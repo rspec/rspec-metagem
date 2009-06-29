@@ -21,11 +21,11 @@ module Rspec
   module Core
     module Matchers
       def fail
-        raise_error(::Spec::Expectations::ExpectationNotMetError)
+        raise_error(::Rspec::Expectations::ExpectationNotMetError)
       end
 
       def fail_with(message)
-        raise_error(::Spec::Expectations::ExpectationNotMetError, message)
+        raise_error(::Rspec::Expectations::ExpectationNotMetError, message)
       end
     end
   end
