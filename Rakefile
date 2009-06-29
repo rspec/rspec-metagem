@@ -16,13 +16,13 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-require 'lib/spec/core/rake_task'
-Spec::Core::RakeTask.new :spec do |t|
+require 'lib/rspec/core/rake_task'
+Rspec::Core::RakeTask.new :spec do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
 desc "Run all examples using rcov"
-Spec::Core::RakeTask.new :coverage do |t|
+Rspec::Core::RakeTask.new :coverage do |t|
   t.pattern = "spec/**/*_spec.rb"
   t.rcov = true
   t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]

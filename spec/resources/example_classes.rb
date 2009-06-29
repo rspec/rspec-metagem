@@ -1,5 +1,5 @@
 # This file contains various classes used by the specs.
-module Spec::Core
+module Rspec::Core
   module Expectations
     class Person
       attr_reader :name
