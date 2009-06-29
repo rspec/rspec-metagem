@@ -9,6 +9,9 @@ begin
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
+    gem.add_dependency "rspec-core", "0.0.0"
+    gem.add_dependency "rspec-expectations", "0.0.0"
+    gem.add_dependency "rspec-mocks", "0.0.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
@@ -17,9 +20,15 @@ rescue LoadError
 end
 
 require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+task :spec do
+  system <<-COMMANDS
+    cd ../core &&
+    rake spec &&
+    cd ../mocks &&
+    rake spec &&
+    cd ../expectations &&
+    rake spec
+  COMMANDS
 end
 
 Spec::Rake::SpecTask.new(:rcov) do |spec|
