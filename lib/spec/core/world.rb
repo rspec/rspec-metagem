@@ -23,7 +23,7 @@ module Spec
 
         if filter || exclusion_filter
           @behaviours_to_run = filter_behaviours
-          p @behaviours_to_run
+
           if @behaviours_to_run.size == 0 && Spec::Core.configuration.run_all_when_everything_filtered?
             puts "No examples were matched by #{filter.inspect}, running all"
             # reset the behaviour list to all behaviours, and add back all examples
