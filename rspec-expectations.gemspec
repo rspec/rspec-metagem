@@ -26,7 +26,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.3}
-  s.summary = %q{TODO.markdown License.txt README.markdown}
+  s.summary = "rspec expectations (should[_not] and matchers)"
   s.test_files = [
     "spec/rspec-expectations_spec.rb",
      "spec/spec_helper.rb"
