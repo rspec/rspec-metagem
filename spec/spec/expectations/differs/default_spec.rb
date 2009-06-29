@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../../../spec_helper.rb'
+require 'ostruct'
 
 module Spec
   module Fixtures
@@ -21,7 +22,7 @@ end
 
 describe "Diff" do
   before(:each) do
-    @options = ::Spec::Runner::Options.new(StringIO.new, StringIO.new)
+    @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
     @differ = Spec::Expectations::Differs::Default.new(@options)
   end
 
@@ -97,7 +98,7 @@ end
 
 describe "Diff in context format" do
   before(:each) do
-    @options = Spec::Runner::Options.new(StringIO.new, StringIO.new)
+    @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
     @options.diff_format = :context
     @differ = Spec::Expectations::Differs::Default.new(@options)
   end

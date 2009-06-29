@@ -1,14 +1,14 @@
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '../../core/lib'))
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '../../mocks/lib'))
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'spec/expectations'
+require 'spec/mocks'
 
 require 'spec/deprecation'
 require 'spec/ruby'
 require 'spec/example'
-require 'spec/runner'
-require 'spec/version'
-require 'spec/dsl'
+require 'spec/core'
 
-require 'spec/autorun'
 # 
 # 
 # require 'stringio'
@@ -125,3 +125,9 @@ end
 # Spec::Runner.configure do |config|
 #   config.extend(Macros)
 # end
+
+Spec::Core::configure do |config|
+  config.mock_with(:rspec)
+  config.include Spec::Mocks::Methods
+  config.include Spec::Matchers
+end

@@ -1,1 +1,1 @@
-Dir["spec/**/*.rb"].each {|f| require f}
+Dir["spec/**/*_spec.rb"].each {|f| require f}
