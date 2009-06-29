@@ -1,13 +1,12 @@
 require 'rubygems'
-require 'spec/matchers'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../expectations/lib'))
-require 'spec/expectations'
+require 'rspec/expectations'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../mocks/lib'))
-require 'spec/mocks'
+require 'rspec/mocks'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rspec/core'
 
-Rspec::Core::Behaviour.send(:include, Spec::Matchers)
+Rspec::Core::Behaviour.send(:include, Rspec::Matchers)
 
 def with_ruby(version)
   yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
