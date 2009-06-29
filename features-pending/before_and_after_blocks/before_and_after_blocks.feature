@@ -95,7 +95,7 @@ Feature: before and after blocks
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
-      Spec::Runner.configure do |config|
+      Rspec::Core.configure do |config|
         config.before(:suite) do
           $before_suite = "before suite"
         end
@@ -131,7 +131,7 @@ Feature: before and after blocks
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """
-      Spec::Runner.configure do |config|
+      Rspec::Core.configure do |config|
         config.before(:suite) do
           puts "before suite"
         end

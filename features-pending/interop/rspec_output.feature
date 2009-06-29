@@ -6,7 +6,7 @@ Feature: spec output
   Scenario Outline: Interop mode with test/unit
     Given a file named "simple_spec.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
 
     describe "Running an Example" do
       it "should not output twice" do

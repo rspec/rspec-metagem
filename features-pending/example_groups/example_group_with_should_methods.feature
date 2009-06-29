@@ -7,7 +7,7 @@ Feature: Spec::ExampleGroup with should methods
   Scenario Outline: Example Group class with should methods
     Given a file named "example_group_with_should_methods.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
 
     class MySpec < Spec::ExampleGroup
       def should_pass_with_should

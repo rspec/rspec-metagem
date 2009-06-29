@@ -7,7 +7,7 @@ Story: Test::Unit::TestCase extended by rspec with should methods
   Scenario Outline: TestCase with should methods
     Given a file named "test_case_with_should_methods.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
     require 'spec/test/unit'
 
     class MyTest < Test::Unit::TestCase

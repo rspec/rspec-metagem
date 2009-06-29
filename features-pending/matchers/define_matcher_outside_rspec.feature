@@ -11,7 +11,7 @@ Feature: define matcher outside rspec
       require 'test/unit'
       require 'spec/expectations'
       
-      Spec::Matchers.define :be_a_multiple_of do |expected|
+      Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
         end

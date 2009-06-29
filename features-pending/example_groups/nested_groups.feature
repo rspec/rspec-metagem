@@ -7,7 +7,7 @@ Feature: Nested example groups
   Scenario Outline: Nested example groups
     Given a file named "nested_example_groups.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
 
     describe "Some Object" do
       describe "with some more context" do

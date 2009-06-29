@@ -7,7 +7,7 @@ Feature: Spec and test together
   Scenario Outline: Run specs and tests together
     Given a file named "spec_and_test_together.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
     require 'spec/test/unit'
 
     describe "An Example" do

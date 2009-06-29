@@ -6,7 +6,7 @@ Feature: mock with mocha
   Scenario: Mock with mocha
     Given a file named "mocha_example_spec.rb" with:
       """
-      Spec::Runner.configure do |config|
+      Rspec::Core.configure do |config|
         config.mock_with :mocha
       end
 

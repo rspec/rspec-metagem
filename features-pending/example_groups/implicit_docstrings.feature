@@ -7,7 +7,7 @@ Feature: implicit docstrings
   Scenario Outline: run passing examples
     Given a file named "implicit_docstrings_example.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
     describe "Examples with no docstrings generate their own:" do
 
       specify { 3.should be < 5 }
@@ -33,7 +33,7 @@ Feature: implicit docstrings
   Scenario Outline: run failing examples
     Given a file named "failing_implicit_docstrings_example.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
     describe "Failing examples with no descriptions" do
 
       # description is auto-generated as "should equal(5)" based on the last #should

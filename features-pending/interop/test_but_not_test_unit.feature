@@ -6,7 +6,7 @@ Story: Test is defined, but not Test::Unit
   Scenario Outline: Spec including Test const but not Test::Unit
     Given a file named "spec_including_test_but_not_unit.rb" with:
     """
-    require 'spec/autorun'
+    require 'rspec/autorun'
 
     module Test
     end

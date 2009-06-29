@@ -7,7 +7,7 @@ Feature: define matcher
   Scenario: one additional method
     Given a file named "between_spec.rb" with:
       """
-      Spec::Matchers.define :be_bigger_than do |first|
+      Rspec::Matchers.define :be_bigger_than do |first|
         def but_smaller_than(second)
           @second = second
           self
