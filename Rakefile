@@ -22,7 +22,7 @@ Rspec::Core::RakeTask.new :spec do |t|
 end
 
 desc "Run all examples using rcov"
-Rspec::Core::RakeTask.new :coverage do |t|
+Rspec::Core::RakeTask.new :rcov do |t|
   t.pattern = "spec/**/*_spec.rb"
   t.rcov = true
   t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
