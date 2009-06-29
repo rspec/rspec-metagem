@@ -29,11 +29,7 @@ module Rspec
         end
 
         def colorise(s, failure)
-          if failure.is_a?(Spec::Expectations::ExpectationNotMetError)
-            red(s)
-          else
-            magenta(s)
-          end
+          red(s)
         end
 
         def dump_summary
