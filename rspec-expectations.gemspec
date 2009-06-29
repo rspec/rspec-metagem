@@ -12,24 +12,71 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
-    ".document",
-     ".gitignore",
-     "License.txt",
-     "README.markdown",
-     "Rakefile",
-     "VERSION",
-     "lib/rspec-expectations.rb",
-     "spec/rspec-expectations_spec.rb",
-     "spec/spec_helper.rb"
+    "License.txt",
+    "README.markdown",
+    "Rakefile",
+    "VERSION.yml",
+    "lib/spec/expectations.rb",
+    "lib/spec/expectations/differs/default.rb",
+    "lib/spec/expectations/differs/load-diff-lcs.rb",
+    "lib/spec/expectations/errors.rb",
+    "lib/spec/expectations/extensions.rb",
+    "lib/spec/expectations/extensions/kernel.rb",
+    "lib/spec/expectations/fail_with.rb",
+    "lib/spec/expectations/handler.rb",
+    "lib/spec/matchers.rb",
+    "lib/spec/matchers/be.rb",
+    "lib/spec/matchers/be_close.rb",
+    "lib/spec/matchers/be_instance_of.rb",
+    "lib/spec/matchers/be_kind_of.rb",
+    "lib/spec/matchers/change.rb",
+    "lib/spec/matchers/compatibility.rb",
+    "lib/spec/matchers/dsl.rb",
+    "lib/spec/matchers/eql.rb",
+    "lib/spec/matchers/equal.rb",
+    "lib/spec/matchers/errors.rb",
+    "lib/spec/matchers/exist.rb",
+    "lib/spec/matchers/extensions/instance_exec.rb",
+    "lib/spec/matchers/generated_descriptions.rb",
+    "lib/spec/matchers/has.rb",
+    "lib/spec/matchers/have.rb",
+    "lib/spec/matchers/include.rb",
+    "lib/spec/matchers/match.rb",
+    "lib/spec/matchers/match_array.rb",
+    "lib/spec/matchers/matcher.rb",
+    "lib/spec/matchers/method_missing.rb",
+    "lib/spec/matchers/operator_matcher.rb",
+    "lib/spec/matchers/pretty.rb",
+    "lib/spec/matchers/raise_error.rb",
+    "lib/spec/matchers/respond_to.rb",
+    "lib/spec/matchers/satisfy.rb",
+    "lib/spec/matchers/simple_matcher.rb",
+    "lib/spec/matchers/throw_symbol.rb",
+    "lib/spec/matchers/wrap_expectation.rb",
+    "spec/spec.opts",
+    "spec/spec/expectations/differs/default_spec.rb",
+    "spec/spec/expectations/extensions/kernel_spec.rb",
+    "spec/spec/expectations/fail_with_spec.rb",
+    "spec/spec/expectations/handler_spec.rb",
+    "spec/spec/expectations/wrap_expectation_spec.rb",
+    "spec/spec_helper.rb",
+    "spec/suite.rb",
+    "spec/support/macros.rb"
   ]
   s.homepage = %q{http://github.com/rspec/expectations}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.3}
-  s.summary = "rspec expectations (should[_not] and matchers)"
+  s.rubygems_version = %q{1.3.4}
+  s.summary = %q{rspec expectations (should[_not] and matchers)}
   s.test_files = [
-    "spec/rspec-expectations_spec.rb",
-     "spec/spec_helper.rb"
+    "spec/spec/expectations/differs/default_spec.rb",
+    "spec/spec/expectations/extensions/kernel_spec.rb",
+    "spec/spec/expectations/fail_with_spec.rb",
+    "spec/spec/expectations/handler_spec.rb",
+    "spec/spec/expectations/wrap_expectation_spec.rb",
+    "spec/spec_helper.rb",
+    "spec/suite.rb",
+    "spec/support/macros.rb"
   ]
 
   if s.respond_to? :specification_version then

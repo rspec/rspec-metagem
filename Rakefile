@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-expectations"
-    gem.summary = %Q{TODO.markdown License.txt README.markdown}
+    gem.summary = "rspec expectations (should[_not] and matchers)"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
