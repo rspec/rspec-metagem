@@ -193,5 +193,3 @@ module Rspec
   #
   module Matchers; end
 end
-
-Rspec::Matchers = Rspec::Matchers

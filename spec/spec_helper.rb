@@ -5,7 +5,7 @@ require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/core'
 
-module Spec
+module Rspec
   module Ruby
     class << self
       def version
