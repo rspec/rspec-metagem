@@ -55,3 +55,15 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+namespace :git do
+  "git status on all the repos"
+  task :status do
+    ["../core","../expectations", "../mocks"].each do |repo|
+      puts
+      puts "*" * 50
+      puts "git status of #{repo}:"
+      puts `cd #{repo} && git status`
+      puts "*" * 50
+    end
+  end
+end
