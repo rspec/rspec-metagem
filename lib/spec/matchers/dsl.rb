@@ -7,12 +7,6 @@ module Spec
           Spec::Matchers::Matcher.new name, *expected, &declarations
         end
       end
-      
-      # Deprecated - use define
-      def create(name, &declarations)
-        Spec.deprecate("Spec::Matchers.create","Spec::Matchers.define")
-        define(name, &declarations)
-      end
     end
   end
 end
