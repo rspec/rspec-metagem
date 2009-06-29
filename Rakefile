@@ -25,7 +25,7 @@ desc "Run all examples using rcov"
 Spec::Core::RakeTask.new :coverage do |t|
   t.pattern = "spec/**/*_spec.rb"
   t.rcov = true
-  t.rcov_opts = %[--exclude "gems/*,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
+  t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
 end
 
 task :default => :spec
