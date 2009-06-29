@@ -23,10 +23,19 @@ require 'spec/rake/spectask'
 task :spec do
   system <<-COMMANDS
     cd ../core &&
+    echo '================================'
+    echo 'Running spec/core suite . . .'
+    echo '================================'
     rake spec &&
     cd ../mocks &&
+    echo '================================'
+    echo 'Running spec/mocks suite . . .'
+    echo '================================'
     rake spec &&
     cd ../expectations &&
+    echo '================================'
+    echo 'Running spec/expectations suite . . .'
+    echo '================================'
     rake spec
   COMMANDS
 end
