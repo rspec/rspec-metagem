@@ -64,6 +64,7 @@ module Spec
       end
 
       alias_example_to :it
+      alias_example_to :specify
       alias_example_to :focused, :focused => true
       alias_example_to :disabled, :disabled => true
       alias_example_to :pending, :pending => true
