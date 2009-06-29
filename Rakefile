@@ -18,7 +18,7 @@ end
 
 require 'spec/rake/spectask'
 task :spec do
-  puts `ruby spec/suite.rb`
+  system "ruby spec/suite.rb -c"
 end
 
 task :default => :spec
