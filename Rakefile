@@ -69,10 +69,10 @@ namespace :git do
   task :status do
     ["../core","../expectations", "../mocks"].each do |repo|
       puts
-      puts "*" * 50
-      puts "git status of #{repo}:"
+      puts "=" * 50
+      puts "running git status on #{repo}:"
+      puts "=" * 50
       puts `cd #{repo} && git status`
-      puts "*" * 50
     end
   end
 end
