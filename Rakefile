@@ -65,14 +65,16 @@ Rake::RDocTask.new do |rdoc|
 end
 
 namespace :git do
-  "git status on all the repos"
-  task :status do
-    ["../core","../expectations", "../mocks"].each do |repo|
-      puts
-      puts "=" * 50
-      puts "running git status on #{repo}:"
-      puts "=" * 50
-      puts `cd #{repo} && git status`
+  [:status, :pull, :push].each do |command|
+    desc "git #{command} on all the repos"
+    task command do
+      ["../meta","../core","../expectations", "../mocks"].each do |repo|
+        puts
+        puts "=" * 50
+        puts "running git #{command} on #{repo}:"
+        puts "=" * 50
+        puts `cd #{repo} && git #{command}`
+      end
     end
   end
 end
