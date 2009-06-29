@@ -16,9 +16,10 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-task :spec do
-  system "ruby spec/suite.rb"
+$:.unshift File.join(File.dirname(__FILE__), "/../core/lib")
+require 'rspec/core/rake_task'
+Rspec::Core::RakeTask.new(:spec) do |spec|
+  spec.pattern = "spec/**/*_spec.rb"
 end
 
 task :default => :spec
