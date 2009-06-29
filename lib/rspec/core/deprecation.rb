@@ -1,8 +1,9 @@
 module Rspec
+  module Core
   
-  class << self
-    def deprecate(method, alternate_method=nil)
-       message = <<-NOTICE
+    class << self
+      def deprecate(method, alternate_method=nil)
+         message = <<-NOTICE
 
 *****************************************************************
 DEPRECATION WARNING: you are using deprecated behaviour that will
@@ -12,33 +13,35 @@ be removed from a future version of RSpec.
 
 * #{method} is deprecated.
 NOTICE
-      if alternate_method
-        message << <<-ADDITIONAL
+        if alternate_method
+          message << <<-ADDITIONAL
 * please use #{alternate_method} instead.
 ADDITIONAL
+        end
+
+        message << "*****************************************************************"
+        warn(message)
       end
 
-      message << "*****************************************************************"
-      warn(message)
+      def warn(message)
+        Kernel.warn(message)
+      end
+
     end
 
-    def warn(message)
-      Kernel.warn(message)
-    end
-
-  end
-
-  class HashWithDeprecationNotice < Hash
+    class HashWithDeprecationNotice < Hash
     
-    def initialize(method, alternate_method=nil, &block)
-      @method, @alternate_method = method, alternate_method
-    end
+      def initialize(method, alternate_method=nil, &block)
+        @method, @alternate_method = method, alternate_method
+      end
     
-    def []=(k,v)
-      Rspec.deprecate(@method, @alternate_method)
-      super
-    end
+      def []=(k,v)
+        Rspec.deprecate(@method, @alternate_method)
+        super
+      end
     
+    end
+  
   end
   
 end
