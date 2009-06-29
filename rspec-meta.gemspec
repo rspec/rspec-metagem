@@ -12,26 +12,17 @@ Gem::Specification.new do |s|
     "README.markdown"
   ]
   s.files = [
-    ".document",
-     ".gitignore",
-     "License.txt",
-     "README.markdown",
-     "Rakefile",
-     "VERSION",
-     "lib/rspec-meta.rb",
-     "rspec-meta.gemspec",
-     "spec/rspec-meta_spec.rb",
-     "spec/spec_helper.rb"
+    "License.txt",
+    "README.markdown",
+    "Rakefile",
+    "VERSION.yml",
+    "lib/rspec-meta.rb"
   ]
   s.homepage = %q{http://github.com/rspec/meta}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.3}
-  s.summary = %q{TODO.markdown License.txt README.markdown}
-  s.test_files = [
-    "spec/rspec-meta_spec.rb",
-     "spec/spec_helper.rb"
-  ]
+  s.rubygems_version = %q{1.3.4}
+  s.summary = %q{pulls in the other rspec gems}
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
