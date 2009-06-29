@@ -5,7 +5,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
-    gem.summary = %Q{TODO.markdown License.txt README.markdown}
+    gem.summary = "RSpec Core"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
@@ -16,18 +16,17 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+require 'lib/spec/core/rake_task'
+Spec::Core::RakeTask.new :spec do |t|
+  t.pattern = "spec/**/*_spec.rb"
 end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
+desc "Run all examples using rcov"
+Spec::Core::RakeTask.new :coverage do |t|
+  t.pattern = "spec/**/*_spec.rb"
+  t.rcov = true
+  t.rcov_opts = %[--exclude "spec/*,gems/*,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
 end
-
 
 task :default => :spec
 
