@@ -65,9 +65,10 @@ Rake::RDocTask.new do |rdoc|
 end
 
 namespace :git do
-  [:status, :pull, :push].each do |command|
+  [:status, :pull, :push, :reset].each do |key|
+    command = key == :reset ? "reset --hard" : key.to_s
     desc "git #{command} on all the repos"
-    task command do
+    task key do
       ["../meta","../core","../expectations", "../mocks"].each do |repo|
         puts
         puts "=" * 50
