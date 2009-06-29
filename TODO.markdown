@@ -1,0 +1,1 @@
+* `it_should_behave_like`
