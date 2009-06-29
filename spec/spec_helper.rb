@@ -1,6 +1,9 @@
 require 'rubygems'
 require 'spec/matchers'
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../expectations/lib'))
 require 'spec/expectations'
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../mocks/lib'))
+require 'spec/mocks'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'spec/core'
 

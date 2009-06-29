@@ -60,6 +60,9 @@ module Spec
         when /rr/i
           require 'spec/core/mocking/with_rr'
           Spec::Core::Mocking::WithRR
+        when /rspec/i
+          require 'spec/core/mocking/with_rspec'
+          Spec::Core::Mocking::WithRspec
         else
           require 'spec/core/mocking/with_absolutely_nothing'
           Spec::Core::Mocking::WithAbsolutelyNothing
