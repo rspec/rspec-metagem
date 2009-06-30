@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
     "README.markdown",
     "Rakefile",
     "VERSION.yml",
-    "lib/rspec-meta.rb"
+    "lib/rspec.rb"
   ]
   s.homepage = %q{http://github.com/rspec/meta}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -29,13 +29,16 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<rspec-core>, ["= 0.0.0"])
       s.add_runtime_dependency(%q<rspec-expectations>, ["= 0.0.0"])
       s.add_runtime_dependency(%q<rspec-mocks>, ["= 0.0.0"])
     else
+      s.add_dependency(%q<rspec-core>, ["= 0.0.0"])
       s.add_dependency(%q<rspec-expectations>, ["= 0.0.0"])
       s.add_dependency(%q<rspec-mocks>, ["= 0.0.0"])
     end
   else
+    s.add_dependency(%q<rspec-core>, ["= 0.0.0"])
     s.add_dependency(%q<rspec-expectations>, ["= 0.0.0"])
     s.add_dependency(%q<rspec-mocks>, ["= 0.0.0"])
   end
