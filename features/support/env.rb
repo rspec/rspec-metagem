@@ -1,4 +1,5 @@
 $:.unshift File.join(File.dirname(__FILE__), "/../../lib")
+$:.unshift File.join(File.dirname(__FILE__), "/../../../expectations/lib")
 
 require 'rspec/expectations'
 require 'forwardable'
