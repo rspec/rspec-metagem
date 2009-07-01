@@ -42,7 +42,7 @@ end
 task :default => :spec
 
 namespace :git do
-  [:status, :pull, :push, :reset].each do |key|
+  [:status, :pull, :push, :reset, :diff].each do |key|
     command = key == :reset ? "reset --hard" : key.to_s
     desc "git #{command} on all the repos"
     task key do
@@ -55,4 +55,6 @@ namespace :git do
       end
     end
   end
+
+  task :st => :status
 end
