@@ -68,6 +68,12 @@ module Rspec
       alias_example_to :focused, :focused => true
       alias_example_to :disabled, :disabled => true
       alias_example_to :pending, :pending => true
+
+      def self.it_should_behave_like(*names)
+        Rspec::Core.world.shared_behaviours.each do |name, block|
+          module_eval(&block) if names.include?(name)
+        end
+      end
     
       def self.examples
         @_examples ||= []

@@ -18,6 +18,10 @@ module Rspec
         Rspec::Core.configuration.exclusion_filter
       end
 
+      def shared_behaviours
+        @shared_behaviours ||= {}
+      end
+
       def behaviours_to_run
         return @behaviours_to_run if @behaviours_to_run
 
