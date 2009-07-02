@@ -6,7 +6,6 @@
     * from command line
     * in rake task definitions
   * formatters
-* rename Behaviour to ExampleGroup
 
 ### Maxwell
 

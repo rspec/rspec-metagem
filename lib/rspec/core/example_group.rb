@@ -1,6 +1,6 @@
 module Rspec
   module Core
-    class Behaviour
+    class ExampleGroup
     
       attr_accessor :running_example, :reporter
     
@@ -147,7 +147,7 @@ module Rspec
         classes = []
         current_class = self
 
-        while current_class < Rspec::Core::Behaviour
+        while current_class < Rspec::Core::ExampleGroup
           superclass_last ? classes << current_class : classes.unshift(current_class)
           current_class = current_class.superclass
         end
@@ -217,7 +217,7 @@ module Rspec
       end
 
       def self.to_s
-        self == Rspec::Core::Behaviour ? 'Rspec::Core::Behaviour' : name
+        self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
       end
    
     end

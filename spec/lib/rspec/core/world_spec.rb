@@ -13,7 +13,7 @@ describe Rspec::Core::World do
   describe "behaviour groups" do
   
     it "should contain all defined behaviour groups" do
-      behaviour_group = Rspec::Core::Behaviour.describe(Bar, 'Empty Behaviour Group') { }
+      behaviour_group = Rspec::Core::ExampleGroup.describe(Bar, 'Empty Behaviour Group') { }
       @world.behaviours.should include(behaviour_group)       
     end
   
@@ -25,10 +25,10 @@ describe Rspec::Core::World do
       options_1 = { :foo => 1, :color => 'blue', :feature => 'reporting' }
       options_2 = { :pending => true, :feature => 'reporting'  }
       options_3 = { :array => [1,2,3,4], :color => 'blue', :feature => 'weather status' }      
-      @bg1 = Rspec::Core::Behaviour.describe(Bar, "find group-1", options_1) { }
-      @bg2 = Rspec::Core::Behaviour.describe(Bar, "find group-2", options_2) { }
-      @bg3 = Rspec::Core::Behaviour.describe(Bar, "find group-3", options_3) { }
-      @bg4 = Rspec::Core::Behaviour.describe(Foo, "find these examples") do
+      @bg1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
+      @bg2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
+      @bg3 = Rspec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
+      @bg4 = Rspec::Core::ExampleGroup.describe(Foo, "find these examples") do
         it('I have no options') {}
         it("this is awesome", :awesome => true) {}
         it("this is too", :awesome => true) {}
@@ -101,7 +101,7 @@ describe Rspec::Core::World do
       options = { :network_access => true }      
       
       isolate_behaviour do
-        group1 = Rspec::Core::Behaviour.describe(Bar, "find group-1", options) do
+        group1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options) do
           it("foo") {}
           it("bar") {}
         end
@@ -110,7 +110,7 @@ describe Rspec::Core::World do
       end
       
       isolate_behaviour do
-        group2 = Rspec::Core::Behaviour.describe(Bar, "find group-1") do
+        group2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1") do
           it("foo", :network_access => true) {}
           it("bar") {}
         end
@@ -122,7 +122,7 @@ describe Rspec::Core::World do
     
     it "should find nothing if a regexp matches the exclusion filter" do
       isolate_behaviour do
-        group = Rspec::Core::Behaviour.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
+        group = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
           it("foo") {}
           it("bar") {}
         end
@@ -142,7 +142,7 @@ describe Rspec::Core::World do
   describe "filtering behaviours" do
     
     before(:all) do
-      @group1 = Rspec::Core::Behaviour.describe(Bar, "find these examples") do
+      @group1 = Rspec::Core::ExampleGroup.describe(Bar, "find these examples") do
         it('I have no options',       :color => :red, :awesome => true) {}
         it("I also have no options",  :color => :red, :awesome => true) {}
         it("not so awesome",          :color => :red, :awesome => false) {}

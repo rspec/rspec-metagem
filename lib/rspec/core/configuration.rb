@@ -43,7 +43,7 @@ module Rspec
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
       def alias_example_to(new_name, extra_options={})
-        Rspec::Core::Behaviour.alias_example_to(new_name, extra_options)
+        Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
       def cleaned_from_backtrace?(line)
@@ -68,7 +68,7 @@ module Rspec
           Rspec::Core::Mocking::WithAbsolutelyNothing
         end 
 
-        Rspec::Core::Behaviour.send(:include, mock_framework_class)
+        Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
       end
 
       def autorun!

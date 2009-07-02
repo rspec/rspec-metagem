@@ -6,7 +6,7 @@ require 'rspec/mocks'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rspec/core'
 
-Rspec::Core::Behaviour.send(:include, Rspec::Matchers)
+Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
 def with_ruby(version)
   yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")

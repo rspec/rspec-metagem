@@ -1,35 +1,35 @@
 require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
-def empty_behaviour_group(name='Empty Behaviour Group')
-  group = Rspec::Core::Behaviour.describe(Object, name) {}
+def empty_behaviour_group(name='Empty ExampleGroup Group')
+  group = Rspec::Core::ExampleGroup.describe(Object, name) {}
   remove_last_describe_from_world
   yield group if block_given?
   group
 end
 
-describe Rspec::Core::Behaviour do
+describe Rspec::Core::ExampleGroup do
 
   describe "describing behaviour with #describe" do
     
     example "an ArgumentError is raised if no type or description is given" do
-      lambda { Rspec::Core::Behaviour.describe() {} }.should raise_error(ArgumentError, "No arguments given.  You must a least supply a type or description")
+      lambda { Rspec::Core::ExampleGroup.describe() {} }.should raise_error(ArgumentError, "No arguments given.  You must a least supply a type or description")
     end
 
     example "an ArgumentError is raised if no block is given" do
-      lambda { Rspec::Core::Behaviour.describe('foo') }.should raise_error(ArgumentError, "You must supply a block when calling describe")
+      lambda { Rspec::Core::ExampleGroup.describe('foo') }.should raise_error(ArgumentError, "You must supply a block when calling describe")
     end
 
     describe '#name' do
 
       it "should expose the first parameter as name" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe("my favorite pony") { }.name.should == 'my favorite pony'
+          Rspec::Core::ExampleGroup.describe("my favorite pony") { }.name.should == 'my favorite pony'
         end
       end
 
       it "should call to_s on the first parameter in case it is a constant" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.name.should == 'Object'
+          Rspec::Core::ExampleGroup.describe(Object) { }.name.should == 'Object'
         end
       end
 
@@ -37,9 +37,9 @@ describe Rspec::Core::Behaviour do
         behaviour_to_test = nil
 
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Rspec::Core, "test") do
-            Rspec::Core::Behaviour.describe("nested one") do
-              behaviour_to_test = Rspec::Core::Behaviour.describe("nested two") { }
+          Rspec::Core::ExampleGroup.describe(Rspec::Core, "test") do
+            Rspec::Core::ExampleGroup.describe("nested one") do
+              behaviour_to_test = Rspec::Core::ExampleGroup.describe("nested two") { }
             end
           end
         end
@@ -53,13 +53,13 @@ describe Rspec::Core::Behaviour do
 
       it "should be the first parameter when it is a constant" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.describes.should == Object
+          Rspec::Core::ExampleGroup.describe(Object) { }.describes.should == Object
         end
       end
 
       it "should be nil when the first parameter is a string" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe("i'm a computer") { }.describes.should be_nil
+          Rspec::Core::ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
         end
       end
 
@@ -69,13 +69,13 @@ describe Rspec::Core::Behaviour do
 
       it "should expose the second parameter as description" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object, "my desc") { }.description.should == 'my desc'
+          Rspec::Core::ExampleGroup.describe(Object, "my desc") { }.description.should == 'my desc'
         end
       end
 
       it "should allow the second parameter to be nil" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object, nil) { }.description.size.should == 0
+          Rspec::Core::ExampleGroup.describe(Object, nil) { }.description.size.should == 0
         end
       end
 
@@ -85,39 +85,39 @@ describe Rspec::Core::Behaviour do
 
       it "should add the third parameter to the metadata" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
+          Rspec::Core::ExampleGroup.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
         end
       end
 
       it "should add the caller to metadata" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}:#{__LINE__}/
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}:#{__LINE__}/
         end
       end
 
       it "should add the the file_path to metadata" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
         end
       end
 
       it "should have a reader for file_path" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.file_path.should == __FILE__
+          Rspec::Core::ExampleGroup.describe(Object) { }.file_path.should == __FILE__
         end
       end
 
       it "should add the line_number to metadata" do
         isolate_behaviour do
-          Rspec::Core::Behaviour.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
         end
       end
 
       it "should add file path and line number metadata for arbitrarily nested describes" do
-        Rspec::Core::Behaviour.describe(Object) do
-          Rspec::Core::Behaviour.describe("foo") do
-            Rspec::Core::Behaviour.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
-            Rspec::Core::Behaviour.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
+        Rspec::Core::ExampleGroup.describe(Object) do
+          Rspec::Core::ExampleGroup.describe("foo") do
+            Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
+            Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
           end
         end
 
@@ -383,9 +383,9 @@ describe Rspec::Core::Behaviour do
       use_formatter(@fake_formatter) do
         passing_example1 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
         passing_example2 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::Behaviour.stubs(:examples_to_run).returns([passing_example1, passing_example2])
+        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([passing_example1, passing_example2])
 
-        Rspec::Core::Behaviour.run_examples(stub_behaviour, stub_everything('reporter')).should be_true
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter')).should be_true
       end
     end
 
@@ -393,9 +393,9 @@ describe Rspec::Core::Behaviour do
       use_formatter(@fake_formatter) do
         failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
         passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::Behaviour.stubs(:examples_to_run).returns([failing_example, passing_example])
+        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([failing_example, passing_example])
 
-        Rspec::Core::Behaviour.run_examples(stub_behaviour, stub_everything('reporter')).should be_false
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter')).should be_false
       end
     end
 
@@ -403,11 +403,11 @@ describe Rspec::Core::Behaviour do
       use_formatter(@fake_formatter) do
         failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
         passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::Behaviour.stubs(:examples_to_run).returns([failing_example, passing_example])
+        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([failing_example, passing_example])
 
         passing_example.expects(:run)
 
-        Rspec::Core::Behaviour.run_examples(stub_behaviour, stub_everything('reporter'))
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter'))
       end
     end
 

@@ -6,19 +6,19 @@ describe Rspec::Core::Configuration do
 
     it "should require and include the mocha adapter when called with :mocha" do
       Rspec::Core.configuration.expects(:require).with('rspec/core/mocking/with_mocha')
-      Rspec::Core::Behaviour.expects(:send)
+      Rspec::Core::ExampleGroup.expects(:send)
       Rspec::Core.configuration.mock_with :mocha
     end
 
     it "should include the null adapter for nil" do
-      Rspec::Core::Behaviour.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
+      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
       Rspec::Core.configuration.mock_with nil
     end
     
     # if the below example doesn't pass, @behaviour_instance._setup_mocks and similiar calls fail without a mock library specified
     # this is really a case where cucumber would be a better fit to catch these type of regressions
     it "should include the null adapter by default, if no mocking library is specified" do
-      Rspec::Core::Behaviour.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
+      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
       config = Rspec::Core::Configuration.new
     end
     
@@ -34,7 +34,7 @@ describe Rspec::Core::Configuration do
 
     it "should include the given module into each matching behaviour" do
       Rspec::Core.configuration.include(InstanceLevelMethods, :magic_key => :include)
-      group = Rspec::Core::Behaviour.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
+      group = Rspec::Core::ExampleGroup.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
       group.should_not respond_to(:you_call_this_a_blt?)
       remove_last_describe_from_world
 
@@ -54,7 +54,7 @@ describe Rspec::Core::Configuration do
 
     it "should extend the given module into each matching behaviour" do
       Rspec::Core.configuration.extend(ThatThingISentYou, :magic_key => :extend)      
-      group = Rspec::Core::Behaviour.describe(ThatThingISentYou, :magic_key => :extend) { }
+      group = Rspec::Core::ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
       
       group.should respond_to(:that_thing)
       remove_last_describe_from_world

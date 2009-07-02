@@ -5,7 +5,7 @@ require 'rspec/core/configuration'
 require 'rspec/core/runner'
 require 'rspec/core/example'
 require 'rspec/core/shared_behaviour'
-require 'rspec/core/behaviour'
+require 'rspec/core/example_group'
 require 'rspec/core/kernel_extensions'
 require 'rspec/core/formatters'
 
