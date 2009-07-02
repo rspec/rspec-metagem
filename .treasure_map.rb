@@ -1,6 +1,12 @@
-map_for(:default) do |m|
+clear_maps
 
-  m.watch 'lib', 'spec'
+map_for(:rspec_core) do |m|
+
+  m.watch 'lib', 'spec', 'example_specs'
+
+  m.add_mapping %r%example_specs/(.*)_spec\.rb% do |match|
+    ["example_specs/#{match[1]}_spec.rb"]
+  end
 
   m.add_mapping %r%spec/(.*)_spec\.rb% do |match|
     ["spec/#{match[1]}_spec.rb"]
