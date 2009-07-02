@@ -20,3 +20,9 @@ components of rspec that you're not using.
 
 Again, we're super early in the process - aiming for a 2.0 release late
 2009/early 2010 - so do stay tuned, but don't start using this just yet.
+
+#### Also see
+
+* [http://github.com/rspec/core](http://github.com/rspec/core)
+* [http://github.com/rspec/expectations](http://github.com/rspec/expectations)
+* [http://github.com/rspec/mocks](http://github.com/rspec/mocks)
