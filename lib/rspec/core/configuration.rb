@@ -27,6 +27,10 @@ module Rspec
 
       attr_reader :mock_framework
 
+      attr_reader :files_to_run
+
+      attr_reader :file_pattern
+
       def initialize
         @backtrace_clean_patterns = [/\/lib\/ruby\//, /bin\/rcov:/, /vendor\/rails/, /bin\/rspec/, /bin\/spec/]
         @run_all_when_everything_filtered = true
@@ -35,8 +39,10 @@ module Rspec
         @color_enabled = false
         @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
         @include_or_extend_modules = []
+        @files_to_run = []
         @formatter_to_use = Rspec::Core::Formatters::ProgressFormatter
         @filter, @exclusion_filter = nil, nil
+        @file_pattern = '**/*_spec.rb'
         mock_with nil unless @mock_framework_established
       end
 
@@ -69,6 +75,22 @@ module Rspec
         end 
 
         Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
+      end
+
+      def files_to_run=(files)
+        file_patterns = file_pattern.split(',')
+
+        files.each do |file|
+          if file =~ /\.rb$/i
+            @files_to_run << file
+          else
+            file_patterns.each do |pattern|
+              @files_to_run.concat Dir["#{File.expand_path(file)}/#{pattern.strip}"]
+            end
+          end
+        end
+
+        @files_to_run.uniq!
       end
 
       def autorun!
@@ -128,6 +150,10 @@ module Rspec
       # Can be turned on at the global (configuration) level or at the individual behaviour (describe) level.
       def trace?
         @trace == true
+      end
+
+      def parse_command_line_args(args)
+        Rspec::Core::CommandLineOptions.parse(args, self)
       end
 
       def include(mod, options={})

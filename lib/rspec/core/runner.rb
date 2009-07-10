@@ -21,12 +21,13 @@ module Rspec
         Rspec::Core.configuration.formatter
       end
 
-      def require_all_behaviours(files_from_args=[])
-        files_from_args.each { |file| require file }
+      def require_all_files(files)
+        files.each { |file| require file }
       end
 
       def run(args = [])
-        require_all_behaviours(args)
+        Rspec::Core.configuration.parse_command_line_args(args)
+        require_all_files Rspec::Core.configuration.files_to_run
 
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 
