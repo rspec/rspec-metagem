@@ -8,7 +8,7 @@
 
 if ENV['RUN_FLEXMOCK_EXAMPLE']
   Spec::Runner.configure do |config|
-    config.mock_with :flexmock
+    config.mock_framework = :flexmock
   end
 
   describe "Flexmocks" do

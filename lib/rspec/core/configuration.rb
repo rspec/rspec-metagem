@@ -19,47 +19,57 @@ module Rspec
       # when using focused examples for instance.  Defaults to true
       attr_accessor :run_all_when_everything_filtered
 
-      # Enable profiling of example run - defaults to false
-      attr_accessor :profile_examples
-
       # Enable verbose interal logging of the framework - defaults to false
       attr_accessor :trace
-
-      attr_reader :mock_framework
 
       attr_reader :files_to_run
 
       attr_reader :file_pattern
+      
+      attr_reader :default_options, :code_configured_options, :command_line_options
+      
+      attr_reader :options
 
       def initialize
         @backtrace_clean_patterns = [/\/lib\/ruby\//, /bin\/rcov:/, /vendor\/rails/, /bin\/rspec/, /bin\/spec/]
         @run_all_when_everything_filtered = true
-        @trace = false
-        @profile_examples = false
-        @color_enabled = false
         @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
         @include_or_extend_modules = []
         @files_to_run = []
         @formatter_to_use = Rspec::Core::Formatters::ProgressFormatter
         @filter, @exclusion_filter = nil, nil
         @file_pattern = '**/*_spec.rb'
-        mock_with nil unless @mock_framework_established
+        @default_options, @code_configured_options, @command_line_options = {}, {}, {}
+        @options = {}
+      end
+      
+      def default_config
+        {
+          :color_enabled => false,
+          :mock_framework => nil,
+          :profile_examples => false
+        }
+      end
+      
+      def apply_options
+        [default_options, code_configured_options, command_line_options].each do |config_source|
+          @options.merge! config_source
+        end  
+  
+        self.files_to_run = @options[:files_to_run]
+        self.insert_mock_framework
       end
 
-      # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
-      # crazy_slow as an example variant that has the crazy_slow speed option
-      def alias_example_to(new_name, extra_options={})
-        Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
+      def mock_framework=(use_me_to_mock)
+        code_configured_options[:mock_framework] = use_me_to_mock
       end
-
-      def cleaned_from_backtrace?(line)
-        @backtrace_clean_patterns.any? { |regex| line =~ regex }
+      
+      def mock_framework
+        options[:mock_framework]
       end
-
-      def mock_with(make_a_mockery_with=nil)
-        @mock_framework_established = true
-        @mock_framework = make_a_mockery_with
-        mock_framework_class = case make_a_mockery_with.to_s
+      
+      def insert_mock_framework
+        mock_framework_class = case mock_framework.to_s
         when /mocha/i
           require 'rspec/core/mocking/with_mocha'
           Rspec::Core::Mocking::WithMocha
@@ -76,8 +86,63 @@ module Rspec
 
         Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
       end
+      
+      def color_enabled=(on_or_off)
+        code_configured_options[:color_enabled] = on_or_off
+      end
 
+      def color_enabled?
+        options[:color_enabled]
+      end
+      
+      # Enable profiling of example run - defaults to false
+      def profile_examples
+        code_configured_options[:profile_examples]
+      end
+      
+      def profile_examples=(profile)
+        code_configured_options[:profile_examples] = on_or_off
+      end
+     
+      def formatter
+        code_configured_options[:formatter]
+      end
+     
+      def formatter=(formatter_to_use)
+        formatter_class = case formatter_to_use.to_s
+        when 'documentation' 
+          Rspec::Core::Formatters::DocumentationFormatter
+        when 'progress' 
+          Rspec::Core::Formatters::ProgressFormatter
+        else 
+          raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
+        end
+        code_configured_options[:formatter] = formatter_class
+      end
+        
+      # ==========
+      
+
+      # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
+      # crazy_slow as an example variant that has the crazy_slow speed option
+      def alias_example_to(new_name, extra_options={})
+        Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
+      end
+
+      def cleaned_from_backtrace?(line)
+        @backtrace_clean_patterns.any? { |regex| line =~ regex }
+      end
+
+    
+
+      # The formatter all output should use.  Defaults to the progress formatter
+      def formatter
+        @formatter ||= @formatter_to_use.new
+      end
+     
       def files_to_run=(files)
+        files ||= []
+        
         file_patterns = file_pattern.split(',')
 
         files.each do |file|
@@ -97,15 +162,7 @@ module Rspec
         Rspec::Core::Runner.autorun
       end
 
-      # Turn ANSI on with 'true', or off with 'false'
-      def color_enabled=(on_or_off)
-        @color_enabled = on_or_off
-      end
 
-      # Output with ANSI color enabled? Defaults to false
-      def color_enabled?
-        @color_enabled
-      end
 
       def filter_run(options={})
         @filter = options
@@ -115,45 +172,19 @@ module Rspec
         @run_all_when_everything_filtered
       end
 
-      def formatter=(formatter_to_use)
-        @formatter_to_use = case formatter_to_use.to_s
-        when 'documentation' then Rspec::Core::Formatters::DocumentationFormatter
-        when 'progress' then Rspec::Core::Formatters::ProgressFormatter
-        else raise(ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
-        end
-      end
 
-      # The formatter all output should use.  Defaults to the progress formatter
-      def formatter
-        @formatter ||= @formatter_to_use.new
-      end
 
       # Where does output go? For now $stdout
       def output
         $stdout
       end
 
-      # Output some string for debugging/tracing assistance if trace is enabled
-      # The trace string should be sent as a block, which means it will only be interpolated if trace is actually enabled
-      # We allow an override here so that trace can be set at lower levels (such as the describe or example level)
-      def trace(override = false)
-        raise(ArgumentError, "Must yield a block with your string to trace.") unless block_given?
-        return unless trace? || override
-        puts("[TRACE] #{yield}")
-      end
-
-      def puts(msg)
+      def puts(msg=nil)
         output.puts(msg)    
       end
 
-      # If true, Rspec will provide detailed trace output of its self as it runs.
-      # Can be turned on at the global (configuration) level or at the individual behaviour (describe) level.
-      def trace?
-        @trace == true
-      end
-
       def parse_command_line_args(args)
-        Rspec::Core::CommandLineOptions.parse(args, self)
+        @command_line_options = Rspec::Core::CommandLineOptions.parse(args)
       end
 
       def include(mod, options={})

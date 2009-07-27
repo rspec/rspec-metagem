@@ -8,15 +8,15 @@
 
 if ENV['RUN_RR_EXAMPLE']
   Spec::Runner.configure do |config|
-    config.mock_with :rr
+    config.mock_framework = :rr
   end
   describe "RR framework" do
-    it "should should be made available by saying config.mock_with :rr" do
+    it "should should be made available by saying config.mock_framework = :rr" do
       o = Object.new
       mock(o).msg("arg")
       o.msg
     end
-    it "should should be made available by saying config.mock_with :rr" do
+    it "should should be made available by saying config.mock_framework = :rr" do
       o = Object.new
       mock(o) do |m|
         m.msg("arg")

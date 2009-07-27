@@ -102,10 +102,8 @@ module Rspec
       
         Rspec::Core.configuration.find_modules(self).each do |include_or_extend, mod, opts|                                                                                                                                                                               
           if include_or_extend == :extend
-            Rspec::Core.configuration.trace { "Extending module #{mod} on #{self}" }
             send(:extend, mod) unless extended_modules.include?(mod)                                                                                                                                                                                                    
           else
-            Rspec::Core.configuration.trace { "Including module #{mod} on #{self}" }
             send(:include, mod) unless included_modules.include?(mod)
           end
         end

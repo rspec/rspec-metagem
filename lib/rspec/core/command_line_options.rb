@@ -6,9 +6,9 @@ module Rspec
 
     class CommandLineOptions
       
-      attr_reader :args, :options, :config
+      attr_reader :args, :options
       
-      def self.parse(args, config)
+      def self.parse(args)
         cli_options = new(args)
         cli_options.parse
       end
@@ -38,6 +38,7 @@ module Rspec
             puts opts
           end
         end.parse!(@args)
+
         options[:files_to_run] = possible_files
         options
       end

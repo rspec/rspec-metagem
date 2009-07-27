@@ -2,29 +2,78 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
 describe Rspec::Core::Configuration do
 
-  describe "#mock_with" do
-
-    it "should require and include the mocha adapter when called with :mocha" do
-      Rspec::Core.configuration.expects(:require).with('rspec/core/mocking/with_mocha')
-      Rspec::Core::ExampleGroup.expects(:send)
-      Rspec::Core.configuration.mock_with :mocha
-    end
-
-    it "should include the null adapter for nil" do
-      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
-      Rspec::Core.configuration.mock_with nil
+  describe "parse_command_line_args" do
+  
+    it "should parse ARGV" do
+      core = Rspec::Core::Configuration.new
+      Rspec::Core::CommandLineOptions.expects(:parse).with(['-f']).returns({})
+      core.parse_command_line_args(["-f"])
     end
     
-    # if the below example doesn't pass, @behaviour_instance._setup_mocks and similiar calls fail without a mock library specified
-    # this is really a case where cucumber would be a better fit to catch these type of regressions
-    it "should include the null adapter by default, if no mocking library is specified" do
-      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
+    it "should set the command line options" do
+      core = Rspec::Core::Configuration.new
+      Rspec::Core::CommandLineOptions.stubs(:parse).returns({:foo => "bar"})
+      core.parse_command_line_args(["-f"])
+      core.command_line_options.should == {:foo => "bar"}      
+    end
+    
+  end
+  
+  describe "applying options" do
+    
+    it "should apply the default config options first" do
+      core = Rspec::Core::Configuration.new
+      core.default_options['configured_by'] = 'defaults'
+      core.apply_options
+
+      core.options['configured_by'].should == 'defaults'
+    end
+  
+    it "should apply the code configured options next" do
+      core = Rspec::Core::Configuration.new
+      core.default_options['configured_by'] = 'defaults'
+      core.code_configured_options['configured_by'] = 'code'
+      core.apply_options
+
+      core.options['configured_by'].should == 'code'
+    end
+    
+    it "should apply the command line options last" do
+      core = Rspec::Core::Configuration.new
+      core.default_options['configured_by'] = 'defaults'
+      core.code_configured_options['configured_by'] = 'code'
+      core.command_line_options['configured_by'] = 'commandline'
+      core.apply_options
+
+      core.options['configured_by'].should == 'commandline'
+    end
+    
+  end
+
+  describe "insert_mock_framework" do
+
+    # TODO: Solution to test rr/rspec/flexmock, possibly cucumber
+    it "should require and include the mocha adapter when the mock_framework is :mocha" do
       config = Rspec::Core::Configuration.new
+      config.stubs(:mock_framework).returns(:mocha)
+      config.expects(:require).with('rspec/core/mocking/with_mocha')
+      Rspec::Core::ExampleGroup.expects(:send)
+      
+      config.insert_mock_framework
+    end
+
+    it "should include the null adapter when the mock_framework is not :rspec, :mocha, or :rr" do
+      config = Rspec::Core::Configuration.new
+      config.stubs(:mock_framework).returns(:crazy_new_mocking_framework_ive_not_yet_heard_of)
+      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
+      config.insert_mock_framework
     end
     
   end  
  
-  describe "#include" do
+ 
+ 
+  describe "include" do
 
     module InstanceLevelMethods
       def you_call_this_a_blt?
@@ -32,18 +81,19 @@ describe Rspec::Core::Configuration do
       end
     end
 
-    it "should include the given module into each matching behaviour" do
+    pending "should include the given module into each matching behaviour" do
       Rspec::Core.configuration.include(InstanceLevelMethods, :magic_key => :include)
-      group = Rspec::Core::ExampleGroup.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
-      group.should_not respond_to(:you_call_this_a_blt?)
-      remove_last_describe_from_world
-
-      group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
+      
+      isolate_behaviour do
+        group = Rspec::Core::ExampleGroup.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
+        group.should_not respond_to(:you_call_this_a_blt?)
+        group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
+      end
     end
 
   end
 
-  describe "#extend" do
+  describe "extend" do
 
     module ThatThingISentYou
 
@@ -52,7 +102,7 @@ describe Rspec::Core::Configuration do
 
     end
 
-    it "should extend the given module into each matching behaviour" do
+    pending "should extend the given module into each matching behaviour" do
       Rspec::Core.configuration.extend(ThatThingISentYou, :magic_key => :extend)      
       group = Rspec::Core::ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
       
@@ -62,7 +112,7 @@ describe Rspec::Core::Configuration do
 
   end
 
-  describe "#run_all_when_everything_filtered" do
+  describe "run_all_when_everything_filtered" do
 
     it "defaults to true" do
       Rspec::Core::Configuration.new.run_all_when_everything_filtered.should == true
@@ -75,46 +125,9 @@ describe Rspec::Core::Configuration do
     end
   end
   
-  describe '#trace?' do
-    
-    it "is false by default" do
-      Rspec::Core::Configuration.new.trace?.should == false
-    end
-    
-    it "is true if configuration.trace is true" do
-      config = Rspec::Core::Configuration.new
-      config.trace = true
-      config.trace?.should == true
-    end
-    
-  end
-  
-  describe '#trace' do
-    
-    it "requires a block" do
-      config = Rspec::Core::Configuration.new
-      config.trace = true
-      lambda { config.trace(true) }.should raise_error(ArgumentError)
-    end
-    
-    it "does nothing if trace is false" do
-      config = Rspec::Core::Configuration.new
-      config.trace = false
-      config.expects(:puts).with("my trace string is awesome").never
-      config.trace { "my trace string is awesome" }
-    end
-    
-    it "allows overriding tracing an optional param" do
-      config = Rspec::Core::Configuration.new
-      config.trace = false
-      config.expects(:puts).with(includes("my trace string is awesome"))
-      config.trace(true) { "my trace string is awesome" }
-    end
-       
-  end
-  
-  describe '#formatter' do
+  describe 'formatter' do
 
+    # TODO: This just needs to be exposed once the refactoring to hash is complete
     it "sets formatter_to_use based on name" do
       config = Rspec::Core::Configuration.new
       config.formatter = :documentation
@@ -130,14 +143,4 @@ describe Rspec::Core::Configuration do
     
   end
 
-  describe "filters" do
-    
-    it "tells you filter is deprecated"
-    
-    it "responds to exclusion_filter"
-    
-    it "responds to inclusion_filter"
-    
-    
-  end
 end

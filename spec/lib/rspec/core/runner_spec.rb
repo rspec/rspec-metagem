@@ -2,27 +2,15 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
 describe Rspec::Core::Runner do
 
-  before do 
-    @runner = Rspec::Core::Runner.new
-  end
-
-  describe '#configuration' do
-
-    it "should return Rspec::Core.configuration" do
-      @runner.configuration.should == Rspec::Core.configuration
-    end
-
-  end
-
-  describe '#formatter' do
+  describe 'formatter' do
 
     it 'should return the configured formatter' do
-      @runner.formatter.should == Rspec::Core.configuration.formatter
+      Rspec::Core::Runner.new.formatter.should == Rspec::Core.configuration.formatter
     end
 
   end  
   
-  describe 'Rspec::Core::Runner.at_exit' do
+  describe 'at_exit' do
     
     it 'should set an at_exit hook if none is already set' do
       Rspec::Core::Runner.stubs(:installed_at_exit?).returns(false)
@@ -38,4 +26,9 @@ describe Rspec::Core::Runner do
     
   end
   
+  describe 'placeholder' do
+    
+    # it "should "    
+    # Rspec::Core::Runner.new
+  end
 end

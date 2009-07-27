@@ -9,6 +9,6 @@ require 'rspec/mocks'
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
 Rspec::Core.configure do |c|
-  c.mock_with :rspec
+  c.mock_framework = :rspec
   c.color_enabled = true
 end

@@ -18,17 +18,20 @@ module Rspec
       end
 
       def formatter
-        Rspec::Core.configuration.formatter
+        configuration.formatter
       end
 
       def require_all_files(files)
         files.each { |file| require file }
       end
-
+      
       def run(args = [])
-        Rspec::Core.configuration.parse_command_line_args(args)
-        require_all_files Rspec::Core.configuration.files_to_run
-
+        configuration.parse_command_line_args(args)
+        configuration.apply_options
+        require_all_files(configuration.files_to_run)
+        
+        configuration.apply_options
+        
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 
         old_sync, formatter.output.sync = formatter.output.sync, true if formatter.output.respond_to?(:sync=)

@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
 describe Rspec::Core::CommandLineOptions do
   
@@ -43,12 +43,21 @@ describe Rspec::Core::CommandLineOptions do
 
   end
 
-    describe 'files_to_run' do
-    
-      example '-c file.rb dir/file.rb' do
-        options_from_args('-c', 'file.rb', 'dir/file.rb').should include(:files_to_run => ['file.rb', 'dir/file.rb'])
-      end
-
+  describe 'files_to_run' do
+  
+    example '-c file.rb dir/file.rb should parse' do
+      options_from_args('-c', 'file.rb', 'dir/file.rb').should include(:files_to_run => ['file.rb', 'dir/file.rb'])
     end
+
+    example 'dir should parse' do
+      options_from_args('dir').should include(:files_to_run => ['dir'])
+    end
+
+    example 'spec/file1_spec.rb, spec/file2_spec.rb should parse' do
+      options_from_args('spec/file1_spec.rb', 'spec/file2_spec.rb').should include(:files_to_run => ['spec/file1_spec.rb', 'spec/file2_spec.rb'])
+    end
+
+  end
+
 end
 

@@ -8,15 +8,15 @@
 
 if ENV['RUN_MOCHA_EXAMPLE']
   Spec::Runner.configure do |config|
-    config.mock_with :mocha
+    config.mock_framework = :mocha
   end
   describe "Mocha framework" do
-    it "should should be made available by saying config.mock_with :mocha" do
+    it "should should be made available by saying config.mock_framework = :mocha" do
       m = mock()
       m.expects(:msg).with("arg")
       m.msg
     end
-    it "should should be made available by saying config.mock_with :mocha" do
+    it "should should be made available by saying config.mock_framework = :mocha" do
       o = Object.new
       o.expects(:msg).with("arg")
       o.msg
