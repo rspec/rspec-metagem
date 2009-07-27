@@ -26,11 +26,11 @@ module Rspec
       end
       
       def run(args = [])
-        configuration.parse_command_line_args(args)
-        configuration.apply_options
-        require_all_files(configuration.files_to_run)
+        cli_config = Rspec::Core::CommandLineOptions.parse(args)
         
-        configuration.apply_options
+        require_all_files(cli_config.files_to_run)
+        
+        cli_config.apply(configuration)
         
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 

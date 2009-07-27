@@ -2,77 +2,30 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
 describe Rspec::Core::Configuration do
 
-  describe "parse_command_line_args" do
-  
-    it "should parse ARGV" do
-      core = Rspec::Core::Configuration.new
-      Rspec::Core::CommandLineOptions.expects(:parse).with(['-f']).returns({})
-      core.parse_command_line_args(["-f"])
-    end
-    
-    it "should set the command line options" do
-      core = Rspec::Core::Configuration.new
-      Rspec::Core::CommandLineOptions.stubs(:parse).returns({:foo => "bar"})
-      core.parse_command_line_args(["-f"])
-      core.command_line_options.should == {:foo => "bar"}      
-    end
-    
-  end
-  
-  describe "applying options" do
-    
-    it "should apply the default config options first" do
-      core = Rspec::Core::Configuration.new
-      core.default_options['configured_by'] = 'defaults'
-      core.apply_options
-
-      core.options['configured_by'].should == 'defaults'
-    end
-  
-    it "should apply the code configured options next" do
-      core = Rspec::Core::Configuration.new
-      core.default_options['configured_by'] = 'defaults'
-      core.code_configured_options['configured_by'] = 'code'
-      core.apply_options
-
-      core.options['configured_by'].should == 'code'
-    end
-    
-    it "should apply the command line options last" do
-      core = Rspec::Core::Configuration.new
-      core.default_options['configured_by'] = 'defaults'
-      core.code_configured_options['configured_by'] = 'code'
-      core.command_line_options['configured_by'] = 'commandline'
-      core.apply_options
-
-      core.options['configured_by'].should == 'commandline'
-    end
-    
-  end
-
-  describe "insert_mock_framework" do
+  describe "setting mock_framework" do
 
     # TODO: Solution to test rr/rspec/flexmock, possibly cucumber
     it "should require and include the mocha adapter when the mock_framework is :mocha" do
       config = Rspec::Core::Configuration.new
-      config.stubs(:mock_framework).returns(:mocha)
       config.expects(:require).with('rspec/core/mocking/with_mocha')
       Rspec::Core::ExampleGroup.expects(:send)
-      
-      config.insert_mock_framework
+      config.mock_framework = :mocha
     end
 
     it "should include the null adapter when the mock_framework is not :rspec, :mocha, or :rr" do
       config = Rspec::Core::Configuration.new
-      config.stubs(:mock_framework).returns(:crazy_new_mocking_framework_ive_not_yet_heard_of)
       Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
-      config.insert_mock_framework
+      config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
     end
     
   end  
  
- 
- 
+  describe "setting the files to run" do
+    
+    it "should gracefully handle being called with nil"
+    
+  end
+  
   describe "include" do
 
     module InstanceLevelMethods
@@ -128,7 +81,7 @@ describe Rspec::Core::Configuration do
   describe 'formatter' do
 
     # TODO: This just needs to be exposed once the refactoring to hash is complete
-    it "sets formatter_to_use based on name" do
+    pending "sets formatter_to_use based on name" do
       config = Rspec::Core::Configuration.new
       config.formatter = :documentation
       config.instance_eval { @formatter_to_use.should == Rspec::Core::Formatters::DocumentationFormatter }
@@ -136,7 +89,7 @@ describe Rspec::Core::Configuration do
       config.instance_eval { @formatter_to_use.should == Rspec::Core::Formatters::DocumentationFormatter }
     end
     
-    it "raises ArgumentError if formatter is unknown" do
+    pending "raises ArgumentError if formatter is unknown" do
       config = Rspec::Core::Configuration.new
       lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
     end

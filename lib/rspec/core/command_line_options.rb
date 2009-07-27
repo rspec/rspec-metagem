@@ -11,11 +11,16 @@ module Rspec
       def self.parse(args)
         cli_options = new(args)
         cli_options.parse
+        cli_options
       end
 
       def initialize(args)
         @args = args
         @options = {}
+      end
+      
+      def files_to_run
+        options[:files_to_run]
       end
 
       def parse
@@ -23,7 +28,7 @@ module Rspec
           opts.banner = "Usage: rspec [options] [files or directories]"
 
           opts.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
-            @options[:color_enabled] = o
+            options[:color_enabled] = o
           end
           
           opts.on('-f', '--formatter [FORMATTER]', 'Choose an optional formatter') do |o|
@@ -41,6 +46,12 @@ module Rspec
 
         options[:files_to_run] = possible_files
         options
+      end
+      
+      def apply(config)
+        options.each do |key, value|
+          config.send("#{key}=", value)
+        end
       end
 
     end

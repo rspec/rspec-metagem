@@ -22,11 +22,7 @@ module Rspec
       # Enable verbose interal logging of the framework - defaults to false
       attr_accessor :trace
 
-      attr_reader :files_to_run
-
       attr_reader :file_pattern
-      
-      attr_reader :default_options, :code_configured_options, :command_line_options
       
       attr_reader :options
 
@@ -35,41 +31,31 @@ module Rspec
         @run_all_when_everything_filtered = true
         @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
         @include_or_extend_modules = []
-        @files_to_run = []
         @formatter_to_use = Rspec::Core::Formatters::ProgressFormatter
         @filter, @exclusion_filter = nil, nil
         @file_pattern = '**/*_spec.rb'
-        @default_options, @code_configured_options, @command_line_options = {}, {}, {}
-        @options = {}
+        @options = default_options
       end
       
-      def default_config
+      def default_options
         {
           :color_enabled => false,
           :mock_framework => nil,
-          :profile_examples => false
+          :profile_examples => false,
+          :files_to_run => []
         }
       end
       
       def apply_options
-        [default_options, code_configured_options, command_line_options].each do |config_source|
-          @options.merge! config_source
-        end  
-  
+
         self.files_to_run = @options[:files_to_run]
         self.insert_mock_framework
       end
 
       def mock_framework=(use_me_to_mock)
-        code_configured_options[:mock_framework] = use_me_to_mock
-      end
-      
-      def mock_framework
-        options[:mock_framework]
-      end
-      
-      def insert_mock_framework
-        mock_framework_class = case mock_framework.to_s
+        options[:mock_framework] = use_me_to_mock
+        
+        mock_framework_class = case use_me_to_mock.to_s
         when /mocha/i
           require 'rspec/core/mocking/with_mocha'
           Rspec::Core::Mocking::WithMocha
@@ -83,12 +69,17 @@ module Rspec
           require 'rspec/core/mocking/with_absolutely_nothing'
           Rspec::Core::Mocking::WithAbsolutelyNothing
         end 
-
+        
+        options[:mock_framework_class] = mock_framework_class
         Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
       end
       
+      def mock_framework
+        options[:mock_framework]
+      end
+      
       def color_enabled=(on_or_off)
-        code_configured_options[:color_enabled] = on_or_off
+        options[:color_enabled] = on_or_off
       end
 
       def color_enabled?
@@ -97,15 +88,15 @@ module Rspec
       
       # Enable profiling of example run - defaults to false
       def profile_examples
-        code_configured_options[:profile_examples]
+        options[:profile_examples]
       end
       
       def profile_examples=(profile)
-        code_configured_options[:profile_examples] = on_or_off
+        options[:profile_examples] = on_or_off
       end
      
-      def formatter
-        code_configured_options[:formatter]
+      def formatter_class
+        options[:formatter_class]
       end
      
       def formatter=(formatter_to_use)
@@ -117,9 +108,35 @@ module Rspec
         else 
           raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
         end
-        code_configured_options[:formatter] = formatter_class
+        options[:formatter_class] = formatter_class
       end
         
+      def formatter
+        formatter_class.new
+      end
+      
+      def files_to_run
+        options[:files_to_run]
+      end
+      
+      def files_to_run=(files)
+        files ||= []
+
+        file_patterns = file_pattern.split(',')
+
+        files.each do |file|
+          if file =~ /\.rb$/i
+            files_to_run << file
+          else
+            file_patterns.each do |pattern|
+              files_to_run.concat Dir["#{File.expand_path(file)}/#{pattern.strip}"]
+            end
+          end
+        end
+
+        files_to_run.uniq!
+      end
+      
       # ==========
       
 
@@ -140,24 +157,7 @@ module Rspec
         @formatter ||= @formatter_to_use.new
       end
      
-      def files_to_run=(files)
-        files ||= []
-        
-        file_patterns = file_pattern.split(',')
-
-        files.each do |file|
-          if file =~ /\.rb$/i
-            @files_to_run << file
-          else
-            file_patterns.each do |pattern|
-              @files_to_run.concat Dir["#{File.expand_path(file)}/#{pattern.strip}"]
-            end
-          end
-        end
-
-        @files_to_run.uniq!
-      end
-
+   
       def autorun!
         Rspec::Core::Runner.autorun
       end
