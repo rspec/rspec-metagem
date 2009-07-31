@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 
 def empty_behaviour_group(name='Empty ExampleGroup Group')
   group = Rspec::Core::ExampleGroup.describe(Object, name) {}

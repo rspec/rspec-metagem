@@ -12,6 +12,12 @@ require 'rspec/core/formatters'
 
 module Rspec
   module Core
+    
+    def self.install_directory
+      @install_directory ||= File.expand_path(File.dirname(__FILE__))
+      puts "@install_directory => #{@install_directory}"
+      @install_directory
+    end
 
     def self.configuration
       @configuration ||= Rspec::Core::Configuration.new

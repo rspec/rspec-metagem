@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
+require File.expand_path(File.dirname(__FILE__) + "/../../spec_helper")
 
 describe Rspec::Core::Configuration do
 
@@ -65,11 +65,12 @@ describe Rspec::Core::Configuration do
         @config.files_to_run = dir
         @config.files_to_run.should_not include("#{dir}/a_bar.rb")
       end
+      
     end
 
     describe "with explicit pattern (comma,separated,values)" do
 
-      before(:each) do
+      before do
         @config.filename_pattern = "**/*_foo.rb,**/*_bar.rb"
       end
 

@@ -3,7 +3,7 @@ module Rspec
     class Configuration
       # Regex patterns to scrub backtrace with
       attr_reader :backtrace_clean_patterns
-
+      
       # All of the defined before/after blocks setup in the configuration
       attr_reader :before_and_afters
 
@@ -25,7 +25,6 @@ module Rspec
       attr_reader :options
 
       def initialize
-        @backtrace_clean_patterns = [/\/lib\/ruby\//, /bin\/rcov:/, /vendor\/rails/, /bin\/rspec/, /bin\/spec/]
         @run_all_when_everything_filtered = true
         @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
         @include_or_extend_modules = []
@@ -40,8 +39,20 @@ module Rspec
           :profile_examples => false,
           :files_to_run => [],
           :filename_pattern => '**/*_spec.rb',
-          :formatter_class => Rspec::Core::Formatters::ProgressFormatter
+          :formatter_class => Rspec::Core::Formatters::ProgressFormatter,
+          :backtrace_clean_patterns => [/\/lib\/ruby\//, 
+                                        /bin\/rcov:/, 
+                                        /vendor\/rails/, 
+                                        /bin\/rspec/, 
+                                        /bin\/spec/,
+                                        /lib\/rspec\/core/,
+                                        /lib\/rspec\/expectations/,
+                                        /lib\/rspec\/mocks/]
         }
+      end
+      
+      def cleaned_from_backtrace?(line)
+        options[:backtrace_clean_patterns].any? { |regex| line =~ regex }
       end
       
       def mock_framework=(use_me_to_mock)
@@ -142,16 +153,9 @@ module Rspec
         Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
-      def cleaned_from_backtrace?(line)
-        @backtrace_clean_patterns.any? { |regex| line =~ regex }
-      end
-
-   
       def autorun!
         Rspec::Core::Runner.autorun
       end
-
-
 
       def filter_run(options={})
         @filter = options
@@ -161,14 +165,12 @@ module Rspec
         @run_all_when_everything_filtered
       end
 
-
-
       # Where does output go? For now $stdout
       def output
         $stdout
       end
 
-      def puts(msg=nil)
+      def puts(msg='')
         output.puts(msg)    
       end
 
