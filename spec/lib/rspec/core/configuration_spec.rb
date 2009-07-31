@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
 
 describe Rspec::Core::Configuration do
 
-  describe "setting mock_framework" do
+  describe "setting the mock framework" do
 
     # TODO: Solution to test rr/rspec/flexmock, possibly cucumber
     it "should require and include the mocha adapter when the mock_framework is :mocha" do
@@ -21,9 +21,74 @@ describe Rspec::Core::Configuration do
   end  
  
   describe "setting the files to run" do
+
+    before do
+      @config = Rspec::Core::Configuration.new
+    end
     
-    it "should gracefully handle being called with nil"
-    
+    it "should load files not following pattern if named explicitly" do
+      file = File.expand_path(File.dirname(__FILE__) + "/resources/a_bar.rb")
+      @config.files_to_run = file
+      @config.files_to_run.should include(file)
+    end
+
+    describe "with default --pattern" do
+
+      it "should load files named _spec.rb" do
+        dir = File.expand_path(File.dirname(__FILE__) + "/resources/")
+        @config.files_to_run = dir
+        @config.files_to_run.should == ["#{dir}/a_spec.rb"]
+      end
+
+    end
+
+    describe "with explicit pattern (single)" do
+
+      before do
+        @config.filename_pattern = "**/*_foo.rb"
+      end
+
+      it "should load files following pattern" do
+        file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+        @config.files_to_run = file
+        @config.files_to_run.should include(file)
+      end
+
+      it "should load files in directories following pattern" do
+        dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+        @config.files_to_run = dir
+        @config.files_to_run.should include("#{dir}/a_foo.rb")
+      end
+
+      it "should not load files in directories not following pattern" do
+        dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+        @config.files_to_run = dir
+        @config.files_to_run.should_not include("#{dir}/a_bar.rb")
+      end
+    end
+
+    describe "with explicit pattern (comma,separated,values)" do
+
+      before(:each) do
+        @config.filename_pattern = "**/*_foo.rb,**/*_bar.rb"
+      end
+
+      it "should support comma separated values" do
+        dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+        @config.files_to_run = dir
+        @config.files_to_run.should include("#{dir}/a_foo.rb")
+        @config.files_to_run.should include("#{dir}/a_bar.rb")
+      end
+
+      it "should support comma separated values with spaces" do
+        dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+        @config.files_to_run = dir
+        @config.files_to_run.should include("#{dir}/a_foo.rb")
+        @config.files_to_run.should include("#{dir}/a_bar.rb")
+      end
+
+    end
+
   end
   
   describe "include" do

@@ -10,7 +10,7 @@ module Rspec
       def self.autorun
         return if installed_at_exit?
         @installed_at_exit = true
-        at_exit { Rspec::Core::Runner.new.run(ARGV) ? exit(0) : exit(1) } 
+        at_exit { new.run(ARGV) ? exit(0) : exit(1) } 
       end
 
       def configuration

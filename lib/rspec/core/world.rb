@@ -29,12 +29,12 @@ module Rspec
           @behaviours_to_run = filter_behaviours
 
           if @behaviours_to_run.size == 0 && Rspec::Core.configuration.run_all_when_everything_filtered?
-            puts "No examples were matched by #{filter.inspect}, running all"
+            Rspec::Core.configuration.puts "No examples were matched by #{filter.inspect}, running all"
             # reset the behaviour list to all behaviours, and add back all examples
             @behaviours_to_run = @behaviours
             @behaviours.each { |b| b.examples_to_run.replace(b.examples) }
           else
-            Rspec::Core.configuration.output.puts "Run filtered using #{filter.inspect}"          
+            Rspec::Core.configuration.puts "Run filtered using #{filter.inspect}"          
           end
         else
           @behaviours_to_run = @behaviours

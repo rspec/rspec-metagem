@@ -22,8 +22,6 @@ module Rspec
       # Enable verbose interal logging of the framework - defaults to false
       attr_accessor :trace
 
-      attr_reader :file_pattern
-      
       attr_reader :options
 
       def initialize
@@ -31,9 +29,7 @@ module Rspec
         @run_all_when_everything_filtered = true
         @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
         @include_or_extend_modules = []
-        @formatter_to_use = Rspec::Core::Formatters::ProgressFormatter
         @filter, @exclusion_filter = nil, nil
-        @file_pattern = '**/*_spec.rb'
         @options = default_options
       end
       
@@ -42,16 +38,12 @@ module Rspec
           :color_enabled => false,
           :mock_framework => nil,
           :profile_examples => false,
-          :files_to_run => []
+          :files_to_run => [],
+          :filename_pattern => '**/*_spec.rb',
+          :formatter_class => Rspec::Core::Formatters::ProgressFormatter
         }
       end
       
-      def apply_options
-
-        self.files_to_run = @options[:files_to_run]
-        self.insert_mock_framework
-      end
-
       def mock_framework=(use_me_to_mock)
         options[:mock_framework] = use_me_to_mock
         
@@ -77,7 +69,15 @@ module Rspec
       def mock_framework
         options[:mock_framework]
       end
-      
+
+      def filename_pattern
+        options[:filename_pattern]
+      end
+
+      def filename_pattern=(new_pattern)
+        options[:filename_pattern] = new_pattern
+      end 
+
       def color_enabled=(on_or_off)
         options[:color_enabled] = on_or_off
       end
@@ -112,7 +112,7 @@ module Rspec
       end
         
       def formatter
-        formatter_class.new
+        @formatter ||= formatter_class.new
       end
       
       def files_to_run
@@ -120,25 +120,21 @@ module Rspec
       end
       
       def files_to_run=(files)
-        files ||= []
-
-        file_patterns = file_pattern.split(',')
-
+        result = []
         files.each do |file|
-          if file =~ /\.rb$/i
-            files_to_run << file
-          else
-            file_patterns.each do |pattern|
-              files_to_run.concat Dir["#{File.expand_path(file)}/#{pattern.strip}"]
+          if File.directory?(file)
+            filename_pattern.split(",").each do |pattern|
+              result += Dir[File.expand_path("#{file}/#{pattern.strip}")]
             end
+          elsif File.file?(file)
+            result << file
+          else
+            raise "File or directory not found: #{file}"
           end
         end
 
-        files_to_run.uniq!
+        options[:files_to_run] = result
       end
-      
-      # ==========
-      
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
@@ -150,13 +146,6 @@ module Rspec
         @backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
-    
-
-      # The formatter all output should use.  Defaults to the progress formatter
-      def formatter
-        @formatter ||= @formatter_to_use.new
-      end
-     
    
       def autorun!
         Rspec::Core::Runner.autorun
