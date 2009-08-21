@@ -38,11 +38,13 @@ module Rspec
       # The options to pass to rcov.  Defaults to blank
       attr_accessor :rcov_opts
 
+      # The options to pass to ruby.  Defaults to blank
+      attr_accessor :ruby_opts
+      
       def initialize(*args)
         @name = args.shift || :spec
-        @pattern, @rcov_opts = nil, nil
+        @pattern, @rcov_opts, @ruby_opts = nil, nil, nil
         @warning, @rcov = false, false
-        @ruby_opts = []
         @fail_on_error = true
 
         yield self if block_given?
@@ -60,7 +62,7 @@ module Rspec
               puts "No examples matching #{pattern} could be found"
             else
               cmd_parts = [rcov ? 'rcov' : RUBY]
-              cmd_parts += rcov ? [rcov_opts] : ruby_opts
+              cmd_parts += rcov ? [rcov_opts] : [ruby_opts]
               cmd_parts << "-w" if warning
               cmd_parts += files_to_run.collect { |fn| %["#{fn}"] }
               cmd = cmd_parts.join(" ")
