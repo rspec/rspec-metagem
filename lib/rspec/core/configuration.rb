@@ -130,7 +130,9 @@ module Rspec
         options[:files_to_run]
       end
       
-      def files_to_run=(files)
+      def files_to_run=(*files)
+        files.flatten!
+
         result = []
         files.each do |file|
           if File.directory?(file)
