@@ -33,17 +33,16 @@ describe Rspec::Core::ExampleGroup do
         end
       end
 
-      pending "should build a nested name correctly, including the module, and each nested description in the correct order" do
+      pending "should be built correctly when nested" do
         behaviour_to_test = nil
 
         isolate_behaviour do
           Rspec::Core::ExampleGroup.describe(Rspec::Core, "test") do
-            Rspec::Core::ExampleGroup.describe("nested one") do
-              behaviour_to_test = Rspec::Core::ExampleGroup.describe("nested two") { }
+            describe("nested one") do
+              behaviour_to_test = describe("nested two") { }
             end
           end
         end
-        
         behaviour_to_test.name.should == 'Rspec::Core - test - nested one - nested two'
       end
 

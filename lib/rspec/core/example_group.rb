@@ -114,7 +114,7 @@ module Rspec
       end
 
       def self.name(friendly=true)
-        friendly ? metadata[:behaviour][:name] : super()
+        friendly ? metadata[:behaviour][:name] : super
       end
 
       def self.describes

@@ -19,7 +19,7 @@ describe Rspec::Core do
     end
     
     it "should be callable without a block" do
-      Rspec::Core.configure
+      lambda { Rspec::Core.configure }.should_not raise_error
     end
     
   end
