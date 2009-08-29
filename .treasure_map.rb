@@ -17,7 +17,7 @@ map_for(:rspec_core) do |m|
   end
 
   m.add_mapping %r%lib/(.*)\.rb% do |match|
-    examples_matching match[1], 'spec'
+    tests_matching match[1]
   end
 
 end
