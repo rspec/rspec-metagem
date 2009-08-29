@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../../spec_helper")
+require 'spec/spec_helper'
 
 def empty_behaviour_group(name='Empty ExampleGroup Group')
   group = Rspec::Core::ExampleGroup.describe(Object, name) {}
@@ -257,8 +257,14 @@ describe Rspec::Core::ExampleGroup do
       }
       Rspec::Core.world.stubs(:shared_behaviours).returns({ :shared_behaviour => block })
       group.it_should_behave_like :shared_behaviour
-      group.instance_methods.sort.should include('extra_helper')
-      group.singleton_methods.sort.should include('class_helper')
+      with_ruby(1.8) do
+        group.instance_methods.should include('extra_helper')
+        group.singleton_methods.should include('class_helper')
+      end
+      with_ruby(1.9) do
+        group.instance_methods.should include(:extra_helper)
+        group.singleton_methods.should include(:class_helper)
+      end
     end
 
     it "should raise when named shared example_group can not be found" 

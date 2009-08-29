@@ -2,6 +2,7 @@ require 'rspec/core/deprecation'
 require 'rspec/core/mocking/with_absolutely_nothing'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
+require 'rspec/core/command_line_options'
 require 'rspec/core/runner'
 require 'rspec/core/example'
 require 'rspec/core/shared_behaviour'
@@ -11,6 +12,12 @@ require 'rspec/core/formatters'
 
 module Rspec
   module Core
+    
+    def self.install_directory
+      @install_directory ||= File.expand_path(File.dirname(__FILE__))
+      puts "@install_directory => #{@install_directory}"
+      @install_directory
+    end
 
     def self.configuration
       @configuration ||= Rspec::Core::Configuration.new

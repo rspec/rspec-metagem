@@ -8,14 +8,14 @@ module Rspec
 
     class RakeTask < ::Rake::TaskLib
 
-      # Name of task. (default is :examples)
+      # Name of task. (default is :spec)
       attr_accessor :name
 
       # If true, requests that the specs be run with the warning flag set.
       # E.g. warning=true implies "ruby -w" used to run the specs. Defaults to false.
       attr_accessor :warning
 
-      # Glob pattern to match example files. (default is 'examples/**/*_example.rb')
+      # Glob pattern to match files. (default is 'spec/**/*_spec.rb')
       attr_accessor :pattern
 
       # Array of commandline options to pass to ruby. Defaults to [].
@@ -38,15 +38,17 @@ module Rspec
       # The options to pass to rcov.  Defaults to blank
       attr_accessor :rcov_opts
 
+      # The options to pass to ruby.  Defaults to blank
+      attr_accessor :ruby_opts
+      
       def initialize(*args)
-        @name = args.shift || :examples
-        @pattern, @rcov_opts = nil, nil
+        @name = args.shift || :spec
+        @pattern, @rcov_opts, @ruby_opts = nil, nil, nil
         @warning, @rcov = false, false
-        @ruby_opts = []
         @fail_on_error = true
 
         yield self if block_given?
-        @pattern ||= 'examples/**/*_example.rb'
+        @pattern ||= 'spec/**/*_spec.rb'
         define
       end
 
@@ -56,13 +58,13 @@ module Rspec
 
         task name do
           RakeFileUtils.send(:verbose, verbose) do
-            if examples_to_run.empty?
+            if files_to_run.empty?
               puts "No examples matching #{pattern} could be found"
             else
               cmd_parts = [rcov ? 'rcov' : RUBY]
-              cmd_parts += rcov ? [rcov_opts] : ruby_opts
+              cmd_parts += rcov ? [rcov_opts] : [ruby_opts]
               cmd_parts << "-w" if warning
-              cmd_parts += examples_to_run.collect { |fn| %["#{fn}"] }
+              cmd_parts += files_to_run.collect { |fn| %["#{fn}"] }
               cmd = cmd_parts.join(" ")
               puts cmd if verbose
               unless system(cmd)
@@ -76,7 +78,7 @@ module Rspec
         self
       end
 
-      def examples_to_run # :nodoc:
+      def files_to_run # :nodoc:
         FileList[ pattern ].to_a
       end
 

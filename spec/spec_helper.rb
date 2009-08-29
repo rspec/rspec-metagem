@@ -1,3 +1,7 @@
+dir = File.dirname(__FILE__)
+lib_path = File.expand_path("#{dir}/../lib")
+$LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
+
 require 'rubygems'
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../expectations/lib'))
 require 'rspec/expectations'
@@ -55,7 +59,8 @@ def not_in_editor?
 end
 
 Rspec::Core.configure do |c|
-  c.mock_with :mocha
-  c.color_enabled = not_in_editor?
+  c.mock_framework = :mocha
+  # c.formatter = :documentation
   c.filter_run :focused => true
+  c.color_enabled = not_in_editor?
 end

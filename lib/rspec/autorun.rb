@@ -1,4 +1,2 @@
 require 'rspec/core'
-
-#Spec::Runner.autorun
-
+Rspec::Core.configuration.autorun!

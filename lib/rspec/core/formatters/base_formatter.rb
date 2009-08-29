@@ -22,15 +22,6 @@ module Rspec
           Rspec::Core.configuration.output
         end
 
-        def trace(&blk)
-          Rspec::Core.configuration.trace(trace_override_flag, &blk)
-        end
-
-        # Allow setting trace at the behaviour level as well globally
-        def trace_override_flag
-          behaviour && behaviour.metadata[:trace]
-        end
-
         def profile_examples?
           Rspec::Core.configuration.profile_examples
         end

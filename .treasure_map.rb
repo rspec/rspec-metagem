@@ -1,4 +1,4 @@
-clear_maps
+Beholder.runner = 'clear; ruby -Ilib -Ispec'
 
 map_for(:rspec_core) do |m|
 
@@ -17,7 +17,7 @@ map_for(:rspec_core) do |m|
   end
 
   m.add_mapping %r%lib/(.*)\.rb% do |match|
-    examples_matching match[1]
+    tests_matching match[1]
   end
 
 end

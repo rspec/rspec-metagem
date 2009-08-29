@@ -10,7 +10,7 @@ module Rspec
       def self.autorun
         return if installed_at_exit?
         @installed_at_exit = true
-        at_exit { Rspec::Core::Runner.new.run(ARGV) ? exit(0) : exit(1) } 
+        at_exit { new.run(ARGV) ? exit(0) : exit(1) } 
       end
 
       def configuration
@@ -18,16 +18,20 @@ module Rspec
       end
 
       def formatter
-        Rspec::Core.configuration.formatter
+        configuration.formatter
       end
 
-      def require_all_behaviours(files_from_args=[])
-        files_from_args.each { |file| require file }
+      def require_all_files(files)
+        files.each { |file| require file }
       end
-
+      
       def run(args = [])
-        require_all_behaviours(args)
-
+        cli_config = Rspec::Core::CommandLineOptions.parse(args)
+        
+        require_all_files(cli_config.files_to_run)
+        
+        cli_config.apply(configuration)
+        
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 
         old_sync, formatter.output.sync = formatter.output.sync, true if formatter.output.respond_to?(:sync=)

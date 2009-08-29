@@ -1,4 +1,4 @@
-require File.expand_path(File.dirname(__FILE__) + "/../../../../spec_helper")
+require 'spec/spec_helper'
 
 describe Rspec::Core::Formatters::BaseFormatter do
   
@@ -98,19 +98,7 @@ describe Rspec::Core::Formatters::BaseFormatter do
   
   describe '#format_backtrace' do
     
-    before do
-      @full_backtrace = ["spec/lib/spec/core/formatters/base_formatter_example.rb:118", "vendor/rails/x.rb:1", "/bin/spec"]
-    end
-
-    it "should display the full backtrace when the example is given the :full_backtrace => true option", :full_backtrace => true do
-      running_example.metadata[:full_backtrace].should be_true
-      @formatter.format_backtrace(@full_backtrace, running_example).should ==  @full_backtrace
-    end
-
-    it "should clean the backtrace when the full_backtrace option is not given" do
-      running_example.metadata[:full_backtrace].should be_nil
-      @formatter.format_backtrace(@full_backtrace, running_example).should ==  ["spec/lib/spec/core/formatters/base_formatter_example.rb:118"]
-    end
+    it "should display the full backtrace when the example is given the :full_backtrace => true option", :full_backtrace => true
     
   end
   
