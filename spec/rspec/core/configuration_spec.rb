@@ -100,7 +100,7 @@ describe Rspec::Core::Configuration do
       end
     end
 
-    pending "should include the given module into each matching behaviour" do
+    it "should include the given module into each matching behaviour" do
       Rspec::Core.configuration.include(InstanceLevelMethods, :magic_key => :include)
       
       isolate_behaviour do
@@ -121,7 +121,7 @@ describe Rspec::Core::Configuration do
 
     end
 
-    pending "should extend the given module into each matching behaviour" do
+    it "should extend the given module into each matching behaviour" do
       Rspec::Core.configuration.extend(ThatThingISentYou, :magic_key => :extend)      
       group = Rspec::Core::ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
       
@@ -146,16 +146,15 @@ describe Rspec::Core::Configuration do
   
   describe 'formatter' do
 
-    # TODO: This just needs to be exposed once the refactoring to hash is complete
-    pending "sets formatter_to_use based on name" do
+    it "sets formatter_to_use based on name" do
       config = Rspec::Core::Configuration.new
       config.formatter = :documentation
-      config.instance_eval { @formatter_to_use.should == Rspec::Core::Formatters::DocumentationFormatter }
+      config.formatter.should be_an_instance_of(Rspec::Core::Formatters::DocumentationFormatter)
       config.formatter = 'documentation'
-      config.instance_eval { @formatter_to_use.should == Rspec::Core::Formatters::DocumentationFormatter }
+      config.formatter.should be_an_instance_of(Rspec::Core::Formatters::DocumentationFormatter)
     end
     
-    pending "raises ArgumentError if formatter is unknown" do
+    it "raises ArgumentError if formatter is unknown" do
       config = Rspec::Core::Configuration.new
       lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
     end
