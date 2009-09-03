@@ -11,11 +11,6 @@ When %r{^I run "ruby ([^"]+)"$} do |file_and_args|
   ruby(file_and_args)
 end
 
-When %r{^I run "cmdline.rb ([^"]+)"$} do |file_and_args|
-  cmdline(file_and_args)
-end
-
-
 Then /^the (.*) should match (.*)$/ do |stream, string_or_regex|
   written = case(stream)
     when 'stdout' then last_stdout

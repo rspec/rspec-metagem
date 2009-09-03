@@ -19,7 +19,7 @@ Feature: spec output
     And the stdout should not match /\d+ tests, \d+ assertions, \d+ failures, \d+ errors/m
     And the stdout should match "1 example, 0 failures"
 
-  Scenarios: Run with ruby and CommandLine object
+  Scenarios: Run with ruby and rspec/commands
     | Command     |
     | ruby        |
     | cmdline.rb  |

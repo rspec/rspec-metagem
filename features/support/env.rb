@@ -4,8 +4,8 @@ $:.unshift File.join(File.dirname(__FILE__), "/../../../expectations/lib")
 require 'rspec/expectations'
 require 'forwardable'
 require 'tempfile'
-require File.dirname(__FILE__) + '/../../spec/ruby_forker'
-require File.dirname(__FILE__) + '/matchers/smart_match'
+require 'spec/ruby_forker'
+require 'features/support/matchers/smart_match'
 
 
 class RspecWorld
@@ -14,7 +14,7 @@ class RspecWorld
   include RubyForker
 
   extend Forwardable
-  def_delegators RspecWorld, :working_dir, :spec_command, :cmdline_file, :rspec_lib
+  def_delegators RspecWorld, :working_dir, :spec_command, :rspec_lib
 
   def self.working_dir
     @working_dir ||= File.expand_path(File.join(File.dirname(__FILE__), "/../../tmp/cucumber-generated-files"))
@@ -24,20 +24,12 @@ class RspecWorld
     @spec_command ||= File.expand_path(File.join(File.dirname(__FILE__), "/../../bin/rspec"))
   end
 
-  def self.cmdline_file
-    @cmdline_file ||= File.expand_path(File.join(File.dirname(__FILE__), "/../../resources/helpers/cmdline.rb"))
-  end
-
   def self.rspec_lib
     @rspec_lib ||= File.join(working_dir, "/../../lib")
   end
 
   def spec(args)
     ruby("#{spec_command} #{args}")
-  end
-
-  def cmdline(args)
-    ruby("#{cmdline_file} #{args}")
   end
 
   def create_file(file_name, contents)
