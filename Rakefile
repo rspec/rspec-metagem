@@ -6,6 +6,7 @@ $:.unshift 'lib'
 
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'
+require 'cucumber/rake/task'
 
 begin
   # require 'jeweler'
@@ -26,6 +27,8 @@ Rspec::Core::RakeTask.new :spec do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
+Cucumber::Rake::Task.new :cucumber
+
 desc "Run all examples using rcov"
 Rspec::Core::RakeTask.new :rcov do |t|
   t.pattern = "spec/**/*_spec.rb"
@@ -34,7 +37,7 @@ Rspec::Core::RakeTask.new :rcov do |t|
   t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
 end
 
-task :default => :spec
+task :default => [:spec, :cucumber]
 
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
