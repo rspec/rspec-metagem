@@ -9,6 +9,7 @@ require 'rspec/core/shared_behaviour'
 require 'rspec/core/example_group'
 require 'rspec/core/kernel_extensions'
 require 'rspec/core/formatters'
+require 'rspec/core/backward_compatibility'
 
 module Rspec
   module Core
