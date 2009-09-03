@@ -16,12 +16,8 @@ Feature: mock with flexmock
           flexmock(target).should_receive(:foo).once
           target.foo
         end
-
-        it "does not include rspec mocks" do
-          Spec.const_defined?(:Mocks).should be_false
-        end
       end
       """
     When I run "spec flexmock_example_spec.rb"
-    Then the exit code should be 0
-    And the stdout should match "2 examples, 0 failures"
+    Then the stdout should match "1 example, 0 failures" 
+    And the exit code should be 0

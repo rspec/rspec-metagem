@@ -30,6 +30,7 @@ module Rspec
         @include_or_extend_modules = []
         @filter, @exclusion_filter = nil, nil
         @options = default_options
+        @backtrace_clean_patterns = []
       end
       
       def default_options
@@ -59,15 +60,18 @@ module Rspec
         options[:mock_framework] = use_me_to_mock
         
         mock_framework_class = case use_me_to_mock.to_s
+        when /rspec/i
+          require 'rspec/core/mocking/with_rspec'
+          Rspec::Core::Mocking::WithRspec
         when /mocha/i
           require 'rspec/core/mocking/with_mocha'
           Rspec::Core::Mocking::WithMocha
         when /rr/i
           require 'rspec/core/mocking/with_rr'
           Rspec::Core::Mocking::WithRR
-        when /rspec/i
-          require 'rspec/core/mocking/with_rspec'
-          Rspec::Core::Mocking::WithRspec
+        when /flexmock/i
+          require 'rspec/core/mocking/with_flexmock'
+          Rspec::Core::Mocking::WithFlexmock
         else
           require 'rspec/core/mocking/with_absolutely_nothing'
           Rspec::Core::Mocking::WithAbsolutelyNothing

@@ -57,6 +57,7 @@ module Rspec
 
         formatter.output.sync = old_sync if formatter_supports_sync
 
+        puts suite_success
         suite_success
       end
 
