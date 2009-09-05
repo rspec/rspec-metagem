@@ -1,7 +1,7 @@
 Feature: mock with mocha
 
-  As an RSpec user who prefers mocha
-  I want to be able to use mocha without rspec mocks interfering
+  As an RSpec user who likes to mock
+  I want to be able to use mocha
 
   Scenario: Mock with mocha
     Given a file named "mocha_example_spec.rb" with:

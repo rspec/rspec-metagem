@@ -1,7 +1,7 @@
 Feature: mock with flexmock
 
-  As an RSpec user who prefers flexmock
-  I want to be able to use flexmock without rspec mocks interfering
+  As an RSpec user who likes to mock
+  I want to be able to use flexmock
 
   Scenario: Mock with flexmock
     Given a file named "flexmock_example_spec.rb" with:

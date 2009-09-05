@@ -1,7 +1,7 @@
 Feature: mock with rspec
 
-  As an RSpec user who prefers rspec's mocks
-  I want to be able to use rspec's mocks
+  As an RSpec user who likes to mock
+  I want to be able to use rspec
 
 @wip
   Scenario: Mock with rspec
