@@ -6,8 +6,6 @@
     * from command line
     * in rake task definitions
   * formatters
-  
-* stop whatever is puts'ing true at the end of running a suite
 
 ### Maxwell
 
