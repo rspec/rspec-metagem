@@ -27,7 +27,7 @@ Rspec::Core::RakeTask.new :spec do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
-Cucumber::Rake::Task.new :cucumber
+Cucumber::Rake::Task.new :features
 
 desc "Run all examples using rcov"
 Rspec::Core::RakeTask.new :rcov do |t|
@@ -37,7 +37,7 @@ Rspec::Core::RakeTask.new :rcov do |t|
   t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
 end
 
-task :default => [:spec, :cucumber]
+task :default => [:spec, :features]
 
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
