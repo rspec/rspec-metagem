@@ -1,3 +1,5 @@
+require 'rspec/expectations'
+
 Rspec::Matchers.define :smart_match do |expected|
   match do |actual|
     case expected

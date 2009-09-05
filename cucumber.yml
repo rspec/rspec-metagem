@@ -1,1 +1,2 @@
 default: features -r features -t ~wip
+wip:     features -r features -t wip

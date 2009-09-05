@@ -1,7 +1,6 @@
 $:.unshift File.join(File.dirname(__FILE__), "/../../lib")
 $:.unshift File.join(File.dirname(__FILE__), "/../../../expectations/lib")
 
-require 'rspec/expectations'
 require 'forwardable'
 require 'tempfile'
 require 'spec/ruby_forker'
@@ -14,8 +13,8 @@ class RspecWorld
   include RubyForker
 
   extend Forwardable
-  def_delegators RspecWorld, :working_dir, :spec_command, :rspec_lib
-
+  def_delegators RspecWorld, :working_dir, :spec_command
+  
   def self.working_dir
     @working_dir ||= File.expand_path(File.join(File.dirname(__FILE__), "/../../tmp/cucumber-generated-files"))
   end
@@ -24,10 +23,10 @@ class RspecWorld
     @spec_command ||= File.expand_path(File.join(File.dirname(__FILE__), "/../../bin/rspec"))
   end
 
-  def self.rspec_lib
-    @rspec_lib ||= File.join(working_dir, "/../../lib")
-  end
-
+  RSPEC_LIB              = File.expand_path(File.join(working_dir, "/../../lib"))
+  RSPEC_EXPECTATIONS_LIB = File.expand_path(File.join(working_dir, "/../../../expectations/lib"))
+  RSPEC_MOCKS_LIB        = File.expand_path(File.join(working_dir, "/../../../mocks/lib"))
+  
   def spec(args)
     ruby("#{spec_command} #{args}")
   end
@@ -48,13 +47,24 @@ class RspecWorld
   def last_exit_code
     @exit_code
   end
+  
+  def rspec_libs
+    result = "-I #{RSPEC_LIB}"
+    if File.directory?(RSPEC_EXPECTATIONS_LIB)
+      result << " -I #{RSPEC_EXPECTATIONS_LIB}"
+    end
+    if File.directory?(RSPEC_MOCKS_LIB)
+      result << " -I #{RSPEC_MOCKS_LIB}"
+    end
+    result
+  end
 
   # it seems like this, and the last_* methods, could be moved into RubyForker-- is that being used anywhere but the features?
   def ruby(args)
     stderr_file = Tempfile.new('rspec')
     stderr_file.close
     Dir.chdir(working_dir) do
-      @stdout = super("-I #{rspec_lib} #{args}", stderr_file.path)
+      @stdout = super("#{rspec_libs} #{args}", stderr_file.path)
     end
     @stderr = IO.read(stderr_file.path)
     @exit_code = $?.to_i

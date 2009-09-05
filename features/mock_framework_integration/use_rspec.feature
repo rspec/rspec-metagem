@@ -3,7 +3,6 @@ Feature: mock with rspec
   As an RSpec user who likes to mock
   I want to be able to use rspec
 
-@wip
   Scenario: Mock with rspec
     Given a file named "rspec_example_spec.rb" with:
       """
