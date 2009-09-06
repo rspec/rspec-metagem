@@ -1,5 +1,3 @@
-require 'rspec/core/example_group_subject'
-
 module Rspec
   module Core
     class ExampleGroup
