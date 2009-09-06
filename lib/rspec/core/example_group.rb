@@ -148,7 +148,9 @@ module Rspec
       def self.describe(*args, &behaviour_block)
         raise(ArgumentError, "No arguments given.  You must a least supply a type or description") if args.empty? 
         raise(ArgumentError, "You must supply a block when calling describe") if behaviour_block.nil?
-      
+        
+        # TODO: Pull out the below into a metadata object, that we can defer the subclassing if necessary
+        # describe 'foo', :shared => true will need this to be completed first
         subclass('NestedLevel') do
           args << {} unless args.last.is_a?(Hash)
           args.last.update(:behaviour_block => behaviour_block)

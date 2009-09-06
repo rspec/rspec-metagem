@@ -46,6 +46,13 @@ def isolate_behaviour
   end
 end
 
+def double_describe(*args)
+  group = Rspec::Core::ExampleGroup.describe(*args) {}
+  remove_last_describe_from_world
+  yield group if block_given?
+  group
+end
+
 def use_formatter(new_formatter)
   original_formatter = Rspec::Core.configuration.formatter
   Rspec::Core.configuration.instance_variable_set(:@formatter, new_formatter)
@@ -60,6 +67,7 @@ end
 
 Rspec::Core.configure do |c|
   c.mock_framework = :mocha
+  c.formatter = :documentation
   c.filter_run :focused => true
   c.color_enabled = not_in_editor?
 end
