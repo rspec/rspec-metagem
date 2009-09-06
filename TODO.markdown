@@ -1,7 +1,6 @@
 ### RSpec Core
 
 * support the following concepts from rspec-1.2.x
-  * subject
   * run options
     * from command line
     * in rake task definitions

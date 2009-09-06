@@ -16,7 +16,7 @@ module Rspec
         end
         @metadata.update(options)
       end
-
+      
       def record_results(results={})
         @metadata[:execution_result].update(results)
       end

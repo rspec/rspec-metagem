@@ -1,6 +1,9 @@
+require 'rspec/core/example_group_subject'
+
 module Rspec
   module Core
     class ExampleGroup
+      include ExampleGroupSubject
     
       attr_accessor :running_example, :reporter
     
@@ -119,6 +122,10 @@ module Rspec
 
       def self.describes
         metadata[:behaviour][:describes]
+      end
+      
+      def self.described_class
+        describes || description
       end
 
       def self.description
