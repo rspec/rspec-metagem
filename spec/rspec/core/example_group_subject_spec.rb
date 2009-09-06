@@ -10,7 +10,7 @@ end
 describe Rspec::Core::ExampleGroupSubject do
 
   describe "implicit subject" do
-    describe Array, "with a class" do
+    describe "with a class" do
       it "returns an instance of the class" do
         describe_double(Array).subject.call.should == []
       end

@@ -86,6 +86,15 @@ module Rspec
         @_examples_to_run ||= []
       end
 
+      def self.generate_name(options, metadata)
+        if superclass.metadata[:behaviour][:name]
+          metadata[:behaviour][:name] = "#{self.superclass.metadata[:behaviour][:name]} #{description} "
+        else
+          metadata[:behaviour][:name] = "#{describes} #{description} "
+        end
+        metadata[:behaviour][:name].strip!
+      end
+
       def self.set_it_up(*args)
         @metadata = { }
         extra_metadata = args.last.is_a?(Hash) ? args.pop : {}
@@ -95,7 +104,7 @@ module Rspec
         @metadata[:behaviour][:describes] = args.shift unless args.first.is_a?(String)
         @metadata[:behaviour][:describes] ||= self.superclass.metadata && self.superclass.metadata[:behaviour][:describes]
         @metadata[:behaviour][:description] = args.shift || ''
-        @metadata[:behaviour][:name] = "#{describes} #{description}".strip
+        @metadata[:behaviour][:name] = generate_name(args, metadata)
         @metadata[:behaviour][:block] = extra_metadata.delete(:behaviour_block)
         @metadata[:behaviour][:caller] = extra_metadata.delete(:caller) || caller(1)
         @metadata[:behaviour][:file_path] = extra_metadata.delete(:file_path) || @metadata[:behaviour][:caller][4].split(":")[0].strip

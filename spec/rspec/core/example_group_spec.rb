@@ -33,17 +33,16 @@ describe Rspec::Core::ExampleGroup do
         end
       end
 
-      pending "should be built correctly when nested" do
+      it "should be built correctly when nested" do
         behaviour_to_test = nil
+        group = empty_behaviour_group('test')
+        group.name.should == 'Object test'
 
-        isolate_behaviour do
-          Rspec::Core::ExampleGroup.describe(Rspec::Core, "test") do
-            describe("nested one") do
-              behaviour_to_test = describe("nested two") { }
-            end
-          end
-        end
-        behaviour_to_test.name.should == 'Rspec::Core - test - nested one - nested two'
+        nested_group_one = group.describe('nested one') { }
+        nested_group_one.name.should == 'Object test nested one'
+
+        nested_group_two = nested_group_one.describe('nested two') { }
+        nested_group_two.name.should == 'Object test nested one nested two'
       end
 
     end
