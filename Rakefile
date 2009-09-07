@@ -27,18 +27,29 @@ Rspec::Core::RakeTask.new :spec do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
-Cucumber::Rake::Task.new :features
+task :cleanup_rcov_files do
+  rm_rf 'coverage.data'
+end
 
 desc "Run all examples using rcov"
-Rspec::Core::RakeTask.new :rcov do |t|
+Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
   t.rcov = true
-  t.rcov_opts = %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-report --sort coverage --only-uncovered --failure-threshold=90]
+  t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
+  t.rcov_opts << %[ --text-report --sort coverage --only-uncovered --no-html --aggregate coverage.data]
   t.pattern = "spec/**/*_spec.rb"
 end
 
-if RUBY_PLATFORM = '1.9.1'
+if RUBY_PLATFORM == '1.9.1'
+  Cucumber::Rake::Task.new :features
+
   task :default => [:spec, :features]
 else
+  Cucumber::Rake::Task.new :features do |t|
+    t.rcov = true
+    t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,features,spec/ruby_forker,spec/rspec,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
+    t.rcov_opts << %[--text-report --sort coverage --failure-threshold=84 --aggregate coverage.data]
+  end
+
   task :default => [:rcov, :features]
 end
 
