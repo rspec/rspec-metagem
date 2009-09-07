@@ -67,7 +67,6 @@ end
 
 Rspec::Core.configure do |c|
   c.mock_framework = :mocha
-  c.formatter = :documentation
   c.filter_run :focused => true
   c.color_enabled = not_in_editor?
 end
