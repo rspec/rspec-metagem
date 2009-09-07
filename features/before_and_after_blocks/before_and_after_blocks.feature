@@ -42,7 +42,7 @@ Feature: before and after blocks
           @thing = Thing.new
         end
 
-        context "initialized in before(:each)" do
+        describe "initialized in before(:each)" do
           it "has 0 widgets" do
             @thing.should have(0).widgets
           end
@@ -57,7 +57,7 @@ Feature: before and after blocks
         end
       end
       """
-    When I run "spec before_each_in_example_group_spec.rb"
+    When I run "rspec before_each_in_example_group_spec.rb"
     Then the stdout should match "3 examples, 0 failures"
 
   Scenario: define before(:all) block in example group
@@ -68,30 +68,31 @@ Feature: before and after blocks
           @widgets ||= []
         end
       end
-
+  
       describe Thing do
         before(:all) do
           @thing = Thing.new
         end
-
-        context "initialized in before(:all)" do
+  
+        describe "initialized in before(:all)" do
           it "has 0 widgets" do
             @thing.should have(0).widgets
           end
-
+  
           it "can get accept new widgets" do
             @thing.widgets << Object.new
           end
-
+  
           it "shares state across examples" do
             @thing.should have(1).widgets
           end
         end
       end
       """
-    When I run "spec before_all_in_example_group_spec.rb"
+    When I run "rspec before_all_in_example_group_spec.rb"
     Then the stdout should match "3 examples, 0 failures"
 
+  @wip
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
@@ -106,7 +107,7 @@ Feature: before and after blocks
           @before_all = "before all"
         end
       end
-
+  
       describe "stuff in before blocks" do
         describe "with :suite" do
           it "should be available in the example" do
@@ -128,6 +129,7 @@ Feature: before and after blocks
     When I run "spec befores_in_configuration_spec.rb"
     Then the stdout should match "3 examples, 0 failures"
 
+  @wip
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """
@@ -139,29 +141,29 @@ Feature: before and after blocks
           puts "after suite"
         end
       end
-
+  
       describe "before and after callbacks" do
         before(:all) do
           puts "before all"
         end
-
+  
         before(:each) do
           puts "before each"
         end
-
+  
         after(:each) do
           puts "after each"
         end
-
+  
         after(:all) do
           puts "after all"
         end
-
+  
         it "gets run in order" do
-
+  
         end
       end
       """
     When I run "spec ensure_block_order_spec.rb"
     Then the stdout should match /before suite\nbefore all\nbefore each\nafter each\n\.after all\n.*after suite/m
-
+  

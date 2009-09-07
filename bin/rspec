@@ -8,3 +8,5 @@ require 'rspec/mocks'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'rspec/autorun'
+
+Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)

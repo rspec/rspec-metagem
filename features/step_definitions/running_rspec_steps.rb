@@ -2,7 +2,7 @@ Given %r{^a file named "([^"]+)" with:$} do |file_name, code|
   create_file(file_name, code)
 end
 
-When %r{^I run "spec ([^"]+)"$} do |file_and_args|
+When %r{^I run "r?spec ([^"]+)"$} do |file_and_args|
   spec(file_and_args)
 end
 

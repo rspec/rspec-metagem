@@ -5,7 +5,7 @@
     * from command line
     * in rake task definitions
   * formatters
-
+* Ensure context works everywhere describe does
 * For self testing
 ** shared example groups should not be merged into the real 'world'
 

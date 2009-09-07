@@ -26,7 +26,7 @@ module Rspec
 
       def initialize
         @run_all_when_everything_filtered = true
-        @before_and_afters = { :before => { :each => [], :all => [] }, :after => { :each => [], :all => [] } }
+        @before_and_afters = { :before => { :each => [], :all => [], :suite => [] }, :after => { :each => [], :all => [], :suite => [] } }
         @include_or_extend_modules = []
         @filter, @exclusion_filter = nil, nil
         @options = default_options
@@ -116,7 +116,7 @@ module Rspec
      
       def formatter=(formatter_to_use)
         formatter_class = case formatter_to_use.to_s
-        when 'documentation' 
+        when /doc/
           Rspec::Core::Formatters::DocumentationFormatter
         when 'progress' 
           Rspec::Core::Formatters::ProgressFormatter
