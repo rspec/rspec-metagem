@@ -4,10 +4,9 @@ module Rspec
       
       def self.included(kls)
         kls.extend ClassMethods
+        kls.send :alias_method, :__should_for_example_group__,     :should
+        kls.send :alias_method, :__should_not_for_example_group__, :should_not
       end
-      
-      alias_method :__should_for_example_group__,     :should
-      alias_method :__should_not_for_example_group__, :should_not
       
       def subject
         @subject ||= self.class.subject.call
