@@ -9,7 +9,7 @@ require 'rspec/core/rake_task'
 require 'cucumber/rake/task'
 
 begin
-  # require 'jeweler'
+  require 'jeweler'
   # Jeweler::Tasks.new do |gem|
     # gem.name = "rspec-core"
     # gem.summary = "RSpec Core"
@@ -31,13 +31,17 @@ Cucumber::Rake::Task.new :features
 
 desc "Run all examples using rcov"
 Rspec::Core::RakeTask.new :rcov do |t|
-  t.pattern = "spec/**/*_spec.rb"
   t.rcov = true
-  t.ruby_opts = %[-Ilib -Ispec]
-  t.rcov_opts = %[--exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-summary  --sort coverage]
+  t.rcov_opts = %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*" --text-report --sort coverage --only-uncovered --failure-threshold=90]
+  t.pattern = "spec/**/*_spec.rb"
 end
 
-task :default => [:spec, :features]
+if RUBY_PLATFORM = '1.9.1'
+  task :default => [:spec, :features]
+else
+  task :default => [:rcov, :features]
+end
+
 
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
