@@ -25,17 +25,17 @@ task :spec do
     echo '================================'
     echo 'Running spec/core suite . . .'
     echo '================================'
-    rake spec &&
+    rake &&
     cd ../mocks &&
     echo '================================'
     echo 'Running spec/mocks suite . . .'
     echo '================================'
-    rake spec &&
+    rake &&
     cd ../expectations &&
     echo '================================'
     echo 'Running spec/expectations suite . . .'
     echo '================================'
-    rake spec
+    rake
   COMMANDS
 end
 
