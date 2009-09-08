@@ -9,7 +9,7 @@ Feature: define matcher outside rspec
       """
       $:.unshift File.join(File.dirname(__FILE__), "/../../lib")
       require 'test/unit'
-      require 'spec/expectations'
+      require 'rspec/expectations'
       
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
@@ -18,7 +18,7 @@ Feature: define matcher outside rspec
       end
       
       class Test::Unit::TestCase
-        include Spec::Matchers
+        include Rspec::Matchers
       end
       
       class TestMultiples < Test::Unit::TestCase
