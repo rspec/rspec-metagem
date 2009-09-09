@@ -8,6 +8,7 @@
 * Ensure context works everywhere describe does
 * For self testing
 ** shared example groups should not be merged into the real 'world'
+* make sure all behaviour refs are now examplegroup
 
 ### Maxwell
 
