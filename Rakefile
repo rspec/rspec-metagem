@@ -10,14 +10,14 @@ require 'cucumber/rake/task'
 
 begin
   require 'jeweler'
-  # Jeweler::Tasks.new do |gem|
-    # gem.name = "rspec-core"
-    # gem.summary = "RSpec Core"
-    # gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
-    # gem.homepage = "http://github.com/rspec/core"
-    # gem.authors = ["David Chelimsky", "Chad Humphries"]
+  Jeweler::Tasks.new do |gem|
+    gem.name = "rspec-core"
+    gem.summary = "RSpec Core"
+    gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
+    gem.homepage = "http://github.com/rspec/core"
+    gem.authors = ["David Chelimsky", "Chad Humphries"]
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  # end
+  end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
@@ -39,7 +39,7 @@ Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
   t.pattern = "spec/**/*_spec.rb"
 end
 
-if RUBY_PLATFORM == '1.9.1'
+if RUBY_VERSION == '1.9.1'
   Cucumber::Rake::Task.new :features do |t|
     t.cucumber_opts = %w{--format progress}
   end
