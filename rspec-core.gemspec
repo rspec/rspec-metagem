@@ -134,6 +134,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/shared_behaviour.rb",
      "lib/rspec/core/shared_behaviour_kernel_extensions.rb",
      "lib/rspec/core/world.rb",
+     "lib/rspec/core/version.rb",
      "rspec-core.gemspec",
      "script/console",
      "spec/resources/example_classes.rb",
