@@ -9,9 +9,9 @@ begin
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
-    gem.add_dependency "rspec-core", "0.0.0"
-    gem.add_dependency "rspec-expectations", "0.0.0"
-    gem.add_dependency "rspec-mocks", "0.0.0"
+    gem.add_dependency "rspec-core", ">= 2.0.0.a1"
+    gem.add_dependency "rspec-expectations", ">= 2.0.0.a1"
+    gem.add_dependency "rspec-mocks", ">= 2.0.0.a1"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
