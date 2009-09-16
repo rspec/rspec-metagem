@@ -13,9 +13,12 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
     gem.summary = "RSpec Core"
+    gem.description = 'RSpec Core'
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
+    gem.add_development_dependency('rspec-expectations', '>= 2.0.0.a1')
+    gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 rescue LoadError
