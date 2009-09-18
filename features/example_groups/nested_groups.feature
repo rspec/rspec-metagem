@@ -8,6 +8,8 @@ Feature: Nested example groups
     Given a file named "nested_example_groups.rb" with:
     """
     require 'rspec/autorun'
+    require 'rspec/expectations'
+    Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
     describe "Some Object" do
       describe "with some more context" do
@@ -23,10 +25,11 @@ Feature: Nested example groups
     end
     """
     When I run "<Command> nested_example_groups.rb -fs"
-    Then the stdout should match /Some Object with some more context/
-    And the stdout should match /Some Object with some other context/
+    Then the stdout should match /^Some Object/
+    And the stdout should match /^\s+with some more context/
+    And the stdout should match /^\s+with some other context/
 
   Scenarios: Run with ruby and spec
     | Command |
     | ruby    |
-    | spec    |
+    | rspec   |
