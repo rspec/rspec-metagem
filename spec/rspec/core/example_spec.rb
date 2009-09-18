@@ -63,5 +63,5 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
     pending "should run after(:each) when the example raises an Exception" 
     
   end
-  
+
 end

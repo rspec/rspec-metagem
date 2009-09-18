@@ -2,12 +2,12 @@ module Rspec
   module Core
     class Example
 
-      attr_reader :behaviour, :description, :metadata, :example_block
+      attr_reader :behaviour, :metadata, :example_block
 
       def initialize(behaviour, desc, options, example_block=nil)
-        @behaviour, @description, @options, @example_block = behaviour, desc, options, example_block
+        @behaviour, @options, @example_block = behaviour, options, example_block
         @metadata = @behaviour.metadata.dup
-        @metadata[:description] = description
+        @metadata[:description] = desc.to_s
         @metadata[:execution_result] = {}
         @metadata[:caller] = options.delete(:caller)
         if @metadata[:caller]
@@ -15,6 +15,10 @@ module Rspec
           @metadata[:line_number] = @metadata[:caller].split(":")[1].to_i
         end
         @metadata.update(options)
+      end
+
+      def description
+        metadata[:description]
       end
       
       def record_results(results={})
@@ -64,6 +68,13 @@ module Rspec
         @behaviour_instance._teardown_mocks if @behaviour_instance.respond_to?(:_teardown_mocks)
       end
 
+      def assign_auto_description
+        if description.empty?
+          metadata[:description] = Rspec::Matchers.generated_description 
+          Rspec::Matchers.clear_generated_description
+        end
+      end
+
       def run(behaviour_instance)
         @behaviour_instance = behaviour_instance
         @behaviour_instance.running_example = self
@@ -80,6 +91,8 @@ module Rspec
           exception_encountered = e
           all_systems_nominal = false
         end
+
+        assign_auto_description
 
         begin
           run_after_each
