@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/../../spec_helper.rb'
 
 share_as :HaveSpecHelper do
   def create_collection_owner_with(n)
-    owner = Spec::Expectations::Helper::CollectionOwner.new
+    owner = Rspec::Expectations::Helper::CollectionOwner.new
     (1..n).each do |number|
       owner.add_to_collection_with_length_method(number)
       owner.add_to_collection_with_size_method(number)
@@ -24,7 +24,6 @@ share_as :HaveSpecHelper do
     end
   end
 end
-
 
 describe "should have(n).items" do
   include HaveSpecHelper
@@ -360,8 +359,20 @@ end
 module Rspec
   module Matchers
     describe Have do
-      treats_method_missing_as_private :noop => false
-      
+      it "should have method_missing as private" do
+        with_ruby 1.8 do
+          described_class.private_instance_methods.should include("method_missing")
+        end
+        with_ruby 1.9 do
+          described_class.private_instance_methods.should include(:method_missing)
+        end
+      end
+
+      it "should not respond_to? method_missing (because it's private)" do
+        formatter = self.class.described_class.new({ }, StringIO.new)
+        formatter.should_not respond_to(:method_missing)
+      end
+
       describe "respond_to?" do
         before :each do
           @have = Have.new(:foo)

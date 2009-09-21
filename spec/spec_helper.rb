@@ -5,7 +5,13 @@ require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/core'
 
-require 'spec/support/macros'
+Dir['./spec/support/**/*'].each do |f|
+  require f
+end
+
+def with_ruby(version)
+  yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
+end
 
 module Rspec
   module Ruby
@@ -19,6 +25,10 @@ end
 
 module Rspec  
   module Matchers
+    def fail
+      raise_error(Rspec::Expectations::ExpectationNotMetError)
+    end
+
     def fail_with(message)
       raise_error(Rspec::Expectations::ExpectationNotMetError, message)
     end
@@ -29,6 +39,5 @@ Rspec::Core::configure do |config|
   config.mock_with(:rspec)
   config.include Rspec::Mocks::Methods
   config.include Rspec::Matchers
-  config.extend Macros
   config.color_enabled = true
 end
