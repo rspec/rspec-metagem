@@ -5,6 +5,8 @@ require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/core'
 
+require 'spec/support/macros'
+
 module Rspec
   module Ruby
     class << self
@@ -27,5 +29,6 @@ Rspec::Core::configure do |config|
   config.mock_with(:rspec)
   config.include Rspec::Mocks::Methods
   config.include Rspec::Matchers
+  config.extend Macros
   config.color_enabled = true
 end

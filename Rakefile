@@ -11,14 +11,12 @@ begin
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
     gem.add_development_dependency('rspec-core', '>= 2.0.0.a1')
     gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
 
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-$:.unshift File.join(File.dirname(__FILE__), "/../core/lib")
 require 'rspec/core/rake_task'
 Rspec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = "spec/**/*_spec.rb"
