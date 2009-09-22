@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-expectations}
-  s.version = "2.0.0"
+  s.version = "2.0.0.a1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
      "License.txt",
      "README.markdown",
      "Rakefile",
-     "VERSION",
      "VERSION.yml",
      "lib/rspec/expectations.rb",
      "lib/rspec/expectations/differs/default.rb",
