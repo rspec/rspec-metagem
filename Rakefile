@@ -19,6 +19,10 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
+task :clobber do
+  rm_rf 'pkg'
+end
+
 task :spec do
   system <<-COMMANDS
     cd ../core &&
