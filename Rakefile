@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'yaml'
 
-$:.unshift 'lib'
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'

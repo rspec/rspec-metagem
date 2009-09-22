@@ -4,4 +4,5 @@ require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/autorun'
 
+# TODO - this feels odd here - move to runner?
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
