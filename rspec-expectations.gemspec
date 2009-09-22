@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-expectations}
-  s.version = "2.0.0.a1"
+  s.version = "2.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2009-09-16}
+  s.date = %q{2009-09-21}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -28,6 +28,7 @@ Gem::Specification.new do |s|
      "lib/rspec/expectations/errors.rb",
      "lib/rspec/expectations/extensions.rb",
      "lib/rspec/expectations/extensions/kernel.rb",
+     "lib/rspec/expectations/extensions/rspec/core/example_group.rb",
      "lib/rspec/expectations/fail_with.rb",
      "lib/rspec/expectations/handler.rb",
      "lib/rspec/matchers.rb",
@@ -65,10 +66,35 @@ Gem::Specification.new do |s|
      "spec/rspec/expectations/fail_with_spec.rb",
      "spec/rspec/expectations/handler_spec.rb",
      "spec/rspec/expectations/wrap_expectation_spec.rb",
+     "spec/rspec/matchers/be_close_spec.rb",
+     "spec/rspec/matchers/be_instance_of_spec.rb",
+     "spec/rspec/matchers/be_kind_of_spec.rb",
+     "spec/rspec/matchers/be_spec.rb",
+     "spec/rspec/matchers/change_spec.rb",
+     "spec/rspec/matchers/compatibility_spec.rb",
+     "spec/rspec/matchers/description_generation_spec.rb",
+     "spec/rspec/matchers/dsl_spec.rb",
+     "spec/rspec/matchers/eql_spec.rb",
+     "spec/rspec/matchers/equal_spec.rb",
+     "spec/rspec/matchers/exist_spec.rb",
+     "spec/rspec/matchers/has_spec.rb",
+     "spec/rspec/matchers/have_spec.rb",
+     "spec/rspec/matchers/include_spec.rb",
+     "spec/rspec/matchers/match_array_spec.rb",
+     "spec/rspec/matchers/match_spec.rb",
+     "spec/rspec/matchers/matcher_methods_spec.rb",
+     "spec/rspec/matchers/matcher_spec.rb",
+     "spec/rspec/matchers/matchers_spec.rb",
+     "spec/rspec/matchers/operator_matcher_spec.rb",
+     "spec/rspec/matchers/raise_error_spec.rb",
+     "spec/rspec/matchers/respond_to_spec.rb",
+     "spec/rspec/matchers/satisfy_spec.rb",
+     "spec/rspec/matchers/simple_matcher_spec.rb",
+     "spec/rspec/matchers/throw_symbol_spec.rb",
      "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/suite.rb",
-     "spec/support/macros.rb"
+     "spec/support/classes.rb"
   ]
   s.homepage = %q{http://github.com/rspec/expectations}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -81,9 +107,34 @@ Gem::Specification.new do |s|
      "spec/rspec/expectations/fail_with_spec.rb",
      "spec/rspec/expectations/handler_spec.rb",
      "spec/rspec/expectations/wrap_expectation_spec.rb",
+     "spec/rspec/matchers/be_close_spec.rb",
+     "spec/rspec/matchers/be_instance_of_spec.rb",
+     "spec/rspec/matchers/be_kind_of_spec.rb",
+     "spec/rspec/matchers/be_spec.rb",
+     "spec/rspec/matchers/change_spec.rb",
+     "spec/rspec/matchers/compatibility_spec.rb",
+     "spec/rspec/matchers/description_generation_spec.rb",
+     "spec/rspec/matchers/dsl_spec.rb",
+     "spec/rspec/matchers/eql_spec.rb",
+     "spec/rspec/matchers/equal_spec.rb",
+     "spec/rspec/matchers/exist_spec.rb",
+     "spec/rspec/matchers/has_spec.rb",
+     "spec/rspec/matchers/have_spec.rb",
+     "spec/rspec/matchers/include_spec.rb",
+     "spec/rspec/matchers/match_array_spec.rb",
+     "spec/rspec/matchers/match_spec.rb",
+     "spec/rspec/matchers/matcher_methods_spec.rb",
+     "spec/rspec/matchers/matcher_spec.rb",
+     "spec/rspec/matchers/matchers_spec.rb",
+     "spec/rspec/matchers/operator_matcher_spec.rb",
+     "spec/rspec/matchers/raise_error_spec.rb",
+     "spec/rspec/matchers/respond_to_spec.rb",
+     "spec/rspec/matchers/satisfy_spec.rb",
+     "spec/rspec/matchers/simple_matcher_spec.rb",
+     "spec/rspec/matchers/throw_symbol_spec.rb",
      "spec/spec_helper.rb",
      "spec/suite.rb",
-     "spec/support/macros.rb"
+     "spec/support/classes.rb"
   ]
 
   if s.respond_to? :specification_version then
