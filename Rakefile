@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'yaml'
 
-$:.unshift 'lib'
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'
@@ -26,12 +26,17 @@ rescue LoadError
 end
 
 Rspec::Core::RakeTask.new :spec do |t|
-  t.ruby_opts = %[-Ilib -Ispec]
   t.pattern = "spec/**/*_spec.rb"
 end
 
 task :cleanup_rcov_files do
   rm_rf 'coverage.data'
+end
+
+task :clobber do
+  rm_rf 'pkg'
+  rm_rf 'tmp'
+  rm_rf 'coverage'
 end
 
 desc "Run all examples using rcov"

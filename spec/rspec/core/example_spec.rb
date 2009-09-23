@@ -1,4 +1,4 @@
-require 'spec/spec_helper'
+require 'spec_helper'
 
 describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
