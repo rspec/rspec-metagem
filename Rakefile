@@ -37,6 +37,7 @@ end
 task :clobber do
   rm_rf 'pkg'
   rm_rf 'tmp'
+  rm_rf 'coverage'
 end
 
 desc "Run all examples using rcov"
