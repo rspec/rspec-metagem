@@ -34,6 +34,11 @@ task :cleanup_rcov_files do
   rm_rf 'coverage.data'
 end
 
+task :clobber do
+  rm_rf 'pkg'
+  rm_rf 'tmp'
+end
+
 desc "Run all examples using rcov"
 Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
   t.rcov = true
