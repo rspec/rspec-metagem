@@ -63,6 +63,8 @@ module Rspec
             else
               cmd_parts = [rcov ? 'rcov' : RUBY]
               cmd_parts += rcov ? [rcov_opts] : [ruby_opts]
+              cmd_parts << '-Ilib'
+              cmd_parts << '-Ispec'
               cmd_parts << "-w" if warning
               cmd_parts += files_to_run.collect { |fn| %["#{fn}"] }
               cmd = cmd_parts.join(" ")

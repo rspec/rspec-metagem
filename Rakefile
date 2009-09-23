@@ -26,7 +26,6 @@ rescue LoadError
 end
 
 Rspec::Core::RakeTask.new :spec do |t|
-  t.ruby_opts = %[-Ilib -Ispec]
   t.pattern = "spec/**/*_spec.rb"
 end
 

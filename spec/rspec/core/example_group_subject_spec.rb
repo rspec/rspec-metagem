@@ -1,4 +1,4 @@
-require 'spec/spec_helper'
+require 'spec_helper'
 
 def describe_double(describes=Object)
   group = Rspec::Core::ExampleGroup.describe(describes) {}
