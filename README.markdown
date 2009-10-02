@@ -21,6 +21,24 @@ components of rspec that you're not using.
 Again, we're super early in the process - aiming for a 2.0 release late
 2009/early 2010 - so do stay tuned, but don't start using this just yet.
 
+## Development
+
+To get started, make a new directory for the rspec-2 repos to live:
+
+    $ mkdir ~/rspec2
+
+Next, cd into it, and pull down the meta repo:
+
+    $ cd ~/rspec2 
+    $ git clone git://github.com/rspec/meta.git
+
+The meta repo provides a task to help manage the others. Initially, you want to clone them:
+
+    $ cd meta
+    $ rake git:clone
+
+Now you'll be able to run the other git tasks for pulling, pushing, etc.
+
 #### Also see
 
 * [http://github.com/rspec/core](http://github.com/rspec/core)

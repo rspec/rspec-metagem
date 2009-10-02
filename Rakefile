@@ -54,10 +54,22 @@ namespace :git do
     :diff => nil
   }.each do |command, options|
     desc "git #{command} on all the repos"
-    task command do
+    task command => :clone do
       run_command "git #{command} #{options}".strip
     end
   end
 
   task :st => :status
+
+  desc "git clone all the repos the first time"
+  task :clone do
+    base_rspec2_path = Pathname.new(Dir.pwd.split('meta').first)
+    FileUtils.cd(base_rspec2_path) do
+      ['core', 'expectations', 'mocks'].each do |repo|
+        unless File.exists?(repo)
+          system "git clone git://github.com/rspec/#{repo}.git"
+        end
+      end
+    end
+  end
 end
