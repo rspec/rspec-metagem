@@ -12,7 +12,7 @@ begin
     gem.add_development_dependency('rspec-core', '>= 2.0.0.a1')
     gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
   end
-
+  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
