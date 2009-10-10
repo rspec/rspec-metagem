@@ -6,8 +6,8 @@ describe Rspec::Core::Formatters::ProgressFormatter do
      @output = StringIO.new
      @formatter = Rspec::Core::Formatters::ProgressFormatter.new
      @formatter.start(2)
-     @formatter.stubs(:color_enabled?).returns(false)
-     @formatter.stubs(:output).returns(@output)
+     @formatter.stub!(:color_enabled?).and_return(false)
+     @formatter.stub!(:output).and_return(@output)
    end
    
    it "should produce line break on start dump" do

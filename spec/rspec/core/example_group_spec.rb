@@ -257,16 +257,18 @@ describe Rspec::Core::ExampleGroup do
     end
 
     def stub_behaviour
-      stub_everything('behaviour', :metadata => { :behaviour => { :name => 'behaviour_name' }})
+      behaviour = mock('behaviour', :null_object => true)
+      behaviour.stub!(:metadata).and_return(:metadata => { :behaviour => { :name => 'behaviour_name' }})
+      behaviour
     end
 
     it "should return true if all examples pass" do
       use_formatter(@fake_formatter) do
         passing_example1 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
         passing_example2 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([passing_example1, passing_example2])
+        Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([passing_example1, passing_example2])
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter')).should be_true
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter', :null_object => true)).should be_true
       end
     end
 
@@ -274,9 +276,9 @@ describe Rspec::Core::ExampleGroup do
       use_formatter(@fake_formatter) do
         failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
         passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([failing_example, passing_example])
+        Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter')).should be_false
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter', :null_object => true)).should be_false
       end
     end
 
@@ -284,11 +286,11 @@ describe Rspec::Core::ExampleGroup do
       use_formatter(@fake_formatter) do
         failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
         passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        Rspec::Core::ExampleGroup.stubs(:examples_to_run).returns([failing_example, passing_example])
+        Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
 
-        passing_example.expects(:run)
+        passing_example.should_receive(:run)
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, stub_everything('reporter'))
+        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter', :null_object => true))
       end
     end
 

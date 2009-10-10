@@ -17,7 +17,6 @@ def with_ruby(version)
 end
 
 require 'rubygems'
-require 'mocha'
 
 require File.expand_path(File.dirname(__FILE__) + "/resources/example_classes")
 
@@ -66,7 +65,7 @@ def not_in_editor?
 end
 
 Rspec::Core.configure do |c|
-  c.mock_framework = :mocha
+  c.mock_framework = :rspec
   c.filter_run :focused => true
   c.color_enabled = not_in_editor?
 end

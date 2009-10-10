@@ -25,7 +25,7 @@ describe Rspec::Core::SharedBehaviour do
   describe "share_examples_for" do
 
     it "should capture the given name and block in the Worlds collection of shared behaviours" do
-      Rspec::Core.world.shared_behaviours.expects(:[]=).with(:foo, anything)
+      Rspec::Core.world.shared_behaviours.should_receive(:[]=).with(:foo, anything)
       share_examples_for(:foo) { }
     end
 
@@ -47,8 +47,8 @@ describe Rspec::Core::SharedBehaviour do
           'extra_helper'
         end
       }
-      Rspec::Core.world.stubs(:shared_behaviours).returns({ :a => block1, :shared_behaviour => block2 })
-      group.expects(:module_eval).once
+      Rspec::Core.world.stub!(:shared_behaviours).and_return({ :a => block1, :shared_behaviour => block2 })
+      group.should_receive(:module_eval).once
       group.it_should_behave_like :shared_behaviour
     end
 
@@ -58,7 +58,7 @@ describe Rspec::Core::SharedBehaviour do
         def self.class_helper; end
         def extra_helper; end
       }
-      Rspec::Core.world.stubs(:shared_behaviours).returns({ :shared_behaviour => block })
+      Rspec::Core.world.stub!(:shared_behaviours).and_return({ :shared_behaviour => block })
       group.it_should_behave_like :shared_behaviour
       with_ruby(1.8) do
         group.instance_methods.should include('extra_helper')

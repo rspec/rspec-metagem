@@ -4,24 +4,23 @@ describe Rspec::Core::Configuration do
 
   describe "setting the mock framework" do
 
-    # TODO: Solution to test rr/rspec/flexmock, possibly cucumber
-    it "requires and includes the mocha adapter when the mock_framework is :mocha" do
+    it "should require and include the rspec adapter when the mock_framework is :rspec" do
       config = Rspec::Core::Configuration.new
-      config.expects(:require).with('rspec/core/mocking/with_mocha')
-      Rspec::Core::ExampleGroup.expects(:send)
-      config.mock_framework = :mocha
+      config.should_receive(:require).with('rspec/core/mocking/with_rspec')
+      Rspec::Core::ExampleGroup.should_receive(:send)
+      config.mock_framework = :rspec
     end
 
     it "supports mock_with for backward compatibility with rspec-1.x" do
       config = Rspec::Core::Configuration.new
-      config.expects(:require).with('rspec/core/mocking/with_mocha')
-      Rspec::Core::ExampleGroup.expects(:send)
-      config.mock_with :mocha
+      config.stub!(:require)
+      Rspec::Core::ExampleGroup.stub!(:send)
+      config.mock_with :rspec
     end
     
     it "includes the null adapter when the mock_framework is not :rspec, :mocha, or :rr" do
       config = Rspec::Core::Configuration.new
-      Rspec::Core::ExampleGroup.expects(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
+      Rspec::Core::ExampleGroup.should_receive(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
       config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
     end
     

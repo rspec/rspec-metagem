@@ -7,7 +7,7 @@ describe Rspec::Core::World do
   
   before do
     @world = Rspec::Core::World.new
-    Rspec::Core.stubs(:world).returns(@world)
+    Rspec::Core.stub!(:world).and_return(@world)
   end
 
   describe "behaviour groups" do
@@ -154,9 +154,9 @@ describe Rspec::Core::World do
     end
 
     it "should run matches" do
-      Rspec::Core.world.stubs(:exclusion_filter).returns({ :awesome => false })
-      Rspec::Core.world.stubs(:filter).returns({ :color => :red })
-      Rspec::Core.world.stubs(:behaviours).returns([@group1])
+      Rspec::Core.world.stub!(:exclusion_filter).and_return({ :awesome => false })
+      Rspec::Core.world.stub!(:filter).and_return({ :color => :red })
+      Rspec::Core.world.stub!(:behaviours).and_return([@group1])
       filtered_behaviours = @world.filter_behaviours
       filtered_behaviours.should == [@group1]
       @group1.examples_to_run.should == @group1.examples[0..1]      

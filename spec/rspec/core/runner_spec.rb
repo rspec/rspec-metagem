@@ -13,14 +13,14 @@ describe Rspec::Core::Runner do
   describe 'at_exit' do
     
     it 'should set an at_exit hook if none is already set' do
-      Rspec::Core::Runner.stubs(:installed_at_exit?).returns(false)
-      Rspec::Core::Runner.expects(:at_exit)
+      Rspec::Core::Runner.stub!(:installed_at_exit?).and_return(false)
+      Rspec::Core::Runner.should_receive(:at_exit)
       Rspec::Core::Runner.autorun
     end
     
     it 'should not set the at_exit hook if it is already set' do
-      Rspec::Core::Runner.stubs(:installed_at_exit?).returns(true)
-      Rspec::Core::Runner.expects(:at_exit).never
+      Rspec::Core::Runner.stub!(:installed_at_exit?).and_return(true)
+      Rspec::Core::Runner.should_receive(:at_exit).never
       Rspec::Core::Runner.autorun
     end
     
