@@ -106,7 +106,7 @@ module Rspec
         options[:profile_examples]
       end
       
-      def profile_examples=(profile)
+      def profile_examples=(on_or_off)
         options[:profile_examples] = on_or_off
       end
      
