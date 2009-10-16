@@ -19,6 +19,7 @@ begin
     gem.authors = ["David Chelimsky", "Chad Humphries"]
     gem.add_development_dependency('rspec-expectations', '>= 2.0.0.a1')
     gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
+    gem.add_development_dependency('cucumber', '>= 0.4.2')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
@@ -53,7 +54,7 @@ if RUBY_VERSION == '1.9.1'
     t.cucumber_opts = %w{--format progress}
   end
 
-  task :default => [:spec, :features]
+  task :default => [:check_dependencies, :spec, :features]
 else
   Cucumber::Rake::Task.new :features do |t|
     t.rcov = true
@@ -62,7 +63,7 @@ else
     t.cucumber_opts = %w{--format progress}
   end
 
-  task :default => [:rcov, :features]
+  task :default => [:check_dependencies, :rcov, :features]
 end
 
 
