@@ -18,6 +18,6 @@ Feature: mock with rspec
         end
       end
       """
-    When I run "spec rspec_example_spec.rb"
+    When I run "rspec rspec_example_spec.rb"
     Then the stdout should match "1 example, 0 failures" 
     And the exit code should be 0
