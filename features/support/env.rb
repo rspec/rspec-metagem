@@ -1,4 +1,5 @@
-RSPEC_LIB = File.expand_path(File.join(File.dirname(__FILE__),'..','..','lib'))
+require 'pathname'
+RSPEC_LIB = File.expand_path('../../../lib', __FILE__)
 
 require 'forwardable'
 require 'tempfile'
@@ -14,11 +15,11 @@ class RspecWorld
   def_delegators RspecWorld, :working_dir, :spec_command
   
   def self.working_dir
-    @working_dir ||= File.expand_path(File.join(File.dirname(__FILE__),'..','..','tmp','cucumber-generated-files'))
+    @working_dir ||= File.expand_path('../../../tmp/cucumber-generated-files', __FILE__)
   end
 
   def self.spec_command
-    @spec_command ||= File.expand_path(File.join(File.dirname(__FILE__),'..','..','bin','rspec'))
+    @spec_command ||= File.expand_path('../../../bin/rspec', __FILE__)
   end
 
   

@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 $LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__),'..','lib')))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__),'..','..','expectations','lib')))
+$LOAD_PATH.unshift(File.expand_path(File.join(File.dirname(__FILE__),'..','..','mocks','lib')))
 require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/autorun'
