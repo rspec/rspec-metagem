@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-core}
-  s.version = "2.0.0.a1"
+  s.version = "2.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2009-09-22}
+  s.date = %q{2009-10-30}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec Core}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -79,7 +79,6 @@ Gem::Specification.new do |s|
      "features-pending/command_line/line_number_option_with_example_with_no_name.feature",
      "features-pending/example_groups/example_group_with_should_methods.feature",
      "features-pending/example_groups/implicit_docstrings.feature",
-     "features-pending/example_groups/nested_groups.feature",
      "features-pending/expectations/expect_change.feature",
      "features-pending/expectations/expect_error.feature",
      "features-pending/extensions/custom_example_group.feature",
@@ -90,19 +89,21 @@ Gem::Specification.new do |s|
      "features-pending/interop/test_but_not_test_unit.feature",
      "features-pending/interop/test_case_with_should_methods.feature",
      "features-pending/matchers/define_diffable_matcher.feature",
-     "features-pending/matchers/define_matcher.feature",
      "features-pending/matchers/define_matcher_with_fluent_interface.feature",
-     "features-pending/mocks/mix_stubs_and_mocks.feature",
      "features-pending/mocks/stub_implementation.feature",
      "features-pending/pending/pending_examples.feature",
      "features-pending/runner/specify_line_number.feature",
      "features/before_and_after_blocks/before_and_after_blocks.feature",
+     "features/example_groups/describe_aliases.feature",
+     "features/example_groups/nested_groups.feature",
      "features/expectations/customized_message.feature",
+     "features/matchers/define_matcher.feature",
      "features/matchers/define_matcher_outside_rspec.feature",
      "features/mock_framework_integration/use_flexmock.feature",
      "features/mock_framework_integration/use_mocha.feature",
      "features/mock_framework_integration/use_rr.feature",
      "features/mock_framework_integration/use_rspec.feature",
+     "features/mocks/mix_stubs_and_mocks.feature",
      "features/step_definitions/running_rspec_steps.rb",
      "features/subject/explicit_subject.feature",
      "features/subject/implicit_subject.feature",
@@ -200,12 +201,15 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec-expectations>, [">= 2.0.0.a1"])
       s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a1"])
+      s.add_development_dependency(%q<cucumber>, [">= 0.4.2"])
     else
       s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a1"])
       s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a1"])
+      s.add_dependency(%q<cucumber>, [">= 0.4.2"])
     end
   else
     s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a1"])
     s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a1"])
+    s.add_dependency(%q<cucumber>, [">= 0.4.2"])
   end
 end
