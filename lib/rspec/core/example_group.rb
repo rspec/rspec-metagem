@@ -206,18 +206,23 @@ module Rspec
       end
 
       def self.run(reporter)
-        behaviour_instance = new
+        example_group_instance = new
         reporter.add_behaviour(self)
-        eval_before_alls(behaviour_instance)
-        success = run_examples(behaviour_instance, reporter)
-        eval_after_alls(behaviour_instance)
+        eval_before_alls(example_group_instance)
+        success = run_examples(example_group_instance, reporter)
+        eval_after_alls(example_group_instance)
       
         success
       end
     
       # Runs all examples, returning true only if all of them pass
-      def self.run_examples(behaviour_instance, reporter)
-        examples_to_run.map { |ex| ex.run(behaviour_instance) }.all?
+      def self.run_examples(example_group_instance, reporter)
+        examples_to_run.map { |ex| ex.run(example_group_instance) }.all?
+      end
+
+      def reset
+        assignments.clear
+        self
       end
 
       def self.subclass(base_name, &body) # :nodoc:
@@ -233,7 +238,17 @@ module Rspec
       def self.to_s
         self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
       end
+
+      def assignments
+        @assignments ||= {}
+      end
    
+      def self.let(name, &block)
+        define_method name do
+          assignments[name] ||= instance_eval(&block)
+        end
+      end
+
     end
   end
 end

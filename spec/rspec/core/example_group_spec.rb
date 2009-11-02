@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-def empty_behaviour_group(name='Empty ExampleGroup Group')
+def empty_example_group(name='Empty ExampleGroup Group')
   group = Rspec::Core::ExampleGroup.describe(Object, name) {}
   remove_last_describe_from_world
   yield group if block_given?
@@ -35,7 +35,7 @@ describe Rspec::Core::ExampleGroup do
 
       it "should be built correctly when nested" do
         behaviour_to_test = nil
-        group = empty_behaviour_group('test')
+        group = empty_example_group('test')
         group.name.should == 'Object test'
 
         nested_group_one = group.describe('nested one') { }
@@ -127,13 +127,13 @@ describe Rspec::Core::ExampleGroup do
     describe "adding before and after hooks" do
 
       it "should expose the before each blocks at before_eachs" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.before(:each) { 'foo' }
         group.should have(1).before_eachs
       end
 
       it "should maintain the before each block order" do
-        group = empty_behaviour_group 
+        group = empty_example_group 
         group.before(:each) { 15 }
         group.before(:each) { 'A' }
         group.before(:each) { 33.5 }
@@ -144,13 +144,13 @@ describe Rspec::Core::ExampleGroup do
       end
 
       it "should expose the before all blocks at before_alls" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.before(:all) { 'foo' }
         group.should have(1).before_alls
       end
 
       it "should maintain the before all block order" do
-        group = empty_behaviour_group 
+        group = empty_example_group 
         group.before(:all) { 15 }
         group.before(:all) { 'A' }
         group.before(:all) { 33.5 }
@@ -161,13 +161,13 @@ describe Rspec::Core::ExampleGroup do
       end
 
       it "should expose the after each blocks at after_eachs" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.after(:each) { 'foo' }
         group.should have(1).after_eachs
       end
 
       it "should maintain the after each block order" do
-        group = empty_behaviour_group 
+        group = empty_example_group 
         group.after(:each) { 15 }
         group.after(:each) { 'A' }
         group.after(:each) { 33.5 }
@@ -178,13 +178,13 @@ describe Rspec::Core::ExampleGroup do
       end
 
       it "should expose the after all blocks at after_alls" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.after(:all) { 'foo' }
         group.should have(1).after_alls
       end
 
       it "should maintain the after each block order" do
-        group = empty_behaviour_group 
+        group = empty_example_group 
         group.after(:all) { 15 }
         group.after(:all) { 'A' }
         group.after(:all) { 33.5 }
@@ -199,13 +199,13 @@ describe Rspec::Core::ExampleGroup do
     describe "adding examples" do
 
       it "should allow adding an example using 'it'" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.it("should do something") { }
         group.examples.size.should == 1
       end
 
       it "should expose all examples at examples" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.it("should do something 1") { }
         group.it("should do something 2") { }
         group.it("should do something 3") { }
@@ -213,7 +213,7 @@ describe Rspec::Core::ExampleGroup do
       end
 
       it "should maintain the example order" do
-        group = empty_behaviour_group
+        group = empty_example_group
         group.it("should 1") { }
         group.it("should 2") { }
         group.it("should 3") { }
@@ -348,6 +348,28 @@ describe Rspec::Core::ExampleGroup do
       
     end
     
+  end
+
+  describe "#let" do
+    let(:counter) do
+      Class.new do
+        def initialize
+          @count = 0
+        end
+        def count
+          @count += 1
+        end
+      end.new
+    end
+
+    it "generates an instance method" do
+      counter.count.should == 1
+    end
+
+    it "caches the value" do
+      counter.count.should == 1
+      counter.count.should == 2
+    end
   end
 
 end

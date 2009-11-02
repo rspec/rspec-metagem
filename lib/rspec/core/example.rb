@@ -57,15 +57,15 @@ module Rspec
       end
 
       def run_before_each
-        @behaviour_instance._setup_mocks if @behaviour_instance.respond_to?(:_setup_mocks)
-        @behaviour.eval_before_eachs(@behaviour_instance)
+        @example_group_instance._setup_mocks if @example_group_instance.respond_to?(:_setup_mocks)
+        @behaviour.eval_before_eachs(@example_group_instance)
       end
 
       def run_after_each
-        @behaviour.eval_after_eachs(@behaviour_instance)
-        @behaviour_instance._verify_mocks if @behaviour_instance.respond_to?(:_verify_mocks)
+        @behaviour.eval_after_eachs(@example_group_instance)
+        @example_group_instance._verify_mocks if @example_group_instance.respond_to?(:_verify_mocks)
       ensure
-        @behaviour_instance._teardown_mocks if @behaviour_instance.respond_to?(:_teardown_mocks)
+        @example_group_instance._teardown_mocks if @example_group_instance.respond_to?(:_teardown_mocks)
       end
 
       def assign_auto_description
@@ -75,9 +75,9 @@ module Rspec
         end
       end
 
-      def run(behaviour_instance)
-        @behaviour_instance = behaviour_instance
-        @behaviour_instance.running_example = self
+      def run(example_group_instance)
+        @example_group_instance = example_group_instance.reset
+        @example_group_instance.running_example = self
 
         run_started
 
@@ -86,7 +86,7 @@ module Rspec
 
         begin
           run_before_each
-          @behaviour_instance.instance_eval(&example_block) if example_block
+          @example_group_instance.instance_eval(&example_block) if example_block
         rescue Exception => e
           exception_encountered = e
           all_systems_nominal = false
@@ -100,7 +100,7 @@ module Rspec
           exception_encountered ||= e
           all_systems_nominal = false
         ensure
-          @behaviour_instance.running_example = nil
+          @example_group_instance.running_example = nil
         end
 
         if exception_encountered
