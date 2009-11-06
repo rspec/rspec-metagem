@@ -22,55 +22,10 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
-def run_command(command)
-  base_rspec2_path = Pathname.new(Dir.pwd.split('meta').first)
-  ['meta', 'core', 'expectations', 'mocks'].each do |dir|
-    path = base_rspec2_path.join(dir)
-    puts "====================================="
-    puts "Running [#{command}] in #{path}"
-    puts "====================================="
-    FileUtils.cd(path) do
-      system command
-    end
-    puts 
-  end
-end
-
 task :clobber do
   rm_rf 'pkg'
 end
 
-task :spec do
-  run_command 'rake'
-end
+task :default do
 
-task :default => :spec
-
-namespace :git do
-
-  { :status => nil,
-    :pull => '--rebase',
-    :push => nil,
-    :reset => '--hard',
-    :diff => nil
-  }.each do |command, options|
-    desc "git #{command} on all the repos"
-    task command => :clone do
-      run_command "git #{command} #{options}".strip
-    end
-  end
-
-  task :st => :status
-
-  desc "git clone all the repos the first time"
-  task :clone do
-    base_rspec2_path = Pathname.new(Dir.pwd.split('meta').first)
-    FileUtils.cd(base_rspec2_path) do
-      ['core', 'expectations', 'mocks'].each do |repo|
-        unless File.exists?(repo)
-          system "git clone git://github.com/rspec/#{repo}.git"
-        end
-      end
-    end
-  end
 end
