@@ -6,6 +6,7 @@ $:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'
+require 'rspec/core/version'
 require 'cucumber/rake/task'
 
 begin
@@ -17,6 +18,7 @@ begin
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
+    gem.version = Rspec::Core::Version::STRING
     gem.add_development_dependency('rspec-expectations', '>= 2.0.0.a1')
     gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
     gem.add_development_dependency('cucumber', '>= 0.4.2')
