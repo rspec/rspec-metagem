@@ -21,7 +21,6 @@ class RspecWorld
   def self.spec_command
     @spec_command ||= File.expand_path('../../../bin/rspec', __FILE__)
   end
-
   
   def spec(args)
     ruby("#{spec_command} #{args}")
@@ -45,7 +44,7 @@ class RspecWorld
   end
   
   def rspec_libs
-    "-I #{RSPEC_LIB}"
+    "-I #{RSPEC_LIB} -I #{working_dir}"
   end
 
   # it seems like this, and the last_* methods, could be moved into RubyForker-- is that being used anywhere but the features?

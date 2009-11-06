@@ -18,13 +18,16 @@ Feature: block local expectations
       """
 
   Scenario: passing example
-    Given a file named "account_dsl.rb" with:
+    Given a file named "account_passing_spec.rb" with:
       """
-      require 'spec_helper'
       require 'account'
 
+      Rspec::Core.configure do |config|
+        config.mock_framework = :rspec
+      end
+
       describe "account DSL" do
-        it " .... " do
+        it "it succeeds when the block local receives the given call" do
           account = Account.new
           Account.should_receive(:create).and_yield do |account|
             account.should_receive(:opening_balance).with(100, :USD)
@@ -35,18 +38,21 @@ Feature: block local expectations
         end
       end
       """
-    When I run "spec account_dsl.rb"
+    When I run "rspec account_passing_spec.rb"
     Then the stdout should match "1 example, 0 failures"
     
   Scenario: failing example
     
-    Given a file named "account_dsl.rb" with:
+    Given a file named "account_failing_spec.rb" with:
       """
-      require 'spec_helper'
       require 'account'
 
+      Rspec::Core.configure do |config|
+        config.mock_framework = :rspec
+      end
+
       describe "account DSL" do
-        it " .... " do
+        it "fails when the block local does not receive the expected call" do
           account = Account.new
           Account.should_receive(:create).and_yield do |account|
             account.should_receive(:opening_balance).with(100, :USD)
@@ -58,5 +64,5 @@ Feature: block local expectations
       end
       """
 
-    When I run "spec account_dsl.rb"
+    When I run "rspec account_failing_spec.rb"
     Then the stdout should match "1 example, 1 failure"
