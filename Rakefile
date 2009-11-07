@@ -30,4 +30,4 @@ task :clobber do
   rm_rf 'pkg'
 end
 
-task :default 
+task :default => [:check_dependencies]
