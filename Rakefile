@@ -12,8 +12,8 @@ begin
     gem.version = Rspec::Expectations::Version::STRING
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
-    gem.add_development_dependency('rspec-core', '>= 2.0.0.a1')
-    gem.add_development_dependency('rspec-mocks', '>= 2.0.0.a1')
+    gem.add_development_dependency('rspec-core', ">= #{Rspec::Expectations::Version::STRING}")
+    gem.add_development_dependency('rspec-mocks', ">= #{Rspec::Expectations::Version::STRING}")
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
@@ -25,7 +25,7 @@ Rspec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = "spec/**/*_spec.rb"
 end
 
-task :default => :spec
+task :default => [:check_dependencies, :spec]
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
