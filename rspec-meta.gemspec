@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
      "VERSION",
      "VERSION.yml",
      "lib/rspec.rb",
+     "lib/rspec/meta/version.rb",
      "rspec-meta.gemspec"
   ]
   s.homepage = %q{http://github.com/rspec/meta}
