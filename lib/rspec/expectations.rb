@@ -4,6 +4,7 @@ require 'rspec/expectations/fail_with'
 require 'rspec/expectations/errors'
 require 'rspec/expectations/extensions'
 require 'rspec/expectations/handler'
+require 'rspec/expectations/version'
 
 module Rspec
   

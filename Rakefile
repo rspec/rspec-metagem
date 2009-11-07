@@ -1,5 +1,7 @@
 require 'rubygems'
 require 'rake'
+$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
+require 'rspec/expectations/version'
 
 begin
   require 'jeweler'
@@ -7,6 +9,7 @@ begin
     gem.name = "rspec-expectations"
     gem.summary = "rspec expectations (should[_not] and matchers)"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
+    gem.version = Rspec::Expectations::Version::STRING
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
     gem.add_development_dependency('rspec-core', '>= 2.0.0.a1')
@@ -14,7 +17,7 @@ begin
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
 require 'rspec/core/rake_task'
