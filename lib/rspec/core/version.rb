@@ -9,7 +9,7 @@ module Rspec # :nodoc:
 
         STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
 
-        SUMMARY = "rspec-core #{STRING}"
+        SUMMARY = "rspec-core " + STRING
       end
     end
   end
