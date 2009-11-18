@@ -20,7 +20,7 @@ begin
     gem.authors = ["David Chelimsky", "Chad Humphries"]
     gem.version = Rspec::Core::Version::STRING
     gem.add_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
-    gem.add_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
+    gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.4.2')
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
