@@ -20,7 +20,7 @@ end
 
 def run(files_to_run)
   puts("Running: #{files_to_run}")
-  system("ruby -Ilib -Ispec #{files_to_run}")
+  system("clear;ruby -Ilib -Ispec #{files_to_run}")
   no_int_for_you
 end
 
