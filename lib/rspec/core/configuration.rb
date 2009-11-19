@@ -19,9 +19,6 @@ module Rspec
       # when using focused examples for instance.  Defaults to true
       attr_accessor :run_all_when_everything_filtered
 
-      # Enable verbose interal logging of the framework - defaults to false
-      attr_accessor :trace
-
       attr_reader :options
 
       def initialize
@@ -46,9 +43,7 @@ module Rspec
                                         /vendor\/rails/, 
                                         /bin\/rspec/, 
                                         /bin\/spec/,
-                                        /lib\/rspec\/core/,
-                                        /lib\/rspec\/expectations/,
-                                        /lib\/rspec\/mocks/]
+                                        /lib\/rspec\/(core|expectations|matchers|mocks)/]
         }
       end
       

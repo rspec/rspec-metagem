@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Rspec::Core::Configuration do
 
-  describe "setting the mock framework" do
+  context "setting the mock framework" do
 
-    it "should require and include the rspec adapter when the mock_framework is :rspec" do
+    it "requires and includes the rspec adapter when the mock_framework is :rspec" do
       config = Rspec::Core::Configuration.new
       config.should_receive(:require).with('rspec/core/mocking/with_rspec')
       Rspec::Core::ExampleGroup.should_receive(:send)
@@ -23,10 +23,16 @@ describe Rspec::Core::Configuration do
       Rspec::Core::ExampleGroup.should_receive(:send).with(:include, Rspec::Core::Mocking::WithAbsolutelyNothing)
       config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
     end
+
+    pending "includes the rspec adapter when the mock_framework is not set" do
+      config = Rspec::Core::Configuration.new
+      Rspec::Core::ExampleGroup.stub!(:send)
+      config.mock_framework.should == :rspec
+    end
     
   end  
  
-  describe "setting the files to run" do
+  context "setting the files to run" do
 
     before do
       @config = Rspec::Core::Configuration.new
@@ -74,7 +80,7 @@ describe Rspec::Core::Configuration do
       
     end
 
-    describe "with explicit pattern (comma,separated,values)" do
+    context "with explicit pattern (comma,separated,values)" do
 
       before do
         @config.filename_pattern = "**/*_foo.rb,**/*_bar.rb"

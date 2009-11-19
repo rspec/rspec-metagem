@@ -157,6 +157,10 @@ module Rspec
         end
       end
 
+      def self.context(*args, &behaviour_block)
+        describe(args, &behaviour_block)
+      end
+
       def self.ancestors(superclass_last=false)
         classes = []
         current_class = self
