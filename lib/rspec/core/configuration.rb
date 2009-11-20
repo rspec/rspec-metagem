@@ -111,7 +111,7 @@ module Rspec
      
       def formatter=(formatter_to_use)
         formatter_class = case formatter_to_use.to_s
-        when /doc/, 's'
+        when /doc/, 's', 'n'
           Rspec::Core::Formatters::DocumentationFormatter
         when 'progress' 
           Rspec::Core::Formatters::ProgressFormatter
