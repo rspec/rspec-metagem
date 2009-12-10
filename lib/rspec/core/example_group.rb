@@ -157,8 +157,8 @@ module Rspec
         end
       end
 
-      def self.context(*args, &behaviour_block)
-        describe(args, &behaviour_block)
+      class << self
+        alias_method :context, :describe
       end
 
       def self.ancestors(superclass_last=false)
