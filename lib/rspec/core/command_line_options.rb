@@ -44,8 +44,18 @@ module Rspec
           end
         end.parse!(@args)
 
-        options[:files_to_run] = possible_files
+        options[:files_to_run] = expand_files_from(possible_files)
         options
+      end
+
+      def expand_files_from(fileset)
+        fileset.inject([]) do |files, file|
+          if File.directory?(file)
+            files += Dir["#{file}/**/*_spec.rb"]
+          else
+            files << file
+          end
+        end
       end
       
       def apply(config)

@@ -53,6 +53,11 @@ describe Rspec::Core::CommandLineOptions do
       options_from_args('dir').should include(:files_to_run => ['dir'])
     end
 
+    example 'dir with files should parse' do
+      files_to_run = options_from_args(File.dirname(__FILE__))[:files_to_run]
+      files_to_run.should include(__FILE__)
+    end
+
     example 'spec/file1_spec.rb, spec/file2_spec.rb should parse' do
       options_from_args('spec/file1_spec.rb', 'spec/file2_spec.rb').should include(:files_to_run => ['spec/file1_spec.rb', 'spec/file2_spec.rb'])
     end
