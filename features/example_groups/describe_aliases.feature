@@ -5,12 +5,8 @@ Feature: Nested example groups
   So that I can better organize my examples
 
   Scenario Outline: Using context
-    Given a file named "context_instead_of_describe.rb" with:
+    Given a file named "context_instead_of_describe_spec.rb" with:
     """
-    require 'rspec/autorun'
-    require 'rspec/expectations'
-    Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
-
     context "Using context" do
       context "with nested context" do
         it "should do this" do
@@ -19,11 +15,6 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "<Command> context_instead_of_describe.rb -fs"
+    When I run "rspec context_instead_of_describe_spec.rb -fn"
     Then the stdout should match /^Using context/
     And the stdout should match /^\s+with nested context/
-
-  Scenarios: Run with ruby and spec
-    | Command |
-    | ruby    |
-    | rspec   |

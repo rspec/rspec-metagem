@@ -10,7 +10,7 @@ end
 describe Rspec::Core::ExampleGroup do
 
   describe "describing behaviour with #describe" do
-    
+
     example "an ArgumentError is raised if no type or description is given" do
       lambda { Rspec::Core::ExampleGroup.describe() {} }.should raise_error(ArgumentError, "No arguments given.  You must a least supply a type or description")
     end
@@ -89,7 +89,7 @@ describe Rspec::Core::ExampleGroup do
 
       it "should add the caller to metadata" do
         isolate_behaviour do
-          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}:#{__LINE__}/
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}/
         end
       end
 
@@ -257,7 +257,7 @@ describe Rspec::Core::ExampleGroup do
   end
 
   describe "#run_examples" do
-    
+
     before do
       @fake_formatter = Rspec::Core::Formatters::BaseFormatter.new
     end
@@ -301,9 +301,9 @@ describe Rspec::Core::ExampleGroup do
     end
 
   end
-  
+
   describe "how instance variables inherit" do
-    
+
     before(:all) do
       @before_all_top_level = 'before_all_top_level'
     end
@@ -311,11 +311,11 @@ describe Rspec::Core::ExampleGroup do
     before(:each) do
       @before_each_top_level = 'before_each_top_level'
     end
-    
+
     it "should be able to access a before each ivar at the same level" do
       @before_each_top_level.should == 'before_each_top_level'
     end
-    
+
     it "should be able to access a before all ivar at the same level" do
       @before_all_top_level.should == 'before_all_top_level'
     end
@@ -329,13 +329,13 @@ describe Rspec::Core::ExampleGroup do
         running_example.behaviour.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
       end
     end
-    
+
     describe "but now I am nested" do
-      
+
       it "should be able to access a parent behaviours before each ivar at a nested level" do
         @before_each_top_level.should == 'before_each_top_level'
       end
-      
+
       it "should be able to access a parent behaviours before all ivar at a nested level" do
         @before_all_top_level.should == "before_all_top_level"
       end
@@ -345,15 +345,15 @@ describe Rspec::Core::ExampleGroup do
       end
 
       describe "accessing a before_all ivar that was changed in a parent behaviour" do
-        
+
         it "should have access to the modified version" do
           @before_all_top_level.should == 'ive been changed'
         end
 
       end
-      
+
     end
-    
+
   end
 
   describe "#let" do

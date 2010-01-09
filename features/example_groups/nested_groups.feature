@@ -24,12 +24,7 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "<Command> nested_example_groups.rb -fs"
+    When I run "rspec nested_example_groups.rb -fn"
     Then the stdout should match /^Some Object/
     And the stdout should match /^\s+with some more context/
     And the stdout should match /^\s+with some other context/
-
-  Scenarios: Run with ruby and spec
-    | Command |
-    | ruby    |
-    | rspec   |

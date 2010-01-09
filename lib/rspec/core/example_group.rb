@@ -1,16 +1,18 @@
+require 'rspec/core/metadata'
+
 module Rspec
   module Core
     class ExampleGroup
       include ExampleGroupSubject
-    
+
       attr_accessor :running_example, :reporter
-    
+
       def self.inherited(klass)
         super
         Rspec::Core.configuration.autorun!
         Rspec::Core.world.behaviours << klass
       end
-    
+
       def self.extended_modules #:nodoc:
         ancestors = class << self; ancestors end
         ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
@@ -63,7 +65,7 @@ module Rspec
       def self.example(desc=nil, options={}, &block)
         examples << Rspec::Core::Example.new(self, desc, options.update(:caller => caller[0]), block)
       end
-        
+
       def self.alias_example_to(new_alias, extra_options={})
         new_alias = <<-END_RUBY
                       def self.#{new_alias}(desc=nil, options={}, &block)
@@ -87,44 +89,22 @@ module Rspec
           module_eval(&block) if names.include?(name)
         end
       end
-    
+
       def self.examples
         @_examples ||= []
       end
-    
+
       def self.examples_to_run
         @_examples_to_run ||= []
       end
 
-      def self.generate_name(options, metadata)
-        if superclass.metadata[:behaviour][:name]
-          metadata[:behaviour][:name] = "#{self.superclass.metadata[:behaviour][:name]} #{description} "
-        else
-          metadata[:behaviour][:name] = "#{describes} #{description} "
-        end
-        metadata[:behaviour][:name].strip!
-      end
-
       def self.set_it_up(*args)
-        @metadata = { }
-        extra_metadata = args.last.is_a?(Hash) ? args.pop : {}
-        extra_metadata.delete(:behaviour) # Remove it when present to prevent it clobbering the one we setup
-        @metadata.update(self.superclass.metadata) 
-        @metadata[:behaviour] = {}
-        @metadata[:behaviour][:describes] = args.shift unless args.first.is_a?(String)
-        @metadata[:behaviour][:describes] ||= self.superclass.metadata && self.superclass.metadata[:behaviour][:describes]
-        @metadata[:behaviour][:description] = args.shift || ''
-        @metadata[:behaviour][:name] = generate_name(args, metadata)
-        @metadata[:behaviour][:block] = extra_metadata.delete(:behaviour_block)
-        @metadata[:behaviour][:caller] = extra_metadata.delete(:caller) || caller(1)
-        @metadata[:behaviour][:file_path] = extra_metadata.delete(:file_path) || @metadata[:behaviour][:caller][4].split(":")[0].strip
-        @metadata[:behaviour][:line_number] = extra_metadata.delete(:line_number) || @metadata[:behaviour][:caller][4].split(":")[1].to_i
-      
-        @metadata.update(extra_metadata)
-      
-        Rspec::Core.configuration.find_modules(self).each do |include_or_extend, mod, opts|                                                                                                                                                                               
+        @metadata = Rspec::Core::Metadata.new(self.superclass.metadata)
+        @metadata.process(*args)
+
+        Rspec::Core.configuration.find_modules(self).each do |include_or_extend, mod, opts|
           if include_or_extend == :extend
-            send(:extend, mod) unless extended_modules.include?(mod)                                                                                                                                                                                                    
+            send(:extend, mod) unless extended_modules.include?(mod)
           else
             send(:include, mod) unless included_modules.include?(mod)
           end
@@ -132,7 +112,7 @@ module Rspec
       end
 
       def self.metadata
-        @metadata ||= { :behaviour => {} }
+        @metadata 
       end
 
       def self.name(friendly=true)
@@ -142,7 +122,7 @@ module Rspec
       def self.describes
         metadata[:behaviour][:describes]
       end
-      
+
       def self.described_class
         describes || description
       end
@@ -150,20 +130,20 @@ module Rspec
       def self.description
         metadata[:behaviour][:description]
       end
-    
+
       def self.file_path
         metadata[:behaviour][:file_path]
       end
-   
+
       def self.describe(*args, &behaviour_block)
         raise(ArgumentError, "No arguments given.  You must a least supply a type or description") if args.empty? 
         raise(ArgumentError, "You must supply a block when calling describe") if behaviour_block.nil?
-        
+
         # TODO: Pull out the below into a metadata object, that we can defer the subclassing if necessary
         # describe 'foo', :shared => true will need this to be completed first
         subclass('NestedLevel') do
           args << {} unless args.last.is_a?(Hash)
-          args.last.update(:behaviour_block => behaviour_block)
+          args.last.update(:behaviour_block => behaviour_block, :caller => caller(2))
           set_it_up(*args)
           module_eval(&behaviour_block)
         end
@@ -181,14 +161,14 @@ module Rspec
           superclass_last ? classes << current_class : classes.unshift(current_class)
           current_class = current_class.superclass
         end
-      
+
         classes
       end
-    
+
       def self.before_ancestors
         @_before_ancestors ||= ancestors 
       end
-    
+
       def self.after_ancestors
         @_after_ancestors ||= ancestors(true)
       end
@@ -200,11 +180,11 @@ module Rspec
       def self.eval_before_alls(running_behaviour)
         superclass.before_all_ivars.each { |ivar, val| running_behaviour.instance_variable_set(ivar, val) }
         Rspec::Core.configuration.find_before_or_after(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
-      
+
         before_alls.each { |blk| running_behaviour.instance_eval(&blk) }
         running_behaviour.instance_variables.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
       end
-        
+
       def self.eval_before_eachs(running_behaviour)
         Rspec::Core.configuration.find_before_or_after(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
         before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
@@ -227,10 +207,10 @@ module Rspec
         eval_before_alls(example_group_instance)
         success = run_examples(example_group_instance, reporter)
         eval_after_alls(example_group_instance)
-      
+
         success
       end
-    
+
       # Runs all examples, returning true only if all of them pass
       def self.run_examples(example_group_instance, reporter)
         examples_to_run.map { |ex| ex.run(example_group_instance) }.all?
@@ -258,8 +238,9 @@ module Rspec
       def assignments
         @assignments ||= {}
       end
-   
+
       def self.let(name, &block)
+        # Should we block defining method names already defined?
         define_method name do
           assignments[name] ||= instance_eval(&block)
         end
