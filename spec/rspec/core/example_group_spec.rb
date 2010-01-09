@@ -377,4 +377,30 @@ describe Rspec::Core::ExampleGroup do
       counter.count.should == 2
     end
   end
+
+  describe "#around" do
+    class Thing
+      def self.cache
+        @cache ||= []
+      end
+
+      def initialize
+        self.class.cache << self
+      end
+    end
+
+    around(:each) do |example|
+      Thing.new
+      example.run
+      Thing.cache.clear
+    end
+
+    it "has 1 Thing (1)" do
+      Thing.cache.length.should == 1
+    end
+
+    it "has 1 Thing (2)" do
+      Thing.cache.length.should == 1
+    end
+  end
 end

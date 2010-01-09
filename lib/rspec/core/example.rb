@@ -75,6 +75,16 @@ module Rspec
         end
       end
 
+      class AroundProxy
+        def initialize(example_group_instance, &example_block)
+          @example_group_instance, @example_block = example_group_instance, example_block
+        end
+
+        def run
+          @example_group_instance.instance_eval(&@example_block)
+        end
+      end
+
       def run(example_group_instance)
         @example_group_instance = example_group_instance.reset
         @example_group_instance.running_example = self
@@ -86,7 +96,11 @@ module Rspec
 
         begin
           run_before_each
-          @example_group_instance.instance_eval(&example_block) if example_block
+          if @behaviour.around_eachs.empty?
+            @example_group_instance.instance_eval(&example_block) if example_block
+          else
+            @behaviour.around_eachs.first.call(AroundProxy.new(self, &example_block))
+          end
         rescue Exception => e
           exception_encountered = e
           all_systems_nominal = false

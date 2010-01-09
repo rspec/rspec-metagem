@@ -21,11 +21,11 @@ Feature: before and after blocks
         end
 
         it "has 1 Thing (1)" do
-          Thing.cache.should have(1).element
+          Thing.cache.length.should == 1
         end
 
         it "has 1 Thing (2)" do
-          Thing.cache.should have(1).element
+          Thing.cache.length.should == 1
         end
       end
       """
