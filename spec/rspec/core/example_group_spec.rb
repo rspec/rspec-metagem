@@ -124,7 +124,7 @@ describe Rspec::Core::ExampleGroup do
 
     end
 
-    describe "adding before and after hooks" do
+    describe "adding before, after, and around hooks" do
 
       it "should expose the before each blocks at before_eachs" do
         group = empty_example_group
@@ -194,6 +194,12 @@ describe Rspec::Core::ExampleGroup do
         group.after_alls[2].call.should == 33.5
       end
 
+      it "should expose the around each blocks at after_alls" do
+        group = empty_example_group
+        group.around(:each) { 'foo' }
+        group.should have(1).around_eachs
+      end
+      
     end
 
     describe "adding examples" do
@@ -371,5 +377,4 @@ describe Rspec::Core::ExampleGroup do
       counter.count.should == 2
     end
   end
-
 end

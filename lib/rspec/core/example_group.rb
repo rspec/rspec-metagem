@@ -44,8 +44,20 @@ module Rspec
         afters[:all]
       end
 
+      def self.arounds
+        @_arounds ||= { :each => [] }
+      end
+
+      def self.around_eachs
+        arounds[:each]
+      end
+
       def self.after(type=:each, &block)
         afters[type] << block
+      end
+
+      def self.around(type=:each, &block)
+        arounds[type] << block
       end
 
       def self.example(desc=nil, options={}, &block)
