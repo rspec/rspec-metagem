@@ -24,27 +24,29 @@ describe Rspec::Core::ExampleGroup do
   describe '#name' do
 
     it "uses the first parameter as name" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe("my favorite pony") { }.name.should == 'my favorite pony'
       end
     end
 
     it "accepts a constant as the first parameter" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object) { }.name.should == 'Object'
       end
     end
 
     it "concats nested names" do
-      behaviour_to_test = nil
-      group = empty_example_group('test')
-      group.name.should == 'Object test'
+      isolate_example_group do
+        behaviour_to_test = nil
+        group = empty_example_group('test')
+        group.name.should == 'Object test'
 
-      nested_group_one = group.describe('nested one') { }
-      nested_group_one.name.should == 'Object test nested one'
+        nested_group_one = group.describe('nested one') { }
+        nested_group_one.name.should == 'Object test nested one'
 
-      nested_group_two = nested_group_one.describe('nested two') { }
-      nested_group_two.name.should == 'Object test nested one nested two'
+        nested_group_two = nested_group_one.describe('nested two') { }
+        nested_group_two.name.should == 'Object test nested one nested two'
+      end
     end
 
   end
@@ -54,7 +56,7 @@ describe Rspec::Core::ExampleGroup do
     context "with a constant as the first parameter" do
 
       it "is that constant" do
-        isolate_behaviour do
+        isolate_example_group do
           Rspec::Core::ExampleGroup.describe(Object) { }.describes.should == Object
         end
       end
@@ -64,7 +66,7 @@ describe Rspec::Core::ExampleGroup do
     context "with a string as the first parameter" do
 
       it "is nil" do
-        isolate_behaviour do
+        isolate_example_group do
           Rspec::Core::ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
         end
       end
@@ -76,13 +78,13 @@ describe Rspec::Core::ExampleGroup do
   describe '#description' do
 
     it "exposes the second parameter as description" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object, "my desc") { }.description.should == 'my desc'
       end
     end
 
     it "allows the second parameter to be nil" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object, nil) { }.description.size.should == 0
       end
     end
@@ -92,31 +94,31 @@ describe Rspec::Core::ExampleGroup do
   describe '#metadata' do
 
     it "adds the third parameter to the metadata" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
       end
     end
 
     it "adds the caller to metadata" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}/
       end
     end
 
     it "adds the the file_path to metadata" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
       end
     end
 
     it "has a reader for file_path" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object) { }.file_path.should == __FILE__
       end
     end
 
     it "adds the line_number to metadata" do
-      isolate_behaviour do
+      isolate_example_group do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
       end
     end

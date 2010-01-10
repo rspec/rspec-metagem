@@ -100,7 +100,7 @@ describe Rspec::Core::World do
     it "should find nothing if all describes match the exclusion filter" do
       options = { :network_access => true }      
       
-      isolate_behaviour do
+      isolate_example_group do
         group1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options) do
           it("foo") {}
           it("bar") {}
@@ -109,7 +109,7 @@ describe Rspec::Core::World do
         @world.apply_exclusion_filters(group1.examples, :network_access => true).should == []
       end
       
-      isolate_behaviour do
+      isolate_example_group do
         group2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1") do
           it("foo", :network_access => true) {}
           it("bar") {}
@@ -121,7 +121,7 @@ describe Rspec::Core::World do
     end
     
     it "should find nothing if a regexp matches the exclusion filter" do
-      isolate_behaviour do
+      isolate_example_group do
         group = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
           it("foo") {}
           it("bar") {}

@@ -38,10 +38,16 @@ def remove_last_describe_from_world
   Rspec::Core.world.behaviours.pop
 end
 
-def isolate_behaviour
+def isolate_example_group
   if block_given?
-    yield
-    Rspec::Core.world.behaviours.pop
+    example_groups = Rspec::Core.world.behaviours.dup
+    begin
+      Rspec::Core.world.behaviours.clear
+      yield
+    ensure
+      Rspec::Core.world.behaviours.clear
+      Rspec::Core.world.behaviours.concat(example_groups)
+    end
   end
 end
 

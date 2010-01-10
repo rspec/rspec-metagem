@@ -115,7 +115,7 @@ describe Rspec::Core::Configuration do
     it "should include the given module into each matching behaviour" do
       Rspec::Core.configuration.include(InstanceLevelMethods, :magic_key => :include)
       
-      isolate_behaviour do
+      isolate_example_group do
         group = Rspec::Core::ExampleGroup.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
         group.should_not respond_to(:you_call_this_a_blt?)
         group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
