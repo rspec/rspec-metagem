@@ -34,6 +34,21 @@ module Rspec
         update(extra_metadata)
       end
 
+      def for_example(desc, options)
+        dup.configure_for_example(desc,options)
+      end
+
+      def configure_for_example(desc, options)
+        store(:description, desc.to_s)
+        store(:execution_result, {})
+        store(:caller, options.delete(:caller))
+        if self[:caller]
+          store(:file_path, determine_file_path)
+          store(:line_number, determine_line_number)
+        end
+        update(options)
+      end
+
     private
 
       def possible_files

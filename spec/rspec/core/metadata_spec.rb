@@ -64,6 +64,38 @@ module Rspec
           m[:behaviour][:line_number].should == __LINE__ - 4
         end
       end
+
+      describe "#metadata_for_example" do
+        let(:caller_to_use)      { caller(0) }
+        let(:caller_line_number) { __LINE__ - 1 }
+        let(:metadata)           { Metadata.new.process(:caller => caller_to_use) }
+        let(:mfe)                { metadata.for_example("this description", {:caller => caller_to_use, :arbitrary => :options}) }
+
+        it "stores the description" do
+          mfe[:description].should == "this description"
+        end
+
+        it "creates an empty execution result" do
+          mfe[:execution_result].should == {}
+        end
+
+        it "stores the caller" do
+          mfe[:caller].should == caller_to_use
+        end
+
+        it "extracts file path from caller" do
+          mfe[:file_path].should == __FILE__ 
+        end
+
+        it "extracts line number from caller" do
+          mfe[:line_number].should == caller_line_number 
+        end
+
+        it "merges arbitrary options" do
+          mfe[:arbitrary].should == :options 
+        end
+
+      end
     end
   end
 end
