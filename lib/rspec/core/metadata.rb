@@ -17,11 +17,6 @@ module Rspec
         yield self if block_given?
       end
 
-      def behaviour
-        p caller(0)[1]
-        self[:behaviour]
-      end
-
       def process(*args)
         extra_metadata = args.last.is_a?(Hash) ? args.pop : {}
         extra_metadata.delete(:behaviour) # Remove it when present to prevent it clobbering the one we setup
