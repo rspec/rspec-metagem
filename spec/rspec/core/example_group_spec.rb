@@ -366,6 +366,17 @@ describe Rspec::Core::ExampleGroup do
 
   end
 
+  describe "ivars are not shared across examples" do
+    pending "(first example)" do
+      @a = 1
+      @b.should be_nil
+    end
+    pending "(second example)" do
+      @b = 2
+      @a.should be_nil
+    end
+  end
+
   describe "#let" do
     let(:counter) do
       Class.new do
