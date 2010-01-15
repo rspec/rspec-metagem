@@ -3,9 +3,9 @@ module Rspec
     class Configuration
       # Regex patterns to scrub backtrace with
       attr_reader :backtrace_clean_patterns
-      
-      # All of the defined before/after blocks setup in the configuration
-      attr_reader :before_and_afters
+
+      # All of the defined advice in the configuration (before/after/around)
+      attr_reader :advice
 
       # Allows you to control what examples are ran by filtering 
       attr_reader :filter
@@ -23,7 +23,10 @@ module Rspec
 
       def initialize
         @run_all_when_everything_filtered = true
-        @before_and_afters = { :before => { :each => [], :all => [], :suite => [] }, :after => { :each => [], :all => [], :suite => [] } }
+        @advice = { 
+          :before => { :each => [], :all => [], :suite => [] }, 
+          :after => { :each => [], :all => [], :suite => [] } 
+        }
         @include_or_extend_modules = []
         @filter, @exclusion_filter = nil, nil
         @options = default_options
@@ -196,15 +199,15 @@ module Rspec
       end
 
       def before(each_or_all=:each, options={}, &block)
-        before_and_afters[:before][each_or_all] << [options, block]
+        advice[:before][each_or_all] << [options, block]
       end
 
       def after(each_or_all=:each, options={}, &block)
-        before_and_afters[:after][each_or_all] << [options, block]
+        advice[:after][each_or_all] << [options, block]
       end
 
-      def find_before_or_after(desired_before_or_after, desired_each_or_all, group)
-        before_and_afters[desired_before_or_after][desired_each_or_all].select do |options, block|
+      def find_advice(desired_advice_type, desired_each_or_all, group)
+        advice[desired_advice_type][desired_each_or_all].select do |options, block|
           options.all? do |filter_on, filter|
             Rspec::Core.world.apply_condition(filter_on, filter, group.metadata)
           end

@@ -1,8 +1,11 @@
+require 'rspec/core/advice'
+require 'rspec/core/example_group_subject'
 require 'rspec/core/metadata'
 
 module Rspec
   module Core
     class ExampleGroup
+      extend Advice
       include ExampleGroupSubject
 
       attr_accessor :running_example, :reporter
@@ -16,50 +19,6 @@ module Rspec
       def self.extended_modules #:nodoc:
         ancestors = class << self; ancestors end
         ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
-      end
-
-      def self.befores
-        @_befores ||= { :all => [], :each => [] }
-      end
-
-      def self.before_eachs
-        befores[:each]
-      end
-
-      def self.before_alls
-        befores[:all]
-      end
-
-      def self.before(type=:each, &block)
-        befores[type] << block
-      end
-
-      def self.afters
-        @_afters ||= { :all => [], :each => [] }
-      end
-
-      def self.after_eachs
-        afters[:each]
-      end
-
-      def self.after_alls
-        afters[:all]
-      end
-
-      def self.arounds
-        @_arounds ||= { :each => [] }
-      end
-
-      def self.around_eachs
-        arounds[:each]
-      end
-
-      def self.after(type=:each, &block)
-        afters[type] << block
-      end
-
-      def self.around(type=:each, &block)
-        arounds[type] << block
       end
 
       def self.example(desc=nil, options={}, &block)
@@ -178,26 +137,26 @@ module Rspec
 
       def self.eval_before_alls(running_behaviour)
         superclass.before_all_ivars.each { |ivar, val| running_behaviour.instance_variable_set(ivar, val) }
-        Rspec::Core.configuration.find_before_or_after(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
 
         before_alls.each { |blk| running_behaviour.instance_eval(&blk) }
         running_behaviour.instance_variables.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
       end
 
       def self.eval_before_eachs(running_behaviour)
-        Rspec::Core.configuration.find_before_or_after(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
         before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
       end
 
       def self.eval_after_alls(running_behaviour)
         after_alls.each { |blk| running_behaviour.instance_eval(&blk) }
-        Rspec::Core.configuration.find_before_or_after(:after, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
         before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
       end
 
       def self.eval_after_eachs(running_behaviour)
         after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
-        Rspec::Core.configuration.find_before_or_after(:after, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
       end
 
       def self.run(reporter)
@@ -237,7 +196,7 @@ module Rspec
 
       def self.let(name, &block)
         # Should we block defining method names already defined?
-        define_method name do
+        define_method(name) do
           assignments[name] ||= instance_eval(&block)
         end
       end
