@@ -201,24 +201,25 @@ module Rspec
       end
 
       def self.run(reporter)
-        example_group_instance = new
+        example_world = new
         reporter.add_behaviour(self)
-        eval_before_alls(example_group_instance)
-        success = run_examples(example_group_instance, reporter)
-        eval_after_alls(example_group_instance)
+        eval_before_alls(example_world)
+        success = run_examples(example_world, reporter)
+        eval_after_alls(example_world)
 
         success
       end
 
       # Runs all examples, returning true only if all of them pass
-      def self.run_examples(example_group_instance, reporter)
-        examples_to_run.map { |ex| ex.run(example_group_instance) }.all?
+      def self.run_examples(example_world, reporter)
+        examples_to_run.map do |ex| 
+          result = ex.run(example_world) 
+          example_world.__reset__
+          before_all_ivars.each { |k, v| example_world.instance_variable_set(k, v) } 
+          result
+        end.all?
       end
 
-      def reset
-        assignments.clear
-        self
-      end
 
       def self.subclass(base_name, &body) # :nodoc:
         @_sub_class_count ||= 0
@@ -234,15 +235,20 @@ module Rspec
         self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
       end
 
-      def assignments
-        @assignments ||= {}
-      end
-
       def self.let(name, &block)
         # Should we block defining method names already defined?
         define_method name do
           assignments[name] ||= instance_eval(&block)
         end
+      end
+
+      def assignments
+        @assignments ||= {}
+      end
+
+      def __reset__
+        instance_variables.each { |ivar| remove_instance_variable(ivar) }
+        assignments.clear
       end
 
     end

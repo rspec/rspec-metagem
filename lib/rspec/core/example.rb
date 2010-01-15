@@ -86,7 +86,8 @@ module Rspec
       end
 
       def run(example_group_instance)
-        @example_group_instance = example_group_instance.reset
+        @example_group_instance = example_group_instance
+        # @example_group_instance = example_group_instance.reset
         @example_group_instance.running_example = self
 
         run_started

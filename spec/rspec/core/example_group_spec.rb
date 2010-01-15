@@ -355,11 +355,9 @@ describe Rspec::Core::ExampleGroup do
       end
 
       describe "accessing a before_all ivar that was changed in a parent behaviour" do
-
-        it "has access to the modified version" do
-          @before_all_top_level.should == 'ive been changed'
+        it "does not have access to the modified version" do
+          @before_all_top_level.should == 'before_all_top_level'
         end
-
       end
 
     end
@@ -367,11 +365,12 @@ describe Rspec::Core::ExampleGroup do
   end
 
   describe "ivars are not shared across examples" do
-    pending "(first example)" do
+    it "(first example)" do
       @a = 1
       @b.should be_nil
     end
-    pending "(second example)" do
+
+    it "(second example)" do
       @b = 2
       @a.should be_nil
     end
