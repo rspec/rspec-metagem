@@ -30,7 +30,6 @@ module Rspec
                       def self.#{new_alias}(desc=nil, options={}, &block)
                         updated_options = options.update(:caller => caller[0])
                         updated_options.update(#{extra_options.inspect})
-                        block = nil if updated_options[:pending] == true || updated_options[:disabled] == true
                         examples << Rspec::Core::Example.new(self, desc, updated_options, block)
                       end
                     END_RUBY

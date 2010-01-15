@@ -85,9 +85,14 @@ module Rspec
         end
       end
 
+      def runnable?
+        ![example_block.nil?,
+          metadata[:disabled] == true,
+          metadata[:pending] == true ].any?
+      end
+
       def run(example_group_instance)
         @example_group_instance = example_group_instance
-        # @example_group_instance = example_group_instance.reset
         @example_group_instance.running_example = self
 
         run_started
@@ -98,7 +103,7 @@ module Rspec
         begin
           run_before_each
           if @behaviour.around_eachs.empty?
-            @example_group_instance.instance_eval(&example_block) if example_block
+            @example_group_instance.instance_eval(&example_block) if runnable?
           else
             @behaviour.around_eachs.first.call(AroundProxy.new(self, &example_block))
           end
@@ -121,7 +126,7 @@ module Rspec
         if exception_encountered
           run_failed(exception_encountered) 
         else
-          example_block ? run_passed : run_pending
+          runnable? ? run_passed : run_pending
         end
 
         all_systems_nominal
