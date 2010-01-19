@@ -5,20 +5,20 @@ require 'pathname'
 
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 
-require 'rspec/meta/version'
+require 'rspec/version'
 
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "rspec-meta"
+    gem.name = "rspec"
     gem.summary = "pulls in the other rspec gems"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
-    gem.version = Rspec::Meta::Version::STRING
-    gem.add_dependency "rspec-core", ">= #{Rspec::Meta::Version::STRING}"
-    gem.add_dependency "rspec-expectations", ">= #{Rspec::Meta::Version::STRING}"
-    gem.add_dependency "rspec-mocks", ">= #{Rspec::Meta::Version::STRING}"
+    gem.version = Rspec::Version::STRING
+    gem.add_dependency "rspec-core", ">= #{Rspec::Version::STRING}"
+    gem.add_dependency "rspec-expectations", ">= #{Rspec::Version::STRING}"
+    gem.add_dependency "rspec-mocks", ">= #{Rspec::Version::STRING}"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
