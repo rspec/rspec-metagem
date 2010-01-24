@@ -3,11 +3,11 @@ lib_path = File.expand_path("#{dir}/../lib")
 $LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
 
 require 'rubygems'
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../expectations/lib'))
+$LOAD_PATH.unshift(File.expand_path('../../../expectations/lib'), __FILE__)
 require 'rspec/expectations'
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '/../../mocks/lib'))
+$LOAD_PATH.unshift(File.expand_path('../../../mocks/lib'), __FILE__)
 require 'rspec/mocks'
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.expand_path('../../lib'), __FILE__)
 require 'rspec/core'
 
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
