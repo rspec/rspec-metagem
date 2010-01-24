@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rspec::Core::CommandLineOptions do
   
   def options_from_args(*args)
-    Rspec::Core::CommandLineOptions.new(args).parse
+    Rspec::Core::CommandLineOptions.new(args).parse.options
   end
 
   describe 'color_enabled' do

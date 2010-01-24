@@ -9,9 +9,7 @@ module Rspec
       attr_reader :args, :options
       
       def self.parse(args)
-        cli_options = new(args)
-        cli_options.parse
-        cli_options
+        new(args).parse
       end
 
       def initialize(args)
@@ -45,7 +43,7 @@ module Rspec
         end.parse!(@args)
 
         options[:files_to_run] = expand_files_from(possible_files)
-        options
+        self 
       end
 
       def expand_files_from(fileset)
