@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-21}
+  s.date = %q{2010-01-24}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec Core}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -113,6 +113,7 @@ Gem::Specification.new do |s|
      "features/support/matchers/smart_match.rb",
      "lib/rspec/autorun.rb",
      "lib/rspec/core.rb",
+     "lib/rspec/core/advice.rb",
      "lib/rspec/core/backward_compatibility.rb",
      "lib/rspec/core/command_line_options.rb",
      "lib/rspec/core/configuration.rb",
