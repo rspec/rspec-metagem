@@ -1,8 +1,11 @@
+require 'rspec/core/advice'
+require 'rspec/core/example_group_subject'
 require 'rspec/core/metadata'
 
 module Rspec
   module Core
     class ExampleGroup
+      extend Advice
       include ExampleGroupSubject
 
       attr_accessor :running_example, :reporter
@@ -18,50 +21,6 @@ module Rspec
         ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
       end
 
-      def self.befores
-        @_befores ||= { :all => [], :each => [] }
-      end
-
-      def self.before_eachs
-        befores[:each]
-      end
-
-      def self.before_alls
-        befores[:all]
-      end
-
-      def self.before(type=:each, &block)
-        befores[type] << block
-      end
-
-      def self.afters
-        @_afters ||= { :all => [], :each => [] }
-      end
-
-      def self.after_eachs
-        afters[:each]
-      end
-
-      def self.after_alls
-        afters[:all]
-      end
-
-      def self.arounds
-        @_arounds ||= { :each => [] }
-      end
-
-      def self.around_eachs
-        arounds[:each]
-      end
-
-      def self.after(type=:each, &block)
-        afters[type] << block
-      end
-
-      def self.around(type=:each, &block)
-        arounds[type] << block
-      end
-
       def self.example(desc=nil, options={}, &block)
         examples << Rspec::Core::Example.new(self, desc, options.update(:caller => caller[0]), block)
       end
@@ -71,7 +30,6 @@ module Rspec
                       def self.#{new_alias}(desc=nil, options={}, &block)
                         updated_options = options.update(:caller => caller[0])
                         updated_options.update(#{extra_options.inspect})
-                        block = nil if updated_options[:pending] == true || updated_options[:disabled] == true
                         examples << Rspec::Core::Example.new(self, desc, updated_options, block)
                       end
                     END_RUBY
@@ -178,47 +136,48 @@ module Rspec
 
       def self.eval_before_alls(running_behaviour)
         superclass.before_all_ivars.each { |ivar, val| running_behaviour.instance_variable_set(ivar, val) }
-        Rspec::Core.configuration.find_before_or_after(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
 
         before_alls.each { |blk| running_behaviour.instance_eval(&blk) }
         running_behaviour.instance_variables.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
       end
 
       def self.eval_before_eachs(running_behaviour)
-        Rspec::Core.configuration.find_before_or_after(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
         before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
       end
 
       def self.eval_after_alls(running_behaviour)
         after_alls.each { |blk| running_behaviour.instance_eval(&blk) }
-        Rspec::Core.configuration.find_before_or_after(:after, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
         before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
       end
 
       def self.eval_after_eachs(running_behaviour)
         after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
-        Rspec::Core.configuration.find_before_or_after(:after, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
       end
 
       def self.run(reporter)
-        example_group_instance = new
+        example_world = new
         reporter.add_behaviour(self)
-        eval_before_alls(example_group_instance)
-        success = run_examples(example_group_instance, reporter)
-        eval_after_alls(example_group_instance)
+        eval_before_alls(example_world)
+        success = run_examples(example_world, reporter)
+        eval_after_alls(example_world)
 
         success
       end
 
       # Runs all examples, returning true only if all of them pass
-      def self.run_examples(example_group_instance, reporter)
-        examples_to_run.map { |ex| ex.run(example_group_instance) }.all?
+      def self.run_examples(example_world, reporter)
+        examples_to_run.map do |ex| 
+          result = ex.run(example_world) 
+          example_world.__reset__
+          before_all_ivars.each { |k, v| example_world.instance_variable_set(k, v) } 
+          result
+        end.all?
       end
 
-      def reset
-        assignments.clear
-        self
-      end
 
       def self.subclass(base_name, &body) # :nodoc:
         @_sub_class_count ||= 0
@@ -234,15 +193,20 @@ module Rspec
         self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
       end
 
+      def self.let(name, &block)
+        # Should we block defining method names already defined?
+        define_method(name) do
+          assignments[name] ||= instance_eval(&block)
+        end
+      end
+
       def assignments
         @assignments ||= {}
       end
 
-      def self.let(name, &block)
-        # Should we block defining method names already defined?
-        define_method name do
-          assignments[name] ||= instance_eval(&block)
-        end
+      def __reset__
+        instance_variables.each { |ivar| remove_instance_variable(ivar) }
+        assignments.clear
       end
 
     end

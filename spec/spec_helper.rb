@@ -72,6 +72,8 @@ end
 
 Rspec::Core.configure do |c|
   c.mock_framework = :rspec
+  # c.filter_run :focused => true
+  # TODO: Filter run needs normal before/after/include filter logic
   c.filter_run :focused => true
   c.color_enabled = not_in_editor?
 end

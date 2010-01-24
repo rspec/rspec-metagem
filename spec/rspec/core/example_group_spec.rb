@@ -245,7 +245,6 @@ describe Rspec::Core::ExampleGroup do
   describe Object, "describing nested example_groups", :little_less_nested => 'yep' do 
 
     describe "A sample nested group", :nested_describe => "yep" do
-
       it "sets the described class to the constant Object" do
         running_example.behaviour.describes.should == Object
       end
@@ -261,13 +260,11 @@ describe Rspec::Core::ExampleGroup do
       it "exposes the parent metadata to the contained examples" do
         running_example.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
       end
-
     end
 
   end
 
   describe "#run_examples" do
-
     before do
       @fake_formatter = Rspec::Core::Formatters::BaseFormatter.new
     end
@@ -313,7 +310,6 @@ describe Rspec::Core::ExampleGroup do
   end
 
   describe "how instance variables inherit" do
-
     before(:all) do
       @before_all_top_level = 'before_all_top_level'
     end
@@ -330,7 +326,6 @@ describe Rspec::Core::ExampleGroup do
       @before_all_top_level.should == 'before_all_top_level'
     end
 
-
     it "should be able to access the before all ivars in the before_all_ivars hash" do
       with_ruby('1.8') do
         running_example.behaviour.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
@@ -341,7 +336,6 @@ describe Rspec::Core::ExampleGroup do
     end
 
     describe "but now I am nested" do
-
       it "should be able to access a parent behaviours before each ivar at a nested level" do
         @before_each_top_level.should == 'before_each_top_level'
       end
@@ -355,23 +349,21 @@ describe Rspec::Core::ExampleGroup do
       end
 
       describe "accessing a before_all ivar that was changed in a parent behaviour" do
-
-        it "has access to the modified version" do
-          @before_all_top_level.should == 'ive been changed'
+        it "does not have access to the modified version" do
+          @before_all_top_level.should == 'before_all_top_level'
         end
-
       end
-
     end
 
   end
 
   describe "ivars are not shared across examples" do
-    pending "(first example)" do
+    it "(first example)" do
       @a = 1
       @b.should be_nil
     end
-    pending "(second example)" do
+
+    it "(second example)" do
       @b = 2
       @a.should be_nil
     end
