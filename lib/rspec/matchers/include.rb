@@ -17,28 +17,29 @@ module Rspec
     #   "spread".should include("read")
     #   "spread".should_not include("red")
     def include(*expected)
-      Matcher.new :include, *expected do |*_expected_|
+      Matcher.new :include, *expected do |*_expected|
         match do |actual|
-          helper(actual, *_expected_)
-        end
-        
-        def helper(actual, *_expected_)
-          _expected_.each do |expected|
-            if actual.is_a?(Hash)
-              if expected.is_a?(Hash)
-                expected.each_pair do |k,v|
-                  return false unless actual[k] == v
-                end
-              else
-                return false unless actual.has_key?(expected)
-              end
+          _expected.all? do |expected|
+            if comparing_hash_values?(actual, expected)
+              expected.all? {|k,v| actual[k] == v}
+            elsif comparing_hash_keys?(actual, expected)
+              actual.has_key?(expected)
             else
-              return false unless actual.include?(expected)
+              actual.include?(expected)
             end
           end
-          true
         end
+
+        def comparing_hash_keys?(actual, expected)
+          actual.is_a?(Hash) && !expected.is_a?(Hash)
+        end
+
+        def comparing_hash_values?(actual, expected)
+          actual.is_a?(Hash) && expected.is_a?(Hash)
+        end
+
       end
+
     end
   end
 end
