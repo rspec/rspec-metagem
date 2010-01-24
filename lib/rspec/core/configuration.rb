@@ -132,16 +132,14 @@ module Rspec
         options[:files_to_run]
       end
       
-      def files_to_run=(*files)
+      def files_or_directories_to_run=(*files)
         options[:files_to_run] = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
             filename_pattern.split(",").each do |pattern|
               result += Dir[File.expand_path("#{file}/#{pattern.strip}")]
             end
-          elsif File.file?(file)
-            result << file
           else
-            raise "File or directory not found: #{file}"
+            result << file
           end
           result
         end

@@ -17,12 +17,8 @@ module Rspec
         @options = {}
       end
       
-      def files_to_run
-        options[:files_to_run]
-      end
-
       def parse
-        possible_files = OptionParser.new do |opts|
+        options[:files_or_directories_to_run] = OptionParser.new do |opts|
           opts.banner = "Usage: rspec [options] [files or directories]"
 
           opts.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
@@ -42,20 +38,9 @@ module Rspec
           end
         end.parse!(@args)
 
-        options[:files_to_run] = expand_files_from(possible_files)
         self 
       end
 
-      def expand_files_from(fileset)
-        fileset.inject([]) do |files, file|
-          if File.directory?(file)
-            files += Dir["#{file}/**/*_spec.rb"]
-          else
-            files << file
-          end
-        end
-      end
-      
       def apply(config)
         options.each do |key, value|
           config.send("#{key}=", value)

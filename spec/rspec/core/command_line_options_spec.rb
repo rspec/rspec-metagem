@@ -43,23 +43,18 @@ describe Rspec::Core::CommandLineOptions do
 
   end
 
-  describe 'files_to_run' do
-  
-    example '-c file.rb dir/file.rb should parse' do
-      options_from_args('-c', 'file.rb', 'dir/file.rb').should include(:files_to_run => ['file.rb', 'dir/file.rb'])
+  describe "files_or_directories_to_run" do
+
+    it "parses files from '-c file.rb dir/file.rb'" do
+      options_from_args("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
     end
 
-    example 'dir should parse' do
-      options_from_args('dir').should include(:files_to_run => ['dir'])
+    it "parses dir from 'dir'" do
+      options_from_args("dir").should include(:files_or_directories_to_run => ["dir"])
     end
 
-    example 'dir with files should parse' do
-      files_to_run = options_from_args(File.dirname(__FILE__))[:files_to_run]
-      files_to_run.should include(__FILE__)
-    end
-
-    example 'spec/file1_spec.rb, spec/file2_spec.rb should parse' do
-      options_from_args('spec/file1_spec.rb', 'spec/file2_spec.rb').should include(:files_to_run => ['spec/file1_spec.rb', 'spec/file2_spec.rb'])
+    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
+      options_from_args("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
   end

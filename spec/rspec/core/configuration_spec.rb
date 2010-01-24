@@ -40,7 +40,7 @@ describe Rspec::Core::Configuration do
     
     it "should load files not following pattern if named explicitly" do
       file = File.expand_path(File.dirname(__FILE__) + "/resources/a_bar.rb")
-      @config.files_to_run = file
+      @config.files_or_directories_to_run = file
       @config.files_to_run.should include(file)
     end
 
@@ -48,7 +48,7 @@ describe Rspec::Core::Configuration do
 
       it "should load files named _spec.rb" do
         dir = File.expand_path(File.dirname(__FILE__) + "/resources/")
-        @config.files_to_run = dir
+        @config.files_or_directories_to_run = dir
         @config.files_to_run.should == ["#{dir}/a_spec.rb"]
       end
 
@@ -62,19 +62,19 @@ describe Rspec::Core::Configuration do
 
       it "should load files following pattern" do
         file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
-        @config.files_to_run = file
+        @config.files_or_directories_to_run = file
         @config.files_to_run.should include(file)
       end
 
       it "should load files in directories following pattern" do
         dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-        @config.files_to_run = dir
+        @config.files_or_directories_to_run = dir
         @config.files_to_run.should include("#{dir}/a_foo.rb")
       end
 
       it "should not load files in directories not following pattern" do
         dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-        @config.files_to_run = dir
+        @config.files_or_directories_to_run = dir
         @config.files_to_run.should_not include("#{dir}/a_bar.rb")
       end
       
@@ -88,14 +88,14 @@ describe Rspec::Core::Configuration do
 
       it "should support comma separated values" do
         dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-        @config.files_to_run = dir
+        @config.files_or_directories_to_run = dir
         @config.files_to_run.should include("#{dir}/a_foo.rb")
         @config.files_to_run.should include("#{dir}/a_bar.rb")
       end
 
       it "should support comma separated values with spaces" do
         dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-        @config.files_to_run = dir
+        @config.files_or_directories_to_run = dir
         @config.files_to_run.should include("#{dir}/a_foo.rb")
         @config.files_to_run.should include("#{dir}/a_bar.rb")
       end

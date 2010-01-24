@@ -21,16 +21,14 @@ module Rspec
         configuration.formatter
       end
 
-      def require_all_files(files)
-        files.each { |file| require file.sub(/^spec\//,'') }
+      def require_all_files(configuration)
+        configuration.files_to_run.map {|f| require f.sub(/^spec\//,'') }
       end
       
       def run(args = [])
-        cli_config = Rspec::Core::CommandLineOptions.parse(args)
-        
-        require_all_files(cli_config.files_to_run)
-        
-        cli_config.apply(configuration)
+        Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
+
+        require_all_files(configuration)
         
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 
