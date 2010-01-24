@@ -180,10 +180,10 @@ module Rspec
 
 
       def self.subclass(base_name, &body) # :nodoc:
-        @_sub_class_count ||= 0
-        @_sub_class_count += 1
+        @_subclass_count ||= 0
+        @_subclass_count += 1
         klass = Class.new(self)
-        class_name = "#{base_name}_#{@_sub_class_count}"
+        class_name = "#{base_name}_#{@_subclass_count}"
         const_set(class_name, klass)
         klass.instance_eval(&body)
         klass

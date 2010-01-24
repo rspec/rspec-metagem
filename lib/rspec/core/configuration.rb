@@ -133,10 +133,7 @@ module Rspec
       end
       
       def files_to_run=(*files)
-        files.flatten!
-
-        result = []
-        files.each do |file|
+        options[:files_to_run] = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
             filename_pattern.split(",").each do |pattern|
               result += Dir[File.expand_path("#{file}/#{pattern.strip}")]
@@ -146,9 +143,8 @@ module Rspec
           else
             raise "File or directory not found: #{file}"
           end
+          result
         end
-
-        options[:files_to_run] = result
       end
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
@@ -192,9 +188,7 @@ module Rspec
 
       def find_modules(group)
         include_or_extend_modules.select do |include_or_extend, mod, options|
-          options.all? do |filter_on, filter|
-            Rspec::Core.world.apply_condition(filter_on, filter, group.metadata)
-          end
+          Rspec::Core.world.all_apply?(group, options)
         end
       end
 
@@ -208,9 +202,7 @@ module Rspec
 
       def find_advice(desired_advice_type, desired_each_or_all, group)
         advice[desired_advice_type][desired_each_or_all].select do |options, block|
-          options.all? do |filter_on, filter|
-            Rspec::Core.world.apply_condition(filter_on, filter, group.metadata)
-          end
+          Rspec::Core.world.all_apply?(group, options)
         end.map { |options, block| block }
       end
 

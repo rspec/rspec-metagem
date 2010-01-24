@@ -96,6 +96,12 @@ module Rspec
         end
       end
 
+      def all_apply?(group, filters)
+        filters.all? do |filter_on, filter|
+          Rspec::Core.world.apply_condition(filter_on, filter, group.metadata)
+        end
+      end
+
     end
   end
 end

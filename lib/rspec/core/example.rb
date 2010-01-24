@@ -18,7 +18,7 @@ module Rspec
       end
 
       def description
-        metadata[:description]
+        @metadata[:description]
       end
       
       def record_results(results={})
