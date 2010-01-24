@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'stringio'
 
 describe Rspec::Core::Formatters::ProgressFormatter do
   

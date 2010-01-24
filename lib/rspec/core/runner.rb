@@ -22,7 +22,7 @@ module Rspec
       end
 
       def require_all_files(files)
-        files.each { |file| require file }
+        files.each { |file| require file.sub(/^spec\//,'') }
       end
       
       def run(args = [])

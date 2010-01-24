@@ -101,7 +101,9 @@ describe Rspec::Core::ExampleGroup do
 
     it "adds the caller to metadata" do
       isolate_example_group do
-        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller][4].should =~ /#{__FILE__}/
+        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller].any? {|f|
+          f =~ /#{__FILE__}/
+        }.should be_true
       end
     end
 
