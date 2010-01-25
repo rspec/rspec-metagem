@@ -1,4 +1,5 @@
 require 'rubygems'
+gem "jeweler", ">= 1.4.0"
 require 'rake'
 require 'yaml'
 
@@ -13,8 +14,9 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
-    gem.summary = "RSpec Core"
-    gem.description = 'RSpec Core'
+    gem.version = Rspec::Core::Version::STRING
+    gem.rubyforge_project = "rspec"
+    gem.summary = 'Rspec runner and example group classes'
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
