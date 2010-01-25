@@ -15,12 +15,12 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
     gem.version = Rspec::Core::Version::STRING
-    gem.rubyforge_project = "rspec"
-    gem.summary = 'Rspec runner and example group classes'
+    gem.summary = Rspec::Core::Version::SUMMARY
+    gem.description = 'Rspec runner and example group classes'
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
-    gem.version = Rspec::Core::Version::STRING
+    gem.rubyforge_project = "rspec"
     gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
