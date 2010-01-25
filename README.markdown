@@ -1,11 +1,17 @@
 # RSpec Core
 
-See README.markdown at [http://github.com/rspec/meta](http://github.com/rspec/meta)
+rspec-core includes the runner, output formatters, and the `rspec` command.
 
-#### Also see
+rspec-core is currently in alpha release. While you are welcome to track, fork,
+explore, etc, we're too early in the process to start fielding pull requests
+and or issues from outside the core development team, so please don't waste
+your time until this notice changes.
 
-* [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
-* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
+## Install
+
+    [sudo] gem install rspec --prerelease
+
+This will install rspec, rspec-core, rspec-expectations and rspec-mocks.
 
 ## Known Issues
 
@@ -38,3 +44,11 @@ You can, of course, fully qualify the declaration and everything works fine:
         Foo.new
       end
     end
+
+#### Also see
+
+* [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
+* [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
+* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
+* [http://github.com/rspec/rspec-dev](http://github.com/rspec/rspec-dev)
+

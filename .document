@@ -1,5 +1,5 @@
-README.rdoc
+README.markdown
 lib/**/*.rb
 bin/*
 features/**/*.feature
-LICENSE
+License.txt
