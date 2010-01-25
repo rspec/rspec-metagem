@@ -1,4 +1,5 @@
 require 'rubygems'
+gem 'jeweler', '>= 1.4.0'
 require 'rake'
 $:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 require 'rspec/expectations/version'
@@ -7,9 +8,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-expectations"
-    gem.summary = "rspec expectations (should[_not] and matchers)"
-    gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.version = Rspec::Expectations::Version::STRING
+    gem.summary = "rspec expectations (should[_not] and matchers)"
+    gem.rubyforge_project = "rspec"
+    gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
     gem.add_development_dependency('rspec-core', ">= #{Rspec::Expectations::Version::STRING}")
