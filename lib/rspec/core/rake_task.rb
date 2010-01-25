@@ -18,7 +18,7 @@ module Rspec
       # Glob pattern to match files. (default is 'spec/**/*_spec.rb')
       attr_accessor :pattern
 
-      # Array of commandline options to pass to ruby. Defaults to [].
+      # The options to pass to ruby.  Defaults to blank
       attr_accessor :ruby_opts
 
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
@@ -38,9 +38,6 @@ module Rspec
       # The options to pass to rcov.  Defaults to blank
       attr_accessor :rcov_opts
 
-      # The options to pass to ruby.  Defaults to blank
-      attr_accessor :ruby_opts
-      
       def initialize(*args)
         @name = args.shift || :spec
         @pattern, @rcov_opts, @ruby_opts = nil, nil, nil
