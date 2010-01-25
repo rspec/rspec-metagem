@@ -1,4 +1,5 @@
 require 'rubygems'
+gem 'jeweler', ">= 1.4.0"
 require 'rake'
 require 'fileutils'
 require 'pathname'
@@ -11,6 +12,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec"
+    gem.version = Rspec::Version::STRING
+    gem.rubyforge_project = "rspec"
     gem.summary = "pulls in the other rspec gems"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
