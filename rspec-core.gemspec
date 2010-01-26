@@ -9,8 +9,9 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-24}
+  s.date = %q{2010-01-25}
   s.default_executable = %q{rspec}
+  s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec"]
   s.extra_rdoc_files = [
@@ -173,7 +174,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rspec}
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{Rspec runner and example group classes}
+  s.summary = %q{rspec-core 2.0.0.a2}
   s.test_files = [
     "spec/resources/example_classes.rb",
      "spec/rspec/core/command_line_options_spec.rb",

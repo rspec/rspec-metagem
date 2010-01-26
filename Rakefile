@@ -24,7 +24,6 @@ begin
     gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
 rescue LoadError
@@ -32,16 +31,13 @@ rescue LoadError
 end
 
 begin
-  Rspec::Core::RakeTask.new :spec do |t|
-    t.pattern = "spec/**/*_spec.rb"
-  end
+  Rspec::Core::RakeTask.new :spec
 
   desc "Run all examples using rcov"
   Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
     t.rcov = true
     t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
     t.rcov_opts << %[--no-html --aggregate coverage.data]
-    t.pattern = "spec/**/*_spec.rb"
   end
 rescue LoadError
   puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-meta"
@@ -57,7 +53,7 @@ task :clobber do
   rm_rf 'coverage'
 end
 
-if RUBY_VERSION == '1.9.1'
+if RUBY_VERSION.to_f >= 1.9
   Cucumber::Rake::Task.new :features do |t|
     t.cucumber_opts = %w{--format progress}
   end
@@ -76,15 +72,8 @@ end
 
 
 Rake::RDocTask.new do |rdoc|
-  if File.exist?('VERSION.yml')
-    config = YAML.load(File.read('VERSION.yml'))
-    version = "#{config[:major]}.#{config[:minor]}.#{config[:patch]}"
-  else
-    version = ""
-  end
-
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "rspec-core #{version}"
+  rdoc.title = "rspec-core #{Rspec::Core::Version::STRING}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
