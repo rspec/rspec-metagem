@@ -6,10 +6,7 @@ Feature: line number option with one liner example
   Background:
     Given a file named "example_spec.rb" with:
       """
-      require 'rspec/expectations'
-     
       describe 9 do
-        include Rspec::Matchers
 
         it { should be > 8 }
 
@@ -19,7 +16,7 @@ Feature: line number option with one liner example
       """
 
   Scenario: two examples - first example on declaration line
-    When I run "spec example_spec.rb --line 6 --format doc"
+    When I run "spec example_spec.rb --line 3 --format doc"
     Then the stdout should match "1 example, 0 failures"
     Then the stdout should match "should be > 8"
     But the stdout should not match "should be < 10"
