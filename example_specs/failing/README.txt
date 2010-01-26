@@ -4,4 +4,4 @@ They allow us to see failure messages. RSpec wants to provide meaningful and hel
 
 To see the types of messages you can expect, stand in this directory and run:
 
-../bin/spec ./*.rb
+../bin/rspec ./*.rb
