@@ -43,6 +43,13 @@ describe Rspec::Core::CommandLineOptions do
 
   end
 
+  describe 'line_number' do
+    it "is parsed from -l or --line_number" do
+      options_from_args('-l','3').should include(:line_number => '3')
+      options_from_args('--line_number','3').should include(:line_number => '3')
+    end
+
+  end
   describe "files_or_directories_to_run" do
 
     it "parses files from '-c file.rb dir/file.rb'" do

@@ -178,7 +178,6 @@ module Rspec
         end.all?
       end
 
-
       def self.subclass(base_name, &body) # :nodoc:
         @_subclass_count ||= 0
         @_subclass_count += 1

@@ -98,6 +98,10 @@ module Rspec
       def color_enabled?
         options[:color_enabled]
       end
+
+      def line_number=(line_number)
+        filter_run :line_number => line_number.to_i
+      end
       
       # Enable profiling of example run - defaults to false
       def profile_examples
@@ -156,7 +160,7 @@ module Rspec
       end
 
       def filter_run(options={})
-        @filter = options
+        @filter = options unless @filter and @filter[:line_number]
       end
 
       def run_all_when_everything_filtered?

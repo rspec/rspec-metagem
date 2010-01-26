@@ -156,7 +156,7 @@ describe Rspec::Core::Configuration do
     end
   end
   
-  describe 'formatter' do
+  describe 'formatter=' do
 
     it "sets formatter_to_use based on name" do
       config = Rspec::Core::Configuration.new
@@ -171,6 +171,28 @@ describe Rspec::Core::Configuration do
       lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
     end
     
+  end
+
+  describe "line_number=" do
+    it "sets the line number" do
+      config = Rspec::Core::Configuration.new
+      config.line_number = '37'
+      config.filter.should == {:line_number => 37}
+    end
+    
+    it "overrides :focused" do
+      config = Rspec::Core::Configuration.new
+      config.filter_run :focused => true
+      config.line_number = '37'
+      config.filter.should == {:line_number => 37}
+    end
+    
+    it "prevents :focused" do
+      config = Rspec::Core::Configuration.new
+      config.line_number = '37'
+      config.filter_run :focused => true
+      config.filter.should == {:line_number => 37}
+    end
   end
 
 end

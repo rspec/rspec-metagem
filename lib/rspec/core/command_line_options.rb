@@ -29,6 +29,10 @@ module Rspec
             options[:formatter] = o
           end
 
+          opts.on('-l', '--line_number [LINE]', 'Specify the line number of a single example to run') do |o|
+            options[:line_number] = o
+          end
+
           opts.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
             options[:profile_examples] = o
           end
