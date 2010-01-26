@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-25}
+  s.date = %q{2010-01-26}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -74,8 +74,6 @@ Gem::Specification.new do |s|
      "example_specs/passing/stubbing_example.rb",
      "example_specs/passing/yielding_example.rb",
      "example_specs/ruby1.9.compatibility/access_to_constants_spec.rb",
-     "features-pending/command_line/line_number_option.feature",
-     "features-pending/command_line/line_number_option_with_example_with_no_name.feature",
      "features-pending/example_groups/example_group_with_should_methods.feature",
      "features-pending/example_groups/implicit_docstrings.feature",
      "features-pending/expectations/expect_change.feature",
@@ -94,6 +92,8 @@ Gem::Specification.new do |s|
      "features-pending/runner/specify_line_number.feature",
      "features/before_and_after_blocks/around.feature",
      "features/before_and_after_blocks/before_and_after_blocks.feature",
+     "features/command_line/line_number_appended_to_path.feature",
+     "features/command_line/line_number_option.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
      "features/expectations/customized_message.feature",
@@ -120,7 +120,6 @@ Gem::Specification.new do |s|
      "lib/rspec/core/example.rb",
      "lib/rspec/core/example_group.rb",
      "lib/rspec/core/example_group_subject.rb",
-     "lib/rspec/core/extensions/instance_exec.rb",
      "lib/rspec/core/formatters.rb",
      "lib/rspec/core/formatters/base_formatter.rb",
      "lib/rspec/core/formatters/base_text_formatter.rb",
