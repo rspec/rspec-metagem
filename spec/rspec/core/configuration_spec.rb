@@ -102,6 +102,15 @@ describe Rspec::Core::Configuration do
 
     end
 
+    context "with line number" do
+
+      it "assigns the line number as the filter" do
+        @config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+        @config.filter.should == {:line_number => 37}
+      end
+
+    end
+
   end
   
   describe "include" do

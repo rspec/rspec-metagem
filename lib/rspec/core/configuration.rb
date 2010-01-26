@@ -137,13 +137,16 @@ module Rspec
       end
       
       def files_or_directories_to_run=(*files)
+        p files
         options[:files_to_run] = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
             filename_pattern.split(",").each do |pattern|
               result += Dir[File.expand_path("#{file}/#{pattern.strip}")]
             end
           else
-            result << file
+            file =~ /([^:]*):?(\d+)?/
+            self.line_number = $2 if $2
+            result << $1
           end
           result
         end
