@@ -22,7 +22,7 @@ module Rspec
       end
 
       def require_all_files(configuration)
-        configuration.files_to_run.map {|f| require f.sub(/^spec\//,'') }
+        configuration.files_to_run.map {|f| require f }
       end
       
       def run(args = [])

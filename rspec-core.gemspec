@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-26}
+  s.date = %q{2010-01-27}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -193,6 +193,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/resources/custom_example_group_runner.rb",
      "spec/rspec/core/resources/example_classes.rb",
      "spec/rspec/core/resources/utf8_encoded.rb",
+     "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
      "spec/rspec/core/shared_behaviour_spec.rb",
      "spec/rspec/core/world_spec.rb",
