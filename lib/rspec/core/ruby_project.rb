@@ -24,10 +24,10 @@ module Rspec
       end
 
       def find_first_parent_containing(dir) # :nodoc:
-        ascend_while {|path| File.exists?(File.join(path, dir))}
+        ascend_until {|path| File.exists?(File.join(path, dir))}
       end
 
-      def ascend_while(&block) # :nodoc:
+      def ascend_until(&block) # :nodoc:
         Pathname(File.expand_path('.')).ascend do |path|
           return path if block.call(path)
         end
@@ -38,7 +38,7 @@ module Rspec
       module_function :root
       module_function :determine_root
       module_function :find_first_parent_containing
-      module_function :ascend_while
+      module_function :ascend_until
     end
   end
 end

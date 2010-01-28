@@ -6,7 +6,7 @@ module Rspec
 
         context "with ancestor containing spec directory" do
           it "returns ancestor containing the spec directory" do
-            RubyProject.stub(:ascend_while).and_return('foodir')
+            RubyProject.stub(:ascend_until).and_return('foodir')
             RubyProject.determine_root.should == 'foodir'
           end
         end
