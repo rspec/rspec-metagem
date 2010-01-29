@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-24}
+  s.date = %q{2010-01-28}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -87,7 +87,6 @@ Gem::Specification.new do |s|
      "spec/rspec/matchers/respond_to_spec.rb",
      "spec/rspec/matchers/satisfy_spec.rb",
      "spec/rspec/matchers/throw_symbol_spec.rb",
-     "spec/spec.opts",
      "spec/spec_helper.rb",
      "spec/suite.rb",
      "spec/support/classes.rb"

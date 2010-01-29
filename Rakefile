@@ -48,3 +48,10 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
+task :clobber do
+  rm_rf 'pkg'
+  rm_rf 'tmp'
+  rm_rf 'coverage'
+end
+
+
