@@ -1,6 +1,6 @@
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '../../core/lib'))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '../../mocks/lib'))
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.expand_path('../../../core/lib', __FILE__))
+$LOAD_PATH.unshift(File.expand_path('../../../mocks/lib', __FILE__))
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'rspec/expectations'
 require 'rspec/mocks'
 require 'rspec/core'
