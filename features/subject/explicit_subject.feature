@@ -5,6 +5,8 @@ Feature: explicit subject
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       describe Array, "with some elements" do
         subject { [1,2,3] }
         it "should have the prescribed elements" do
@@ -18,6 +20,8 @@ Feature: explicit subject
   Scenario: subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       describe Array do
         subject { [1,2,3] }
         describe "with some elements" do

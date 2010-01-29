@@ -3,6 +3,8 @@ Feature: before and after blocks
   Scenario: define around(:each) block in example group
     Given a file named "around_each_in_example_group_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       class Thing
         def self.cache
           @cache ||= []

@@ -51,8 +51,21 @@ class RspecWorld
   def ruby(args)
     stderr_file = Tempfile.new('rspec')
     stderr_file.close
+    
     Dir.chdir(working_dir) do
-      @stdout = super("-rrubygems #{rspec_libs} #{args}", stderr_file.path)
+      File.open('load_paths.rb', 'w') do |f|
+        f.write <<-CONTENT
+$LOAD_PATH.unshift(File.expand_path('../../../lib', __FILE__))
+$LOAD_PATH.unshift(File.expand_path('../../../../rspec-expectations/lib', __FILE__))
+$LOAD_PATH.unshift(File.expand_path('../../../../rspec-mocks/lib', __FILE__))
+require 'rspec'
+require 'rspec/matchers'
+Rspec::Core::ExampleGroup.__send__(:include, Rspec::Matchers)
+CONTENT
+      end
+      cmd = "-rrubygems -rload_paths.rb #{rspec_libs} #{args}"
+      # p cmd
+      @stdout = super(cmd, stderr_file.path)
     end
     @stderr = IO.read(stderr_file.path)
     @exit_code = $?.to_i

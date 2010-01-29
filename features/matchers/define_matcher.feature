@@ -7,6 +7,8 @@ Feature: define matcher
   Scenario: define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
@@ -47,6 +49,8 @@ Feature: define matcher
   Scenario: overriding the failure_message_for_should
     Given a file named "matcher_with_failure_message_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
@@ -69,6 +73,8 @@ Feature: define matcher
   Scenario: overriding the failure_message_for_should_not
     Given a file named "matcher_with_failure_for_message_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
@@ -91,6 +97,8 @@ Feature: define matcher
   Scenario: overriding the description
     Given a file named "matcher_overriding_description_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
@@ -117,6 +125,8 @@ Feature: define matcher
   Scenario: with no args
     Given a file named "matcher_with_no_args_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :have_7_fingers do
         match do |thing|
           thing.fingers.length == 7
@@ -139,6 +149,8 @@ Feature: define matcher
   Scenario: with multiple args
     Given a file named "matcher_with_multiple_args_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :be_the_sum_of do |a,b,c,d|
         match do |sum|
           a + b + c + d == sum
@@ -157,16 +169,18 @@ Feature: define matcher
   Scenario: with helper methods
     Given a file named "matcher_with_internal_helper_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Matchers.define :have_same_elements_as do |sample|
         match do |actual|
           similar?(sample, actual)
         end
-        
+
         def similar?(a, b)
           a.sort == b.sort
         end
       end
-      
+
       describe "these two arrays" do
         specify "should be similar" do
           [1,2,3].should have_same_elements_as([2,3,1])

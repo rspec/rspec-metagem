@@ -6,6 +6,8 @@ Feature: Spec and test together
   Scenario: stub in before
     Given a file named "stub_and_mocks_spec.rb" with:
       """
+      require 'rspec/expectations'
+
       Rspec::Core.configure do |config|
         config.mock_framework = :rspec
       end
