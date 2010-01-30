@@ -13,22 +13,6 @@ module Rspec
           raise ArgumentError, "Failure message is nil. Does your matcher define the " +
                                "appropriate failure_message_for_* method to return a string?"
         end
-        if (Array === message) & (message.length == 3)
-          ::Rspec::Core.warn(<<-NOTICE
-
-*****************************************************************
-DEPRECATION WARNING: you are using deprecated behaviour that will
-be removed from a future version of RSpec.
-
-* Support for matchers that return arrays from failure message
-methods is deprecated.
-* Instead, the matcher should return a string, and expose methods
-for the expected() and actual() values.
-*****************************************************************
-NOTICE
-          )
-          message, expected, target = message[0], message[1], message[2]
-        end
         unless (differ.nil? || expected.nil? || target.nil?)
           if expected.is_a?(String)
             message << "\nDiff:" << self.differ.diff_as_string(target.to_s, expected)

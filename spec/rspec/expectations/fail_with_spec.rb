@@ -21,13 +21,6 @@ describe Rspec::Expectations, "#fail_with with Array" do
   before(:each) do
     Rspec::Core.stub!(:warn)
   end
-  
-  it "is deprecated" do
-    Rspec::Core.should_receive(:warn)
-    lambda {
-      Rspec::Expectations.fail_with ["message", "expected", "actual"]
-    }.should raise_error
-  end
 end
 
 describe Rspec::Expectations, "#fail_with with diff" do
