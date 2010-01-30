@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper.rb'
+require 'spec_helper'
 
 describe "should have_sym(*args)" do
   it "should pass if #has_sym?(*args) returns true" do

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper.rb'
+require 'spec_helper'
 
 describe "should include(expected)" do
   it "should pass if target includes expected" do

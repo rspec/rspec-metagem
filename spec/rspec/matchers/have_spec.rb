@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../../spec_helper.rb'
+require 'spec_helper'
 
 share_as :HaveSpecHelper do
   def create_collection_owner_with(n)

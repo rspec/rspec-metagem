@@ -1,6 +1,6 @@
 #Based on patch from Wilson Bilkovich
 
-require File.dirname(__FILE__) + '/../../spec_helper.rb'
+require 'spec_helper'
 class SomethingExpected
   attr_accessor :some_value
 end
