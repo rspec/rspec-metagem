@@ -1,169 +1,206 @@
+require 'rspec/matchers/dsl'
+
+Rspec::Matchers.define :be_true do
+  match do |actual|
+    !!actual
+  end
+end
+
+Rspec::Matchers.define :be_false do
+  match do |actual|
+    !actual
+  end
+end
+
+Rspec::Matchers.define :be_nil do
+  match do |actual|
+    actual.nil?
+  end
+
+  failure_message_for_should do |actual|
+    "expected nil, got #{actual.inspect}"
+  end
+
+  failure_message_for_should_not do
+    "expected not nil, got nil"
+  end
+end
+
 module Rspec
   module Matchers
-    
+
     class Be #:nodoc:
       include Rspec::Matchers::Pretty
       
-      def initialize(*args)
-        @expected = args.empty? ? true : set_expected(args.shift)
+      def initialize(*args, &block)
         @args = args
-        @comparison_method = nil
       end
       
       def matches?(actual)
         @actual = actual
-        handling_predicate? ? run_predicate_on(actual) : match_or_compare(actual)
+        !!@actual
+      end
+
+      def failure_message_for_should
+        "expected #{@actual.inspect} to evaluate to true"
       end
       
-      def run_predicate_on(actual)
+      def failure_message_for_should_not
+        "expected #{@actual.inspect} to evaluate to false"
+      end
+      
+      def description
+        "be"
+      end
+
+      [:==, :<, :<=, :>=, :>, :===].each do |operator|
+        define_method operator do |operand|
+          BeComparedTo.new(operand, operator)
+        end
+      end
+
+    private
+
+      def args_to_s
+        @args.empty? ? "" : parenthesize(inspected_args.join(', '))
+      end
+      
+      def parenthesize(string)
+        return "(#{string})"
+      end
+      
+      def inspected_args
+        @args.collect{|a| a.inspect}
+      end
+      
+      def expected_to_sentence
+        split_words(@expected)
+      end
+      
+      def args_to_sentence
+        to_sentence(@args)
+      end
+        
+    end
+
+    class BeComparedTo < Be
+
+      def initialize(operand, operator)
+        @expected, @operator = operand, operator
+        @args = []
+      end
+
+      def matches?(actual)
+        @actual = actual
+        @actual.__send__(@operator, @expected)
+      end
+
+      def failure_message_for_should
+        "expected #{@operator} #{@expected}, got #{@actual.inspect}"
+      end
+      
+      def failure_message_for_should_not
+        message = <<-MESSAGE
+'should_not be #{@operator} #{@expected}' not only FAILED,
+it is a bit confusing.
+          MESSAGE
+          
+        raise message << ([:===,:==].include?(@operator) ?
+          "It might be more clearly expressed without the \"be\"?" :
+          "It might be more clearly expressed in the positive?")
+      end
+
+      def description
+        "be #{@operator} #{expected_to_sentence}#{args_to_sentence}"
+      end
+
+    end
+
+    class BePredicate < Be
+
+      def initialize(*args, &block)
+        @expected = parse_expected(args.shift)
+        @args = args
+        @block = block
+      end
+      
+      def matches?(actual)
+        @actual = actual
         begin
-          return @result = actual.__send__(predicate, *@args)
+          return @result = actual.__send__(predicate, *@args, &@block)
         rescue NameError => predicate_missing_error
           "this needs to be here or rcov will not count this branch even though it's executed in a code example"
         end
 
         begin
-          return @result = actual.__send__(present_tense_predicate, *@args)
+          return @result = actual.__send__(present_tense_predicate, *@args, &@block)
         rescue NameError
           raise predicate_missing_error
         end
       end
       
       def failure_message_for_should
-        if handling_predicate?
-          if predicate == :nil?
-            "expected nil, got #{@actual.inspect}"
-          else
-            "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
-          end
-        else
-          "expected #{@comparison_method} #{expected}, got #{@actual.inspect}".gsub('  ',' ')
-        end
+        "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
       end
       
       def failure_message_for_should_not
-        if handling_predicate?
-          if predicate == :nil?
-            "expected not nil, got nil"
-          else
-          "expected #{predicate}#{args_to_s} to return false, got #{@result.inspect}"
-          end
-        else
-          message = <<-MESSAGE
-'should_not be #{@comparison_method} #{expected}' not only FAILED,
-it is a bit confusing.
-          MESSAGE
-          
-          raise message << ([:===,:==].include?(@comparison_method) ?
-            "It might be more clearly expressed without the \"be\"?" :
-            "It might be more clearly expressed in the positive?")
-        end
+        "expected #{predicate}#{args_to_s} to return false, got #{@result.inspect}"
       end
-      
+
       def description
-        "#{prefix_to_sentence}#{comparison} #{expected_to_sentence}#{args_to_sentence}".gsub(/\s+/,' ')
+        "#{prefix_to_sentence}#{expected_to_sentence}#{args_to_sentence}"
       end
 
-      [:==, :<, :<=, :>=, :>, :===].each do |method|
-        define_method method do |expected|
-          compare_to(expected, :using => method)
-          self
-        end
+    private
+
+      def predicate
+        "#{@expected}?".to_sym
+      end
+      
+      def present_tense_predicate
+        "#{@expected}s?".to_sym
+      end
+      
+      def parse_expected(expected)
+        @prefix, expected = prefix_and_expected(expected)
+        expected
       end
 
-      private
-        def match_or_compare(actual)
-          TrueClass === @expected ? @actual : @actual.__send__(comparison_method, @expected)
-        end
+      def prefix_and_expected(symbol)
+        symbol.to_s =~ /^(be_(an?_)?)(.*)/
+        return $1, $3
+      end
+
+      def prefix_to_sentence
+        split_words(@prefix)
+      end
+
+    end
+
+    class BeSameAs < Be
       
-        def comparison_method
-          @comparison_method || :equal?
-        end
+      def initialize(*args, &block)
+        @expected = args.shift
+        @args = args
+      end
       
-        def expected
-          @expected
-        end
+      def matches?(actual)
+        @actual = actual
+        @actual.equal?(@expected)
+      end
 
-        def compare_to(expected, opts)
-          @expected, @comparison_method = expected, opts[:using]
-        end
+      def failure_message_for_should
+        "expected #{@expected}, got #{@actual.inspect}"
+      end
+      
+      def failure_message_for_should_not
+        "expected not #{@expected}, got #{@actual.inspect}"
+      end
 
-        def set_expected(expected)
-          Symbol === expected ? parse_expected(expected) : expected
-        end
-        
-        def parse_expected(expected)
-          ["be_an_","be_a_","be_"].each do |prefix|
-            handling_predicate!
-            if expected.to_s =~ /^#{prefix}/
-              set_prefix(prefix)
-              expected = expected.to_s.sub(prefix,"")
-              [true, false, nil].each do |val|
-                return val if val.to_s == expected
-              end
-              return expected.to_sym
-            end
-          end
-        end
-        
-        def set_prefix(prefix)
-          @prefix = prefix
-        end
-        
-        def prefix
-          # FIXME - this is a bit goofy - but we get failures
-          # if just defining @prefix = nil in initialize
-          @prefix = nil unless defined?(@prefix)
-          @prefix
-        end
+      def description
+        "be #{expected_to_sentence}#{args_to_sentence}"
+      end
 
-        def handling_predicate!
-          @handling_predicate = true
-        end
-        
-        def handling_predicate?
-          return false if [true, false, nil].include?(expected)
-          # FIXME - this is a bit goofy - but we get failures
-          # if just defining @handling_predicate = nil or false in initialize
-          return defined?(@handling_predicate) ? @handling_predicate : nil
-        end
-
-        def predicate
-          "#{@expected.to_s}?".to_sym
-        end
-        
-        def present_tense_predicate
-          "#{@expected.to_s}s?".to_sym
-        end
-        
-        def args_to_s
-          @args.empty? ? "" : parenthesize(inspected_args.join(', '))
-        end
-        
-        def parenthesize(string)
-          return "(#{string})"
-        end
-        
-        def inspected_args
-          @args.collect{|a| a.inspect}
-        end
-        
-        def comparison
-          @comparison_method.nil? ? " " : "be #{@comparison_method.to_s} "
-        end
-        
-        def expected_to_sentence
-          split_words(expected)
-        end
-        
-        def prefix_to_sentence
-          split_words(prefix)
-        end
-
-        def args_to_sentence
-          to_sentence(@args)
-        end
-        
     end
  
     # :call-seq:
@@ -179,7 +216,7 @@ it is a bit confusing.
     # the caller should satisfy an if condition (to be or not to be). 
     #
     # Predicates are any Ruby method that ends in a "?" and returns true or false.
-    # Given be_ followed by arbitrary_predicate (without the "?"), RSpec will match
+    # Given be_ followed by arbitrary_predicate (without the "?"), Rspec will match
     # convert that into a query against the target object.
     #
     # The arbitrary_predicate feature will handle any predicate
@@ -197,7 +234,9 @@ it is a bit confusing.
     #   target.should_not be_empty #passes unless target.empty?
     #   target.should_not be_old_enough(16) #passes unless target.old_enough?(16)
     def be(*args)
-      Matchers::Be.new(*args)
+      args.empty? ?
+        Matchers::Be.new :
+        Matchers::BeSameAs.new(*args)
     end
 
     # passes if target.kind_of?(klass)
@@ -208,3 +247,4 @@ it is a bit confusing.
     alias_method :be_an, :be_a
   end
 end
+
