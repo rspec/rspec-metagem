@@ -33,6 +33,10 @@ module Rspec
             options[:line_number] = o
           end
 
+          opts.on('-e', '--example [FULL DESCRIPTION]', 'Run examples whose full descriptions match this pattern') do |o|
+            options[:full_description] = /#{o}/
+          end
+
           opts.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
             options[:profile_examples] = o
           end

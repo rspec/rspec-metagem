@@ -5,11 +5,11 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   before do
     behaviour = stub('behaviour', 
       :metadata => Rspec::Core::Metadata.new.process(
-        'behaviour_name',
+        'group description',
         :caller => ['foo_spec.rb:37']
       )
     ).as_null_object 
-    @example = Rspec::Core::Example.new(behaviour, 'description', {}, (lambda {}))
+    @example = Rspec::Core::Example.new(behaviour, 'example description', {}, (lambda {}))
   end
 
   describe "attr readers" do
@@ -31,8 +31,8 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe '#inspect' do
-    it "should return 'behaviour_name - description'" do
-      @example.inspect.should == 'behaviour_name - description'
+    it "should return 'group description - description'" do
+      @example.inspect.should == 'group description example description'
     end
   end
 

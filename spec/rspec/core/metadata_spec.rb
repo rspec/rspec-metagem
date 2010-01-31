@@ -3,7 +3,7 @@ require 'spec_helper'
 module Rspec
   module Core
     describe Metadata do
-      describe "#generated_name" do
+      describe "[:behaviour][:name]" do
         it "generates name for top level example group" do
           m = Metadata.new
           m.process("description", :caller => caller(0))
@@ -26,6 +26,16 @@ module Rspec
           m = Metadata.new
           m.process("  description  \n", :caller => caller(0))
           m[:behaviour][:name].should == "description"
+        end
+      end
+
+      describe "[:full_description]" do
+        it "concats the behaviour name and description" do
+          m = Metadata.new
+          m[:behaviour][:name] = "group"
+
+          m = m.for_example("example", {})
+          m[:full_description].should == "group example"
         end
       end
 
@@ -68,11 +78,15 @@ module Rspec
       describe "#metadata_for_example" do
         let(:caller_for_example) { caller(0) }
         let(:line_number)        { __LINE__ - 1 }
-        let(:metadata)           { Metadata.new.process(:caller => caller(0)) }
-        let(:mfe)                { metadata.for_example("this description", {:caller => caller_for_example, :arbitrary => :options}) }
+        let(:metadata)           { Metadata.new.process("group description", :caller => caller(0)) }
+        let(:mfe)                { metadata.for_example("example description", {:caller => caller_for_example, :arbitrary => :options}) }
 
         it "stores the description" do
-          mfe[:description].should == "this description"
+          mfe[:description].should == "example description"
+        end
+
+        it "stores the full_description (group description + example description)" do
+          mfe[:full_description].should == "group description example description"
         end
 
         it "creates an empty execution result" do

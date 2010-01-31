@@ -41,6 +41,7 @@ module Rspec
 
       def configure_for_example(description, options)
         store(:description, description.to_s)
+        store(:full_description, "#{self[:behaviour][:name]} #{self[:description]}")
         store(:execution_result, {})
         store(:caller, options.delete(:caller))
         if self[:caller]

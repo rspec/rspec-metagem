@@ -125,7 +125,7 @@ module Rspec
       end
 
       def inspect
-        "#{@metadata[:behaviour][:name]} - #{@metadata[:description]}"
+        @metadata[:full_description]
       end
 
       def to_s

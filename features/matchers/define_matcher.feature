@@ -39,8 +39,8 @@ Feature: define matcher
 
     And the stdout should match "should be a multiple of 3"
     And the stdout should match "should not be a multiple of 4"
-    And the stdout should match "should be a multiple of 4\n    Failure"
-    And the stdout should match "should not be a multiple of 3\n    Failure"
+    And the stdout should match "Failure/Error: it {should be_a_multiple_of(4)}"
+    And the stdout should match "Failure/Error: it {should_not be_a_multiple_of(3)}"
 
     And the stdout should match "4 examples, 2 failures"
     And the stdout should match "expected 9 to be a multiple of 4"

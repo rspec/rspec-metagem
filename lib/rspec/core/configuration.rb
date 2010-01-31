@@ -102,6 +102,10 @@ module Rspec
       def line_number=(line_number)
         filter_run :line_number => line_number.to_i
       end
+
+      def full_description=(description)
+        filter_run :full_description => /#{description}/
+      end
       
       # Enable profiling of example run - defaults to false
       def profile_examples
@@ -162,7 +166,7 @@ module Rspec
       end
 
       def filter_run(options={})
-        @filter = options unless @filter and @filter[:line_number]
+        @filter = options unless @filter and @filter[:line_number] || @filter[:full_description]
       end
 
       def run_all_when_everything_filtered?

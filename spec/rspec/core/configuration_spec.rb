@@ -111,6 +111,15 @@ describe Rspec::Core::Configuration do
 
     end
 
+    context "with full_description" do
+
+      it "assigns the example name as the filter on description" do
+        @config.full_description = "foo"
+        @config.filter.should == {:full_description => /foo/}
+      end
+
+    end
+
   end
   
   describe "include" do
