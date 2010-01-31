@@ -28,41 +28,50 @@ module Rspec
         self[:behaviour][:name] = determine_name
         self[:behaviour][:block] = extra_metadata.delete(:behaviour_block)
         self[:behaviour][:caller] = extra_metadata.delete(:caller)
-        self[:behaviour][:file_path] = determine_file_path(extra_metadata.delete(:file_path))
-        self[:behaviour][:line_number] = determine_line_number(extra_metadata.delete(:line_number))
+        self[:behaviour][:file_path] = file_path_from(self[:behaviour], extra_metadata.delete(:file_path))
+        self[:behaviour][:line_number] = line_number_from(self[:behaviour], extra_metadata.delete(:line_number))
+        self[:behaviour][:location] = location_from(self[:behaviour])
 
         update(extra_metadata)
       end
 
-      def for_example(desc, options)
-        dup.configure_for_example(desc,options)
+      def for_example(description, options)
+        dup.configure_for_example(description,options)
       end
 
-      def configure_for_example(desc, options)
-        store(:description, desc.to_s)
+      def configure_for_example(description, options)
+        store(:description, description.to_s)
         store(:execution_result, {})
         store(:caller, options.delete(:caller))
         if self[:caller]
-          store(:file_path, determine_file_path)
-          store(:line_number, determine_line_number)
+          store(:file_path, file_path_from(self))
+          store(:line_number, line_number_from(self))
         end
+        self[:location] = location_from(self)
         update(options)
+        self
       end
 
     private
 
-      def possible_files
-        self[:behaviour][:caller].grep(/\_spec\.rb:/i)
+      def file_path_from(hash, given_file_path=nil)
+        given_file_path || file_and_line_number(hash)[0].strip
       end
 
-      def determine_file_path(given_file_path=nil)
-        return given_file_path if given_file_path
-        possible_files.first.split(':').first.strip
+      def line_number_from(hash, given_line_number=nil)
+        given_line_number || file_and_line_number(hash)[1].to_i
       end
 
-      def determine_line_number(given_line_number=nil)
-        return given_line_number if given_line_number
-        possible_files.first.split(':')[1].to_i
+      def location_from(metadata)
+        "#{metadata[:file_path]}:#{metadata[:line_number]}"
+      end
+
+      def file_and_line_number(hash)
+        candidate_entries_from_caller(hash).first.split(':')
+      end
+
+      def candidate_entries_from_caller(hash)
+        hash[:caller].grep(/\_spec\.rb:/i)
       end
 
       def determine_name

@@ -22,13 +22,13 @@ module Rspec
       end
 
       def self.example(desc=nil, options={}, &block)
-        examples << Rspec::Core::Example.new(self, desc, options.update(:caller => caller[0]), block)
+        examples << Rspec::Core::Example.new(self, desc, options.update(:caller => caller), block)
       end
 
       def self.alias_example_to(new_alias, extra_options={})
         new_alias = <<-END_RUBY
                       def self.#{new_alias}(desc=nil, options={}, &block)
-                        updated_options = options.update(:caller => caller[0])
+                        updated_options = options.update(:caller => caller)
                         updated_options.update(#{extra_options.inspect})
                         examples << Rspec::Core::Example.new(self, desc, updated_options, block)
                       end
@@ -100,7 +100,7 @@ module Rspec
         # describe 'foo', :shared => true will need this to be completed first
         subclass('NestedLevel') do
           args << {} unless args.last.is_a?(Hash)
-          args.last.update(:behaviour_block => behaviour_block, :caller => caller(2))
+          args.last.update(:behaviour_block => behaviour_block, :caller => caller)
           set_it_up(*args)
           module_eval(&behaviour_block)
         end

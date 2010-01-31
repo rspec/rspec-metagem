@@ -79,7 +79,7 @@ module Rspec
             output.puts "Pending:"
             pending_examples.each do |pending_example, message|
               output.puts "  #{pending_example}"
-              output.puts grey("   # #{format_caller(pending_example.metadata[:caller])}")
+              output.puts grey("   # #{format_caller(pending_example.metadata[:location])}")
             end
           end
           output.flush

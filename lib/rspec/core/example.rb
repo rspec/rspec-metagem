@@ -6,15 +6,7 @@ module Rspec
 
       def initialize(behaviour, desc, options, example_block=nil)
         @behaviour, @options, @example_block = behaviour, options, example_block
-        @metadata = @behaviour.metadata.dup
-        @metadata[:description] = desc.to_s
-        @metadata[:execution_result] = {}
-        @metadata[:caller] = options.delete(:caller)
-        if @metadata[:caller]
-          @metadata[:file_path] = @metadata[:caller].split(":")[0].strip 
-          @metadata[:line_number] = @metadata[:caller].split(":")[1].to_i
-        end
-        @metadata.update(options)
+        @metadata = @behaviour.metadata.for_example(desc, options)
       end
 
       def description
