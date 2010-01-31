@@ -33,7 +33,8 @@ module Rspec
             options[:line_number] = o
           end
 
-          opts.on('-e', '--example [FULL DESCRIPTION]', 'Run examples whose full descriptions match this pattern') do |o|
+          opts.on('-e', '--example [PATTERN]', "Run examples whose full descriptions match this pattern",
+                  "(PATTERN is compiled into a Ruby regular expression)") do |o|
             options[:full_description] = /#{o}/
           end
 
