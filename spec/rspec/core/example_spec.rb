@@ -3,7 +3,12 @@ require 'spec_helper'
 describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
   before do
-    behaviour = stub('behaviour', :metadata => { :behaviour => { :name => 'behaviour_name' }})
+    behaviour = stub('behaviour', 
+      :metadata => Rspec::Core::Metadata.new.process(
+        'behaviour_name',
+        :caller => ['foo_spec.rb:37']
+      )
+    ).as_null_object 
     @example = Rspec::Core::Example.new(behaviour, 'description', {}, (lambda {}))
   end
 
