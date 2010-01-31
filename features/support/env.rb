@@ -58,8 +58,8 @@ class RspecWorld
 $LOAD_PATH.unshift(File.expand_path('../../../lib', __FILE__))
 $LOAD_PATH.unshift(File.expand_path('../../../../rspec-expectations/lib', __FILE__))
 $LOAD_PATH.unshift(File.expand_path('../../../../rspec-mocks/lib', __FILE__))
-require 'rspec'
-require 'rspec/matchers'
+require 'rspec/core'
+require 'rspec/expectations'
 Rspec::Core::ExampleGroup.__send__(:include, Rspec::Matchers)
 CONTENT
       end
@@ -68,6 +68,7 @@ CONTENT
       @stdout = super(cmd, stderr_file.path)
     end
     @stderr = IO.read(stderr_file.path)
+    p @stderr unless @stderr == ""
     @exit_code = $?.to_i
   end
 
