@@ -1,4 +1,4 @@
-# Upgrade to rspec-2.0
+# Upgrade to rspec-expectations-2.0
 
 ## What's new
 
