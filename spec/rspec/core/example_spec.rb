@@ -42,6 +42,12 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe '#described_class' do
+    it "is a shortcut to ...." do
+      @example.described_class.should == @example.metadata[:describes]
+    end
+  end
+
   describe "accessing metadata within a running example" do
     it "should have a reference to itself when running" do
       running_example.description.should == "should have a reference to itself when running"

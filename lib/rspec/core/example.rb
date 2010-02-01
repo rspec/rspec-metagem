@@ -12,6 +12,10 @@ module Rspec
       def description
         @metadata[:description]
       end
+
+      def described_class
+        @metadata[:behaviour][:describes]
+      end
       
       def record_results(results={})
         @metadata[:execution_result].update(results)

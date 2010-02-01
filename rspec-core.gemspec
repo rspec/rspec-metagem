@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-29}
+  s.date = %q{2010-01-31}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -92,6 +92,7 @@ Gem::Specification.new do |s|
      "features-pending/runner/specify_line_number.feature",
      "features/before_and_after_blocks/around.feature",
      "features/before_and_after_blocks/before_and_after_blocks.feature",
+     "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
      "features/example_groups/describe_aliases.feature",
@@ -142,7 +143,6 @@ Gem::Specification.new do |s|
      "lib/rspec/core/world.rb",
      "rspec-core.gemspec",
      "script/console",
-     "spec/resources/example_classes.rb",
      "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
@@ -158,7 +158,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
      "spec/rspec/core/resources/custom_example_group_runner.rb",
-     "spec/rspec/core/resources/example_classes.rb",
      "spec/rspec/core/resources/utf8_encoded.rb",
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
@@ -176,8 +175,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.5}
   s.summary = %q{rspec-core 2.0.0.a2}
   s.test_files = [
-    "spec/resources/example_classes.rb",
-     "spec/rspec/core/command_line_options_spec.rb",
+    "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_group_subject_spec.rb",
@@ -192,7 +190,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
      "spec/rspec/core/resources/custom_example_group_runner.rb",
-     "spec/rspec/core/resources/example_classes.rb",
      "spec/rspec/core/resources/utf8_encoded.rb",
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
