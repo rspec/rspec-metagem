@@ -195,8 +195,8 @@ module Rspec
       end
 
       def find_modules(group)
-        include_or_extend_modules.select do |include_or_extend, mod, options|
-          Rspec::Core.world.all_apply?(group, options)
+        include_or_extend_modules.select do |include_or_extend, mod, filters|
+          group.all_apply?(filters)
         end
       end
 
@@ -209,9 +209,9 @@ module Rspec
       end
 
       def find_advice(desired_advice_type, desired_each_or_all, group)
-        advice[desired_advice_type][desired_each_or_all].select do |options, block|
-          Rspec::Core.world.all_apply?(group, options)
-        end.map { |options, block| block }
+        advice[desired_advice_type][desired_each_or_all].select do |filters, block|
+          group.all_apply?(filters)
+        end.map { |filters, block| block }
       end
 
     end

@@ -47,30 +47,18 @@ module Rspec
       end
 
       def filter_behaviours
-        behaviours.inject([]) do |list_of_behaviors, _behavior|
-          examples = _behavior.examples
+        behaviours.inject([]) do |list_of_example_groups, example_group|
+          examples = example_group.examples
           examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
           examples = apply_inclusion_filters(examples, filter) if filter
           examples.uniq!
-          _behavior.examples_to_run.replace(examples)
+          example_group.examples_to_run.replace(examples)
           if examples.empty?
-            list_of_behaviors << nil
+            list_of_example_groups << nil
           else
-            list_of_behaviors << _behavior
+            list_of_example_groups << example_group
           end
         end.compact
-      end
-
-      def find(collection, type_of_filter=:positive, conditions={})
-        negative = type_of_filter != :positive
-
-        collection.select do |item|
-          # negative conditions.any?, positive conditions.all? ?????
-          result = conditions.all? do |filter_on, filter| 
-            apply_condition(filter_on, filter, item.metadata)
-          end
-          negative ? !result : result
-        end
       end
 
       def apply_inclusion_filters(collection, conditions={})
@@ -81,24 +69,15 @@ module Rspec
         find(collection, :negative, conditions)
       end
 
-      def apply_condition(filter_on, filter, metadata)
-        return false if metadata.nil?
+      def find(collection, type_of_filter=:positive, conditions={})
+        negative = type_of_filter != :positive
 
-        case filter
-        when Hash
-          filter.all? { |k, v| apply_condition(k, v, metadata[filter_on]) }
-        when Regexp
-          metadata[filter_on] =~ filter
-        when Proc
-          filter.call(metadata[filter_on]) rescue false
-        else
-          metadata[filter_on] == filter
-        end
-      end
-
-      def all_apply?(group, filters)
-        filters.all? do |filter_on, filter|
-          Rspec::Core.world.apply_condition(filter_on, filter, group.metadata)
+        collection.select do |item|
+          # negative conditions.any?, positive conditions.all? ?????
+          result = conditions.all? do |filter_on, filter| 
+            item.metadata.apply_condition(filter_on, filter)
+          end
+          negative ? !result : result
         end
       end
 

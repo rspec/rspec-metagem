@@ -199,6 +199,10 @@ module Rspec
         end
       end
 
+      def self.all_apply?(filters)
+        metadata.all_apply?(filters)
+      end
+
       def assignments
         @assignments ||= {}
       end

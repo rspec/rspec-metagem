@@ -53,6 +53,26 @@ module Rspec
         self
       end
 
+      def apply_condition(filter_on, filter, metadata=nil)
+        metadata ||= self
+        case filter
+        when Hash
+          filter.all? { |k, v| apply_condition(k, v, metadata[filter_on]) }
+        when Regexp
+          metadata[filter_on] =~ filter
+        when Proc
+          filter.call(metadata[filter_on]) rescue false
+        else
+          metadata[filter_on] == filter
+        end
+      end
+
+      def all_apply?(filters)
+        filters.all? do |filter_on, filter|
+          apply_condition(filter_on, filter)
+        end
+      end
+
     private
 
       def file_path_from(hash, given_file_path=nil)
