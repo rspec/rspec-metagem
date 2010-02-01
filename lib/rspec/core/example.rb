@@ -14,7 +14,7 @@ module Rspec
       end
 
       def described_class
-        @metadata[:behaviour][:describes]
+        @metadata[:describes]
       end
       
       def record_results(results={})
