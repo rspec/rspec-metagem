@@ -75,24 +75,24 @@ module Rspec
 
     private
 
-      def file_path_from(hash, given_file_path=nil)
-        given_file_path || file_and_line_number(hash)[0].strip
+      def file_path_from(metadata, given_file_path=nil)
+        given_file_path || file_and_line_number(metadata)[0].strip
       end
 
-      def line_number_from(hash, given_line_number=nil)
-        given_line_number || file_and_line_number(hash)[1].to_i
+      def line_number_from(metadata, given_line_number=nil)
+        given_line_number || file_and_line_number(metadata)[1].to_i
       end
 
       def location_from(metadata)
         "#{metadata[:file_path]}:#{metadata[:line_number]}"
       end
 
-      def file_and_line_number(hash)
-        candidate_entries_from_caller(hash).first.split(':')
+      def file_and_line_number(metadata)
+        candidate_entries_from_caller(metadata).first.split(':')
       end
 
-      def candidate_entries_from_caller(hash)
-        hash[:caller].grep(/\_spec\.rb:/i)
+      def candidate_entries_from_caller(metadata)
+        metadata[:caller].grep(/\_spec\.rb:/i)
       end
 
       def determine_name
