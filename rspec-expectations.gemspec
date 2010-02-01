@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-29}
+  s.date = %q{2010-01-31}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -79,7 +79,6 @@ Gem::Specification.new do |s|
      "spec/rspec/matchers/include_spec.rb",
      "spec/rspec/matchers/match_array_spec.rb",
      "spec/rspec/matchers/match_spec.rb",
-     "spec/rspec/matchers/matcher_methods_spec.rb",
      "spec/rspec/matchers/matcher_spec.rb",
      "spec/rspec/matchers/matchers_spec.rb",
      "spec/rspec/matchers/operator_matcher_spec.rb",
@@ -110,6 +109,7 @@ Gem::Specification.new do |s|
      "spec/rspec/matchers/compatibility_spec.rb",
      "spec/rspec/matchers/description_generation_spec.rb",
      "spec/rspec/matchers/dsl_spec.rb",
+     "spec/rspec/matchers/eq_spec.rb",
      "spec/rspec/matchers/eql_spec.rb",
      "spec/rspec/matchers/equal_spec.rb",
      "spec/rspec/matchers/exist_spec.rb",
@@ -118,7 +118,6 @@ Gem::Specification.new do |s|
      "spec/rspec/matchers/include_spec.rb",
      "spec/rspec/matchers/match_array_spec.rb",
      "spec/rspec/matchers/match_spec.rb",
-     "spec/rspec/matchers/matcher_methods_spec.rb",
      "spec/rspec/matchers/matcher_spec.rb",
      "spec/rspec/matchers/matchers_spec.rb",
      "spec/rspec/matchers/operator_matcher_spec.rb",
