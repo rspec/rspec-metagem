@@ -112,8 +112,23 @@ module Rspec
         it "merges arbitrary options" do
           mfe[:arbitrary].should == :options 
         end
-
       end
+
+      describe "#apply_condition" do
+        let(:group_metadata) { Metadata.new.process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
+        let(:group_line_number) { __LINE__ -1 }
+        let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"]) }
+        let(:example_line_number) { __LINE__ -1 }
+
+        it "matches when the line_number matches the group" do
+          group_metadata.apply_condition(:line_number, group_line_number).should be_true
+        end
+
+        it "matches when the line_number matches the example" do
+          example_metadata.apply_condition(:line_number, example_line_number).should be_true
+        end
+      end
+
     end
   end
 end

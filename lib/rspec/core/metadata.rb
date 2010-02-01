@@ -62,6 +62,12 @@ module Rspec
           metadata[filter_on] =~ filter
         when Proc
           filter.call(metadata[filter_on]) rescue false
+        when Fixnum
+          if filter_on == :line_number
+            [metadata[:line_number],metadata[:behaviour][:line_number]].include?(filter)
+          else
+            metadata[filter_on] == filter
+          end
         else
           metadata[filter_on] == filter
         end
