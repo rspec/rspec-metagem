@@ -1,22 +1,17 @@
-dir = File.dirname(__FILE__)
-lib_path = File.expand_path("#{dir}/../lib")
-$LOAD_PATH.unshift lib_path unless $LOAD_PATH.include?(lib_path)
+$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+require 'rspec/core'
 
 require 'rubygems'
-$LOAD_PATH.unshift(File.expand_path('../../../expectations/lib'), __FILE__)
+$LOAD_PATH << File.expand_path('../../../expectations/lib', __FILE__)
+$LOAD_PATH << File.expand_path('../../../mocks/lib', __FILE__)
 require 'rspec/expectations'
-$LOAD_PATH.unshift(File.expand_path('../../../mocks/lib'), __FILE__)
 require 'rspec/mocks'
-$LOAD_PATH.unshift(File.expand_path('../../lib'), __FILE__)
-require 'rspec/core'
 
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
 def with_ruby(version)
   yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
 end
-
-require 'rubygems'
 
 module Rspec
   module Core
@@ -70,7 +65,7 @@ end
 
 Rspec::Core.configure do |c|
   c.mock_framework = :rspec
-  # TODO: Filter run needs normal before/after/include filter logic
   c.filter_run :focused => true
+  c.run_all_when_everything_filtered = true
   c.color_enabled = not_in_editor?
 end

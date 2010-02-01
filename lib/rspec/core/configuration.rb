@@ -22,7 +22,7 @@ module Rspec
       attr_reader :options
 
       def initialize
-        @run_all_when_everything_filtered = true
+        @run_all_when_everything_filtered = false
         @advice = { 
           :before => { :each => [], :all => [], :suite => [] }, 
           :after => { :each => [], :all => [], :suite => [] } 

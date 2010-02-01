@@ -163,14 +163,14 @@ describe Rspec::Core::Configuration do
 
   describe "run_all_when_everything_filtered" do
 
-    it "defaults to true" do
-      Rspec::Core::Configuration.new.run_all_when_everything_filtered.should == true
+    it "defaults to false" do
+      Rspec::Core::Configuration.new.run_all_when_everything_filtered.should == false
     end
 
     it "can be queried with question method" do
       config = Rspec::Core::Configuration.new
-      config.run_all_when_everything_filtered = false
-      config.run_all_when_everything_filtered?.should == false
+      config.run_all_when_everything_filtered = true
+      config.run_all_when_everything_filtered?.should == true
     end
   end
   

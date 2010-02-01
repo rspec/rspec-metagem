@@ -9,8 +9,6 @@ Feature: example name option
   This allows you to run a single uniquely named example, all examples with
   similar names, all the example in a uniquely named group, etc, etc.
 
-  If no matches are found, then the entire suite is run.
-
   Background:
     Given a file named "first_spec.rb" with:
       """
@@ -29,7 +27,7 @@ Feature: example name option
 
   Scenario: no matches
     When I run "spec . --example nothing_like_this"
-    Then the stdout should match "4 examples, 0 failures"
+    Then the stdout should match "0 examples, 0 failures"
 
   Scenario: all matches
     When I run "spec . --example example"

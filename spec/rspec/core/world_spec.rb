@@ -24,7 +24,7 @@ describe Rspec::Core::World do
     before(:all) do
       options_1 = { :foo => 1, :color => 'blue', :feature => 'reporting' }
       options_2 = { :pending => true, :feature => 'reporting'  }
-      options_3 = { :array => [1,2,3,4], :color => 'blue', :feature => 'weather status' }      
+      options_3 = { :array => [1,2,3,4], :color => 'blue' }      
       @bg1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
       @bg2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
       @bg3 = Rspec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
@@ -45,54 +45,46 @@ describe Rspec::Core::World do
       Rspec::Core.world.behaviours.delete(@bg4)
     end
   
-    it "should find awesome examples" do
-      @world.apply_inclusion_filters(@bg4.examples, :awesome => true).should == [@bg4.examples[1], @bg4.examples[2]]
-    end
-    
-    it "should find no groups when given no search parameters" do
+    it "finds no groups when given no search parameters" do
       @world.apply_inclusion_filters([]).should == []
     end
   
-    it "should find three groups when searching for :behaviour_describes => Bar" do
+    it "finds matching groups when filtering on :describes (described class or module)" do
       @world.apply_inclusion_filters(@behaviours, :behaviour => { :describes => Bar }).should == [@bg1, @bg2, @bg3]
     end
     
-    it "should find one group when searching for :description => 'find group-1'" do
+    it "finds matching groups when filtering on :description with text" do
       @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => 'find group-1' }).should == [@bg1]
     end
     
-    it "should find two groups when searching for :description => lambda { |v| v.include?('-1') || v.include?('-3') }" do
+    it "finds matching groups when filtering on :description with a lambda" do
       @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [@bg1, @bg3]
     end
     
-    it "should find three groups when searching for :description => /find group/" do
+    it "finds matching groups when filtering on :description with a regular expression" do
       @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => /find group/ }).should == [@bg1, @bg2, @bg3]
     end
     
-    it "should find one group when searching for :foo => 1" do
-      @world.apply_inclusion_filters(@behaviours, :foo => 1 ).should == [@bg1]
-    end
-    
-    it "should find one group when searching for :pending => true" do
+    it "finds one group when searching for :pending => true" do
       @world.apply_inclusion_filters(@behaviours, :pending => true ).should == [@bg2]
     end
   
-    it "should find one group when searching for :array => [1,2,3,4]" do
+    it "finds matching groups when filtering on arbitrary metadata with a number" do
+      @world.apply_inclusion_filters(@behaviours, :foo => 1 ).should == [@bg1]
+    end
+    
+    it "finds matching groups when filtering on arbitrary metadata with an array" do
       @world.apply_inclusion_filters(@behaviours, :array => [1,2,3,4]).should == [@bg3]
     end
   
-    it "should find no group when searching for :array => [4,3,2,1]" do
+    it "finds no groups when filtering on arbitrary metadata with an array but the arrays do not match" do
       @world.apply_inclusion_filters(@behaviours, :array => [4,3,2,1]).should be_empty
     end    
   
-    it "should find two groups when searching for :color => 'blue'" do
-      @world.apply_inclusion_filters(@behaviours, :color => 'blue').should == [@bg1, @bg3]
+    it "finds matching examples when filtering on arbitrary metadata" do
+      @world.apply_inclusion_filters(@bg4.examples, :awesome => true).should == [@bg4.examples[1], @bg4.examples[2]]
     end
-  
-    it "should find two groups when searching for :feature => 'reporting' }" do
-      @world.apply_inclusion_filters(@behaviours, :feature => 'reporting').should == [@bg1, @bg2]
-    end
-  
+    
   end
   
   describe "applying exclusion filters" do

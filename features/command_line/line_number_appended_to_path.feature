@@ -20,6 +20,7 @@ Feature: line number appended to file path
       end
       """
 
+  @wip
   Scenario: two examples - both examples from the group declaration
     When I run "spec example_spec.rb:1 --format doc"
     Then the stdout should match "2 examples, 0 failures"
