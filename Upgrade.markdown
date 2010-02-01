@@ -1,5 +1,20 @@
 # Upgrade to rspec-2.0
 
+## What's new
+
+### New `eq` matcher.
+
+`Rspec::Matchers` now offers you two approaches to differentiating between
+object identity. You can use the rspec-1 approach:
+
+    actual.should == expected     # object equality
+    actual.should equal(expected) # object identity
+
+... or, if you prefer:
+
+    actual.should eq(expected) # object equality
+    actual.should be(expected) # object identity
+
 ## What's been removed
 
 ### simple_matcher
