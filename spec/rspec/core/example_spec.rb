@@ -43,8 +43,8 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe '#described_class' do
-    it "is a shortcut to ...." do
-      @example.described_class.should == @example.metadata[:describes]
+    it "returns the class (if any) of the outermost example group" do
+      described_class.should == Rspec::Core::Example
     end
   end
 

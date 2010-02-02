@@ -209,6 +209,10 @@ module Rspec
         @assignments ||= {}
       end
 
+      def described_class
+        running_example.metadata[:behaviour][:describes]
+      end
+
       def __reset__
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
         assignments.clear
