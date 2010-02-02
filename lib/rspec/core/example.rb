@@ -82,9 +82,7 @@ module Rspec
       end
 
       def runnable?
-        ![example_block.nil?,
-          metadata[:disabled] == true,
-          metadata[:pending] == true ].any?
+        !metadata[:pending]
       end
 
       def run(example_group_instance)

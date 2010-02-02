@@ -22,13 +22,16 @@ module Rspec
       end
 
       def self.example(desc=nil, options={}, &block)
-        examples << Rspec::Core::Example.new(self, desc, options.update(:caller => caller), block)
+        options.update(:pending => true) unless block
+        options.update(:caller => caller)
+        examples << Rspec::Core::Example.new(self, desc, options, block)
       end
 
       def self.alias_example_to(new_alias, extra_options={})
         new_alias = <<-END_RUBY
                       def self.#{new_alias}(desc=nil, options={}, &block)
                         updated_options = options.update(:caller => caller)
+                        updated_options.update(:pending => true) unless block
                         updated_options.update(#{extra_options.inspect})
                         examples << Rspec::Core::Example.new(self, desc, updated_options, block)
                       end
@@ -39,7 +42,6 @@ module Rspec
       alias_example_to :it
       alias_example_to :specify
       alias_example_to :focused, :focused => true
-      alias_example_to :disabled, :disabled => true
       alias_example_to :pending, :pending => true
 
       def self.it_should_behave_like(*names)
