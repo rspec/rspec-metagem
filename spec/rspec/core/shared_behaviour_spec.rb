@@ -15,7 +15,7 @@ describe Rspec::Core::SharedBehaviour do
   end
 
   it "should raise an ArgumentError when adding a second shared behaviour with the same name" do
-    group = double_describe('example group')
+    group = isolated_example_group('example group')
     group.share_examples_for('really important business value') { }
     lambda do
       group.share_examples_for('really important business value') { }
@@ -40,7 +40,7 @@ describe Rspec::Core::SharedBehaviour do
     end
 
     it "should module_eval any found shared behaviours" do
-      group = double_describe('fake group')
+      group = isolated_example_group('fake group')
       block1 = lambda {}
       block2 = lambda {
         def extra_helper
@@ -53,7 +53,7 @@ describe Rspec::Core::SharedBehaviour do
     end
 
     it "should make any shared behaviour available at the correct level" do
-      group = double_describe('fake group')
+      group = isolated_example_group('fake group')
       block = lambda {
         def self.class_helper; end
         def extra_helper; end
@@ -74,8 +74,8 @@ describe Rspec::Core::SharedBehaviour do
 
     it "adds examples to current example_group using it_should_behave_like" do
       cleanup_shared_behaviours do
-        group = double_describe("example_group") do |g|
-          g.it("i was already here") {}
+        group = isolated_example_group("example_group") do
+          it("i was already here") {}
         end
 
         group.examples.size.should == 1
@@ -93,7 +93,7 @@ describe Rspec::Core::SharedBehaviour do
 
     it "adds examples to from two shared groups" do
       cleanup_shared_behaviours do
-        group = double_describe("example_group") do |g|
+        group = isolated_example_group("example_group") do |g|
           g.it("i was already here") {}
         end
 
@@ -116,17 +116,17 @@ describe Rspec::Core::SharedBehaviour do
     end
 
     share_as('Cornucopia') do
-      it "should do foo"
+      it "should do foo" do; end
     end
 
-    it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
-      group = double_describe('group') { include Cornucopia }
-      group.should have(1).example
+    pending "adds examples to current example_group using include", :compat => 'rspec-1.2' do
+      group = isolated_example_group('group') { include Cornucopia }
+      group.examples.length.should == 1
     end
 
     it "adds examples to current example_group using it_should_behave_like with a module" do
       cleanup_shared_behaviours do
-        group = double_describe("example_group")  {}
+        group = isolated_example_group("example_group")  {}
 
         shared_foo = group.share_as(:FooShared) do
           it("shared example") {}

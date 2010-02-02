@@ -7,7 +7,7 @@ describe Rspec::Core::World do
   
   before do
     @world = Rspec::Core::World.new
-    Rspec::Core.stub!(:world).and_return(@world)
+    Rspec::Core.stub(:world).and_return(@world)
   end
 
   describe "behaviour groups" do
@@ -92,63 +92,50 @@ describe Rspec::Core::World do
     it "should find nothing if all describes match the exclusion filter" do
       options = { :network_access => true }      
       
-      isolate_example_group do
-        group1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options) do
-          it("foo") {}
-          it("bar") {}
-        end
-        
-        @world.apply_exclusion_filters(group1.examples, :network_access => true).should == []
+      group1 = isolated_example_group(Bar, "find group-1", options) do
+        it("foo") {}
+        it("bar") {}
       end
       
-      isolate_example_group do
-        group2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1") do
-          it("foo", :network_access => true) {}
-          it("bar") {}
-        end
-        
-        @world.apply_exclusion_filters(group2.examples, :network_access => true).should == [group2.examples.last]
+      @world.apply_exclusion_filters(group1.examples, :network_access => true).should == []
+      
+      group2 = isolated_example_group(Bar, "find group-1") do
+        it("foo", :network_access => true) {}
+        it("bar") {}
       end
+      
+      @world.apply_exclusion_filters(group2.examples, :network_access => true).should == [group2.examples.last]
   
     end
     
     it "should find nothing if a regexp matches the exclusion filter" do
-      isolate_example_group do
-        group = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
-          it("foo") {}
-          it("bar") {}
-        end
-        @world.apply_exclusion_filters(group.examples, :name => /exclude/).should == []
-        @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo").should == []
-        @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo", :behaviour => {
-          :describes => lambda { |b| b == Bar } } ).should == []
-        
-        @world.apply_exclusion_filters(group.examples, :name => /exclude not/).should == group.examples
-        @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == group.examples
-        @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == group.examples
+      group = isolated_example_group(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
+        it("foo") {}
+        it("bar") {}
       end
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/).should == []
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo").should == []
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo", :behaviour => {
+        :describes => lambda { |b| b == Bar } } ).should == []
+      
+      @world.apply_exclusion_filters(group.examples, :name => /exclude not/).should == group.examples
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == group.examples
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == group.examples
     end
     
   end
   
   describe "filtering behaviours" do
     
-    before(:all) do
-      @group1 = Rspec::Core::ExampleGroup.describe(Bar, "find these examples") do
+    it "should run matches" do
+      @group1 = isolated_example_group(Bar, "find these examples") do
         it('I have no options',       :color => :red, :awesome => true) {}
         it("I also have no options",  :color => :red, :awesome => true) {}
         it("not so awesome",          :color => :red, :awesome => false) {}
       end
-    end
-    
-    after(:all) do
-      Rspec::Core.world.behaviours.delete(@group1)
-    end
-
-    it "should run matches" do
-      Rspec::Core.world.stub!(:exclusion_filter).and_return({ :awesome => false })
-      Rspec::Core.world.stub!(:filter).and_return({ :color => :red })
-      Rspec::Core.world.stub!(:behaviours).and_return([@group1])
+      Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
+      Rspec::Core.world.stub(:filter).and_return({ :color => :red })
+      Rspec::Core.world.stub(:behaviours).and_return([@group1])
       filtered_behaviours = @world.filter_behaviours
       filtered_behaviours.should == [@group1]
       @group1.examples_to_run.should == @group1.examples[0..1]      

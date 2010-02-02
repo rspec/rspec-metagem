@@ -1,12 +1,5 @@
 require 'spec_helper'
 
-def empty_example_group(name='Empty ExampleGroup Group')
-  group = Rspec::Core::ExampleGroup.describe(Object, name) {}
-  remove_last_describe_from_world
-  yield group if block_given?
-  group
-end
-
 describe Rspec::Core::ExampleGroup do
 
   describe "#describe" do
@@ -24,29 +17,26 @@ describe Rspec::Core::ExampleGroup do
   describe '#name' do
 
     it "uses the first parameter as name" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe("my favorite pony") { }.name.should == 'my favorite pony'
       end
     end
 
     it "accepts a constant as the first parameter" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object) { }.name.should == 'Object'
       end
     end
 
     it "concats nested names" do
-      isolate_example_group do
-        behaviour_to_test = nil
-        group = empty_example_group('test')
-        group.name.should == 'Object test'
+      group = isolated_example_group(Object, 'test')
+      group.name.should == 'Object test'
 
-        nested_group_one = group.describe('nested one') { }
-        nested_group_one.name.should == 'Object test nested one'
+      nested_group_one = group.describe('nested one') { }
+      nested_group_one.name.should == 'Object test nested one'
 
-        nested_group_two = nested_group_one.describe('nested two') { }
-        nested_group_two.name.should == 'Object test nested one nested two'
-      end
+      nested_group_two = nested_group_one.describe('nested two') { }
+      nested_group_two.name.should == 'Object test nested one nested two'
     end
 
   end
@@ -56,7 +46,7 @@ describe Rspec::Core::ExampleGroup do
     context "with a constant as the first parameter" do
 
       it "is that constant" do
-        isolate_example_group do
+        disconnect_from_world do
           Rspec::Core::ExampleGroup.describe(Object) { }.describes.should == Object
         end
       end
@@ -66,7 +56,7 @@ describe Rspec::Core::ExampleGroup do
     context "with a string as the first parameter" do
 
       it "is nil" do
-        isolate_example_group do
+        disconnect_from_world do
           Rspec::Core::ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
         end
       end
@@ -78,14 +68,14 @@ describe Rspec::Core::ExampleGroup do
   describe '#description' do
 
     it "exposes the second parameter as description" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object, "my desc") { }.description.should == 'my desc'
       end
     end
 
     it "allows the second parameter to be nil" do
-      isolate_example_group do
-        Rspec::Core::ExampleGroup.describe(Object, nil) { }.description.size.should == 0
+      disconnect_from_world do
+        Rspec::Core::ExampleGroup.describe(Object, nil) { }.description.should == ""
       end
     end
 
@@ -94,13 +84,13 @@ describe Rspec::Core::ExampleGroup do
   describe '#metadata' do
 
     it "adds the third parameter to the metadata" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
       end
     end
 
     it "adds the caller to metadata" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller].any? {|f|
           f =~ /#{__FILE__}/
         }.should be_true
@@ -108,19 +98,19 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "adds the the file_path to metadata" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
       end
     end
 
     it "has a reader for file_path" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object) { }.file_path.should == __FILE__
       end
     end
 
     it "adds the line_number to metadata" do
-      isolate_example_group do
+      disconnect_from_world do
         Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
       end
     end
@@ -133,7 +123,7 @@ describe Rspec::Core::ExampleGroup do
         end
       end
 
-      4.times { remove_last_describe_from_world }
+      4.times { remove_last_example_group_from_world }
     end
 
   end
@@ -141,13 +131,13 @@ describe Rspec::Core::ExampleGroup do
   describe "adding before, after, and around hooks" do
 
     it "should expose the before each blocks at before_eachs" do
-      group = empty_example_group
+      group = isolated_example_group
       group.before(:each) { 'foo' }
       group.should have(1).before_eachs
     end
 
     it "should maintain the before each block order" do
-      group = empty_example_group 
+      group = isolated_example_group 
       group.before(:each) { 15 }
       group.before(:each) { 'A' }
       group.before(:each) { 33.5 }
@@ -158,13 +148,13 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "should expose the before all blocks at before_alls" do
-      group = empty_example_group
+      group = isolated_example_group
       group.before(:all) { 'foo' }
       group.should have(1).before_alls
     end
 
     it "should maintain the before all block order" do
-      group = empty_example_group 
+      group = isolated_example_group 
       group.before(:all) { 15 }
       group.before(:all) { 'A' }
       group.before(:all) { 33.5 }
@@ -175,13 +165,13 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "should expose the after each blocks at after_eachs" do
-      group = empty_example_group
+      group = isolated_example_group
       group.after(:each) { 'foo' }
       group.should have(1).after_eachs
     end
 
     it "should maintain the after each block order" do
-      group = empty_example_group 
+      group = isolated_example_group 
       group.after(:each) { 15 }
       group.after(:each) { 'A' }
       group.after(:each) { 33.5 }
@@ -192,13 +182,13 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "should expose the after all blocks at after_alls" do
-      group = empty_example_group
+      group = isolated_example_group
       group.after(:all) { 'foo' }
       group.should have(1).after_alls
     end
 
     it "should maintain the after each block order" do
-      group = empty_example_group 
+      group = isolated_example_group 
       group.after(:all) { 15 }
       group.after(:all) { 'A' }
       group.after(:all) { 33.5 }
@@ -209,7 +199,7 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "should expose the around each blocks at after_alls" do
-      group = empty_example_group
+      group = isolated_example_group
       group.around(:each) { 'foo' }
       group.should have(1).around_eachs
     end
@@ -219,13 +209,13 @@ describe Rspec::Core::ExampleGroup do
   describe "adding examples" do
 
     it "should allow adding an example using 'it'" do
-      group = empty_example_group
+      group = isolated_example_group
       group.it("should do something") { }
       group.examples.size.should == 1
     end
 
     it "should expose all examples at examples" do
-      group = empty_example_group
+      group = isolated_example_group
       group.it("should do something 1") { }
       group.it("should do something 2") { }
       group.it("should do something 3") { }
@@ -233,7 +223,7 @@ describe Rspec::Core::ExampleGroup do
     end
 
     it "should maintain the example order" do
-      group = empty_example_group
+      group = isolated_example_group
       group.it("should 1") { }
       group.it("should 2") { }
       group.it("should 3") { }

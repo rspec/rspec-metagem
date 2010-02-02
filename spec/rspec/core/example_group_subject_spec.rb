@@ -2,7 +2,7 @@ require 'spec_helper'
 
 def describe_double(describes=Object)
   group = Rspec::Core::ExampleGroup.describe(describes) {}
-  remove_last_describe_from_world
+  remove_last_example_group_from_world
   yield group if block_given?
   group
 end

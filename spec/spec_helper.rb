@@ -27,27 +27,24 @@ module Rspec
   end
 end
 
-def remove_last_describe_from_world
+def remove_last_example_group_from_world
   Rspec::Core.world.behaviours.pop
 end
 
-def isolate_example_group
-  if block_given?
-    example_groups = Rspec::Core.world.behaviours.dup
-    begin
-      Rspec::Core.world.behaviours.clear
-      yield
-    ensure
-      Rspec::Core.world.behaviours.clear
-      Rspec::Core.world.behaviours.concat(example_groups)
-    end
-  end
+def disconnect_from_world
+  example_groups = Rspec::Core.world.behaviours.dup
+  Rspec::Core.world.behaviours.clear
+  yield
+ensure
+  Rspec::Core.world.behaviours.clear
+  Rspec::Core.world.behaviours.concat(example_groups)
 end
 
-def double_describe(*args)
-  group = Rspec::Core::ExampleGroup.describe(*args) {}
-  remove_last_describe_from_world
-  yield group if block_given?
+def isolated_example_group(*args, &block)
+  block ||= lambda {}
+  args << 'example group' if args.empty?
+  group = Rspec::Core::ExampleGroup.describe(*args, &block)
+  remove_last_example_group_from_world
   group
 end
 

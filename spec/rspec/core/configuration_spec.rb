@@ -130,14 +130,12 @@ describe Rspec::Core::Configuration do
       end
     end
 
-    it "should include the given module into each matching behaviour" do
+    it "should include the given module into each matching example group" do
       Rspec::Core.configuration.include(InstanceLevelMethods, :magic_key => :include)
       
-      isolate_example_group do
-        group = Rspec::Core::ExampleGroup.describe(Object, 'does like, stuff and junk', :magic_key => :include) { }
-        group.should_not respond_to(:you_call_this_a_blt?)
-        group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
-      end
+      group = isolated_example_group('does like, stuff and junk', :magic_key => :include) { }
+      group.should_not respond_to(:you_call_this_a_blt?)
+      group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
     end
 
   end
@@ -156,7 +154,7 @@ describe Rspec::Core::Configuration do
       group = Rspec::Core::ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
       
       group.should respond_to(:that_thing)
-      remove_last_describe_from_world
+      remove_last_example_group_from_world
     end
 
   end
