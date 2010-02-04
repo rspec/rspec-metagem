@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-expectations}
-  s.version = "2.0.0.a2"
+  s.version = "2.0.0.a3"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-31}
+  s.date = %q{2010-02-03}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -137,15 +137,15 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec-core>, [">= 2.0.0.a2"])
-      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a2"])
+      s.add_development_dependency(%q<rspec-core>, [">= 2.0.0.a3"])
+      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a3"])
     else
-      s.add_dependency(%q<rspec-core>, [">= 2.0.0.a2"])
-      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a2"])
+      s.add_dependency(%q<rspec-core>, [">= 2.0.0.a3"])
+      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a3"])
     end
   else
-    s.add_dependency(%q<rspec-core>, [">= 2.0.0.a2"])
-    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a2"])
+    s.add_dependency(%q<rspec-core>, [">= 2.0.0.a3"])
+    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a3"])
   end
 end
 
