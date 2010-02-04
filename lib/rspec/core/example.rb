@@ -2,11 +2,12 @@ module Rspec
   module Core
     class Example
 
-      attr_reader :behaviour, :metadata, :example_block
+      attr_reader :example_group, :metadata, :example_block
+      alias_method :behaviour, :example_group
 
-      def initialize(behaviour, desc, options, example_block=nil)
-        @behaviour, @options, @example_block = behaviour, options, example_block
-        @metadata = @behaviour.metadata.for_example(desc, options)
+      def initialize(example_group, desc, options, example_block=nil)
+        @example_group, @options, @example_block = example_group, options, example_block
+        @metadata = @example_group.metadata.for_example(desc, options)
       end
 
       def description
@@ -22,7 +23,7 @@ module Rspec
       end
 
       def file_path
-        @metadata[:file_path] || behaviour.file_path
+        @metadata[:file_path] || example_group.file_path
       end
 
       def run_started
@@ -50,11 +51,11 @@ module Rspec
 
       def run_before_each
         @example_group_instance._setup_mocks if @example_group_instance.respond_to?(:_setup_mocks)
-        @behaviour.eval_before_eachs(@example_group_instance)
+        @example_group.eval_before_eachs(@example_group_instance)
       end
 
       def run_after_each
-        @behaviour.eval_after_eachs(@example_group_instance)
+        @example_group.eval_after_eachs(@example_group_instance)
         @example_group_instance._verify_mocks if @example_group_instance.respond_to?(:_verify_mocks)
       ensure
         @example_group_instance._teardown_mocks if @example_group_instance.respond_to?(:_teardown_mocks)
@@ -92,10 +93,10 @@ module Rspec
 
         begin
           run_before_each
-          if @behaviour.around_eachs.empty?
+          if @example_group.around_eachs.empty?
             @example_group_instance.instance_eval(&example_block) if runnable?
           else
-            @behaviour.around_eachs.first.call(AroundProxy.new(self, &example_block))
+            @example_group.around_eachs.first.call(AroundProxy.new(self, &example_block))
           end
         rescue Exception => e
           exception_encountered = e

@@ -42,8 +42,8 @@ module Rspec
         formatter.start(total_examples_to_run) # start the clock
         start = Time.now
 
-        Rspec::Core.world.behaviours_to_run.each do |behaviour|
-          suite_success &= behaviour.run(formatter)
+        Rspec::Core.world.example_groups_to_run.each do |example_group|
+          suite_success &= example_group.run(formatter)
         end
 
         formatter.start_dump(Time.now - start)

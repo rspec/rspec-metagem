@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-01-31}
+  s.date = %q{2010-02-03}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -137,8 +137,8 @@ Gem::Specification.new do |s|
      "lib/rspec/core/rake_task.rb",
      "lib/rspec/core/ruby_project.rb",
      "lib/rspec/core/runner.rb",
-     "lib/rspec/core/shared_behaviour.rb",
-     "lib/rspec/core/shared_behaviour_kernel_extensions.rb",
+     "lib/rspec/core/shared_example_group.rb",
+     "lib/rspec/core/shared_example_group_kernel_extensions.rb",
      "lib/rspec/core/version.rb",
      "lib/rspec/core/world.rb",
      "rspec-core.gemspec",
@@ -154,6 +154,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
      "spec/rspec/core/mocha_spec.rb",
+     "spec/rspec/core/pending_example_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
@@ -161,7 +162,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/resources/utf8_encoded.rb",
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
-     "spec/rspec/core/shared_behaviour_spec.rb",
+     "spec/rspec/core/shared_example_group_spec.rb",
      "spec/rspec/core/world_spec.rb",
      "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",
@@ -186,6 +187,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
      "spec/rspec/core/mocha_spec.rb",
+     "spec/rspec/core/pending_example_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
@@ -193,7 +195,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/resources/utf8_encoded.rb",
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
-     "spec/rspec/core/shared_behaviour_spec.rb",
+     "spec/rspec/core/shared_example_group_spec.rb",
      "spec/rspec/core/world_spec.rb",
      "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",

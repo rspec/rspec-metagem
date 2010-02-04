@@ -2,10 +2,10 @@ module Rspec
   module Core
     class World
 
-      attr_reader :behaviours
+      attr_reader :example_groups
 
       def initialize
-        @behaviours = []
+        @example_groups = []
       end
 
       def filter
@@ -16,38 +16,38 @@ module Rspec
         Rspec::Core.configuration.exclusion_filter
       end
 
-      def shared_behaviours
-        @shared_behaviours ||= {}
+      def shared_example_groups
+        @shared_example_groups ||= {}
       end
 
-      def behaviours_to_run
-        return @behaviours_to_run if @behaviours_to_run
+      def example_groups_to_run
+        return @example_groups_to_run if @example_groups_to_run
 
         if filter || exclusion_filter
-          @behaviours_to_run = filter_behaviours
+          @example_groups_to_run = filter_example_groups
 
-          if @behaviours_to_run.size == 0 && Rspec::Core.configuration.run_all_when_everything_filtered?
+          if @example_groups_to_run.size == 0 && Rspec::Core.configuration.run_all_when_everything_filtered?
             Rspec::Core.configuration.puts "No examples were matched by #{filter.inspect}, running all"
-            # reset the behaviour list to all behaviours, and add back all examples
-            @behaviours_to_run = @behaviours
-            @behaviours.each { |b| b.examples_to_run.replace(b.examples) }
+            # reset the behaviour list to all example groups, and add back all examples
+            @example_groups_to_run = @example_groups
+            @example_groups.each { |b| b.examples_to_run.replace(b.examples) }
           else
             Rspec::Core.configuration.puts "Run filtered using #{filter.inspect}"          
           end
         else
-          @behaviours_to_run = @behaviours
-          @behaviours.each { |b| b.examples_to_run.replace(b.examples) }
+          @example_groups_to_run = @example_groups
+          @example_groups.each { |b| b.examples_to_run.replace(b.examples) }
         end      
 
-        @behaviours_to_run
+        @example_groups_to_run
       end
 
       def total_examples_to_run
-        @total_examples_to_run ||= behaviours_to_run.inject(0) { |sum, b| sum += b.examples_to_run.size }
+        @total_examples_to_run ||= example_groups_to_run.inject(0) { |sum, b| sum += b.examples_to_run.size }
       end
 
-      def filter_behaviours
-        behaviours.inject([]) do |list_of_example_groups, example_group|
+      def filter_example_groups
+        example_groups.inject([]) do |list_of_example_groups, example_group|
           examples = example_group.examples
           examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
           examples = apply_inclusion_filters(examples, filter) if filter

@@ -91,7 +91,7 @@ describe Rspec::Core::ExampleGroup do
 
     it "adds the caller to metadata" do
       disconnect_from_world do
-        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:caller].any? {|f|
+        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:example_group][:caller].any? {|f|
           f =~ /#{__FILE__}/
         }.should be_true
       end
@@ -99,7 +99,7 @@ describe Rspec::Core::ExampleGroup do
 
     it "adds the the file_path to metadata" do
       disconnect_from_world do
-        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
+        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should == __FILE__
       end
     end
 
@@ -111,15 +111,15 @@ describe Rspec::Core::ExampleGroup do
 
     it "adds the line_number to metadata" do
       disconnect_from_world do
-        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
+        Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number].should == __LINE__
       end
     end
 
     it "adds file path and line number metadata for arbitrarily nested describes" do
       Rspec::Core::ExampleGroup.describe(Object) do
         Rspec::Core::ExampleGroup.describe("foo") do
-          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:file_path].should == __FILE__
-          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:behaviour][:line_number].should == __LINE__
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should == __FILE__
+          Rspec::Core::ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number].should == __LINE__
         end
       end
 
@@ -238,15 +238,15 @@ describe Rspec::Core::ExampleGroup do
 
     describe "A sample nested group", :nested_describe => "yep" do
       it "sets the described class to the constant Object" do
-        running_example.behaviour.describes.should == Object
+        running_example.example_group.describes.should == Object
       end
 
       it "sets the description to 'A sample nested describe'" do
-        running_example.behaviour.description.should == 'A sample nested group'
+        running_example.example_group.description.should == 'A sample nested group'
       end
 
-      it "has top level metadata from the behaviour and its ancestors" do
-        running_example.behaviour.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
+      it "has top level metadata from the example_group and its ancestors" do
+        running_example.example_group.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
       end
 
       it "exposes the parent metadata to the contained examples" do
@@ -261,10 +261,10 @@ describe Rspec::Core::ExampleGroup do
       @fake_formatter = Rspec::Core::Formatters::BaseFormatter.new
     end
 
-    def stub_behaviour
-      stub('behaviour', 
+    def stub_example_group
+      stub('example_group', 
         :metadata => Rspec::Core::Metadata.new.process(
-          'behaviour_name',
+          'example_group_name',
           :caller => ['foo_spec.rb:37']
         )
       ).as_null_object 
@@ -272,33 +272,33 @@ describe Rspec::Core::ExampleGroup do
 
     it "should return true if all examples pass" do
       use_formatter(@fake_formatter) do
-        passing_example1 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
-        passing_example2 = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
+        passing_example1 = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
+        passing_example2 = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
         Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([passing_example1, passing_example2])
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter').as_null_object).should be_true
+        Rspec::Core::ExampleGroup.run_examples(stub_example_group, mock('reporter').as_null_object).should be_true
       end
     end
 
     it "should return false if any of the examples return false" do
       use_formatter(@fake_formatter) do
-        failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
-        passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
+        failing_example = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 2 }))
+        passing_example = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
         Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter').as_null_object).should be_false
+        Rspec::Core::ExampleGroup.run_examples(stub_example_group, mock('reporter').as_null_object).should be_false
       end
     end
 
     it "should run all examples, regardless of any of them failing" do
       use_formatter(@fake_formatter) do
-        failing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 2 }))
-        passing_example = Rspec::Core::Example.new(stub_behaviour, 'description', {}, (lambda { 1.should == 1 }))
+        failing_example = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 2 }))
+        passing_example = Rspec::Core::Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
         Rspec::Core::ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
 
         passing_example.should_receive(:run)
 
-        Rspec::Core::ExampleGroup.run_examples(stub_behaviour, mock('reporter', :null_object => true))
+        Rspec::Core::ExampleGroup.run_examples(stub_example_group, mock('reporter', :null_object => true))
       end
     end
 
@@ -323,19 +323,19 @@ describe Rspec::Core::ExampleGroup do
 
     it "should be able to access the before all ivars in the before_all_ivars hash" do
       with_ruby('1.8') do
-        running_example.behaviour.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
+        running_example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
       end
       with_ruby('1.9') do
-        running_example.behaviour.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
+        running_example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
       end
     end
 
     describe "but now I am nested" do
-      it "should be able to access a parent behaviours before each ivar at a nested level" do
+      it "should be able to access a parent example groups before each ivar at a nested level" do
         @before_each_top_level.should == 'before_each_top_level'
       end
 
-      it "should be able to access a parent behaviours before all ivar at a nested level" do
+      it "should be able to access a parent example groups before all ivar at a nested level" do
         @before_all_top_level.should == "before_all_top_level"
       end
 
@@ -343,7 +343,7 @@ describe Rspec::Core::ExampleGroup do
         @before_all_top_level = "ive been changed"
       end
 
-      describe "accessing a before_all ivar that was changed in a parent behaviour" do
+      describe "accessing a before_all ivar that was changed in a parent example_group" do
         it "does not have access to the modified version" do
           @before_all_top_level.should == 'before_all_top_level'
         end

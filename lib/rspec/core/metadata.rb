@@ -13,24 +13,26 @@ module Rspec
       def initialize(superclass_metadata=nil)
         @superclass_metadata = superclass_metadata
         update(@superclass_metadata) if @superclass_metadata
-        store(:behaviour, {})
+        store(:example_group, {})
+        store(:behaviour, self[:example_group])
         yield self if block_given?
       end
 
       def process(*args)
         extra_metadata = args.last.is_a?(Hash) ? args.pop : {}
-        extra_metadata.delete(:behaviour) # Remove it when present to prevent it clobbering the one we setup
+        extra_metadata.delete(:example_group) # Remove it when present to prevent it clobbering the one we setup
+        extra_metadata.delete(:behaviour)     # Remove it when present to prevent it clobbering the one we setup
 
-        self[:behaviour][:describes] = args.shift unless args.first.is_a?(String)
-        self[:behaviour][:describes] ||= self.superclass_metadata && self.superclass_metadata[:behaviour][:describes]
-        self[:behaviour][:description] = args.shift || ''
+        self[:example_group][:describes] = args.shift unless args.first.is_a?(String)
+        self[:example_group][:describes] ||= self.superclass_metadata && self.superclass_metadata[:example_group][:describes]
+        self[:example_group][:description] = args.shift || ''
 
-        self[:behaviour][:name] = determine_name
-        self[:behaviour][:block] = extra_metadata.delete(:behaviour_block)
-        self[:behaviour][:caller] = extra_metadata.delete(:caller)
-        self[:behaviour][:file_path] = file_path_from(self[:behaviour], extra_metadata.delete(:file_path))
-        self[:behaviour][:line_number] = line_number_from(self[:behaviour], extra_metadata.delete(:line_number))
-        self[:behaviour][:location] = location_from(self[:behaviour])
+        self[:example_group][:name] = determine_name
+        self[:example_group][:block] = extra_metadata.delete(:example_group_block)
+        self[:example_group][:caller] = extra_metadata.delete(:caller)
+        self[:example_group][:file_path] = file_path_from(self[:example_group], extra_metadata.delete(:file_path))
+        self[:example_group][:line_number] = line_number_from(self[:example_group], extra_metadata.delete(:line_number))
+        self[:example_group][:location] = location_from(self[:example_group])
 
         update(extra_metadata)
       end
@@ -41,7 +43,7 @@ module Rspec
 
       def configure_for_example(description, options)
         store(:description, description.to_s)
-        store(:full_description, "#{self[:behaviour][:name]} #{self[:description]}")
+        store(:full_description, "#{self[:example_group][:name]} #{self[:description]}")
         store(:execution_result, {})
         store(:caller, options.delete(:caller))
         if self[:caller]
@@ -64,7 +66,7 @@ module Rspec
           filter.call(metadata[filter_on]) rescue false
         when Fixnum
           if filter_on == :line_number
-            [metadata[:line_number],metadata[:behaviour][:line_number]].include?(filter)
+            [metadata[:line_number],metadata[:example_group][:line_number]].include?(filter)
           else
             metadata[filter_on] == filter
           end
@@ -102,10 +104,10 @@ module Rspec
       end
 
       def determine_name
-        if superclass_metadata && superclass_metadata[:behaviour][:name]
-          self[:behaviour][:name] = "#{superclass_metadata[:behaviour][:name]} #{self[:behaviour][:description]}".strip 
+        if superclass_metadata && superclass_metadata[:example_group][:name]
+          self[:example_group][:name] = "#{superclass_metadata[:example_group][:name]} #{self[:example_group][:description]}".strip 
         else
-          self[:behaviour][:name] = "#{self[:behaviour][:describes]} #{self[:behaviour][:description]}".strip
+          self[:example_group][:name] = "#{self[:example_group][:describes]} #{self[:example_group][:description]}".strip
         end
       end
 

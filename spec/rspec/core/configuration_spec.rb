@@ -149,7 +149,7 @@ describe Rspec::Core::Configuration do
 
     end
 
-    it "should extend the given module into each matching behaviour" do
+    it "should extend the given module into each matching example group" do
       Rspec::Core.configuration.extend(ThatThingISentYou, :magic_key => :extend)      
       group = Rspec::Core::ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
       

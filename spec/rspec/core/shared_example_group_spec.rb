@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Rspec::Core::SharedBehaviour do
+describe Rspec::Core::SharedExampleGroup do
 
   it "should add the 'share_examples_for' method to the global namespace" do
     Kernel.should respond_to(:share_examples_for)
@@ -14,7 +14,7 @@ describe Rspec::Core::SharedBehaviour do
     Kernel.should respond_to(:share_as)
   end
 
-  it "should raise an ArgumentError when adding a second shared behaviour with the same name" do
+  it "should raise an ArgumentError when adding a second shared example group with the same name" do
     group = isolated_example_group('example group')
     group.share_examples_for('really important business value') { }
     lambda do
@@ -24,22 +24,22 @@ describe Rspec::Core::SharedBehaviour do
 
   describe "share_examples_for" do
 
-    it "should capture the given name and block in the Worlds collection of shared behaviours" do
-      Rspec::Core.world.shared_behaviours.should_receive(:[]=).with(:foo, anything)
+    it "should capture the given name and block in the Worlds collection of shared example groups" do
+      Rspec::Core.world.shared_example_groups.should_receive(:[]=).with(:foo, anything)
       share_examples_for(:foo) { }
     end
 
   end
 
-  describe "including shared behaviours using #it_should_behave_like" do
+  describe "including shared example_groups using #it_should_behave_like" do
 
-    def cleanup_shared_behaviours
-      original_shared_behaviours = Rspec::Core.world.shared_behaviours
+    def cleanup_shared_example_groups
+      original_shared_example_groups = Rspec::Core.world.shared_example_groups
       yield if block_given?
-      Rspec::Core.world.shared_behaviours.replace(original_shared_behaviours)
+      Rspec::Core.world.shared_example_groups.replace(original_shared_example_groups)
     end
 
-    it "should module_eval any found shared behaviours" do
+    it "should module_eval any found shared example_groups" do
       group = isolated_example_group('fake group')
       block1 = lambda {}
       block2 = lambda {
@@ -47,19 +47,19 @@ describe Rspec::Core::SharedBehaviour do
           'extra_helper'
         end
       }
-      Rspec::Core.world.stub!(:shared_behaviours).and_return({ :a => block1, :shared_behaviour => block2 })
+      Rspec::Core.world.stub!(:shared_example_groups).and_return({ :a => block1, :shared_example_group => block2 })
       group.should_receive(:module_eval).once
-      group.it_should_behave_like :shared_behaviour
+      group.it_should_behave_like :shared_example_group
     end
 
-    it "should make any shared behaviour available at the correct level" do
+    it "should make any shared example_group available at the correct level" do
       group = isolated_example_group('fake group')
       block = lambda {
         def self.class_helper; end
         def extra_helper; end
       }
-      Rspec::Core.world.stub!(:shared_behaviours).and_return({ :shared_behaviour => block })
-      group.it_should_behave_like :shared_behaviour
+      Rspec::Core.world.stub!(:shared_example_groups).and_return({ :shared_example_group => block })
+      group.it_should_behave_like :shared_example_group
       with_ruby(1.8) do
         group.instance_methods.should include('extra_helper')
         group.singleton_methods.should include('class_helper')
@@ -73,7 +73,7 @@ describe Rspec::Core::SharedBehaviour do
     it "should raise when named shared example_group can not be found" 
 
     it "adds examples to current example_group using it_should_behave_like" do
-      cleanup_shared_behaviours do
+      cleanup_shared_example_groups do
         group = isolated_example_group("example_group") do
           it("i was already here") {}
         end
@@ -92,7 +92,7 @@ describe Rspec::Core::SharedBehaviour do
     end
 
     it "adds examples to from two shared groups" do
-      cleanup_shared_behaviours do
+      cleanup_shared_example_groups do
         group = isolated_example_group("example_group") do |g|
           g.it("i was already here") {}
         end
@@ -125,7 +125,7 @@ describe Rspec::Core::SharedBehaviour do
     end
 
     it "adds examples to current example_group using it_should_behave_like with a module" do
-      cleanup_shared_behaviours do
+      cleanup_shared_example_groups do
         group = isolated_example_group("example_group")  {}
 
         shared_foo = group.share_as(:FooShared) do
@@ -168,13 +168,13 @@ describe Rspec::Core::SharedBehaviour do
       it "should run after(:all) only once from shared example_group", :compat => 'rspec-1.2' 
 
       it "should include modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
-        running_example.behaviour.included_modules.should include(RunningSharedExamplesJustForTesting)
+        running_example.example_group.included_modules.should include(RunningSharedExamplesJustForTesting)
       end
 
       it "should make methods defined in the shared example_group available in consuming example_group", :compat => 'rspec-1.2' do
         # TODO: Consider should have_method(...) simple matcher
-        with_ruby('1.8') { running_example.behaviour.methods.should include('magic') }
-        with_ruby('1.9') { running_example.behaviour.methods.should include(:magic) }
+        with_ruby('1.8') { running_example.example_group.methods.should include('magic') }
+        with_ruby('1.9') { running_example.example_group.methods.should include(:magic) }
       end
 
     end

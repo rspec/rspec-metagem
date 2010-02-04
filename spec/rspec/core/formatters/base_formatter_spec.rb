@@ -68,8 +68,8 @@ describe Rspec::Core::Formatters::BaseFormatter do
     @formatter.should have_interface_for(:start).with(1).argument
   end
 
-  it "should have add_behaviour as an interface with one argument" do
-    @formatter.should have_interface_for(:add_behaviour).with(1).argument
+  it "should have add_example_group as an interface with one argument" do
+    @formatter.should have_interface_for(:add_example_group).with(1).argument
   end
 
   it "should have example_finished as an interface with one argument" do

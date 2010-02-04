@@ -28,16 +28,16 @@ module Rspec
 end
 
 def remove_last_example_group_from_world
-  Rspec::Core.world.behaviours.pop
+  Rspec::Core.world.example_groups.pop
 end
 
 def disconnect_from_world
-  example_groups = Rspec::Core.world.behaviours.dup
-  Rspec::Core.world.behaviours.clear
+  example_groups = Rspec::Core.world.example_groups.dup
+  Rspec::Core.world.example_groups.clear
   yield
 ensure
-  Rspec::Core.world.behaviours.clear
-  Rspec::Core.world.behaviours.concat(example_groups)
+  Rspec::Core.world.example_groups.clear
+  Rspec::Core.world.example_groups.concat(example_groups)
 end
 
 def isolated_example_group(*args, &block)

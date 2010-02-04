@@ -3,18 +3,18 @@ require 'spec_helper'
 describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
   before do
-    behaviour = stub('behaviour', 
+    example_group = stub('example_group', 
       :metadata => Rspec::Core::Metadata.new.process(
         'group description',
         :caller => ['foo_spec.rb:37']
       )
     ).as_null_object 
-    @example = Rspec::Core::Example.new(behaviour, 'example description', {}, (lambda {}))
+    @example = Rspec::Core::Example.new(example_group, 'example description', {}, (lambda {}))
   end
 
   describe "attr readers" do
-    it "should have one for the parent behaviour" do
-      @example.should respond_to(:behaviour)
+    it "should have one for the parent example group" do
+      @example.should respond_to(:example_group)
     end
 
     it "should have one for it's description" do
@@ -53,8 +53,8 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
       running_example.description.should == "should have a reference to itself when running"
     end
 
-    it "should be able to access the behaviours top level metadata as if it were its own" do
-      running_example.behaviour.metadata.should include(:parent_metadata => 'sample')
+    it "should be able to access the example group's top level metadata as if it were its own" do
+      running_example.example_group.metadata.should include(:parent_metadata => 'sample')
       running_example.metadata.should include(:parent_metadata => 'sample')
     end
   end

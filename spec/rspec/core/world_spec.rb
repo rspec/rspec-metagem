@@ -10,11 +10,13 @@ describe Rspec::Core::World do
     Rspec::Core.stub(:world).and_return(@world)
   end
 
-  describe "behaviour groups" do
+  describe "example groups" do
   
-    it "should contain all defined behaviour groups" do
-      behaviour_group = Rspec::Core::ExampleGroup.describe(Bar, 'Empty Behaviour Group') { }
-      @world.behaviours.should include(behaviour_group)       
+    it "should contain all defined example groups" do
+      disconnect_from_world do
+        example_group = Rspec::Core::ExampleGroup.describe(Bar, 'Empty Example Group') { }
+        @world.example_groups.should include(example_group)       
+      end
     end
   
   end
@@ -35,14 +37,14 @@ describe Rspec::Core::World do
         it("not so awesome", :awesome => false) {}
         it("I also have no options") {}
       end
-      @behaviours = [@bg1, @bg2, @bg3, @bg4]
+      @example_groups = [@bg1, @bg2, @bg3, @bg4]
     end
     
     after(:all) do
-      Rspec::Core.world.behaviours.delete(@bg1)
-      Rspec::Core.world.behaviours.delete(@bg2)
-      Rspec::Core.world.behaviours.delete(@bg3)
-      Rspec::Core.world.behaviours.delete(@bg4)
+      Rspec::Core.world.example_groups.delete(@bg1)
+      Rspec::Core.world.example_groups.delete(@bg2)
+      Rspec::Core.world.example_groups.delete(@bg3)
+      Rspec::Core.world.example_groups.delete(@bg4)
     end
   
     it "finds no groups when given no search parameters" do
@@ -50,35 +52,35 @@ describe Rspec::Core::World do
     end
   
     it "finds matching groups when filtering on :describes (described class or module)" do
-      @world.apply_inclusion_filters(@behaviours, :behaviour => { :describes => Bar }).should == [@bg1, @bg2, @bg3]
+      @world.apply_inclusion_filters(@example_groups, :example_group => { :describes => Bar }).should == [@bg1, @bg2, @bg3]
     end
     
     it "finds matching groups when filtering on :description with text" do
-      @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => 'find group-1' }).should == [@bg1]
+      @world.apply_inclusion_filters(@example_groups, :example_group => { :description => 'find group-1' }).should == [@bg1]
     end
     
     it "finds matching groups when filtering on :description with a lambda" do
-      @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [@bg1, @bg3]
+      @world.apply_inclusion_filters(@example_groups, :example_group => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [@bg1, @bg3]
     end
     
     it "finds matching groups when filtering on :description with a regular expression" do
-      @world.apply_inclusion_filters(@behaviours, :behaviour => { :description => /find group/ }).should == [@bg1, @bg2, @bg3]
+      @world.apply_inclusion_filters(@example_groups, :example_group => { :description => /find group/ }).should == [@bg1, @bg2, @bg3]
     end
     
     it "finds one group when searching for :pending => true" do
-      @world.apply_inclusion_filters(@behaviours, :pending => true ).should == [@bg2]
+      @world.apply_inclusion_filters(@example_groups, :pending => true ).should == [@bg2]
     end
   
     it "finds matching groups when filtering on arbitrary metadata with a number" do
-      @world.apply_inclusion_filters(@behaviours, :foo => 1 ).should == [@bg1]
+      @world.apply_inclusion_filters(@example_groups, :foo => 1 ).should == [@bg1]
     end
     
     it "finds matching groups when filtering on arbitrary metadata with an array" do
-      @world.apply_inclusion_filters(@behaviours, :array => [1,2,3,4]).should == [@bg3]
+      @world.apply_inclusion_filters(@example_groups, :array => [1,2,3,4]).should == [@bg3]
     end
   
     it "finds no groups when filtering on arbitrary metadata with an array but the arrays do not match" do
-      @world.apply_inclusion_filters(@behaviours, :array => [4,3,2,1]).should be_empty
+      @world.apply_inclusion_filters(@example_groups, :array => [4,3,2,1]).should be_empty
     end    
   
     it "finds matching examples when filtering on arbitrary metadata" do
@@ -115,7 +117,7 @@ describe Rspec::Core::World do
       end
       @world.apply_exclusion_filters(group.examples, :name => /exclude/).should == []
       @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo").should == []
-      @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo", :behaviour => {
+      @world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo", :example_group => {
         :describes => lambda { |b| b == Bar } } ).should == []
       
       @world.apply_exclusion_filters(group.examples, :name => /exclude not/).should == group.examples
@@ -125,7 +127,7 @@ describe Rspec::Core::World do
     
   end
   
-  describe "filtering behaviours" do
+  describe "filtering example groups" do
     
     it "should run matches" do
       @group1 = isolated_example_group(Bar, "find these examples") do
@@ -135,9 +137,9 @@ describe Rspec::Core::World do
       end
       Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
       Rspec::Core.world.stub(:filter).and_return({ :color => :red })
-      Rspec::Core.world.stub(:behaviours).and_return([@group1])
-      filtered_behaviours = @world.filter_behaviours
-      filtered_behaviours.should == [@group1]
+      Rspec::Core.world.stub(:example_groups).and_return([@group1])
+      filtered_example_groups = @world.filter_example_groups
+      filtered_example_groups.should == [@group1]
       @group1.examples_to_run.should == @group1.examples[0..1]      
     end
     

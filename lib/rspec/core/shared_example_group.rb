@@ -1,14 +1,14 @@
 module Rspec
   module Core
-    module SharedBehaviourKernelExtensions
-
+    module SharedExampleGroup
+      
       def share_examples_for(name, &block)
-        Rspec::Core.world.shared_behaviours[name] = block
+        ensure_shared_example_group_name_not_taken(name)
+        Rspec::Core.world.shared_example_groups[name] = block
       end
 
       def share_as(name, &block)
         if Object.const_defined?(name)
-          puts "name was defined as #{name.inspect}"
           raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
         end
         
@@ -21,11 +21,21 @@ module Rspec
         end
 
         shared_const = Object.const_set(name, mod)
-        Rspec::Core.world.shared_behaviours[shared_const] = block
+        Rspec::Core.world.shared_example_groups[shared_const] = block
       end
 
       alias :shared_examples_for :share_examples_for
 
+      private
+
+      def ensure_shared_example_group_name_not_taken(name)
+        if Rspec::Core.world.shared_example_groups.has_key?(name)
+          raise ArgumentError.new("Shared example group '#{name}' already exists")
+        end
+      end
+
     end
   end
 end
+
+include Rspec::Core::SharedExampleGroup

@@ -5,13 +5,13 @@ module Rspec
     module Formatters
 
       class BaseFormatter
-        attr_accessor :behaviour
+        attr_accessor :example_group
         attr_reader :example_count, :duration, :examples
 
         def initialize
           @example_count = 0
           @examples = []
-          @behaviour = nil
+          @example_group = nil
         end
 
         def configuration
@@ -43,7 +43,7 @@ module Rspec
         # formatters that need to provide progress on feedback (graphical ones)
         #
         # This method will only be invoked once, and the next one to be invoked
-        # is #add_behaviour
+        # is #add_example_group
         def start(example_count)
           @example_count = example_count
         end
@@ -52,13 +52,15 @@ module Rspec
           examples << example
         end
 
-        # This method is invoked at the beginning of the execution of each behaviour.
-        # +behaviour+ is the behaviour.
+        # This method is invoked at the beginning of the execution of each example group.
+        # +example_group+ is the example_group.
         #
         # The next method to be invoked after this is #example_failed or #example_finished
-        def add_behaviour(behaviour)
-          @behaviour = behaviour
+        def add_example_group(example_group)
+          @example_group = example_group
         end
+        
+        alias_method :add_example_group, :add_example_group
 
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is #dump_failure (once for each failed example),

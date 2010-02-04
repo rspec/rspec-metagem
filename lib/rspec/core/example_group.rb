@@ -13,7 +13,7 @@ module Rspec
       def self.inherited(klass)
         super
         Rspec::Core.configuration.autorun!
-        Rspec::Core.world.behaviours << klass
+        Rspec::Core.world.example_groups << klass
       end
 
       def self.extended_modules #:nodoc:
@@ -45,7 +45,7 @@ module Rspec
       alias_example_to :pending, :pending => true
 
       def self.it_should_behave_like(*names)
-        Rspec::Core.world.shared_behaviours.each do |name, block|
+        Rspec::Core.world.shared_example_groups.each do |name, block|
           module_eval(&block) if names.include?(name)
         end
       end
@@ -75,11 +75,11 @@ module Rspec
       end
 
       def self.name(friendly=true)
-        friendly ? metadata[:behaviour][:name] : super
+        friendly ? metadata[:example_group][:name] : super
       end
 
       def self.describes
-        metadata[:behaviour][:describes]
+        metadata[:example_group][:describes]
       end
 
       def self.described_class
@@ -87,24 +87,24 @@ module Rspec
       end
 
       def self.description
-        metadata[:behaviour][:description]
+        metadata[:example_group][:description]
       end
 
       def self.file_path
-        metadata[:behaviour][:file_path]
+        metadata[:example_group][:file_path]
       end
 
-      def self.describe(*args, &behaviour_block)
+      def self.describe(*args, &example_group_block)
         raise(ArgumentError, "No arguments given.  You must a least supply a type or description") if args.empty? 
-        raise(ArgumentError, "You must supply a block when calling describe") if behaviour_block.nil?
+        raise(ArgumentError, "You must supply a block when calling describe") if example_group_block.nil?
 
         # TODO: Pull out the below into a metadata object, that we can defer the subclassing if necessary
         # describe 'foo', :shared => true will need this to be completed first
         subclass('NestedLevel') do
           args << {} unless args.last.is_a?(Hash)
-          args.last.update(:behaviour_block => behaviour_block, :caller => caller)
+          args.last.update(:example_group_block => example_group_block, :caller => caller)
           set_it_up(*args)
-          module_eval(&behaviour_block)
+          module_eval(&example_group_block)
         end
       end
 
@@ -136,33 +136,33 @@ module Rspec
         @before_all_ivars ||= {}
       end
 
-      def self.eval_before_alls(running_behaviour)
-        superclass.before_all_ivars.each { |ivar, val| running_behaviour.instance_variable_set(ivar, val) }
-        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
+      def self.eval_before_alls(running_example_group)
+        superclass.before_all_ivars.each { |ivar, val| running_example_group.instance_variable_set(ivar, val) }
+        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_example_group.instance_eval(&blk) }
 
-        before_alls.each { |blk| running_behaviour.instance_eval(&blk) }
-        running_behaviour.instance_variables.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
+        before_alls.each { |blk| running_example_group.instance_eval(&blk) }
+        running_example_group.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example_group.instance_variable_get(ivar) }
       end
 
-      def self.eval_before_eachs(running_behaviour)
-        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
-        before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
+      def self.eval_before_eachs(running_example_group)
+        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_example_group.instance_eval(&blk) }
+        before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_example_group.instance_eval(&blk) } }
       end
 
-      def self.eval_after_alls(running_behaviour)
-        after_alls.each { |blk| running_behaviour.instance_eval(&blk) }
-        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_behaviour.instance_eval(&blk) }
-        before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_behaviour.instance_variable_get(ivar) }
+      def self.eval_after_alls(running_example_group)
+        after_alls.each { |blk| running_example_group.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_example_group.instance_eval(&blk) }
+        before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example_group.instance_variable_get(ivar) }
       end
 
-      def self.eval_after_eachs(running_behaviour)
-        after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_behaviour.instance_eval(&blk) } }
-        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_behaviour.instance_eval(&blk) }
+      def self.eval_after_eachs(running_example_group)
+        after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example_group.instance_eval(&blk) } }
+        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_example_group.instance_eval(&blk) }
       end
 
       def self.run(reporter)
         example_world = new
-        reporter.add_behaviour(self)
+        reporter.add_example_group(self)
         eval_before_alls(example_world)
         success = run_examples(example_world, reporter)
         eval_after_alls(example_world)
@@ -210,7 +210,7 @@ module Rspec
       end
 
       def described_class
-        running_example.metadata[:behaviour][:describes]
+        running_example.metadata[:example_group][:describes]
       end
 
       def __reset__

@@ -3,36 +3,38 @@ require 'spec_helper'
 module Rspec
   module Core
     describe Metadata do
-      describe "[:behaviour][:name]" do
+      describe "[:example_group][:name]" do
         it "generates name for top level example group" do
           m = Metadata.new
           m.process("description", :caller => caller(0))
-          m[:behaviour][:name].should == "description"
+          m[:example_group][:name].should == "description"
         end
 
         it "concats args to describe()" do
           m = Metadata.new
           m.process(String, "with dots", :caller => caller(0))
-          m[:behaviour][:name].should == "String with dots"
+          m[:example_group][:name].should == "String with dots"
         end
 
         it "concats nested names" do
-          m = Metadata.new(:behaviour => {:name => 'parent'})
-          m.process(String, "child", :caller => caller(0))
-          m[:behaviour][:name].should == "parent child"
+          parent = Metadata.new
+          parent.process("parent", :caller => caller(0))
+          m = Metadata.new(parent)
+          m.process("child", :caller => caller(0))
+          m[:example_group][:name].should == "parent child"
         end
 
         it "strips the name" do
           m = Metadata.new
           m.process("  description  \n", :caller => caller(0))
-          m[:behaviour][:name].should == "description"
+          m[:example_group][:name].should == "description"
         end
       end
 
       describe "[:full_description]" do
-        it "concats the behaviour name and description" do
+        it "concats the example group name and description" do
           m = Metadata.new
-          m[:behaviour][:name] = "group"
+          m[:example_group][:name] = "group"
 
           m = m.for_example("example", {})
           m[:full_description].should == "group example"
@@ -48,7 +50,7 @@ module Rspec
             "bar_spec.rb:23",
             "baz"
           ])
-          m[:behaviour][:file_path].should == __FILE__
+          m[:example_group][:file_path].should == __FILE__
         end
       end
 
@@ -61,7 +63,7 @@ module Rspec
             "bar_spec.rb:23",
             "baz"
           ])
-          m[:behaviour][:line_number].should == __LINE__ - 4
+          m[:example_group][:line_number].should == __LINE__ - 4
         end
         it "uses the number after the first : for ruby 1.9" do
           m = Metadata.new
@@ -71,7 +73,7 @@ module Rspec
             "bar_spec.rb:23",
             "baz"
           ])
-          m[:behaviour][:line_number].should == __LINE__ - 4
+          m[:example_group][:line_number].should == __LINE__ - 4
         end
       end
 

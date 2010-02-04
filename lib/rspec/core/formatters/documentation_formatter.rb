@@ -6,28 +6,26 @@ module Rspec
 
       class DocumentationFormatter < BaseTextFormatter
 
-        attr_reader :previous_nested_behaviours
-
         def initialize
           super
-          @previous_nested_behaviours = []
+          @previous_nested_example_groups = []
         end
 
-        def add_behaviour(behaviour)
+        def add_example_group(example_group)
           super
 
-          described_behaviour_chain.each_with_index do |nested_behaviour, i|
-            unless nested_behaviour == previous_nested_behaviours[i]
+          described_example_group_chain.each_with_index do |nested_example_group, i|
+            unless nested_example_group == @previous_nested_example_groups[i]
               at_root_level = (i == 0)
-              desc_or_name = at_root_level ? nested_behaviour.name : nested_behaviour.description
+              desc_or_name = at_root_level ? nested_example_group.name : nested_example_group.description
               output.puts if at_root_level
               output.puts "#{'  ' * i}#{desc_or_name}"
             end
           end
 
-          @previous_nested_behaviours = described_behaviour_chain
+          @previous_nested_example_groups = described_example_group_chain
         end
-
+        
         def output_for(example)
           case example.execution_result[:status]
           when 'failed'
@@ -68,11 +66,11 @@ module Rspec
         end
 
         def current_indentation
-          '  ' * previous_nested_behaviours.size
+          '  ' * @previous_nested_example_groups.size
         end
 
-        def described_behaviour_chain
-          behaviour.ancestors
+        def described_example_group_chain
+          example_group.ancestors
         end
 
       end
