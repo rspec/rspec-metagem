@@ -2,8 +2,8 @@ $LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
 require 'rspec/core'
 
 require 'rubygems'
-$LOAD_PATH << File.expand_path('../../../expectations/lib', __FILE__)
-$LOAD_PATH << File.expand_path('../../../mocks/lib', __FILE__)
+$LOAD_PATH << File.expand_path('../../../rspec-expectations/lib', __FILE__)
+$LOAD_PATH << File.expand_path('../../../rspec-mocks/lib', __FILE__)
 require 'rspec/expectations'
 require 'rspec/mocks'
 

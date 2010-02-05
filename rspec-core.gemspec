@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version = "2.0.0.a3"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
-  s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-02-03}
+  s.authors = ["Chad Humphries", "David Chelimsky"]
+  s.date = %q{2010-02-04}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -74,6 +74,7 @@ Gem::Specification.new do |s|
      "example_specs/passing/stubbing_example.rb",
      "example_specs/passing/yielding_example.rb",
      "example_specs/ruby1.9.compatibility/access_to_constants_spec.rb",
+     "example_specs/spec_helper.rb",
      "features-pending/example_groups/example_group_with_should_methods.feature",
      "features-pending/example_groups/implicit_docstrings.feature",
      "features-pending/expectations/expect_change.feature",
