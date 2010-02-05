@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 describe Rspec::Core::CommandLineOptions do
   
@@ -7,7 +8,6 @@ describe Rspec::Core::CommandLineOptions do
   end
 
   describe 'color_enabled' do
-    
     example "-c, --colour, or --color should be parsed as true" do
       options_from_args('-c').should include(:color_enabled => true)
       options_from_args('--color').should include(:color_enabled => true)
@@ -17,11 +17,9 @@ describe Rspec::Core::CommandLineOptions do
     example "--no-color should be parsed as false" do
       options_from_args('--no-color').should include(:color_enabled => false)
     end
-
   end
 
   describe  'formatter' do
-
     example '-f or --formatter with no arguments should be parsed as nil' do
       options_from_args('--formatter').should include(:formatter => nil)
     end
@@ -31,16 +29,13 @@ describe Rspec::Core::CommandLineOptions do
       options_from_args('-f', 'd').should include(:formatter => 'd')
       options_from_args('-fd').should include(:formatter => 'd')
     end
-
   end
 
   describe 'profile_examples' do
-    
     example "-p or --profile should be parsed as true" do
       options_from_args('-p').should include(:profile_examples => true)
       options_from_args('--profile').should include(:profile_examples => true)
     end
-
   end
 
   describe 'line_number' do
@@ -57,8 +52,36 @@ describe Rspec::Core::CommandLineOptions do
     end
   end
 
-  describe "files_or_directories_to_run" do
+  describe "options" do
+    it "is parsed from --options or -o" do
+      options_from_args('--options', 'spec/spec.opts').should include(:options_file => "spec/spec.opts")
+      options_from_args('-o', 'foo/spec.opts').should include(:options_file => "foo/spec.opts")
+    end
 
+    it "defaults to spec/spec.opts when you don't give it a file path" do
+      options_from_args('-o').should include(:options_file => "spec/spec.opts")
+      options_from_args('--options').should include(:options_file => "spec/spec.opts")
+    end
+    
+    it "merges options from the CLI and file options gracefully" do
+      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
+      cli_options.stub!(:parse_spec_file_contents).and_return(:full_backtrace => true)
+      config = OpenStruct.new
+      cli_options.apply(config)
+      config.full_backtrace.should == true
+      config.formatter.should == 'progress'
+    end
+
+    it "CLI options trump file options" do
+      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
+      cli_options.stub!(:parse_spec_file_contents).and_return(:formatter => 'documentation')
+      config = OpenStruct.new
+      cli_options.apply(config)
+      config.formatter.should == 'progress'
+    end
+  end
+
+  describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
       options_from_args("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
     end

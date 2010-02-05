@@ -5,6 +5,7 @@ module Rspec
   module Core
 
     class CommandLineOptions
+      DEFAULT_OPTIONS_FILE = 'spec/spec.opts'
       
       attr_reader :args, :options
       
@@ -38,6 +39,10 @@ module Rspec
             options[:full_description] = /#{o}/
           end
 
+          opts.on('-o', '--options [PATH]', 'Read configuration options from a file path.  (Defaults to spec/spec.opts)') do |o|
+            options[:options_file] = o || DEFAULT_OPTIONS_FILE
+          end
+
           opts.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
             options[:profile_examples] = o
           end
@@ -56,9 +61,25 @@ module Rspec
       end
 
       def apply(config)
+        # 1) option file, cli options, rspec core configure
+        # TODO: Add options_file to configuration
+        # TODO: Store command line options for reference
+        if options_file = options.delete(:options_file)
+          merged_options = parse_spec_file_contents(options_file).merge!(options)
+          options.replace merged_options
+        end
+        
         options.each do |key, value|
           config.send("#{key}=", value)
         end
+      end
+
+      private
+
+      def parse_spec_file_contents(options_file)
+        return {} unless File.exist?(options_file)
+        spec_file_contents = File.readlines(options_file)
+        self.class.new(spec_file_contents).parse.options
       end
 
     end
