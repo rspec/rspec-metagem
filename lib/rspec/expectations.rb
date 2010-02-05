@@ -1,5 +1,4 @@
 require 'rspec/matchers'
-require 'rspec/expectations/differs/default'
 require 'rspec/expectations/fail_with'
 require 'rspec/expectations/errors'
 require 'rspec/expectations/extensions'
