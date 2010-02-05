@@ -215,6 +215,5 @@ module Rspec
       end
 
     end
-
   end
 end
