@@ -1,9 +1,6 @@
 module Rspec
   module Core
     class Configuration
-      # Regex patterns to scrub backtrace with
-      attr_reader :backtrace_clean_patterns
-
       # All of the defined advice in the configuration (before/after/around)
       attr_reader :advice
 
@@ -30,7 +27,6 @@ module Rspec
         @include_or_extend_modules = []
         @filter, @exclusion_filter = nil, nil
         @options = default_options
-        @backtrace_clean_patterns = []
       end
       
       def default_options
@@ -53,7 +49,11 @@ module Rspec
       def cleaned_from_backtrace?(line)
         options[:backtrace_clean_patterns].any? { |regex| line =~ regex }
       end
-      
+
+      def backtrace_clean_patterns
+        options[:backtrace_clean_patterns]
+      end
+
       def mock_framework=(use_me_to_mock)
         options[:mock_framework] = use_me_to_mock
         
@@ -93,6 +93,10 @@ module Rspec
 
       def color_enabled=(on_or_off)
         options[:color_enabled] = on_or_off
+      end
+
+      def full_backtrace=(bool)
+        @options[:backtrace_clean_patterns].clear
       end
 
       def color_enabled?

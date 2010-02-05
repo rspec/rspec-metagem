@@ -73,5 +73,12 @@ describe Rspec::Core::CommandLineOptions do
 
   end
 
+  describe "--backtrace (-b)" do
+    it "sets full_backtrace on config" do
+      options_from_args("--backtrace").should include(:full_backtrace => true)
+      options_from_args("-b").should include(:full_backtrace => true)
+    end
+  end
+
 end
 

@@ -42,6 +42,10 @@ module Rspec
             options[:profile_examples] = o
           end
 
+          opts.on('-b', '--backtrace', 'Enable full backtrace') do |o|
+            options[:full_backtrace] = true
+          end
+
           opts.on_tail('-h', '--help', "You're looking at it.") do 
             puts opts
             exit

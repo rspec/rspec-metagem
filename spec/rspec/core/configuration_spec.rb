@@ -211,4 +211,12 @@ describe Rspec::Core::Configuration do
     end
   end
 
+  describe "full_backtrace=" do
+    it "clears the backtrace clean patterns" do
+      config = Rspec::Core::Configuration.new
+      config.full_backtrace = true
+      config.options[:backtrace_clean_patterns].should == []
+    end
+  end
+
 end
