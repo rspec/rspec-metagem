@@ -136,36 +136,36 @@ module Rspec
         @before_all_ivars ||= {}
       end
 
-      def self.eval_before_alls(running_example_group)
-        superclass.before_all_ivars.each { |ivar, val| running_example_group.instance_variable_set(ivar, val) }
-        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_example_group.instance_eval(&blk) }
+      def self.eval_before_alls(running_example)
+        superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
+        Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
 
-        before_alls.each { |blk| running_example_group.instance_eval(&blk) }
-        running_example_group.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example_group.instance_variable_get(ivar) }
+        before_alls.each { |blk| running_example.instance_eval(&blk) }
+        running_example.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
-      def self.eval_before_eachs(running_example_group)
-        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_example_group.instance_eval(&blk) }
-        before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_example_group.instance_eval(&blk) } }
+      def self.eval_before_eachs(running_example)
+        Rspec::Core.configuration.find_advice(:before, :each, self).each { |blk| running_example.instance_eval(&blk) }
+        before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
       end
 
-      def self.eval_after_alls(running_example_group)
-        after_alls.each { |blk| running_example_group.instance_eval(&blk) }
-        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_example_group.instance_eval(&blk) }
-        before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example_group.instance_variable_get(ivar) }
+      def self.eval_after_alls(running_example)
+        after_alls.each { |blk| running_example.instance_eval(&blk) }
+        Rspec::Core.configuration.find_advice(:after, :all, self).each { |blk| running_example.instance_eval(&blk) }
+        before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
-      def self.eval_after_eachs(running_example_group)
-        after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example_group.instance_eval(&blk) } }
-        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_example_group.instance_eval(&blk) }
+      def self.eval_after_eachs(running_example)
+        after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example.instance_eval(&blk) } }
+        Rspec::Core.configuration.find_advice(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
       end
 
       def self.run(reporter)
-        example_world = new
+        example_group_instance = new
         reporter.add_example_group(self)
-        eval_before_alls(example_world)
-        success = run_examples(example_world, reporter)
-        eval_after_alls(example_world)
+        eval_before_alls(example_group_instance)
+        success = run_examples(example_group_instance, reporter)
+        eval_after_alls(example_group_instance)
 
         success
       end

@@ -2,12 +2,17 @@ module Rspec
   module Core
     class Example
 
-      attr_reader :example_group, :metadata, :example_block
+      attr_reader :metadata, :example_block
+
+      def example_group
+        @example_group_class
+      end
+
       alias_method :behaviour, :example_group
 
-      def initialize(example_group, desc, options, example_block=nil)
-        @example_group, @options, @example_block = example_group, options, example_block
-        @metadata = @example_group.metadata.for_example(desc, options)
+      def initialize(example_group_class, desc, options, example_block=nil)
+        @example_group_class, @options, @example_block = example_group_class, options, example_block
+        @metadata = @example_group_class.metadata.for_example(desc, options)
       end
 
       def description
@@ -51,11 +56,11 @@ module Rspec
 
       def run_before_each
         @example_group_instance._setup_mocks if @example_group_instance.respond_to?(:_setup_mocks)
-        @example_group.eval_before_eachs(@example_group_instance)
+        @example_group_class.eval_before_eachs(@example_group_instance)
       end
 
       def run_after_each
-        @example_group.eval_after_eachs(@example_group_instance)
+        @example_group_class.eval_after_eachs(@example_group_instance)
         @example_group_instance._verify_mocks if @example_group_instance.respond_to?(:_verify_mocks)
       ensure
         @example_group_instance._teardown_mocks if @example_group_instance.respond_to?(:_teardown_mocks)
@@ -93,10 +98,10 @@ module Rspec
 
         begin
           run_before_each
-          if @example_group.around_eachs.empty?
+          if @example_group_class.around_eachs.empty?
             @example_group_instance.instance_eval(&example_block) if runnable?
           else
-            @example_group.around_eachs.first.call(AroundProxy.new(self, &example_block))
+            @example_group_class.around_eachs.first.call(AroundProxy.new(self, &example_block))
           end
         rescue Exception => e
           exception_encountered = e
