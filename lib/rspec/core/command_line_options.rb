@@ -44,6 +44,7 @@ module Rspec
 
           opts.on_tail('-h', '--help', "You're looking at it.") do 
             puts opts
+            exit
           end
         end.parse!(@args)
 
