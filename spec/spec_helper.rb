@@ -56,13 +56,13 @@ ensure
   Rspec::Core.configuration.instance_variable_set(:@formatter, original_formatter)
 end
 
-def not_in_editor?
-  !(ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM'))
+def in_editor?
+  ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
 end
 
 Rspec::Core.configure do |c|
   c.mock_framework = :rspec
   c.filter_run :focused => true
   c.run_all_when_everything_filtered = true
-  c.color_enabled = not_in_editor?
+  c.color_enabled = !in_editor?
 end
