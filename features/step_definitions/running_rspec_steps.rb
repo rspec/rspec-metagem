@@ -1,12 +1,16 @@
-Given %r{^a file named "([^"]+)" with:$} do |file_name, code|
+Given /^a directory named "([^"]+)"$/ do |dirname|
+  create_dir(dirname)
+end
+
+Given /^a file named "([^"]+)" with:$/ do |file_name, code|
   create_file(file_name, code)
 end
 
-When %r{^I run "r?spec ([^"]+)"$} do |file_and_args|
+When /^I run "r?spec ([^"]+)"$/ do |file_and_args|
   spec(file_and_args)
 end
 
-When %r{^I run "ruby ([^"]+)"$} do |file_and_args|
+When /^I run "ruby ([^"]+)"$/ do |file_and_args|
   ruby(file_and_args)
 end
 

@@ -26,6 +26,10 @@ class RspecWorld
     ruby("#{spec_command} #{args}")
   end
 
+  def create_dir(dirname)
+    FileUtils.mkdir_p File.join(working_dir, dirname)
+  end
+
   def create_file(file_name, contents)
     file_path = File.join(working_dir, file_name)
     File.open(file_path, "w") { |f| f << contents }
