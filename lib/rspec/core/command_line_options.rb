@@ -64,10 +64,9 @@ module Rspec
         # 1) option file, cli options, rspec core configure
         # TODO: Add options_file to configuration
         # TODO: Store command line options for reference
-        if options_file = options.delete(:options_file)
-          merged_options = parse_spec_file_contents(options_file).merge!(options)
-          options.replace merged_options
-        end
+        options_file = options.delete(:options_file) || DEFAULT_OPTIONS_FILE
+        merged_options = parse_spec_file_contents(options_file).merge!(options)
+        options.replace merged_options
         
         options.each do |key, value|
           config.send("#{key}=", value)
@@ -78,7 +77,7 @@ module Rspec
 
       def parse_spec_file_contents(options_file)
         return {} unless File.exist?(options_file)
-        spec_file_contents = File.readlines(options_file)
+        spec_file_contents = File.readlines(options_file).map {|l| l.split}.flatten
         self.class.new(spec_file_contents).parse.options
       end
 

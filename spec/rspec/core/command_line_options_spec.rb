@@ -62,6 +62,24 @@ describe Rspec::Core::CommandLineOptions do
       options_from_args('-o').should include(:options_file => "spec/spec.opts")
       options_from_args('--options').should include(:options_file => "spec/spec.opts")
     end
+
+    it "loads automatically" do
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      File.stub(:exist?) { true }
+      File.stub(:readlines) { ["--formatter", "doc"] }
+      config = OpenStruct.new
+      cli_options.apply(config)
+      config.formatter.should == 'doc'
+    end
+
+    it "allows options on one line" do
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      File.stub(:exist?) { true }
+      File.stub(:readlines) { ["--formatter doc"] }
+      config = OpenStruct.new
+      cli_options.apply(config)
+      config.formatter.should == 'doc'
+    end
     
     it "merges options from the CLI and file options gracefully" do
       cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
