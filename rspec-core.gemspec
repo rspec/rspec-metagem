@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-02-05}
+  s.date = %q{2010-02-07}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -96,6 +96,7 @@ Gem::Specification.new do |s|
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
+     "features/configuration/spec_opts.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
      "features/expectations/customized_message.feature",
