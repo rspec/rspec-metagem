@@ -10,7 +10,7 @@ require 'rspec/mocks'
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
 def with_ruby(version)
-  yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
+  yield if RUBY_VERSION.to_s =~ Regexp.compile("^#{version}")
 end
 
 module Rspec
@@ -25,27 +25,6 @@ module Rspec
       end
     end
   end
-end
-
-def remove_last_example_group_from_world
-  Rspec::Core.world.example_groups.pop
-end
-
-def disconnect_from_world
-  example_groups = Rspec::Core.world.example_groups.dup
-  Rspec::Core.world.example_groups.clear
-  yield
-ensure
-  Rspec::Core.world.example_groups.clear
-  Rspec::Core.world.example_groups.concat(example_groups)
-end
-
-def isolated_example_group(*args, &block)
-  block ||= lambda {}
-  args << 'example group' if args.empty?
-  group = Rspec::Core::ExampleGroup.describe(*args, &block)
-  remove_last_example_group_from_world
-  group
 end
 
 def use_formatter(new_formatter)

@@ -58,8 +58,12 @@ module Rspec
         @_examples_to_run ||= []
       end
 
+      def self.superclass_metadata
+        self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
+      end
+
       def self.set_it_up(*args)
-        @metadata = Rspec::Core::Metadata.process(self.superclass.metadata, *args)
+        @metadata = Rspec::Core::Metadata.process(superclass_metadata, *args)
 
         Rspec::Core.configuration.find_modules(self).each do |include_or_extend, mod, opts|
           if include_or_extend == :extend
@@ -97,15 +101,24 @@ module Rspec
       def self.describe(*args, &example_group_block)
         raise(ArgumentError, "No arguments given.  You must a least supply a type or description") if args.empty? 
         raise(ArgumentError, "You must supply a block when calling describe") if example_group_block.nil?
+        @_subclass_count ||= 0
+        @_subclass_count += 1
+        const_set(
+          "NestedLevel_#{@_subclass_count}",
+          _build(Class.new(self), caller, args, &example_group_block)
+        )
+      end
 
-        # TODO: Pull out the below into a metadata object, that we can defer the subclassing if necessary
-        # describe 'foo', :shared => true will need this to be completed first
-        subclass('NestedLevel') do
-          args << {} unless args.last.is_a?(Hash)
-          args.last.update(:example_group_block => example_group_block, :caller => caller)
-          set_it_up(*args)
-          module_eval(&example_group_block)
-        end
+      def self.create(*args, &example_group_block)
+        _build(dup, caller, args, &example_group_block)
+      end
+
+      def self._build(klass, given_caller, args, &example_group_block)
+        args << {} unless args.last.is_a?(Hash)
+        args.last.update(:example_group_block => example_group_block, :caller => given_caller)
+        klass.set_it_up(*args) 
+        klass.module_eval(&example_group_block) if example_group_block
+        klass
       end
 
       class << self
@@ -137,7 +150,9 @@ module Rspec
       end
 
       def self.eval_before_alls(running_example)
-        superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
+        if superclass.respond_to?(:before_all_ivars)
+          superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
+        end
         Rspec::Core.configuration.find_advice(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
 
         before_alls.each { |blk| running_example.instance_eval(&blk) }
@@ -178,16 +193,6 @@ module Rspec
           before_all_ivars.each { |k, v| example_world.instance_variable_set(k, v) } 
           result
         end.all?
-      end
-
-      def self.subclass(base_name, &body) # :nodoc:
-        @_subclass_count ||= 0
-        @_subclass_count += 1
-        klass = Class.new(self)
-        class_name = "#{base_name}_#{@_subclass_count}"
-        const_set(class_name, klass)
-        klass.instance_eval(&body)
-        klass
       end
 
       def self.to_s

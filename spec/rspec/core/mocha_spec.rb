@@ -10,16 +10,14 @@ describe "Mocha Regression involving double reporting of errors" do
 
     use_formatter(formatter) do
 
-      disconnect_from_world do
-        group = Rspec::Core::ExampleGroup.describe("my favorite pony") do
-          example("showing a double fail") do
-            foo = "string"
-            foo.expects(:something)
-          end
-        end      
-        group.examples_to_run.replace(group.examples)
-        group.run(formatter)
-      end
+      group = Rspec::Core::ExampleGroup.create("my favorite pony") do
+        example("showing a double fail") do
+          foo = "string"
+          foo.expects(:something)
+        end
+      end      
+      group.examples_to_run.replace(group.examples)
+      group.run(formatter)
 
     end
 

@@ -9,7 +9,7 @@ end
 describe "an example" do
   context "with no block" do
     it "is listed as pending" do
-      group = isolated_example_group do
+      group = Rspec::Core::ExampleGroup.create('group') do
         it "has no block" 
       end
       group.run(stub('reporter').as_null_object)
