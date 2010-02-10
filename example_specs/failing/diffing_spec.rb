@@ -1,3 +1,5 @@
+require File.dirname(__FILE__) + '/spec_helper'
+
 describe "Running specs with --diff" do
   it "should print diff of different strings" do
     uk = <<-EOF
@@ -31,6 +33,6 @@ species=#{@species}
   it "should print diff of different objects' pretty representation" do
     expected = Animal.new "bob", "giraffe"
     actual   = Animal.new "bob", "tortoise"
-    expected.should eql(actual)
+    expected.should eq(actual)
   end
 end
