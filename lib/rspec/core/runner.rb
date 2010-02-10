@@ -17,7 +17,7 @@ module Rspec
         Rspec::Core.configuration
       end
 
-      def formatter
+      def reporter
         configuration.formatter
       end
 
@@ -32,28 +32,28 @@ module Rspec
         
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 
-        old_sync, formatter.output.sync = formatter.output.sync, true if formatter.output.respond_to?(:sync=)
+        old_sync, reporter.output.sync = reporter.output.sync, true if reporter.output.respond_to?(:sync=)
 
         suite_success = true
 
-        formatter_supports_sync = formatter.output.respond_to?(:sync=)
-        old_sync, formatter.output.sync = formatter.output.sync, true if formatter_supports_sync
+        reporter_supports_sync = reporter.output.respond_to?(:sync=)
+        old_sync, reporter.output.sync = reporter.output.sync, true if reporter_supports_sync
 
-        formatter.start(total_examples_to_run) # start the clock
+        reporter.start(total_examples_to_run) # start the clock
         start = Time.now
 
         Rspec::Core.world.example_groups_to_run.each do |example_group|
-          suite_success &= example_group.run(formatter)
+          suite_success &= example_group.run(reporter)
         end
 
-        formatter.start_dump(Time.now - start)
+        reporter.start_dump(Time.now - start)
 
-        formatter.dump_failures
-        formatter.dump_summary
-        formatter.dump_pending
-        formatter.close
+        reporter.dump_failures
+        reporter.dump_summary
+        reporter.dump_pending
+        reporter.close
 
-        formatter.output.sync = old_sync if formatter_supports_sync
+        reporter.output.sync = old_sync if reporter_supports_sync
 
         suite_success
       end

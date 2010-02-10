@@ -8,7 +8,7 @@ module Rspec
       extend Advice
       include ExampleGroupSubject
 
-      attr_accessor :running_example, :reporter
+      attr_accessor :running_example
 
       def self.inherited(klass)
         super
@@ -173,7 +173,7 @@ module Rspec
       # Runs all examples, returning true only if all of them pass
       def self.run_examples(example_world, reporter)
         examples_to_run.map do |ex| 
-          result = ex.run(example_world) 
+          result = ex.run(example_world, reporter) 
           example_world.__reset__
           before_all_ivars.each { |k, v| example_world.instance_variable_set(k, v) } 
           result

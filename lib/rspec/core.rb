@@ -1,6 +1,7 @@
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'
 require 'rspec/core/mocking/with_absolutely_nothing'
+require 'rspec/core/around_proxy'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
 require 'rspec/core/command_line_options'

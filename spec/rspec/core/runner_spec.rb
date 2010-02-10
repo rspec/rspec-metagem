@@ -2,10 +2,10 @@ require 'spec_helper'
 
 describe Rspec::Core::Runner do
 
-  describe 'formatter' do
+  describe 'reporter' do
 
     it 'should return the configured formatter' do
-      Rspec::Core::Runner.new.formatter.should == Rspec::Core.configuration.formatter
+      Rspec::Core::Runner.new.reporter.should == Rspec::Core.configuration.formatter
     end
 
   end  

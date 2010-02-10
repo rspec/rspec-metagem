@@ -35,23 +35,23 @@ module Rspec
         record_results :started_at => Time.now
       end
 
-      def run_passed
-        run_finished 'passed'
+      def run_passed(reporter=nil)
+        run_finished reporter, 'passed'
       end
 
-      def run_pending(message='Not yet implemented')
-        run_finished 'pending', :pending_message => message
+      def run_pending(reporter=nil, message='Not yet implemented')
+        run_finished reporter, 'pending', :pending_message => message
       end
 
-      def run_failed(exception)
-        run_finished 'failed', :exception_encountered => exception
+      def run_failed(reporter, exception)
+        run_finished reporter, 'failed', :exception_encountered => exception
       end
 
-      def run_finished(status, results={})
+      def run_finished(reporter, status, results={})
         record_results results.update(:status => status)
         finish_time = Time.now
         record_results :finished_at => finish_time, :run_time => (finish_time - execution_result[:started_at])
-        Rspec::Core.configuration.formatter.example_finished(self)
+        reporter.example_finished(self)
       end
 
       def run_before_each
@@ -73,21 +73,11 @@ module Rspec
         end
       end
 
-      class AroundProxy
-        def initialize(example_group_instance, &example_block)
-          @example_group_instance, @example_block = example_group_instance, example_block
-        end
-
-        def run
-          @example_group_instance.instance_eval(&@example_block)
-        end
-      end
-
       def runnable?
         !metadata[:pending]
       end
 
-      def run(example_group_instance)
+      def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @example_group_instance.running_example = self
 
@@ -120,9 +110,9 @@ module Rspec
         end
 
         if exception_encountered
-          run_failed(exception_encountered) 
+          run_failed(reporter, exception_encountered) 
         else
-          runnable? ? run_passed : run_pending
+          runnable? ? run_passed(reporter) : run_pending(reporter)
         end
 
         all_systems_nominal
