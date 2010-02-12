@@ -4,13 +4,10 @@ Feature: Nested example groups
   I want to nest examples groups
   So that I can better organize my examples
 
-  Scenario Outline: Nested example groups
+  @wip
+  Scenario: Nested example groups
     Given a file named "nested_example_groups.rb" with:
     """
-    require 'rspec/autorun'
-    require 'rspec/expectations'
-    Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
-
     describe "Some Object" do
       describe "with some more context" do
         it "should do this" do
@@ -24,7 +21,7 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec nested_example_groups.rb -fn"
+    When I run "rspec nested_example_groups.rb -fdoc"
     Then the stdout should match /^Some Object/
     And the stdout should match /^\s+with some more context/
     And the stdout should match /^\s+with some other context/

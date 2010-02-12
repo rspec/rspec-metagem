@@ -4,7 +4,7 @@ Feature: Nested example groups
   I want to use alternate names for describe
   So that I can better organize my examples
 
-  Scenario Outline: Using context
+  Scenario: Using context
     Given a file named "context_instead_of_describe_spec.rb" with:
     """
     context "Using context" do
