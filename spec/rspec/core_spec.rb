@@ -13,13 +13,13 @@ describe Rspec::Core do
   describe "#configure" do
     
     it "should yield the current configuration" do
-      Rspec::Core.configure do |config|
+      Rspec.configure do |config|
         config.should == Rspec::Core.configuration
       end
     end
     
     it "should be callable without a block" do
-      lambda { Rspec::Core.configure }.should_not raise_error
+      lambda { Rspec.configure }.should_not raise_error
     end
     
   end

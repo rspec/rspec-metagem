@@ -1,4 +1,4 @@
-Feature: before and after blocks
+Feature: around hook
 
   Scenario: define around(:each) block in example group
     Given a file named "around_each_in_example_group_spec.rb" with:

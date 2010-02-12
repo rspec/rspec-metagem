@@ -36,4 +36,8 @@ module Rspec
     end
 
   end
+
+  def self.configure
+    yield Core.configuration if block_given?
+  end
 end

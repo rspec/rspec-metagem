@@ -22,7 +22,7 @@ Feature: block local expectations
       """
       require 'account'
 
-      Rspec::Core.configure do |config|
+      Rspec.configure do |config|
         config.mock_framework = :rspec
       end
 
@@ -47,7 +47,7 @@ Feature: block local expectations
       """
       require 'account'
 
-      Rspec::Core.configure do |config|
+      Rspec.configure do |config|
         config.mock_framework = :rspec
       end
 

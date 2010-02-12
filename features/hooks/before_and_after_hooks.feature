@@ -1,4 +1,4 @@
-Feature: before and after blocks
+Feature: before and after hooks
 
   As a developer using RSpec
   I want to execute arbitrary code before and after each example
@@ -96,7 +96,7 @@ Feature: before and after blocks
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
-      Rspec::Core.configure do |config|
+      Rspec.configure do |config|
         config.before(:suite) do
           $before_suite = "before suite"
         end
@@ -133,7 +133,7 @@ Feature: before and after blocks
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """
-      Rspec::Core.configure do |config|
+      Rspec.configure do |config|
         config.before(:suite) do
           puts "before suite"
         end

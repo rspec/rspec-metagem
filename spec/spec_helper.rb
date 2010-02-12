@@ -39,7 +39,7 @@ def in_editor?
   ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
 end
 
-Rspec::Core.configure do |c|
+Rspec.configure do |c|
   c.mock_framework = :rspec
   c.filter_run :focused => true
   c.run_all_when_everything_filtered = true
