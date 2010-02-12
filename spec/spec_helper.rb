@@ -35,7 +35,7 @@ module Rspec
   end
 end
 
-Rspec::Core::configure do |config|
+Rspec::configure do |config|
   config.mock_with(:rspec)
   config.include Rspec::Mocks::Methods
   config.include Rspec::Matchers
