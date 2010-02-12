@@ -28,6 +28,7 @@ module Rspec
     end
 
     def self.configure
+      Rspec.deprecate('Rspec::Core.configure', 'Rspec.configure', '2.0.0')
       yield configuration if block_given?
     end
 
