@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-02-07}
+  s.date = %q{2010-02-11}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -116,6 +116,7 @@ Gem::Specification.new do |s|
      "lib/rspec/autorun.rb",
      "lib/rspec/core.rb",
      "lib/rspec/core/advice.rb",
+     "lib/rspec/core/around_proxy.rb",
      "lib/rspec/core/backward_compatibility.rb",
      "lib/rspec/core/command_line_options.rb",
      "lib/rspec/core/configuration.rb",
