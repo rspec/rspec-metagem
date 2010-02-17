@@ -1,9 +1,8 @@
-require 'rubygems'
 gem "jeweler", ">= 1.4.0"
 require 'rake'
 require 'yaml'
 
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
+$:.unshift File.expand_path('../lib', __FILE__)
 
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'

@@ -99,6 +99,24 @@ module Rspec
         @options[:backtrace_clean_patterns].clear
       end
 
+      def debug=(bool)
+        return unless bool
+        begin
+          require 'ruby-debug'
+        rescue LoadError
+          raise <<-EOM
+
+#{'*'*50}
+You must install ruby-debug to run rspec with the --debug option.
+
+If you have ruby-debug installed as a ruby gem, then you need to either
+require 'rubygems' or configure the RUBYOPT environment variable with
+the value 'rubygems'.
+#{'*'*50}
+EOM
+        end
+      end
+
       def color_enabled?
         options[:color_enabled]
       end

@@ -217,4 +217,20 @@ describe Rspec::Core::Configuration do
     end
   end
 
+  describe "debug=true" do
+    it "requires 'ruby-debug'" do
+      config = Rspec::Core::Configuration.new
+      config.should_receive(:require).with('ruby-debug')
+      config.debug = true
+    end
+  end
+
+  describe "debug=false" do
+    it "does not require 'ruby-debug'" do
+      config = Rspec::Core::Configuration.new
+      config.should_not_receive(:require).with('ruby-debug')
+      config.debug = false
+    end
+  end
+
 end
