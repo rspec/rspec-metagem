@@ -121,5 +121,12 @@ describe Rspec::Core::CommandLineOptions do
     end
   end
 
+  describe "--debug (-d)" do
+    it "sets debug on config" do
+      options_from_args("--debug").should include(:debug => true)
+      options_from_args("-d").should include(:debug => true)
+    end
+  end
+
 end
 

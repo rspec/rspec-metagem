@@ -51,6 +51,10 @@ module Rspec
             options[:full_backtrace] = true
           end
 
+          opts.on('-d', '--debug', 'Enable debugging') do |o|
+            options[:debug] = true
+          end
+
           opts.on_tail('-h', '--help', "You're looking at it.") do 
             puts opts
             exit
