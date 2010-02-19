@@ -35,15 +35,15 @@ module Rspec::Core
     context "setting the files to run" do
 
       it "should load files not following pattern if named explicitly" do
-        file = File.expand_path(File.dirname(__FILE__) + "/resources/a_bar.rb")
+        file = "./spec/rspec/core/resources/a_bar.rb"
         config.files_or_directories_to_run = file
-        config.files_to_run.should include(file)
+        config.files_to_run.should == [file]
       end
 
       describe "with default --pattern" do
 
         it "should load files named _spec.rb" do
-          dir = File.expand_path(File.dirname(__FILE__) + "/resources/")
+          dir = "./spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
           config.files_to_run.should == ["#{dir}/a_spec.rb"]
         end

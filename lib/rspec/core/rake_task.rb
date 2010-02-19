@@ -45,7 +45,7 @@ module Rspec
         @fail_on_error = true
 
         yield self if block_given?
-        @pattern ||= 'spec/**/*_spec.rb'
+        @pattern ||= './spec/**/*_spec.rb'
         define
       end
 

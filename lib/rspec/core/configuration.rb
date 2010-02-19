@@ -166,7 +166,7 @@ EOM
         options[:files_to_run] = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
             filename_pattern.split(",").each do |pattern|
-              result += Dir[File.expand_path("#{file}/#{pattern.strip}")]
+              result += Dir["#{file}/#{pattern.strip}"]
             end
           else
             path, line_number = file.split(':')
