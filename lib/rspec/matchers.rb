@@ -190,5 +190,10 @@ module Rspec
   #     config.include(CustomGameMatchers)
   #   end
   #
-  module Matchers; end
+  module Matchers
+    if Rspec.respond_to?(:configure)
+      Rspec.configure {|c| c.include self}
+    end
+  end
 end
+

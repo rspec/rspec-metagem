@@ -38,6 +38,5 @@ end
 Rspec::configure do |config|
   config.mock_with(:rspec)
   config.include Rspec::Mocks::Methods
-  config.include Rspec::Matchers
   config.color_enabled = true
 end
