@@ -5,11 +5,12 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-expectations}
-  s.version = "2.0.0.a6"
+  s.version = "2.0.0.a7"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-02-19}
+  s.date = %q{2010-02-20}
+  s.description = %q{rspec expectations (should[_not] and matchers)}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
     "README.markdown"
@@ -21,6 +22,11 @@ Gem::Specification.new do |s|
      "README.markdown",
      "Rakefile",
      "Upgrade.markdown",
+     "VERSION",
+     "features/expectations/customized_message.feature",
+     "features/matchers/define_matcher.feature",
+     "features/matchers/define_matcher_outside_rspec.feature",
+     "features/support/env.rb",
      "lib/rspec/expectations.rb",
      "lib/rspec/expectations/differs/default.rb",
      "lib/rspec/expectations/differs/load-diff-lcs.rb",
@@ -97,7 +103,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rspec}
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{rspec expectations (should[_not] and matchers)}
+  s.summary = %q{rspec-expectations-2.0.0.a7}
   s.test_files = [
     "spec/rspec/expectations/differs/default_spec.rb",
      "spec/rspec/expectations/extensions/kernel_spec.rb",
@@ -137,15 +143,21 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec-core>, [">= 2.0.0.a6"])
-      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+      s.add_development_dependency(%q<cucumber>, [">= 0.6.2"])
+      s.add_development_dependency(%q<aruba>, [">= 0.1.1"])
+      s.add_development_dependency(%q<rspec-core>, [">= 2.0.0.a7"])
+      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
     else
-      s.add_dependency(%q<rspec-core>, [">= 2.0.0.a6"])
-      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+      s.add_dependency(%q<cucumber>, [">= 0.6.2"])
+      s.add_dependency(%q<aruba>, [">= 0.1.1"])
+      s.add_dependency(%q<rspec-core>, [">= 2.0.0.a7"])
+      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
     end
   else
-    s.add_dependency(%q<rspec-core>, [">= 2.0.0.a6"])
-    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+    s.add_dependency(%q<cucumber>, [">= 0.6.2"])
+    s.add_dependency(%q<aruba>, [">= 0.1.1"])
+    s.add_dependency(%q<rspec-core>, [">= 2.0.0.a7"])
+    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
   end
 end
 

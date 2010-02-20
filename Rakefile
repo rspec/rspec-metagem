@@ -9,7 +9,8 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-expectations"
     gem.version = Rspec::Expectations::Version::STRING
-    gem.summary = "rspec expectations (should[_not] and matchers)"
+    gem.summary = "rspec-expectations-#{Rspec::Expectations::Version::STRING}"
+    gem.description = "rspec expectations (should[_not] and matchers)"
     gem.rubyforge_project = "rspec"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/expectations"
