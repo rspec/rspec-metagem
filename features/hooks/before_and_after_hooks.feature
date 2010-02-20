@@ -31,6 +31,8 @@ Feature: before and after hooks
   Scenario: define before(:each) block in example group
     Given a file named "before_each_in_example_group_spec.rb" with:
       """
+      require "rspec/expectations"
+
       class Thing
         def widgets
           @widgets ||= []
@@ -63,6 +65,8 @@ Feature: before and after hooks
   Scenario: define before(:all) block in example group
     Given a file named "before_all_in_example_group_spec.rb" with:
       """
+      require "rspec/expectations"
+
       class Thing
         def widgets
           @widgets ||= []
@@ -96,6 +100,8 @@ Feature: before and after hooks
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
+      require "rspec/expectations"
+
       Rspec.configure do |config|
         config.before(:suite) do
           $before_suite = "before suite"
@@ -133,6 +139,8 @@ Feature: before and after hooks
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """
+      require "rspec/expectations"
+
       Rspec.configure do |config|
         config.before(:suite) do
           puts "before suite"

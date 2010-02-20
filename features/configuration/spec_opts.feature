@@ -13,9 +13,8 @@ Feature: spec/spec.opts
   Scenario: color set in Rspec.configure
     Given a file named "spec/spec_helper.rb" with:
       """
-      Rspec.configure do |c|
-        c.color_enabled = true
-      end
+      require "rspec/expectations"
+      Rspec.configure {|c| c.color_enabled = true }
       """
     And a file named "spec/example_spec.rb" with:
       """
@@ -38,6 +37,8 @@ Feature: spec/spec.opts
       """
     And a file named "spec/example_spec.rb" with:
       """
+      require "rspec/expectations"
+
       describe "color_enabled" do
         context "when set with Rspec.configure" do
           it "is true" do
@@ -49,20 +50,21 @@ Feature: spec/spec.opts
     When I run "rspec spec/example_spec.rb"
     Then the stdout should match "1 example, 0 failures"
             
+  @wip
   Scenario: formatter set in both (spec.opts wins)
     Given a file named "spec/spec.opts" with:
       """
       --formatter documentation
       """
-
     And a file named "spec/spec_helper.rb" with:
       """
-      Rspec.configure do |c|
-        c.formatter = 'pretty'
-      end
+      require "rspec/expectations"
+      Rspec.configure {|c| c.formatter = 'progress'}
       """
     And a file named "spec/example_spec.rb" with:
       """
+      require "spec_helper"
+
       describe "formatter" do
         context "when set with Rspec.configure and in spec.opts" do
           it "takes the value set in spec.opts" do

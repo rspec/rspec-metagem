@@ -62,9 +62,6 @@ class RspecWorld
 $LOAD_PATH.unshift(File.expand_path('../../../lib', __FILE__))
 $LOAD_PATH.unshift(File.expand_path('../../../../rspec-expectations/lib', __FILE__))
 $LOAD_PATH.unshift(File.expand_path('../../../../rspec-mocks/lib', __FILE__))
-require 'rspec/core'
-require 'rspec/expectations'
-Rspec::Core::ExampleGroup.__send__(:include, Rspec::Matchers)
 CONTENT
       end
       cmd = "-rrubygems -rload_paths.rb #{rspec_libs} #{args}"

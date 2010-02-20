@@ -7,8 +7,8 @@ Feature: define matcher outside rspec
   Scenario: define a matcher with default messages
     Given a file named "test_multiples.rb" with:
       """
-      require 'test/unit'
-      require 'rspec/expectations'
+      require "test/unit"
+      require "rspec/expectations"
       
       Rspec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
@@ -35,4 +35,4 @@ Feature: define matcher outside rspec
     When I run "ruby test_multiples.rb"
     Then the exit code should be 256
     And the stdout should match "expected 9 to be a multiple of 4"
-    And the stdout should match "2 tests, 0 assertions, 0 failures, 1 errors"
+    And the stdout should match "2 tests, 0 assertions, 1 failures, 0 errors"

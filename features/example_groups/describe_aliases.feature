@@ -7,7 +7,9 @@ Feature: Nested example groups
   Scenario: Using context
     Given a file named "context_instead_of_describe_spec.rb" with:
     """
-    context "Using context" do
+    require "rspec/expectations"
+
+    describe "Using context" do
       context "with nested context" do
         it "should do this" do
           true.should be_true

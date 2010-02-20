@@ -7,7 +7,9 @@ Feature: custom formatters
   Scenario: specdoc format
     Given a file named "custom_formatter.rb" with:
       """
-      require 'spec/runner/formatter/base_formatter'
+      require "rspec/expectations"
+      require "spec/runner/formatter/base_formatter"
+
       class CustomFormatter < Spec::Runner::Formatter::BaseFormatter
         def initialize(options, output)
           @output = output
@@ -18,13 +20,13 @@ Feature: custom formatters
       end
       """
     And a file named "simple_example_spec.rb" with:
-    """
+      """
       describe "my group" do
         specify "my example" do
         end
       end
-    """
+      """
 
-    When I run "spec simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
+    When I run "rspec simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
     Then the exit code should be 0
     And the stdout should match "example: my example"

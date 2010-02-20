@@ -7,6 +7,8 @@ Feature: customized message
   Scenario: one additional method
     Given a file named "node_spec.rb" with:
       """
+      require "rspec/expectations"
+
       class Node
         def initialize(state=:waiting)
           @state = state
