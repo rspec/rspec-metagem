@@ -14,7 +14,7 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
     gem.version = Rspec::Core::Version::STRING
-    gem.summary = Rspec::Core::Version::SUMMARY
+    gem.summary = "rspec-core-#{Rspec::Core::Version::STRING}"
     gem.description = 'Rspec runner and example group classes'
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"

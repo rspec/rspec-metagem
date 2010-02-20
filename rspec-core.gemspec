@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-core}
-  s.version = "2.0.0.a6"
+  s.version = "2.0.0.a7"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-02-19}
+  s.date = %q{2010-02-20}
   s.default_executable = %q{rspec}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "README.markdown",
      "Rakefile",
      "TODO.markdown",
+     "VERSION",
      "bin/rspec",
      "cucumber.yml",
      "example_specs/failing/README.txt",
@@ -97,12 +98,9 @@ Gem::Specification.new do |s|
      "features/configuration/spec_opts.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
-     "features/expectations/customized_message.feature",
      "features/hooks/around_hook.feature",
      "features/hooks/before_and_after_hooks.feature",
      "features/hooks/halt.feature",
-     "features/matchers/define_matcher.feature",
-     "features/matchers/define_matcher_outside_rspec.feature",
      "features/mock_framework_integration/use_flexmock.feature",
      "features/mock_framework_integration/use_mocha.feature",
      "features/mock_framework_integration/use_rr.feature",
@@ -178,7 +176,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rspec}
   s.rubygems_version = %q{1.3.5}
-  s.summary = %q{rspec-core 2.0.0.a6}
+  s.summary = %q{rspec-core-2.0.0.a7}
   s.test_files = [
     "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
@@ -211,17 +209,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec-expectations>, [">= 2.0.0.a6"])
-      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+      s.add_development_dependency(%q<rspec-expectations>, [">= 2.0.0.a7"])
+      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
       s.add_development_dependency(%q<cucumber>, [">= 0.5.3"])
     else
-      s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a6"])
-      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+      s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a7"])
+      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
       s.add_dependency(%q<cucumber>, [">= 0.5.3"])
     end
   else
-    s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a6"])
-    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a6"])
+    s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.a7"])
+    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.a7"])
     s.add_dependency(%q<cucumber>, [">= 0.5.3"])
   end
 end
