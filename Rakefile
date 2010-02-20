@@ -14,6 +14,8 @@ begin
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
+    gem.add_development_dependency('cucumber', ">= 0.6.2")
+    gem.add_development_dependency('aruba', ">= 0.1.1")
     gem.add_development_dependency('rspec-core', ">= #{Rspec::Expectations::Version::STRING}")
     gem.add_development_dependency('rspec-mocks', ">= #{Rspec::Expectations::Version::STRING}")
   end
@@ -31,7 +33,14 @@ rescue LoadError
   puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-meta"
 end
 
-task :default => [:check_dependencies, :spec]
+require 'cucumber/rake/task'
+
+Cucumber::Rake::Task.new do |t|
+  t.cucumber_opts = %w{--format progress}
+end
+
+
+task :default => [:check_dependencies, :spec, :cucumber]
 
 require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
