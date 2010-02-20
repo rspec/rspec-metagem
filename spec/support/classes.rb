@@ -1,12 +1,6 @@
 # This file contains various classes used by the specs.
 module Rspec
   module Expectations
-    # class ClassWithMultiWordPredicate
-    #   def multi_word_predicate?
-    #     true 
-    #   end
-    # end
-    # 
     module Helper
       class CollectionWithSizeMethod
         def initialize; @list = []; end
