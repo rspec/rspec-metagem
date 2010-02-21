@@ -13,12 +13,12 @@ begin
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec"
     gem.version = Rspec::Version::STRING
-    gem.rubyforge_project = "rspec"
-    gem.summary = "pulls in the other rspec gems"
+    gem.summary = "rspec-#{Rspec::Version::STRING}"
+    gem.description = "Meta-gem that depends on the other rspec gems"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
-    gem.version = Rspec::Version::STRING
+    gem.rubyforge_project = "rspec"
     gem.add_dependency "rspec-core", ">= #{Rspec::Version::STRING}"
     gem.add_dependency "rspec-expectations", ">= #{Rspec::Version::STRING}"
     gem.add_dependency "rspec-mocks", ">= #{Rspec::Version::STRING}"
