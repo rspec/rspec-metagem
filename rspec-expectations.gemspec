@@ -99,6 +99,16 @@ Gem::Specification.new do |s|
      "spec/support/classes.rb"
   ]
   s.homepage = %q{http://github.com/rspec/expectations}
+  s.post_install_message = %q{**************************************************
+
+  Thank you for installing rspec-expectations-2.0.0.a7
+
+  The 'a' in 2.0.0.a7 means this is alpha software.
+  If you are looking for a supported production release,
+  please "gem install rspec" (without --pre).
+  
+**************************************************
+}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rspec}

@@ -19,8 +19,18 @@ begin
     gem.add_development_dependency('aruba', ">= 0.1.1")
     gem.add_development_dependency('rspec-core', ">= #{Rspec::Expectations::Version::STRING}")
     gem.add_development_dependency('rspec-mocks', ">= #{Rspec::Expectations::Version::STRING}")
+    gem.post_install_message = <<-EOM
+#{"*"*50}
+
+  Thank you for installing #{gem.summary}
+
+  The 'a' in #{gem.version} means this is alpha software.
+  If you are looking for a supported production release,
+  please "gem install rspec" (without --pre).
+  
+#{"*"*50}
+EOM
   end
-  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
