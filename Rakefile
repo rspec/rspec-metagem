@@ -22,9 +22,18 @@ begin
     gem.add_dependency "rspec-core", ">= #{Rspec::Version::STRING}"
     gem.add_dependency "rspec-expectations", ">= #{Rspec::Version::STRING}"
     gem.add_dependency "rspec-mocks", ">= #{Rspec::Version::STRING}"
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+    gem.post_install_message = <<-EOM
+#{"*"*50}
+
+  Thank you for installing #{gem.summary}
+
+  The 'a' in #{gem.version} means this is alpha software.
+  If you are looking for a supported production release,
+  please "gem install rspec" (without --pre).
+  
+#{"*"*50}
+EOM
   end
-  Jeweler::GemcutterTasks.new
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
