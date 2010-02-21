@@ -1,5 +1,5 @@
 module Rspec # :nodoc:
   module Version # :nodoc:
-    STRING = File.read(File.expand_path('../../../VERSION', __FILE__))
+    STRING = File.readlines(File.expand_path('../../../VERSION', __FILE__)).first
   end
 end
