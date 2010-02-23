@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'stringio'
 
 share_as :HaveSpecHelper do
   def create_collection_owner_with(n)
