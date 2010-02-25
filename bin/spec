@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+# This is for backward compatibility with the rspec-1.x spec
+# command.
+
+begin
+  # rspec-1.x
+  require 'spec/autorun'
+rescue LoadError
+  # rspec-2.x
+  require 'rspec/autorun'
+end

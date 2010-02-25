@@ -9,11 +9,10 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-02-22}
-  s.default_executable = %q{rspec}
+  s.date = %q{2010-02-25}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
-  s.executables = ["rspec"]
+  s.executables = ["rspec", "spec"]
   s.extra_rdoc_files = [
     "README.markdown"
   ]
@@ -27,6 +26,7 @@ Gem::Specification.new do |s|
      "TODO.markdown",
      "VERSION",
      "bin/rspec",
+     "bin/spec",
      "cucumber.yml",
      "example_specs/failing/README.txt",
      "example_specs/failing/diffing_spec.rb",
