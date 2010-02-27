@@ -19,9 +19,9 @@ begin
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
     gem.rubyforge_project = "rspec"
-    gem.add_dependency "rspec-core", ">= #{Rspec::Version::STRING}"
-    gem.add_dependency "rspec-expectations", ">= #{Rspec::Version::STRING}"
-    gem.add_dependency "rspec-mocks", ">= #{Rspec::Version::STRING}"
+    gem.add_dependency "rspec-core", Rspec::Version::STRING
+    gem.add_dependency "rspec-expectations", Rspec::Version::STRING
+    gem.add_dependency "rspec-mocks", Rspec::Version::STRING
     gem.post_install_message = <<-EOM
 #{"*"*50}
 
