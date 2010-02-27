@@ -22,6 +22,6 @@ Feature: Nested example groups
     end
     """
     When I run "rspec nested_example_groups.rb -fdoc"
-    Then the stdout should match /^Some Object/
-    And the stdout should match /^\s+with some more context/
-    And the stdout should match /^\s+with some other context/
+    Then I should see /^Some Object/
+    And I should see /^\s+with some more context/
+    And I should see /^\s+with some other context/

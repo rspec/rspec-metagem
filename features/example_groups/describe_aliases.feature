@@ -18,5 +18,8 @@ Feature: Nested example groups
     end
     """
     When I run "rspec context_instead_of_describe_spec.rb -fn"
-    Then the stdout should match /^Using context/
-    And the stdout should match /^\s+with nested context/
+    Then I should see:
+      """
+      Using context
+        with nested context
+      """

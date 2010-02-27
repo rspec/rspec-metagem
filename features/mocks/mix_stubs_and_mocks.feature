@@ -25,4 +25,4 @@ Feature: Spec and test together
       end
       """
     When I run "rspec stub_and_mocks_spec.rb -fs"
-    Then the stdout should match "expected :foo with (\"first\") but received it with ([\"second\"], [\"third\"])"
+    Then I should see "'messenger' expected :foo with"

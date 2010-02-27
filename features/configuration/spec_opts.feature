@@ -28,7 +28,7 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec spec/example_spec.rb"
-    Then the stdout should match "1 example, 0 failures"
+    Then I should see "1 example, 0 failures"
             
   Scenario: color set in spec/spec.opts
     Given a file named "spec/spec.opts" with:
@@ -48,7 +48,7 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec spec/example_spec.rb"
-    Then the stdout should match "1 example, 0 failures"
+    Then I should see "1 example, 0 failures"
             
   @wip
   Scenario: formatter set in both (spec.opts wins)
@@ -74,5 +74,5 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec spec/example_spec.rb"
-    Then the stdout should match "1 example, 0 failures"
+    Then I should see "1 example, 0 failures"
 

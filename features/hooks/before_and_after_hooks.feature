@@ -60,7 +60,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec before_each_in_example_group_spec.rb"
-    Then the stdout should match "3 examples, 0 failures"
+    Then I should see "3 examples, 0 failures"
 
   Scenario: define before(:all) block in example group
     Given a file named "before_all_in_example_group_spec.rb" with:
@@ -94,7 +94,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec before_all_in_example_group_spec.rb"
-    Then the stdout should match "3 examples, 0 failures"
+    Then I should see "3 examples, 0 failures"
 
   @wip
   Scenario: define before and after blocks in configuration
@@ -132,8 +132,8 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "spec befores_in_configuration_spec.rb"
-    Then the stdout should match "3 examples, 0 failures"
+    When I run "rspec befores_in_configuration_spec.rb"
+    Then I should see "3 examples, 0 failures"
 
   @wip
   Scenario: before/after blocks are run in order
@@ -172,6 +172,6 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "spec ensure_block_order_spec.rb"
-    Then the stdout should match /before suite\nbefore all\nbefore each\nafter each\n\.after all\n.*after suite/m
+    When I run "rspec ensure_block_order_spec.rb"
+    Then I should see /before suite\nbefore all\nbefore each\nafter each\n\.after all\n.*after suite/m
   

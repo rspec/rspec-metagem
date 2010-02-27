@@ -24,4 +24,4 @@ Feature: halt
       end
       """
     When I run "rspec spec/example_spec.rb"
-    Then the stdout should match "1 example, 1 failure"
+    Then I should see "1 example, 1 failure"

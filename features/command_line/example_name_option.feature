@@ -26,29 +26,29 @@ Feature: example name option
       """
 
   Scenario: no matches
-    When I run "spec . --example nothing_like_this"
-    Then the stdout should match "0 examples, 0 failures"
+    When I run "rspec . --example nothing_like_this"
+    Then I should see "0 examples, 0 failures"
 
   Scenario: all matches
-    When I run "spec . --example example"
-    Then the stdout should match "4 examples, 0 failures"
+    When I run "rspec . --example example"
+    Then I should see "4 examples, 0 failures"
 
   Scenario: one match in each file
-    When I run "spec . --example 'first example'"
-    Then the stdout should match "2 examples, 0 failures"
+    When I run "rspec . --example 'first example'"
+    Then I should see "2 examples, 0 failures"
 
   Scenario: one match in one file
-    When I run "spec . --example 'first example in first group'"
-    Then the stdout should match "1 example, 0 failures"
+    When I run "rspec . --example 'first example in first group'"
+    Then I should see "1 example, 0 failures"
 
   Scenario: one match in one file using regexp
-    When I run "spec . --example 'first .* first example'"
-    Then the stdout should match "1 example, 0 failures"
+    When I run "rspec . --example 'first .* first example'"
+    Then I should see "1 example, 0 failures"
 
   Scenario: all examples in one group
-    When I run "spec . --example 'first group'"
-    Then the stdout should match "2 examples, 0 failures"
+    When I run "rspec . --example 'first group'"
+    Then I should see "2 examples, 0 failures"
 
   Scenario: one match in one file with group name
-    When I run "spec . --example 'second group first example'"
-    Then the stdout should match "1 example, 0 failures"
+    When I run "rspec . --example 'second group first example'"
+    Then I should see "1 example, 0 failures"
