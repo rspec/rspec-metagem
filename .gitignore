@@ -3,3 +3,4 @@
 coverage
 doc
 pkg
+*.gemspec
