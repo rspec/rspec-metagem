@@ -20,7 +20,8 @@ begin
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["Chad Humphries", "David Chelimsky"]
     gem.rubyforge_project = "rspec"
-    gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
+    # TODO - make this a dev dep when the dep on rspec-expectations becomes configurable
+    gem.add_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
     gem.post_install_message = <<-EOM
