@@ -27,9 +27,9 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  The 'b' in #{gem.version} means this is beta software.
-  If you are looking for a supported production release,
-  please "gem install rspec" (without --pre).
+  This is beta software. If you are looking
+  for a supported production release, please
+  "gem install rspec" (without --pre).
   
 #{"*"*50}
 EOM
