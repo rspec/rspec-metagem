@@ -202,9 +202,8 @@ module Rspec
       end
 
       def self.let(name, &block)
-        # Should we block defining method names already defined?
         define_method(name) do
-          assignments[name] ||= instance_eval(&block)
+          __memoized[name] ||= instance_eval(&block)
         end
       end
 
@@ -216,13 +215,13 @@ module Rspec
         self.class.describes
       end
 
-      def assignments
-        @assignments ||= {}
+      def __memoized
+        @__memoized ||= {}
       end
 
       def __reset__
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
-        assignments.clear
+        __memoized.clear
       end
 
     end
