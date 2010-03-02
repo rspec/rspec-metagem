@@ -1,7 +1,5 @@
-require 'rubygems'
-gem 'jeweler', '>= 1.4.0'
+$LOAD_PATH << File.expand_path("../lib", __FILE__)
 require 'rake'
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
 require 'rspec/expectations/version'
 
 begin
@@ -24,7 +22,7 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  The 'a' in #{gem.version} means this is alpha software.
+  The 'b' in #{gem.version} means this is beta software.
   If you are looking for a supported production release,
   please "gem install rspec" (without --pre).
   
@@ -37,19 +35,19 @@ end
 
 begin
   require 'rspec/core/rake_task'
-  Rspec::Core::RakeTask.new(:spec) do |spec|
-    spec.pattern = "spec/**/*_spec.rb"
+  Rspec::Core::RakeTask.new(:spec)
+rescue LoadError
+  puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-core"
+end
+
+begin
+  require 'cucumber/rake/task'
+  Cucumber::Rake::Task.new do |t|
+    t.cucumber_opts = %w{--format progress}
   end
 rescue LoadError
-  puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-meta"
+  puts "Cucumber or one of its dependencies is not installed. Install it with: gem install cucumber"
 end
-
-require 'cucumber/rake/task'
-
-Cucumber::Rake::Task.new do |t|
-  t.cucumber_opts = %w{--format progress}
-end
-
 
 task :default => [:check_dependencies, :spec, :cucumber]
 

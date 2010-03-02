@@ -1,9 +1,18 @@
-$LOAD_PATH << File.expand_path('../../../rspec-core/lib', __FILE__)
-$LOAD_PATH << File.expand_path('../../../rspec-mocks/lib', __FILE__)
-$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
-require 'rspec/mocks'
+def add_to_load_path(path, prepend=false)
+  path = File.expand_path("../#{path}", __FILE__)
+  if prepend
+    $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
+  else
+    $LOAD_PATH << path unless $LOAD_PATH.include?(path)
+  end
+end
+
+add_to_load_path("../lib", :prepend)
+add_to_load_path("../../rspec-core/lib")
+add_to_load_path("../../rspec-mocks/lib")
+
 require 'rspec/core'
-require 'rspec/expectations'
+require 'rspec/mocks'
 
 Dir['./spec/support/**/*'].each do |f|
   require f

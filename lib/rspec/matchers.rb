@@ -1,33 +1,4 @@
-require 'rspec/matchers/extensions/instance_exec'
-require 'rspec/matchers/pretty'
-require 'rspec/matchers/matcher'
-require 'rspec/matchers/operator_matcher'
-require 'rspec/matchers/be'
-require 'rspec/matchers/be_close'
-require 'rspec/matchers/be_instance_of'
-require 'rspec/matchers/be_kind_of'
-require 'rspec/matchers/change'
-require 'rspec/matchers/eq'
-require 'rspec/matchers/eql'
-require 'rspec/matchers/equal'
-require 'rspec/matchers/errors'
-require 'rspec/matchers/exist'
-require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/has'
-require 'rspec/matchers/have'
-require 'rspec/matchers/include'
-require 'rspec/matchers/match'
-require 'rspec/matchers/match_array'
-require 'rspec/matchers/method_missing'
-require 'rspec/matchers/raise_error'
-require 'rspec/matchers/respond_to'
-require 'rspec/matchers/satisfy'
-require 'rspec/matchers/throw_symbol'
-require 'rspec/matchers/compatibility'
-require 'rspec/matchers/dsl'
-
 module Rspec
-
   # RSpec ships with a number of useful Expression Matchers. An Expression Matcher
   # is any object that responds to the following methods:
   #
@@ -196,4 +167,32 @@ module Rspec
     end
   end
 end
+
+require 'rspec/matchers/extensions/instance_exec'
+require 'rspec/matchers/pretty'
+require 'rspec/matchers/matcher'
+require 'rspec/matchers/operator_matcher'
+require 'rspec/matchers/be'
+require 'rspec/matchers/be_close'
+require 'rspec/matchers/be_instance_of'
+require 'rspec/matchers/be_kind_of'
+require 'rspec/matchers/change'
+require 'rspec/matchers/eq'
+require 'rspec/matchers/eql'
+require 'rspec/matchers/equal'
+require 'rspec/matchers/errors'
+require 'rspec/matchers/exist'
+require 'rspec/matchers/generated_descriptions'
+require 'rspec/matchers/has'
+require 'rspec/matchers/have'
+require 'rspec/matchers/include'
+require 'rspec/matchers/match'
+require 'rspec/matchers/match_array'
+require 'rspec/matchers/method_missing'
+require 'rspec/matchers/raise_error'
+require 'rspec/matchers/respond_to'
+require 'rspec/matchers/satisfy'
+require 'rspec/matchers/throw_symbol'
+require 'rspec/matchers/compatibility'
+require 'rspec/matchers/dsl'
 
