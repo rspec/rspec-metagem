@@ -20,8 +20,7 @@ begin
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["Chad Humphries", "David Chelimsky"]
     gem.rubyforge_project = "rspec"
-    # TODO - make this a dev dep when the dep on rspec-expectations becomes configurable
-    gem.add_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
+    gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
     gem.post_install_message = <<-EOM
@@ -29,7 +28,7 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  The 'a' in #{gem.version} means this is alpha software.
+  The 'b' in #{gem.version} means this is beta software.
   If you are looking for a supported production release,
   please "gem install rspec" (without --pre).
   
@@ -40,17 +39,13 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-begin
-  Rspec::Core::RakeTask.new :spec
+Rspec::Core::RakeTask.new(:spec)
 
-  desc "Run all examples using rcov"
-  Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
-    t.rcov = true
-    t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
-    t.rcov_opts << %[--no-html --aggregate coverage.data]
-  end
-rescue LoadError
-  puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-meta"
+desc "Run all examples using rcov"
+Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
+  t.rcov = true
+  t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
+  t.rcov_opts << %[--no-html --aggregate coverage.data]
 end
 
 task :cleanup_rcov_files do
@@ -79,7 +74,6 @@ else
 
   task :default => [:check_dependencies, :rcov, :features]
 end
-
 
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'rdoc'

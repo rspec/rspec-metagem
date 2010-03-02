@@ -16,9 +16,6 @@ require 'rspec/core/formatters'
 require 'rspec/core/backward_compatibility'
 require 'rspec/core/version'
 
-# TODO - make this configurable with default 'on'
-require 'rspec/expectations'
-
 module Rspec
   module Core
 
@@ -45,3 +42,6 @@ module Rspec
     yield Core.configuration if block_given?
   end
 end
+
+# TODO - make this configurable with default 'on'
+require 'rspec/expectations'
