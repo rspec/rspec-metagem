@@ -370,7 +370,7 @@ module Rspec
       end
 
       it "should not respond_to? method_missing (because it's private)" do
-        formatter = self.class.described_class.new({ }, StringIO.new)
+        formatter = described_class.new({ }, StringIO.new)
         formatter.should_not respond_to(:method_missing)
       end
 
