@@ -1,5 +1,15 @@
 require 'spec_helper'
 
+class SelfObserver
+  def self.cache
+    @cache ||= []
+  end
+
+  def initialize
+    self.class.cache << self
+  end
+end
+
 module Rspec::Core
 
   describe ExampleGroup do
@@ -356,28 +366,19 @@ module Rspec::Core
     end
 
     describe "#around" do
-      class Thing
-        def self.cache
-          @cache ||= []
-        end
-
-        def initialize
-          self.class.cache << self
-        end
-      end
 
       around(:each) do |example|
-        Thing.new
+        SelfObserver.new
         example.run
-        Thing.cache.clear
+        SelfObserver.cache.clear
       end
 
-      it "has 1 Thing (1)" do
-        Thing.cache.length.should == 1
+      it "has 1 SelfObserver (1)" do
+        SelfObserver.cache.length.should == 1
       end
 
-      it "has 1 Thing (2)" do
-        Thing.cache.length.should == 1
+      it "has 1 SelfObserver (2)" do
+        SelfObserver.cache.length.should == 1
       end
     end
   end

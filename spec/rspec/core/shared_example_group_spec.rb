@@ -82,8 +82,8 @@ module Rspec::Core
 
       it "adds examples to from two shared groups" do
         cleanup_shared_example_groups do
-          group = ExampleGroup.create("example_group") do |g|
-            g.it("i was already here") {}
+          group = ExampleGroup.create("example_group") do
+            it("i was already here") {}
           end
 
           group.examples.size.should == 1

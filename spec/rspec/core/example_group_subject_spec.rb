@@ -31,7 +31,7 @@ module Rspec::Core
       
     end
     
-     describe "explicit subject" do
+    describe "explicit subject" do
       describe "defined in a top level group" do
         it "replaces the implicit subject in that group" do
           group = ExampleGroup.create(Array)
@@ -41,20 +41,23 @@ module Rspec::Core
       end
 
       describe "defined in a top level group" do
-        before do
-          @group = ExampleGroup.create
-          @group.subject{ [4,5,6] }
+        let(:group) do
+          ExampleGroup.create do
+            subject{ [4,5,6] }
+          end
         end
 
         it "is available in a nested group (subclass)" do
-          nested = @group.describe("I'm nested!") { }
-          nested.subject.call.should == [4,5,6]
+          nested_group = group.describe("I'm nested!") { }
+          nested_group.subject.call.should == [4,5,6]
         end
 
-        it "is available in a doubly nested group (subclass)" do
-          nested_group = @group.describe("Nesting level 1") { }
-          doubly_nested_group = nested_group.describe("Nesting level 1") { }
-          doubly_nested_group.subject.call.should == [4,5,6]
+        with_ruby('1.8') do
+          it "is available in a doubly nested group (subclass)" do
+            nested_group = group.describe("Nesting level 1") { }
+            doubly_nested_group = nested_group.describe("Nesting level 2") { }
+            doubly_nested_group.subject.call.should == [4,5,6]
+          end
         end
       end
     end
