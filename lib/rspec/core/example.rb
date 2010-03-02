@@ -31,6 +31,14 @@ module Rspec
         @metadata[:file_path] || example_group.file_path
       end
 
+      def inspect
+        @metadata[:full_description]
+      end
+
+      def to_s
+        inspect
+      end
+
       def run_started
         record_results :started_at => Time.now
       end
@@ -116,14 +124,6 @@ module Rspec
         end
 
         all_systems_nominal
-      end
-
-      def inspect
-        @metadata[:full_description]
-      end
-
-      def to_s
-        inspect
       end
 
     end

@@ -87,16 +87,12 @@ module Rspec
         friendly ? metadata[:example_group][:name] : super()
       end
 
-      def self.describes
-        metadata[:example_group][:describes]
-      end
-
-      def self.described_class
-        describes || description
-      end
-
       def self.description
         metadata[:example_group][:description]
+      end
+
+      def self.describes
+        metadata[:example_group][:describes]
       end
 
       def self.file_path
@@ -216,12 +212,12 @@ module Rspec
         metadata.all_apply?(filters)
       end
 
-      def assignments
-        @assignments ||= {}
+      def described_class
+        self.class.describes
       end
 
-      def described_class
-        running_example.metadata[:example_group][:describes]
+      def assignments
+        @assignments ||= {}
       end
 
       def __reset__

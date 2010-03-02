@@ -58,7 +58,7 @@ module Rspec
       
         attr_reader :explicit_subject_block # :nodoc:
 
-        private
+      private
 
         def explicit_subject
           group = self
@@ -69,7 +69,11 @@ module Rspec
         end
 
         def implicit_subject
-          described_class.is_a?(Class) ? lambda { described_class.new } : lambda { described_class }
+          Class === described ? lambda { described.new } : lambda { described }
+        end
+
+        def described
+          @described ||= describes || description
         end
       end
     end
