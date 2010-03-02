@@ -59,20 +59,20 @@ task :clobber do
 end
 
 if RUBY_VERSION.to_f >= 1.9
-  Cucumber::Rake::Task.new :features do |t|
+  Cucumber::Rake::Task.new(:cucumber) do |t|
     t.cucumber_opts = %w{--format progress}
   end
 
-  task :default => [:check_dependencies, :spec, :features]
+  task :default => [:check_dependencies, :spec, :cucumber]
 else
-  Cucumber::Rake::Task.new :features do |t|
+  Cucumber::Rake::Task.new(:cucumber) do |t|
     t.rcov = true
     t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,features,spec/ruby_forker,spec/rspec,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
     t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
     t.cucumber_opts = %w{--format progress}
   end
 
-  task :default => [:check_dependencies, :rcov, :features]
+  task :default => [:check_dependencies, :rcov, :cucumber]
 end
 
 Rake::RDocTask.new do |rdoc|
