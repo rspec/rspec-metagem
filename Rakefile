@@ -27,7 +27,7 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  The 'a' in #{gem.version} means this is alpha software.
+  The 'b' in #{gem.version} means this is beta software.
   If you are looking for a supported production release,
   please "gem install rspec" (without --pre).
   
