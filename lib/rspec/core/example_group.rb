@@ -1,11 +1,12 @@
-require 'rspec/core/advice'
+require 'rspec/core/hooks'
 require 'rspec/core/example_group_subject'
+require 'rspec/core/let'
 require 'rspec/core/metadata'
 
 module Rspec
   module Core
     class ExampleGroup
-      extend Advice
+      extend  Hooks
       include ExampleGroupSubject
       include Let
 

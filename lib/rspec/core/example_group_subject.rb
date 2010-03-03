@@ -3,9 +3,9 @@ module Rspec
     module ExampleGroupSubject
       
       def self.included(kls)
-        kls.extend ClassMethods
-        kls.send :alias_method, :__should_for_example_group__,     :should
-        kls.send :alias_method, :__should_not_for_example_group__, :should_not
+        kls.extend   ClassMethods
+        kls.__send__ :alias_method, :__should_for_example_group__,     :should
+        kls.__send__ :alias_method, :__should_not_for_example_group__, :should_not
       end
       
       def subject

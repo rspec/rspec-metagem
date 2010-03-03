@@ -1,6 +1,6 @@
 module Rspec
   module Core
-    module Advice
+    module Hooks
       def before_blocks
         @before_blocks ||= { :all => [], :each => [] }
       end
