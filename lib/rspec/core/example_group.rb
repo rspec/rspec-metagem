@@ -82,8 +82,8 @@ module Rspec
         @metadata 
       end
 
-      def self.name(friendly=true)
-        friendly ? metadata[:example_group][:name] : super()
+      def self.name
+        metadata[:example_group][:name]
       end
 
       def self.description
