@@ -1,11 +1,9 @@
-# RSpec Core
+# Rspec Core
 
-rspec-core includes the runner, output formatters, and the `rspec` command.
+Rspec is an automated testing framework for Ruby, designed for use in
+Behaviour Driven Development and Test Driven Development.
 
-rspec-core is currently in alpha release. While you are welcome to track, fork,
-explore, etc, we're too early in the process to start fielding pull requests
-and or issues from outside the core development team, so please don't waste
-your time until this notice changes.
+rspec-core includes the Rspec runner, output formatters, and the `rspec` command.
 
 ## Install
 
@@ -13,37 +11,55 @@ your time until this notice changes.
 
 This will install rspec, rspec-core, rspec-expectations and rspec-mocks.
 
-## Known Issues
+## Get Started
 
-### Ruby-1.9
+Start with a simple example of behavior you expect from your system. Do
+this before you write any code:
 
-Due to changes in scoping rules in 1.9, classes defined inside example groups
-are not visible to the examples. For example:
-
-    describe "something" do
-      class Foo
-      end
-
-      it "does something" do
-        Foo.new
+    # in spec/calculator_spec.rb
+    describe Calculator, "add" do
+      it "returns the sum of its arguments" do
+        Calculator.new.add(1, 2).should eq(3)
       end
     end
 
-This runs without incident in ruby-1.8, but raises an `uninitialized constant`
-error in ruby-1.9. We had solved this in rspec-1.x, but rspec-2 has a slightly
-different object model, so this has (for the moment) reared its ugly head. We'll
-certainly resolve this before rspec-core-2.0.0 (final) is released. 
+Run this with the rspec command, and watch it fail:
 
-You can, of course, fully qualify the declaration and everything works fine:
+    $ rspec spec/calculator_spec.rb
+    ./spec/calculator_spec.rb:1: uninitialized constant Calculator
 
-    describe "something" do
-      class ::Foo
-      end
+Implement the simplest solution:
 
-      it "does something" do
-        Foo.new
+    # in lib/calculator.rb
+    class Calculator
+      def add(a,b)
+        a + b
       end
     end
+
+Be sure to require the implementation file in the spec:
+
+    # in spec/calculator_spec.rb
+    # - Rspec adds ./lib to the $LOAD_PATH, so you can
+    #   just require "calculator" directly
+    require "calculator"
+
+Now run the spec again, and watch it pass:
+    
+    $ rspec spec/calculator_spec.rb
+    .
+
+    Finished in 0.000315 seconds
+    1 example, 0 failures
+
+Use the documentation formatter to see the resulting spec:
+
+    $ rspec spec/calculator_spec.rb --format doc
+    Calculator add
+      returns the sum of its arguments
+
+    Finished in 0.000379 seconds
+    1 example, 0 failures
 
 #### Also see
 
