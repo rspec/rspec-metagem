@@ -156,26 +156,26 @@ module Rspec
         if superclass.respond_to?(:before_all_ivars)
           superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         end
-        configuration.find_advice(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
+        configuration.find_hook(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
 
         before_alls.each { |blk| running_example.instance_eval(&blk) }
         running_example.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
       def self.eval_before_eachs(running_example)
-        configuration.find_advice(:before, :each, self).each { |blk| running_example.instance_eval(&blk) }
+        configuration.find_hook(:before, :each, self).each { |blk| running_example.instance_eval(&blk) }
         before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
       end
 
       def self.eval_after_alls(running_example)
         after_alls.each { |blk| running_example.instance_eval(&blk) }
-        configuration.find_advice(:after, :all, self).each { |blk| running_example.instance_eval(&blk) }
+        configuration.find_hook(:after, :all, self).each { |blk| running_example.instance_eval(&blk) }
         before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
       def self.eval_after_eachs(running_example)
         after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example.instance_eval(&blk) } }
-        configuration.find_advice(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
+        configuration.find_hook(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
       end
 
       def self.run(reporter)

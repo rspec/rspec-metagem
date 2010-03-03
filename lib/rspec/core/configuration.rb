@@ -1,26 +1,18 @@
 module Rspec
   module Core
     class Configuration
-      # All of the defined advice in the configuration (before/after/around)
-      attr_reader :advice
-
-      # Allows you to control what examples are ran by filtering 
+      # Control what examples are run by filtering 
       attr_reader :filter
 
+      # Control what examples are not run by filtering 
       attr_reader :exclusion_filter
 
-      # Modules that will be included or extended based on given filters
-      attr_reader :include_or_extend_modules
-
-      # Run all examples if the run is filtered, and no examples were found.  Normally this is what you want -
-      # when using focused examples for instance.  Defaults to true
-      attr_accessor :run_all_when_everything_filtered
-
-      attr_reader :options
+      # Run all examples if the run is filtered, and no examples were found.
+      attr_writer :run_all_when_everything_filtered
 
       def initialize
         @run_all_when_everything_filtered = false
-        @advice = { 
+        @hooks = { 
           :before => { :each => [], :all => [], :suite => [] }, 
           :after => { :each => [], :all => [], :suite => [] } 
         }
@@ -47,15 +39,15 @@ module Rspec
       end
       
       def cleaned_from_backtrace?(line)
-        options[:backtrace_clean_patterns].any? { |regex| line =~ regex }
+        @options[:backtrace_clean_patterns].any? { |regex| line =~ regex }
       end
 
       def backtrace_clean_patterns
-        options[:backtrace_clean_patterns]
+        @options[:backtrace_clean_patterns]
       end
 
       def mock_framework=(use_me_to_mock)
-        options[:mock_framework] = use_me_to_mock
+        @options[:mock_framework] = use_me_to_mock
         
         mock_framework_class = case use_me_to_mock.to_s
         when /rspec/i
@@ -75,24 +67,24 @@ module Rspec
           Rspec::Core::Mocking::WithAbsolutelyNothing
         end 
         
-        options[:mock_framework_class] = mock_framework_class
+        @options[:mock_framework_class] = mock_framework_class
         Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
       end
       
       def mock_framework
-        options[:mock_framework]
+        @options[:mock_framework]
       end
 
       def filename_pattern
-        options[:filename_pattern]
+        @options[:filename_pattern]
       end
 
       def filename_pattern=(new_pattern)
-        options[:filename_pattern] = new_pattern
+        @options[:filename_pattern] = new_pattern
       end 
 
       def color_enabled=(on_or_off)
-        options[:color_enabled] = on_or_off
+        @options[:color_enabled] = on_or_off
       end
 
       def full_backtrace=(bool)
@@ -118,7 +110,7 @@ EOM
       end
 
       def color_enabled?
-        options[:color_enabled]
+        @options[:color_enabled]
       end
 
       def line_number=(line_number)
@@ -131,15 +123,15 @@ EOM
       
       # Enable profiling of example run - defaults to false
       def profile_examples
-        options[:profile_examples]
+        @options[:profile_examples]
       end
       
       def profile_examples=(on_or_off)
-        options[:profile_examples] = on_or_off
+        @options[:profile_examples] = on_or_off
       end
      
       def formatter_class
-        options[:formatter_class]
+        @options[:formatter_class]
       end
      
       def formatter=(formatter_to_use)
@@ -151,7 +143,7 @@ EOM
         else 
           raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
         end
-        options[:formatter_class] = formatter_class
+        @options[:formatter_class] = formatter_class
       end
         
       def formatter
@@ -159,11 +151,11 @@ EOM
       end
       
       def files_to_run
-        options[:files_to_run]
+        @options[:files_to_run]
       end
       
       def files_or_directories_to_run=(*files)
-        options[:files_to_run] = files.flatten.inject([]) do |result, file|
+        @options[:files_to_run] = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
             filename_pattern.split(",").each do |pattern|
               result += Dir["#{file}/#{pattern.strip}"]
@@ -205,29 +197,29 @@ EOM
       end
 
       def include(mod, options={})
-        include_or_extend_modules << [:include, mod, options]
+        @include_or_extend_modules << [:include, mod, options]
       end
 
       def extend(mod, options={})
-        include_or_extend_modules << [:extend, mod, options]
+        @include_or_extend_modules << [:extend, mod, options]
       end
 
       def find_modules(group)
-        include_or_extend_modules.select do |include_or_extend, mod, filters|
+        @include_or_extend_modules.select do |include_or_extend, mod, filters|
           group.all_apply?(filters)
         end
       end
 
       def before(each_or_all=:each, options={}, &block)
-        advice[:before][each_or_all] << [options, block]
+        @hooks[:before][each_or_all] << [options, block]
       end
 
       def after(each_or_all=:each, options={}, &block)
-        advice[:after][each_or_all] << [options, block]
+        @hooks[:after][each_or_all] << [options, block]
       end
 
-      def find_advice(desired_advice_type, desired_each_or_all, group)
-        advice[desired_advice_type][desired_each_or_all].select do |filters, block|
+      def find_hook(hook, each_or_all, group)
+        @hooks[hook][each_or_all].select do |filters, block|
           group.all_apply?(filters)
         end.map { |filters, block| block }
       end

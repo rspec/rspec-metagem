@@ -164,10 +164,10 @@ module Rspec::Core
 
     end
 
-    describe "run_all_when_everything_filtered" do
+    describe "run_all_when_everything_filtered?" do
 
       it "defaults to false" do
-        config.run_all_when_everything_filtered.should == false
+        config.run_all_when_everything_filtered?.should == false
       end
 
       it "can be queried with question method" do
@@ -213,7 +213,7 @@ module Rspec::Core
     describe "full_backtrace=" do
       it "clears the backtrace clean patterns" do
         config.full_backtrace = true
-        config.options[:backtrace_clean_patterns].should == []
+        config.backtrace_clean_patterns.should == []
       end
     end
 
