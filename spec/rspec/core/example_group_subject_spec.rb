@@ -52,12 +52,10 @@ module Rspec::Core
           nested_group.subject.call.should == [4,5,6]
         end
 
-        with_ruby('1.8') do
-          it "is available in a doubly nested group (subclass)" do
-            nested_group = group.describe("Nesting level 1") { }
-            doubly_nested_group = nested_group.describe("Nesting level 2") { }
-            doubly_nested_group.subject.call.should == [4,5,6]
-          end
+        it "is available in a doubly nested group (subclass)" do
+          nested_group = group.describe("Nesting level 1") { }
+          doubly_nested_group = nested_group.describe("Nesting level 2") { }
+          doubly_nested_group.subject.call.should == [4,5,6]
         end
       end
     end

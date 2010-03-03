@@ -11,7 +11,6 @@ module Rspec
       attr_accessor :running_example
 
       def self.inherited(klass)
-        super(klass)
         Rspec::Core.configuration.autorun!
         Rspec::Core.world.example_groups << klass
       end
