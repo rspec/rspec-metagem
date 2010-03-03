@@ -183,10 +183,6 @@ EOM
         Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
-      def autorun!
-        Rspec::Core::Runner.autorun
-      end
-
       def filter_run(options={})
         @filter = options unless @filter and @filter[:line_number] || @filter[:full_description]
       end
