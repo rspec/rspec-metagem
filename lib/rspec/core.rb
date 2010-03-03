@@ -1,4 +1,5 @@
 require 'rspec/core/load_path'
+require 'rspec/core/let'
 require 'rspec/core/deprecation'
 require 'rspec/core/mocking/with_absolutely_nothing'
 require 'rspec/core/around_proxy'

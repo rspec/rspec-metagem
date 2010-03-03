@@ -7,6 +7,7 @@ module Rspec
     class ExampleGroup
       extend Advice
       include ExampleGroupSubject
+      include Let
 
       attr_accessor :running_example
 
@@ -200,22 +201,12 @@ module Rspec
         self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
       end
 
-      def self.let(name, &block)
-        define_method(name) do
-          __memoized[name] ||= instance_eval(&block)
-        end
-      end
-
       def self.all_apply?(filters)
         metadata.all_apply?(filters)
       end
 
       def described_class
         self.class.describes
-      end
-
-      def __memoized
-        @__memoized ||= {}
       end
 
       def __reset__
