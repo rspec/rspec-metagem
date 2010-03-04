@@ -26,25 +26,25 @@ module Rspec::Core
 
     end
 
-    describe '#name' do
+    describe '#display_name' do
 
       it "uses the first parameter as name" do
-        ExampleGroup.create("my favorite pony") { }.name.should == 'my favorite pony'
+        ExampleGroup.create("my favorite pony") { }.display_name.should == 'my favorite pony'
       end
 
       it "accepts a constant as the first parameter" do
-        ExampleGroup.create(Object) { }.name.should == 'Object'
+        ExampleGroup.create(Object) { }.display_name.should == 'Object'
       end
 
       it "concats nested names" do
         group = ExampleGroup.create(Object, 'test') {}
-        group.name.should == 'Object test'
+        group.display_name.should == 'Object test'
 
         nested_group_one = group.describe('nested one') { }
-        nested_group_one.name.should == 'Object test nested one'
+        nested_group_one.display_name.should == 'Object test nested one'
 
         nested_group_two = nested_group_one.describe('nested two') { }
-        nested_group_two.name.should == 'Object test nested one nested two'
+        nested_group_two.display_name.should == 'Object test nested one nested two'
       end
 
     end
