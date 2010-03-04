@@ -38,6 +38,13 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
 end
 
+namespace :gem do
+  desc "push to gemcutter"
+  task :push => :build do
+    system "gem push pkg/rspec-#{Rspec::Version::STRING}.gem"
+  end
+end
+
 task :clobber do
   rm_rf 'pkg'
 end
