@@ -2,10 +2,10 @@ module Rspec
   module Core
     class Configuration
       # Control what examples are run by filtering 
-      attr_reader :filter
+      attr_accessor :filter
 
       # Control what examples are not run by filtering 
-      attr_reader :exclusion_filter
+      attr_accessor :exclusion_filter
 
       # Run all examples if the run is filtered, and no examples were found.
       attr_writer :run_all_when_everything_filtered

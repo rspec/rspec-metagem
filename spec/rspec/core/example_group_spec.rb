@@ -300,13 +300,12 @@ module Rspec::Core
         @before_all_top_level.should == 'before_all_top_level'
       end
 
-      it "should be able to access the before all ivars in the before_all_ivars hash" do
-        with_ruby('1.8') do
-          running_example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
-        end
-        with_ruby('1.9') do
-          running_example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
-        end
+      it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do
+        running_example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
+      end
+
+      it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.9 do
+        running_example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
       end
 
       describe "but now I am nested" do

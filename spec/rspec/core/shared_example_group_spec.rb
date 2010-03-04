@@ -41,7 +41,7 @@ module Rspec::Core
         Rspec::Core.world.shared_example_groups.replace(original_shared_example_groups)
       end
 
-      it "should make any shared example_group available at the correct level" do
+      it "should make any shared example_group available at the correct level", :ruby => 1.8 do
         group = ExampleGroup.create('fake group')
         block = lambda {
           def self.class_helper; end
@@ -49,14 +49,20 @@ module Rspec::Core
         }
         Rspec::Core.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
         group.it_should_behave_like :shared_example_group
-        with_ruby(1.8) do
-          group.instance_methods.should include('extra_helper')
-          group.singleton_methods.should include('class_helper')
-        end
-        with_ruby(1.9) do
-          group.instance_methods.should include(:extra_helper)
-          group.singleton_methods.should include(:class_helper)
-        end
+        group.instance_methods.should  include('extra_helper')
+        group.singleton_methods.should include('class_helper')
+      end
+
+      it "should make any shared example_group available at the correct level", :ruby => 1.9 do
+        group = ExampleGroup.create('fake group')
+        block = lambda {
+          def self.class_helper; end
+          def extra_helper; end
+        }
+        Rspec::Core.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
+        group.it_should_behave_like :shared_example_group
+        group.instance_methods.should include(:extra_helper)
+        group.singleton_methods.should include(:class_helper)
       end
 
       it "should raise when named shared example_group can not be found" 

@@ -8,10 +8,6 @@ require 'rspec/mocks'
 
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
-def with_ruby(version)
-  yield if RUBY_VERSION.to_s =~ Regexp.compile("^#{version}")
-end
-
 module Rspec
   module Core
     module Matchers
@@ -40,7 +36,8 @@ end
 
 Rspec.configure do |c|
   c.mock_framework = :rspec
-  c.filter_run :focused => true
-  c.run_all_when_everything_filtered = true
   c.color_enabled = !in_editor?
+  c.exclusion_filter = { :ruby => lambda {|version|
+    !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
+  }}
 end
