@@ -39,6 +39,13 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
+namespace :gem do
+  desc "push to gemcutter"
+  task :push => :build do
+    system "gem push pkg/rspec-core-#{Rspec::Core::Version::STRING}.gem"
+  end
+end
+
 Rspec::Core::RakeTask.new(:spec)
 
 desc "Run all examples using rcov"
