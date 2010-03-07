@@ -85,7 +85,7 @@ module Rspec
       end
 
       def self.display_name
-        metadata[:example_group][:name]
+        metadata[:example_group][:description]
       end
 
       def self.description

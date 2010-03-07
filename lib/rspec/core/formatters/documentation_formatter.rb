@@ -16,10 +16,8 @@ module Rspec
 
           described_example_group_chain.each_with_index do |nested_example_group, i|
             unless nested_example_group == @previous_nested_example_groups[i]
-              at_root_level = (i == 0)
-              desc_or_name = at_root_level ? nested_example_group.display_name : nested_example_group.description
-              output.puts if at_root_level
-              output.puts "#{'  ' * i}#{desc_or_name}"
+              output.puts if i == 0
+              output.puts "#{'  ' * i}#{nested_example_group.description}"
             end
           end
 

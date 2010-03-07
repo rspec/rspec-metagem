@@ -23,13 +23,12 @@ module Rspec
         extra_metadata.delete(:example_group) # Remove it when present to prevent it clobbering the one we setup
         extra_metadata.delete(:behaviour)     # Remove it when present to prevent it clobbering the one we setup
 
-        self[:example_group][:describes] = args.shift unless args.first.is_a?(String)
-        self[:example_group][:describes] ||= self.superclass_metadata && self.superclass_metadata[:example_group][:describes]
-        self[:example_group][:description] = args.shift || ''
+        self[:example_group][:describes] = described_class_from(args)
+        self[:example_group][:description] = description_from(args)
+        self[:example_group][:full_description] = full_description_from(args)
 
-        self[:example_group][:name] = determine_name
         self[:example_group][:block] = extra_metadata.delete(:example_group_block)
-        self[:example_group][:caller] = extra_metadata.delete(:caller)
+        self[:example_group][:caller] = extra_metadata.delete(:caller) || caller(1)
         self[:example_group][:file_path] = file_path_from(self[:example_group], extra_metadata.delete(:file_path))
         self[:example_group][:line_number] = line_number_from(self[:example_group], extra_metadata.delete(:line_number))
         self[:example_group][:location] = location_from(self[:example_group])
@@ -43,7 +42,7 @@ module Rspec
 
       def configure_for_example(description, options)
         store(:description, description.to_s)
-        store(:full_description, "#{self[:example_group][:name]} #{self[:description]}")
+        store(:full_description, "#{self[:example_group][:full_description]} #{self[:description]}")
         store(:execution_result, {})
         store(:caller, options.delete(:caller))
         if self[:caller]
@@ -52,7 +51,6 @@ module Rspec
         end
         self[:location] = location_from(self)
         update(options)
-        self
       end
 
       def apply_condition(filter_on, filter, metadata=nil)
@@ -83,6 +81,26 @@ module Rspec
 
     private
 
+      def description_from(args)
+        @build_description ||= args.map{|a| a.to_s.strip}.join(" ")
+      end
+
+      def full_description_from(args)
+        if superclass_metadata && superclass_metadata[:example_group][:full_description]
+          "#{superclass_metadata[:example_group][:full_description]} #{description_from(args)}"
+        else
+          description_from(args)
+        end
+      end
+
+      def described_class_from(args)
+        if args.first.is_a?(String)
+          self.superclass_metadata && self.superclass_metadata[:example_group][:describes]
+        else
+          args.first
+        end
+      end
+
       def file_path_from(metadata, given_file_path=nil)
         given_file_path || file_and_line_number(metadata)[0].strip
       end
@@ -101,14 +119,6 @@ module Rspec
 
       def candidate_entries_from_caller(metadata)
         metadata[:caller].grep(/\_spec\.rb:/i)
-      end
-
-      def determine_name
-        if superclass_metadata && superclass_metadata[:example_group][:name]
-          self[:example_group][:name] = "#{superclass_metadata[:example_group][:name]} #{self[:example_group][:description]}".strip 
-        else
-          self[:example_group][:name] = "#{self[:example_group][:describes]} #{self[:example_group][:description]}".strip
-        end
       end
 
     end

@@ -3,41 +3,55 @@ require 'spec_helper'
 module Rspec
   module Core
     describe Metadata do
-      describe "[:example_group][:name]" do
-        it "generates name for top level example group" do
-          m = Metadata.new
-          m.process("description", :caller => caller(0))
-          m[:example_group][:name].should == "description"
+
+      describe "[:example_group][:description]" do
+        context "with a string" do
+          it "provides the submitted description" do
+            m = Metadata.new
+            m.process('group')
+
+            m[:example_group][:description].should == "group"
+          end
         end
 
-        it "concats args to describe()" do
-          m = Metadata.new
-          m.process(String, "with dots", :caller => caller(0))
-          m[:example_group][:name].should == "String with dots"
+        context "with a non-string" do
+          it "provides the submitted description" do
+            m = Metadata.new
+            m.process('group')
+
+            m[:example_group][:description].should == "group"
+          end
         end
 
-        it "concats nested names" do
-          parent = Metadata.new
-          parent.process("parent", :caller => caller(0))
-          m = Metadata.new(parent)
-          m.process("child", :caller => caller(0))
-          m[:example_group][:name].should == "parent child"
-        end
+        context "with a non-string and a string" do
+          it "concats the args" do
+            m = Metadata.new
+            m.process(Object, 'group')
 
-        it "strips the name" do
-          m = Metadata.new
-          m.process("  description  \n", :caller => caller(0))
-          m[:example_group][:name].should == "description"
+            m[:example_group][:description].should == "Object group"
+          end
         end
       end
 
       describe "[:full_description]" do
         it "concats the example group name and description" do
           m = Metadata.new
-          m[:example_group][:name] = "group"
+          m.process('group')
 
           m = m.for_example("example", {})
           m[:full_description].should == "group example"
+        end
+      end
+
+      describe "[:example_group][:full_description]" do
+        it "concats the nested example group descriptions" do
+          parent = Metadata.new
+          parent.process(Object, 'parent')
+
+          child = Metadata.new(parent)
+          child.process('child')
+
+          child[:example_group][:full_description].should == "Object parent child"
         end
       end
 
@@ -80,7 +94,7 @@ module Rspec
       describe "#metadata_for_example" do
         let(:caller_for_example) { caller(0) }
         let(:line_number)        { __LINE__ - 1 }
-        let(:metadata)           { Metadata.new.process("group description", :caller => caller(0)) }
+        let(:metadata)           { Metadata.new.process("group description") }
         let(:mfe)                { metadata.for_example("example description", {:caller => caller_for_example, :arbitrary => :options}) }
 
         it "stores the description" do

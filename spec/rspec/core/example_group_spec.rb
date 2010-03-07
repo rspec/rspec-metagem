@@ -26,28 +26,6 @@ module Rspec::Core
 
     end
 
-    describe '#display_name' do
-
-      it "uses the first parameter as name" do
-        ExampleGroup.create("my favorite pony") { }.display_name.should == 'my favorite pony'
-      end
-
-      it "accepts a constant as the first parameter" do
-        ExampleGroup.create(Object) { }.display_name.should == 'Object'
-      end
-
-      it "concats nested names" do
-        group = ExampleGroup.create(Object, 'test') {}
-        group.display_name.should == 'Object test'
-
-        nested_group_one = group.describe('nested one') { }
-        nested_group_one.display_name.should == 'Object test nested one'
-
-        nested_group_two = nested_group_one.describe('nested two') { }
-        nested_group_two.display_name.should == 'Object test nested one nested two'
-      end
-
-    end
 
     describe '#describes' do
 
@@ -71,12 +49,9 @@ module Rspec::Core
 
     describe '#description' do
 
-      it "exposes the second parameter as description" do
-        ExampleGroup.create(Object, "my desc") { }.description.should == 'my desc'
-      end
-
-      it "allows the second parameter to be nil" do
-        ExampleGroup.create(Object, nil) { }.description.should == ""
+      it "grabs the description from the metadata" do
+        group = ExampleGroup.create(Object, "my desc") { }
+        group.description.should == group.metadata[:example_group][:description]
       end
 
     end

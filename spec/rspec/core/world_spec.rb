@@ -49,7 +49,7 @@ module Rspec::Core
       end
       
       it "finds matching groups when filtering on :description with text" do
-        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => 'find group-1' }).should == [@bg1]
+        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => 'Bar find group-1' }).should == [@bg1]
       end
       
       it "finds matching groups when filtering on :description with a lambda" do
