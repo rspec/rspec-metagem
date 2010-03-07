@@ -10,8 +10,6 @@ module Rspec
         yield self if block_given?
       end
 
-      # TODO - need to add :caller to this list, but we're using
-      # it for our own specs
       RESERVED_KEYS = [
         :behaviour,
         :description,
@@ -25,25 +23,7 @@ module Rspec
 
       def process(*args)
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
-        RESERVED_KEYS.each do |key|
-          if user_metadata.keys.include?(key)
-            raise <<-EOM
-#{"*"*50}
-:#{key} is not allowed
-
-Rspec reserves some hash keys for its own internal use, 
-including :#{key}, which is used on:
-
-  #{caller(0)[1]}.
-
-Here are all of Rspec's reserved hash keys:
-
-  #{RESERVED_KEYS.join("\n  ")}
-#{"*"*50}
-EOM
-            raise ":#{key} is not allowed"
-          end
-        end
+        ensure_valid_keys(user_metadata)
 
         self[:example_group][:describes] = described_class_from(args)
         self[:example_group][:description] = description_from(args)
@@ -56,6 +36,28 @@ EOM
         self[:example_group][:location] = location_from(self[:example_group])
 
         update(user_metadata)
+      end
+
+      def ensure_valid_keys(user_metadata)
+        RESERVED_KEYS.each do |key|
+          if user_metadata.keys.include?(key)
+            raise <<-EOM
+#{"*"*50}
+:#{key} is not allowed
+
+Rspec reserves some hash keys for its own internal use, 
+including :#{key}, which is used on:
+
+  #{caller(0)[4]}.
+
+Here are all of Rspec's reserved hash keys:
+
+  #{RESERVED_KEYS.join("\n  ")}
+#{"*"*50}
+EOM
+            raise ":#{key} is not allowed"
+          end
+        end
       end
 
       def for_example(description, options)
