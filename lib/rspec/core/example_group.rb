@@ -69,7 +69,7 @@ module Rspec
 
       def self.set_it_up(*args)
         @configuration = args.shift
-        @metadata = Rspec::Core::Metadata.process(superclass_metadata, *args)
+        @metadata = Rspec::Core::Metadata.new(superclass_metadata).process(*args)
 
         configuration.find_modules(self).each do |include_or_extend, mod, opts|
           if include_or_extend == :extend

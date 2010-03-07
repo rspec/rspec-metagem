@@ -4,6 +4,37 @@ module Rspec
   module Core
     describe Metadata do
 
+      describe "#process" do
+        Metadata::RESERVED_KEYS.each do |key|
+          it "prohibits :#{key} as a hash key" do
+            m = Metadata.new
+            expect do
+              m.process('group', key => {})
+            end.to raise_error(/:#{key} is not allowed/)
+          end
+        end
+      end
+
+      describe "[:description]" do
+        it "just has the example description" do
+          m = Metadata.new
+          m.process('group')
+
+          m = m.for_example("example", {})
+          m[:description].should == "example"
+        end
+      end
+
+      describe "[:full_description]" do
+        it "concats the example group name and description" do
+          m = Metadata.new
+          m.process('group')
+
+          m = m.for_example("example", {})
+          m[:full_description].should == "group example"
+        end
+      end
+
       describe "[:example_group][:description]" do
         context "with a string" do
           it "provides the submitted description" do
@@ -30,16 +61,6 @@ module Rspec
 
             m[:example_group][:description].should == "Object group"
           end
-        end
-      end
-
-      describe "[:full_description]" do
-        it "concats the example group name and description" do
-          m = Metadata.new
-          m.process('group')
-
-          m = m.for_example("example", {})
-          m[:full_description].should == "group example"
         end
       end
 

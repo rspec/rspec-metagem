@@ -2,14 +2,6 @@ module Rspec
   module Core
     class Metadata < Hash
 
-      def self.process(superclass_metadata, *args)
-        new(superclass_metadata) do |metadata|
-          metadata.process(*args)
-        end
-      end
-      
-      attr_reader :superclass_metadata
-
       def initialize(superclass_metadata=nil)
         @superclass_metadata = superclass_metadata
         update(@superclass_metadata) if @superclass_metadata
@@ -18,22 +10,52 @@ module Rspec
         yield self if block_given?
       end
 
+      # TODO - need to add :caller to this list, but we're using
+      # it for our own specs
+      RESERVED_KEYS = [
+        :behaviour,
+        :description,
+        :example_group,
+        :execution_result,
+        :file_path,
+        :full_description,
+        :line_number,
+        :location
+      ]
+
       def process(*args)
-        extra_metadata = args.last.is_a?(Hash) ? args.pop : {}
-        extra_metadata.delete(:example_group) # Remove it when present to prevent it clobbering the one we setup
-        extra_metadata.delete(:behaviour)     # Remove it when present to prevent it clobbering the one we setup
+        user_metadata = args.last.is_a?(Hash) ? args.pop : {}
+        RESERVED_KEYS.each do |key|
+          if user_metadata.keys.include?(key)
+            raise <<-EOM
+#{"*"*50}
+:#{key} is not allowed
+
+Rspec reserves some hash keys for its own internal use, 
+including :#{key}, which is used on:
+
+  #{caller(0)[1]}.
+
+Here are all of Rspec's reserved hash keys:
+
+  #{RESERVED_KEYS.join("\n  ")}
+#{"*"*50}
+EOM
+            raise ":#{key} is not allowed"
+          end
+        end
 
         self[:example_group][:describes] = described_class_from(args)
         self[:example_group][:description] = description_from(args)
         self[:example_group][:full_description] = full_description_from(args)
 
-        self[:example_group][:block] = extra_metadata.delete(:example_group_block)
-        self[:example_group][:caller] = extra_metadata.delete(:caller) || caller(1)
-        self[:example_group][:file_path] = file_path_from(self[:example_group], extra_metadata.delete(:file_path))
-        self[:example_group][:line_number] = line_number_from(self[:example_group], extra_metadata.delete(:line_number))
+        self[:example_group][:block] = user_metadata.delete(:example_group_block)
+        self[:example_group][:caller] = user_metadata.delete(:caller) || caller(1)
+        self[:example_group][:file_path] = file_path_from(self[:example_group], user_metadata.delete(:file_path))
+        self[:example_group][:line_number] = line_number_from(self[:example_group], user_metadata.delete(:line_number))
         self[:example_group][:location] = location_from(self[:example_group])
 
-        update(extra_metadata)
+        update(user_metadata)
       end
 
       def for_example(description, options)
@@ -81,12 +103,16 @@ module Rspec
 
     private
 
+      def superclass_metadata
+        @superclass_metadata ||= { :example_group => {} }
+      end
+
       def description_from(args)
-        @build_description ||= args.map{|a| a.to_s.strip}.join(" ")
+        @description_from_args ||= args.map{|a| a.to_s.strip}.join(" ")
       end
 
       def full_description_from(args)
-        if superclass_metadata && superclass_metadata[:example_group][:full_description]
+        if superclass_metadata[:example_group][:full_description]
           "#{superclass_metadata[:example_group][:full_description]} #{description_from(args)}"
         else
           description_from(args)
@@ -95,7 +121,7 @@ module Rspec
 
       def described_class_from(args)
         if args.first.is_a?(String)
-          self.superclass_metadata && self.superclass_metadata[:example_group][:describes]
+          superclass_metadata[:example_group][:describes]
         else
           args.first
         end
