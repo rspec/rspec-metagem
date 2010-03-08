@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{rspec-core}
-  s.version = "2.0.0.beta.2"
+  s.version = "2.0.0.beta.3"
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
@@ -164,7 +164,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/rspec/core}
   s.post_install_message = %q{**************************************************
 
-  Thank you for installing rspec-core-2.0.0.beta.2
+  Thank you for installing rspec-core-2.0.0.beta.3
 
   This is beta software. If you are looking
   for a supported production release, please
@@ -176,7 +176,7 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubyforge_project = %q{rspec}
   s.rubygems_version = %q{1.3.6}
-  s.summary = %q{rspec-core-2.0.0.beta.2}
+  s.summary = %q{rspec-core-2.0.0.beta.3}
   s.test_files = [
     "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
@@ -209,17 +209,17 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
-      s.add_development_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.2"])
-      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.2"])
+      s.add_development_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.3"])
+      s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.3"])
       s.add_development_dependency(%q<cucumber>, [">= 0.5.3"])
     else
-      s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.2"])
-      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.2"])
+      s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.3"])
+      s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.3"])
       s.add_dependency(%q<cucumber>, [">= 0.5.3"])
     end
   else
-    s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.2"])
-    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.2"])
+    s.add_dependency(%q<rspec-expectations>, [">= 2.0.0.beta.3"])
+    s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.3"])
     s.add_dependency(%q<cucumber>, [">= 0.5.3"])
   end
 end
