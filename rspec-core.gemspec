@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-03-04}
+  s.date = %q{2010-03-08}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -76,22 +76,14 @@ Gem::Specification.new do |s|
      "example_specs/passing/yielding_example.rb",
      "example_specs/ruby1.9.compatibility/access_to_constants_spec.rb",
      "example_specs/spec_helper.rb",
-     "features-pending/example_groups/example_group_with_should_methods.feature",
-     "features-pending/example_groups/implicit_docstrings.feature",
-     "features-pending/expectations/expect_change.feature",
-     "features-pending/expectations/expect_error.feature",
-     "features-pending/extensions/custom_example_group.feature",
      "features-pending/formatters/custom_formatter.feature",
      "features-pending/heckle/heckle.feature",
      "features-pending/interop/examples_and_tests_together.feature",
      "features-pending/interop/rspec_output.feature",
      "features-pending/interop/test_but_not_test_unit.feature",
      "features-pending/interop/test_case_with_should_methods.feature",
-     "features-pending/matchers/define_diffable_matcher.feature",
-     "features-pending/matchers/define_matcher_with_fluent_interface.feature",
      "features-pending/mocks/stub_implementation.feature",
      "features-pending/pending/pending_examples.feature",
-     "features-pending/runner/specify_line_number.feature",
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
