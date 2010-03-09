@@ -4,11 +4,11 @@ Feature: custom formatters
   As an RSpec user
   I want to create my own custom output formatters
 
+  @wip
   Scenario: specdoc format
     Given a file named "custom_formatter.rb" with:
       """
-      require "rspec/expectations"
-      require "spec/runner/formatter/base_formatter"
+      require "rspec/runner/formatter/base_formatter"
 
       class CustomFormatter < Spec::Runner::Formatter::BaseFormatter
         def initialize(options, output)
@@ -28,5 +28,5 @@ Feature: custom formatters
       """
 
     When I run "rspec simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
-    Then the exit code should be 0
-    And the stdout should match "example: my example"
+    Then I should see "example: my example"
+    And  the exit status should be 0
