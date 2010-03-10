@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-03-08}
+  s.date = %q{2010-03-09}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -76,20 +76,13 @@ Gem::Specification.new do |s|
      "example_specs/passing/yielding_example.rb",
      "example_specs/ruby1.9.compatibility/access_to_constants_spec.rb",
      "example_specs/spec_helper.rb",
-     "features-pending/formatters/custom_formatter.feature",
-     "features-pending/heckle/heckle.feature",
-     "features-pending/interop/examples_and_tests_together.feature",
-     "features-pending/interop/rspec_output.feature",
-     "features-pending/interop/test_but_not_test_unit.feature",
-     "features-pending/interop/test_case_with_should_methods.feature",
-     "features-pending/mocks/stub_implementation.feature",
-     "features-pending/pending/pending_examples.feature",
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
      "features/configuration/spec_opts.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
+     "features/formatters/custom_formatter.feature",
      "features/hooks/around_hook.feature",
      "features/hooks/before_and_after_hooks.feature",
      "features/hooks/described_class.feature",
@@ -98,6 +91,7 @@ Gem::Specification.new do |s|
      "features/mock_framework_integration/use_mocha.feature",
      "features/mock_framework_integration/use_rr.feature",
      "features/mock_framework_integration/use_rspec.feature",
+     "features/pending/pending_examples.feature",
      "features/subject/explicit_subject.feature",
      "features/subject/implicit_subject.feature",
      "features/support/env.rb",
