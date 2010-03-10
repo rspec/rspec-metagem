@@ -6,7 +6,6 @@ module Rspec
       include Rspec::Matchers
 
       attr_reader :expected, :actual
-
       def initialize(name, *expected, &declarations)
         @name     = name
         @expected = expected
@@ -22,7 +21,16 @@ module Rspec
           instance_exec(*@expected, &declarations)
         end
       end
-
+      
+      # This allows access to running_example 
+      alias_method :old_instance_exec, :instance_exec
+      def instance_exec(*args, &block)
+        instance_eval {
+          self.running_example ||= eval("running_example", block.binding) rescue nil
+          old_instance_exec(*args, &block)
+        }
+      end
+            
       #Used internally by objects returns by +should+ and +should_not+.
       def matches?(actual)
         @actual = actual
@@ -87,9 +95,12 @@ module Rspec
           end
         end
       end
-
+      
+    protected
+      attr_accessor :running_example
+      
     private
-
+    
       def making_declared_methods_public # :nodoc:
         # Our home-grown instance_exec in ruby 1.8.6 results in any methods
         # declared in the block eval'd by instance_exec in the block to which we

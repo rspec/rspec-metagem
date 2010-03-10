@@ -284,6 +284,40 @@ module Rspec
         matcher.expecting('value').matches?('value').should be_true
         matcher.expecting('value').matches?('other value').should be_false
       end
+    
+      context "can access running_example" do
+        it "works with matcher using dsl" do
+          Rspec::Matchers.define(:something) do
+            match do |actual|
+              actual == running_example
+            end
+          end
+          running_example.should something
+        end
+
+        it "works within matcher using #new" do
+          @matcher = Rspec::Matchers::Matcher.new(:something) {}
+          @matcher.send(:running_example).should == running_example
+        end
+        
+        module ::FakeMatcher
+          include Rspec::Matchers
+          
+          def do_something
+            Matcher.new(:do_something) do
+              match do |actual|
+                !running_example.nil?
+              end
+            end
+          end
+        end
+        
+        include FakeMatcher
+        
+        it "works when defined with api" do
+          "this string".should do_something
+        end
+      end
     end
   end
 end

@@ -15,8 +15,8 @@ module Rspec
           obj = Object.new
           obj.extend mod
     
-          Rspec::Matchers::Matcher.should_receive(:new).with(:foo, 3)
-    
+          Rspec::Matchers::Matcher.should_receive(:new).with(:foo, 3) { stub('matcher').as_null_object }
+
           obj.foo(3)
         end
       end
