@@ -5,7 +5,7 @@ describe Rspec::Core::Runner do
   describe 'reporter' do
 
     it 'should return the configured formatter' do
-      Rspec::Core::Runner.new.reporter.should == Rspec::Core.configuration.formatter
+      Rspec::Core::Runner.new.reporter.should == Rspec.configuration.formatter
     end
 
   end  

@@ -118,7 +118,7 @@ module Rspec
       def self._build(klass, given_caller, args, &example_group_block)
         args << {} unless args.last.is_a?(Hash)
         args.last.update(:example_group_block => example_group_block, :caller => given_caller)
-        args.unshift Rspec::Core.configuration unless args.first.is_a?(Rspec::Core::Configuration)
+        args.unshift Rspec.configuration unless args.first.is_a?(Rspec::Core::Configuration)
         klass.set_it_up(*args) 
         klass.module_eval(&example_group_block) if example_group_block
         klass

@@ -15,15 +15,15 @@ module Rspec
         end
 
         def configuration
-          Rspec::Core.configuration
+          Rspec.configuration
         end
 
         def output
-          Rspec::Core.configuration.output
+          Rspec.configuration.output
         end
 
         def profile_examples?
-          Rspec::Core.configuration.profile_examples
+          Rspec.configuration.profile_examples
         end
 
         def color_enabled?

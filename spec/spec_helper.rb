@@ -23,11 +23,11 @@ module Rspec
 end
 
 def use_formatter(new_formatter)
-  original_formatter = Rspec::Core.configuration.formatter
-  Rspec::Core.configuration.instance_variable_set(:@formatter, new_formatter)
+  original_formatter = Rspec.configuration.formatter
+  Rspec.configuration.instance_variable_set(:@formatter, new_formatter)
   yield
 ensure
-  Rspec::Core.configuration.instance_variable_set(:@formatter, original_formatter)
+  Rspec.configuration.instance_variable_set(:@formatter, original_formatter)
 end
 
 def in_editor?

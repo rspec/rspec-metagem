@@ -1,6 +1,6 @@
 require 'rr'
 
-Rspec::Core.configuration.backtrace_clean_patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
+Rspec.configuration.backtrace_clean_patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
 
 module Rspec
   module Core

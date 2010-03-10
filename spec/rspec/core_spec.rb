@@ -4,17 +4,21 @@ describe Rspec::Core do
 
   describe "#configuration" do
     
-    it "should return an instance of Rspec::Core::Configuration" do
-      Rspec::Core.configuration.should be_an_instance_of(Rspec::Core::Configuration)
+    it "returns an instance of Rspec::Core::Configuration" do
+      Rspec.configuration.should be_an_instance_of(Rspec::Core::Configuration)
     end
-    
+
+    it "returns the same object every time" do
+      Rspec.configuration.should equal(Rspec.configuration)
+    end
+
   end
   
   describe "#configure" do
     
     it "should yield the current configuration" do
       Rspec.configure do |config|
-        config.should == Rspec::Core.configuration
+        config.should == Rspec::configuration
       end
     end
     

@@ -14,7 +14,7 @@ module Rspec
       end
 
       def configuration
-        Rspec::Core.configuration
+        Rspec.configuration
       end
 
       def reporter

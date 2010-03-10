@@ -23,7 +23,8 @@ module Rspec
     end
 
     def self.configuration
-      @configuration ||= Rspec::Core::Configuration.new
+      Rspec.deprecate('Rspec::Core.configuration', 'Rspec.configuration', '2.0.0')
+      Rspec.configuration
     end
 
     def self.configure
@@ -37,8 +38,12 @@ module Rspec
 
   end
 
+  def self.configuration
+    @configuration ||= Rspec::Core::Configuration.new
+  end
+
   def self.configure
-    yield Core.configuration if block_given?
+    yield configuration if block_given?
   end
 end
 

@@ -9,11 +9,11 @@ module Rspec
       end
 
       def filter
-        Rspec::Core.configuration.filter
+        Rspec.configuration.filter
       end
 
       def exclusion_filter
-        Rspec::Core.configuration.exclusion_filter
+        Rspec.configuration.exclusion_filter
       end
 
       def shared_example_groups
@@ -26,13 +26,13 @@ module Rspec
         if filter || exclusion_filter
           @example_groups_to_run = filter_example_groups
 
-          if @example_groups_to_run.size == 0 && Rspec::Core.configuration.run_all_when_everything_filtered?
-            Rspec::Core.configuration.puts "No examples were matched by #{filter.inspect}, running all"
+          if @example_groups_to_run.size == 0 && Rspec.configuration.run_all_when_everything_filtered?
+            Rspec.configuration.puts "No examples were matched by #{filter.inspect}, running all"
             # reset the behaviour list to all example groups, and add back all examples
             @example_groups_to_run = @example_groups
             @example_groups.each { |b| b.examples_to_run.replace(b.examples) }
           else
-            Rspec::Core.configuration.puts "Run filtered using #{filter.inspect}"          
+            Rspec.configuration.puts "Run filtered using #{filter.inspect}"          
           end
         else
           @example_groups_to_run = @example_groups

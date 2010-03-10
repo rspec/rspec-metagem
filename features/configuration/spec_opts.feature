@@ -22,7 +22,7 @@ Feature: spec/spec.opts
       describe "color_enabled" do
         context "when set with Rspec.configure" do
           it "is true" do
-            Rspec::Core.configuration.color_enabled?.should be_true
+            Rspec.configuration.color_enabled?.should be_true
           end
         end
       end
@@ -42,7 +42,7 @@ Feature: spec/spec.opts
       describe "color_enabled" do
         context "when set with Rspec.configure" do
           it "is true" do
-            Rspec::Core.configuration.color_enabled?.should be_true
+            Rspec.configuration.color_enabled?.should be_true
           end
         end
       end
@@ -68,7 +68,7 @@ Feature: spec/spec.opts
       describe "formatter" do
         context "when set with Rspec.configure and in spec.opts" do
           it "takes the value set in spec.opts" do
-            Rspec::Core.configuration.formatter.should be_an(Rspec::Core::Formatters::DocumentationFormatter)
+            Rspec.configuration.formatter.should be_an(Rspec::Core::Formatters::DocumentationFormatter)
           end
         end
       end
