@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-03-08}
+  s.date = %q{2010-03-10}
   s.description = %q{rspec expectations (should[_not] and matchers)}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
@@ -102,7 +102,8 @@ Gem::Specification.new do |s|
      "spec/rspec/matchers/throw_symbol_spec.rb",
      "spec/spec_helper.rb",
      "spec/suite.rb",
-     "spec/support/classes.rb"
+     "spec/support/classes.rb",
+     "specs.watchr"
   ]
   s.homepage = %q{http://github.com/rspec/expectations}
   s.post_install_message = %q{**************************************************
