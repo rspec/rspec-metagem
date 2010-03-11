@@ -15,14 +15,14 @@ module Rspec
             orig_critical, Thread.critical = Thread.critical, true
             n = 0
             n += 1 while respond_to?(method_name="__instance_exec#{n}")
-            singleton_class.module_eval{ define_method(:__instance_exec, &block) }
+            singleton_class.module_eval{ define_method(method_name, &block) }
           ensure
             Thread.critical = orig_critical
           end
           begin
-            return send(:__instance_exec, *args)
+            return send(method_name, *args)
           ensure
-            singleton_class.module_eval{ remove_method(:__instance_exec) } rescue nil
+            singleton_class.module_eval{ remove_method(method_name) } rescue nil
           end
         end
       end
