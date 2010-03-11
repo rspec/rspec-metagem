@@ -22,13 +22,9 @@ module Rspec
         end
       end
       
-      # This allows access to running_example 
-      alias_method :old_instance_exec, :instance_exec
       def instance_exec(*args, &block)
-        instance_eval {
-          self.running_example ||= eval("running_example", block.binding) rescue nil
-          old_instance_exec(*args, &block)
-        }
+        self.running_example ||= eval("running_example", block.binding) rescue nil
+        super(*args, &block)
       end
             
       #Used internally by objects returns by +should+ and +should_not+.
