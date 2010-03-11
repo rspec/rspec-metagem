@@ -4,4 +4,4 @@ rerun_opts = rerun.to_s.strip.empty? ? "--format progress features" : "--format 
 std_opts = "#{rerun_opts} --require features --format rerun --out rerun.txt --strict --tags ~@wip"
 %>
 default: <%= std_opts %>
-wip: --tags @wip:3 --wip features
+wip: --require features --tags @wip:3 --wip features
