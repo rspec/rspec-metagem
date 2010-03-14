@@ -46,8 +46,12 @@ module Rspec
       alias_example_to :pending, :pending => true
 
       def self.it_should_behave_like(*names)
-        Rspec::Core.world.shared_example_groups.each do |name, block|
-          module_eval(&block) if names.include?(name)
+        names.each do |name|
+          begin
+            module_eval &Rspec::Core.world.shared_example_groups[name]
+          rescue ArgumentError
+            raise "Could not find shared example group named #{name.inspect}"
+          end
         end
       end
 

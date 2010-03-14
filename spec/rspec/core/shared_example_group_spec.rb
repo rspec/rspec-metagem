@@ -65,7 +65,14 @@ module Rspec::Core
         group.singleton_methods.should include(:class_helper)
       end
 
-      it "should raise when named shared example_group can not be found" 
+      it "raises when named shared example_group can not be found" do
+        cleanup_shared_example_groups do
+          group = ExampleGroup.create("example_group")
+          lambda do
+            group.it_should_behave_like("a group that does not exist")
+          end.should raise_error(/Could not find shared example group named/)
+        end
+      end
 
       it "adds examples to current example_group using it_should_behave_like" do
         cleanup_shared_example_groups do
@@ -142,35 +149,70 @@ module Rspec::Core
         share_examples_for("it runs shared examples") do
           include RunningSharedExamplesJustForTesting
 
-          def magic
-            @magic ||= {}
+          class << self
+            def magic
+              $magic ||= {}
+            end
+
+            def count(scope)
+              @counters ||= {
+                :before_all  => 0,
+                :before_each => 0,
+                :after_each  => 0,
+                :after_all   => 0
+              }
+              @counters[scope] += 1
+            end
           end
 
-          before(:each) { magic[:before_each] = 'each' }
-          after(:each)  { magic[:after_each] = 'each' }
-          before(:all)  { magic[:before_all] = 'all' }
+          def magic
+            $magic ||= {}
+          end
+
+          def count(scope)
+            self.class.count(scope)
+          end
+
+          before(:all)  { magic[:before_all]  = "before all #{count(:before_all)}" }
+          before(:each) { magic[:before_each] = "before each #{count(:before_each)}" }
+          after(:each)  { magic[:after_each]  = "after each #{count(:after_each)}" }
+          after(:all)   { magic[:after_all]   = "after all #{count(:after_all)}" }
+        end
+
+        let(:group) do
+          group = ExampleGroup.create("example group") do
+            it_should_behave_like "it runs shared examples"
+            it "has one example" do; end
+            it "has another example" do; end
+          end
+        end
+
+        before { group.run(stub('reporter').as_null_object) }
+
+        it "runs before(:all) only once from shared example_group", :compat => 'rspec-1.2' do
+          group.magic[:before_all].should eq("before all 1")
+        end
+
+        it "runs before(:each) from shared example_group", :compat => 'rspec-1.2' do
+          group.magic[:before_each].should eq("before each 2")
+        end
+
+        it "runs after(:each) from shared example_group", :compat => 'rspec-1.2' do
+          group.magic[:after_each].should eq("after each 2")
+        end
+
+        it "runs after(:all) only once from shared example_group", :compat => 'rspec-1.2' do
+          group.magic[:after_all].should eq("after all 1")
         end
 
         it_should_behave_like "it runs shared examples"
 
-        it "runs before(:each) from shared example_group", :compat => 'rspec-1.2' do
-          magic[:before_each].should == 'each'
-        end
-
-        it "runs after(:each) from shared example_group", :compat => 'rspec-1.2' 
-
-        it "should run before(:all) only once from shared example_group", :compat => 'rspec-1.2' do
-          magic[:before_all].should == 'all'
-        end
-
-        it "should run after(:all) only once from shared example_group", :compat => 'rspec-1.2' 
-
-        it "should include modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
+        it "includes modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
           running_example.example_group.included_modules.should include(RunningSharedExamplesJustForTesting)
         end
 
-        it "should make methods defined in the shared example_group available in consuming example_group", :compat => 'rspec-1.2' do
-          magic.should be_a(Hash)
+        it "makes methods defined in the shared example_group available in consuming example_group", :compat => 'rspec-1.2' do
+          group.magic.should be_a(Hash)
         end
 
       end
