@@ -31,9 +31,11 @@ end
 # --------------------------------------------------
 # Watchr Rules
 # --------------------------------------------------
-watch('^spec/(.*)_spec\.rb'  )   { |m| run_test_matching(m[1]) }
-watch('^lib/(.*)\.rb'               )   { |m| run_test_matching(m[1]) }
-watch('^spec/spec_helper\.rb')   { run_all_tests }
+watch('^spec/(.*)_spec\.rb')   { |m| run_test_matching(m[1]) }
+watch('^lib/(.*)\.rb')         { |m| run_test_matching(m[1]) }
+watch('^spec/spec_helper\.rb') { run_all_tests }
+watch('^spec/support/.*\.rb')   { run_all_tests }
+
 # --------------------------------------------------
 # Signal Handling
 # --------------------------------------------------
