@@ -6,7 +6,17 @@ $LOAD_PATH << File.expand_path('../../../rspec-mocks/lib', __FILE__)
 require 'rspec/expectations'
 require 'rspec/mocks'
 
+begin
+  require 'autotest'
+rescue LoadError
+  raise "You must install ZenTest to use autotest"
+end
+
+require 'autotest/rspec2'
+
 Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
+
+Dir['./spec/support/**/*.rb'].map {|f| require f}
 
 module Rspec
   module Core

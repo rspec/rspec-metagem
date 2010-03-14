@@ -23,6 +23,7 @@ begin
     gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
+    gem.add_development_dependency('autotest', '>= 4.2.9')
     gem.post_install_message = <<-EOM
 #{"*"*50}
 
