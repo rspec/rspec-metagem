@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Autotest::Rspec do
+describe Autotest::Rspec2 do
   describe "adding spec.opts --options" do 
     before(:each) do
       @rspec_autotest = Autotest::Rspec2.new
