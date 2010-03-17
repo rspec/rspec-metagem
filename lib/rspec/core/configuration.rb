@@ -10,6 +10,8 @@ module Rspec
       # Run all examples if the run is filtered, and no examples were found.
       attr_writer :run_all_when_everything_filtered
 
+      attr_reader :options
+
       def initialize
         @run_all_when_everything_filtered = false
         @hooks = { 
@@ -48,31 +50,23 @@ module Rspec
 
       def mock_framework=(use_me_to_mock)
         @options[:mock_framework] = use_me_to_mock
-        
-        mock_framework_class = case use_me_to_mock.to_s
-        when /rspec/i
-          require 'rspec/core/mocking/with_rspec'
-          Rspec::Core::Mocking::WithRspec
-        when /mocha/i
-          require 'rspec/core/mocking/with_mocha'
-          Rspec::Core::Mocking::WithMocha
-        when /rr/i
-          require 'rspec/core/mocking/with_rr'
-          Rspec::Core::Mocking::WithRR
-        when /flexmock/i
-          require 'rspec/core/mocking/with_flexmock'
-          Rspec::Core::Mocking::WithFlexmock
-        else
-          require 'rspec/core/mocking/with_absolutely_nothing'
-          Rspec::Core::Mocking::WithAbsolutelyNothing
-        end 
-        
-        @options[:mock_framework_class] = mock_framework_class
-        Rspec::Core::ExampleGroup.send(:include, mock_framework_class)
       end
       
-      def mock_framework
-        @options[:mock_framework]
+      def require_mock_framework_adapter
+        require case @options[:mock_framework].to_s
+        when ""
+           'rspec/core/mocking/with_rspec'
+        when /rspec/i
+          'rspec/core/mocking/with_rspec'
+        when /mocha/i
+          'rspec/core/mocking/with_mocha'
+        when /rr/i
+          'rspec/core/mocking/with_rr'
+        when /flexmock/i
+          'rspec/core/mocking/with_flexmock'
+        else
+          'rspec/core/mocking/with_absolutely_nothing'
+        end 
       end
 
       def filename_pattern
@@ -222,6 +216,11 @@ EOM
         @hooks[hook][each_or_all].select do |filters, block|
           group.all_apply?(filters)
         end.map { |filters, block| block }
+      end
+
+      def configure_mock_framework
+        require_mock_framework_adapter
+        Rspec::Core::ExampleGroup.send(:include, Rspec::Core::MockFrameworkAdapter)
       end
 
     end

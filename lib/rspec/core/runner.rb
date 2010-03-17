@@ -29,6 +29,8 @@ module Rspec
         Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
 
         require_all_files(configuration)
+
+        configuration.configure_mock_framework
         
         total_examples_to_run = Rspec::Core.world.total_examples_to_run
 

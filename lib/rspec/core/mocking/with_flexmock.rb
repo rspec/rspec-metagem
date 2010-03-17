@@ -7,19 +7,19 @@ require 'flexmock/rspec'
 
 module Rspec
   module Core
-    module Mocking
-      module WithFlexmock
-        include FlexMock::MockContainer
-        def setup_mocks_for_rspec
-          # No setup required
-        end
-        def verify_mocks_for_rspec
-          flexmock_verify
-        end
-        def teardown_mocks_for_rspec
-          flexmock_close
-        end
+    module MockFrameworkAdapter
+
+      include FlexMock::MockContainer
+      def setup_mocks_for_rspec
+        # No setup required
       end
+      def verify_mocks_for_rspec
+        flexmock_verify
+      end
+      def teardown_mocks_for_rspec
+        flexmock_close
+      end
+
     end
   end
 end

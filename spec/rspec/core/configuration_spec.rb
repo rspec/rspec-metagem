@@ -6,28 +6,34 @@ module Rspec::Core
 
     let(:config) { Configuration.new }
 
-    context "setting the mock framework" do
+    describe "#mock_framework_class" do
+      before(:each) do
+        config.stub(:require)
+      end
 
-      it "requires and includes the rspec adapter when the mock_framework is :rspec" do
+      it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')
-        ExampleGroup.should_receive(:send)
-        config.mock_framework = :rspec
+        config.require_mock_framework_adapter
+      end
+
+      [:rspec, :mocha, :rr, :flexmock].each do |framework|
+        it "uses #{framework.inspect} framework when set explicitly" do
+          config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
+          config.mock_framework = framework
+          config.require_mock_framework_adapter
+        end
+      end
+
+      it "uses the null adapter when set to any unknown key" do
+        config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
+        config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
+        config.require_mock_framework_adapter
       end
 
       it "supports mock_with for backward compatibility with rspec-1.x" do
-        config.stub!(:require)
-        ExampleGroup.stub!(:send)
+        config.should_receive(:require).with('rspec/core/mocking/with_rspec')
         config.mock_with :rspec
-      end
-      
-      it "includes the null adapter when the mock_framework is not :rspec, :mocha, or :rr" do
-        ExampleGroup.should_receive(:send).with(:include, Mocking::WithAbsolutelyNothing)
-        config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
-      end
-
-      pending "includes the rspec adapter when the mock_framework is not set" do
-        ExampleGroup.stub!(:send)
-        config.mock_framework.should == :rspec
+        config.require_mock_framework_adapter
       end
       
     end  

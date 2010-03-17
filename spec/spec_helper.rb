@@ -9,12 +9,10 @@ require 'rspec/mocks'
 begin
   require 'autotest'
 rescue LoadError
-  raise "You must install ZenTest to use autotest"
+  raise "You must install autotest to use it"
 end
 
 require 'autotest/rspec2'
-
-Rspec::Core::ExampleGroup.send(:include, Rspec::Matchers)
 
 Dir['./spec/support/**/*.rb'].map {|f| require f}
 
@@ -45,7 +43,6 @@ def in_editor?
 end
 
 Rspec.configure do |c|
-  c.mock_framework = :rspec
   c.color_enabled = !in_editor?
   c.exclusion_filter = { :ruby => lambda {|version|
     !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
