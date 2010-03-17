@@ -144,10 +144,10 @@ module Rspec::Core
       end
 
       describe "running shared examples" do
-        module RunningSharedExamplesJustForTesting; end
+        module ::RunningSharedExamplesJustForTesting; end
 
         share_examples_for("it runs shared examples") do
-          include RunningSharedExamplesJustForTesting
+          include ::RunningSharedExamplesJustForTesting
 
           class << self
             def magic
