@@ -38,7 +38,7 @@ class Autotest::Rspec2 < Autotest
 
   def make_test_cmd(files_to_test)
     files_to_test.empty? ? '' :
-      "#{ruby} #{SPEC_PROGRAM} #{normalize(files_to_test).keys.flatten.join(' ')} #{add_options_if_present}"
+      "#{ruby} #{SPEC_PROGRAM} #{normalize(files_to_test).keys.flatten.join(' ')}"
   end
 
   def normalize(files_to_test)
@@ -48,7 +48,4 @@ class Autotest::Rspec2 < Autotest
     end
   end
 
-  def add_options_if_present # :nodoc:
-    File.exist?("spec/spec.opts") ? "-O #{File.join('spec','spec.opts')} " : ""
-  end
 end

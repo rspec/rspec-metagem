@@ -1,31 +1,13 @@
 require "spec_helper"
 
 describe Autotest::Rspec2 do
-  describe "adding spec.opts --options" do 
-    before(:each) do
-      @rspec_autotest = Autotest::Rspec2.new
-    end
-
-    it "should return the command line option to add spec.opts if the options file exists" do
-      File.stub!(:exist?).and_return true
-      @rspec_autotest.add_options_if_present.should == "-O spec/spec.opts "
-    end
-
-    it "should return an empty string if no spec.opts exists" do
-      File.stub!(:exist?).and_return false
-      Autotest::Rspec2.new.add_options_if_present.should == ""
-    end
-  end  
-
   describe "commands" do
     before(:each) do
       @rspec_autotest = Autotest::Rspec2.new
       @rspec_autotest.stub!(:ruby).and_return "ruby"
-      @rspec_autotest.stub!(:add_options_if_present).and_return "-O spec/spec.opts"
     
       @ruby = @rspec_autotest.ruby
       @spec_cmd = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec'))
-      @options = @rspec_autotest.add_options_if_present
       files = %w[file_one file_two]
       @files_to_test = {
         files[0] => [],
@@ -38,7 +20,7 @@ describe Autotest::Rspec2 do
   
     it "should make the appropriate test command" do
       actual = @rspec_autotest.make_test_cmd(@files_to_test)
-      expected = /#{@ruby} #{@spec_cmd} (.*) #{@options}/
+      expected = /#{@ruby} #{@spec_cmd} (.*)/
 
       actual.should match(expected)
 
