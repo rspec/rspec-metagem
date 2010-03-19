@@ -31,12 +31,13 @@ module Rspec
         def colorise(s, failure)
           red(s)
         end
-
+        
         def dump_summary
           failure_count = failed_examples.size
           pending_count = pending_examples.size
+          
 
-          output.puts "\nFinished in #{duration} seconds\n"
+            output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
           summary = "#{example_count} example#{'s' unless example_count == 1}, #{failure_count} failures"
           summary << ", #{pending_count} pending" if pending_count > 0  
@@ -56,18 +57,13 @@ module Rspec
             sorted_examples = examples.sort_by { |example| example.execution_result[:run_time] }.reverse.first(10)
             output.puts "\nTop #{sorted_examples.size} slowest examples:\n"        
             sorted_examples.each do |example|
-              output.puts "  (#{sprintf("%.7f", example.execution_result[:run_time])} seconds) #{example}"
+              output.puts "  (#{format_seconds(duration, 7)} seconds) #{example}"
               output.puts grey("   # #{format_caller(example.metadata[:caller])}")
             end
           end
 
           output.flush
         end
-
-        # def textmate_link_backtrace(path)
-        #   file, line = path.split(':')
-        #   "txmt://open/?url=file://#{File.expand_path(file)}&line=#{line}"
-        # end
 
         def format_caller(caller_info)
           caller_info.to_s.split(':in `block').first

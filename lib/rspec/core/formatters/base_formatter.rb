@@ -5,6 +5,7 @@ module Rspec
     module Formatters
 
       class BaseFormatter
+        include Helpers
         attr_accessor :example_group
         attr_reader :example_count, :duration, :examples
 
