@@ -4,7 +4,7 @@ module Rspec
   module Core
     describe Metadata do
 
-      describe "#process" do
+      describe "process" do
         Metadata::RESERVED_KEYS.each do |key|
           it "prohibits :#{key} as a hash key" do
             m = Metadata.new
@@ -15,7 +15,7 @@ module Rspec
         end
       end
 
-      describe "[:description]" do
+      describe "description" do
         it "just has the example description" do
           m = Metadata.new
           m.process('group')
@@ -25,7 +25,7 @@ module Rspec
         end
       end
 
-      describe "[:full_description]" do
+      describe "full description" do
         it "concats the example group name and description" do
           m = Metadata.new
           m.process('group')
@@ -35,7 +35,7 @@ module Rspec
         end
       end
 
-      describe "[:example_group][:description]" do
+      describe "description" do
         context "with a string" do
           it "provides the submitted description" do
             m = Metadata.new
@@ -64,7 +64,7 @@ module Rspec
         end
       end
 
-      describe "[:example_group][:full_description]" do
+      describe "full description" do
         it "concats the nested example group descriptions" do
           parent = Metadata.new
           parent.process(Object, 'parent')
@@ -76,7 +76,7 @@ module Rspec
         end
       end
 
-      describe "#determine_file_path" do
+      describe "file path" do
         it "finds the first spec file in the caller array" do
           m = Metadata.new
           m.process(:caller => [
@@ -89,7 +89,7 @@ module Rspec
         end
       end
 
-      describe "#determine_line_number" do
+      describe "line number" do
         it "finds the line number with the first spec file " do
           m = Metadata.new
           m.process(:caller => [
@@ -112,7 +112,7 @@ module Rspec
         end
       end
 
-      describe "#metadata_for_example" do
+      describe "metadata for example" do
         let(:caller_for_example) { caller(0) }
         let(:line_number)        { __LINE__ - 1 }
         let(:metadata)           { Metadata.new.process("group description") }
@@ -151,7 +151,7 @@ module Rspec
         end
       end
 
-      describe "#apply_condition" do
+      describe "apply_condition" do
         let(:group_metadata) { Metadata.new.process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:group_line_number) { __LINE__ -1 }
         let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"]) }
