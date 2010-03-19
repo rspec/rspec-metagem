@@ -90,9 +90,9 @@ module Rspec
     private
 
       def method_missing(name, *args, &block)
-        begin
+        if $matcher_execution_context.respond_to?(name)
           $matcher_execution_context.send name, *args, &block
-        rescue NoMethodError
+        else
           super(name, *args, &block)
         end
       end

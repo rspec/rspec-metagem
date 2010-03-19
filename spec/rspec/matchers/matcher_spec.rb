@@ -308,7 +308,7 @@ module Rspec
 
           expect do
             running_example.should __raise_no_method_error
-          end.to raise_error(NoMethodError, /Rspec::Matchers::Matcher/)
+          end.to raise_error(/Rspec::Matchers::Matcher/)
         end
       end
     
