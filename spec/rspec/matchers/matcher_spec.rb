@@ -286,37 +286,32 @@ module Rspec
       end
 
       context "defined using the dsl" do
-        it "can access the running_example" do
+        def a_method_in_the_example
+          "method defined in the example"
+        end
+
+        it "can access methods in the running_example" do
           Rspec::Matchers.define(:__access_running_example) do
             match do |actual|
-              actual == running_example
+              a_method_in_the_example == "method defined in the example"
             end
           end
           running_example.should __access_running_example
         end
-      end
-    
-      context "defined using #new" do
-        it "can access the running_example" do
-          @matcher = Rspec::Matchers::Matcher.new(:something) {}
-          @matcher.send(:running_example).should eq(running_example)
-        end
-      end
 
-      context "wrapped in a method" do
-        
-        def access_running_example
-          Matcher.new(:access_running_example) do
+        it "raises NoMethodError for methods not in the running_example" do
+          Rspec::Matchers.define(:__raise_no_method_error) do
             match do |actual|
-              actual == running_example
+              a_method_not_in_the_example == "method defined in the example"
             end
           end
-        end
-        
-        it "can access the running_example" do
-          running_example.should access_running_example
+
+          expect do
+            running_example.should __raise_no_method_error
+          end.to raise_error(NoMethodError, /Rspec::Matchers::Matcher/)
         end
       end
+    
     end
   end
 end

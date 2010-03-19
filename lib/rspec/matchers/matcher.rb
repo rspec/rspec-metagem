@@ -22,11 +22,6 @@ module Rspec
         end
       end
       
-      def instance_exec(*args, &block)
-        self.running_example ||= eval("running_example", block.binding) rescue nil
-        super(*args, &block)
-      end
-            
       #Used internally by objects returns by +should+ and +should_not+.
       def matches?(actual)
         @actual = actual
@@ -92,10 +87,15 @@ module Rspec
         end
       end
       
-    protected
-      attr_accessor :running_example
-      
     private
+
+      def method_missing(name, *args, &block)
+        begin
+          $matcher_execution_context.send name, *args, &block
+        rescue NoMethodError
+          super(name, *args, &block)
+        end
+      end
     
       def making_declared_methods_public # :nodoc:
         # Our home-grown instance_exec in ruby 1.8.6 results in any methods
