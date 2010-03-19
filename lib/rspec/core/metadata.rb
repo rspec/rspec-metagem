@@ -130,19 +130,24 @@ EOM
       end
 
       def file_path_from(metadata, given_file_path=nil)
-        given_file_path || file_and_line_number(metadata)[0].strip
+        return given_file_path if given_file_path
+        file = file_and_line_number(metadata)[0] if file_and_line_number(metadata)
+        file.strip if file
       end
 
       def line_number_from(metadata, given_line_number=nil)
-        given_line_number || file_and_line_number(metadata)[1].to_i
+        return given_line_number if given_line_number
+        line_number = file_and_line_number(metadata)[1] if file_and_line_number(metadata)
+        line_number && line_number.to_i
       end
-
+      
       def location_from(metadata)
         "#{metadata[:file_path]}:#{metadata[:line_number]}"
       end
 
       def file_and_line_number(metadata)
-        candidate_entries_from_caller(metadata).first.split(':')
+        entry = candidate_entries_from_caller(metadata).first
+        entry && entry.split(":")
       end
 
       def candidate_entries_from_caller(metadata)

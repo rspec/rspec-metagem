@@ -87,6 +87,15 @@ module Rspec
           ])
           m[:example_group][:file_path].should == __FILE__
         end
+        it "is nil if there are no spec files found", :full_backtrace => true do
+          m = Metadata.new
+          m.process(:caller => [
+            "foo",
+            "metadata_example.rb:#{__LINE__}",
+            "baz"
+          ])
+          m[:example_group][:file_path].should be_nil
+        end
       end
 
       describe "line number" do
