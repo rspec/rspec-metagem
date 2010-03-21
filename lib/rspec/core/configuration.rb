@@ -54,9 +54,7 @@ module Rspec
       
       def require_mock_framework_adapter
         require case @options[:mock_framework].to_s
-        when ""
-           'rspec/core/mocking/with_rspec'
-        when /rspec/i
+        when "", /rspec/i
           'rspec/core/mocking/with_rspec'
         when /mocha/i
           'rspec/core/mocking/with_mocha'
@@ -130,7 +128,7 @@ EOM
      
       def formatter=(formatter_to_use)
         formatter_class = case formatter_to_use.to_s
-        when /doc/, 's', 'n'
+        when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
           Rspec::Core::Formatters::DocumentationFormatter
         when 'progress' 
           Rspec::Core::Formatters::ProgressFormatter

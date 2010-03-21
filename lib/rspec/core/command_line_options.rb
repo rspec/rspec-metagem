@@ -26,7 +26,9 @@ module Rspec
             options[:color_enabled] = o
           end
           
-          opts.on('-f', '--formatter [FORMATTER]', 'Choose an optional formatter') do |o|
+          opts.on('-f', '--formatter [FORMATTER]', 'Choose a formatter',
+                  '  [p]rogress (default - dots)',
+                  '  [d]ocumentation (group and example names)') do |o|
             options[:formatter] = o
           end
 
