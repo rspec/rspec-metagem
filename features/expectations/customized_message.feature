@@ -45,7 +45,7 @@ Feature: customized message
       end
 
       """
-    When I run "rspec node_spec.rb --format n"
+    When I run "rspec node_spec.rb --format documentation"
     Then I should see "3 examples, 3 failures"
     And  I should not see "to return true, got false"
     And  I should not see "to return false, got true"

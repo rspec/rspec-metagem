@@ -22,6 +22,6 @@ Feature: define matcher
         it { should be_bigger_than(4).but_smaller_than(6) }
       end
       """
-    When I run "rspec between_spec.rb --format specdoc"
+    When I run "rspec between_spec.rb --format documentation"
     Then I should see "1 example, 0 failures"
     And  I should see "should be bigger than 4"

@@ -34,7 +34,7 @@ Feature: define matcher
       end
 
       """
-    When I run "rspec matcher_with_default_message_spec.rb --format specdoc"
+    When I run "rspec matcher_with_default_message_spec.rb --format documentation"
     Then the exit status should not be 0
 
     And I should see "should be a multiple of 3"
@@ -116,7 +116,7 @@ Feature: define matcher
         it {should_not be_a_multiple_of(4)}
       end
       """
-    When I run "rspec matcher_overriding_description_spec.rb --format specdoc"
+    When I run "rspec matcher_overriding_description_spec.rb --format documentation"
     Then the exit status should be 0
     And the stdout should contain "2 examples, 0 failures"
     And the stdout should contain "should be multiple of 3"
@@ -141,7 +141,7 @@ Feature: define matcher
         it {should have_7_fingers}
       end
       """
-    When I run "rspec matcher_with_no_args_spec.rb --format specdoc"
+    When I run "rspec matcher_with_no_args_spec.rb --format documentation"
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should have 7 fingers"
@@ -161,7 +161,7 @@ Feature: define matcher
         it {should be_the_sum_of(1,2,3,4)}
       end
       """
-    When I run "rspec matcher_with_multiple_args_spec.rb --format specdoc"
+    When I run "rspec matcher_with_multiple_args_spec.rb --format documentation"
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should be the sum of 1, 2, 3, and 4"
