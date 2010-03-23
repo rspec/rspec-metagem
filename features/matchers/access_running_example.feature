@@ -48,6 +48,6 @@ Feature: access running example
       """
     When I run "rspec example_spec.rb"
     Then I should see "1 example, 1 failure"
-    And I should see "undefined method"
+    And I should see "undefined local variable"
     And I should see "Rspec::Matchers::Matcher"
     And I should not see "ExampleGroup"
