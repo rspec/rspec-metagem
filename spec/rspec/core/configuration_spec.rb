@@ -237,6 +237,19 @@ module Rspec::Core
       end
     end
 
+
+    context "transactional examples" do
+      it "defaults to use transactional examples" do
+          config.use_transactional_examples?.should be_true
+      end
+      describe "#use_transactional_examples=" do
+        it "remembers that I don't want transactional exmaples" do
+          config.use_transactional_examples false
+          config.use_transactional_examples?.should be_false
+        end
+      end
+    end
+
   end
 
 end

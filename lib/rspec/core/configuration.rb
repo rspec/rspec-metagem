@@ -27,6 +27,7 @@ module Rspec
         {
           :color_enabled => false,
           :mock_framework => nil,
+          :use_transactional_examples => true,
           :profile_examples => false,
           :files_to_run => [],
           :filename_pattern => '**/*_spec.rb',
@@ -50,6 +51,14 @@ module Rspec
 
       def mock_framework=(use_me_to_mock)
         @options[:mock_framework] = use_me_to_mock
+      end
+
+      def use_transactional_examples(value)
+        @options[:use_transactional_examples] = value
+      end
+
+      def use_transactional_examples?
+        @options[:use_transactional_examples]
       end
       
       def require_mock_framework_adapter
