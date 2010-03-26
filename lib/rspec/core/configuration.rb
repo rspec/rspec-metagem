@@ -53,7 +53,7 @@ module Rspec
         @options[:mock_framework] = use_me_to_mock
       end
 
-      def use_transactional_examples(value)
+      def use_transactional_examples=(value)
         @options[:use_transactional_examples] = value
       end
 

@@ -244,7 +244,7 @@ module Rspec::Core
       end
       describe "#use_transactional_examples=" do
         it "remembers that I don't want transactional exmaples" do
-          config.use_transactional_examples false
+          config.use_transactional_examples = false
           config.use_transactional_examples?.should be_false
         end
       end
