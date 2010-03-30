@@ -138,6 +138,45 @@ module Rspec::Core
       
     end
 
+    describe "preceding_example_or_group_line" do
+      before(:each) do
+        @group1_line = 10
+        @group2_line = 20
+        @group2_example1_line = 30
+        @group2_example2_line = 40
+        
+        @group1 = Rspec::Core::ExampleGroup.describe(Bar, "group-1") { }
+        @group2 = Rspec::Core::ExampleGroup.describe(Bar, "group-2") do
+          it('example 1') {}
+          it("example 2") {}
+        end
+        @group1.metadata[:example_group][:line_number] = @group1_line
+        @group2.metadata[:example_group][:line_number] = @group2_line
+        @group2.examples[0].metadata[:line_number] = @group2_example1_line
+        @group2.examples[1].metadata[:line_number] = @group2_example2_line
+      end
+      
+      it "should return nil if no example or group precedes the line" do 
+        @world.preceding_example_or_group_line(@group1_line-1).should == nil
+      end
+      
+      it "should return the argument line number if a group starts on that line" do
+        @world.preceding_example_or_group_line(@group1_line).should == @group1_line
+      end
+      
+      it "should return the argument line number if an example starts on that line" do
+        @world.preceding_example_or_group_line(@group2_example1_line).should == @group2_example1_line
+      end
+      
+      it "should return line number of a group that immediately precedes the argument line" do
+        @world.preceding_example_or_group_line(@group2_line+1).should == @group2_line
+      end
+      
+      it "should return line number of an example that immediately precedes the argument line" do
+        @world.preceding_example_or_group_line(@group2_example1_line+1).should == @group2_example1_line        
+      end
+      
+    end
   end
 
 end

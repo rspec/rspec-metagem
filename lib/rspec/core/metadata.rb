@@ -88,7 +88,8 @@ EOM
           filter.call(metadata[filter_on]) rescue false
         when Fixnum
           if filter_on == :line_number
-            [metadata[:line_number],metadata[:example_group][:line_number]].include?(filter)
+            example_or_group_line = preceding_example_or_group_line(filter)
+            [metadata[:line_number],metadata[:example_group][:line_number]].include?(example_or_group_line)
           else
             metadata[filter_on] == filter
           end
@@ -96,7 +97,7 @@ EOM
           metadata[filter_on] == filter
         end
       end
-
+      
       def all_apply?(filters)
         filters.all? do |filter_on, filter|
           apply_condition(filter_on, filter)
