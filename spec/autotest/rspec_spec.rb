@@ -20,7 +20,7 @@ describe Autotest::Rspec2 do
   
     it "should make the appropriate test command" do
       actual = @rspec_autotest.make_test_cmd(@files_to_test)
-      expected = /#{@ruby} #{@spec_cmd} (.*)/
+      expected = /#{@ruby}.*#{@spec_cmd} (.*)/
 
       actual.should match(expected)
 
