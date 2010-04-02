@@ -99,6 +99,7 @@ module Rspec
 
         def backtrace_line(line)
           return nil if configuration.cleaned_from_backtrace?(line)
+          line.sub!(File.expand_path("."), ".")
           line.sub!(/\A([^:]+:\d+)$/, '\\1')
           return nil if line == '-e:1'
           line
