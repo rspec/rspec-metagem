@@ -110,7 +110,7 @@ module Rspec
         @_subclass_count ||= 0
         @_subclass_count += 1
         const_set(
-          "NestedLevel_#{@_subclass_count}",
+          "Nested_#{@_subclass_count}",
           _build(Class.new(self), caller, args, &example_group_block)
         )
       end
