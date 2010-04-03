@@ -9,7 +9,7 @@ module Rspec
       end
       
       def subject
-        @subject ||= self.class.subject.call
+        @subject ||= instance_eval(&self.class.subject)
       end
       
       # When +should+ is called with no explicit receiver, the call is
@@ -69,11 +69,8 @@ module Rspec
         end
 
         def implicit_subject
+          described = describes || description
           Class === described ? lambda { described.new } : lambda { described }
-        end
-
-        def described
-          @described ||= describes || description
         end
       end
     end
