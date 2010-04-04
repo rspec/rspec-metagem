@@ -20,10 +20,6 @@ describe Rspec::Core::CommandLineOptions do
   end
 
   describe  'formatter' do
-    example '-f or --formatter with no arguments should be parsed as nil' do
-      options_from_args('--formatter').should include(:formatter => nil)
-    end
-
     example '-f or --formatter with an argument should parse' do
       options_from_args('--formatter', 'd').should include(:formatter => 'd')
       options_from_args('-f', 'd').should include(:formatter => 'd')
@@ -57,16 +53,6 @@ describe Rspec::Core::CommandLineOptions do
       options_from_args('--options', 'spec/spec.opts').should include(:options_file => "spec/spec.opts")
       options_from_args('-o', 'foo/spec.opts').should include(:options_file => "foo/spec.opts")
     end
-
-    it "defaults to spec/spec.opts when you don't give it a file path" do
-      options_from_args('-o').should include(:options_file => "spec/spec.opts")
-      options_from_args('--options').should include(:options_file => "spec/spec.opts")
-    end
-    
-    it "loads a global .rspecrc" do
-      options_from_args('-g').should include(:global_options_file => File.join(File.expand_path('~'), '.rspecrc'))
-      options_from_args('--global').should include(:global_options_file => File.join(File.expand_path('~'), '.rspecrc'))
-    end
     
     it "merges options from the global and local .rspecrc" do
       opts = ['--formatter', 'progress']
@@ -99,7 +85,7 @@ describe Rspec::Core::CommandLineOptions do
     
     it "merges options from the CLI and file options gracefully" do
       cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
-      cli_options.stub!(:parse_spec_file_contents).and_return(:full_backtrace => true)
+      cli_options.stub!(:parse_options_file).and_return(:full_backtrace => true)
       config = OpenStruct.new
       cli_options.apply(config)
       config.full_backtrace.should == true

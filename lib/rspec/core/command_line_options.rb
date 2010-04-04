@@ -5,8 +5,8 @@ module Rspec
   module Core
 
     class CommandLineOptions
-      DEFAULT_OPTIONS_FILE = './.rspecrc'
-      DEFAULT_GLOBAL_OPTIONS_FILE = File.join(File.expand_path('~'), '.rspecrc')
+      OPTIONS_FILE = './.rspecrc'
+      GLOBAL_OPTIONS_FILE = File.join(File.expand_path('~'), '.rspecrc')
       
       attr_reader :args, :options
       
@@ -27,27 +27,23 @@ module Rspec
             options[:color_enabled] = o
           end
           
-          opts.on('-f', '--formatter [FORMATTER]', 'Choose a formatter',
+          opts.on('-f', '--formatter FORMATTER', 'Choose a formatter',
                   '  [p]rogress (default - dots)',
                   '  [d]ocumentation (group and example names)') do |o|
             options[:formatter] = o
           end
 
-          opts.on('-l', '--line_number [LINE]', 'Specify the line number of a single example to run') do |o|
+          opts.on('-l', '--line_number LINE', 'Specify the line number of a single example to run') do |o|
             options[:line_number] = o
           end
 
-          opts.on('-e', '--example [PATTERN]', "Run examples whose full descriptions match this pattern",
+          opts.on('-e', '--example PATTERN', "Run examples whose full descriptions match this pattern",
                   "(PATTERN is compiled into a Ruby regular expression)") do |o|
             options[:full_description] = /#{o}/
           end
 
-          opts.on('-o', '--options [PATH]', 'Read configuration options from a file path.  (Defaults to spec/spec.opts)') do |o|
-            options[:options_file] = o || default_options_file
-          end
-          
-          opts.on('-g', '--global [PATH]', "Location of global .rspecrc") do |o|
-            options[:global_options_file] = o || DEFAULT_GLOBAL_OPTIONS_FILE
+          opts.on('-o', '--options PATH', 'Read configuration options from a file path.  (Defaults to spec/spec.opts)') do |o|
+            options[:options_file] = o || local_options_file
           end
           
           opts.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
@@ -75,10 +71,10 @@ module Rspec
         # 1) option file, cli options, rspec core configure
         # TODO: Add options_file to configuration
         # TODO: Store command line options for reference
-        options_file        = options.delete(:options_file){ default_options_file }
-        global_options_file = options.delete(:global_options_file) { DEFAULT_GLOBAL_OPTIONS_FILE }
-        default_options     = parse_spec_file_contents(options_file)
-        global_options      = parse_spec_file_contents(global_options_file)
+        options_file        = options.delete(:options_file) { local_options_file }
+        global_options_file = options.delete(:global_options_file) { GLOBAL_OPTIONS_FILE }
+        default_options     = parse_options_file(options_file)
+        global_options      = parse_options_file(global_options_file)
 
         merged_options = default_options.merge(options)
         options        = global_options.merge(merged_options)
@@ -90,16 +86,16 @@ module Rspec
 
       private
 
-      def default_options_file
-        return DEFAULT_OPTIONS_FILE if File.exist?(DEFAULT_OPTIONS_FILE)
+      def local_options_file
+        return OPTIONS_FILE if File.exist?(OPTIONS_FILE)
         Rspec.deprecate("spec/spec.opts", ".rspecrc or ~/.rspecrc", "2.0.0") if File.exist?("spec/spec.opts")
         "spec/spec.opts"
       end
       
-      def parse_spec_file_contents(options_file)
+      def parse_options_file(options_file)
         return {} unless File.exist?(options_file)
-        spec_file_contents = File.readlines(options_file).map {|l| l.split}.flatten
-        self.class.new(spec_file_contents).parse.options
+        options_file_contents = File.readlines(options_file).map {|l| l.split}.flatten
+        self.class.new(options_file_contents).parse.options
       end
 
     end
