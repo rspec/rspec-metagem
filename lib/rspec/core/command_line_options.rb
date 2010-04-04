@@ -5,7 +5,8 @@ module Rspec
   module Core
 
     class CommandLineOptions
-      DEFAULT_OPTIONS_FILE = 'spec/spec.opts'
+      DEFAULT_OPTIONS_FILE = 'spec/.rspecrc'
+      DEFAULT_GLOBAL_OPTIONS_FILE = File.join(File.expand_path('~'), '.rspecrc')
       
       attr_reader :args, :options
       
@@ -42,9 +43,13 @@ module Rspec
           end
 
           opts.on('-o', '--options [PATH]', 'Read configuration options from a file path.  (Defaults to spec/spec.opts)') do |o|
-            options[:options_file] = o || DEFAULT_OPTIONS_FILE
+            options[:options_file] = o || default_options_file
           end
-
+          
+          opts.on('-g', '--global [PATH]', "Location of global .rspecrc") do |o|
+            options[:global_options_file] = o || DEFAULT_GLOBAL_OPTIONS_FILE
+          end
+          
           opts.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
             options[:profile_examples] = o
           end
@@ -70,9 +75,13 @@ module Rspec
         # 1) option file, cli options, rspec core configure
         # TODO: Add options_file to configuration
         # TODO: Store command line options for reference
-        options_file = options.delete(:options_file) || DEFAULT_OPTIONS_FILE
-        merged_options = parse_spec_file_contents(options_file).merge!(options)
-        options.replace merged_options
+        options_file        = options.delete(:options_file){ default_options_file }
+        global_options_file = options.delete(:global_options_file) { DEFAULT_GLOBAL_OPTIONS_FILE }
+        default_options     = parse_spec_file_contents(options_file)
+        global_options      = parse_spec_file_contents(global_options_file)
+
+        merged_options = default_options.merge(options)
+        options        = global_options.merge(merged_options)
         
         options.each do |key, value|
           config.send("#{key}=", value)
@@ -81,6 +90,12 @@ module Rspec
 
       private
 
+      def default_options_file
+        return DEFAULT_OPTIONS_FILE if File.exist?(DEFAULT_OPTIONS_FILE)
+        Rspec.deprecate("spec/spec.opts", "spec/.rspecrc", "2.0.0") if File.exist?("spec/spec.opts")
+        "spec/spec.opts"
+      end
+      
       def parse_spec_file_contents(options_file)
         return {} unless File.exist?(options_file)
         spec_file_contents = File.readlines(options_file).map {|l| l.split}.flatten

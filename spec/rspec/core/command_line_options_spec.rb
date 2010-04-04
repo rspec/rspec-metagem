@@ -62,7 +62,23 @@ describe Rspec::Core::CommandLineOptions do
       options_from_args('-o').should include(:options_file => "spec/spec.opts")
       options_from_args('--options').should include(:options_file => "spec/spec.opts")
     end
-
+    
+    it "loads a global .rspecrc" do
+      options_from_args('-g').should include(:global_options_file => File.join(File.expand_path('~'), '.rspecrc'))
+      options_from_args('--global').should include(:global_options_file => File.join(File.expand_path('~'), '.rspecrc'))
+    end
+    
+    it "merges options from the global and local .rspecrc" do
+      opts = ['--formatter', 'progress']
+      File.stub(:exist?){ true }
+      File.should_receive(:readlines).with('spec/.rspecrc').and_return(['--formatter', 'documentation'])
+      File.should_receive(:readlines).with(File.join(File.expand_path('~'), '.rspecrc')).and_return(opts)
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      config = OpenStruct.new
+      cli_options.apply(config)
+      config.formatter.should == 'documentation'
+    end
+    
     it "loads automatically" do
       cli_options = Rspec::Core::CommandLineOptions.new([]).parse
       File.stub(:exist?) { true }
@@ -71,7 +87,7 @@ describe Rspec::Core::CommandLineOptions do
       cli_options.apply(config)
       config.formatter.should == 'doc'
     end
-
+    
     it "allows options on one line" do
       cli_options = Rspec::Core::CommandLineOptions.new([]).parse
       File.stub(:exist?) { true }
