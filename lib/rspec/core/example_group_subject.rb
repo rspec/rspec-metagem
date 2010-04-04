@@ -52,8 +52,7 @@ module Rspec
         #
         # See +ExampleMethods#should+ for more information about this approach.
         def subject(&block)
-          block.nil? ?
-          explicit_subject || implicit_subject : @explicit_subject_block = block
+          block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
       
         attr_reader :explicit_subject_block # :nodoc:
