@@ -105,13 +105,13 @@ describe Rspec::Core::CommandLineOptions do
       config.formatter.should == 'doc'
     end
     
-    it "merges options from the global and local .rspecrc and the command line" do
+    it "merges options from the global and local .rspec and the command line" do
       File.stub(:exist?){ true }
       File.stub(:readlines) do |path|
         case path
-        when ".rspecrc"
+        when ".rspec"
           ["--formatter", "documentation"] 
-        when /\.rspecrc/
+        when /\.rspec/
           ["--line", "37"]
         else
           raise "Unexpected path: #{path}"
@@ -130,9 +130,9 @@ describe Rspec::Core::CommandLineOptions do
       File.stub(:exist?){ true }
       File.stub(:readlines) do |path|
         case path
-        when ".rspecrc"
+        when ".rspec"
           ["--formatter", "local"] 
-        when /\.rspecrc/
+        when /\.rspec/
           ["--formatter", "global"] 
         else
           raise "Unexpected path: #{path}"

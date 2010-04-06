@@ -5,8 +5,8 @@ module Rspec
   module Core
 
     class CommandLineOptions
-      LOCAL_OPTIONS_FILE  = ".rspecrc"
-      GLOBAL_OPTIONS_FILE = File.join(File.expand_path("~"), ".rspecrc")
+      LOCAL_OPTIONS_FILE  = ".rspec"
+      GLOBAL_OPTIONS_FILE = File.join(File.expand_path("~"), ".rspec")
       
       attr_reader :args, :options
       
@@ -89,7 +89,7 @@ module Rspec
       def local_options_file
         return @options.delete(:options_file) if @options[:options_file]
         return LOCAL_OPTIONS_FILE if File.exist?(LOCAL_OPTIONS_FILE)
-        Rspec.deprecate("spec/spec.opts", ".rspecrc or ~/.rspecrc", "2.0.0") if File.exist?("spec/spec.opts")
+        Rspec.deprecate("spec/spec.opts", ".rspec or ~/.rspec", "2.0.0") if File.exist?("spec/spec.opts")
         "spec/spec.opts"
       end
       

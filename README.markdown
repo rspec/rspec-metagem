@@ -63,6 +63,18 @@ Use the documentation formatter to see the resulting spec:
     Finished in 0.000379 seconds
     1 example, 0 failures
 
+## Configuration
+
+You can define runtime configuration options in four places. They
+are loaded and processed in this order:
+
+* ~/.rspec
+* .rspec
+* RSpec.configure
+* command line
+
+Run `rspec --help` to see supported configuration options.
+
 #### Also see
 
 * [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
