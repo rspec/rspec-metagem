@@ -8,13 +8,13 @@ describe Rspec::Core::CommandLineOptions do
   end
 
   describe 'color_enabled' do
-    example "-c, --colour, or --color should be parsed as true" do
+    example "-c, --colour, or --color are parsed as true" do
       options_from_args('-c').should include(:color_enabled => true)
       options_from_args('--color').should include(:color_enabled => true)
       options_from_args('--colour').should include(:color_enabled => true)
     end
 
-    example "--no-color should be parsed as false" do
+    example "--no-color is parsed as false" do
       options_from_args('--no-color').should include(:color_enabled => false)
     end
   end
@@ -48,56 +48,10 @@ describe Rspec::Core::CommandLineOptions do
     end
   end
 
-  describe "options" do
+  describe "options file" do
     it "is parsed from --options or -o" do
-      options_from_args('--options', 'spec/spec.opts').should include(:options_file => "spec/spec.opts")
-      options_from_args('-o', 'foo/spec.opts').should include(:options_file => "foo/spec.opts")
-    end
-    
-    it "merges options from the global and local .rspecrc" do
-      opts = ['--formatter', 'progress']
-      File.stub(:exist?){ true }
-      File.should_receive(:readlines).with('./.rspecrc').and_return(['--formatter', 'documentation'])
-      File.should_receive(:readlines).with(File.join(File.expand_path('~'), '.rspecrc')).and_return(opts)
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
-      config = OpenStruct.new
-      cli_options.apply(config)
-      config.formatter.should == 'documentation'
-    end
-    
-    it "loads automatically" do
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
-      File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--formatter", "doc"] }
-      config = OpenStruct.new
-      cli_options.apply(config)
-      config.formatter.should == 'doc'
-    end
-    
-    it "allows options on one line" do
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
-      File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--formatter doc"] }
-      config = OpenStruct.new
-      cli_options.apply(config)
-      config.formatter.should == 'doc'
-    end
-    
-    it "merges options from the CLI and file options gracefully" do
-      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
-      cli_options.stub!(:parse_options_file).and_return(:full_backtrace => true)
-      config = OpenStruct.new
-      cli_options.apply(config)
-      config.full_backtrace.should == true
-      config.formatter.should == 'progress'
-    end
-
-    it "CLI options trump file options" do
-      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress', '--options', 'spec/spec.opts']).parse
-      cli_options.stub!(:parse_spec_file_contents).and_return(:formatter => 'documentation')
-      config = OpenStruct.new
-      cli_options.apply(config)
-      config.formatter.should == 'progress'
+      options_from_args("--options", "custom/path").should include(:options_file => "custom/path")
+      options_from_args("-o", "custom/path").should include(:options_file => "custom/path")
     end
   end
 
@@ -127,6 +81,77 @@ describe Rspec::Core::CommandLineOptions do
     it "sets debug on config" do
       options_from_args("--debug").should include(:debug => true)
       options_from_args("-d").should include(:debug => true)
+    end
+  end
+
+  describe "options file (override)" do
+    let(:config) { OpenStruct.new }
+
+    it "loads automatically" do
+      File.stub(:exist?) { true }
+      File.stub(:readlines) { ["--formatter", "doc"] }
+
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      cli_options.apply(config)
+      config.formatter.should == 'doc'
+    end
+    
+    it "allows options on one line" do
+      File.stub(:exist?) { true }
+      File.stub(:readlines) { ["--formatter doc"] }
+
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      cli_options.apply(config)
+      config.formatter.should == 'doc'
+    end
+    
+    it "merges options from the global and local .rspecrc and the command line" do
+      File.stub(:exist?){ true }
+      File.stub(:readlines) do |path|
+        case path
+        when ".rspecrc"
+          ["--formatter", "documentation"] 
+        when /\.rspecrc/
+          ["--line", "37"]
+        else
+          raise "Unexpected path: #{path}"
+        end
+      end
+      cli_options = Rspec::Core::CommandLineOptions.new(["--no-color"]).parse
+
+      cli_options.apply(config)
+
+      config.formatter.should == "documentation"
+      config.line_number.should == "37"
+      config.color_enabled.should be_false
+    end
+    
+    it "prefers local options over global" do
+      File.stub(:exist?){ true }
+      File.stub(:readlines) do |path|
+        case path
+        when ".rspecrc"
+          ["--formatter", "local"] 
+        when /\.rspecrc/
+          ["--formatter", "global"] 
+        else
+          raise "Unexpected path: #{path}"
+        end
+      end
+      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+
+      cli_options.apply(config)
+
+      config.formatter.should == "local"
+    end
+
+    it "prefers CLI options over file options" do
+      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress']).parse
+      cli_options.stub!(:parse_spec_file_contents).and_return(:formatter => 'documentation')
+
+      cli_options.apply(config)
+
+      config.formatter.should == 'progress'
     end
   end
 
