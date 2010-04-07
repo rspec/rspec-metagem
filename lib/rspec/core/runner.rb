@@ -21,46 +21,32 @@ module Rspec
         configuration.formatter
       end
 
-      def require_all_files(configuration)
-        configuration.files_to_run.map {|f| require f }
-      end
-      
       def run(args = [])
-        Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
-
-        require_all_files(configuration)
-
-        configuration.configure_mock_framework
+        configure(args)
         
-        total_examples_to_run = Rspec::Core.world.total_examples_to_run
-
-        old_sync, reporter.output.sync = reporter.output.sync, true if reporter.output.respond_to?(:sync=)
-
-        suite_success = true
-
-        reporter_supports_sync = reporter.output.respond_to?(:sync=)
-        old_sync, reporter.output.sync = reporter.output.sync, true if reporter_supports_sync
-
-        reporter.start(total_examples_to_run) # start the clock
-        start = Time.now
-
-        Rspec::Core.world.example_groups_to_run.each do |example_group|
-          suite_success &= example_group.run(reporter)
+        reporter.report(example_count) do
+          example_groups.inject(true) do |success, example_group|
+            success &= example_group.run(reporter)
+          end
         end
-
-        reporter.start_dump(Time.now - start)
-
-        reporter.dump_failures
-        reporter.dump_summary
-        reporter.dump_pending
-        reporter.close
-
-        reporter.output.sync = old_sync if reporter_supports_sync
-
-        suite_success
       end
       
+    private
 
+      def configure(args)
+        Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
+        configuration.require_all_files
+        configuration.configure_mock_framework
+      end
+
+      def example_count
+        Rspec::Core.world.total_examples_to_run
+      end
+
+      def example_groups
+        Rspec::Core.world.example_groups_to_run
+      end
+      
     end
 
   end

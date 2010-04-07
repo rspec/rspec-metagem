@@ -184,7 +184,6 @@ EOM
         @run_all_when_everything_filtered
       end
 
-      # Where does output go? For now $stdout
       def output
         $stdout
       end
@@ -228,6 +227,10 @@ EOM
       def configure_mock_framework
         require_mock_framework_adapter
         Rspec::Core::ExampleGroup.send(:include, Rspec::Core::MockFrameworkAdapter)
+      end
+
+      def require_all_files
+        files_to_run.map {|f| require f }
       end
 
     end

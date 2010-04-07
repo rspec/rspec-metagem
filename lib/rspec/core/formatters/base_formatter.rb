@@ -1,7 +1,5 @@
 module Rspec
-
   module Core
-
     module Formatters
 
       class BaseFormatter
@@ -15,20 +13,8 @@ module Rspec
           @example_group = nil
         end
 
-        def configuration
-          Rspec.configuration
-        end
-
         def output
-          Rspec.configuration.output
-        end
-
-        def profile_examples?
-          Rspec.configuration.profile_examples
-        end
-
-        def color_enabled?
-          configuration.color_enabled?
+          configuration.output
         end
 
         def pending_examples
@@ -39,6 +25,19 @@ module Rspec
           @failed_examples ||= ::Rspec::Core.world.find(examples, :positive, :execution_result => { :status => 'failed' })
         end
 
+        def report(count)
+          sync_output do
+            start(count)
+            begin
+              yield
+            ensure
+              stop
+              dump(@duration)
+              close
+            end
+          end
+        end
+
         # This method is invoked before any examples are run, right after
         # they have all been collected. This can be useful for special
         # formatters that need to provide progress on feedback (graphical ones)
@@ -46,7 +45,12 @@ module Rspec
         # This method will only be invoked once, and the next one to be invoked
         # is #add_example_group
         def start(example_count)
+          @start = Time.now
           @example_count = example_count
+        end
+
+        def stop
+          @duration = Time.now - @start
         end
 
         def example_finished(example)
@@ -60,8 +64,13 @@ module Rspec
         def add_example_group(example_group)
           @example_group = example_group
         end
-        
-        alias_method :add_example_group, :add_example_group
+
+        def dump(duration)
+          start_dump(duration)
+          dump_failures
+          dump_summary
+          dump_pending
+        end
 
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is #dump_failure (once for each failed example),
@@ -95,7 +104,11 @@ module Rspec
           cleansed.empty? ? backtrace : cleansed
         end
 
-        protected
+      protected
+
+        def configuration
+          Rspec.configuration
+        end
 
         def backtrace_line(line)
           return nil if configuration.cleaned_from_backtrace?(line)
@@ -119,9 +132,29 @@ module Rspec
           end
         end
 
+        def sync_output
+          begin
+            old_sync, output.sync = output.sync, true if output_supports_sync
+            yield
+          ensure
+            output.sync = old_sync if output_supports_sync
+          end
+        end
+
+        def output_supports_sync
+          output.respond_to?(:sync=)
+        end
+
+        def profile_examples?
+          configuration.profile_examples
+        end
+
+        def color_enabled?
+          configuration.color_enabled?
+        end
+
       end
 
     end
   end
-
 end
