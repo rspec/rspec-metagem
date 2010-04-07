@@ -24,11 +24,11 @@ module Rspec
       def run(args = [])
         configure(args)
         
-        reporter.report(example_count) do
-          example_groups.inject(true) do |success, example_group|
-            success &= example_group.run(reporter)
-          end
+        reporter.report(example_count) do |reporter|
+          example_groups.run_all(reporter)
         end
+        
+        example_groups.success?
       end
       
     private
@@ -44,7 +44,17 @@ module Rspec
       end
 
       def example_groups
-        Rspec::Core.world.example_groups_to_run
+        Rspec::Core.world.example_groups_to_run.extend(ExampleGroups)
+      end
+
+      module ExampleGroups
+        def run_all(reporter)
+          @success = self.inject(true) {|success, group| success &= group.run(reporter)}
+        end
+
+        def success?
+          @success ||= false
+        end
       end
       
     end
