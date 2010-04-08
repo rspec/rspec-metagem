@@ -7,18 +7,11 @@ Feature: spec/spec.opts
   Options declared in spec/spec.opts will override configuration
   set up in Rspec.configure blocks.
 
-  Background:
-    Given a directory named "spec"
-
   Scenario: color set in Rspec.configure
-    Given a file named "spec/spec_helper.rb" with:
+    Given a file named "spec/example_spec.rb" with:
       """
-      require "rspec/expectations"
       Rspec.configure {|c| c.color_enabled = true }
-      """
-    And a file named "spec/example_spec.rb" with:
-      """
-      require "spec_helper"
+
       describe "color_enabled" do
         context "when set with Rspec.configure" do
           it "is true" do
@@ -30,15 +23,13 @@ Feature: spec/spec.opts
     When I run "rspec spec/example_spec.rb"
     Then I should see "1 example, 0 failures"
             
-  Scenario: color set in spec/spec.opts
-    Given a file named "spec/spec.opts" with:
+  Scenario: color set in .rspec
+    Given a file named ".rspec" with:
       """
       --color
       """
     And a file named "spec/example_spec.rb" with:
       """
-      require "rspec/expectations"
-
       describe "color_enabled" do
         context "when set with Rspec.configure" do
           it "is true" do
@@ -49,16 +40,15 @@ Feature: spec/spec.opts
       """
     When I run "rspec spec/example_spec.rb"
     Then I should see "1 example, 0 failures"
-            
-  @wip
-  Scenario: formatter set in both (spec.opts wins)
-    Given a file named "spec/spec.opts" with:
+
+@wip            
+  Scenario: formatter set in both (.rspec wins)
+    Given a file named ".rspec" with:
       """
-      --formatter documentation
+      --format documentation
       """
     And a file named "spec/spec_helper.rb" with:
       """
-      require "rspec/expectations"
       Rspec.configure {|c| c.formatter = 'progress'}
       """
     And a file named "spec/example_spec.rb" with:
