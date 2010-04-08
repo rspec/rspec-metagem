@@ -188,7 +188,7 @@ EOM
         $stdout
       end
 
-      def puts(msg='')
+      def puts(msg="")
         output.puts(msg)    
       end
 
