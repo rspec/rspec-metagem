@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module Rspec::Core
 
-  describe ExampleGroupSubject do
+  describe Subject do
 
     describe "implicit subject" do
       describe "with a class" do

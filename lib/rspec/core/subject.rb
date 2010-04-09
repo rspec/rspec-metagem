@@ -1,6 +1,6 @@
 module Rspec
   module Core
-    module ExampleGroupSubject
+    module Subject
       
       def self.included(kls)
         kls.extend   ClassMethods

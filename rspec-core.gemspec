@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-04-06}
+  s.date = %q{2010-04-08}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -80,7 +80,7 @@ Gem::Specification.new do |s|
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
-     "features/configuration/spec_opts.feature",
+     "features/configuration/options_file.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
      "features/formatters/custom_formatter.feature",
@@ -106,7 +106,6 @@ Gem::Specification.new do |s|
      "lib/rspec/core/deprecation.rb",
      "lib/rspec/core/example.rb",
      "lib/rspec/core/example_group.rb",
-     "lib/rspec/core/example_group_subject.rb",
      "lib/rspec/core/formatters.rb",
      "lib/rspec/core/formatters/base_formatter.rb",
      "lib/rspec/core/formatters/base_text_formatter.rb",
@@ -128,6 +127,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/runner.rb",
      "lib/rspec/core/shared_example_group.rb",
      "lib/rspec/core/shared_example_group_kernel_extensions.rb",
+     "lib/rspec/core/subject.rb",
      "lib/rspec/core/version.rb",
      "lib/rspec/core/world.rb",
      "rspec-core.gemspec",
@@ -137,7 +137,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
-     "spec/rspec/core/example_group_subject_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
      "spec/rspec/core/formatters/base_text_formatter_spec.rb",
@@ -156,6 +155,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
      "spec/rspec/core/shared_example_group_spec.rb",
+     "spec/rspec/core/subject_spec.rb",
      "spec/rspec/core/world_spec.rb",
      "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",
@@ -185,7 +185,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/command_line_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
-     "spec/rspec/core/example_group_subject_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
      "spec/rspec/core/formatters/base_text_formatter_spec.rb",
@@ -204,6 +203,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/ruby_project_spec.rb",
      "spec/rspec/core/runner_spec.rb",
      "spec/rspec/core/shared_example_group_spec.rb",
+     "spec/rspec/core/subject_spec.rb",
      "spec/rspec/core/world_spec.rb",
      "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",
