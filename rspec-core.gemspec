@@ -126,7 +126,6 @@ Gem::Specification.new do |s|
      "lib/rspec/core/ruby_project.rb",
      "lib/rspec/core/runner.rb",
      "lib/rspec/core/shared_example_group.rb",
-     "lib/rspec/core/shared_example_group_kernel_extensions.rb",
      "lib/rspec/core/subject.rb",
      "lib/rspec/core/version.rb",
      "lib/rspec/core/world.rb",

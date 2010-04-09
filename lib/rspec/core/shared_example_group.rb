@@ -26,7 +26,7 @@ module Rspec
 
       alias :shared_examples_for :share_examples_for
 
-      private
+    private
 
       def ensure_shared_example_group_name_not_taken(name)
         if Rspec::Core.world.shared_example_groups.has_key?(name)
