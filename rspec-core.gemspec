@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.files = [
     ".document",
      ".gitignore",
+     ".rspec",
      ".treasure_map.rb",
      "License.txt",
      "README.markdown",
@@ -133,7 +134,7 @@ Gem::Specification.new do |s|
      "script/console",
      "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
-     "spec/rspec/core/config_options_spec.rb",
+     "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
@@ -181,7 +182,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
-     "spec/rspec/core/config_options_spec.rb",
+     "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",

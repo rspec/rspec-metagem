@@ -19,6 +19,15 @@ describe Rspec::Core::ConfigurationOptions do
     end
   end
 
+  describe 'load path additions' do
+    example "-I parses like it does w/ ruby command" do
+      options_from_args('-I', 'a_dir').should include(:libs => ['a_dir'])
+    end
+    example "-I can be used more than once" do
+      options_from_args('-I', 'dir_1', '-I', 'dir_2').should include(:libs => ['dir_1','dir_2'])
+    end
+  end
+
   describe  'formatter' do
     example '-f or --formatter with an argument should parse' do
       options_from_args('--formatter', 'd').should include(:formatter => 'd')

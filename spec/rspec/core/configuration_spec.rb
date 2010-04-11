@@ -4,7 +4,7 @@ module Rspec::Core
 
   describe Configuration do
 
-    let(:config) { Configuration.new }
+    let(:config) { subject }
 
     describe "#mock_framework_class" do
       before(:each) do
@@ -237,16 +237,23 @@ module Rspec::Core
       end
     end
 
-
     context "transactional examples" do
       it "defaults to use transactional examples" do
-          config.use_transactional_examples?.should be_true
+        config.use_transactional_examples?.should be_true
       end
+
       describe "#use_transactional_examples=" do
         it "remembers that I don't want transactional exmaples" do
           config.use_transactional_examples = false
           config.use_transactional_examples?.should be_false
         end
+      end
+    end
+
+    describe "libs=" do
+      it "adds directories to the LOAD_PATH" do
+        $LOAD_PATH.should_receive(:unshift).with("a/dir")
+        config.libs = ["a/dir"]
       end
     end
 

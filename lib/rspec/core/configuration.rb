@@ -92,6 +92,10 @@ module Rspec
         @options[:backtrace_clean_patterns].clear
       end
 
+      def libs=(libs)
+        libs.map {|lib| $LOAD_PATH.unshift lib}
+      end
+
       def debug=(bool)
         return unless bool
         begin
