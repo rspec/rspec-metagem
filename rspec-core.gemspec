@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-04-08}
+  s.date = %q{2010-04-11}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -101,8 +101,8 @@ Gem::Specification.new do |s|
      "lib/rspec/core.rb",
      "lib/rspec/core/around_proxy.rb",
      "lib/rspec/core/backward_compatibility.rb",
-     "lib/rspec/core/command_line_options.rb",
      "lib/rspec/core/configuration.rb",
+     "lib/rspec/core/configuration_options.rb",
      "lib/rspec/core/deprecation.rb",
      "lib/rspec/core/example.rb",
      "lib/rspec/core/example_group.rb",
@@ -133,7 +133,7 @@ Gem::Specification.new do |s|
      "script/console",
      "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
-     "spec/rspec/core/command_line_options_spec.rb",
+     "spec/rspec/core/config_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
@@ -181,7 +181,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
-     "spec/rspec/core/command_line_options_spec.rb",
+     "spec/rspec/core/config_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",

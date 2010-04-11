@@ -1,6 +1,5 @@
 module Rspec
   module Core
-
     class Runner
 
       def self.installed_at_exit?
@@ -34,8 +33,8 @@ module Rspec
     private
 
       def configure(args)
-        Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
-        configuration.require_all_files
+        Rspec::Core::ConfigurationOptions.new(args).apply_to(configuration)
+        configuration.require_files_to_run
         configuration.configure_mock_framework
       end
 
@@ -58,6 +57,5 @@ module Rspec
       end
       
     end
-
   end
 end

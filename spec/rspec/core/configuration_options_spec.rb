@@ -1,10 +1,10 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe Rspec::Core::CommandLineOptions do
+describe Rspec::Core::ConfigurationOptions do
   
   def options_from_args(*args)
-    Rspec::Core::CommandLineOptions.new(args).parse.options
+    Rspec::Core::ConfigurationOptions.new(args).parse_command_line_options
   end
 
   describe 'color_enabled' do
@@ -91,8 +91,8 @@ describe Rspec::Core::CommandLineOptions do
       File.stub(:exist?) { true }
       File.stub(:readlines) { ["--formatter", "doc"] }
 
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
-      cli_options.apply(config)
+      cli_options = Rspec::Core::ConfigurationOptions.new([])
+      cli_options.apply_to(config)
       config.formatter.should == 'doc'
     end
     
@@ -100,8 +100,8 @@ describe Rspec::Core::CommandLineOptions do
       File.stub(:exist?) { true }
       File.stub(:readlines) { ["--formatter doc"] }
 
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
-      cli_options.apply(config)
+      cli_options = Rspec::Core::ConfigurationOptions.new([])
+      cli_options.apply_to(config)
       config.formatter.should == 'doc'
     end
     
@@ -117,9 +117,9 @@ describe Rspec::Core::CommandLineOptions do
           raise "Unexpected path: #{path}"
         end
       end
-      cli_options = Rspec::Core::CommandLineOptions.new(["--no-color"]).parse
+      cli_options = Rspec::Core::ConfigurationOptions.new(["--no-color"])
 
-      cli_options.apply(config)
+      cli_options.apply_to(config)
 
       config.formatter.should == "documentation"
       config.line_number.should == "37"
@@ -138,18 +138,18 @@ describe Rspec::Core::CommandLineOptions do
           raise "Unexpected path: #{path}"
         end
       end
-      cli_options = Rspec::Core::CommandLineOptions.new([]).parse
+      cli_options = Rspec::Core::ConfigurationOptions.new([])
 
-      cli_options.apply(config)
+      cli_options.apply_to(config)
 
       config.formatter.should == "local"
     end
 
     it "prefers CLI options over file options" do
-      cli_options = Rspec::Core::CommandLineOptions.new(['--formatter', 'progress']).parse
-      cli_options.stub!(:parse_spec_file_contents).and_return(:formatter => 'documentation')
+      config_options = Rspec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
+      config_options.stub(:parse_options_file).and_return(:formatter => 'documentation')
 
-      cli_options.apply(config)
+      config_options.apply_to(config)
 
       config.formatter.should == 'progress'
     end

@@ -9,7 +9,7 @@ require 'rspec/core/metadata'
 require 'rspec/core/around_proxy'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
-require 'rspec/core/command_line_options'
+require 'rspec/core/configuration_options'
 require 'rspec/core/runner'
 require 'rspec/core/example'
 require 'rspec/core/kernel_extensions'
@@ -33,7 +33,7 @@ module Rspec
 
     def self.configure
       Rspec.deprecate('Rspec::Core.configure', 'Rspec.configure', '2.0.0')
-      yield configuration if block_given?
+      yield Rspec.configuration if block_given?
     end
 
     def self.world

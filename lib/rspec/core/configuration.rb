@@ -192,10 +192,6 @@ EOM
         output.puts(msg)    
       end
 
-      def parse_command_line_args(args)
-        @command_line_options = Rspec::Core::CommandLineOptions.parse(args)
-      end
-
       def include(mod, options={})
         @include_or_extend_modules << [:include, mod, options]
       end
@@ -229,7 +225,7 @@ EOM
         Rspec::Core::ExampleGroup.send(:include, Rspec::Core::MockFrameworkAdapter)
       end
 
-      def require_all_files
+      def require_files_to_run
         files_to_run.map {|f| require f }
       end
 
