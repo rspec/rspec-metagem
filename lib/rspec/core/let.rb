@@ -9,6 +9,11 @@ module Rspec
             __memoized[name] ||= instance_eval(&block)
           end
         end
+
+        def let!(name, &block)
+          let(name, &block)
+          before { __send__(name) } 
+        end
       end
 
       module InstanceMethods
