@@ -30,7 +30,7 @@ module Rspec
     private
 
       def merged_options
-        [global_options, local_options, command_line_options].inject({}) do |merged, options|
+        [global_options, local_options, command_line_options].inject do |merged, options|
           merged.merge(options)
         end
       end
