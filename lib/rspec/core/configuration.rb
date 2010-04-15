@@ -92,6 +92,10 @@ module Rspec
         @options[:backtrace_clean_patterns].clear
       end
 
+      def libs=(libs)
+        libs.map {|lib| $LOAD_PATH.unshift lib}
+      end
+
       def debug=(bool)
         return unless bool
         begin
@@ -184,17 +188,12 @@ EOM
         @run_all_when_everything_filtered
       end
 
-      # Where does output go? For now $stdout
       def output
         $stdout
       end
 
-      def puts(msg='')
+      def puts(msg="")
         output.puts(msg)    
-      end
-
-      def parse_command_line_args(args)
-        @command_line_options = Rspec::Core::CommandLineOptions.parse(args)
       end
 
       def include(mod, options={})
@@ -228,6 +227,10 @@ EOM
       def configure_mock_framework
         require_mock_framework_adapter
         Rspec::Core::ExampleGroup.send(:include, Rspec::Core::MockFrameworkAdapter)
+      end
+
+      def require_files_to_run
+        files_to_run.map {|f| require f }
       end
 
     end

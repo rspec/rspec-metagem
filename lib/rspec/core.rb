@@ -1,15 +1,19 @@
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'
-require 'rspec/core/mocking/with_absolutely_nothing'
+
+require 'rspec/core/hooks'
+require 'rspec/core/subject'
+require 'rspec/core/let'
+require 'rspec/core/metadata'
+
 require 'rspec/core/around_proxy'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
-require 'rspec/core/command_line_options'
+require 'rspec/core/configuration_options'
 require 'rspec/core/runner'
 require 'rspec/core/example'
 require 'rspec/core/kernel_extensions'
 require 'rspec/core/shared_example_group'
-require 'rspec/core/example_group_subject'
 require 'rspec/core/example_group'
 require 'rspec/core/formatters'
 require 'rspec/core/backward_compatibility'
@@ -29,7 +33,7 @@ module Rspec
 
     def self.configure
       Rspec.deprecate('Rspec::Core.configure', 'Rspec.configure', '2.0.0')
-      yield configuration if block_given?
+      yield Rspec.configuration if block_given?
     end
 
     def self.world

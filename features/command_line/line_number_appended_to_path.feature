@@ -7,33 +7,53 @@ Feature: line number appended to file path
   Background:
     Given a file named "example_spec.rb" with:
       """
-      describe "a group" do
+      describe "outer group" do
 
-        it "has a first example" do
-
-        end
-        
-        it "has a second example" do
+        it "first example in outer group" do
 
         end
         
+        it "second example in outer group" do
+
+        end
+
+        describe "nested group" do
+          
+          it "example in nested group" do
+
+          end
+        
+        end
+
       end
       """
 
-  Scenario: two examples - both examples from the group declaration
+@wip
+  Scenario: nested groups - outer group on declaration line
     When I run "rspec example_spec.rb:1 --format doc"
-    Then I should see "2 examples, 0 failures"
-    And I should see "has a second example"
-    And I should see "has a first example"
+    Then I should see "3 examples, 0 failures"
+    And I should see "second example in outer group"
+    And I should see "first example in outer group"
+    And I should see "example in nested group"
+
+@wip
+  Scenario: nested groups - inner group on declaration line
+    When I run "rspec example_spec.rb:11 --format doc"
+    Then I should see "3 examples, 0 failures"
+    And I should see "example in nested group"
+    And I should not see "second example in outer group"
+    And I should not see "first example in outer group"
 
   Scenario: two examples - first example on declaration line
     When I run "rspec example_spec.rb:3 --format doc"
     Then I should see "1 example, 0 failures"
-    And I should see "has a first example"
-    But the stdout should not contain "has a second example"
+    And I should see "first example in outer group"
+    But I should not see "second example in outer group"
+    And I should not see "example in nested group"
 
   Scenario: two examples - second example on declaration line
     When I run "rspec example_spec.rb:7 --format doc"
     Then I should see "1 example, 0 failures"
-    And I should see "has a second example"
-    But the stdout should not contain "has a first example"
+    And I should see "second example in outer group"
+    But I should not see "first example in outer group"
+    And I should not see "example in nested group"

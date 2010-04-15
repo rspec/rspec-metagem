@@ -38,7 +38,11 @@ class Autotest::Rspec2 < Autotest
 
   def make_test_cmd(files_to_test)
     files_to_test.empty? ? '' :
-      "#{ruby} #{SPEC_PROGRAM} #{normalize(files_to_test).keys.flatten.join(' ')}"
+      "#{ruby} #{require_rubygems}#{SPEC_PROGRAM} #{normalize(files_to_test).keys.flatten.join(' ')}"
+  end
+
+  def require_rubygems
+    defined?(:Gem) ? "-rrubygems " : ""
   end
 
   def normalize(files_to_test)

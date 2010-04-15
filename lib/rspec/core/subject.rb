@@ -1,6 +1,6 @@
 module Rspec
   module Core
-    module ExampleGroupSubject
+    module Subject
       
       def self.included(kls)
         kls.extend   ClassMethods
@@ -9,7 +9,7 @@ module Rspec
       end
       
       def subject
-        @subject ||= self.class.subject.call
+        @subject ||= instance_eval(&self.class.subject)
       end
       
       # When +should+ is called with no explicit receiver, the call is
@@ -52,8 +52,7 @@ module Rspec
         #
         # See +ExampleMethods#should+ for more information about this approach.
         def subject(&block)
-          block.nil? ?
-          explicit_subject || implicit_subject : @explicit_subject_block = block
+          block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
       
         attr_reader :explicit_subject_block # :nodoc:
@@ -69,11 +68,8 @@ module Rspec
         end
 
         def implicit_subject
+          described = describes || description
           Class === described ? lambda { described.new } : lambda { described }
-        end
-
-        def described
-          @described ||= describes || description
         end
       end
     end

@@ -1,6 +1,5 @@
 module Rspec
   module Core
-
     class Runner
 
       def self.installed_at_exit?
@@ -21,47 +20,42 @@ module Rspec
         configuration.formatter
       end
 
-      def require_all_files(configuration)
-        configuration.files_to_run.map {|f| require f }
+      def run(args = [])
+        configure(args)
+        
+        reporter.report(example_count) do |reporter|
+          example_groups.run_all(reporter)
+        end
+        
+        example_groups.success?
       end
       
-      def run(args = [])
-        Rspec::Core::CommandLineOptions.parse(args).apply(configuration)
+    private
 
-        require_all_files(configuration)
-
+      def configure(args)
+        Rspec::Core::ConfigurationOptions.new(args).apply_to(configuration)
+        configuration.require_files_to_run
         configuration.configure_mock_framework
-        
-        total_examples_to_run = Rspec::Core.world.total_examples_to_run
+      end
 
-        old_sync, reporter.output.sync = reporter.output.sync, true if reporter.output.respond_to?(:sync=)
+      def example_count
+        Rspec::Core.world.total_examples_to_run
+      end
 
-        suite_success = true
+      def example_groups
+        Rspec::Core.world.example_groups_to_run.extend(ExampleGroups)
+      end
 
-        reporter_supports_sync = reporter.output.respond_to?(:sync=)
-        old_sync, reporter.output.sync = reporter.output.sync, true if reporter_supports_sync
-
-        reporter.start(total_examples_to_run) # start the clock
-        start = Time.now
-
-        Rspec::Core.world.example_groups_to_run.each do |example_group|
-          suite_success &= example_group.run(reporter)
+      module ExampleGroups
+        def run_all(reporter)
+          @success = self.inject(true) {|success, group| success &= group.run(reporter)}
         end
 
-        reporter.start_dump(Time.now - start)
-
-        reporter.dump_failures
-        reporter.dump_summary
-        reporter.dump_pending
-        reporter.close
-
-        reporter.output.sync = old_sync if reporter_supports_sync
-
-        suite_success
+        def success?
+          @success ||= false
+        end
       end
       
-
     end
-
   end
 end

@@ -1,13 +1,8 @@
-require 'rspec/core/hooks'
-require 'rspec/core/example_group_subject'
-require 'rspec/core/let'
-require 'rspec/core/metadata'
-
 module Rspec
   module Core
     class ExampleGroup
       extend  Hooks
-      include ExampleGroupSubject
+      include Subject
       include Let
 
       attr_accessor :running_example
@@ -31,10 +26,10 @@ module Rspec
       def self.alias_example_to(new_alias, extra_options={})
         new_alias = <<-END_RUBY
                       def self.#{new_alias}(desc=nil, options={}, &block)
-                        updated_options = options.update(:caller => caller)
-                        updated_options.update(:pending => true) unless block
-                        updated_options.update(#{extra_options.inspect})
-                        examples << Rspec::Core::Example.new(self, desc, updated_options, block)
+                        options.update(:pending => true) unless block
+                        options.update(:caller => caller)
+                        options.update(#{extra_options.inspect})
+                        examples << Rspec::Core::Example.new(self, desc, options, block)
                       end
                     END_RUBY
         module_eval(new_alias, __FILE__, __LINE__)
@@ -110,7 +105,7 @@ module Rspec
         @_subclass_count ||= 0
         @_subclass_count += 1
         const_set(
-          "NestedLevel_#{@_subclass_count}",
+          "Nested_#{@_subclass_count}",
           _build(Class.new(self), caller, args, &example_group_block)
         )
       end

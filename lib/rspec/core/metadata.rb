@@ -77,6 +77,12 @@ EOM
         update(options)
       end
 
+      def all_apply?(filters)
+        filters.all? do |filter_on, filter|
+          apply_condition(filter_on, filter)
+        end
+      end
+
       def apply_condition(filter_on, filter, metadata=nil)
         metadata ||= self
         case filter
@@ -95,12 +101,6 @@ EOM
           end
         else
           metadata[filter_on] == filter
-        end
-      end
-      
-      def all_apply?(filters)
-        filters.all? do |filter_on, filter|
-          apply_condition(filter_on, filter)
         end
       end
 

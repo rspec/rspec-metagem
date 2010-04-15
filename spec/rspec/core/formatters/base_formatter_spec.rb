@@ -37,9 +37,13 @@ describe Rspec::Core::Formatters::BaseFormatter do
   end
   
   describe '#format_backtrace' do
-    
     it "displays the full backtrace when the example is given the :full_backtrace => true option", :full_backtrace => true
-    
+  end
+
+  describe "backtrace_line" do
+    it "trims current working directory" do
+      formatter.__send__(:backtrace_line, File.expand_path(__FILE__)).should == "./spec/rspec/core/formatters/base_formatter_spec.rb"
+    end
   end
   
 end

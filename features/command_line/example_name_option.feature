@@ -2,9 +2,9 @@ Feature: example name option
 
   Use the --example (or -e) option to filter the examples to be run by name.
 
-  The submitted argument is compiled to a Ruby Regexp, and matched against the
-  full description of the example, which is the concatenation of descriptions
-  of the group (including any nested groups) and the example.
+  The argument is compiled to a Ruby Regexp, and matched against the full
+  description of the example, which is the concatenation of descriptions of the
+  group (including any nested groups) and the example.
 
   This allows you to run a single uniquely named example, all examples with
   similar names, all the example in a uniquely named group, etc, etc.
