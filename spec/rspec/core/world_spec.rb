@@ -131,7 +131,7 @@ module Rspec::Core
         Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
         Rspec::Core.world.stub(:filter).and_return({ :color => :red })
         Rspec::Core.world.stub(:example_groups).and_return([@group1])
-        filtered_example_groups = @world.filter_example_groups
+        filtered_example_groups = @world.filtered_example_groups
         filtered_example_groups.should == [@group1]
         @group1.examples_to_run.should == @group1.examples[0..1]      
       end

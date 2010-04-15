@@ -99,7 +99,7 @@ module Rspec
       end
 
       describe "line number" do
-        it "finds the line number with the first spec file " do
+        it "finds the line number with the first spec file in the backtrace" do
           m = Metadata.new
           m.process(:caller => [
             "foo",
@@ -174,31 +174,32 @@ module Rspec
         let(:example_line_number) { __LINE__ -1 }
         let(:next_example_metadata) {group_metadata.for_example('next_example', 
           :caller => ["foo_spec.rb:#{example_line_number + 2}"])}
+        let(:world) { Rspec::Core.world }
 
         it "matches the group when the line_number is the example group line number" do
-          Rspec::Core.world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
+          world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
           # this call doesn't really make sense since apply_condition is only called 
           # for example metadata not group metadata
           group_metadata.apply_condition(:line_number, group_line_number).should be_true
         end
 
         it "matches the example when the line_number is the parent example group line number" do
-          Rspec::Core.world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
+          world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
           example_metadata.apply_condition(:line_number, group_line_number).should be_true
         end
 
         it "matches the example when the line_number is the example line number" do
-          Rspec::Core.world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
+          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
           example_metadata.apply_condition(:line_number, example_line_number).should be_true
         end
         
         it "matches when the line number is between this example and the next" do
-          Rspec::Core.world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
+          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
           example_metadata.apply_condition(:line_number, example_line_number + 1).should be_true
         end
         
         it "does not match when the line number matches the next example" do
-          Rspec::Core.world.should_receive(:preceding_example_or_group_line).and_return(example_line_number+2)
+          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number + 2)
           example_metadata.apply_condition(:line_number, example_line_number + 2).should be_false
         end
         

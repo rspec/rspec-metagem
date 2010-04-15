@@ -8,7 +8,7 @@ module Rspec
         @example_groups = []
       end
 
-      def filter
+      def inclusion_filter
         Rspec.configuration.filter
       end
 
@@ -21,36 +21,34 @@ module Rspec
       end
 
       def example_groups_to_run
-        return @example_groups_to_run if @example_groups_to_run
-
-        if filter || exclusion_filter
-          @example_groups_to_run = filter_example_groups
-
-          if @example_groups_to_run.size == 0 && Rspec.configuration.run_all_when_everything_filtered?
-            Rspec.configuration.puts "No examples were matched by #{filter.inspect}, running all"
-            # reset the behaviour list to all example groups, and add back all examples
-            @example_groups_to_run = @example_groups
-            @example_groups.each { |b| b.examples_to_run.replace(b.examples) }
+        @example_groups_to_run ||= begin
+          if inclusion_filter || exclusion_filter
+            if Rspec.configuration.run_all_when_everything_filtered? && filtered_example_groups.empty?
+              Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+              all_example_groups
+            else
+              Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+              filtered_example_groups
+            end
           else
-            Rspec.configuration.puts "Run filtered using #{filter.inspect}"          
-          end
-        else
-          @example_groups_to_run = @example_groups
-          @example_groups.each { |b| b.examples_to_run.replace(b.examples) }
-        end      
+            all_example_groups
+          end      
+        end
+      end
 
-        @example_groups_to_run
+      def all_example_groups
+        @example_groups.each { |g| g.examples_to_run.replace(g.examples) }
       end
 
       def total_examples_to_run
         @total_examples_to_run ||= example_groups_to_run.inject(0) { |sum, b| sum += b.examples_to_run.size }
       end
 
-      def filter_example_groups
-        example_groups.inject([]) do |list_of_example_groups, example_group|
+      def filtered_example_groups
+        @filtered_example_groups ||= example_groups.inject([]) do |list_of_example_groups, example_group|
           examples = example_group.examples
           examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
-          examples = apply_inclusion_filters(examples, filter) if filter
+          examples = apply_inclusion_filters(examples, inclusion_filter) if inclusion_filter
           examples.uniq!
           example_group.examples_to_run.replace(examples)
           if examples.empty?
@@ -61,39 +59,31 @@ module Rspec
         end.compact
       end
 
-      def apply_inclusion_filters(collection, conditions={})
-        find(collection, :positive, conditions)
+      def apply_inclusion_filters(examples, conditions={})
+        examples.select &all_apply?(conditions)
       end
 
-      def apply_exclusion_filters(collection, conditions={})
-        find(collection, :negative, conditions)
-      end
+      alias_method :find, :apply_inclusion_filters
 
-      def find(collection, type_of_filter=:positive, conditions={})
-        negative = type_of_filter != :positive
-
-        collection.select do |item|
-          # negative conditions.any?, positive conditions.all? ?????
-          result = conditions.all? do |filter_on, filter| 
-            item.metadata.apply_condition(filter_on, filter)
-          end
-          negative ? !result : result
-        end
+      def apply_exclusion_filters(examples, conditions={})
+        examples.reject &all_apply?(conditions)
       end
 
       def preceding_example_or_group_line(filter_line) 
-        example_and_group_line_numbers.inject(nil) do |highest_prior_example_or_group_line, line|
-          line <= filter_line ? line : highest_prior_example_or_group_line
+        declaration_line_numbers.inject(nil) do |highest_prior_declaration_line, line|
+          line <= filter_line ? line : highest_prior_declaration_line
         end
       end
       
-      def example_and_group_line_numbers
+    private
+
+      def all_apply?(conditions)
+        lambda {|example| example.metadata.all_apply?(conditions)}
+      end
+
+      def declaration_line_numbers
         @line_numbers ||= example_groups.inject([]) do |lines, g|
-          lines << g.metadata[:example_group][:line_number]
-          g.examples.each do |e|
-            lines << e.metadata[:line_number]
-          end
-          lines
+          lines + g.declaration_line_numbers
         end
       end
       

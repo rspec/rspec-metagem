@@ -205,6 +205,11 @@ module Rspec
         metadata.all_apply?(filters)
       end
 
+      def self.declaration_line_numbers
+        [metadata[:example_group][:line_number]] +
+          examples.collect {|e| e.metadata[:line_number]}
+      end
+
       def described_class
         self.class.describes
       end

@@ -94,8 +94,8 @@ EOM
           filter.call(metadata[filter_on]) rescue false
         when Fixnum
           if filter_on == :line_number
-            example_or_group_line = Rspec::Core.world.preceding_example_or_group_line(filter)
-            [metadata[:line_number],metadata[:example_group][:line_number]].include?(example_or_group_line)
+            [metadata[:line_number], metadata[:example_group][:line_number]].
+              include?(world.preceding_example_or_group_line(filter))
           else
             metadata[filter_on] == filter
           end
@@ -105,6 +105,10 @@ EOM
       end
 
     private
+
+      def world
+        Rspec::Core.world
+      end
 
       def superclass_metadata
         @superclass_metadata ||= { :example_group => {} }

@@ -18,11 +18,11 @@ module Rspec
         end
 
         def pending_examples
-          @pending_examples ||= ::Rspec::Core.world.find(examples, :positive, :execution_result => { :status => 'pending' })
+          @pending_examples ||= ::Rspec::Core.world.find(examples, :execution_result => { :status => 'pending' })
         end
 
         def failed_examples
-          @failed_examples ||= ::Rspec::Core.world.find(examples, :positive, :execution_result => { :status => 'failed' })
+          @failed_examples ||= ::Rspec::Core.world.find(examples, :execution_result => { :status => 'failed' })
         end
 
         def report(count)
