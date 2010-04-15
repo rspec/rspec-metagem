@@ -81,6 +81,22 @@ module Rspec
         end
       end
 
+      def preceding_example_or_group_line(filter_line) 
+        example_and_group_line_numbers.inject(nil) do |highest_prior_example_or_group_line, line|
+          line <= filter_line ? line : highest_prior_example_or_group_line
+        end
+      end
+      
+      def example_and_group_line_numbers
+        @line_numbers ||= example_groups.inject([]) do |lines, g|
+          lines << g.metadata[:example_group][:line_number]
+          g.examples.each do |e|
+            lines << e.metadata[:line_number]
+          end
+          lines
+        end
+      end
+      
     end
   end
 end

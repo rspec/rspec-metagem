@@ -94,7 +94,8 @@ EOM
           filter.call(metadata[filter_on]) rescue false
         when Fixnum
           if filter_on == :line_number
-            [metadata[:line_number],metadata[:example_group][:line_number]].include?(filter)
+            example_or_group_line = Rspec::Core.world.preceding_example_or_group_line(filter)
+            [metadata[:line_number],metadata[:example_group][:line_number]].include?(example_or_group_line)
           else
             metadata[filter_on] == filter
           end
