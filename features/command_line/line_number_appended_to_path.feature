@@ -36,10 +36,9 @@ Feature: line number appended to file path
     And I should see "first example in outer group"
     And I should see "example in nested group"
 
-@wip
   Scenario: nested groups - inner group on declaration line
     When I run "rspec example_spec.rb:11 --format doc"
-    Then I should see "3 examples, 0 failures"
+    Then I should see "1 example, 0 failures"
     And I should see "example in nested group"
     And I should not see "second example in outer group"
     And I should not see "first example in outer group"
