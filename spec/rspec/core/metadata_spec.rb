@@ -158,6 +158,13 @@ module Rspec
         it "merges arbitrary options" do
           mfe[:arbitrary].should == :options 
         end
+
+        it "points :example_group to the same hash object" do
+          a = metadata.for_example("foo", {})[:example_group]
+          b = metadata.for_example("bar", {})[:example_group]
+          a[:description] = "new description"
+          b[:description].should == "new description"
+        end
       end
 
       describe "apply_condition" do
