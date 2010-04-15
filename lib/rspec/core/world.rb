@@ -41,22 +41,18 @@ module Rspec
       end
 
       def total_examples_to_run
-        @total_examples_to_run ||= example_groups_to_run.inject(0) { |sum, b| sum += b.examples_to_run.size }
+        @total_examples_to_run ||= example_groups_to_run.inject(0) { |sum, g| sum += g.examples_to_run.size }
       end
 
       def filtered_example_groups
-        @filtered_example_groups ||= example_groups.inject([]) do |list_of_example_groups, example_group|
+        @filtered_example_groups ||= example_groups.select do |example_group|
           examples = example_group.examples
           examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
           examples = apply_inclusion_filters(examples, inclusion_filter) if inclusion_filter
           examples.uniq!
           example_group.examples_to_run.replace(examples)
-          if examples.empty?
-            list_of_example_groups << nil
-          else
-            list_of_example_groups << example_group
-          end
-        end.compact
+          !examples.empty?
+        end
       end
 
       def apply_inclusion_filters(examples, conditions={})

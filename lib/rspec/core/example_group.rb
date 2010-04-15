@@ -17,22 +17,21 @@ module Rspec
         ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
       end
 
-      def self.example(desc=nil, options={}, &block)
-        options.update(:pending => true) unless block
-        options.update(:caller => caller)
-        examples << Rspec::Core::Example.new(self, desc, options, block)
+      def self.define_example_method(name, extra_options={})
+        module_eval(<<-END_RUBY, __FILE__, __LINE__)
+          def self.#{name}(desc=nil, options={}, &block)
+            options.update(:pending => true) unless block
+            options.update(:caller => caller)
+            options.update(#{extra_options.inspect})
+            examples << Rspec::Core::Example.new(self, desc, options, block)
+          end
+        END_RUBY
       end
 
-      def self.alias_example_to(new_alias, extra_options={})
-        new_alias = <<-END_RUBY
-                      def self.#{new_alias}(desc=nil, options={}, &block)
-                        options.update(:pending => true) unless block
-                        options.update(:caller => caller)
-                        options.update(#{extra_options.inspect})
-                        examples << Rspec::Core::Example.new(self, desc, options, block)
-                      end
-                    END_RUBY
-        module_eval(new_alias, __FILE__, __LINE__)
+      define_example_method :example
+
+      class << self
+        alias_method :alias_example_to, :define_example_method
       end
 
       alias_example_to :it
@@ -128,14 +127,13 @@ module Rspec
       end
 
       def self.ancestors(superclass_last=false)
-        classes = []
         current_class = self
 
+        classes = []
         while current_class < Rspec::Core::ExampleGroup
           superclass_last ? classes << current_class : classes.unshift(current_class)
           current_class = current_class.superclass
         end
-
         classes
       end
 
@@ -178,22 +176,23 @@ module Rspec
       end
 
       def self.run(reporter)
-        example_group_instance = new
         reporter.add_example_group(self)
-        eval_before_alls(example_group_instance)
-        success = run_examples(example_group_instance, reporter)
-        eval_after_alls(example_group_instance)
 
-        success
+        new do |instance|
+          eval_before_alls(instance)
+          success = run_examples(instance, reporter)
+          eval_after_alls(instance)
+          success
+        end
       end
 
       # Runs all examples, returning true only if all of them pass
-      def self.run_examples(example_world, reporter)
-        examples_to_run.map do |ex| 
-          result = ex.run(example_world, reporter) 
-          example_world.__reset__
-          before_all_ivars.each { |k, v| example_world.instance_variable_set(k, v) } 
-          result
+      def self.run_examples(instance, reporter)
+        examples_to_run.map do |example|
+          success = example.run(instance, reporter)
+          instance.__reset__
+          before_all_ivars.each {|k, v| instance.instance_variable_set(k, v)}
+          success
         end.all?
       end
 
@@ -208,6 +207,10 @@ module Rspec
       def self.declaration_line_numbers
         [metadata[:example_group][:line_number]] +
           examples.collect {|e| e.metadata[:line_number]}
+      end
+
+      def initialize
+        yield self if block_given?
       end
 
       def described_class
