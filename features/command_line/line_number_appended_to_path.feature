@@ -36,8 +36,23 @@ Feature: line number appended to file path
     And I should see "first example in outer group"
     And I should see "example in nested group"
 
+@wip
+  Scenario: nested groups - outer group inside block before example
+    When I run "rspec example_spec.rb:2 --format doc"
+    Then I should see "3 examples, 0 failures"
+    And I should see "second example in outer group"
+    And I should see "first example in outer group"
+    And I should see "example in nested group"
+
   Scenario: nested groups - inner group on declaration line
     When I run "rspec example_spec.rb:11 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "example in nested group"
+    And I should not see "second example in outer group"
+    And I should not see "first example in outer group"
+
+  Scenario: nested groups - inner group inside block before example
+    When I run "rspec example_spec.rb:12 --format doc"
     Then I should see "1 example, 0 failures"
     And I should see "example in nested group"
     And I should not see "second example in outer group"
@@ -50,9 +65,46 @@ Feature: line number appended to file path
     But I should not see "second example in outer group"
     And I should not see "example in nested group"
 
+  Scenario: two examples - first example inside block
+    When I run "rspec example_spec.rb:4 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "first example in outer group"
+    But I should not see "second example in outer group"
+    And I should not see "example in nested group"
+
+  Scenario: two examples - first example on end
+    When I run "rspec example_spec.rb:5 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "first example in outer group"
+    But I should not see "second example in outer group"
+    And I should not see "example in nested group"
+
+  Scenario: two examples - first example after end but before next example
+    When I run "rspec example_spec.rb:6 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "first example in outer group"
+    But I should not see "second example in outer group"
+    And I should not see "example in nested group"
+
   Scenario: two examples - second example on declaration line
     When I run "rspec example_spec.rb:7 --format doc"
     Then I should see "1 example, 0 failures"
     And I should see "second example in outer group"
     But I should not see "first example in outer group"
     And I should not see "example in nested group"
+
+  Scenario: two examples - second example inside block
+    When I run "rspec example_spec.rb:7 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "second example in outer group"
+    But I should not see "first example in outer group"
+    And I should not see "example in nested group"
+
+  Scenario: two examples - second example on end
+    When I run "rspec example_spec.rb:7 --format doc"
+    Then I should see "1 example, 0 failures"
+    And I should see "second example in outer group"
+    But I should not see "first example in outer group"
+    And I should not see "example in nested group"
+
+
