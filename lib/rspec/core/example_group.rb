@@ -176,14 +176,13 @@ module Rspec
       end
 
       def self.run(reporter)
+        example_group_instance = new
         reporter.add_example_group(self)
+        eval_before_alls(example_group_instance)
+        success = run_examples(example_group_instance, reporter)
+        eval_after_alls(example_group_instance)
 
-        new do |instance|
-          eval_before_alls(instance)
-          success = run_examples(instance, reporter)
-          eval_after_alls(instance)
-          success
-        end
+        success
       end
 
       # Runs all examples, returning true only if all of them pass
@@ -207,10 +206,6 @@ module Rspec
       def self.declaration_line_numbers
         [metadata[:example_group][:line_number]] +
           examples.collect {|e| e.metadata[:line_number]}
-      end
-
-      def initialize
-        yield self if block_given?
       end
 
       def described_class
