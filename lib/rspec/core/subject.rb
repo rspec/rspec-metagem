@@ -1,17 +1,17 @@
 module Rspec
   module Core
     module Subject
-      
+
       def self.included(kls)
         kls.extend   ClassMethods
         kls.__send__ :alias_method, :__should_for_example_group__,     :should
         kls.__send__ :alias_method, :__should_not_for_example_group__, :should_not
       end
-      
+
       def subject
-        @subject ||= instance_eval(&self.class.subject)
+        modify_subject? ? modified_subject : unmodified_subject
       end
-      
+
       # When +should+ is called with no explicit receiver, the call is
       # delegated to the object returned by +subject+. Combined with
       # an implicit subject (see +subject+), this supports very concise
@@ -37,7 +37,7 @@ module Rspec
       def should_not(matcher=nil, message=nil)
         self == subject ? self.__should_not_for_example_group__(matcher) : subject.should_not(matcher,message)
       end
-      
+
       module ClassMethods
         # Defines an explicit subject for an example group which can then be the
         # implicit receiver (through delegation) of calls to +should+.
@@ -54,7 +54,7 @@ module Rspec
         def subject(&block)
           block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
-      
+
         attr_reader :explicit_subject_block # :nodoc:
 
       private
@@ -72,6 +72,23 @@ module Rspec
           Class === described ? proc { described.new } : proc { described }
         end
       end
+
+    private
+
+      def modify_subject?
+        !running_example.nil? &&
+        !running_example.subject_modifier.nil? &&
+        running_example.state == :block
+      end
+
+      def unmodified_subject
+        @unmodified_subject ||= instance_eval(&self.class.subject)
+      end
+
+      def modified_subject
+        unmodified_subject.send(running_example.subject_modifier)
+      end
+
     end
   end
 end

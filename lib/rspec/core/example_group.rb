@@ -42,6 +42,13 @@ module Rspec
         END_RUBY
       end
 
+      def self.its(modifier, desc=nil, options={}, &block)
+        options.update(:pending => true) unless block
+        options.update(:caller => caller)
+        options.update(:subject_modifier => modifier)
+        examples << Rspec::Core::Example.new(self, desc, options, block)
+      end
+
       define_example_method :example
 
       class << self

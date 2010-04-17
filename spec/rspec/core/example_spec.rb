@@ -26,6 +26,10 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
       example.should respond_to(:example_block)
     end
 
+    it "should have one for its subject modifier" do
+      example.should respond_to(:subject_modifier)
+    end
+
     it "should have one for its state" do
       example.should respond_to(:state)
     end

@@ -10,7 +10,7 @@ module Rspec
         end
       end
 
-      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending
+      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending, :subject_modifier
 
       alias_method :inspect, :full_description
       alias_method :to_s, :full_description
