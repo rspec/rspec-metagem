@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'rspec/expectations/differs/default'
-
 describe "should ==" do
   
   it "should delegate message to target" do
