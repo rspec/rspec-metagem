@@ -25,6 +25,10 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
     it "should have one for it's block" do
       example.should respond_to(:example_block)
     end
+
+    it "should have one for its state" do
+      example.should respond_to(:state)
+    end
   end
 
   describe '#inspect' do
@@ -85,6 +89,18 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
       end
       group.run_all
       after_run.should be_true, "expected after(:each) to be run"
+    end
+  end
+
+  describe "#state" do
+    before do
+      running_example.state.should == :before
+    end
+    it "should have block state while running actual example block" do
+      running_example.state.should == :block
+    end
+    after do
+      running_example.state.should == :after
     end
   end
 end

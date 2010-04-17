@@ -2,7 +2,7 @@ module Rspec
   module Core
     class Example
 
-      attr_reader :metadata, :example_block
+      attr_reader :metadata, :example_block, :state
 
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
@@ -35,7 +35,9 @@ module Rspec
         exception = nil
 
         begin
+          @state = :before
           run_before_each
+          @state = :block
           pending_declared_in_example = catch(:pending_declared_in_example) do
             if @example_group_class.around_eachs.empty?
               @example_group_instance.instance_eval(&example_block) unless pending
@@ -51,6 +53,7 @@ module Rspec
         end
 
         begin
+          @state = :after
           run_after_each
         rescue Exception => e
           exception ||= e
