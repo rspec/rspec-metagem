@@ -47,7 +47,8 @@ module Rspec
         run_finished reporter, 'passed'
       end
 
-      def run_pending(reporter=nil, message='Not yet implemented')
+      def run_pending(reporter=nil)
+        message = metadata[:execution_result][:pending_message] || 'Not Yet Implemented'
         run_finished reporter, 'pending', :pending_message => message
       end
 
@@ -125,6 +126,7 @@ module Rspec
 
         all_systems_nominal
       end
+
 
     end
 

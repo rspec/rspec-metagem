@@ -190,7 +190,6 @@ module Rspec
         eval_before_alls(example_group_instance)
         success = run_examples(example_group_instance, reporter)
         eval_after_alls(example_group_instance)
-
         success
       end
 
@@ -224,6 +223,21 @@ module Rspec
       def __reset__
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
         __memoized.clear
+      end
+
+      def pending(message = nil)
+        running_example.metadata[:pending] = true
+        running_example.metadata[:execution_result][:pending_message] = message if message
+        if block_given?
+          begin
+            result = yield
+          rescue Exception => e
+          end
+          if result
+            running_example.metadata[:pending] = false
+            raise Rspec::Core::PendingExampleFixedError.new
+          end
+        end
       end
 
     end

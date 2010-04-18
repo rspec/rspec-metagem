@@ -11,12 +11,15 @@ module Rspec
           failed_examples.each_with_index do |failed_example, index|
             exception = failed_example.execution_result[:exception_encountered]
             padding = '    '
-
-            output.puts "#{index.next}) #{failed_example}"
-            output.puts "#{padding}Failure/Error: #{read_failed_line(exception, failed_example).strip}"
-
-            exception.message.split("\n").each do |line|
-              output.puts "#{padding}#{colorise(line, exception).strip}"
+            if exception.is_a?(Rspec::Core::PendingExampleFixedError)
+              output.puts "#{index.next}) #{failed_example} FIXED"
+              output.puts "#{padding}Expected pending '#{failed_example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
+            else
+              output.puts "#{index.next}) #{failed_example}"
+              output.puts "#{padding}Failure/Error: #{read_failed_line(exception, failed_example).strip}"
+              exception.message.split("\n").each do |line|
+                output.puts "#{padding}#{colorise(line, exception).strip}"
+              end
             end
 
             format_backtrace(exception.backtrace, failed_example).each do |backtrace_info|
@@ -73,8 +76,8 @@ module Rspec
           unless pending_examples.empty?
             output.puts
             output.puts "Pending:"
-            pending_examples.each do |pending_example, message|
-              output.puts "  #{pending_example}"
+            pending_examples.each do |pending_example|
+              output.puts "  #{pending_example} (#{pending_example.metadata[:execution_result][:pending_message]})"
               output.puts grey("   # #{format_caller(pending_example.metadata[:location])}")
             end
           end

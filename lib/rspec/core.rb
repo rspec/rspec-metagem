@@ -18,6 +18,7 @@ require 'rspec/core/example_group'
 require 'rspec/core/formatters'
 require 'rspec/core/backward_compatibility'
 require 'rspec/core/version'
+require 'rspec/core/errors'
 
 module Rspec
   module Core
