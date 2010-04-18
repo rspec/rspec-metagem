@@ -82,7 +82,7 @@ module Rspec::Core
 
     end
 
-    describe "adding before, after, and around hooks" do
+    describe "before, after, and around hooks" do
 
       it "should expose the before each blocks at before_eachs" do
         group = ExampleGroup.create

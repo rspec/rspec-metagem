@@ -28,8 +28,8 @@ Feature: before and after hooks
     applied to all groups or subsets of all groups defined by example group
     types.
 
-  Scenario: define before(:each) block in example group
-    Given a file named "before_each_in_example_group_spec.rb" with:
+  Scenario: define before(:each) block
+    Given a file named "before_each_spec.rb" with:
       """
       require "rspec/expectations"
 
@@ -59,11 +59,11 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec before_each_in_example_group_spec.rb"
+    When I run "rspec before_each_spec.rb"
     Then I should see "3 examples, 0 failures"
 
   Scenario: define before(:all) block in example group
-    Given a file named "before_all_in_example_group_spec.rb" with:
+    Given a file named "before_all_spec.rb" with:
       """
       require "rspec/expectations"
 
@@ -93,8 +93,11 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec before_all_in_example_group_spec.rb"
+    When I run "rspec before_all_spec.rb"
     Then I should see "3 examples, 0 failures"
+
+    When I run "rspec before_all_spec.rb:15"
+    Then I should see "1 example, 0 failures"
 
   @wip
   Scenario: define before and after blocks in configuration
@@ -135,21 +138,11 @@ Feature: before and after hooks
     When I run "rspec befores_in_configuration_spec.rb"
     Then I should see "3 examples, 0 failures"
 
-  @wip
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """
       require "rspec/expectations"
 
-      Rspec.configure do |config|
-        config.before(:suite) do
-          puts "before suite"
-        end
-        config.after(:suite) do
-          puts "after suite"
-        end
-      end
-  
       describe "before and after callbacks" do
         before(:all) do
           puts "before all"
@@ -173,5 +166,38 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ensure_block_order_spec.rb"
-    Then I should see /before suite\nbefore all\nbefore each\nafter each\n\.after all\n.*after suite/m
+    Then I should see matching "before all\nbefore each\nafter each\n.after all"
+  
+@wip
+  Scenario: before/after all blocks are run once
+    Given a file named "before_and_after_all_spec.rb" with:
+      """
+      describe "before and after callbacks" do
+        before(:all) do
+          puts "before all"
+        end
+  
+        after(:all) do
+          puts "after all"
+        end
+  
+        example "in outer group" do
+  
+        end
+
+        describe "nested group" do
+          
+          example "in nested group" do
+
+          end
+
+        end
+
+      end
+      """
+    When I run "rspec before_and_after_all_spec.rb:16"
+    Then I should see matching "before all\n.after all"
+
+    When I run "rspec before_and_after_all_spec.rb"
+    Then I should see matching "before all\n..after all"
   
