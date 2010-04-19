@@ -16,12 +16,14 @@ Feature: pending examples
     And I should see "Not Yet Implemented"
     And I should see "example_without_block_spec.rb:2"
 
+@wip
   Scenario: pending any arbitary reason, with no block
     Given a file named "pending_without_block_spec.rb" with:
       """
       describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
+          this should not get executed
         end
       end
       """

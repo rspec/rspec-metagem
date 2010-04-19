@@ -5,9 +5,10 @@ describe Rspec::Core::Formatters::Helpers do
   let(:helper) { helper = Object.new.extend(Rspec::Core::Formatters::Helpers) }
 
   describe "format seconds" do
-    pending "uses passed in precision if specified" do
-      # can't get regex right to handle this case where we don't want it to consume all zeroes
-      helper.format_seconds(0.00005, 2).should == "0.00"
+    it "uses passed in precision if specified" do
+      pending("get regex right to handle this case where we don't want it to consume all zeroes") do
+        helper.format_seconds(0.00005, 2).should == "0.00"
+      end
     end
     
     context "sub second times" do
