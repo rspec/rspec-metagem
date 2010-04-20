@@ -4,40 +4,76 @@ module Rspec
 
       attr_reader :metadata, :example_block
 
-      def example_group
-        @example_group_class
+      def self.delegate_to_metadata(*keys)
+        keys.each do |key|
+          define_method(key) {@metadata[key]}
+        end
       end
 
-      alias_method :behaviour, :example_group
+      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending
+
+      alias_method :inspect, :full_description
+      alias_method :to_s, :full_description
 
       def initialize(example_group_class, desc, options, example_block=nil)
         @example_group_class, @options, @example_block = example_group_class, options, example_block
         @metadata = @example_group_class.metadata.for_example(desc, options)
       end
 
-      def description
-        @metadata[:description]
+      def example_group
+        @example_group_class
       end
 
-      def record_results(results={})
-        @metadata[:execution_result].update(results)
+      alias_method :behaviour, :example_group
+
+      def run(example_group_instance, reporter)
+        @example_group_instance = example_group_instance
+        @example_group_instance.running_example = self
+
+        run_started
+
+        exception = nil
+
+        begin
+          run_before_each
+          
+          pending_message = catch(:pending_declared_in_example) do
+            if @example_group_class.around_eachs.empty?
+              @example_group_instance.instance_eval(&example_block) unless pending
+            else
+              @example_group_class.around_eachs.first.call(AroundProxy.new(self, &example_block))
+            end
+          end
+        rescue Exception => e
+          exception = e
+        end
+
+        assign_auto_description
+
+        begin
+          run_after_each
+        rescue Exception => e
+          exception ||= e
+        ensure
+          @example_group_instance.running_example = nil
+        end
+
+        if exception
+          run_failed(reporter, exception) 
+          false
+        elsif String === pending_message
+          run_pending(reporter, pending_message)
+          true
+        elsif pending
+          run_pending(reporter, 'Not Yet Implemented')
+          true
+        else
+          run_passed(reporter) 
+          true
+        end
       end
 
-      def execution_result
-        @metadata[:execution_result]
-      end
-
-      def file_path
-        @metadata[:file_path] || example_group.file_path
-      end
-
-      def inspect
-        @metadata[:full_description]
-      end
-
-      def to_s
-        inspect
-      end
+    private
 
       def run_started
         record_results :started_at => Time.now
@@ -47,8 +83,7 @@ module Rspec
         run_finished reporter, 'passed'
       end
 
-      def run_pending(reporter=nil)
-        message = metadata[:execution_result][:pending_message] || 'Not Yet Implemented'
+      def run_pending(reporter, message)
         run_finished reporter, 'pending', :pending_message => message
       end
 
@@ -82,53 +117,10 @@ module Rspec
         end
       end
 
-      def runnable?
-        !metadata[:pending]
+      def record_results(results={})
+        execution_result.update(results)
       end
-
-      def run(example_group_instance, reporter)
-        @example_group_instance = example_group_instance
-        @example_group_instance.running_example = self
-
-        run_started
-
-        all_systems_nominal = true
-        exception_encountered = nil
-
-        begin
-          run_before_each
-          if @example_group_class.around_eachs.empty?
-            @example_group_instance.instance_eval(&example_block) if runnable?
-          else
-            @example_group_class.around_eachs.first.call(AroundProxy.new(self, &example_block))
-          end
-        rescue Exception => e
-          exception_encountered = e
-          all_systems_nominal = false
-        end
-
-        assign_auto_description
-
-        begin
-          run_after_each
-        rescue Exception => e
-          exception_encountered ||= e
-          all_systems_nominal = false
-        ensure
-          @example_group_instance.running_example = nil
-        end
-
-        if exception_encountered
-          run_failed(reporter, exception_encountered) 
-        else
-          runnable? ? run_passed(reporter) : run_pending(reporter)
-        end
-
-        all_systems_nominal
-      end
-
 
     end
-
   end
 end

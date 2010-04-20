@@ -196,10 +196,10 @@ module Rspec
       # Runs all examples, returning true only if all of them pass
       def self.run_examples(instance, reporter)
         examples_to_run.map do |example|
-          success = example.run(instance, reporter)
+          result = example.run(instance, reporter)
           instance.__reset__
           before_all_ivars.each {|k, v| instance.instance_variable_set(k, v)}
-          success
+          result
         end.all?
       end
 
@@ -225,19 +225,18 @@ module Rspec
         __memoized.clear
       end
 
-      def pending(message = nil)
+      def pending(message = 'No reason given')
         running_example.metadata[:pending] = true
-        running_example.metadata[:execution_result][:pending_message] = message if message
+        running_example.metadata[:execution_result][:pending_message] = message
         if block_given?
           begin
             result = yield
+            running_example.metadata[:pending] = false
           rescue Exception => e
           end
-          if result
-            running_example.metadata[:pending] = false
-            raise Rspec::Core::PendingExampleFixedError.new
-          end
+          raise Rspec::Core::PendingExampleFixedError.new if result
         end
+        throw :pending_declared_in_example, message
       end
 
     end

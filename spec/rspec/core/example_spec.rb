@@ -1,44 +1,46 @@
 require 'spec_helper'
 
 describe Rspec::Core::Example, :parent_metadata => 'sample' do
-
-  before do
-    example_group = stub('example_group', 
+  let(:example_group) do
+    stub('example_group', 
       :metadata => Rspec::Core::Metadata.new.process(
         'group description',
         :caller => ['foo_spec.rb:37']
       )
     ).as_null_object 
-    @example = Rspec::Core::Example.new(example_group, 'example description', {}, (lambda {}))
+  end
+
+  let(:example) do
+    Rspec::Core::Example.new(example_group, 'example description', {}, (lambda {}))
   end
 
   describe "attr readers" do
     it "should have one for the parent example group" do
-      @example.should respond_to(:example_group)
+      example.should respond_to(:example_group)
     end
 
     it "should have one for it's description" do
-      @example.should respond_to(:description)
+      example.should respond_to(:description)
     end
 
     it "should have one for it's metadata" do
-      @example.should respond_to(:metadata)
+      example.should respond_to(:metadata)
     end
 
     it "should have one for it's block" do
-      @example.should respond_to(:example_block)
+      example.should respond_to(:example_block)
     end
   end
 
   describe '#inspect' do
     it "should return 'group description - description'" do
-      @example.inspect.should == 'group description example description'
+      example.inspect.should == 'group description example description'
     end
   end
 
   describe '#to_s' do
     it "should return #inspect" do
-      @example.to_s.should == @example.inspect
+      example.to_s.should == example.inspect
     end
   end
 
@@ -60,9 +62,8 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#run" do
-    pending "should run after(:each) when the example fails"
-
-    pending "should run after(:each) when the example raises an Exception" 
+    it "should run after(:each) when the example fails"
+    it "should run after(:each) when the example raises an Exception" 
   end
 
 end
