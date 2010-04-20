@@ -187,19 +187,23 @@ module Rspec
       def self.run(reporter)
         example_group_instance = new
         reporter.add_example_group(self)
-        eval_before_alls(example_group_instance)
-        success = run_examples(example_group_instance, reporter)
-        eval_after_alls(example_group_instance)
-        success
+        begin
+          eval_before_alls(example_group_instance)
+          run_examples(example_group_instance, reporter)
+        ensure
+          eval_after_alls(example_group_instance)
+        end
       end
 
       # Runs all examples, returning true only if all of them pass
       def self.run_examples(instance, reporter)
         examples_to_run.map do |example|
-          result = example.run(instance, reporter)
-          instance.__reset__
-          before_all_ivars.each {|k, v| instance.instance_variable_set(k, v)}
-          result
+          begin
+            example.run(instance, reporter)
+          ensure
+            instance.__reset__
+            before_all_ivars.each {|k, v| instance.instance_variable_set(k, v)}
+          end
         end.all?
       end
 
