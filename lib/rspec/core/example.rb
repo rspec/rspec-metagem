@@ -36,19 +36,19 @@ module Rspec
 
         begin
           run_before_each
-          
-          pending_message = catch(:pending_declared_in_example) do
+          pending_declared_in_example = catch(:pending_declared_in_example) do
             if @example_group_class.around_eachs.empty?
               @example_group_instance.instance_eval(&example_block) unless pending
             else
               @example_group_class.around_eachs.first.call(AroundProxy.new(self, &example_block))
             end
+            throw :pending_declared_in_example, false
           end
         rescue Exception => e
           exception = e
+        ensure
+          assign_auto_description
         end
-
-        assign_auto_description
 
         begin
           run_after_each
@@ -60,16 +60,12 @@ module Rspec
 
         if exception
           run_failed(reporter, exception) 
-          false
-        elsif String === pending_message
-          run_pending(reporter, pending_message)
-          true
+        elsif pending_declared_in_example
+          run_pending(reporter, pending_declared_in_example)
         elsif pending
           run_pending(reporter, 'Not Yet Implemented')
-          true
         else
           run_passed(reporter) 
-          true
         end
       end
 
@@ -81,14 +77,17 @@ module Rspec
 
       def run_passed(reporter=nil)
         run_finished reporter, 'passed'
+        true
       end
 
       def run_pending(reporter, message)
         run_finished reporter, 'pending', :pending_message => message
+        true
       end
 
       def run_failed(reporter, exception)
         run_finished reporter, 'failed', :exception_encountered => exception
+        false
       end
 
       def run_finished(reporter, status, results={})
