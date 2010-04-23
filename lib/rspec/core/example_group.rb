@@ -103,23 +103,21 @@ module Rspec
         raise(ArgumentError, "You must supply a block when calling describe") if example_group_block.nil?
         @_subclass_count ||= 0
         @_subclass_count += 1
+        args << {} unless args.last.is_a?(Hash)
+        args.last.update(:example_group_block => example_group_block)
+        args.last.update(:caller => caller)
+        args.unshift Rspec.configuration unless args.first.is_a?(Rspec::Core::Configuration)
         const_set(
           "Nested_#{@_subclass_count}",
-          _build(Class.new(self), caller, args, &example_group_block)
+          subclass(self, args, &example_group_block)
         )
       end
 
-      def self.create(*args, &example_group_block)
-        _build(dup, caller, args, &example_group_block)
-      end
-
-      def self._build(klass, given_caller, args, &example_group_block)
-        args << {} unless args.last.is_a?(Hash)
-        args.last.update(:example_group_block => example_group_block, :caller => given_caller)
-        args.unshift Rspec.configuration unless args.first.is_a?(Rspec::Core::Configuration)
-        klass.set_it_up(*args) 
-        klass.module_eval(&example_group_block) if example_group_block
-        klass
+      def self.subclass(parent, args, &example_group_block)
+        subclass = Class.new(parent)
+        subclass.set_it_up(*args) 
+        subclass.module_eval(&example_group_block) if example_group_block
+        subclass
       end
 
       class << self

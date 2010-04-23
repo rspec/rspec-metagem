@@ -30,6 +30,14 @@ module Rspec
   end
 end
 
+class Rspec::Core::ExampleGroup
+  def self.create(*args, &example_group_block)
+    args.unshift('example group') if args.empty?
+    describe(*args, &example_group_block || lambda {})
+    Rspec::Core.world.example_groups.pop
+  end
+end
+
 def use_formatter(new_formatter)
   original_formatter = Rspec.configuration.formatter
   Rspec.configuration.instance_variable_set(:@formatter, new_formatter)
