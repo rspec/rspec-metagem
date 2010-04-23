@@ -36,6 +36,12 @@ class Rspec::Core::ExampleGroup
     describe(*args, &example_group_block || lambda {})
     Rspec::Core.world.example_groups.pop
   end
+
+  def self.run_all(reporter=nil)
+    reporter ||= Rspec::Mocks::Mock.new('reporter').as_null_object
+    examples_to_run.replace(examples)
+    run(reporter)
+  end
 end
 
 def use_formatter(new_formatter)
