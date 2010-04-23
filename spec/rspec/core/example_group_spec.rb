@@ -84,13 +84,13 @@ module Rspec::Core
 
     describe "before, after, and around hooks" do
 
-      it "should expose the before each blocks at before_eachs" do
+      it "exposes the before each blocks at before_eachs" do
         group = ExampleGroup.create
         group.before(:each) { 'foo' }
         group.should have(1).before_eachs
       end
 
-      it "should maintain the before each block order" do
+      it "maintains the before each block order" do
         group = ExampleGroup.create
         group.before(:each) { 15 }
         group.before(:each) { 'A' }
@@ -101,13 +101,13 @@ module Rspec::Core
         group.before_eachs[2].call.should == 33.5
       end
 
-      it "should expose the before all blocks at before_alls" do
+      it "exposes the before all blocks at before_alls" do
         group = ExampleGroup.create
         group.before(:all) { 'foo' }
         group.should have(1).before_alls
       end
 
-      it "should maintain the before all block order" do
+      it "maintains the before all block order" do
         group = ExampleGroup.create
         group.before(:all) { 15 }
         group.before(:all) { 'A' }
@@ -118,13 +118,13 @@ module Rspec::Core
         group.before_alls[2].call.should == 33.5
       end
 
-      it "should expose the after each blocks at after_eachs" do
+      it "exposes the after each blocks at after_eachs" do
         group = ExampleGroup.create
         group.after(:each) { 'foo' }
         group.should have(1).after_eachs
       end
 
-      it "should maintain the after each block order" do
+      it "maintains the after each block order" do
         group = ExampleGroup.create
         group.after(:each) { 15 }
         group.after(:each) { 'A' }
@@ -135,13 +135,13 @@ module Rspec::Core
         group.after_eachs[2].call.should == 33.5
       end
 
-      it "should expose the after all blocks at after_alls" do
+      it "exposes the after all blocks at after_alls" do
         group = ExampleGroup.create
         group.after(:all) { 'foo' }
         group.should have(1).after_alls
       end
 
-      it "should maintain the after each block order" do
+      it "maintains the after each block order" do
         group = ExampleGroup.create
         group.after(:all) { 15 }
         group.after(:all) { 'A' }
@@ -152,7 +152,7 @@ module Rspec::Core
         group.after_alls[2].call.should == 33.5
       end
 
-      it "should expose the around each blocks at after_alls" do
+      it "exposes the around each blocks at after_alls" do
         group = ExampleGroup.create
         group.around(:each) { 'foo' }
         group.should have(1).around_eachs
@@ -162,13 +162,13 @@ module Rspec::Core
 
     describe "adding examples" do
 
-      it "should allow adding an example using 'it'" do
+      it "allows adding an example using 'it'" do
         group = ExampleGroup.create
         group.it("should do something") { }
         group.examples.size.should == 1
       end
 
-      it "should expose all examples at examples" do
+      it "exposes all examples at examples" do
         group = ExampleGroup.create
         group.it("should do something 1") { }
         group.it("should do something 2") { }
@@ -176,7 +176,7 @@ module Rspec::Core
         group.examples.size.should == 3
       end
 
-      it "should maintain the example order" do
+      it "maintains the example order" do
         group = ExampleGroup.create
         group.it("should 1") { }
         group.it("should 2") { }
@@ -211,51 +211,38 @@ module Rspec::Core
     end
 
     describe "#run_examples" do
-      before do
-        @fake_formatter = Formatters::BaseFormatter.new
-      end
 
-      def stub_example_group
-        stub('example_group', 
-          :metadata => Metadata.new.process(
-            'example_group_name',
-            :caller => ['foo_spec.rb:37']
-          )
-        ).as_null_object 
-      end
+      let(:reporter) { double("reporter").as_null_object }
 
-      it "should return true if all examples pass" do
-        use_formatter(@fake_formatter) do
-          passing_example1 = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
-          passing_example2 = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
-          ExampleGroup.stub(:examples_to_run).and_return([passing_example1, passing_example2])
-
-          ExampleGroup.run_examples(stub_example_group, mock('reporter').as_null_object).should be_true
+      it "returns true if all examples pass" do
+        group = ExampleGroup.create('group') do
+          example('ex 1') { 1.should == 1 }
+          example('ex 2') { 1.should == 1 }
         end
+        group.stub(:examples_to_run) { group.examples }
+        group.run(reporter).should be_true
       end
 
-      it "should return false if any of the examples return false" do
-        use_formatter(@fake_formatter) do
-          failing_example = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 2 }))
-          passing_example = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
-          ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
-
-          ExampleGroup.run_examples(stub_example_group, mock('reporter').as_null_object).should be_false
+      it "returns false if any of the examples fail" do
+        group = ExampleGroup.create('group') do
+          example('ex 1') { 1.should == 1 }
+          example('ex 2') { 1.should == 2 }
         end
+        group.stub(:examples_to_run) { group.examples }
+        group.run(reporter).should be_false
       end
 
-      it "should run all examples, regardless of any of them failing" do
-        use_formatter(@fake_formatter) do
-          failing_example = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 2 }))
-          passing_example = Example.new(stub_example_group, 'description', {}, (lambda { 1.should == 1 }))
-          ExampleGroup.stub!(:examples_to_run).and_return([failing_example, passing_example])
-
-          passing_example.should_receive(:run)
-
-          ExampleGroup.run_examples(stub_example_group, mock('reporter', :null_object => true))
+      it "runs all examples, regardless of any of them failing" do
+        group = ExampleGroup.create('group') do
+          example('ex 1') { 1.should == 2 }
+          example('ex 2') { 1.should == 1 }
         end
+        group.stub(:examples_to_run) { group.examples }
+        group.examples_to_run.each do |example|
+          example.should_receive(:run)
+        end
+        group.run(reporter).should be_false
       end
-
     end
 
     describe "how instance variables inherit" do
