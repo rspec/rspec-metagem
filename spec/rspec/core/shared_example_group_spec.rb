@@ -48,12 +48,11 @@ module Rspec::Core
       end
 
       it "should make any shared example_group available at the correct level", :ruby => 1.9 do
-        group = ExampleGroup.describe('fake group')
-        block = lambda {
+        group = ExampleGroup.describe
+        shared_examples_for(:shared_example_group) do
           def self.class_helper; end
           def extra_helper; end
-        }
-        Rspec::Core.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
+        end
         group.it_should_behave_like :shared_example_group
         group.instance_methods.should include(:extra_helper)
         group.singleton_methods.should include(:class_helper)
