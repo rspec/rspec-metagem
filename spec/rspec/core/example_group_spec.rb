@@ -17,19 +17,15 @@ module Rspec::Core
     describe '#describes' do
 
       context "with a constant as the first parameter" do
-
         it "is that constant" do
           ExampleGroup.describe(Object) { }.describes.should == Object
         end
-
       end
 
       context "with a string as the first parameter" do
-
         it "is nil" do
           ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
         end
-
       end
 
     end
@@ -232,7 +228,7 @@ module Rspec::Core
       end
     end
 
-    describe "how instance variables inherit" do
+    describe "how instance variables are inherited" do
       before(:all) do
         @before_all_top_level = 'before_all_top_level'
       end
@@ -288,47 +284,6 @@ module Rspec::Core
       it "(second example)" do
         @b = 2
         @a.should be_nil
-      end
-    end
-
-    describe "#let" do
-      let(:counter) do
-        Class.new do
-          def initialize
-            @count = 0
-          end
-          def count
-            @count += 1
-          end
-        end.new
-      end
-
-      it "generates an instance method" do
-        counter.count.should == 1
-      end
-
-      it "caches the value" do
-        counter.count.should == 1
-        counter.count.should == 2
-      end
-    end
-
-    describe "#let!" do
-      let!(:creator) do
-        class Creator
-          @count = 0
-          def self.count
-            @count += 1
-          end
-        end
-      end
-
-      it "evaluates the value non-lazily" do
-        lambda { Creator.count }.should_not raise_error
-      end
-
-      it "does not interfere between tests" do 
-        Creator.count.should == 1
       end
     end
 
