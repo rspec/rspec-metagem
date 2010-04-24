@@ -38,14 +38,6 @@ class Rspec::Core::ExampleGroup
   end
 end
 
-def use_formatter(new_formatter)
-  original_formatter = Rspec.configuration.formatter
-  Rspec.configuration.instance_variable_set(:@formatter, new_formatter)
-  yield
-ensure
-  Rspec.configuration.instance_variable_set(:@formatter, original_formatter)
-end
-
 def in_editor?
   ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
 end
