@@ -24,6 +24,7 @@ module Rspec
             options.update(:caller => caller)
             options.update(#{extra_options.inspect})
             examples << Rspec::Core::Example.new(self, desc, options, block)
+            examples.last
           end
         END_RUBY
       end

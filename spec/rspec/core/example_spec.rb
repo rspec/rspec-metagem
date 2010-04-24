@@ -2,16 +2,11 @@ require 'spec_helper'
 
 describe Rspec::Core::Example, :parent_metadata => 'sample' do
   let(:example_group) do
-    stub('example_group', 
-      :metadata => Rspec::Core::Metadata.new.process(
-        'group description',
-        :caller => ['foo_spec.rb:37']
-      )
-    ).as_null_object 
+    Rspec::Core::ExampleGroup.describe('group description')
   end
 
   let(:example) do
-    Rspec::Core::Example.new(example_group, 'example description', {}, (lambda {}))
+    example_group.example('example description')
   end
 
   describe "attr readers" do
