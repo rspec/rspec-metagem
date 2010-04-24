@@ -29,7 +29,7 @@ Feature: expect change
         end
       end
       """
-    When I run "spec expect_change_spec.rb"
+    When I run "rspec expect_change_spec.rb"
     Then I should see "2 examples, 1 failure"
     Then I should see "should have been changed by 2, but was changed by 1"
 
@@ -60,6 +60,6 @@ Feature: expect change
         end
       end
       """
-    When I run "spec expect_no_change_spec.rb"
+    When I run "rspec expect_no_change_spec.rb"
     Then I should see "2 examples, 1 failure"
     Then I should see "should not have changed, but did change from 1 to 2"
