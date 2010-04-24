@@ -68,7 +68,7 @@ module Rspec
         end
 
         def described_example_group_chain
-          example_group.ancestors
+          example_group.ancestor_example_groups
         end
 
       end

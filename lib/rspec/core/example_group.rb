@@ -118,27 +118,17 @@ module Rspec
         subclass
       end
 
-      class << self
-        alias_method :context, :describe
-      end
-
-      def self.ancestors(superclass_last=false)
-        current_class = self
-
-        classes = []
-        while current_class < Rspec::Core::ExampleGroup
-          superclass_last ? classes << current_class : classes.unshift(current_class)
-          current_class = current_class.superclass
-        end
-        classes
-      end
-
       def self.before_ancestors
-        @_before_ancestors ||= ancestors 
+        @_before_ancestors ||= after_ancestors.reverse
       end
 
       def self.after_ancestors
-        @_after_ancestors ||= ancestors(true)
+        @_after_ancestors ||= ancestors.select {|a| a < Rspec::Core::ExampleGroup}
+      end
+
+      class << self
+        alias_method :context, :describe
+        alias_method :ancestor_example_groups, :before_ancestors
       end
 
       def self.before_all_ivars
