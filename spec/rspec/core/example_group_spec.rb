@@ -14,25 +14,12 @@ module Rspec::Core
 
   describe ExampleGroup do
 
-    describe "#describe" do
-
-      it "raises an ArgumentError if no type or description is given" do
-        lambda { ExampleGroup.describe() {} }.should raise_error(ArgumentError, "No arguments given.  You must a least supply a type or description")
-      end
-
-      it "raises an ArgumentError if no block is given" do
-        lambda { ExampleGroup.describe('foo') }.should raise_error(ArgumentError, "You must supply a block when calling describe")
-      end
-
-    end
-
-
     describe '#describes' do
 
       context "with a constant as the first parameter" do
 
         it "is that constant" do
-          ExampleGroup.create(Object) { }.describes.should == Object
+          ExampleGroup.describe(Object) { }.describes.should == Object
         end
 
       end
@@ -40,7 +27,7 @@ module Rspec::Core
       context "with a string as the first parameter" do
 
         it "is nil" do
-          ExampleGroup.create("i'm a computer") { }.describes.should be_nil
+          ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
         end
 
       end
@@ -50,7 +37,7 @@ module Rspec::Core
     describe '#description' do
 
       it "grabs the description from the metadata" do
-        group = ExampleGroup.create(Object, "my desc") { }
+        group = ExampleGroup.describe(Object, "my desc") { }
         group.description.should == group.metadata[:example_group][:description]
       end
 
@@ -59,25 +46,25 @@ module Rspec::Core
     describe '#metadata' do
 
       it "adds the third parameter to the metadata" do
-        ExampleGroup.create(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
+        ExampleGroup.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
       end
 
       it "adds the caller to metadata" do
-        ExampleGroup.create(Object) { }.metadata[:example_group][:caller].any? {|f|
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:caller].any? {|f|
           f =~ /#{__FILE__}/
         }.should be_true
       end
 
       it "adds the the file_path to metadata" do
-        ExampleGroup.create(Object) { }.metadata[:example_group][:file_path].should == __FILE__
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should == __FILE__
       end
 
       it "has a reader for file_path" do
-        ExampleGroup.create(Object) { }.file_path.should == __FILE__
+        ExampleGroup.describe(Object) { }.file_path.should == __FILE__
       end
 
       it "adds the line_number to metadata" do
-        ExampleGroup.create(Object) { }.metadata[:example_group][:line_number].should == __LINE__
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number].should == __LINE__
       end
 
     end
@@ -85,13 +72,13 @@ module Rspec::Core
     describe "before, after, and around hooks" do
 
       it "exposes the before each blocks at before_eachs" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.before(:each) { 'foo' }
         group.should have(1).before_eachs
       end
 
       it "maintains the before each block order" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.before(:each) { 15 }
         group.before(:each) { 'A' }
         group.before(:each) { 33.5 }
@@ -102,13 +89,13 @@ module Rspec::Core
       end
 
       it "exposes the before all blocks at before_alls" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.before(:all) { 'foo' }
         group.should have(1).before_alls
       end
 
       it "maintains the before all block order" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.before(:all) { 15 }
         group.before(:all) { 'A' }
         group.before(:all) { 33.5 }
@@ -119,13 +106,13 @@ module Rspec::Core
       end
 
       it "exposes the after each blocks at after_eachs" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.after(:each) { 'foo' }
         group.should have(1).after_eachs
       end
 
       it "maintains the after each block order" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.after(:each) { 15 }
         group.after(:each) { 'A' }
         group.after(:each) { 33.5 }
@@ -136,13 +123,13 @@ module Rspec::Core
       end
 
       it "exposes the after all blocks at after_alls" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.after(:all) { 'foo' }
         group.should have(1).after_alls
       end
 
       it "maintains the after each block order" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.after(:all) { 15 }
         group.after(:all) { 'A' }
         group.after(:all) { 33.5 }
@@ -153,7 +140,7 @@ module Rspec::Core
       end
 
       it "exposes the around each blocks at after_alls" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.around(:each) { 'foo' }
         group.should have(1).around_eachs
       end
@@ -163,13 +150,13 @@ module Rspec::Core
     describe "adding examples" do
 
       it "allows adding an example using 'it'" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.it("should do something") { }
         group.examples.size.should == 1
       end
 
       it "exposes all examples at examples" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.it("should do something 1") { }
         group.it("should do something 2") { }
         group.it("should do something 3") { }
@@ -177,7 +164,7 @@ module Rspec::Core
       end
 
       it "maintains the example order" do
-        group = ExampleGroup.create
+        group = ExampleGroup.describe
         group.it("should 1") { }
         group.it("should 2") { }
         group.it("should 3") { }
@@ -215,7 +202,7 @@ module Rspec::Core
       let(:reporter) { double("reporter").as_null_object }
 
       it "returns true if all examples pass" do
-        group = ExampleGroup.create('group') do
+        group = ExampleGroup.describe('group') do
           example('ex 1') { 1.should == 1 }
           example('ex 2') { 1.should == 1 }
         end
@@ -224,7 +211,7 @@ module Rspec::Core
       end
 
       it "returns false if any of the examples fail" do
-        group = ExampleGroup.create('group') do
+        group = ExampleGroup.describe('group') do
           example('ex 1') { 1.should == 1 }
           example('ex 2') { 1.should == 2 }
         end
@@ -233,7 +220,7 @@ module Rspec::Core
       end
 
       it "runs all examples, regardless of any of them failing" do
-        group = ExampleGroup.create('group') do
+        group = ExampleGroup.describe('group') do
           example('ex 1') { 1.should == 2 }
           example('ex 2') { 1.should == 1 }
         end

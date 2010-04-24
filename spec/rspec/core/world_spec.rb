@@ -87,14 +87,14 @@ module Rspec::Core
       it "should find nothing if all describes match the exclusion filter" do
         options = { :network_access => true }      
         
-        group1 = ExampleGroup.create(Bar, "find group-1", options) do
+        group1 = ExampleGroup.describe(Bar, "find group-1", options) do
           it("foo") {}
           it("bar") {}
         end
         
         @world.apply_exclusion_filters(group1.examples, :network_access => true).should == []
         
-        group2 = ExampleGroup.create(Bar, "find group-1") do
+        group2 = ExampleGroup.describe(Bar, "find group-1") do
           it("foo", :network_access => true) {}
           it("bar") {}
         end
@@ -104,7 +104,7 @@ module Rspec::Core
       end
       
       it "should find nothing if a regexp matches the exclusion filter" do
-        group = ExampleGroup.create(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
+        group = ExampleGroup.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
           it("foo") {}
           it("bar") {}
         end
@@ -123,7 +123,7 @@ module Rspec::Core
     describe "filtering example groups" do
       
       it "should run matches" do
-        @group1 = ExampleGroup.create(Bar, "find these examples") do
+        @group1 = ExampleGroup.describe(Bar, "find these examples") do
           it('I have no options',       :color => :red, :awesome => true) {}
           it("I also have no options",  :color => :red, :awesome => true) {}
           it("not so awesome",          :color => :red, :awesome => false) {}

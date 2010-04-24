@@ -62,9 +62,9 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#run" do
-    it "should run after(:each) when the example passes" do
+    it "runs after(:each) when the example passes" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.create do
+      group = Rspec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { 1.should == 1 }
       end
@@ -72,9 +72,9 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
       after_run.should be_true, "expected after(:each) to be run"
     end
 
-    it "should run after(:each) when the example fails" do
+    it "runs after(:each) when the example fails" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.create do
+      group = Rspec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { 1.should == 2 }
       end
@@ -82,9 +82,9 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
       after_run.should be_true, "expected after(:each) to be run"
     end
 
-    it "should run after(:each) when the example raises an Exception" do
+    it "runs after(:each) when the example raises an Exception" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.create do
+      group = Rspec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { raise "this error" } 
       end

@@ -99,8 +99,6 @@ module Rspec
       end
 
       def self.describe(*args, &example_group_block)
-        raise(ArgumentError, "No arguments given.  You must a least supply a type or description") if args.empty? 
-        raise(ArgumentError, "You must supply a block when calling describe") if example_group_block.nil?
         @_subclass_count ||= 0
         @_subclass_count += 1
         args << {} unless args.last.is_a?(Hash)

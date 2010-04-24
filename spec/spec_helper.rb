@@ -9,7 +9,7 @@ require 'rspec/mocks'
 begin
   require 'autotest'
 rescue LoadError
-  raise "You must install autotest to use it"
+  raise "Could not load autotest."
 end
 
 require 'autotest/rspec2'
@@ -31,12 +31,6 @@ module Rspec
 end
 
 class Rspec::Core::ExampleGroup
-  def self.create(*args, &example_group_block)
-    args.unshift('example group') if args.empty?
-    describe(*args, &example_group_block || lambda {})
-    Rspec::Core.world.example_groups.pop
-  end
-
   def self.run_all(reporter=nil)
     reporter ||= Rspec::Mocks::Mock.new('reporter').as_null_object
     examples_to_run.replace(examples)
@@ -61,4 +55,11 @@ Rspec.configure do |c|
   c.exclusion_filter = { :ruby => lambda {|version|
     !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
   }}
+  c.before do
+    @real_world = Rspec::Core.world
+    Rspec::Core.instance_variable_set(:@world, Rspec::Core::World.new)
+  end
+  c.after do
+    Rspec::Core.instance_variable_set(:@world, @real_world)
+  end
 end

@@ -13,7 +13,7 @@ end
 describe "an example" do
   context "with no block" do
     it "is listed as pending with 'Not Yet Implemented'" do
-      group = Rspec::Core::ExampleGroup.create('group') do
+      group = Rspec::Core::ExampleGroup.describe('group') do
         it "has no block" 
       end
       example = group.examples.first
@@ -24,7 +24,7 @@ describe "an example" do
 
   context "with no args" do
     it "is listed as pending with 'No reason given'" do
-      group = Rspec::Core::ExampleGroup.create('group') do
+      group = Rspec::Core::ExampleGroup.describe('group') do
         it "does something" do
           pending
         end
@@ -37,7 +37,7 @@ describe "an example" do
 
   context "with a message" do
     it "is listed as pending with the supplied message" do
-      group = Rspec::Core::ExampleGroup.create('group') do
+      group = Rspec::Core::ExampleGroup.describe('group') do
         it "does something" do
           pending("just because")
         end
@@ -51,7 +51,7 @@ describe "an example" do
   context "with a block" do
     context "that fails" do
       it "is listed as pending with the supplied message" do
-        group = Rspec::Core::ExampleGroup.create('group') do
+        group = Rspec::Core::ExampleGroup.describe('group') do
           it "does something" do
             pending("just because") do
               3.should == 4
@@ -66,7 +66,7 @@ describe "an example" do
 
     context "that passes" do
       it "raises a PendingExampleFixedError" do
-        group = Rspec::Core::ExampleGroup.create('group') do
+        group = Rspec::Core::ExampleGroup.describe('group') do
           it "does something" do
             pending("just because") do
               3.should == 3

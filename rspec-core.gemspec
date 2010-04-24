@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-04-17}
+  s.date = %q{2010-04-24}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -105,6 +105,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/configuration.rb",
      "lib/rspec/core/configuration_options.rb",
      "lib/rspec/core/deprecation.rb",
+     "lib/rspec/core/errors.rb",
      "lib/rspec/core/example.rb",
      "lib/rspec/core/example_group.rb",
      "lib/rspec/core/formatters.rb",

@@ -7,25 +7,25 @@ module Rspec::Core
     describe "implicit subject" do
       describe "with a class" do
         it "returns an instance of the class" do
-          ExampleGroup.create(Array).subject.call.should == []
+          ExampleGroup.describe(Array).subject.call.should == []
         end
       end
       
       describe "with a Module" do
         it "returns the Module" do
-          ExampleGroup.create(Enumerable).subject.call.should == Enumerable
+          ExampleGroup.describe(Enumerable).subject.call.should == Enumerable
         end
       end
       
       describe "with a string" do
         it "return the string" do
-          ExampleGroup.create("Foo").subject.call.should == 'Foo'
+          ExampleGroup.describe("Foo").subject.call.should == 'Foo'
         end
       end
 
       describe "with a number" do
         it "returns the number" do
-          ExampleGroup.create(15).subject.call.should == 15
+          ExampleGroup.describe(15).subject.call.should == 15
         end
       end
       
@@ -34,7 +34,7 @@ module Rspec::Core
     describe "explicit subject" do
       describe "defined in a top level group" do
         it "replaces the implicit subject in that group" do
-          group = ExampleGroup.create(Array)
+          group = ExampleGroup.describe(Array)
           group.subject { [1,2,3] }
           group.subject.call.should == [1,2,3]
         end
@@ -42,7 +42,7 @@ module Rspec::Core
 
       describe "defined in a top level group" do
         let(:group) do
-          ExampleGroup.create do
+          ExampleGroup.describe do
             subject{ [4,5,6] }
           end
         end

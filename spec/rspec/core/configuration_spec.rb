@@ -136,7 +136,7 @@ module Rspec::Core
         it "includes the given module into each example group" do
           config.include(InstanceLevelMethods)
           
-          group = ExampleGroup.create(config, 'does like, stuff and junk', :magic_key => :include) { }
+          group = ExampleGroup.describe(config, 'does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
           group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
         end
@@ -147,7 +147,7 @@ module Rspec::Core
         it "includes the given module into each matching example group" do
           config.include(InstanceLevelMethods, :magic_key => :include)
           
-          group = ExampleGroup.create(config, 'does like, stuff and junk', :magic_key => :include) { }
+          group = ExampleGroup.describe(config, 'does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
           group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
         end
@@ -164,7 +164,7 @@ module Rspec::Core
 
       it "should extend the given module into each matching example group" do
         config.extend(ThatThingISentYou, :magic_key => :extend)      
-        group = ExampleGroup.create(config, ThatThingISentYou, :magic_key => :extend) { }
+        group = ExampleGroup.describe(config, ThatThingISentYou, :magic_key => :extend) { }
         group.should respond_to(:that_thing)
       end
 
