@@ -69,7 +69,7 @@ module Rspec
 
         def implicit_subject
           described = describes || description
-          Class === described ? lambda { described.new } : lambda { described }
+          Class === described ? proc { described.new } : proc { described }
         end
       end
     end
