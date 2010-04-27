@@ -119,17 +119,12 @@ module Rspec
         subclass
       end
 
-      def self.before_ancestors
-        @_before_ancestors ||= after_ancestors.reverse
-      end
-
-      def self.after_ancestors
-        @_after_ancestors ||= ancestors.select {|a| a < Rspec::Core::ExampleGroup}
+      def self.ancestors
+        @_ancestors ||= super().select {|a| a < Rspec::Core::ExampleGroup}
       end
 
       class << self
         alias_method :context, :describe
-        alias_method :ancestor_example_groups, :before_ancestors
       end
 
       def self.before_all_ivars
@@ -142,7 +137,7 @@ module Rspec
         end
         configuration.find_hook(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
 
-        before_ancestors.each do |ancestor|
+        ancestors.reverse.each do |ancestor|
           until ancestor.before_alls.empty?
             running_example.instance_eval &ancestor.before_alls.shift
           end
@@ -152,16 +147,16 @@ module Rspec
 
       def self.eval_before_eachs(running_example)
         configuration.find_hook(:before, :each, self).each { |blk| running_example.instance_eval(&blk) }
-        before_ancestors.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
+        ancestors.reverse.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
       end
 
       def self.eval_after_eachs(running_example)
-        after_ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example.instance_eval(&blk) } }
+        ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example.instance_eval(&blk) } }
         configuration.find_hook(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
       end
 
       def self.eval_after_alls(running_example)
-        after_ancestors.each do |ancestor|
+        ancestors.each do |ancestor|
           after_alls = ancestor.after_alls.dup
           until after_alls.empty?
             running_example.instance_eval &after_alls.shift

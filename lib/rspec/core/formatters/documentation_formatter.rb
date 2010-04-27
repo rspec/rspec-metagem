@@ -14,14 +14,14 @@ module Rspec
         def add_example_group(example_group)
           super
 
-          described_example_group_chain.each_with_index do |nested_example_group, i|
+          example_group_chain.each_with_index do |nested_example_group, i|
             unless nested_example_group == @previous_nested_example_groups[i]
               output.puts if i == 0
               output.puts "#{'  ' * i}#{nested_example_group.description}"
             end
           end
 
-          @previous_nested_example_groups = described_example_group_chain
+          @previous_nested_example_groups = example_group_chain
         end
         
         def output_for(example)
@@ -67,8 +67,8 @@ module Rspec
           '  ' * @previous_nested_example_groups.size
         end
 
-        def described_example_group_chain
-          example_group.ancestor_example_groups
+        def example_group_chain
+          example_group.ancestors.reverse
         end
 
       end
