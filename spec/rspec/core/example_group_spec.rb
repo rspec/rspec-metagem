@@ -303,6 +303,19 @@ module Rspec::Core
         SelfObserver.cache.length.should == 1
       end
     end
-  end
 
+    describe "top_level_description" do
+      it "returns the description from the outermost example group" do
+        group = nil
+        ExampleGroup.describe("top") do
+          context "middle" do
+            group = describe "bottom" do
+            end
+          end
+        end
+
+        group.top_level_description.should == "top"
+      end
+    end
+  end
 end

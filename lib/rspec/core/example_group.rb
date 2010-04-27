@@ -4,6 +4,7 @@ module Rspec
       extend  Hooks
       include Subject
       include Let
+      include Pending
 
       attr_accessor :running_example
 
@@ -12,9 +13,21 @@ module Rspec
         Rspec::Core.world.example_groups << klass
       end
 
+      class << self
+        def self.delegate_to_metadata(*names)
+          names.each do |name|
+            define_method name do
+              metadata[:example_group][name]
+            end
+          end
+        end
+
+        delegate_to_metadata :description, :describes, :file_path
+        alias_method :display_name, :description
+      end
+
       def self.extended_modules #:nodoc:
-        ancestors = class << self; ancestors end
-        ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
+        @extended_modules ||= ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
       end
 
       def self.define_example_method(name, extra_options={})
@@ -81,22 +94,6 @@ module Rspec
 
       def self.metadata
         @metadata 
-      end
-
-      def self.display_name
-        metadata[:example_group][:description]
-      end
-
-      def self.description
-        metadata[:example_group][:description]
-      end
-
-      def self.describes
-        metadata[:example_group][:describes]
-      end
-
-      def self.file_path
-        metadata[:example_group][:file_path]
       end
 
       def self.describe(*args, &example_group_block)
@@ -202,6 +199,10 @@ module Rspec
           examples.collect {|e| e.metadata[:line_number]}
       end
 
+      def self.top_level_description
+        ancestors.last.description
+      end
+
       def described_class
         self.class.describes
       end
@@ -209,20 +210,6 @@ module Rspec
       def __reset__
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
         __memoized.clear
-      end
-
-      def pending(message = 'No reason given')
-        running_example.metadata[:pending] = true
-        running_example.metadata[:execution_result][:pending_message] = message
-        if block_given?
-          begin
-            result = yield
-            running_example.metadata[:pending] = false
-          rescue Exception => e
-          end
-          raise Rspec::Core::PendingExampleFixedError.new if result
-        end
-        throw :pending_declared_in_example, message
       end
 
     end

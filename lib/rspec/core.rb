@@ -5,6 +5,7 @@ require 'rspec/core/hooks'
 require 'rspec/core/subject'
 require 'rspec/core/let'
 require 'rspec/core/metadata'
+require 'rspec/core/pending'
 
 require 'rspec/core/around_proxy'
 require 'rspec/core/world'

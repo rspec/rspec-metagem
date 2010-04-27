@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-04-24}
+  s.date = %q{2010-04-26}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -124,6 +124,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/mocking/with_mocha.rb",
      "lib/rspec/core/mocking/with_rr.rb",
      "lib/rspec/core/mocking/with_rspec.rb",
+     "lib/rspec/core/pending.rb",
      "lib/rspec/core/rake_task.rb",
      "lib/rspec/core/ruby_project.rb",
      "lib/rspec/core/runner.rb",
@@ -145,6 +146,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/formatters/helpers_spec.rb",
      "spec/rspec/core/formatters/progress_formatter_spec.rb",
      "spec/rspec/core/kernel_extensions_spec.rb",
+     "spec/rspec/core/let_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
      "spec/rspec/core/pending_example_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
