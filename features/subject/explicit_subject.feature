@@ -34,19 +34,18 @@ Feature: explicit subject
     When I run "rspec nested_subject_spec.rb"
     Then I should see "1 example, 0 failures"
 
-@wip
   Scenario: access subject from before block
     Given a file named "top_level_subject_spec.rb" with:
       """
       describe Array, "with some elements" do
         subject { [] }
-        before { subject += [1,2,3] }
+        before { subject.push(1,2,3) }
         it "should have the prescribed elements" do
           subject.should == [1,2,3]
         end
       end
       """
-    When I run "spec top_level_subject_spec.rb"
+    When I run "rspec top_level_subject_spec.rb"
     Then I should see "1 example, 0 failures"
 
   Scenario: subject using helper method
