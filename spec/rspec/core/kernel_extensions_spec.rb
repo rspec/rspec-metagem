@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Rspec::Core::KernelExtensions do
   
   it "should be included in Object" do
-    Object.included_modules.should include(Rspec::Core::KernelExtensions)
+    Kernel.included_modules.should include(Rspec::Core::KernelExtensions)
   end
   
   it "should add a describe method to Object" do
