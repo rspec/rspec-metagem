@@ -166,7 +166,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ensure_block_order_spec.rb"
-    Then I should see matching "before all\nbefore each\nafter each\n.after all"
+    Then I should see matching /before all\nbefore each\nafter each\n.after all/
   
 @wip
   Scenario: before/after all blocks are run once
