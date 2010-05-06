@@ -1,13 +1,9 @@
 require 'spec_helper'
 
-describe Rspec::Core::KernelExtensions do
-  
-  it "should be included in Object" do
-    Kernel.included_modules.should include(Rspec::Core::KernelExtensions)
+describe "extensions" do
+  describe "debugger" do
+    it "is defined on Kernel" do
+      Kernel.should respond_to(:debugger)
+    end
   end
-  
-  it "should add a describe method to Object" do
-    Object.should respond_to(:describe)
-  end
-
 end
