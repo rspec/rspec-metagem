@@ -168,7 +168,6 @@ Feature: before and after hooks
     When I run "rspec ensure_block_order_spec.rb"
     Then I should see matching /before all\nbefore each\nafter each\n.after all/
   
-@wip
   Scenario: before/after all blocks are run once
     Given a file named "before_and_after_all_spec.rb" with:
       """
@@ -196,8 +195,8 @@ Feature: before and after hooks
       end
       """
     When I run "rspec before_and_after_all_spec.rb:16"
-    Then I should see matching "before all\n.after all"
+    Then I should see matching /before all\n.after all/
 
     When I run "rspec before_and_after_all_spec.rb"
-    Then I should see matching "before all\n..after all"
+    Then I should see matching /before all\n..after all/
   

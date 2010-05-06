@@ -4,7 +4,6 @@ Feature: Nested example groups
   I want to nest examples groups
   So that I can better organize my examples
 
-  @wip
   Scenario: Nested example groups
     Given a file named "nested_example_groups.rb" with:
     """
@@ -22,6 +21,6 @@ Feature: Nested example groups
     end
     """
     When I run "rspec nested_example_groups.rb -fdoc"
-    Then I should see /^Some Object/
-    And I should see /^\s+with some more context/
-    And I should see /^\s+with some other context/
+    Then I should see matching /^Some Object/
+    And I should see matching /^\s+with some more context/
+    And I should see matching /^\s+with some other context/
