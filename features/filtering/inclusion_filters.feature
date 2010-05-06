@@ -67,7 +67,8 @@ Feature: inclusion feature
       end
       """
     When I run "rspec spec/sample_spec.rb --format doc"
-    Then I should see "group 1 example 1"
+    Then I should see "No examples were matched by {:focus=>true}, running all"
+    And  I should see "group 1 example 1"
     And  I should see "group 1 example 2"
     And  I should see "group 2 example 1"
 

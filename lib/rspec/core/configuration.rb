@@ -40,6 +40,11 @@ module Rspec
                                         /lib\/rspec\/(core|expectations|matchers|mocks)/]
         }
       end
+
+      def clear_filters
+        filter = nil
+        exclusion_filter = nil
+      end
       
       def cleaned_from_backtrace?(line)
         @options[:backtrace_clean_patterns].any? { |regex| line =~ regex }
