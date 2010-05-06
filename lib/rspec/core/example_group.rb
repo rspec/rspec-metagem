@@ -10,7 +10,7 @@ module Rspec
 
       def self.inherited(klass)
         Rspec::Core::Runner.autorun
-        Rspec::Core.world.example_groups << klass
+        Rspec::Core.world.example_groups << klass if klass.superclass == ExampleGroup
       end
 
       class << self
@@ -68,7 +68,14 @@ module Rspec
       end
 
       def self.examples_to_run
-        @_examples_to_run ||= []
+        examples = self.examples.dup
+        examples = world.apply_exclusion_filters(examples, world.exclusion_filter) if world.exclusion_filter
+        examples = world.apply_inclusion_filters(examples, world.inclusion_filter) if world.inclusion_filter
+        examples.uniq
+      end
+
+      def self.world
+        Rspec::Core.world
       end
 
       def self.superclass_metadata
@@ -77,6 +84,10 @@ module Rspec
 
       def self.configuration
         @configuration
+      end
+
+      def self.descendents
+        [self] + children.collect {|c| c.descendents}.flatten
       end
 
       def self.set_it_up(*args)
@@ -103,10 +114,18 @@ module Rspec
         args.last.update(:example_group_block => example_group_block)
         args.last.update(:caller => caller)
         args.unshift Rspec.configuration unless args.first.is_a?(Rspec::Core::Configuration)
-        const_set(
+
+        # TODO 2010-05-05: Because we don't know if const_set is thread-safe
+        child = const_set(
           "Nested_#{@_subclass_count}",
           subclass(self, args, &example_group_block)
         )
+        children << child
+        child
+      end
+
+      def self.children
+        @children ||= []
       end
 
       def self.subclass(parent, args, &example_group_block)
@@ -168,7 +187,11 @@ module Rspec
         reporter.add_example_group(self)
         begin
           eval_before_alls(example_group_instance)
-          run_examples(example_group_instance, reporter)
+          examples_result = run_examples(example_group_instance, reporter)
+          child_results = children.map do |child|
+            child.run(reporter)
+          end
+          examples_result && (children.empty? ? true : child_results)
         ensure
           eval_after_alls(example_group_instance)
         end
@@ -196,7 +219,8 @@ module Rspec
 
       def self.declaration_line_numbers
         [metadata[:example_group][:line_number]] +
-          examples.collect {|e| e.metadata[:line_number]}
+          examples.collect {|e| e.metadata[:line_number]} +
+          children.collect {|c| c.declaration_line_numbers}.flatten
       end
 
       def self.top_level_description

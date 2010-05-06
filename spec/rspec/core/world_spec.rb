@@ -117,26 +117,8 @@ module Rspec::Core
         @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == group.examples
         @world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == group.examples
       end
-      
     end
     
-    describe "filtering example groups" do
-      
-      it "should run matches" do
-        @group1 = ExampleGroup.describe(Bar, "find these examples") do
-          it('I have no options',       :color => :red, :awesome => true) {}
-          it("I also have no options",  :color => :red, :awesome => true) {}
-          it("not so awesome",          :color => :red, :awesome => false) {}
-        end
-        Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
-        Rspec::Core.world.stub(:filter).and_return({ :color => :red })
-        Rspec::Core.world.stub(:example_groups).and_return([@group1])
-        filtered_example_groups = @world.filtered_example_groups
-        filtered_example_groups.should == [@group1]
-        @group1.examples_to_run.should == @group1.examples[0..1]      
-      end
-      
-    end
 
     describe "preceding_declaration_line" do
       before(:each) do

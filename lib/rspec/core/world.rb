@@ -21,19 +21,20 @@ module Rspec
       end
 
       def example_groups_to_run
-        @example_groups_to_run ||= begin
-          if inclusion_filter || exclusion_filter
-            if Rspec.configuration.run_all_when_everything_filtered? && filtered_example_groups.empty?
-              Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
-              all_example_groups
-            else
-              Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
-              filtered_example_groups
-            end
-          else
-            all_example_groups
-          end      
-        end
+        all_example_groups
+        # @example_groups_to_run ||= begin
+          # if inclusion_filter || exclusion_filter
+            # if Rspec.configuration.run_all_when_everything_filtered? && filtered_example_groups.empty?
+              # Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+              # all_example_groups
+            # else
+              # Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+              # filtered_example_groups
+            # end
+          # else
+            # all_example_groups
+          # end      
+        # end
       end
 
       def all_example_groups
@@ -41,18 +42,7 @@ module Rspec
       end
 
       def total_examples_to_run
-        @total_examples_to_run ||= example_groups_to_run.inject(0) { |sum, g| sum += g.examples_to_run.size }
-      end
-
-      def filtered_example_groups
-        @filtered_example_groups ||= example_groups.select do |example_group|
-          examples = example_group.examples
-          examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
-          examples = apply_inclusion_filters(examples, inclusion_filter) if inclusion_filter
-          examples.uniq!
-          example_group.examples_to_run.replace(examples)
-          !examples.empty?
-        end
+        @total_examples_to_run ||= all_example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.examples_to_run.size }
       end
 
       def apply_inclusion_filters(examples, conditions={})

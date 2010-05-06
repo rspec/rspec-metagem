@@ -14,6 +14,105 @@ module Rspec::Core
 
   describe ExampleGroup do
 
+    describe "top level group" do
+      it "runs its children" do
+        examples_run = []
+        parent = ExampleGroup.describe("parent")
+        child = parent.describe("child") do
+          it "does something" do
+            examples_run << running_example
+          end
+        end
+
+        child.examples_to_run.replace(child.examples)
+        parent.run_all
+        examples_run.should have(1).example
+      end
+
+      describe "descendents" do
+        it "returns self + all descendents" do
+          group = ExampleGroup.describe("parent") do
+            describe("child") do
+              describe("grandchild 1") {}
+              describe("grandchild 2") {}
+            end
+          end
+          group.descendents.size.should == 4
+        end
+      end
+    end
+
+    describe "child" do
+      it "is known by parent" do
+        parent = ExampleGroup.describe
+        child = parent.describe
+        parent.children.should == [child]
+      end
+
+      it "is not registered in world" do
+        parent = ExampleGroup.describe
+        child = parent.describe
+        Rspec::Core.world.example_groups.should == [parent]
+      end
+    end
+
+    describe "filtering" do
+      it "includes all examples in an explicitly included group" do
+        Rspec::Core.world.stub(:inclusion_filter).and_return({ :awesome => true })
+        group = ExampleGroup.describe("does something", :awesome => true)
+        examples = [
+          group.example("first"),
+          group.example("second")
+        ]
+        group.examples_to_run.should == examples
+      end
+
+      it "includes explicitly included examples" do
+        Rspec::Core.world.stub(:inclusion_filter).and_return({ :awesome => true })
+        group = ExampleGroup.describe
+        example = group.example("does something", :awesome => true)
+        group.example("don't run me")
+        group.examples_to_run.should == [example]
+      end
+
+      it "excludes all examples in an excluded group" do
+        Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
+        group = ExampleGroup.describe("does something", :awesome => false)
+        examples = [
+          group.example("first"),
+          group.example("second")
+        ]
+        group.examples_to_run.should == []
+      end
+
+      it "filters out excluded examples" do
+        Rspec::Core.world.stub(:exclusion_filter).and_return({ :awesome => false })
+        group = ExampleGroup.describe("does something")
+        examples = [
+          group.example("first", :awesome => false),
+          group.example("second")
+        ]
+        group.examples_to_run.should == [examples[1]]
+      end
+
+      context "with no filters" do
+        it "returns all" do
+          group = ExampleGroup.describe
+          example = group.example("does something")
+          group.examples_to_run.should == [example]
+        end
+      end
+
+      context "with no examples or groups that match filters" do
+        it "returns none" do
+          Rspec::Core.world.stub(:inclusion_filter).and_return({ :awesome => false })
+          group = ExampleGroup.describe
+          example = group.example("does something")
+          group.examples_to_run.should == []
+        end
+      end
+    end
+
     describe '#describes' do
 
       context "with a constant as the first parameter" do
@@ -317,5 +416,6 @@ module Rspec::Core
         group.top_level_description.should == "top"
       end
     end
+
   end
 end
