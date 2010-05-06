@@ -71,4 +71,5 @@ Feature: inclusion feature
     And  I should see "group 1 example 1"
     And  I should see "group 1 example 2"
     And  I should see "group 2 example 1"
+    And  I should see "3 examples, 0 failures"
 

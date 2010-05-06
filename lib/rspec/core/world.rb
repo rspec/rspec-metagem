@@ -21,10 +21,10 @@ module Rspec
       end
 
       def example_groups_to_run
-        if inclusion_filter || exclusion_filter
+        if inclusion_filter
           if Rspec.configuration.run_all_when_everything_filtered? && total_examples_to_run == 0
             Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
-            Rspec.configuration.clear_filters
+            Rspec.configuration.clear_inclusion_filter
           else
             Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
           end
@@ -33,7 +33,7 @@ module Rspec
       end
 
       def total_examples_to_run
-        @total_examples_to_run ||= example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.examples_to_run.size }
+        example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.examples_to_run.size }
       end
 
       def apply_inclusion_filters(examples, conditions={})

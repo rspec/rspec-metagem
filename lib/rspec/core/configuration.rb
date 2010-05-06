@@ -41,9 +41,8 @@ module Rspec
         }
       end
 
-      def clear_filters
-        filter = nil
-        exclusion_filter = nil
+      def clear_inclusion_filter
+        self.filter = nil
       end
       
       def cleaned_from_backtrace?(line)

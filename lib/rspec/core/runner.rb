@@ -24,7 +24,7 @@ module Rspec
         configure(args)
         
         reporter.report(example_count) do |reporter|
-          example_groups.run_all(reporter)
+          example_groups.run_examples(reporter)
         end
         
         example_groups.success?
@@ -47,7 +47,7 @@ module Rspec
       end
 
       module ExampleGroups
-        def run_all(reporter)
+        def run_examples(reporter)
           @success = self.inject(true) {|success, group| success &= group.run(reporter)}
         end
 
