@@ -28,7 +28,6 @@ Feature: line number appended to file path
       end
       """
 
-@wip
   Scenario: nested groups - outer group on declaration line
     When I run "rspec example_spec.rb:1 --format doc"
     Then I should see "3 examples, 0 failures"
@@ -36,7 +35,6 @@ Feature: line number appended to file path
     And I should see "first example in outer group"
     And I should see "example in nested group"
 
-@wip
   Scenario: nested groups - outer group inside block before example
     When I run "rspec example_spec.rb:2 --format doc"
     Then I should see "3 examples, 0 failures"

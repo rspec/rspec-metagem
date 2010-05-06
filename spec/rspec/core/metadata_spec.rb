@@ -76,6 +76,18 @@ module Rspec
         end
       end
 
+      describe "parent example group" do
+        it "nests the parent's example group metadata" do
+          parent = Metadata.new
+          parent.process(Object, 'parent')
+          
+          child = Metadata.new(parent)
+          child.process()
+
+          child[:example_group][:example_group].should == parent[:example_group]
+        end
+      end
+
       describe "file path" do
         it "finds the first spec file in the caller array" do
           m = Metadata.new
@@ -168,7 +180,11 @@ module Rspec
       end
 
       describe "apply_condition" do
-        let(:group_metadata) { Metadata.new.process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
+
+
+        let(:parent_group_metadata) { Metadata.new.process('parent group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
+        let(:parent_group_line_number) { __LINE__ -1 }
+        let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:group_line_number) { __LINE__ -1 }
         let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:example_line_number) { __LINE__ -1 }
@@ -177,29 +193,34 @@ module Rspec
         let(:world) { Rspec::Core.world }
 
         it "matches the group when the line_number is the example group line number" do
-          world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
+          world.should_receive(:preceding_declaration_line).and_return(group_line_number)
           # this call doesn't really make sense since apply_condition is only called 
           # for example metadata not group metadata
           group_metadata.apply_condition(:line_number, group_line_number).should be_true
         end
 
+        it "matches the example when the line_number is the grandparent example group line number" do
+          world.should_receive(:preceding_declaration_line).and_return(parent_group_line_number)
+          example_metadata.apply_condition(:line_number, parent_group_line_number).should be_true
+        end
+
         it "matches the example when the line_number is the parent example group line number" do
-          world.should_receive(:preceding_example_or_group_line).and_return(group_line_number)
+          world.should_receive(:preceding_declaration_line).and_return(group_line_number)
           example_metadata.apply_condition(:line_number, group_line_number).should be_true
         end
 
         it "matches the example when the line_number is the example line number" do
-          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
+          world.should_receive(:preceding_declaration_line).and_return(example_line_number)
           example_metadata.apply_condition(:line_number, example_line_number).should be_true
         end
         
         it "matches when the line number is between this example and the next" do
-          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number)
+          world.should_receive(:preceding_declaration_line).and_return(example_line_number)
           example_metadata.apply_condition(:line_number, example_line_number + 1).should be_true
         end
         
         it "does not match when the line number matches the next example" do
-          world.should_receive(:preceding_example_or_group_line).and_return(example_line_number + 2)
+          world.should_receive(:preceding_declaration_line).and_return(example_line_number + 2)
           example_metadata.apply_condition(:line_number, example_line_number + 2).should be_false
         end
         

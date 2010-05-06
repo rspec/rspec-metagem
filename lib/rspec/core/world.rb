@@ -65,7 +65,7 @@ module Rspec
         examples.reject &all_apply?(conditions)
       end
 
-      def preceding_example_or_group_line(filter_line) 
+      def preceding_declaration_line(filter_line) 
         declaration_line_numbers.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
         end

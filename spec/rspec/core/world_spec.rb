@@ -138,7 +138,7 @@ module Rspec::Core
       
     end
 
-    describe "preceding_example_or_group_line" do
+    describe "preceding_declaration_line" do
       before(:each) do
         @group1_line = 10
         @group2_line = 20
@@ -157,23 +157,23 @@ module Rspec::Core
       end
       
       it "should return nil if no example or group precedes the line" do 
-        @world.preceding_example_or_group_line(@group1_line-1).should == nil
+        @world.preceding_declaration_line(@group1_line-1).should == nil
       end
       
       it "should return the argument line number if a group starts on that line" do
-        @world.preceding_example_or_group_line(@group1_line).should == @group1_line
+        @world.preceding_declaration_line(@group1_line).should == @group1_line
       end
       
       it "should return the argument line number if an example starts on that line" do
-        @world.preceding_example_or_group_line(@group2_example1_line).should == @group2_example1_line
+        @world.preceding_declaration_line(@group2_example1_line).should == @group2_example1_line
       end
       
       it "should return line number of a group that immediately precedes the argument line" do
-        @world.preceding_example_or_group_line(@group2_line+1).should == @group2_line
+        @world.preceding_declaration_line(@group2_line+1).should == @group2_line
       end
       
       it "should return line number of an example that immediately precedes the argument line" do
-        @world.preceding_example_or_group_line(@group2_example1_line+1).should == @group2_example1_line        
+        @world.preceding_declaration_line(@group2_example1_line+1).should == @group2_example1_line        
       end
       
     end

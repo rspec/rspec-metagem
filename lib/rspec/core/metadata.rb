@@ -4,8 +4,12 @@ module Rspec
 
       def initialize(superclass_metadata=nil)
         @superclass_metadata = superclass_metadata
-        update(@superclass_metadata) if @superclass_metadata
-        store(:example_group, {})
+        if @superclass_metadata
+          update(@superclass_metadata)
+          example_group = {:example_group => @superclass_metadata[:example_group]}
+        end
+
+        store(:example_group, example_group || {})
         store(:behaviour, self[:example_group])
         yield self if block_given?
       end
@@ -83,6 +87,15 @@ EOM
         end
       end
 
+      def relevant_line_numbers(metadata)
+        line_numbers = [metadata[:line_number]]
+        if metadata[:example_group]
+          line_numbers + relevant_line_numbers(metadata[:example_group])
+        else
+          line_numbers
+        end
+      end
+
       def apply_condition(filter_on, filter, metadata=nil)
         metadata ||= self
         case filter
@@ -94,8 +107,7 @@ EOM
           filter.call(metadata[filter_on]) rescue false
         when Fixnum
           if filter_on == :line_number
-            [metadata[:line_number], metadata[:example_group][:line_number]].
-              include?(world.preceding_example_or_group_line(filter))
+            relevant_line_numbers(metadata).include?(world.preceding_declaration_line(filter))
           else
             metadata[filter_on] == filter
           end
