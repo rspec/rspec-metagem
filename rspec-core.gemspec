@@ -84,6 +84,7 @@ Gem::Specification.new do |s|
      "features/configuration/options_file.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
+     "features/filtering/inclusion_filters.feature",
      "features/formatters/custom_formatter.feature",
      "features/hooks/around_hook.feature",
      "features/hooks/before_and_after_hooks.feature",
