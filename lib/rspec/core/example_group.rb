@@ -148,6 +148,7 @@ module Rspec
       end
 
       def self.eval_before_alls(running_example)
+        return if examples_to_run.empty?
         if superclass.respond_to?(:before_all_ivars)
           superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         end
@@ -172,8 +173,9 @@ module Rspec
       end
 
       def self.eval_after_alls(running_example)
+        return if examples_to_run.empty?
         ancestors.each do |ancestor|
-          after_alls = ancestor.after_alls.dup
+          after_alls = ancestor.after_alls
           until after_alls.empty?
             running_example.instance_eval &after_alls.shift
           end
