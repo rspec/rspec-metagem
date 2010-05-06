@@ -168,35 +168,42 @@ Feature: before and after hooks
     When I run "rspec ensure_block_order_spec.rb"
     Then I should see matching /before all\nbefore each\nafter each\n.after all/
   
+@wip
   Scenario: before/after all blocks are run once
     Given a file named "before_and_after_all_spec.rb" with:
       """
       describe "before and after callbacks" do
         before(:all) do
-          puts "before all"
-        end
-  
-        after(:all) do
-          puts "after all"
+          puts "outer before all"
         end
   
         example "in outer group" do
-  
         end
 
         describe "nested group" do
+          before(:all) do
+            puts "inner before all"
+          end
           
           example "in nested group" do
-
           end
 
+          after(:all) do
+            puts "inner after all"
+          end
+        end
+
+        after(:all) do
+          puts "outer after all"
         end
 
       end
       """
-    When I run "rspec before_and_after_all_spec.rb:16"
-    Then I should see matching /before all\n.after all/
-
     When I run "rspec before_and_after_all_spec.rb"
-    Then I should see matching /before all\n..after all/
-  
+    Then I should see matching /outer before all\n.inner before all\n.inner after all\nouter after all\n\n\n\nFinished/
+
+    When I run "rspec before_and_after_all_spec.rb:14"
+    Then I should see matching /outer before all\ninner before all\n.inner after all\nouter after all\n\n\n\nFinished/
+
+    When I run "rspec before_and_after_all_spec.rb:6"
+    Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
