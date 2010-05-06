@@ -20,9 +20,22 @@ module Rspec
         configuration.formatter
       end
 
+      def inclusion_filter
+        Rspec.configuration.filter
+      end
+
       def run(args = [])
         configure(args)
-        
+
+        if inclusion_filter
+          if Rspec.configuration.run_all_when_everything_filtered? && Rspec::Core.world.total_examples_to_run == 0
+            Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+            Rspec.configuration.clear_inclusion_filter
+          else
+            Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+          end
+        end      
+
         reporter.report(example_count) do |reporter|
           example_groups.run_examples(reporter)
         end

@@ -197,7 +197,6 @@ module Rspec
         end
       end
 
-      # Runs all examples, returning true only if all of them pass
       def self.run_examples(instance, reporter)
         examples_to_run.map do |example|
           begin

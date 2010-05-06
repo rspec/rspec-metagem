@@ -44,7 +44,6 @@ Feature: inclusion feature
     And  I should see "group 1 example 2"
     And  I should not see "group 2 example 1"
 
-@wip
   Scenario: no examples match filter
     Given a file named "spec/sample_spec.rb" with:
       """
