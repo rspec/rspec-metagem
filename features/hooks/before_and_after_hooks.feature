@@ -199,10 +199,13 @@ Feature: before and after hooks
       end
       """
     When I run "rspec before_and_after_all_spec.rb"
+    Then I should see "2 examples, 0 failures"
     Then I should see matching /outer before all\n.inner before all\n.inner after all\nouter after all\n\n\n\nFinished/
 
     When I run "rspec before_and_after_all_spec.rb:14"
+    Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\ninner before all\n.inner after all\nouter after all\n\n\n\nFinished/
 
     When I run "rspec before_and_after_all_spec.rb:6"
+    Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
