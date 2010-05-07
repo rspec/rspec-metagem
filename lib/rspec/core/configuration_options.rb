@@ -23,6 +23,7 @@ module Rspec
 
       def parse_command_line_options
         @options = Parser.parse!(@args)
+        @args << 'spec' if @args.empty? and FileTest.directory? 'spec'
         @options[:files_or_directories_to_run] = @args
         @options
       end

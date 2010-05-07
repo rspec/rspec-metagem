@@ -9,11 +9,17 @@ module Rspec
 
       def share_as(name, &block)
         if Object.const_defined?(name)
-          raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
+          mod = Object.const_get(name)
+          raise_name_error unless mod.created_from_caller(caller)
         end
         
         mod = Module.new do
           @shared_block = block
+          @caller_line = caller.last
+
+          def self.created_from_caller(other_caller)
+            @caller_line == other_caller.last
+          end
 
           def self.included(kls)
             kls.module_eval(&@shared_block)
@@ -27,6 +33,10 @@ module Rspec
       alias :shared_examples_for :share_examples_for
 
     private
+
+      def raise_name_error
+        raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
+      end
 
       def ensure_shared_example_group_name_not_taken(name)
         if Rspec::Core.world.shared_example_groups.has_key?(name)
