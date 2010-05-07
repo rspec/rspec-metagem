@@ -166,72 +166,76 @@ module Rspec::Core
 
     describe "before, after, and around hooks" do
 
-      it "exposes the before each blocks at before_eachs" do
+      it "runs the before alls in order" do
         group = ExampleGroup.describe
-        group.before(:each) { 'foo' }
-        group.should have(1).before_eachs
+        order = []
+        group.before(:all) { order << 1 }
+        group.before(:all) { order << 2 }
+        group.before(:all) { order << 3 }
+        group.example("example") {}
+
+        group.run_all
+
+        order.should == [1,2,3]
       end
 
-      it "maintains the before each block order" do
+      it "runs the before eachs in order" do
         group = ExampleGroup.describe
-        group.before(:each) { 15 }
-        group.before(:each) { 'A' }
-        group.before(:each) { 33.5 }
+        order = []
+        group.before(:each) { order << 1 }
+        group.before(:each) { order << 2 }
+        group.before(:each) { order << 3 }
+        group.example("example") {}
 
-        group.before_eachs[0].call.should == 15
-        group.before_eachs[1].call.should == 'A'
-        group.before_eachs[2].call.should == 33.5
+        group.run_all
+
+        order.should == [1,2,3]
       end
 
-      it "exposes the before all blocks at before_alls" do
+      it "runs the after eachs in reverse order" do
         group = ExampleGroup.describe
-        group.before(:all) { 'foo' }
-        group.should have(1).before_alls
+        order = []
+        group.after(:each) { order << 1 }
+        group.after(:each) { order << 2 }
+        group.after(:each) { order << 3 }
+        group.example("example") {}
+
+        group.run_all
+
+        order.should == [3,2,1]
       end
 
-      it "maintains the before all block order" do
+      it "runs the after alls in reverse order" do
         group = ExampleGroup.describe
-        group.before(:all) { 15 }
-        group.before(:all) { 'A' }
-        group.before(:all) { 33.5 }
+        order = []
+        group.after(:all) { order << 1 }
+        group.after(:all) { order << 2 }
+        group.after(:all) { order << 3 }
+        group.example("example") {}
 
-        group.before_alls[0].call.should == 15
-        group.before_alls[1].call.should == 'A'
-        group.before_alls[2].call.should == 33.5
+        group.run_all
+
+        order.should == [3,2,1]
       end
 
-      it "exposes the after each blocks at after_eachs" do
+      it "runs before all, before each, example, after each, after all, in that order" do
         group = ExampleGroup.describe
-        group.after(:each) { 'foo' }
-        group.should have(1).after_eachs
-      end
+        order = []
+        group.after(:all)   { order << :after_all   }
+        group.after(:each)  { order << :after_each  }
+        group.before(:each) { order << :before_each }
+        group.before(:all)  { order << :before_all  }
+        group.example("example") { order << :example }
 
-      it "maintains the after each block order" do
-        group = ExampleGroup.describe
-        group.after(:each) { 15 }
-        group.after(:each) { 'A' }
-        group.after(:each) { 33.5 }
+        group.run_all
 
-        group.after_eachs[0].call.should == 15
-        group.after_eachs[1].call.should == 'A'
-        group.after_eachs[2].call.should == 33.5
-      end
-
-      it "exposes the after all blocks at after_alls" do
-        group = ExampleGroup.describe
-        group.after(:all) { 'foo' }
-        group.should have(1).after_alls
-      end
-
-      it "maintains the after each block order" do
-        group = ExampleGroup.describe
-        group.after(:all) { 15 }
-        group.after(:all) { 'A' }
-        group.after(:all) { 33.5 }
-
-        group.after_alls[0].call.should == 15
-        group.after_alls[1].call.should == 'A'
-        group.after_alls[2].call.should == 33.5
+        order.should == [
+          :before_all,
+          :before_each,
+          :example,
+          :after_each,
+          :after_all
+        ]
       end
 
       it "exposes the around each blocks at after_alls" do
@@ -255,7 +259,7 @@ module Rspec::Core
         group.it("should do something 1") { }
         group.it("should do something 2") { }
         group.it("should do something 3") { }
-        group.examples.size.should == 3
+        group.should have(3).examples
       end
 
       it "maintains the example order" do

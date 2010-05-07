@@ -67,7 +67,7 @@ module Rspec
         @_examples ||= []
       end
 
-      def self.filtered_examples
+      def self.filtered_examples(fresh = false)
         examples = self.examples.dup
         examples = world.apply_exclusion_filters(examples, world.exclusion_filter) if world.exclusion_filter
         examples = world.apply_inclusion_filters(examples, world.inclusion_filter) if world.inclusion_filter
@@ -168,16 +168,15 @@ module Rspec
       end
 
       def self.eval_after_eachs(running_example)
-        ancestors.each { |ancestor| ancestor.after_eachs.each { |blk| running_example.instance_eval(&blk) } }
+        ancestors.each { |ancestor| ancestor.after_eachs.reverse.each { |blk| running_example.instance_eval(&blk) } }
         configuration.find_hook(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
       end
 
       def self.eval_after_alls(running_example)
         return if filtered_examples.empty?
         ancestors.each do |ancestor|
-          after_alls = ancestor.after_alls
-          until after_alls.empty?
-            running_example.instance_eval &after_alls.shift
+          until ancestor.after_alls.empty?
+            running_example.instance_eval &ancestor.after_alls.pop
           end
         end
         configuration.find_hook(:after, :all, self).each { |blk| running_example.instance_eval(&blk) }
