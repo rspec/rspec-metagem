@@ -32,9 +32,7 @@ end
 
 class Rspec::Core::ExampleGroup
   def self.run_all(reporter=nil)
-    reporter ||= Rspec::Mocks::Mock.new('reporter').as_null_object
-    examples_to_run.replace(examples)
-    run(reporter)
+    run(reporter || Rspec::Mocks::Mock.new('reporter').as_null_object)
   end
 end
 
@@ -47,11 +45,11 @@ Rspec.configure do |c|
   c.exclusion_filter = { :ruby => lambda {|version|
     !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
   }}
-  c.before do
+  c.before(:each) do
     @real_world = Rspec::Core.world
     Rspec::Core.instance_variable_set(:@world, Rspec::Core::World.new)
   end
-  c.after do
+  c.after(:each) do
     Rspec::Core.instance_variable_set(:@world, @real_world)
   end
 end

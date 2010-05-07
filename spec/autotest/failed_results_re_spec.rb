@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "failed_results_re" do
+describe "failed_results_re for autotest" do
   it "should match a failure" do
     re = Autotest::Rspec2.new.failed_results_re
     re =~ "1)\n'this example' FAILED\nreason\n/path.rb:37:\n\n"

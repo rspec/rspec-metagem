@@ -23,7 +23,7 @@ module Rspec::Core
     
     describe "applying inclusion filters" do
     
-      before(:all) do
+      before(:each) do
         options_1 = { :foo => 1, :color => 'blue', :feature => 'reporting' }
         options_2 = { :pending => true, :feature => 'reporting'  }
         options_3 = { :array => [1,2,3,4], :color => 'blue' }      
