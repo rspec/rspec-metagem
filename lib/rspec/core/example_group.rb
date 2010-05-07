@@ -67,7 +67,7 @@ module Rspec
         @_examples ||= []
       end
 
-      def self.examples_to_run
+      def self.filtered_examples
         examples = self.examples.dup
         examples = world.apply_exclusion_filters(examples, world.exclusion_filter) if world.exclusion_filter
         examples = world.apply_inclusion_filters(examples, world.inclusion_filter) if world.inclusion_filter
@@ -84,10 +84,6 @@ module Rspec
 
       def self.configuration
         @configuration
-      end
-
-      def self.descendents
-        [self] + children.collect {|c| c.descendents}.flatten
       end
 
       def self.set_it_up(*args)
@@ -128,6 +124,10 @@ module Rspec
         @children ||= []
       end
 
+      def self.descendents
+        [self] + children.collect {|c| c.descendents}.flatten
+      end
+
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
         subclass.set_it_up(*args) 
@@ -148,7 +148,7 @@ module Rspec
       end
 
       def self.eval_before_alls(running_example)
-        return if examples_to_run.empty?
+        return if filtered_examples.empty?
         if superclass.respond_to?(:before_all_ivars)
           superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         end
@@ -173,7 +173,7 @@ module Rspec
       end
 
       def self.eval_after_alls(running_example)
-        return if examples_to_run.empty?
+        return if filtered_examples.empty?
         ancestors.each do |ancestor|
           after_alls = ancestor.after_alls
           until after_alls.empty?
@@ -198,7 +198,7 @@ module Rspec
       end
 
       def self.run_examples(instance, reporter)
-        examples_to_run.map do |example|
+        filtered_examples.map do |example|
           begin
             example.run(instance, reporter)
           ensure

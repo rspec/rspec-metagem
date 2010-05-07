@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-05-06}
+  s.date = %q{2010-05-07}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -143,8 +143,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
-     "spec/rspec/core/formatters/base_text_formatter_spec.rb",
-     "spec/rspec/core/formatters/documentation_formatter_spec.rb",
      "spec/rspec/core/formatters/helpers_spec.rb",
      "spec/rspec/core/formatters/progress_formatter_spec.rb",
      "spec/rspec/core/kernel_extensions_spec.rb",
@@ -191,8 +189,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
-     "spec/rspec/core/formatters/base_text_formatter_spec.rb",
-     "spec/rspec/core/formatters/documentation_formatter_spec.rb",
      "spec/rspec/core/formatters/helpers_spec.rb",
      "spec/rspec/core/formatters/progress_formatter_spec.rb",
      "spec/rspec/core/kernel_extensions_spec.rb",

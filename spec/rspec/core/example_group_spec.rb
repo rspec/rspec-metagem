@@ -24,7 +24,7 @@ module Rspec::Core
           end
         end
 
-        child.examples_to_run.replace(child.examples)
+        child.filtered_examples.replace(child.examples)
         parent.run_all
         examples_run.should have(1).example
       end
@@ -64,7 +64,7 @@ module Rspec::Core
           group.example("first"),
           group.example("second")
         ]
-        group.examples_to_run.should == examples
+        group.filtered_examples.should == examples
       end
 
       it "includes explicitly included examples" do
@@ -72,7 +72,7 @@ module Rspec::Core
         group = ExampleGroup.describe
         example = group.example("does something", :awesome => true)
         group.example("don't run me")
-        group.examples_to_run.should == [example]
+        group.filtered_examples.should == [example]
       end
 
       it "excludes all examples in an excluded group" do
@@ -82,7 +82,7 @@ module Rspec::Core
           group.example("first"),
           group.example("second")
         ]
-        group.examples_to_run.should == []
+        group.filtered_examples.should == []
       end
 
       it "filters out excluded examples" do
@@ -92,14 +92,14 @@ module Rspec::Core
           group.example("first", :awesome => false),
           group.example("second")
         ]
-        group.examples_to_run.should == [examples[1]]
+        group.filtered_examples.should == [examples[1]]
       end
 
       context "with no filters" do
         it "returns all" do
           group = ExampleGroup.describe
           example = group.example("does something")
-          group.examples_to_run.should == [example]
+          group.filtered_examples.should == [example]
         end
       end
 
@@ -108,7 +108,7 @@ module Rspec::Core
           Rspec::Core.world.stub(:inclusion_filter).and_return({ :awesome => false })
           group = ExampleGroup.describe
           example = group.example("does something")
-          group.examples_to_run.should == []
+          group.filtered_examples.should == []
         end
       end
     end
@@ -301,7 +301,7 @@ module Rspec::Core
           example('ex 1') { 1.should == 1 }
           example('ex 2') { 1.should == 1 }
         end
-        group.stub(:examples_to_run) { group.examples }
+        group.stub(:filtered_examples) { group.examples }
         group.run(reporter).should be_true
       end
 
@@ -310,7 +310,7 @@ module Rspec::Core
           example('ex 1') { 1.should == 1 }
           example('ex 2') { 1.should == 2 }
         end
-        group.stub(:examples_to_run) { group.examples }
+        group.stub(:filtered_examples) { group.examples }
         group.run(reporter).should be_false
       end
 
@@ -319,8 +319,8 @@ module Rspec::Core
           example('ex 1') { 1.should == 2 }
           example('ex 2') { 1.should == 1 }
         end
-        group.stub(:examples_to_run) { group.examples }
-        group.examples_to_run.each do |example|
+        group.stub(:filtered_examples) { group.examples }
+        group.filtered_examples.each do |example|
           example.should_receive(:run)
         end
         group.run(reporter).should be_false

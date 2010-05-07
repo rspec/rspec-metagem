@@ -26,15 +26,7 @@ module Rspec
 
       def run(args = [])
         configure(args)
-
-        if inclusion_filter
-          if Rspec.configuration.run_all_when_everything_filtered? && Rspec::Core.world.total_examples_to_run == 0
-            Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
-            Rspec.configuration.clear_inclusion_filter
-          else
-            Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
-          end
-        end      
+        announce_inclusion_filter
 
         reporter.report(example_count) do |reporter|
           example_groups.run_examples(reporter)
@@ -45,6 +37,17 @@ module Rspec
       
     private
 
+      def announce_inclusion_filter
+        if inclusion_filter
+          if Rspec.configuration.run_all_when_everything_filtered? && Rspec::Core.world.example_count == 0
+            Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+            Rspec.configuration.clear_inclusion_filter
+          else
+            Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+          end
+        end      
+      end
+
       def configure(args)
         Rspec::Core::ConfigurationOptions.new(args).apply_to(configuration)
         configuration.require_files_to_run
@@ -52,11 +55,11 @@ module Rspec
       end
 
       def example_count
-        Rspec::Core.world.total_examples_to_run
+        Rspec::Core.world.example_count
       end
 
       def example_groups
-        Rspec::Core.world.example_groups_to_run.extend(ExampleGroups)
+        Rspec::Core.world.example_groups.extend(ExampleGroups)
       end
 
       module ExampleGroups

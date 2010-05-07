@@ -20,12 +20,8 @@ module Rspec
         @shared_example_groups ||= {}
       end
 
-      def example_groups_to_run
-        example_groups
-      end
-
-      def total_examples_to_run
-        example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.examples_to_run.size }
+      def example_count
+        example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
       end
 
       def apply_inclusion_filters(examples, conditions={})
