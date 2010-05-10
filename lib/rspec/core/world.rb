@@ -8,12 +8,20 @@ module Rspec
         @example_groups = []
       end
 
+      def configuration
+        Rspec.configuration
+      end
+
       def inclusion_filter
-        Rspec.configuration.filter
+        configuration.filter
       end
 
       def exclusion_filter
-        Rspec.configuration.exclusion_filter
+        configuration.exclusion_filter
+      end
+
+      def find_modules(group)
+        configuration.find_modules(group)
       end
 
       def shared_example_groups

@@ -82,15 +82,10 @@ module Rspec
         self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end
 
-      def self.configuration
-        @configuration
-      end
-
       def self.set_it_up(*args)
-        @configuration = args.shift
         @metadata = Rspec::Core::Metadata.new(superclass_metadata).process(*args)
 
-        configuration.find_modules(self).each do |include_or_extend, mod, opts|
+        world.find_modules(self).each do |include_or_extend, mod, opts|
           if include_or_extend == :extend
             send(:extend, mod) unless extended_modules.include?(mod)
           else
@@ -109,7 +104,6 @@ module Rspec
         args << {} unless args.last.is_a?(Hash)
         args.last.update(:example_group_block => example_group_block)
         args.last.update(:caller => caller)
-        args.unshift Rspec.configuration unless args.first.is_a?(Rspec::Core::Configuration)
 
         # TODO 2010-05-05: Because we don't know if const_set is thread-safe
         child = const_set(
