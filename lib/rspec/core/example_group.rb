@@ -132,9 +132,7 @@ module Rspec
 
       def self.eval_before_alls(running_example)
         return if filtered_examples.empty?
-        if superclass.respond_to?(:before_all_ivars)
-          superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
-        end
+        superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         world.run_hook(:before, :all, self, running_example)
 
         ancestors.reverse.each do |ancestor|
@@ -182,10 +180,11 @@ module Rspec
       def self.run_examples(instance, reporter)
         filtered_examples.map do |example|
           begin
+            set_ivars(instance, before_all_ivars)
             example.run(instance, reporter)
           ensure
-            instance.__reset__
-            before_all_ivars.each {|k, v| instance.instance_variable_set(k, v)}
+            clear_ivars(instance)
+            clear_memoized(instance)
           end
         end.all?
       end
@@ -208,13 +207,20 @@ module Rspec
         ancestors.last.description
       end
 
-      def described_class
-        self.class.describes
+      def self.set_ivars(instance, ivars)
+        ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
-      def __reset__
-        instance_variables.each { |ivar| remove_instance_variable(ivar) }
-        __memoized.clear
+      def self.clear_ivars(instance)
+        instance.instance_variables.each { |ivar| instance.send(:remove_instance_variable, ivar) }
+      end
+
+      def self.clear_memoized(instance)
+        instance.__memoized.clear
+      end
+
+      def described_class
+        self.class.describes
       end
 
     private
