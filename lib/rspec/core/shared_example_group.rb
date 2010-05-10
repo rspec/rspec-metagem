@@ -4,7 +4,7 @@ module Rspec
       
       def share_examples_for(name, &block)
         ensure_shared_example_group_name_not_taken(name)
-        Rspec::Core.world.shared_example_groups[name] = block
+        Rspec.world.shared_example_groups[name] = block
       end
 
       def share_as(name, &block)
@@ -27,7 +27,7 @@ module Rspec
         end
 
         shared_const = Object.const_set(name, mod)
-        Rspec::Core.world.shared_example_groups[shared_const] = block
+        Rspec.world.shared_example_groups[shared_const] = block
       end
 
       alias :shared_examples_for :share_examples_for
@@ -39,7 +39,7 @@ module Rspec
       end
 
       def ensure_shared_example_group_name_not_taken(name)
-        if Rspec::Core.world.shared_example_groups.has_key?(name)
+        if Rspec.world.shared_example_groups.has_key?(name)
           raise ArgumentError.new("Shared example group '#{name}' already exists")
         end
       end

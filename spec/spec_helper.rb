@@ -46,10 +46,10 @@ Rspec.configure do |c|
     !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
   }}
   c.before(:each) do
-    @real_world = Rspec::Core.world
-    Rspec::Core.instance_variable_set(:@world, Rspec::Core::World.new)
+    @real_world = Rspec.world
+    Rspec.instance_variable_set(:@world, Rspec::Core::World.new)
   end
   c.after(:each) do
-    Rspec::Core.instance_variable_set(:@world, @real_world)
+    Rspec.instance_variable_set(:@world, @real_world)
   end
 end

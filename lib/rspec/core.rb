@@ -40,9 +40,14 @@ module Rspec
     end
 
     def self.world
-      @world ||= Rspec::Core::World.new
+      Rspec.deprecate('Rspec::Core.world', 'Rspec.world', '2.0.0')
+      Rspec.world
     end
 
+  end
+
+  def self.world
+    @world ||= Rspec::Core::World.new
   end
 
   def self.configuration

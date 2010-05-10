@@ -31,7 +31,7 @@ describe Rspec::Core do
   describe "#world" do
     
     it "should return the Rspec::Core::World instance the current run is using" do
-      Rspec::Core.world.should be_instance_of(Rspec::Core::World)
+      Rspec.world.should be_instance_of(Rspec::Core::World)
     end
     
   end

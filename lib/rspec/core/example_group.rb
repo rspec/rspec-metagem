@@ -10,7 +10,7 @@ module Rspec
 
       def self.inherited(klass)
         Rspec::Core::Runner.autorun
-        Rspec::Core.world.example_groups << klass if klass.superclass == ExampleGroup
+        Rspec.world.example_groups << klass if klass.superclass == ExampleGroup
       end
 
       class << self
@@ -56,7 +56,7 @@ module Rspec
       def self.it_should_behave_like(*names)
         names.each do |name|
           begin
-            module_eval &Rspec::Core.world.shared_example_groups[name]
+            module_eval &Rspec.world.shared_example_groups[name]
           rescue ArgumentError
             raise "Could not find shared example group named #{name.inspect}"
           end
@@ -75,7 +75,7 @@ module Rspec
       end
 
       def self.world
-        Rspec::Core.world
+        Rspec.world
       end
 
       def self.superclass_metadata

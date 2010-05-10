@@ -7,7 +7,7 @@ module Rspec::Core
     let(:config) { subject }
 
     before(:each) do
-      Rspec::Core.world.stub(:configuration).and_return(config)
+      Rspec.world.stub(:configuration).and_return(config)
     end
 
     describe "#mock_framework_class" do

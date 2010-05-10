@@ -8,8 +8,7 @@ module Rspec::Core
   describe World do
     
     before do
-      @world = Rspec::Core::World.new
-      Rspec::Core.stub(:world).and_return(@world)
+      @world = Rspec.world
     end
 
     describe "example_groups" do

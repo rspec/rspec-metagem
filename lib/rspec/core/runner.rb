@@ -39,7 +39,7 @@ module Rspec
 
       def announce_inclusion_filter
         if inclusion_filter
-          if Rspec.configuration.run_all_when_everything_filtered? && Rspec::Core.world.example_count == 0
+          if Rspec.configuration.run_all_when_everything_filtered? && Rspec.world.example_count == 0
             Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
             Rspec.configuration.clear_inclusion_filter
           else
@@ -55,11 +55,11 @@ module Rspec
       end
 
       def example_count
-        Rspec::Core.world.example_count
+        Rspec.world.example_count
       end
 
       def example_groups
-        Rspec::Core.world.example_groups.extend(ExampleGroups)
+        Rspec.world.example_groups.extend(ExampleGroups)
       end
 
       module ExampleGroups

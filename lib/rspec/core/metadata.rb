@@ -119,7 +119,7 @@ EOM
     private
 
       def world
-        Rspec::Core.world
+        Rspec.world
       end
 
       def superclass_metadata

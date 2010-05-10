@@ -27,7 +27,7 @@ module Rspec::Core
     describe "share_examples_for" do
 
       it "should capture the given name and block in the Worlds collection of shared example groups" do
-        Rspec::Core.world.shared_example_groups.should_receive(:[]=).with(:foo, anything)
+        Rspec.world.shared_example_groups.should_receive(:[]=).with(:foo, anything)
         share_examples_for(:foo) { }
       end
 
@@ -41,7 +41,7 @@ module Rspec::Core
           def self.class_helper; end
           def extra_helper; end
         }
-        Rspec::Core.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
+        Rspec.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
         group.it_should_behave_like :shared_example_group
         group.instance_methods.should  include('extra_helper')
         group.singleton_methods.should include('class_helper')
