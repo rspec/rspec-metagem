@@ -40,6 +40,16 @@ module Rspec
         end
       end
       
+      def run_hook(hook, scope, group, example)
+        find_hook(hook, scope, group).each { |blk| example.instance_eval(&blk) }
+      end
+
+      def find_hook(hook, scope, group)
+        Rspec.configuration.hooks[hook][scope].select do |filters, block|
+          group.all_apply?(filters)
+        end.map { |filters, block| block }
+      end
+
     private
 
       def all_apply?(conditions)

@@ -1,6 +1,8 @@
 module Rspec
   module Core
     class Configuration
+      attr_reader :hooks # :nodoc:
+
       # Control what examples are run by filtering 
       attr_accessor :filter
 

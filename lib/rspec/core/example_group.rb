@@ -152,7 +152,7 @@ module Rspec
         if superclass.respond_to?(:before_all_ivars)
           superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         end
-        configuration.find_hook(:before, :all, self).each { |blk| running_example.instance_eval(&blk) }
+        world.run_hook(:before, :all, self, running_example)
 
         ancestors.reverse.each do |ancestor|
           until ancestor.before_alls.empty?
@@ -163,13 +163,13 @@ module Rspec
       end
 
       def self.eval_before_eachs(running_example)
-        configuration.find_hook(:before, :each, self).each { |blk| running_example.instance_eval(&blk) }
+        world.run_hook(:before, :each, self, running_example)
         ancestors.reverse.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
       end
 
       def self.eval_after_eachs(running_example)
         ancestors.each { |ancestor| ancestor.after_eachs.reverse.each { |blk| running_example.instance_eval(&blk) } }
-        configuration.find_hook(:after, :each, self).each { |blk| running_example.instance_eval(&blk) }
+        world.run_hook(:after, :each, self, running_example)
       end
 
       def self.eval_after_alls(running_example)
@@ -179,7 +179,7 @@ module Rspec
             running_example.instance_eval &ancestor.after_alls.pop
           end
         end
-        configuration.find_hook(:after, :all, self).each { |blk| running_example.instance_eval(&blk) }
+        world.run_hook(:after, :all, self, running_example)
         before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
