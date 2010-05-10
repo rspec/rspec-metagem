@@ -26,7 +26,7 @@ module Rspec
 
       def run(args = [])
         configure(args)
-        announce_inclusion_filter
+        Rspec.world.announce_inclusion_filter
 
         reporter.report(example_count) do |reporter|
           example_groups.run_examples(reporter)
@@ -36,17 +36,6 @@ module Rspec
       end
       
     private
-
-      def announce_inclusion_filter
-        if inclusion_filter
-          if Rspec.configuration.run_all_when_everything_filtered? && Rspec.world.example_count == 0
-            Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
-            Rspec.configuration.clear_inclusion_filter
-          else
-            Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
-          end
-        end      
-      end
 
       def configure(args)
         Rspec::Core::ConfigurationOptions.new(args).apply_to(configuration)

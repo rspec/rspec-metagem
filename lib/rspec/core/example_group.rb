@@ -8,9 +8,13 @@ module Rspec
 
       attr_accessor :running_example
 
+      def self.world
+        Rspec.world
+      end
+
       def self.inherited(klass)
         Rspec::Core::Runner.autorun
-        Rspec.world.example_groups << klass if klass.superclass == ExampleGroup
+        world.example_groups << klass if klass.superclass == ExampleGroup
       end
 
       class << self
@@ -24,10 +28,6 @@ module Rspec
 
         delegate_to_metadata :description, :describes, :file_path
         alias_method :display_name, :description
-      end
-
-      def self.extended_modules #:nodoc:
-        @extended_modules ||= ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
       end
 
       def self.define_example_method(name, extra_options={})
@@ -67,35 +67,16 @@ module Rspec
         @_examples ||= []
       end
 
-      def self.filtered_examples(fresh = false)
-        examples = self.examples.dup
-        examples = world.apply_exclusion_filters(examples, world.exclusion_filter) if world.exclusion_filter
-        examples = world.apply_inclusion_filters(examples, world.inclusion_filter) if world.inclusion_filter
-        examples.uniq
-      end
-
-      def self.world
-        Rspec.world
-      end
-
-      def self.superclass_metadata
-        self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
-      end
-
-      def self.set_it_up(*args)
-        @metadata = Rspec::Core::Metadata.new(superclass_metadata).process(*args)
-
-        world.find_modules(self).each do |include_or_extend, mod, opts|
-          if include_or_extend == :extend
-            send(:extend, mod) unless extended_modules.include?(mod)
-          else
-            send(:include, mod) unless included_modules.include?(mod)
-          end
-        end
+      def self.filtered_examples
+        world.filtered_examples[self]
       end
 
       def self.metadata
         @metadata 
+      end
+
+      def self.superclass_metadata
+        self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end
 
       def self.describe(*args, &example_group_block)
@@ -114,12 +95,8 @@ module Rspec
         child
       end
 
-      def self.children
-        @children ||= []
-      end
-
-      def self.descendents
-        [self] + children.collect {|c| c.descendents}.flatten
+      class << self
+        alias_method :context, :describe
       end
 
       def self.subclass(parent, args, &example_group_block)
@@ -129,12 +106,24 @@ module Rspec
         subclass
       end
 
+      def self.children
+        @children ||= []
+      end
+
+      def self.descendents
+        [self] + children.collect {|c| c.descendents}.flatten
+      end
+
       def self.ancestors
         @_ancestors ||= super().select {|a| a < Rspec::Core::ExampleGroup}
       end
 
-      class << self
-        alias_method :context, :describe
+      def self.set_it_up(*args)
+        @metadata = Rspec::Core::Metadata.new(superclass_metadata).process(*args)
+
+        world.find_modules(self).each do |include_or_extend, mod, opts|
+          send(include_or_extend, mod) unless mixins[include_or_extend].include?(mod)
+        end
       end
 
       def self.before_all_ivars
@@ -226,6 +215,19 @@ module Rspec
       def __reset__
         instance_variables.each { |ivar| remove_instance_variable(ivar) }
         __memoized.clear
+      end
+
+    private
+
+      def self.extended_modules #:nodoc:
+        @extended_modules ||= ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
+      end
+
+      def self.mixins
+        @mixins ||= {
+          :include => included_modules,
+          :extend => extended_modules
+        }
       end
 
     end
