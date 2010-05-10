@@ -77,11 +77,6 @@ describe Rspec::Core::ConfigurationOptions do
       options_from_args("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
-    it "assumes a 'spec' directory if it exists" do
-      FileTest.stub(:directory?).with("spec").and_return true
-      options_from_args().should include(:files_or_directories_to_run => ["spec"])
-    end
-
     it "provides no files or directories if spec directory does not exist" do
       FileTest.stub(:directory?).with("spec").and_return false
       options_from_args().should include(:files_or_directories_to_run => [])
