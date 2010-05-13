@@ -79,7 +79,6 @@ module Rspec
         #      end
         #    end
         #  end
-
         def let!(name, &block)
           let(name, &block)
           before { __send__(name) } 
