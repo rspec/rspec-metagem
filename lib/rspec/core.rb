@@ -18,7 +18,6 @@ require 'rspec/core/example'
 require 'rspec/core/shared_example_group'
 require 'rspec/core/example_group'
 require 'rspec/core/formatters'
-require 'rspec/core/backward_compatibility'
 require 'rspec/core/version'
 require 'rspec/core/errors'
 
@@ -58,6 +57,8 @@ module Rspec
     yield configuration if block_given?
   end
 end
+
+require 'rspec/core/backward_compatibility'
 
 # TODO - make this configurable with default 'on'
 require 'rspec/expectations'
