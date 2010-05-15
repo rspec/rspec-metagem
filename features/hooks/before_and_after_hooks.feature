@@ -213,11 +213,12 @@ Feature: before and after hooks
     Then I should see "1 example, 1 failure"
     And I should see "this error"
 
-  Scenario: exception in before(:each) is captured and reported as failure
-    Given a file named "error_in_before_each_spec.rb" with:
+@wip
+  Scenario: exception in before(:all) is captured and reported as failure
+    Given a file named "error_in_before_all_spec.rb" with:
       """
-      describe "error in before(:each)" do
-        before(:each) do
+      describe "error in before(:all)" do
+        before(:all) do
           raise "this error"
         end
 
@@ -225,6 +226,6 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec error_in_before_each_spec.rb"
+    When I run "rspec error_in_before_all_spec.rb"
     Then I should see "1 example, 1 failure"
     And I should see "this error"
