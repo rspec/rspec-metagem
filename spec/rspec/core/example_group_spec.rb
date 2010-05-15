@@ -243,7 +243,26 @@ module Rspec::Core
         group.around(:each) { 'foo' }
         group.should have(1).around_eachs
       end
-      
+
+      it "treats an error in before(:each) as a failure" do
+        group = ExampleGroup.describe
+        group.before(:each) { raise "error in before each" }
+        example = group.example("equality") { 1.should == 2}
+        group.run_all
+
+        example.metadata[:execution_result][:exception_encountered].message.should == "error in before each"
+      end
+
+      it "treats an error in before(:all) as a failure" do
+        pending("fix issue 21 - treat error in before all as failure") do
+          group = ExampleGroup.describe
+          group.before(:all) { raise "error in before all" }
+          example = group.example("equality") { 1.should == 2}
+          group.run_all
+
+          example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
+        end
+      end
     end
 
     describe "adding examples" do
