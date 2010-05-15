@@ -9,7 +9,7 @@ module Rspec
       end
 
       def subject
-        modify_subject? ? modified_subject : unmodified_subject
+        attribute_of_subject || original_subject
       end
 
       # When +should+ is called with no explicit receiver, the call is
@@ -75,18 +75,17 @@ module Rspec
 
     private
 
-      def modify_subject?
-        !running_example.nil? &&
-        !running_example.subject_modifier.nil? &&
-        running_example.state == :block
+      def original_subject
+        @original_subject ||= instance_eval(&self.class.subject)
       end
 
-      def unmodified_subject
-        @unmodified_subject ||= instance_eval(&self.class.subject)
+      def attribute_of_subject
+        original_subject.send(running_example.description) if using_attribute? 
       end
 
-      def modified_subject
-        unmodified_subject.send(running_example.subject_modifier)
+      def using_attribute?
+        running_example.in_block? &&
+        running_example.metadata[:attribute_of_subject]
       end
 
     end

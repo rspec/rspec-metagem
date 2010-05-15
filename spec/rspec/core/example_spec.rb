@@ -25,14 +25,6 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
     it "should have one for it's block" do
       example.should respond_to(:example_block)
     end
-
-    it "should have one for its subject modifier" do
-      example.should respond_to(:subject_modifier)
-    end
-
-    it "should have one for its state" do
-      example.should respond_to(:state)
-    end
   end
 
   describe '#inspect' do
@@ -96,15 +88,15 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe "#state" do
+  describe "#in_block?" do
     before do
-      running_example.state.should == :before
+      running_example.should_not be_in_block
     end
-    it "should have block state while running actual example block" do
-      running_example.state.should == :block
+    it "is only true during the example (but not before or after)" do
+      running_example.should be_in_block
     end
     after do
-      running_example.state.should == :after
+      running_example.should_not be_in_block
     end
   end
 end

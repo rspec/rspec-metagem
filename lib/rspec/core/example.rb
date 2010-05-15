@@ -2,7 +2,7 @@ module Rspec
   module Core
     class Example
 
-      attr_reader :metadata, :example_block, :state
+      attr_reader :metadata, :example_block
 
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
@@ -10,7 +10,7 @@ module Rspec
         end
       end
 
-      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending, :subject_modifier
+      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending
 
       alias_method :inspect, :full_description
       alias_method :to_s, :full_description
@@ -24,9 +24,14 @@ module Rspec
         @example_group_class
       end
 
+      def in_block?
+        @in_block
+      end
+
       alias_method :behaviour, :example_group
 
       def run(example_group_instance, reporter)
+        @in_block = false
         @example_group_instance = example_group_instance
         @example_group_instance.running_example = self
 
@@ -35,10 +40,9 @@ module Rspec
         exception = nil
 
         begin
-          @state = :before
           run_before_each
-          @state = :block
           pending_declared_in_example = catch(:pending_declared_in_example) do
+            @in_block = true
             if @example_group_class.around_eachs.empty?
               @example_group_instance.instance_eval(&example_block) unless pending
             else
@@ -49,11 +53,11 @@ module Rspec
         rescue Exception => e
           exception = e
         ensure
+          @in_block = false
           assign_auto_description
         end
 
         begin
-          @state = :after
           run_after_each
         rescue Exception => e
           exception ||= e

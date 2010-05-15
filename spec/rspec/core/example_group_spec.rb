@@ -412,27 +412,17 @@ module Rspec::Core
       end
     end
 
-    describe "example added with its" do
-      it "should have a subject_modifier" do
-        group    = ExampleGroup.describe
-        examples = group.its(:some_method) { }
-        example  = examples.last
-        example.subject_modifier.should === :some_method
-      end
-    end
-
     describe "#its" do
-      its(:class, "should be ExampleGroup") { should == Rspec::Core::ExampleGroup }
-      it "does not interfere between tests" do
+      its(:class) { should == Rspec::Core::ExampleGroup }
+      it "does not interfere between examples" do
         subject.class.should == Rspec::Core::ExampleGroup
       end
       context "subject modified in before block" do
         before { subject.class.should == Rspec::Core::ExampleGroup }
-        its(:class, "should be ExampleGroup") { should == Rspec::Core::ExampleGroup }
       end
     end
 
-    describe "top_level_description" do
+    describe "#top_level_description" do
       it "returns the description from the outermost example group" do
         group = nil
         ExampleGroup.describe("top") do
