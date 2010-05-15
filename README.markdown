@@ -6,6 +6,10 @@ Driven Development and Test Driven Development.
 rspec-core includes the Rspec runner, output formatters, and the `rspec`
 command.
 
+## Upgrading from rspec-1.x
+
+See [Upgrade.markdown](Upgrade.markdown)
+
 ## Install
 
     [sudo] gem install rspec --prerelease
