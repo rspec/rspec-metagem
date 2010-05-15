@@ -239,6 +239,17 @@ EOM
         files_to_run.map {|f| require f }
       end
 
+      def add_option(mname, options)
+        case options[:type]
+        when :boolean
+          (class << self; self; end).class_eval do
+            attr_reader mname
+            define_method("#{mname}?") { !!(send mname) }
+          end
+          instance_variable_set "@#{mname}", options[:default]
+        end
+      end
+
     end
   end
 end

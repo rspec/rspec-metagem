@@ -261,6 +261,33 @@ module Rspec::Core
       end
     end
 
-  end
+    describe "#add_option" do
+      describe ":type => :boolean" do
+        context "with no additional options" do
+          before { config.add_option :custom_option, :type => :boolean }
 
+          it "defaults to false" do
+            config.custom_option.should be_false
+          end
+
+          it "adds a predicate" do
+            config.custom_option?.should be_false
+          end
+        end
+
+        context "with :default => true" do
+          before { config.add_option :custom_option, :type => :boolean, :default => true }
+
+          it "defaults to false" do
+            config.custom_option.should be_true
+          end
+
+          it "adds a predicate" do
+            config.custom_option?.should be_true
+          end
+        end
+      end
+    end
+
+  end
 end

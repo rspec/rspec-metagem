@@ -1,4 +1,3 @@
-@wip
 Feature: custom options
 
   In order to seamlessly provide my users more options
@@ -45,6 +44,7 @@ Feature: custom options
     When I run "rspec boolean_option_spec.rb"
     Then I should see "2 examples, 0 failures"
 
+@wip
   Scenario: boolean option overridden in client app
     Given a file named "boolean_option_spec.rb" with:
       """
@@ -53,12 +53,12 @@ Feature: custom options
       end
 
       Rspec.configure do |c|
-        c.custom_option = :reset
+        c.custom_option = true
       end
 
       describe "custom option" do
         it "returns the value set in the client app" do
-          Rspec.configuration.custom_option.should == :reset
+          Rspec.configuration.custom_option.should be_true
         end
 
         it "is exposed as a predicate" do
