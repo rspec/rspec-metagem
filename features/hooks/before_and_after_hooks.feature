@@ -9,19 +9,15 @@ Feature: before and after hooks
 
     before(:each) blocks are run before each example
     before(:all) blocks are run once before all of the examples in a group
-    before(:suite) blocks are run once before the entire suite
 
     after(:each) blocks are run after each example
     after(:all) blocks are run once after all of the examples in a group
-    after(:suite) blocks are run once after the entire suite
 
     Before and after blocks are called in the following order:
-      before suite
       before all
       before each
       after each
       after all
-      after suite
 
     Before and after blocks can be defined in the example groups to which they
     apply or in a configuration. When defined in a configuration, they can be
@@ -99,16 +95,12 @@ Feature: before and after hooks
     When I run "rspec before_all_spec.rb:15"
     Then I should see "1 example, 0 failures"
 
-  @wip
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
       require "rspec/expectations"
 
       Rspec.configure do |config|
-        config.before(:suite) do
-          $before_suite = "before suite"
-        end
         config.before(:each) do
           @before_each = "before each"
         end
@@ -118,11 +110,6 @@ Feature: before and after hooks
       end
   
       describe "stuff in before blocks" do
-        describe "with :suite" do
-          it "should be available in the example" do
-            $before_suite.should == "before suite"
-          end
-        end
         describe "with :all" do
           it "should be available in the example" do
             @before_all.should == "before all"
@@ -136,7 +123,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec befores_in_configuration_spec.rb"
-    Then I should see "3 examples, 0 failures"
+    Then I should see "2 examples, 0 failures"
 
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
@@ -209,3 +196,35 @@ Feature: before and after hooks
     When I run "rspec before_and_after_all_spec.rb:6"
     Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
+
+  Scenario: exception in before(:each) is captured and reported as failure
+    Given a file named "error_in_before_each_spec.rb" with:
+      """
+      describe "error in before(:each)" do
+        before(:each) do
+          raise "this error"
+        end
+
+        it "is reported as failure" do
+        end
+      end
+      """
+    When I run "rspec error_in_before_each_spec.rb"
+    Then I should see "1 example, 1 failure"
+    And I should see "this error"
+
+  Scenario: exception in before(:each) is captured and reported as failure
+    Given a file named "error_in_before_each_spec.rb" with:
+      """
+      describe "error in before(:each)" do
+        before(:each) do
+          raise "this error"
+        end
+
+        it "is reported as failure" do
+        end
+      end
+      """
+    When I run "rspec error_in_before_each_spec.rb"
+    Then I should see "1 example, 1 failure"
+    And I should see "this error"
