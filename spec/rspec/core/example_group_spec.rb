@@ -68,16 +68,16 @@ module Rspec::Core
       end
 
       it "includes explicitly included examples" do
-        Rspec.world.stub(:inclusion_filter).and_return({ :awesome => true })
+        Rspec.world.stub(:inclusion_filter).and_return({ :include_me => true })
         group = ExampleGroup.describe
-        example = group.example("does something", :awesome => true)
+        example = group.example("does something", :include_me => true)
         group.example("don't run me")
         group.filtered_examples.should == [example]
       end
 
       it "excludes all examples in an excluded group" do
-        Rspec.world.stub(:exclusion_filter).and_return({ :awesome => false })
-        group = ExampleGroup.describe("does something", :awesome => false)
+        Rspec.world.stub(:exclusion_filter).and_return({ :include_me => false })
+        group = ExampleGroup.describe("does something", :include_me => false)
         examples = [
           group.example("first"),
           group.example("second")
@@ -86,10 +86,10 @@ module Rspec::Core
       end
 
       it "filters out excluded examples" do
-        Rspec.world.stub(:exclusion_filter).and_return({ :awesome => false })
+        Rspec.world.stub(:exclusion_filter).and_return({ :exclude_me => true })
         group = ExampleGroup.describe("does something")
         examples = [
-          group.example("first", :awesome => false),
+          group.example("first", :exclude_me => true),
           group.example("second")
         ]
         group.filtered_examples.should == [examples[1]]
@@ -164,7 +164,7 @@ module Rspec::Core
 
     end
 
-    describe "before, after, and around hooks" do
+    describe "#before, after, and around hooks" do
 
       it "runs the before alls in order" do
         group = ExampleGroup.describe
@@ -254,7 +254,7 @@ module Rspec::Core
         group.examples.size.should == 1
       end
 
-      it "should allow adding an example using 'its'" do
+      it "allows adding an example using 'its'" do
         group = ExampleGroup.describe
         group.its(:some_method) { }
         group.examples.size.should == 1
