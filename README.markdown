@@ -8,7 +8,7 @@ command.
 
 ## Upgrading from rspec-1.x
 
-See [Upgrade.markdown](Upgrade.markdown)
+See Upgrade.markdown
 
 ## Install
 
