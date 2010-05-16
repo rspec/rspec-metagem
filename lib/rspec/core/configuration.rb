@@ -243,7 +243,7 @@ EOM
         case options[:type]
         when :boolean
           (class << self; self; end).class_eval do
-            attr_reader mname
+            attr_accessor mname
             define_method("#{mname}?") { !!(send mname) }
           end
           instance_variable_set "@#{mname}", options[:default]

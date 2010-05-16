@@ -273,6 +273,11 @@ module Rspec::Core
           it "adds a predicate" do
             config.custom_option?.should be_false
           end
+
+          it "can be overridden" do
+            config.custom_option = true
+            config.custom_option.should be_true
+          end
         end
 
         context "with :default => true" do
@@ -284,6 +289,11 @@ module Rspec::Core
 
           it "adds a predicate" do
             config.custom_option?.should be_true
+          end
+
+          it "can be overridden" do
+            config.custom_option = false
+            config.custom_option.should be_false
           end
         end
       end

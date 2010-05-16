@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-05-07}
+  s.date = %q{2010-05-15}
   s.description = %q{Rspec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -75,12 +75,14 @@ Gem::Specification.new do |s|
      "example_specs/passing/stack_spec.rb",
      "example_specs/passing/stack_spec_with_nested_example_groups.rb",
      "example_specs/passing/stubbing_example.rb",
+     "example_specs/passing/subject_example.rb",
      "example_specs/passing/yielding_example.rb",
      "example_specs/ruby1.9.compatibility/access_to_constants_spec.rb",
      "example_specs/spec_helper.rb",
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
+     "features/configuration/custom_options.feature",
      "features/configuration/options_file.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
@@ -140,6 +142,7 @@ Gem::Specification.new do |s|
      "spec/autotest/rspec_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
+     "spec/rspec/core/deprecations_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
@@ -186,6 +189,7 @@ Gem::Specification.new do |s|
      "spec/autotest/rspec_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
+     "spec/rspec/core/deprecations_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
