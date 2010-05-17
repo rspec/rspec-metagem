@@ -18,7 +18,7 @@ module RSpec
               output.puts "#{index.next}) #{failed_example}"
               output.puts "#{padding}Failure/Error: #{read_failed_line(exception, failed_example).strip}"
               exception.message.split("\n").each do |line|
-                output.puts "#{padding}#{colorise(line, exception).strip}"
+                output.puts "#{padding}#{colorise(line, exception)}"
               end
             end
 
