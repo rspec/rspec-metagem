@@ -23,7 +23,7 @@ def with_ruby(version)
   yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
 end
 
-module Rspec
+module RSpec
   module Ruby
     class << self
       def version
@@ -33,20 +33,20 @@ module Rspec
   end
 end
 
-module Rspec  
+module RSpec  
   module Matchers
     def fail
-      raise_error(Rspec::Expectations::ExpectationNotMetError)
+      raise_error(RSpec::Expectations::ExpectationNotMetError)
     end
 
     def fail_with(message)
-      raise_error(Rspec::Expectations::ExpectationNotMetError, message)
+      raise_error(RSpec::Expectations::ExpectationNotMetError, message)
     end
   end
 end
 
-Rspec::configure do |config|
+RSpec::configure do |config|
   config.mock_with(:rspec)
-  config.include Rspec::Mocks::Methods
+  config.include RSpec::Mocks::Methods
   config.color_enabled = true
 end

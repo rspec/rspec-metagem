@@ -1,8 +1,8 @@
-module Rspec
+module RSpec
   module Matchers
 
     class MatchArray #:nodoc:
-      include Rspec::Matchers::Pretty
+      include RSpec::Matchers::Pretty
       
       def initialize(expected)
         @expected = expected
@@ -66,6 +66,6 @@ module Rspec
     #   [1,2,3,4].should =~ [1,2,3]   # => would fail
     #   [1,2,2,3].should =~ [1,2,3]   # => would fail
     #   [1,2,3].should   =~ [1,2,3,4] # => would fail
-    OperatorMatcher.register(Array, '=~', Rspec::Matchers::MatchArray)
+    OperatorMatcher.register(Array, '=~', RSpec::Matchers::MatchArray)
   end
 end

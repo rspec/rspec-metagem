@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-module Rspec
+module RSpec
   module Fixtures
     class Animal
       def initialize(name,species)
@@ -23,7 +23,7 @@ end
 describe "Diff" do
   before(:each) do
     @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
-    @differ = Rspec::Expectations::Differs::Default.new(@options)
+    @differ = RSpec::Expectations::Differs::Default.new(@options)
   end
 
   it "should output unified diff of two strings" do
@@ -76,8 +76,8 @@ EOD
   end
 
   it "should output unified diff message of two objects" do
-    expected = Rspec::Fixtures::Animal.new "bob", "giraffe"
-    actual   = Rspec::Fixtures::Animal.new "bob", "tortoise"
+    expected = RSpec::Fixtures::Animal.new "bob", "giraffe"
+    actual   = RSpec::Fixtures::Animal.new "bob", "tortoise"
 
     expected_diff = <<'EOD'
 
@@ -100,12 +100,12 @@ describe "Diff in context format" do
   before(:each) do
     @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
     @options.diff_format = :context
-    @differ = Rspec::Expectations::Differs::Default.new(@options)
+    @differ = RSpec::Expectations::Differs::Default.new(@options)
   end
 
   it "should output unified diff message of two objects" do
-    expected = Rspec::Fixtures::Animal.new "bob", "giraffe"
-    actual   = Rspec::Fixtures::Animal.new "bob", "tortoise"
+    expected = RSpec::Fixtures::Animal.new "bob", "giraffe"
+    actual   = RSpec::Fixtures::Animal.new "bob", "tortoise"
 
     expected_diff = <<'EOD'
 

@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   # RSpec ships with a number of useful Expression Matchers. An Expression Matcher
   # is any object that responds to the following methods:
   #
@@ -17,7 +17,7 @@ module Rspec
   #   failure_message          (use failure_message_for_should instead)
   #   negative_failure_message (use failure_message_for_should_not instead)
   #
-  # See Rspec::Expectations to learn how to use these as Expectation Matchers.
+  # See RSpec::Expectations to learn how to use these as Expectation Matchers.
   #
   # == Predicates
   #
@@ -78,7 +78,7 @@ module Rspec
   #
   # You can create such a matcher like so:
   #
-  #   Rspec::Matchers.define :be_in_zone do |zone|
+  #   RSpec::Matchers.define :be_in_zone do |zone|
   #     match do |player|
   #       player.in_zone?(zone)
   #     end
@@ -88,7 +88,7 @@ module Rspec
   # with logical default messages for failures. You can override the failure
   # messages and the generated description as follows:
   #
-  #   Rspec::Matchers.define :be_in_zone do |zone|
+  #   RSpec::Matchers.define :be_in_zone do |zone|
   #     match do |player|
   #       player.in_zone?(zone)
   #     end
@@ -157,13 +157,13 @@ module Rspec
   # or you can include in globally in a spec_helper.rb file <tt>require</tt>d
   # from your spec file(s):
   #
-  #   Rspec::Runner.configure do |config|
+  #   RSpec::Runner.configure do |config|
   #     config.include(CustomGameMatchers)
   #   end
   #
   module Matchers
-    if Rspec.respond_to?(:configure)
-      Rspec.configure {|c| c.include self}
+    if RSpec.respond_to?(:configure)
+      RSpec.configure {|c| c.include self}
     end
   end
 end
@@ -195,4 +195,3 @@ require 'rspec/matchers/satisfy'
 require 'rspec/matchers/throw_symbol'
 require 'rspec/matchers/compatibility'
 require 'rspec/matchers/dsl'
-

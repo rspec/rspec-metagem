@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class ExampleGroup
       module BlockAliases

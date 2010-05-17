@@ -1,7 +1,7 @@
 # RSpec Expectations
 
 rspec-expectations adds `should` and `should_not` to every object and includes
-Rspec::Matchers, a library of standard matchers.
+RSpec::Matchers, a library of standard matchers.
 
 rspec-expectations is currently in alpha release. While you are welcome to
 track, fork, explore, etc, we're too early in the process to start fielding

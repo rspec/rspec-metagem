@@ -8,7 +8,7 @@ Feature: define diffable matcher
   Scenario: define a diffable matcher
     Given a file named "diffable_matcher_spec.rb" with:
       """
-      Rspec::Matchers.define :be_just_like do |expected|
+      RSpec::Matchers.define :be_just_like do |expected|
         match do |actual|
           actual == expected
         end

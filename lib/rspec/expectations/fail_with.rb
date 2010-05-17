@@ -1,9 +1,9 @@
-module Rspec
+module RSpec
   module Expectations
     class << self
       attr_accessor :differ
       
-      # raises a Rspec::Expectations::ExpectationNotMetError with message
+      # raises a RSpec::Expectations::ExpectationNotMetError with message
       #
       # When a differ has been assigned and fail_with is passed
       # <code>expected</code> and <code>target</code>, passes them
@@ -20,7 +20,7 @@ module Rspec
             message << "\nDiff:" << self.differ.diff_as_object(target, expected)
           end
         end
-        Kernel::raise(Rspec::Expectations::ExpectationNotMetError.new(message))
+        Kernel::raise(RSpec::Expectations::ExpectationNotMetError.new(message))
       end
     end
   end

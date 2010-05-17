@@ -1,5 +1,5 @@
 # This file contains various classes used by the specs.
-module Rspec
+module RSpec
   module Expectations
     module Helper
       class CollectionWithSizeMethod

@@ -1,12 +1,12 @@
-module Rspec
+module RSpec
   module Expectations
     class InvalidMatcherError < ArgumentError; end        
     
     class PositiveExpectationHandler        
       def self.handle_matcher(actual, matcher, message=nil, &block)
-        ::Rspec::Matchers.last_should = :should
-        ::Rspec::Matchers.last_matcher = matcher
-        return ::Rspec::Matchers::PositiveOperatorMatcher.new(actual) if matcher.nil?
+        ::RSpec::Matchers.last_should = :should
+        ::RSpec::Matchers.last_matcher = matcher
+        return ::RSpec::Matchers::PositiveOperatorMatcher.new(actual) if matcher.nil?
 
         match = matcher.matches?(actual, &block)
         return match if match
@@ -16,18 +16,18 @@ module Rspec
                     matcher.failure_message
         
         if matcher.respond_to?(:diffable?) && matcher.diffable?
-          ::Rspec::Expectations.fail_with message, matcher.expected.first, matcher.actual
+          ::RSpec::Expectations.fail_with message, matcher.expected.first, matcher.actual
         else
-          ::Rspec::Expectations.fail_with message
+          ::RSpec::Expectations.fail_with message
         end
       end
     end
 
     class NegativeExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
-        ::Rspec::Matchers.last_should = :should_not
-        ::Rspec::Matchers.last_matcher = matcher
-        return ::Rspec::Matchers::NegativeOperatorMatcher.new(actual) if matcher.nil?
+        ::RSpec::Matchers.last_should = :should_not
+        ::RSpec::Matchers.last_matcher = matcher
+        return ::RSpec::Matchers::NegativeOperatorMatcher.new(actual) if matcher.nil?
         
         match = matcher.respond_to?(:does_not_match?) ?
                 !matcher.does_not_match?(actual, &block) :
@@ -39,9 +39,9 @@ module Rspec
                     matcher.negative_failure_message
 
         if matcher.respond_to?(:diffable?) && matcher.diffable?
-          ::Rspec::Expectations.fail_with message, matcher.expected.first, matcher.actual
+          ::RSpec::Expectations.fail_with message, matcher.expected.first, matcher.actual
         else
-          ::Rspec::Expectations.fail_with message
+          ::RSpec::Expectations.fail_with message
         end
       end
     end

@@ -4,22 +4,23 @@ require 'rspec/expectations/errors'
 require 'rspec/expectations/extensions'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
+require 'rspec/expectations/backward_compatibility'
 
-module Rspec
+module RSpec
   
-  # Rspec::Expectations lets you set expectations on your objects.
+  # RSpec::Expectations lets you set expectations on your objects.
   #
   #   result.should == 37
   #   team.should have(11).players_on_the_field
   #
   # == How Expectations work.
   #
-  # Rspec::Expectations adds two methods to Object:
+  # RSpec::Expectations adds two methods to Object:
   #
   #   should(matcher=nil)
   #   should_not(matcher=nil)
   #
-  # Both methods take an optional Expression Matcher (See Rspec::Matchers).
+  # Both methods take an optional Expression Matcher (See RSpec::Matchers).
   #
   # When +should+ receives an Expression Matcher, it calls <tt>matches?(self)</tt>. If
   # it returns +true+, the spec passes and execution continues. If it returns
@@ -30,7 +31,7 @@ module Rspec
   # +true+, then the spec fails with the message returned by <tt>matcher.negative_failure_message</tt>.
   #
   # RSpec ships with a standard set of useful matchers, and writing your own
-  # matchers is quite simple. See Rspec::Matchers for details.
+  # matchers is quite simple. See RSpec::Matchers for details.
   module Expectations
   end
 end

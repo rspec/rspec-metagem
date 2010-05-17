@@ -3,7 +3,7 @@ require 'stringio'
 
 share_as :HaveSpecHelper do
   def create_collection_owner_with(n)
-    owner = Rspec::Expectations::Helper::CollectionOwner.new
+    owner = RSpec::Expectations::Helper::CollectionOwner.new
     (1..n).each do |number|
       owner.add_to_collection_with_length_method(number)
       owner.add_to_collection_with_size_method(number)
@@ -329,7 +329,7 @@ describe "have(n).things on an object which is not a collection nor contains one
   end
 end
 
-describe Rspec::Matchers::Have, "for a collection owner that implements #send" do
+describe RSpec::Matchers::Have, "for a collection owner that implements #send" do
   include HaveSpecHelper
   
   before(:each) do
@@ -357,7 +357,7 @@ describe Rspec::Matchers::Have, "for a collection owner that implements #send" d
   end
 end
 
-module Rspec
+module RSpec
   module Matchers
     describe Have do
       it "should have method_missing as private" do

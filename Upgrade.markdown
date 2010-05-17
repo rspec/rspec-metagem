@@ -4,7 +4,7 @@
 
 ### New `eq` matcher.
 
-`Rspec::Matchers` now offers you two approaches to differentiating between
+`RSpec::Matchers` now offers you two approaches to differentiating between
 object identity. You can use the rspec-1 approach:
 
     actual.should == expected     # object equality
@@ -19,7 +19,7 @@ object identity. You can use the rspec-1 approach:
 
 ### simple_matcher
 
-Use Rspec::Matchers.define instead. For example, if you had:
+Use RSpec::Matchers.define instead. For example, if you had:
 
     def eat_cheese
       simple_matcher("eat cheese") do |actual|
@@ -29,7 +29,7 @@ Use Rspec::Matchers.define instead. For example, if you had:
 
 Change it to:
 
-    Rspec::Matchers.define :eat_cheese do
+    RSpec::Matchers.define :eat_cheese do
       match do |actual|
         actual.eat?(:cheese)
       end
@@ -37,15 +37,15 @@ Change it to:
 
 ### wrap_expectation
 
-Use Rspec::Matchers.define instead.
+Use RSpec::Matchers.define instead.
 
-    Rspec::Matchers.define :eat_cheese do
+    RSpec::Matchers.define :eat_cheese do
       match do |actual|
         actual.should eat?(:cheese)
       end
     end
 
-    Rspec::Matchers.define :eat_cheese do
+    RSpec::Matchers.define :eat_cheese do
       include MyCheesyAssertions
       match_unless_raises Test::Unit::AssertionFailedError do |actual|
         assert_eats_chesse actual

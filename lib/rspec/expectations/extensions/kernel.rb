@@ -17,14 +17,14 @@ module Kernel
   #   receiver.should =~ regexp
   #     => Passes if (receiver =~ regexp)
   #
-  # See Rspec::Matchers for more information about matchers
+  # See RSpec::Matchers for more information about matchers
   #
   # == Warning
   #
   # NOTE that this does NOT support receiver.should != expected.
   # Instead, use receiver.should_not == expected
   def should(matcher=nil, message=nil, &block)
-    Rspec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
+    RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
   end
   
   # :call-seq:
@@ -45,8 +45,8 @@ module Kernel
   #   receiver.should_not =~ regexp
   #     => Passes unless (receiver =~ regexp)
   #
-  # See Rspec::Matchers for more information about matchers
+  # See RSpec::Matchers for more information about matchers
   def should_not(matcher=nil, message=nil, &block)
-    Rspec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
+    RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
   end
 end

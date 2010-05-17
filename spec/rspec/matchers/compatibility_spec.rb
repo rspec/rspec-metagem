@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-Rspec::Matchers.define :have_public_instance_method do |method|
+RSpec::Matchers.define :have_public_instance_method do |method|
   match do |klass|
     klass.public_instance_methods.any? {|m| [method, method.to_sym].include?(m)}
   end
 end
 
-(Rspec::Matchers.constants.sort).each do |c|
-  if (Class === (klass = Rspec::Matchers.const_get(c)))
+(RSpec::Matchers.constants.sort).each do |c|
+  if (Class === (klass = RSpec::Matchers.const_get(c)))
     describe klass do
       if klass.public_instance_methods.any? {|m| ['failure_message_for_should',:failure_message_for_should].include?(m)}
         describe "called with should" do

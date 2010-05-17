@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     module Pretty
       def split_words(sym)

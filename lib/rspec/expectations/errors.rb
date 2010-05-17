@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Expectations
     # If Test::Unit is loaed, we'll use its error as baseclass, so that Test::Unit
     # will report unmet RSpec expectations as failures rather than errors.

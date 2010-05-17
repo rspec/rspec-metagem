@@ -1,5 +1,5 @@
 require 'spec_helper'
-module Rspec
+module RSpec
   module Matchers
     describe "equal" do
       

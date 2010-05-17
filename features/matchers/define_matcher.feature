@@ -9,7 +9,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :be_a_multiple_of do |expected|
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
         end
@@ -51,7 +51,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :be_a_multiple_of do |expected|
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
         end
@@ -75,7 +75,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :be_a_multiple_of do |expected|
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
         end
@@ -99,7 +99,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :be_a_multiple_of do |expected|
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
         match do |actual|
           actual % expected == 0
         end
@@ -127,7 +127,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :have_7_fingers do
+      RSpec::Matchers.define :have_7_fingers do
         match do |thing|
           thing.fingers.length == 7
         end
@@ -151,7 +151,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :be_the_sum_of do |a,b,c,d|
+      RSpec::Matchers.define :be_the_sum_of do |a,b,c,d|
         match do |sum|
           a + b + c + d == sum
         end
@@ -171,7 +171,7 @@ Feature: define matcher
       """
       require 'rspec/expectations'
 
-      Rspec::Matchers.define :have_same_elements_as do |sample|
+      RSpec::Matchers.define :have_same_elements_as do |sample|
         match do |actual|
           similar?(sample, actual)
         end

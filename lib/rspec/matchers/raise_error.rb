@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     class RaiseError #:nodoc:
       def initialize(expected_error_or_message=Exception, expected_message=nil, &block)

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec
+module RSpec
   module Matchers
     describe ThrowSymbol do
       describe "with no args" do

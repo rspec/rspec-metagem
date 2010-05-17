@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), "/load-diff-lcs")
 require 'pp'
 
-module Rspec
+module RSpec
   module Expectations
     module Differs
       unless defined?(Default)

@@ -44,7 +44,7 @@ module ExampleExpectations
   
 end
 
-module Rspec
+module RSpec
   module Expectations
     describe PositiveExpectationHandler do
       describe "#handle_matcher" do
@@ -52,23 +52,23 @@ module Rspec
           matcher = mock("matcher")
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(true)
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
         end
       
         it "returns the match value" do
           matcher = mock("matcher")
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(:this_value)
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher).should == :this_value
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher).should == :this_value
         end
         
         it "calls failure_message_for_should if the matcher implements it" do
           matcher = mock("matcher", :failure_message_for_should => "message", :matches? => false)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message")
+          ::RSpec::Expectations.should_receive(:fail_with).with("message")
           
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
         end
         
         it "calls fail if matcher.diffable?" do
@@ -81,18 +81,18 @@ module Rspec
           )
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message", 1, 2)
+          ::RSpec::Expectations.should_receive(:fail_with).with("message", 1, 2)
           
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
         end
         
         it "calls failure_message if the matcher does not implement failure_message_for_should" do
           matcher = mock("matcher", :failure_message => "message", :matches? => false)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message")
+          ::RSpec::Expectations.should_receive(:fail_with).with("message")
           
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)
           
         end
         
@@ -100,9 +100,9 @@ module Rspec
           matcher = mock("matcher", :failure_message_for_should => "message", :matches? => false)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("custom")
+          ::RSpec::Expectations.should_receive(:fail_with).with("custom")
           
-          Rspec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher, "custom")
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher, "custom")
         end
       end
     end
@@ -113,7 +113,7 @@ module Rspec
           matcher = mock("matcher", :does_not_match? => true, :negative_failure_message => nil)
           actual = Object.new
           matcher.should_receive(:does_not_match?).with(actual).and_return(true)
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
         end
 
         it "asks the matcher if it matches when the matcher doesn't respond to #does_not_match?" do
@@ -121,7 +121,7 @@ module Rspec
           actual = Object.new
           matcher.stub!(:negative_failure_message)
           matcher.should_receive(:matches?).with(actual).and_return(false)
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
         end
       
         it "returns the match value" do
@@ -129,7 +129,7 @@ module Rspec
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(false)
           matcher.stub!(:negative_failure_message).and_return("ignore")
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher).should be_false
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher).should be_false
         end
 
         
@@ -137,9 +137,9 @@ module Rspec
           matcher = mock("matcher", :failure_message_for_should_not => "message", :matches? => true)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message")
+          ::RSpec::Expectations.should_receive(:fail_with).with("message")
           
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
           
         end
         
@@ -147,9 +147,9 @@ module Rspec
           matcher = mock("matcher", :negative_failure_message => "message", :matches? => true)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message")
+          ::RSpec::Expectations.should_receive(:fail_with).with("message")
           
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
           
         end
 
@@ -164,18 +164,18 @@ module Rspec
           )
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("message", 1, 2)
+          ::RSpec::Expectations.should_receive(:fail_with).with("message", 1, 2)
           
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
         end
 
         it "appends the :or message in the options hash passed to should" do
           matcher = mock("matcher", :failure_message_for_should_not => "message", :matches? => true)
           actual = Object.new
           
-          ::Rspec::Expectations.should_receive(:fail_with).with("custom")
+          ::RSpec::Expectations.should_receive(:fail_with).with("custom")
           
-          Rspec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher, "custom")
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher, "custom")
         end
 
       end

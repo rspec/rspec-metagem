@@ -1,5 +1,5 @@
 require 'spec_helper'
-module Rspec
+module RSpec
   module Matchers
     describe "[actual.should] be_close(expected, delta)" do
       it "matches when actual == expected" do

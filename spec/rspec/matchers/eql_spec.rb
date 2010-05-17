@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec
+module RSpec
   module Matchers
     describe "eql" do
       it "should match when actual.eql?(expected)" do

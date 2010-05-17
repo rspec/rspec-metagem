@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec
+module RSpec
   module Matchers
     describe "eq" do
       it "matches when actual == expected" do

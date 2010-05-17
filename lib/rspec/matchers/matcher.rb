@@ -1,9 +1,9 @@
-module Rspec
+module RSpec
   module Matchers
     class Matcher
-      include Rspec::Matchers::InstanceExec
-      include Rspec::Matchers::Pretty
-      include Rspec::Matchers
+      include RSpec::Matchers::InstanceExec
+      include RSpec::Matchers::Pretty
+      include RSpec::Matchers
 
       attr_reader :expected, :actual
       def initialize(name, *expected, &declarations)
@@ -35,34 +35,34 @@ module Rspec
         else
           begin
             instance_exec(actual, &@match_block)
-          rescue Rspec::Expectations::ExpectationNotMetError
+          rescue RSpec::Expectations::ExpectationNotMetError
             false
           end
         end
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def match(&block)
         @match_block = block
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def match_unless_raises(exception=Exception, &block)
         @expected_exception = exception
         match(&block)
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def failure_message_for_should(&block)
         cache_or_call_cached(:failure_message_for_should, &block)
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def failure_message_for_should_not(&block)
         cache_or_call_cached(:failure_message_for_should_not, &block)
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def description(&block)
         cache_or_call_cached(:description, &block)
       end
@@ -72,12 +72,12 @@ module Rspec
         @diffable
       end
 
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def diffable
         @diffable = true
       end
       
-      # See Rspec::Matchers
+      # See RSpec::Matchers
       def chain(method, &block)
         self.class.class_eval do
           define_method method do |*args|
@@ -105,7 +105,7 @@ module Rspec
         #
         # Also, due some crazy scoping that I don't understand, these methods
         # are actually available in the specs (something about the matcher being
-        # defined in the scope of Rspec::Matchers or within an example), so not
+        # defined in the scope of RSpec::Matchers or within an example), so not
         # doing the following will not cause specs to fail, but they *will*
         # cause features to fail and that will make users unhappy. So don't.
         orig_private_methods = private_methods

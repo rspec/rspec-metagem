@@ -1,18 +1,18 @@
 require 'rspec/matchers/dsl'
 
-Rspec::Matchers.define :be_true do
+RSpec::Matchers.define :be_true do
   match do |actual|
     !!actual
   end
 end
 
-Rspec::Matchers.define :be_false do
+RSpec::Matchers.define :be_false do
   match do |actual|
     !actual
   end
 end
 
-Rspec::Matchers.define :be_nil do
+RSpec::Matchers.define :be_nil do
   match do |actual|
     actual.nil?
   end
@@ -26,11 +26,11 @@ Rspec::Matchers.define :be_nil do
   end
 end
 
-module Rspec
+module RSpec
   module Matchers
 
     class Be #:nodoc:
-      include Rspec::Matchers::Pretty
+      include RSpec::Matchers::Pretty
       
       def initialize(*args, &block)
         @args = args
@@ -216,7 +216,7 @@ it is a bit confusing.
     # the caller should satisfy an if condition (to be or not to be). 
     #
     # Predicates are any Ruby method that ends in a "?" and returns true or false.
-    # Given be_ followed by arbitrary_predicate (without the "?"), Rspec will match
+    # Given be_ followed by arbitrary_predicate (without the "?"), RSpec will match
     # convert that into a query against the target object.
     #
     # The arbitrary_predicate feature will handle any predicate

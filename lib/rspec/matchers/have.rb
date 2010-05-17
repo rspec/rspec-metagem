@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     class Have #:nodoc:
       def initialize(expected, relativity=:exactly)

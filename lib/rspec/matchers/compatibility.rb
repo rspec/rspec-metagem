@@ -1,5 +1,5 @@
-Rspec::Matchers.constants.each do |c|
-  if Class === (klass = Rspec::Matchers.const_get(c))
+RSpec::Matchers.constants.each do |c|
+  if Class === (klass = RSpec::Matchers.const_get(c))
     if klass.public_instance_methods.any? {|m| ['failure_message_for_should',:failure_message_for_should].include?(m)}
       klass.class_eval do
         alias_method :failure_message, :failure_message_for_should

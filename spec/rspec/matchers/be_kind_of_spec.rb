@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec
+module RSpec
   module Matchers
     [:be_a_kind_of, :be_kind_of].each do |method|
       describe "actual.should #{method}(expected)" do

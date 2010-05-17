@@ -14,7 +14,7 @@ class Substance
 end
   
 class SubstanceTester
-  include Rspec::Matchers
+  include RSpec::Matchers
   def initialize substance
     @substance = substance
   end

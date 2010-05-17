@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
 
     class OperatorMatcher
@@ -24,7 +24,7 @@ module Rspec
       def self.use_custom_matcher_or_delegate(operator)
         define_method(operator) do |expected|
           if matcher = OperatorMatcher.get(@actual.class, operator)
-            @actual.send(::Rspec::Matchers.last_should, matcher.new(expected))
+            @actual.send(::RSpec::Matchers.last_should, matcher.new(expected))
           else
             eval_match(@actual, operator, expected)
           end
@@ -36,7 +36,7 @@ module Rspec
       end
 
       def fail_with_message(message)
-        Rspec::Expectations.fail_with(message, @expected, @actual)
+        RSpec::Expectations.fail_with(message, @expected, @actual)
       end
 
       def description
@@ -46,7 +46,7 @@ module Rspec
     private
       
       def eval_match(actual, operator, expected)
-        ::Rspec::Matchers.last_matcher = self
+        ::RSpec::Matchers.last_matcher = self
         @operator, @expected = operator, expected
         __delegate_operator(actual, operator, expected)
       end

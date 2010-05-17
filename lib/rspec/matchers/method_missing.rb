@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     def method_missing(sym, *args, &block) # :nodoc:
       return Matchers::BePredicate.new(sym, *args, &block) if sym.to_s =~ /^be_/

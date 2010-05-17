@@ -62,7 +62,7 @@ describe "should change { block }" do
   it "should warn if passed a block using do/end instead of {}" do
     expect do
       expect {}.to change do; end
-    end.to raise_error(Rspec::Matchers::MatcherError, /block passed to should or should_not/)
+    end.to raise_error(RSpec::Matchers::MatcherError, /block passed to should or should_not/)
   end
   
   it "provides a #description" do
@@ -89,7 +89,7 @@ describe "should_not change { block }" do
   it "should warn if passed a block using do/end instead of {}" do
     expect do
       expect {}.to_not change do; end
-    end.to raise_error(Rspec::Matchers::MatcherError, /block passed to should or should_not/)
+    end.to raise_error(RSpec::Matchers::MatcherError, /block passed to should or should_not/)
   end
 end
 
@@ -336,7 +336,7 @@ describe "should change{ block }.from(old).to(new)" do
   end
 end
 
-describe Rspec::Matchers::Change do
+describe RSpec::Matchers::Change do
   it "should work when the receiver has implemented #send" do
     @instance = SomethingExpected.new
     @instance.some_value = "string"

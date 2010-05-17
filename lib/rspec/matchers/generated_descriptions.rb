@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     class << self
       attr_accessor :last_matcher, :last_should # :nodoc:

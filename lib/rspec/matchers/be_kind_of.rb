@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     # :call-seq:
     #   should be_kind_of(expected)

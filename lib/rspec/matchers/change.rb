@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Matchers
     
     #Based on patch from Wilson Bilkovich

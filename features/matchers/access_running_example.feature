@@ -12,7 +12,7 @@ Feature: access running example
   Scenario: call method defined on example from matcher
     Given a file named "example_spec.rb" with:
       """
-      Rspec::Matchers.define :bar do
+      RSpec::Matchers.define :bar do
         match do |_|
           foo == "foo"
         end
@@ -34,7 +34,7 @@ Feature: access running example
   Scenario: call method _not_ defined on example from matcher
     Given a file named "example_spec.rb" with:
       """
-      Rspec::Matchers.define :bar do
+      RSpec::Matchers.define :bar do
         match do |_|
           foo == "foo"
         end
@@ -49,5 +49,5 @@ Feature: access running example
     When I run "rspec example_spec.rb"
     Then I should see "1 example, 1 failure"
     And I should see "undefined local variable"
-    And I should see "Rspec::Matchers::Matcher"
+    And I should see "RSpec::Matchers::Matcher"
     And I should not see "ExampleGroup"

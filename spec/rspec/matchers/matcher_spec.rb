@@ -2,12 +2,12 @@ require 'spec_helper'
 
 class UnexpectedError < StandardError; end
 
-module Rspec
+module RSpec
   module Matchers
     describe Matcher do
       context "without overrides" do
         before(:each) do
-          @matcher = Rspec::Matchers::Matcher.new(:be_a_multiple_of, 3) do |multiple|
+          @matcher = RSpec::Matchers::Matcher.new(:be_a_multiple_of, 3) do |multiple|
             match do |actual|
               actual % multiple == 0
             end
@@ -30,22 +30,22 @@ module Rspec
       end
 
       it "is not diffable by default" do
-        matcher = Rspec::Matchers::Matcher.new(:name) {}
+        matcher = RSpec::Matchers::Matcher.new(:name) {}
         matcher.should_not be_diffable
       end
 
       it "is diffable when told to be" do
-        matcher = Rspec::Matchers::Matcher.new(:name) { diffable }
+        matcher = RSpec::Matchers::Matcher.new(:name) { diffable }
         matcher.should be_diffable
       end
 
       it "provides expected" do
-        matcher = Rspec::Matchers::Matcher.new(:name, 'expected string') {}
+        matcher = RSpec::Matchers::Matcher.new(:name, 'expected string') {}
         matcher.expected.should == ['expected string']
       end
 
       it "provides actual" do
-        matcher = Rspec::Matchers::Matcher.new(:name, 'expected string') do
+        matcher = RSpec::Matchers::Matcher.new(:name, 'expected string') do
           match {|actual|}
         end
 
@@ -56,7 +56,7 @@ module Rspec
 
       context "wrapping another expectation (should == ...)" do
         it "returns true if the wrapped expectation passes" do
-          matcher = Rspec::Matchers::Matcher.new(:name, 'value') do |expected|
+          matcher = RSpec::Matchers::Matcher.new(:name, 'value') do |expected|
             match do |actual|
               actual.should == expected
             end
@@ -65,7 +65,7 @@ module Rspec
         end
 
         it "returns false if the wrapped expectation fails" do
-          matcher = Rspec::Matchers::Matcher.new(:name, 'value') do |expected|
+          matcher = RSpec::Matchers::Matcher.new(:name, 'value') do |expected|
             match do |actual|
               actual.should == expected
             end
@@ -76,7 +76,7 @@ module Rspec
 
       context "with overrides" do
         before(:each) do
-          @matcher = Rspec::Matchers::Matcher.new(:be_boolean, true) do |boolean|
+          @matcher = RSpec::Matchers::Matcher.new(:be_boolean, true) do |boolean|
             match do |actual|
               actual
             end
@@ -117,7 +117,7 @@ module Rspec
 
       context "#new" do
         it "passes matches? arg to match block" do
-          matcher = Rspec::Matchers::Matcher.new(:ignore) do
+          matcher = RSpec::Matchers::Matcher.new(:ignore) do
             match do |actual|
               actual == 5
             end
@@ -126,7 +126,7 @@ module Rspec
         end
 
         it "exposes arg submitted through #new to matcher block" do
-          matcher = Rspec::Matchers::Matcher.new(:ignore, 4) do |expected|
+          matcher = RSpec::Matchers::Matcher.new(:ignore, 4) do |expected|
             match do |actual|
               actual > expected
             end
@@ -137,7 +137,7 @@ module Rspec
 
       context "with no args" do
         before(:each) do
-          @matcher = Rspec::Matchers::Matcher.new(:matcher_name) do
+          @matcher = RSpec::Matchers::Matcher.new(:matcher_name) do
             match do |actual|
               actual == 5
             end
@@ -155,7 +155,7 @@ module Rspec
 
       context "with 1 arg" do
         before(:each) do
-          @matcher = Rspec::Matchers::Matcher.new(:matcher_name, 1) do |expected|
+          @matcher = RSpec::Matchers::Matcher.new(:matcher_name, 1) do |expected|
             match do |actual|
               actual == 5 && expected == 1
             end
@@ -173,7 +173,7 @@ module Rspec
 
       context "with multiple args" do
         before(:each) do
-          @matcher = Rspec::Matchers::Matcher.new(:matcher_name, 1, 2, 3, 4) do |a,b,c,d|
+          @matcher = RSpec::Matchers::Matcher.new(:matcher_name, 1, 2, 3, 4) do |a,b,c,d|
             match do |sum|
               a + b + c + d == sum
             end
@@ -190,7 +190,7 @@ module Rspec
       end
 
       it "supports helper methods" do
-        matcher = Rspec::Matchers::Matcher.new(:be_similar_to, [1,2,3]) do |sample|
+        matcher = RSpec::Matchers::Matcher.new(:be_similar_to, [1,2,3]) do |sample|
           match do |actual|
             similar?(sample, actual)
           end
@@ -204,7 +204,7 @@ module Rspec
       end
 
       it "supports fluent interface" do
-        matcher = Rspec::Matchers::Matcher.new(:first_word) do
+        matcher = RSpec::Matchers::Matcher.new(:first_word) do
           def second_word
             self
           end
@@ -214,14 +214,14 @@ module Rspec
       end
 
       it "treats method missing normally for undeclared methods" do
-        matcher = Rspec::Matchers::Matcher.new(:ignore) { }
+        matcher = RSpec::Matchers::Matcher.new(:ignore) { }
         expect { matcher.non_existent_method }.to raise_error(NoMethodError)
       end
 
       it "has access to other matchers" do
-        matcher = Rspec::Matchers::Matcher.new(:ignore, 3) do |expected|
+        matcher = RSpec::Matchers::Matcher.new(:ignore, 3) do |expected|
           match do |actual|
-            extend Rspec::Matchers
+            extend RSpec::Matchers
             actual.should eql(5 + expected)
           end
         end
@@ -240,7 +240,7 @@ module Rspec
           end
           let(:matcher) do
             m = mod
-            Rspec::Matchers::Matcher.new :equal, 4 do |expected|
+            RSpec::Matchers::Matcher.new :equal, 4 do |expected|
               extend m
               match_unless_raises UnexpectedError do
                 assert_equal expected, actual
@@ -257,7 +257,7 @@ module Rspec
 
         context "with an unexpected error" do
           let(:matcher) do
-            Rspec::Matchers::Matcher.new :foo, :bar do |expected|
+            RSpec::Matchers::Matcher.new :foo, :bar do |expected|
               match_unless_raises SyntaxError do |actual|
                 raise "unexpected exception"
               end
@@ -274,7 +274,7 @@ module Rspec
       end
 
       it "can define chainable methods" do
-        matcher = Rspec::Matchers::Matcher.new(:name) do
+        matcher = RSpec::Matchers::Matcher.new(:name) do
           chain(:expecting) do |expected_value|
             @expected_value = expected_value
           end
@@ -291,7 +291,7 @@ module Rspec
         end
 
         it "can access methods in the running_example" do
-          Rspec::Matchers.define(:__access_running_example) do
+          RSpec::Matchers.define(:__access_running_example) do
             match do |actual|
               a_method_in_the_example == "method defined in the example"
             end
@@ -300,7 +300,7 @@ module Rspec
         end
 
         it "raises NoMethodError for methods not in the running_example" do
-          Rspec::Matchers.define(:__raise_no_method_error) do
+          RSpec::Matchers.define(:__raise_no_method_error) do
             match do |actual|
               a_method_not_in_the_example == "method defined in the example"
             end
@@ -308,7 +308,7 @@ module Rspec
 
           expect do
             running_example.should __raise_no_method_error
-          end.to raise_error(/Rspec::Matchers::Matcher/)
+          end.to raise_error(/RSpec::Matchers::Matcher/)
         end
       end
     

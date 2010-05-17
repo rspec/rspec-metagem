@@ -6,8 +6,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-expectations"
-    gem.version = Rspec::Expectations::Version::STRING
-    gem.summary = "rspec-expectations-#{Rspec::Expectations::Version::STRING}"
+    gem.version = RSpec::Expectations::Version::STRING
+    gem.summary = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
     gem.description = "rspec expectations (should[_not] and matchers)"
     gem.rubyforge_project = "rspec"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
@@ -15,8 +15,8 @@ begin
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
     gem.add_development_dependency('cucumber', ">= 0.6.2")
     gem.add_development_dependency('aruba', ">= 0.1.1")
-    gem.add_development_dependency('rspec-core', ">= #{Rspec::Expectations::Version::STRING}")
-    gem.add_development_dependency('rspec-mocks', ">= #{Rspec::Expectations::Version::STRING}")
+    gem.add_development_dependency('rspec-core', ">= #{RSpec::Expectations::Version::STRING}")
+    gem.add_development_dependency('rspec-mocks', ">= #{RSpec::Expectations::Version::STRING}")
     gem.post_install_message = <<-EOM
 #{"*"*50}
 
@@ -36,15 +36,15 @@ end
 namespace :gem do
   desc "push to gemcutter"
   task :push => :build do
-    system "gem push pkg/rspec-expectations-#{Rspec::Expectations::Version::STRING}.gem"
+    system "gem push pkg/rspec-expectations-#{RSpec::Expectations::Version::STRING}.gem"
   end
 end
 
 begin
   require 'rspec/core/rake_task'
-  Rspec::Core::RakeTask.new(:spec)
+  RSpec::Core::RakeTask.new(:spec)
 rescue LoadError
-  puts "Rspec core or one of its dependencies is not installed. Install it with: gem install rspec-core"
+  puts "RSpec core or one of its dependencies is not installed. Install it with: gem install rspec-core"
 end
 
 begin

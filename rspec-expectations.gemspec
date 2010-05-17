@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-04-27}
+  s.date = %q{2010-05-16}
   s.description = %q{rspec expectations (should[_not] and matchers)}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
@@ -35,6 +35,7 @@ Gem::Specification.new do |s|
      "features/matchers/expect_error.feature",
      "features/support/env.rb",
      "lib/rspec/expectations.rb",
+     "lib/rspec/expectations/backward_compatibility.rb",
      "lib/rspec/expectations/differs/default.rb",
      "lib/rspec/expectations/differs/load-diff-lcs.rb",
      "lib/rspec/expectations/errors.rb",
