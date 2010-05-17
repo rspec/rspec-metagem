@@ -2,7 +2,7 @@ require 'rake'
 require 'fileutils'
 require 'pathname'
 
-$:.unshift File.expand_path(File.join(File.dirname(__FILE__),'lib'))
+$:.unshift File.expand_path('../lib', __FILE__)
 
 require 'rspec/version'
 
@@ -10,16 +10,16 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec"
-    gem.version = Rspec::Version::STRING
-    gem.summary = "rspec-#{Rspec::Version::STRING}"
+    gem.version = RSpec::Version::STRING
+    gem.summary = "rspec-#{RSpec::Version::STRING}"
     gem.description = "Meta-gem that depends on the other rspec gems"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/meta"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
     gem.rubyforge_project = "rspec"
-    gem.add_dependency "rspec-core", Rspec::Version::STRING
-    gem.add_dependency "rspec-expectations", Rspec::Version::STRING
-    gem.add_dependency "rspec-mocks", Rspec::Version::STRING
+    gem.add_dependency "rspec-core", RSpec::Version::STRING
+    gem.add_dependency "rspec-expectations", RSpec::Version::STRING
+    gem.add_dependency "rspec-mocks", RSpec::Version::STRING
     gem.post_install_message = <<-EOM
 #{"*"*50}
 
@@ -39,7 +39,7 @@ end
 namespace :gem do
   desc "push to gemcutter"
   task :push => :build do
-    system "gem push pkg/rspec-#{Rspec::Version::STRING}.gem"
+    system "gem push pkg/rspec-#{RSpec::Version::STRING}.gem"
   end
 end
 
