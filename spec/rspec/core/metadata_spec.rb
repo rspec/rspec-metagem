@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec
+module RSpec
   module Core
     describe Metadata do
 
@@ -190,7 +190,7 @@ module Rspec
         let(:example_line_number) { __LINE__ -1 }
         let(:next_example_metadata) {group_metadata.for_example('next_example', 
           :caller => ["foo_spec.rb:#{example_line_number + 2}"])}
-        let(:world) { Rspec.world }
+        let(:world) { RSpec.world }
 
         it "matches the group when the line_number is the example group line number" do
           world.should_receive(:preceding_declaration_line).and_return(group_line_number)

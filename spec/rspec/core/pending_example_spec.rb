@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-Rspec::Matchers.define :be_pending_with do |message|
+RSpec::Matchers.define :be_pending_with do |message|
   match do |example|
     example.metadata[:pending] && example.metadata[:execution_result][:pending_message] == message
   end
@@ -13,7 +13,7 @@ end
 describe "an example" do
   context "with no block" do
     it "is listed as pending with 'Not Yet Implemented'" do
-      group = Rspec::Core::ExampleGroup.describe('group') do
+      group = RSpec::Core::ExampleGroup.describe('group') do
         it "has no block" 
       end
       example = group.examples.first
@@ -24,7 +24,7 @@ describe "an example" do
 
   context "with no args" do
     it "is listed as pending with 'No reason given'" do
-      group = Rspec::Core::ExampleGroup.describe('group') do
+      group = RSpec::Core::ExampleGroup.describe('group') do
         it "does something" do
           pending
         end
@@ -37,7 +37,7 @@ describe "an example" do
 
   context "with a message" do
     it "is listed as pending with the supplied message" do
-      group = Rspec::Core::ExampleGroup.describe('group') do
+      group = RSpec::Core::ExampleGroup.describe('group') do
         it "does something" do
           pending("just because")
         end
@@ -51,7 +51,7 @@ describe "an example" do
   context "with a block" do
     context "that fails" do
       it "is listed as pending with the supplied message" do
-        group = Rspec::Core::ExampleGroup.describe('group') do
+        group = RSpec::Core::ExampleGroup.describe('group') do
           it "does something" do
             pending("just because") do
               3.should == 4
@@ -66,7 +66,7 @@ describe "an example" do
 
     context "that passes" do
       it "raises a PendingExampleFixedError" do
-        group = Rspec::Core::ExampleGroup.describe('group') do
+        group = RSpec::Core::ExampleGroup.describe('group') do
           it "does something" do
             pending("just because") do
               3.should == 3
@@ -77,7 +77,7 @@ describe "an example" do
         example.run(group.new, stub.as_null_object)
         example.metadata[:pending].should be_false
         example.metadata[:execution_result][:status].should == 'failed'
-        example.metadata[:execution_result][:exception_encountered].should be_a(Rspec::Core::PendingExampleFixedError)
+        example.metadata[:execution_result][:exception_encountered].should be_a(RSpec::Core::PendingExampleFixedError)
       end
     end
   end

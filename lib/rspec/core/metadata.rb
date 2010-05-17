@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class Metadata < Hash
 
@@ -49,12 +49,12 @@ module Rspec
 #{"*"*50}
 :#{key} is not allowed
 
-Rspec reserves some hash keys for its own internal use, 
+RSpec reserves some hash keys for its own internal use, 
 including :#{key}, which is used on:
 
   #{caller(0)[4]}.
 
-Here are all of Rspec's reserved hash keys:
+Here are all of RSpec's reserved hash keys:
 
   #{RESERVED_KEYS.join("\n  ")}
 #{"*"*50}
@@ -119,7 +119,7 @@ EOM
     private
 
       def world
-        Rspec.world
+        RSpec.world
       end
 
       def superclass_metadata

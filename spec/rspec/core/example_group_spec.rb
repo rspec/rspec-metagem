@@ -10,7 +10,7 @@ class SelfObserver
   end
 end
 
-module Rspec::Core
+module RSpec::Core
 
   describe ExampleGroup do
 
@@ -52,13 +52,13 @@ module Rspec::Core
       it "is not registered in world" do
         parent = ExampleGroup.describe
         child = parent.describe
-        Rspec.world.example_groups.should == [parent]
+        RSpec.world.example_groups.should == [parent]
       end
     end
 
     describe "filtering" do
       it "includes all examples in an explicitly included group" do
-        Rspec.world.stub(:inclusion_filter).and_return({ :awesome => true })
+        RSpec.world.stub(:inclusion_filter).and_return({ :awesome => true })
         group = ExampleGroup.describe("does something", :awesome => true)
         examples = [
           group.example("first"),
@@ -68,7 +68,7 @@ module Rspec::Core
       end
 
       it "includes explicitly included examples" do
-        Rspec.world.stub(:inclusion_filter).and_return({ :include_me => true })
+        RSpec.world.stub(:inclusion_filter).and_return({ :include_me => true })
         group = ExampleGroup.describe
         example = group.example("does something", :include_me => true)
         group.example("don't run me")
@@ -76,7 +76,7 @@ module Rspec::Core
       end
 
       it "excludes all examples in an excluded group" do
-        Rspec.world.stub(:exclusion_filter).and_return({ :include_me => false })
+        RSpec.world.stub(:exclusion_filter).and_return({ :include_me => false })
         group = ExampleGroup.describe("does something", :include_me => false)
         examples = [
           group.example("first"),
@@ -86,7 +86,7 @@ module Rspec::Core
       end
 
       it "filters out excluded examples" do
-        Rspec.world.stub(:exclusion_filter).and_return({ :exclude_me => true })
+        RSpec.world.stub(:exclusion_filter).and_return({ :exclude_me => true })
         group = ExampleGroup.describe("does something")
         examples = [
           group.example("first", :exclude_me => true),
@@ -105,7 +105,7 @@ module Rspec::Core
 
       context "with no examples or groups that match filters" do
         it "returns none" do
-          Rspec.world.stub(:inclusion_filter).and_return({ :awesome => false })
+          RSpec.world.stub(:inclusion_filter).and_return({ :awesome => false })
           group = ExampleGroup.describe
           example = group.example("does something")
           group.filtered_examples.should == []
@@ -432,12 +432,12 @@ module Rspec::Core
     end
 
     describe "#its" do
-      its(:class) { should == Rspec::Core::ExampleGroup }
+      its(:class) { should == RSpec::Core::ExampleGroup }
       it "does not interfere between examples" do
-        subject.class.should == Rspec::Core::ExampleGroup
+        subject.class.should == RSpec::Core::ExampleGroup
       end
       context "subject modified in before block" do
-        before { subject.class.should == Rspec::Core::ExampleGroup }
+        before { subject.class.should == RSpec::Core::ExampleGroup }
       end
     end
 

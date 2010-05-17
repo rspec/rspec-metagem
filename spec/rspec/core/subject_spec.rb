@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Rspec::Core
+module RSpec::Core
 
   describe Subject do
 

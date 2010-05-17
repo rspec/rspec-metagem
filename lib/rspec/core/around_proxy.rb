@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class AroundProxy
       def initialize(example_group_instance, &example_block)

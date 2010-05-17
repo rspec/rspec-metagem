@@ -1,9 +1,9 @@
-# Rspec Core
+# RSpec Core
 
-Rspec is an automated testing framework for Ruby, designed for use in Behaviour
+RSpec is an automated testing framework for Ruby, designed for use in Behaviour
 Driven Development and Test Driven Development.
 
-rspec-core includes the Rspec runner, output formatters, and the `rspec`
+rspec-core includes the RSpec runner, output formatters, and the `rspec`
 command.
 
 ## Upgrading from rspec-1.x
@@ -46,7 +46,7 @@ Implement the simplest solution:
 Be sure to require the implementation file in the spec:
 
     # in spec/calculator_spec.rb
-    # - Rspec adds ./lib to the $LOAD_PATH, so you can
+    # - RSpec adds ./lib to the $LOAD_PATH, so you can
     #   just require "calculator" directly
     require "calculator"
 

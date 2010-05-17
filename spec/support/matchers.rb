@@ -1,4 +1,4 @@
-Rspec::Matchers.define :map_specs do |specs|
+RSpec::Matchers.define :map_specs do |specs|
   match do |autotest|
     @specs = specs
     @autotest = prepare(autotest)
@@ -20,7 +20,7 @@ Rspec::Matchers.define :map_specs do |specs|
   end
 end
 
-Rspec::Matchers.define :have_interface_for do |method|
+RSpec::Matchers.define :have_interface_for do |method|
   match do |object|
     @method = method
     @object = object

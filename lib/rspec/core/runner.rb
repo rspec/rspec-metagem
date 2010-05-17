@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class Runner
 
@@ -13,7 +13,7 @@ module Rspec
       end
 
       def configuration
-        Rspec.configuration
+        RSpec.configuration
       end
 
       def reporter
@@ -21,12 +21,12 @@ module Rspec
       end
 
       def inclusion_filter
-        Rspec.configuration.filter
+        RSpec.configuration.filter
       end
 
       def run(args = [])
         configure(args)
-        Rspec.world.announce_inclusion_filter
+        RSpec.world.announce_inclusion_filter
 
         reporter.report(example_count) do |reporter|
           example_groups.run_examples(reporter)
@@ -38,17 +38,17 @@ module Rspec
     private
 
       def configure(args)
-        Rspec::Core::ConfigurationOptions.new(args).apply_to(configuration)
+        RSpec::Core::ConfigurationOptions.new(args).apply_to(configuration)
         configuration.require_files_to_run
         configuration.configure_mock_framework
       end
 
       def example_count
-        Rspec.world.example_count
+        RSpec.world.example_count
       end
 
       def example_groups
-        Rspec.world.example_groups.extend(ExampleGroups)
+        RSpec.world.example_groups.extend(ExampleGroups)
       end
 
       module ExampleGroups

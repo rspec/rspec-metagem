@@ -1,8 +1,8 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Rspec::Core::Formatters::Helpers do
-  let(:helper) { helper = Object.new.extend(Rspec::Core::Formatters::Helpers) }
+describe RSpec::Core::Formatters::Helpers do
+  let(:helper) { helper = Object.new.extend(RSpec::Core::Formatters::Helpers) }
 
   describe "format seconds" do
     it "uses passed in precision if specified" do

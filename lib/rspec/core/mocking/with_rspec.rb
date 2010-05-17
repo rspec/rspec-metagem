@@ -1,13 +1,13 @@
 require 'rspec/mocks/framework'
 require 'rspec/mocks/extensions'
 
-module Rspec
+module RSpec
   module Core
     module MockFrameworkAdapter
 
-      include Rspec::Mocks::ExampleMethods
+      include RSpec::Mocks::ExampleMethods
       def _setup_mocks
-        $rspec_mocks ||= Rspec::Mocks::Space.new
+        $rspec_mocks ||= RSpec::Mocks::Space.new
       end
       def _verify_mocks
         $rspec_mocks.verify_all

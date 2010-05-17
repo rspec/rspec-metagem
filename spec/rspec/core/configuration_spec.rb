@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-module Rspec::Core
+module RSpec::Core
 
   describe Configuration do
 
     let(:config) { subject }
 
     before(:each) do
-      Rspec.world.stub(:configuration).and_return(config)
+      RSpec.world.stub(:configuration).and_return(config)
     end
 
     describe "#mock_framework_class" do

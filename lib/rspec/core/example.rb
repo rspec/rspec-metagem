@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class Example
 
@@ -118,8 +118,8 @@ module Rspec
 
       def assign_auto_description
         if description.empty?
-          metadata[:description] = Rspec::Matchers.generated_description 
-          Rspec::Matchers.clear_generated_description
+          metadata[:description] = RSpec::Matchers.generated_description 
+          RSpec::Matchers.clear_generated_description
         end
       end
 

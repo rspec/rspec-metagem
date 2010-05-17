@@ -1,6 +1,6 @@
 Feature: line number option
 
-  As an Rspec user
+  As an RSpec user
   I want to run one example identified by the line number
   
   Scenario: standard examples

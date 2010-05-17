@@ -1,7 +1,7 @@
 require 'mocha/standalone'
 require 'mocha/object'
 
-module Rspec
+module RSpec
   module Core
     module MockFrameworkAdapter
 

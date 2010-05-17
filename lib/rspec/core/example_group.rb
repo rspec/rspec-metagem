@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class ExampleGroup
       extend  Hooks
@@ -9,11 +9,11 @@ module Rspec
       attr_accessor :running_example
 
       def self.world
-        Rspec.world
+        RSpec.world
       end
 
       def self.inherited(klass)
-        Rspec::Core::Runner.autorun
+        RSpec::Core::Runner.autorun
         world.example_groups << klass if klass.superclass == ExampleGroup
       end
 
@@ -36,7 +36,7 @@ module Rspec
             options.update(:pending => true) unless block
             options.update(:caller => caller)
             options.update(#{extra_options.inspect})
-            examples << Rspec::Core::Example.new(self, desc, options, block)
+            examples << RSpec::Core::Example.new(self, desc, options, block)
             examples.last
           end
         END_RUBY
@@ -57,7 +57,7 @@ module Rspec
       def self.it_should_behave_like(*names)
         names.each do |name|
           begin
-            module_eval &Rspec.world.shared_example_groups[name]
+            module_eval &RSpec.world.shared_example_groups[name]
           rescue ArgumentError
             raise "Could not find shared example group named #{name.inspect}"
           end
@@ -116,11 +116,11 @@ module Rspec
       end
 
       def self.ancestors
-        @_ancestors ||= super().select {|a| a < Rspec::Core::ExampleGroup}
+        @_ancestors ||= super().select {|a| a < RSpec::Core::ExampleGroup}
       end
 
       def self.set_it_up(*args)
-        @metadata = Rspec::Core::Metadata.new(superclass_metadata).process(*args)
+        @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
 
         world.find_modules(self).each do |include_or_extend, mod, opts|
           send(include_or_extend, mod) unless mixins[include_or_extend].include?(mod)
@@ -191,7 +191,7 @@ module Rspec
       end
 
       def self.to_s
-        self == Rspec::Core::ExampleGroup ? 'Rspec::Core::ExampleGroup' : name
+        self == RSpec::Core::ExampleGroup ? 'RSpec::Core::ExampleGroup' : name
       end
 
       def self.all_apply?(filters)

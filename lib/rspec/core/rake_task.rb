@@ -3,7 +3,7 @@
 require 'rake'
 require 'rake/tasklib'
 
-module Rspec
+module RSpec
   module Core
 
     class RakeTask < ::Rake::TaskLib
@@ -51,7 +51,7 @@ module Rspec
 
       def define # :nodoc:
         actual_name = Hash === name ? name.keys.first : name
-        desc("Run Rspec code examples") unless ::Rake.application.last_comment
+        desc("Run RSpec code examples") unless ::Rake.application.last_comment
 
         task name do
           RakeFileUtils.send(:verbose, verbose) do

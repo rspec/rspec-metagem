@@ -1,8 +1,8 @@
 require "spec_helper"
 
-describe Rspec::Core::Formatters::BaseFormatter do
+describe RSpec::Core::Formatters::BaseFormatter do
   
-  let(:formatter) { Rspec::Core::Formatters::BaseFormatter.new }
+  let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new }
 
   it "has start as an interface with one argument" do
     formatter.should have_interface_for(:start).with(1).argument

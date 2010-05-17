@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     module Pending
       def pending(message = 'No reason given')
@@ -10,7 +10,7 @@ module Rspec
             running_example.metadata[:pending] = false
           rescue Exception => e
           end
-          raise Rspec::Core::PendingExampleFixedError.new if result
+          raise RSpec::Core::PendingExampleFixedError.new if result
         end
         throw :pending_declared_in_example, message
       end

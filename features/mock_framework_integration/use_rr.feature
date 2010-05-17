@@ -6,7 +6,7 @@ Feature: mock with rr
   Scenario: Mock with rr
     Given a file named "rr_example_spec.rb" with:
       """
-      Rspec.configure do |config|
+      RSpec.configure do |config|
         config.mock_framework = :rr
       end
 

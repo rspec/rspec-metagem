@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class World
 
@@ -17,7 +17,7 @@ module Rspec
       end
 
       def configuration
-        Rspec.configuration
+        RSpec.configuration
       end
 
       def inclusion_filter
@@ -58,12 +58,12 @@ module Rspec
 
       def announce_inclusion_filter
         if inclusion_filter
-          if Rspec.configuration.run_all_when_everything_filtered? && Rspec.world.example_count == 0
-            Rspec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
-            Rspec.configuration.clear_inclusion_filter
+          if RSpec.configuration.run_all_when_everything_filtered? && RSpec.world.example_count == 0
+            RSpec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+            RSpec.configuration.clear_inclusion_filter
             filtered_examples.clear
           else
-            Rspec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+            RSpec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
           end
         end      
       end
@@ -73,7 +73,7 @@ module Rspec
       end
 
       def find_hook(hook, scope, group)
-        Rspec.configuration.hooks[hook][scope].select do |filters, block|
+        RSpec.configuration.hooks[hook][scope].select do |filters, block|
           group.all_apply?(filters)
         end.map { |filters, block| block }
       end

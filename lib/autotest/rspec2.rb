@@ -14,7 +14,7 @@ Autotest.add_hook :initialize do |at|
   }
 end
 
-class RspecCommandError < StandardError; end
+class RSpecCommandError < StandardError; end
 
 class Autotest::Rspec2 < Autotest
   

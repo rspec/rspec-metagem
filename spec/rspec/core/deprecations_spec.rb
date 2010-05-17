@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe "deprecations" do
   describe "Spec" do
-    Rspec.should_receive(:warn).with /Spec .* Rspec/i
+    RSpec.should_receive(:warn).with /Spec .* RSpec/i
     Spec
   end
 end

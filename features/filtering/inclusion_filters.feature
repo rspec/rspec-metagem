@@ -3,7 +3,7 @@ Feature: inclusion feature
   Scenario: focus on one example
     Given a file named "spec/sample_spec.rb" with:
       """
-      Rspec.configure do |c|
+      RSpec.configure do |c|
         c.filter_run :focus => true
       end
 
@@ -22,7 +22,7 @@ Feature: inclusion feature
   Scenario: focus on one group
     Given a file named "spec/sample_spec.rb" with:
       """
-      Rspec.configure do |c|
+      RSpec.configure do |c|
         c.filter_run :focus => true
       end
 
@@ -47,7 +47,7 @@ Feature: inclusion feature
   Scenario: no examples match filter
     Given a file named "spec/sample_spec.rb" with:
       """
-      Rspec.configure do |c|
+      RSpec.configure do |c|
         c.filter_run :focus => true
         c.run_all_when_everything_filtered = true
       end

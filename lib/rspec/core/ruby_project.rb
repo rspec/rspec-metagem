@@ -4,7 +4,7 @@
 
 require 'pathname'
 
-module Rspec
+module RSpec
   module Core
     module RubyProject
       def add_to_load_path(*dirs)

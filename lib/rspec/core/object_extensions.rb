@@ -1,10 +1,10 @@
-module Rspec
+module RSpec
   module Core
     module ObjectExtensions
       def describe(*args, &example_group_block)
         args << {} unless args.last.is_a?(Hash)
         args.last.update :caller => caller(1)
-        Rspec::Core::ExampleGroup.describe(*args, &example_group_block)
+        RSpec::Core::ExampleGroup.describe(*args, &example_group_block)
       end
 
       alias :context :describe
@@ -12,4 +12,4 @@ module Rspec
   end
 end
 
-include Rspec::Core::ObjectExtensions
+include RSpec::Core::ObjectExtensions

@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     class Configuration
       attr_reader :hooks # :nodoc:
@@ -32,7 +32,7 @@ module Rspec
           :profile_examples => false,
           :files_to_run => [],
           :filename_pattern => '**/*_spec.rb',
-          :formatter_class => Rspec::Core::Formatters::ProgressFormatter,
+          :formatter_class => RSpec::Core::Formatters::ProgressFormatter,
           :backtrace_clean_patterns => [/\/lib\/ruby\//, 
                                         /bin\/rcov:/, 
                                         /vendor\/rails/, 
@@ -139,9 +139,9 @@ EOM
       def formatter=(formatter_to_use)
         formatter_class = case formatter_to_use.to_s
         when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
-          Rspec::Core::Formatters::DocumentationFormatter
+          RSpec::Core::Formatters::DocumentationFormatter
         when 'progress' 
-          Rspec::Core::Formatters::ProgressFormatter
+          RSpec::Core::Formatters::ProgressFormatter
         else 
           raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
         end
@@ -174,7 +174,7 @@ EOM
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
       def alias_example_to(new_name, extra_options={})
-        Rspec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
+        RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
       def filter_run(options={})
@@ -223,7 +223,7 @@ EOM
 
       def configure_mock_framework
         require_mock_framework_adapter
-        Rspec::Core::ExampleGroup.send(:include, Rspec::Core::MockFrameworkAdapter)
+        RSpec::Core::ExampleGroup.send(:include, RSpec::Core::MockFrameworkAdapter)
       end
 
       def require_files_to_run

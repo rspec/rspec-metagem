@@ -13,15 +13,15 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
-    gem.version = Rspec::Core::Version::STRING
-    gem.summary = "rspec-core-#{Rspec::Core::Version::STRING}"
-    gem.description = 'Rspec runner and example group classes'
+    gem.version = RSpec::Core::Version::STRING
+    gem.summary = "rspec-core-#{RSpec::Core::Version::STRING}"
+    gem.description = 'RSpec runner and example group classes'
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/core"
     gem.authors = ["Chad Humphries", "David Chelimsky"]
     gem.rubyforge_project = "rspec"
-    gem.add_development_dependency "rspec-expectations", ">= #{Rspec::Core::Version::STRING}"
-    gem.add_development_dependency "rspec-mocks", ">= #{Rspec::Core::Version::STRING}"
+    gem.add_development_dependency "rspec-expectations", ">= #{RSpec::Core::Version::STRING}"
+    gem.add_development_dependency "rspec-mocks", ">= #{RSpec::Core::Version::STRING}"
     gem.add_development_dependency('cucumber', '>= 0.5.3')
     gem.add_development_dependency('autotest', '>= 4.2.9')
     gem.post_install_message = <<-EOM
@@ -43,14 +43,14 @@ end
 namespace :gem do
   desc "push to gemcutter"
   task :push => :build do
-    system "gem push pkg/rspec-core-#{Rspec::Core::Version::STRING}.gem"
+    system "gem push pkg/rspec-core-#{RSpec::Core::Version::STRING}.gem"
   end
 end
 
-Rspec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec)
 
 desc "Run all examples using rcov"
-Rspec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
+RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
   t.rcov = true
   t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
   t.rcov_opts << %[--no-html --aggregate coverage.data]
@@ -85,7 +85,7 @@ end
 
 Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "rspec-core #{Rspec::Core::Version::STRING}"
+  rdoc.title = "rspec-core #{RSpec::Core::Version::STRING}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

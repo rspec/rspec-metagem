@@ -1,11 +1,11 @@
 require 'spec_helper'
 require 'stringio'
 
-describe Rspec::Core::Formatters::ProgressFormatter do
+describe RSpec::Core::Formatters::ProgressFormatter do
   
    before do
      @output = StringIO.new
-     @formatter = Rspec::Core::Formatters::ProgressFormatter.new
+     @formatter = RSpec::Core::Formatters::ProgressFormatter.new
      @formatter.start(2)
      @formatter.stub!(:color_enabled?).and_return(false)
      @formatter.stub!(:output).and_return(@output)

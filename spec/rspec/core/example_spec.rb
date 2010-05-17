@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Rspec::Core::Example, :parent_metadata => 'sample' do
+describe RSpec::Core::Example, :parent_metadata => 'sample' do
   let(:example_group) do
-    Rspec::Core::ExampleGroup.describe('group description')
+    RSpec::Core::ExampleGroup.describe('group description')
   end
 
   let(:example) do
@@ -41,7 +41,7 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
-      described_class.should == Rspec::Core::Example
+      described_class.should == RSpec::Core::Example
     end
   end
 
@@ -59,7 +59,7 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
   describe "#run" do
     it "runs after(:each) when the example passes" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.describe do
+      group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { 1.should == 1 }
       end
@@ -69,7 +69,7 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
     it "runs after(:each) when the example fails" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.describe do
+      group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { 1.should == 2 }
       end
@@ -79,7 +79,7 @@ describe Rspec::Core::Example, :parent_metadata => 'sample' do
 
     it "runs after(:each) when the example raises an Exception" do
       after_run = false
-      group = Rspec::Core::ExampleGroup.describe do
+      group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { raise "this error" } 
       end

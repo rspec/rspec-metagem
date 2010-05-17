@@ -1,6 +1,6 @@
 Feature: pending examples
 
-  Rspec offers three ways to indicate that an example is disabled pending
+  RSpec offers three ways to indicate that an example is disabled pending
   some action.
 
   Scenario: pending implementation

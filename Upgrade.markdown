@@ -2,16 +2,16 @@
 
 ## What's changed
 
-### Rspec namespace
+### RSpec namespace
 
-The root namespace is now `Rspec` instead of `Spec`, and the root directory
+The root namespace is now `RSpec` instead of `Spec`, and the root directory
 under `lib` is `rspec` instead of `spec`.
 
 ### Configuration
 
 Typically in `spec/spec_helper.rb`, configuration is now done like this:
 
-    Rspec.configure do |c|
+    RSpec.configure do |c|
       # ....
     end
 
@@ -38,7 +38,7 @@ each example in a variety of ways.
 The most obvious use is for filtering the run. For example:
 
     # in spec/spec_helper.rb
-    Rspec.configure do |c|
+    RSpec.configure do |c|
       c.filter_run :focus => true
     end
 
@@ -54,7 +54,7 @@ When you run the `rspec` command, rspec will run only the examples that have
 
 You can also add `run_all_when_everything_filtered` to the config:
 
-    Rspec.configure do |c|
+    RSpec.configure do |c|
       c.filter_run :focus => true
       c.run_all_when_everything_filtered = true
     end
@@ -72,7 +72,7 @@ rspec-core, and here's how we're getting the right stuff to run under the
 right version:
 
     # in spec/spec_helper.rb
-    Rspec.configure do |c|
+    RSpec.configure do |c|
       c.exclusion_filter = { :ruby => lambda {|version|
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       }}

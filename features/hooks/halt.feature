@@ -9,7 +9,7 @@ Feature: halt
     Given a directory named "spec"
     And a file named "spec/example_spec.rb" with:
       """
-      Rspec.configure do |c|
+      RSpec.configure do |c|
         c.after(:each) do
           running_example.halt(:group, :status => 'failed')
         end

@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
 
   module Core
 
@@ -11,7 +11,7 @@ module Rspec
           failed_examples.each_with_index do |failed_example, index|
             exception = failed_example.execution_result[:exception_encountered]
             padding = '    '
-            if exception.is_a?(Rspec::Core::PendingExampleFixedError)
+            if exception.is_a?(RSpec::Core::PendingExampleFixedError)
               output.puts "#{index.next}) #{failed_example} FIXED"
               output.puts "#{padding}Expected pending '#{failed_example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
             else

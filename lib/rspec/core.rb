@@ -21,7 +21,7 @@ require 'rspec/core/formatters'
 require 'rspec/core/version'
 require 'rspec/core/errors'
 
-module Rspec
+module RSpec
   module Core
 
     def self.install_directory
@@ -29,28 +29,28 @@ module Rspec
     end
 
     def self.configuration
-      Rspec.deprecate('Rspec::Core.configuration', 'Rspec.configuration', '2.0.0')
-      Rspec.configuration
+      RSpec.deprecate('RSpec::Core.configuration', 'RSpec.configuration', '2.0.0')
+      RSpec.configuration
     end
 
     def self.configure
-      Rspec.deprecate('Rspec::Core.configure', 'Rspec.configure', '2.0.0')
-      yield Rspec.configuration if block_given?
+      RSpec.deprecate('RSpec::Core.configure', 'RSpec.configure', '2.0.0')
+      yield RSpec.configuration if block_given?
     end
 
     def self.world
-      Rspec.deprecate('Rspec::Core.world', 'Rspec.world', '2.0.0')
-      Rspec.world
+      RSpec.deprecate('RSpec::Core.world', 'RSpec.world', '2.0.0')
+      RSpec.world
     end
 
   end
 
   def self.world
-    @world ||= Rspec::Core::World.new
+    @world ||= RSpec::Core::World.new
   end
 
   def self.configuration
-    @configuration ||= Rspec::Core::Configuration.new
+    @configuration ||= RSpec::Core::Configuration.new
   end
 
   def self.configure

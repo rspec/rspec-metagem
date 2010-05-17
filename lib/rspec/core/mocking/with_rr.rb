@@ -1,8 +1,8 @@
 require 'rr'
 
-Rspec.configuration.backtrace_clean_patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
+RSpec.configuration.backtrace_clean_patterns.push(RR::Errors::BACKTRACE_IDENTIFIER)
 
-module Rspec
+module RSpec
   module Core
     module MockFrameworkAdapter
 

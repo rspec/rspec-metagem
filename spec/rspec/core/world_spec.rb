@@ -3,18 +3,18 @@ require 'spec_helper'
 class Bar; end
 class Foo; end
 
-module Rspec::Core
+module RSpec::Core
 
   describe World do
     
     before do
-      @world = Rspec.world
+      @world = RSpec.world
     end
 
     describe "example_groups" do
     
       it "should contain all defined example groups" do
-        group = Rspec::Core::ExampleGroup.describe("group") {}
+        group = RSpec::Core::ExampleGroup.describe("group") {}
         @world.example_groups.should include(group)
       end
     
@@ -26,10 +26,10 @@ module Rspec::Core
         options_1 = { :foo => 1, :color => 'blue', :feature => 'reporting' }
         options_2 = { :pending => true, :feature => 'reporting'  }
         options_3 = { :array => [1,2,3,4], :color => 'blue' }      
-        @bg1 = Rspec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
-        @bg2 = Rspec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
-        @bg3 = Rspec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
-        @bg4 = Rspec::Core::ExampleGroup.describe(Foo, "find these examples") do
+        @bg1 = RSpec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
+        @bg2 = RSpec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
+        @bg3 = RSpec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
+        @bg4 = RSpec::Core::ExampleGroup.describe(Foo, "find these examples") do
           it('I have no options') {}
           it("this is awesome", :awesome => true) {}
           it("this is too", :awesome => true) {}
@@ -126,8 +126,8 @@ module Rspec::Core
         @group2_example1_line = 30
         @group2_example2_line = 40
         
-        @group1 = Rspec::Core::ExampleGroup.describe(Bar, "group-1") { }
-        @group2 = Rspec::Core::ExampleGroup.describe(Bar, "group-2") do
+        @group1 = RSpec::Core::ExampleGroup.describe(Bar, "group-1") { }
+        @group2 = RSpec::Core::ExampleGroup.describe(Bar, "group-2") do
           it('example 1') {}
           it("example 2") {}
         end

@@ -6,7 +6,7 @@ Feature: mock with flexmock
   Scenario: Mock with flexmock
     Given a file named "flexmock_example_spec.rb" with:
       """
-      Rspec.configure do |config|
+      RSpec.configure do |config|
         config.mock_framework = :flexmock
       end
 

@@ -5,17 +5,17 @@ Feature: spec/spec.opts
   automatically.
 
   Options declared in spec/spec.opts will override configuration
-  set up in Rspec.configure blocks.
+  set up in RSpec.configure blocks.
 
-  Scenario: color set in Rspec.configure
+  Scenario: color set in RSpec.configure
     Given a file named "spec/example_spec.rb" with:
       """
-      Rspec.configure {|c| c.color_enabled = true }
+      RSpec.configure {|c| c.color_enabled = true }
 
       describe "color_enabled" do
-        context "when set with Rspec.configure" do
+        context "when set with RSpec.configure" do
           it "is true" do
-            Rspec.configuration.color_enabled?.should be_true
+            RSpec.configuration.color_enabled?.should be_true
           end
         end
       end
@@ -31,9 +31,9 @@ Feature: spec/spec.opts
     And a file named "spec/example_spec.rb" with:
       """
       describe "color_enabled" do
-        context "when set with Rspec.configure" do
+        context "when set with RSpec.configure" do
           it "is true" do
-            Rspec.configuration.color_enabled?.should be_true
+            RSpec.configuration.color_enabled?.should be_true
           end
         end
       end
@@ -49,16 +49,16 @@ Feature: spec/spec.opts
       """
     And a file named "spec/spec_helper.rb" with:
       """
-      Rspec.configure {|c| c.formatter = 'progress'}
+      RSpec.configure {|c| c.formatter = 'progress'}
       """
     And a file named "spec/example_spec.rb" with:
       """
       require "spec_helper"
 
       describe "formatter" do
-        context "when set with Rspec.configure and in spec.opts" do
+        context "when set with RSpec.configure and in spec.opts" do
           it "takes the value set in spec.opts" do
-            Rspec.configuration.formatter.should be_an(Rspec::Core::Formatters::DocumentationFormatter)
+            RSpec.configuration.formatter.should be_an(RSpec::Core::Formatters::DocumentationFormatter)
           end
         end
       end

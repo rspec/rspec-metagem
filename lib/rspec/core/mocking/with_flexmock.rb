@@ -5,7 +5,7 @@
 
 require 'flexmock/rspec'
 
-module Rspec
+module RSpec
   module Core
     module MockFrameworkAdapter
 

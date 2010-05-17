@@ -100,7 +100,7 @@ Feature: before and after hooks
       """
       require "rspec/expectations"
 
-      Rspec.configure do |config|
+      RSpec.configure do |config|
         config.before(:each) do
           @before_each = "before each"
         end

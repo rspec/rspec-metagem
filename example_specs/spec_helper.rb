@@ -4,7 +4,7 @@ $LOAD_PATH << File.expand_path('../../../rspec-mocks/lib', __FILE__)
 require 'rspec/expectations'
 require 'rspec/core'
 
-Rspec.configure do |c|
+RSpec.configure do |c|
   c.mock_with :rspec
 end
 

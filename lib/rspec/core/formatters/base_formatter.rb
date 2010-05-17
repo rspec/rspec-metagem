@@ -1,4 +1,4 @@
-module Rspec
+module RSpec
   module Core
     module Formatters
 
@@ -18,11 +18,11 @@ module Rspec
         end
 
         def pending_examples
-          @pending_examples ||= ::Rspec.world.find(examples, :execution_result => { :status => 'pending' })
+          @pending_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'pending' })
         end
 
         def failed_examples
-          @failed_examples ||= ::Rspec.world.find(examples, :execution_result => { :status => 'failed' })
+          @failed_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'failed' })
         end
 
         def report(count)
@@ -109,7 +109,7 @@ module Rspec
       protected
 
         def configuration
-          Rspec.configuration
+          RSpec.configuration
         end
 
         def backtrace_line(line)
