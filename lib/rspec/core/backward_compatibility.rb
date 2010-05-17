@@ -8,7 +8,10 @@ module RSpec
 
     module ConstMissing
       def const_missing(name)
-        if :Spec == name
+        case name
+        when :Rspec
+          RSpec
+        when :Spec
           RSpec.warn <<-WARNING
 *****************************************************************
 DEPRECATION WARNING: you are using a deprecated constant that will
