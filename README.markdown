@@ -1,10 +1,6 @@
 # RSpec Core
 
-RSpec is an automated testing framework for Ruby, designed for use in Behaviour
-Driven Development and Test Driven Development.
-
-rspec-core includes the RSpec runner, output formatters, and the `rspec`
-command.
+Behaviour Driven Development for Ruby
 
 ## Upgrading from rspec-1.x
 
@@ -12,7 +8,7 @@ See Upgrade.markdown
 
 ## Install
 
-    [sudo] gem install rspec --prerelease
+    gem install rspec --prerelease
 
 This will install the rspec, rspec-core, rspec-expectations and rspec-mocks
 gems.
@@ -20,7 +16,7 @@ gems.
 ## Get Started
 
 Start with a simple example of behavior you expect from your system. Do
-this before you write any code:
+this before you write any implementation code:
 
     # in spec/calculator_spec.rb
     describe Calculator, "add" do
