@@ -44,15 +44,12 @@ module RSpec
         end
 
         def failure_output(example, exception)
-          expectation_not_met = exception.is_a?(::RSpec::Expectations::ExpectationNotMetError)
+          red("#{current_indentation}#{example.description} (FAILED - #{next_failure_index})")
+        end
 
-          message = if expectation_not_met
-            "#{current_indentation}#{example.description} (FAILED)"
-          else
-            "#{current_indentation}#{example.description} (ERROR)"
-          end
-
-          expectation_not_met ? red(message) : magenta(message)
+        def next_failure_index
+          @next_failure_index ||= 0
+          @next_failure_index += 1
         end
 
         def passed_output(example)
