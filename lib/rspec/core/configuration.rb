@@ -227,7 +227,7 @@ EOM
       end
 
       def require_files_to_run
-        files_to_run.map {|f| require f }
+        files_to_run.map {|f| require File.expand_path(f) }
       end
 
       def add_option(mname, options)

@@ -5,7 +5,7 @@ require 'aruba'
 module ArubaOverrides
   def detect_ruby_script(cmd)
     if cmd =~ /^rspec /
-      "ruby -I. -I../../lib -S ../../bin/#{cmd}"
+      "ruby  -I../../lib -S ../../bin/#{cmd}"
     else
       super(cmd)
     end
