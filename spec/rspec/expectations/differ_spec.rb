@@ -23,7 +23,7 @@ end
 describe "Diff" do
   before(:each) do
     @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
-    @differ = RSpec::Expectations::Differs::Default.new(@options)
+    @differ = RSpec::Expectations::Differ.new(@options)
   end
 
   it "should output unified diff of two strings" do
@@ -93,36 +93,4 @@ EOD
     diff.should == expected_diff
   end
 
-end
-
-
-describe "Diff in context format" do
-  before(:each) do
-    @options = OpenStruct.new(:diff_format => :unified, :context_lines => 3)
-    @options.diff_format = :context
-    @differ = RSpec::Expectations::Differs::Default.new(@options)
-  end
-
-  it "should output unified diff message of two objects" do
-    expected = RSpec::Fixtures::Animal.new "bob", "giraffe"
-    actual   = RSpec::Fixtures::Animal.new "bob", "tortoise"
-
-    expected_diff = <<'EOD'
-
-***************
-*** 1,5 ****
-  <Animal
-    name=bob,
-!   species=tortoise
-  >
---- 1,5 ----
-  <Animal
-    name=bob,
-!   species=giraffe
-  >
-EOD
-
-    diff = @differ.diff_as_object(expected,actual)
-    diff.should == expected_diff
-  end
 end

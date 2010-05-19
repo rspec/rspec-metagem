@@ -13,7 +13,6 @@ add_to_load_path("../../rspec-mocks/lib")
 
 require 'rspec/core'
 require 'rspec/mocks'
-require 'rspec/expectations/differs/default'
 
 Dir['./spec/support/**/*'].each do |f|
   require f

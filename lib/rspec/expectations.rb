@@ -5,6 +5,7 @@ require 'rspec/expectations/extensions'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
 require 'rspec/expectations/backward_compatibility'
+require 'rspec/expectations/differ'
 
 module RSpec
   

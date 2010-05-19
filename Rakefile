@@ -13,6 +13,7 @@ begin
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
     gem.homepage = "http://github.com/rspec/expectations"
     gem.authors = ["David Chelimsky", "Chad Humphries"]    
+    gem.add_dependency('diff-lcs', ">= 1.1.2")
     gem.add_development_dependency('cucumber', ">= 0.6.2")
     gem.add_development_dependency('aruba', ">= 0.1.1")
     gem.add_development_dependency('rspec-core', ">= #{RSpec::Expectations::Version::STRING}")

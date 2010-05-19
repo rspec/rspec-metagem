@@ -1,7 +1,9 @@
 module RSpec
   module Expectations
     class << self
-      attr_accessor :differ
+      def differ
+        @differ ||= Differ.new
+      end
       
       # raises a RSpec::Expectations::ExpectationNotMetError with message
       #

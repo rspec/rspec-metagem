@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-05-16}
+  s.date = %q{2010-05-19}
   s.description = %q{rspec expectations (should[_not] and matchers)}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
@@ -36,8 +36,7 @@ Gem::Specification.new do |s|
      "features/support/env.rb",
      "lib/rspec/expectations.rb",
      "lib/rspec/expectations/backward_compatibility.rb",
-     "lib/rspec/expectations/differs/default.rb",
-     "lib/rspec/expectations/differs/load-diff-lcs.rb",
+     "lib/rspec/expectations/differ.rb",
      "lib/rspec/expectations/errors.rb",
      "lib/rspec/expectations/extensions.rb",
      "lib/rspec/expectations/extensions/kernel.rb",
@@ -74,7 +73,7 @@ Gem::Specification.new do |s|
      "lib/rspec/matchers/satisfy.rb",
      "lib/rspec/matchers/throw_symbol.rb",
      "rspec-expectations.gemspec",
-     "spec/rspec/expectations/differs/default_spec.rb",
+     "spec/rspec/expectations/differ_spec.rb",
      "spec/rspec/expectations/extensions/kernel_spec.rb",
      "spec/rspec/expectations/fail_with_spec.rb",
      "spec/rspec/expectations/handler_spec.rb",
@@ -124,7 +123,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.6}
   s.summary = %q{rspec-expectations-2.0.0.beta.8}
   s.test_files = [
-    "spec/rspec/expectations/differs/default_spec.rb",
+    "spec/rspec/expectations/differ_spec.rb",
      "spec/rspec/expectations/extensions/kernel_spec.rb",
      "spec/rspec/expectations/fail_with_spec.rb",
      "spec/rspec/expectations/handler_spec.rb",
@@ -162,17 +161,20 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+      s.add_runtime_dependency(%q<diff-lcs>, [">= 1.1.2"])
       s.add_development_dependency(%q<cucumber>, [">= 0.6.2"])
       s.add_development_dependency(%q<aruba>, [">= 0.1.1"])
       s.add_development_dependency(%q<rspec-core>, [">= 2.0.0.beta.8"])
       s.add_development_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.8"])
     else
+      s.add_dependency(%q<diff-lcs>, [">= 1.1.2"])
       s.add_dependency(%q<cucumber>, [">= 0.6.2"])
       s.add_dependency(%q<aruba>, [">= 0.1.1"])
       s.add_dependency(%q<rspec-core>, [">= 2.0.0.beta.8"])
       s.add_dependency(%q<rspec-mocks>, [">= 2.0.0.beta.8"])
     end
   else
+    s.add_dependency(%q<diff-lcs>, [">= 1.1.2"])
     s.add_dependency(%q<cucumber>, [">= 0.6.2"])
     s.add_dependency(%q<aruba>, [">= 0.1.1"])
     s.add_dependency(%q<rspec-core>, [">= 2.0.0.beta.8"])
