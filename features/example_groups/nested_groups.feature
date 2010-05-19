@@ -20,7 +20,7 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec nested_example_groups.rb -fdoc"
+    When I run "rspec ./nested_example_groups.rb -fdoc"
     Then I should see matching /^Some Object/
     And I should see matching /^\s+with some more context/
     And I should see matching /^\s+with some other context/

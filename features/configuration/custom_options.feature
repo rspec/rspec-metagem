@@ -21,7 +21,7 @@ Feature: custom options
         end
       end
       """
-    When I run "rspec boolean_option_spec.rb"
+    When I run "rspec ./boolean_option_spec.rb"
     Then I should see "2 examples, 0 failures"
 
   Scenario: boolean option set to default to true
@@ -41,7 +41,7 @@ Feature: custom options
         end
       end
       """
-    When I run "rspec boolean_option_spec.rb"
+    When I run "rspec ./boolean_option_spec.rb"
     Then I should see "2 examples, 0 failures"
 
 @wip
@@ -66,6 +66,6 @@ Feature: custom options
         end
       end
       """
-    When I run "rspec boolean_option_spec.rb"
+    When I run "rspec ./boolean_option_spec.rb"
     Then I should see "2 examples, 0 failures"
 

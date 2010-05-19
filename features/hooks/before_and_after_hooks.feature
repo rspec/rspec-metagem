@@ -55,7 +55,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec before_each_spec.rb"
+    When I run "rspec ./before_each_spec.rb"
     Then I should see "3 examples, 0 failures"
 
   Scenario: define before(:all) block in example group
@@ -89,10 +89,10 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec before_all_spec.rb"
+    When I run "rspec ./before_all_spec.rb"
     Then I should see "3 examples, 0 failures"
 
-    When I run "rspec before_all_spec.rb:15"
+    When I run "rspec ./before_all_spec.rb:15"
     Then I should see "1 example, 0 failures"
 
   Scenario: define before and after blocks in configuration
@@ -122,7 +122,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec befores_in_configuration_spec.rb"
+    When I run "rspec ./befores_in_configuration_spec.rb"
     Then I should see "2 examples, 0 failures"
 
   Scenario: before/after blocks are run in order
@@ -152,7 +152,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec ensure_block_order_spec.rb"
+    When I run "rspec ./ensure_block_order_spec.rb"
     Then I should see matching /before all\nbefore each\nafter each\n.after all/
   
   Scenario: before/after all blocks are run once
@@ -185,15 +185,15 @@ Feature: before and after hooks
 
       end
       """
-    When I run "rspec before_and_after_all_spec.rb"
+    When I run "rspec ./before_and_after_all_spec.rb"
     Then I should see "2 examples, 0 failures"
     Then I should see matching /outer before all\n.inner before all\n.inner after all\nouter after all\n\n\n\nFinished/
 
-    When I run "rspec before_and_after_all_spec.rb:14"
+    When I run "rspec ./before_and_after_all_spec.rb:14"
     Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\ninner before all\n.inner after all\nouter after all\n\n\n\nFinished/
 
-    When I run "rspec before_and_after_all_spec.rb:6"
+    When I run "rspec ./before_and_after_all_spec.rb:6"
     Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
 
@@ -209,7 +209,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec error_in_before_each_spec.rb"
+    When I run "rspec ./error_in_before_each_spec.rb"
     Then I should see "1 example, 1 failure"
     And I should see "this error"
 
@@ -226,6 +226,6 @@ Feature: before and after hooks
         end
       end
       """
-    When I run "rspec error_in_before_all_spec.rb"
+    When I run "rspec ./error_in_before_all_spec.rb"
     Then I should see "1 example, 1 failure"
     And I should see "this error"

@@ -9,6 +9,6 @@ Feature: described class
         end
       end
       """
-    When I run "rspec spec/example_spec.rb"
+    When I run "rspec ./spec/example_spec.rb"
     Then I should see "1 example, 0 failures"
 

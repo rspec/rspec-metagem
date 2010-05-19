@@ -17,7 +17,7 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec context_instead_of_describe_spec.rb -fn"
+    When I run "rspec ./context_instead_of_describe_spec.rb -fn"
     Then I should see:
       """
       Using context

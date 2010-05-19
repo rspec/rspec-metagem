@@ -31,6 +31,6 @@ Feature: around hook
         end
       end
       """
-    When I run "rspec around_each_in_example_group_spec.rb"
+    When I run "rspec ./around_each_in_example_group_spec.rb"
     Then the stderr should not contain "NoMethodError"
     Then I should see "2 examples, 0 failures"

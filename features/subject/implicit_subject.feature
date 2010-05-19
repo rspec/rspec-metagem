@@ -13,7 +13,7 @@ Feature: implicit subject
         end
       end
       """
-    When I run "rspec top_level_subject_spec.rb"
+    When I run "rspec ./top_level_subject_spec.rb"
     Then I should see "1 example, 0 failures"
 
   Scenario: subject in a nested group
@@ -27,5 +27,5 @@ Feature: implicit subject
         end
       end
       """
-    When I run "rspec nested_subject_spec.rb"
+    When I run "rspec ./nested_subject_spec.rb"
     Then I should see "1 example, 0 failures"

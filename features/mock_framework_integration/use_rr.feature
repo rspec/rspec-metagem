@@ -18,6 +18,6 @@ Feature: mock with rr
         end
       end
       """
-    When I run "rspec rr_example_spec.rb"
+    When I run "rspec ./rr_example_spec.rb"
     Then I should see "1 example, 0 failures" 
     And the exit status should be 0

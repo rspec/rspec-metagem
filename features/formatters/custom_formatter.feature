@@ -27,6 +27,6 @@ Feature: custom formatters
       end
       """
 
-    When I run "rspec simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
+    When I run "rspec ./simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
     Then I should see "example: my example"
     And  the exit status should be 0
