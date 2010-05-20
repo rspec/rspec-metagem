@@ -5,19 +5,25 @@ describe RSpec::Core::Formatters::Helpers do
   let(:helper) { helper = Object.new.extend(RSpec::Core::Formatters::Helpers) }
 
   describe "format seconds" do
-    it "uses passed in precision if specified" do
-      pending("get regex right to handle this case where we don't want it to consume all zeroes") do
-        helper.format_seconds(0.00005, 2).should == "0.00"
-      end
-    end
-    
     context "sub second times" do
       it "returns 5 digits of precision" do
-        helper.format_seconds(0.000005).should == "0.00001"
+        helper.format_seconds(0.000006).should == "0.00001"
       end
 
-      it "strips off trailing zeroes" do
-        helper.format_seconds(0.02000).should == "0.02"
+      it "strips off trailing zeroes beyond sub-second precision" do
+        helper.format_seconds(0.020000).should == "0.02"
+      end
+
+      context "0" do
+        it "strips off trailing zeroes" do
+          helper.format_seconds(0.00000000001).should == "0"
+        end
+      end
+
+      context "> 1" do
+        it "strips off trailing zeroes" do
+          helper.format_seconds(1.00000000001).should == "1"
+        end
       end
     end
 
@@ -32,6 +38,7 @@ describe RSpec::Core::Formatters::Helpers do
         helper.format_seconds(5).should == "5"
         helper.format_seconds(5.0).should == "5"
       end
+
     end    
   end
 
