@@ -18,7 +18,7 @@ Feature: implicit docstrings
     end
     """
 
-    When I run "rspec implicit_docstrings_spec.rb -fdoc"
+    When I run "rspec ./implicit_docstrings_spec.rb -fdoc"
 
     Then I should see "should be < 5"
     And I should see "should include 2"
@@ -44,7 +44,7 @@ Feature: implicit docstrings
     end
     """
 
-    When I run "rspec failing_implicit_docstrings_spec.rb -fdoc"
+    When I run "rspec ./failing_implicit_docstrings_spec.rb -fdoc"
 
     Then I should see "should equal 2"
     And I should see "should be > 5"

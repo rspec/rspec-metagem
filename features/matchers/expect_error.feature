@@ -18,7 +18,7 @@ Feature: expect error
         end
       end
       """
-    When I run "rspec expect_error_spec.rb"
+    When I run "rspec ./expect_error_spec.rb"
     Then I should see "2 examples, 1 failure"
     Then I should see "expected NameError but nothing was raised"
 
@@ -38,7 +38,7 @@ Feature: expect error
         end
       end
       """
-    When I run "rspec expect_no_error_spec.rb"
+    When I run "rspec ./expect_no_error_spec.rb"
     Then I should see "2 examples, 1 failure"
     Then I should see "undefined method `non_existent_message'"
 
