@@ -19,7 +19,7 @@ module RSpec::Core::Formatters
       RSpec.configuration.stub(:output) { output }
       RSpec.configuration.stub(:color_enabled?) { false }
 
-      formatter = DocumentationFormatter.new
+      formatter = RSpec::Core::Formatters::DocumentationFormatter.new
       
       examples.each {|e| formatter.example_finished(e) }
 

@@ -8,7 +8,7 @@ module RSpec::Core::Formatters
         output = StringIO.new
         group = RSpec::Core::ExampleGroup.describe
         example = group.example { "this".should eq("that") }
-        formatter = BaseTextFormatter.new
+        formatter = RSpec::Core::Formatters::BaseTextFormatter.new
         group.run_all(formatter)
 
         RSpec.configuration.stub(:output) { output }
