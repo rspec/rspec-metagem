@@ -249,6 +249,34 @@ module RSpec::Core
     end
 
     describe "#add_option" do
+      describe "with no type" do
+        context "with no additional options" do
+          before { config.add_option :custom_option }
+
+          it "defaults to nil" do
+            config.custom_option.should be_nil
+          end
+
+          it "can be overridden" do
+            config.custom_option = "a value"
+            config.custom_option.should eq("a value")
+          end
+        end
+
+        context "with :default => 'a value'" do
+          before { config.add_option :custom_option, :default => 'a value' }
+
+          it "defaults to 'a value'" do
+            config.custom_option.should eq("a value")
+          end
+
+          it "can be overridden" do
+            config.custom_option = "a new value"
+            config.custom_option.should eq("a new value")
+          end
+        end
+      end
+
       describe ":type => :boolean" do
         context "with no additional options" do
           before { config.add_option :custom_option, :type => :boolean }
@@ -270,7 +298,7 @@ module RSpec::Core
         context "with :default => true" do
           before { config.add_option :custom_option, :type => :boolean, :default => true }
 
-          it "defaults to false" do
+          it "defaults to true" do
             config.custom_option.should be_true
           end
 

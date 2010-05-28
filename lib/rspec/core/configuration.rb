@@ -230,14 +230,19 @@ EOM
         files_to_run.map {|f| require File.expand_path(f) }
       end
 
-      def add_option(mname, options)
+      def add_option(name, options={})
         case options[:type]
         when :boolean
           (class << self; self; end).class_eval do
-            attr_accessor mname
-            define_method("#{mname}?") { !!(send mname) }
+            attr_accessor name
+            define_method("#{name}?") { !!(send name) }
           end
-          instance_variable_set "@#{mname}", options[:default]
+          instance_variable_set "@#{name}", options[:default]
+        else
+          (class << self; self; end).class_eval do
+            attr_accessor name
+          end
+          instance_variable_set "@#{name}", options[:default]
         end
       end
 
