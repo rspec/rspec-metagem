@@ -191,7 +191,7 @@ module RSpec::Core
           group.magic[:after_each].should eq("after each 3")
         end
 
-        it "runs after(:all) only once from shared example_group", :pending => true, :compat => 'rspec-1.2' do
+        it "runs after(:all) only once from shared example_group", :compat => 'rspec-1.2' do
           group.magic[:after_all].should eq("after all 1")
         end
 
