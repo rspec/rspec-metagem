@@ -311,6 +311,47 @@ module RSpec::Core
             config.custom_option.should be_false
           end
         end
+
+        context "with :alias_for => " do
+          context "default type" do
+            before do
+              config.add_option :custom_option
+              config.add_option :another_custom_option, :alias_for => :custom_option
+            end
+
+            it "delegates the getter to the other option" do
+              config.another_custom_option = "this value"
+              config.custom_option.should == "this value"
+            end
+
+            it "delegates the setter to the other option" do
+              config.custom_option = "this value"
+              config.another_custom_option.should == "this value"
+            end
+          end
+
+          context "boolean type" do
+            before do
+              config.add_option :custom_option, :type => :boolean
+              config.add_option :another_custom_option, :alias_for => :custom_option
+            end
+
+            it "delegates the getter to the other option" do
+              config.another_custom_option = true
+              config.custom_option.should == true
+            end
+
+            it "delegates the setter to the other option" do
+              config.custom_option = true
+              config.another_custom_option.should be_true
+            end
+
+            it "delegates the predicate to the other option" do
+              config.custom_option = true
+              config.another_custom_option?.should be_true
+            end
+          end
+        end
       end
     end
 
