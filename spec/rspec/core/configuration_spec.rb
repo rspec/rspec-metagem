@@ -316,7 +316,7 @@ module RSpec::Core
           context "default type" do
             before do
               config.add_option :custom_option
-              config.add_option :another_custom_option, :alias_for => :custom_option
+              config.add_option :another_custom_option, :type => :alias, :target => :custom_option
             end
 
             it "delegates the getter to the other option" do
@@ -333,7 +333,7 @@ module RSpec::Core
           context "boolean type" do
             before do
               config.add_option :custom_option, :type => :boolean
-              config.add_option :another_custom_option, :alias_for => :custom_option
+              config.add_option :another_custom_option, :type => :alias, :target => :custom_option
             end
 
             it "delegates the getter to the other option" do

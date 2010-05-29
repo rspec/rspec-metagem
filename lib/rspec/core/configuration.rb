@@ -231,31 +231,28 @@ EOM
       end
 
       def add_option(name, options={})
-        if options[:alias_for]
+        case options[:type]
+        when :alias
           (class << self; self; end).class_eval do
-            alias_method name, options[:alias_for]
-            alias_method "#{name}=", "#{options[:alias_for]}="
-            if public_instance_methods.map {|m| m.to_s}.include? "#{options[:alias_for]}?"
-              alias_method "#{name}?", "#{options[:alias_for]}?"
+            alias_method name, options[:target]
+            alias_method "#{name}=", "#{options[:target]}="
+            if public_instance_methods.map {|m| m.to_s}.include? "#{options[:target]}?"
+              alias_method "#{name}?", "#{options[:target]}?"
             end
           end
+        when :boolean
+          (class << self; self; end).class_eval do
+            attr_accessor name
+            define_method("#{name}?") { !!(send name) }
+          end
+          instance_variable_set "@#{name}", options[:default]
         else
-          case options[:type]
-          when :boolean
-            (class << self; self; end).class_eval do
-              attr_accessor name
-              define_method("#{name}?") { !!(send name) }
-            end
-            instance_variable_set "@#{name}", options[:default]
-          else
-            (class << self; self; end).class_eval do
-              attr_accessor name
-            end
-            instance_variable_set "@#{name}", options[:default]
+          (class << self; self; end).class_eval do
+            attr_accessor name
           end
+          instance_variable_set "@#{name}", options[:default]
         end
       end
-
     end
   end
 end
