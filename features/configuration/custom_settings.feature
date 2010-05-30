@@ -11,7 +11,7 @@ Feature: custom settings
         c.add_setting :custom_setting
       end
 
-      describe "custom option" do
+      describe "custom setting" do
         it "is nil by default" do
           RSpec.configuration.custom_setting.should be_nil
         end
@@ -41,7 +41,7 @@ Feature: custom settings
         c.add_setting :custom_setting, :default => true
       end
 
-      describe "custom option" do
+      describe "custom setting" do
         it "is true by default" do
           RSpec.configuration.custom_setting.should be_true
         end
@@ -71,7 +71,7 @@ Feature: custom settings
         c.custom_setting = true
       end
 
-      describe "custom option" do
+      describe "custom setting" do
         it "returns the value set in the last cofigure block to get eval'd" do
           RSpec.configuration.custom_setting.should be_true
         end
