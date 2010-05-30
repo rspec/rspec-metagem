@@ -1,71 +1,86 @@
-Feature: custom options
+Feature: custom settings
 
-  In order to seamlessly provide my users more options
+  In order to seamlessly provide users more configuration settings
   As an RSpec extenstion-library author
-  I want to define new options on the RSpec.configuration
+  I want to define new settings on the RSpec.configuration object
 
-  Scenario: boolean option with default settings
-    Given a file named "boolean_option_spec.rb" with:
+  Scenario: simple setting
+    Given a file named "additional_setting_spec.rb" with:
       """
       RSpec.configure do |c|
-        c.add_option :custom_option, :type => :boolean
+        c.add_setting :custom_setting
       end
 
       describe "custom option" do
-        it "is false by default" do
-          RSpec.configuration.custom_option.should be_false
+        it "is nil by default" do
+          RSpec.configuration.custom_setting.should be_nil
+        end
+
+        it "acts false by default" do
+          RSpec.configuration.custom_setting.should be_false
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_option?.should be_false
+          RSpec.configuration.custom_setting?.should be_false
+        end
+
+        it "can be overridden" do
+          RSpec.configuration.custom_setting = true
+          RSpec.configuration.custom_setting.should be_true
+          RSpec.configuration.custom_setting?.should be_true
         end
       end
       """
-    When I run "rspec ./boolean_option_spec.rb"
-    Then I should see "2 examples, 0 failures"
+    When I run "rspec ./additional_setting_spec.rb"
+    Then I should see "0 failures"
 
-  Scenario: boolean option set to default to true
-    Given a file named "boolean_option_spec.rb" with:
+  Scenario: default to true
+    Given a file named "additional_setting_spec.rb" with:
       """
       RSpec.configure do |c|
-        c.add_option :custom_option, :type => :boolean, :default => true
+        c.add_setting :custom_setting, :default => true
       end
 
       describe "custom option" do
         it "is true by default" do
-          RSpec.configuration.custom_option.should be_true
+          RSpec.configuration.custom_setting.should be_true
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_option?.should be_true
+          RSpec.configuration.custom_setting?.should be_true
+        end
+
+        it "can be overridden" do
+          RSpec.configuration.custom_setting = false
+          RSpec.configuration.custom_setting.should be_false
+          RSpec.configuration.custom_setting?.should be_false
         end
       end
       """
-    When I run "rspec ./boolean_option_spec.rb"
-    Then I should see "2 examples, 0 failures"
+    When I run "rspec ./additional_setting_spec.rb"
+    Then I should see "0 failures"
 
-@wip
-  Scenario: boolean option overridden in client app
-    Given a file named "boolean_option_spec.rb" with:
+  Scenario: overridden in a subsequent RSpec.configure block
+    Given a file named "additional_setting_spec.rb" with:
       """
       RSpec.configure do |c|
-        c.add_option :custom_option, :type => :boolean
+        c.add_setting :custom_setting
       end
 
       RSpec.configure do |c|
-        c.custom_option = true
+        c.custom_setting = true
       end
 
       describe "custom option" do
-        it "returns the value set in the client app" do
-          RSpec.configuration.custom_option.should be_true
+        it "returns the value set in the last cofigure block to get eval'd" do
+          RSpec.configuration.custom_setting.should be_true
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_option?.should be_true
+          RSpec.configuration.custom_setting?.should be_true
         end
       end
       """
-    When I run "rspec ./boolean_option_spec.rb"
-    Then I should see "2 examples, 0 failures"
+    When I run "rspec ./additional_setting_spec.rb"
+    Then I should see "0 failures"
 

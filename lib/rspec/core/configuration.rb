@@ -13,14 +13,14 @@ module RSpec
         end
       end
 
-      add_setting :color_enabled, :default => false
-      add_setting :profile_examples, :default => false
+      add_setting :color_enabled
+      add_setting :profile_examples
       add_setting :run_all_when_everything_filtered
       add_setting :mock_framework, :default => :rspec
       add_setting :filter
       add_setting :exclusion_filter
-      add_setting :files_to_run, :default => []
       add_setting :filename_pattern, :default => '**/*_spec.rb'
+      add_setting :files_to_run, :default => []
       add_setting :include_or_extend_modules, :default => []
       add_setting :formatter_class, :default => RSpec::Core::Formatters::ProgressFormatter
       add_setting :backtrace_clean_patterns, :default => [
@@ -32,6 +32,44 @@ module RSpec
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
     
+      # :call-seq:
+      #   add_setting(:name)
+      #   add_setting(:name, :default => "default_value")
+      #   add_setting(:name, :alias => :other_setting)
+      #
+      # Use this to add custom settings to the RSpec.configuration object. 
+      #
+      #   RSpec.configuration.add_setting :foo
+      #
+      # Creates three methods on the configuration object, a setter, a getter,
+      # and a predicate:
+      #
+      #   RSpec.configuration.foo=(value)
+      #   RSpec.configuration.foo()
+      #   RSpec.configuration.foo?() # returns !!foo
+      #
+      # Intended for extension frameworks like rspec-rails, so they can add config
+      # settings that are domain specific. For example:
+      #
+      #   RSpec.configure do |c|
+      #     c.add_setting :use_transactional_fixtures, :default => true
+      #     c.add_setting :use_transactional_examples, :alias => :use_transactional_fixtures
+      #   end
+      #
+      # == Options
+      # 
+      # +add_setting+ takes an optional hash that supports the following
+      # keys:
+      #
+      #   :default => "default value"
+      #
+      # This sets the default value for the getter and the predicate (which
+      # will return +true+ as long as the value is not +false+ or +nil+).
+      #
+      #   :alias => :other_setting
+      #
+      # Aliases its setter, getter, and predicate, to those for the
+      # +other_setting+.
       def add_setting(name, opts={})
         self.class.add_setting(name, opts)
       end
