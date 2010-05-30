@@ -7,7 +7,7 @@
 #   RUN_MOCHA_EXAMPLE=true ruby ../bin/spec mocking_with_mocha.rb
 
 if ENV['RUN_MOCHA_EXAMPLE']
-  Spec::Runner.configure do |config|
+  RSpec::Runner.configure do |config|
     config.mock_framework = :mocha
   end
   describe "Mocha framework" do

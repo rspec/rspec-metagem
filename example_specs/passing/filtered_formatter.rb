@@ -1,7 +1,7 @@
 $:.unshift File.join(File.dirname(__FILE__), "/../../lib")
 require 'spec/runner/formatter/nested_text_formatter'
 
-class FilteredFormatter < Spec::Runner::Formatter::NestedTextFormatter
+class FilteredFormatter < RSpec::Runner::Formatter::NestedTextFormatter
   def add_example_group(example_group)
     if example_group.options[:show] == false
       @showing = false

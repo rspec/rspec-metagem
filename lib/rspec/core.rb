@@ -45,6 +45,9 @@ module RSpec
 
   end
 
+  RSpec::Runner = RSpec::Core::Runner
+  RSpec::Runner::CommandLine = RSpec::Core::Runner
+
   def self.world
     @world ||= RSpec::Core::World.new
   end

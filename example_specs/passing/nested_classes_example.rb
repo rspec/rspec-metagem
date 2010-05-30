@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper'
 require File.dirname(__FILE__) + '/stack'
 
-class StackExamples < Spec::ExampleGroup
+class StackExamples < RSpec::ExampleGroup
   describe(Stack)
   before(:each) do
     @stack = Stack.new

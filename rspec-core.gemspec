@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-05-29}
+  s.date = %q{2010-05-30}
   s.description = %q{RSpec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -82,7 +82,7 @@ Gem::Specification.new do |s|
      "features/command_line/example_name_option.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
-     "features/configuration/custom_options.feature",
+     "features/configuration/custom_settings.feature",
      "features/configuration/options_file.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
@@ -105,6 +105,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core.rb",
      "lib/rspec/core/around_proxy.rb",
      "lib/rspec/core/backward_compatibility.rb",
+     "lib/rspec/core/command_line_options.rb",
      "lib/rspec/core/configuration.rb",
      "lib/rspec/core/configuration_options.rb",
      "lib/rspec/core/deprecation.rb",
@@ -189,6 +190,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
+     "spec/rspec/core/_dummy_spec0.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",

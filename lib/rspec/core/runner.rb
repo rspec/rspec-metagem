@@ -26,7 +26,6 @@ module RSpec
           # TODO this is copied in from RSpec 1.3
           # exit if stdout?
         elsif options.drb?
-          # TODO check if it's possible to send a Configuration over Drb, and if so, unify the interface
           DRbProxy.new(:argv => options.to_drb_argv, :remote_port => options.drb_port || ENV['RSPEC_DRB'].to_i).run(err, out)
         else
           InProcess.new(configuration).run(err, out)
@@ -43,7 +42,6 @@ module RSpec
         options
       end
 
-      # TODO drb port
       class DRbProxy
         def initialize(options)
           @argv = options[:argv]

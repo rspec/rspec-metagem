@@ -7,7 +7,7 @@
 #   RUN_RR_EXAMPLE=true ruby ../bin/spec mocking_with_rr.rb
 
 if ENV['RUN_RR_EXAMPLE']
-  Spec::Runner.configure do |config|
+  RSpec::Runner.configure do |config|
     config.mock_framework = :rr
   end
   describe "RR framework" do

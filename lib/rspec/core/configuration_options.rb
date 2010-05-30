@@ -14,18 +14,28 @@ module RSpec
         @args = args
         @options = {}
         @drb = false
+        parse_command_line_options
       end
       
       def apply_to(config)
         merged_options.each do |key, value|
-          config.send("#{key}=", value)
+          config.send("#{key}=", value) rescue nil
         end
       end
 
       def parse_command_line_options
-        @options = Parser.parse!(@args)
-        @options[:files_or_directories_to_run] = @args
+        @parsed_options ||= begin
+        cloptions = Parser.parse!(@args)
+        cloptions[:files_or_directories_to_run] = @args
+        @options = [global_options, local_options, cloptions].inject do |merged, options|
+          merged.merge(options)
+        end
+
+        adjust_to_drb
+
+        @merged_options = @options
         @options
+                            end
       end
 
       def version?
@@ -42,31 +52,25 @@ module RSpec
 
       def to_drb_argv
         argv = []
-        argv << "--colour" if options[:color_enabled]
-        argv << "--formatter" << options[:formatter] if options[:formatter] # TODO preserve string
-        argv << "--line_number" << options[:line_number] if options[:line_number]
-        argv << "--example" << options[:full_description].pattern_source if options[:full_description]
-        # options[:options_file] # TODO check
-        argv << "--profile" if options[:profile_examples]
-        argv << "--backtrace" if options[:full_backtrace]
-        argv << "--version" if options[:version]
-        # options[:debug] # TODO check - we're only making to_s for DRb
-        # options[:drb] # TODO check - we're only making to_s for DRb
+        argv << "--colour" if merged_options[:color_enabled]
+        argv << "--formatter" << merged_options[:formatter] if merged_options[:formatter] # TODO preserve string
+        argv << "--line_number" << merged_options[:line_number] if merged_options[:line_number]
+        argv << "--example" << merged_options[:full_description].source if merged_options[:full_description]
+        # merged_options[:options_file] # TODO check
+        argv << "--profile" if merged_options[:profile_examples]
+        argv << "--backtrace" if merged_options[:full_backtrace]
+        argv << "--version" if merged_options[:version]
+        # merged_options[:debug] # TODO check - we're only making to_s for DRb
+        # merged_options[:drb] # TODO check - we're only making to_s for DRb
         
-        argv + options[:files_or_directories_to_run]
+        argv + merged_options[:files_or_directories_to_run]
+      end
+
+      def merged_options
+        @merged_options
       end
 
     private
-
-      def merged_options
-        options = [global_options, local_options, command_line_options].inject do |merged, options|
-          merged.merge(options)
-        end
-
-        adjust_to_drb
-
-        options
-      end
 
       def command_line_options
         parse_command_line_options
@@ -136,6 +140,10 @@ module RSpec
             
             parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
               options[:profile_examples] = o
+            end
+
+            parser.on('-v', '--version', 'Show version') do |o|
+              options[:version] = o
             end
 
             parser.on('-X', '--drb', 'Run examples via DRb') do |o|

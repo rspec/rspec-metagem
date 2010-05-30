@@ -5,7 +5,19 @@ require 'ostruct'
 describe RSpec::Core::ConfigurationOptions do
   
   def options_from_args(*args)
-    RSpec::Core::ConfigurationOptions.new(args).parse_command_line_options
+    options_object = RSpec::Core::ConfigurationOptions.new(args)
+    options_object.parse_command_line_options
+    options_object.merged_options
+  end
+
+  def parse(*args)
+    options_from_args(*args)
+  end
+
+  def config_options_object(*args)
+    options_object = RSpec::Core::ConfigurationOptions.new(args)
+    options_object.parse_command_line_options
+    options_object
   end
 
   describe 'color_enabled' do
@@ -123,39 +135,39 @@ describe RSpec::Core::ConfigurationOptions do
       it "turns off the debugger option if --drb is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb  ] }
-        options_from_args_and_options_file("--debug").should include(:debug => false)
-        options_from_args_and_options_file("-d"     ).should include(:debug => false)        
+        parse("--debug").should include(:debug => false)
+        parse("-d"     ).should include(:debug => false)        
       end
       
       it "turns off the debugger option if --debug is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --debug  ] }
-        options_from_args_and_options_file("--drb").should include(:debug => false)
-        options_from_args_and_options_file("-X"   ).should include(:debug => false)
+        parse("--drb").should include(:debug => false)
+        parse("-X"   ).should include(:debug => false)
       end
     end
     
     context "combined with --version" do
       # TODO this is proof we need a proper OO solution to the "type" of CommandLineOptions we get from parsing 
       it "preserves --version in the DRb args but doesn't set #version? (currently confuses Runner#run)" do
-        options = parse("--drb", "--version")
-        options.should be_drb
-        options.should_not be_version
+        options = config_options_object("--drb", "--version")
+        options.drb?.should     be_true
+        options.version?.should be_false
       end
       
       it "handles --version first" do
-        options = parse("--version", "--drb")
-        options.should be_drb
-        options.should_not be_version        
+        options = config_options_object("--version", "--drb")
+        options.drb?.should     be_true
+        options.version?.should be_false
       end
       
       it "handles --drb in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb  ] }
-        options = parse("--version").merge_options_file
+        options = config_options_object("--version")
         
-        options.should be_drb
-        options.should_not be_version        
+        options.drb?.should     be_true
+        options.version?.should be_false
       end
       
       it "doesn't handle --version in the options file" do
@@ -168,31 +180,31 @@ describe RSpec::Core::ConfigurationOptions do
     end
     
     it "records that it is a drb" do
-      options = parse("--colour", "--drb")
+      options = config_options_object("--colour", "--drb")
       options.should be_drb
     end
     
     it "records that it is a drb if --drb comes from the options file" do
       File.stub(:exist?) { true }
       File.stub(:readlines) { %w[ --drb  ] }
-      options = parse.merge_options_file
+      options = config_options_object
       options.should be_drb
     end
     
     it "does not record that it is a drb if --drb is absent" do
-      options = parse("--colour")
+      options = config_options_object("--colour")
       options.should_not be_drb
     end
   end
   
   describe "--drb-port" do
     it "sets the DRb port" do
-      parse("--drb-port", "1234").drb_port.should == 1234
-      parse("--drb-port", "5678").drb_port.should == 5678
+      config_options_object("--drb-port", "1234").drb_port.should == 1234
+      config_options_object("--drb-port", "5678").drb_port.should == 5678
     end
     
     it "defaults to 8989" do
-      parse.drb_port.should == 8989
+      config_options_object.drb_port.should == 8989
     end
   end
   
@@ -201,14 +213,14 @@ describe RSpec::Core::ConfigurationOptions do
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
   describe "#to_drb_argv" do
     it "preserves extra arguments" do
-      parse(*%w[ a --drb b --colour c ]).to_drb_argv.should eq(%w[ --colour a b c ])
+      config_options_object(*%w[ a --drb b --colour c ]).to_drb_argv.should eq(%w[ --colour a b c ])
     end
     
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
         # no --options
         # using eq rather than =~ because of the arguments that take options
-        parse(*%w[ --drb --colour --formatter s --line_number 1 --example pattern --profile --backtrace]).
+        config_options_object(*%w[ --drb --colour --formatter s --line_number 1 --example pattern --profile --backtrace]).
           to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])
       end
     end
@@ -217,7 +229,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --colour ] }
-        parse(*%w[ --formatter s --line_number 1 --example pattern --profile --backtrace ]).merge_options_file.
+        config_options_object(*%w[ --formatter s --line_number 1 --example pattern --profile --backtrace ]).
           to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])
       end
     end
@@ -226,7 +238,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --colour ] }
-        parse(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).merge_options_file.
+        config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
           to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])          
       end
     end
@@ -235,7 +247,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb and --options" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --colour ] }
-        parse(*%w[ --drb --options my_spec.opts --formatter s --line_number 1 --example pattern --profile --backtrace]).merge_options_file.
+        config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
           to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])          
       end
     end
@@ -243,12 +255,12 @@ describe RSpec::Core::ConfigurationOptions do
 
   describe "version?" do
     it "is set to true when --version is detected" do
-      parse("--version").version?.should be_true
-      parse("-v"       ).version?.should be_true
+      config_options_object("--version").version?.should be_true
+      config_options_object("-v"       ).version?.should be_true
     end
 
     it "is set to false when --version is absent" do
-      parse([]).version?.should be_false
+      config_options_object([]).version?.should be_false
     end
   end
   
