@@ -13,6 +13,7 @@ module RSpec
       def initialize(args)
         @args = args
         @options = {}
+        @drb = false
       end
       
       def apply_to(config)
@@ -27,12 +28,44 @@ module RSpec
         @options
       end
 
+      def version?
+        !!options[:version] && !drb?
+      end
+
+      def drb?
+        @drb
+      end
+
+      def drb_port
+        options[:drb_port] || 8989
+      end
+
+      def to_drb_argv
+        argv = []
+        argv << "--colour" if options[:color_enabled]
+        argv << "--formatter" << options[:formatter] if options[:formatter] # TODO preserve string
+        argv << "--line_number" << options[:line_number] if options[:line_number]
+        argv << "--example" << options[:full_description].pattern_source if options[:full_description]
+        # options[:options_file] # TODO check
+        argv << "--profile" if options[:profile_examples]
+        argv << "--backtrace" if options[:full_backtrace]
+        argv << "--version" if options[:version]
+        # options[:debug] # TODO check - we're only making to_s for DRb
+        # options[:drb] # TODO check - we're only making to_s for DRb
+        
+        argv + options[:files_or_directories_to_run]
+      end
+
     private
 
       def merged_options
-        [global_options, local_options, command_line_options].inject do |merged, options|
+        options = [global_options, local_options, command_line_options].inject do |merged, options|
           merged.merge(options)
         end
+
+        adjust_to_drb
+
+        options
       end
 
       def command_line_options
@@ -104,6 +137,15 @@ module RSpec
             parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
               options[:profile_examples] = o
             end
+
+            parser.on('-X', '--drb', 'Run examples via DRb') do |o|
+              options[:drb] = true
+            end
+
+            parser.on('--drb-port [PORT]', 'Port to connect to on the DRb server') do |o|
+              options[:drb_port] = o.to_i
+            end
+
           end
         end
       end
@@ -132,6 +174,12 @@ module RSpec
         "spec/spec.opts"
       end
 
+      def adjust_to_drb
+        if @drb || options[:drb]
+          options[:debug] = false
+          @drb = options.delete(:drb)
+        end
+      end
     end
   end
 end
