@@ -31,6 +31,7 @@ module RSpec
 end
 
 class RSpec::Core::ExampleGroup
+  include RSpec::Matchers
   def self.run_all(reporter=nil)
     run(reporter || RSpec::Mocks::Mock.new('reporter').as_null_object)
   end
