@@ -59,11 +59,11 @@ module RSpec
       def announce_inclusion_filter
         if inclusion_filter
           if RSpec.configuration.run_all_when_everything_filtered? && RSpec.world.example_count == 0
-            RSpec.configuration.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
+            RSpec.configuration.output_stream.puts "No examples were matched by #{inclusion_filter.inspect}, running all"
             RSpec.configuration.clear_inclusion_filter
             filtered_examples.clear
           else
-            RSpec.configuration.puts "Run filtered using #{inclusion_filter.inspect}"          
+            RSpec.configuration.output_stream.puts "Run filtered using #{inclusion_filter.inspect}"          
           end
         end      
       end

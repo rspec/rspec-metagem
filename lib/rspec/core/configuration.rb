@@ -13,7 +13,9 @@ module RSpec
         end
       end
 
-      add_setting :output, :default => $stdout
+      add_setting :error_stream
+      add_setting :output_stream
+      add_setting :output, :alias => :output_stream
       add_setting :color_enabled
       add_setting :profile_examples
       add_setting :run_all_when_everything_filtered
@@ -182,10 +184,6 @@ EOM
 
       def filter_run(options={})
         self.filter = options unless filter and filter[:line_number] || filter[:full_description]
-      end
-
-      def puts(msg="")
-        output.puts(msg)    
       end
 
       def include(mod, filters={})

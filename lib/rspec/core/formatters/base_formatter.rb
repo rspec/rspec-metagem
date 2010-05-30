@@ -28,8 +28,6 @@ module RSpec
         def report(count)
           sync_output do
             start(count)
-            # TODO - spec that we still dump even when there's
-            # an exception
             begin
               yield self
             ensure

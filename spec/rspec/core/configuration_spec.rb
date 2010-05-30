@@ -241,12 +241,6 @@ module RSpec::Core
       end
     end
     
-    describe "#output" do
-      it "defaults to STDOUT" do
-        config.output.should eq($stdout)
-      end
-    end
-    
     describe "#output=" do
       it "sets the output" do
         output = mock("output")

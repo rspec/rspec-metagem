@@ -21,6 +21,9 @@ module RSpec
       def run(args, err, out)
         options = configure(args)
 
+        configuration.error_stream  = err
+        configuration.output_stream = out
+
         if options.version?
           out.puts("rspec " + ::Rspec::Core::Version::STRING)
           # TODO this is copied in from RSpec 1.3
@@ -44,19 +47,18 @@ module RSpec
 
       class DRbProxy
         def initialize(options)
-          @argv = options[:argv]
-          @remote_port = options[:remote_port] # TODO default remote DRb port
+          @options = options
         end
 
         def run(err, out)
           begin
-            begin; \
-              DRb.start_service("druby://localhost:0"); \
-            rescue SocketError, Errno::EADDRNOTAVAIL; \
-              DRb.start_service("druby://:0"); \
+            begin
+              DRb.start_service("druby://localhost:0")
+            rescue SocketError, Errno::EADDRNOTAVAIL
+              DRb.start_service("druby://:0")
             end
-            spec_server = DRbObject.new_with_uri("druby://127.0.0.1:#{@remote_port}")
-            spec_server.run(@argv, err, out)
+            spec_server = DRbObject.new_with_uri("druby://127.0.0.1:#{@options[:remote_port]}")
+            spec_server.run(@options[:argv], err, out)
             true
           rescue DRb::DRbConnError
             err.puts "No server is running"
@@ -100,7 +102,6 @@ module RSpec
           RSpec.world.example_groups.extend(ExampleGroups)
         end
       end
-
 
     end
   end
