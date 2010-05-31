@@ -34,7 +34,7 @@ describe "::DRbProxy" do
     end
   
     before(:all) do
-      @drb_port = 8999
+      @drb_port = "8999"
       create_dummy_spec_file
       DRb::DRbServer.new("druby://127.0.0.1:#{@drb_port}", ::FakeDrbSpecServer)
     end

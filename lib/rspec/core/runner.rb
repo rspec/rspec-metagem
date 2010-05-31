@@ -9,9 +9,13 @@ module RSpec
       end
 
       def self.autorun
-        return if installed_at_exit?
+        return if installed_at_exit? || running_in_drb?
         @installed_at_exit = true
         at_exit { new.run(ARGV, $stderr, $stdout) ? exit(0) : exit(1) }
+      end
+
+      def self.running_in_drb?
+        (DRb.current_server.uri rescue "") =~ /druby\:\/\/127.0.0.1\:/
       end
 
       def configuration

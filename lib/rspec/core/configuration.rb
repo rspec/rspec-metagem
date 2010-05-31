@@ -16,7 +16,7 @@ module RSpec
       add_setting :error_stream,  :default => $stderr
       add_setting :output_stream, :default => $stdout
       add_setting :output, :alias => :output_stream
-      add_setting :drb_request
+      add_setting :drb_port
       add_setting :color_enabled
       add_setting :profile_examples
       add_setting :run_all_when_everything_filtered

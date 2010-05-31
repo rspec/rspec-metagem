@@ -39,9 +39,9 @@ module RSpec::Core
           @err, @out = StringIO.new, StringIO.new
           @drb_port, @drb_argv = double(Fixnum), double(Array)
 
-          @non_drb_args = %w[ --color ]
+          @non_drb_args = %w[--color --drb-port 8181]
           
-          @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181] + @non_drb_args)
+          @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
 
           

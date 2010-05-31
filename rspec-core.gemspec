@@ -138,6 +138,8 @@ Gem::Specification.new do |s|
      "lib/rspec/core/subject.rb",
      "lib/rspec/core/version.rb",
      "lib/rspec/core/world.rb",
+     "lib/rspec/monkey.rb",
+     "lib/rspec/monkey/spork/test_framework/rspec.rb",
      "rspec-core.gemspec",
      "script/console",
      "spec/autotest/failed_results_re_spec.rb",
