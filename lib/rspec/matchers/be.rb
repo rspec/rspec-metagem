@@ -66,7 +66,7 @@ module RSpec
       end
       
       def parenthesize(string)
-        return "(#{string})"
+        "(#{string})"
       end
       
       def inspected_args
@@ -247,4 +247,3 @@ it is a bit confusing.
     alias_method :be_an, :be_a
   end
 end
-
