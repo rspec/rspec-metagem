@@ -36,10 +36,10 @@ module RSpec::Core
     describe "#run" do
       context "options indicate DRb" do
         before(:each) do
-          @err, @out = double("error stream"), double("output stream")
+          @err, @out = StringIO.new, StringIO.new
           @drb_port, @drb_argv = double(Fixnum), double(Array)
 
-          @non_drb_args = %w[ --colour ]
+          @non_drb_args = %w[ --color ]
           
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181] + @non_drb_args)
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }

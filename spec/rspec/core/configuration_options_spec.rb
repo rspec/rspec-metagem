@@ -4,20 +4,12 @@ require 'ostruct'
 
 describe RSpec::Core::ConfigurationOptions do
   
-  def options_from_args(*args)
-    options_object = RSpec::Core::ConfigurationOptions.new(args)
-    options_object.parse_command_line_options
-    options_object.merged_options
-  end
-
-  def parse(*args)
-    options_from_args(*args)
-  end
-
   def config_options_object(*args)
-    options_object = RSpec::Core::ConfigurationOptions.new(args)
-    options_object.parse_command_line_options
-    options_object
+    RSpec::Core::ConfigurationOptions.new(args)
+  end
+
+  def options_from_args(*args)
+    config_options_object(*args).options
   end
 
   describe 'color_enabled' do
@@ -119,31 +111,31 @@ describe RSpec::Core::ConfigurationOptions do
   describe "--drb (-X)" do
     context "combined with --debug" do
       it "turns off the debugger if --drb is specified first" do
-        options_from_args("--drb", "--debug").should include(:debug => false)
-        options_from_args("--drb", "-d"     ).should include(:debug => false)
-        options_from_args("-X",    "--debug").should include(:debug => false)
-        options_from_args("-X",    "-d"     ).should include(:debug => false)
+        config_options_object("--drb", "--debug").to_drb_argv.should_not include("--debug")
+        config_options_object("--drb", "-d"     ).to_drb_argv.should_not include("--debug")
+        config_options_object("-X",    "--debug").to_drb_argv.should_not include("--debug")
+        config_options_object("-X",    "-d"     ).to_drb_argv.should_not include("--debug")
       end
       
       it "turns off the debugger option if --drb is specified later" do      
-        options_from_args("--debug", "--drb").should include(:debug => false)
-        options_from_args("-d",      "--drb").should include(:debug => false)
-        options_from_args("--debug", "-X"   ).should include(:debug => false)
-        options_from_args("-d",      "-X"   ).should include(:debug => false)
+        config_options_object("--debug", "--drb").to_drb_argv.should_not include("--debug")
+        config_options_object("-d",      "--drb").to_drb_argv.should_not include("--debug")
+        config_options_object("--debug", "-X"   ).to_drb_argv.should_not include("--debug")
+        config_options_object("-d",      "-X"   ).to_drb_argv.should_not include("--debug")
       end
       
       it "turns off the debugger option if --drb is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb  ] }
-        parse("--debug").should include(:debug => false)
-        parse("-d"     ).should include(:debug => false)        
+        config_options_object("--debug").to_drb_argv.should_not include("--debug")
+        config_options_object("-d"     ).to_drb_argv.should_not include("--debug")        
       end
       
       it "turns off the debugger option if --debug is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --debug  ] }
-        parse("--drb").should include(:debug => false)
-        parse("-X"   ).should include(:debug => false)
+        config_options_object("--drb").to_drb_argv.should_not include("--debug")
+        config_options_object("-X"   ).to_drb_argv.should_not include("--debug")        
       end
     end
     
@@ -176,11 +168,11 @@ describe RSpec::Core::ConfigurationOptions do
     end
     
     it "sends all the arguments other than --drb back to the parser after parsing options" do
-      options_from_args("--drb", "--colour").should_not have_key(:drb)
+      config_options_object("--drb", "--color").to_drb_argv.should_not include("--drb")
     end
     
     it "records that it is a drb" do
-      options = config_options_object("--colour", "--drb")
+      options = config_options_object("--color", "--drb")
       options.should be_drb
     end
     
@@ -192,7 +184,7 @@ describe RSpec::Core::ConfigurationOptions do
     end
     
     it "does not record that it is a drb if --drb is absent" do
-      options = config_options_object("--colour")
+      options = config_options_object("--color")
       options.should_not be_drb
     end
   end
@@ -213,42 +205,40 @@ describe RSpec::Core::ConfigurationOptions do
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
   describe "#to_drb_argv" do
     it "preserves extra arguments" do
-      config_options_object(*%w[ a --drb b --colour c ]).to_drb_argv.should eq(%w[ --colour a b c ])
+      config_options_object(*%w[ a --drb b --color c ]).to_drb_argv.should eq(%w[ --color a b c ])
     end
     
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
-        # no --options
-        # using eq rather than =~ because of the arguments that take options
-        config_options_object(*%w[ --drb --colour --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])
+        config_options_object(*%w[ --drb --color --formatter s --line_number 1 --example pattern --profile --backtrace]).
+          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
     context "--drb specified in the options file" do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --colour ] }
+        File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --formatter s --line_number 1 --example pattern --profile --backtrace ]).
-          to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])
+          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
     context "--drb specified in ARGV and the options file" do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --colour ] }
+        File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])          
+          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
     context "--drb specified in ARGV and in as ARGV-specified --options file" do
       it "renders all the original arguments except --drb and --options" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --colour ] }
+        File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --colour --formatter s --line_number 1 --example pattern --profile --backtrace ])          
+          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
   end
@@ -272,7 +262,7 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:readlines) { ["--formatter", "doc"] }
 
       cli_options = RSpec::Core::ConfigurationOptions.new([])
-      cli_options.apply_to(config)
+      cli_options.configure(config)
       config.formatter.should == 'doc'
     end
     
@@ -281,7 +271,7 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:readlines) { ["--formatter doc"] }
 
       cli_options = RSpec::Core::ConfigurationOptions.new([])
-      cli_options.apply_to(config)
+      cli_options.configure(config)
       config.formatter.should == 'doc'
     end
     
@@ -299,7 +289,7 @@ describe RSpec::Core::ConfigurationOptions do
       end
       cli_options = RSpec::Core::ConfigurationOptions.new(["--no-color"])
 
-      cli_options.apply_to(config)
+      cli_options.configure(config)
 
       config.formatter.should == "documentation"
       config.line_number.should == "37"
@@ -320,7 +310,7 @@ describe RSpec::Core::ConfigurationOptions do
       end
       cli_options = RSpec::Core::ConfigurationOptions.new([])
 
-      cli_options.apply_to(config)
+      cli_options.configure(config)
 
       config.formatter.should == "local"
     end
@@ -329,7 +319,7 @@ describe RSpec::Core::ConfigurationOptions do
       config_options = RSpec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
       config_options.stub(:parse_options_file).and_return(:formatter => 'documentation')
 
-      config_options.apply_to(config)
+      config_options.configure(config)
 
       config.formatter.should == 'progress'
     end

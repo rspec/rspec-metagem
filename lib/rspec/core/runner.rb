@@ -26,20 +26,29 @@ module RSpec
 
         if options.version?
           out.puts("rspec " + ::Rspec::Core::Version::STRING)
-          # TODO this is copied in from RSpec 1.3
-          # exit if stdout?
         elsif options.drb?
-          DRbProxy.new(:argv => options.to_drb_argv, :remote_port => options.drb_port || ENV['RSPEC_DRB'].to_i).run(err, out)
+          run_over_drb(options, err, out) || 
+          run_in_process(configuration, err, out)
         else
-          InProcess.new(configuration).run(err, out)
+          run_in_process(configuration, err, out)
         end
+      end
+
+      def run_over_drb(options, err, out)
+        DRbProxy.new(:argv => options.to_drb_argv, :remote_port => options.drb_port || ENV['RSPEC_DRB'].to_i).run(err, out)
+      end
+
+      def run_in_process(configuration, err, out)
+        InProcess.new(configuration).run(err, out)
       end
 
     private
 
+      # TODO - this method violates command/query, and the query has little to
+      # do with the command
       def configure(args)
         options = RSpec::Core::ConfigurationOptions.new(args)
-        options.apply_to(configuration)
+        options.configure(configuration)
         configuration.require_files_to_run
         configuration.configure_mock_framework
         options
@@ -61,7 +70,7 @@ module RSpec
             spec_server.run(@options[:argv], err, out)
             true
           rescue DRb::DRbConnError
-            err.puts "No server is running"
+            err.puts "No DRb server is running. Running in local process instead ..."
             false
           end
         end

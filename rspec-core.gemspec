@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-05-30}
+  s.date = %q{2010-05-31}
   s.description = %q{RSpec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -129,6 +129,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/mocking/with_rr.rb",
      "lib/rspec/core/mocking/with_rspec.rb",
      "lib/rspec/core/object_extensions.rb",
+     "lib/rspec/core/option_parser.rb",
      "lib/rspec/core/pending.rb",
      "lib/rspec/core/rake_task.rb",
      "lib/rspec/core/ruby_project.rb",
@@ -144,6 +145,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",
+     "spec/rspec/core/drb_proxy_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",
@@ -190,10 +192,10 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
-     "spec/rspec/core/_dummy_spec0.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",
+     "spec/rspec/core/drb_proxy_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
      "spec/rspec/core/example_spec.rb",
      "spec/rspec/core/formatters/base_formatter_spec.rb",

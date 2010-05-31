@@ -13,6 +13,7 @@ require 'rspec/core/pending'
 require 'rspec/core/around_proxy'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
+require 'rspec/core/option_parser'
 require 'rspec/core/configuration_options'
 require 'rspec/core/runner'
 require 'rspec/core/example'
@@ -62,3 +63,4 @@ require 'rspec/core/backward_compatibility'
 
 # TODO - make this configurable with default 'on'
 require 'rspec/expectations'
+
