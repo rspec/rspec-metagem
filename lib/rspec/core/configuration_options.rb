@@ -30,7 +30,7 @@ module RSpec
       end
 
       def drb_port
-        options[:drb_port] || 8989
+        options[:drb_port] || ENV['RSPEC_DRB'] || 8989
       end
 
       def to_drb_argv

@@ -9,7 +9,7 @@ describe "::DRbProxy" do
   context "without server running" do
     it "prints error" do
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::Runner::DRbProxy.new(:argv => [], :remote_port => 1234).run(err, out)
+      RSpec::Core::Runner::DRbProxy.new([]).run(err, out)
 
       err.rewind
       err.read.should =~ /No DRb server is running/
@@ -17,7 +17,7 @@ describe "::DRbProxy" do
     
     it "returns false" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner::DRbProxy.new(:argv => [], :remote_port => 1234).run(err, out)
+      result = RSpec::Core::Runner::DRbProxy.new([]).run(err, out)
       result.should be_false
     end
   end
@@ -36,7 +36,7 @@ describe "::DRbProxy" do
     before(:all) do
       @drb_port = "8999"
       create_dummy_spec_file
-      DRb::DRbServer.new("druby://127.0.0.1:#{@drb_port}", ::FakeDrbSpecServer)
+      DRb.start_service("druby://127.0.0.1:#{@drb_port}", ::FakeDrbSpecServer)
     end
 
     after(:all) do
@@ -62,17 +62,17 @@ describe "::DRbProxy" do
   
     def run_spec_via_druby(argv)
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::Runner::DRbProxy.new(:argv => argv, :remote_port => @drb_port).run(err, out)
+      RSpec::Core::Runner::DRbProxy.new(argv.push("--drb-port", @drb_port)).run(err, out)
       out.rewind
       out.read
     end
-    
+
     it "returns true" do
-      err = out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner::DRbProxy.new(:argv => [] , :remote_port => @drb_port).run(err, out)
+      err, out = StringIO.new, StringIO.new
+      result = RSpec::Core::Runner::DRbProxy.new(%w[--drb-port 8999]).run(err, out)
       result.should be_true
     end
-  
+    
     it "should output green colorized text when running with --colour option" do
       out = run_spec_via_druby(["--colour", dummy_spec_filename])
       out.should =~ /\e\[32m/m
@@ -83,7 +83,7 @@ describe "::DRbProxy" do
       out.should =~ /\e\[31m/m
     end
     
-    it "integrates via #run" do
+    it "integrates via Runner.new.run" do
       err, out = StringIO.new, StringIO.new
       result = RSpec::Core::Runner.new.run(%W[ --drb --drb-port #{@drb_port}], err, out)
       result.should be_true

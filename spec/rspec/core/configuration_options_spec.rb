@@ -156,20 +156,55 @@ describe RSpec::Core::ConfigurationOptions do
     end
     
     it "does not record that it is a drb if --drb is absent" do
-      options = config_options_object("--color")
-      options.should_not be_drb
+      config_options_object("--color").drb?.should be_false
     end
   end
   
   describe "--drb-port" do
-    it "sets the DRb port" do
-      config_options_object("--drb-port", "1234").drb_port.should == 1234
-      config_options_object("--drb-port", "5678").drb_port.should == 5678
+    def with_RSPEC_DRB_set_to(val)
+      original = ENV['RSPEC_DRB']
+      ENV['RSPEC_DRB'] = val
+      begin
+        yield
+      ensure
+        ENV['RSPEC_DRB'] = original
+      end
     end
-    
-    it "defaults to 8989" do
-      config_options_object.drb_port.should == 8989
+
+    context "without RSPEC_DRB environment variable set" do
+      it "defaults to 8989" do
+        with_RSPEC_DRB_set_to(nil) do
+          config_options_object.drb_port.should == 8989
+        end
+      end
+      
+      it "sets the DRb port" do
+        with_RSPEC_DRB_set_to(nil) do
+          config_options_object("--drb-port", "1234").drb_port.should == 1234
+          config_options_object("--drb-port", "5678").drb_port.should == 5678
+        end
+      end
     end
+
+    context "with RSPEC_DRB environment variable set" do
+
+      context "without config variable set" do
+        it "uses RSPEC_DRB value" do
+          with_RSPEC_DRB_set_to('9000') do
+            config_options_object().drb_port.should == "9000"
+          end
+        end
+      end
+        
+      context "and config variable set" do
+        it "uses configured value" do
+          with_RSPEC_DRB_set_to('9000') do
+            config_options_object(*%w[--drb-port 5678]).drb_port.should == 5678
+          end
+        end
+      end
+    end
+
   end
   
   # TODO #to_drb_argv may not be the best name

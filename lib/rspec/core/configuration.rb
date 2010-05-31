@@ -78,6 +78,10 @@ module RSpec
         self.class.add_setting(name, opts)
       end
 
+      def puts(message)
+        output_stream.puts(message)
+      end
+
       def hooks
         @hooks ||= { 
           :before => { :each => [], :all => [], :suite => [] }, 
