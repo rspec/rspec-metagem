@@ -38,7 +38,6 @@ module RSpec
         argv << "--color"    if options[:color_enabled]
         argv << "--profile"   if options[:profile_examples]
         argv << "--backtrace" if options[:full_backtrace]
-        argv << "--version"   if options[:version]
         argv << "--formatter"    << options[:formatter]               if options[:formatter]
         argv << "--drb-port"     << options[:drb_port].to_s           if options[:drb_port]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]

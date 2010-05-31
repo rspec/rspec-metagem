@@ -22,16 +22,6 @@ module RSpec::Core
       
     end
     
-    # This is added in because the examples use --version
-    describe "running with --version" do
-      it "prints the version" do
-        err, out = StringIO.new, StringIO.new
-        RSpec::Core::Runner.new.run(%w[ --version ], err, out)
-        out.rewind
-        out.read.should match(/rspec \d+\.\d+\.\d+/n)
-      end
-    end
-    
     # TODO move collaboration specs into this and cover the other situations
     describe "#run" do
       context "options indicate DRb" do

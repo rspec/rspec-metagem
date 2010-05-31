@@ -28,9 +28,7 @@ module RSpec
         configuration.error_stream  = err
         configuration.output_stream = out
 
-        if options.version?
-          out.puts("rspec " + ::Rspec::Core::Version::STRING)
-        elsif options.drb?
+        if options.drb?
           run_over_drb(options, err, out) || 
           run_in_process(configuration, err, out)
         else

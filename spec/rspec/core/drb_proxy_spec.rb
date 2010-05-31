@@ -73,11 +73,6 @@ describe "::DRbProxy" do
       result.should be_true
     end
   
-    it "should run against local server" do
-      out = run_spec_via_druby(['--version'])
-      out.should =~ /rspec \d+\.\d+\.\d+.*/m
-    end
-  
     it "should output green colorized text when running with --colour option" do
       out = run_spec_via_druby(["--colour", dummy_spec_filename])
       out.should =~ /\e\[32m/m
@@ -90,7 +85,7 @@ describe "::DRbProxy" do
     
     it "integrates via #run" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner.new.run(%W[ --drb --drb-port #{@drb_port} --version ], err, out)
+      result = RSpec::Core::Runner.new.run(%W[ --drb --drb-port #{@drb_port}], err, out)
       result.should be_true
     end
   end

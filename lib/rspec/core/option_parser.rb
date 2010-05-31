@@ -65,8 +65,9 @@ module RSpec::Core
           options[:profile_examples] = o
         end
 
-        parser.on('-v', '--version', 'Show version') do |o|
-          options[:version] = o
+        parser.on('-v', '--version', 'Show version') do
+          puts RSpec::Core::Version::STRING
+          exit
         end
 
         parser.on('-X', '--drb', 'Run examples via DRb') do |o|

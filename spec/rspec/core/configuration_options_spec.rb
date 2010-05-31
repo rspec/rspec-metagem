@@ -138,35 +138,7 @@ describe RSpec::Core::ConfigurationOptions do
         config_options_object("-X"   ).to_drb_argv.should_not include("--debug")        
       end
     end
-    
-    context "combined with --version" do
-      # TODO this is proof we need a proper OO solution to the "type" of CommandLineOptions we get from parsing 
-      it "preserves --version in the DRb args but doesn't set #version? (currently confuses Runner#run)" do
-        options = config_options_object("--drb", "--version")
-        options.drb?.should     be_true
-        options.version?.should be_false
-      end
-      
-      it "handles --version first" do
-        options = config_options_object("--version", "--drb")
-        options.drb?.should     be_true
-        options.version?.should be_false
-      end
-      
-      it "handles --drb in the options file" do
-        File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb  ] }
-        options = config_options_object("--version")
         
-        options.drb?.should     be_true
-        options.version?.should be_false
-      end
-      
-      it "doesn't handle --version in the options file" do
-        # that would be silly
-      end
-    end
-    
     it "sends all the arguments other than --drb back to the parser after parsing options" do
       config_options_object("--drb", "--color").to_drb_argv.should_not include("--drb")
     end
@@ -243,17 +215,6 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "version?" do
-    it "is set to true when --version is detected" do
-      config_options_object("--version").version?.should be_true
-      config_options_object("-v"       ).version?.should be_true
-    end
-
-    it "is set to false when --version is absent" do
-      config_options_object([]).version?.should be_false
-    end
-  end
-  
   describe "options file (override)" do
     let(:config) { OpenStruct.new }
 
