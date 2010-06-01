@@ -217,6 +217,13 @@ module RSpec::Core
     end
 
     describe "full_backtrace=" do
+      around do |example|
+        # TODO - figure out why in the world this is necessary to
+        # avoid bleed into other specs.
+        backtrace_clean_patterns = config.backtrace_clean_patterns
+        example.run
+        config.backtrace_clean_patterns = backtrace_clean_patterns
+      end
       it "clears the backtrace clean patterns" do
         config.full_backtrace = true
         config.backtrace_clean_patterns.should == []
