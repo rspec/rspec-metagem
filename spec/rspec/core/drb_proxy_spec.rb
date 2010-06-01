@@ -30,46 +30,32 @@ describe "::DRbProxy" do
     end
 
     def dummy_spec_filename
-      File.expand_path(File.dirname(__FILE__)) + "/_dummy_spec.rb"
+      File.expand_path(File.dirname(__FILE__)) + "/resources/drb_example_spec.rb"
     end
   
     before(:all) do
-      @drb_port = "8999"
-      create_dummy_spec_file
-      DRb.start_service("druby://127.0.0.1:#{@drb_port}", ::FakeDrbSpecServer)
+      @drb_port = 8990
     end
 
-    after(:all) do
-      File.delete(dummy_spec_filename)
-      DRb.stop_service
+    before(:each) do
+      @drb_port += 1
+      @service = DRb::start_service("druby://127.0.0.1:#{@drb_port}", ::FakeDrbSpecServer)
     end
-  
-    def create_dummy_spec_file
-      File.open(dummy_spec_filename, 'w') do |f|
-        f.write %{
-          describe "DUMMY CONTEXT for 'DrbCommandLine with -c option'" do
-            it "should be output with green bar" do
-              true.should be_true
-            end
-  
-            it "should be output with red bar" do
-              fail "I want to see a red bar!"
-            end
-          end
-        }
-      end
+
+    after(:each) do
+      @service::stop_service
     end
-  
+
     def run_spec_via_druby(argv)
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::Runner::DRbProxy.new(argv.push("--drb-port", @drb_port)).run(err, out)
+      RSpec::Core::Runner::DRbProxy.new(argv.push("--drb-port", @drb_port.to_s)).run(err, out)
       out.rewind
       out.read
     end
 
     it "returns true" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner::DRbProxy.new(%w[--drb-port 8999]).run(err, out)
+      result = RSpec::Core::Runner::DRbProxy.new(["--drb-port", @drb_port.to_s]).run(err, out)
       result.should be_true
     end
     
@@ -85,7 +71,7 @@ describe "::DRbProxy" do
     
     it "integrates via Runner.new.run" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner.new.run(%W[ --drb --drb-port #{@drb_port}], err, out)
+      result = RSpec::Core::Runner.new.run(%W[ --drb --drb-port #{@drb_port} #{dummy_spec_filename}], err, out)
       result.should be_true
     end
   end

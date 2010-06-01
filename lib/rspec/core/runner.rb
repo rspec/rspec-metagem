@@ -15,7 +15,7 @@ module RSpec
       end
 
       def self.running_in_drb?
-        (DRb.current_server.uri rescue "") =~ /druby\:\/\/127.0.0.1\:/
+        !!((DRb.current_server.uri rescue "") =~ /druby\:\/\/127.0.0.1\:/)
       end
 
       def configuration
@@ -45,8 +45,8 @@ module RSpec
         def initialize(argv)
           drb = argv.any? {|a| %w[--drb -X].include? a}
           @options = RSpec::Core::ConfigurationOptions.new(argv)
-          @options.configure(configuration)
           unless drb
+            @options.configure(configuration)
             configuration.require_files_to_run
             configuration.configure_mock_framework
           end
@@ -75,6 +75,7 @@ module RSpec
             spec_server.run(@options.to_drb_argv, err, out)
             true
           rescue DRb::DRbConnError
+            out.puts "WTF"
             err.puts "No DRb server is running. Running in local process instead ..."
             false
           end
