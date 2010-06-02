@@ -2,12 +2,7 @@ require 'spec_helper'
 
 module RSpec::Core
   describe Runner do
-    before do
-      RSpec.stub(:configuration).and_return(RSpec::Core::Configuration.new)
-    end
-
     describe 'at_exit' do
-      
       it 'sets an at_exit hook if none is already set' do
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
@@ -21,7 +16,6 @@ module RSpec::Core
         RSpec::Core::Runner.should_receive(:at_exit).never
         RSpec::Core::Runner.autorun
       end
-      
     end
     
     describe "#run" do
