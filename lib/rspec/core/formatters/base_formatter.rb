@@ -5,16 +5,13 @@ module RSpec
       class BaseFormatter
         include Helpers
         attr_accessor :example_group
-        attr_reader :example_count, :duration, :examples
+        attr_reader :example_count, :duration, :examples, :output
 
-        def initialize
+        def initialize(output)
+          @output = output
           @example_count = 0
           @examples = []
           @example_group = nil
-        end
-
-        def output
-          configuration.output
         end
 
         def pending_examples

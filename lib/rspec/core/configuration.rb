@@ -155,7 +155,7 @@ EOM
       end
         
       def formatter
-        @formatter ||= formatter_class.new
+        @formatter ||= formatter_class.new(output)
       end
       
       def files_or_directories_to_run=(*files)

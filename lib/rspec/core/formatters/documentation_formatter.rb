@@ -6,8 +6,8 @@ module RSpec
 
       class DocumentationFormatter < BaseTextFormatter
 
-        def initialize
-          super
+        def initialize(output)
+          super(output)
           @previous_nested_example_groups = []
         end
 

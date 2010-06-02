@@ -16,10 +16,9 @@ module RSpec::Core::Formatters
       ]
 
       output = StringIO.new
-      RSpec.configuration.stub(:output) { output }
       RSpec.configuration.stub(:color_enabled?) { false }
 
-      formatter = RSpec::Core::Formatters::DocumentationFormatter.new
+      formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
       
       examples.each {|e| formatter.example_finished(e) }
 

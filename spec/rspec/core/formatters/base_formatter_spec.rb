@@ -2,7 +2,8 @@ require "spec_helper"
 
 describe RSpec::Core::Formatters::BaseFormatter do
   
-  let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new }
+  let(:output)    { StringIO.new }
+  let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }
 
   it "has start as an interface with one argument" do
     formatter.should have_interface_for(:start).with(1).argument
