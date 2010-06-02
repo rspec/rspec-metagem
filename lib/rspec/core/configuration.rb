@@ -163,7 +163,7 @@ EOM
       end
 
       def formatter
-        @formatter ||= formatter_class.new
+        @formatter ||= formatter_class.new(output)
       end
 
       alias_method :reporter, :formatter
