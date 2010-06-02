@@ -24,18 +24,13 @@ module RSpec::Core
       
     end
     
-    # TODO move collaboration specs into this and cover the other situations
     describe "#run" do
       context "with --drb or -X" do
         before(:each) do
-          @err, @out = StringIO.new, StringIO.new
-          @drb_port, @drb_argv = double(Fixnum), double(Array)
+          @err = @out = StringIO.new
 
-          @non_drb_args = %w[--color --drb-port 8181]
-          
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
-
           
           @drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
           RSpec::Core::DRbCommandLine.stub(:new => @drb_proxy)
@@ -43,12 +38,12 @@ module RSpec::Core
         
         it "builds a DRbCommandLine" do
           RSpec::Core::DRbCommandLine.should_receive(:new)
-          RSpec::Core::Runner.new.run(%w[ --drb ], @err, @out)
+          RSpec::Core::Runner.run(%w[ --drb ], @err, @out)
         end
 
         it "runs specs over the proxy" do
           @drb_proxy.should_receive(:run).with(@err, @out)
-          RSpec::Core::Runner.new.run(%w[ --drb ], @err, @out)
+          RSpec::Core::Runner.run(%w[ --drb ], @err, @out)
         end
       end
     end

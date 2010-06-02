@@ -11,7 +11,7 @@ module RSpec
       def self.autorun
         return if installed_at_exit? || running_in_drb?
         @installed_at_exit = true
-        at_exit { new.run(ARGV, $stderr, $stdout) ? exit(0) : exit(1) }
+        at_exit { run(ARGV, $stderr, $stdout) ? exit(0) : exit(1) }
       end
 
       def self.running_in_drb?
@@ -19,7 +19,7 @@ module RSpec
         !!((DRb.current_server.uri) =~ /druby\:\/\/127.0.0.1\:/)
       end
 
-      def run(args, err, out)
+      def self.run(args, err, out)
         if args.any? {|a| %w[--drb -X].include? a}
           run_over_drb(args, err, out) || run_in_process(args, err, out)
         else
@@ -27,11 +27,11 @@ module RSpec
         end
       end
 
-      def run_over_drb(args, err, out)
+      def self.run_over_drb(args, err, out)
         DRbCommandLine.new(args).run(err, out)
       end
 
-      def run_in_process(args, err, out)
+      def self.run_in_process(args, err, out)
         CommandLine.new(args).run(err, out)
       end
 
