@@ -13,8 +13,8 @@ module RSpec
         end
       end
 
-      add_setting :error_stream,  :default => $stderr
-      add_setting :output_stream, :default => $stdout
+      add_setting :error_stream
+      add_setting :output_stream
       add_setting :output, :alias => :output_stream
       add_setting :drb_port
       add_setting :color_enabled
