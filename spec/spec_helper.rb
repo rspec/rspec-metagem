@@ -34,10 +34,15 @@ Spork.prefork do
     end
   end
 
+  class NullObject
+    def method_missing(method, *args, &block)
+      # ignore
+    end
+  end
+
   class RSpec::Core::ExampleGroup
-    include RSpec::Matchers
     def self.run_all(reporter=nil)
-      run(reporter || RSpec::Mocks::Mock.new('reporter').as_null_object)
+      run(reporter || NullObject.new)
     end
   end
 
