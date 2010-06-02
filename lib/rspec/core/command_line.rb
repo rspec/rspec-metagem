@@ -13,7 +13,7 @@ module RSpec
         configuration.output_stream = out
         world.announce_inclusion_filter
 
-        configuration.formatter.report(world.example_count) do |reporter|
+        configuration.reporter.report(example_count) do |reporter|
           example_groups.run_examples(reporter)
         end
         

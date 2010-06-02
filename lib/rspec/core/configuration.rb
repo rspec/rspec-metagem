@@ -166,6 +166,8 @@ EOM
         @formatter ||= formatter_class.new
       end
 
+      alias_method :reporter, :formatter
+
       def files_or_directories_to_run=(*files)
         self.files_to_run = files.flatten.inject([]) do |result, file|
           if File.directory?(file)
