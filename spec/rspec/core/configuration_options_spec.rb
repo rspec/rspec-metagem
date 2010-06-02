@@ -111,114 +111,52 @@ describe RSpec::Core::ConfigurationOptions do
   describe "--drb (-X)" do
     context "combined with --debug" do
       it "turns off the debugger if --drb is specified first" do
-        config_options_object("--drb", "--debug").to_drb_argv.should_not include("--debug")
-        config_options_object("--drb", "-d"     ).to_drb_argv.should_not include("--debug")
-        config_options_object("-X",    "--debug").to_drb_argv.should_not include("--debug")
-        config_options_object("-X",    "-d"     ).to_drb_argv.should_not include("--debug")
+        config_options_object("--drb", "--debug").drb_argv.should_not include("--debug")
+        config_options_object("--drb", "-d"     ).drb_argv.should_not include("--debug")
+        config_options_object("-X",    "--debug").drb_argv.should_not include("--debug")
+        config_options_object("-X",    "-d"     ).drb_argv.should_not include("--debug")
       end
       
       it "turns off the debugger option if --drb is specified later" do      
-        config_options_object("--debug", "--drb").to_drb_argv.should_not include("--debug")
-        config_options_object("-d",      "--drb").to_drb_argv.should_not include("--debug")
-        config_options_object("--debug", "-X"   ).to_drb_argv.should_not include("--debug")
-        config_options_object("-d",      "-X"   ).to_drb_argv.should_not include("--debug")
+        config_options_object("--debug", "--drb").drb_argv.should_not include("--debug")
+        config_options_object("-d",      "--drb").drb_argv.should_not include("--debug")
+        config_options_object("--debug", "-X"   ).drb_argv.should_not include("--debug")
+        config_options_object("-d",      "-X"   ).drb_argv.should_not include("--debug")
       end
       
       it "turns off the debugger option if --drb is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb  ] }
-        config_options_object("--debug").to_drb_argv.should_not include("--debug")
-        config_options_object("-d"     ).to_drb_argv.should_not include("--debug")        
+        config_options_object("--debug").drb_argv.should_not include("--debug")
+        config_options_object("-d"     ).drb_argv.should_not include("--debug")        
       end
       
       it "turns off the debugger option if --debug is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --debug  ] }
-        config_options_object("--drb").to_drb_argv.should_not include("--debug")
-        config_options_object("-X"   ).to_drb_argv.should_not include("--debug")        
+        config_options_object("--drb").drb_argv.should_not include("--debug")
+        config_options_object("-X"   ).drb_argv.should_not include("--debug")        
       end
     end
         
     it "sends all the arguments other than --drb back to the parser after parsing options" do
-      config_options_object("--drb", "--color").to_drb_argv.should_not include("--drb")
-    end
-    
-    it "records that it is a drb" do
-      options = config_options_object("--color", "--drb")
-      options.should be_drb
-    end
-    
-    it "records that it is a drb if --drb comes from the options file" do
-      File.stub(:exist?) { true }
-      File.stub(:readlines) { %w[ --drb  ] }
-      options = config_options_object
-      options.should be_drb
-    end
-    
-    it "does not record that it is a drb if --drb is absent" do
-      config_options_object("--color").drb?.should be_false
+      config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
     end
   end
   
-  describe "--drb-port" do
-    def with_RSPEC_DRB_set_to(val)
-      original = ENV['RSPEC_DRB']
-      ENV['RSPEC_DRB'] = val
-      begin
-        yield
-      ensure
-        ENV['RSPEC_DRB'] = original
-      end
-    end
-
-    context "without RSPEC_DRB environment variable set" do
-      it "defaults to 8989" do
-        with_RSPEC_DRB_set_to(nil) do
-          config_options_object.drb_port.should == 8989
-        end
-      end
-      
-      it "sets the DRb port" do
-        with_RSPEC_DRB_set_to(nil) do
-          config_options_object("--drb-port", "1234").drb_port.should == 1234
-          config_options_object("--drb-port", "5678").drb_port.should == 5678
-        end
-      end
-    end
-
-    context "with RSPEC_DRB environment variable set" do
-
-      context "without config variable set" do
-        it "uses RSPEC_DRB value" do
-          with_RSPEC_DRB_set_to('9000') do
-            config_options_object().drb_port.should == "9000"
-          end
-        end
-      end
-        
-      context "and config variable set" do
-        it "uses configured value" do
-          with_RSPEC_DRB_set_to('9000') do
-            config_options_object(*%w[--drb-port 5678]).drb_port.should == 5678
-          end
-        end
-      end
-    end
-
-  end
   
-  # TODO #to_drb_argv may not be the best name
+  # TODO #drb_argv may not be the best name
   # TODO ensure all options are output
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
-  describe "#to_drb_argv" do
+  describe "#drb_argv" do
     it "preserves extra arguments" do
-      config_options_object(*%w[ a --drb b --color c ]).to_drb_argv.should eq(%w[ --color a b c ])
+      config_options_object(*%w[ a --drb b --color c ]).drb_argv.should eq(%w[ --color a b c ])
     end
     
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
         config_options_object(*%w[ --drb --color --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
@@ -227,7 +165,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --formatter s --line_number 1 --example pattern --profile --backtrace ]).
-          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
@@ -236,7 +174,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
 
@@ -245,7 +183,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
         config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          to_drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
       end
     end
   end

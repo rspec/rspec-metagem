@@ -21,6 +21,56 @@ describe "::DRbCommandLine" do
     end
   end
   
+  describe "--drb-port" do
+    def config_options_object(*args)
+      RSpec::Core::DRbCommandLine.new(args)
+    end
+
+    def with_RSPEC_DRB_set_to(val)
+      original = ENV['RSPEC_DRB']
+      ENV['RSPEC_DRB'] = val
+      begin
+        yield
+      ensure
+        ENV['RSPEC_DRB'] = original
+      end
+    end
+
+    context "without RSPEC_DRB environment variable set" do
+      it "defaults to 8989" do
+        with_RSPEC_DRB_set_to(nil) do
+          RSpec::Core::DRbCommandLine.new([]).drb_port.should == 8989
+        end
+      end
+      
+      it "sets the DRb port" do
+        with_RSPEC_DRB_set_to(nil) do
+          RSpec::Core::DRbCommandLine.new(["--drb-port", "1234"]).drb_port.should == 1234
+          RSpec::Core::DRbCommandLine.new(["--drb-port", "5678"]).drb_port.should == 5678
+        end
+      end
+    end
+
+    context "with RSPEC_DRB environment variable set" do
+
+      context "without config variable set" do
+        it "uses RSPEC_DRB value" do
+          with_RSPEC_DRB_set_to('9000') do
+            RSpec::Core::DRbCommandLine.new([]).drb_port.should == "9000"
+          end
+        end
+      end
+        
+      context "and config variable set" do
+        it "uses configured value" do
+          with_RSPEC_DRB_set_to('9000') do
+            RSpec::Core::DRbCommandLine.new(%w[--drb-port 5678]).drb_port.should == 5678
+          end
+        end
+      end
+    end
+
+  end
   # context "with server running" do
     # class ::FakeDrbSpecServer
       # def self.run(argv, err, out) 
