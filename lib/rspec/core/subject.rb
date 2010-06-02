@@ -9,7 +9,7 @@ module RSpec
       end
 
       def subject
-        attribute_of_subject || original_subject
+        using_attribute? ? attribute_of_subject : original_subject
       end
 
       # When +should+ is called with no explicit receiver, the call is
@@ -80,7 +80,7 @@ module RSpec
       end
 
       def attribute_of_subject
-        original_subject.send(running_example.description) if using_attribute? 
+        original_subject.send(running_example.description) if using_attribute?
       end
 
       def using_attribute?
