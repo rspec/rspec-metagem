@@ -35,12 +35,12 @@ module RSpec::Core
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
 
           
-          @drb_proxy = double(RSpec::Core::Runner::DRbProxy, :run => true)
-          RSpec::Core::Runner::DRbProxy.stub(:new => @drb_proxy)
+          @drb_proxy = double(RSpec::Core::Runner::DRbCommandLine, :run => true)
+          RSpec::Core::Runner::DRbCommandLine.stub(:new => @drb_proxy)
         end
         
-        it "builds a DRbProxy" do
-          RSpec::Core::Runner::DRbProxy.should_receive(:new)
+        it "builds a DRbCommandLine" do
+          RSpec::Core::Runner::DRbCommandLine.should_receive(:new)
           RSpec::Core::Runner.new.run(%w[ --drb ], @err, @out)
         end
 

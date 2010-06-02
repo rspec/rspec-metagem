@@ -58,8 +58,10 @@ Spork.prefork do
       RSpec.instance_variable_set(:@world, @real_world)
     end
   end
+  puts "PREFORK"
 end
 
 Spork.each_run do
+  puts "EACH RUN"
 end
 

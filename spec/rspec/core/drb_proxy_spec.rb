@@ -1,7 +1,7 @@
 require "spec_helper"
 
 
-describe "::DRbProxy" do
+describe "::DRbCommandLine" do
   before do
     RSpec.stub(:configuration).and_return(RSpec::Core::Configuration.new)
   end
@@ -9,7 +9,7 @@ describe "::DRbProxy" do
   context "without server running" do
     it "prints error" do
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::Runner::DRbProxy.new([]).run(err, out)
+      RSpec::Core::DRbCommandLine.new([]).run(err, out)
 
       err.rewind
       err.read.should =~ /No DRb server is running/
@@ -17,7 +17,7 @@ describe "::DRbProxy" do
     
     it "returns false" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner::DRbProxy.new([]).run(err, out)
+      result = RSpec::Core::DRbCommandLine.new([]).run(err, out)
       result.should be_false
     end
   end
@@ -48,14 +48,14 @@ describe "::DRbProxy" do
 
     def run_spec_via_druby(argv)
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::Runner::DRbProxy.new(argv.push("--drb-port", @drb_port.to_s)).run(err, out)
+      RSpec::Core::DRbCommandLine.new(argv.push("--drb-port", @drb_port.to_s)).run(err, out)
       out.rewind
       out.read
     end
 
     it "returns true" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::Runner::DRbProxy.new(["--drb-port", @drb_port.to_s]).run(err, out)
+      result = RSpec::Core::DRbCommandLine.new(["--drb-port", @drb_port.to_s]).run(err, out)
       result.should be_true
     end
     
