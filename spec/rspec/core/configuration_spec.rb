@@ -51,7 +51,7 @@ module RSpec::Core
         it "should load files named _spec.rb" do
           dir = "./spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
-          config.files_to_run.should == ["#{dir}/a_spec.rb", "#{dir}/drb_example_spec.rb"]
+          config.files_to_run.should == ["#{dir}/a_spec.rb"]
         end
 
       end
