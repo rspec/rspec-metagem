@@ -9,15 +9,13 @@ module RSpec
     module ConstMissing
       def const_missing(name)
         case name
-        when :Rspec
-          RSpec
-        when :Spec
-          RSpec.warn <<-WARNING
+        when :Rspec, :Spec
+          RSpec.warn_deprecation <<-WARNING
 *****************************************************************
 DEPRECATION WARNING: you are using a deprecated constant that will
 be removed from a future version of RSpec.
 
-* Spec is deprecated.
+* #{name} is deprecated.
 * RSpec is the new top-level module in RSpec-2
 
 #{caller(0)[1]}

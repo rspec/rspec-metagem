@@ -21,13 +21,12 @@ ADDITIONAL
       end
 
       message << "*****************************************************************"
-      warn(message)
+      warn_deprecation(message)
     end
 
-    def warn(message)
-      Kernel.warn(message)
+    def warn_deprecation(message)
+      send :warn, message
     end
-
   end
 
   class HashWithDeprecationNotice < Hash
