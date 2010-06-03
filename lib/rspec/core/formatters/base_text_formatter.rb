@@ -60,8 +60,8 @@ module RSpec
             sorted_examples = examples.sort_by { |example| example.execution_result[:run_time] }.reverse.first(10)
             output.puts "\nTop #{sorted_examples.size} slowest examples:\n"        
             sorted_examples.each do |example|
-              output.puts "  (#{format_seconds(duration, 7)} seconds) #{example}"
-              output.puts grey("   # #{format_caller(example.metadata[:caller])}")
+              output.puts "  (#{format_seconds(example.execution_result[:run_time])} seconds) #{example}"
+              output.puts grey("   # #{format_caller(example.metadata[:location])}")
             end
           end
 
