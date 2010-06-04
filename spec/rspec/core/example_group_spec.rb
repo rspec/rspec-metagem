@@ -238,6 +238,17 @@ module RSpec::Core
         ]
       end
 
+      it "accesses before(:all) state in after(:all)" do
+        group = ExampleGroup.describe
+        group.before(:all) { @ivar = "value" }
+        group.after(:all)  { @ivar.should eq("value") }
+        group.example("ignore") {  }
+
+        expect do
+          group.run_all
+        end.to_not raise_error
+      end
+
       it "exposes the around each blocks at after_alls" do
         group = ExampleGroup.describe
         group.around(:each) { 'foo' }

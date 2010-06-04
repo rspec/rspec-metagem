@@ -166,6 +166,10 @@ Feature: before and after hooks
         example "in outer group" do
         end
 
+        after(:all) do
+          puts "outer after all"
+        end
+
         describe "nested group" do
           before(:all) do
             puts "inner before all"
@@ -177,10 +181,6 @@ Feature: before and after hooks
           after(:all) do
             puts "inner after all"
           end
-        end
-
-        after(:all) do
-          puts "outer after all"
         end
 
       end
@@ -196,6 +196,42 @@ Feature: before and after hooks
     When I run "rspec ./before_and_after_all_spec.rb:6"
     Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
+
+  Scenario: before/after all blocks have access to state
+    Given a file named "before_and_after_all_spec.rb" with:
+      """
+      describe "before and after callbacks" do
+        before(:all) do
+          @outer_state = "set in outer before all"
+        end
+
+        example "in outer group" do
+          @outer_state.should eq("set in outer before all")
+        end
+
+        describe "nested group" do
+          before(:all) do
+            @inner_state = "set in inner before all"
+          end
+
+          example "in nested group" do
+            @outer_state.should eq("set in outer before all")
+            @inner_state.should eq("set in inner before all")
+          end
+
+          after(:all) do
+            @inner_state.should eq("set in inner before all")
+          end
+        end
+
+        after(:all) do
+          # p @outer_state.nil?
+          @outer_state.should eq("set in outer before all")
+        end
+      end
+      """
+    When I run "rspec ./before_and_after_all_spec.rb"
+    Then I should see "2 examples, 0 failures"
 
   Scenario: exception in before(:each) is captured and reported as failure
     Given a file named "error_in_before_each_spec.rb" with:

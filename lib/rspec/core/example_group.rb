@@ -156,13 +156,13 @@ module RSpec
 
       def self.eval_after_alls(running_example)
         return if filtered_examples.empty?
+        before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         ancestors.each do |ancestor|
           until ancestor.after_alls.empty?
             running_example.instance_eval &ancestor.after_alls.pop
           end
         end
         world.run_hook(:after, :all, self, running_example)
-        before_all_ivars.keys.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
 
       def self.run(reporter)
