@@ -450,6 +450,17 @@ module RSpec::Core
       context "subject modified in before block" do
         before { subject.class.should == RSpec::Core::ExampleGroup }
       end
+
+      context "with nil value" do
+        subject do
+          Class.new do
+            def nil_value
+              nil
+            end
+          end.new
+        end
+        its(:nil_value) { should be_nil }
+      end
     end
 
     describe "#top_level_description" do
