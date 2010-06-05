@@ -30,11 +30,11 @@ module RSpec
           end
         end
 
-        def comparing_hash_keys?(actual, expected)
+        def comparing_hash_keys?(actual, expected) # :nodoc:
           actual.is_a?(Hash) && !expected.is_a?(Hash)
         end
 
-        def comparing_hash_values?(actual, expected)
+        def comparing_hash_values?(actual, expected) # :nodoc:
           actual.is_a?(Hash) && expected.is_a?(Hash)
         end
 

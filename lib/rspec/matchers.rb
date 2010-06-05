@@ -1,6 +1,7 @@
 module RSpec
-  # RSpec ships with a number of useful Expression Matchers. An Expression Matcher
-  # is any object that responds to the following methods:
+  # rspec-expecations provides a number of useful Matchers we use to compose
+  # expectations. A Matcher is any object that responds to the following
+  # methods:
   #
   #   matches?(actual)
   #   failure_message_for_should
@@ -10,14 +11,6 @@ module RSpec
   #   does_not_match?(actual)
   #   failure_message_for_should_not
   #   description #optional
-  #
-  # These methods are from older versions of the protocol. They are still supported,
-  # but are not recommended:
-  #
-  #   failure_message          (use failure_message_for_should instead)
-  #   negative_failure_message (use failure_message_for_should_not instead)
-  #
-  # See RSpec::Expectations to learn how to use these as Expectation Matchers.
   #
   # == Predicates
   #

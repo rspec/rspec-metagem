@@ -3,17 +3,14 @@
 rspec-expectations adds `should` and `should_not` to every object and includes
 RSpec::Matchers, a library of standard matchers.
 
-rspec-expectations is currently in alpha release. While you are welcome to
-track, fork, explore, etc, we're too early in the process to start fielding
-pull requests and or issues from outside the core development team, so please
-don't waste your time until this notice changes.
+# Matchers
 
-## Install
+Matchers are objects used to compose expectations:
 
-    [sudo] gem install rspec --prerelease
+    result.should eq("this value")
 
-This will install rspec, rspec-core, rspec-expectations and rspec-mocks.
-
+In that example, `eq("this value")` returns a `Matcher` object that
+compares the actual `result` to the expected `"this value"`.
 
 #### Also see
 
