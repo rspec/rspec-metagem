@@ -1,11 +1,29 @@
 # Upgrade to rspec-core-2.0
 
-## What's changed
+## What's changed since rspec-1
 
-### RSpec namespace
+### rspec command
 
-The root namespace is now `RSpec` instead of `Spec`, and the root directory
-under `lib` is `rspec` instead of `spec`.
+The command to run specs is now `rspec` instead of `spec`.
+
+    rspec ./spec
+
+### autotest
+
+RSpec-2 works with autotest as follows:
+
+    # in ./autotest/discover.rb
+    Autotest.add_discovery { "rspec2" }
+
+    # command line
+    $ autotest
+
+The `autospec` command is a thing of the past. 
+
+### RSpec
+
+The root namespace (top level module ) is now `RSpec` instead of `Spec`, and
+the root directory under `lib` within all of the `rspec` gems is `rspec` instead of `spec`.
 
 ### Configuration
 
@@ -15,11 +33,15 @@ Typically in `spec/spec_helper.rb`, configuration is now done like this:
       # ....
     end
 
-### rspec commmand
+### .rspec
 
-The command to run specs is now `rspec` instead of `spec`.
+Command line options can be persisted in a `.rspec` file in a project. You
+can also store a `.rspec` file in your home directory (`~/.rspec`) with global
+options. Precedence is:
 
-    rspec ./spec
+    command line
+    ./.rspec
+    ~/.rspec
 
 ## What's new
 
@@ -34,6 +56,8 @@ like the file and line number on which it was declared, the arguments passed to
 `describe` and `it`, etc.  This metadata can be appended to through a hash
 argument passed to `describe` or `it`, allowing us to pre and post-process
 each example in a variety of ways.
+
+### Filtering
 
 The most obvious use is for filtering the run. For example:
 
