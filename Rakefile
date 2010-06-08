@@ -23,10 +23,6 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  This is beta software. If you are looking
-  for a supported production release, please
-  "gem install rspec" (without --pre).
-  
 #{"*"*50}
 EOM
   end
