@@ -5,13 +5,13 @@ module RSpec
       include RSpec::Matchers::Pretty
       include RSpec::Matchers
 
-      attr_reader :expected, :actual
+      attr_reader :expected, :actual, :rescued_exception
       def initialize(name, *expected, &declarations)
         @name     = name
         @expected = expected
         @actual   = nil
         @diffable = false
-        @expected_exception = nil
+        @expected_exception, @rescued_exception = nil
         @messages = {
           :description => lambda {"#{name_to_sentence}#{expected_to_sentence}"},
           :failure_message_for_should => lambda {|actual| "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"},
@@ -29,7 +29,7 @@ module RSpec
           begin
             instance_exec(actual, &@match_block)
             true
-          rescue @expected_exception
+          rescue @expected_exception => @rescued_exception
             false
           end
         else

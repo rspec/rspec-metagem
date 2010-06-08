@@ -230,11 +230,11 @@ module RSpec
       end
 
       describe "#match_unless_raises" do
-        context "with a passing assertion" do
+        context "with an assertion" do
           let(:mod) do
             Module.new do
               def assert_equal(a,b)
-                a == b ? nil : (raise UnexpectedError.new("#{a} does not equal #{b}"))
+                a == b ? nil : (raise UnexpectedError.new("#{b} does not equal #{a}"))
               end
             end
           end
@@ -247,11 +247,23 @@ module RSpec
               end
             end
           end
-          it "passes as you would expect" do
-            matcher.matches?(4).should be_true
+
+          context "with passing assertion" do
+            it "passes" do
+              matcher.matches?(4).should be_true
+            end
           end
-          it "fails as you would expect" do
-            matcher.matches?(5).should be_false
+
+          context "with failing assertion" do
+            it "fails" do
+              matcher.matches?(5).should be_false
+            end
+
+            it "provides the raised exception" do
+              matcher.matches?(5)
+              matcher.rescued_exception.message.
+                should eq("5 does not equal 4")
+            end
           end
         end
 
