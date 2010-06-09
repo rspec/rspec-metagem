@@ -199,7 +199,7 @@ Feature: define matcher
       module MyHelpers
         extend RSpec::Matchers::DSL
 
-        define :be_just_like do |expected|
+        matcher :be_just_like do |expected|
           match {|actual| actual == expected}
         end
       end

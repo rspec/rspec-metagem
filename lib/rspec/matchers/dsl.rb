@@ -8,6 +8,8 @@ module RSpec
           RSpec::Matchers::Matcher.new name, *expected, &declarations
         end
       end
+
+      alias_method :matcher, :define
     end
   end
 end
