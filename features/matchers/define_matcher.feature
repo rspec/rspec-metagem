@@ -191,3 +191,32 @@ Feature: define matcher
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
 
+  Scenario: scoped
+    Given a file named "scoped_matcher_spec.rb" with:
+      """
+      require 'rspec/expectations'
+
+      module MyHelpers
+        extend RSpec::Matchers::DSL
+
+        define :be_just_like do |expected|
+          match {|actual| actual == expected}
+        end
+      end
+
+      describe "group with MyHelpers" do
+        include MyHelpers
+        it "has access to the defined matcher" do
+          self.should respond_to(:be_just_like)
+        end
+      end
+
+      describe "group without MyHelpers" do
+        it "does not have access to the defined matcher" do
+          self.should_not respond_to(:be_just_like)
+        end
+      end
+      """
+
+    When I run "rspec ./scoped_matcher_spec.rb"
+    Then the stdout should contain "1 failure"
