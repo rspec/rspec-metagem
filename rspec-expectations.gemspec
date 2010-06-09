@@ -112,10 +112,6 @@ Gem::Specification.new do |s|
 
   Thank you for installing rspec-expectations-2.0.0.beta.11
 
-  This is beta software. If you are looking
-  for a supported production release, please
-  "gem install rspec" (without --pre).
-  
 **************************************************
 }
   s.rdoc_options = ["--charset=UTF-8"]
