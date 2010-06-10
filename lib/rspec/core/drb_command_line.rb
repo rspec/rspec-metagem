@@ -3,6 +3,7 @@ module RSpec
     class DRbCommandLine
       def initialize(argv)
         @options = RSpec::Core::ConfigurationOptions.new(argv)
+        @options.parse_options
       end
 
       def drb_port

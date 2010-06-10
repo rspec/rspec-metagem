@@ -12,7 +12,6 @@ module RSpec
       
       def initialize(args)
         @args = args
-        @options = parse_options
       end
 
       def configure(config)
@@ -33,17 +32,19 @@ module RSpec
         argv + options[:files_or_directories_to_run]
       end
 
-    private
-
       def parse_options
-        command_line_options = parse_command_line_options
-        local_options        = parse_local_options(command_line_options)
-        global_options       = parse_global_options
+        @options = begin
+                     command_line_options = parse_command_line_options
+                     local_options        = parse_local_options(command_line_options)
+                     global_options       = parse_global_options
 
-        [global_options, local_options, command_line_options].inject do |merged, options|
-          merged.merge(options)
-        end
+                     [global_options, local_options, command_line_options].inject do |merged, options|
+                       merged.merge(options)
+                     end
+                   end
       end
+
+    private
 
       def parse_command_line_options
         options = Parser.parse!(@args)

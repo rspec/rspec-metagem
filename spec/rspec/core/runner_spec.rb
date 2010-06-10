@@ -24,6 +24,7 @@ module RSpec::Core
           @err = @out = StringIO.new
 
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
+          @options.parse_options
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
           
           @drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)

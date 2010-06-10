@@ -5,7 +5,9 @@ require 'ostruct'
 describe RSpec::Core::ConfigurationOptions do
   
   def config_options_object(*args)
-    RSpec::Core::ConfigurationOptions.new(args)
+    coo = RSpec::Core::ConfigurationOptions.new(args)
+    coo.parse_options
+    coo
   end
 
   def options_from_args(*args)
@@ -195,8 +197,9 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:exist?) { true }
       File.stub(:readlines) { ["--formatter", "doc"] }
 
-      cli_options = RSpec::Core::ConfigurationOptions.new([])
-      cli_options.configure(config)
+      config_options = RSpec::Core::ConfigurationOptions.new([])
+      config_options.parse_options
+      config_options.configure(config)
       config.formatter.should == 'doc'
     end
     
@@ -204,8 +207,9 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:exist?) { true }
       File.stub(:readlines) { ["--formatter doc"] }
 
-      cli_options = RSpec::Core::ConfigurationOptions.new([])
-      cli_options.configure(config)
+      config_options = RSpec::Core::ConfigurationOptions.new([])
+      config_options.parse_options
+      config_options.configure(config)
       config.formatter.should == 'doc'
     end
     
@@ -221,9 +225,10 @@ describe RSpec::Core::ConfigurationOptions do
           raise "Unexpected path: #{path}"
         end
       end
-      cli_options = RSpec::Core::ConfigurationOptions.new(["--no-color"])
+      config_options = RSpec::Core::ConfigurationOptions.new(["--no-color"])
+      config_options.parse_options
 
-      cli_options.configure(config)
+      config_options.configure(config)
 
       config.formatter.should == "documentation"
       config.line_number.should == "37"
@@ -242,9 +247,10 @@ describe RSpec::Core::ConfigurationOptions do
           raise "Unexpected path: #{path}"
         end
       end
-      cli_options = RSpec::Core::ConfigurationOptions.new([])
+      config_options = RSpec::Core::ConfigurationOptions.new([])
+      config_options.parse_options
 
-      cli_options.configure(config)
+      config_options.configure(config)
 
       config.formatter.should == "local"
     end
@@ -253,6 +259,7 @@ describe RSpec::Core::ConfigurationOptions do
       config_options = RSpec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
       config_options.stub(:parse_options_file).and_return(:formatter => 'documentation')
 
+      config_options.parse_options
       config_options.configure(config)
 
       config.formatter.should == 'progress'
