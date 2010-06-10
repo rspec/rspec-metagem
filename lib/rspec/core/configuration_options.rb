@@ -37,14 +37,19 @@ module RSpec
                      command_line_options = parse_command_line_options
                      local_options        = parse_local_options(command_line_options)
                      global_options       = parse_global_options
+                     env_options          = parse_env_options
 
-                     [global_options, local_options, command_line_options].inject do |merged, options|
+                     [global_options, local_options, command_line_options, env_options].inject do |merged, options|
                        merged.merge(options)
                      end
                    end
       end
 
     private
+
+      def parse_env_options
+        ENV["SPEC_OPTS"] ? Parser.parse!(ENV["SPEC_OPTS"].split) : {}
+      end
 
       def parse_command_line_options
         options = Parser.parse!(@args)

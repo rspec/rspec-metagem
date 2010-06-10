@@ -264,6 +264,25 @@ describe RSpec::Core::ConfigurationOptions do
 
       config.formatter.should == 'progress'
     end
+
+    context "with SPEC_OPTS" do
+      around do |example|
+        orig_spec_opts = ENV["SPEC_OPTS"]
+        example.run
+        ENV["SPEC_OPTS"] = orig_spec_opts
+      end
+
+      it "prefers SPEC_OPTS options over file options" do
+        config = OpenStruct.new
+        ENV["SPEC_OPTS"] = "--formatter documentation"
+        config_options = RSpec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
+
+        config_options.parse_options
+        config_options.configure(config)
+
+        config.formatter.should == 'documentation'
+      end
+    end
   end
 end
 
