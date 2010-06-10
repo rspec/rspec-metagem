@@ -151,13 +151,17 @@ EOM
       end
       
       def formatter=(formatter_to_use)
-        formatter_class = case formatter_to_use.to_s
-        when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
-          RSpec::Core::Formatters::DocumentationFormatter
-        when 'progress' 
-          RSpec::Core::Formatters::ProgressFormatter
-        else 
-          raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
+        if formatter_to_use.is_a?(Class)
+          formatter_class = formatter_to_use
+        else
+          formatter_class = case formatter_to_use.to_s
+          when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+            RSpec::Core::Formatters::DocumentationFormatter
+          when 'progress' 
+            RSpec::Core::Formatters::ProgressFormatter
+          else 
+            raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
+          end
         end
         self.formatter_class = formatter_class
       end

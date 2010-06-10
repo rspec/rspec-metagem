@@ -35,11 +35,15 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe  'formatter' do
+  describe  'format' do
     example '-f or --format with an argument should parse' do
       options_from_args('--format', 'd').should include(:formatter => 'd')
       options_from_args('-f', 'd').should include(:formatter => 'd')
       options_from_args('-fd').should include(:formatter => 'd')
+    end
+
+    example "-f/--format can accept a class name" do
+      options_from_args('-fSome::Formatter::Class').should include(:formatter => 'Some::Formatter::Class')
     end
   end
 

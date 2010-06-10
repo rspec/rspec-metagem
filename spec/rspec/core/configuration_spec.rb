@@ -190,6 +190,12 @@ module RSpec::Core
         config.formatter = 'documentation'
         config.formatter.should be_an_instance_of(Formatters::DocumentationFormatter)
       end
+
+      it "sets a formatter based on its class" do
+        formatter_class = Class.new(Formatters::BaseTextFormatter)
+        config.formatter = formatter_class
+        config.formatter.should be_an_instance_of(formatter_class)
+      end
       
       it "raises ArgumentError if formatter is unknown" do
         lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
