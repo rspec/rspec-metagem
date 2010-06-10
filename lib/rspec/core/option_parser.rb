@@ -9,6 +9,10 @@ module RSpec::Core
     end
 
     def parse!(args)
+      if args.include?("--formatter")
+        args[args.index("--formatter")] = "--format"
+        RSpec.deprecate("the --formatter option", "-f or --format")
+      end
       options = {}
       parser(options).parse!(args)
       options
@@ -37,7 +41,7 @@ module RSpec::Core
           options[:full_description] = /#{o}/
         end
 
-        parser.on('-f', '--formatter FORMATTER', 'Choose a formatter',
+        parser.on('-f', '--format FORMATTER', 'Choose a formatter',
                 '  [p]rogress (default - dots)',
                 '  [d]ocumentation (group and example names)') do |o|
           options[:formatter] = o

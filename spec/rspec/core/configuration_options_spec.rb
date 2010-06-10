@@ -36,8 +36,8 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   describe  'formatter' do
-    example '-f or --formatter with an argument should parse' do
-      options_from_args('--formatter', 'd').should include(:formatter => 'd')
+    example '-f or --format with an argument should parse' do
+      options_from_args('--format', 'd').should include(:formatter => 'd')
       options_from_args('-f', 'd').should include(:formatter => 'd')
       options_from_args('-fd').should include(:formatter => 'd')
     end
@@ -157,8 +157,8 @@ describe RSpec::Core::ConfigurationOptions do
     
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
-        config_options_object(*%w[ --drb --color --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --drb --color --format s --line_number 1 --example pattern --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
     end
 
@@ -166,8 +166,8 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
-        config_options_object(*%w[ --formatter s --line_number 1 --example pattern --profile --backtrace ]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --format s --line_number 1 --example pattern --profile --backtrace ]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
     end
 
@@ -175,8 +175,8 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
-        config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
     end
 
@@ -184,8 +184,8 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb and --options" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb --color ] }
-        config_options_object(*%w[ --drb --formatter s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --formatter s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
     end
   end
@@ -195,7 +195,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "loads automatically" do
       File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--formatter", "doc"] }
+      File.stub(:readlines) { ["--format", "doc"] }
 
       config_options = RSpec::Core::ConfigurationOptions.new([])
       config_options.parse_options
@@ -205,7 +205,7 @@ describe RSpec::Core::ConfigurationOptions do
     
     it "allows options on one line" do
       File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--formatter doc"] }
+      File.stub(:readlines) { ["--format doc"] }
 
       config_options = RSpec::Core::ConfigurationOptions.new([])
       config_options.parse_options
@@ -218,7 +218,7 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:readlines) do |path|
         case path
         when ".rspec"
-          ["--formatter", "documentation"] 
+          ["--format", "documentation"] 
         when /\.rspec/
           ["--line", "37"]
         else
@@ -240,9 +240,9 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:readlines) do |path|
         case path
         when ".rspec"
-          ["--formatter", "local"] 
+          ["--format", "local"] 
         when /\.rspec/
-          ["--formatter", "global"] 
+          ["--format", "global"] 
         else
           raise "Unexpected path: #{path}"
         end
@@ -256,7 +256,7 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     it "prefers CLI options over file options" do
-      config_options = RSpec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
+      config_options = RSpec::Core::ConfigurationOptions.new(['--format', 'progress'])
       config_options.stub(:parse_options_file).and_return(:formatter => 'documentation')
 
       config_options.parse_options
@@ -274,8 +274,8 @@ describe RSpec::Core::ConfigurationOptions do
 
       it "prefers SPEC_OPTS options over file options" do
         config = OpenStruct.new
-        ENV["SPEC_OPTS"] = "--formatter documentation"
-        config_options = RSpec::Core::ConfigurationOptions.new(['--formatter', 'progress'])
+        ENV["SPEC_OPTS"] = "--format documentation"
+        config_options = RSpec::Core::ConfigurationOptions.new(['--format', 'progress'])
 
         config_options.parse_options
         config_options.configure(config)
