@@ -120,6 +120,22 @@ module RSpec
         backtrace_clean_patterns.clear
       end
 
+      def color_enabled=(bool)
+        return unless bool
+        settings[:color_enabled] = true
+        if bool && Config::CONFIG['host_os'] =~ /mswin|mingw/
+          orig_output_stream = settings[:output_stream]
+          begin
+            require 'Win32/Console/ANSI'
+          rescue LoadError
+            warn "You must 'gem install win32console' to use colour on Windows"
+            settings[:color_enabled] = false
+          ensure
+            settings[:output_stream] = orig_output_stream
+          end
+        end
+      end
+
       def libs=(libs)
         libs.map {|lib| $LOAD_PATH.unshift lib}
       end

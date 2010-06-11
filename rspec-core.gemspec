@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-06-06}
+  s.date = %q{2010-06-10}
   s.description = %q{RSpec runner and example group classes}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -110,6 +110,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/let_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
+     "spec/rspec/core/option_parser_spec.rb",
      "spec/rspec/core/pending_example_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",
@@ -131,10 +132,6 @@ Gem::Specification.new do |s|
   s.post_install_message = %q{**************************************************
 
   Thank you for installing rspec-core-2.0.0.beta.11
-
-  This is beta software. If you are looking
-  for a supported production release, please
-  "gem install rspec" (without --pre).
   
 **************************************************
 }
@@ -160,6 +157,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/let_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
+     "spec/rspec/core/option_parser_spec.rb",
      "spec/rspec/core/pending_example_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",

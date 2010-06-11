@@ -181,6 +181,55 @@ module RSpec::Core
         config.run_all_when_everything_filtered?.should == true
       end
     end
+
+    describe 'color_enabled=' do
+      context "given true" do
+        context "on windows" do
+          before do
+            @original_host  = Config::CONFIG['host_os']
+            Config::CONFIG['host_os'] = 'mswin'
+            config.stub(:require)
+            config.stub(:warn)
+          end
+
+          after do
+            Config::CONFIG['host_os'] = @original_host
+          end
+
+          context "with win32console available" do
+            it "requires win32console" do
+              config.should_receive(:require).
+                with("Win32/Console/ANSI")
+              config.color_enabled = true
+            end
+
+            it "leaves output stream intact" do
+              config.output_stream = $stdout
+              config.stub(:require) do |what|
+                config.output_stream = 'foo' if what =~ /Win32/
+              end
+              config.color_enabled = true
+              config.output_stream.should eq($stdout)
+            end
+          end
+
+          context "with win32console NOT available" do
+            it "warns to install win32console" do
+              config.stub(:require) { raise LoadError }
+              config.should_receive(:warn).
+                with /You must 'gem install win32console'/
+              config.color_enabled = true
+            end
+
+            it "sets color_enabled to false" do
+              config.stub(:require) { raise LoadError }
+              config.color_enabled = true
+              config.color_enabled.should be_false
+            end
+          end
+        end
+      end
+    end
     
     describe 'formatter=' do
 
