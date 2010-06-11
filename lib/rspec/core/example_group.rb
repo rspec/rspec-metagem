@@ -65,11 +65,15 @@ module RSpec
       end
 
       def self.examples
-        @_examples ||= []
+        @examples ||= []
       end
 
       def self.filtered_examples
         world.filtered_examples[self]
+      end
+
+      def self.descendent_filtered_examples
+        filtered_examples + children.collect{|c| c.descendent_filtered_examples}
       end
 
       def self.metadata
@@ -132,14 +136,12 @@ module RSpec
       end
 
       def self.eval_before_alls(running_example)
-        return if filtered_examples.empty?
+        return if descendent_filtered_examples.empty?
         superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         world.run_hook(:before, :all, self, running_example)
 
-        ancestors.reverse.each do |ancestor|
-          until ancestor.before_alls.empty?
-            running_example.instance_eval &ancestor.before_alls.shift
-          end
+        until before_alls.empty?
+          running_example.instance_eval &before_alls.shift
         end
         running_example.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
       end
@@ -155,7 +157,7 @@ module RSpec
       end
 
       def self.eval_after_alls(running_example)
-        return if filtered_examples.empty?
+        return if descendent_filtered_examples.empty?
         before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         ancestors.each do |ancestor|
           until ancestor.after_alls.empty?

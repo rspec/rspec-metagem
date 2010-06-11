@@ -197,6 +197,36 @@ Feature: before and after hooks
     Then I should see "1 example, 0 failures"
     Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
 
+  Scenario: nested examples have access to state set in outer before(:all)
+    Given a file named "before_all_spec.rb" with:
+      """
+      describe "something" do
+        before :all do
+          @value = 123
+        end
+
+        describe "nested" do
+          it "access state set in before(:all)" do
+            @value.should eq(123)
+          end
+
+          describe "nested more deeply" do
+            it "access state set in before(:all)" do
+              @value.should eq(123)
+            end
+          end
+        end
+
+        describe "nested in parallel" do
+          it "access state set in before(:all)" do
+            @value.should == 123
+          end
+        end
+      end
+      """
+    When I run "rspec before_all_spec.rb"
+    Then I should see "3 examples, 0 failures"
+
   Scenario: before/after all blocks have access to state
     Given a file named "before_and_after_all_spec.rb" with:
       """
