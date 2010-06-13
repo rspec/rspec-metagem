@@ -71,6 +71,7 @@ Rake::RDocTask.new do |rdoc|
 end
 
 task :clobber do
+  rm_rf 'doc'
   rm_rf 'pkg'
   rm_rf 'tmp'
   rm_rf 'coverage'

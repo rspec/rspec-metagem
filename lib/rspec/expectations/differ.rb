@@ -19,8 +19,9 @@ module RSpec
         file_length_difference = 0
         diffs.each do |piece|
           begin
-            hunk = Diff::LCS::Hunk.new(data_old, data_new, piece, context_lines,
-                                       file_length_difference)
+            hunk = Diff::LCS::Hunk.new(
+              data_old, data_new, piece, context_lines, file_length_difference
+            )
             file_length_difference = hunk.file_length_difference      
             next unless oldhunk      
             # Hunks may overlap, which is why we need to be careful when our
@@ -44,7 +45,8 @@ module RSpec
         diff_as_string(PP.pp(target,""), PP.pp(expected,""))
       end
 
-      protected
+    protected
+
       def format
         :unified
       end
