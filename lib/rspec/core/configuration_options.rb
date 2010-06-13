@@ -15,9 +15,13 @@ module RSpec
       end
 
       def configure(config)
-        options.keys.sort{|a,b| a.to_s <=> b.to_s}.each do |key|
+        sorted_keys.each do |key|
           config.send("#{key}=", options[key])
         end
+      end
+
+      def sorted_keys
+        options.keys.sort{|a,b| a.to_s <=> b.to_s}
       end
 
       def drb_argv
