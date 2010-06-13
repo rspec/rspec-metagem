@@ -70,6 +70,11 @@ module RSpec::Core
           options[:profile_examples] = o
         end
 
+        parser.on('-r', '--require PATH', 'Require a file') do |path|
+          options[:requires] ||= []
+          options[:requires] << path
+        end
+
         parser.on('-v', '--version', 'Show version') do
           puts RSpec::Core::Version::STRING
           exit

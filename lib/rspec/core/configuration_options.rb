@@ -16,7 +16,7 @@ module RSpec
 
       def configure(config)
         options.each do |key, value|
-          config.send("#{key}=", value) rescue nil
+          config.send("#{key}=", value)
         end
       end
 

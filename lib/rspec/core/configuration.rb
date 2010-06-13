@@ -140,6 +140,10 @@ module RSpec
         libs.map {|lib| $LOAD_PATH.unshift lib}
       end
 
+      def requires=(paths)
+        paths.map {|path| require path}
+      end
+
       def debug=(bool)
         return unless bool
         begin

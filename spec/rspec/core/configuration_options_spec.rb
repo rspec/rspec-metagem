@@ -14,6 +14,16 @@ describe RSpec::Core::ConfigurationOptions do
     config_options_object(*args).options
   end
 
+  describe "#configure" do
+    it "sends libs before requires" do
+      opts = config_options_object(*%w[--require a/path -I a/lib])
+      config = double("config").as_null_object
+      config.should_receive(:libs=).ordered
+      config.should_receive(:requires=).ordered
+      opts.configure(config)
+    end
+  end
+
   describe 'color_enabled' do
     example "-c, --colour, or --color are parsed as true" do
       options_from_args('-c').should include(:color_enabled => true)
@@ -32,6 +42,15 @@ describe RSpec::Core::ConfigurationOptions do
     end
     example "-I can be used more than once" do
       options_from_args('-I', 'dir_1', '-I', 'dir_2').should include(:libs => ['dir_1','dir_2'])
+    end
+  end
+
+  describe '--require' do
+    example "--requires files" do
+      options_from_args('--require', 'a/path').should include(:requires => ['a/path'])
+    end
+    example "--require can be used more than once" do
+      options_from_args('--require', 'path/1', '--require', 'path/2').should include(:requires => ['path/1','path/2'])
     end
   end
 

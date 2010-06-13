@@ -315,6 +315,13 @@ module RSpec::Core
       end
     end
 
+    describe "requires=" do
+      it "requires paths" do
+        config.should_receive(:require).with("a/path")
+        config.requires = ["a/path"]
+      end
+    end
+
     describe "#add_setting" do
       describe "with no modifiers" do
         context "with no additional options" do
