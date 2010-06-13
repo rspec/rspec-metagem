@@ -41,15 +41,14 @@ Feature: spec/spec.opts
     When I run "rspec ./spec/example_spec.rb"
     Then I should see "1 example, 0 failures"
 
-@wip            
-  Scenario: formatter set in both (.rspec wins)
+  Scenario: formatter set in both (RSpec.configure wins)
     Given a file named ".rspec" with:
       """
-      --format documentation
+      --format progress
       """
     And a file named "spec/spec_helper.rb" with:
       """
-      RSpec.configure {|c| c.formatter = 'progress'}
+      RSpec.configure {|c| c.formatter = 'documentation'}
       """
     And a file named "spec/example_spec.rb" with:
       """
