@@ -29,7 +29,7 @@ Feature: example name option
     When I run "rspec . --example nothing_like_this"
     Then I should see "0 examples, 0 failures"
 
-  Scenario: all matches
+  Scenario: match on one word
     When I run "rspec . --example example"
     Then I should see "4 examples, 0 failures"
 
@@ -37,8 +37,12 @@ Feature: example name option
     When I run "rspec . --example 'first example'"
     Then I should see "2 examples, 0 failures"
 
-  Scenario: one match in one file
+  Scenario: one match in one file using just the example name
     When I run "rspec . --example 'first example in first group'"
+    Then I should see "1 example, 0 failures"
+
+  Scenario: one match in one file using the example name and the group name
+    When I run "rspec . --example 'first group first example in first group'"
     Then I should see "1 example, 0 failures"
 
   Scenario: one match in one file using regexp
