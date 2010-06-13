@@ -1,10 +1,9 @@
 Feature: halt
   
-  In an example, before hook, after hook, or around hook, you can
-  halt the current example, group, or suite based on arbitrary
-  criteria.
+  In an example, before or after hook, you can halt the current example, group,
+  or suite based on arbitrary criteria.
 
-  @wip
+@wip
   Scenario: halt group on failure
     Given a directory named "spec"
     And a file named "spec/example_spec.rb" with:

@@ -249,12 +249,6 @@ module RSpec::Core
         end.to_not raise_error
       end
 
-      it "exposes the around each blocks at after_alls" do
-        group = ExampleGroup.describe
-        group.around(:each) { 'foo' }
-        group.should have(1).around_eachs
-      end
-
       it "treats an error in before(:each) as a failure" do
         group = ExampleGroup.describe
         group.before(:each) { raise "error in before each" }
@@ -423,22 +417,6 @@ module RSpec::Core
       it "(second example)" do
         @b = 2
         @a.should be_nil
-      end
-    end
-
-    describe "#around" do
-      around(:each) do |example|
-        SelfObserver.new
-        example.run
-        SelfObserver.cache.clear
-      end
-
-      it "has 1 SelfObserver (1)" do
-        SelfObserver.cache.length.should == 1
-      end
-
-      it "has 1 SelfObserver (2)" do
-        SelfObserver.cache.length.should == 1
       end
     end
 

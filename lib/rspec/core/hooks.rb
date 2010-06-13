@@ -42,6 +42,7 @@ module RSpec
       end
 
       def around(type=:each, &block)
+        RSpec::deprecate("around", "before and after")
         around_blocks[type] << block
       end
     end

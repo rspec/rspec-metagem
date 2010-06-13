@@ -289,10 +289,12 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     context "with SPEC_OPTS" do
-      around do |example|
-        orig_spec_opts = ENV["SPEC_OPTS"]
-        example.run
-        ENV["SPEC_OPTS"] = orig_spec_opts
+      before do
+        @orig_spec_opts = ENV["SPEC_OPTS"]
+      end
+
+      after do
+        ENV["SPEC_OPTS"] = @orig_spec_opts
       end
 
       it "prefers SPEC_OPTS options over file options" do
