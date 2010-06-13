@@ -72,8 +72,8 @@ module RSpec
         world.filtered_examples[self]
       end
 
-      def self.descendent_filtered_examples
-        filtered_examples + children.collect{|c| c.descendent_filtered_examples}
+      def self.descendant_filtered_examples
+        filtered_examples + children.collect{|c| c.descendant_filtered_examples}
       end
 
       def self.metadata
@@ -115,8 +115,8 @@ module RSpec
         @children ||= []
       end
 
-      def self.descendents
-        [self] + children.collect {|c| c.descendents}.flatten
+      def self.descendants
+        [self] + children.collect {|c| c.descendants}.flatten
       end
 
       def self.ancestors
@@ -136,7 +136,7 @@ module RSpec
       end
 
       def self.eval_before_alls(running_example)
-        return if descendent_filtered_examples.empty?
+        return if descendant_filtered_examples.empty?
         superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         world.run_hook(:before, :all, self, running_example)
 
@@ -157,7 +157,7 @@ module RSpec
       end
 
       def self.eval_after_alls(running_example)
-        return if descendent_filtered_examples.empty?
+        return if descendant_filtered_examples.empty?
         before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
         ancestors.each do |ancestor|
           until ancestor.after_alls.empty?
@@ -173,8 +173,8 @@ module RSpec
         begin
           eval_before_alls(example_group_instance)
           result_for_this_group = run_examples(example_group_instance, reporter)
-          results_for_descendents = children.map {|child| child.run(reporter)}
-          result_for_this_group && (children.empty? ? true : results_for_descendents)
+          results_for_descendants = children.map {|child| child.run(reporter)}
+          result_for_this_group && (children.empty? ? true : results_for_descendants)
         ensure
           eval_after_alls(example_group_instance)
         end

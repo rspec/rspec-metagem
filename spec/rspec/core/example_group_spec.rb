@@ -29,15 +29,15 @@ module RSpec::Core
         examples_run.should have(1).example
       end
 
-      describe "descendents" do
-        it "returns self + all descendents" do
+      describe "descendants" do
+        it "returns self + all descendants" do
           group = ExampleGroup.describe("parent") do
             describe("child") do
               describe("grandchild 1") {}
               describe("grandchild 2") {}
             end
           end
-          group.descendents.size.should == 4
+          group.descendants.size.should == 4
         end
       end
     end

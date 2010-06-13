@@ -37,7 +37,7 @@ module RSpec
       end
 
       def example_count
-        example_groups.collect {|g| g.descendents}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
+        example_groups.collect {|g| g.descendants}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
       end
 
       def apply_inclusion_filters(examples, conditions={})
