@@ -15,8 +15,8 @@ module RSpec
       end
 
       def configure(config)
-        options.each do |key, value|
-          config.send("#{key}=", value)
+        options.keys.sort{|a,b| a.to_s <=> b.to_s}.each do |key|
+          config.send("#{key}=", options[key])
         end
       end
 
