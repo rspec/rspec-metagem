@@ -213,8 +213,14 @@ EOM
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
-      def filter_run(options={})
+      def filter_run_including(options={})
         self.filter = options unless filter and filter[:line_number] || filter[:full_description]
+      end
+
+      alias_method :filter_run, :filter_run_including
+
+      def filter_run_excluding(options={})
+        self.exclusion_filter = options
       end
 
       def include(mod, filters={})

@@ -54,9 +54,9 @@ Spork.prefork do
     c.color_enabled = !in_editor?
     c.filter_run :focus => true
     c.run_all_when_everything_filtered = true
-    c.exclusion_filter = { :ruby => lambda {|version|
+    c.filter_run_excluding :ruby => lambda {|version|
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
-    }}
+    }
     c.before(:each) do
       @real_world = RSpec.world
       RSpec.instance_variable_set(:@world, RSpec::Core::World.new)

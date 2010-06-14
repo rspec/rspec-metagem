@@ -252,6 +252,20 @@ module RSpec::Core
       
     end
 
+    describe "#filter_run" do
+      it "sets the filter" do
+        config.filter_run :focus => true
+        config.filter.should eq({:focus => true})
+      end
+    end
+
+    describe "#filter_run_excluding" do
+      it "sets the filter" do
+        config.filter_run_excluding :slow => true
+        config.exclusion_filter.should eq({:slow => true})
+      end
+    end
+
     describe "line_number=" do
       it "sets the line number" do
         config.line_number = '37'
