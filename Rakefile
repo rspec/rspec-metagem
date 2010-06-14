@@ -25,9 +25,10 @@ begin
 
   Thank you for installing #{gem.summary}
 
-  This is beta software. If you are looking
-  for a supported production release, please
-  "gem install rspec" (without --pre).
+  This is a meta-gem that depends on:
+    rspec-core
+    rspec-expectations
+    rspec-mocks
   
 #{"*"*50}
 EOM
