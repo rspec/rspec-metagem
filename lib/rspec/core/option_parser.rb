@@ -62,7 +62,7 @@ module RSpec::Core
           options[:line_number] = o
         end
 
-        parser.on('-o', '--options PATH', 'Read configuration options from a file path.  (Defaults to spec/spec.parser)') do |o|
+        parser.on('-o', '--options PATH', 'Read configuration options from a file path.  (Defaults to .rspec)') do |o|
           options[:options_file] = o || local_options_file
         end
         
