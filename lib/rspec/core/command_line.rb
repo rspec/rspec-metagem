@@ -1,9 +1,13 @@
 module RSpec
   module Core
     class CommandLine
-      def initialize(argv)
-        @options = RSpec::Core::ConfigurationOptions.new(argv)
-        @options.parse_options
+      def initialize(args_or_options)
+        if RSpec::Core::ConfigurationOptions === args_or_options
+          @options = args_or_options
+        else
+          @options = RSpec::Core::ConfigurationOptions.new(args_or_options)
+          @options.parse_options
+        end
         @options.configure(configuration)
         configuration.require_files_to_run
         configuration.configure_mock_framework

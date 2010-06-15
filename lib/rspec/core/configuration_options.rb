@@ -26,7 +26,7 @@ module RSpec
 
       def drb_argv
         argv = []
-        argv << "--color"    if options[:color_enabled]
+        argv << "--color"     if options[:color_enabled]
         argv << "--profile"   if options[:profile_examples]
         argv << "--backtrace" if options[:full_backtrace]
         argv << "--format"       << options[:formatter]               if options[:formatter]
