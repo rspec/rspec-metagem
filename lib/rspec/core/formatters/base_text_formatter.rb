@@ -42,8 +42,7 @@ module RSpec
 
             output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
-          summary = "#{example_count} example#{'s' unless example_count == 1}, #{failure_count} failures"
-          summary << ", #{pending_count} pending" if pending_count > 0  
+          summary = summary_line(example_count, failure_count, pending_count)
 
           if failure_count == 0
             if pending_count > 0
@@ -66,6 +65,17 @@ module RSpec
           end
 
           output.flush
+        end
+
+        def summary_line(example_count, failure_count, pending_count)
+          summary = pluralize(example_count, "example")
+          summary << ", " << pluralize(failure_count, "failure")
+          summary << ", #{pending_count} pending" if pending_count > 0  
+          summary
+        end
+
+        def pluralize(count, string)
+          "#{count} #{string}#{'s' unless count == 1}"
         end
 
         def format_caller(caller_info)
