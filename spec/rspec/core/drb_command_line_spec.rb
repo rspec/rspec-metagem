@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "::DRbCommandLine" do
+describe "::DRbCommandLine", :ruby => "!jruby" do
   before do
     RSpec.stub(:configuration).and_return(RSpec::Core::Configuration.new)
   end
