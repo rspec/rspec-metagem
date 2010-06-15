@@ -174,7 +174,9 @@ EOM
       end
       
       def formatter=(formatter_to_use)
-        if formatter_to_use.is_a?(Class)
+        if string_const?(formatter_to_use) && Object.const_defined?(formatter_to_use)
+          formatter_class = Object.const_get(formatter_to_use)
+        elsif formatter_to_use.is_a?(Class)
           formatter_class = formatter_to_use
         else
           formatter_class = case formatter_to_use.to_s
@@ -188,7 +190,11 @@ EOM
         end
         self.formatter_class = formatter_class
       end
-
+      
+      def string_const?(str)
+        str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
+      end
+      
       def formatter
         @formatter ||= formatter_class.new(output)
       end

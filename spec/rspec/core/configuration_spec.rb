@@ -246,6 +246,12 @@ module RSpec::Core
         config.formatter.should be_an_instance_of(formatter_class)
       end
       
+      it "sets a formatter based on its class name" do
+        Object.const_set("CustomFormatter",Class.new(Formatters::BaseFormatter))
+        config.formatter = "CustomFormatter"
+        config.formatter.should be_an_instance_of(CustomFormatter)
+      end
+      
       it "raises ArgumentError if formatter is unknown" do
         lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
       end

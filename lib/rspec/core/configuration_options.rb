@@ -13,17 +13,16 @@ module RSpec
       def initialize(args)
         @args = args
       end
-
+      
       def configure(config)
-        sorted_keys.each do |key|
+        keys = options.keys
+        keys.unshift(:requires) if keys.delete(:requires)
+        keys.unshift(:libs)     if keys.delete(:libs)
+        keys.each do |key|
           config.send("#{key}=", options[key])
         end
       end
-
-      def sorted_keys
-        options.keys.sort{|a,b| a.to_s <=> b.to_s}
-      end
-
+      
       def drb_argv
         argv = []
         argv << "--color"     if options[:color_enabled]

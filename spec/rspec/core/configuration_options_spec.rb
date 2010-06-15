@@ -22,6 +22,14 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:requires=).ordered
       opts.configure(config)
     end
+    
+    it "sends requires before formatter" do
+      opts = config_options_object(*%w[--require a/path -f a/formatter])
+      config = double("config").as_null_object
+      config.should_receive(:requires=).ordered
+      config.should_receive(:formatter=).ordered
+      opts.configure(config)
+    end
   end
 
   describe 'color_enabled' do
