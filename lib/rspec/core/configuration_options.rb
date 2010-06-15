@@ -33,6 +33,12 @@ module RSpec
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
         argv << "--options_file" << options[:options_file]            if options[:options_file]
         argv << "--example"      << options[:full_description].source if options[:full_description]
+        (options[:libs] || []).each do |path|
+          argv << "-I" << path
+        end
+        (options[:requires] || []).each do |path|
+          argv << "--require" << path
+        end
         argv + options[:files_or_directories_to_run]
       end
 

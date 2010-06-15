@@ -175,13 +175,14 @@ describe RSpec::Core::ConfigurationOptions do
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
   describe "#drb_argv" do
     it "preserves extra arguments" do
-      config_options_object(*%w[ a --drb b --color c ]).drb_argv.should eq(%w[ --color a b c ])
+      File.stub(:exist?) { false }
+      config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
     end
     
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
-        config_options_object(*%w[ --drb --color --format s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --drb --color --format s --line_number 1 --example pattern --profile --backtrace -I path/a -I path/b --require path/c --require path/d]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern -I path/a -I path/b --require path/c --require path/d])
       end
     end
 
