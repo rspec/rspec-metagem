@@ -172,9 +172,8 @@ module RSpec
         reporter.add_example_group(self)
         begin
           eval_before_alls(example_group_instance)
-          result_for_this_group = run_examples(example_group_instance, reporter)
-          results_for_descendants = children.map {|child| child.run(reporter)}
-          result_for_this_group && (children.empty? ? true : results_for_descendants.all?)
+          run_examples(example_group_instance, reporter) && 
+            children.map {|child| child.run(reporter)}.all?
         ensure
           eval_after_alls(example_group_instance)
         end

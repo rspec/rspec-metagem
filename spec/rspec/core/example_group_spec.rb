@@ -17,15 +17,15 @@ module RSpec::Core
     describe "top level group" do
       it "runs its children" do
         examples_run = []
-        parent = ExampleGroup.describe("parent")
-        child = parent.describe("child") do
-          it "does something" do
-            examples_run << running_example
+        group = ExampleGroup.describe("parent") do
+          describe("child") do
+            it "does something" do
+              examples_run << running_example
+            end
           end
         end
 
-        child.filtered_examples.replace(child.examples)
-        parent.run_all
+        group.run_all
         examples_run.should have(1).example
       end
 
@@ -452,6 +452,61 @@ module RSpec::Core
         end
 
         group.top_level_description.should == "top"
+      end
+    end
+
+    describe "#run" do
+      let(:reporter) { double("reporter").as_null_object }
+
+      context "with all examples passing" do
+        it "returns true" do
+          group = describe("something") do
+            it "does something" do
+              # pass
+            end
+            describe ("nested") do
+              it "does something else" do
+                # pass
+              end
+            end
+          end
+
+          group.run(reporter).should be_true
+        end
+      end
+
+      context "with top level example failing" do
+        it "returns false" do
+          group = describe("something") do
+            it "does something (wrong - fail)" do
+              raise "fail"
+            end
+            describe ("nested") do
+              it "does something else" do
+                # pass
+              end
+            end
+          end
+
+          group.run(reporter).should be_false
+        end
+      end
+
+      context "with nested example failing" do
+        it "returns true" do
+          group = describe("something") do
+            it "does something" do
+              # pass
+            end
+            describe ("nested") do
+              it "does something else (wrong -fail)" do
+                raise "fail"
+              end
+            end
+          end
+
+          group.run(reporter).should be_false
+        end
       end
     end
 
