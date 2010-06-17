@@ -19,9 +19,14 @@ module RSpec
         world.announce_inclusion_filter
 
         configuration.reporter.report(example_count) do |reporter|
-          example_groups.run_examples(reporter)
+          begin
+            configuration.run_before_suite
+            example_groups.run_examples(reporter)
+          ensure
+            configuration.run_after_suite
+          end
         end
-        
+
         example_groups.success?
       end
 

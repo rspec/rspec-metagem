@@ -246,12 +246,20 @@ EOM
         end
       end
 
-      def before(each_or_all=:each, options={}, &block)
-        hooks[:before][each_or_all] << [options, block]
+      def before(scope=:each, options={}, &block)
+        hooks[:before][scope] << [options, block]
       end
 
-      def after(each_or_all=:each, options={}, &block)
-        hooks[:after][each_or_all] << [options, block]
+      def after(scope=:each, options={}, &block)
+        hooks[:after][scope] << [options, block]
+      end
+
+      def run_before_suite
+        hooks[:before][:suite].each {|hook| hook.last.call}
+      end
+
+      def run_after_suite
+        hooks[:after][:suite].each {|hook| hook.last.call}
       end
 
       def find_hook(hook, each_or_all, group)

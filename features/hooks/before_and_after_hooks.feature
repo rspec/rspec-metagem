@@ -14,10 +14,12 @@ Feature: before and after hooks
     after(:all) blocks are run once after all of the examples in a group
 
     Before and after blocks are called in the following order:
+      before suite
       before all
       before each
-      after each
-      after all
+      after  each
+      after  all
+      after  suite
 
     Before and after blocks can be defined in the example groups to which they
     apply or in a configuration. When defined in a configuration, they can be
@@ -155,6 +157,53 @@ Feature: before and after hooks
     When I run "rspec ./ensure_block_order_spec.rb"
     Then I should see matching /before all\nbefore each\nafter each\n.after all/
   
+  Scenario: before/after blocks defined in config are run in order
+    Given a file named "configuration_spec.rb" with:
+      """
+      require "rspec/expectations"
+
+      RSpec.configure do |config|
+        config.before(:suite) do
+          puts "before suite"
+        end
+  
+        config.before(:all) do
+          puts "before all"
+        end
+  
+        config.before(:each) do
+          puts "before each"
+        end
+  
+        config.after(:each) do
+          puts "after each"
+        end
+  
+        config.after(:all) do
+          puts "after all"
+        end
+  
+        config.after(:suite) do
+          puts "after suite"
+        end
+      end
+  
+      describe "ignore" do
+        example "ignore" do
+        end
+      end
+      """
+    When I run "rspec configuration_spec.rb"
+    Then I should see matching:
+      """
+      before suite
+      before all
+      before each
+      after each
+      .after all
+      after suite
+      """
+
   Scenario: before/after all blocks are run once
     Given a file named "before_and_after_all_spec.rb" with:
       """
@@ -276,22 +325,5 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./error_in_before_each_spec.rb"
-    Then I should see "1 example, 1 failure"
-    And I should see "this error"
-
-@wip
-  Scenario: exception in before(:all) is captured and reported as failure
-    Given a file named "error_in_before_all_spec.rb" with:
-      """
-      describe "error in before(:all)" do
-        before(:all) do
-          raise "this error"
-        end
-
-        it "is reported as failure" do
-        end
-      end
-      """
-    When I run "rspec ./error_in_before_all_spec.rb"
     Then I should see "1 example, 1 failure"
     And I should see "this error"

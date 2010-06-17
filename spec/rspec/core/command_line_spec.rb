@@ -17,5 +17,45 @@ module RSpec::Core
         command_line.instance_eval { @options }.should be(config_options)
       end
     end
+
+    describe "#run" do
+      let(:config_options) do
+        config_options = ConfigurationOptions.new(%w[--color])
+        config_options.parse_options
+        config_options
+      end
+
+      let(:command_line) do
+        CommandLine.new(config_options)
+      end
+
+      it "runs before suite hooks" do
+        err = out = StringIO.new
+        config = RSpec::Core::Configuration.new
+        config.should_receive(:run_before_suite)
+        command_line.stub(:configuration) { config }
+        command_line.run(err, out)
+      end
+
+      it "runs after suite hooks" do
+        err = out = StringIO.new
+        config = RSpec::Core::Configuration.new
+        config.should_receive(:run_after_suite)
+        command_line.stub(:configuration) { config }
+        command_line.run(err, out)
+      end
+
+      it "runs after suite hooks even after an error" do
+        err = out = StringIO.new
+        config = RSpec::Core::Configuration.new
+        config.stub(:run_before_suite) { raise "this error" }
+        config.should_receive(:run_after_suite)
+        command_line.stub(:configuration) { config }
+        expect do
+          command_line.run(err, out)
+        end.to raise_error
+      end
+    end
+
   end
 end
