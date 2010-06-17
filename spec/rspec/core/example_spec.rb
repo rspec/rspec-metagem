@@ -25,6 +25,10 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     it "should have one for its block" do
       example_instance.should respond_to(:example_block)
     end
+
+    it "should have one for its options" do
+      example_instance.should respond_to(:options)
+    end
   end
 
   describe '#inspect' do
@@ -53,6 +57,12 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     it "should be able to access the example group's top level metadata as if it were its own" do
       example.example_group.metadata.should include(:parent_metadata => 'sample')
       example.metadata.should include(:parent_metadata => 'sample')
+    end
+  end
+
+  describe "accessing options within a running example" do
+    it "should be able to look up option values by key", :demo => :data do
+      example.options[:demo].should == :data
     end
   end
 

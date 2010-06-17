@@ -2,7 +2,7 @@ module RSpec
   module Core
     class Example
 
-      attr_reader :metadata, :example_block
+      attr_reader :metadata, :example_block, :options
 
       def self.delegate_to_metadata(*keys)
         keys.each do |key|

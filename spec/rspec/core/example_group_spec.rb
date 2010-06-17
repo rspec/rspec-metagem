@@ -268,6 +268,42 @@ module RSpec::Core
           example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
         end
       end
+
+      it "has no 'running example' within before(:all)" do
+        group = ExampleGroup.describe
+        running_example = :none
+        group.before(:all) { running_example = example }
+        group.example("no-op") { }
+        group.run_all
+        running_example.should == nil
+      end
+
+      it "has access to example options within before(:each)" do
+        group = ExampleGroup.describe
+        option = nil
+        group.before(:each) { option = example.options[:data] }
+        group.example("no-op", :data => :sample) { }
+        group.run_all
+        option.should == :sample
+      end
+
+      it "has access to example options within after(:each)" do
+        group = ExampleGroup.describe
+        option = nil
+        group.after(:each) { option = example.options[:data] }
+        group.example("no-op", :data => :sample) { }
+        group.run_all
+        option.should == :sample
+      end
+
+      it "has no 'running example' within after(:all)" do
+        group = ExampleGroup.describe
+        running_example = :none
+        group.after(:all) { running_example = example }
+        group.example("no-op") { }
+        group.run_all
+        running_example.should == nil
+      end
     end
 
     describe "adding examples" do
