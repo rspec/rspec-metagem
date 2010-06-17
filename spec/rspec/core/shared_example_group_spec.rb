@@ -172,7 +172,7 @@ module RSpec::Core
             it "has one example" do; end
             it "has another example" do; end
             it "includes modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
-              raise "FAIL" unless running_example.example_group.included_modules.include?(RunningSharedExamplesJustForTesting)
+              raise "FAIL" unless example.example_group.included_modules.include?(RunningSharedExamplesJustForTesting)
             end
           end
         end

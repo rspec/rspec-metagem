@@ -5,37 +5,37 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     RSpec::Core::ExampleGroup.describe('group description')
   end
 
-  let(:example) do
+  let(:example_instance) do
     example_group.example('example description')
   end
 
   describe "attr readers" do
     it "should have one for the parent example group" do
-      example.should respond_to(:example_group)
+      example_instance.should respond_to(:example_group)
     end
 
-    it "should have one for it's description" do
-      example.should respond_to(:description)
+    it "should have one for its description" do
+      example_instance.should respond_to(:description)
     end
 
-    it "should have one for it's metadata" do
-      example.should respond_to(:metadata)
+    it "should have one for its metadata" do
+      example_instance.should respond_to(:metadata)
     end
 
-    it "should have one for it's block" do
-      example.should respond_to(:example_block)
+    it "should have one for its block" do
+      example_instance.should respond_to(:example_block)
     end
   end
 
   describe '#inspect' do
     it "should return 'group description - description'" do
-      example.inspect.should == 'group description example description'
+      example_instance.inspect.should == 'group description example description'
     end
   end
 
   describe '#to_s' do
     it "should return #inspect" do
-      example.to_s.should == example.inspect
+      example_instance.to_s.should == example_instance.inspect
     end
   end
 
@@ -47,12 +47,12 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "accessing metadata within a running example" do
     it "should have a reference to itself when running" do
-      running_example.description.should == "should have a reference to itself when running"
+      example.description.should == "should have a reference to itself when running"
     end
 
     it "should be able to access the example group's top level metadata as if it were its own" do
-      running_example.example_group.metadata.should include(:parent_metadata => 'sample')
-      running_example.metadata.should include(:parent_metadata => 'sample')
+      example.example_group.metadata.should include(:parent_metadata => 'sample')
+      example.metadata.should include(:parent_metadata => 'sample')
     end
   end
 
@@ -81,7 +81,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
-        example('example') { raise "this error" } 
+        example('example') { raise "this error" }
       end
       group.run_all
       after_run.should be_true, "expected after(:each) to be run"
@@ -90,13 +90,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "#in_block?" do
     before do
-      running_example.should_not be_in_block
+      example.should_not be_in_block
     end
     it "is only true during the example (but not before or after)" do
-      running_example.should be_in_block
+      example.should be_in_block
     end
     after do
-      running_example.should_not be_in_block
+      example.should_not be_in_block
     end
   end
 end

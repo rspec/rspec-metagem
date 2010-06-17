@@ -20,7 +20,7 @@ module RSpec::Core
         group = ExampleGroup.describe("parent") do
           describe("child") do
             it "does something" do
-              examples_run << running_example
+              examples_run << example
             end
           end
         end
@@ -308,19 +308,19 @@ module RSpec::Core
 
       describe "A sample nested group", :nested_describe => "yep" do
         it "sets the described class to the constant Object" do
-          running_example.example_group.describes.should == Object
+          example.example_group.describes.should == Object
         end
 
         it "sets the description to 'A sample nested describe'" do
-          running_example.example_group.description.should == 'A sample nested group'
+          example.example_group.description.should == 'A sample nested group'
         end
 
         it "has top level metadata from the example_group and its ancestors" do
-          running_example.example_group.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
+          example.example_group.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
         end
 
         it "exposes the parent metadata to the contained examples" do
-          running_example.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
+          example.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
         end
       end
 
@@ -379,11 +379,11 @@ module RSpec::Core
       end
 
       it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do
-        running_example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
+        example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
       end
 
       it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.9 do
-        running_example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
+        example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
       end
 
       describe "but now I am nested" do

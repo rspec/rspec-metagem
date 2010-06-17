@@ -80,12 +80,12 @@ module RSpec
       end
 
       def attribute_of_subject
-        original_subject.send(running_example.description) if using_attribute?
+        original_subject.send(example.description) if using_attribute?
       end
 
       def using_attribute?
-        running_example.in_block? &&
-        running_example.metadata[:attribute_of_subject]
+        example.in_block? &&
+        example.metadata[:attribute_of_subject]
       end
 
     end

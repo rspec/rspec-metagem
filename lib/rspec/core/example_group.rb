@@ -6,7 +6,7 @@ module RSpec
       include Let
       include Pending
 
-      attr_accessor :running_example
+      attr_accessor :example
 
       def self.world
         RSpec.world

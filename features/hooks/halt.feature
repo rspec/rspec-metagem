@@ -10,7 +10,7 @@ Feature: halt
       """
       RSpec.configure do |c|
         c.after(:each) do
-          running_example.halt(:group, :status => 'failed')
+          example.halt(:group, :status => 'failed')
         end
       end
       describe "something" do

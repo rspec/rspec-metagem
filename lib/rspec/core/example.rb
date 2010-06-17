@@ -33,7 +33,7 @@ module RSpec
       def run(example_group_instance, reporter)
         @in_block = false
         @example_group_instance = example_group_instance
-        @example_group_instance.running_example = self
+        @example_group_instance.example = self
 
         run_started
 
@@ -62,7 +62,7 @@ module RSpec
         rescue Exception => e
           exception ||= e
         ensure
-          @example_group_instance.running_example = nil
+          @example_group_instance.example = nil
         end
 
         if exception
