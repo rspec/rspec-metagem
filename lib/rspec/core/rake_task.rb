@@ -35,16 +35,20 @@ module RSpec
       # Use rcov for code coverage? defaults to false
       attr_accessor :rcov
 
+      # Path to rcov.  You can set this to 'bundle exec rcov' if you bundle rcov.
+      attr_accessor :rcov_path
+
       # The options to pass to rcov.  Defaults to blank
       attr_accessor :rcov_opts
 
       def initialize(*args)
         @name = args.shift || :spec
-        @pattern, @rcov_opts, @ruby_opts = nil, nil, nil
+        @pattern, @rcov_path, @rcov_opts, @ruby_opts = nil, nil, nil, nil
         @warning, @rcov = false, false
         @fail_on_error = true
 
         yield self if block_given?
+        @rcov_path ||= 'rcov'
         @pattern ||= './spec/**/*_spec.rb'
         define
       end
@@ -58,14 +62,17 @@ module RSpec
             if files_to_run.empty?
               puts "No examples matching #{pattern} could be found"
             else
-              cmd_parts = [rcov ? 'rcov' : RUBY]
-              cmd_parts += rcov ? [rcov_opts] : [ruby_opts]
-              cmd_parts << '-Ilib'
-              cmd_parts << '-Ispec'
+              cmd_parts = [
+                runner, 
+                runner_options,
+                '-Ilib',
+                '-Ispec'
+              ]
               cmd_parts << "-w" if warning
-              cmd_parts += files_to_run.collect { |fn| %["#{fn}"] }
+              cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
               cmd = cmd_parts.join(" ")
               puts cmd if verbose
+
               unless system(cmd)
                 STDERR.puts failure_message if failure_message
                 raise("Command #{cmd} failed") if fail_on_error
@@ -79,6 +86,15 @@ module RSpec
 
       def files_to_run # :nodoc:
         FileList[ pattern ].to_a
+      end
+
+      private
+      def runner
+        rcov ? rcov_path : RUBY
+      end
+
+      def runner_options
+        rcov ? [rcov_opts] : [ruby_opts]
       end
 
     end
