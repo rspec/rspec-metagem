@@ -302,13 +302,13 @@ module RSpec
           "method defined in the example"
         end
 
-        it "can access methods in the running_example" do
+        it "can access methods in the running example" do
           RSpec::Matchers.define(:__access_running_example) do
             match do |actual|
               a_method_in_the_example == "method defined in the example"
             end
           end
-          running_example.should __access_running_example
+          example.should __access_running_example
         end
 
         it "raises NoMethodError for methods not in the running_example" do
@@ -319,7 +319,7 @@ module RSpec
           end
 
           expect do
-            running_example.should __raise_no_method_error
+            example.should __raise_no_method_error
           end.to raise_error(/RSpec::Matchers::Matcher/)
         end
       end
