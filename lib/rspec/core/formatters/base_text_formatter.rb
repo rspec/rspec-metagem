@@ -38,9 +38,8 @@ module RSpec
         def dump_summary
           failure_count = failed_examples.size
           pending_count = pending_examples.size
-          
 
-            output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
+          output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
           summary = summary_line(example_count, failure_count, pending_count)
 
