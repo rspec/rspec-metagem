@@ -6,6 +6,7 @@ module RSpec::Core
       it 'sets an at_exit hook if none is already set' do
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
+        RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
         RSpec::Core::Runner.should_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
@@ -13,6 +14,7 @@ module RSpec::Core
       it 'does not set the at_exit hook if it is already set' do
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(true)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
+        RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
         RSpec::Core::Runner.should_receive(:at_exit).never
         RSpec::Core::Runner.autorun
       end
