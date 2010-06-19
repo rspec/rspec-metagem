@@ -22,7 +22,7 @@ describe RSpec::Expectations, "#fail_with with diff" do
   
   it "does not call differ if expected/actual are single line strings" do
     differ.should_not_receive(:diff_as_string)
-    RSpec::Expectations.fail_with ("the message", "expected", "actual") rescue nil
+    RSpec::Expectations.fail_with("the message", "expected", "actual") rescue nil
   end
   
   it "calls differ if expected/actual are not strings" do
