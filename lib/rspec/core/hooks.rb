@@ -42,6 +42,24 @@ module RSpec
         }
       end
 
+      def run_hook_unfiltered(hook, scope, example, options={})
+        if options[:reverse]
+          hooks[hook][scope].reverse.each { |arr| example.instance_eval(&arr.last) }
+        else
+          hooks[hook][scope].each { |arr| example.instance_eval(&arr.last) }
+        end
+      end
+
+      def run_hook_unfiltered!(hook, scope, example, options={})
+        until hooks[hook][scope].empty?
+          if options[:reverse] 
+            example.instance_eval &hooks[hook][scope].shift.last
+          else
+            example.instance_eval &hooks[hook][scope].pop.last
+          end
+        end
+      end
+
       def run_hook(hook, scope, group=nil, example=nil)
         find_hook(hook, scope, group).each do |blk| 
           example ? example.instance_eval(&blk) : blk.call
