@@ -43,10 +43,10 @@ module RSpec
           run_before_each
           pending_declared_in_example = catch(:pending_declared_in_example) do
             @in_block = true
-            if @example_group_class.around_eachs.empty?
+            if @example_group_class.hooks[:around][:each].empty?
               @example_group_instance.instance_eval(&example_block) unless pending
             else
-              @example_group_class.around_eachs.first.call(AroundProxy.new(self, &example_block))
+              @example_group_class.hooks[:around][:each].first.call(AroundProxy.new(self, &example_block))
             end
             throw :pending_declared_in_example, false
           end
