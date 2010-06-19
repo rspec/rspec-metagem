@@ -43,8 +43,8 @@ module RSpec
         hooks[:around][scope] << block
       end
 
-      # Runs the hook in the context of the example. If no
-      # example is provided, just callse the hook directly
+      # Runs all of the blocks stored with the hook in the context of the
+      # example. If no example is provided, just calls the hook directly.
       def run_hook(hook, scope, example=nil, options={})
         if options[:reverse]
           hooks[hook][scope].reverse.each &run_hook_in(example)
@@ -53,6 +53,8 @@ module RSpec
         end
       end
 
+      # Just like run_hook, except it removes the blocks as it evalutes them,
+      # ensuring that they will only be run once.
       def run_hook!(hook, scope, example, options={})
         until hooks[hook][scope].empty?
           if options[:reverse] 
