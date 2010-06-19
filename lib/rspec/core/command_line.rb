@@ -20,10 +20,10 @@ module RSpec
 
         configuration.reporter.report(example_count) do |reporter|
           begin
-            configuration.run_before_suite
+            configuration.run_hook(:before, :suite)
             example_groups.run_examples(reporter)
           ensure
-            configuration.run_after_suite
+            configuration.run_hook(:after, :suite)
           end
         end
 

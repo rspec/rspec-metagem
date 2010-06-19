@@ -67,15 +67,11 @@ module RSpec
           end
         end      
       end
-      
-      def run_hook(hook, scope, group, example)
-        find_hook(hook, scope, group).each { |blk| example.instance_eval(&blk) }
-      end
+
+      include RSpec::Core::Hooks
 
       def find_hook(hook, scope, group)
-        RSpec.configuration.hooks[hook][scope].select do |filters, block|
-          group.all_apply?(filters)
-        end.map { |filters, block| block }
+        RSpec.configuration.find_hook(hook, scope, group)
       end
 
     private

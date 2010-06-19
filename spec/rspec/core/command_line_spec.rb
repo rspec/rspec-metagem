@@ -1,4 +1,5 @@
 require "spec_helper"
+require "stringio"
 
 module RSpec::Core
   describe CommandLine do
@@ -29,31 +30,41 @@ module RSpec::Core
         CommandLine.new(config_options)
       end
 
-      it "runs before suite hooks" do
-        err = out = StringIO.new
-        config = RSpec::Core::Configuration.new
-        config.should_receive(:run_before_suite)
+      let(:config) do
+        RSpec::Core::Configuration.new
+      end
+
+      let(:out) { ::StringIO.new }
+
+      before do
         command_line.stub(:configuration) { config }
-        command_line.run(err, out)
+        config.stub(:run_hook)
+      end
+
+      it "runs before suite hooks" do
+        config.should_receive(:run_hook).with(:before, :suite)
+        command_line.run(out, out)
       end
 
       it "runs after suite hooks" do
-        err = out = StringIO.new
-        config = RSpec::Core::Configuration.new
-        config.should_receive(:run_after_suite)
-        command_line.stub(:configuration) { config }
-        command_line.run(err, out)
+        config.should_receive(:run_hook).with(:after, :suite)
+        command_line.run(out, out)
       end
 
       it "runs after suite hooks even after an error" do
-        err = out = StringIO.new
-        config = RSpec::Core::Configuration.new
-        config.stub(:run_before_suite) { raise "this error" }
-        config.should_receive(:run_after_suite)
-        command_line.stub(:configuration) { config }
+        after_suite_called = false
+        config.stub(:run_hook) do |*args|
+          case args.first
+          when :before
+            raise "this error"
+          when :after
+            after_suite_called = true
+          end
+        end
         expect do
-          command_line.run(err, out)
+          command_line.run(out, out)
         end.to raise_error
+        after_suite_called.should be_true
       end
     end
 

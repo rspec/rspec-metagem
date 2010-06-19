@@ -140,36 +140,36 @@ module RSpec
         @before_all_ivars ||= {}
       end
 
-      def self.eval_before_alls(running_example)
+      def self.eval_before_alls(example)
         return if descendant_filtered_examples.empty?
-        superclass.before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
-        world.run_hook(:before, :all, self, running_example)
+        superclass.before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
+        world.run_hook(:before, :all, self, example)
 
         until before_alls.empty?
-          running_example.instance_eval &before_alls.shift
+          example.instance_eval &before_alls.shift.last
         end
-        running_example.instance_variables.each { |ivar| before_all_ivars[ivar] = running_example.instance_variable_get(ivar) }
+        example.instance_variables.each { |ivar| before_all_ivars[ivar] = example.instance_variable_get(ivar) }
       end
 
-      def self.eval_before_eachs(running_example)
-        world.run_hook(:before, :each, self, running_example)
-        ancestors.reverse.each { |ancestor| ancestor.before_eachs.each { |blk| running_example.instance_eval(&blk) } }
+      def self.eval_before_eachs(example)
+        world.run_hook(:before, :each, self, example)
+        ancestors.reverse.each { |ancestor| ancestor.before_eachs.each { |arr| example.instance_eval(&arr.last) } }
       end
 
-      def self.eval_after_eachs(running_example)
-        ancestors.each { |ancestor| ancestor.after_eachs.reverse.each { |blk| running_example.instance_eval(&blk) } }
-        world.run_hook(:after, :each, self, running_example)
+      def self.eval_after_eachs(example)
+        ancestors.each { |ancestor| ancestor.after_eachs.reverse.each { |arr| example.instance_eval(&arr.last) } }
+        world.run_hook(:after, :each, self, example)
       end
 
-      def self.eval_after_alls(running_example)
+      def self.eval_after_alls(example)
         return if descendant_filtered_examples.empty?
-        before_all_ivars.each { |ivar, val| running_example.instance_variable_set(ivar, val) }
+        before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
         ancestors.each do |ancestor|
           until ancestor.after_alls.empty?
-            running_example.instance_eval &ancestor.after_alls.pop
+            example.instance_eval &ancestor.after_alls.pop.last
           end
         end
-        world.run_hook(:after, :all, self, running_example)
+        world.run_hook(:after, :all, self, example)
       end
 
       def self.run(reporter)

@@ -401,27 +401,5 @@ module RSpec::Core
         end
       end
     end
-
-    describe "#run_before_suite" do
-      it "runs any before suite hooks" do
-        calls = 0
-        config.before(:suite) { calls += 1 }
-        config.before(:suite) { calls += 1 }
-        config.before(:suite) { calls += 1 }
-        config.run_before_suite
-        calls.should == 3
-      end
-    end
-
-    describe "#run_after_suite" do
-      it "runs any after suite hooks" do
-        calls = 0
-        config.after(:suite) { calls += 1 }
-        config.after(:suite) { calls += 1 }
-        config.after(:suite) { calls += 1 }
-        config.run_after_suite
-        calls.should == 3
-      end
-    end
   end
 end

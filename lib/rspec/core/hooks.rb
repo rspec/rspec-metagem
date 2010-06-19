@@ -1,49 +1,57 @@
 module RSpec
   module Core
     module Hooks
-      def before_blocks
-        @before_blocks ||= { :all => [], :each => [] }
+      def before(scope=:each, options={}, &block)
+        hooks[:before][scope] << [options, block]
       end
 
-      def after_blocks
-        @after_blocks  ||= { :all => [], :each => [] }
-      end
-
-      def around_blocks
-        @around_blocks ||= { :each => [] }
+      def after(scope=:each, options={}, &block)
+        hooks[:after][scope] << [options, block]
       end
 
       def before_eachs
-        before_blocks[:each]
+        hooks[:before][:each]
       end
 
       def before_alls
-        before_blocks[:all]
-      end
-
-      def before(type=:each, &block)
-        before_blocks[type] << block
+        hooks[:before][:all]
       end
 
       def after_eachs
-        after_blocks[:each]
+        hooks[:after][:each]
       end
 
       def after_alls
-        after_blocks[:all]
-      end
-
-      def after(type=:each, &block)
-        after_blocks[type] << block
+        hooks[:after][:all]
       end
 
       def around_eachs
-        around_blocks[:each]
+        hooks[:around][:each]
       end
 
-      def around(type=:each, &block)
+      def around(scope=:each, &block)
         RSpec::deprecate("around", "before and after")
-        around_blocks[type] << block
+        hooks[:around][scope] << block
+      end
+
+      def hooks
+        @hooks ||= { 
+          :around => { :each => [] },
+          :before => { :each => [], :all => [], :suite => [] }, 
+          :after => { :each => [], :all => [], :suite => [] } 
+        }
+      end
+
+      def run_hook(hook, scope, group=nil, example=nil)
+        find_hook(hook, scope, group).each do |blk| 
+          example ? example.instance_eval(&blk) : blk.call
+        end
+      end
+
+      def find_hook(hook, scope, group)
+        hooks[hook][scope].select do |filters, block|
+          !group || group.all_apply?(filters)
+        end.map { |filters, block| block }
       end
     end
   end

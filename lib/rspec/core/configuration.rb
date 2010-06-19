@@ -3,6 +3,8 @@ require "rbconfig"
 module RSpec
   module Core
     class Configuration
+      include RSpec::Core::Hooks
+
       def self.add_setting(name, opts={})
         if opts[:alias]
           alias_method name, opts[:alias]
@@ -83,13 +85,6 @@ module RSpec
 
       def puts(message)
         output_stream.puts(message)
-      end
-
-      def hooks
-        @hooks ||= { 
-          :before => { :each => [], :all => [], :suite => [] }, 
-          :after => { :each => [], :all => [], :suite => [] } 
-        }
       end
 
       def settings
@@ -244,28 +239,6 @@ EOM
         include_or_extend_modules.select do |include_or_extend, mod, filters|
           group.all_apply?(filters)
         end
-      end
-
-      def before(scope=:each, options={}, &block)
-        hooks[:before][scope] << [options, block]
-      end
-
-      def after(scope=:each, options={}, &block)
-        hooks[:after][scope] << [options, block]
-      end
-
-      def run_before_suite
-        hooks[:before][:suite].each {|hook| hook.last.call}
-      end
-
-      def run_after_suite
-        hooks[:after][:suite].each {|hook| hook.last.call}
-      end
-
-      def find_hook(hook, each_or_all, group)
-        hooks[hook][each_or_all].select do |filters, block|
-          group.all_apply?(filters)
-        end.map { |filters, block| block }
       end
 
       def configure_mock_framework
