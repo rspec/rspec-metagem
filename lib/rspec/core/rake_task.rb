@@ -102,6 +102,7 @@ module RSpec
       def rcov_command(cmd_parts)
         cmd_parts.unshift runner_options
         cmd_parts.unshift runner
+        cmd_parts.unshift bundler
         cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
         cmd_parts.join(" ")
       end
@@ -114,6 +115,9 @@ module RSpec
         rcov ? [rcov_opts] : [ruby_opts]
       end
 
+      def bundler
+        File.exist?("./Gemfile") ? "bundle exec " : ""
+      end
     end
 
   end
