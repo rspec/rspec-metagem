@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-06-15}
-  s.description = %q{RSpec runner and example group classes}
+  s.date = %q{2010-06-21}
+  s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
   s.extra_rdoc_files = [
@@ -21,6 +21,7 @@ Gem::Specification.new do |s|
      ".gitignore",
      ".rspec",
      ".treasure_map.rb",
+     "Gemfile",
      "License.txt",
      "README.markdown",
      "Rakefile",
@@ -31,6 +32,7 @@ Gem::Specification.new do |s|
      "bin/spec",
      "cucumber.yml",
      "features/command_line/example_name_option.feature",
+     "features/command_line/exit_status.feature",
      "features/command_line/line_number_appended_to_path.feature",
      "features/command_line/line_number_option.feature",
      "features/configuration/custom_settings.feature",
@@ -95,6 +97,7 @@ Gem::Specification.new do |s|
      "script/console",
      "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
+     "spec/rspec/core/command_line_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",
@@ -128,7 +131,7 @@ Gem::Specification.new do |s|
      "spec/support/matchers.rb",
      "specs.watchr"
   ]
-  s.homepage = %q{http://github.com/rspec/core}
+  s.homepage = %q{http://github.com/rspec/rspec-core}
   s.post_install_message = %q{**************************************************
 
   Thank you for installing rspec-core-2.0.0.beta.12

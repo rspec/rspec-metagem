@@ -1,11 +1,13 @@
-$LOAD_PATH.unshift File.expand_path("../../../../rspec-expectations/lib", __FILE__)
-require 'rspec/expectations'
+require "bundler"
+Bundler.setup
+
 require 'aruba'
+require 'rspec/expectations'
 
 module ArubaOverrides
   def detect_ruby_script(cmd)
     if cmd =~ /^rspec /
-      "ruby  -I../../lib -S ../../bin/#{cmd}"
+      "bundle exec ruby -I../../lib -S ../../bin/#{cmd}"
     else
       super(cmd)
     end

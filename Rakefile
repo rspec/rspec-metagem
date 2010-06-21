@@ -1,29 +1,32 @@
+require "bundler"
+Bundler.setup
+
 gem "jeweler", ">= 1.4.0"
-require 'rake'
-require 'yaml'
+require "rake"
+require "yaml"
 
-$:.unshift File.expand_path('../lib', __FILE__)
+$:.unshift File.expand_path("../lib", __FILE__)
 
-require 'rake/rdoctask'
-require 'rspec/core/rake_task'
-require 'rspec/core/version'
-require 'cucumber/rake/task'
+require "rake/rdoctask"
+require "rspec/core/rake_task"
+require "rspec/core/version"
+require "cucumber/rake/task"
 
 begin
-  require 'jeweler'
+  require "jeweler"
   Jeweler::Tasks.new do |gem|
     gem.name = "rspec-core"
     gem.version = RSpec::Core::Version::STRING
     gem.summary = "rspec-core-#{RSpec::Core::Version::STRING}"
-    gem.description = 'RSpec runner and example group classes'
+    gem.description = "RSpec runner and example groups"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
-    gem.homepage = "http://github.com/rspec/core"
+    gem.homepage = "http://github.com/rspec/rspec-core"
     gem.authors = ["Chad Humphries", "David Chelimsky"]
     gem.rubyforge_project = "rspec"
     gem.add_development_dependency "rspec-expectations", ">= #{RSpec::Core::Version::STRING}"
     gem.add_development_dependency "rspec-mocks", ">= #{RSpec::Core::Version::STRING}"
-    gem.add_development_dependency('cucumber', '>= 0.5.3')
-    gem.add_development_dependency('autotest', '>= 4.2.9')
+    gem.add_development_dependency "cucumber", ">= 0.5.3"
+    gem.add_development_dependency "autotest", ">= 4.2.9"
     gem.post_install_message = <<-EOM
 #{"*"*50}
 
