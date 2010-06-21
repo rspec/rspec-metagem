@@ -6,3 +6,4 @@ pkg
 doc
 tmp
 rerun.txt
+Gemfile.lock
