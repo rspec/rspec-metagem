@@ -49,11 +49,19 @@ Feature: exit status
       """
       
   Scenario: exit with 0 when no examples are run
-    Given a file named "no_examples_spec.rb" with:
+    Given a file named "spec/a_no_examples_spec.rb" with:
       """
       """
-    When I run "rspec no_examples_spec.rb"
+    And a file named "spec/b_one_example_spec.rb" with:
+      """
+      describe "something" do
+        it "does something" do
+        end
+      end
+      """
+          
+    When I run "rspec spec"
     Then it should pass with:
       """
-      0 examples, 0 failures
+      1 example, 0 failures
       """
