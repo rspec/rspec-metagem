@@ -133,7 +133,6 @@ module RSpec::Core
             group = ExampleGroup.describe(String) do
               describe :symbol do
                 example "describes is String" do
-                  debugger
                   described_class.should eq(String)
                 end
               end
