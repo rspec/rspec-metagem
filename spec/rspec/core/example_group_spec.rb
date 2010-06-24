@@ -127,6 +127,23 @@ module RSpec::Core
         end
       end
 
+      context "with a constant in an outer group" do
+        context "and a string in an inner group" do
+          it "is the top level constant" do
+            group = ExampleGroup.describe(String) do
+              describe :symbol do
+                example "describes is String" do
+                  debugger
+                  described_class.should eq(String)
+                end
+              end
+            end
+
+            group.run_all.should be_true
+          end
+        end
+      end
+
     end
 
     describe '#description' do

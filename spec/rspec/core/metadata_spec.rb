@@ -25,6 +25,38 @@ module RSpec
         end
       end
 
+      describe "describes" do
+        context "with a String" do
+          it "returns nil" do
+            m = Metadata.new
+            m.process('group')
+
+            m = m.for_example("example", {})
+            m[:example_group][:describes].should be_nil
+          end
+        end
+
+        context "with a Symbol" do
+          it "returns nil" do
+            m = Metadata.new
+            m.process(:group)
+
+            m = m.for_example("example", {})
+            m[:example_group][:describes].should be_nil
+          end
+        end
+
+        context "with a class" do
+          it "returns the class" do
+            m = Metadata.new
+            m.process(String)
+
+            m = m.for_example("example", {})
+            m[:example_group][:describes].should be(String)
+          end
+        end
+      end
+
       describe "full description" do
         it "concats the example group name and description" do
           m = Metadata.new
