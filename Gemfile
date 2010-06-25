@@ -1,3 +1,5 @@
+source "http://rubygems.org"
+
 gem "bundler"
 gem "rake"
 gem "jeweler"
@@ -11,4 +13,8 @@ gem "flexmock"
 gem "rspec-core", :path => "."
 gem "rspec-expectations", :path => "../rspec-expectations"
 gem "rspec-mocks", :path => "../rspec-mocks"
-gem "ruby-debug"
+if RUBY_VERSION.to_s =~ /1.9/
+  gem "ruby-debug19"
+else
+  gem "ruby-debug"
+end
