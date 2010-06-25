@@ -169,8 +169,8 @@ EOM
       end
       
       def formatter=(formatter_to_use)
-        if string_const?(formatter_to_use) && Object.const_defined?(formatter_to_use)
-          formatter_class = Object.const_get(formatter_to_use)
+        if string_const?(formatter_to_use) && (class_name = eval(formatter_to_use)).is_a?(Class)
+          formatter_class = class_name
         elsif formatter_to_use.is_a?(Class)
           formatter_class = formatter_to_use
         else

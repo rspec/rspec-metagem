@@ -247,11 +247,17 @@ module RSpec::Core
       end
       
       it "sets a formatter based on its class name" do
-        Object.const_set("CustomFormatter",Class.new(Formatters::BaseFormatter))
+        Object.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
         config.formatter = "CustomFormatter"
         config.formatter.should be_an_instance_of(CustomFormatter)
       end
-      
+
+      it "sets a formatter based on its class fully qualified name" do
+        RSpec.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
+        config.formatter = "RSpec::CustomFormatter"
+        config.formatter.should be_an_instance_of(RSpec::CustomFormatter)
+      end
+
       it "raises ArgumentError if formatter is unknown" do
         lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
       end
@@ -277,13 +283,13 @@ module RSpec::Core
         config.line_number = '37'
         config.filter.should == {:line_number => 37}
       end
-      
+
       it "overrides :focused" do
         config.filter_run :focused => true
         config.line_number = '37'
         config.filter.should == {:line_number => 37}
       end
-      
+
       it "prevents :focused" do
         config.line_number = '37'
         config.filter_run :focused => true
@@ -319,7 +325,7 @@ module RSpec::Core
         config.debug = false
       end
     end
-    
+
     describe "#output=" do
       it "sets the output" do
         output = mock("output")
