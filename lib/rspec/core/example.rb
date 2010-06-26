@@ -46,7 +46,7 @@ module RSpec
             the_example = lambda do
               @example_group_instance.instance_eval(&example_block) unless pending
             end
-            around_hooks(@example_group_class, the_example).call
+            around_hooks(@example_group_class, @example_group_instance, the_example).call
             throw :pending_declared_in_example, false
           end
         rescue Exception => e
@@ -77,11 +77,11 @@ module RSpec
 
     private
 
-      def around_hooks(example_group_class, the_example)
+      def around_hooks(example_group_class, example_group_instance, the_example)
         hooks = example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}.flatten
         hooks.reverse.inject(the_example) do |accum, hook|
           def accum.run; call; end
-          lambda { hook.call(accum) }
+          lambda { example_group_instance.instance_exec(accum, &hook) }
         end
       end
 
