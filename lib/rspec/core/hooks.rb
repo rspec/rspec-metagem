@@ -39,7 +39,6 @@ module RSpec
       end
 
       def around(scope=:each, &block)
-        RSpec::deprecate("around", "before and after")
         hooks[:around][scope] << block
       end
 
