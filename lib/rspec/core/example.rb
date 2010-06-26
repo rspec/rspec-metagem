@@ -43,11 +43,10 @@ module RSpec
           run_before_each
           pending_declared_in_example = catch(:pending_declared_in_example) do
             @in_block = true
-            if @example_group_class.hooks[:around][:each].empty?
+            the_example = lambda do
               @example_group_instance.instance_eval(&example_block) unless pending
-            else
-              @example_group_instance.instance_exec(AroundProxy.new(@example_group_instance, &example_block), &@example_group_class.hooks[:around][:each].first)
             end
+            around_hooks(@example_group_class, the_example).call
             throw :pending_declared_in_example, false
           end
         rescue Exception => e
@@ -77,6 +76,14 @@ module RSpec
       end
 
     private
+
+      def around_hooks(example_group_class, the_example)
+        hooks = example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}.flatten
+        hooks.reverse.inject(the_example) do |accum, hook|
+          def accum.run; call; end
+          lambda { hook.call(accum) }
+        end
+      end
 
       def run_started
         record_results :started_at => Time.now
