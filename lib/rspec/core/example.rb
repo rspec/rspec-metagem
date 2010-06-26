@@ -46,7 +46,7 @@ module RSpec
             if @example_group_class.hooks[:around][:each].empty?
               @example_group_instance.instance_eval(&example_block) unless pending
             else
-              @example_group_class.hooks[:around][:each].first.call(AroundProxy.new(@example_group_instance, &example_block))
+              @example_group_instance.instance_exec(AroundProxy.new(@example_group_instance, &example_block), &@example_group_class.hooks[:around][:each].first)
             end
             throw :pending_declared_in_example, false
           end
