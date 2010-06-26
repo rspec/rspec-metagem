@@ -62,30 +62,11 @@ module RSpec
             if files_to_run.empty?
               puts "No examples matching #{pattern} could be found"
             else
-              cmd_parts = [ '-Ilib', '-Ispec' ]
-              cmd_parts << "-w" if warning
-
-              if rcov
-                command_to_run = rcov_command(cmd_parts)
-                command_to_run.inspect if verbose
-
-                unless system(command_to_run)
-                  STDERR.puts failure_message if failure_message
-                  raise("#{command_to_run} failed") if fail_on_error
-                end
-              else
-                cmd_parts.concat(files_to_run)
-                puts cmd.inspect if verbose
-
-                require 'rspec/core'
-                RSpec::Core::Runner.disable_at_exit_hook!
-
-                unless RSpec::Core::Runner.run(cmd_parts, $stderr, $stdout)
-                  STDERR.puts failure_message if failure_message
-                  raise("RSpec::Core::Runner.run with args #{cmd_parts.inspect} failed") if fail_on_error
-                end
+              puts spec_command.inspect if verbose
+              unless system(spec_command)
+                STDERR.puts failure_message if failure_message
+                raise("#{spec_command} failed") if fail_on_error
               end
-
             end
           end
         end
@@ -97,14 +78,18 @@ module RSpec
         FileList[ pattern ].to_a
       end
 
-      private
+    private
 
-      def rcov_command(cmd_parts)
-        cmd_parts.unshift runner_options
-        cmd_parts.unshift runner
-        cmd_parts.unshift bundler
-        cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
-        cmd_parts.join(" ")
+      def spec_command
+        @spec_command ||= begin
+                            cmd_parts = %w[-Ilib -Ispec]
+                            cmd_parts << "-w" if warning
+                            cmd_parts.unshift runner_options
+                            cmd_parts.unshift runner
+                            cmd_parts.unshift bundler
+                            cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
+                            cmd_parts.join(" ")
+                          end
       end
 
       def runner
