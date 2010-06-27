@@ -4,7 +4,7 @@ Feature: around hooks
   I want to run the examples as part of a block given to a an arbitary function
   So that I can control the environment in which it is run
 
-  Scenario: around hooks are run
+  Scenario: around hooks defined in a group are run
     Given a file named "ensure_around_blocks_are_run.rb" with:
       """
       describe "around filter" do
@@ -14,6 +14,31 @@ Feature: around hooks
           puts "around each after"
         end
 
+        it "gets run in order" do
+          puts "in the example"
+        end
+      end
+      """
+    When I run "rspec ./ensure_around_blocks_are_run.rb"
+    Then I should see matching:
+      """
+      around each before
+      in the example
+      around each after
+      """
+
+  Scenario: around hooks defined globally are run
+    Given a file named "ensure_around_blocks_are_run.rb" with:
+      """
+      RSpec.configure do |c|
+        c.around(:each) do |example|
+          puts "around each before"
+          example.run
+          puts "around each after"
+        end
+      end
+
+      describe "around filter" do
         it "gets run in order" do
           puts "in the example"
         end

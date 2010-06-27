@@ -118,7 +118,6 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         "after",
         "around (after)"
       ])
-    
     end
   end
 
