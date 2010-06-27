@@ -39,29 +39,29 @@ module RSpec
 
         exception = nil
 
-        begin
-          run_before_each
-          pending_declared_in_example = catch(:pending_declared_in_example) do
+        the_example = lambda do
+          begin
+            run_before_each
             @in_block = true
-            the_example = lambda do
-              @example_group_instance.instance_eval(&example_block) unless pending
-            end
+            @example_group_instance.instance_eval(&example_block) unless pending
+          rescue Exception => e
+            exception = e
+          ensure
+            @in_block = false
+            run_after_each
+          end
+        end
+
+        begin
+          pending_declared_in_example = catch(:pending_declared_in_example) do
             around_hooks(@example_group_class, @example_group_instance, the_example).call
             throw :pending_declared_in_example, false
           end
         rescue Exception => e
           exception = e
         ensure
-          @in_block = false
-          assign_auto_description
-        end
-
-        begin
-          run_after_each
-        rescue Exception => e
-          exception ||= e
-        ensure
           @example_group_instance.example = nil
+          assign_auto_description
         end
 
         if exception

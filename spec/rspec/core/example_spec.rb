@@ -96,6 +96,30 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       group.run_all
       after_run.should be_true, "expected after(:each) to be run"
     end
+
+    it "wraps before/after(:each) inside around" do
+      results = []
+      group = RSpec::Core::ExampleGroup.describe do
+        around(:each) do |e|
+          results << "around (before)"
+          e.run
+          results << "around (after)"
+        end
+        before(:each) { results << "before" }
+        after(:each) { results << "after" }
+        example { results << "example" }
+      end
+
+      group.run_all
+      results.should eq([
+        "around (before)",
+        "before",
+        "example",
+        "after",
+        "around (after)"
+      ])
+    
+    end
   end
 
   describe "#in_block?" do
