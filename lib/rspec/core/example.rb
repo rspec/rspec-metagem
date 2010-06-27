@@ -66,12 +66,16 @@ module RSpec
 
         if exception
           run_failed(reporter, exception) 
+          false
         elsif pending_declared_in_example
           run_pending(reporter, pending_declared_in_example)
+          true
         elsif pending
           run_pending(reporter, 'Not Yet Implemented')
+          true
         else
           run_passed(reporter) 
+          true
         end
       end
 
@@ -92,17 +96,14 @@ module RSpec
 
       def run_passed(reporter=nil)
         run_finished reporter, 'passed'
-        true
       end
 
       def run_pending(reporter, message)
         run_finished reporter, 'pending', :pending_message => message
-        true
       end
 
       def run_failed(reporter, exception)
         run_finished reporter, 'failed', :exception_encountered => exception
-        false
       end
 
       def run_finished(reporter, status, results={})
