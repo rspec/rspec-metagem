@@ -31,11 +31,10 @@ module RSpec
       alias_method :behaviour, :example_group
 
       def run(example_group_instance, reporter)
+        start
         @in_block = false
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
-
-        run_started
 
         exception = nil
 
@@ -90,7 +89,7 @@ module RSpec
         end
       end
 
-      def run_started
+      def start
         record_results :started_at => Time.now
       end
 
