@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-06-26}
+  s.date = %q{2010-06-27}
   s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.executables = ["rspec", "spec"]
@@ -41,6 +41,7 @@ Gem::Specification.new do |s|
      "features/example_groups/nested_groups.feature",
      "features/filtering/inclusion_filters.feature",
      "features/formatters/custom_formatter.feature",
+     "features/hooks/around_hooks.feature",
      "features/hooks/before_and_after_hooks.feature",
      "features/hooks/described_class.feature",
      "features/hooks/halt.feature",
