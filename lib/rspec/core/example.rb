@@ -42,7 +42,7 @@ module RSpec
 
         begin
           @pending_declared_in_example = catch(:pending_declared_in_example) do
-            around_hooks(@example_group_class, @example_group_instance, &wrapped_example).call
+            wrap_in_around_hooks(@example_group_class, @example_group_instance, &wrapped_example).call
             throw :pending_declared_in_example, false
           end
         rescue Exception => e
@@ -72,13 +72,16 @@ module RSpec
         end
       end
 
-      def around_hooks(example_group_class, example_group_instance, &wrapped_example)
-        hooks = RSpec.configuration.hooks[:around][:each] + 
-          example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}
-        hooks.flatten.reverse.inject(wrapped_example) do |wrapper, hook|
+      def wrap_in_around_hooks(example_group_class, example_group_instance, &wrapped_example)
+        around_hooks_for(example_group_class).reverse.inject(wrapped_example) do |wrapper, hook|
           def wrapper.run; call; end
           lambda { example_group_instance.instance_exec(wrapper, &hook) }
         end
+      end
+
+      def around_hooks_for(example_group_class)
+        (RSpec.configuration.hooks[:around][:each] + 
+          example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}).flatten
       end
 
       def start
