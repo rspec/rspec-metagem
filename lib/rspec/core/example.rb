@@ -73,8 +73,8 @@ module RSpec
       end
 
       def around_hooks(example_group_class, example_group_instance, &wrapped_example)
-        hooks = RSpec.configuration.hooks[:around][:each].dup
-        hooks.push example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}
+        hooks = RSpec.configuration.hooks[:around][:each] + 
+          example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}
         hooks.flatten.reverse.inject(wrapped_example) do |wrapper, hook|
           def wrapper.run; call; end
           lambda { example_group_instance.instance_exec(wrapper, &hook) }
