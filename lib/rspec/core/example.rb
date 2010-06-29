@@ -88,19 +88,19 @@ module RSpec
       def finish(reporter)
         if @exception
           record_finished 'failed', :exception_encountered => @exception
-          reporter.send("example_failed", self)
+          reporter.example_failed self
           false
         elsif @pending_declared_in_example
           record_finished 'pending', :pending_message => @pending_declared_in_example
-          reporter.send("example_pending", self)
+          reporter.example_pending self
           true
         elsif pending
           record_finished 'pending', :pending_message => 'Not Yet Implemented'
-          reporter.send("example_pending", self)
+          reporter.example_pending self
           true
         else
           record_finished 'passed'
-          reporter.send("example_passed", self)
+          reporter.example_passed self
           true
         end
       end
