@@ -20,7 +20,7 @@ module RSpec::Core::Formatters
 
       formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
       
-      examples.each {|e| formatter.example_finished(e) }
+      examples.each {|e| formatter.example_failed(e) }
 
       output.string.should =~ /first example \(FAILED - 1\)/m
       output.string.should =~ /second example \(FAILED - 2\)/m

@@ -1,7 +1,5 @@
 module RSpec
-
   module Core
-
     module Formatters
 
       class BaseTextFormatter < BaseFormatter
@@ -18,7 +16,7 @@ module RSpec
               output.puts "#{index.next}) #{failed_example}"
               output.puts "#{padding}Failure/Error: #{read_failed_line(exception, failed_example).strip}"
               exception.message.split("\n").each do |line|
-                output.puts "#{padding}#{colorise(line, exception)}"
+                output.puts "#{padding}#{red(line)}"
               end
             end
 
@@ -27,31 +25,25 @@ module RSpec
             end
 
             output.puts 
-            output.flush
           end
         end
 
-        def colorise(s, failure)
-          red(s)
+        def colorise_summary(summary)
+          if failure_count == 0
+            if pending_count > 0
+              yellow(summary)
+            else
+              green(summary)
+            end
+          else
+            red(summary)
+          end
         end
         
         def dump_summary
-          failure_count = failed_examples.size
-          pending_count = pending_examples.size
-
           output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
-          summary = summary_line(example_count, failure_count, pending_count)
-
-          if failure_count == 0
-            if pending_count > 0
-              output.puts yellow(summary)
-            else
-              output.puts green(summary)
-            end
-          else
-            output.puts red(summary)
-          end
+          output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
 
           # Don't print out profiled info if there are failures, it just clutters the output
           if profile_examples? && failure_count == 0
@@ -62,8 +54,6 @@ module RSpec
               output.puts grey("   # #{format_caller(example.metadata[:location])}")
             end
           end
-
-          output.flush
         end
 
         def summary_line(example_count, failure_count, pending_count)
@@ -71,14 +61,6 @@ module RSpec
           summary << ", " << pluralize(failure_count, "failure")
           summary << ", #{pending_count} pending" if pending_count > 0  
           summary
-        end
-
-        def pluralize(count, string)
-          "#{count} #{string}#{'s' unless count == 1}"
-        end
-
-        def format_caller(caller_info)
-          caller_info.to_s.split(':in `block').first
         end
 
         def dump_pending
@@ -90,20 +72,16 @@ module RSpec
               output.puts grey("   # #{format_caller(pending_example.metadata[:location])}")
             end
           end
-          output.flush
         end
 
         def close
-          if IO === output && output != $stdout
-            output.close 
-          end
+          output.close if IO === output && output != $stdout
         end
 
-        protected
+      protected
 
         def color(text, color_code)
-          return text unless color_enabled?
-          "#{color_code}#{text}\e[0m"
+          color_enabled? ? "#{color_code}#{text}\e[0m" : text
         end
 
         def bold(text)
@@ -138,10 +116,18 @@ module RSpec
           color(text, "\e[90m")
         end
 
+      private
+
+        def pluralize(count, string)
+          "#{count} #{string}#{'s' unless count == 1}"
+        end
+
+        def format_caller(caller_info)
+          caller_info.to_s.split(':in `block').first
+        end
+
       end
 
     end
-
   end
-
 end

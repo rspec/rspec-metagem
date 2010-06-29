@@ -1,7 +1,5 @@
 module RSpec
-
   module Core
-
     module Formatters
 
       class DocumentationFormatter < BaseTextFormatter
@@ -24,23 +22,19 @@ module RSpec
           @previous_nested_example_groups = example_group_chain
         end
         
-        def output_for(example)
-          case example.execution_result[:status]
-          when 'failed'
-            failure_output(example, example.execution_result[:exception_encountered])
-          when 'pending'
-            pending_output(example, example.execution_result[:pending_message])
-          when 'passed'
-            passed_output(example)
-          else
-            red(example.execution_result[:status])
-          end
+        def example_passed(example)
+          super
+          output.puts passed_output(example)
         end
 
-        def example_finished(example)
+        def example_pending(example)
           super
-          output.puts output_for(example)
-          output.flush
+          output.puts pending_output(example, example.execution_result[:pending_message])
+        end
+
+        def example_failed(example)
+          super
+          output.puts failure_output(example, example.execution_result[:exception_encountered])
         end
 
         def failure_output(example, exception)
@@ -71,7 +65,5 @@ module RSpec
       end
 
     end
-
   end
-
 end

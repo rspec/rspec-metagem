@@ -1,36 +1,31 @@
 module RSpec
-
   module Core
-
     module Formatters
 
       class ProgressFormatter < BaseTextFormatter
 
-        def output_for(example)
-          case example.execution_result[:status]
-          when 'failed' then colorise('F', example.execution_result[:exception_encountered])
-          when 'pending' then yellow('*')
-          when 'passed' then green('.')
-          else
-            red(example.execution_result[:status])
-          end
+        def example_passed(example)
+          super
+          output.print green('.')
         end
 
-        def example_finished(example)
+        def example_pending(example)
           super
-          output.print output_for(example)
+          output.print yellow('*')
+        end
+
+        def example_failed(example)
+          super
+          output.print red('F')
         end
 
         def start_dump(duration)
           super
           output.puts
-          output.flush
         end
 
       end
 
     end
-
   end
-
 end

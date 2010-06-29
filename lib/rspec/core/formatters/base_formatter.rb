@@ -18,8 +18,16 @@ module RSpec
           @pending_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'pending' })
         end
 
+        def pending_count
+          pending_examples.size
+        end
+
         def failed_examples
           @failed_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'failed' })
+        end
+
+        def failure_count
+          failed_examples.size
         end
 
         def report(count)
@@ -50,14 +58,23 @@ module RSpec
           @duration = Time.now - @start
         end
 
-        def example_finished(example)
+        def example_passed(example)
+          examples << example
+        end
+
+        def example_pending(example)
+          examples << example
+        end
+
+        def example_failed(example)
           examples << example
         end
 
         # This method is invoked at the beginning of the execution of each example group.
         # +example_group+ is the example_group.
         #
-        # The next method to be invoked after this is #example_failed or #example_finished
+        # The next method to be invoked after this is +example_passed+,
+        # +example_pending+, or +example_finished+
         def add_example_group(example_group)
           @example_group = example_group
         end
