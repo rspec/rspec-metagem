@@ -26,13 +26,13 @@ module RSpec
         @example_group_class
       end
 
-      def in_block?
-        @in_block
-      end
-
       def behaviour
         RSpec.deprecate("behaviour", "example_group")
         example_group
+      end
+
+      def in_block?
+        @in_block
       end
 
       def run(example_group_instance, reporter)
