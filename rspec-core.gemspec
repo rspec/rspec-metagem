@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-06-28}
+  s.date = %q{2010-06-29}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -101,6 +101,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/command_line_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
+     "spec/rspec/core/core_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",
      "spec/rspec/core/drb_command_line_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
@@ -126,7 +127,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/shared_example_group_spec.rb",
      "spec/rspec/core/subject_spec.rb",
      "spec/rspec/core/world_spec.rb",
-     "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",
      "spec/spec_helper.rb",
      "spec/support/matchers.rb",
@@ -150,6 +150,7 @@ Gem::Specification.new do |s|
      "spec/rspec/core/command_line_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
+     "spec/rspec/core/core_spec.rb",
      "spec/rspec/core/deprecations_spec.rb",
      "spec/rspec/core/drb_command_line_spec.rb",
      "spec/rspec/core/example_group_spec.rb",
@@ -175,7 +176,6 @@ Gem::Specification.new do |s|
      "spec/rspec/core/shared_example_group_spec.rb",
      "spec/rspec/core/subject_spec.rb",
      "spec/rspec/core/world_spec.rb",
-     "spec/rspec/core_spec.rb",
      "spec/ruby_forker.rb",
      "spec/spec_helper.rb",
      "spec/support/matchers.rb"
