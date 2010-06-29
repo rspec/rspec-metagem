@@ -9,25 +9,10 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     example_group.example('example description')
   end
 
-  describe "attr readers" do
-    it "should have one for the parent example group" do
-      example_instance.should respond_to(:example_group)
-    end
-
-    it "should have one for its description" do
-      example_instance.should respond_to(:description)
-    end
-
-    it "should have one for its metadata" do
-      example_instance.should respond_to(:metadata)
-    end
-
-    it "should have one for its block" do
-      example_instance.should respond_to(:example_block)
-    end
-
-    it "should have one for its options" do
-      example_instance.should respond_to(:options)
+  describe "#behaviour" do
+    it "is deprecated" do
+      RSpec.should_receive(:deprecate)
+      example_instance.behaviour
     end
   end
 

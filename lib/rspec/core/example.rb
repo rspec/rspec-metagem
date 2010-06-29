@@ -30,7 +30,10 @@ module RSpec
         @in_block
       end
 
-      alias_method :behaviour, :example_group
+      def behaviour
+        RSpec.deprecate("behaviour", "example_group")
+        example_group
+      end
 
       def run(example_group_instance, reporter)
         start
