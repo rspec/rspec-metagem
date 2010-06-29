@@ -40,7 +40,7 @@ module RSpec::Core
    
     context "setting the files to run" do
 
-      it "should load files not following pattern if named explicitly" do
+      it "loads files not following pattern if named explicitly" do
         file = "./spec/rspec/core/resources/a_bar.rb"
         config.files_or_directories_to_run = file
         config.files_to_run.should == [file]
@@ -48,10 +48,16 @@ module RSpec::Core
 
       describe "with default --pattern" do
 
-        it "should load files named _spec.rb" do
+        it "loads files named _spec.rb" do
           dir = "./spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
           config.files_to_run.should == ["#{dir}/a_spec.rb"]
+        end
+
+        it "loads files in Windows" do
+          file = "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
+          config.files_or_directories_to_run = file
+          config.files_to_run.should == [file]
         end
 
       end

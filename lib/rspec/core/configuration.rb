@@ -197,18 +197,20 @@ EOM
       alias_method :reporter, :formatter
 
       def files_or_directories_to_run=(*files)
-        self.files_to_run = files.flatten.inject([]) do |result, file|
+        self.files_to_run = files.flatten.collect do |file|
           if File.directory?(file)
-            filename_pattern.split(",").each do |pattern|
-              result += Dir["#{file}/#{pattern.strip}"]
+            filename_pattern.split(",").collect do |pattern|
+              Dir["#{file}/#{pattern.strip}"]
             end
           else
-            path, line_number = file.split(':')
-            self.line_number = line_number if line_number
-            result << path
+            if file =~ /(\:(\d+))$/
+              self.line_number = $2
+              file.sub($1,'')
+            else
+              file
+            end
           end
-          result
-        end
+        end.flatten
       end
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
