@@ -54,6 +54,9 @@ module RSpec
                 @in_block = false
                 run_after_each
               end
+              # FUCKME (DC): I really want to move the call below to the end of
+              # the with_around_hooks method, but it adds 4% to the run time.
+              # Why? (footnote - Dan North made me write this comment)
             end.call
           end
         rescue Exception => e
