@@ -1,5 +1,4 @@
-require 'rspec/mocks/framework'
-require 'rspec/mocks/extensions'
+require 'rspec/mocks'
 
 module RSpec
   module Core

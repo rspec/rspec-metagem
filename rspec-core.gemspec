@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-06-30}
+  s.date = %q{2010-07-02}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -31,6 +31,7 @@ Gem::Specification.new do |s|
      "autotest/discover.rb",
      "bin/rspec",
      "cucumber.yml",
+     "features/README.markdown",
      "features/command_line/example_name_option.feature",
      "features/command_line/exit_status.feature",
      "features/command_line/line_number_appended_to_path.feature",
