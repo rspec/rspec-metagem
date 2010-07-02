@@ -181,6 +181,8 @@ EOM
           formatter_class = case formatter_to_use.to_s
           when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
             RSpec::Core::Formatters::DocumentationFormatter
+          when 'h', 'html'
+            RSpec::Core::Formatters::HtmlFormatter
           when 'progress' 
             RSpec::Core::Formatters::ProgressFormatter
           else 

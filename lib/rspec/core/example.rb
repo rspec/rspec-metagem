@@ -39,7 +39,7 @@ module RSpec
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
 
-        start
+        start(reporter)
 
         begin
           unless pending
@@ -90,7 +90,8 @@ module RSpec
           @example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}).flatten
       end
 
-      def start
+      def start(reporter)
+        reporter.example_started(self)
         record :started_at => Time.now
       end
 

@@ -58,16 +58,17 @@ module RSpec
           @duration = Time.now - @start
         end
 
-        def example_passed(example)
+        def example_started(example)
           examples << example
+        end
+
+        def example_passed(example)
         end
 
         def example_pending(example)
-          examples << example
         end
 
         def example_failed(example)
-          examples << example
         end
 
         # This method is invoked at the beginning of the execution of each example group.
