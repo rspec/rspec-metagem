@@ -16,8 +16,8 @@ Feature: inclusion feature
       end
       """
     When I run "rspec ./spec/sample_spec.rb --format doc"
-    Then I should see "does another thing"
-    And I should not see "does one thing"
+    Then the output should contain "does another thing"
+    And the output should not contain "does one thing"
 
   Scenario: focus on one group
     Given a file named "spec/sample_spec.rb" with:
@@ -40,9 +40,9 @@ Feature: inclusion feature
       end
       """
     When I run "rspec ./spec/sample_spec.rb --format doc"
-    Then I should see "group 1 example 1"
-    And  I should see "group 1 example 2"
-    And  I should not see "group 2 example 1"
+    Then the output should contain "group 1 example 1"
+    And  the output should contain "group 1 example 2"
+    And  the output should not contain "group 2 example 1"
 
   Scenario: no examples match filter
     Given a file named "spec/sample_spec.rb" with:
@@ -66,9 +66,9 @@ Feature: inclusion feature
       end
       """
     When I run "rspec ./spec/sample_spec.rb --format doc"
-    Then I should see "No examples were matched by {:focus=>true}, running all"
-    And  I should see "group 1 example 1"
-    And  I should see "group 1 example 2"
-    And  I should see "group 2 example 1"
-    And  I should see "3 examples, 0 failures"
+    Then the output should contain "No examples were matched by {:focus=>true}, running all"
+    And  the output should contain "group 1 example 1"
+    And  the output should contain "group 1 example 2"
+    And  the output should contain "group 2 example 1"
+    And  the output should contain "3 examples, 0 failures"
 

@@ -20,10 +20,10 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec ./nested_example_groups.rb -fdoc"
-    Then I should see matching /^Some Object/
-    And I should see matching /^\s+with some more context/
-    And I should see matching /^\s+with some other context/
+    When I run "rspec nested_example_groups.rb -fdoc"
+    Then the output should contain "Some Object"
+    And  the output should contain "with some more context"
+    And  the output should contain "with some other context"
 
   Scenario: failure in outer group continues to run inner groups
     Given a file named "nested_example_groups.rb" with:
@@ -39,6 +39,6 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec ./nested_example_groups.rb -fdoc"
-    Then I should see "2 examples, 1 failure"
-    And I should see "passes"
+    When I run "rspec nested_example_groups.rb -fdoc"
+    Then the output should contain "2 examples, 1 failure"
+    And the output should contain "passes"

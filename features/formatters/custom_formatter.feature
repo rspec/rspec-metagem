@@ -28,5 +28,5 @@ Feature: custom formatters
       """
 
     When I run "rspec ./simple_example_spec.rb --require custom_formatter.rb --format CustomFormatter"
-    Then I should see "example: my example"
+    Then the output should contain "example: my example"
     And  the exit status should be 0

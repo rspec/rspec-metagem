@@ -20,7 +20,7 @@ Feature: around hooks
       end
       """
     When I run "rspec ./ensure_around_blocks_are_run.rb"
-    Then I should see matching:
+    Then the output should contain:
       """
       around each before
       in the example
@@ -45,7 +45,7 @@ Feature: around hooks
       end
       """
     When I run "rspec ./ensure_around_blocks_are_run.rb"
-    Then I should see matching:
+    Then the output should contain:
       """
       around each before
       in the example
@@ -76,7 +76,7 @@ Feature: around hooks
       end
       """
     When I run "rspec ./ensure_around_blocks_are_run.rb"
-    Then I should see matching:
+    Then the output should contain:
       """
       around each before
       before each
@@ -109,7 +109,7 @@ Feature: around hooks
       end
       """
     When I run "rspec ./ensure_around_blocks_are_run.rb"
-    Then I should see matching:
+    Then the output should contain:
       """
       before all
       around each before
@@ -140,7 +140,7 @@ Feature: around hooks
       end
       """
     When I run "rspec ./around_block_with_context.rb"
-    Then I should see "1 example, 0 failure"
+    Then the output should contain "1 example, 0 failure"
 
   Scenario: implicitly pending examples should be detected as Not Yet Implemented
     Given a file named "around_block_with_implicit_pending_example.rb" with:
@@ -154,8 +154,8 @@ Feature: around hooks
       end
       """
     When I run "rspec ./around_block_with_implicit_pending_example.rb"
-    Then I should see "1 example, 0 failures, 1 pending"
-    And I should see "implicit pending example should be detected as Not Yet Implemented (Not Yet Implemented)"
+    Then the output should contain "1 example, 0 failures, 1 pending"
+    And the output should contain "implicit pending example should be detected as Not Yet Implemented (Not Yet Implemented)"
 
 
   Scenario: explicitly pending examples should be detected as pending
@@ -172,8 +172,8 @@ Feature: around hooks
       end
       """
     When I run "rspec ./around_block_with_explicit_pending_example.rb"
-    Then I should see "1 example, 0 failures, 1 pending"
-    And I should see "explicit pending example should be detected as pending (No reason given)"
+    Then the output should contain "1 example, 0 failures, 1 pending"
+    And the output should contain "explicit pending example should be detected as pending (No reason given)"
 
   Scenario: multiple around hooks in the same scope are all run
     Given a file named "around_hooks_in_same_scope.rb" with:
@@ -198,8 +198,8 @@ Feature: around hooks
     end
     """
     When I run "rspec ./around_hooks_in_same_scope.rb"
-    Then I should see "1 example, 0 failure"
-    And I should see matching:
+    Then the output should contain "1 example, 0 failure"
+    And the output should contain:
     """
     first around hook before
     second around hook before
@@ -258,8 +258,8 @@ Feature: around hooks
     end
     """
     When I run "rspec ./around_hooks_in_outer_scope.rb"
-    Then I should see "1 example, 0 failure"
-    And I should see matching:
+    Then the output should contain "1 example, 0 failure"
+    And the output should contain:
     """
     first outermost around hook before
     second outermost around hook before

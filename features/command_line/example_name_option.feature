@@ -37,36 +37,36 @@ Feature: example name option
 
   Scenario: no matches
     When I run "rspec . --example nothing_like_this"
-    Then I should see "0 examples, 0 failures"
+    Then the output should contain "0 examples, 0 failures"
 
   Scenario: match on one word
     When I run "rspec . --example example"
-    Then I should see "7 examples, 0 failures"
+    Then the output should contain "7 examples, 0 failures"
 
   Scenario: one match in each context
     When I run "rspec . --example 'first example'"
-    Then I should see "4 examples, 0 failures"
+    Then the output should contain "4 examples, 0 failures"
 
   Scenario: one match in one file using just the example name
     When I run "rspec . --example 'first example in first group'"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: one match in one file using the example name and the group name
     When I run "rspec . --example 'first group first example in first group'"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: one match in one file using regexp
     When I run "rspec . --example 'first .* first example'"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: all examples in one group
     When I run "rspec . --example 'first group'"
-    Then I should see "2 examples, 0 failures"
+    Then the output should contain "2 examples, 0 failures"
 
   Scenario: one match in one file with group name
     When I run "rspec . --example 'second group first example'"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: all examples in one group including examples in nested groups
     When I run "rspec . --example 'third group'"
-    Then I should see "3 examples, 0 failures"
+    Then the output should contain "3 examples, 0 failures"

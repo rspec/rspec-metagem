@@ -15,7 +15,7 @@ Feature: explicit subject
       end
       """
     When I run "rspec ./top_level_subject_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
@@ -32,7 +32,7 @@ Feature: explicit subject
       end
       """
     When I run "rspec ./nested_subject_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: access subject from before block
     Given a file named "top_level_subject_spec.rb" with:
@@ -46,7 +46,7 @@ Feature: explicit subject
       end
       """
     When I run "rspec ./top_level_subject_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: subject using helper method
     Given a file named "helper_subject_spec.rb" with:
@@ -64,4 +64,4 @@ Feature: explicit subject
       end
       """
     When I run "rspec ./helper_subject_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"

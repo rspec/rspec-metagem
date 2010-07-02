@@ -21,7 +21,7 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec ./spec/example_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
             
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
@@ -39,7 +39,7 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec ./spec/example_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: formatter set in both (RSpec.configure wins)
     Given a file named ".rspec" with:
@@ -63,5 +63,5 @@ Feature: spec/spec.opts
       end
       """
     When I run "rspec ./spec/example_spec.rb"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 

@@ -32,7 +32,7 @@ Feature: custom settings
       end
       """
     When I run "rspec ./additional_setting_spec.rb"
-    Then I should see "0 failures"
+    Then the output should contain "0 failures"
 
   Scenario: default to true
     Given a file named "additional_setting_spec.rb" with:
@@ -58,7 +58,7 @@ Feature: custom settings
       end
       """
     When I run "rspec ./additional_setting_spec.rb"
-    Then I should see "0 failures"
+    Then the output should contain "0 failures"
 
   Scenario: overridden in a subsequent RSpec.configure block
     Given a file named "additional_setting_spec.rb" with:
@@ -82,5 +82,5 @@ Feature: custom settings
       end
       """
     When I run "rspec ./additional_setting_spec.rb"
-    Then I should see "0 failures"
+    Then the output should contain "0 failures"
 

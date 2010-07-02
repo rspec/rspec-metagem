@@ -58,7 +58,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./before_each_spec.rb"
-    Then I should see "3 examples, 0 failures"
+    Then the output should contain "3 examples, 0 failures"
 
   Scenario: define before(:all) block in example group
     Given a file named "before_all_spec.rb" with:
@@ -92,10 +92,10 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./before_all_spec.rb"
-    Then I should see "3 examples, 0 failures"
+    Then the output should contain "3 examples, 0 failures"
 
     When I run "rspec ./before_all_spec.rb:15"
-    Then I should see "1 example, 0 failures"
+    Then the output should contain "1 example, 0 failures"
 
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
@@ -125,7 +125,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./befores_in_configuration_spec.rb"
-    Then I should see "2 examples, 0 failures"
+    Then the output should contain "2 examples, 0 failures"
 
   Scenario: before/after blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
@@ -155,7 +155,13 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./ensure_block_order_spec.rb"
-    Then I should see matching /before all\nbefore each\nafter each\n.after all/
+    Then the output should contain:
+      """
+      before all
+      before each
+      after each
+      .after all
+      """
   
   Scenario: before/after blocks defined in config are run in order
     Given a file named "configuration_spec.rb" with:
@@ -194,7 +200,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec configuration_spec.rb"
-    Then I should see matching:
+    Then the output should contain:
       """
       before suite
       before all
@@ -235,16 +241,32 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./before_and_after_all_spec.rb"
-    Then I should see "2 examples, 0 failures"
-    Then I should see matching /outer before all\n.inner before all\n.inner after all\nouter after all\n\n\n\nFinished/
+    Then the output should contain "2 examples, 0 failures"
+    And the output should contain:
+      """
+      outer before all
+      .inner before all
+      .inner after all
+      outer after all
+      """
 
     When I run "rspec ./before_and_after_all_spec.rb:14"
-    Then I should see "1 example, 0 failures"
-    Then I should see matching /outer before all\ninner before all\n.inner after all\nouter after all\n\n\n\nFinished/
+    Then the output should contain "1 example, 0 failures"
+    And the output should contain:
+      """
+      outer before all
+      inner before all
+      .inner after all
+      outer after all
+      """
 
     When I run "rspec ./before_and_after_all_spec.rb:6"
-    Then I should see "1 example, 0 failures"
-    Then I should see matching /outer before all\n.outer after all\n\n\n\nFinished/
+    Then the output should contain "1 example, 0 failures"
+    And the output should contain:
+      """
+      outer before all
+      .outer after all
+      """
 
   Scenario: nested examples have access to state set in outer before(:all)
     Given a file named "before_all_spec.rb" with:
@@ -274,7 +296,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec before_all_spec.rb"
-    Then I should see "3 examples, 0 failures"
+    Then the output should contain "3 examples, 0 failures"
 
   Scenario: before/after all blocks have access to state
     Given a file named "before_and_after_all_spec.rb" with:
@@ -310,7 +332,7 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./before_and_after_all_spec.rb"
-    Then I should see "2 examples, 0 failures"
+    Then the output should contain "2 examples, 0 failures"
 
   Scenario: exception in before(:each) is captured and reported as failure
     Given a file named "error_in_before_each_spec.rb" with:
@@ -325,5 +347,5 @@ Feature: before and after hooks
       end
       """
     When I run "rspec ./error_in_before_each_spec.rb"
-    Then I should see "1 example, 1 failure"
-    And I should see "this error"
+    Then the output should contain "1 example, 1 failure"
+    And the output should contain "this error"
