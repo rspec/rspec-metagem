@@ -56,6 +56,7 @@ module RSpec
         end
 
         def example_started(example)
+          super
           @example_number += 1
         end
 
@@ -68,7 +69,7 @@ module RSpec
         def example_failed(example)
           counter = 0
           exception = example.metadata[:execution_result][:exception_encountered]
-          # extra = extra_failure_content(failure)
+          extra = extra_failure_content(exception)
           failure_style = 'failed'
           failure_style = RSpec::Core::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
@@ -80,8 +81,8 @@ module RSpec
           @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
           @output.puts "      <div class=\"failure\" id=\"failure_#{counter}\">"
           @output.puts "        <div class=\"message\"><pre>#{h(exception.message)}</pre></div>" unless exception.nil?
-          @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(exception.backtrace, example)}</pre></div>" if exception
-          # @output.puts extra unless extra == ""
+          @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(exception.backtrace, example).join("\n")}</pre></div>" if exception
+          @output.puts extra unless extra == ""
           @output.puts "      </div>"
           @output.puts "    </dd>"
           @output.flush
@@ -99,10 +100,10 @@ module RSpec
         # Override this method if you wish to output extra HTML for a failed spec. For example, you
         # could output links to images or other files produced during the specs.
         #
-        def extra_failure_content(failure)
-          require 'spec/runner/formatter/snippet_extractor'
+        def extra_failure_content(exception)
+          require 'rspec/core/formatters/snippet_extractor'
           @snippet_extractor ||= SnippetExtractor.new
-          "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(failure.exception)}</code></pre>"
+          "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(exception)}</code></pre>"
         end
         
         def move_progress
@@ -118,7 +119,10 @@ module RSpec
           result
         end
 
-        def dump_failure(counter, failure)
+        def dump_failures
+        end
+
+        def dump_pending
         end
 
         def dump_summary
