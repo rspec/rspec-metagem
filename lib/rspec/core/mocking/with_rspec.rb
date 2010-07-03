@@ -4,10 +4,8 @@ module RSpec
   module Core
     module MockFrameworkAdapter
 
-      include RSpec::Mocks::ExampleMethods
-
       def _setup_mocks
-        RSpec::Mocks::setup
+        RSpec::Mocks::setup(self)
       end
 
       def _verify_mocks
