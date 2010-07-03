@@ -99,6 +99,10 @@ module RSpec
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
+      def mock_with(mock_framework)
+        self.mock_framework = mock_framework
+      end
+
       def require_mock_framework_adapter
         require case mock_framework.to_s
         when /rspec/i
