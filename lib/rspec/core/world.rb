@@ -4,7 +4,8 @@ module RSpec
 
       attr_reader :example_groups, :filtered_examples
 
-      def initialize
+      def initialize(configuration=RSpec.configuration)
+        @configuration = configuration
         @example_groups = []
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
@@ -16,20 +17,16 @@ module RSpec
         }
       end
 
-      def configuration
-        RSpec.configuration
-      end
-
       def inclusion_filter
-        configuration.filter
+        @configuration.filter
       end
 
       def exclusion_filter
-        configuration.exclusion_filter
+        @configuration.exclusion_filter
       end
 
       def find_modules(group)
-        configuration.find_modules(group)
+        @configuration.find_modules(group)
       end
 
       def shared_example_groups
@@ -58,12 +55,12 @@ module RSpec
 
       def announce_inclusion_filter
         if inclusion_filter
-          if RSpec.configuration.run_all_when_everything_filtered? && RSpec.world.example_count == 0
-            RSpec.configuration.reporter.message "No examples were matched by #{inclusion_filter.inspect}, running all"
-            RSpec.configuration.clear_inclusion_filter
+          if @configuration.run_all_when_everything_filtered? && RSpec.world.example_count == 0
+            @configuration.reporter.message "No examples were matched by #{inclusion_filter.inspect}, running all"
+            @configuration.clear_inclusion_filter
             filtered_examples.clear
           else
-            RSpec.configuration.reporter.message "Run filtered using #{inclusion_filter.inspect}"
+            @configuration.reporter.message "Run filtered using #{inclusion_filter.inspect}"
           end
         end      
       end
@@ -71,7 +68,7 @@ module RSpec
       include RSpec::Core::Hooks
 
       def find_hook(hook, scope, group)
-        RSpec.configuration.find_hook(hook, scope, group)
+        @configuration.find_hook(hook, scope, group)
       end
 
     private
