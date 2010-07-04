@@ -23,7 +23,7 @@ begin # See rescue all the way at the bottom
             # untangled between config options, config, world, and runner to
             # get it to work right.
             seconds = /\d+\.\d+ seconds/
-            html = `bundle exec rspec spec/rspec/core/resources/formatter_specs.rb --format html`
+            html = `rspec spec/rspec/core/resources/formatter_specs.rb --format html`
             html.gsub seconds, 'x seconds'
           end
 
