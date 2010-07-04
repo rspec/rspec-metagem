@@ -2,28 +2,38 @@ require "spec_helper"
 
 describe "::DRbCommandLine", :ruby => "!jruby" do
   let(:config) { RSpec::Core::Configuration.new }
+  let(:out)    { StringIO.new }
+  let(:err)    { StringIO.new }
+
+  def config_options(argv=[])
+    options = RSpec::Core::ConfigurationOptions.new(argv)
+    options.parse_options
+    options
+  end
+
+  def drb_command_line(args)
+    RSpec::Core::DRbCommandLine.new(config_options(args), config)
+  end
+
+  def run_with(args)
+    drb_command_line(args).run(err, out)
+  end
 
   context "without server running" do
     it "prints error" do
-      err = out = StringIO.new
-      RSpec::Core::DRbCommandLine.new([], config).run(err, out)
+      run_with []
 
       err.rewind
       err.read.should =~ /No DRb server is running/
     end
     
     it "returns false" do
-      err = out = StringIO.new
-      result = RSpec::Core::DRbCommandLine.new([], config).run(err, out)
+      result = run_with []
       result.should be_false
     end
   end
   
   describe "--drb-port" do
-    def config_options_object(*args)
-      RSpec::Core::DRbCommandLine.new(args)
-    end
-
     def with_RSPEC_DRB_set_to(val)
       original = ENV['RSPEC_DRB']
       ENV['RSPEC_DRB'] = val
@@ -37,14 +47,14 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
     context "without RSPEC_DRB environment variable set" do
       it "defaults to 8989" do
         with_RSPEC_DRB_set_to(nil) do
-          RSpec::Core::DRbCommandLine.new([], config).drb_port.should == 8989
+          drb_command_line([]).drb_port.should == 8989
         end
       end
       
       it "sets the DRb port" do
         with_RSPEC_DRB_set_to(nil) do
-          RSpec::Core::DRbCommandLine.new(["--drb-port", "1234"], config).drb_port.should == 1234
-          RSpec::Core::DRbCommandLine.new(["--drb-port", "5678"], config).drb_port.should == 5678
+          drb_command_line(["--drb-port", "1234"]).drb_port.should == 1234
+          drb_command_line(["--drb-port", "5678"]).drb_port.should == 5678
         end
       end
     end
@@ -54,7 +64,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       context "without config variable set" do
         it "uses RSPEC_DRB value" do
           with_RSPEC_DRB_set_to('9000') do
-            RSpec::Core::DRbCommandLine.new([], config).drb_port.should == "9000"
+            drb_command_line([]).drb_port.should == "9000"
           end
         end
       end
@@ -62,7 +72,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       context "and config variable set" do
         it "uses configured value" do
           with_RSPEC_DRB_set_to('9000') do
-            RSpec::Core::DRbCommandLine.new(%w[--drb-port 5678], config).drb_port.should == 5678
+            drb_command_line(%w[--drb-port 5678]).drb_port.should == 5678
           end
         end
       end
@@ -72,7 +82,9 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
   context "with server running" do
     class ::FakeDrbSpecServer
       def self.run(argv, err, out) 
-        RSpec::Core::CommandLine.new(argv).run(err, out)
+        options = RSpec::Core::ConfigurationOptions.new(argv)
+        options.parse_options
+        RSpec::Core::CommandLine.new(options, RSpec::Core::Configuration.new).run(err, out)
       end
     end
 
@@ -117,14 +129,14 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
 
     def run_spec_via_druby(argv)
       err, out = StringIO.new, StringIO.new
-      RSpec::Core::DRbCommandLine.new(argv.push("--drb-port", @drb_port.to_s), config).run(err, out)
+      drb_command_line(argv.push("--drb-port", @drb_port.to_s)).run(err, out)
       out.rewind
       out.read
     end
 
     it "returns true" do
       err, out = StringIO.new, StringIO.new
-      result = RSpec::Core::DRbCommandLine.new(["--drb-port", @drb_port.to_s], config).run(err, out)
+      result = drb_command_line(["--drb-port", @drb_port.to_s]).run(err, out)
       result.should be_true
     end
     
