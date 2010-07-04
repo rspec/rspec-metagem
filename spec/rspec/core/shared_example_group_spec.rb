@@ -3,7 +3,6 @@ require 'spec_helper'
 module RSpec::Core
 
   describe SharedExampleGroup do
-
     it "should add the 'share_examples_for' method to the global namespace" do
       Kernel.should respond_to(:share_examples_for)
     end
@@ -131,8 +130,12 @@ module RSpec::Core
       describe "running shared examples" do
         module ::RunningSharedExamplesJustForTesting; end
 
+        let(:group) do
+          ExampleGroup.describe("example group")
+        end
+
         before(:each) do
-          share_examples_for("it runs shared examples") do
+          group.share_examples_for("it runs shared examples") do
             include ::RunningSharedExamplesJustForTesting
 
             class << self
@@ -166,18 +169,15 @@ module RSpec::Core
           end
         end
 
-        let(:group) do
-          group = ExampleGroup.describe("example group") do
-            it_should_behave_like "it runs shared examples"
-            it "has one example" do; end
-            it "has another example" do; end
-            it "includes modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
-              raise "FAIL" unless example.example_group.included_modules.include?(RunningSharedExamplesJustForTesting)
-            end
+        before do
+          group.it_should_behave_like "it runs shared examples"
+          group.it "has one example" do; end
+          group.it "has another example" do; end
+          group.it "includes modules, included into shared example_group, into current example_group", :compat => 'rspec-1.2' do
+            raise "FAIL" unless example.example_group.included_modules.include?(RunningSharedExamplesJustForTesting)
           end
+          group.run_all
         end
-
-        before { group.run_all }
 
         it "runs before(:all) only once from shared example_group", :compat => 'rspec-1.2' do
           group.magic[:before_all].should eq("before all 1")

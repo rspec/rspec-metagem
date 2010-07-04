@@ -34,6 +34,25 @@ class RSpec::Core::ExampleGroup
   end
 end
 
+def sandboxed(&block)
+  begin
+    @orig_config = RSpec.configuration
+    @orig_world  = RSpec.world
+    new_config = RSpec::Core::Configuration.new
+    new_world  = RSpec::Core::World.new(new_config)
+    RSpec.instance_variable_set(:@configuration, new_config)
+    RSpec.instance_variable_set(:@world, new_world)
+    object = Object.new
+    object.extend(RSpec::Core::ObjectExtensions)
+    object.extend(RSpec::Core::SharedExampleGroup)
+
+    object.instance_eval(&block)
+  ensure
+    RSpec.instance_variable_set(:@configuration, @orig_config)
+    RSpec.instance_variable_set(:@world, @orig_world)
+  end
+end
+
 def in_editor?
   ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
 end
@@ -50,11 +69,7 @@ RSpec.configure do |c|
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
     end
   }
-  c.before(:each) do
-    @real_world = RSpec.world
-    RSpec.instance_variable_set(:@world, RSpec::Core::World.new)
-  end
-  c.after(:each) do
-    RSpec.instance_variable_set(:@world, @real_world)
+  c.around do |example|
+    sandboxed { example.run }
   end
 end

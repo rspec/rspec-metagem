@@ -12,7 +12,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
   end
 
   def drb_command_line(args)
-    RSpec::Core::DRbCommandLine.new(config_options(args), config)
+    RSpec::Core::DRbCommandLine.new(config_options(args))
   end
 
   def run_with(args)
@@ -127,34 +127,32 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       end
     end
 
-    def run_spec_via_druby(argv)
-      err, out = StringIO.new, StringIO.new
-      drb_command_line(argv.push("--drb-port", @drb_port.to_s)).run(err, out)
-      out.rewind
-      out.read
-    end
-
     it "returns true" do
       err, out = StringIO.new, StringIO.new
       result = drb_command_line(["--drb-port", @drb_port.to_s]).run(err, out)
       result.should be_true
     end
     
-    it "should output green colorized text when running with --colour option" do
-      out = run_spec_via_druby(["--colour", dummy_spec_filename])
-      out.should =~ /\e\[32m/m
-    end
-  
-    it "should output red colorized text when running with -c option" do
-      pending
-      out = run_spec_via_druby(["-c", dummy_spec_filename])
-      out.should =~ /\e\[31m/m
-    end
-    
     it "integrates via Runner.new.run" do
       err, out = StringIO.new, StringIO.new
       result = RSpec::Core::Runner.run(%W[ --drb --drb-port #{@drb_port} #{dummy_spec_filename}], err, out)
       result.should be_true
+    end
+
+    def run_spec_via_druby
+      run_with([dummy_spec_filename, "--colour", "--drb-port", @drb_port.to_s])
+      out.rewind
+      out.read
+    end
+    
+    it "should output green colorized text when running with --colour option" do
+      pending "figure out a way to properly sandbox this"
+      run_spec_via_druby.should =~ /\e\[32m/m
+    end
+  
+    it "should output red colorized text when running with -c option" do
+      pending "figure out a way to properly sandbox this"
+      run_spec_via_druby.should =~ /\e\[31m/m
     end
   end
   
