@@ -39,7 +39,7 @@ module RSpec
       end
 
       def self.run_over_drb(options, err, out)
-        DRbCommandLine.new(options, RSpec::configuration, RSpec::world).run(err, out)
+        DRbCommandLine.new(options).run(err, out)
       end
 
       def self.run_in_process(options, err, out)
