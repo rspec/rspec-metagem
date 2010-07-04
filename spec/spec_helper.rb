@@ -1,19 +1,9 @@
-require 'rubygems'
+require 'bundler'
+Bundler.setup
 
-$LOAD_PATH.unshift(File.expand_path('../../lib', __FILE__))
+# TODO (DC 2010-07-04) This next line is necessary when running 'rake spec'.
+# Why doesn't the rspec-core ref in Gemfile handle this.
 require 'rspec/core'
-
-$LOAD_PATH << File.expand_path('../../../rspec-expectations/lib', __FILE__)
-$LOAD_PATH << File.expand_path('../../../rspec-mocks/lib', __FILE__)
-require 'rspec/expectations'
-require 'rspec/mocks'
-
-begin
-  require 'autotest'
-rescue LoadError
-  raise "Could not load autotest."
-end
-
 require 'autotest/rspec2'
 
 Dir['./spec/support/**/*.rb'].map {|f| require f}
