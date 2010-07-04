@@ -44,7 +44,7 @@ RSpec.configure do |c|
   c.run_all_when_everything_filtered = true
   c.filter_run_excluding :ruby => lambda {|version|
     case version.to_s
-    when "!ruby"
+    when "!jruby"
       RUBY_ENGINE != "jruby"
     else
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
