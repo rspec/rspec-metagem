@@ -1,8 +1,11 @@
 module RSpec
   module Core
     class DRbCommandLine
-      def initialize(options)
+      def initialize(options, configuration=RSpec::configuration, ignore_world=nil)
+        # ignore_world in the argument list is just there to keep the
+        # APIs for CommandLine and DRbCommandLine aligned
         @options = options
+        @configuration = configuration
       end
 
       def drb_port

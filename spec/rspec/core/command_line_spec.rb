@@ -3,13 +3,6 @@ require "stringio"
 
 module RSpec::Core
   describe CommandLine do
-    context "given an array" do
-      it "converts the contents to a ConfigurationOptions object" do
-        command_line = CommandLine.new(%w[--color])
-        command_line.instance_eval { @options }.should be_a(ConfigurationOptions)
-      end
-    end
-
     context "given a ConfigurationOptions object" do
       it "assigns it to @options" do
         config_options = ConfigurationOptions.new(%w[--color])
@@ -27,7 +20,7 @@ module RSpec::Core
       end
 
       let(:command_line) do
-        CommandLine.new(config_options)
+        CommandLine.new(config_options, config)
       end
 
       let(:config) do
@@ -37,7 +30,6 @@ module RSpec::Core
       let(:out) { ::StringIO.new }
 
       before do
-        command_line.stub(:configuration) { config }
         config.stub(:run_hook)
       end
 

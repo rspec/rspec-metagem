@@ -1,29 +1,26 @@
 module RSpec
   module Core
     class CommandLine
-      def initialize(args_or_options)
-        if RSpec::Core::ConfigurationOptions === args_or_options
-          @options = args_or_options
-        else
-          @options = RSpec::Core::ConfigurationOptions.new(args_or_options)
-          @options.parse_options
-        end
-        @options.configure(configuration)
+      def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
+        options.configure(configuration)
         configuration.require_files_to_run
         configuration.configure_mock_framework
+        @configuration = configuration
+        @options = options
+        @world = world
       end
 
       def run(err, out)
-        configuration.error_stream = err
-        configuration.output_stream = out
-        world.announce_inclusion_filter
+        @configuration.error_stream = err
+        @configuration.output_stream = out
+        @world.announce_inclusion_filter
 
-        configuration.reporter.report(example_count) do |reporter|
+        @configuration.reporter.report(example_count) do |reporter|
           begin
-            configuration.run_hook(:before, :suite)
+            @configuration.run_hook(:before, :suite)
             example_groups.run_examples(reporter)
           ensure
-            configuration.run_hook(:after, :suite)
+            @configuration.run_hook(:after, :suite)
           end
         end
 
@@ -33,7 +30,7 @@ module RSpec
     private
 
       def example_count
-        world.example_count
+        @world.example_count
       end
 
       module ExampleGroups
@@ -47,15 +44,7 @@ module RSpec
       end
 
       def example_groups
-        world.example_groups.extend(ExampleGroups)
-      end
-
-      def configuration
-        RSpec.configuration
-      end
-
-      def world
-        RSpec.world
+        @world.example_groups.extend(ExampleGroups)
       end
     end
   end
