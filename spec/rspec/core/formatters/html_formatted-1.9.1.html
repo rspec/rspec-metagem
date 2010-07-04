@@ -213,12 +213,11 @@ a {
       <div class="failure" id="failure_0">
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:19:in `block (3 levels) in <top (required)>'</pre></div>
-    <pre class="ruby"><code><span class="linenum">11</span>          rescue Exception => e
-<span class="linenum">12</span>          end
-<span class="offending"><span class="linenum">13</span>          raise RSpec::Core::PendingExampleFixedError.new if result</span>
-<span class="linenum">14</span>        end
-<span class="linenum">15</span>        throw :pending_declared_in_example, message
-<span class="linenum">16</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
+    <pre class="ruby"><code><span class="linenum">11</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span> <span class="punct">=&gt;</span> <span class="ident">e</span>
+<span class="linenum">12</span>          <span class="keyword">end</span>
+<span class="offending"><span class="linenum">13</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
+<span class="linenum">14</span>        <span class="keyword">end</span>
+<span class="linenum">15</span>        <span class="ident">throw</span> <span class="symbol">:pending_declared_in_example</span><span class="punct">,</span> <span class="ident">message</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -245,12 +244,10 @@ expected 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:34:in `block (2 levels) in <top (required)>'</pre></div>
-    <pre class="ruby"><code><span class="linenum">27</span>        end
+    <pre class="ruby"><code><span class="linenum">27</span>        <span class="keyword">end</span>
 <span class="linenum">28</span>
-<span class="offending"><span class="linenum">29</span>        raise(RSpec::Expectations::ExpectationNotMetError.new(message))</span>
-<span class="linenum">30</span>      end
-<span class="linenum">31</span>
-<span class="linenum">32</span><span class="comment"># gem install syntax to get syntax highlighting</span></code></pre>
+<span class="offending"><span class="linenum">29</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
+<span class="linenum">30</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
