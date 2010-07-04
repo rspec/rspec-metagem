@@ -9,25 +9,27 @@ begin # See rescue all the way at the bottom
     module Core
       module Formatters
         describe HtmlFormatter do
+          let(:jruby?) { ::RUBY_PLATFORM == 'java' }
+          let(:root)   { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
+          let(:suffix) { jruby? ? '-jruby' : '' }
 
-          def jruby?
-            ::RUBY_PLATFORM == 'java'
-          end
-
-          attr_reader :root, :expected_file, :expected_html
-
-          before do
-            @root = File.expand_path("#{File.dirname(__FILE__)}/../../../..")
-            suffix = jruby? ? '-jruby' : ''
-            @expected_file = "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
-            raise "There is no HTML file with expected content for this platform: #{expected_file}" unless File.file?(expected_file)
-            @expected_html = File.read(expected_file)
+          let(:expected_file) do
+            "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
           end
 
           let(:generated_html) do
+            # TODO (DC 2010-07-03)- in rspec-1 this was all done in memory -
+            # doing this by shelling out is a HOG, but some things need to be
+            # untangled between config options, config, world, and runner to
+            # get it to work right.
             seconds = /\d+\.\d+ seconds/
             html = `bundle exec rspec spec/rspec/core/resources/formatter_specs.rb --format html`
             html.gsub seconds, 'x seconds'
+          end
+
+          let(:expected_html) do
+            raise "There is no HTML file with expected content for this platform: #{expected_file}" unless File.file?(expected_file)
+            File.read(expected_file)
           end
 
           # Uncomment this line temporarily in order to overwrite the expected with actual.
