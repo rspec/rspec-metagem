@@ -131,6 +131,18 @@ module RSpec
           ])
           m[:example_group][:file_path].should == __FILE__
         end
+
+        it "finds the first spec file in the caller array in Windows" do
+          m = Metadata.new
+          m.process(:caller => [
+            "foo",
+            "C:/path/file_spec.rb:#{__LINE__}",
+            "bar_spec.rb:23",
+            "baz"
+          ])
+          m[:example_group][:file_path].should == "C:/path/file_spec.rb"
+        end
+
         it "is nil if there are no spec files found", :full_backtrace => true do
           m = Metadata.new
           m.process(:caller => [
