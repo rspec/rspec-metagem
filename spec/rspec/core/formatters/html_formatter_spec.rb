@@ -1,72 +1,65 @@
-# require 'spec_helper'
+require 'spec_helper'
+require 'nokogiri'
 
-begin # See rescue all the way at the bottom
+module RSpec
+  module Core
+    module Formatters
+      describe HtmlFormatter do
+        let(:jruby?) { ::RUBY_PLATFORM == 'java' }
+        let(:root)   { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
+        let(:suffix) { jruby? ? '-jruby' : '' }
 
-  require 'nokogiri' # Needed to compare generated with wanted HTML
-  require 'rspec/core/formatters/html_formatter'
+        let(:expected_file) do
+          "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
+        end
 
-  module RSpec
-    module Core
-      module Formatters
-        describe HtmlFormatter do
-          let(:jruby?) { ::RUBY_PLATFORM == 'java' }
-          let(:root)   { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
-          let(:suffix) { jruby? ? '-jruby' : '' }
+        let(:generated_html) do
+          options = RSpec::Core::ConfigurationOptions.new(
+            %w[spec/rspec/core/resources/formatter_specs.rb --format html]
+          )
+          options.parse_options
+          err, out = StringIO.new, StringIO.new
+          command_line = RSpec::Core::CommandLine.new(options)
+          command_line.run(err, out)
+          out.string.gsub /\d+\.\d+ seconds/, 'x seconds'
+        end
 
-          let(:expected_file) do
-            "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
-          end
+        let(:expected_html) do
+          raise "There is no HTML file with expected content for this platform: #{expected_file}" unless File.file?(expected_file)
+          File.read(expected_file)
+        end
 
-          let(:generated_html) do
-            # TODO (DC 2010-07-03)- in rspec-1 this was all done in memory -
-            # doing this by shelling out is a HOG, but some things need to be
-            # untangled between config options, config, world, and runner to
-            # get it to work right.
-            seconds = /\d+\.\d+ seconds/
-            html = `rspec spec/rspec/core/resources/formatter_specs.rb --format html`
-            html.gsub seconds, 'x seconds'
-          end
-
-          let(:expected_html) do
-            raise "There is no HTML file with expected content for this platform: #{expected_file}" unless File.file?(expected_file)
-            File.read(expected_file)
-          end
-
-          # Uncomment this line temporarily in order to overwrite the expected with actual.
-          # Use with care!!!
-          # describe "file generator" do
-            # it "generates a new comparison file" do
-              # Dir.chdir(root) do
-                # File.open(expected_file, 'w') {|io| io.write(generated_html)}
-              # end
+        # Uncomment this group temporarily in order to overwrite the expected
+        # with actual.  Use with care!!!
+        # describe "file generator" do
+          # it "generates a new comparison file" do
+            # Dir.chdir(root) do
+              # File.open(expected_file, 'w') {|io| io.write(generated_html)}
             # end
           # end
+        # end
 
-          it "should produce HTML identical to the one we designed manually" do
-            Dir.chdir(root) do
-              actual_doc = Nokogiri::HTML(generated_html)
-              actual_backtraces = actual_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
-              actual_doc.css("div.backtrace").remove
+        it "should produce HTML identical to the one we designed manually" do
+          Dir.chdir(root) do
+            actual_doc = Nokogiri::HTML(generated_html)
+            actual_backtraces = actual_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
+            actual_doc.css("div.backtrace").remove
 
-              expected_doc = Nokogiri::HTML(expected_html)
-              expected_backtraces = expected_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
-              expected_doc.search("div.backtrace").remove
+            expected_doc = Nokogiri::HTML(expected_html)
+            expected_backtraces = expected_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
+            expected_doc.search("div.backtrace").remove
 
-              actual_doc.inner_html.should == expected_doc.inner_html
+            actual_doc.inner_html.should == expected_doc.inner_html
 
-              expected_backtraces.each_with_index do |expected_line, i|
-                expected_path, expected_line_number, expected_suffix = expected_line.split(':')
-                actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
-                File.expand_path(actual_path).should == File.expand_path(expected_path)
-                actual_line_number.should == expected_line_number
-              end
+            expected_backtraces.each_with_index do |expected_line, i|
+              expected_path, expected_line_number, expected_suffix = expected_line.split(':')
+              actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
+              File.expand_path(actual_path).should == File.expand_path(expected_path)
+              actual_line_number.should == expected_line_number
             end
           end
         end
       end
     end
   end
-
-rescue LoadError
-  warn "nokogiri not loaded -- skipping HtmlFormatter specs"
 end

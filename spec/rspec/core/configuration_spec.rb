@@ -140,19 +140,22 @@ module RSpec::Core
 
       context "with no filter" do
         it "includes the given module into each example group" do
-          config.include(InstanceLevelMethods)
-          
+          RSpec.configure do |c|
+            c.include(InstanceLevelMethods)
+          end
+
           group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
           group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
         end
-        
       end
 
       context "with a filter" do
         it "includes the given module into each matching example group" do
-          config.include(InstanceLevelMethods, :magic_key => :include)
-          
+          RSpec.configure do |c|
+            c.include(InstanceLevelMethods, :magic_key => :include)
+          end
+
           group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
           group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
@@ -169,7 +172,10 @@ module RSpec::Core
       end
 
       it "should extend the given module into each matching example group" do
-        config.extend(ThatThingISentYou, :magic_key => :extend)      
+        RSpec.configure do |c|
+          c.extend(ThatThingISentYou, :magic_key => :extend)      
+        end
+
         group = ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
         group.should respond_to(:that_thing)
       end
@@ -304,17 +310,17 @@ module RSpec::Core
     end
 
     describe "full_backtrace=" do
-      before do
-        @backtrace_clean_patterns = config.backtrace_clean_patterns
-      end
-
-      after do
-        config.backtrace_clean_patterns = @backtrace_clean_patterns
-      end
-
       it "clears the backtrace clean patterns" do
         config.full_backtrace = true
         config.backtrace_clean_patterns.should == []
+      end
+
+      it "doesn't impact other instances of config" do
+        config_1 = Configuration.new
+        config_2 = Configuration.new
+
+        config_1.full_backtrace = true
+        config_2.backtrace_clean_patterns.should_not be_empty
       end
     end
 
@@ -384,9 +390,19 @@ module RSpec::Core
             config.custom_option?.should be_true
           end
 
-          it "can be overridden" do
+          it "can be overridden with a truthy value" do
             config.custom_option = "a new value"
             config.custom_option.should eq("a new value")
+          end
+
+          it "can be overridden with nil" do
+            config.custom_option = nil
+            config.custom_option.should eq(nil)
+          end
+
+          it "can be overridden with false" do
+            config.custom_option = false
+            config.custom_option.should eq(false)
           end
         end
       end

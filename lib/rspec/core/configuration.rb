@@ -12,7 +12,7 @@ module RSpec
           alias_method "#{name}?", "#{opts[:alias]}?"
         else
           define_method("#{name}=") {|val| settings[name] = val}
-          define_method(name) { settings.has_key?(name) ? settings[name] : opts[:default] }
+          define_method(name)       { settings.has_key?(name) ? settings[name] : opts[:default] }
           define_method("#{name}?") { !!(send name) }
         end
       end
@@ -40,7 +40,7 @@ module RSpec
         /bin\/spec/,
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
-    
+
       # :call-seq:
       #   add_setting(:name)
       #   add_setting(:name, :default => "default_value")
@@ -100,7 +100,7 @@ module RSpec
       end
 
       def mock_with(mock_framework)
-        self.mock_framework = mock_framework
+        settings[:mock_framework] = mock_framework
       end
 
       def require_mock_framework_adapter
@@ -119,7 +119,7 @@ module RSpec
       end
 
       def full_backtrace=(bool)
-        backtrace_clean_patterns.clear
+        settings[:backtrace_clean_patterns] = []
       end
 
       def color_enabled=(bool)
