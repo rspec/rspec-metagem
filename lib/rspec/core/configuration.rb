@@ -183,6 +183,8 @@ EOM
             RSpec::Core::Formatters::DocumentationFormatter
           when 'h', 'html'
             RSpec::Core::Formatters::HtmlFormatter
+          when 't', 'textmate'
+            RSpec::Core::Formatters::TextMateFormatter
           when 'progress' 
             RSpec::Core::Formatters::ProgressFormatter
           else 

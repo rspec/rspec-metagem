@@ -44,6 +44,8 @@ module RSpec::Core
         parser.on('-f', '--format FORMATTER', 'Choose a formatter',
                 '  [p]rogress (default - dots)',
                 '  [d]ocumentation (group and example names)',
+                '  [h]tml',
+                '  [t]extmate',
                 '  custom formatter class name') do |o|
           options[:formatter] = o
         end
