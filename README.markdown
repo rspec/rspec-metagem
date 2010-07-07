@@ -17,11 +17,14 @@ components of rspec that you're not using.
 
 ## Install
 
-    [sudo] gem install rspec --prerelease
+    gem install rspec --prerelease
 
-#### Also see
+## Contribute
 
 * [http://github.com/rspec/rspec-dev](http://github.com/rspec/rspec-dev)
+
+## Also see
+
 * [http://github.com/rspec/rspec-core](http://github.com/rspec/rspec-core)
 * [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
 * [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
