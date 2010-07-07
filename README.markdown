@@ -72,10 +72,13 @@ is a feature that is not documented there, or you find them insufficient to
 understand how to use a feature, please submit issues to
 [http://github.com/rspec/rspec-core/issues](http://github.com/rspec/rspec-core/issues).
 
-#### Also see
+## Contribute
+
+See [http://github.com/rspec/rspec-dev](http://github.com/rspec/rspec-dev)
+
+## Also see
 
 * [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
 * [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
 * [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
-* [http://github.com/rspec/rspec-dev](http://github.com/rspec/rspec-dev)
 
