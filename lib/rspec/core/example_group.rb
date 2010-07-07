@@ -159,6 +159,17 @@ module RSpec
         world.run_hook_filtered(:after, :each, self, example)
       end
 
+      def self.eval_around_eachs(example_group_instance, wrapped_example)
+        around_hooks.reverse.inject(wrapped_example) do |wrapper, hook|
+          def wrapper.run; call; end
+          lambda { example_group_instance.instance_exec(wrapper, &hook) }
+        end
+      end
+
+      def self.around_hooks
+        (RSpec.configuration.hooks[:around][:each] + ancestors.reverse.map{|a| a.hooks[:around][:each]}).flatten
+      end
+
       def self.eval_after_alls(example)
         return if descendant_filtered_examples.empty?
         before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }

@@ -79,15 +79,7 @@ module RSpec
       end
 
       def with_around_hooks(&wrapped_example)
-        around_hooks_for(@example_group_class).reverse.inject(wrapped_example) do |wrapper, hook|
-          def wrapper.run; call; end
-          lambda { @example_group_instance.instance_exec(wrapper, &hook) }
-        end
-      end
-
-      def around_hooks_for(example_group_class)
-        (RSpec.configuration.hooks[:around][:each] + 
-          @example_group_class.ancestors.reverse.map{|a| a.hooks[:around][:each]}).flatten
+        @example_group_class.eval_around_eachs(@example_group_instance, wrapped_example)
       end
 
       def start(reporter)
