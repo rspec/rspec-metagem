@@ -11,7 +11,11 @@ module RSpec
       end
 
       def self.autorun_disabled?
-        !!ENV['DISABLE_RSPEC_AUTORUN']
+        @autorun_disabled ||= false
+      end
+
+      def self.disable_autorun!
+        @autorun_disabled = true
       end
 
       def self.installed_at_exit?
