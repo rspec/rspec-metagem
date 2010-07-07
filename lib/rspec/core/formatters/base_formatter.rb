@@ -155,7 +155,7 @@ module RSpec
             old_sync, output.sync = output.sync, true if output_supports_sync
             yield
           ensure
-            output.sync = old_sync if output_supports_sync
+            output.sync = old_sync if output_supports_sync and !output.closed?
           end
         end
 
