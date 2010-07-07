@@ -167,7 +167,7 @@ module RSpec
       end
 
       def self.around_hooks
-        (RSpec.configuration.hooks[:around][:each] + ancestors.reverse.map{|a| a.hooks[:around][:each]}).flatten
+        (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
       end
 
       def self.eval_after_alls(example)
