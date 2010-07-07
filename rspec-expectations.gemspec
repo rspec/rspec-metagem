@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["David Chelimsky", "Chad Humphries"]
-  s.date = %q{2010-06-30}
+  s.date = %q{2010-07-02}
   s.description = %q{rspec expectations (should[_not] and matchers)}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
      "Upgrade.markdown",
      "VERSION",
      "cucumber.yml",
+     "features/README.markdown",
      "features/expectations/attribute_of_subject.feature",
      "features/expectations/customized_message.feature",
      "features/expectations/implicit_docstrings.feature",
