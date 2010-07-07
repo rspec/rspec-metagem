@@ -3,6 +3,17 @@ require "stringio"
 
 module RSpec::Core
   describe CommandLine do
+    context "given an Array of options" do
+      it "assigns ConfigurationOptions built from Array to @options" do
+        config_options = ConfigurationOptions.new(%w[--color])
+        config_options.parse_options
+
+        array_options = %w[--color]
+        command_line = CommandLine.new(array_options)
+        command_line.instance_eval { @options.options }.should eq(config_options.options)
+      end
+    end
+
     context "given a ConfigurationOptions object" do
       it "assigns it to @options" do
         config_options = ConfigurationOptions.new(%w[--color])

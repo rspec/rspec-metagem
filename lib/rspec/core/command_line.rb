@@ -2,6 +2,10 @@ module RSpec
   module Core
     class CommandLine
       def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
+        if Array === options
+          options = ConfigurationOptions.new(options)
+          options.parse_options
+        end
         @options       = options
         @configuration = configuration
         @world         = world
