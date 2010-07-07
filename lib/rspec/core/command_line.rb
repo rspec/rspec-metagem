@@ -14,7 +14,7 @@ module RSpec
       def run(err, out)
         @options.configure(@configuration)
         @configuration.error_stream = err
-        @configuration.output_stream = out
+        @configuration.output_stream ||= out
         @configuration.require_files_to_run
         @configuration.configure_mock_framework
         @world.announce_inclusion_filter
