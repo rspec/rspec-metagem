@@ -21,14 +21,30 @@ module RSpec
         def call
           @block.call
         end
+      end
 
+      class BeforeHook < Hook
         def run_in(example)
           example ? example.instance_eval(&self) : call
         end
       end
 
-      class BeforeHook < Hook; end
-      class AfterHook < Hook; end
+      class AfterHook < Hook
+        def run_in(example)
+          if example
+            begin
+              example.instance_eval(&self)
+            rescue Exception => e
+              if example.respond_to?(:example)
+                example.example.set_exception(e)
+              end
+            end
+          else
+            call
+          end
+        end
+      end
+
       class AroundHook < Hook
         def call(wrapped_example)
           @block.call(wrapped_example)
@@ -50,6 +66,7 @@ module RSpec
           shift.run_in(example) until empty?
         end
       end
+
       class AfterHooks < HookCollection
         def run_all(example)
           reverse.each {|h| h.run_in(example) }
@@ -59,6 +76,7 @@ module RSpec
           pop.run_in(example) until empty?
         end
       end
+
       class AroundHooks < HookCollection; end
 
       def hooks

@@ -49,7 +49,7 @@ module RSpec
                 @in_block = true
                 with_pending_capture &@example_block 
               rescue Exception => e
-                @exception = e
+                set_exception(e)
               ensure
                 @in_block = false
                 run_after_each
@@ -60,13 +60,17 @@ module RSpec
             end.call
           end
         rescue Exception => e
-          @exception ||= e
+          set_exception(e)
         ensure
           @example_group_instance.example = nil
           assign_auto_description
         end
 
         finish(reporter)
+      end
+
+      def set_exception(exception)
+        @exception ||= exception
       end
 
     private

@@ -82,6 +82,29 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       after_run.should be_true, "expected after(:each) to be run"
     end
 
+    context "with an after(:each) that raises" do
+      it "runs subsequent after(:each)'s" do
+        after_run = false
+        group = RSpec::Core::ExampleGroup.describe do
+          after(:each) { after_run = true }
+          after(:each) { raise "FOO" }
+          example('example') { 1.should == 1 }
+        end
+        group.run_all
+        after_run.should be_true, "expected after(:each) to be run"
+      end
+
+      it "stores the exception" do
+        group = RSpec::Core::ExampleGroup.describe
+        group.after(:each) { raise "FOO" }
+        example = group.example('example') { 1.should == 1 }
+
+        group.run_all
+
+        example.metadata[:execution_result][:exception_encountered].message.should == "FOO"
+      end
+    end
+
     it "wraps before/after(:each) inside around" do
       results = []
       group = RSpec::Core::ExampleGroup.describe do
