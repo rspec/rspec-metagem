@@ -1,5 +1,6 @@
 require "spec_helper"
 require "stringio"
+require 'tmpdir'
 
 module RSpec::Core
   describe CommandLine do
@@ -81,9 +82,13 @@ module RSpec::Core
       let(:command_line) do
         CommandLine.new(config_options, config)
       end
+
+      let(:output_file_path) do
+        Dir.tmpdir + "/command_line_spec_output.txt"
+      end
       
       let(:output_file) do
-        File.new("#{File.dirname(__FILE__)}/command_line_spec_output.txt", 'w')
+        File.new(output_file_path, 'w')
       end
       
       let(:config) do
