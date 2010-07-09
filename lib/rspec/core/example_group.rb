@@ -145,7 +145,7 @@ module RSpec
         superclass.before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
         world.run_hook_filtered(:before, :all, self, example)
 
-        run_hook!(:before, :all, example, :reverse => true)
+        run_hook!(:before, :all, example)
         example.instance_variables.each { |ivar| before_all_ivars[ivar] = example.instance_variable_get(ivar) }
       end
 
@@ -155,7 +155,7 @@ module RSpec
       end
 
       def self.eval_after_eachs(example)
-        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example, :reverse => true) }
+        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example) }
         world.run_hook_filtered(:after, :each, self, example)
       end
 
