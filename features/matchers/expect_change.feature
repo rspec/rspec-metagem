@@ -30,8 +30,8 @@ Feature: expect change
       end
       """
     When I run "rspec ./expect_change_spec.rb"
-    Then I should see "2 examples, 1 failure"
-    Then I should see "should have been changed by 2, but was changed by 1"
+    Then the output should contain "2 examples, 1 failure"
+    Then the output should contain "should have been changed by 2, but was changed by 1"
 
   Scenario: expecting no change
     Given a file named "expect_no_change_spec.rb" with:
@@ -61,5 +61,5 @@ Feature: expect change
       end
       """
     When I run "rspec ./expect_no_change_spec.rb"
-    Then I should see "2 examples, 1 failure"
-    Then I should see "should not have changed, but did change from 1 to 2"
+    Then the output should contain "2 examples, 1 failure"
+    Then the output should contain "should not have changed, but did change from 1 to 2"

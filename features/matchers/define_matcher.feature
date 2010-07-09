@@ -37,14 +37,14 @@ Feature: define matcher
     When I run "rspec ./matcher_with_default_message_spec.rb --format documentation"
     Then the exit status should not be 0
 
-    And I should see "should be a multiple of 3"
-    And I should see "should not be a multiple of 4"
-    And I should see "Failure/Error: it {should be_a_multiple_of(4)}"
-    And I should see "Failure/Error: it {should_not be_a_multiple_of(3)}"
+    And the output should contain "should be a multiple of 3"
+    And the output should contain "should not be a multiple of 4"
+    And the output should contain "Failure/Error: it {should be_a_multiple_of(4)}"
+    And the output should contain "Failure/Error: it {should_not be_a_multiple_of(3)}"
 
-    And I should see "4 examples, 2 failures"
-    And I should see "expected 9 to be a multiple of 4"
-    And I should see "expected 9 not to be a multiple of 3"
+    And the output should contain "4 examples, 2 failures"
+    And the output should contain "expected 9 to be a multiple of 4"
+    And the output should contain "expected 9 not to be a multiple of 3"
 
   Scenario: overriding the failure_message_for_should
     Given a file named "matcher_with_failure_message_spec.rb" with:

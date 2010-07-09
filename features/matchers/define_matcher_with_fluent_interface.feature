@@ -23,5 +23,5 @@ Feature: define matcher
       end
       """
     When I run "rspec ./between_spec.rb --format documentation"
-    Then I should see "1 example, 0 failures"
-    And  I should see "should be bigger than 4"
+    Then the output should contain "1 example, 0 failures"
+    And  the output should contain "should be bigger than 4"

@@ -1,7 +1,9 @@
+source "http://rubygems.org"
+
 gem "rake"
 gem "jeweler"
 gem "cucumber"
-gem "aruba"
+gem "aruba", ">= 0.2.0"
 gem "autotest"
 gem "diff-lcs"
 gem "rspec-expectations", :path => "."

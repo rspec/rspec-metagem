@@ -15,5 +15,5 @@ Feature: attribute of subject
     """
 
     When I run "rspec example_spec.rb -fdoc"
-    Then I should see "Failure/Error: its(:size) { should eq(1) }"
-    And  I should see "expected 1"
+    Then the output should contain "Failure/Error: its(:size) { should eq(1) }"
+    And  the output should contain "expected 1"

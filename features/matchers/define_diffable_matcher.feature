@@ -23,5 +23,5 @@ Feature: define diffable matcher
     When I run "rspec ./diffable_matcher_spec.rb --diff"
     Then the exit status should not be 0
 
-    And I should see "should be just like that"
-    And I should see "Diff:\n@@ -1,2 +1,2 @@\n-that\n+this"
+    And the output should contain "should be just like that"
+    And the output should contain "Diff:\n@@ -1,2 +1,2 @@\n-that\n+this"

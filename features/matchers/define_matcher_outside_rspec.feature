@@ -34,5 +34,5 @@ Feature: define matcher outside rspec
       """
     When I run "ruby test_multiples.rb"
     Then the exit status should not be 0 
-    And I should see "expected 9 to be a multiple of 4"
-    And I should see "2 tests, 0 assertions, 0 failures, 1 errors"
+    And the output should contain "expected 9 to be a multiple of 4"
+    And the output should contain "2 tests, 0 assertions, 0 failures, 1 errors"
