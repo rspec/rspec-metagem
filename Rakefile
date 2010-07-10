@@ -65,6 +65,14 @@ task :clobber do
   rm_rf 'coverage'
 end
 
+class Cucumber::Rake::Task::ForkedCucumberRunner
+  # When cucumber shells out, we still need it to run in the context of our
+  # bundle.
+  def run
+    sh "bundle exec #{RUBY} " + args.join(" ")
+  end
+end
+
 if RUBY_VERSION.to_f >= 1.9
   Cucumber::Rake::Task.new(:cucumber) do |t|
     t.cucumber_opts = %w{--format progress}
