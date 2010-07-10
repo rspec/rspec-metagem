@@ -3,7 +3,10 @@ Bundler.setup
 
 $LOAD_PATH << File.expand_path("../lib", __FILE__)
 require 'rake'
+require 'rake/rdoctask'
 require 'rspec/expectations/version'
+require 'rspec/core/rake_task'
+require 'cucumber/rake/task'
 
 begin
   require 'jeweler'
@@ -40,25 +43,22 @@ namespace :gem do
   end
 end
 
-begin
-  require 'rspec/core/rake_task'
-  RSpec::Core::RakeTask.new(:spec)
-rescue LoadError
-  puts "RSpec core or one of its dependencies is not installed. Install it with: gem install rspec-core"
+RSpec::Core::RakeTask.new(:spec)
+
+class Cucumber::Rake::Task::ForkedCucumberRunner
+  # When cucumber shells out, we still need it to run in the context of our
+  # bundle.
+  def run
+    sh "bundle exec #{RUBY} " + args.join(" ")
+  end
 end
 
-begin
-  require 'cucumber/rake/task'
-  Cucumber::Rake::Task.new do |t|
-    t.cucumber_opts = %w{--format progress}
-  end
-rescue LoadError
-  puts "Cucumber or one of its dependencies is not installed. Install it with: gem install cucumber"
+Cucumber::Rake::Task.new do |t|
+  t.cucumber_opts = %w{--format progress}
 end
 
 task :default => [:check_dependencies, :spec, :cucumber]
 
-require 'rake/rdoctask'
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION.yml')
     config = YAML.load(File.read('VERSION.yml'))
