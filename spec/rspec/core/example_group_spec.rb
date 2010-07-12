@@ -511,6 +511,18 @@ module RSpec::Core
         end
         its(:nil_value) { should be_nil }
       end
+
+      context "with nested attributes" do
+        subject do
+          Class.new do
+            def name
+              "John"
+            end
+          end.new
+        end
+        its("name.size") { should == 4 }
+        its("name.size.class") { should == Fixnum }
+      end
     end
 
     describe "#top_level_description" do

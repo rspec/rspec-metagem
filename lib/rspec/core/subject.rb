@@ -80,7 +80,13 @@ module RSpec
       end
 
       def attribute_of_subject
-        original_subject.send(example.description) if using_attribute?
+        if using_attribute?
+          value = original_subject
+          example.description.split('.').each do |attr|
+            value = value.send(attr)
+          end
+          value
+        end
       end
 
       def using_attribute?
