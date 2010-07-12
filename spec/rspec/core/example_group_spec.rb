@@ -261,14 +261,20 @@ module RSpec::Core
         group.after(:each)  { order << :after_each  }
         group.before(:each) { order << :before_each }
         group.before(:all)  { order << :before_all  }
-        group.example("example") { order << :example }
+        context1 = group.describe("context 1")
+        context1.example("example") { order << :example1 }
+        context2 = group.describe("context 2")
+        context2.example("example") { order << :example2 }
 
         group.run_all
 
         order.should == [
           :before_all,
           :before_each,
-          :example,
+          :example1,
+          :after_each,
+          :before_each,
+          :example2,
           :after_each,
           :after_all
         ]

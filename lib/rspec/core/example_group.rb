@@ -173,7 +173,7 @@ module RSpec
       def self.eval_after_alls(example)
         return if descendant_filtered_examples.empty?
         before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
-        ancestors.each {|ancestor| ancestor.run_hook!(:after, :all, example) }
+        run_hook!(:after, :all, example)
         world.run_hook_filtered(:after, :all, self, example)
       end
 
