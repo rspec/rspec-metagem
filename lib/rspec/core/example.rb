@@ -12,9 +12,6 @@ module RSpec
 
       delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending
 
-      alias_method :inspect, :full_description
-      alias_method :to_s, :full_description
-
       def initialize(example_group_class, desc, options, example_block=nil)
         @example_group_class, @options, @example_block = example_group_class, options, example_block
         @metadata  = @example_group_class.metadata.for_example(desc, options)

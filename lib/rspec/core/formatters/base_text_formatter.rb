@@ -72,8 +72,9 @@ module RSpec
             output.puts
             output.puts "Pending:"
             pending_examples.each do |pending_example|
-              output.puts "  #{pending_example} (#{pending_example.metadata[:execution_result][:pending_message]})"
-              output.puts grey("   # #{format_caller(pending_example.metadata[:location])}")
+              output.puts yellow("  #{pending_example.full_description}")
+              output.puts grey("    # #{pending_example.metadata[:execution_result][:pending_message]}")
+              output.puts grey("    # #{format_caller(pending_example.metadata[:location])}")
             end
           end
         end
@@ -127,7 +128,7 @@ module RSpec
         end
 
         def format_caller(caller_info)
-          caller_info.to_s.split(':in `block').first
+          backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
       end

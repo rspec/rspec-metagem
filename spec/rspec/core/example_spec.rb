@@ -16,18 +16,6 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe '#inspect' do
-    it "should return 'group description - description'" do
-      example_instance.inspect.should == 'group description example description'
-    end
-  end
-
-  describe '#to_s' do
-    it "should return #inspect" do
-      example_instance.to_s.should == example_instance.inspect
-    end
-  end
-
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
       described_class.should == RSpec::Core::Example

@@ -155,7 +155,12 @@ Feature: around hooks
       """
     When I run "rspec ./around_block_with_implicit_pending_example.rb"
     Then the output should contain "1 example, 0 failures, 1 pending"
-    And the output should contain "implicit pending example should be detected as Not Yet Implemented (Not Yet Implemented)"
+    And the output should contain:
+      """
+      Pending:
+        implicit pending example should be detected as Not Yet Implemented
+          # Not Yet Implemented
+      """
 
 
   Scenario: explicitly pending examples should be detected as pending
@@ -173,7 +178,11 @@ Feature: around hooks
       """
     When I run "rspec ./around_block_with_explicit_pending_example.rb"
     Then the output should contain "1 example, 0 failures, 1 pending"
-    And the output should contain "explicit pending example should be detected as pending (No reason given)"
+    And the output should contain:
+      """
+        explicit pending example should be detected as pending
+          # No reason given
+      """
 
   Scenario: multiple around hooks in the same scope are all run
     Given a file named "around_hooks_in_same_scope.rb" with:
