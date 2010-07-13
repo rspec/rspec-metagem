@@ -33,3 +33,61 @@ Feature: Shared example group
     """
     When I run "rspec ./shared_example_group_spec.rb"
     Then the output should contain "4 examples, 0 failures"
+
+  Scenario: Defining a helper method for a shared example group
+    Given a file named "shared_example_group_with_helper_method_block.rb" with:
+    """
+    require "set"
+
+    shared_examples_for "a collection object" do
+      def instance
+        "this default implementation is ignored when it_should_behave_like has a block with a definition"
+      end
+
+      it "should have 3 items" do
+        instance.size.should == 3
+      end
+
+      it "should return the first item from #first" do
+        instance.first.should == 7
+      end
+
+      it "should be an instance of the expected class" do
+        instance.should be_instance_of(described_class)
+      end
+    end
+
+    describe Array do
+      it_should_behave_like "a collection object" do
+        def instance; [7, 2, 4]; end
+      end
+    end
+
+    describe Set do
+      it_should_behave_like "a collection object" do
+        def instance; Set.new([7, 2, 4]); end
+      end
+    end
+    """
+    When I run "rspec ./shared_example_group_with_helper_method_block.rb"
+    Then the output should contain "6 examples, 0 failures"
+
+  Scenario: Using the rspec DSL in the block passed to it_should_behave_like
+    Given a file named "shared_example_group_with_rspec_dsl_in_block.rb" with:
+    """
+    shared_examples_for "a convoluted example" do
+      it "should return 7 from @foo" do
+        @foo.should == 7
+      end
+    end
+
+    describe "An example using rspec DSL methods" do
+      it_should_behave_like "a convoluted example" do
+        subject { [4, "1234567", 3] }
+        let(:second_element) { subject[1] }
+        before(:each) { @foo = second_element.size }
+      end
+    end
+    """
+    When I run "rspec ./shared_example_group_with_rspec_dsl_in_block.rb"
+    Then the output should contain "1 example, 0 failures"

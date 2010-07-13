@@ -59,13 +59,14 @@ module RSpec
       alias_example_to :focused, :focused => true
       alias_example_to :pending, :pending => true
 
-      def self.it_should_behave_like(*names)
+      def self.it_should_behave_like(*names, &customization_block)
         names.each do |name|
           begin
             module_eval &RSpec.world.shared_example_groups[name]
           rescue ArgumentError
             raise "Could not find shared example group named #{name.inspect}"
           end
+          module_eval &customization_block if customization_block
         end
       end
 

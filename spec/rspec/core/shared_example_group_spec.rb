@@ -127,6 +127,59 @@ module RSpec::Core
         group.examples.size.should == 1
       end
 
+      it "adds the helper methods from the block provided to it_should_behave_like" do
+        group = ExampleGroup.describe("example group") {}
+        group.shared_examples_for("shared group") {}
+        group.it_should_behave_like("shared group") do
+          def helper_method; end
+          def self.class_helper; end
+        end
+
+        group.instance_methods.map { |m| m.to_sym }.should include(:helper_method)
+        group.singleton_methods.map { |m| m.to_sym }.should include(:class_helper)
+      end
+
+      it "overrides the helper methods with the definitions from the block provided to it_should_behave_like" do
+        group = ExampleGroup.describe("example group") {}
+        group.shared_examples_for("shared group") do
+          def helper_method; :base_helper_method; end
+          def self.class_helper; :base_class_helper; end
+        end
+
+        group.it_should_behave_like("shared group") do
+          def helper_method; :overriden_helper_method; end
+          def self.class_helper; :overriden_class_helper; end
+        end
+
+        group.send(:class_helper).should == :overriden_class_helper
+        group.new.send(:helper_method).should == :overriden_helper_method
+      end
+
+      it "allows the RSpec DSL to be used in the block provided to it_should_behave_like" do
+        results = {}
+        group = ExampleGroup.describe("example group") {}
+        group.shared_examples_for("shared group") do
+          it 'assigns the results of using the RSpec DSL' do
+            results[:subject] = subject
+            results[:foo] = foo
+            results[:before_each] = @before_each
+          end
+        end
+
+        group.it_should_behave_like("shared group") do
+          subject { :the_subject }
+          let(:foo) { :foo_value }
+          before(:each) { @before_each = :before_each_ivar }
+        end
+
+        group.run_all
+        results.should == {
+          :subject     => :the_subject,
+          :foo         => :foo_value,
+          :before_each => :before_each_ivar
+        }
+      end
+
       describe "running shared examples" do
         module ::RunningSharedExamplesJustForTesting; end
 
