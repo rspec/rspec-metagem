@@ -29,13 +29,14 @@ module RSpec::Core::Formatters
     describe "#dump_failures" do
       it "preserves formatting" do 
         output = StringIO.new
-        group = RSpec::Core::ExampleGroup.describe
-        example = group.example { "this".should eq("that") }
+        group = RSpec::Core::ExampleGroup.describe("group name")
+        example = group.example("example name") { "this".should eq("that") }
         formatter = RSpec::Core::Formatters::BaseTextFormatter.new(output)
         group.run_all(formatter)
 
         RSpec.configuration.stub(:color_enabled?) { false }
         formatter.dump_failures
+        output.string.should =~ /group name example name/m
         output.string.should =~ /(\s+)expected \"that\"\n\1     got \"this\"/m
       end
     end
