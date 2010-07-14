@@ -257,26 +257,36 @@ module RSpec::Core
       it "runs before all, before each, example, after each, after all, in that order" do
         group = ExampleGroup.describe
         order = []
-        group.after(:all)   { order << :after_all   }
-        group.after(:each)  { order << :after_each  }
+        group.before(:all)  { order << :top_level_before_all  }
         group.before(:each) { order << :before_each }
-        group.before(:all)  { order << :before_all  }
+        group.after(:each)  { order << :after_each  }
+        group.after(:all)   { order << :top_level_after_all   }
+        group.example("top level example") { order << :top_level_example }
+
         context1 = group.describe("context 1")
-        context1.example("example") { order << :example1 }
+        context1.before(:all) { order << :nested_before_all }
+        context1.example("nested example 1") { order << :nested_example_1 }
+
         context2 = group.describe("context 2")
-        context2.example("example") { order << :example2 }
+        context2.after(:all) { order << :nested_after_all }
+        context2.example("nested example 2") { order << :nested_example_2 }
 
         group.run_all
 
         order.should == [
-          :before_all,
+          :top_level_before_all,
           :before_each,
-          :example1,
+          :top_level_example,
+          :after_each,
+          :nested_before_all,
+          :before_each,
+          :nested_example_1,
           :after_each,
           :before_each,
-          :example2,
+          :nested_example_2,
           :after_each,
-          :after_all
+          :nested_after_all,
+          :top_level_after_all
         ]
       end
 
