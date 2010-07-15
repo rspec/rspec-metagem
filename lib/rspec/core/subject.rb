@@ -3,9 +3,11 @@ module RSpec
     module Subject
 
       def self.included(kls)
-        kls.extend   ClassMethods
-        kls.__send__ :alias_method, :__should_for_example_group__,     :should
-        kls.__send__ :alias_method, :__should_not_for_example_group__, :should_not
+        kls.class_eval do
+          extend ClassMethods
+          alias_method :__should_for_example_group__,     :should
+          alias_method :__should_not_for_example_group__, :should_not
+        end
       end
 
       def subject
