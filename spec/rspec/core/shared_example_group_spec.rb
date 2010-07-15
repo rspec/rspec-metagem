@@ -139,20 +139,30 @@ module RSpec::Core
         group.singleton_methods.map { |m| m.to_sym }.should include(:class_helper)
       end
 
-      it "overrides the helper methods with the definitions from the block provided to it_should_behave_like" do
+      it "overrides the instance helper methods with the definitions from the block provided to it_should_behave_like" do
         group = ExampleGroup.describe("example group") {}
         group.shared_examples_for("shared group") do
-          def helper_method; :base_helper_method; end
-          def self.class_helper; :base_class_helper; end
+          def helper_method; 'base helper'; end
         end
 
         group.it_should_behave_like("shared group") do
-          def helper_method; :overriden_helper_method; end
-          def self.class_helper; :overriden_class_helper; end
+          def helper_method; [super, 'overridden helper'].join('; '); end
         end
 
-        group.send(:class_helper).should == :overriden_class_helper
-        group.new.send(:helper_method).should == :overriden_helper_method
+        group.new.helper_method.should == 'base helper; overridden helper'
+      end
+
+      it "overrides the class helper methods with the definitions from the block provided to it_should_behave_like" do
+        group = ExampleGroup.describe("example group") {}
+        group.shared_examples_for("shared group") do
+          def self.helper_method; 'base helper'; end
+        end
+
+        group.it_should_behave_like("shared group") do
+          def self.helper_method; [super, 'overridden helper'].join('; '); end
+        end
+
+        group.helper_method.should == 'base helper; overridden helper'
       end
 
       it "allows the RSpec DSL to be used in the block provided to it_should_behave_like" do

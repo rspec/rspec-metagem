@@ -37,11 +37,12 @@ Feature: Shared example group
   Scenario: Defining a helper method for a shared example group
     Given a file named "shared_example_group_with_helper_method_block.rb" with:
     """
-    require "set"
+    class MyArray < Array; end
 
     shared_examples_for "a collection object" do
       def instance
-        "this default implementation is ignored when it_should_behave_like has a block with a definition"
+        "this default implementation is ignored when it_should_behave_like has a block with a definition " +
+        "but it can be accessed using super"
       end
 
       it "should have 3 items" do
@@ -52,6 +53,10 @@ Feature: Shared example group
         instance.first.should == 7
       end
 
+      it "should return the default implementation of #instance from #last" do
+        instance.last =~ /default implementation/
+      end
+
       it "should be an instance of the expected class" do
         instance.should be_instance_of(described_class)
       end
@@ -59,18 +64,18 @@ Feature: Shared example group
 
     describe Array do
       it_should_behave_like "a collection object" do
-        def instance; [7, 2, 4]; end
+        def instance; [7, 2, super]; end
       end
     end
 
-    describe Set do
+    describe MyArray do
       it_should_behave_like "a collection object" do
-        def instance; Set.new([7, 2, 4]); end
+        def instance; MyArray.new([7, 2, super]); end
       end
     end
     """
     When I run "rspec ./shared_example_group_with_helper_method_block.rb"
-    Then the output should contain "6 examples, 0 failures"
+    Then the output should contain "8 examples, 0 failures"
 
   Scenario: Using the rspec DSL in the block passed to it_should_behave_like
     Given a file named "shared_example_group_with_rspec_dsl_in_block.rb" with:
