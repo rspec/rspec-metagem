@@ -34,27 +34,16 @@ module RSpec::Core
 
     describe "including shared example_groups using #it_should_behave_like" do
 
-      it "should make any shared example_group available at the correct level", :ruby => 1.8 do
+      it "should make any shared example_group available at the correct level" do
         group = ExampleGroup.describe('fake group')
         block = lambda {
           def self.class_helper; end
           def extra_helper; end
         }
         RSpec.world.stub(:shared_example_groups).and_return({ :shared_example_group => block })
-        group.it_should_behave_like :shared_example_group
-        group.instance_methods.should  include('extra_helper')
-        group.singleton_methods.should include('class_helper')
-      end
-
-      it "should make any shared example_group available at the correct level", :ruby => 1.9 do
-        group = ExampleGroup.describe
-        shared_examples_for(:shared_example_group) do
-          def self.class_helper; end
-          def extra_helper; end
-        end
-        group.it_should_behave_like :shared_example_group
-        group.instance_methods.should include(:extra_helper)
-        group.singleton_methods.should include(:class_helper)
+        shared_group = group.it_should_behave_like(:shared_example_group).first
+        shared_group.instance_methods.map {|m| m.to_s }.should  include('extra_helper')
+        shared_group.singleton_methods.map {|m| m.to_s}.should include('class_helper')
       end
 
       it "raises when named shared example_group can not be found" do
@@ -64,7 +53,7 @@ module RSpec::Core
         end.should raise_error(/Could not find shared example group named/)
       end
 
-      it "adds examples to current example_group using it_should_behave_like" do
+      it "does not add examples to current example_group using it_should_behave_like" do
         group = ExampleGroup.describe("example_group") do
           it("i was already here") {}
         end
@@ -78,31 +67,8 @@ module RSpec::Core
 
         group.it_should_behave_like("shared example_group")
 
-        group.examples.size.should == 3
-      end
-
-      it "adds examples to from two shared groups" do
-        group = ExampleGroup.describe("example_group") do
-          it("i was already here") {}
-        end
-
         group.examples.size.should == 1
-
-        group.share_examples_for('test 2 shared groups') do
-          it("shared example") {}
-          it("shared example 2") {}
-        end
-
-        group.share_examples_for('test 2 shared groups 2') do
-          it("shared example 3") {}
-        end
-
-        group.it_should_behave_like("test 2 shared groups")
-        group.it_should_behave_like("test 2 shared groups 2")
-
-        group.examples.size.should == 4
       end
-
 
       it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
         share_as('Cornucopia') do
@@ -115,54 +81,46 @@ module RSpec::Core
         group.examples.first.metadata[:description].should == "is plentiful"
       end
 
-      it "adds examples to current example_group using it_should_behave_like with a module" do
-        group = ExampleGroup.describe("example_group")  {}
-
-        shared_foo = group.share_as(:FooShared) do
-          it("shared example") {}
-        end
-
-        group.it_should_behave_like(::FooShared) 
-
-        group.examples.size.should == 1
-      end
-
       it "adds the helper methods from the block provided to it_should_behave_like" do
         group = ExampleGroup.describe("example group") {}
         group.shared_examples_for("shared group") {}
-        group.it_should_behave_like("shared group") do
+        shared_groups = group.it_should_behave_like("shared group") do
           def helper_method; end
           def self.class_helper; end
         end
 
-        group.instance_methods.map { |m| m.to_sym }.should include(:helper_method)
-        group.singleton_methods.map { |m| m.to_sym }.should include(:class_helper)
+        shared_group = shared_groups.first
+
+        shared_group.instance_methods.map { |m| m.to_sym }.should include(:helper_method)
+        shared_group.singleton_methods.map { |m| m.to_sym }.should include(:class_helper)
       end
 
       it "overrides the instance helper methods with the definitions from the block provided to it_should_behave_like" do
+        pending("decide that we really want this behavior")
         group = ExampleGroup.describe("example group") {}
         group.shared_examples_for("shared group") do
           def helper_method; 'base helper'; end
         end
 
-        group.it_should_behave_like("shared group") do
+        shared_groups = group.it_should_behave_like("shared group") do
           def helper_method; [super, 'overridden helper'].join('; '); end
         end
 
-        group.new.helper_method.should == 'base helper; overridden helper'
+        shared_groups.first.new.helper_method.should == 'base helper; overridden helper'
       end
 
       it "overrides the class helper methods with the definitions from the block provided to it_should_behave_like" do
+        pending("decide that we really want this behavior")
         group = ExampleGroup.describe("example group") {}
         group.shared_examples_for("shared group") do
           def self.helper_method; 'base helper'; end
         end
 
-        group.it_should_behave_like("shared group") do
+        shared_groups = group.it_should_behave_like("shared group") do
           def self.helper_method; [super, 'overridden helper'].join('; '); end
         end
 
-        group.helper_method.should == 'base helper; overridden helper'
+        shared_groups.first.helper_method.should == 'base helper; overridden helper'
       end
 
       it "allows the RSpec DSL to be used in the block provided to it_should_behave_like" do
@@ -190,7 +148,7 @@ module RSpec::Core
         }
       end
 
-      describe "running shared examples" do
+      describe "running shared examples", :pending => true do
         module ::RunningSharedExamplesJustForTesting; end
 
         let(:group) do
@@ -217,6 +175,7 @@ module RSpec::Core
               end
             end
 
+            # TODO - necessary?
             def magic
               $magic ||= {}
             end
@@ -242,8 +201,10 @@ module RSpec::Core
           group.run_all
         end
 
+        let(:shared_group) { group.children.first }
+
         it "runs before(:all) only once from shared example_group", :compat => 'rspec-1.2' do
-          group.magic[:before_all].should eq("before all 1")
+          shared_group.magic[:before_all].should eq("before all 1")
         end
 
         it "runs before(:each) from shared example_group", :compat => 'rspec-1.2' do

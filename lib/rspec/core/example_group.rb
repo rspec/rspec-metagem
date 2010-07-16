@@ -60,23 +60,12 @@ module RSpec
       alias_example_to :pending, :pending => true
 
       def self.it_should_behave_like(*names, &customization_block)
-        names.each do |name|
+        names.map do |name|
           shared_block = RSpec.world.shared_example_groups[name]
           raise "Could not find shared example group named #{name.inspect}" unless shared_block
-
-          module_eval &shared_block
-
-          if customization_block
-            # in order to allow the overriden methods in the customization block
-            # to super to the base definitions in our shared block, the methods need
-            # to be defined in an ancestor.  Here we extract the methods and put them
-            # in a module that we include/extend so they are available in an ancestor.
-            instance_methods, class_methods = extract_method_defs_from(shared_block)
-            include define_module(instance_methods)
-            extend define_module(class_methods)
-
-            module_eval &customization_block
-          end
+          shared_group = describe("it should behave like #{name}", &shared_block)
+          shared_group.class_eval &customization_block if customization_block
+          shared_group
         end
       end
 
@@ -189,6 +178,7 @@ module RSpec
       end
 
       def self.run(reporter)
+        @reporter = reporter
         example_group_instance = new
         reporter.add_example_group(self)
         begin
@@ -258,29 +248,6 @@ module RSpec
           :include => included_modules,
           :extend => extended_modules
         }
-      end
-
-      def self.extract_method_defs_from(block)
-        klass = Class.new do
-          # swallow any missing class method errors (such as #it and #before);
-          # we only care to capture the raw method definitions here.
-          def self.method_missing(*a); end
-          class_eval(&block)
-        end
-
-        instance = klass.new
-        instance_methods = klass.instance_methods(false).map { |m| instance.method(m) }
-        class_methods = klass.singleton_methods.map { |m| klass.method(m) }
-
-        return instance_methods, class_methods
-      end
-
-      def self.define_module(methods)
-        Module.new do
-          methods.each do |m|
-            define_method(m.name, &m)
-          end
-        end
       end
     end
   end

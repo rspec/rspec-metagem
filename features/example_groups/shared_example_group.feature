@@ -34,7 +34,9 @@ Feature: Shared example group
     When I run "rspec ./shared_example_group_spec.rb"
     Then the output should contain "4 examples, 0 failures"
 
+  @wip
   Scenario: Defining a helper method for a shared example group
+    # Need to decide whether to support super() behaviour
     Given a file named "shared_example_group_with_helper_method_block.rb" with:
     """
     class MyArray < Array; end
