@@ -10,7 +10,16 @@ module RSpec
       def run
         case @command
         when 'autotest' then Autotest.generate
-        else raise ArgumentError, "#{@command} is not a valid option"
+        else raise ArgumentError, <<-MESSAGE
+
+#{"*"*50}
+"#{@command}" is not valid a valid argument to "rspec --configure".
+Supported options are:
+
+  rspec --configure autotest # generates configuration to run autotest with rspec
+
+#{"*"*50}
+MESSAGE
         end
       end
 
