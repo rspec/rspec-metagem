@@ -61,7 +61,7 @@ module RSpec
 
       def self.it_should_behave_like(*names, &customization_block)
         names.map do |name|
-          shared_block = RSpec.world.shared_example_groups[name]
+          shared_block = world.shared_example_groups[name]
           raise "Could not find shared example group named #{name.inspect}" unless shared_block
           shared_group = describe("it should behave like #{name}", &shared_block)
           shared_group.class_eval &customization_block if customization_block
