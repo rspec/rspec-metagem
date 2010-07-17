@@ -58,7 +58,7 @@ module RSpec::Core
           it("does something")
         end
         group = ExampleGroup.describe('fake group')
-        shared_group = group.it_should_behave_like("thing").first
+        shared_group = group.it_should_behave_like("thing")
         shared_group.should have(1).examples
       end
 
@@ -67,7 +67,7 @@ module RSpec::Core
           def foo; end
         end
         group = ExampleGroup.describe('fake group')
-        shared_group = group.it_should_behave_like("thing").first
+        shared_group = group.it_should_behave_like("thing")
         shared_group.public_instance_methods.should include("foo")
       end
 
@@ -76,7 +76,7 @@ module RSpec::Core
           def self.foo; end
         end
         group = ExampleGroup.describe('fake group')
-        shared_group = group.it_should_behave_like("thing").first
+        shared_group = group.it_should_behave_like("thing")
         shared_group.methods.should include("foo")
       end
 
