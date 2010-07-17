@@ -63,6 +63,10 @@ Use the documentation formatter to see the resulting spec:
     Finished in 0.000379 seconds
     1 example, 0 failures
 
+## Known issues
+
+[http://github.com/rspec/rspec-core/issues](http://github.com/rspec/rspec-core/issues)
+
 ## Learn more
 
 While not comprehensive yet, you can learn quite a lot from the Cucumber
