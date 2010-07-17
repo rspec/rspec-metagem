@@ -132,7 +132,13 @@ Shared example groups are now run in a nested group within the including group
 `around`, and `let` hooks, as well as any methods that are defined in the parent
 group.
 
-, and an opportunity to add contextual information to the shared
-group via a block passed to `it_should_behave_like`.
+This new approach provides better encapsulation, better output, and an
+opportunity to add contextual information to the shared group via a block
+passed to `it_should_behave_like`.
 
+See [`features/example_groups/shared_example_group.feature`](http://github.com/rspec/rspec-core/blob/master/features/example_groups/shared_example_group.feature) for more information.
 
+NOTICE: The including example groups no longer have access to any of the
+methods, hooks, or state defined inside a shared group. This will break specs
+that were using shared example groups to extend the behavior of including
+groups in any way besides their intended purpose: to add examples to a group.
