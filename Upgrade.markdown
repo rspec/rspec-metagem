@@ -136,7 +136,7 @@ This new approach provides better encapsulation, better output, and an
 opportunity to add contextual information to the shared group via a block
 passed to `it_should_behave_like`.
 
-See [`features/example_groups/shared_example_group.feature`](http://github.com/rspec/rspec-core/blob/master/features/example_groups/shared_example_group.feature) for more information.
+See [features/example\_groups/shared\_example\_group.feature](http://github.com/rspec/rspec-core/blob/master/features/example_groups/shared_example_group.feature) for more information.
 
 NOTICE: The including example groups no longer have access to any of the
 methods, hooks, or state defined inside a shared group. This will break specs
