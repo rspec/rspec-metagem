@@ -12,11 +12,19 @@ The command to run specs is now `rspec` instead of `spec`.
 
 RSpec-2 works with autotest as follows:
 
-    # in ./autotest/discover.rb
+    rspec --configure autotest
+
+This adds `./autotest/discover.rb` with:
+
     Autotest.add_discovery { "rspec2" }
 
-    # command line
+Now, on the command line just type:
+
     $ autotest
+
+Or, if you're using bundler:
+
+    $ bundle exec autotest
 
 The `autospec` command is a thing of the past. 
 
@@ -116,3 +124,15 @@ right version:
 In this case, we're using `exclusion_filter` instead of `filter_run` or
 `filter`, which indicate _inclusion_ filters. So each of those examples is
 excluded if we're _not_ running the version of Ruby they work with.
+
+### Shared example groups
+
+Shared example groups are now run in a nested group within the including group
+(they used to be run in the same group). Nested groups inherit `before`, `after`,
+`around`, and `let` hooks, as well as any methods that are defined in the parent
+group.
+
+, and an opportunity to add contextual information to the shared
+group via a block passed to `it_should_behave_like`.
+
+
