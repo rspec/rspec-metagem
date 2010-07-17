@@ -65,7 +65,7 @@ Use the documentation formatter to see the resulting spec:
 
 ## Known issues
 
-[http://github.com/rspec/rspec-core/issues](http://github.com/rspec/rspec-core/issues)
+See [http://github.com/rspec/rspec-core/issues](http://github.com/rspec/rspec-core/issues)
 
 ## Learn more
 
