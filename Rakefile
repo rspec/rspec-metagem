@@ -17,7 +17,7 @@ begin
     gem.summary = "rspec-#{RSpec::Version::STRING}"
     gem.description = "Meta-gem that depends on the other rspec gems"
     gem.email = "dchelimsky@gmail.com;chad.humphries@gmail.com"
-    gem.homepage = "http://github.com/rspec/meta"
+    gem.homepage = "http://github.com/rspec/rspec"
     gem.authors = ["David Chelimsky", "Chad Humphries"]
     gem.rubyforge_project = "rspec"
     gem.add_dependency "rspec-core", RSpec::Version::STRING
