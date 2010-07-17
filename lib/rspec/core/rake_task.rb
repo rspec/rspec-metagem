@@ -18,6 +18,9 @@ module RSpec
       # Glob pattern to match files. (default is 'spec/**/*_spec.rb')
       attr_accessor :pattern
 
+      # Array of commandline options to pass to RSpec. Defaults to [].
+      attr_accessor :spec_opts
+
       # The options to pass to ruby.  Defaults to blank
       attr_accessor :ruby_opts
 
@@ -46,6 +49,7 @@ module RSpec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts = nil, nil, nil, nil
         @warning, @rcov = false, false
         @fail_on_error = true
+        @spec_opts = []
 
         yield self if block_given?
         @rcov_path ||= 'rcov'
@@ -88,6 +92,7 @@ module RSpec
                             cmd_parts.unshift runner
                             cmd_parts.unshift bundler
                             cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
+                            cmd_parts << spec_opts.join(" ")
                             cmd_parts.join(" ")
                           end
       end
