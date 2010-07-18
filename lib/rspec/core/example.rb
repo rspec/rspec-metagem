@@ -56,11 +56,7 @@ module RSpec
                   @in_block = false
                   run_after_each
                 end
-                # TODO (DC): I really want to move the call below to the end
-                # of the with_around_hooks method, but it adds 4% to the run
-                # time.  Why? (footnote - Dan North made me write this
-                # comment)
-              end.call
+              end
             end
           end
         rescue Exception => e
@@ -87,7 +83,7 @@ module RSpec
       end
 
       def with_around_hooks(&wrapped_example)
-        @example_group_class.eval_around_eachs(@example_group_instance, wrapped_example)
+        @example_group_class.eval_around_eachs(@example_group_instance, wrapped_example).call
       end
 
       def start(reporter)
