@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-07-11}
+  s.date = %q{2010-07-18}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -32,6 +32,7 @@ Gem::Specification.new do |s|
      "bin/rspec",
      "cucumber.yml",
      "features/README.markdown",
+     "features/command_line/configure.feature",
      "features/command_line/example_name_option.feature",
      "features/command_line/exit_status.feature",
      "features/command_line/line_number_appended_to_path.feature",
@@ -40,6 +41,7 @@ Gem::Specification.new do |s|
      "features/configuration/options_file.feature",
      "features/example_groups/describe_aliases.feature",
      "features/example_groups/nested_groups.feature",
+     "features/example_groups/shared_example_group.feature",
      "features/filtering/inclusion_filters.feature",
      "features/formatters/custom_formatter.feature",
      "features/hooks/around_hooks.feature",
@@ -60,6 +62,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/around_proxy.rb",
      "lib/rspec/core/backward_compatibility.rb",
      "lib/rspec/core/command_line.rb",
+     "lib/rspec/core/command_line_configuration.rb",
      "lib/rspec/core/configuration.rb",
      "lib/rspec/core/configuration_options.rb",
      "lib/rspec/core/deprecation.rb",
@@ -102,6 +105,7 @@ Gem::Specification.new do |s|
      "script/console",
      "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
+     "spec/rspec/core/command_line_configuration_spec.rb",
      "spec/rspec/core/command_line_spec.rb",
      "spec/rspec/core/command_line_spec_output.txt",
      "spec/rspec/core/configuration_options_spec.rb",
@@ -161,6 +165,7 @@ Gem::Specification.new do |s|
   s.test_files = [
     "spec/autotest/failed_results_re_spec.rb",
      "spec/autotest/rspec_spec.rb",
+     "spec/rspec/core/command_line_configuration_spec.rb",
      "spec/rspec/core/command_line_spec.rb",
      "spec/rspec/core/configuration_options_spec.rb",
      "spec/rspec/core/configuration_spec.rb",
