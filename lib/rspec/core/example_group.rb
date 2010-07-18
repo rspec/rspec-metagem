@@ -59,17 +59,8 @@ module RSpec
       alias_example_to :focused, :focused => true
       alias_example_to :pending, :pending => true
 
-      def self.it_should_behave_like(name, &customization_block)
-        shared_block = world.shared_example_groups[name]
-        raise "Could not find shared example group named #{name.inspect}" unless shared_block
-
-        shared_group = describe("it should behave like #{name}", &shared_block)
-        shared_group.class_eval &customization_block if customization_block
-        shared_group
-      end
-
-      def self.alias_it_should_behave_like_to(new_name, report_label)
-        report_label = "it should behave like" if report_label.empty? || report_label.nil?
+      def self.define_shared_group_method(new_name, report_label=nil)
+        report_label = "it should behave like" unless report_label
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, &customization_block)
             shared_block = world.shared_example_groups[name]
@@ -81,6 +72,14 @@ module RSpec
           end
         END_RUBY
       end
+
+      define_shared_group_method :it_should_behave_like
+
+      class << self
+        alias_method :alias_it_should_behave_like_to, :define_shared_group_method
+      end
+
+      alias_it_should_behave_like_to :it_behaves_like, "behaves like"
 
       def self.examples
         @examples ||= []
