@@ -10,13 +10,13 @@ module RSpec::Core
           ExampleGroup.describe(Array).subject.call.should == []
         end
       end
-      
+
       describe "with a Module" do
         it "returns the Module" do
           ExampleGroup.describe(Enumerable).subject.call.should == Enumerable
         end
       end
-      
+
       describe "with a string" do
         it "return the string" do
           ExampleGroup.describe("Foo").subject.call.should == 'Foo'
@@ -28,9 +28,9 @@ module RSpec::Core
           ExampleGroup.describe(15).subject.call.should == 15
         end
       end
-      
+
     end
-    
+
     describe "explicit subject" do
       describe "defined in a top level group" do
         it "replaces the implicit subject in that group" do

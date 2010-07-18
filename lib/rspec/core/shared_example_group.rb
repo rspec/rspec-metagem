@@ -1,7 +1,7 @@
 module RSpec
   module Core
     module SharedExampleGroup
-      
+
       def share_examples_for(name, &block)
         ensure_shared_example_group_name_not_taken(name)
         RSpec.world.shared_example_groups[name] = block
@@ -12,7 +12,7 @@ module RSpec
           mod = Object.const_get(name)
           raise_name_error unless mod.created_from_caller(caller)
         end
-        
+
         mod = Module.new do
           @shared_block = block
           @caller_line = caller.last

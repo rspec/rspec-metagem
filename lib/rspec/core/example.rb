@@ -44,7 +44,7 @@ module RSpec
               begin
                 run_before_each
                 @in_block = true
-                with_pending_capture &@example_block 
+                with_pending_capture &@example_block
               rescue Exception => e
                 set_exception(e)
               ensure
@@ -127,7 +127,7 @@ module RSpec
 
       def assign_auto_description
         if description.empty?
-          metadata[:description] = RSpec::Matchers.generated_description 
+          metadata[:description] = RSpec::Matchers.generated_description
           RSpec::Matchers.clear_generated_description
         end
       end

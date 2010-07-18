@@ -14,7 +14,7 @@ describe "an example" do
   context "with no block" do
     it "is listed as pending with 'Not Yet Implemented'" do
       group = RSpec::Core::ExampleGroup.describe('group') do
-        it "has no block" 
+        it "has no block"
       end
       example = group.examples.first
       example.run(group.new, stub.as_null_object)

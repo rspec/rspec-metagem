@@ -392,7 +392,7 @@ module RSpec::Core
 
     end
 
-    describe Object, "describing nested example_groups", :little_less_nested => 'yep' do 
+    describe Object, "describing nested example_groups", :little_less_nested => 'yep' do
 
       describe "A sample nested group", :nested_describe => "yep" do
         it "sets the described class to the constant Object" do

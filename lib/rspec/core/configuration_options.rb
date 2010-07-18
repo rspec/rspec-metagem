@@ -7,13 +7,13 @@ module RSpec
     class ConfigurationOptions
       LOCAL_OPTIONS_FILE  = ".rspec"
       GLOBAL_OPTIONS_FILE = File.join(File.expand_path("~"), ".rspec")
-      
+
       attr_reader :options
-      
+
       def initialize(args)
         @args = args
       end
-      
+
       def configure(config)
         keys = options.keys
         keys.unshift(:requires) if keys.delete(:requires)
@@ -22,7 +22,7 @@ module RSpec
           config.send("#{key}=", options[key])
         end
       end
-      
+
       def drb_argv
         argv = []
         argv << "--color"     if options[:color_enabled]
@@ -73,7 +73,7 @@ module RSpec
       def parse_global_options
         parse_options_file(GLOBAL_OPTIONS_FILE)
       end
-      
+
       def parse_options_file(path)
         Parser.parse(args_from_options_file(path))
       end

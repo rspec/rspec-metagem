@@ -71,7 +71,7 @@ module RSpec::Core
         after_suite_called.should be_true
       end
     end
-    
+
     describe "#run with custom output" do
       let(:config_options) do
         config_options = ConfigurationOptions.new(%w[--color])
@@ -86,11 +86,11 @@ module RSpec::Core
       let(:output_file_path) do
         Dir.tmpdir + "/command_line_spec_output.txt"
       end
-      
+
       let(:output_file) do
         File.new(output_file_path, 'w')
       end
-      
+
       let(:config) do
         config = RSpec::Core::Configuration.new
         config.output_stream = output_file
@@ -102,12 +102,12 @@ module RSpec::Core
       before do
         config.stub(:run_hook)
       end
-      
+
       it "doesn't override output_stream" do
         command_line.run(out, out)
         command_line.instance_eval { @configuration.output_stream }.should eql(output_file)
       end
     end
-    
+
   end
 end

@@ -21,7 +21,7 @@ module RSpec
 
           @previous_nested_example_groups = example_group_chain
         end
-        
+
         def example_passed(example)
           super
           output.puts passed_output(example)

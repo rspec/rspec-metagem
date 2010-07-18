@@ -39,8 +39,8 @@ describe RSpec::Core::Formatters::Helpers do
         helper.format_seconds(5.0).should == "5"
       end
 
-    end    
+    end
   end
 
-  
+
 end

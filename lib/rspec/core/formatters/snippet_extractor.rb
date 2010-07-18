@@ -5,14 +5,14 @@ module RSpec
       class SnippetExtractor #:nodoc:
         class NullConverter; def convert(code, pre); code; end; end #:nodoc:
         begin; require 'syntax/convertors/html'; @@converter = Syntax::Convertors::HTML.for_syntax "ruby"; rescue LoadError => e; @@converter = NullConverter.new; end
-        
+
         def snippet(error)
           raw_code, line = snippet_for(error.backtrace[0])
           highlighted = @@converter.convert(raw_code, false)
           highlighted << "\n<span class=\"comment\"># gem install syntax to get syntax highlighting</span>" if @@converter.is_a?(NullConverter)
           post_process(highlighted, line)
         end
-        
+
         def snippet_for(error_line)
           if error_line =~ /(.*):(\d+)/
             file = $1
@@ -22,7 +22,7 @@ module RSpec
             ["# Couldn't get snippet for #{error_line}", 1]
           end
         end
-        
+
         def lines_around(file, line)
           if File.file?(file)
             lines = File.open(file).read.split("\n")
@@ -35,7 +35,7 @@ module RSpec
             "# Couldn't get snippet for #{file}"
           end
         end
-        
+
         def post_process(highlighted, offending_line)
           new_lines = []
           highlighted.split("\n").each_with_index do |line, i|
@@ -45,7 +45,7 @@ module RSpec
           end
           new_lines.join("\n")
         end
-        
+
       end
     end
   end

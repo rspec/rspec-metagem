@@ -19,7 +19,7 @@ module RSpec::Core::Formatters
       RSpec.configuration.stub(:color_enabled?) { false }
 
       formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
-      
+
       examples.each {|e| formatter.example_failed(e) }
 
       output.string.should =~ /first example \(FAILED - 1\)/m

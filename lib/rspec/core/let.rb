@@ -4,7 +4,7 @@ module RSpec
 
       module ClassMethods
         # Generates a method whose return value is memoized
-        # after the first call. 
+        # after the first call.
         #
         # == Examples
         #
@@ -13,7 +13,7 @@ module RSpec
         #
         #    it "does something" do
         #      # first invocation, executes block, memoizes and returns result
-        #      thing.do_something 
+        #      thing.do_something
         #
         #      # second invocation, returns the memoized value
         #      thing.should be_something
@@ -36,7 +36,7 @@ module RSpec
         #    def self.count
         #      @count ||= 0
         #    end
-        #    
+        #
         #    def self.count=(val)
         #      @count += val
         #    end
@@ -72,7 +72,7 @@ module RSpec
         #      it "is invoked implicitly" do
         #        Thing.count.should == 1
         #      end
-        #      
+        #
         #      it "returns memoized version on first invocation" do
         #        thing
         #        Thing.count.should == 1
@@ -81,7 +81,7 @@ module RSpec
         #  end
         def let!(name, &block)
           let(name, &block)
-          before { __send__(name) } 
+          before { __send__(name) }
         end
       end
 

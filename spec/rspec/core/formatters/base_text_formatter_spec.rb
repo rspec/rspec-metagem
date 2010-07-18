@@ -27,7 +27,7 @@ module RSpec::Core::Formatters
     end
 
     describe "#dump_failures" do
-      it "preserves formatting" do 
+      it "preserves formatting" do
         output = StringIO.new
         group = RSpec::Core::ExampleGroup.describe("group name")
         example = group.example("example name") { "this".should eq("that") }

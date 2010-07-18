@@ -10,5 +10,5 @@ module Custom
 
     def run
     end
-  end  
+  end
 end

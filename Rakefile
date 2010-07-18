@@ -31,7 +31,7 @@ begin
 #{"*"*50}
 
   Thank you for installing #{gem.summary}
-  
+
 #{"*"*50}
 EOM
   end

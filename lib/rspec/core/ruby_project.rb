@@ -32,7 +32,7 @@ module RSpec
           return path if block.call(path)
         end
       end
-      
+
       module_function :add_to_load_path
       module_function :add_dir_to_load_path
       module_function :root

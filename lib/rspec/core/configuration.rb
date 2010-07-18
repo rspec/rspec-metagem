@@ -33,10 +33,10 @@ module RSpec
       add_setting :include_or_extend_modules, :default => []
       add_setting :formatter_class, :default => RSpec::Core::Formatters::ProgressFormatter
       add_setting :backtrace_clean_patterns, :default => [
-        /\/lib\/ruby\//, 
-        /bin\/rcov:/, 
-        /vendor\/rails/, 
-        /bin\/rspec/, 
+        /\/lib\/ruby\//,
+        /bin\/rcov:/,
+        /vendor\/rails/,
+        /bin\/rspec/,
         /bin\/spec/,
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
@@ -46,7 +46,7 @@ module RSpec
       #   add_setting(:name, :default => "default_value")
       #   add_setting(:name, :alias => :other_setting)
       #
-      # Use this to add custom settings to the RSpec.configuration object. 
+      # Use this to add custom settings to the RSpec.configuration object.
       #
       #   RSpec.configuration.add_setting :foo
       #
@@ -66,7 +66,7 @@ module RSpec
       #   end
       #
       # == Options
-      # 
+      #
       # +add_setting+ takes an optional hash that supports the following
       # keys:
       #
@@ -115,7 +115,7 @@ module RSpec
           'rspec/core/mocking/with_flexmock'
         else
           'rspec/core/mocking/with_absolutely_nothing'
-        end 
+        end
       end
 
       def full_backtrace=(bool)
@@ -171,7 +171,7 @@ EOM
       def full_description=(description)
         filter_run :full_description => /#{description}/
       end
-      
+
       def formatter=(formatter_to_use)
         if string_const?(formatter_to_use) && (class_name = eval(formatter_to_use)).is_a?(Class)
           formatter_class = class_name
@@ -185,19 +185,19 @@ EOM
             RSpec::Core::Formatters::HtmlFormatter
           when 't', 'textmate'
             RSpec::Core::Formatters::TextMateFormatter
-          when 'progress' 
+          when 'progress'
             RSpec::Core::Formatters::ProgressFormatter
-          else 
+          else
             raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
           end
         end
         self.formatter_class = formatter_class
       end
-      
+
       def string_const?(str)
         str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
       end
-      
+
       def formatter
         @formatter ||= formatter_class.new(output)
       end

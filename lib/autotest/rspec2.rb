@@ -17,7 +17,7 @@ end
 class RSpecCommandError < StandardError; end
 
 class Autotest::Rspec2 < Autotest
-  
+
   SPEC_PROGRAM = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec'))
 
   def initialize

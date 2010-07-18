@@ -94,7 +94,7 @@ module RSpec
       end
 
       def self.metadata
-        @metadata 
+        @metadata
       end
 
       def self.superclass_metadata
@@ -123,7 +123,7 @@ module RSpec
 
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
-        subclass.set_it_up(*args) 
+        subclass.set_it_up(*args)
         subclass.module_eval(&example_group_block) if example_group_block
         subclass
       end

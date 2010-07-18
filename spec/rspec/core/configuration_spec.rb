@@ -35,9 +35,9 @@ module RSpec::Core
         config.mock_with :rspec
         config.require_mock_framework_adapter
       end
-      
-    end  
-   
+
+    end
+
     context "setting the files to run" do
 
       it "loads files not following pattern if named explicitly" do
@@ -85,7 +85,7 @@ module RSpec::Core
           config.files_or_directories_to_run = dir
           config.files_to_run.should_not include("#{dir}/a_bar.rb")
         end
-        
+
       end
 
       context "with explicit pattern (comma,separated,values)" do
@@ -129,7 +129,7 @@ module RSpec::Core
       end
 
     end
-    
+
     describe "include" do
 
       module InstanceLevelMethods
@@ -173,7 +173,7 @@ module RSpec::Core
 
       it "should extend the given module into each matching example group" do
         RSpec.configure do |c|
-          c.extend(ThatThingISentYou, :magic_key => :extend)      
+          c.extend(ThatThingISentYou, :magic_key => :extend)
         end
 
         group = ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
@@ -242,7 +242,7 @@ module RSpec::Core
         end
       end
     end
-    
+
     describe 'formatter=' do
 
       it "sets formatter_to_use based on name" do
@@ -257,7 +257,7 @@ module RSpec::Core
         config.formatter = formatter_class
         config.formatter.should be_an_instance_of(formatter_class)
       end
-      
+
       it "sets a formatter based on its class name" do
         Object.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
         config.formatter = "CustomFormatter"
@@ -273,7 +273,7 @@ module RSpec::Core
       it "raises ArgumentError if formatter is unknown" do
         lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
       end
-      
+
     end
 
     describe "#filter_run" do

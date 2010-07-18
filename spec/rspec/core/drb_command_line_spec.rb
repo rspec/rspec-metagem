@@ -26,13 +26,13 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       err.rewind
       err.read.should =~ /No DRb server is running/
     end
-    
+
     it "returns false" do
       result = run_with []
       result.should be_false
     end
   end
-  
+
   describe "--drb-port" do
     def with_RSPEC_DRB_set_to(val)
       original = ENV['RSPEC_DRB']
@@ -50,7 +50,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
           drb_command_line([]).drb_port.should == 8989
         end
       end
-      
+
       it "sets the DRb port" do
         with_RSPEC_DRB_set_to(nil) do
           drb_command_line(["--drb-port", "1234"]).drb_port.should == 1234
@@ -68,7 +68,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
           end
         end
       end
-        
+
       context "and config variable set" do
         it "uses configured value" do
           with_RSPEC_DRB_set_to('9000') do
@@ -81,7 +81,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
 
   context "with server running" do
     class ::FakeDrbSpecServer
-      def self.run(argv, err, out) 
+      def self.run(argv, err, out)
         options = RSpec::Core::ConfigurationOptions.new(argv)
         options.parse_options
         RSpec::Core::CommandLine.new(options, RSpec::Core::Configuration.new).run(err, out)
@@ -91,7 +91,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
     def dummy_spec_filename
       @dummy_spec_filename ||= File.expand_path(File.dirname(__FILE__)) + "/_dummy_spec#{@drb_example_file_counter}.rb"
     end
-  
+
     before(:all) do
       @drb_port = 8990
       @drb_example_file_counter = 0
@@ -132,7 +132,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       result = drb_command_line(["--drb-port", @drb_port.to_s]).run(err, out)
       result.should be_true
     end
-    
+
     it "integrates via Runner.new.run" do
       err, out = StringIO.new, StringIO.new
       result = RSpec::Core::Runner.run(%W[ --drb --drb-port #{@drb_port} #{dummy_spec_filename}], err, out)
@@ -144,16 +144,16 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       out.rewind
       out.read
     end
-    
+
     it "should output green colorized text when running with --colour option" do
       pending "figure out a way to properly sandbox this"
       run_spec_via_druby.should =~ /\e\[32m/m
     end
-  
+
     it "should output red colorized text when running with -c option" do
       pending "figure out a way to properly sandbox this"
       run_spec_via_druby.should =~ /\e\[31m/m
     end
   end
-  
+
 end

@@ -118,7 +118,7 @@ module RSpec
 
           cleansed = backtrace.select { |line| backtrace_line(line) }
           # Kick the describe stack info off the list, just keep the line the problem happened on from that file
-          # cleansed = [cleansed.detect { |line| line.split(':').first == example.metadata[:caller].split(':').first }] if cleansed.size > 1 
+          # cleansed = [cleansed.detect { |line| line.split(':').first == example.metadata[:caller].split(':').first }] if cleansed.size > 1
           cleansed.empty? ? backtrace : cleansed
         end
 

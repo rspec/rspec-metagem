@@ -10,7 +10,7 @@ module RSpec::Core
         RSpec::Core::Runner.should_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
-      
+
       it 'does not set the at_exit hook if it is already set' do
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(true)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
@@ -19,7 +19,7 @@ module RSpec::Core
         RSpec::Core::Runner.autorun
       end
     end
-    
+
     describe "#run" do
       context "with --drb or -X" do
         before(:each) do
@@ -27,11 +27,11 @@ module RSpec::Core
 
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
-          
+
           @drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
           RSpec::Core::DRbCommandLine.stub(:new => @drb_proxy)
         end
-        
+
         it "builds a DRbCommandLine" do
           RSpec::Core::DRbCommandLine.should_receive(:new)
           RSpec::Core::Runner.run(%w[ --drb ], @err, @out)

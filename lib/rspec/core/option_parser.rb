@@ -31,7 +31,7 @@ module RSpec::Core
         parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
           options[:color_enabled] = o
         end
-        
+
         parser.on('-d', '--debug', 'Enable debugging') do |o|
           options[:debug] = true
         end
@@ -50,7 +50,7 @@ module RSpec::Core
           options[:formatter] = o
         end
 
-        parser.on_tail('-h', '--help', "You're looking at it.") do 
+        parser.on_tail('-h', '--help', "You're looking at it.") do
           puts parser
           exit
         end
@@ -67,7 +67,7 @@ module RSpec::Core
         parser.on('-o', '--options PATH', 'Read configuration options from a file path.  (Defaults to .rspec)') do |o|
           options[:options_file] = o || local_options_file
         end
-        
+
         parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
           options[:profile_examples] = o
         end

@@ -5,7 +5,7 @@ module RSpec
     superclass = ['Test::Unit::AssertionFailedError', '::StandardError'].map do |c|
       eval(c) rescue nil
     end.compact.first
-    
+
     class PendingExampleFixedError < superclass
     end
   end

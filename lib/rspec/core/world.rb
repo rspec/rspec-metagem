@@ -47,7 +47,7 @@ module RSpec
         examples.reject &all_apply?(conditions)
       end
 
-      def preceding_declaration_line(filter_line) 
+      def preceding_declaration_line(filter_line)
         declaration_line_numbers.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
         end
@@ -62,7 +62,7 @@ module RSpec
           else
             @configuration.reporter.message "Run filtered using #{inclusion_filter.inspect}"
           end
-        end      
+        end
       end
 
       include RSpec::Core::Hooks
@@ -82,7 +82,7 @@ module RSpec
           lines + g.declaration_line_numbers
         end
       end
-      
+
     end
   end
 end

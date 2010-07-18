@@ -3,7 +3,7 @@ require 'spec_helper'
 require 'ostruct'
 
 describe RSpec::Core::ConfigurationOptions do
-  
+
   def config_options_object(*args)
     coo = RSpec::Core::ConfigurationOptions.new(args)
     coo.parse_options
@@ -22,7 +22,7 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:requires=).ordered
       opts.configure(config)
     end
-    
+
     it "sends requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
@@ -122,7 +122,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
       options_from_args("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
-      
+
     end
 
   end
@@ -140,7 +140,7 @@ describe RSpec::Core::ConfigurationOptions do
       options_from_args("-d").should include(:debug => true)
     end
   end
-  
+
   describe "--drb (-X)" do
     context "combined with --debug" do
       it "turns off the debugger if --drb is specified first" do
@@ -149,35 +149,35 @@ describe RSpec::Core::ConfigurationOptions do
         config_options_object("-X",    "--debug").drb_argv.should_not include("--debug")
         config_options_object("-X",    "-d"     ).drb_argv.should_not include("--debug")
       end
-      
-      it "turns off the debugger option if --drb is specified later" do      
+
+      it "turns off the debugger option if --drb is specified later" do
         config_options_object("--debug", "--drb").drb_argv.should_not include("--debug")
         config_options_object("-d",      "--drb").drb_argv.should_not include("--debug")
         config_options_object("--debug", "-X"   ).drb_argv.should_not include("--debug")
         config_options_object("-d",      "-X"   ).drb_argv.should_not include("--debug")
       end
-      
+
       it "turns off the debugger option if --drb is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --drb  ] }
         config_options_object("--debug").drb_argv.should_not include("--debug")
-        config_options_object("-d"     ).drb_argv.should_not include("--debug")        
+        config_options_object("-d"     ).drb_argv.should_not include("--debug")
       end
-      
+
       it "turns off the debugger option if --debug is specified in the options file" do
         File.stub(:exist?) { true }
         File.stub(:readlines) { %w[ --debug  ] }
         config_options_object("--drb").drb_argv.should_not include("--debug")
-        config_options_object("-X"   ).drb_argv.should_not include("--debug")        
+        config_options_object("-X"   ).drb_argv.should_not include("--debug")
       end
     end
-        
+
     it "sends all the arguments other than --drb back to the parser after parsing options" do
       config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
     end
   end
-  
-  
+
+
   # TODO #drb_argv may not be the best name
   # TODO ensure all options are output
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
@@ -186,7 +186,7 @@ describe RSpec::Core::ConfigurationOptions do
       File.stub(:exist?) { false }
       config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
     end
-    
+
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
         config_options_object(*%w[ --drb --color --format s --line_number 1 --example pattern --profile --backtrace -I path/a -I path/b --require path/c --require path/d]).
@@ -234,7 +234,7 @@ describe RSpec::Core::ConfigurationOptions do
       config_options.configure(config)
       config.formatter.should == 'doc'
     end
-    
+
     it "allows options on one line" do
       File.stub(:exist?) { true }
       File.stub(:readlines) { ["--format doc"] }
@@ -244,13 +244,13 @@ describe RSpec::Core::ConfigurationOptions do
       config_options.configure(config)
       config.formatter.should == 'doc'
     end
-    
+
     it "merges options from the global and local .rspec and the command line" do
       File.stub(:exist?){ true }
       File.stub(:readlines) do |path|
         case path
         when ".rspec"
-          ["--format", "documentation"] 
+          ["--format", "documentation"]
         when /\.rspec/
           ["--line", "37"]
         else
@@ -266,15 +266,15 @@ describe RSpec::Core::ConfigurationOptions do
       config.line_number.should == "37"
       config.color_enabled.should be_false
     end
-    
+
     it "prefers local options over global" do
       File.stub(:exist?){ true }
       File.stub(:readlines) do |path|
         case path
         when ".rspec"
-          ["--format", "local"] 
+          ["--format", "local"]
         when /\.rspec/
-          ["--format", "global"] 
+          ["--format", "global"]
         else
           raise "Unexpected path: #{path}"
         end

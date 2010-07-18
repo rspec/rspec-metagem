@@ -28,7 +28,7 @@ module RSpec
               output.puts grey("#{padding}# #{backtrace_info}")
             end
 
-            output.puts 
+            output.puts
           end
         end
 
@@ -43,7 +43,7 @@ module RSpec
             red(summary)
           end
         end
-        
+
         def dump_summary
           output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
@@ -52,7 +52,7 @@ module RSpec
           # Don't print out profiled info if there are failures, it just clutters the output
           if profile_examples? && failure_count == 0
             sorted_examples = examples.sort_by { |example| example.execution_result[:run_time] }.reverse.first(10)
-            output.puts "\nTop #{sorted_examples.size} slowest examples:\n"        
+            output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
             sorted_examples.each do |example|
               output.puts "  (#{format_seconds(example.execution_result[:run_time])} seconds) #{example}"
               output.puts grey("   # #{format_caller(example.metadata[:location])}")
@@ -63,7 +63,7 @@ module RSpec
         def summary_line(example_count, failure_count, pending_count)
           summary = pluralize(example_count, "example")
           summary << ", " << pluralize(failure_count, "failure")
-          summary << ", #{pending_count} pending" if pending_count > 0  
+          summary << ", #{pending_count} pending" if pending_count > 0
           summary
         end
 

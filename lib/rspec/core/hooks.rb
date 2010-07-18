@@ -80,10 +80,10 @@ module RSpec
       class AroundHooks < HookCollection; end
 
       def hooks
-        @hooks ||= { 
+        @hooks ||= {
           :around => { :each => AroundHooks.new },
-          :before => { :each => BeforeHooks.new, :all => BeforeHooks.new, :suite => BeforeHooks.new }, 
-          :after => { :each => AfterHooks.new, :all => AfterHooks.new, :suite => AfterHooks.new } 
+          :before => { :each => BeforeHooks.new, :all => BeforeHooks.new, :suite => BeforeHooks.new },
+          :after => { :each => AfterHooks.new, :all => AfterHooks.new, :suite => AfterHooks.new }
         }
       end
 

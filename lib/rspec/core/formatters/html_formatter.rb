@@ -13,24 +13,24 @@ module RSpec
 
         def message(message)
         end
-        
+
         def initialize(output)
           super
           @example_group_number = 0
           @example_number = 0
           @header_red = nil
         end
-        
+
         # The number of the currently running example_group
         def example_group_number
           @example_group_number
         end
-        
+
         # The number of the currently running example (a global counter)
         def example_number
           @example_number
         end
-        
+
         def start(example_count)
           super
           @output.puts html_header
@@ -108,7 +108,7 @@ module RSpec
           @snippet_extractor ||= SnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(exception)}</code></pre>"
         end
-        
+
         def move_progress
           @output.puts "    <script type=\"text/javascript\">moveProgressBar('#{percent_done}');</script>"
           @output.flush
@@ -133,7 +133,7 @@ module RSpec
             totals = "This was a dry-run"
           else
             totals = "#{example_count} example#{'s' unless example_count == 1}, #{failure_count} failure#{'s' unless failure_count == 1}"
-            totals << ", #{pending_count} pending" if pending_count > 0  
+            totals << ", #{pending_count} pending" if pending_count > 0
           end
           @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{duration} seconds</strong>\";</script>"
           @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
@@ -144,10 +144,10 @@ module RSpec
           @output.flush
         end
 
-        def html_header 
+        def html_header
           <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html 
+<!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
@@ -220,7 +220,7 @@ function makeYellow(element_id) {
 }
 EOF
         end
-        
+
         def global_styles
           <<-EOF
 #rspec-header {

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 describe RSpec::Core::Formatters::BaseFormatter do
-  
+
   let(:output)    { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }
 
@@ -44,7 +44,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
   it "has close as an interface with zero arguments" do
     formatter.should have_interface_for(:close).with(0).arguments
   end
-  
+
   describe '#format_backtrace' do
     it "displays the full backtrace when the example is given the :full_backtrace => true option", :full_backtrace => true
   end
@@ -54,5 +54,5 @@ describe RSpec::Core::Formatters::BaseFormatter do
       formatter.__send__(:backtrace_line, File.expand_path(__FILE__)).should == "./spec/rspec/core/formatters/base_formatter_spec.rb"
     end
   end
-  
+
 end
