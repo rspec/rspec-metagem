@@ -128,4 +128,50 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       example.should_not be_in_block
     end
   end
+
+  describe "#pending" do
+    context "in the example" do
+      it "sets the example to pending" do
+        group = RSpec::Core::ExampleGroup.describe do
+          example { pending }
+        end
+        group.run_all
+        group.examples.first.should be_pending
+      end
+    end
+      
+    context "in before(:each)" do
+      it "sets the example to pending" do
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:each) { pending }
+          example {}
+        end
+        group.run_all
+        group.examples.first.should be_pending
+      end
+    end
+
+    context "in around(:each)" do
+      it "sets the example to pending" do
+        group = RSpec::Core::ExampleGroup.describe do
+          around(:each) { pending }
+          example {}
+        end
+        group.run_all
+        group.examples.first.should be_pending
+      end
+    end
+
+    context "in before(:all)" do
+      it "is not supported" do
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:all) { pending }
+          example {}
+        end
+        expect do
+          group.run_all
+        end.to raise_error(/undefined method `metadata'/)
+      end
+    end
+  end
 end

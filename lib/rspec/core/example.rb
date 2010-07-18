@@ -32,6 +32,10 @@ module RSpec
         @in_block
       end
 
+      def pending?
+        !!pending
+      end
+
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
@@ -40,21 +44,23 @@ module RSpec
 
         begin
           unless pending
-            with_around_hooks do
-              begin
-                run_before_each
-                @in_block = true
-                with_pending_capture &@example_block
-              rescue Exception => e
-                set_exception(e)
-              ensure
-                @in_block = false
-                run_after_each
-              end
-              # FUCKME (DC): I really want to move the call below to the end of
-              # the with_around_hooks method, but it adds 4% to the run time.
-              # Why? (footnote - Dan North made me write this comment)
-            end.call
+            with_pending_capture do
+              with_around_hooks do
+                begin
+                  run_before_each
+                  @in_block = true
+                  @example_group_instance.instance_eval &@example_block
+                rescue Exception => e
+                  set_exception(e)
+                ensure
+                  @in_block = false
+                  run_after_each
+                end
+                # FUCKME (DC): I really want to move the call below to the end of
+                # the with_around_hooks method, but it adds 4% to the run time.
+                # Why? (footnote - Dan North made me write this comment)
+              end.call
+            end
           end
         rescue Exception => e
           set_exception(e)
@@ -72,9 +78,9 @@ module RSpec
 
     private
 
-      def with_pending_capture
+      def with_pending_capture(&block)
         @pending_declared_in_example = catch(:pending_declared_in_example) do
-          @example_group_instance.instance_eval(&@example_block)
+          block.call
           throw :pending_declared_in_example, false
         end
       end
