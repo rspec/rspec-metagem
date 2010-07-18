@@ -227,6 +227,31 @@ EOM
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
+      # Define an alias for it_should_behave_like that allows different
+      # language (like "it_has_behavior" or "it_behaves_like") to be
+      # employed when including shared examples.
+      #
+      # Example:
+      #
+      #     alias_it_should_behave_like_to(:it_has_behavior, 'has behavior:')
+      #
+      # allows the user to include a shared example group like:
+      #
+      #     describe Entity do
+      #       it_has_behavior 'sortability' do
+      #         let(:sortable) { Entity.new }
+      #       end
+      #     end
+      #
+      # which is reported in the output as:
+      #
+      #     Entity
+      #       has behavior: sortability
+      #         # sortability examples here
+      def alias_it_should_behave_like_to(new_name, report_label = '')
+        RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
+      end
+
       def filter_run_including(options={})
         # TODO (DC 2010-07-03) this should probably warn when the unless clause returns true
         self.filter = options unless filter and filter[:line_number] || filter[:full_description]

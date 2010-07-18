@@ -95,3 +95,31 @@ Feature: Shared example group
           <<
             adds objects to the end of the collection
       """
+
+  Scenario: Aliasing "it_should_behave_like" to "it_has_behavior"
+    Given a file named "shared_example_group_spec.rb" with:
+      """
+      RSpec.configure do |c|
+        c.alias_it_should_behave_like_to :it_has_behavior, 'has behavior:'
+      end
+
+      shared_examples_for 'sortability' do
+        it 'responds to <==>' do
+          sortable.should respond_to(:<=>)
+        end
+      end
+
+      describe String do
+        it_has_behavior 'sortability' do
+          let(:sortable) { 'sample string' }
+        end
+      end
+      """
+    When I run "rspec shared_example_group_spec.rb --format documentation"
+    Then the output should contain "1 example, 0 failures"
+    And the output should contain:
+      """
+      String
+        has behavior: sortability
+          responds to <==>
+      """

@@ -68,6 +68,20 @@ module RSpec
         shared_group
       end
 
+      def self.alias_it_should_behave_like_to(new_name, report_label)
+        report_label = "it should behave like" if report_label.empty? || report_label.nil?
+        module_eval(<<-END_RUBY, __FILE__, __LINE__)
+          def self.#{new_name}(name, &customization_block)
+            shared_block = world.shared_example_groups[name]
+            raise "Could not find shared example group named \#{name.inspect}" unless shared_block
+
+            shared_group = describe("#{report_label} \#{name}", &shared_block)
+            shared_group.class_eval &customization_block if customization_block
+            shared_group
+          end
+        END_RUBY
+      end
+
       def self.examples
         @examples ||= []
       end
