@@ -140,6 +140,10 @@ module RSpec
         @_ancestors ||= super().select {|a| a < RSpec::Core::ExampleGroup}
       end
 
+      def self.top_level?
+        ancestors.size <= 1
+      end
+
       def self.set_it_up(*args)
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
 
@@ -155,7 +159,7 @@ module RSpec
       def self.eval_before_alls(example)
         return if descendant_filtered_examples.empty?
         superclass.before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
-        world.run_hook_filtered(:before, :all, self, example)
+        world.run_hook_filtered(:before, :all, self, example) if top_level?
 
         run_hook!(:before, :all, example)
         example.instance_variables.each { |ivar| before_all_ivars[ivar] = example.instance_variable_get(ivar) }
@@ -186,7 +190,7 @@ module RSpec
         return if descendant_filtered_examples.empty?
         before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
         run_hook!(:after, :all, example)
-        world.run_hook_filtered(:after, :all, self, example)
+        world.run_hook_filtered(:after, :all, self, example) if top_level?
       end
 
       def self.run(reporter)
