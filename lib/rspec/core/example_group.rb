@@ -141,7 +141,7 @@ module RSpec
       end
 
       def self.top_level?
-        ancestors.size <= 1
+        ancestors.size == 1
       end
 
       def self.set_it_up(*args)
