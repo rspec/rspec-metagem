@@ -38,13 +38,13 @@ module RSpec
       end
 
       def apply_inclusion_filters(examples, conditions={})
-        examples.select &all_apply?(conditions)
+        examples.select(&all_apply?(conditions))
       end
 
       alias_method :find, :apply_inclusion_filters
 
       def apply_exclusion_filters(examples, conditions={})
-        examples.reject &all_apply?(conditions)
+        examples.reject(&all_apply?(conditions))
       end
 
       def preceding_declaration_line(filter_line)

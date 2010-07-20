@@ -229,7 +229,7 @@ module RSpec::Core
             it "warns to install win32console" do
               config.stub(:require) { raise LoadError }
               config.should_receive(:warn).
-                with /You must 'gem install win32console'/
+                with(/You must 'gem install win32console'/)
               config.color_enabled = true
             end
 

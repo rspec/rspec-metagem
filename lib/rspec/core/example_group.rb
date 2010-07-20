@@ -67,7 +67,7 @@ module RSpec
             raise "Could not find shared example group named \#{name.inspect}" unless shared_block
 
             shared_group = describe("#{report_label} \#{name}", &shared_block)
-            shared_group.class_eval &customization_block if customization_block
+            shared_group.class_eval(&customization_block) if customization_block
             shared_group
           end
         END_RUBY
@@ -94,7 +94,7 @@ module RSpec
       end
 
       def self.metadata
-        @metadata
+        @metadata if defined?(@metadata)
       end
 
       def self.superclass_metadata

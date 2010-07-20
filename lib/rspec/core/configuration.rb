@@ -122,6 +122,8 @@ module RSpec
         settings[:backtrace_clean_patterns] = []
       end
 
+      remove_method :color_enabled=
+
       def color_enabled=(bool)
         return unless bool
         settings[:color_enabled] = true

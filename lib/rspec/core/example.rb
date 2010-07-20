@@ -16,7 +16,7 @@ module RSpec
         @example_group_class, @options, @example_block = example_group_class, options, example_block
         @metadata  = @example_group_class.metadata.for_example(desc, options)
         @exception = nil
-        @in_block  = false
+        @pending_declared_in_example = @in_block = false
       end
 
       def example_group
@@ -49,7 +49,7 @@ module RSpec
                 begin
                   run_before_each
                   @in_block = true
-                  @example_group_instance.instance_eval &@example_block
+                  @example_group_instance.instance_eval(&@example_block)
                 rescue Exception => e
                   set_exception(e)
                 ensure
