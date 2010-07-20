@@ -187,7 +187,7 @@ EOM
             RSpec::Core::Formatters::HtmlFormatter
           when 't', 'textmate'
             RSpec::Core::Formatters::TextMateFormatter
-          when 'progress'
+          when 'p', 'progress'
             RSpec::Core::Formatters::ProgressFormatter
           else
             raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
