@@ -4,15 +4,15 @@ module RSpec
   module Core
     module MockFrameworkAdapter
 
-      def _setup_mocks
+      def setup_mocks_for_rspec
         RSpec::Mocks::setup(self)
       end
 
-      def _verify_mocks
+      def verify_mocks_for_rspec
         RSpec::Mocks::verify
       end
 
-      def _teardown_mocks
+      def teardown_mocks_for_rspec
         RSpec::Mocks::teardown
       end
 

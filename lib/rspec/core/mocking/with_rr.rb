@@ -8,15 +8,15 @@ module RSpec
 
       include RR::Extensions::InstanceMethods
 
-      def _setup_mocks
+      def setup_mocks_for_rspec
         RR::Space.instance.reset
       end
 
-      def _verify_mocks
+      def verify_mocks_for_rspec
         RR::Space.instance.verify_doubles
       end
 
-      def _teardown_mocks
+      def teardown_mocks_for_rspec
         RR::Space.instance.reset
       end
 

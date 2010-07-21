@@ -12,9 +12,9 @@ module RSpec
         include Mocha::Standalone
       end
 
-      alias :_setup_mocks :mocha_setup
-      alias :_verify_mocks :mocha_verify
-      alias :_teardown_mocks :mocha_teardown
+      alias :setup_mocks_for_rspec :mocha_setup
+      alias :verify_mocks_for_rspec :mocha_verify
+      alias :teardown_mocks_for_rspec :mocha_teardown
 
     end
   end

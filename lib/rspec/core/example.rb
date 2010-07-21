@@ -117,15 +117,15 @@ module RSpec
       end
 
       def run_before_each
-        @example_group_instance._setup_mocks if @example_group_instance.respond_to?(:_setup_mocks)
+        @example_group_instance.setup_mocks_for_rspec if @example_group_instance.respond_to?(:setup_mocks_for_rspec)
         @example_group_class.eval_before_eachs(@example_group_instance)
       end
 
       def run_after_each
         @example_group_class.eval_after_eachs(@example_group_instance)
-        @example_group_instance._verify_mocks if @example_group_instance.respond_to?(:_verify_mocks)
+        @example_group_instance.verify_mocks_for_rspec if @example_group_instance.respond_to?(:verify_mocks_for_rspec)
       ensure
-        @example_group_instance._teardown_mocks if @example_group_instance.respond_to?(:_teardown_mocks)
+        @example_group_instance.teardown_mocks_for_rspec if @example_group_instance.respond_to?(:teardown_mocks_for_rspec)
       end
 
       def assign_auto_description
