@@ -38,7 +38,7 @@ module RSpec
           @output.flush
         end
 
-        def add_example_group(example_group)
+        def example_group_started(example_group)
           super
           @example_group_red = false
           @example_group_number += 1
@@ -52,7 +52,7 @@ module RSpec
           @output.flush
         end
 
-        def start_dump(duration)
+        def start_dump
           @output.puts "  </dl>"
           @output.puts "</div>"
           @output.flush

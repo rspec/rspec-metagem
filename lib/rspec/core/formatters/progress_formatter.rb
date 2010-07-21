@@ -19,7 +19,7 @@ module RSpec
           output.print red('F')
         end
 
-        def start_dump(duration)
+        def start_dump
           super
           output.puts
         end

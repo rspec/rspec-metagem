@@ -196,7 +196,7 @@ module RSpec
       def self.run(reporter)
         @reporter = reporter
         example_group_instance = new
-        reporter.add_example_group(self)
+        reporter.example_group_started(self)
         begin
           eval_before_alls(example_group_instance)
           result_for_this_group = run_examples(example_group_instance, reporter)

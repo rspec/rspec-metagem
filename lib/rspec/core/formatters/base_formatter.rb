@@ -35,9 +35,12 @@ module RSpec
             start(count)
             begin
               yield self
-            ensure
               stop
-              dump(@duration)
+              start_dump
+              dump_failures
+              dump_summary
+              dump_pending
+            ensure
               close
             end
           end
@@ -47,15 +50,25 @@ module RSpec
         # they have all been collected. This can be useful for special
         # formatters that need to provide progress on feedback (graphical ones)
         #
-        # This method will only be invoked once, and the next one to be invoked
-        # is #add_example_group
+        # This will only be invoked once, and the next one to be invoked
+        # is #example_group_started
         def start(example_count)
-          @start = Time.now
           @example_count = example_count
+          @start = Time.now
         end
 
-        def stop
-          @duration = Time.now - @start
+        # This method is invoked at the beginning of the execution of each example group.
+        # +example_group+ is the example_group.
+        #
+        # The next method to be invoked after this is +example_passed+,
+        # +example_pending+, or +example_finished+
+        def example_group_started(example_group)
+          @example_group = example_group
+        end
+
+        def add_example_group(example_group)
+          RSpec.deprecate("add_example_group", "example_group_started")
+          example_group_started(example_group)
         end
 
         def example_started(example)
@@ -74,26 +87,16 @@ module RSpec
         def message(message)
         end
 
-        # This method is invoked at the beginning of the execution of each example group.
-        # +example_group+ is the example_group.
-        #
-        # The next method to be invoked after this is +example_passed+,
-        # +example_pending+, or +example_finished+
-        def add_example_group(example_group)
-          @example_group = example_group
+        def stop
+          @duration = Time.now - @start
         end
 
-        def dump(duration)
-          start_dump(duration)
-          dump_failures
-          dump_summary
-          dump_pending
+        def dump
         end
 
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is #dump_failure (once for each failed example),
-        def start_dump(duration)
-          @duration = duration
+        def start_dump
         end
 
         # Dumps detailed information about each example failure.

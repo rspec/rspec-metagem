@@ -11,14 +11,15 @@ describe RSpec::Core::Formatters::ProgressFormatter do
    end
 
    it "should produce line break on start dump" do
-     @formatter.start_dump(3)
+     @formatter.start_dump
      @output.string.should == "\n"
    end
 
    it "should produce standard summary without pending when pending has a 0 count" do
-     @formatter.start_dump(3)
+     pending
+     @formatter.start_dump
      @formatter.dump_summary
-     @output.string.should =~ /Finished in 3 seconds\n2 examples/i
+     @output.string.should =~ /2 examples/i
    end
 
    it "should push nothing on start" do

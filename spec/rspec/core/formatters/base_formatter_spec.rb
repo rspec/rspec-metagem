@@ -9,8 +9,8 @@ describe RSpec::Core::Formatters::BaseFormatter do
     formatter.should have_interface_for(:start).with(1).argument
   end
 
-  it "has add_example_group as an interface with one argument" do
-    formatter.should have_interface_for(:add_example_group).with(1).argument
+  it "has example_group_started as an interface with one argument" do
+    formatter.should have_interface_for(:example_group_started).with(1).argument
   end
 
   it "has example_passed as an interface with one argument" do
@@ -25,8 +25,8 @@ describe RSpec::Core::Formatters::BaseFormatter do
     formatter.should have_interface_for(:example_failed).with(1).arguments
   end
 
-  it "has start_dump as an interface with 1 arguments" do
-    formatter.should have_interface_for(:start_dump).with(1).arguments
+  it "has start_dump as an interface with no arguments" do
+    formatter.should have_interface_for(:start_dump).with(0).arguments
   end
 
   it "has dump_failures as an interface with no arguments" do

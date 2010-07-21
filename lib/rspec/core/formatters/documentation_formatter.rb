@@ -9,7 +9,7 @@ module RSpec
           @previous_nested_example_groups = []
         end
 
-        def add_example_group(example_group)
+        def example_group_started(example_group)
           super
 
           example_group_chain.each_with_index do |nested_example_group, i|
