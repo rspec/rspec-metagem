@@ -37,9 +37,9 @@ module RSpec
               yield self
               stop
               start_dump
-              dump_failures
-              dump_summary
+              dump_summary(duration, example_count, failure_count, pending_count)
               dump_pending
+              dump_failures
             ensure
               close
             end
@@ -91,9 +91,6 @@ module RSpec
           @duration = Time.now - @start
         end
 
-        def dump
-        end
-
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is #dump_failure (once for each failed example),
         def start_dump
@@ -104,7 +101,7 @@ module RSpec
         end
 
         # This method is invoked after the dumping of examples and failures.
-        def dump_summary
+        def dump_summary(duration, example_count, failure_count, pending_count)
         end
 
         # This gets invoked after the summary if option is set to do so.

@@ -44,7 +44,7 @@ module RSpec
           end
         end
 
-        def dump_summary
+        def dump_summary(duration, example_count, failure_count, pending_count)
           output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
 
           output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))

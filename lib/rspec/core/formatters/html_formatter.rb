@@ -128,7 +128,8 @@ module RSpec
         def dump_pending
         end
 
-        def dump_summary
+        def dump_summary(duration, example_count, failure_count, pending_count)
+          # TODO - kill dry_run?
           if dry_run?
             totals = "This was a dry-run"
           else
