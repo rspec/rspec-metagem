@@ -25,18 +25,18 @@ module RSpec
 
       class BeforeHook < Hook
         def run_in(example_group_instance)
-          example_group_instance ? example_group_instance.instance_eval(&self) : call
+          if example_group_instance
+            example_group_instance.instance_eval(&self)
+          else
+            call
+          end
         end
       end
 
       class AfterHook < Hook
         def run_in(example_group_instance)
           if example_group_instance
-            begin
-              example_group_instance.instance_eval(&self)
-            rescue Exception => e
-              example_group_instance.example.set_exception(e)
-            end
+            example_group_instance.instance_eval_with_rescue(&self)
           else
             call
           end

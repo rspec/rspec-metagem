@@ -253,6 +253,14 @@ module RSpec
         self.class.describes
       end
 
+      def instance_eval_with_rescue(&hook)
+        begin
+          instance_eval(&hook)
+        rescue Exception => e
+          example.set_exception(e)
+        end
+      end
+
     private
 
       def self.extended_modules #:nodoc:
