@@ -374,12 +374,6 @@ module RSpec::Core
         group.examples.size.should == 1
       end
 
-      it "allows adding an example using 'its'" do
-        group = ExampleGroup.describe
-        group.its(:some_method) { }
-        group.examples.size.should == 1
-      end
-
       it "exposes all examples at examples" do
         group = ExampleGroup.describe
         group.it("should do something 1") { }
@@ -546,6 +540,24 @@ module RSpec::Core
         end
         its("name.size") { should == 4 }
         its("name.size.class") { should == Fixnum }
+      end
+
+      context "calling and overriding super" do
+        it "calls to the subject defined in the parent group" do
+          group = ExampleGroup.describe(Array) do
+            subject { [1, 'a'] }
+
+            its(:last) { should == 'a' }
+
+            describe '.first' do
+              def subject; super.first; end
+
+              its(:next) { should == 2 }
+            end
+          end
+
+          group.run_all.should be_true
+        end
       end
     end
 

@@ -3,7 +3,7 @@ Feature: implicit subject
   The first argument to the outermost example group block is
   made available to each example as an implicit subject of
   that example.
-  
+
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """
