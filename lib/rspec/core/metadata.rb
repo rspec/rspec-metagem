@@ -164,7 +164,7 @@ EOM
 
       def file_and_line_number(metadata)
         entry = candidate_entries_from_caller(metadata).first
-        entry && entry.split(":")
+        entry && entry.match(/(.+?):(\d+)(|:\d+)/)[1..2]
       end
 
       def candidate_entries_from_caller(metadata)

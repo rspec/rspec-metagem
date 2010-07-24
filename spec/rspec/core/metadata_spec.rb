@@ -132,7 +132,7 @@ module RSpec
           m[:example_group][:file_path].should == __FILE__
         end
 
-        it "finds the first spec file in the caller array in Windows" do
+        it "finds the first spec file in the caller array with drive letter" do
           m = Metadata.new
           m.process(:caller => [
             "foo",
@@ -160,6 +160,16 @@ module RSpec
           m.process(:caller => [
             "foo",
             "#{__FILE__}:#{__LINE__}",
+            "bar_spec.rb:23",
+            "baz"
+          ])
+          m[:example_group][:line_number].should == __LINE__ - 4
+        end
+        it "finds the line number with the first spec file with drive letter" do
+          m = Metadata.new
+          m.process(:caller => [
+            "foo",
+            "C:/path/to/file_spec.rb:#{__LINE__}",
             "bar_spec.rb:23",
             "baz"
           ])
