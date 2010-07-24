@@ -155,23 +155,22 @@ module RSpec
         @before_all_ivars ||= {}
       end
 
-      def self.eval_before_alls(example)
+      def self.store_before_all_ivars(example_group_instance)
+        example_group_instance.instance_variables.each { |ivar| 
+          before_all_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
+        }
+      end
+
+      def self.assign_before_all_ivars(ivars, example_group_instance)
+        ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
+      end
+
+      def self.eval_before_alls(example_group_instance)
         return if descendant_filtered_examples.empty?
-        superclass.before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
-        world.run_hook_filtered(:before, :all, self, example) if top_level?
-
-        run_hook!(:before, :all, example)
-        example.instance_variables.each { |ivar| before_all_ivars[ivar] = example.instance_variable_get(ivar) }
-      end
-
-      def self.eval_before_eachs(example)
-        world.run_hook_filtered(:before, :each, self, example)
-        ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example) }
-      end
-
-      def self.eval_after_eachs(example)
-        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example) }
-        world.run_hook_filtered(:after, :each, self, example)
+        assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
+        world.run_hook_filtered(:before, :all, self, example_group_instance) if top_level?
+        run_hook!(:before, :all, example_group_instance)
+        store_before_all_ivars(example_group_instance)
       end
 
       def self.eval_around_eachs(example_group_instance, wrapped_example)
@@ -181,15 +180,25 @@ module RSpec
         end
       end
 
-      def self.around_hooks
-        (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
+      def self.eval_before_eachs(example_group_instance)
+        world.run_hook_filtered(:before, :each, self, example_group_instance)
+        ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example_group_instance) }
       end
 
-      def self.eval_after_alls(example)
+      def self.eval_after_eachs(example_group_instance)
+        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example_group_instance) }
+        world.run_hook_filtered(:after, :each, self, example_group_instance)
+      end
+
+      def self.eval_after_alls(example_group_instance)
         return if descendant_filtered_examples.empty?
-        before_all_ivars.each { |ivar, val| example.instance_variable_set(ivar, val) }
-        run_hook!(:after, :all, example)
-        world.run_hook_filtered(:after, :all, self, example) if top_level?
+        assign_before_all_ivars(before_all_ivars, example_group_instance)
+        run_hook!(:after, :all, example_group_instance)
+        world.run_hook_filtered(:after, :all, self, example_group_instance) if top_level?
+      end
+
+      def self.around_hooks
+        (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
       end
 
       def self.run(reporter)
