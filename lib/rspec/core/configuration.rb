@@ -284,8 +284,8 @@ EOM
         RSpec::Core::ExampleGroup.send(:include, RSpec::Core::MockFrameworkAdapter)
       end
 
-      def require_files_to_run
-        files_to_run.map {|f| require File.expand_path(f) }
+      def load_spec_files
+        files_to_run.map {|f| load File.expand_path(f) }
       end
     end
   end

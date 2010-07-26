@@ -15,7 +15,7 @@ module RSpec
         @options.configure(@configuration)
         @configuration.error_stream = err
         @configuration.output_stream ||= out
-        @configuration.require_files_to_run
+        @configuration.load_spec_files
         @configuration.configure_mock_framework
         @world.announce_inclusion_filter
 

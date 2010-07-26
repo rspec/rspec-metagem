@@ -30,7 +30,7 @@ module RSpec
         end
 
         before do
-          RSpec.configuration.stub(:require_files_to_run) do
+          RSpec.configuration.stub(:load_spec_files) do
             RSpec.configuration.files_to_run.map {|f| load File.expand_path(f) }
           end
         end

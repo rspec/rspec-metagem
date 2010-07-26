@@ -6,6 +6,14 @@ module RSpec::Core
 
     let(:config) { subject }
 
+    describe "#load_spec_files" do
+      it "loads files using load" do
+        config.files_to_run = ["foo.bar", "blah_spec.rb"]
+        config.should_receive(:load).twice
+        config.load_spec_files
+      end
+    end
+
     describe "#mock_framework_class" do
       before(:each) do
         config.stub(:require)
