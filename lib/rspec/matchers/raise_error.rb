@@ -125,5 +125,6 @@ module RSpec
     def raise_error(error=Exception, message=nil, &block)
       Matchers::RaiseError.new(error, message, &block)
     end
+    alias_method :raise_exception, :raise_error
   end
 end

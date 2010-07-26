@@ -12,6 +12,12 @@ describe "should raise_error" do
   end
 end
 
+describe "raise_exception aliased to raise_error" do
+  it "should pass if anything is raised" do
+    lambda {raise}.should raise_exception
+  end
+end
+
 describe "should raise_error {|err| ... }" do
   it "passes if there is an error" do
     ran = false
