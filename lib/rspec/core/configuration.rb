@@ -204,7 +204,9 @@ EOM
         @formatter ||= formatter_class.new(output)
       end
 
-      alias_method :reporter, :formatter
+      def reporter
+        @reporter ||= Reporter.new(formatter)
+      end
 
       def files_or_directories_to_run=(*files)
         self.files_to_run = files.flatten.collect do |file|

@@ -30,22 +30,6 @@ module RSpec
           failed_examples.size
         end
 
-        def report(count)
-          sync_output do
-            start(count)
-            begin
-              yield self
-              stop
-              start_dump
-              dump_summary(duration, example_count, failure_count, pending_count)
-              dump_pending
-              dump_failures
-            ensure
-              close
-            end
-          end
-        end
-
         # This method is invoked before any examples are run, right after
         # they have all been collected. This can be useful for special
         # formatters that need to provide progress on feedback (graphical ones)
@@ -53,6 +37,7 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is #example_group_started
         def start(example_count)
+          start_sync_output
           @example_count = example_count
           @start = Time.now
         end
@@ -110,6 +95,7 @@ module RSpec
 
         # This method is invoked at the very end. Allows the formatter to clean up, like closing open streams.
         def close
+          restore_sync_output
         end
 
         def format_backtrace(backtrace, example)
@@ -150,13 +136,12 @@ module RSpec
           end
         end
 
-        def sync_output
-          begin
-            old_sync, output.sync = output.sync, true if output_supports_sync
-            yield
-          ensure
-            output.sync = old_sync if output_supports_sync and !output.closed?
-          end
+        def start_sync_output
+          @old_sync, output.sync = output.sync, true if output_supports_sync
+        end
+
+        def restore_sync_output
+          output.sync = @old_sync if output_supports_sync and !output.closed?
         end
 
         def output_supports_sync
