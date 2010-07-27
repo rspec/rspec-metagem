@@ -5,11 +5,12 @@ module RSpec
       class BaseFormatter
         include Helpers
         attr_accessor :example_group
-        attr_reader :example_count, :duration, :examples, :output
+        attr_reader :duration, :examples, :output
+        attr_reader :example_count, :pending_count, :failure_count
 
         def initialize(output)
           @output = output
-          @example_count = 0
+          @example_count = @pending_count = @failure_count = 0
           @examples = []
           @example_group = nil
         end
@@ -18,16 +19,8 @@ module RSpec
           @pending_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'pending' })
         end
 
-        def pending_count
-          pending_examples.size
-        end
-
         def failed_examples
           @failed_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'failed' })
-        end
-
-        def failure_count
-          failed_examples.size
         end
 
         # This method is invoked before any examples are run, right after
@@ -39,7 +32,6 @@ module RSpec
         def start(example_count)
           start_sync_output
           @example_count = example_count
-          @start = Time.now
         end
 
         # This method is invoked at the beginning of the execution of each example group.
@@ -73,7 +65,6 @@ module RSpec
         end
 
         def stop
-          @duration = Time.now - @start
         end
 
         # This method is invoked after all of the examples have executed. The next method
@@ -87,6 +78,10 @@ module RSpec
 
         # This method is invoked after the dumping of examples and failures.
         def dump_summary(duration, example_count, failure_count, pending_count)
+          @duration = duration
+          @example_count = example_count
+          @failure_count = failure_count
+          @pending_count = pending_count
         end
 
         # This gets invoked after the summary if option is set to do so.
