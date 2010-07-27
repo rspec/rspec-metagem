@@ -10,6 +10,10 @@ module RSpec
       end
 
       alias_method :matcher, :define
+
+      if RSpec.respond_to?(:configure)
+        RSpec.configure {|c| c.extend self}
+      end
     end
   end
 end

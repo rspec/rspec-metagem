@@ -191,7 +191,7 @@ Feature: define matcher
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
 
-  Scenario: scoped
+  Scenario: scoped in a module
     Given a file named "scoped_matcher_spec.rb" with:
       """
       require 'rspec/expectations'
@@ -207,16 +207,52 @@ Feature: define matcher
       describe "group with MyHelpers" do
         include MyHelpers
         it "has access to the defined matcher" do
-          self.should respond_to(:be_just_like)
+          5.should be_just_like(5)
         end
       end
 
       describe "group without MyHelpers" do
         it "does not have access to the defined matcher" do
-          self.should_not respond_to(:be_just_like)
+          expect do
+            5.should be_just_like(5)
+          end.to raise_exception
         end
       end
       """
 
     When I run "rspec ./scoped_matcher_spec.rb"
-    Then the stdout should contain "1 failure"
+    Then the stdout should contain "2 examples, 0 failures"
+
+  Scenario: scoped in an example group
+    Given a file named "scoped_matcher_spec.rb" with:
+      """
+      require 'rspec/expectations'
+
+      describe "group with matcher" do
+        matcher :be_just_like do |expected|
+          match {|actual| actual == expected}
+        end
+
+        it "has access to the defined matcher" do
+          5.should be_just_like(5)
+        end
+
+        describe "nested group" do
+          it "has access to the defined matcher" do
+            5.should be_just_like(5)
+          end
+        end
+
+      end
+
+      describe "group without matcher" do
+        it "does not have access to the defined matcher" do
+          expect do
+            5.should be_just_like(5)
+          end.to raise_exception
+        end
+      end
+      """
+
+    When I run "rspec scoped_matcher_spec.rb"
+    Then the output should contain "3 examples, 0 failures"
