@@ -7,20 +7,15 @@ module RSpec
         attr_accessor :example_group
         attr_reader :duration, :examples, :output
         attr_reader :example_count, :pending_count, :failure_count
+        attr_reader :failed_examples, :pending_examples
 
         def initialize(output)
           @output = output
           @example_count = @pending_count = @failure_count = 0
           @examples = []
+          @failed_examples = []
+          @pending_examples = []
           @example_group = nil
-        end
-
-        def pending_examples
-          @pending_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'pending' })
-        end
-
-        def failed_examples
-          @failed_examples ||= ::RSpec.world.find(examples, :execution_result => { :status => 'failed' })
         end
 
         # This method is invoked before any examples are run, right after
@@ -56,9 +51,11 @@ module RSpec
         end
 
         def example_pending(example)
+          @pending_examples << example
         end
 
         def example_failed(example)
+          @failed_examples << example
         end
 
         def message(message)
