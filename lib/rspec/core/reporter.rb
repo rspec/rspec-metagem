@@ -1,25 +1,65 @@
 module RSpec::Core
   class Reporter
-    def initialize(formatter)
-      @formatter = formatter
+    def initialize(*formatters)
+      @formatters = formatters
+      @failure_count = @pending_count = 0
     end
 
     def report(count)
-      @formatter.start(count)
+      start(count)
       begin
         yield self
-        @formatter.stop
-        @formatter.start_dump
-        @formatter.dump_summary(duration, example_count, failure_count, pending_count)
-        @formatter.dump_pending
-        @formatter.dump_failures
+        stop
+        notify :start_dump
+        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
+        notify :dump_pending
+        notify :dump_failures
       ensure
-        @formatter.close
+        notify :close
       end
     end
 
-    def method_missing(method, *args, &block)
-      @formatter.send method, *args, &block
+    def start(example_count)
+      @example_count = example_count
+      @start = Time.now
+      notify :start, example_count
+    end
+
+    def message(message)
+      notify :message, message
+    end
+
+    def example_group_started(group)
+      notify :example_group_started, group
+    end
+
+    def example_started(example)
+      notify :example_started, example
+    end
+
+    def example_passed(example)
+      notify :example_passed, example
+    end
+
+    def example_failed(example)
+      @failure_count += 1
+      notify :example_failed, example
+    end
+
+    def example_pending(example)
+      @pending_count += 1
+      notify :example_pending, example
+    end
+
+    def stop
+      @duration = Time.now - @start
+      notify :stop
+    end
+
+    def notify(method, *args, &block)
+      @formatters.each do |formatter|
+        formatter.send method, *args, &block
+      end
     end
   end
 end
