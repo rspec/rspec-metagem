@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Chad Humphries", "David Chelimsky"]
-  s.date = %q{2010-07-25}
+  s.date = %q{2010-07-27}
   s.default_executable = %q{rspec}
   s.description = %q{RSpec runner and example groups}
   s.email = %q{dchelimsky@gmail.com;chad.humphries@gmail.com}
@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
      "features/mock_framework_integration/use_rr.feature",
      "features/mock_framework_integration/use_rspec.feature",
      "features/pending/pending_examples.feature",
+     "features/spec_files/arbitrary_file_suffix.feature",
      "features/subject/attribute_of_subject.feature",
      "features/subject/explicit_subject.feature",
      "features/subject/implicit_subject.feature",
@@ -94,6 +95,7 @@ Gem::Specification.new do |s|
      "lib/rspec/core/option_parser.rb",
      "lib/rspec/core/pending.rb",
      "lib/rspec/core/rake_task.rb",
+     "lib/rspec/core/reporter.rb",
      "lib/rspec/core/ruby_project.rb",
      "lib/rspec/core/runner.rb",
      "lib/rspec/core/shared_example_group.rb",
@@ -129,12 +131,14 @@ Gem::Specification.new do |s|
      "spec/rspec/core/formatters/text_mate_formatted-1.8.7.html",
      "spec/rspec/core/formatters/text_mate_formatted-1.9.2.html",
      "spec/rspec/core/formatters/text_mate_formatter_spec.rb",
+     "spec/rspec/core/hooks_filtering_spec.rb",
      "spec/rspec/core/hooks_spec.rb",
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/let_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
      "spec/rspec/core/option_parser_spec.rb",
      "spec/rspec/core/pending_example_spec.rb",
+     "spec/rspec/core/reporter_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
@@ -186,12 +190,14 @@ Gem::Specification.new do |s|
      "spec/rspec/core/formatters/progress_formatter_spec.rb",
      "spec/rspec/core/formatters/snippet_extractor_spec.rb",
      "spec/rspec/core/formatters/text_mate_formatter_spec.rb",
+     "spec/rspec/core/hooks_filtering_spec.rb",
      "spec/rspec/core/hooks_spec.rb",
      "spec/rspec/core/kernel_extensions_spec.rb",
      "spec/rspec/core/let_spec.rb",
      "spec/rspec/core/metadata_spec.rb",
      "spec/rspec/core/option_parser_spec.rb",
      "spec/rspec/core/pending_example_spec.rb",
+     "spec/rspec/core/reporter_spec.rb",
      "spec/rspec/core/resources/a_bar.rb",
      "spec/rspec/core/resources/a_foo.rb",
      "spec/rspec/core/resources/a_spec.rb",
