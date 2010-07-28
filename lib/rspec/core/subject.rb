@@ -99,7 +99,7 @@ module RSpec
             example do
               self.class.class_eval do
                 define_method(:subject) do
-                  attribute.to_s.split('.').inject(super) do |target, method|
+                  attribute.to_s.split('.').inject(super()) do |target, method|
                     target.send(method)
                   end
                 end
