@@ -68,7 +68,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing")
-        shared_group.public_instance_methods.should include("foo")
+        shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
       end
 
       it "adds shared class methods to nested group" do
@@ -77,7 +77,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing")
-        shared_group.methods.should include("foo")
+        shared_group.methods.map{|m| m.to_s}.should include("foo")
       end
 
       context "given a block" do
