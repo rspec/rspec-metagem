@@ -15,7 +15,7 @@ module RSpec
         end
 
         def initialize(output)
-          super
+          super(output)
           @example_group_number = 0
           @example_number = 0
           @header_red = nil
@@ -32,14 +32,14 @@ module RSpec
         end
 
         def start(example_count)
-          super
+          super(example_count)
           @output.puts html_header
           @output.puts report_header
           @output.flush
         end
 
         def example_group_started(example_group)
-          super
+          super(example_group)
           @example_group_red = false
           @example_group_number += 1
           unless example_group_number == 1
@@ -59,7 +59,7 @@ module RSpec
         end
 
         def example_started(example)
-          super
+          super(example)
           @example_number += 1
         end
 

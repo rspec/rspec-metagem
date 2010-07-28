@@ -10,7 +10,7 @@ module RSpec
         end
 
         def example_group_started(example_group)
-          super
+          super(example_group)
 
           example_group_chain.each_with_index do |nested_example_group, i|
             unless nested_example_group == @previous_nested_example_groups[i]
@@ -23,17 +23,17 @@ module RSpec
         end
 
         def example_passed(example)
-          super
+          super(example)
           output.puts passed_output(example)
         end
 
         def example_pending(example)
-          super
+          super(example)
           output.puts pending_output(example, example.execution_result[:pending_message])
         end
 
         def example_failed(example)
-          super
+          super(example)
           output.puts failure_output(example, example.execution_result[:exception_encountered])
         end
 

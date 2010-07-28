@@ -21,7 +21,7 @@ class Autotest::Rspec2 < Autotest
   SPEC_PROGRAM = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec'))
 
   def initialize
-    super
+    super()
     self.failed_results_re = /^\d+\)\n(?:\e\[\d*m)?(?:.*?in )?'([^\n]*)'(?: FAILED)?(?:\e\[\d*m)?\n\n?(.*?(\n\n\(.*?)?)\n\n/m
     self.completed_re = /\n(?:\e\[\d*m)?\d* examples?/m
   end

@@ -5,22 +5,22 @@ module RSpec
       class ProgressFormatter < BaseTextFormatter
 
         def example_passed(example)
-          super
+          super(example)
           output.print green('.')
         end
 
         def example_pending(example)
-          super
+          super(example)
           output.print yellow('*')
         end
 
         def example_failed(example)
-          super
+          super(example)
           output.print red('F')
         end
 
         def start_dump
-          super
+          super()
           output.puts
         end
 

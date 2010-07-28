@@ -550,7 +550,7 @@ module RSpec::Core
             its(:last) { should == 'a' }
 
             describe '.first' do
-              def subject; super.first; end
+              def subject; super().first; end
 
               its(:next) { should == 2 }
             end

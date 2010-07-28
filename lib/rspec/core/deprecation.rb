@@ -37,7 +37,7 @@ ADDITIONAL
 
     def []=(k,v)
       RSpec.deprecate(@method, @alternate_method)
-      super
+      super(k,v)
     end
 
   end
