@@ -23,18 +23,6 @@ begin
     gem.add_dependency "rspec-core", RSpec::Version::STRING
     gem.add_dependency "rspec-expectations", RSpec::Version::STRING
     gem.add_dependency "rspec-mocks", RSpec::Version::STRING
-    gem.post_install_message = <<-EOM
-#{"*"*50}
-
-  Thank you for installing #{gem.summary}
-
-  This is a meta-gem that depends on:
-    rspec-core
-    rspec-expectations
-    rspec-mocks
-  
-#{"*"*50}
-EOM
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
