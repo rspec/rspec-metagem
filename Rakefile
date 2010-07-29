@@ -24,13 +24,6 @@ begin
     gem.add_development_dependency('aruba', ">= 0.1.1")
     gem.add_development_dependency('rspec-core', ">= #{RSpec::Expectations::Version::STRING}")
     gem.add_development_dependency('rspec-mocks', ">= #{RSpec::Expectations::Version::STRING}")
-    gem.post_install_message = <<-EOM
-#{"*"*50}
-
-  Thank you for installing #{gem.summary}
-
-#{"*"*50}
-EOM
   end
 rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
