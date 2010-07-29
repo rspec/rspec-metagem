@@ -9,26 +9,28 @@ module RSpec
         end
 
         def dump_failures
+          return if failed_examples.empty?
           output.puts
-          failed_examples.each_with_index do |failed_example, index|
-            exception = failed_example.execution_result[:exception_encountered]
-            padding = '    '
+          output.puts "Failures:"
+          failed_examples.each_with_index do |example, index|
+            output.puts if index > 0
+            exception = example.execution_result[:exception_encountered]
+            short_padding = '  '
+            padding = '     '
             if exception.is_a?(RSpec::Core::PendingExampleFixedError)
-              output.puts "#{index.next}) #{failed_example.full_description} FIXED"
-              output.puts "#{padding}Expected pending '#{failed_example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
+              output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
+              output.puts "#{padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
             else
-              output.puts "#{index.next}) #{failed_example.full_description}"
-              output.puts "#{padding}Failure/Error: #{read_failed_line(exception, failed_example).strip}"
+              output.puts "#{short_padding}#{index.next}) #{example.full_description}"
+              output.puts "#{padding}Failure/Error: #{read_failed_line(exception, example).strip}"
               exception.message.split("\n").each do |line|
                 output.puts "#{padding}#{red(line)}"
               end
             end
 
-            format_backtrace(exception.backtrace, failed_example).each do |backtrace_info|
+            format_backtrace(exception.backtrace, example).each do |backtrace_info|
               output.puts grey("#{padding}# #{backtrace_info}")
             end
-
-            output.puts
           end
         end
 

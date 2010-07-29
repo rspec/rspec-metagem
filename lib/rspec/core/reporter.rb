@@ -11,9 +11,9 @@ module RSpec::Core
         yield self
         stop
         notify :start_dump
-        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
         notify :dump_pending
         notify :dump_failures
+        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
       ensure
         notify :close
       end

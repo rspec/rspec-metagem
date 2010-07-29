@@ -28,10 +28,9 @@ Feature: pending examples
       """
     When I run "rspec ./pending_without_block_spec.rb"
     Then the exit status should be 0
+    And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
-      1 example, 0 failures, 1 pending
-
       Pending:
         an example is implemented but waiting
           # something else getting finished
@@ -51,10 +50,9 @@ Feature: pending examples
       """
     When I run "rspec ./pending_with_failing_block_spec.rb"
     Then the exit status should be 0
+    And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
-      1 example, 0 failures, 1 pending
-
       Pending:
         an example is implemented but waiting
           # something else getting finished
