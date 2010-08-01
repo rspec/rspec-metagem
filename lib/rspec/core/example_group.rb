@@ -61,12 +61,12 @@ module RSpec
 
       def self.define_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
-          def self.#{new_name}(name, &customization_block)
+          def self.#{new_name}(name, *args, &customization_block)
             shared_block = world.shared_example_groups[name]
             raise "Could not find shared example group named \#{name.inspect}" unless shared_block
 
             describe("#{report_label || "it should behave like"} \#{name}") do
-              module_eval &shared_block
+              module_exec *args, &shared_block
               module_eval &customization_block if customization_block
             end
           end

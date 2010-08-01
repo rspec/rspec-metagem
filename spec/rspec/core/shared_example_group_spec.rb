@@ -80,6 +80,26 @@ module RSpec::Core
         shared_group.methods.map{|m| m.to_s}.should include("foo")
       end
 
+      context "given some parameters" do
+        it "passes the parameters to the shared example group" do
+          passed_params = {}
+
+          shared_examples_for("thing") do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
+          group = ExampleGroup.describe("group") do
+            it_should_behave_like "thing", :value1, :value2
+          end
+          group.run_all
+
+          passed_params.should == { :param1 => :value1, :param2 => :value2 }
+        end
+      end
+
       context "given a block" do
         it "evaluates the block in nested group" do
           scopes = []
