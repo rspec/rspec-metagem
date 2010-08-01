@@ -59,13 +59,12 @@ module RSpec
       alias_example_to :pending, :pending => true
 
       def self.define_shared_group_method(new_name, report_label=nil)
-        report_label = "it should behave like" unless report_label
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, &customization_block)
             shared_block = world.shared_example_groups[name]
             raise "Could not find shared example group named \#{name.inspect}" unless shared_block
 
-            shared_group = describe("#{report_label} \#{name}", &shared_block)
+            shared_group = describe("#{report_label || "it should behave like"} \#{name}", &shared_block)
             shared_group.class_eval(&customization_block) if customization_block
             shared_group
           end
