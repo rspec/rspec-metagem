@@ -27,6 +27,33 @@ Feature: around hooks
       around each after
       """
 
+  Scenario: argument passed to around hook can be treated as a proc
+    Given a file named "treat_around_hook_arg_as_a_proc.rb" with:
+      """
+      describe "around filter" do
+        def perform_around
+          puts "around each before"
+          yield
+          puts "around each after"
+        end
+
+        around(:each) do |example|
+          perform_around(&example)
+        end
+
+        it "gets run in order" do
+          puts "in the example"
+        end
+      end
+      """
+    When I run "rspec ./treat_around_hook_arg_as_a_proc.rb"
+    Then the output should contain:
+      """
+      around each before
+      in the example
+      around each after
+      """
+
   Scenario: around hooks defined globally are run
     Given a file named "ensure_around_blocks_are_run.rb" with:
       """
