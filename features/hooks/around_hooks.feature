@@ -85,7 +85,7 @@ Feature: around hooks
       around each after
       """
 
-  Scenario: before/after(:hooks) hooks are NOT wrapped by the around hook
+  Scenario: before/after(:all) hooks are NOT wrapped by the around hook
     Given a file named "ensure_around_blocks_are_run.rb" with:
       """
       describe "around filter" do
