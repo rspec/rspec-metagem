@@ -20,9 +20,11 @@ Feature: Shared example group
         end
       end
 
-      describe "#first" do
-        it "returns the first item" do
-          @instance.first.should == 7
+      describe "#include?" do
+        context "with an an item in the collection" do
+          it "returns true" do
+            @instance.include?(7).should be_true
+          end
         end
       end
     end
@@ -43,15 +45,17 @@ Feature: Shared example group
         it should behave like a collection object
           initialized with 3 items
             has three items
-          #first
-            returns the first item
+          #include?
+            with an an item in the collection
+              returns true
 
       Set
         it should behave like a collection object
           initialized with 3 items
             has three items
-          #first
-            returns the first item
+          #include?
+            with an an item in the collection
+              returns true
       """
 
   Scenario: Using a shared example group with a block
