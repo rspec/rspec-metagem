@@ -8,6 +8,13 @@ The command to run specs is now `rspec` instead of `spec`.
 
     rspec ./spec
 
+### rake task
+
+The RSpec rake task has moved to:
+
+    'rspec/core/rake_task'
+
+
 ### autotest
 
 RSpec-2 works with autotest as follows:
