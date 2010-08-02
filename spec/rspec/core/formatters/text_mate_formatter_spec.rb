@@ -37,13 +37,13 @@ module RSpec
 
         # Uncomment this group temporarily in order to overwrite the expected
         # with actual.  Use with care!!!
-        # describe "file generator" do
-          # it "generates a new comparison file" do
-            # Dir.chdir(root) do
-              # File.open(expected_file, 'w') {|io| io.write(generated_html)}
-            # end
-          # end
-        # end
+        describe "file generator" do
+          it "generates a new comparison file" do
+            Dir.chdir(root) do
+              File.open(expected_file, 'w') {|io| io.write(generated_html)}
+            end
+          end
+        end
 
         it "should produce HTML identical to the one we designed manually" do
           Dir.chdir(root) do
