@@ -2,6 +2,7 @@ module RSpec
   module Core
     class ExampleGroup
       extend  Hooks
+      include InstanceExec
       include Subject
       include Let
       include Pending
