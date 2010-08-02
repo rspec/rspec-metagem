@@ -27,15 +27,103 @@ module RSpec::Core::Formatters
     end
 
     describe "#dump_failures" do
-      it "preserves formatting" do
-        group = RSpec::Core::ExampleGroup.describe("group name")
-        example = group.example("example name") { "this".should eq("that") }
-        group.run_all(formatter)
+      let(:group) { RSpec::Core::ExampleGroup.describe("group name") }
 
-        RSpec.configuration.stub(:color_enabled?) { false }
+      before { RSpec.configuration.stub(:color_enabled?) { false } }
+
+      def run_all_and_dump_failures
+        group.run_all(formatter)
         formatter.dump_failures
+      end
+
+      it "preserves formatting" do
+        group.example("example name") { "this".should eq("that") }
+
+        run_all_and_dump_failures
+
         output.string.should =~ /group name example name/m
         output.string.should =~ /(\s+)expected \"that\"\n\1     got \"this\"/m
+      end
+
+      context 'for #share_examples_for' do
+        it 'outputs the name and location' do
+
+          share_examples_for 'foo bar' do
+            it("example name") { "this".should eq("that") }
+          end
+
+          line = __LINE__.next
+          group.it_should_behave_like('foo bar')
+
+          run_all_and_dump_failures
+
+          output.string.should include(
+            'Shared Example Group: "foo bar" called from ' +
+              "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+          )
+        end
+
+        context 'that contains nested example groups' do
+          it 'outputs the name and location' do
+            share_examples_for 'foo bar' do
+              describe 'nested group' do
+                it("example name") { "this".should eq("that") }
+              end
+            end
+
+            line = __LINE__.next
+            group.it_should_behave_like('foo bar')
+
+            run_all_and_dump_failures
+
+            output.string.should include(
+              'Shared Example Group: "foo bar" called from ' +
+                "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+            )
+          end
+        end
+      end
+
+      context 'for #share_as' do
+        it 'outputs the name and location' do
+
+          share_as :FooBar do
+            it("example name") { "this".should eq("that") }
+          end
+
+          line = __LINE__.next
+          group.send(:include, FooBar)
+
+          run_all_and_dump_failures
+
+          output.string.should include(
+            'Shared Example Group: "FooBar" called from ' +
+              "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+          )
+        end
+
+        context 'that contains nested example groups' do
+          it 'outputs the name and location' do
+
+            share_as :NestedFoo do
+              describe 'nested group' do
+                describe 'hell' do
+                  it("example name") { "this".should eq("that") }
+                end
+              end
+            end
+
+            line = __LINE__.next
+            group.send(:include, NestedFoo)
+
+            run_all_and_dump_failures
+
+            output.string.should include(
+              'Shared Example Group: "NestedFoo" called from ' +
+                "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+            )
+          end
+        end
       end
     end
 
@@ -64,7 +152,7 @@ module RSpec::Core::Formatters
         formatter.dump_profile
         filename = __FILE__.split(File::SEPARATOR).last
 
-        output.string.should =~ /#{filename}\:46/
+        output.string.should =~ /#{filename}\:134/
       end
     end
   end

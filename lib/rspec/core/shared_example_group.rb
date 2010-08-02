@@ -22,7 +22,8 @@ module RSpec
           end
 
           def self.included(kls)
-            kls.module_eval(&@shared_block)
+            kls.describe(&@shared_block)
+            kls.children.first.metadata[:shared_group_name] = name
           end
         end
 

@@ -40,8 +40,11 @@ module RSpec::Core
           end
         end
         group = ExampleGroup.describe('group') { include Cornucopia }
-        group.examples.length.should == 1
-        group.examples.first.metadata[:description].should == "is plentiful"
+        phantom_group = group.children.first
+        phantom_group.description.should eql("")
+        phantom_group.metadata[:shared_group_name].should eql('Cornucopia')
+        phantom_group.examples.length.should == 1
+        phantom_group.examples.first.metadata[:description].should == "is plentiful"
       end
     end
 

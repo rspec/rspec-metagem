@@ -22,9 +22,17 @@ module RSpec
               output.puts "#{padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
             else
               output.puts "#{short_padding}#{index.next}) #{example.full_description}"
-              output.puts "#{padding}Failure/Error: #{read_failed_line(exception, example).strip}"
+              output.puts "#{padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
               exception.message.split("\n").each do |line|
                 output.puts "#{padding}#{red(line)}"
+              end
+
+              example.example_group.ancestors.push(example.example_group).each do |group|
+                if group.metadata[:shared_group_name]
+                  output.puts "#{padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
+                              "#{backtrace_line(group.metadata[:example_group][:location])}"
+                  break
+                end
               end
             end
 
