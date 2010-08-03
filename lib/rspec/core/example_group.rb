@@ -34,6 +34,7 @@ module RSpec
 
         delegate_to_metadata :description, :describes, :file_path
         alias_method :display_name, :description
+        alias_method :described_class, :describes
       end
 
       def self.define_example_method(name, extra_options={})
@@ -273,7 +274,7 @@ MSG
       end
 
       def described_class
-        self.class.describes
+        self.class.described_class
       end
 
       def instance_eval_with_rescue(&hook)

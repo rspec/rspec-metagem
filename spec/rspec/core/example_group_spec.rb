@@ -165,6 +165,12 @@ module RSpec::Core
 
     end
 
+    describe '#described_class' do
+      it "is the same as describes" do
+        self.class.described_class.should eq(self.class.describes)
+      end
+    end
+
     describe '#description' do
 
       it "grabs the description from the metadata" do
