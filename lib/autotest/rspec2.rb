@@ -10,7 +10,7 @@ class Autotest::Rspec2 < Autotest
     super
     clear_mappings
     setup_rspec_project_mappings
-    self.failed_results_re = /^\d+\)\n(?:\e\[\d*m)?(?:.*?in )?'([^\n]*)'(?: FAILED)?(?:\e\[\d*m)?\n\n?(.*?(\n\n\(.*?)?)\n\n/m
+    self.failed_results_re = /^\s*\d\)\s(.*?$\n.*?$).*?#\s(.*?):/m
     self.completed_re = /\n(?:\e\[\d*m)?\d* examples?/m
   end
 
@@ -29,8 +29,8 @@ class Autotest::Rspec2 < Autotest
   def consolidate_failures(failed)
     filters = new_hash_of_arrays
     failed.each do |spec, trace|
-      if trace =~ /\n(\.\/)?(.*spec\.rb):[\d]+:/
-        filters[$2] << spec
+      if trace =~ /(.*spec\.rb)/
+        filters[$1] << spec
       end
     end
     return filters

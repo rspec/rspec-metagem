@@ -78,7 +78,7 @@ describe Autotest::Rspec2 do
       failures = [
         [
           "false should be false",
-          "expected: true,\n     got: false (using ==)\n#{@spec_file}:203:"
+          "#{@spec_file}"
         ]
       ]
       @rspec_autotest.consolidate_failures(failures).should == {
