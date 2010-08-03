@@ -100,6 +100,7 @@ Feature: Shared example group
             adds objects to the end of the collection
       """
 
+  @wip
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """
