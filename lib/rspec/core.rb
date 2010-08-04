@@ -1,5 +1,5 @@
 require 'rspec/core/kernel_extensions'
-require 'rspec/core/instance_exec'
+require 'rspec/core/instance_eval_with_args'
 require 'rspec/core/object_extensions'
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'

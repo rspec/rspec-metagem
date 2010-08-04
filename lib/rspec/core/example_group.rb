@@ -2,7 +2,7 @@ module RSpec
   module Core
     class ExampleGroup
       extend  Hooks
-      include InstanceExec
+      include InstanceEvalWithArgs
       include Subject
       include Let
       include Pending
@@ -192,7 +192,7 @@ MSG
       def self.eval_around_eachs(example_group_instance, wrapped_example)
         around_hooks.reverse.inject(wrapped_example) do |wrapper, hook|
           def wrapper.run; call; end
-          lambda { example_group_instance.instance_exec(wrapper, &hook) }
+          lambda { example_group_instance.instance_eval_with_args(wrapper, &hook) }
         end
       end
 
