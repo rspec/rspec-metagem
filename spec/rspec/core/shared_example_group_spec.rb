@@ -81,36 +81,22 @@ module RSpec::Core
       end
 
       context "given some parameters" do
-        context "running with Ruby 1.8.7 or better", :ruby => "> 1.8.6" do
-          it "passes the parameters to the shared example group" do
-            passed_params = {}
+        it "passes the parameters to the shared example group" do
+          passed_params = {}
 
-            shared_examples_for("thing") do |param1, param2|
-              it("has access to the given parameters") do
-                passed_params[:param1] = param1
-                passed_params[:param2] = param2
-              end
+          shared_examples_for("thing") do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
             end
-
-            group = ExampleGroup.describe("group") do
-              it_should_behave_like "thing", :value1, :value2
-            end
-            group.run_all
-
-            passed_params.should == { :param1 => :value1, :param2 => :value2 }
           end
-        end
 
-        context "running with Ruby 1.8.6 or better", :ruby => "1.8.6" do
-          it "raises an error with a friendly message" do
-            shared_examples_for("thing") {}
-
-            lambda do
-              ExampleGroup.describe("group") do
-                it_should_behave_like "thing", :value1, :value2
-              end
-            end.should raise_error(/^RSpec only supports parameterized shared groups/)
+          group = ExampleGroup.describe("group") do
+            it_should_behave_like "thing", :value1, :value2
           end
+          group.run_all
+
+          passed_params.should == { :param1 => :value1, :param2 => :value2 }
         end
       end
 

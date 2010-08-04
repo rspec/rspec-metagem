@@ -2,6 +2,7 @@ module RSpec
   module Core
     class ExampleGroup
       extend  Hooks
+      extend  ModuleEvalWithArgs
       include InstanceEvalWithArgs
       include Subject
       include Let
@@ -60,20 +61,6 @@ module RSpec
       alias_example_to :focused, :focused => true
       alias_example_to :pending, :pending => true
 
-      class << self
-        unless respond_to?(:module_exec)
-          def module_exec(*args, &block)
-            unless args.empty?
-              raise <<-MSG
-RSpec only supports parameterized shared groups with Ruby versions of Ruby that
-support module_exec.  You are using Ruby #{RUBY_VERSION}, which does not.
-MSG
-            end
-            module_eval(&block)
-          end
-        end
-      end
-
       def self.define_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, *args, &customization_block)
@@ -81,7 +68,7 @@ MSG
             raise "Could not find shared example group named \#{name.inspect}" unless shared_block
 
             describe("#{report_label || "it should behave like"} \#{name}") do
-              module_exec *args, &shared_block
+              module_eval_with_args *args, &shared_block
               module_eval &customization_block if customization_block
             end
           end
