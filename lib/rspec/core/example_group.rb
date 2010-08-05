@@ -1,9 +1,9 @@
 module RSpec
   module Core
     class ExampleGroup
+      extend  Extensions::ModuleEvalWithArgs
+      include Extensions::InstanceEvalWithArgs
       extend  Hooks
-      extend  ModuleEvalWithArgs
-      include InstanceEvalWithArgs
       include Subject
       include Let
       include Pending

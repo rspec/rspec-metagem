@@ -12,4 +12,6 @@ module RSpec
   end
 end
 
-include RSpec::Core::ObjectExtensions
+class Object
+  include RSpec::Core::ObjectExtensions
+end
