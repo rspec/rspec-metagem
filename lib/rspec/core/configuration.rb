@@ -127,7 +127,7 @@ module RSpec
       def color_enabled=(bool)
         return unless bool
         settings[:color_enabled] = true
-        if bool && ::Config::CONFIG['host_os'] =~ /mswin|mingw/
+        if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
           orig_output_stream = settings[:output_stream]
           begin
             require 'Win32/Console/ANSI'

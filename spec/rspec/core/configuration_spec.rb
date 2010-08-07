@@ -206,14 +206,14 @@ module RSpec::Core
       context "given true" do
         context "on windows" do
           before do
-            @original_host  = Config::CONFIG['host_os']
-            Config::CONFIG['host_os'] = 'mswin'
+            @original_host  = RbConfig::CONFIG['host_os']
+            RbConfig::CONFIG['host_os'] = 'mswin'
             config.stub(:require)
             config.stub(:warn)
           end
 
           after do
-            Config::CONFIG['host_os'] = @original_host
+            RbConfig::CONFIG['host_os'] = @original_host
           end
 
           context "with win32console available" do
