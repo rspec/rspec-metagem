@@ -7,10 +7,17 @@ module RSpec::Core
     let(:config) { subject }
 
     describe "#load_spec_files" do
+      
       it "loads files using load" do
         config.files_to_run = ["foo.bar", "blah_spec.rb"]
         config.should_receive(:load).twice
         config.load_spec_files
+      end
+      
+      pending "raises if RSpec 1 is loaded" do
+        expect {
+          config.load_spec_files
+        }.to raise_error('This is RSpec 2, please do not load RSpec 1')        
       end
     end
 

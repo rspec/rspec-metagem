@@ -332,6 +332,15 @@ EOM
 
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
+        ensure_version_one_is_not_loaded
+      end
+      
+    private
+      
+      def ensure_version_one_is_not_loaded
+        if Object.constants.include?('Spec') && defined?(Spec::VERSION) && Spec::VERSION::MAJOR.eql?(1)
+          raise 'This is RSpec 2, please do not load RSpec 1'
+        end
       end
 
     private
