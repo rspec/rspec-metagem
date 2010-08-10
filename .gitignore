@@ -8,3 +8,4 @@ tmp
 tags
 rerun.txt
 Gemfile.lock
+.bundle
