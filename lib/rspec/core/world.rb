@@ -25,8 +25,8 @@ module RSpec
         @configuration.exclusion_filter
       end
 
-      def find_modules(group)
-        @configuration.find_modules(group)
+      def configure_group(group)
+        @configuration.configure_group(group)
       end
 
       def shared_example_groups

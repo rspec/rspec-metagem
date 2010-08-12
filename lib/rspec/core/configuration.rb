@@ -275,9 +275,17 @@ EOM
         include_or_extend_modules << [:extend, mod, filters]
       end
 
-      def find_modules(group)
-        include_or_extend_modules.select do |include_or_extend, mod, filters|
-          group.all_apply?(filters)
+      def configure_group(group)
+        modules = {
+          :include => [] + group.included_modules,
+          :extend  => [] + group.ancestors
+        }
+
+        include_or_extend_modules.each do |include_or_extend, mod, filters|
+          next unless group.all_apply?(filters)
+          next if modules[include_or_extend].include?(mod)
+          modules[include_or_extend] << mod
+          group.send(include_or_extend, mod)
         end
       end
 

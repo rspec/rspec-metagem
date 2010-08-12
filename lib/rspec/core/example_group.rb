@@ -148,10 +148,7 @@ module RSpec
 
       def self.set_it_up(*args)
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
-
-        world.find_modules(self).each do |include_or_extend, mod, opts|
-          send(include_or_extend, mod) unless mixins[include_or_extend].include?(mod)
-        end
+        world.configure_group(self)
       end
 
       def self.before_all_ivars
@@ -270,19 +267,6 @@ module RSpec
         rescue Exception => e
           example.set_exception(e)
         end
-      end
-
-    private
-
-      def self.extended_modules #:nodoc:
-        @extended_modules ||= ancestors.select { |mod| mod.class == Module } - [ Object, Kernel ]
-      end
-
-      def self.mixins
-        @mixins ||= {
-          :include => included_modules,
-          :extend => extended_modules
-        }
       end
     end
   end

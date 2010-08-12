@@ -437,5 +437,42 @@ module RSpec::Core
         end
       end
     end
+
+    describe "#configure_group" do
+      it "extends with modules" do
+        mod = Module.new
+        group = ExampleGroup.describe("group", :foo => :bar)
+
+        config.extend(mod, :foo => :bar)
+        config.configure_group(group)
+        group.should be_a(mod)
+      end
+
+      it "includes modules" do
+        mod = Module.new
+        group = ExampleGroup.describe("group", :foo => :bar)
+
+        config.include(mod, :foo => :bar)
+        config.configure_group(group)
+        group.included_modules.should include(mod)
+      end
+
+      it "includes each one before deciding whether to include the next" do
+        mod1 = Module.new do
+          def self.included(host)
+            host.metadata[:foo] = :bar
+          end
+        end
+        mod2 = Module.new
+
+        group = ExampleGroup.describe("group")
+
+        config.include(mod1)
+        config.include(mod2, :foo => :bar)
+        config.configure_group(group)
+        group.included_modules.should include(mod1)
+        group.included_modules.should include(mod2)
+      end
+    end
   end
 end
