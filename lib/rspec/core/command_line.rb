@@ -18,6 +18,7 @@ module RSpec
         @configuration.load_spec_files
         @configuration.configure_mock_framework
         @world.announce_inclusion_filter
+        @world.announce_exclusion_filter
 
         @configuration.reporter.report(example_count) do |reporter|
           begin

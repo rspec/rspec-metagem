@@ -1,4 +1,4 @@
-Feature: inclusion feature
+Feature: inclusion filters
   
   Scenario: focus on one example
     Given a file named "spec/sample_spec.rb" with:
