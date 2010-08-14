@@ -7,21 +7,21 @@ module RSpec
         "#<#{o.class}:#{o.object_id}> => #{o.inspect}"
       end
       
-      it "should match when actual.equal?(expected)" do
+      it "matches when actual.equal?(expected)" do
         1.should equal(1)
       end
 
-      it "should not match when !actual.equal?(expected)" do
+      it "does not match when !actual.equal?(expected)" do
         1.should_not equal("1")
       end
       
-      it "should describe itself" do
+      it "describes itself" do
         matcher = equal(1)
         matcher.matches?(1)
         matcher.description.should == "equal 1"
       end
       
-      it "should provide message on #failure_message" do
+      it "provides message on #failure_message" do
         expected, actual = "1", "1"
         matcher = equal(expected)
         matcher.matches?(actual)
@@ -39,7 +39,7 @@ object identity in this example.
 MESSAGE
       end
       
-      it "should provide message on #negative_failure_message" do
+      it "provides message on #negative_failure_message" do
         expected = actual = "1"
         matcher = equal(expected)
         matcher.matches?(actual)

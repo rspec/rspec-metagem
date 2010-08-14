@@ -153,7 +153,7 @@ describe "a Matcher with no description" do
      end.new
   end
   
-  it "should provide a helpful message when used in a string-less example block" do
+  it "provides a helpful message when used in a string-less example block" do
     5.should matcher
     RSpec::Matchers.generated_description.should =~ /When you call.*description method/m
   end

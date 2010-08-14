@@ -184,7 +184,7 @@ module RSpec
     describe PositiveExpectationHandler do
       include ExampleExpectations
       
-      it "should handle submitted args" do
+      it "handles submitted args" do
         5.should arbitrary_matcher(:expected => 5)
         5.should arbitrary_matcher(:expected => "wrong").with(5)
         lambda { 5.should arbitrary_matcher(:expected => 4) }.should fail_with("expected 4, got 5")
@@ -195,7 +195,7 @@ module RSpec
         lambda { 5.should_not arbitrary_matcher(:expected => 4).with(5) }.should fail_with("expected not 5, got 5")
       end
 
-      it "should handle the submitted block" do
+      it "handles the submitted block" do
         5.should arbitrary_matcher { 5 }
         5.should arbitrary_matcher(:expected => 4) { 5 }
         5.should arbitrary_matcher(:expected => 4).with(5) { 3 }

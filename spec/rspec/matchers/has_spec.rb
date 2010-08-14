@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe "should have_sym(*args)" do
-  it "should pass if #has_sym?(*args) returns true" do
+  it "passes if #has_sym?(*args) returns true" do
     {:a => "A"}.should have_key(:a)
   end
 
-  it "should fail if #has_sym?(*args) returns false" do
+  it "fails if #has_sym?(*args) returns false" do
     lambda {
       {:b => "B"}.should have_key(:a)
     }.should fail_with("expected #has_key?(:a) to return true, got false")
   end
 
-  it "should fail if #has_sym?(*args) returns nil" do
+  it "fails if #has_sym?(*args) returns nil" do
     klass = Class.new do
       def has_foo?
       end
@@ -21,13 +21,13 @@ describe "should have_sym(*args)" do
     }.should fail_with("expected #has_foo?(nil) to return true, got false")
   end
 
-  it "should fail if target does not respond to #has_sym?" do
+  it "fails if target does not respond to #has_sym?" do
     lambda {
       Object.new.should have_key(:a)
     }.should raise_error(NoMethodError)
   end
   
-  it "should reraise an exception thrown in #has_sym?(*args)" do
+  it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
     def o.has_sym?(*args)
       raise "Funky exception"
@@ -37,11 +37,11 @@ describe "should have_sym(*args)" do
 end
 
 describe "should_not have_sym(*args)" do
-  it "should pass if #has_sym?(*args) returns false" do
+  it "passes if #has_sym?(*args) returns false" do
     {:a => "A"}.should_not have_key(:b)
   end
 
-  it "should pass if #has_sym?(*args) returns nil" do
+  it "passes if #has_sym?(*args) returns nil" do
     klass = Class.new do
       def has_foo?
       end
@@ -49,19 +49,19 @@ describe "should_not have_sym(*args)" do
     klass.new.should_not have_foo
   end
 
-  it "should fail if #has_sym?(*args) returns true" do
+  it "fails if #has_sym?(*args) returns true" do
     lambda {
       {:a => "A"}.should_not have_key(:a)
     }.should fail_with("expected #has_key?(:a) to return false, got true")
   end
 
-  it "should fail if target does not respond to #has_sym?" do
+  it "fails if target does not respond to #has_sym?" do
     lambda {
       Object.new.should have_key(:a)
     }.should raise_error(NoMethodError)
   end
   
-  it "should reraise an exception thrown in #has_sym?(*args)" do
+  it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
     def o.has_sym?(*args)
       raise "Funky exception"
@@ -71,7 +71,7 @@ describe "should_not have_sym(*args)" do
 end
 
 describe "has" do
-  it "should work when the target implements #send" do
+  it "works when the target implements #send" do
     o = {:a => "A"}
     def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end
     lambda {

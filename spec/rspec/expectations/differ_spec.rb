@@ -26,7 +26,7 @@ describe "Diff" do
     @differ = RSpec::Expectations::Differ.new(@options)
   end
 
-  it "should output unified diff of two strings" do
+  it "outputs unified diff of two strings" do
     expected="foo\nbar\nzap\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nline\n"
     actual="foo\nzap\nbar\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nanother\nline\n"
     expected_diff= <<'EOD'
@@ -52,7 +52,7 @@ EOD
     diff.should eql(expected_diff)
   end
 
-  it "should output unified diff message of two arrays" do
+  it "outputs unified diff message of two arrays" do
     expected = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'charlie', :width, 'quite wide' ]
     actual   = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'tango'  , :width, 'very wide'  ]
 
@@ -75,7 +75,7 @@ EOD
     diff.should == expected_diff
   end
 
-  it "should output unified diff message of two objects" do
+  it "outputs unified diff message of two objects" do
     expected = RSpec::Fixtures::Animal.new "bob", "giraffe"
     actual   = RSpec::Fixtures::Animal.new "bob", "tortoise"
 

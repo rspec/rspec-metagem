@@ -18,15 +18,15 @@ class UnsortableObject
 end
 
 describe "array.should =~ other_array" do
-  it "should pass if target contains all items" do
+  it "passes if target contains all items" do
     [1,2,3].should =~ [1,2,3]
   end
 
-  it "should pass if target contains all items out of order" do
+  it "passes if target contains all items out of order" do
     [1,3,2].should =~ [1,2,3]
   end
 
-  it "should fail if target includes extra items" do
+  it "fails if target includes extra items" do
     lambda {
       [1,2,3,4].should =~ [1,2,3]
     }.should fail_with(<<-MESSAGE)
@@ -36,7 +36,7 @@ the extra elements were:        [4]
 MESSAGE
   end
 
-  it "should fail if target is missing items" do
+  it "fails if target is missing items" do
     lambda {
       [1,2].should =~ [1,2,3]
     }.should fail_with(<<-MESSAGE)
@@ -46,7 +46,7 @@ the missing elements were:      [3]
 MESSAGE
   end
 
-  it "should fail if target is missing items and has extra items" do
+  it "fails if target is missing items and has extra items" do
 
     lambda {
       [1,2,4].should =~ [1,2,3]
@@ -58,7 +58,7 @@ the extra elements were:        [4]
 MESSAGE
   end
 
-  it "should sort items in the error message if they all respond to <=>" do
+  it "sorts items in the error message if they all respond to <=>" do
     lambda {
       [6,2,1,5].should =~ [4,1,2,3]
     }.should fail_with(<<-MESSAGE)
@@ -69,7 +69,7 @@ the extra elements were:        [5, 6]
 MESSAGE
   end
 
-    it "should not sort items in the error message if they don't all respond to <=>" do
+    it "does not sort items in the error message if they don't all respond to <=>" do
       lambda {
         [UnsortableObject.new(2), UnsortableObject.new(1)].should =~ [UnsortableObject.new(4), UnsortableObject.new(3)]
       }.should fail_with(<<-MESSAGE)
@@ -80,7 +80,7 @@ the extra elements were:        [2, 1]
 MESSAGE
     end
 
-  it "should accurately report extra elements when there are duplicates" do
+  it "accurately reports extra elements when there are duplicates" do
     lambda {
       [1,1,1,5].should =~ [1,5]
     }.should fail_with(<<-MESSAGE)
@@ -90,7 +90,7 @@ the extra elements were:        [1, 1]
 MESSAGE
   end
 
-  it "should accurately report missing elements when there are duplicates" do
+  it "accurately reports missing elements when there are duplicates" do
     lambda {
       [1,5].should =~ [1,1,5]
     }.should fail_with(<<-MESSAGE)
@@ -103,7 +103,7 @@ MESSAGE
 end
 
 describe "should_not =~ [:with, :multiple, :args]" do
-  it "should not be supported" do
+  it "is not supported" do
     lambda {
       [1,2,3].should_not =~ [1,2,3]
     }.should fail_with(/Matcher does not support should_not/)

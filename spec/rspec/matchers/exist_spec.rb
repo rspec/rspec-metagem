@@ -55,7 +55,7 @@ describe "should exist" do
 
   describe "outside of an example group" do
 
-    it "should pass if target exists" do
+    it "passes if target exists" do
       real_tester = SubstanceTester.new @real
       real_tester.should_exist
     end
