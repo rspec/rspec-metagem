@@ -466,28 +466,28 @@ module RSpec::Core
         @before_each_top_level = 'before_each_top_level'
       end
 
-      it "should be able to access a before each ivar at the same level" do
+      it "can access a before each ivar at the same level" do
         @before_each_top_level.should == 'before_each_top_level'
       end
 
-      it "should be able to access a before all ivar at the same level" do
+      it "can access a before all ivar at the same level" do
         @before_all_top_level.should == 'before_all_top_level'
       end
 
-      it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do
+      it "can access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do
         example.example_group.before_all_ivars.should include('@before_all_top_level' => 'before_all_top_level')
       end
 
-      it "should be able to access the before all ivars in the before_all_ivars hash", :ruby => 1.9 do
+      it "can access the before all ivars in the before_all_ivars hash", :ruby => 1.9 do
         example.example_group.before_all_ivars.should include(:@before_all_top_level => 'before_all_top_level')
       end
 
       describe "but now I am nested" do
-        it "should be able to access a parent example groups before each ivar at a nested level" do
+        it "can access a parent example groups before each ivar at a nested level" do
           @before_each_top_level.should == 'before_each_top_level'
         end
 
-        it "should be able to access a parent example groups before all ivar at a nested level" do
+        it "can access a parent example groups before all ivar at a nested level" do
           @before_all_top_level.should == "before_all_top_level"
         end
 

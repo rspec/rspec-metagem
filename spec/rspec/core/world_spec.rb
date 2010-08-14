@@ -85,7 +85,7 @@ module RSpec::Core
 
     describe "applying exclusion filters" do
 
-      it "should find nothing if all describes match the exclusion filter" do
+      it "finds nothing if all describes match the exclusion filter" do
         options = { :network_access => true }
 
         group1 = ExampleGroup.describe(Bar, "find group-1", options) do
@@ -104,7 +104,7 @@ module RSpec::Core
 
       end
 
-      it "should find nothing if a regexp matches the exclusion filter" do
+      it "finds nothing if a regexp matches the exclusion filter" do
         group = ExampleGroup.describe(Bar, "find group-1", :name => "exclude me with a regex", :another => "foo") do
           it("foo") {}
           it("bar") {}
@@ -139,23 +139,23 @@ module RSpec::Core
         @group2.examples[1].metadata[:line_number] = @group2_example2_line
       end
 
-      it "should return nil if no example or group precedes the line" do
+      it "returns nil if no example or group precedes the line" do
         @world.preceding_declaration_line(@group1_line-1).should == nil
       end
 
-      it "should return the argument line number if a group starts on that line" do
+      it "returns the argument line number if a group starts on that line" do
         @world.preceding_declaration_line(@group1_line).should == @group1_line
       end
 
-      it "should return the argument line number if an example starts on that line" do
+      it "returns the argument line number if an example starts on that line" do
         @world.preceding_declaration_line(@group2_example1_line).should == @group2_example1_line
       end
 
-      it "should return line number of a group that immediately precedes the argument line" do
+      it "returns line number of a group that immediately precedes the argument line" do
         @world.preceding_declaration_line(@group2_line+1).should == @group2_line
       end
 
-      it "should return line number of an example that immediately precedes the argument line" do
+      it "returns line number of an example that immediately precedes the argument line" do
         @world.preceding_declaration_line(@group2_example1_line+1).should == @group2_example1_line
       end
 

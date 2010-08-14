@@ -25,7 +25,9 @@ module RSpec
         end
 
         let(:expected_html) do
-          raise "There is no HTML file with expected content for this platform: #{expected_file}" unless File.file?(expected_file)
+          unless File.file?(expected_file)
+            raise "There is no HTML file with expected content for this platform: #{expected_file}"
+          end
           File.read(expected_file)
         end
 
@@ -45,7 +47,7 @@ module RSpec
           # end
         # end
 
-        it "should produce HTML identical to the one we designed manually" do
+        it "produces HTML identical to the one we designed manually" do
           Dir.chdir(root) do
             actual_doc = Nokogiri::HTML(generated_html)
             backtrace_lines = actual_doc.search("div.backtrace a")

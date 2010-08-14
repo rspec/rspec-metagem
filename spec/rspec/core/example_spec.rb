@@ -23,18 +23,18 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "accessing metadata within a running example" do
-    it "should have a reference to itself when running" do
-      example.description.should == "should have a reference to itself when running"
+    it "has a reference to itself when running" do
+      example.description.should == "has a reference to itself when running"
     end
 
-    it "should be able to access the example group's top level metadata as if it were its own" do
+    it "can access the example group's top level metadata as if it were its own" do
       example.example_group.metadata.should include(:parent_metadata => 'sample')
       example.metadata.should include(:parent_metadata => 'sample')
     end
   end
 
   describe "accessing options within a running example" do
-    it "should be able to look up option values by key", :demo => :data do
+    it "can look up option values by key", :demo => :data do
       example.options[:demo].should == :data
     end
   end

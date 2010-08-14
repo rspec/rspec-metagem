@@ -145,12 +145,12 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       out.read
     end
 
-    it "should output green colorized text when running with --colour option" do
+    it "outputs green colorized text when running with --colour option" do
       pending "figure out a way to properly sandbox this"
       run_spec_via_druby.should =~ /\e\[32m/m
     end
 
-    it "should output red colorized text when running with -c option" do
+    it "outputs red colorized text when running with -c option" do
       pending "figure out a way to properly sandbox this"
       run_spec_via_druby.should =~ /\e\[31m/m
     end

@@ -76,19 +76,19 @@ module RSpec::Core
           config.filename_pattern = "**/*_foo.rb"
         end
 
-        it "should load files following pattern" do
+        it "loads files following pattern" do
           file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
           config.files_or_directories_to_run = file
           config.files_to_run.should include(file)
         end
 
-        it "should load files in directories following pattern" do
+        it "loads files in directories following pattern" do
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           config.files_or_directories_to_run = dir
           config.files_to_run.should include("#{dir}/a_foo.rb")
         end
 
-        it "should not load files in directories not following pattern" do
+        it "does not load files in directories not following pattern" do
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           config.files_or_directories_to_run = dir
           config.files_to_run.should_not include("#{dir}/a_bar.rb")
@@ -102,14 +102,14 @@ module RSpec::Core
           config.filename_pattern = "**/*_foo.rb,**/*_bar.rb"
         end
 
-        it "should support comma separated values" do
+        it "supports comma separated values" do
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           config.files_or_directories_to_run = dir
           config.files_to_run.should include("#{dir}/a_foo.rb")
           config.files_to_run.should include("#{dir}/a_bar.rb")
         end
 
-        it "should support comma separated values with spaces" do
+        it "supports comma separated values with spaces" do
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           config.files_or_directories_to_run = dir
           config.files_to_run.should include("#{dir}/a_foo.rb")
@@ -179,7 +179,7 @@ module RSpec::Core
         end
       end
 
-      it "should extend the given module into each matching example group" do
+      it "extends the given module into each matching example group" do
         RSpec.configure do |c|
           c.extend(ThatThingISentYou, :magic_key => :extend)
         end
