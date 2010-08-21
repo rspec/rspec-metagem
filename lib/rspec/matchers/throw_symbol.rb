@@ -97,8 +97,8 @@ module RSpec
     #   lambda { do_something_risky }.should_not throw_symbol
     #   lambda { do_something_risky }.should_not throw_symbol(:that_was_risky)
     #   lambda { do_something_risky }.should_not throw_symbol(:that_was_risky, culprit)
-    def throw_symbol(sym=nil)
-      Matchers::ThrowSymbol.new(sym)
+    def throw_symbol(expected_symbol = nil, expected_arg=nil)
+      Matchers::ThrowSymbol.new(expected_symbol, expected_arg)
     end
   end
 end
