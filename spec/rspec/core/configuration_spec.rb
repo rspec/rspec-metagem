@@ -289,6 +289,24 @@ module RSpec::Core
         config.filter_run :focus => true
         config.filter.should eq({:focus => true})
       end
+      
+      it "warns if :line_number is already a filter" do
+        config.filter_run :line_number => 100
+        config.should_receive(:warn).with(
+          "Filtering by {:focus=>true} is not possible since you " \
+          "are already filtering by {:line_number=>100}"
+        )
+        config.filter_run :focus => true
+      end
+      
+      it "warns if :full_description is already a filter" do
+        config.filter_run :full_description => 'foo'
+        config.should_receive(:warn).with(
+          "Filtering by {:focus=>true} is not possible since you " \
+          "are already filtering by {:full_description=>\"foo\"}"
+        )
+        config.filter_run :focus => true
+      end
     end
 
     describe "#filter_run_excluding" do
@@ -299,6 +317,8 @@ module RSpec::Core
     end
 
     describe "line_number=" do
+      before { config.stub(:warn) }
+      
       it "sets the line number" do
         config.line_number = '37'
         config.filter.should == {:line_number => 37}

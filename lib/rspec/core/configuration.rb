@@ -257,8 +257,12 @@ EOM
       end
 
       def filter_run_including(options={})
-        # TODO (DC 2010-07-03) this should probably warn when the unless clause returns true
-        self.filter = options unless filter and filter[:line_number] || filter[:full_description]
+        if filter and filter[:line_number] || filter[:full_description]
+          warn "Filtering by #{options.inspect} is not possible since " \
+               "you are already filtering by #{filter.inspect}"
+        else
+          self.filter = options
+        end
       end
 
       alias_method :filter_run, :filter_run_including
