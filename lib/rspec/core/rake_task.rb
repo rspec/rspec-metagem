@@ -67,7 +67,7 @@ module RSpec
               puts "No examples matching #{pattern} could be found"
             else
               puts spec_command.inspect if verbose
-              unless system(spec_command)
+              unless ruby("-S #{spec_command}")
                 STDERR.puts failure_message if failure_message
                 raise("#{spec_command} failed") if fail_on_error
               end
