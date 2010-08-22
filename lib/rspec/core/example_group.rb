@@ -227,10 +227,6 @@ module RSpec
         end.all?
       end
 
-      def self.to_s
-        self == RSpec::Core::ExampleGroup ? 'RSpec::Core::ExampleGroup' : name
-      end
-
       def self.all_apply?(filters)
         metadata.all_apply?(filters)
       end
