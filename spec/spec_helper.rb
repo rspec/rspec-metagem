@@ -3,20 +3,6 @@ require 'autotest/rspec2'
 
 Dir['./spec/support/**/*.rb'].map {|f| require f}
 
-module RSpec
-  module Core
-    module Matchers
-      def fail
-        raise_error(::RSpec::Expectations::ExpectationNotMetError)
-      end
-
-      def fail_with(message)
-        raise_error(::RSpec::Expectations::ExpectationNotMetError, message)
-      end
-    end
-  end
-end
-
 class NullObject
   def method_missing(method, *args, &block)
     # ignore

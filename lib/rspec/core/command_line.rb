@@ -17,6 +17,7 @@ module RSpec
         @options.configure(@configuration)
         @configuration.load_spec_files
         @configuration.configure_mock_framework
+        @configuration.configure_expectation_framework
         @world.announce_inclusion_filter
         @world.announce_exclusion_filter
 

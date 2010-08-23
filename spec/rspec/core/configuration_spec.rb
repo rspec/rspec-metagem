@@ -14,7 +14,7 @@ module RSpec::Core
       end
     end
 
-    describe "#mock_framework_class" do
+    describe "mock_framework" do
       before(:each) do
         config.stub(:require)
       end
@@ -42,6 +42,34 @@ module RSpec::Core
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')
         config.mock_with :rspec
         config.require_mock_framework_adapter
+      end
+
+    end
+
+    describe "expectation_framework" do
+
+      it "defaults to :rspec" do
+        config.should_receive(:require).with('rspec/core/expecting/with_rspec')
+        config.require_expectation_framework_adapter
+      end
+
+      [:rspec].each do |framework|
+        it "uses #{framework.inspect} framework when set explicitly" do
+          config.should_receive(:require).with("rspec/core/expecting/with_#{framework}")
+          config.mock_framework = framework
+          config.require_expectation_framework_adapter
+        end
+      end
+
+      it "supports expect_with for backward compatibility with rspec-1.x" do
+        config.should_receive(:require).with('rspec/core/expecting/with_rspec')
+        config.mock_with :rspec
+        config.require_expectation_framework_adapter
+      end
+
+      it "raises ArgumentError if framework is not supported" do
+        config.expectation_framework = :not_supported
+        expect { config.require_expectation_framework_adapter }.to raise_error(ArgumentError)
       end
 
     end
@@ -370,7 +398,7 @@ module RSpec::Core
         config.filter_run :focus => true
         config.filter.should eq({:focus => true})
       end
-      
+
       it "warns if :line_number is already a filter" do
         config.filter_run :line_number => 100
         config.should_receive(:warn).with(
@@ -379,7 +407,7 @@ module RSpec::Core
         )
         config.filter_run :focus => true
       end
-      
+
       it "warns if :full_description is already a filter" do
         config.filter_run :full_description => 'foo'
         config.should_receive(:warn).with(
@@ -399,7 +427,7 @@ module RSpec::Core
 
     describe "line_number=" do
       before { config.stub(:warn) }
-      
+
       it "sets the line number" do
         config.line_number = '37'
         config.filter.should == {:line_number => 37}

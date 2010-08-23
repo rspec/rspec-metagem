@@ -1,3 +1,5 @@
+require 'rspec/matchers'
+
 RSpec::Matchers.define :map_specs do |specs|
   match do |autotest|
     @specs = specs

@@ -31,19 +31,30 @@ module RSpec::Core
         config_options
       end
 
-      let(:command_line) do
-        CommandLine.new(config_options, config)
-      end
-
       let(:config) do
         RSpec::Core::Configuration.new
       end
 
-      let(:err) { ::StringIO.new }
+      let(:world) do
+        RSpec::Core::World.new
+      end
+
+      let(:command_line) do
+        CommandLine.new(config_options, config, world)
+      end
+
       let(:out) { ::StringIO.new }
+      let(:err) { ::StringIO.new }
 
       before do
         config.stub(:run_hook)
+
+        config.should_receive(:load_spec_files)
+        config.should_receive(:configure_mock_framework)
+        config.should_receive(:configure_expectation_framework)
+
+        world.should_receive(:announce_inclusion_filter)
+        world.should_receive(:announce_exclusion_filter)
       end
 
       it "configures streams before command line options" do
