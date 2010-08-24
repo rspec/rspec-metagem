@@ -3,10 +3,10 @@ require "spec_helper"
 module RSpec::Core::Formatters
 
   describe BaseTextFormatter do
-    describe "#summary_line" do
-      let(:output) { StringIO.new }
-      let(:formatter) { RSpec::Core::Formatters::BaseTextFormatter.new(output) }
+    let(:output) { StringIO.new }
+    let(:formatter) { RSpec::Core::Formatters::BaseTextFormatter.new(output) }
 
+    describe "#summary_line" do
       context "with 0s" do
         it "outputs pluralized (excluding pending)" do
           formatter.summary_line(0,0,0).should eq("0 examples, 0 failures")
@@ -28,16 +28,43 @@ module RSpec::Core::Formatters
 
     describe "#dump_failures" do
       it "preserves formatting" do
-        output = StringIO.new
         group = RSpec::Core::ExampleGroup.describe("group name")
         example = group.example("example name") { "this".should eq("that") }
-        formatter = RSpec::Core::Formatters::BaseTextFormatter.new(output)
         group.run_all(formatter)
 
         RSpec.configuration.stub(:color_enabled?) { false }
         formatter.dump_failures
         output.string.should =~ /group name example name/m
         output.string.should =~ /(\s+)expected \"that\"\n\1     got \"this\"/m
+      end
+    end
+
+    describe "#dump_profile" do
+      before do
+        formatter.stub(:examples) do
+          group = RSpec::Core::ExampleGroup.describe("group") do
+            example("example")
+          end
+          group.run_all(double('reporter').as_null_object)
+          group.examples
+        end
+      end
+
+      it "names the example" do
+        formatter.dump_profile
+        output.string.should =~ /group example/m
+      end
+
+      it "prints the time" do
+        formatter.dump_profile
+        output.string.should =~ /0\.\d+ seconds/
+      end
+
+      it "prints the path" do
+        formatter.dump_profile
+        filename = __FILE__.split(File::SEPARATOR).last
+
+        output.string.should =~ /#{filename}\:46/
       end
     end
   end

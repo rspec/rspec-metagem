@@ -48,18 +48,18 @@ module RSpec
 
         def dump_summary(duration, example_count, failure_count, pending_count)
           super(duration, example_count, failure_count, pending_count)
-          output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
-
-          output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
-
           # Don't print out profiled info if there are failures, it just clutters the output
-          if profile_examples? && failure_count == 0
-            sorted_examples = examples.sort_by { |example| example.execution_result[:run_time] }.reverse.first(10)
-            output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
-            sorted_examples.each do |example|
-              output.puts "  (#{format_seconds(example.execution_result[:run_time])} seconds) #{example}"
-              output.puts grey("   # #{format_caller(example.metadata[:location])}")
-            end
+          dump_profile if profile_examples? && failure_count == 0
+          output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
+          output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
+        end
+
+        def dump_profile
+          sorted_examples = examples.sort_by { |example| example.execution_result[:run_time] }.reverse.first(10)
+          output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
+          sorted_examples.each do |example|
+            output.puts "  #{example.full_description}"
+            output.puts grey("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.metadata[:location])}")
           end
         end
 
