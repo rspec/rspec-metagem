@@ -104,32 +104,36 @@ Feature: Shared example group
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """
-    shared_examples_for "a measurable object" do |measurement_method, measurement|
-      it "should return #{measurement} from ##{measurement_method}" do
-        subject.send(measurement_method).should == measurement
+    shared_examples_for "a measurable object" do |measurement, measurement_methods|
+      measurement_methods.each do |measurement_method|
+        it "should return #{measurement} from ##{measurement_method}" do
+          subject.send(measurement_method).should == measurement
+        end
       end
     end
 
     describe Array, "with 3 items" do
       subject { [1, 2, 3] }
-      it_should_behave_like "a measurable object", :size, 3
+      it_should_behave_like "a measurable object", 3, [:size, :length]
     end
 
     describe String, "of 6 characters" do
       subject { "FooBar" }
-      it_should_behave_like "a measurable object", :length, 6
+      it_should_behave_like "a measurable object", 6, [:size, :length]
     end
     """
     When I run "rspec shared_example_group_params_spec.rb --format documentation"
-    Then the output should contain "2 examples, 0 failures"
+    Then the output should contain "4 examples, 0 failures"
     And the output should contain:
       """
       Array with 3 items
         it should behave like a measurable object
           should return 3 from #size
+          should return 3 from #length
 
       String of 6 characters
         it should behave like a measurable object
+          should return 6 from #size
           should return 6 from #length
       """
 

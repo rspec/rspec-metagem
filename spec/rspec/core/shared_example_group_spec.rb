@@ -98,6 +98,23 @@ module RSpec::Core
 
           passed_params.should == { :param1 => :value1, :param2 => :value2 }
         end
+
+        it "adds shared instance methods to nested group" do
+          shared_examples_for("thing") do |param1|
+            def foo; end
+          end
+          group = ExampleGroup.describe('fake group')
+          shared_group = group.it_should_behave_like("thing", :a)
+          shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+        end
+
+        it "evals the shared example group only once" do
+          eval_count = 0
+          shared_examples_for("thing") { |p| eval_count += 1 }
+          group = ExampleGroup.describe('fake group')
+          shared_group = group.it_should_behave_like("thing", :a)
+          eval_count.should == 1
+        end
       end
 
       context "given a block" do
