@@ -138,7 +138,7 @@ module RSpec::Core
 
     end
 
-    describe "include" do
+    describe "#include" do
 
       module InstanceLevelMethods
         def you_call_this_a_blt?
@@ -172,7 +172,7 @@ module RSpec::Core
 
     end
 
-    describe "extend" do
+    describe "#extend" do
 
       module ThatThingISentYou
         def that_thing
@@ -202,7 +202,7 @@ module RSpec::Core
       end
     end
 
-    describe 'color_enabled=' do
+    describe "#color_enabled=" do
       context "given true" do
         context "on windows" do
           before do
@@ -337,7 +337,7 @@ module RSpec::Core
       end
     end
 
-    describe "full_backtrace=" do
+    describe "#full_backtrace=" do
       it "clears the backtrace clean patterns" do
         config.full_backtrace = true
         config.backtrace_clean_patterns.should == []
@@ -352,14 +352,14 @@ module RSpec::Core
       end
     end
 
-    describe "debug=true" do
+    describe "#debug=true" do
       it "requires 'ruby-debug'" do
         config.should_receive(:require).with('ruby-debug')
         config.debug = true
       end
     end
 
-    describe "debug=false" do
+    describe "#debug=false" do
       it "does not require 'ruby-debug'" do
         config.should_not_receive(:require).with('ruby-debug')
         config.debug = false
@@ -374,14 +374,14 @@ module RSpec::Core
       end
     end
 
-    describe "libs=" do
+    describe "#libs=" do
       it "adds directories to the LOAD_PATH" do
         $LOAD_PATH.should_receive(:unshift).with("a/dir")
         config.libs = ["a/dir"]
       end
     end
 
-    describe "requires=" do
+    describe "#requires=" do
       it "requires paths" do
         config.should_receive(:require).with("a/path")
         config.requires = ["a/path"]
