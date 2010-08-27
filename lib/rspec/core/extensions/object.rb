@@ -6,8 +6,6 @@ module RSpec
         args.last.update :caller => caller(1)
         RSpec::Core::ExampleGroup.describe(*args, &example_group_block)
       end
-
-      alias :context :describe
     end
   end
 end
