@@ -6,20 +6,20 @@ module RSpec
 
         def initialize(output)
           super(output)
-          @previous_nested_example_groups = []
+          @group_level = 0
         end
 
         def example_group_started(example_group)
           super(example_group)
 
-          example_group_chain.each_with_index do |nested_example_group, i|
-            unless nested_example_group == @previous_nested_example_groups[i]
-              output.puts if i == 0
-              output.puts "#{'  ' * i}#{nested_example_group.description}"
-            end
-          end
+          output.puts if @group_level == 0
+          output.puts "#{'  ' * @group_level}#{example_group.description}"
 
-          @previous_nested_example_groups = example_group_chain
+          @group_level += 1
+        end
+
+        def example_group_finished(example_group)
+          @group_level -= 1
         end
 
         def example_passed(example)
@@ -55,7 +55,7 @@ module RSpec
         end
 
         def current_indentation
-          '  ' * @previous_nested_example_groups.size
+          '  ' * @group_level
         end
 
         def example_group_chain

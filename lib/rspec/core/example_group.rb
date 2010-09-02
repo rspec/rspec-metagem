@@ -212,6 +212,7 @@ module RSpec
           result_for_this_group && results_for_descendants
         ensure
           eval_after_alls(example_group_instance)
+          reporter.example_group_finished(self)
         end
       end
 

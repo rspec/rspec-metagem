@@ -33,6 +33,10 @@ module RSpec::Core
       notify :example_group_started, group
     end
 
+    def example_group_finished(group)
+      notify :example_group_finished, group
+    end
+
     def example_started(example)
       notify :example_started, example
     end

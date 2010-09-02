@@ -38,6 +38,11 @@ module RSpec
           @example_group = example_group
         end
 
+        # This method is invoked at the end of the execution of each example group.
+        # +example_group+ is the example_group.
+        def example_group_finished(example_group)
+        end
+
         def add_example_group(example_group)
           RSpec.deprecate("add_example_group", "example_group_started")
           example_group_started(example_group)

@@ -13,6 +13,29 @@ module RSpec::Core
 
         reporter.example_started(example)
       end
+
+      it "passes example_group_started and example_group_finished messages to that formatter in that order" do
+        order = []
+
+        formatter = stub("formatter")
+        formatter.stub(:example_group_started) { |group| order << "Started: #{group.description}" }
+        formatter.stub(:example_group_finished) { |group| order << "Finished: #{group.description}" }
+
+        group = ExampleGroup.describe("root")
+        group.describe("context 1")
+        group.describe("context 2")
+
+        group.run_all(Reporter.new(formatter))
+
+        order.should == [
+           "Started: root",
+           "Started: context 1",
+           "Finished: context 1",
+           "Started: context 2",
+           "Finished: context 2",
+           "Finished: root"
+        ]
+      end
     end
 
     context "given multiple formatters" do
