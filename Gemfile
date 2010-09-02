@@ -1,7 +1,6 @@
 source "http://rubygems.org"
 
 gem "rake"
-gem "jeweler"
 gem "cucumber"
 gem "aruba", ">= 0.2.0"
 gem "autotest"
