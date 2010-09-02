@@ -32,6 +32,13 @@ describe Autotest::Rspec2 do
     it "should return a blank command for no files" do
       @rspec_autotest.make_test_cmd({}).should == ''
     end
+
+    it "should quote the paths of files to test" do
+      cmd = @rspec_autotest.make_test_cmd(@files_to_test)
+      @files_to_test.keys.each do |file_to_test|
+        cmd.should =~ /'#{File.expand_path(file_to_test)}'/
+      end
+    end
   end
 
   describe "mappings" do
