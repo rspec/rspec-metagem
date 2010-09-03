@@ -205,14 +205,23 @@ module RSpec
         @reporter = reporter
         example_group_instance = new
         reporter.example_group_started(self)
+
         begin
           eval_before_alls(example_group_instance)
           result_for_this_group = run_examples(example_group_instance, reporter)
           results_for_descendants = children.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
+        rescue Exception => ex
+          fail_filtered_examples(ex)
         ensure
           eval_after_alls(example_group_instance)
           reporter.example_group_finished(self)
+        end
+      end
+
+      def self.fail_filtered_examples(exception)
+        filtered_examples.each do |example|
+          example.metadata[:execution_result] = { :exception_encountered => exception }
         end
       end
 

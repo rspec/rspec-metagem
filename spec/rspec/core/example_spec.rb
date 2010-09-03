@@ -163,11 +163,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     context "in before(:all)" do
-      it "is not supported" do
+      pending "is not supported" do
         group = RSpec::Core::ExampleGroup.describe do
           before(:all) { pending }
           example {}
         end
+        group.run_all
+        group.examples.first.should be_pending
         expect do
           group.run_all
         end.to raise_error(/undefined method `metadata'/)

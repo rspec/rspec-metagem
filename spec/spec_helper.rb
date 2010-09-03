@@ -54,7 +54,7 @@ end
 
 RSpec.configure do |c|
   c.color_enabled = !in_editor?
-  c.filter_run :focus => true
+  c.filter_run :focused => true
   c.run_all_when_everything_filtered = true
   c.filter_run_excluding :ruby => lambda {|version|
     case version.to_s

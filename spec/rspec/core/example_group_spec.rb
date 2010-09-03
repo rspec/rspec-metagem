@@ -325,14 +325,15 @@ module RSpec::Core
       end
 
       it "treats an error in before(:all) as a failure" do
-        pending("fix issue 21 - treat error in before all as failure") do
-          group = ExampleGroup.describe
-          group.before(:all) { raise "error in before all" }
-          example = group.example("equality") { 1.should == 2}
-          group.run_all
+        group = ExampleGroup.describe
+        group.before(:all) { raise "error in before all" }
+        example = group.example("equality") { 1.should == 2}
+        group.run_all
 
-          example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
-        end
+        example.metadata.should_not be_nil
+        example.metadata[:execution_result].should_not be_nil
+        example.metadata[:execution_result][:exception_encountered].should_not be_nil
+        example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
       end
 
       it "has no 'running example' within before(:all)" do
