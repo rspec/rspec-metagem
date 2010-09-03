@@ -23,9 +23,9 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
-  s.post_install_message = %q{**************************************************
+  s.post_install_message = %Q{**************************************************
 
-  Thank you for installing rspec-core-2.0.0.beta.20
+  Thank you for installing #{s.summary}
 
   Please be sure to look at Upgrade.markdown to see what might have changed
   since the last release.
