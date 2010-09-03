@@ -15,6 +15,8 @@
   * don't stumble over an exception without a message (Hans Hasselberg)
   * remove non-ascii characters from comments that were choking rcov (Geoffrey
     Byers)
+  * fixed backtrace so it doesn't include lines from before the autorun at_exit
+    hook (Myron Marston)
 
 ### 2.5.1 / 2011-02-06
 

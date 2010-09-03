@@ -56,4 +56,24 @@ describe RSpec::Core::Formatters::BaseFormatter do
     end
   end
 
+  describe "#format_backtrace" do
+    let(:rspec_expectations_dir) { "/path/to/rspec-expectations/lib" }
+    let(:rspec_core_dir) { "/path/to/rspec-core/lib" }
+    let(:backtrace) do
+      [
+        "#{rspec_expectations_dir}/rspec/matchers/operator_matcher.rb:51:in `eval_match'",
+        "#{rspec_expectations_dir}/rspec/matchers/operator_matcher.rb:29:in `=='",
+        "./my_spec.rb:5",
+        "#{rspec_core_dir}/rspec/core/example.rb:52:in `run'",
+        "#{rspec_core_dir}/rspec/core/runner.rb:37:in `run'",
+        RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE,
+        "./my_spec.rb:3"
+      ]
+    end
+
+    it "removes lines from rspec and lines that come before the invocation of the at_exit autorun hook" do
+      formatter.format_backtrace(backtrace, stub.as_null_object).should == ["./my_spec.rb:5"]
+    end
+  end
+
 end

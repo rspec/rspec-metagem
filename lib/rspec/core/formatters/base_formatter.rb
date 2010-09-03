@@ -95,6 +95,11 @@ module RSpec
         def format_backtrace(backtrace, example)
           return "" unless backtrace
           return backtrace if example.metadata[:full_backtrace] == true
+
+          if at_exit_index = backtrace.index(RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE)
+            backtrace = backtrace[0, at_exit_index]
+          end
+
           cleansed = backtrace.map { |line| backtrace_line(line) }.compact
           cleansed.empty? ? backtrace : cleansed
         end
