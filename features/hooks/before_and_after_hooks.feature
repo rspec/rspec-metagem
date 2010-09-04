@@ -97,6 +97,45 @@ Feature: before and after hooks
     When I run "rspec ./before_all_spec.rb:15"
     Then the output should contain "1 example, 0 failures"
 
+  @wip
+  Scenario: failure in before(:all) block
+    Given a file named "before_all_spec.rb" with:
+      """
+      describe "an error in before(:all)" do
+        before(:all) do
+          raise "oops"
+        end
+
+        it "fails this example" do
+        end
+
+        it "fails this example, too" do
+        end
+
+        after(:all) do
+          puts "after all ran"
+        end
+      end
+      """
+    When I run "rspec ./before_all_spec.rb --format documentation"
+    Then the output should contain "2 examples, 2 failures"
+    And the output should contain:
+      """
+      an error in before(:all)
+        fails this example (FAILED - 1)
+        fails this example, too (FAILED - 2)
+      after all ran
+      """
+
+    When I run "rspec ./before_all_spec.rb:9 --format documentation"
+    Then the output should contain "1 example, 1 failure"
+    And the output should contain:
+      """
+      an error in before(:all)
+        fails this example, too (FAILED - 1)
+      after all ran
+      """
+
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """
