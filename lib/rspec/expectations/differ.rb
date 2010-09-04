@@ -41,8 +41,10 @@ module RSpec
         output << oldhunk.diff(format) << "\n"
       end  
 
-      def diff_as_object(target,expected)
-        diff_as_string(PP.pp(target,""), PP.pp(expected,""))
+      def diff_as_object(actual,expected)
+        actual = String === actual ? actual : PP.pp(actual,"")
+        expected = String === expected ? expected : PP.pp(expected,"")
+        diff_as_string(actual, expected)
       end
 
     protected
