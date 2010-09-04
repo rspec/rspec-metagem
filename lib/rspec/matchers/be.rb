@@ -177,32 +177,6 @@ it is a bit confusing.
 
     end
 
-    class BeSameAs < Be
-      
-      def initialize(*args, &block)
-        @expected = args.shift
-        @args = args
-      end
-      
-      def matches?(actual)
-        @actual = actual
-        @actual.equal?(@expected)
-      end
-
-      def failure_message_for_should
-        "expected #{@expected}, got #{@actual.inspect}"
-      end
-      
-      def failure_message_for_should_not
-        "expected not #{@expected}, got #{@actual.inspect}"
-      end
-
-      def description
-        "be #{expected_to_sentence}#{args_to_sentence}"
-      end
-
-    end
- 
     # :call-seq:
     #   should be_true
     #   should be_false
@@ -235,8 +209,7 @@ it is a bit confusing.
     #   target.should_not be_old_enough(16) #passes unless target.old_enough?(16)
     def be(*args)
       args.empty? ?
-        Matchers::Be.new :
-        Matchers::BeSameAs.new(*args)
+        Matchers::Be.new : equal(*args)
     end
 
     # passes if target.kind_of?(klass)

@@ -386,25 +386,16 @@ describe "should_not be" do
 end
 
 describe "should be(value)" do
-  it "passes if actual.equal?(value)" do
+  it "delegates to equal" do
+    self.should_receive(:equal).with(5)
     5.should be(5)
-  end
-
-  it "fails if !actual.equal?(value)" do
-    lambda { 5.should be(6) }.should fail_with("expected 6, got 5")
-  end
-
-  it "describes itself" do
-    be(5).description.should == "be 5"
   end
 end
 
 describe "should_not be(value)" do
-  it "passes if !actual.equal?(value)" do
-    5.should_not be(6)
-  end
-  it "fails if !actual.equal?(value)" do
-    lambda { 5.should_not be(5) }.should fail_with("expected not 5, got 5")
+  it "delegates to equal" do
+    self.should_receive(:equal).with(4)
+    5.should_not be(4)
   end
 end
 
