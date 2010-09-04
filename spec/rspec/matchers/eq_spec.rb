@@ -3,6 +3,10 @@ require 'spec_helper'
 module RSpec
   module Matchers
     describe "eq" do
+      it "is diffable" do
+        eq(1).should be_diffable
+      end
+
       it "matches when actual == expected" do
         1.should eq(1)
       end

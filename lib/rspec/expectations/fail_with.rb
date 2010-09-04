@@ -21,7 +21,7 @@ module RSpec
             if any_multiline_strings?(actual, expected)
               message << "\nDiff:" << self.differ.diff_as_string(actual, expected)
             end
-          elsif no_procs?(actual, expected)
+          elsif no_procs?(actual, expected) && no_numbers?(actual, expected)
             message << "\nDiff:" << self.differ.diff_as_object(actual, expected)
           end
         end
@@ -41,6 +41,10 @@ module RSpec
 
       def any_multiline_strings?(*args)
         all_strings?(*args) && args.any? {|a| a =~ /\n/}
+      end
+
+      def no_numbers?(*args)
+        args.none? {|a| Numeric === a}
       end
     end
   end

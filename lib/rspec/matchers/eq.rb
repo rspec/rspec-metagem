@@ -14,6 +14,9 @@ module RSpec
     #   5.should_not eq(3)
     def eq(expected)
       Matcher.new :eq, expected do |_expected_|
+
+        diffable
+
         match do |actual|
           actual == _expected_
         end

@@ -14,6 +14,9 @@ module RSpec
     #   5.should_not eql(3)
     def eql(expected)
       Matcher.new :eql, expected do |_expected_|
+
+        diffable
+
         match do |actual|
           actual.eql?(_expected_)
         end
