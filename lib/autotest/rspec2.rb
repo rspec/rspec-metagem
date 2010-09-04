@@ -42,7 +42,7 @@ class Autotest::Rspec2 < Autotest
   end
 
   def require_rubygems
-    defined?(:Gem) ? "-rrubygems " : ""
+    using_bundler? ? "" : defined?(:Gem) ? "-rrubygems " : ""
   end
 
   def normalize(files_to_test)
@@ -50,6 +50,14 @@ class Autotest::Rspec2 < Autotest
       result[File.expand_path(filename)] = []
       result
     end
+  end
+
+  def ruby
+    using_bundler? ? "bundle exec" : super
+  end
+
+  def using_bundler?
+    File.exists?('./Gemfile')
   end
 
 end
