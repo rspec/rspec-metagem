@@ -91,14 +91,14 @@ module RSpec
                             cmd_parts.unshift runner_options
                             cmd_parts.unshift runner
                             cmd_parts.unshift bundler
-                            cmd_parts += files_to_run.map { |fn| %["#{fn}"] }
+                            cmd_parts += files_to_run.map { |f| %["#{f}"] }
                             cmd_parts << spec_opts.join(" ")
-                            cmd_parts.join(" ")
+                            cmd_parts.flatten.compact.reject{|p| p == ""}.join(" ")
                           end
       end
 
       def runner
-        rcov ? rcov_path : RUBY
+        rcov ? rcov_path : 'rspec'
       end
 
       def runner_options
@@ -106,7 +106,7 @@ module RSpec
       end
 
       def bundler
-        File.exist?("./Gemfile") ? "bundle exec " : ""
+        File.exist?("./Gemfile") ? %w[bundle exec] : nil
       end
     end
 
