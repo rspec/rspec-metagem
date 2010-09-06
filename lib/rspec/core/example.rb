@@ -73,6 +73,12 @@ module RSpec
         @exception ||= exception
       end
 
+      def fail_fast(reporter, exception)
+        start(reporter)
+        set_exception(exception)
+        finish(reporter)
+      end
+
     private
 
       def with_pending_capture(&block)

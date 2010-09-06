@@ -212,17 +212,15 @@ module RSpec
           results_for_descendants = children.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
-          fail_filtered_examples(ex)
+          fail_filtered_examples(ex, reporter)
         ensure
           eval_after_alls(example_group_instance)
           reporter.example_group_finished(self)
         end
       end
 
-      def self.fail_filtered_examples(exception)
-        filtered_examples.each do |example|
-          example.metadata[:execution_result] = { :exception_encountered => exception }
-        end
+      def self.fail_filtered_examples(exception, reporter)
+        filtered_examples.each { |example| example.fail_fast(reporter, exception) }
       end
 
       def self.run_examples(instance, reporter)

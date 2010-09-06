@@ -97,7 +97,6 @@ Feature: before and after hooks
     When I run "rspec ./before_all_spec.rb:15"
     Then the output should contain "1 example, 0 failures"
 
-  @wip
   Scenario: failure in before(:all) block
     Given a file named "before_all_spec.rb" with:
       """
