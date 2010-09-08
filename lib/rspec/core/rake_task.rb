@@ -8,40 +8,69 @@ module RSpec
 
     class RakeTask < ::Rake::TaskLib
 
-      # Name of task. (default is :spec)
+      # Name of task.
+      #
+      # default:
+      #   :spec
       attr_accessor :name
 
-      # Glob pattern to match files. (default is 'spec/**/*_spec.rb')
+      # Glob pattern to match files.
+      #
+      # default:
+      #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
-      # If true, requests that the specs be run with the warning flag set.
-      # E.g. warning=true implies "ruby -w" used to run the specs. Defaults to false.
+      # When true, requests that the specs be run with the warning flag set.
+      # e.g. "ruby -w"
+      #
+      # default:
+      #   false
       attr_accessor :warning
 
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
-      # Defaults to true.
+      #
+      # default:
+      #   true
       attr_accessor :fail_on_error
 
       # A message to print to stderr when there are failures.
       attr_accessor :failure_message
 
-      # Use verbose output. If this is set to true, the task will print
-      # the executed spec command to stdout. Defaults to false.
+      # Use verbose output. If this is set to true, the task will print the
+      # executed spec command to stdout.
+      #
+      # default:
+      #   false
       attr_accessor :verbose
 
-      # Use rcov for code coverage? defaults to false
+      # Use rcov for code coverage?
+      #
+      # default:
+      #   false
       attr_accessor :rcov
 
-      # Path to rcov. You can set this to 'bundle exec rcov' if you bundle rcov.
+      # Path to rcov.
+      #
+      # defaults:
+      #   'rcov'
       attr_accessor :rcov_path
 
-      # Options to pass to rcov. Defaults to blank.
+      # Command line options to pass to rcov.
+      #
+      # default:
+      #   nil
       attr_accessor :rcov_opts
 
-      # Options to pass to ruby. Defaults to blank.
+      # Command line options to pass to ruby.
+      #
+      # default:
+      #   nil
       attr_accessor :ruby_opts
 
-      # Options to pass to rspec. Defaults to blank.
+      # Command line options to pass to rspec.
+      #
+      # default:
+      #   nil
       attr_accessor :rspec_opts
 
       # Deprecated. Use rspec_opts instead.
