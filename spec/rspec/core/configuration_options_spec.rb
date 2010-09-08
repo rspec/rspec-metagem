@@ -159,14 +159,14 @@ describe RSpec::Core::ConfigurationOptions do
 
       it "turns off the debugger option if --drb is specified in the options file" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb  ] }
+        IO.stub(:read) { "--drb" }
         config_options_object("--debug").drb_argv.should_not include("--debug")
         config_options_object("-d"     ).drb_argv.should_not include("--debug")
       end
 
       it "turns off the debugger option if --debug is specified in the options file" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --debug  ] }
+        IO.stub(:read) { "--debug" }
         config_options_object("--drb").drb_argv.should_not include("--debug")
         config_options_object("-X"   ).drb_argv.should_not include("--debug")
       end
@@ -197,7 +197,7 @@ describe RSpec::Core::ConfigurationOptions do
     context "--drb specified in the options file" do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --color ] }
+        IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --format s --line_number 1 --example pattern --profile --backtrace ]).
           drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
@@ -206,7 +206,7 @@ describe RSpec::Core::ConfigurationOptions do
     context "--drb specified in ARGV and the options file" do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --color ] }
+        IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
@@ -215,7 +215,7 @@ describe RSpec::Core::ConfigurationOptions do
     context "--drb specified in ARGV and in as ARGV-specified --options file" do
       it "renders all the original arguments except --drb and --options" do
         File.stub(:exist?) { true }
-        File.stub(:readlines) { %w[ --drb --color ] }
+        IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
       end
@@ -227,17 +227,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "loads automatically" do
       File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--format", "doc"] }
-
-      config_options = RSpec::Core::ConfigurationOptions.new([])
-      config_options.parse_options
-      config_options.configure(config)
-      config.formatter.should == 'doc'
-    end
-
-    it "allows options on one line" do
-      File.stub(:exist?) { true }
-      File.stub(:readlines) { ["--format doc"] }
+      IO.stub(:read) { "--format doc" }
 
       config_options = RSpec::Core::ConfigurationOptions.new([])
       config_options.parse_options
@@ -247,12 +237,12 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "merges options from the global and local .rspec and the command line" do
       File.stub(:exist?){ true }
-      File.stub(:readlines) do |path|
+      IO.stub(:read) do |path|
         case path
         when ".rspec"
-          ["--format", "documentation"]
+          "--format documentation"
         when /\.rspec/
-          ["--line", "37"]
+          "--line 37"
         else
           raise "Unexpected path: #{path}"
         end
@@ -269,12 +259,12 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "prefers local options over global" do
       File.stub(:exist?){ true }
-      File.stub(:readlines) do |path|
+      IO.stub(:read) do |path|
         case path
         when ".rspec"
-          ["--format", "local"]
+          "--format local"
         when /\.rspec/
-          ["--format", "global"]
+          "--format global"
         else
           raise "Unexpected path: #{path}"
         end

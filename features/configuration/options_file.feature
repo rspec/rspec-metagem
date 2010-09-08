@@ -1,27 +1,21 @@
-Feature: spec/spec.opts
+Feature: options file
+  
+  To load in configuration options from a file, RSpec will look
+  for a ".rspec" file.
+  
+  There are two types of ".rspec" files: local and global. Local
+  exists in the project root directory, while global exists in
+  the system root directory (~). Examples:
+  
+    Local:  "~/path/to/project/.rspec"
+    Global: "~/.rspec"
 
-  For backwards compatibility with rspec-1, you can write command
-  line options in a spec/spec.opts file and it will be loaded
-  automatically.
-
-  Options declared in spec/spec.opts will override configuration
-  set up in RSpec.configure blocks.
-
-  Scenario: color set in RSpec.configure
-    Given a file named "spec/example_spec.rb" with:
-      """
-      RSpec.configure {|c| c.color_enabled = true }
-
-      describe "color_enabled" do
-        context "when set with RSpec.configure" do
-          it "is true" do
-            RSpec.configuration.color_enabled?.should be_true
-          end
-        end
-      end
-      """
-    When I run "rspec ./spec/example_spec.rb"
-    Then the output should contain "1 example, 0 failures"
+  The local file will override the global file, while options
+  declared in RSpec.configure will override any ".rspec" file.
+  
+  NOTE: For backwards compatibility with rspec-1, you can write
+  command line options in a "spec/spec.opts" file and it will be
+  loaded automatically.
             
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
@@ -33,7 +27,7 @@ Feature: spec/spec.opts
       describe "color_enabled" do
         context "when set with RSpec.configure" do
           it "is true" do
-            RSpec.configuration.color_enabled?.should be_true
+            RSpec.configuration.should be_color_enabled
           end
         end
       end
@@ -41,7 +35,7 @@ Feature: spec/spec.opts
     When I run "rspec ./spec/example_spec.rb"
     Then the output should contain "1 example, 0 failures"
 
-  Scenario: formatter set in both (RSpec.configure wins)
+  Scenario: formatter set in RSpec.configure overrides .rspec
     Given a file named ".rspec" with:
       """
       --format progress
@@ -64,4 +58,19 @@ Feature: spec/spec.opts
       """
     When I run "rspec ./spec/example_spec.rb"
     Then the output should contain "1 example, 0 failures"
-
+    
+  Scenario: using ERB in .rspec
+    Given a file named ".rspec" with:
+      """
+      --format <%= true ? 'documentation' : 'progress' %>
+      """
+    And a file named "spec/example_spec.rb" with:
+      """
+      describe "formatter" do
+        it "is set to documentation" do
+          RSpec.configuration.formatter.should be_an(RSpec::Core::Formatters::DocumentationFormatter)
+        end
+      end
+      """
+    When I run "rspec ./spec/example_spec.rb"
+    Then the output should contain "1 example, 0 failures"

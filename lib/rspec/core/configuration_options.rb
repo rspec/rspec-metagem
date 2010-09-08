@@ -77,10 +77,15 @@ module RSpec
       def parse_options_file(path)
         Parser.parse(args_from_options_file(path))
       end
-
+      
       def args_from_options_file(path)
         return [] unless File.exist?(path)
-        File.readlines(path).map {|l| l.split}.flatten
+        config_string = options_file_as_erb_string(path)
+        config_string.split(/\n+/).map {|l| l.split}.flatten
+      end
+      
+      def options_file_as_erb_string(path)
+        ERB.new(IO.read(path)).result(binding)
       end
 
       def local_options_file(options)
