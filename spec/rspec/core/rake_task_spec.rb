@@ -5,13 +5,12 @@ module RSpec::Core
   describe RakeTask do
     let(:task) { RakeTask.new }
 
-    def with_bundler
-      File.stub(:exist?) { true }
-      yield
+    before do
+      File.stub(:exist?) { false }
     end
 
-    def without_bundler
-      File.stub(:exist?) { false }
+    def with_bundler
+      File.stub(:exist?) { true }
       yield
     end
 
@@ -20,54 +19,85 @@ module RSpec::Core
       yield
     end
 
-    def without_rcov
-      yield
-    end
-
     def spec_command
       task.__send__(:spec_command)
     end
 
-    context "without bundler" do
-      context "without rcov" do
-        it "renders rspec" do
-          without_bundler do
-            without_rcov do
-              spec_command.should =~ /^rspec/
-            end
-          end
+    context "default" do
+      it "renders rspec" do
+        spec_command.should =~ /^-S rspec/
+      end
+    end
+
+    context "with bundler" do
+      it "renders bundle exec rspec" do
+        with_bundler do
+          spec_command.should =~ /^-S bundle exec rspec/
         end
       end
+    end
 
-      context "with rcov" do
-        it "renders rcov" do
-          without_bundler do
-            with_rcov do
-              spec_command.should =~ /^rcov/
-            end
+    context "with rcov" do
+      it "renders rcov" do
+        with_rcov do
+          spec_command.should =~ /^-S rcov/
+        end
+      end
+    end
+
+    context "with bundler and rcov" do
+      it "renders bundle exec rcov" do
+        with_bundler do
+          with_rcov do
+            spec_command.should =~ /^-S bundle exec rcov/
           end
         end
       end
     end
 
-    context "with bundler" do
-      context "without rcov" do
-        it "renders bundle exec rspec" do
-          with_bundler do
-            without_rcov do
-              spec_command.should =~ /^bundle exec rspec/
-            end
-          end
+    context "with warnings on" do
+      it "renders -w before the -S" do
+        task.warning = true
+        spec_command.should =~ /^-w -S rspec/
+      end
+    end
+
+    context "with ruby options" do
+      it "renders them before -S" do
+        task.ruby_opts = "-w"
+        spec_command.should =~ /^-w -S rspec/
+      end
+    end
+
+    context "with rcov_opts" do
+      context "with rcov=false (default)" do
+        it "does not add the rcov options to the command" do
+          task.rcov_opts = '--exclude "mocks"'
+          spec_command.should_not =~ /--exclude "mocks"/
         end
       end
 
-      context "with rcov" do
-        it "renders bundle exec rcov" do
-          with_bundler do
-            with_rcov do
-              spec_command.should =~ /^bundle exec rcov/
-            end
-          end
+      context "with rcov=true" do
+        it "renders them after rcov" do
+          task.rcov = true
+          task.rcov_opts = '--exclude "mocks"'
+          spec_command.should =~ /^-S rcov --exclude "mocks"/
+        end
+      end
+    end
+
+    context "with spec_opts" do
+      context "with rcov=true" do
+        it "does not add the spec_opts" do
+          task.rcov = true
+          task.spec_opts = "-Ifoo"
+          spec_command.should_not =~ /-Ifoo/
+        end
+      end
+      context "with rcov=false (default)" do
+        it "adds the spec_opts" do
+          task.spec_opts = "-Ifoo"
+          spec_command.should =~ /rspec -Ifoo/
         end
       end
     end
