@@ -44,6 +44,7 @@ module RSpec
       # Options to pass to rspec. Defaults to blank.
       attr_accessor :rspec_opts
 
+      # Deprecated. Use rspec_opts instead.
       def spec_opts=(opts)
         RSpec.deprecate("spec_opts","rspec_opts")
         @rspec_opts = opts
