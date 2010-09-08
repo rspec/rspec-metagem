@@ -20,12 +20,18 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
+      # Deprecated. Use ruby_opts="-w" instead.
       # When true, requests that the specs be run with the warning flag set.
       # e.g. "ruby -w"
       #
       # default:
       #   false
-      attr_accessor :warning
+      attr_reader :warning
+
+      def warning=(true_or_false)
+        RSpec.deprecate("warning", 'ruby_opts="-w"')
+        @warning = true_or_false
+      end
 
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
       #

@@ -56,9 +56,16 @@ module RSpec::Core
     end
 
     context "with warnings on" do
+      before { RSpec.stub(:deprecate) }
+
       it "renders -w before the -S" do
         task.warning = true
         spec_command.should =~ /^-w -S rspec/
+      end
+
+      it "warns about deprecation" do
+        RSpec.should_receive(:deprecate)
+        task.warning = true
       end
     end
 
