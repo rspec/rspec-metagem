@@ -1,21 +1,16 @@
-Feature: options file
-  
-  To load in configuration options from a file, RSpec will look
-  for a ".rspec" file.
-  
-  There are two types of ".rspec" files: local and global. Local
-  exists in the project root directory, while global exists in
-  the system root directory (~). Examples:
-  
-    Local:  "~/path/to/project/.rspec"
-    Global: "~/.rspec"
+Feature: read command line configuration options from files
 
-  The local file will override the global file, while options
-  declared in RSpec.configure will override any ".rspec" file.
+  RSpec will read command line configuration options from files in
+  two different locations:
   
-  NOTE: For backwards compatibility with rspec-1, you can write
-  command line options in a "spec/spec.opts" file and it will be
-  loaded automatically.
+    Local:  "./.rspec" (i.e. in the project's root directory)
+    Global: "~/.rspec" (i.e. in the user's home directory)
+
+  Options declared in the local file override those in the global file, while
+  those declared in RSpec.configure will override any ".rspec" file.
+  
+  NOTE: For backwards compatibility with rspec-1, you can write command line
+  options in a "spec/spec.opts" file and it will be loaded automatically.
             
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
