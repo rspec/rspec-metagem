@@ -30,7 +30,6 @@ Feature: diffing
            -  expected
            +  actual
                 string
-           # ./example_spec.rb:13
       """
 
   Scenario: diff for a multiline string and a regexp
@@ -57,7 +56,6 @@ Feature: diffing
            +this is the
            +  actual
            +    string
-           # ./example_spec.rb:9
       """
 
   Scenario: no diff for a single line strings
