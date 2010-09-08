@@ -86,20 +86,35 @@ module RSpec::Core
       end
     end
 
-    context "with spec_opts" do
+    context "with rspec_opts" do
       context "with rcov=true" do
-        it "does not add the spec_opts" do
+        it "does not add the rspec_opts" do
           task.rcov = true
-          task.spec_opts = "-Ifoo"
+          task.rspec_opts = "-Ifoo"
           spec_command.should_not =~ /-Ifoo/
         end
       end
       context "with rcov=false (default)" do
-        it "adds the spec_opts" do
-          task.spec_opts = "-Ifoo"
+        it "adds the rspec_opts" do
+          task.rspec_opts = "-Ifoo"
           spec_command.should =~ /rspec -Ifoo/
         end
       end
+    end
+
+    context "with spec_opts" do
+      before { RSpec.stub(:deprecate) }
+
+      it "warns about deprecation" do
+        RSpec.should_receive(:deprecate)
+        task.spec_opts = "-Ifoo"
+      end
+
+      it "adds options as rspec_opts" do
+        task.spec_opts = "-Ifoo"
+        spec_command.should =~ /rspec -Ifoo/
+      end
+
     end
 
   end

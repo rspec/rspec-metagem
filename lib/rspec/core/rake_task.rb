@@ -42,11 +42,16 @@ module RSpec
       attr_accessor :ruby_opts
 
       # Options to pass to rspec. Defaults to blank.
-      attr_accessor :spec_opts
+      attr_accessor :rspec_opts
+
+      def spec_opts=(opts)
+        RSpec.deprecate("spec_opts","rspec_opts")
+        @rspec_opts = opts
+      end
 
       def initialize(*args)
         @name = args.shift || :spec
-        @pattern, @rcov_path, @rcov_opts, @ruby_opts, @spec_opts = nil, nil, nil, nil, nil
+        @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
         @warning, @rcov = false, false
         @fail_on_error = true
 
@@ -98,7 +103,7 @@ module RSpec
       end
 
       def runner_options
-        rcov ? [rcov_opts] : [spec_opts]
+        rcov ? [rcov_opts] : [rspec_opts]
       end
 
       def bundler?
