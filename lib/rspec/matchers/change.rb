@@ -7,6 +7,7 @@ module RSpec
         @message = message || "result"
         @value_proc = block || lambda {receiver.__send__(message)}
         @to = @from = @minimum = @maximum = @amount = nil
+        @given_from = @given_to = false
       end
       
       def matches?(event_proc)
@@ -16,8 +17,8 @@ module RSpec
         event_proc.call
         @after = evaluate_value_proc
         
-        return (@to = false) if @from unless @from == @before
-        return false if @to unless @to == @after
+        return false if @given_from unless @from == @before
+        return false if @given_to unless @to == @after
         return (@before + @amount == @after) if @amount
         return ((@after - @before) >= @minimum) if @minimum
         return ((@after - @before) <= @maximum) if @maximum        
@@ -36,10 +37,10 @@ MESSAGE
       end
       
       def failure_message_for_should
-        if @to
-          "#{@message} should have been changed to #{@to.inspect}, but is now #{@after.inspect}"
-        elsif @from
+        if @given_from && @before != @from
           "#{@message} should have initially been #{@from.inspect}, but was #{@before.inspect}"
+        elsif @given_to && @to != @after
+          "#{@message} should have been changed to #{@to.inspect}, but is now #{@after.inspect}"
         elsif @amount
           "#{@message} should have been changed by #{@amount.inspect}, but was changed by #{actual_delta.inspect}"
         elsif @minimum
@@ -75,11 +76,13 @@ MESSAGE
       end      
       
       def to(to)
+        @given_to = true
         @to = to
         self
       end
       
       def from (from)
+        @given_from = true
         @from = from
         self
       end

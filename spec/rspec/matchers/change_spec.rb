@@ -1,28 +1,48 @@
 #Based on patch from Wilson Bilkovich
 
 require 'spec_helper'
+
 class SomethingExpected
   attr_accessor :some_value
 end
 
 describe "should change(actual, message)" do
-  before(:each) do
-    @instance = SomethingExpected.new
-    @instance.some_value = 5
+  context "with a numeric value" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = 5
+    end
+
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value = 6}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail_with("some_value should have changed, but is still 5")
+    end
+    
+    it "provides a #description" do
+      change(@instance, :some_value).description.should == "change #some_value"
+    end
   end
 
-  it "passes when actual is modified by the block" do
-    expect {@instance.some_value = 6}.to change(@instance, :some_value)
-  end
+  context "with boolean values" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = true
+    end
 
-  it "fails when actual is not modified by the block" do
-    expect do
-      expect {}.to change(@instance, :some_value)
-    end.to fail_with("some_value should have changed, but is still 5")
-  end
-  
-  it "provides a #description" do
-    change(@instance, :some_value).description.should == "change #some_value"
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value = false}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail_with("some_value should have changed, but is still true")
+    end
   end
 end
 
@@ -227,19 +247,37 @@ describe "should change{ block }.by_at_most(expected)" do
 end
 
 describe "should change(actual, message).from(old)" do
-  before(:each) do
-    @instance = SomethingExpected.new
-    @instance.some_value = 'string'
-  end
+  context "with boolean values" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = true
+    end
 
-  it "passes when attribute is == to expected value before executing block" do
-    expect { @instance.some_value = "astring" }.to change(@instance, :some_value).from("string")
-  end
+    it "passes when attribute is == to expected value before executing block" do
+      expect { @instance.some_value = false }.to change(@instance, :some_value).from(true)
+    end
 
-  it "fails when attribute is not == to expected value before executing block" do
-    expect do
-      expect { @instance.some_value = "knot" }.to change(@instance, :some_value).from("cat")
-    end.to fail_with("some_value should have initially been \"cat\", but was \"string\"")
+    it "fails when attribute is not == to expected value before executing block" do
+      expect do
+        expect { @instance.some_value = 'foo' }.to change(@instance, :some_value).from(false)
+      end.to fail_with("some_value should have initially been false, but was true")
+    end
+  end
+  context "with non-boolean values" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = 'string'
+    end
+
+    it "passes when attribute is == to expected value before executing block" do
+      expect { @instance.some_value = "astring" }.to change(@instance, :some_value).from("string")
+    end
+
+    it "fails when attribute is not == to expected value before executing block" do
+      expect do
+        expect { @instance.some_value = "knot" }.to change(@instance, :some_value).from("cat")
+      end.to fail_with("some_value should have initially been \"cat\", but was \"string\"")
+    end
   end
 end
 
@@ -261,19 +299,37 @@ describe "should change{ block }.from(old)" do
 end
 
 describe "should change(actual, message).to(new)" do
-  before(:each) do
-    @instance = SomethingExpected.new
-    @instance.some_value = 'string'
-  end
-  
-  it "passes when attribute is == to expected value after executing block" do
-    expect { @instance.some_value = "cat" }.to change(@instance, :some_value).to("cat")
-  end
+  context "with boolean values" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = true
+    end
+    
+    it "passes when attribute is == to expected value after executing block" do
+      expect { @instance.some_value = false }.to change(@instance, :some_value).to(false)
+    end
 
-  it "fails when attribute is not == to expected value after executing block" do
-    expect do
-      expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
-    end.to fail_with("some_value should have been changed to \"dog\", but is now \"cat\"")
+    it "fails when attribute is not == to expected value after executing block" do
+      expect do
+        expect { @instance.some_value = 1 }.to change(@instance, :some_value).from(true).to(false)
+      end.to fail_with("some_value should have been changed to false, but is now 1")
+    end
+  end
+  context "with non-boolean values" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = 'string'
+    end
+    
+    it "passes when attribute is == to expected value after executing block" do
+      expect { @instance.some_value = "cat" }.to change(@instance, :some_value).to("cat")
+    end
+
+    it "fails when attribute is not == to expected value after executing block" do
+      expect do
+        expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
+      end.to fail_with("some_value should have been changed to \"dog\", but is now \"cat\"")
+    end
   end
 end
 
