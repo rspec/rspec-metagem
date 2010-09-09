@@ -1,2 +1,3 @@
 #!/usr/bin/env ruby
-require 'rspec/autorun'
+require 'rspec/core'
+exit RSpec::Core::Runner.run(ARGV, $stderr, $stdout)
