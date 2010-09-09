@@ -4,7 +4,7 @@ module RSpec
     #Based on patch from Wilson Bilkovich
     class Change #:nodoc:
       def initialize(receiver=nil, message=nil, &block)
-        @message = message || "result"
+        @message = message
         @value_proc = block || lambda {receiver.__send__(message)}
         @to = @from = @minimum = @maximum = @amount = nil
         @given_from = @given_to = false
@@ -17,14 +17,9 @@ module RSpec
         event_proc.call
         @after = evaluate_value_proc
         
-        return false if @given_from unless @from == @before
-        return false if @given_to unless @to == @after
-        return (@before + @amount == @after) if @amount
-        return ((@after - @before) >= @minimum) if @minimum
-        return ((@after - @before) <= @maximum) if @maximum        
-        return @before != @after
+        changed? && matches_before? && matches_after? && matches_amount? && matches_min? && matches_max?
       end
-      
+
       def raise_block_syntax_error
         raise MatcherError.new(<<-MESSAGE
 block passed to should or should_not change must use {} instead of do/end
@@ -38,17 +33,17 @@ MESSAGE
       
       def failure_message_for_should
         if @given_from && @before != @from
-          "#{@message} should have initially been #{@from.inspect}, but was #{@before.inspect}"
+          "#{message} should have initially been #{@from.inspect}, but was #{@before.inspect}"
         elsif @given_to && @to != @after
-          "#{@message} should have been changed to #{@to.inspect}, but is now #{@after.inspect}"
+          "#{message} should have been changed to #{@to.inspect}, but is now #{@after.inspect}"
         elsif @amount
-          "#{@message} should have been changed by #{@amount.inspect}, but was changed by #{actual_delta.inspect}"
+          "#{message} should have been changed by #{@amount.inspect}, but was changed by #{actual_delta.inspect}"
         elsif @minimum
-          "#{@message} should have been changed by at least #{@minimum.inspect}, but was changed by #{actual_delta.inspect}"
+          "#{message} should have been changed by at least #{@minimum.inspect}, but was changed by #{actual_delta.inspect}"
         elsif @maximum
-          "#{@message} should have been changed by at most #{@maximum.inspect}, but was changed by #{actual_delta.inspect}"
+          "#{message} should have been changed by at most #{@maximum.inspect}, but was changed by #{actual_delta.inspect}"
         else
-          "#{@message} should have changed, but is still #{@before.inspect}"
+          "#{message} should have changed, but is still #{@before.inspect}"
         end
       end
       
@@ -57,7 +52,7 @@ MESSAGE
       end
       
       def failure_message_for_should_not
-        "#{@message} should not have changed, but did change from #{@before.inspect} to #{@after.inspect}"
+        "#{message} should not have changed, but did change from #{@before.inspect} to #{@after.inspect}"
       end
       
       def by(amount)
@@ -88,8 +83,39 @@ MESSAGE
       end
       
       def description
-        "change ##{@message}"
+        "change ##{message}"
       end
+
+    private
+      
+      def message
+        @message || "result"
+      end
+
+      def changed?
+        @before != @after
+      end
+
+      def matches_before?
+        @given_from ? @from == @before : true
+      end
+
+      def matches_after?
+        @given_to ? @to == @after : true
+      end
+
+      def matches_amount?
+        @amount ? (@before + @amount == @after) : true
+      end
+
+      def matches_min?
+        @minimum ? (@after - @before >= @minimum) : true
+      end
+
+      def matches_max?
+        @maximum ? (@after - @before <= @maximum) : true
+      end
+      
     end
     
     # :call-seq:
