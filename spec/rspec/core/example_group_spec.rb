@@ -585,6 +585,15 @@ module RSpec::Core
     describe "#run" do
       let(:reporter) { double("reporter").as_null_object }
 
+      context "with RSpec.wants_to_quit=true" do
+        it "returns without starting the group" do
+          RSpec.stub(:wants_to_quit) { true }
+          group = RSpec::Core::ExampleGroup.describe
+          reporter.should_not_receive(:example_group_started)
+          group.run(reporter)
+        end
+      end
+
       context "with all examples passing" do
         it "returns true" do
           group = describe("something") do

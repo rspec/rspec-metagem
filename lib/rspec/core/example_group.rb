@@ -202,6 +202,7 @@ module RSpec
       end
 
       def self.run(reporter)
+        return if RSpec.wants_to_quit
         @reporter = reporter
         example_group_instance = new
         reporter.example_group_started(self)
@@ -216,6 +217,10 @@ module RSpec
         ensure
           eval_after_alls(example_group_instance)
           reporter.example_group_finished(self)
+          if top_level? && RSpec.wants_to_quit
+            reporter.abort
+            exit!(1)
+          end
         end
       end
 

@@ -49,6 +49,10 @@ module RSpec
 
   end
 
+  class << self
+    attr_accessor :wants_to_quit
+  end
+
   def self.world
     @world ||= RSpec::Core::World.new
   end

@@ -40,6 +40,19 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#run" do
+    context "with RSpec.wants_to_quit=true" do
+      it "returns without starting the example" do
+        RSpec.stub(:wants_to_quit) { true }
+        group = RSpec::Core::ExampleGroup.describe
+        example = group.example('example') {}
+
+        reporter = double('reporter').as_null_object
+        reporter.should_not_receive(:example_started)
+
+        example.run(group.new,reporter)
+      end
+    end
+
     it "runs after(:each) when the example passes" do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do

@@ -2,13 +2,20 @@ module RSpec::Core
   class Reporter
     def initialize(*formatters)
       @formatters = formatters
-      @failure_count = @pending_count = 0
+      @example_count = @failure_count = @pending_count = 0
     end
 
     def report(count)
       start(count)
       begin
         yield self
+      ensure
+        conclude
+      end
+    end
+
+    def conclude
+      begin
         stop
         notify :start_dump
         notify :dump_pending
@@ -19,10 +26,11 @@ module RSpec::Core
       end
     end
 
-    def start(example_count)
-      @example_count = example_count
+    alias_method :abort, :conclude
+
+    def start(expected_example_count)
       @start = Time.now
-      notify :start, example_count
+      notify :start, expected_example_count
     end
 
     def message(message)
@@ -38,6 +46,7 @@ module RSpec::Core
     end
 
     def example_started(example)
+      @example_count += 1
       notify :example_started, example
     end
 
@@ -56,7 +65,7 @@ module RSpec::Core
     end
 
     def stop
-      @duration = Time.now - @start
+      @duration = Time.now - @start if @start
       notify :stop
     end
 

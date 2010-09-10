@@ -37,6 +37,7 @@ module RSpec
       end
 
       def run(example_group_instance, reporter)
+        return if RSpec.wants_to_quit
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
 
