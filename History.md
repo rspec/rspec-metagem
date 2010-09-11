@@ -23,3 +23,7 @@
   * remove context method from top-level
     * was conflicting with irb, for example
   * errors in before(:all) are now reported correctly (Chad Humphries)
+
+* Removals
+  * removed -o --options-file command line option
+    * use ./.rspec and ~/.rspec
