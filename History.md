@@ -1,16 +1,16 @@
-## Woefully incomplete (but gotta start somewhere)
+## rspec-expectations release history (incomplete)
 
-### 2.0.0.beta.21 / 2010-09-11
+### 2.0.0.beta.21 (not yet released)
 
-http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.20...v2.0.0.beta.21
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.20...v2.0.0.beta.21)
 
-* enhancements
+* Enhancements
   * diffing improvements
     * diff multiline strings
     * don't diff single line strings
     * don't diff numbers (silly)
     * diff regexp + multiline string
 
-* bug fixes
+* Bug fixes
   * should[_not] change now handles boolean values correctly
 
