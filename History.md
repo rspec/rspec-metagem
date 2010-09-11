@@ -1,8 +1,11 @@
 ## Woefully incomplete (but gotta start somewhere)
 
-### git (since beta.20)
+### 2.0.0.beta.21 / 2010-09-10
 
 * enhancements
+  * CTRL-C stops the run (almost) immediately
+    * first it cleans things up by running the appropriate after(:all) and after(:suite) hooks
+    * then it reports on any examples that have already run
   * cleaned up rake task
     * generate correct task under variety of conditions
     * options are more consistent
