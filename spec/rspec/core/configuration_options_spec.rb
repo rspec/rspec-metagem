@@ -95,13 +95,6 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "options file" do
-    it "is parsed from --options or -o" do
-      options_from_args("--options", "custom/path").should include(:options_file => "custom/path")
-      options_from_args("-o", "custom/path").should include(:options_file => "custom/path")
-    end
-  end
-
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
       options_from_args("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])

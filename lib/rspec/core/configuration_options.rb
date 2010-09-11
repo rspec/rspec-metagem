@@ -30,7 +30,6 @@ module RSpec
         argv << "--backtrace" if options[:full_backtrace]
         argv << "--format"       << options[:formatter]               if options[:formatter]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
-        argv << "--options_file" << options[:options_file]            if options[:options_file]
         argv << "--example"      << options[:full_description].source if options[:full_description]
         (options[:libs] || []).each do |path|
           argv << "-I" << path
