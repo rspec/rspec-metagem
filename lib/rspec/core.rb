@@ -64,6 +64,10 @@ module RSpec
   def self.configure
     yield configuration if block_given?
   end
+
+  def self.clear_remaining_example_groups
+    world.example_groups.clear
+  end
 end
 
 require 'rspec/core/backward_compatibility'

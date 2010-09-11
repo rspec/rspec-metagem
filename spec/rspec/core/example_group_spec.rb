@@ -586,11 +586,32 @@ module RSpec::Core
       let(:reporter) { double("reporter").as_null_object }
 
       context "with RSpec.wants_to_quit=true" do
-        it "returns without starting the group" do
+        before do
+          RSpec.stub(:clear_remaining_example_groups)
           RSpec.stub(:wants_to_quit) { true }
+        end
+
+        it "returns without starting the group" do
           group = RSpec::Core::ExampleGroup.describe
           reporter.should_not_receive(:example_group_started)
           group.run(reporter)
+        end
+
+        context "at top level" do
+          it "purges remaining groups" do
+            group = RSpec::Core::ExampleGroup.describe
+            RSpec.should_receive(:clear_remaining_example_groups)
+            group.run(reporter)
+          end
+        end
+
+        context "in a nested group" do
+          it "does not purge remaining groups" do
+            group = RSpec::Core::ExampleGroup.describe
+            nested_group = group.describe
+            RSpec.should_not_receive(:clear_remaining_example_groups)
+            nested_group.run(reporter)
+          end
         end
       end
 
