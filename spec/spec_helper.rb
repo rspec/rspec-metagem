@@ -34,6 +34,7 @@ def sandboxed(&block)
     @orig_config = RSpec.configuration
     @orig_world  = RSpec.world
     new_config = RSpec::Core::Configuration.new
+    new_config.include(RSpec::Matchers)
     new_world  = RSpec::Core::World.new(new_config)
     RSpec.instance_variable_set(:@configuration, new_config)
     RSpec.instance_variable_set(:@world, new_world)

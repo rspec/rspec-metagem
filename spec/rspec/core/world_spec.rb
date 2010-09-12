@@ -26,17 +26,17 @@ module RSpec::Core
         options_1 = { :foo => 1, :color => 'blue', :feature => 'reporting' }
         options_2 = { :pending => true, :feature => 'reporting'  }
         options_3 = { :array => [1,2,3,4], :color => 'blue' }
-        @bg1 = RSpec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
-        @bg2 = RSpec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
-        @bg3 = RSpec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
-        @bg4 = RSpec::Core::ExampleGroup.describe(Foo, "find these examples") do
+        @group1 = RSpec::Core::ExampleGroup.describe(Bar, "find group-1", options_1) { }
+        @group2 = RSpec::Core::ExampleGroup.describe(Bar, "find group-2", options_2) { }
+        @group3 = RSpec::Core::ExampleGroup.describe(Bar, "find group-3", options_3) { }
+        @group4 = RSpec::Core::ExampleGroup.describe(Foo, "find these examples") do
           it('I have no options') {}
           it("this is awesome", :awesome => true) {}
           it("this is too", :awesome => true) {}
           it("not so awesome", :awesome => false) {}
           it("I also have no options") {}
         end
-        @example_groups = [@bg1, @bg2, @bg3, @bg4]
+        @example_groups = [@group1, @group2, @group3, @group4]
       end
 
       it "finds no groups when given no search parameters" do
@@ -44,33 +44,31 @@ module RSpec::Core
       end
 
       it "finds matching groups when filtering on :describes (described class or module)" do
-        @world.apply_inclusion_filters(@example_groups, :example_group => { :describes => Bar }).should == [@bg1, @bg2, @bg3]
+        @world.apply_inclusion_filters(@example_groups, :example_group => { :describes => Bar }).should == [@group1, @group2, @group3]
       end
 
       it "finds matching groups when filtering on :description with text" do
-        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => 'Bar find group-1' }).should == [@bg1]
+        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => 'Bar find group-1' }).should == [@group1]
       end
 
       it "finds matching groups when filtering on :description with a lambda" do
-        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [@bg1, @bg3]
+        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [@group1, @group3]
       end
 
       it "finds matching groups when filtering on :description with a regular expression" do
-        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => /find group/ }).should == [@bg1, @bg2, @bg3]
+        @world.apply_inclusion_filters(@example_groups, :example_group => { :description => /find group/ }).should == [@group1, @group2, @group3]
       end
 
       it "finds one group when searching for :pending => true" do
-        @world.apply_inclusion_filters(@example_groups, :pending => true ).should == [@bg2]
+        @world.apply_inclusion_filters(@example_groups, :pending => true ).should == [@group2]
       end
 
       it "finds matching groups when filtering on arbitrary metadata with a number" do
-        pending("discover why this example fails when the whole suite is run, but passes when just this group is run") do
-          @world.apply_inclusion_filters(@example_groups, :foo => 1 ).should == [@bg1]
-        end
+        @world.apply_inclusion_filters(@example_groups, :foo => 1 ).should == [@group1]
       end
 
       it "finds matching groups when filtering on arbitrary metadata with an array" do
-        @world.apply_inclusion_filters(@example_groups, :array => [1,2,3,4]).should == [@bg3]
+        @world.apply_inclusion_filters(@example_groups, :array => [1,2,3,4]).should == [@group3]
       end
 
       it "finds no groups when filtering on arbitrary metadata with an array but the arrays do not match" do
@@ -78,7 +76,7 @@ module RSpec::Core
       end
 
       it "finds matching examples when filtering on arbitrary metadata" do
-        @world.apply_inclusion_filters(@bg4.examples, :awesome => true).should == [@bg4.examples[1], @bg4.examples[2]]
+        @world.apply_inclusion_filters(@group4.examples, :awesome => true).should == [@group4.examples[1], @group4.examples[2]]
       end
 
     end

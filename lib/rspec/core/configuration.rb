@@ -29,17 +29,23 @@ module RSpec
       add_setting :filter
       add_setting :exclusion_filter
       add_setting :filename_pattern, :default => '**/*_spec.rb'
-      add_setting :files_to_run, :default => []
-      add_setting :include_or_extend_modules, :default => []
+      add_setting :files_to_run
+      add_setting :include_or_extend_modules
       add_setting :formatter_class, :default => RSpec::Core::Formatters::ProgressFormatter
-      add_setting :backtrace_clean_patterns, :default => [
-        /\/lib\d*\/ruby\//,
-        /bin\/rcov:/,
-        /vendor\/rails/,
-        /bin\/rspec/,
-        /bin\/spec/,
-        /lib\/rspec\/(core|expectations|matchers|mocks)/
-      ]
+      add_setting :backtrace_clean_patterns
+
+      def initialize
+        self.include_or_extend_modules = []
+        self.files_to_run = []
+        self.backtrace_clean_patterns = [
+          /\/lib\d*\/ruby\//,
+          /bin\/rcov:/,
+          /vendor\/rails/,
+          /bin\/rspec/,
+          /bin\/spec/,
+          /lib\/rspec\/(core|expectations|matchers|mocks)/
+        ]
+      end
 
       # :call-seq:
       #   add_setting(:name)
