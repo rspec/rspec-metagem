@@ -5,6 +5,7 @@
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.20...master)
 
 * Enhancements
+  * removed at_exit hook
   * CTRL-C stops the run (almost) immediately
     * first it cleans things up by running the appropriate after(:all) and after(:suite) hooks
     * then it reports on any examples that have already run
