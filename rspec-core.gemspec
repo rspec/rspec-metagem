@@ -37,5 +37,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec-mocks",        ">= #{RSpec::Core::Version::STRING}"
   s.add_development_dependency "cucumber",           ">= 0.5.3"
   s.add_development_dependency "autotest",           ">= 4.2.9"
+  s.add_development_dependency "syntax",             ">= 1.0.0"
+  s.add_development_dependency "flexmock"
+  s.add_development_dependency "mocha"
+  s.add_development_dependency "rr"
 end
 
