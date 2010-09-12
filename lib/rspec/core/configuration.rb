@@ -33,7 +33,7 @@ module RSpec
       add_setting :include_or_extend_modules, :default => []
       add_setting :formatter_class, :default => RSpec::Core::Formatters::ProgressFormatter
       add_setting :backtrace_clean_patterns, :default => [
-        /\/lib\/ruby\//,
+        /\/lib\d*\/ruby\//,
         /bin\/rcov:/,
         /vendor\/rails/,
         /bin\/rspec/,
