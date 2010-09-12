@@ -1,8 +1,8 @@
 ## rspec-core release history (incomplete)
 
-### 2.0.0.beta.21 (not yet released)
+### 2.0.0.beta.21 / 2010-09-12
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.20...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.20...v2.0.0.beta.21)
 
 * Enhancements
   * removed at_exit hook
