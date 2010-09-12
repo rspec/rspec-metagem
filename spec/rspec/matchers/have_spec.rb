@@ -1,15 +1,8 @@
 require 'spec_helper'
 require 'stringio'
 
-share_as :HaveSpecHelper do
-  def create_collection_owner_with(n)
-    owner = RSpec::Expectations::Helper::CollectionOwner.new
-    (1..n).each do |number|
-      owner.add_to_collection_with_length_method(number)
-      owner.add_to_collection_with_size_method(number)
-    end
-    owner
-  end
+describe "have matcher" do
+
   before(:each) do
     if defined?(::ActiveSupport::Inflector)
       @active_support_was_defined = true
@@ -24,10 +17,17 @@ share_as :HaveSpecHelper do
       end
     end
   end
-end
+
+  def create_collection_owner_with(n)
+    owner = RSpec::Expectations::Helper::CollectionOwner.new
+    (1..n).each do |number|
+      owner.add_to_collection_with_length_method(number)
+      owner.add_to_collection_with_size_method(number)
+    end
+    owner
+  end
 
 describe "should have(n).items" do
-  include HaveSpecHelper
 
   it "passes if target has a collection of items with n members" do
     owner = create_collection_owner_with(3)
@@ -63,7 +63,6 @@ describe "should have(n).items" do
 end
 
 describe 'should have(1).item when ActiveSupport::Inflector is defined' do
-  include HaveSpecHelper
   
   it 'pluralizes the collection name' do
     owner = create_collection_owner_with(1)
@@ -78,7 +77,6 @@ describe 'should have(1).item when ActiveSupport::Inflector is defined' do
 end
 
 describe 'should have(1).item when Inflector is defined' do
-  include HaveSpecHelper
   
   before(:each) do
     if defined?(Inflector)
@@ -119,7 +117,6 @@ describe "should have(n).items where result responds to items but returns someth
 end
 
 describe "should_not have(n).items" do
-  include HaveSpecHelper
 
   it "passes if target has a collection of items with < n members" do
     owner = create_collection_owner_with(3)
@@ -145,7 +142,6 @@ describe "should_not have(n).items" do
 end
 
 describe "should have_exactly(n).items" do
-  include HaveSpecHelper
 
   it "passes if target has a collection of items with n members" do
     owner = create_collection_owner_with(3)
@@ -181,7 +177,6 @@ describe "should have_exactly(n).items" do
 end
 
 describe "should have_at_least(n).items" do
-  include HaveSpecHelper
 
   it "passes if target has a collection of items with n members" do
     owner = create_collection_owner_with(3)
@@ -235,8 +230,6 @@ EOF
 end
 
 describe "should have_at_most(n).items" do
-  include HaveSpecHelper
-
   it "passes if target has a collection of items with n members" do
     owner = create_collection_owner_with(3)
     owner.should have_at_most(3).items_in_collection_with_length_method
@@ -330,8 +323,6 @@ describe "have(n).things on an object which is not a collection nor contains one
 end
 
 describe RSpec::Matchers::Have, "for a collection owner that implements #send" do
-  include HaveSpecHelper
-  
   before(:each) do
     @collection = Object.new
     def @collection.floozles; [1,2] end
@@ -405,4 +396,6 @@ module RSpec
       end
     end
   end
+end
+
 end
