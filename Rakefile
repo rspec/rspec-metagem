@@ -5,6 +5,7 @@ Bundler::GemHelper.install_tasks
 require 'rake'
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'
+require 'rspec/expectations/version'
 require 'cucumber/rake/task'
 
 RSpec::Core::RakeTask.new(:spec)
