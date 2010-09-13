@@ -7,6 +7,7 @@ require "yaml"
 
 require "rake/rdoctask"
 require "rspec/core/rake_task"
+require "rspec/core/version"
 require "cucumber/rake/task"
 
 RSpec::Core::RakeTask.new(:spec)
