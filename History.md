@@ -15,12 +15,12 @@
     * deprecated redundant options
   * run 'bundle exec autotest' when Gemfile is present
   * support ERB in .rspec options files (Justin Ko)
-  * depend on bundler for development tasks (Myron Marsten)
+  * depend on bundler for development tasks (Myron Marston)
   * add example_group_finished to formatters and reporter (Roman Chernyatchik)
 
 * Bug fixes
   * support paths with spaces when using autotest (Andreas Neuhaus)
-  * fix module_exec with ruby 1.8.6 (Myron Marsten)
+  * fix module_exec with ruby 1.8.6 (Myron Marston)
   * remove context method from top-level
     * was conflicting with irb, for example
   * errors in before(:all) are now reported correctly (Chad Humphries)
