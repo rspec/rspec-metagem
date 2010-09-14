@@ -135,14 +135,15 @@ module RSpec
         return unless bool
         settings[:color_enabled] = true
         if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
-          orig_output_stream = settings[:output_stream]
+          using_stdout = settings[:output_stream] == $stdout
+          using_stderr = settings[:error_stream] == $stderr
           begin
             require 'Win32/Console/ANSI'
+            settings[:output_stream] = $stdout if using_stdout
+            settings[:error_stream] = $stderr if using_stderr
           rescue LoadError
             warn "You must 'gem install win32console' to use colour on Windows"
             settings[:color_enabled] = false
-          ensure
-            settings[:output_stream] = orig_output_stream
           end
         end
       end
