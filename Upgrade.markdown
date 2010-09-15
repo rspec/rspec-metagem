@@ -63,7 +63,7 @@ We removed `context` from the main object because it was creating conflicts with
 IRB and some users who had `Context` domain objects. `describe` is still there,
 so if you want to use `context` at the top level, just alias it:
 
-    alias :context, :describe
+    alias :context :describe
 
 Of course, you can still use `context` to declare a nested group:
 
