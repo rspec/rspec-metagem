@@ -10,7 +10,6 @@ require 'rspec/core/let'
 require 'rspec/core/metadata'
 require 'rspec/core/pending'
 
-require 'rspec/core/around_proxy'
 require 'rspec/core/world'
 require 'rspec/core/configuration'
 require 'rspec/core/command_line_configuration'
