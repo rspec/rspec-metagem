@@ -1,4 +1,5 @@
-require "spec_helper"
+require 'spec_helper'
+require 'rspec/core/formatters/base_formatter'
 
 describe RSpec::Core::Formatters::BaseFormatter do
 

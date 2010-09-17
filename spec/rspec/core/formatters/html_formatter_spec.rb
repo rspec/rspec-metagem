@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rspec/core/formatters/html_formatter'
 require 'nokogiri'
 
 module RSpec

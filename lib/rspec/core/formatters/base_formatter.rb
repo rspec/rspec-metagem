@@ -1,3 +1,5 @@
+require 'rspec/core/formatters/helpers'
+
 module RSpec
   module Core
     module Formatters

@@ -1,4 +1,5 @@
-require "spec_helper"
+require 'spec_helper'
+require 'rspec/core/formatters/base_text_formatter'
 
 module RSpec::Core::Formatters
 
@@ -152,7 +153,7 @@ module RSpec::Core::Formatters
         formatter.dump_profile
         filename = __FILE__.split(File::SEPARATOR).last
 
-        output.string.should =~ /#{filename}\:134/
+        output.string.should =~ /#{filename}\:135/
       end
     end
   end

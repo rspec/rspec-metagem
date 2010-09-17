@@ -31,7 +31,6 @@ module RSpec
       add_setting :filename_pattern, :default => '**/*_spec.rb'
       add_setting :files_to_run
       add_setting :include_or_extend_modules
-      add_setting :formatter_class, :default => RSpec::Core::Formatters::ProgressFormatter
       add_setting :backtrace_clean_patterns
 
       def initialize
@@ -180,6 +179,15 @@ EOM
         filter_run :full_description => /#{description}/
       end
 
+      attr_writer :formatter_class
+
+      def formatter_class
+        @formatter_class ||= begin
+                               require 'rspec/core/formatters/progress_formatter'
+                               RSpec::Core::Formatters::ProgressFormatter
+                             end
+      end
+
       def formatter=(formatter_to_use)
         if string_const?(formatter_to_use) && (class_name = eval(formatter_to_use)).is_a?(Class)
           formatter_class = class_name
@@ -188,12 +196,16 @@ EOM
         else
           formatter_class = case formatter_to_use.to_s
           when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+            require 'rspec/core/formatters/documentation_formatter'
             RSpec::Core::Formatters::DocumentationFormatter
           when 'h', 'html'
+            require 'rspec/core/formatters/html_formatter'
             RSpec::Core::Formatters::HtmlFormatter
           when 't', 'textmate'
+            require 'rspec/core/formatters/text_mate_formatter'
             RSpec::Core::Formatters::TextMateFormatter
           when 'p', 'progress'
+            require 'rspec/core/formatters/progress_formatter'
             RSpec::Core::Formatters::ProgressFormatter
           else
             raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."

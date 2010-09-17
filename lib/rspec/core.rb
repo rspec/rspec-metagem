@@ -2,7 +2,6 @@ require 'rspec/core/extensions'
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'
 require 'rspec/core/reporter'
-require 'rspec/core/formatters'
 
 require 'rspec/core/hooks'
 require 'rspec/core/subject'

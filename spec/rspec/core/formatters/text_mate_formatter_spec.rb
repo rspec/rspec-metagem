@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rspec/core/formatters/text_mate_formatter'
 require 'nokogiri'
 
 module RSpec
