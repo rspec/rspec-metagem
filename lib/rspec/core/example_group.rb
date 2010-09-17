@@ -20,7 +20,7 @@ module RSpec
       end
 
       def self.inherited(klass)
-        world.example_groups << klass if klass.superclass == ExampleGroup
+        world.example_groups << klass if klass.top_level?
       end
 
       class << self
@@ -93,7 +93,7 @@ module RSpec
       end
 
       def self.descendant_filtered_examples
-        filtered_examples + children.collect{|c| c.descendant_filtered_examples}
+        @descendant_filtered_examples ||= filtered_examples + children.collect{|c| c.descendant_filtered_examples}
       end
 
       def self.metadata
@@ -101,7 +101,7 @@ module RSpec
       end
 
       def self.superclass_metadata
-        self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
+        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end
 
       def self.describe(*args, &example_group_block)
@@ -136,7 +136,7 @@ module RSpec
       end
 
       def self.descendants
-        [self] + children.collect {|c| c.descendants}.flatten
+        @_descendants ||= [self] + children.collect {|c| c.descendants}.flatten
       end
 
       def self.ancestors
@@ -144,7 +144,7 @@ module RSpec
       end
 
       def self.top_level?
-        ancestors.size == 1
+        superclass == ExampleGroup
       end
 
       def self.set_it_up(*args)
@@ -199,7 +199,7 @@ module RSpec
       end
 
       def self.around_hooks
-        (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
+        @around_hooks ||= (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
       end
 
       def self.run(reporter)
@@ -245,7 +245,7 @@ module RSpec
       end
 
       def self.declaration_line_numbers
-        [metadata[:example_group][:line_number]] +
+        @declaration_line_numbers ||= [metadata[:example_group][:line_number]] +
           examples.collect {|e| e.metadata[:line_number]} +
           children.collect {|c| c.declaration_line_numbers}.flatten
       end
