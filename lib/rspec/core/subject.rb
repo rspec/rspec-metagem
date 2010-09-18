@@ -86,7 +86,7 @@ module RSpec
         # with dots, the result is as though you concatenated that +String+
         # onto the subject in an expression.
         #   
-        #   describe Person 
+        #   describe Person do
         #     let(:person) do
         #       person = Person.new
         #       person.phone_numbers << "555-1212"
