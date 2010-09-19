@@ -11,9 +11,13 @@ gem "rr"
 gem "flexmock"
 gem "nokogiri"
 gem "syntax"
+
 gem "rspec-core", :path => "."
-gem "rspec-expectations", :path => "../rspec-expectations"
-gem "rspec-mocks", :path => "../rspec-mocks"
+%w[rspec-expectations rspec-mocks].each do |dependency|
+  path = "../#{dependency}"
+  gem dependency, :path => (path if File.exist?(path))
+end
+
 unless RUBY_PLATFORM == "java"
   case RUBY_VERSION
   when /^1.9.2/
