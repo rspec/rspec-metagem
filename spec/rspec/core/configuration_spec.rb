@@ -278,6 +278,19 @@ module RSpec::Core
         config.formatter.should be_an_instance_of(RSpec::CustomFormatter)
       end
 
+      it "requires and sets a formatter based on its class fully qualified name" do
+        config.should_receive(:require).with('rspec/custom_formatter2') do
+          RSpec.const_set("CustomFormatter2", Class.new(Formatters::BaseFormatter))
+        end
+        config.formatter = "RSpec::CustomFormatter2"
+        config.formatter.should be_an_instance_of(RSpec::CustomFormatter2)
+      end
+
+      it "raises NameError if class is unresolvable" do
+        config.should_receive(:require).with('rspec/custom_formatter3')
+        lambda { config.formatter = "RSpec::CustomFormatter3" }.should raise_error(NameError)
+      end
+
       it "raises ArgumentError if formatter is unknown" do
         lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
       end

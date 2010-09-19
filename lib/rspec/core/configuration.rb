@@ -189,8 +189,7 @@ EOM
       end
 
       def formatter=(formatter_to_use)
-        if string_const?(formatter_to_use) && (class_name = eval(formatter_to_use)).is_a?(Class)
-          formatter_class = class_name
+        if formatter_class = extract_formatter_class_name(formatter_to_use)
         elsif formatter_to_use.is_a?(Class)
           formatter_class = formatter_to_use
         else
@@ -318,6 +317,33 @@ EOM
 
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
+      end
+
+      private
+
+      def extract_formatter_class_name(formatter_to_use)
+        return unless string_const?(formatter_to_use)
+        klass = begin
+          eval(formatter_to_use)
+        rescue NameError
+          path = underscore(formatter_to_use)
+          path = path.sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2') # fix non-standard RSpec naming
+          require path
+          eval(formatter_to_use)
+        end
+        return unless klass.is_a?(Class)
+        klass
+      end
+
+      # activesupport/lib/active_support/inflector/methods.rb, line 48
+      def underscore(camel_cased_word)
+        word = camel_cased_word.to_s.dup
+        word.gsub!(/::/, '/')
+        word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+        word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+        word.tr!("-", "_")
+        word.downcase!
+        word
       end
     end
   end
