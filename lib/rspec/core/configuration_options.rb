@@ -84,6 +84,7 @@ module RSpec
       end
       
       def options_file_as_erb_string(path)
+        require 'erb'
         ERB.new(IO.read(path)).result(binding)
       end
 
