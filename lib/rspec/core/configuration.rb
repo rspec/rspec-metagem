@@ -189,32 +189,10 @@ EOM
       end
 
       def formatter=(formatter_to_use)
-        if formatter_class = extract_formatter_class_name(formatter_to_use)
-        elsif formatter_to_use.is_a?(Class)
-          formatter_class = formatter_to_use
-        else
-          formatter_class = case formatter_to_use.to_s
-          when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
-            require 'rspec/core/formatters/documentation_formatter'
-            RSpec::Core::Formatters::DocumentationFormatter
-          when 'h', 'html'
-            require 'rspec/core/formatters/html_formatter'
-            RSpec::Core::Formatters::HtmlFormatter
-          when 't', 'textmate'
-            require 'rspec/core/formatters/text_mate_formatter'
-            RSpec::Core::Formatters::TextMateFormatter
-          when 'p', 'progress'
-            require 'rspec/core/formatters/progress_formatter'
-            RSpec::Core::Formatters::ProgressFormatter
-          else
-            raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?."
-          end
-        end
-        self.formatter_class = formatter_class
-      end
-
-      def string_const?(str)
-        str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
+        self.formatter_class = 
+          built_in_formatter(formatter_to_use) ||
+          custom_formatter(formatter_to_use) ||
+          (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
       end
 
       def formatter
@@ -319,20 +297,48 @@ EOM
         files_to_run.map {|f| load File.expand_path(f) }
       end
 
-      private
+    private
 
-      def extract_formatter_class_name(formatter_to_use)
-        return unless string_const?(formatter_to_use)
-        klass = begin
-          eval(formatter_to_use)
-        rescue NameError
-          path = underscore(formatter_to_use)
-          path = path.sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2') # fix non-standard RSpec naming
-          require path
-          eval(formatter_to_use)
+      def built_in_formatter(key)
+        case key.to_s
+        when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+          require 'rspec/core/formatters/documentation_formatter'
+          RSpec::Core::Formatters::DocumentationFormatter
+        when 'h', 'html'
+          require 'rspec/core/formatters/html_formatter'
+          RSpec::Core::Formatters::HtmlFormatter
+        when 't', 'textmate'
+          require 'rspec/core/formatters/text_mate_formatter'
+          RSpec::Core::Formatters::TextMateFormatter
+        when 'p', 'progress'
+          require 'rspec/core/formatters/progress_formatter'
+          RSpec::Core::Formatters::ProgressFormatter
         end
-        return unless klass.is_a?(Class)
-        klass
+      end
+
+      def custom_formatter(formatter_ref)
+        if Class === formatter_ref
+          formatter_ref
+        elsif string_const?(formatter_ref)
+          begin
+            eval(formatter_ref)
+          rescue NameError
+            require path_for(formatter_ref)
+            eval(formatter_ref)
+          end
+        end
+      end
+
+      def string_const?(str)
+        str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
+      end
+
+      def path_for(const_ref)
+        underscore_with_fix_for_non_standard_rspec_naming(const_ref)
+      end
+
+      def underscore_with_fix_for_non_standard_rspec_naming(string)
+        underscore(string).sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2') 
       end
 
       # activesupport/lib/active_support/inflector/methods.rb, line 48
