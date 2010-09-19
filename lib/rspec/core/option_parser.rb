@@ -9,9 +9,10 @@ module RSpec::Core
     end
 
     def parse!(args)
+      return {} if args.empty?
       if args.include?("--formatter")
-        args[args.index("--formatter")] = "--format"
         RSpec.deprecate("the --formatter option", "-f or --format")
+        args[args.index("--formatter")] = "--format"
       end
       options = {}
       parser(options).parse!(args)
