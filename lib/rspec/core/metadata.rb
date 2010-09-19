@@ -10,12 +10,10 @@ module RSpec
         end
 
         store(:example_group, example_group || {})
-        store(:behaviour, self[:example_group])
         yield self if block_given?
       end
 
       RESERVED_KEYS = [
-        :behaviour,
         :description,
         :example_group,
         :execution_result,
@@ -127,7 +125,7 @@ EOM
       end
 
       def description_from(args)
-        @description_from_args ||= args.map{|a| a.to_s.strip}.join(" ")
+        args.map{|a| a.to_s.strip}.join(" ")
       end
 
       def full_description_from(args)
