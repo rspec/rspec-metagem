@@ -39,7 +39,7 @@ def sandboxed(&block)
     RSpec.instance_variable_set(:@configuration, new_config)
     RSpec.instance_variable_set(:@world, new_world)
     object = Object.new
-    # object.extend(RSpec::Core::ObjectExtensions)
+    object.extend(RSpec::Core::ObjectExtensions)
     object.extend(RSpec::Core::SharedExampleGroup)
 
     object.instance_eval(&block)
