@@ -144,7 +144,7 @@ module RSpec
       end
 
       def self.top_level?
-        superclass == ExampleGroup
+        @top_level ||= superclass == ExampleGroup
       end
 
       def self.set_it_up(*args)
