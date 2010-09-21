@@ -18,4 +18,19 @@ describe RSpec::Core::Formatters::BaseFormatter do
     end
   end
 
+  describe "read_failed_line" do
+    it "can deal gracefully with a heterogeneous language stack trace" do
+      exception = mock(:Exception, :backtrace => [
+        "at Object.prototypeMethod (foo:331:18)",
+        "at Array.forEach (native)",
+        "at a_named_javascript_function (/some/javascript/file.js:39:5)",
+        "/some/line/of/ruby.rb:14"
+      ])
+      example = mock(:Example, :file_path => __FILE__)
+      lambda {
+        formatter.send(:read_failed_line, exception, example)
+      }.should_not raise_error
+    end
+  end
+
 end

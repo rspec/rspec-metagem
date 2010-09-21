@@ -120,7 +120,11 @@ module RSpec
 
         def read_failed_line(exception, example)
           original_file = example.file_path.to_s.downcase
-          matching_line = exception.backtrace.detect { |line| line.match(/(.+?):(\d+)(|:\d+)/)[1].downcase == original_file.downcase }
+
+          matching_line = exception.backtrace.detect { |line|
+            match = line.match(/(.+?):(\d+)(|:\d+)/)
+            match && match[1].downcase == original_file.downcase
+          }
 
           return "Unable to find matching line from backtrace" if matching_line.nil?
 
