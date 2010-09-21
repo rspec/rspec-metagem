@@ -21,5 +21,15 @@ module RSpec::Core
       OptionParser.should_not_receive(:new)
       parser.parse!([])
     end
+
+    it "parses output stream from --out" do
+      options = Parser.parse!(%w[--out foo.txt])
+      options.should eq( {:output_stream=>"foo.txt"} )
+    end
+
+    it "parses output stream from -o" do
+      options = Parser.parse!(%w[-o foo.txt])
+      options.should eq( {:output_stream=>"foo.txt"} )
+    end
   end
 end

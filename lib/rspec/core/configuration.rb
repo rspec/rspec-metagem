@@ -20,6 +20,7 @@ module RSpec
       add_setting :error_stream
       add_setting :output_stream
       add_setting :output, :alias => :output_stream
+      add_setting :out, :alias => :output_stream
       add_setting :drb
       add_setting :drb_port
       add_setting :color_enabled

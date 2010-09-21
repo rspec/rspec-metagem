@@ -51,6 +51,10 @@ module RSpec::Core
           options[:formatter] = o
         end
 
+        parser.on('-o', '--out FILE', 'output to a file instead of STDOUT') do |o|
+          options[:output_stream] = o
+        end
+
         parser.on_tail('-h', '--help', "You're looking at it.") do
           puts parser
           exit
