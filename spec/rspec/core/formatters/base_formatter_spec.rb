@@ -19,7 +19,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
   end
 
   describe "read_failed_line" do
-    it "can deal gracefully with a heterogeneous language stack trace" do
+    it "deals gracefully with a heterogeneous language stack trace" do
       exception = mock(:Exception, :backtrace => [
         "at Object.prototypeMethod (foo:331:18)",
         "at Array.forEach (native)",

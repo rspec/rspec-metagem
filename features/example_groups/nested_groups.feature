@@ -5,7 +5,7 @@ Feature: Nested example groups
   So that I can better organize my examples
 
   Scenario: Nested example groups
-    Given a file named "nested_example_groups.rb" with:
+    Given a file named "nested_example_groups_spec.rb" with:
     """
     describe "Some Object" do
       describe "with some more context" do
@@ -20,13 +20,13 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec nested_example_groups.rb -fdoc"
+    When I run "rspec nested_example_groups_spec.rb -fdoc"
     Then the output should contain "Some Object"
     And  the output should contain "with some more context"
     And  the output should contain "with some other context"
 
   Scenario: failure in outer group continues to run inner groups
-    Given a file named "nested_example_groups.rb" with:
+    Given a file named "nested_example_groups_spec.rb" with:
     """
     describe "something" do
       it "fails" do
@@ -39,6 +39,6 @@ Feature: Nested example groups
       end
     end
     """
-    When I run "rspec nested_example_groups.rb -fdoc"
+    When I run "rspec nested_example_groups_spec.rb -fdoc"
     Then the output should contain "2 examples, 1 failure"
     And the output should contain "passes"
