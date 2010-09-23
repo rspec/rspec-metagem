@@ -7,9 +7,11 @@ module RSpec
       class TextMateFormatter < HtmlFormatter
         def backtrace_line(line)
           if line = super(line)
-            line.sub!(/([^:]*\.rb):(\d*)/) do
+            line.sub!(/([^:]*\.e?rb):(\d*)/) do
               "<a href=\"txmt://open?url=file://#{File.expand_path($1)}&line=#{$2}\">#{$1}:#{$2}</a> "
             end
+
+            line
           end
         end
       end
