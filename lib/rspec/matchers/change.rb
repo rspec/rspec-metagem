@@ -17,8 +17,7 @@ module RSpec
         event_proc.call
         @after = evaluate_value_proc
       
-        changed_if_expected = @amount == 0 || changed?
-        changed_if_expected && matches_before? && matches_after? && matches_amount? && matches_min? && matches_max?
+        (!change_expected? || changed?) && matches_before? && matches_after? && matches_amount? && matches_min? && matches_max?
       end
 
       def raise_block_syntax_error
@@ -91,6 +90,10 @@ MESSAGE
       
       def message
         @message || "result"
+      end
+
+      def change_expected?
+        @amount != 0
       end
 
       def changed?
