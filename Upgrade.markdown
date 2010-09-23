@@ -75,6 +75,12 @@ Of course, you can still use `context` to declare a nested group:
       end
     end
 
+### $KCODE no longer set implicitly to 'u'
+
+In RSpec-1, the runner set $KCODE to 'u', which impacts, among other things,
+the behaviour of Regular Expressions when applied to non-ascii characters. This
+is no longer the case in RSpec-2.
+
 ## What's new
 
 ### Runner
