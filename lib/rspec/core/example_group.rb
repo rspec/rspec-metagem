@@ -20,6 +20,7 @@ module RSpec
       end
 
       def self.inherited(klass)
+        RSpec::Core::Runner.autorun
         world.example_groups << klass if klass.top_level?
       end
 
