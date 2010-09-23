@@ -123,6 +123,10 @@ describe "should change(actual, message).by(expected)" do
     expect { @instance.some_value += 1 }.to change(@instance, :some_value).by(1)
   end
 
+  it "passes when attribute is not changed and expected amount is 0" do
+    expect { @instance.some_value += 0 }.to change(@instance, :some_value).by(0)
+  end
+
   it "fails when the attribute is changed by unexpected amount" do
     expect do
       expect { @instance.some_value += 2 }.to change(@instance, :some_value).by(1)
