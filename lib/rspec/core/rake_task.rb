@@ -5,7 +5,6 @@ require 'rake/tasklib'
 
 module RSpec
   module Core
-
     class RakeTask < ::Rake::TaskLib
 
       # Name of task.
@@ -46,7 +45,7 @@ module RSpec
       # executed spec command to stdout.
       #
       # default:
-      #   false
+      #   true
       attr_accessor :verbose
 
       # Use rcov for code coverage?
@@ -89,7 +88,7 @@ module RSpec
         @name = args.shift || :spec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
         @warning, @rcov = false, false
-        @fail_on_error = true
+        @verbose, @fail_on_error = true, true
 
         yield self if block_given?
 
@@ -103,21 +102,22 @@ module RSpec
             if files_to_run.empty?
               puts "No examples matching #{pattern} could be found"
             else
-              puts spec_command.inspect if verbose
-              unless ruby(spec_command)
-                STDERR.puts failure_message if failure_message
-                raise("#{spec_command} failed") if fail_on_error
+              begin
+                ruby(spec_command)
+              rescue
+                puts failure_message if failure_message
+                raise("ruby #{spec_command} failed") if fail_on_error
               end
             end
           end
         end
       end
 
+    private
+
       def files_to_run # :nodoc:
         FileList[ pattern ].map { |f| %["#{f}"] }
       end
-
-    private
 
       def spec_command
         @spec_command ||= begin
@@ -155,6 +155,5 @@ module RSpec
       end
 
     end
-
   end
 end

@@ -121,7 +121,6 @@ module RSpec::Core
         task.spec_opts = "-Ifoo"
         spec_command.should =~ /rspec -Ifoo/
       end
-
     end
 
   end
