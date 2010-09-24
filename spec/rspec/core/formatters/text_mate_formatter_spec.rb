@@ -23,6 +23,7 @@ module RSpec
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.run(err, out)
           out.string.gsub /\d+\.\d+ seconds/, 'x seconds'
+
         end
 
         let(:expected_html) do
@@ -64,6 +65,19 @@ module RSpec
             end
           end
         end
+
+        it "has a backtrace line from the raw erb evaluation" do
+          Dir.chdir(root) do
+            actual_doc = Nokogiri::HTML(generated_html)
+
+            actual_doc.inner_html.should include('(erb):1:in')
+          end
+        end
+
+        it "has a backtrace line from a erb source file we forced to appear" do
+          generated_html.should include('open?url=file:///foo.html.erb')
+        end
+
       end
     end
   end
