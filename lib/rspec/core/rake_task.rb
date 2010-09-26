@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'rspec/core/deprecation'
 require 'rake'
 require 'rake/tasklib'
 
