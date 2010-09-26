@@ -94,11 +94,7 @@ module RSpec
       end
 
       def self.descendant_filtered_examples
-        @descendant_filtered_examples ||= filtered_examples + children.collect{|c| c.descendant_filtered_examples}
-      end
-
-      def self.any_descendant_filtered_examples?
-        descendant_filtered_examples.flatten.any?
+        @descendant_filtered_examples ||= filtered_examples + children.collect{|c| c.descendant_filtered_examples}.flatten
       end
 
       def self.metadata
@@ -172,7 +168,7 @@ module RSpec
       end
 
       def self.eval_before_alls(example_group_instance)
-        return unless any_descendant_filtered_examples?
+        return if descendant_filtered_examples.empty?
         assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
         world.run_hook_filtered(:before, :all, self, example_group_instance) if top_level?
         run_hook!(:before, :all, example_group_instance)
@@ -197,7 +193,7 @@ module RSpec
       end
 
       def self.eval_after_alls(example_group_instance)
-        return unless any_descendant_filtered_examples?
+        return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
         run_hook!(:after, :all, example_group_instance)
         world.run_hook_filtered(:after, :all, self, example_group_instance) if top_level?
