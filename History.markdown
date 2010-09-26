@@ -1,5 +1,25 @@
 ## rspec-core release history (incomplete)
 
+### 2.0.0.beta.23 / not yet released
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.22...master)
+
+* Enhancements
+  * implicitly require unknown formatters so you don't have to require the
+    file explicitly on the commmand line (Michael Grosser) 
+  * add --out/-o option to assign output target
+
+* Bug fixes
+  * Explicitly require rspec version to fix broken rdoc task (Hans de Graaff)
+  * Ignore backtrace lines that come from other languages, like Java or
+    Javascript (Charles Lowell)
+  * Rake task now does what is expected when setting (or not setting)
+    fail_on_error and verbose
+  * Fix bug in which before/after(:all) hooks were running on excluded nested
+    groups (Myron Marston)
+  * Fix before(:all) error handling so that it fails examples in nested groups,
+    too (Myron Marston)
+
 ### 2.0.0.beta.22 / 2010-09-12
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.20...v2.0.0.beta.22)
