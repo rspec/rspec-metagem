@@ -3,7 +3,7 @@ require "spec_helper"
 module RSpec::Core
   describe Hooks do
     describe "#around" do
-      context "when not running the example within the arond block" do
+      context "when not running the example within the around block" do
         it "does not run the example" do
           examples = []
           group = ExampleGroup.describe do
