@@ -14,6 +14,15 @@ The RSpec rake task has moved to:
 
     'rspec/core/rake_task'
 
+RCov options are now set directly on the Rake task:
+
+    RSpec::Core::RakeTask.new(:rcov) do |t|
+      t.rcov_opts =  %q[--exclude "spec"]
+    end
+
+In RSpec-1, the rake task would read in rcov options from an `rcov.opts`
+file. This is ignored by RSpec-2.
+
 ### autotest
 
 RSpec-2 works with autotest as follows:
@@ -26,17 +35,17 @@ This adds `./autotest/discover.rb` with:
 
 Now, on the command line just type:
 
-    $ autotest
+    autotest
 
 Or, if you're using bundler:
 
-    $ bundle exec autotest
+    bundle exec autotest
 
 The `autospec` command is a thing of the past. 
 
 ### RSpec
 
-The root namespace (top level module ) is now `RSpec` instead of `Spec`, and
+The root namespace (top level module) is now `RSpec` instead of `Spec`, and
 the root directory under `lib` within all of the `rspec` gems is `rspec` instead of `spec`.
 
 ### Configuration
@@ -75,11 +84,11 @@ Of course, you can still use `context` to declare a nested group:
       end
     end
 
-### $KCODE no longer set implicitly to 'u'
+### `$KCODE` no longer set implicitly to `'u'`
 
-In RSpec-1, the runner set $KCODE to 'u', which impacts, among other things,
-the behaviour of Regular Expressions when applied to non-ascii characters. This
-is no longer the case in RSpec-2.
+In RSpec-1, the runner set `$KCODE` to `'u'`, which impacts, among other
+things, the behaviour of Regular Expressions when applied to non-ascii
+characters. This is no longer the case in RSpec-2.
 
 ## What's new
 
