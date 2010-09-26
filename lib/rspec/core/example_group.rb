@@ -227,6 +227,12 @@ module RSpec
 
       def self.fail_filtered_examples(exception, reporter)
         filtered_examples.each { |example| example.fail_fast(reporter, exception) }
+
+        children.each do |child|
+          reporter.example_group_started(child)
+          child.fail_filtered_examples(exception, reporter)
+          reporter.example_group_finished(child)
+        end
       end
 
       def self.run_examples(instance, reporter)

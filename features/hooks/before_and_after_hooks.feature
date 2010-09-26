@@ -114,15 +114,33 @@ Feature: before and after hooks
         after(:all) do
           puts "after all ran"
         end
+
+        describe "nested group" do
+          it "fails this third example" do
+          end
+
+          it "fails this fourth example" do
+          end
+
+          describe "yet another level deep" do
+            it "fails this last example" do
+            end
+          end
+        end
       end
       """
     When I run "rspec ./before_all_spec.rb --format documentation"
-    Then the output should contain "2 examples, 2 failures"
+    Then the output should contain "5 examples, 5 failures"
     And the output should contain:
       """
       an error in before(:all)
         fails this example (FAILED - 1)
         fails this example, too (FAILED - 2)
+        nested group
+          fails this third example (FAILED - 3)
+          fails this fourth example (FAILED - 4)
+          yet another level deep
+            fails this last example (FAILED - 5)
       after all ran
       """
 
@@ -132,6 +150,8 @@ Feature: before and after hooks
       """
       an error in before(:all)
         fails this example, too (FAILED - 1)
+        nested group
+          yet another level deep
       after all ran
       """
 

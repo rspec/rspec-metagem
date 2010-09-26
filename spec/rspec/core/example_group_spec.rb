@@ -367,6 +367,23 @@ module RSpec::Core
         example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
       end
 
+      it "treats an error in before(:all) as a failure for a spec in a nested group" do
+        example = nil
+        group = ExampleGroup.describe do
+          before(:all) { raise "error in before all" }
+
+          describe "nested" do
+            example = it("equality") { 1.should == 2}
+          end
+        end
+        group.run_all
+
+        example.metadata.should_not be_nil
+        example.metadata[:execution_result].should_not be_nil
+        example.metadata[:execution_result][:exception_encountered].should_not be_nil
+        example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
+      end
+
       it "has no 'running example' within before(:all)" do
         group = ExampleGroup.describe
         running_example = :none
