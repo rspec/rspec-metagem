@@ -19,6 +19,10 @@ module RSpec
       def failure_message_for_should_not
         "expected #{@actual} not to satisfy block"
       end
+
+      def description
+        "satisfy block"
+      end
     end
     
     # :call-seq:

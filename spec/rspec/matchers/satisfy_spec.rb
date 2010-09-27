@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "should satisfy { block }" do
+  it "describes itself" do
+    satisfy.description.should eq("satisfy block")
+  end
+
   it "passes if block returns true" do
     true.should satisfy { |val| val }
     true.should satisfy do |val|
