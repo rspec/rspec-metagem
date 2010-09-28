@@ -10,6 +10,45 @@ RSpec::Matchers.define :be_pending_with do |message|
   end
 end
 
+RSpec::Matchers.define :fail_with do |exception_klass|
+  match do |example|
+    failure_reason(example, exception_klass).nil?
+  end
+
+  failure_message_for_should do |example|
+    "expected example to fail with a #{exception_klass} exception, but #{failure_reason(example, exception_klass)}"
+  end
+
+  def failure_reason(example, exception_klass)
+    result = example.metadata[:execution_result]
+    case
+      when example.metadata[:pending] then "was pending"
+      when result[:status] != 'failed' then result[:status]
+      when !result[:exception_encountered].is_a?(exception_klass) then "failed with a #{result[:exception_encountered].class}"
+      else nil
+    end
+  end
+end
+
+RSpec::Matchers.define :pass do
+  match do |example|
+    failure_reason(example).nil?
+  end
+
+  failure_message_for_should do |example|
+    "expected example to pass, but #{failure_reason(example)}"
+  end
+
+  def failure_reason(example)
+    result = example.metadata[:execution_result]
+    case
+      when example.metadata[:pending] then "was pending"
+      when result[:status] != 'passed' then result[:status]
+      else nil
+    end
+  end
+end
+
 describe "an example" do
   context "with no block" do
     it "is listed as pending with 'Not Yet Implemented'" do
@@ -23,7 +62,7 @@ describe "an example" do
   end
 
   context "with no args" do
-    it "is listed as pending with 'No reason given'" do
+    it "is listed as pending with the default message" do
       group = RSpec::Core::ExampleGroup.describe('group') do
         it "does something" do
           pending
@@ -31,7 +70,7 @@ describe "an example" do
       end
       example = group.examples.first
       example.run(group.new, stub.as_null_object)
-      example.should be_pending_with('No reason given')
+      example.should be_pending_with(RSpec::Core::Pending::DEFAULT_MESSAGE)
     end
   end
 
@@ -82,37 +121,106 @@ describe "an example" do
   end
 
   context "with a block" do
-    context "that fails" do
-      it "is listed as pending with the supplied message" do
-        group = RSpec::Core::ExampleGroup.describe('group') do
-          it "does something" do
-            pending("just because") do
-              3.should == 4
-            end
-          end
+    def run_example(*pending_args)
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        it "does something" do
+          pending(*pending_args) { yield }
         end
-        example = group.examples.first
-        example.run(group.new, stub.as_null_object)
-        example.should be_pending_with('just because')
+      end
+      example = group.examples.first
+      example.run(group.new, stub.as_null_object)
+      example
+    end
+
+    context "that fails" do
+      def run_example(*pending_args)
+        super(*pending_args) { raise ArgumentError.new }
+      end
+
+      context "when given no options" do
+        it "is listed as pending with the supplied message" do
+          run_example("just because").should be_pending_with("just because")
+        end
+
+        it "is listed as pending with the default message when no message is given" do
+          run_example.should be_pending_with(RSpec::Core::Pending::DEFAULT_MESSAGE)
+        end
+      end
+
+      context "when given a truthy :if option" do
+        it "is listed as pending with the supplied message" do
+          run_example("just because", :if => true).should be_pending_with("just because")
+        end
+
+        it "is listed as pending with the default message when no message is given" do
+          run_example(:if => true).should be_pending_with(RSpec::Core::Pending::DEFAULT_MESSAGE)
+        end
+      end
+
+      context "when given a falsey :if option" do
+        it "runs the example and fails" do
+          run_example(                :if => false).should fail_with(ArgumentError)
+          run_example("just because", :if => false).should fail_with(ArgumentError)
+        end
+      end
+
+      context "when given a truthy :unless option" do
+        it "runs the example and fails" do
+          run_example(                :unless => true).should fail_with(ArgumentError)
+          run_example("just because", :unless => true).should fail_with(ArgumentError)
+        end
+      end
+
+      context "when given a falsey :unless option" do
+        it "is listed as pending with the supplied message" do
+          run_example("just because", :unless => false).should be_pending_with("just because")
+        end
+
+        it "is listed as pending with the default message when no message is given" do
+          run_example(:unless => false).should be_pending_with(RSpec::Core::Pending::DEFAULT_MESSAGE)
+        end
       end
     end
 
     context "that passes" do
-      it "raises a PendingExampleFixedError" do
-        group = RSpec::Core::ExampleGroup.describe('group') do
-          it "does something" do
-            pending("just because") do
-              3.should == 3
-            end
-          end
+      def run_example(*pending_args)
+        super(*pending_args) { 3.should == 3 }
+      end
+
+      context "when given no options" do
+        it "fails with a PendingExampleFixedError" do
+          run_example("just because").should fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example.should                 fail_with(RSpec::Core::PendingExampleFixedError)
         end
-        example = group.examples.first
-        example.run(group.new, stub.as_null_object)
-        example.metadata[:pending].should be_false
-        example.metadata[:execution_result][:status].should == 'failed'
-        example.metadata[:execution_result][:exception_encountered].should be_a(RSpec::Core::PendingExampleFixedError)
+      end
+
+      context "when given a truthy :if option" do
+        it "fails with a PendingExampleFixedError" do
+          run_example("just because", :if => true).should fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example(                :if => true).should fail_with(RSpec::Core::PendingExampleFixedError)
+        end
+      end
+
+      context "when given a falsey :if option" do
+        it "runs the example and it passes" do
+          run_example(                :if => false).should pass
+          run_example("just because", :if => false).should pass
+        end
+      end
+
+      context "when given a truthy :unless option" do
+        it "runs the example and it passes" do
+          run_example(                :unless => true).should pass
+          run_example("just because", :unless => true).should pass
+        end
+      end
+
+      context "when given a falsey :unless option" do
+        it "fails with a PendingExampleFixedError" do
+          run_example("just because", :unless => false).should fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example(                :unless => false).should fail_with(RSpec::Core::PendingExampleFixedError)
+        end
       end
     end
   end
-
 end
