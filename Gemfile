@@ -9,6 +9,7 @@ gem "rspec-expectations", :path => "."
 gem "rspec-core", :path => "../rspec-core"
 gem "rspec-mocks", :path => "../rspec-mocks"
 gem "watchr"
+gem "rcov"
 
 case RUBY_VERSION
 when '1.9.2'

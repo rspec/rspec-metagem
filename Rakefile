@@ -18,8 +18,22 @@ class Cucumber::Rake::Task::ForkedCucumberRunner
   end
 end
 
-Cucumber::Rake::Task.new do |t|
+desc "Run all examples using rcov"
+RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
+  t.rcov = true
+  t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+  t.rcov_opts << %[--text-report --sort coverage --no-html --aggregate coverage.data]
+end
+
+task :cleanup_rcov_files do
+  rm_rf 'coverage.data'
+end
+
+Cucumber::Rake::Task.new :cucumber => :cleanup_rcov_files do |t|
   t.cucumber_opts = %w{--format progress}
+  t.rcov = true
+  t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+  t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
 end
 
 task :default => [:spec, :cucumber]
