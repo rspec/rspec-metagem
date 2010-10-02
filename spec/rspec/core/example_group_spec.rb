@@ -606,7 +606,7 @@ module RSpec::Core
         its([:attribute]) { should_not == 'another_value' }
         its([:another_attribute]) { should == 'another_value' }
         its([:another_attribute]) { should_not == 'value' }
-        its(:keys) { should == ['another_attribute', :attribute] }
+        its(:keys) { should =~ ['another_attribute', :attribute] }
 
         context "when referring to an attribute without the proper array syntax" do
           it "raises a NoMethodError" do
