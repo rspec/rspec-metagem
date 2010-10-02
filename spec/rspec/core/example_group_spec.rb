@@ -597,6 +597,22 @@ module RSpec::Core
         its("name.size.class") { should == Fixnum }
       end
 
+      context "when it's a Hash" do
+        subject do
+          { :attribute => 'value',
+            'another_attribute' => 'another_value' }
+        end
+        its([:attribute]) { should == 'value' }
+        its([:another_attribute]) { should == 'another_value' }
+        its(:keys) { should == ['another_attribute', :attribute] }
+
+        context "when referring to an attribute without the proper array syntax" do
+          it "raises a NoMethodError" do
+            expect{ its(:attribute) }.to raise_error(NoMethodError)
+          end
+        end
+      end
+      
       context "calling and overriding super" do
         it "calls to the subject defined in the parent group" do
           group = ExampleGroup.describe(Array) do
@@ -614,6 +630,7 @@ module RSpec::Core
           group.run_all.should be_true
         end
       end
+
     end
 
     describe "#top_level_description" do
