@@ -603,7 +603,9 @@ module RSpec::Core
             'another_attribute' => 'another_value' }
         end
         its([:attribute]) { should == 'value' }
+        its([:attribute]) { should_not == 'another_value' }
         its([:another_attribute]) { should == 'another_value' }
+        its([:another_attribute]) { should_not == 'value' }
         its(:keys) { should == ['another_attribute', :attribute] }
 
         context "when referring to an attribute without the proper array syntax" do

@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module RSpec
   module Core
     module Subject
@@ -65,7 +67,6 @@ module RSpec
       end
 
       module ClassMethods
-        require 'ostruct' unless defined?(OpenStruct)
         # Creates a nested example group named by the submitted +attribute+,
         # and then generates an example using the submitted block.
         #
@@ -112,15 +113,17 @@ module RSpec
         #     its(:keys) { should include(:max_users) }
         #     its(:count) { should == 2 }
         #   end
-        #
         def its(attribute, &block)
           describe(attribute) do
             example do
               self.class.class_eval do
                 define_method(:subject) do
-                  attribute.to_s.split('.').inject(super()) do |target, method|
-                    target = OpenStruct.new(target) if target.is_a?(Hash) && attribute.is_a?(Array)
-                    target.send(method)
+                  if super.is_a?(Hash) && attribute.is_a?(Array)
+                    OpenStruct.new(super).send(attribute.first)
+                  else
+                    attribute.to_s.split('.').inject(super()) do |target, method|
+                      target.send(method)
+                    end
                   end
                 end
               end
