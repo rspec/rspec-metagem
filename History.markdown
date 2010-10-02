@@ -9,6 +9,7 @@
     file explicitly on the commmand line (Michael Grosser) 
   * add --out/-o option to assign output target
   * added fail_fast configuration option to abort on first failure
+  * support a Hash subject (its([:key]) { should == value }) (Josep M. Bach)
 
 * Bug fixes
   * Explicitly require rspec version to fix broken rdoc task (Hans de Graaff)
