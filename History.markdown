@@ -8,6 +8,7 @@
   * implicitly require unknown formatters so you don't have to require the
     file explicitly on the commmand line (Michael Grosser) 
   * add --out/-o option to assign output target
+  * added fail_fast configuration option to abort on first failure
 
 * Bug fixes
   * Explicitly require rspec version to fix broken rdoc task (Hans de Graaff)
