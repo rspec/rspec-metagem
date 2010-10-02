@@ -145,7 +145,7 @@ Feature: Shared example group
       end
 
       shared_examples_for 'sortability' do
-        it 'responds to <==>' do
+        it 'responds to <=>' do
           sortable.should respond_to(:<=>)
         end
       end
@@ -162,5 +162,5 @@ Feature: Shared example group
       """
       String
         has behavior: sortability
-          responds to <==>
+          responds to <=>
       """

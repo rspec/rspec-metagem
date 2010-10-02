@@ -1,8 +1,8 @@
 source "http://rubygems.org"
 
 gem "rake"
-gem "cucumber"
-gem "aruba", ">= 0.2.0"
+gem "cucumber", "0.8.5"
+gem "aruba", "0.2.2"
 gem "autotest"
 gem "watchr"
 gem "rcov"
