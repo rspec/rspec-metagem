@@ -158,6 +158,14 @@ module RSpec
     if RSpec.respond_to?(:configure)
       RSpec.configure {|c| c.include self}
     end
+
+    # Include Matchers for other test frameworks
+    if defined?(Test::Unit::TestCase)
+      Test::Unit::TestCase.send(:include, self)
+    end
+    if defined?(MiniTest::Unit::TestCase)
+      MiniTest::Unit::TestCase.send(:include, self)
+    end
   end
 end
 
