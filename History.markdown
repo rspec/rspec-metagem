@@ -4,6 +4,9 @@
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.22...master)
 
+* Enhancements
+  * require 'rspec/expectations' in a T::U or MiniUnit suite (Josep M. Bach)
+
 * Bug fixes
   * change by 0 passes/fails correctly (Len Smith)
   * Add description to satisfy matcher
