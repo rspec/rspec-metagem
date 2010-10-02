@@ -54,6 +54,7 @@ def in_editor?
 end
 
 RSpec.configure do |c|
+  c.fail_fast = true
   c.color_enabled = !in_editor?
   c.filter_run :focused => true
   c.run_all_when_everything_filtered = true

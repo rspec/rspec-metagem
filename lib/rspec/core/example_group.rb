@@ -239,7 +239,11 @@ module RSpec
         filtered_examples.map do |example|
           begin
             set_ivars(instance, before_all_ivars)
-            example.run(instance, reporter)
+            succeeded = example.run(instance, reporter)
+            if Rspec.configuration.fail_fast? && !succeeded
+              Rspec.wants_to_quit = true 
+            end
+            succeeded
           ensure
             clear_ivars(instance)
             clear_memoized(instance)

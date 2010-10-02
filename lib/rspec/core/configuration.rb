@@ -25,6 +25,7 @@ module RSpec
       add_setting :drb_port
       add_setting :color_enabled
       add_setting :profile_examples
+      add_setting :fail_fast, :default => false
       add_setting :run_all_when_everything_filtered
       add_setting :mock_framework, :default => :rspec
       add_setting :filter
