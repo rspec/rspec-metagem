@@ -1,8 +1,27 @@
 Feature: have matchers
 
-  As an RSpec user
-  I want to set readable expectations about the counts of items in a collection
-  So that I can test my collection objects without having to define my own matchers
+  RSpec provides several matchers that make it easy to set expectations about the
+  size of a collection.  There are three basic forms:
+
+    * collection.should have(x).items
+    * collection.should have_at_least(x).items
+    * collection.should have_at_most(x).items
+
+  In addition, #have_exactly is provided as an alias to #have.
+
+  These work on any collection-like object--the object just needs to respond to #size
+  or #length (or both).  When the matcher is called directly on a collection object,
+  the #items call is pure syntactic sugar.  You can use anything you want here.  These
+  are equivalent:
+
+    * collection.should have(x).items
+    * collection.should have(x).things
+
+  You can also use this matcher on a non-collection object that returns a collection
+  from one of its methods.  For example, Dir#entries returns an array, so you could
+  set an expectation using the following:
+
+    Dir.new("my/directory").should have(7).entries
 
   Scenario: have(x).items on a collection
     Given a file named "have_items_spec.rb" with:
@@ -32,7 +51,7 @@ Feature: have matchers
         it { should have_at_most(2).items }
       end
       """
-     When I run "rspec ./have_items_spec.rb"
+     When I run "rspec have_items_spec.rb"
      Then the output should contain "16 examples, 8 failures"
       And the output should contain "expected target not to have 3 items, got 3"
       And the output should contain "expected 2 items, got 3"
@@ -74,7 +93,7 @@ Feature: have matchers
         it { should have_at_most(4).words }
       end
       """
-     When I run "rspec ./have_words_spec.rb"
+     When I run "rspec have_words_spec.rb"
      Then the output should contain "16 examples, 8 failures"
       And the output should contain "expected target not to have 5 words, got 5"
       And the output should contain "expected 4 words, got 5"
