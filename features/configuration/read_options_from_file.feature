@@ -1,7 +1,7 @@
 Feature: read command line configuration options from files
 
-  RSpec will read command line configuration options from files in
-  two different locations:
+  RSpec reads command line configuration options from files in two different
+  locations:
   
     Local:  "./.rspec" (i.e. in the project's root directory)
     Global: "~/.rspec" (i.e. in the user's home directory)
@@ -9,9 +9,6 @@ Feature: read command line configuration options from files
   Options declared in the local file override those in the global file, while
   those declared in RSpec.configure will override any ".rspec" file.
   
-  NOTE: For backwards compatibility with rspec-1, you can write command line
-  options in a "spec/spec.opts" file and it will be loaded automatically.
-            
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
       """

@@ -17,14 +17,14 @@ Feature: example name option
         it "second example in first group" do; end
       end
       """
-    Given a file named "second_spec.rb" with:
+    And a file named "second_spec.rb" with:
       """
       describe "second group" do
         it "first example in second group" do; end
         it "second example in second group" do; end
       end
       """
-    Given a file named "third_spec.rb" with:
+    And a file named "third_spec.rb" with:
       """
       describe "third group" do
         it "first example in third group" do; end

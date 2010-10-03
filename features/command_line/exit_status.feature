@@ -1,6 +1,7 @@
 Feature: exit status
-  In order to fail the build when it should,
-  the spec CLI exits with an appropriate exit status
+
+  In order to fail the build when it should, the spec CLI exits with an
+  appropriate exit status
 
   Scenario: exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:
@@ -11,10 +12,8 @@ Feature: exit status
       end
       """
     When I run "rspec ok_spec.rb"
-    Then it should pass with:
-      """
-      1 example, 0 failures
-      """
+    Then the exit status should be 0
+    And the stdout should contain "1 example, 0 failures"
 
   Scenario: exit with 1 when one example fails
     Given a file named "ko_spec.rb" with:
@@ -26,10 +25,8 @@ Feature: exit status
       end
       """
     When I run "rspec ko_spec.rb"
-    Then it should fail with:
-      """
-      1 example, 1 failure
-      """
+    Then the exit status should be 1
+    And the stdout should contain "1 example, 1 failure"
 
   Scenario: exit with 1 when a nested examples fails
     Given a file named "nested_ko_spec.rb" with:
@@ -43,25 +40,13 @@ Feature: exit status
       end
       """
     When I run "rspec nested_ko_spec.rb"
-    Then it should fail with:
-      """
-      1 example, 1 failure
-      """
+    Then the exit status should be 1
+    And the stdout should contain "1 example, 1 failure"
       
   Scenario: exit with 0 when no examples are run
-    Given a file named "spec/a_no_examples_spec.rb" with:
+    Given a file named "a_no_examples_spec.rb" with:
       """
       """
-    And a file named "spec/b_one_example_spec.rb" with:
-      """
-      describe "something" do
-        it "does something" do
-        end
-      end
-      """
-          
-    When I run "rspec spec"
-    Then it should pass with:
-      """
-      1 example, 0 failures
-      """
+    When I run "rspec a_no_examples_spec.rb"
+    Then the exit status should be 0
+    And the stdout should contain "0 examples, 0 failures"

@@ -1,10 +1,8 @@
 Feature: custom settings
 
-  In order to seamlessly provide users more configuration settings
-  As an RSpec extenstion-library author
-  I want to define new settings on the RSpec.configuration object
+  Extensions like rspec-rails can add their own configuration settings.
 
-  Scenario: simple setting
+  Scenario: simple setting (with defaults)
     Given a file named "additional_setting_spec.rb" with:
       """
       RSpec.configure do |c|

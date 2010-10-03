@@ -1,64 +1,76 @@
 Feature: Shared example group
 
-  As an RSpec user
-  I want to share my examples
-  In order to reduce duplication in my specs
+  Shared example groups let you describe behaviour of types or modules. When
+  declared, a shared group's content is stored. It is only realized in the
+  context of another example group, which provides any context the shared group
+  needs to run.
 
-  Scenario: Using a shared example group
-    Given a file named "shared_example_group_spec.rb" with:
+  A shared group is included in another group using the it_behaves_like() or
+  it_should_behave_like() methods.
+
+  Scenario: shared example group applied to two groups
+    Given a file named "collection_spec.rb" with:
     """
     require "set"
 
-    shared_examples_for "a collection object" do
-      before(:each) do
-        @instance = described_class.new([7, 2, 4])
-      end
+    shared_examples_for "a collection" do
+      let(:collection) { described_class.new([7, 2, 4]) }
 
       context "initialized with 3 items" do
-        it "has three items" do
-          @instance.size.should == 3
+        it "says it has three items" do
+          collection.size.should eq(3)
         end
       end
 
       describe "#include?" do
-        context "with an an item in the collection" do
+        context "with an an item that is in the collection" do
           it "returns true" do
-            @instance.include?(7).should be_true
+            collection.include?(7).should be_true
+          end
+        end
+
+        context "with an an item that is not in the collection" do
+          it "returns false" do
+            collection.include?(9).should be_false
           end
         end
       end
     end
 
     describe Array do
-      it_should_behave_like "a collection object"
+      it_behaves_like "a collection"
     end
 
     describe Set do
-      it_should_behave_like "a collection object"
+      it_behaves_like "a collection"
     end
     """
-    When I run "rspec shared_example_group_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    When I run "rspec collection_spec.rb --format documentation"
+    Then the output should contain "6 examples, 0 failures"
     And the output should contain:
       """
       Array
-        it should behave like a collection object
+        behaves like a collection
           initialized with 3 items
-            has three items
+            says it has three items
           #include?
-            with an an item in the collection
+            with an an item that is in the collection
               returns true
+            with an an item that is not in the collection
+              returns false
 
       Set
-        it should behave like a collection object
+        behaves like a collection
           initialized with 3 items
-            has three items
+            says it has three items
           #include?
-            with an an item in the collection
+            with an an item that is in the collection
               returns true
+            with an an item that is not in the collection
+              returns false
       """
 
-  Scenario: Using a shared example group with a block
+  Scenario: Providing context to a shared group using a block
     Given a file named "shared_example_group_spec.rb" with:
     """
     require "set"
@@ -100,7 +112,6 @@ Feature: Shared example group
             adds objects to the end of the collection
       """
 
-  @wip
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """
