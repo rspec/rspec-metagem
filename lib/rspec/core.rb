@@ -47,8 +47,12 @@ module RSpec
 
   end
 
-  class << self
-    attr_accessor :wants_to_quit
+  def self.wants_to_quit
+    world.wants_to_quit
+  end
+
+  def self.wants_to_quit=(maybe)
+    world.wants_to_quit=(maybe)
   end
 
   def self.world

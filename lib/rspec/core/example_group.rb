@@ -235,15 +235,17 @@ module RSpec
         end
       end
 
+      def self.fail_fast?
+        RSpec.configuration.fail_fast?
+      end
+
       def self.run_examples(instance, reporter)
         filtered_examples.map do |example|
           next if RSpec.wants_to_quit
           begin
             set_ivars(instance, before_all_ivars)
             succeeded = example.run(instance, reporter)
-            if Rspec.configuration.fail_fast? && !succeeded
-              Rspec.wants_to_quit = true 
-            end
+            RSpec.wants_to_quit = true if fail_fast? && !succeeded
             succeeded
           ensure
             clear_ivars(instance)

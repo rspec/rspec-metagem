@@ -606,7 +606,7 @@ module RSpec::Core
           end
         end
       end
-      
+
       context "calling and overriding super" do
         it "calls to the subject defined in the parent group" do
           group = ExampleGroup.describe(Array) do
@@ -644,25 +644,25 @@ module RSpec::Core
     describe "#run" do
       let(:reporter) { double("reporter").as_null_object }
 
-      context "with RSpec.wants_to_quit=true" do
-        it "returns without starting the example" do
+      context "with fail_fast? => true" do
+        it "does not run examples after the failed example" do
           group = RSpec::Core::ExampleGroup.describe
-          group.example('example 1') {}
-          group.example('example 2') {}
-          group.example('example 3') {}
+          group.stub(:fail_fast?) { true }
+          examples_run = []
+          group.example('example 1') { examples_run << self }
+          group.example('example 2') { examples_run << self; fail; }
+          group.example('example 3') { examples_run << self }
 
-          reporter = RSpec::Core::Reporter.new
-          reporter.should_not_receive(:example_started)#.exactly(2).times
+          group.run
 
-          group.run(reporter)
+          examples_run.length.should eq(2)
         end
-    end
-
+      end
 
       context "with RSpec.wants_to_quit=true" do
         before do
-          RSpec.stub(:clear_remaining_example_groups)
-          RSpec.stub(:wants_to_quit) { true }
+          RSpec.world.stub(:example_groups) { [] }
+          RSpec.world.stub(:wants_to_quit) { true }
         end
 
         it "returns without starting the group" do

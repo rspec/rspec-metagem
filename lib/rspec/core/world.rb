@@ -2,7 +2,7 @@ module RSpec
   module Core
     class World
 
-      attr_reader :example_groups, :filtered_examples
+      attr_reader :example_groups, :filtered_examples, :wants_to_quit
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
