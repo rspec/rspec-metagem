@@ -566,14 +566,6 @@ module RSpec::Core
     end
 
     describe "#its" do
-      its(:class) { should == RSpec::Core::ExampleGroup }
-      it "does not interfere between examples" do
-        subject.class.should == RSpec::Core::ExampleGroup
-      end
-      context "subject modified in before block" do
-        before { subject.class.should == RSpec::Core::ExampleGroup }
-      end
-
       context "with nil value" do
         subject do
           Class.new do
@@ -597,7 +589,7 @@ module RSpec::Core
         its("name.size.class") { should == Fixnum }
       end
 
-      context "when it's a Hash" do
+      context "when it is a Hash" do
         subject do
           { :attribute => 'value',
             'another_attribute' => 'another_value' }
