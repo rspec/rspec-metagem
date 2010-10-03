@@ -1,6 +1,6 @@
 Feature: expect error
 
-  Expect a proc to change the state of some object.
+  Expect a proc to raise an error when called.
   
   Scenario: expect error
     Given a file named "expect_error_spec.rb" with:
