@@ -1,9 +1,13 @@
 Feature: exclusion filters
+
+  You can exclude examples from a run by declaring an exclusion filter and
+  then tagging examples, or entire groups, with that filter.
   
-  Scenario: exclude one example
+  Scenario: exclude an example
     Given a file named "spec/sample_spec.rb" with:
       """
       RSpec.configure do |c|
+        # declare an exclusion filter
         c.filter_run_excluding :broken => true
       end
 
@@ -11,6 +15,7 @@ Feature: exclusion filters
         it "does one thing" do
         end
 
+        # tag example for exclusion by adding metadata
         it "does another thing", :broken => true do
         end
       end
@@ -19,7 +24,7 @@ Feature: exclusion filters
     Then the output should contain "does one thing"
     And the output should not contain "does another thing"
 
-  Scenario: exclude one group
+  Scenario: exclude a group
     Given a file named "spec/sample_spec.rb" with:
       """
       RSpec.configure do |c|
@@ -44,7 +49,7 @@ Feature: exclusion filters
     And  the output should not contain "group 1 example 1"
     And  the output should not contain "group 1 example 2"
   
-  Scenario: exclude all groups
+  Scenario: exclude multiple groups
     Given a file named "spec/sample_spec.rb" with:
       """
       RSpec.configure do |c|
@@ -78,7 +83,7 @@ Feature: exclusion filters
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 
-  Scenario: before/after(:all) hook in excluded example group
+  Scenario: before/after(:all) hooks in excluded example group are not run
     Given a file named "spec/before_after_all_exclusion_filter_spec.rb" with:
       """
       RSpec.configure do |c|
@@ -86,16 +91,16 @@ Feature: exclusion filters
       end
 
       describe "group 1" do
-        before(:all) { puts "before all in focused group" }
-        after(:all)  { puts "after all in focused group"  }
+        before(:all) { puts "before all in included group" }
+        after(:all)  { puts "after all in included group"  }
 
         it "group 1 example" do
         end
       end
 
       describe "group 2", :broken => true do
-        before(:all) { puts "before all in unfocused group" }
-        after(:all)  { puts "after all in unfocused group"  }
+        before(:all) { puts "before all in excluded group" }
+        after(:all)  { puts "after all in excluded group"  }
 
         context "context 1" do
           it "group 2 context 1 example 1" do
@@ -104,7 +109,7 @@ Feature: exclusion filters
       end
       """
     When I run "rspec ./spec/before_after_all_exclusion_filter_spec.rb"
-    Then the output should contain "before all in focused group"
-     And the output should contain "after all in focused group"
-     And the output should not contain "before all in unfocused group"
-     And the output should not contain "after all in unfocused group"
+    Then the output should contain "before all in included group"
+     And the output should contain "after all in included group"
+     And the output should not contain "before all in excluded group"
+     And the output should not contain "after all in excluded group"

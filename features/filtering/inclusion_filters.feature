@@ -1,11 +1,22 @@
 Feature: inclusion filters
-  
-  Scenario: focus on one example
-    Given a file named "spec/sample_spec.rb" with:
+
+  You can restrict which examples are run by declaring an inclusion filter. The
+  most common use case is to focus on a subset of examples as you're focused on
+  a particular problem.
+
+  Background:
+    Given a file named "spec/spec_helper.rb" with:
       """
       RSpec.configure do |c|
+        # filter_run is short-form alias for filter_run_including
         c.filter_run :focus => true
       end
+      """
+
+  Scenario: focus on an example
+    Given a file named "spec/sample_spec.rb" with:
+      """
+      require "spec_helper"
 
       describe "something" do
         it "does one thing" do
@@ -15,16 +26,14 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
+    When I run "rspec spec/sample_spec.rb --format doc"
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"
 
-  Scenario: focus on one group
+  Scenario: focus on a group
     Given a file named "spec/sample_spec.rb" with:
       """
-      RSpec.configure do |c|
-        c.filter_run :focus => true
-      end
+      require "spec_helper"
 
       describe "group 1", :focus => true do
         it "group 1 example 1" do
@@ -39,45 +48,15 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
+    When I run "rspec spec/sample_spec.rb --format doc"
     Then the output should contain "group 1 example 1"
     And  the output should contain "group 1 example 2"
     And  the output should not contain "group 2 example 1"
 
-  Scenario: no examples match filter
-    Given a file named "spec/sample_spec.rb" with:
-      """
-      RSpec.configure do |c|
-        c.filter_run :focus => true
-        c.run_all_when_everything_filtered = true
-      end
-
-      describe "group 1" do
-        it "group 1 example 1" do
-        end
-
-        it "group 1 example 2" do
-        end
-      end
-
-      describe "group 2" do
-        it "group 2 example 1" do
-        end
-      end
-      """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
-    Then the output should contain "No examples were matched by {:focus=>true}, running all"
-    And  the output should contain "group 1 example 1"
-    And  the output should contain "group 1 example 2"
-    And  the output should contain "group 2 example 1"
-    And  the output should contain "3 examples, 0 failures"
-
-  Scenario: before/after(:all) hook in unmatched example group
+  Scenario: before/after(:all) hooks in unmatched example group are not run
     Given a file named "spec/before_after_all_inclusion_filter_spec.rb" with:
       """
-      RSpec.configure do |c|
-        c.filter_run :focus => true
-      end
+      require "spec_helper"
 
       describe "group 1", :focus => true do
         before(:all) { puts "before all in focused group" }
