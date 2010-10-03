@@ -47,7 +47,7 @@ module RSpec::Core::Formatters
       context2.example("nested example 2.1"){}
       context2.example("nested example 2.2"){}
 
-      group.run_all(RSpec::Core::Reporter.new(formatter))
+      group.run(RSpec::Core::Reporter.new(formatter))
 
       output.string.should eql "
 root

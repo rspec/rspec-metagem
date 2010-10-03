@@ -6,7 +6,7 @@ describe "failed_results_re for autotest" do
   let(:example_output) do
     group = RSpec::Core::ExampleGroup.describe("group name")
     example = group.example("example name") { "this".should eq("that") }
-    group.run_all(formatter)
+    group.run(formatter)
     RSpec.configuration.stub(:color_enabled?) { false }
     formatter.dump_failures
     output.string

@@ -33,7 +33,7 @@ module RSpec::Core::Formatters
       before { RSpec.configuration.stub(:color_enabled?) { false } }
 
       def run_all_and_dump_failures
-        group.run_all(formatter)
+        group.run(formatter)
         formatter.dump_failures
       end
 
@@ -134,7 +134,7 @@ module RSpec::Core::Formatters
           group = RSpec::Core::ExampleGroup.describe("group") do
             example("example")
           end
-          group.run_all(double('reporter').as_null_object)
+          group.run(double('reporter').as_null_object)
           group.examples
         end
       end

@@ -14,7 +14,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe
         group.example("example") {}
-        group.run_all
+        group.run
         filters.should == [
           "before all in config",
           "around each in config",
@@ -37,7 +37,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe(:match => true)
         group.example("example") {}
-        group.run_all
+        group.run
         filters.should == [
           "before all in config",
           "around each in config",
@@ -58,7 +58,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe(:match => true)
         group.example("example") {}
-        group.run_all
+        group.run
         filters.should == []
       end
     end
@@ -75,7 +75,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe(:one => 1, :two => 2, :three => 3)
         group.example("example") {}
-        group.run_all
+        group.run
         filters.should == [
           "before all in config",
           "around each in config",
@@ -96,7 +96,7 @@ module RSpec::Core
         end
         group = ExampleGroup.describe(:one => 1, :two => 2, :three => 3)
         group.example("example") {}
-        group.run_all
+        group.run
         filters.should == []
       end
     end

@@ -97,7 +97,7 @@ module RSpec::Core
           group = ExampleGroup.describe("group") do
             it_should_behave_like "thing", :value1, :value2
           end
-          group.run_all
+          group.run
 
           passed_params.should == { :param1 => :value1, :param2 => :value2 }
         end
@@ -135,7 +135,7 @@ module RSpec::Core
               end
             end
           end
-          group.run_all
+          group.run
 
           scopes[0].should be(scopes[1])
         end

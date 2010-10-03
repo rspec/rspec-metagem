@@ -13,7 +13,7 @@ module RSpec::Core
               examples << self
             end
           end
-          group.run_all
+          group.run
           examples.should have(0).example
         end
       end
@@ -29,7 +29,7 @@ module RSpec::Core
               examples << self
             end
           end
-          group.run_all
+          group.run
           examples.should have(1).example
         end
       end
@@ -48,7 +48,7 @@ module RSpec::Core
               examples << self
             end
           end
-          group.run_all
+          group.run
           examples.should have(1).example
         end
       end

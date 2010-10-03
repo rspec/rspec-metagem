@@ -38,7 +38,7 @@ module RSpec::Core
         group.describe("context 1")
         group.describe("context 2")
 
-        group.run_all(Reporter.new(formatter))
+        group.run(Reporter.new(formatter))
 
         order.should == [
            "Started: root",

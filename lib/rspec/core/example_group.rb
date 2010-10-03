@@ -237,6 +237,7 @@ module RSpec
 
       def self.run_examples(instance, reporter)
         filtered_examples.map do |example|
+          next if RSpec.wants_to_quit
           begin
             set_ivars(instance, before_all_ivars)
             succeeded = example.run(instance, reporter)

@@ -40,26 +40,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#run" do
-    context "with RSpec.wants_to_quit=true" do
-      it "returns without starting the example" do
-        RSpec.stub(:wants_to_quit) { true }
-        group = RSpec::Core::ExampleGroup.describe
-        example = group.example('example') {}
-
-        reporter = double('reporter').as_null_object
-        reporter.should_not_receive(:example_started)
-
-        example.run(group.new,reporter)
-      end
-    end
-
     it "runs after(:each) when the example passes" do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
         example('example') { 1.should == 1 }
       end
-      group.run_all
+      group.run
       after_run.should be_true, "expected after(:each) to be run"
     end
 
@@ -69,7 +56,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         after(:each) { after_run = true }
         example('example') { 1.should == 2 }
       end
-      group.run_all
+      group.run
       after_run.should be_true, "expected after(:each) to be run"
     end
 
@@ -79,7 +66,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         after(:each) { after_run = true }
         example('example') { raise "this error" }
       end
-      group.run_all
+      group.run
       after_run.should be_true, "expected after(:each) to be run"
     end
 
@@ -91,7 +78,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           after(:each) { raise "FOO" }
           example('example') { 1.should == 1 }
         end
-        group.run_all
+        group.run
         after_run.should be_true, "expected after(:each) to be run"
       end
 
@@ -100,7 +87,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.after(:each) { raise "FOO" }
         example = group.example('example') { 1.should == 1 }
 
-        group.run_all
+        group.run
 
         example.metadata[:execution_result][:exception_encountered].message.should == "FOO"
       end
@@ -119,7 +106,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example { results << "example" }
       end
 
-      group.run_all
+      group.run
       results.should eq([
         "around (before)",
         "before",
@@ -148,7 +135,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group = RSpec::Core::ExampleGroup.describe do
           example { pending }
         end
-        group.run_all
+        group.run
         group.examples.first.should be_pending
       end
     end
@@ -159,7 +146,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           before(:each) { pending }
           example {}
         end
-        group.run_all
+        group.run
         group.examples.first.should be_pending
       end
     end
@@ -170,7 +157,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           around(:each) { pending }
           example {}
         end
-        group.run_all
+        group.run
         group.examples.first.should be_pending
       end
     end
@@ -181,10 +168,10 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           before(:all) { pending }
           example {}
         end
-        group.run_all
+        group.run
         group.examples.first.should be_pending
         expect do
-          group.run_all
+          group.run
         end.to raise_error(/undefined method `metadata'/)
       end
     end
