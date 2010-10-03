@@ -19,7 +19,7 @@ Feature: predicate matchers
     Then the output should contain "2 examples, 1 failure"
      And the output should contain "expected zero? to return true, got false"
 
-  Scenario: should_not be_empty (based on Arrray#empty?)
+  Scenario: should_not be_empty (based on Array#empty?)
     Given a file named "should_not_be_empty_spec.rb" with:
       """
       describe Array do
