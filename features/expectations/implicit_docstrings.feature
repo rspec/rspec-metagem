@@ -24,7 +24,7 @@ Feature: implicit docstrings
     And the output should contain "should include 2"
     And the output should contain "should respond to #size"
 
-  Scenario Outline: run failing examples
+  Scenario: run failing examples
     Given a file named "failing_implicit_docstrings_spec.rb" with:
     """
     describe "Failing examples with no descriptions" do
@@ -48,5 +48,5 @@ Feature: implicit docstrings
 
     Then the output should contain "should equal 2"
     And the output should contain "should be > 5"
-    And the output should contain "should include "b""
+    And the output should contain "should include 4"
     And the output should contain "should not respond to #size"
