@@ -60,6 +60,7 @@ module RSpec
       alias_example_to :specify
       alias_example_to :focused, :focused => true
       alias_example_to :pending, :pending => true
+      alias_example_to :xit,     :pending => true
 
       def self.define_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)

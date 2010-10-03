@@ -429,6 +429,13 @@ module RSpec::Core
         group.examples.size.should == 1
       end
 
+      it "allows adding a pending example using 'xit'" do
+        group = ExampleGroup.describe
+        group.xit("is pending") { }
+        group.run
+        group.examples.first.should be_pending
+      end
+
       it "exposes all examples at examples" do
         group = ExampleGroup.describe
         group.it("should do something 1") { }
