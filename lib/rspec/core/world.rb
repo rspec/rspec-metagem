@@ -3,6 +3,7 @@ module RSpec
     class World
 
       attr_reader :example_groups, :filtered_examples, :wants_to_quit
+      attr_writer :wants_to_quit
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
