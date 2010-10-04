@@ -146,7 +146,7 @@ module RSpec::Core::Formatters
 
       it "prints the time" do
         formatter.dump_profile
-        output.string.should =~ /0\.\d+ seconds/
+        output.string.should =~ /0(\.\d)?+ seconds/
       end
 
       it "prints the path" do

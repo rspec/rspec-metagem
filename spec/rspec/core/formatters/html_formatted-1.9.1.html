@@ -212,17 +212,19 @@ a {
       <span class="failed_spec_name">fails</span>
       <div class="failure" id="failure_0">
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb:19:in `block (3 levels) in <top (required)>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:23:in `block (2 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (5 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `open'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (4 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:44:in `chdir'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:44:in `block (3 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:70:in `block (3 levels) in <top (required)>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:44:in `instance_eval'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:44:in `sandboxed'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:70:in `block (2 levels) in <top (required)>'</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:19:in `block (3 levels) in <top (required)>'
+./spec/spec_helper.rb:31:in `run'
+./spec/spec_helper.rb:31:in `run'
+./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `block (2 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `block (5 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `block (4 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (3 levels) in <module:Formatters>'
+./spec/spec_helper.rb:82:in `block (3 levels) in <top (required)>'
+./spec/spec_helper.rb:54:in `instance_eval'
+./spec/spec_helper.rb:54:in `sandboxed'
+./spec/spec_helper.rb:82:in `block (2 levels) in <top (required)>'</pre></div>
     <pre class="ruby"><code><span class="linenum">11</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span> <span class="punct">=&gt;</span> <span class="ident">e</span>
 <span class="linenum">12</span>          <span class="keyword">end</span>
 <span class="offending"><span class="linenum">13</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
@@ -253,17 +255,18 @@ expected 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb:34:in `block (2 levels) in <top (required)>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:23:in `block (2 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (5 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `open'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (4 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:44:in `chdir'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/html_formatter_spec.rb:44:in `block (3 levels) in <module:Formatters>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:70:in `block (3 levels) in <top (required)>'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:44:in `instance_eval'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:44:in `sandboxed'
-/Users/dchelimsky/projects/ruby/rspec2/repos/rspec-core/spec/spec_helper.rb:70:in `block (2 levels) in <top (required)>'</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:34:in `block (2 levels) in <top (required)>'
+./spec/spec_helper.rb:31:in `run'
+./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `block (2 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `block (5 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `block (4 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `block (3 levels) in <module:Formatters>'
+./spec/spec_helper.rb:82:in `block (3 levels) in <top (required)>'
+./spec/spec_helper.rb:54:in `instance_eval'
+./spec/spec_helper.rb:54:in `sandboxed'
+./spec/spec_helper.rb:82:in `block (2 levels) in <top (required)>'</pre></div>
     <pre class="ruby"><code><span class="linenum">27</span>        <span class="keyword">end</span>
 <span class="linenum">28</span>
 <span class="offending"><span class="linenum">29</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>

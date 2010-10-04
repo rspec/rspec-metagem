@@ -48,14 +48,21 @@ module RSpec
           # end
         # end
 
+        def extract_backtrace_from(doc)
+          backtrace = doc.search("div.backtrace").
+            collect {|e| e.at("pre").inner_html}.
+            collect {|e| e.split("\n")}.flatten.
+            reject  {|e| e =~ /formatter_spec\.rb/}
+        end
+
         it "produces HTML identical to the one we designed manually" do
           Dir.chdir(root) do
             actual_doc = Nokogiri::HTML(generated_html)
-            actual_backtraces = actual_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
+            actual_backtraces = extract_backtrace_from(actual_doc)
             actual_doc.css("div.backtrace").remove
 
             expected_doc = Nokogiri::HTML(expected_html)
-            expected_backtraces = expected_doc.search("div.backtrace").collect {|e| e.at("pre").inner_html}
+            expected_backtraces = extract_backtrace_from(expected_doc)
             expected_doc.search("div.backtrace").remove
 
             actual_doc.inner_html.should == expected_doc.inner_html
