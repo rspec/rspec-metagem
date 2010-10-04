@@ -52,7 +52,7 @@ module RSpec
           backtrace = doc.search("div.backtrace").
             collect {|e| e.at("pre").inner_html}.
             collect {|e| e.split("\n")}.flatten.
-            reject  {|e| e =~ /formatter_spec\.rb/}
+            select  {|e| e =~ /formatter_specs\.rb/}
         end
 
         it "produces HTML identical to the one we designed manually" do
