@@ -34,6 +34,16 @@ Feature: example name option
         end
       end
       """
+    And a file named "fourth_spec.rb" with:
+      """
+      describe Array do
+        describe "#length" do
+          it "is the number of items" do
+            Array.new([1,2,3]).length.should eq 3
+          end
+        end
+      end
+      """
 
   Scenario: no matches
     When I run "rspec . --example nothing_like_this"
@@ -70,3 +80,7 @@ Feature: example name option
   Scenario: all examples in one group including examples in nested groups
     When I run "rspec . --example 'third group'"
     Then the output should contain "3 examples, 0 failures"
+
+  Scenario: Object#method
+    When I run "rspec . --example 'Array#length'"
+    Then the output should contain "1 example, 0 failures"

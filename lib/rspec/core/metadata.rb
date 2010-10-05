@@ -27,9 +27,9 @@ module RSpec
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
 
-        self[:example_group][:describes] = described_class_from(args)
-        self[:example_group][:description] = description_from(args)
-        self[:example_group][:full_description] = full_description_from(args)
+        self[:example_group][:describes] = described_class_from(*args)
+        self[:example_group][:description] = description_from(*args)
+        self[:example_group][:full_description] = full_description_from(*args)
 
         self[:example_group][:block] = user_metadata.delete(:example_group_block)
         self[:example_group][:caller] = user_metadata.delete(:caller) || caller(1)
@@ -124,19 +124,28 @@ EOM
         @superclass_metadata ||= { :example_group => {} }
       end
 
-      def description_from(args)
-        args.map{|a| a.to_s.strip}.join(" ")
-      end
-
-      def full_description_from(args)
-        if superclass_metadata[:example_group][:full_description]
-          "#{superclass_metadata[:example_group][:full_description]} #{description_from(args)}"
-        else
-          description_from(args)
+      def description_from(*args)
+        args.inject("") do |result, a|
+          a = a.to_s.strip
+          if result == ""
+            a
+          elsif a =~ /^(#|::|\.)/
+            "#{result}#{a}"
+          else
+            "#{result} #{a}"
+          end
         end
       end
 
-      def described_class_from(args)
+      def full_description_from(*args)
+        if superclass_metadata[:example_group][:full_description]
+          description_from(superclass_metadata[:example_group][:full_description], *args)
+        else
+          description_from(*args)
+        end
+      end
+
+      def described_class_from(*args)
         if args.first.is_a?(String) || args.first.is_a?(Symbol)
           superclass_metadata[:example_group][:describes]
         else

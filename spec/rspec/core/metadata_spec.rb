@@ -65,6 +65,26 @@ module RSpec
           m = m.for_example("example", {})
           m[:full_description].should == "group example"
         end
+
+        %w[# . ::].each do |char|
+          context "with a 2nd arg starting with #{char}" do
+            it "removes the space" do
+              m = Metadata.new
+              m.process(Array, "#{char}method")
+              m[:example_group][:full_description].should eq("Array#{char}method")
+            end
+          end
+
+          context "with a nested description starting with #" do
+            it "removes the space" do
+              m = Metadata.new
+              m.process("Object")
+              m = Metadata.new(m)
+              m.process("#{char}method")
+              m[:example_group][:full_description].should eq("Object#{char}method")
+            end
+          end
+        end
       end
 
       describe "description" do
