@@ -1,8 +1,8 @@
 ## rspec-core release history (incomplete)
 
-### 2.0.0.beta.23 / not yet released
+### 2.0.0.rc / 2010-10-05
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.22...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.22...v2.0.0.rc)
 
 * Enhancements
   * implicitly require unknown formatters so you don't have to require the
