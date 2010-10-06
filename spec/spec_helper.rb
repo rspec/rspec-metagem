@@ -23,18 +23,6 @@ class NullObject
   end
 end
 
-module RSpec::Core
-  class SandboxedExampleGroup < ExampleGroup
-    def self.run(reporter=nil)
-      @orig_mock_space = RSpec::Mocks::space
-      RSpec::Mocks::space = RSpec::Mocks::Space.new
-      super(reporter || NullObject.new)
-    ensure
-      RSpec::Mocks::space = @orig_mock_space
-    end
-  end
-end
-
 def sandboxed(&block)
   begin
     @orig_config = RSpec.configuration
@@ -48,13 +36,25 @@ def sandboxed(&block)
     object.extend(RSpec::Core::ObjectExtensions)
     object.extend(RSpec::Core::SharedExampleGroup)
 
-    @orig_example_group_class = RSpec::Core::const_get(:ExampleGroup)
-    RSpec::Core::__send__ :remove_const, :ExampleGroup
-    RSpec::Core::const_set(:ExampleGroup, RSpec::Core::SandboxedExampleGroup)
+    (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+      alias_method :orig_run, :run
+      def run(reporter=nil)
+        @orig_mock_space = RSpec::Mocks::space
+        RSpec::Mocks::space = RSpec::Mocks::Space.new
+        orig_run(reporter || NullObject.new)
+      ensure
+        RSpec::Mocks::space = @orig_mock_space
+      end
+    end
+
     object.instance_eval(&block)
   ensure
-    RSpec::Core::__send__ :remove_const, :ExampleGroup
-    RSpec::Core::const_set(:ExampleGroup, @orig_example_group_class)
+    (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+      remove_method :run
+      alias_method :run, :orig_run
+      remove_method :orig_run
+    end
+
     RSpec.instance_variable_set(:@configuration, @orig_config)
     RSpec.instance_variable_set(:@world, @orig_world)
   end
