@@ -39,20 +39,29 @@ module RSpec::Core
         RSpec::Core::Configuration.new
       end
 
+      let(:err) { ::StringIO.new }
       let(:out) { ::StringIO.new }
 
       before do
         config.stub(:run_hook)
       end
 
+      it "configures streams before command line options" do
+        # this is necessary to ensure that color works correctly on windows
+        config.should_receive(:error_stream=).ordered
+        config.should_receive(:output_stream=).ordered
+        config.should_receive(:color_enabled=).ordered
+        command_line.run(err, out) rescue nil
+      end
+
       it "runs before suite hooks" do
         config.should_receive(:run_hook).with(:before, :suite)
-        command_line.run(out, out)
+        command_line.run(err, out)
       end
 
       it "runs after suite hooks" do
         config.should_receive(:run_hook).with(:after, :suite)
-        command_line.run(out, out)
+        command_line.run(err, out)
       end
 
       it "runs after suite hooks even after an error" do
@@ -66,10 +75,11 @@ module RSpec::Core
           end
         end
         expect do
-          command_line.run(out, out)
+          command_line.run(err, out)
         end.to raise_error
         after_suite_called.should be_true
       end
+
     end
 
     describe "#run with custom output" do
