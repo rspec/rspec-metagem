@@ -56,6 +56,37 @@ Typically in `spec/spec_helper.rb`, configuration is now done like this:
       # ....
     end
 
+### Bones
+
+Bones produces a handy little Rakefile to provide several services including
+running specs. The current version (3.4.7) still assumes RSpec-1. To bring its
+Rakefile into conformance with RSpec-2 a few changes are necessary.
+
+1. Note that the require line has changed to:
+
+    require 'spec/rake/spectask'
+
+2. The `spec_opts` accessor has been deprecated in favor of `rspec_opts`. Also, the
+   `rspec` command no longer supports the `--options` command line option so the
+   options must be embedded directly in the Rakefile.
+
+3. The `spec_files` accessor has been replaced by `pattern`.
+
+Here is a complete example:
+
+    Spec::Rake::SpecTask.new do |t|
+      t.spec_opts = ['--options', "\"spec/spec.opts\""]
+      t.spec_files = FileList['spec/**/*.rb']
+    end
+
+becomes:
+
+    RSpec::Core::RakeTask.new do |t|
+      t.rspec_opts = ["-c", "-f progress", "-r ./spec/spec_helper.rb"]
+      t.pattern = 'spec/**/*_spec.rb'
+    end
+
+
 ### .rspec
 
 Command line options can be persisted in a `.rspec` file in a project. You
