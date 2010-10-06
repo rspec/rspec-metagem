@@ -101,10 +101,11 @@ module RSpec::Core
 
     context "with rspec_opts" do
       context "with rcov=true" do
-        it "does not add the rspec_opts" do
+        it "adds the rspec_opts after the rcov_opts and files" do
+          task.stub(:files_to_run) { "this.rb that.rb" }
           task.rcov = true
           task.rspec_opts = "-Ifoo"
-          spec_command.should_not =~ /-Ifoo/
+          spec_command.should =~ /this.rb that.rb -- -Ifoo/
         end
       end
       context "with rcov=false (default)" do

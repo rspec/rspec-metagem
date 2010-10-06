@@ -10,11 +10,16 @@ require "rspec/core/rake_task"
 require "rspec/core/version"
 require "cucumber/rake/task"
 
-RSpec::Core::RakeTask.new(:spec)
+desc "Run all examples"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_path = 'bin/rspec'
+  t.rspec_opts = %w[--color]
+end
 
 desc "Run all examples using rcov"
 RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
   t.rcov = true
+  t.rspec_opts = %w[--color]
   t.rcov_opts =  %[-Ilib -Ispec --exclude "mocks,expectations,gems/*,spec/resources,spec/lib,spec/spec_helper.rb,db/*,/Library/Ruby/*,config/*"]
   t.rcov_opts << %[--no-html --aggregate coverage.data]
 end
