@@ -88,7 +88,13 @@ module RSpec::Core
         it "renders them after rcov" do
           task.rcov = true
           task.rcov_opts = '--exclude "mocks"'
-          spec_command.should =~ /^-S rcov --exclude "mocks"/
+          spec_command.should =~ /rcov.*--exclude "mocks"/
+        end
+
+        it "ensures that -Ispec is in the resulting command" do
+          task.rcov = true
+          task.rcov_opts = '--exclude "mocks"'
+          spec_command.should =~ /rcov.*-Ispec/
         end
       end
     end

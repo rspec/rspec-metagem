@@ -127,7 +127,7 @@ module RSpec
                             cmd_parts << "-S"
                             cmd_parts << "bundle exec" if bundler?
                             cmd_parts << runner
-                            cmd_parts << runner_options 
+                            cmd_parts << runner_options
                             cmd_parts << files_to_run
                             cmd_parts.flatten.compact.reject(&blank).join(" ")
                           end
@@ -139,8 +139,20 @@ module RSpec
         rcov ? rcov_path : 'rspec'
       end
 
+      def enhanced_rcov_opts
+        opts = case rcov_opts
+               when Array
+                 rcov_opts.map{|o| o.strip}
+               when String
+                 rcov_opts.split(/\s+/)
+               when nil
+                 []
+               end
+        opts.unshift "-Ispec"
+      end
+
       def runner_options
-        rcov ? [rcov_opts] : [rspec_opts]
+        rcov ? [enhanced_rcov_opts] : [rspec_opts]
       end
 
       def bundler?
