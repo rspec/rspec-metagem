@@ -18,10 +18,18 @@ module RSpec
     #   "spread".should_not include("red")
     def include(*expected)
       Matcher.new :include, *expected do |*_expected|
-        match do |actual|
-          _expected.all? do |expected|
+        match_for_should do |actual|
+          perform_match(:all?, :all?, actual, _expected)
+        end
+
+        match_for_should_not do |actual|
+          perform_match(:none?, :any?, actual, _expected)
+        end
+
+        def perform_match(predicate, hash_predicate, actual, _expected)
+          _expected.send(predicate) do |expected|
             if comparing_hash_values?(actual, expected)
-              expected.all? {|k,v| actual[k] == v}
+              expected.send(hash_predicate) {|k,v| actual[k] == v}
             elsif comparing_hash_keys?(actual, expected)
               actual.has_key?(expected)
             else
@@ -37,9 +45,7 @@ module RSpec
         def comparing_hash_values?(actual, expected) # :nodoc:
           actual.is_a?(Hash) && expected.is_a?(Hash)
         end
-
       end
-
     end
   end
 end
