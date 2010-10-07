@@ -52,7 +52,7 @@ module RSpec::Core
         end
 
         parser.on('-o', '--out FILE', 'output to a file instead of STDOUT') do |o|
-          options[:output_stream] = o
+          options[:output_stream] = File.open(o,'w')
         end
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
