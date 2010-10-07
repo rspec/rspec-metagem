@@ -1,5 +1,12 @@
 ## rspec-expectations release history (incomplete)
 
+### 2.0.0 / in development
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.rc...master)
+
+* Bug fixes
+  * respond_to matcher works correctly with should_not with multiple methods (Myron Marston)
+
 ### 2.0.0.rc / 2010-10-05
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.22...v2.0.0.rc)
