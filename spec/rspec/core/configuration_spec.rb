@@ -204,6 +204,36 @@ module RSpec::Core
 
     describe "#color_enabled=" do
       context "given true" do
+        context "with non-tty output and no autotest" do
+          it "does not set color_enabled" do
+            config.output_stream = StringIO.new
+            config.output_stream.stub(:tty?) { false }
+            config.autotest = false
+            config.color_enabled = true
+            config.color_enabled.should be_false
+          end
+        end
+
+        context "with tty output" do
+          it "does not set color_enabled" do
+            config.output_stream = StringIO.new
+            config.output_stream.stub(:tty?) { true }
+            config.autotest = false
+            config.color_enabled = true
+            config.color_enabled.should be_true
+          end
+        end
+
+        context "with autotest output" do
+          it "does not set color_enabled" do
+            config.output_stream = StringIO.new
+            config.output_stream.stub(:tty?) { false }
+            config.autotest = true
+            config.color_enabled = true
+            config.color_enabled.should be_true
+          end
+        end
+
         context "on windows" do
           before do
             @original_host  = RbConfig::CONFIG['host_os']

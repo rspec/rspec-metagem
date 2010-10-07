@@ -23,7 +23,6 @@ module RSpec
       add_setting :out, :alias => :output_stream
       add_setting :drb
       add_setting :drb_port
-      add_setting :color_enabled
       add_setting :profile_examples
       add_setting :fail_fast, :default => false
       add_setting :run_all_when_everything_filtered
@@ -34,8 +33,10 @@ module RSpec
       add_setting :files_to_run
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
+      add_setting :autotest
 
       def initialize
+        @color_enabled = false
         self.include_or_extend_modules = []
         self.files_to_run = []
         self.backtrace_clean_patterns = [
@@ -129,11 +130,17 @@ module RSpec
         settings[:backtrace_clean_patterns] = []
       end
 
-      remove_method :color_enabled=
+      def color_enabled
+        @color_enabled && (output_to_tty? || autotest?)
+      end
+
+      def color_enabled?
+        !!color_enabled
+      end
 
       def color_enabled=(bool)
         return unless bool
-        settings[:color_enabled] = true
+        @color_enabled = true
         if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
           using_stdout = settings[:output_stream] == $stdout
           using_stderr = settings[:error_stream]  == $stderr
@@ -143,7 +150,7 @@ module RSpec
             settings[:error_stream]  = $stderr if using_stderr
           rescue LoadError
             warn "You must 'gem install win32console' to use colour on Windows"
-            settings[:color_enabled] = false
+            @color_enabled = false
           end
         end
       end
@@ -301,6 +308,14 @@ EOM
       end
 
     private
+
+      def output_to_tty?
+        begin
+          settings[:output_stream].tty?
+        rescue NoMethodError
+          false
+        end
+      end
 
       def built_in_formatter(key)
         case key.to_s

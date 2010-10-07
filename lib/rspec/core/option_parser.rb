@@ -95,6 +95,10 @@ module RSpec::Core
         parser.on('--drb-port [PORT]', 'Port to connect to on the DRb server') do |o|
           options[:drb_port] = o.to_i
         end
+
+        parser.on('--autotest') do |o|
+          options[:autotest] = true
+        end
       end
     end
   end
