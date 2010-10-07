@@ -6,6 +6,7 @@
 
 * Bug fixes
   * Bug Fix: optparse --out foo.txt (Leonardo Bessa)
+  * Suppress color codes for non-tty output (except autotest)
 
 ### 2.0.0.rc / 2010-10-05
 
