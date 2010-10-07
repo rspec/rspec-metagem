@@ -1,5 +1,12 @@
 ## rspec-core release history (incomplete)
 
+### 2.0.0 / in development
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.rc...master)
+
+* Bug fixes
+  * Bug Fix: optparse --out foo.txt (Leonardo Bessa)
+
 ### 2.0.0.rc / 2010-10-05
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.beta.22...v2.0.0.rc)
