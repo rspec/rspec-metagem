@@ -5,3 +5,9 @@ Then /^the output should contain "([^"]*)" or "([^"]*)"$/ do |string1, string2|
   end
 end
 
+Then /^the output should contain all of these:$/ do |table|
+  table.raw.flatten.each do |string|
+    assert_partial_output(string)
+  end
+end
+
