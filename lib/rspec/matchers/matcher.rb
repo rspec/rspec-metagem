@@ -41,9 +41,23 @@ module RSpec
         end
       end
 
+      # Used internally by +should_not+
+      def does_not_match?(actual)
+        @actual = actual
+        @match_for_should_not_block ?
+          instance_exec(actual, &@match_for_should_not_block) :
+          !matches?(actual)
+      end
+
       # See RSpec::Matchers
       def match(&block)
         @match_block = block
+      end
+      alias match_for_should match
+
+      # See RSpec::Matchers
+      def match_for_should_not(&block)
+        @match_for_should_not_block = block
       end
 
       # See RSpec::Matchers

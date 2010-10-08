@@ -29,6 +29,35 @@ module RSpec
         end
       end
 
+      context "with separate match logic for should and should not" do
+        let(:matcher) do
+          RSpec::Matchers::Matcher.new(:to_be_composed_of, 7, 11) do |a, b|
+            match_for_should do |actual|
+              actual == a * b
+            end
+
+            match_for_should_not do |actual|
+              actual == a + b
+            end
+          end
+        end
+
+        it "invokes the match_for_should block for #matches?" do
+          matcher.matches?(77).should be_true
+          matcher.matches?(18).should be_false
+        end
+
+        it "invokes the match_for_should_not block for #does_not_match?" do
+          matcher.does_not_match?(77).should be_false
+          matcher.does_not_match?(18).should be_true
+        end
+
+        it "provides a default failure message for #should_not" do
+          matcher.does_not_match?(77)
+          matcher.failure_message_for_should_not.should == "expected 77 not to to be composed of 7 and 11"
+        end
+      end
+
       it "is not diffable by default" do
         matcher = RSpec::Matchers::Matcher.new(:name) {}
         matcher.should_not be_diffable
