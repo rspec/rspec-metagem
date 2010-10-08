@@ -130,5 +130,19 @@ module RSpec::Core
       end
     end
 
+    context "with SPEC=path/to/file" do
+      before do
+        @orig_spec = ENV["SPEC"]
+        ENV["SPEC"] = "path/to/file"
+      end
+
+      after do
+        ENV["SPEC"] = @orig_spec
+      end
+
+      it "sets files to run" do
+        task.__send__(:files_to_run).should eq(["path/to/file"])
+      end
+    end
   end
 end

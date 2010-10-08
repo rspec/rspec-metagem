@@ -4,6 +4,9 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.rc...master)
 
+* RSpec-1 compatibility
+  * Rake task uses ENV["SPEC"] as file list if present
+
 * Bug fixes
   * Bug Fix: optparse --out foo.txt (Leonardo Bessa)
   * Suppress color codes for non-tty output (except autotest)

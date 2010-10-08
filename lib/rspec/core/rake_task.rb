@@ -124,7 +124,11 @@ module RSpec
     private
 
       def files_to_run # :nodoc:
-        FileList[ pattern ].map { |f| %["#{f}"] }
+        if ENV['SPEC']
+          FileList[ ENV['SPEC'] ]
+        else
+          FileList[ pattern ].map { |f| %["#{f}"] }
+        end
       end
 
       def spec_command
