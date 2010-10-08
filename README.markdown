@@ -8,7 +8,7 @@ See [Upgrade.markdown](http://github.com/rspec/rspec-core/blob/master/Upgrade.ma
 
 ## Install
 
-    gem install rspec --prerelease
+    gem install rspec -v 2.0.0.rc
 
 This will install the rspec, rspec-core, rspec-expectations and rspec-mocks
 gems.
