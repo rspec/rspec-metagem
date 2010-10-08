@@ -41,10 +41,9 @@ module RSpec
         self.files_to_run = []
         self.backtrace_clean_patterns = [
           /\/lib\d*\/ruby\//,
-          /bin\/rcov:/,
-          /vendor\/rails/,
-          /bin\/rspec/,
-          /bin\/spec/,
+          /bin\//,
+          /gems/,
+          /spec\/spec_helper\.rb/,
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
       end
