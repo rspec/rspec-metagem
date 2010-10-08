@@ -48,4 +48,6 @@ RSpec::configure do |config|
   config.mock_with(:rspec)
   config.include RSpec::Mocks::Methods
   config.color_enabled = true
+  config.filter_run :focused => true
+  config.run_all_when_everything_filtered = true
 end
