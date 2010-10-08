@@ -5,7 +5,7 @@ module RSpec
       class Hook
         attr_reader :options
 
-        def initialize(options, block)
+        def initialize(options, &block)
           @options = options
           @block = block
         end
@@ -85,16 +85,19 @@ module RSpec
         }
       end
 
-      def before(scope=:each, options={}, &block)
-        hooks[:before][scope] << BeforeHook.new(options, block)
+      def before(*args, &block)
+        scope, options = scope_and_options_from(*args)
+        hooks[:before][scope] << BeforeHook.new(options, &block)
       end
 
-      def after(scope=:each, options={}, &block)
-        hooks[:after][scope] << AfterHook.new(options, block)
+      def after(*args, &block)
+        scope, options = scope_and_options_from(*args)
+        hooks[:after][scope] << AfterHook.new(options, &block)
       end
 
-      def around(scope=:each, options={}, &block)
-        hooks[:around][scope] << AroundHook.new(options, block)
+      def around(*args, &block)
+        scope, options = scope_and_options_from(*args)
+        hooks[:around][scope] << AroundHook.new(options, &block)
       end
 
       # Runs all of the blocks stored with the hook in the context of the
@@ -115,6 +118,16 @@ module RSpec
 
       def find_hook(hook, scope, example_group_class)
         hooks[hook][scope].find_hooks_for(example_group_class)
+      end
+
+    private
+
+      def scope_and_options_from(scope=:each, options={})
+        if Hash === scope
+          options = scope
+          scope = :each
+        end
+        return scope, options
       end
     end
   end

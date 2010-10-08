@@ -26,6 +26,26 @@ module RSpec::Core
     end
 
     describe "hooks with single filters" do
+
+      context "with no scope specified" do
+        it "should be ran around|before|after :each if the filter matches the example group's filter" do
+          filters = []
+          RSpec.configure do |c|
+            c.around(:match => true) {|example| filters << "around each in config"; example.run}
+            c.before(:match => true) { filters << "before each in config"}
+            c.after(:match => true)  { filters << "after each in config"}
+          end
+          group = ExampleGroup.describe(:match => true)
+          group.example("example") {}
+          group.run
+          filters.should == [
+            "around each in config",
+            "before each in config",
+            "after each in config"
+          ]
+        end
+      end
+
       it "should be ran if the filter matches the example group's filter" do
         filters = []
         RSpec.configure do |c|
