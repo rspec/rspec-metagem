@@ -4,8 +4,12 @@
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.rc...master)
 
+* Enhancements
+  * Add match_for_should_not method to matcher DSL (Myron Marston)
+
 * Bug fixes
   * respond_to matcher works correctly with should_not with multiple methods (Myron Marston)
+  * include matcher works correctly with should_not with multiple values (Myron Marston)
 
 ### 2.0.0.rc / 2010-10-05
 
