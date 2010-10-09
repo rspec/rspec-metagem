@@ -49,6 +49,10 @@ module RSpec
           !matches?(actual)
       end
 
+      def define_method(name, &block)
+        singleton_class.__send__(:define_method, name, &block)
+      end
+
       # See RSpec::Matchers
       def match(&block)
         @match_block = block
@@ -124,8 +128,7 @@ module RSpec
         # cause features to fail and that will make users unhappy. So don't.
         orig_private_methods = private_methods
         yield
-        st = (class << self; self; end)
-        (private_methods - orig_private_methods).each {|m| st.__send__ :public, m}
+        (private_methods - orig_private_methods).each {|m| singleton_class.__send__ :public, m}
       end
 
       def cache_or_call_cached(key, &block)
@@ -148,6 +151,11 @@ module RSpec
         to_sentence(@expected)
       end
 
+      unless method_defined?(:singleton_class)
+        def singleton_class
+          class << self; self; end
+        end
+      end
     end
   end
 end

@@ -58,6 +58,14 @@ module RSpec
         end
       end
 
+      it "allows helper methods to be defined with #define_method to have access to matcher parameters" do
+        matcher = RSpec::Matchers::Matcher.new(:name, 3, 4) do |a, b|
+          define_method(:sum) { a + b }
+        end
+
+        matcher.sum.should == 7
+      end
+
       it "is not diffable by default" do
         matcher = RSpec::Matchers::Matcher.new(:name) {}
         matcher.should_not be_diffable

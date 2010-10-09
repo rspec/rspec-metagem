@@ -284,3 +284,28 @@ Feature: define matcher
       | 4 examples, 2 failures                    |
       | expected [1, 2, 3] to contain 1 and 4     |
       | expected [1, 2, 3] not to contain 1 and 4 |
+
+  Scenario: use define_method to create a helper method with access to matcher params
+    Given a file named "define_method_spec.rb" with:
+      """
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
+        define_method :is_multiple? do |actual|
+          actual % expected == 0
+        end
+        match { |actual| is_multiple?(actual) }
+      end
+
+      describe 9 do
+        it { should be_a_multiple_of(3) }
+        it { should_not be_a_multiple_of(4) }
+
+        # deliberate failures
+        it { should be_a_multiple_of(2) }
+        it { should_not be_a_multiple_of(3) }
+      end
+      """
+    When I run "rspec define_method_spec.rb"
+    Then the output should contain all of these:
+      | 4 examples, 2 failures               |
+      | expected 9 to be a multiple of 2     |
+      | expected 9 not to be a multiple of 3 |
