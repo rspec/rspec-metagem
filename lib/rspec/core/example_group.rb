@@ -209,7 +209,6 @@ module RSpec
           RSpec.clear_remaining_example_groups if top_level?
           return
         end
-        @reporter = reporter
         example_group_instance = new
         reporter.example_group_started(self)
 
