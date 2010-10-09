@@ -10,7 +10,7 @@ class Autotest::Rspec2 < Autotest
     super
     clear_mappings
     setup_rspec_project_mappings
-    self.failed_results_re = /^\s*\d\)\s(.*?$\n.*?$).*?#\s(.*?):/m
+    self.failed_results_re = /^\s*\d\).*\n\s+Failure.*(\n\s+#\s(.*)?:\d+)+$/m
     self.completed_re = /\n(?:\e\[\d*m)?\d* examples?/m
   end
 
