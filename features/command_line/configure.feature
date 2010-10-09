@@ -1,6 +1,7 @@
 Feature: configure
 
-  Use --configure to generate configuration files.
+  Use the --configure option on the command line to generate configuration
+  files.
 
   The only supported argument, so far, is "autotest", which creates an
   autotest/discover.rb file in your project root directory.
