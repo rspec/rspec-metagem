@@ -14,6 +14,7 @@ gem "syntax"
 gem "rspec-core", :path => "."
 gem "rspec-expectations", :path => "../rspec-expectations"
 gem "rspec-mocks", :path => "../rspec-mocks"
+gem "ruby-prof"
 unless RUBY_PLATFORM == "java"
   case RUBY_VERSION
   when /^1.9.2/
