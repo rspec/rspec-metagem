@@ -159,12 +159,14 @@ module RSpec
       end
 
       def self.store_before_all_ivars(example_group_instance)
+        return if example_group_instance.instance_variables.empty?
         example_group_instance.instance_variables.each { |ivar| 
           before_all_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
         }
       end
 
       def self.assign_before_all_ivars(ivars, example_group_instance)
+        return if ivars.empty?
         ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
       end
 
