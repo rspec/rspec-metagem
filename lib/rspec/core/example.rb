@@ -16,7 +16,7 @@ module RSpec
         @example_group_class, @options, @example_block = example_group_class, options, example_block
         @metadata  = @example_group_class.metadata.for_example(desc, options)
         @exception = nil
-        @pending_declared_in_example = @in_block = false
+        @pending_declared_in_example = false
       end
 
       def example_group
@@ -26,10 +26,6 @@ module RSpec
       def behaviour
         RSpec.deprecate("behaviour", "example_group")
         example_group
-      end
-
-      def in_block?
-        @in_block
       end
 
       def pending?
@@ -48,12 +44,10 @@ module RSpec
               with_around_hooks do
                 begin
                   run_before_each
-                  @in_block = true
                   @example_group_instance.instance_eval(&@example_block)
                 rescue Exception => e
                   set_exception(e)
                 ensure
-                  @in_block = false
                   run_after_each
                 end
               end

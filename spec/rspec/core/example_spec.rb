@@ -117,18 +117,6 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe "#in_block?" do
-    before do
-      example.should_not be_in_block
-    end
-    it "is only true during the example (but not before or after)" do
-      example.should be_in_block
-    end
-    after do
-      example.should_not be_in_block
-    end
-  end
-
   describe "#pending" do
     context "in the example" do
       it "sets the example to pending" do
