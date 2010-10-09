@@ -155,6 +155,29 @@ Feature: before and after hooks
       after all ran
       """
 
+  Scenario: failure in after(:all) block
+    Given a file named "after_all_spec.rb" with:
+      """
+      describe "an error in after(:all)" do
+        after(:all) do
+          raise StandardError.new("Boom!")
+        end
+
+        it "passes this example" do
+        end
+
+        it "passes this example, too" do
+        end
+      end
+      """
+    When I run "rspec after_all_spec.rb"
+    Then the output should contain "2 examples, 0 failures"
+    And the output should contain:
+      """
+      An error occurred in an after(:all) hook.
+        StandardError: Boom!
+      """
+
   Scenario: define before and after blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """

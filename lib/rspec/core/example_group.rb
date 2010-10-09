@@ -198,7 +198,20 @@ module RSpec
       def self.eval_after_alls(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
-        run_hook!(:after, :all, example_group_instance)
+
+        begin
+          run_hook!(:after, :all, example_group_instance)
+        rescue => e
+          # TODO: come up with a better solution for this.
+          RSpec.configuration.reporter.message <<-EOS
+
+An error occurred in an after(:all) hook.
+  #{e.class}: #{e.message}
+  occurred at #{e.backtrace.first}
+
+        EOS
+        end
+
         world.run_hook_filtered(:after, :all, self, example_group_instance) if top_level?
       end
 
@@ -290,6 +303,7 @@ module RSpec
         begin
           instance_eval(&hook)
         rescue Exception => e
+          raise unless example
           example.set_exception(e)
         end
       end

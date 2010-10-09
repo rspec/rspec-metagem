@@ -384,6 +384,32 @@ module RSpec::Core
         example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
       end
 
+      context "when an error occurs in an after(:all) hook" do
+        before(:each) do
+          RSpec.configuration.reporter.stub(:message)
+        end
+
+        let(:group) do
+          ExampleGroup.describe do
+            after(:all) { raise "error in after all" }
+            it("equality") { 1.should == 1 }
+          end
+        end
+
+        it "allows the example to pass" do
+          group.run
+          example = group.examples.first
+          example.metadata.should_not be_nil
+          example.metadata[:execution_result].should_not be_nil
+          example.metadata[:execution_result][:status].should == "passed"
+        end
+
+        it "rescues the error and prints it out" do
+          RSpec.configuration.reporter.should_receive(:message).with(/error in after all/)
+          group.run
+        end
+      end
+
       it "has no 'running example' within before(:all)" do
         group = ExampleGroup.describe
         running_example = :none
