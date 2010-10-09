@@ -22,7 +22,7 @@ module RSpec
         end
       end
       
-      #Used internally by objects returns by +should+ and +should_not+.
+      #Used internally by +should+ and +should_not+.
       def matches?(actual)
         @actual = actual
         if @expected_exception
@@ -49,7 +49,7 @@ module RSpec
           !matches?(actual)
       end
 
-      def define_method(name, &block)
+      def define_method(name, &block) # :nodoc:
         singleton_class.__send__(:define_method, name, &block)
       end
 
