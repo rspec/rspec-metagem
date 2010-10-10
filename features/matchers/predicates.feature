@@ -1,4 +1,4 @@
-Feature: predicate matchers
+Feature: Predicate matchers
 
   Ruby objects commonly provide predicate methods:
 

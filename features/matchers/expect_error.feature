@@ -1,4 +1,4 @@
-Feature: expect error
+Feature: Expect error
 
   Expect a proc to raise an error when called.
   

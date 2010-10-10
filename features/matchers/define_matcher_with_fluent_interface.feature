@@ -1,4 +1,4 @@
-Feature: define matcher with fluent interface
+Feature: Define matcher with fluent interface
 
   Use the chain() method to define matchers with a fluent interface.
   

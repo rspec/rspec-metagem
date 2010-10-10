@@ -1,4 +1,4 @@
-Feature: have matchers
+Feature: have(n).items matcher
 
   RSpec provides several matchers that make it easy to set expectations about the
   size of a collection.  There are three basic forms:

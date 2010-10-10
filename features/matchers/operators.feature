@@ -1,4 +1,4 @@
-Feature: Operator Matchers
+Feature: Operator matchers
 
   RSpec provides a number of matchers that are based on Ruby's built-in
   operators.  These mostly work like you expect.  For example, each of these pass:

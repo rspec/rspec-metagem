@@ -1,4 +1,4 @@
-Feature: define matcher
+Feature: Define matcher
 
   In order to express my domain clearly in my code examples
   As an RSpec user
