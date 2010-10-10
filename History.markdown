@@ -1,8 +1,8 @@
 ## rspec-core release history (incomplete)
 
-### 2.0.0 / in development
+### 2.0.0 / 2010-10-10
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.rc...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.rc...v2.0.0)
 
 * RSpec-1 compatibility
   * Rake task uses ENV["SPEC"] as file list if present
