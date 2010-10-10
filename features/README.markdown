@@ -10,5 +10,10 @@ rspec-core provides the structure for RSpec code examples:
 
 ## Issues
 
-If you find this documentation incomplete or confusing, please [submit an
-issue](http://github.com/rspec/rspec-core/issues).
+The documentation for rspec-core is a work in progress. We'll be adding
+Cucumber features over time, and clarifying existing ones.  If you have
+specific features you'd like to see added, find the existing documentation
+incomplete or confusing, or, better yet, wish to write a missing Cucumber
+feature yourself, please [submit an
+issue](http://github.com/rspec/rspec-core/issues) or a [pull
+request](http://github.com/rspec/rspec-core).
