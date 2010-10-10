@@ -1,12 +1,33 @@
 # Upgrade to rspec-core-2.0
 
-## What's changed since rspec-1
+## What's changed since RSpec-1
 
 ### rspec command
 
 The command to run specs is now `rspec` instead of `spec`.
 
     rspec ./spec
+
+#### Co-habitation of rspec-1 and rspec-2
+
+Early beta versions of RSpec-2 included a `spec` command, which conflicted with
+the RSpec-1 `spec` command because RSpec-1's was installed by the rspec gem,
+while RSpec-2's is installed by the rspec-core gem.
+
+If you installed one of these early versions, the safest bet is to uninstall
+rspec-1 and rspec-core-2, and then reinstall both. After you do this, you will
+be able to run rspec-2 like this:
+
+    `rspec ./spec`
+
+... and rspec-1 like this:
+
+    `spec _1.3.1_ ./spec`
+
+Rubygems inspects the first argument to any gem executable to see if it's
+formatted like a version number surrounded by underscores. If so, it uses that
+version (e.g.  `1.3.1`). If not, it uses the most recent version (e.g.
+`2.0.0`).
 
 ### rake task
 
