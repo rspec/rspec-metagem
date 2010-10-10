@@ -1,8 +1,11 @@
-RSpec is specified using both RSpec and
-[Cucumber](http://github.com/aslakhellesoy/cucumber). Cucumber provides
-_executable documentation_.  This means that all of the _.feature_ files in
-this directory serve as specification, documentation _and_ regression tests of
-the behaviour.
+rspec-core provides the structure for RSpec code examples:
+
+    describe Account do
+      it "has a balance of zero when first opened" do
+        # example code goes here - for more on the code inside the examples,
+        # see rspec-expectations and rspec-mocks
+      end
+    end
 
 ## Issues
 
