@@ -20,7 +20,10 @@ task :cleanup_rcov_files do
   rm_rf 'coverage.data'
 end
 
-RSpec::Core::RakeTask.new(:spec)
+desc "Run all examples"
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.rspec_opts = %w[--color]
+end
 
 Cucumber::Rake::Task.new(:cucumber)
 
