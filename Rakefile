@@ -8,8 +8,6 @@ require 'rspec/core/rake_task'
 require 'rspec/expectations/version'
 require 'cucumber/rake/task'
 
-RSpec::Core::RakeTask.new(:spec)
-
 class Cucumber::Rake::Task::ForkedCucumberRunner
   # When cucumber shells out, we still need it to run in the context of our
   # bundle.
@@ -18,22 +16,31 @@ class Cucumber::Rake::Task::ForkedCucumberRunner
   end
 end
 
-desc "Run all examples using rcov"
-RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
-  t.rcov = true
-  t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-  t.rcov_opts << %[--text-report --sort coverage --no-html --aggregate coverage.data]
-end
-
 task :cleanup_rcov_files do
   rm_rf 'coverage.data'
 end
 
-Cucumber::Rake::Task.new :cucumber => :cleanup_rcov_files do |t|
-  t.cucumber_opts = %w{--format progress}
-  t.rcov = true
-  t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-  t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
+RSpec::Core::RakeTask.new(:spec)
+
+Cucumber::Rake::Task.new(:cucumber)
+
+namespace :spec do
+  desc "Run all examples using rcov"
+  RSpec::Core::RakeTask.new :rcov => :cleanup_rcov_files do |t|
+    t.rcov = true
+    t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+    t.rcov_opts << %[--text-report --sort coverage --no-html --aggregate coverage.data]
+  end
+end
+
+namespace :cucumber do
+  desc "Run cucumber features using rcov"
+  Cucumber::Rake::Task.new :rcov => :cleanup_rcov_files do |t|
+    t.cucumber_opts = %w{--format progress}
+    t.rcov = true
+    t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+    t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
+  end
 end
 
 task :default => [:spec, :cucumber]
