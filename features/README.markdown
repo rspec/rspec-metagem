@@ -1,10 +1,11 @@
-# Cucumber features
+rspec-expectations is used to set expectations in executable
+examples:
 
-RSpec is specified using both RSpec and
-[Cucumber](http://github.com/aslakhellesoy/cucumber). Cucumber provides
-_executable documentation_.  This means that the _.feature_ files below this
-directory serve as specification, documentation _and_ regression tests of the
-behaviour.
+    describe Account do
+      it "has a balance of zero when first created" do
+        Account.new.balance.should eq(Money.new(0))
+      end
+    end
 
 ## Issues
 
