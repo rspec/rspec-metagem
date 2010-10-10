@@ -1,8 +1,8 @@
 Feature: include matcher
 
-  rspec-expectations provides an include matcher for testing if an object includes
-  one or more expected objects.  This works on any object that responds to #include?
-  (such as a string or array):
+  Use the include matcher to specify than a collection includes one or more
+  expected objects.  This works on any object that responds to #include?  (such
+  as a string or array):
 
     "a string".should include("a")
     "a string".should include("str")

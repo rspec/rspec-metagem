@@ -1,25 +1,24 @@
 Feature: respond_to matcher
 
-  rspec-expectations includes a matcher to assist in checking an object's
-  interface.  In its most basic form:
+  Use the respond_to matcher to specify details of an object's interface.  In
+  its most basic form:
 
     obj.should respond_to(:foo) # pass if obj.respond_to?(:foo)
 
-  You can perform multiple #respond_to? checks with a single matcher, if
-  you pass multiple arguments:
-
+  You can specify that an object responds to multiple messages in a single
+  statement with multiple arguments passed to the matcher
+    
     obj.should respond_to(:foo, :bar) # passes if obj.respond_to?(:foo) && obj.respond_to?(:bar)
 
   If the number of arguments accepted by the method is important to you,
-  you can check that as well:
+  you can specify that as well:
 
     obj.should respond_to(:foo).with(1).argument
     obj.should respond_to(:bar).with(2).arguments
 
   Note that this matcher relies entirely upon #respond_to?.  If an object
-  dynamically responds to a message via #method_missing, but does not
-  indicate this via #respond_to?, then this matcher will give you
-  false results.
+  dynamically responds to a message via #method_missing, but does not indicate
+  this via #respond_to?, then this matcher will give you false results.
 
   Scenario: basic usage
     Given a file named "respond_to_matcher_spec.rb" with:
@@ -52,7 +51,7 @@ Feature: respond_to matcher
       | expected "a string" to respond to :flatten                 |
       | expected "a string" not to respond to :length              |
 
-  Scenario: argument checking
+  Scenario: specify arguments
     Given a file named "respond_to_matcher_argument_checking_spec.rb" with:
       """
       describe 7 do
