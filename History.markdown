@@ -1,5 +1,12 @@
 ## rspec-core release history (incomplete)
 
+### 2.0.1 / in development
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0...master)
+
+* Bug fixes
+  * restore color when using spork + autotest
+
 ### 2.0.0 / 2010-10-10
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0.rc...v2.0.0)
