@@ -129,7 +129,7 @@ module RSpec
       end
 
       def assign_auto_description
-        if description.empty?
+        if description.empty? and !pending?
           metadata[:description] = RSpec::Matchers.generated_description
           RSpec::Matchers.clear_generated_description
         end

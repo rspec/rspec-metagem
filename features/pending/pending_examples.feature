@@ -86,12 +86,55 @@ Feature: pending examples
         end
       end
       """
-     When I run "rspec pending_with_xit_spec.rb"
-     Then the exit status should be 0
-      And the output should contain "1 example, 0 failures, 1 pending"
-      And the output should contain:
+    When I run "rspec pending_with_xit_spec.rb"
+    Then the exit status should be 0
+    And the output should contain "1 example, 0 failures, 1 pending"
+    And the output should contain:
       """
       Pending:
         an example is pending using xit
       """
 
+  Scenario: example with no docstring and pending method using documentation formatter
+    Given a file named "pending_with_no_docstring_spec.rb" with:
+      """
+      describe "an example" do
+        it "checks something" do
+          (3+4).should == 7
+        end
+        specify do
+          pending
+        end
+      end
+      """
+    When I run "rspec pending_with_no_docstring_spec.rb --format documentation"
+    Then the exit status should be 0
+    And the output should contain "2 examples, 0 failures, 1 pending"
+    And the output should contain:
+      """
+      an example
+        checks something
+         (PENDING: No reason given)
+      """
+
+  Scenario: pending with no docstring using documentation formatter
+    Given a file named "pending_with_no_docstring_spec.rb" with:
+      """
+      describe "an example" do
+        it "checks something" do
+          (3+4).should == 7
+        end
+        pending do
+          "string".reverse.should == "gnirts"
+        end
+      end
+      """
+    When I run "rspec pending_with_no_docstring_spec.rb --format documentation"
+    Then the exit status should be 0
+    And the output should contain "2 examples, 0 failures, 1 pending"
+    And the output should contain:
+      """
+      an example
+        checks something
+         (PENDING: Not Yet Implemented)
+      """

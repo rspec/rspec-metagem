@@ -35,6 +35,39 @@ describe "an example" do
     end
   end
 
+  context "with no docstring" do
+    context "declared with the pending method" do
+      it "does not have an auto-generated description" do
+        group = RSpec::Core::ExampleGroup.describe('group') do
+          it "checks something" do
+            (3+4).should == 7
+          end
+          pending do
+            "string".reverse.should == "gnirts"
+          end
+        end
+        example = group.examples.last
+        example.run(group.new, stub.as_null_object)
+        example.description.should be_empty
+      end
+    end
+    context "after another example with some assertion" do
+      it "does not show any message" do
+        group = RSpec::Core::ExampleGroup.describe('group') do
+          it "checks something" do
+            (3+4).should == 7
+          end
+          specify do
+            pending
+          end
+        end
+        example = group.examples.last
+        example.run(group.new, stub.as_null_object)
+        example.description.should be_empty
+      end
+    end
+  end
+
   context "with a message" do
     it "is listed as pending with the supplied message" do
       group = RSpec::Core::ExampleGroup.describe('group') do
