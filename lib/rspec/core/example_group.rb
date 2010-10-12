@@ -95,7 +95,7 @@ module RSpec
       end
 
       def self.descendant_filtered_examples
-        @descendant_filtered_examples ||= filtered_examples + children.collect{|c| c.descendant_filtered_examples}.flatten
+        @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
       end
 
       def self.metadata
@@ -138,7 +138,7 @@ module RSpec
       end
 
       def self.descendants
-        @_descendants ||= [self] + children.collect {|c| c.descendants}.flatten
+        @_descendants ||= [self] + children.inject([]) {|list, c| list + c.descendants}
       end
 
       def self.ancestors
@@ -216,7 +216,7 @@ An error occurred in an after(:all) hook.
       end
 
       def self.around_hooks
-        @around_hooks ||= (world.find_hook(:around, :each, self) + ancestors.reverse.map{|a| a.find_hook(:around, :each, self)}).flatten
+        @around_hooks ||= (world.find_hook(:around, :each, self) + ancestors.reverse.inject([]){|l,a| l + a.find_hook(:around, :each, self)})
       end
 
       def self.run(reporter)
@@ -276,7 +276,7 @@ An error occurred in an after(:all) hook.
       def self.declaration_line_numbers
         @declaration_line_numbers ||= [metadata[:example_group][:line_number]] +
           examples.collect {|e| e.metadata[:line_number]} +
-          children.collect {|c| c.declaration_line_numbers}.flatten
+          children.inject([]) {|l,c| l + c.declaration_line_numbers}
       end
 
       def self.top_level_description
