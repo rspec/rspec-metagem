@@ -6,6 +6,7 @@
 
 * Bug fixes
   * restore color when using spork + autotest
+  * Pending examples without docstrings render the correct message (Josep M. Bach)
 
 ### 2.0.0 / 2010-10-10
 
