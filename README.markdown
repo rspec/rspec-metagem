@@ -17,7 +17,7 @@ components of rspec that you're not using.
 
 ## Install
 
-    gem install rspec --prerelease
+    gem install rspec
 
 ## Contribute
 
