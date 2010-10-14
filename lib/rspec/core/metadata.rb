@@ -170,12 +170,12 @@ EOM
       end
 
       def file_and_line_number(metadata)
-        entry = candidate_entries_from_caller(metadata).first
+        entry = first_caller_from_outside_rspec(metadata)
         entry && entry.match(/(.+?):(\d+)(|:\d+)/)[1..2]
       end
 
-      def candidate_entries_from_caller(metadata)
-        metadata[:caller].grep(/\_spec\.rb:/i)
+      def first_caller_from_outside_rspec(metadata)
+        metadata[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
       end
 
     end
