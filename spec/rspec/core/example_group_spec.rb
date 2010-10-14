@@ -186,12 +186,6 @@ module RSpec::Core
         ExampleGroup.describe(Object, nil, 'foo' => 'bar') { }.metadata.should include({ "foo" => 'bar' })
       end
 
-      it "adds the caller to metadata" do
-        ExampleGroup.describe(Object) { }.metadata[:example_group][:caller].any? {|f|
-          f =~ /#{__FILE__}/
-        }.should be_true
-      end
-
       it "adds the the file_path to metadata" do
         ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should == __FILE__
       end

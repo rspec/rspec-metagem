@@ -149,22 +149,13 @@ module RSpec
           ])
           m[:example_group][:file_path].should == __FILE__
         end
-
-        it "finds the first spec file in the caller array with drive letter" do
-          m = Metadata.new
-          m.process(:caller => [ "C:/path/file_spec.rb:#{__LINE__}" ])
-          m[:example_group][:file_path].should == "C:/path/file_spec.rb"
-        end
       end
 
       describe "line number" do
         it "finds the line number with the first non-rspec lib file in the backtrace" do
           m = Metadata.new
-          m.process(:caller => [
-            "./lib/rspec/core/foo.rb",
-            "#{__FILE__}:#{__LINE__}",
-          ])
-          m[:example_group][:line_number].should == __LINE__ - 2
+          m.process({})
+          m[:example_group][:line_number].should == __LINE__ - 1
         end
 
         it "finds the line number with the first spec file with drive letter" do
@@ -181,10 +172,9 @@ module RSpec
       end
 
       describe "metadata for example" do
-        let(:caller_for_example) { caller(0) }
-        let(:line_number)        { __LINE__ - 1 }
         let(:metadata)           { Metadata.new.process("group description") }
-        let(:mfe)                { metadata.for_example("example description", {:caller => caller_for_example, :arbitrary => :options}) }
+        let(:mfe)                { metadata.for_example("example description", {:arbitrary => :options}) }
+        let(:line_number)        { __LINE__ - 1 }
 
         it "stores the description" do
           mfe[:description].should == "example description"
@@ -196,10 +186,6 @@ module RSpec
 
         it "creates an empty execution result" do
           mfe[:execution_result].should == {}
-        end
-
-        it "stores the caller" do
-          mfe[:caller].should == caller_for_example
         end
 
         it "extracts file path from caller" do

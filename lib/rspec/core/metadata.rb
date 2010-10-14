@@ -32,9 +32,7 @@ module RSpec
         self[:example_group][:full_description] = full_description_from(*args)
 
         self[:example_group][:block] = user_metadata.delete(:example_group_block)
-        self[:example_group][:caller] = user_metadata.delete(:caller) || caller(1)
-        self[:example_group][:file_path] = file_path_from(self[:example_group], user_metadata.delete(:file_path))
-        self[:example_group][:line_number] = line_number_from(self[:example_group], user_metadata.delete(:line_number))
+        self[:example_group][:file_path], self[:example_group][:line_number] = file_and_line_number_from(caller)
         self[:example_group][:location] = location_from(self[:example_group])
 
         update(user_metadata)
@@ -70,11 +68,7 @@ EOM
         store(:description, description.to_s)
         store(:full_description, "#{self[:example_group][:full_description]} #{self[:description]}")
         store(:execution_result, {})
-        store(:caller, options.delete(:caller))
-        if self[:caller]
-          store(:file_path, file_path_from(self))
-          store(:line_number, line_number_from(self))
-        end
+        self[:file_path], self[:line_number] = file_and_line_number_from(caller)
         self[:location] = location_from(self)
         update(options)
       end
@@ -153,31 +147,19 @@ EOM
         end
       end
 
-      def file_path_from(metadata, given_file_path=nil)
-        return given_file_path if given_file_path
-        file = file_and_line_number(metadata)[0] if file_and_line_number(metadata)
-        file.strip if file
+      def file_and_line_number_from(list)
+        entry = first_caller_from_outside_rspec_from_caller(list)
+        entry =~ /(.+?):(\d+)(|:\d+)/
+        return [$1, $2.to_i]
       end
 
-      def line_number_from(metadata, given_line_number=nil)
-        return given_line_number if given_line_number
-        line_number = file_and_line_number(metadata)[1] if file_and_line_number(metadata)
-        line_number && line_number.to_i
+      def first_caller_from_outside_rspec_from_caller(list)
+        list.detect {|l| l !~ /\/lib\/rspec\/core/}
       end
 
       def location_from(metadata)
         "#{metadata[:file_path]}:#{metadata[:line_number]}"
       end
-
-      def file_and_line_number(metadata)
-        entry = first_caller_from_outside_rspec(metadata)
-        entry && entry.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-      end
-
-      def first_caller_from_outside_rspec(metadata)
-        metadata[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
-      end
-
     end
   end
 end

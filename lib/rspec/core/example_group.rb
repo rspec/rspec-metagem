@@ -42,7 +42,6 @@ module RSpec
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{name}(desc=nil, options={}, &block)
             options.update(:pending => true) unless block
-            options.update(:caller => caller)
             options.update(#{extra_options.inspect})
             examples << RSpec::Core::Example.new(self, desc, options, block)
             examples.last
@@ -111,7 +110,6 @@ module RSpec
         @_subclass_count += 1
         args << {} unless args.last.is_a?(Hash)
         args.last.update(:example_group_block => example_group_block)
-        args.last.update(:caller => caller)
 
         # TODO 2010-05-05: Because we don't know if const_set is thread-safe
         child = const_set(
