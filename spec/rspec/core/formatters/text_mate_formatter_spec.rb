@@ -70,7 +70,7 @@ module RSpec
           Dir.chdir(root) do
             actual_doc = Nokogiri::HTML(generated_html)
 
-            actual_doc.inner_html.should include('(erb):1:in')
+            actual_doc.inner_html.should include('(erb):1')
           end
         end
 
