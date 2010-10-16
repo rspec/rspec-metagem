@@ -91,9 +91,7 @@ module RSpec
 
       def local_options_file(options)
         return options[:options_file] if options[:options_file]
-        return LOCAL_OPTIONS_FILE if File.exist?(LOCAL_OPTIONS_FILE)
-        RSpec.deprecate("spec/spec.opts", "./.rspec or ~/.rspec", "2.0.0") if File.exist?("spec/spec.opts")
-        "spec/spec.opts"
+        LOCAL_OPTIONS_FILE
       end
     end
   end

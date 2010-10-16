@@ -23,11 +23,6 @@ module RSpec
         @example_group_class
       end
 
-      def behaviour
-        RSpec.deprecate("behaviour", "example_group")
-        example_group
-      end
-
       def pending?
         !!pending
       end

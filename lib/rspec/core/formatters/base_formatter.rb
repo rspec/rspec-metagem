@@ -45,11 +45,6 @@ module RSpec
         def example_group_finished(example_group)
         end
 
-        def add_example_group(example_group)
-          RSpec.deprecate("add_example_group", "example_group_started")
-          example_group_started(example_group)
-        end
-
         def example_started(example)
           examples << example
         end

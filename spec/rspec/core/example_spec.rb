@@ -9,13 +9,6 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     example_group.example('example description')
   end
 
-  describe "#behaviour" do
-    it "is deprecated" do
-      RSpec.should_receive(:deprecate)
-      example_instance.behaviour
-    end
-  end
-
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
       described_class.should == RSpec::Core::Example

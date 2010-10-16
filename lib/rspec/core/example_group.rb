@@ -10,11 +10,6 @@ module RSpec
 
       attr_accessor :example
 
-      def running_example
-        RSpec.deprecate('running_example', 'example')
-        example
-      end
-
       def self.world
         RSpec.world
       end
