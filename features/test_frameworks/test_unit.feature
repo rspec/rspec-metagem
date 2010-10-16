@@ -12,6 +12,15 @@ Feature: Test::Unit integration
       require 'rspec/expectations'
 
       class RSpecExpectationsTest < Test::Unit::TestCase
+        RSpec::Matchers.define :be_an_integer do
+          match { |actual| Integer === actual }
+        end
+
+        def be_an_int
+          RSpec.deprecate(:be_an_int, :be_an_integer)
+          be_an_integer
+        end
+
         def test_passing_expectation
           x = 1 + 3
           x.should == 4
@@ -21,9 +30,13 @@ Feature: Test::Unit integration
           array = [1, 2]
           array.should be_empty
         end
+
+        def test_custom_matcher_and_deprecation_warning
+          1.should be_an_int
+        end
       end
       """
      When I run "ruby rspec_expectations_test.rb"
-     Then the output should contain "2 tests"
-      And the output should contain "1 failure" or "1 error"
+     Then the output should contain "3 tests, 0 assertions, 1 failures, 0 errors" or "3 tests, 0 assertions, 0 failures, 1 errors"
       And the output should contain "expected empty? to return true, got false"
+      And the output should contain "be_an_int is deprecated"
