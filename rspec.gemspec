@@ -24,6 +24,6 @@ Gem::Specification.new do |s|
   s.require_path     = "lib"
 
   %w[core expectations mocks].each do |name|
-    s.add_runtime_dependency "rspec-#{name}", "~> 2.0.0"
+    s.add_runtime_dependency "rspec-#{name}", "2.1.0.pre"
   end
 end
