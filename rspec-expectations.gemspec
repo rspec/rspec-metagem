@@ -22,10 +22,10 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
-  s.add_runtime_dependency     'diff-lcs',    '>= 1.1.2'
-  s.add_development_dependency 'cucumber',    ">= 0.6.2"
-  s.add_development_dependency 'aruba',       ">= 0.1.1"
-  s.add_development_dependency 'rspec-core',  ">= #{RSpec::Expectations::Version::STRING}"
-  s.add_development_dependency 'rspec-mocks', ">= #{RSpec::Expectations::Version::STRING}"
+  s.add_runtime_dependency     'diff-lcs',    '~> 1.1.2'
+  s.add_development_dependency 'cucumber',    "~> 0.9.2"
+  s.add_development_dependency 'aruba',       "~> 0.2.3"
+  s.add_development_dependency 'rspec-core',  "2.1.0.pre"
+  s.add_development_dependency 'rspec-mocks', "2.1.0.pre"
 end
 
