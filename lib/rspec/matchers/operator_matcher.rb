@@ -29,6 +29,15 @@ module RSpec
             eval_match(@actual, operator, expected)
           end
         end
+
+        negative_operator = operator.sub(/^=/, '!')
+        if negative_operator != operator && respond_to?(negative_operator)
+          define_method(negative_operator) do |expected|
+            opposite_should = ::RSpec::Matchers.last_should == :should ? :should_not : :should
+            raise "RSpec does not support `#{::RSpec::Matchers.last_should} #{negative_operator} expected`.  " +
+                  "Use `#{opposite_should} #{operator} expected` instead."
+          end
+        end
       end
 
       ['==', '===', '=~', '>', '>=', '<', '<='].each do |operator|

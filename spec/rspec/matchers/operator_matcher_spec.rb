@@ -21,6 +21,32 @@ describe "should ==" do
   
 end
 
+describe "unsupported operators", :ruby => '1.9' do
+  it "raises an appropriate error for should != expected" do
+    expect {
+      "apple".should != "pear"
+    }.to raise_error(/does not support `should != expected`.  Use `should_not == expected`/)
+  end
+
+  it "raises an appropriate error for should_not != expected" do
+    expect {
+      "apple".should_not != "pear"
+    }.to raise_error(/does not support `should_not != expected`.  Use `should == expected`/)
+  end
+
+  it "raises an appropriate error for should !~ expected" do
+    expect {
+      "apple".should !~ /regex/
+    }.to raise_error(/does not support `should !~ expected`.  Use `should_not =~ expected`/)
+  end
+
+  it "raises an appropriate error for should_not !~ expected" do
+    expect {
+      "apple".should_not !~ /regex/
+    }.to raise_error(/does not support `should_not !~ expected`.  Use `should =~ expected`/)
+  end
+end
+
 describe "should_not ==" do
   
   it "delegates message to target" do
