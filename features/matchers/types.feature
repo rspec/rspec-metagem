@@ -1,4 +1,4 @@
-Feature: Type Check matchers
+Feature: specify types of objects
 
   rspec-expectations includes two matchers to specify types of objects:
 
