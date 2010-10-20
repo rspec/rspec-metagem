@@ -1,6 +1,6 @@
 Feature: Type Check matchers
 
-  rspec-expectations includes two matchers specify types of objects:
+  rspec-expectations includes two matchers to specify types of objects:
 
     * obj.should be_kind_of(type): calls obj.kind_of?(type), which returns
       true if type is in obj's class hierarchy or is a module and is

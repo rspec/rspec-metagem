@@ -6,7 +6,7 @@ Feature: respond_to matcher
     obj.should respond_to(:foo) # pass if obj.respond_to?(:foo)
 
   You can specify that an object responds to multiple messages in a single
-  statement with multiple arguments passed to the matcher
+  statement with multiple arguments passed to the matcher:
     
     obj.should respond_to(:foo, :bar) # passes if obj.respond_to?(:foo) && obj.respond_to?(:bar)
 

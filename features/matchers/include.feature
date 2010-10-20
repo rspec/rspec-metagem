@@ -1,6 +1,6 @@
 Feature: include matcher
 
-  Use the include matcher to specify than a collection includes one or more
+  Use the include matcher to specify that a collection includes one or more
   expected objects.  This works on any object that responds to #include?  (such
   as a string or array):
 
