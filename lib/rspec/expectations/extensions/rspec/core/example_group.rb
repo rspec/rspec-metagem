@@ -1,3 +1,4 @@
+# TODO - as/is this forces a dependency on RSpec::Core - need to eliminate that
 module RSpec
   module Core
     class ExampleGroup
