@@ -32,7 +32,7 @@ module RSpec
         self[:example_group][:full_description] = full_description_from(*args)
 
         self[:example_group][:block] = user_metadata.delete(:example_group_block)
-        self[:example_group][:file_path], self[:example_group][:line_number] = file_and_line_number_from(caller)
+        self[:example_group][:file_path], self[:example_group][:line_number] = file_and_line_number_from(user_metadata.delete(:caller) || caller)
         self[:example_group][:location] = location_from(self[:example_group])
 
         update(user_metadata)
@@ -68,7 +68,7 @@ EOM
         store(:description, description.to_s)
         store(:full_description, "#{self[:example_group][:full_description]} #{self[:description]}")
         store(:execution_result, {})
-        self[:file_path], self[:line_number] = file_and_line_number_from(caller)
+        self[:file_path], self[:line_number] = file_and_line_number_from(options.delete(:caller) || caller)
         self[:location] = location_from(self)
         update(options)
       end

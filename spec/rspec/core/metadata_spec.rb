@@ -13,6 +13,12 @@ module RSpec
             end.to raise_error(/:#{key} is not allowed/)
           end
         end
+        
+        it "uses :caller if passed as part of the user metadata" do
+          m = Metadata.new
+          m.process('group', :caller => ['example_file:42'])
+          m[:example_group][:location].should == 'example_file:42'
+        end
       end
 
       describe "description" do
@@ -198,6 +204,11 @@ module RSpec
 
         it "extracts location from caller" do
           mfe[:location].should == "#{__FILE__}:#{line_number}"
+        end
+        
+        it "uses :caller if passed as an option" do
+          example_metadata = metadata.for_example('example description', {:caller => ['example_file:42']})
+          example_metadata[:location].should == 'example_file:42'
         end
 
         it "merges arbitrary options" do
