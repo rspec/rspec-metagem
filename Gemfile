@@ -1,13 +1,14 @@
 source "http://rubygems.org"
 
+%w[rspec-core rspec-expectations rspec-mocks].each do |lib|
+  gem lib, :path => File.expand_path("../../#{lib}", __FILE__)
+end
+
 gem "rake"
-gem "cucumber"
-gem "aruba", ">= 0.2.0"
+gem "cucumber", "0.8.5"
+gem "aruba", "0.2.2"
 gem "autotest"
 gem "diff-lcs"
-gem "rspec-expectations", :path => "."
-gem "rspec-core", :path => "../rspec-core"
-gem "rspec-mocks", :path => "../rspec-mocks"
 gem "watchr"
 gem "rcov"
 gem "relish"
