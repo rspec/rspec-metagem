@@ -31,12 +31,16 @@ Feature: Test::Unit integration
           array.should be_empty
         end
 
+        def test_expect_matcher
+          expect { @a = 5 }.to change { @a }.from(nil).to(5)
+        end
+
         def test_custom_matcher_and_deprecation_warning
           1.should be_an_int
         end
       end
       """
      When I run "ruby rspec_expectations_test.rb"
-     Then the output should contain "3 tests, 0 assertions, 1 failures, 0 errors" or "3 tests, 0 assertions, 0 failures, 1 errors"
+     Then the output should contain "4 tests, 0 assertions, 1 failures, 0 errors" or "4 tests, 0 assertions, 0 failures, 1 errors"
       And the output should contain "expected empty? to return true, got false"
       And the output should contain "be_an_int is deprecated"
