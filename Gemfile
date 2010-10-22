@@ -1,4 +1,9 @@
 source "http://rubygems.org"
+gemspec "rspec-core.gemspec"
+
+%w[rspec-core rspec-expectations rspec-mocks].each do |lib|
+  gem lib, :path => File.expand_path("../../#{lib}", __FILE__)
+end
 
 gem "rake"
 gem "cucumber", "0.8.5"
@@ -11,9 +16,6 @@ gem "rr"
 gem "flexmock"
 gem "nokogiri"
 gem "syntax"
-gem "rspec-core", :path => "."
-gem "rspec-expectations", :path => "../rspec-expectations"
-gem "rspec-mocks", :path => "../rspec-mocks"
 
 unless RUBY_PLATFORM == "java"
   gem "ruby-prof"
