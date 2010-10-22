@@ -334,6 +334,14 @@ module RSpec
         matcher.expecting('value').matches?('other value').should be_false
       end
 
+      it "prevents name collisions on chainable methods from different matchers" do
+        m1 = RSpec::Matchers::Matcher.new(:m1) { chain(:foo) { raise "foo in m1" } }
+        m2 = RSpec::Matchers::Matcher.new(:m2) { chain(:foo) { raise "foo in m2" } }
+
+        expect { m1.foo }.to raise_error("foo in m1")
+        expect { m2.foo }.to raise_error("foo in m2")
+      end
+
       context "defined using the dsl" do
         def a_method_in_the_example
           "method defined in the example"

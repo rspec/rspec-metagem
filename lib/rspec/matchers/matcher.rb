@@ -97,11 +97,9 @@ module RSpec
       
       # See RSpec::Matchers
       def chain(method, &block)
-        self.class.class_eval do
-          define_method method do |*args|
-            block.call(*args)
-            self
-          end
+        define_method method do |*args|
+          block.call(*args)
+          self
         end
       end
       
