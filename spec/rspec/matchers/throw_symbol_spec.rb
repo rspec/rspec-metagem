@@ -53,7 +53,9 @@ module RSpec
           @matcher.failure_message_for_should_not.should == "expected :sym not to be thrown"
         end
         it "only matches NameErrors raised by uncaught throws" do
-          @matcher.matches?(lambda{ sym }).should be_false
+          expect {
+            @matcher.matches?(lambda{ sym }).should be_false
+          }.to raise_error(NameError)
         end
       end
 
@@ -88,7 +90,14 @@ module RSpec
           @matcher.failure_message_for_should_not.should == %q[expected :sym with "a" not to be thrown]
         end
         it "only matches NameErrors raised by uncaught throws" do
-          @matcher.matches?(lambda{ sym }).should be_false
+          expect {
+            @matcher.matches?(lambda{ sym }).should be_false
+          }.to raise_error(NameError)
+        end
+        it "raises other errors" do
+          expect {
+            @matcher.matches?(lambda { raise "Boom" })
+          }.to raise_error(/Boom/)
         end
       end
     end

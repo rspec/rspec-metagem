@@ -25,17 +25,23 @@ module RSpec
         # Ruby 1.8 uses NameError with `symbol'
         # Ruby 1.9 uses ArgumentError with :symbol
         rescue NameError, ArgumentError => e
-          raise e unless e.message =~ /uncaught throw (`|\:)([a-zA-Z0-9_]*)(')?/
+          unless e.message =~ /uncaught throw (`|\:)([a-zA-Z0-9_]*)(')?/
+            other_exception = e
+            raise
+          end
           @caught_symbol = $2.to_sym
-
+        rescue => other_exception
+          raise
         ensure
-          if @expected_symbol.nil?
-            return !@caught_symbol.nil?
-          else
-            if @expected_arg.nil?
-              return @caught_symbol == @expected_symbol
+          unless other_exception
+            if @expected_symbol.nil?
+              return !@caught_symbol.nil?
             else
-              return (@caught_symbol == @expected_symbol) & (@caught_arg == @expected_arg)
+              if @expected_arg.nil?
+                return @caught_symbol == @expected_symbol
+              else
+                return (@caught_symbol == @expected_symbol) & (@caught_arg == @expected_arg)
+              end
             end
           end
         end
