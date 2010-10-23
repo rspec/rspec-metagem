@@ -2,13 +2,20 @@
 
 Behaviour Driven Development for Ruby
 
+## Documentation
+
+* [Cucumber features](http://relishapp.com/rspec/rspec-core/v/2-0)
+* [RDoc](http://rubydoc.info/gems/rspec-core/2.0.1/frames)
+
+## Install
+
+    gem install rspec      # for rspec-core, rspec-expectations, rspec-mocks
+    gem install rspec-core # for rspec-core only
+
 ## Upgrading from rspec-1.x
 
 See [Upgrade.markdown](http://github.com/rspec/rspec-core/blob/master/Upgrade.markdown)
 
-## Install
-
-    gem install rspec -v 2.0.0
 
 This will install the rspec, rspec-core, rspec-expectations and rspec-mocks
 gems.
