@@ -15,6 +15,23 @@ examples (`describe` and `it`) but prefer Test::Unit assertions and mocha, rr
 or flexmock for mocking, you'll be able to do that without having to load the
 components of rspec that you're not using.
 
+## Documentation
+
+### rspec-core
+
+* [Cucumber features](http://relishapp.com/rspec/rspec-core/v/2-0)
+* [RDoc](http://rubydoc.info/gems/rspec-core/2.0.1/frames)
+
+### rspec-expectations
+
+* [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
+* [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames)
+
+### rspec-mocks
+
+* [Cucumber features](http://relishapp.com/rspec/rspec-mocks/v/2-0)
+* [RDoc](http://rubydoc.info/gems/rspec-mocks/2.0.1/frames)
+
 ## Install
 
     gem install rspec
