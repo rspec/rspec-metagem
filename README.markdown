@@ -3,6 +3,16 @@
 rspec-expectations adds `should` and `should_not` to every object and includes
 RSpec::Matchers, a library of standard matchers.
 
+## Documentation
+
+* [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
+* [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames)
+
+## Install
+
+    gem install rspec               # for rspec-core, rspec-expectations, rspec-mocks
+    gem install rspec-expecctations # for rspec-core only
+
 ## Matchers
 
 Matchers are objects used to compose expectations:
