@@ -18,11 +18,11 @@ If you installed one of these early versions, the safest bet is to uninstall
 rspec-1 and rspec-core-2, and then reinstall both. After you do this, you will
 be able to run rspec-2 like this:
 
-    `rspec ./spec`
+    rspec ./spec
 
 ... and rspec-1 like this:
 
-    `spec _1.3.1_ ./spec`
+    spec _1.3.1_ ./spec
 
 Rubygems inspects the first argument to any gem executable to see if it's
 formatted like a version number surrounded by underscores. If so, it uses that
