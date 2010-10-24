@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+require 'rspec/core'
+RSpec.warn_deprecation <<-WARNING
+*************************************************************************
+NOTICE: The 'spec' command was changed to 'rspec' in RSpec-2.
+
+To run examples with rspec-2, please use:
+
+    rspec #{ARGV.join(' ')}
+
+If you are trying to run specs using rspec-1, make sure rspec-1 is installed in
+this environment, and then run it with the version argument:
+
+    spec _1.3.1_ #{ARGV.join(' ')}
+
+*************************************************************************
+WARNING
+require 'rspec/autorun'
