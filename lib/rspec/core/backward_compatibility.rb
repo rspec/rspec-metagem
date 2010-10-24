@@ -29,6 +29,20 @@ WARNING
       RSpec.configure(&block)
     end
   end
+
+  module Rake
+    def self.const_missing(name)
+      case name
+      when :SpecTask
+        RSpec.deprecate("Spec::Rake::SpecTask", "RSpec::Core::RakeTask")
+        require 'rspec/core/rake_task'
+        RSpec::Core::RakeTask
+      else
+        super(name)
+      end
+    end
+
+  end
 end
 
 Object.extend(RSpec::Core::ConstMissing)

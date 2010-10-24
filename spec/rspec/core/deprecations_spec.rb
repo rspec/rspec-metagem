@@ -34,4 +34,12 @@ describe "deprecations" do
       Spec::Runner.configure
     end
   end
+
+  describe "Spec::Rake::SpecTask" do
+    it "is deprecated" do
+      RSpec.stub(:warn_deprecation)
+      RSpec.should_receive(:deprecate)
+      Spec::Rake::SpecTask
+    end
+  end
 end
