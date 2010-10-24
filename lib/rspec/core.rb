@@ -1,6 +1,7 @@
 require 'rspec/core/extensions'
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'
+require 'rspec/core/backward_compatibility'
 require 'rspec/core/reporter'
 
 require 'rspec/core/hooks'
