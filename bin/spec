@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
-require 'rspec/core'
-RSpec.warn_deprecation <<-WARNING
+require 'rubygems'
+case ARGV.first
+when /^_1/
+  ARGV.shift
+  require 'spec/autorun'
+else
+  warn <<-WARNING
 *************************************************************************
 NOTICE: The 'spec' command was changed to 'rspec' in RSpec-2.
 
@@ -15,4 +20,5 @@ this environment, and then run it with the version argument:
 
 *************************************************************************
 WARNING
-require 'rspec/autorun'
+  require 'rspec/autorun'
+end
