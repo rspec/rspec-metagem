@@ -136,7 +136,7 @@ module RSpec
                             cmd_parts << "bundle exec" if bundler
                             cmd_parts << runner
                             if rcov
-                              cmd_parts << ["-Ispec", rcov_opts]
+                              cmd_parts << ["-Ispec", "-Ilib", rcov_opts]
                             else
                               cmd_parts << rspec_opts
                             end
