@@ -87,13 +87,12 @@ options. Precedence is:
     ./.rspec
     ~/.rspec
 
-### Bones
+### Rake task
 
-Bones produces a handy little Rakefile to provide several services including
-running specs. The current version (3.4.7) still assumes RSpec-1. To bring its
-Rakefile into conformance with RSpec-2 a few changes are necessary.
+A few things changed in the Rake task used to run specs:
 
-1.  The require line has changed to `require 'spec/rake/spectask'`
+1.  The file in which it is defined changed from `spec/rake/spectask` to
+    `rspec/core/rake_task`
 
 2.  The `spec_opts` accessor has been deprecated in favor of `rspec_opts`. Also,
     the `rspec` command no longer supports the `--options` command line option
@@ -102,17 +101,17 @@ Rakefile into conformance with RSpec-2 a few changes are necessary.
 
 3.  The `spec_files` accessor has been replaced by `pattern`.
 
-Here is a complete example:
-
     # rspec-1
+    require 'spec/rake/spectask'
+
     Spec::Rake::SpecTask.new do |t|
       t.spec_opts = ['--options', "\"spec/spec.opts\""]
       t.spec_files = FileList['spec/**/*.rb']
     end
 
-becomes:
-
     # rspec-2
+    require 'rspec/core/rake_task'
+
     RSpec::Core::RakeTask.new do |t|
       t.rspec_opts = ["-c", "-f progress", "-r ./spec/spec_helper.rb"]
       t.pattern = 'spec/**/*_spec.rb'
