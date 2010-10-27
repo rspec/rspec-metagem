@@ -4,7 +4,7 @@ require 'stringio'
 describe "have matcher" do
 
   before(:each) do
-    if defined?(::ActiveSupport::Inflector)
+    if defined?(::ActiveSupport::Inflector) && ::ActiveSupport::Inflector.respond_to?(:pluralize)
       @active_support_was_defined = true
     else
       @active_support_was_defined = false
@@ -67,6 +67,16 @@ describe 'should have(1).item when ActiveSupport::Inflector is defined' do
   it 'pluralizes the collection name' do
     owner = create_collection_owner_with(1)
     owner.should have(1).item
+  end
+
+  context "when ActiveSupport::Inflector is partially loaded without its inflectors" do
+
+    it "does not pluralize the collection name" do
+      (class << ::ActiveSupport::Inflector; self; end).send :undef_method, :pluralize
+      owner = create_collection_owner_with(1)
+      expect { owner.should have(1).item }.to raise_error(NoMethodError)
+    end
+
   end
   
   after(:each) do
