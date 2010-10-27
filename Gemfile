@@ -16,6 +16,7 @@ gem "rr"
 gem "flexmock"
 gem "nokogiri"
 gem "syntax"
+gem "relish"
 
 unless RUBY_PLATFORM == "java"
   gem "ruby-prof"

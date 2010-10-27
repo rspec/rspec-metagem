@@ -60,7 +60,7 @@ end
 desc "Push cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
   raise "rake relish[VERSION]" unless args[:version]
-  sh "bundle exec relish --organization rspec --project rspec-core -v #{args[:version]} push"
+  sh "relish push --organization rspec --project rspec-core -v #{args[:version]}"
 end
 
 Rake::RDocTask.new do |rdoc|
