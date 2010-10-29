@@ -27,8 +27,10 @@ Gem::Specification.new do |s|
 
   Thank you for installing #{s.summary}
 
-  Please be sure to look at Upgrade.markdown to see what might have changed
-  since the last release.
+  Please be sure to look at the upgrade instructions to see what might have
+  changed since the last release:
+
+  http://github.com/rspec/rspec-core/blob/master/Upgrade.markdown
 
 **************************************************
 }
