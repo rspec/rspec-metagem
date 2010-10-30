@@ -1,15 +1,15 @@
 Feature: implicit subject
 
-  The first argument to the outermost example group block is
-  made available to each example as an implicit subject of
-  that example.
+  If the first argument to the outermost example group is a class, an
+  instance of that class is made available to each example as the
+  implicit subject of that example.
 
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """
       describe Array, "when first created" do
         it "should be empty" do
-          subject.should == []
+          subject.should eq([])
         end
       end
       """
@@ -22,10 +22,10 @@ Feature: implicit subject
       describe Array do
         describe "when first created" do
           it "should be empty" do
-            subject.should == []
+            subject.should eq([])
           end
         end
       end
       """
-    When I run "rspec ./nested_subject_spec.rb"
+    When I run "rspec nested_subject_spec.rb"
     Then the output should contain "1 example, 0 failures"

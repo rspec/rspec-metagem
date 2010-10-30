@@ -1,5 +1,13 @@
 Feature: attribute of subject
 
+  Use the its() method as a short-hand to generate a nested example group with
+  a single example that specifies the expected value of an attribute of the subject.
+  This can be used with an implicit or explicit subject.
+
+  its() accepts a single or a string, and a block representing the example. Use
+  a string with dots to specify a nested attribute (i.e. an attribute of the
+  attribute of the subject).
+
   Scenario: simple attribute
     Given a file named "example_spec.rb" with:
       """
@@ -27,9 +35,9 @@ Feature: attribute of subject
 
       describe Person do
         subject do
-          person = Person.new
-          person.phone_numbers << "555-1212"
-          person
+          Person.new.tap do |person|
+            person.phone_numbers << "555-1212"
+          end
         end
 
         its("phone_numbers.first") { should == "555-1212" }
