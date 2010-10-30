@@ -1,6 +1,7 @@
 Feature: explicit subject
 
-  You can override the implicit subject using the subject() method.
+  Use subject() in the group scope to explicitly define the value that is
+  returned by the subject() method in the example scope.
 
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:

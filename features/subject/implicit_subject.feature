@@ -1,9 +1,8 @@
 Feature: implicit subject
 
-  If the first argument to the outermost example group is a class, an
-  instance of that class is made available to each example as the
-  implicit subject of that example.
-
+  If the first argument to the outermost example group is a class, an instance
+  of that class is exposed to each example via the subject() method.
+  
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """
