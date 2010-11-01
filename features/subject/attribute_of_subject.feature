@@ -35,9 +35,9 @@ Feature: attribute of subject
 
       describe Person do
         subject do
-          Person.new.tap do |person|
-            person.phone_numbers << "555-1212"
-          end
+          person = Person.new
+          person.phone_numbers << "555-1212"
+          person
         end
 
         its("phone_numbers.first") { should == "555-1212" }
