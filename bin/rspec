@@ -1,2 +1,26 @@
 #!/usr/bin/env ruby
-require 'rspec/autorun'
+
+begin
+  require 'rspec/autorun'
+rescue LoadError
+  $stderr.puts <<-EOS
+Could not find 'rspec/autorun'
+
+This may happen if you're using rubygems as your package manager, but it is not
+being required through some mechanism before execing this file.
+
+You may need to do one of the following in your shell:
+
+  # for bash/zsh
+  export RUBYOPT=rubygems
+
+  # for csh, etc.
+  set RUBYOPT=rubygems
+
+
+For background, please see http://gist.github.com/54177
+
+  EOS
+
+  raise
+end
