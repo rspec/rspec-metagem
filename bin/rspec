@@ -4,23 +4,22 @@ begin
   require 'rspec/autorun'
 rescue LoadError
   $stderr.puts <<-EOS
-Could not find 'rspec/autorun'
+#{'*'*50}
+  Could not find 'rspec/autorun'
 
-This may happen if you're using rubygems as your package manager, but it is not
-being required through some mechanism before execing this file.
+  This may happen if you're using rubygems as your package manager, but it is not
+  being required through some mechanism before executing the rspec command.
 
-You may need to do one of the following in your shell:
+  You may need to do one of the following in your shell:
 
-  # for bash/zsh
-  export RUBYOPT=rubygems
+    # for bash/zsh
+    export RUBYOPT=rubygems
 
-  # for csh, etc.
-  set RUBYOPT=rubygems
+    # for csh, etc.
+    set RUBYOPT=rubygems
 
-
-For background, please see http://gist.github.com/54177
-
+  For background, please see http://gist.github.com/54177.
+#{'*'*50}
   EOS
-
-  raise
+  exit(1)
 end
