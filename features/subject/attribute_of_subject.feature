@@ -4,7 +4,7 @@ Feature: attribute of subject
   a single example that specifies the expected value of an attribute of the subject.
   This can be used with an implicit or explicit subject.
 
-  its() accepts a single or a string, and a block representing the example. Use
+  its() accepts a symbol or a string, and a block representing the example. Use
   a string with dots to specify a nested attribute (i.e. an attribute of the
   attribute of the subject).
 

@@ -18,6 +18,11 @@ module RSpec
         }
       end
 
+      def register(example_group)
+        example_groups << example_group
+        example_group
+      end
+
       def inclusion_filter
         @configuration.filter
       end

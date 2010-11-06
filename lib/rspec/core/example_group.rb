@@ -20,9 +20,9 @@ module RSpec
         RSpec.world
       end
 
-      def self.inherited(klass)
+      def self.register
         RSpec::Core::Runner.autorun
-        world.example_groups << klass if klass.top_level?
+        world.register(self)
       end
 
       class << self

@@ -70,16 +70,22 @@ module RSpec::Core
       end
 
       it "is not registered in world" do
+        world = RSpec::Core::World.new
         parent = ExampleGroup.describe
+        world.register(parent)
         child = parent.describe
-        RSpec.world.example_groups.should == [parent]
+        world.example_groups.should == [parent]
       end
     end
 
     describe "filtering" do
+      let(:world) { World.new }
+
       it "includes all examples in an explicitly included group" do
-        RSpec.world.stub(:inclusion_filter).and_return({ :awesome => true })
+        world.stub(:inclusion_filter).and_return({ :awesome => true })
         group = ExampleGroup.describe("does something", :awesome => true)
+        group.stub(:world) { world }
+
         examples = [
           group.example("first"),
           group.example("second")
@@ -88,16 +94,19 @@ module RSpec::Core
       end
 
       it "includes explicitly included examples" do
-        RSpec.world.stub(:inclusion_filter).and_return({ :include_me => true })
+        world.stub(:inclusion_filter).and_return({ :include_me => true })
         group = ExampleGroup.describe
+        group.stub(:world) { world }
         example = group.example("does something", :include_me => true)
         group.example("don't run me")
         group.filtered_examples.should == [example]
       end
 
       it "excludes all examples in an excluded group" do
-        RSpec.world.stub(:exclusion_filter).and_return({ :include_me => false })
+        world.stub(:exclusion_filter).and_return({ :include_me => false })
         group = ExampleGroup.describe("does something", :include_me => false)
+        group.stub(:world) { world }
+
         examples = [
           group.example("first"),
           group.example("second")
@@ -106,8 +115,10 @@ module RSpec::Core
       end
 
       it "filters out excluded examples" do
-        RSpec.world.stub(:exclusion_filter).and_return({ :exclude_me => true })
+        world.stub(:exclusion_filter).and_return({ :exclude_me => true })
         group = ExampleGroup.describe("does something")
+        group.stub(:world) { world }
+
         examples = [
           group.example("first", :exclude_me => true),
           group.example("second")
@@ -118,6 +129,7 @@ module RSpec::Core
       context "with no filters" do
         it "returns all" do
           group = ExampleGroup.describe
+          group.stub(:world) { world }
           example = group.example("does something")
           group.filtered_examples.should == [example]
         end
@@ -125,8 +137,9 @@ module RSpec::Core
 
       context "with no examples or groups that match filters" do
         it "returns none" do
-          RSpec.world.stub(:inclusion_filter).and_return({ :awesome => false })
+          world.stub(:inclusion_filter).and_return({ :awesome => false })
           group = ExampleGroup.describe
+          group.stub(:world) { world }
           example = group.example("does something")
           group.filtered_examples.should == []
         end
@@ -687,20 +700,20 @@ module RSpec::Core
       end
 
       context "with RSpec.wants_to_quit=true" do
+        let(:group) { RSpec::Core::ExampleGroup.describe }
+
         before do
-          RSpec.world.stub(:example_groups) { [] }
-          RSpec.world.stub(:wants_to_quit) { true }
+          RSpec.stub(:wants_to_quit) { true }
+          RSpec.stub(:clear_remaining_example_groups)
         end
 
         it "returns without starting the group" do
-          group = RSpec::Core::ExampleGroup.describe
           reporter.should_not_receive(:example_group_started)
           group.run(reporter)
         end
 
         context "at top level" do
           it "purges remaining groups" do
-            group = RSpec::Core::ExampleGroup.describe
             RSpec.should_receive(:clear_remaining_example_groups)
             group.run(reporter)
           end
@@ -708,7 +721,6 @@ module RSpec::Core
 
         context "in a nested group" do
           it "does not purge remaining groups" do
-            group = RSpec::Core::ExampleGroup.describe
             nested_group = group.describe
             RSpec.should_not_receive(:clear_remaining_example_groups)
             nested_group.run(reporter)

@@ -1,14 +1,15 @@
 ## rspec-core release history (incomplete)
 
-### 2.0.1 / in development
+### 2.0.1 / 2010-10-18
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0...v2.0.1)
 
 * Bug fixes
   * restore color when using spork + autotest
   * Pending examples without docstrings render the correct message (Josep M. Bach)
   * Fixed bug where a failure in a spec file ending in anything but _spec.rb would
     fail in a confusing way.
+  * Support backtrace lines from erb templates in html formatter (Alex Crichton)
 
 ### 2.0.0 / 2010-10-10
 
