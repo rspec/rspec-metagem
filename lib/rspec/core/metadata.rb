@@ -73,8 +73,8 @@ EOM
         update(options)
       end
 
-      def all_apply?(filters)
-        filters.all? do |key, value|
+      def apply?(predicate, filters)
+        filters.send(predicate) do |key, value|
           apply_condition(key, value)
         end
       end
@@ -96,7 +96,17 @@ EOM
         when Regexp
           metadata[key] =~ value
         when Proc
-          value.call(metadata[key]) rescue false
+          if value.arity == 2
+            # Pass the metadata hash to allow the proc to check if it even has the key.
+            # This is necessary for the implicit :if exclusion filter:
+            #   {            } # => run the example
+            #   { :if => nil } # => exclude the example
+            # The value of metadata[:if] is the same in these two cases but
+            # they need to be treated differently.
+            value.call(metadata[key], metadata) rescue false
+          else
+            value.call(metadata[key]) rescue false
+          end
         when Fixnum
           if key == :line_number
             relevant_line_numbers(metadata).include?(world.preceding_declaration_line(value))

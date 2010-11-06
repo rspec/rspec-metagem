@@ -156,6 +156,11 @@ module RSpec::Core
       end
 
       context "with full_description" do
+        it "overrides :focused" do
+          config.filter_run :focused => true
+          config.full_description = "foo"
+          config.filter.should_not have_key(:focused)
+        end
 
         it "assigns the example name as the filter on description" do
           config.full_description = "foo"
@@ -396,7 +401,15 @@ module RSpec::Core
     describe "#filter_run" do
       it "sets the filter" do
         config.filter_run :focus => true
-        config.filter.should eq({:focus => true})
+        config.filter[:focus].should == true
+      end
+
+      it "merges with existing filters" do
+        config.filter_run :filter1 => true
+        config.filter_run :filter2 => false
+
+        config.filter[:filter1].should == true
+        config.filter[:filter2].should == false
       end
 
       it "warns if :line_number is already a filter" do
@@ -421,7 +434,49 @@ module RSpec::Core
     describe "#filter_run_excluding" do
       it "sets the filter" do
         config.filter_run_excluding :slow => true
-        config.exclusion_filter.should eq({:slow => true})
+        config.exclusion_filter[:slow].should == true
+      end
+
+      it "merges with existing filters" do
+        config.filter_run_excluding :filter1 => true
+        config.filter_run_excluding :filter2 => false
+
+        config.exclusion_filter[:filter1].should == true
+        config.exclusion_filter[:filter2].should == false
+      end
+    end
+
+    describe "#exclusion_filter" do
+      describe "the default :if filter" do
+        it "does not exclude a spec with no :if metadata" do
+          config.exclusion_filter[:if].call(nil, {}).should be_false
+        end
+
+        it "does not exclude a spec with { :if => true } metadata" do
+          config.exclusion_filter[:if].call(true, {:if => true}).should be_false
+        end
+
+        it "excludes a spec with { :if => false } metadata" do
+          config.exclusion_filter[:if].call(false, {:if => false}).should be_true
+        end
+
+        it "excludes a spec with { :if => nil } metadata" do
+          config.exclusion_filter[:if].call(false, {:if => nil}).should be_true
+        end
+      end
+
+      describe "the default :unless filter" do
+        it "excludes a spec with  { :unless => true } metadata" do
+          config.exclusion_filter[:unless].call(true).should be_true
+        end
+
+        it "does not exclude a spec with { :unless => false } metadata" do
+          config.exclusion_filter[:unless].call(false).should be_false
+        end
+
+        it "does not exclude a spec with { :unless => nil } metadata" do
+          config.exclusion_filter[:unless].call(nil).should be_false
+        end
       end
     end
 

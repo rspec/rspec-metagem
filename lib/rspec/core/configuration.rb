@@ -47,6 +47,11 @@ module RSpec
           /spec\/spec_helper\.rb/,
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
+
+        filter_run_excluding(
+          :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
+          :unless => lambda { |value| value }
+        )
       end
 
       # :call-seq:
@@ -195,11 +200,11 @@ EOM
       end
 
       def line_number=(line_number)
-        filter_run :line_number => line_number.to_i
+        filter_run({ :line_number => line_number.to_i }, true)
       end
 
       def full_description=(description)
-        filter_run :full_description => /#{description}/
+        filter_run({ :full_description => /#{description}/ }, true)
       end
 
       attr_writer :formatter_class
@@ -274,19 +279,23 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
-      def filter_run_including(options={})
+      def filter_run_including(options={}, force_overwrite = false)
         if filter and filter[:line_number] || filter[:full_description]
           warn "Filtering by #{options.inspect} is not possible since " \
                "you are already filtering by #{filter.inspect}"
         else
-          self.filter = options
+          if force_overwrite
+            self.filter = options
+          else
+            self.filter = (filter || {}).merge(options)
+          end
         end
       end
 
       alias_method :filter_run, :filter_run_including
 
       def filter_run_excluding(options={})
-        self.exclusion_filter = options
+        self.exclusion_filter = (exclusion_filter || {}).merge(options)
       end
 
       def include(mod, filters={})
@@ -304,7 +313,7 @@ EOM
         }
 
         include_or_extend_modules.each do |include_or_extend, mod, filters|
-          next unless group.all_apply?(filters)
+          next unless group.apply?(:all?, filters)
           next if modules[include_or_extend].include?(mod)
           modules[include_or_extend] << mod
           group.send(include_or_extend, mod)

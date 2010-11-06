@@ -11,7 +11,7 @@ module RSpec
         end
 
         def options_apply?(group)
-          !group || group.all_apply?(options)
+          !group || group.apply?(:all?, options)
         end
 
         def to_proc
