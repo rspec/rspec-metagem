@@ -1,69 +1,68 @@
-require 'ostruct'
-
 module RSpec
   module Core
     module Subject
+      module InstanceMethods
 
-      def self.included(kls)
-        kls.class_eval do
-          extend ClassMethods
+        # Returns the subject defined by the example group. The subject block is
+        # only executed once per example, the result of which is cached and
+        # returned by any subsequent calls to +subject+.
+        #
+        # If a class is passed to +describe+ and no subject is explicitly
+        # declared in the example group, then +subject+ will return a new
+        # instance of that class.
+        #
+        # == Examples
+        #
+        #   # explicit subject defined by the subject method
+        #   describe Person do
+        #     subject { Person.new(:birthdate => 19.years.ago) }
+        #     it "should be eligible to vote" do
+        #       subject.should be_eligible_to_vote
+        #     end
+        #   end
+        #
+        #   # implicit subject => { Person.new }
+        #   describe Person do
+        #     it "should be eligible to vote" do
+        #       subject.should be_eligible_to_vote
+        #     end
+        #   end
+        def subject
+          @original_subject ||= instance_eval(&self.class.subject)
+        end
+
+        begin
+          require 'rspec/expectations/extensions/kernel'
           alias_method :__should_for_example_group__,     :should
           alias_method :__should_not_for_example_group__, :should_not
+
+          # When +should+ is called with no explicit receiver, the call is
+          # delegated to the object returned by +subject+. Combined with
+          # an implicit subject (see +subject+), this supports very concise
+          # expressions.
+          #
+          # == Examples
+          #
+          #   describe Person do
+          #     it { should be_eligible_to_vote }
+          #   end
+          def should(matcher=nil, message=nil)
+            self == subject ? self.__should_for_example_group__(matcher) : subject.should(matcher,message)
+          end
+
+          # Just like +should+, +should_not+ delegates to the subject (implicit or
+          # explicit) of the example group.
+          #
+          # == Examples
+          #
+          #   describe Person do
+          #     it { should_not be_eligible_to_vote }
+          #   end
+          def should_not(matcher=nil, message=nil)
+            self == subject ? self.__should_not_for_example_group__(matcher) : subject.should_not(matcher,message)
+          end
+        rescue LoadError
         end
-      end
-
-      # Returns the subject defined by the example group. The subject block is
-      # only executed once per example, the result of which is cached and
-      # returned by any subsequent calls to +subject+.
-      #
-      # If a class is passed to +describe+ and no subject is explicitly
-      # declared in the example group, then +subject+ will return a new
-      # instance of that class.
-      #
-      # == Examples
-      #
-      #   # explicit subject defined by the subject method
-      #   describe Person do
-      #     subject { Person.new(:birthdate => 19.years.ago) }
-      #     it "should be eligible to vote" do
-      #       subject.should be_eligible_to_vote
-      #     end
-      #   end
-      #
-      #   # implicit subject => { Person.new }
-      #   describe Person do
-      #     it "should be eligible to vote" do
-      #       subject.should be_eligible_to_vote
-      #     end
-      #   end
-      def subject
-        @original_subject ||= instance_eval(&self.class.subject)
-      end
-
-      # When +should+ is called with no explicit receiver, the call is
-      # delegated to the object returned by +subject+. Combined with
-      # an implicit subject (see +subject+), this supports very concise
-      # expressions.
-      #
-      # == Examples
-      #
-      #   describe Person do
-      #     it { should be_eligible_to_vote }
-      #   end
-      def should(matcher=nil, message=nil)
-        self == subject ? self.__should_for_example_group__(matcher) : subject.should(matcher,message)
-      end
-
-      # Just like +should+, +should_not+ delegates to the subject (implicit or
-      # explicit) of the example group.
-      #
-      # == Examples
-      #
-      #   describe Person do
-      #     it { should_not be_eligible_to_vote }
-      #   end
-      def should_not(matcher=nil, message=nil)
-        self == subject ? self.__should_not_for_example_group__(matcher) : subject.should_not(matcher,message)
       end
 
       module ClassMethods
@@ -150,7 +149,7 @@ module RSpec
 
         attr_reader :explicit_subject_block # :nodoc:
 
-      private
+        private
 
         def explicit_subject
           group = self

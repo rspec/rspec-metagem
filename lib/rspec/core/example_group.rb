@@ -4,7 +4,8 @@ module RSpec
       extend  Extensions::ModuleEvalWithArgs
       include Extensions::InstanceEvalWithArgs
       extend  Hooks
-      include Subject
+      extend  Subject::ClassMethods
+      include Subject::InstanceMethods
       include Let
       include Pending
 

@@ -59,5 +59,20 @@ module RSpec::Core
         end
       end
     end
+
+    context "using 'self' as an explicit subject" do
+      it "delegates matcher to the ExampleGroup" do
+        group = ExampleGroup.describe("group") do
+          subject { self }
+          def ok?; true; end
+
+          it { should eq self }
+          it { should be_ok }
+        end
+
+        group.run.should be_true
+      end
+    end
+
   end
 end
