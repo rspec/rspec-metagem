@@ -27,7 +27,7 @@ module RSpec
         let(:parent_group_line_number) { parent_group_metadata[:example_group][:line_number] }
         let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:group_line_number) { group_metadata[:example_group][:line_number] }
-        let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"]) }
+        let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"], :if => true) }
         let(:example_line_number) { example_metadata[:line_number] }
         let(:next_example_metadata) { group_metadata.for_example('next_example', :caller => ["foo_spec.rb:#{example_line_number + 2}"]) }
         let(:world) { World.new }
@@ -64,6 +64,20 @@ module RSpec
         it "does not match when the line number matches the next example" do
           world.should_receive(:preceding_declaration_line).and_return(example_line_number + 2)
           example_metadata.apply_condition(:line_number, example_line_number + 2).should be_false
+        end
+
+        it "matches a proc that evaluates to true" do
+          example_metadata.apply_condition(:if, lambda { |v| v }).should be_true
+        end
+
+        it "does not match a proc that evaluates to false" do
+          example_metadata.apply_condition(:if, lambda { |v| !v }).should be_false
+        end
+
+        it "passes the metadata hash as the second argument if a given proc expects 2 args" do
+          passed_metadata = nil
+          example_metadata.apply_condition(:if, lambda { |v, m| passed_metadata = m })
+          passed_metadata.should == example_metadata
         end
       end
 

@@ -138,3 +138,79 @@ Feature: pending examples
         checks something
          (PENDING: Not Yet Implemented)
       """
+
+  Scenario: conditionally pending examples
+    Given a file named "conditionally_pending_spec.rb" with:
+      """
+      describe "a failing spec" do
+        def run_test; raise "failure"; end
+
+        it "is pending when pending with a true :if condition" do
+          pending("true :if", :if => true) { run_test }
+        end
+
+        it "fails when pending with a false :if condition" do
+          pending("false :if", :if => false) { run_test }
+        end
+
+        it "is pending when pending with a false :unless condition" do
+          pending("false :unless", :unless => false) { run_test }
+        end
+
+        it "fails when pending with a true :unless condition" do
+          pending("true :unless", :unless => true) { run_test }
+        end
+      end
+
+      describe "a passing spec" do
+        def run_test; true.should be(true); end
+
+        it "fails when pending with a true :if condition" do
+          pending("true :if", :if => true) { run_test }
+        end
+
+        it "passes when pending with a false :if condition" do
+          pending("false :if", :if => false) { run_test }
+        end
+
+        it "fails when pending with a false :unless condition" do
+          pending("false :unless", :unless => false) { run_test }
+        end
+
+        it "passes when pending with a true :unless condition" do
+          pending("true :unless", :unless => true) { run_test }
+        end
+      end
+      """
+    When I run "rspec ./conditionally_pending_spec.rb"
+    Then the output should contain "8 examples, 4 failures, 2 pending"
+    And the output should contain:
+      """
+      Pending:
+        a failing spec is pending when pending with a true :if condition
+          # true :if
+          # ./conditionally_pending_spec.rb:4
+        a failing spec is pending when pending with a false :unless condition
+          # false :unless
+          # ./conditionally_pending_spec.rb:12
+      """
+    And the output should contain:
+      """
+        1) a failing spec fails when pending with a false :if condition
+           Failure/Error: def run_test; raise "failure"; end
+      """
+    And the output should contain:
+      """
+        2) a failing spec fails when pending with a true :unless condition
+           Failure/Error: def run_test; raise "failure"; end
+      """
+    And the output should contain:
+      """
+        3) a passing spec fails when pending with a true :if condition FIXED
+           Expected pending 'true :if' to fail. No Error was raised.
+      """
+    And the output should contain:
+      """
+        4) a passing spec fails when pending with a false :unless condition FIXED
+           Expected pending 'false :unless' to fail. No Error was raised.
+      """

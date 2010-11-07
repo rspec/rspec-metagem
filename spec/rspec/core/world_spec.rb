@@ -86,6 +86,10 @@ module RSpec::Core
       it "finds matching examples when filtering on arbitrary metadata" do
         world.apply_inclusion_filters(group4.examples, :awesome => true).should == [group4.examples[1], group4.examples[2]]
       end
+
+      it "finds matching examples for example that match any of the filters" do
+        world.apply_inclusion_filters(group4.examples, :awesome => true, :something => :else).should == [group4.examples[1], group4.examples[2]]
+      end
     end
 
     describe "#apply_exclusion_filters" do
@@ -124,8 +128,8 @@ module RSpec::Core
           :describes => lambda { |b| b == Bar } } ).should == []
 
         world.apply_exclusion_filters(group.examples, :name => /exclude not/).should == group.examples
-        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == group.examples
-        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == group.examples
+        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == []
+        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == []
       end
     end
 

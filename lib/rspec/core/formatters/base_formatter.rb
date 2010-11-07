@@ -12,7 +12,7 @@ module RSpec
         attr_reader :failed_examples, :pending_examples
 
         def initialize(output)
-          @output = output
+          @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
           @examples = []
           @failed_examples = []
