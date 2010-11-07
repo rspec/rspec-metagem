@@ -215,6 +215,12 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "--fail-fast" do
+    it "sets fail_fast on config" do
+      options_from_args("--fail-fast").should include(:fail_fast => true)
+    end
+  end
+
   describe "options file (override)" do
     let(:config) { OpenStruct.new }
 

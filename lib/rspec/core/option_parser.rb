@@ -99,16 +99,20 @@ module RSpec::Core
         parser.on('--autotest') do |o|
           options[:autotest] = true
         end
-        
+
+        parser.on('--fail-fast', 'Use the fail_fast option to tell RSpec to abort the run on first failure.') do |o|
+          options[:fail_fast] = true
+        end
+
         parser.on('-t', '--tag TAG[:VALUE]', 'Run examples with the specified tag',
                 'To exclude examples, add ~ before the tag (e.g. ~slow)',
                 '(TAG is always converted to a symbol)') do |tag|
           filter_type = tag.start_with?('~') ? :exclusion_filter : :filter
-          
+
           name,value = tag.gsub(/^(~@|~|@)/, '').split(':')
           name = name.to_sym
           value = true if value.nil?
-          
+
           options[filter_type] ||= {}
           options[filter_type][name] = value
         end
