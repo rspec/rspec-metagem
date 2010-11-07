@@ -639,10 +639,13 @@ module RSpec::Core
         its([:another_attribute]) { should == 'another_value' }
         its([:another_attribute]) { should_not == 'value' }
         its(:keys) { should =~ ['another_attribute', :attribute] }
-
         context "when referring to an attribute without the proper array syntax" do
-          it "raises a NoMethodError" do
-            expect{ its(:attribute) }.to raise_error(NoMethodError)
+          context "it raises an error" do
+            its(:attribute) do
+              expect do
+                should eq('value')
+              end.to raise_error(NoMethodError)
+            end
           end
         end
       end
