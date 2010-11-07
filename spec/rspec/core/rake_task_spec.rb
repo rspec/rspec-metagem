@@ -10,7 +10,8 @@ module RSpec::Core
     end
 
     def with_bundler
-      task.bundler = true
+      task.skip_bundler = false
+      File.stub(:exist?) { true }
       yield
     end
 

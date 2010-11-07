@@ -21,13 +21,16 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
-      # Whether or not to include 'bundle exec' in the command
+      # By default, if there is a Gemfile, the generated command will include
+      # 'bundle exec'. Set this to true to ignore the presence of a Gemfile, and
+      # not add 'bundle exec' to the command.
       #
       # default:
       #   false
-      attr_accessor :bundler
+      attr_accessor :skip_bundler
 
       # Deprecated. Use ruby_opts="-w" instead.
+      #
       # When true, requests that the specs be run with the warning flag set.
       # e.g. "ruby -w"
       #
@@ -64,7 +67,7 @@ module RSpec
 
       # Path to rcov.
       #
-      # defaults:
+      # default:
       #   'rcov'
       attr_accessor :rcov_path
 
@@ -93,10 +96,20 @@ module RSpec
       attr_accessor :rspec_opts
 
       # Deprecated. Use rspec_opts instead.
+      #
+      # Command line options to pass to rspec.
+      #
+      # default:
+      #   nil
+      def spec_opts=(opts)
+        RSpec.deprecate("RSpec::Core::RakeTask#spec_opts=", 'rspec_opts=')
+        @rspec_opts = opts
+      end
+
       def initialize(*args)
         @name = args.shift || :spec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
-        @warning, @rcov, @bundler = false, false, false
+        @warning, @rcov, @skip_bundler = false, false, false
         @verbose, @fail_on_error = true, true
 
         yield self if block_given?
@@ -138,7 +151,7 @@ module RSpec
                             cmd_parts = [ruby_opts]
                             cmd_parts << "-w" if warning?
                             cmd_parts << "-S"
-                            cmd_parts << "bundle exec" if bundler
+                            cmd_parts << "bundle exec" if gemfile? unless skip_bundler
                             cmd_parts << runner
                             if rcov
                               cmd_parts << ["-Ispec", "-Ilib", rcov_opts]
@@ -165,6 +178,10 @@ module RSpec
 
       def blank
         lambda {|s| s == ""}
+      end
+
+      def gemfile?
+        File.exist?('./Gemfile')
       end
 
     end
