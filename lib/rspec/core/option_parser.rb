@@ -107,7 +107,7 @@ module RSpec::Core
         parser.on('-t', '--tag TAG[:VALUE]', 'Run examples with the specified tag',
                 'To exclude examples, add ~ before the tag (e.g. ~slow)',
                 '(TAG is always converted to a symbol)') do |tag|
-          filter_type = tag.start_with?('~') ? :exclusion_filter : :filter
+          filter_type = tag =~ /^~/ ? :exclusion_filter : :filter
 
           name,value = tag.gsub(/^(~@|~|@)/, '').split(':')
           name = name.to_sym
