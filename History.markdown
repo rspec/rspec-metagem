@@ -1,8 +1,8 @@
 ## rspec-core release history (incomplete)
 
-### 2.1.0 / in development
+### 2.1.0 / 2010-11-07
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.1...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.1...v2.1.0)
 
 * Enhancments
   * Add skip_bundler option to rake task to tell rake task to ignore the
