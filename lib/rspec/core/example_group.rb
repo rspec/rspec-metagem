@@ -69,8 +69,8 @@ module RSpec
             raise "Could not find shared example group named \#{name.inspect}" unless shared_block
 
             group = describe("#{report_label || "it should behave like"} \#{name}") do
-              module_eval_with_args *args, &shared_block
-              module_eval &customization_block if customization_block
+              module_eval_with_args(*args, &shared_block)
+              module_eval(&customization_block) if customization_block
             end
             group.metadata[:shared_group_name] = name
             group
