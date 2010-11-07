@@ -42,25 +42,24 @@ expressions:
 
 ## Conditionally 'pending' examples
 
-Make examples pending based on a condition. If you have an example, for
-example, that can only run if a certain library is loaded, you can do something
-like this:
+Make examples pending based on a condition.  This is most useful when you
+have an example that runs in multiple contexts and fails in one of those due to
+a bug in a third-party dependency that you expect to be fixed in the future.
 
     describe "something" do
-      it "does something that works with any version of foo" do
-        pending("need to install foo-1.2.3", :unless => defined?(Foo))
-        # ...
-      end
-
-      it "does something that only supported for Ruby-1.9 and above" do
-        pending("requires Ruby >= 1.9.2", :if => RUBY_VERSION.to_f < 1.9)
-        # ...
+      it "does something that doesn't yet work right on JRuby" do
+        pending("waiting for the JRuby team to fix issue XYZ", :if => RUBY_PLATFORM == 'java') do
+          # the content of your spec
+        end
       end
     end
 
-This is similar to filtering on :if and :unless keys but here you get "pending"
-output. The filtering option is great when you have two examples that work in
-opposite ways (e.g. one works for Ruby-1.8.7 and up, one for 1.8.6 and down).
+This example would run normally on all ruby interpretters except JRuby.  On JRuby,
+it uses the block form of `pending`, which causes the example to still be run and
+will remain pending as long as it fails.  In the future, if you upgraded your
+JRuby installation to a newer release that allows the example to pass, RSpec
+will report it as a failure (`Expected pending '...' to fail.  No Error was raised.`),
+so that know that you can remove the call to `pending`.
 
 # New features in rspec-core-2.0
 
