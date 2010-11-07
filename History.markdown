@@ -1,5 +1,22 @@
 ## rspec-expectations release history (incomplete)
 
+### 2.1.0 / in development
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0...v2.1.0)
+
+* Enhancements
+  * be_within(delta).of(expected) matcher (Myron Marston)
+  * Lots of new Cucumber features (Myron Marston)
+  * Raise error if you try "should != expected" on Ruby-1.9 (Myron Marston)
+  * Improved failure messages from throw_symbol (Myron Marston)
+
+* Bug fixes
+  * Eliminate hard dependency on RSpec::Core (Myron Marston)
+  * have_matcher - use pluralize only when ActiveSupport inflections are indeed
+    defined (Josep M Bach)
+  * throw_symbol matcher no longer swallows exceptions (Myron Marston)
+  * fix matcher chaining to avoid name collisions (Myron Marston)
+
 ### 2.0.0 / 2010-10-10
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.rc...v2.0.0)
