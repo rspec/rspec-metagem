@@ -78,7 +78,7 @@ Feature: exclusion filters
       end
       """
     When I run "rspec ./spec/sample_spec.rb --format doc"
-    Then the output should contain "No examples were matched. Perhaps {:broken=>true} is excluding everything?"
+    Then the output should match /No examples were matched. Perhaps \{.*:broken=>true.*\} is excluding everything?/
     And  the output should contain "0 examples, 0 failures"
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
