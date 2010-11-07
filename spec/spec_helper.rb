@@ -1,5 +1,5 @@
 def add_to_load_path(path, prepend=false)
-  path = File.expand_path("../#{path}", __FILE__)
+  path = File.expand_path("../../#{path}/lib", __FILE__)
   if prepend
     $LOAD_PATH.unshift(path) unless $LOAD_PATH.include?(path)
   else
@@ -7,10 +7,11 @@ def add_to_load_path(path, prepend=false)
   end
 end
 
-add_to_load_path("../lib", :prepend)
-add_to_load_path("../../rspec-core/lib")
-add_to_load_path("../../rspec-mocks/lib")
+add_to_load_path("rspec-expectations", :prepend)
+add_to_load_path("rspec-core")
+add_to_load_path("rspec-mocks")
 
+require 'rspec/expectations'
 require 'rspec/core'
 require 'rspec/mocks'
 
