@@ -35,6 +35,11 @@ module RSpec
       #   false
       attr_reader :warning
 
+      def warning=(true_or_false)
+        RSpec.deprecate("RSpec::Core::RakeTask#warning=", 'ruby_opts="-w"')
+        @warning = true_or_false
+      end
+
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
       #
       # default:
