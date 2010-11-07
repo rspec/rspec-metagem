@@ -11,7 +11,9 @@ module RSpec
         @expected = expected
         @actual   = nil
         @diffable = false
-        @expected_exception, @rescued_exception = nil
+        @expected_exception, @rescued_exception = nil, nil
+        @match_for_should_not_block = nil
+
         @messages = {
           :description => lambda {"#{name_to_sentence}#{expected_to_sentence}"},
           :failure_message_for_should => lambda {|actual| "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"},

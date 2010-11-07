@@ -4,7 +4,7 @@ module RSpec
       def initialize(expected, relativity=:exactly)
         @expected = (expected == :no ? 0 : expected)
         @relativity = relativity
-        @actual = nil
+        @actual = @collection_name = @plural_collection_name = nil
       end
     
       def relativities
