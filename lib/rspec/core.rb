@@ -25,12 +25,12 @@ require 'rspec/core/version'
 require 'rspec/core/errors'
 
 module RSpec
-  module Core
+  autoload :Matchers, 'rspec/matchers'
 
+  module Core
     def self.install_directory
       @install_directory ||= File.expand_path(File.dirname(__FILE__))
     end
-
   end
 
   def self.wants_to_quit
