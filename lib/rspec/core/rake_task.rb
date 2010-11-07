@@ -29,6 +29,12 @@ module RSpec
       #   false
       attr_accessor :skip_bundler
 
+      # Name of Gemfile to use
+      #
+      # default:
+      #   Gemfile
+      attr_accessor :gemfile
+
       # Deprecated. Use ruby_opts="-w" instead.
       #
       # When true, requests that the specs be run with the warning flag set.
@@ -102,7 +108,7 @@ module RSpec
       # default:
       #   nil
       def spec_opts=(opts)
-        RSpec.deprecate("RSpec::Core::RakeTask#spec_opts=", 'rspec_opts=')
+        RSpec.deprecate('RSpec::Core::RakeTask#spec_opts=', 'rspec_opts=')
         @rspec_opts = opts
       end
 
@@ -111,6 +117,7 @@ module RSpec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
         @warning, @rcov, @skip_bundler = false, false, false
         @verbose, @fail_on_error = true, true
+        @gemfile = 'Gemfile'
 
         yield self if block_given?
 
@@ -181,7 +188,7 @@ module RSpec
       end
 
       def gemfile?
-        File.exist?('./Gemfile')
+        File.exist?(gemfile)
       end
 
     end

@@ -5,8 +5,10 @@
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.1...master)
 
 * Enhancments
-  * Add rake task option (skip_bundler) to tell rake task to ignore the presence
-    of a Gemfile (jfelchner)
+  * Add skip_bundler option to rake task to tell rake task to ignore the
+    presence of a Gemfile (jfelchner)
+  * Add gemfile option to rake task to tell rake task what Gemfile to look
+    for (defaults to 'Gemfile')
   * Allow passing caller trace into Metadata to support extensions (Glenn
     Vanderburg)
   * Add deprecation warning for Spec::Runner.configure to aid upgrade from

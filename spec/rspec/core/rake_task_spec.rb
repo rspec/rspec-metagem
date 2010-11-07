@@ -31,9 +31,28 @@ module RSpec::Core
     end
 
     context "with bundler" do
-      it "renders bundle exec rspec" do
-        with_bundler do
-          spec_command.should =~ /^-S bundle exec rspec/
+      context "with Gemfile" do
+        it "renders bundle exec rspec" do
+          File.stub(:exist?) { true }
+          task.skip_bundler = false
+          spec_command.should match(/bundle exec/)
+        end
+      end
+
+      context "with non-standard Gemfile" do
+        it "renders bundle exec rspec" do
+          File.stub(:exist?) {|f| f =~ /AltGemfile/}
+          task.gemfile = 'AltGemfile'
+          task.skip_bundler = false
+          spec_command.should match(/bundle exec/)
+        end
+      end
+
+      context "without Gemfile" do
+        it "renders bundle exec rspec" do
+          File.stub(:exist?) { false }
+          task.skip_bundler = false
+          spec_command.should_not match(/bundle exec/)
         end
       end
     end
