@@ -1,5 +1,8 @@
 Feature: implicit filters
 
+  The `:if` and `:unless` metadata keys can be used to filter examples without
+  needing to configure an exclusion filter.
+
   Scenario: implicit :if filter
     Given a file named "implicit_if_filter_spec.rb" with:
       """
