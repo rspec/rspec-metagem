@@ -22,6 +22,7 @@
   * Add 'pending' to be conditional (Myron Marston)
   * Add explicit support for :if and :unless as metadata keys for conditional run
     of examples (Myron Marston)
+  * Add --fail-fast command line option (Jeff Kreeftmeijer)
 
 * Bug fixes
   * Eliminate stack overflow with "subject { self }"
