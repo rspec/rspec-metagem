@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "should be_predicate" do  
+  it "allows other undefined methods to raise errors as normal" do
+    expect { some_undefined_method }.to raise_error(NameError)
+  end
+
   it "passes when actual returns true for :predicate?" do
     actual = stub("actual", :happy? => true)
     actual.should be_happy
