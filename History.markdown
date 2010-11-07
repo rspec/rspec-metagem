@@ -1,11 +1,35 @@
 ## rspec-core release history (incomplete)
 
+### 2.1.0 / in development
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.0.1...master)
+
+* Enhancments
+  * Add rake task option (skip_bundler) to tell rake task to ignore the presence
+    of a Gemfile (jfelchner)
+  * Allow passing caller trace into Metadata to support extensions (Glenn
+    Vanderburg)
+  * Add deprecation warning for Spec::Runner.configure to aid upgrade from
+    RSpec-1
+  * Add deprecated Spec::Rake::SpecTask to aid upgrade from RSpec-1
+  * Add 'autospec' command with helpful message to aid upgrade from RSpec-1
+  * Add support for filtering with tags on CLI (Lailson Bandeira)
+  * Add a helpful message about RUBYOPT when require fails in bin/rspec
+    (slyphon)
+  * Add "-Ilib" to the default rcov options (Tianyi Cui)
+  * Make the expectation framework configurable (default rspec, of course)
+    (Justin Ko)
+
+* Bug fixes
+  * Eliminate stack overflow with "subject { self }"
+  * Require 'rspec/core' in the Raketask (ensures it required when running rcov)
+
 ### 2.0.1 / 2010-10-18
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.0...v2.0.1)
 
 * Bug fixes
-  * restore color when using spork + autotest
+  * Restore color when using spork + autotest
   * Pending examples without docstrings render the correct message (Josep M. Bach)
   * Fixed bug where a failure in a spec file ending in anything but _spec.rb would
     fail in a confusing way.
@@ -28,7 +52,7 @@
 
 * Enhancements
   * implicitly require unknown formatters so you don't have to require the
-    file explicitly on the commmand line (Michael Grosser) 
+    file explicitly on the commmand line (Michael Grosser)
   * add --out/-o option to assign output target
   * added fail_fast configuration option to abort on first failure
   * support a Hash subject (its([:key]) { should == value }) (Josep M. Bach)
