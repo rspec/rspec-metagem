@@ -19,6 +19,9 @@
   * Add "-Ilib" to the default rcov options (Tianyi Cui)
   * Make the expectation framework configurable (default rspec, of course)
     (Justin Ko)
+  * Add 'pending' to be conditional (Myron Marston)
+  * Add explicit support for :if and :unless as metadata keys for conditional run
+    of examples (Myron Marston)
 
 * Bug fixes
   * Eliminate stack overflow with "subject { self }"
