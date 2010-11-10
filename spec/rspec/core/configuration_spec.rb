@@ -7,17 +7,25 @@ module RSpec::Core
     let(:config) { subject }
 
     describe "#load_spec_files" do
-      
+
       it "loads files using load" do
         config.files_to_run = ["foo.bar", "blah_spec.rb"]
         config.should_receive(:load).twice
         config.load_spec_files
       end
-      
-      pending "raises if RSpec 1 is loaded" do
-        expect {
-          config.load_spec_files
-        }.to raise_error('This is RSpec 2, please do not load RSpec 1')        
+
+      context "with rspec-1 loaded" do
+        before do
+          Object.const_set(:Spec, Module.new)
+          ::Spec::const_set(:VERSION, Module.new)
+          ::Spec::VERSION::const_set(:MAJOR, 1)
+        end
+        after  { Object.__send__(:remove_const, :Spec) }
+        it "raises with a helpful message" do
+          expect {
+            config.load_spec_files
+          }.to raise_error(/rspec-1 has been loaded/)
+        end
       end
     end
 

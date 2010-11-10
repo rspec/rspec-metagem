@@ -217,7 +217,7 @@ EOM
       end
 
       def formatter=(formatter_to_use)
-        self.formatter_class = 
+        self.formatter_class =
           built_in_formatter(formatter_to_use) ||
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
@@ -332,14 +332,24 @@ EOM
 
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
-        ensure_version_one_is_not_loaded
+        raise_if_rspec_1_is_loaded
       end
-      
+
     private
-      
-      def ensure_version_one_is_not_loaded
-        if Object.constants.include?('Spec') && defined?(Spec::VERSION) && Spec::VERSION::MAJOR.eql?(1)
-          raise 'This is RSpec 2, please do not load RSpec 1'
+
+      def raise_if_rspec_1_is_loaded
+        if defined?(Spec::VERSION::MAJOR) && Spec::VERSION::MAJOR == 1
+          raise <<-MESSAGE
+
+#{'*'*80}
+  You are running rspec-2, but it seems as though rspec-1 has been loaded as
+  well.  This is likely due to a statement like this somewhere in the specs:
+
+      require 'spec'
+
+  Please locate that statement, remove it, and try again.
+#{'*'*80}
+MESSAGE
         end
       end
 
@@ -392,7 +402,7 @@ EOM
       end
 
       def underscore_with_fix_for_non_standard_rspec_naming(string)
-        underscore(string).sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2') 
+        underscore(string).sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2')
       end
 
       # activesupport/lib/active_support/inflector/methods.rb, line 48
