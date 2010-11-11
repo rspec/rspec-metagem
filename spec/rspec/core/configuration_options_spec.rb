@@ -165,19 +165,21 @@ describe RSpec::Core::ConfigurationOptions do
       end
     end
 
-    it "sends all the arguments other than --drb back to the parser after parsing options" do
+    it "does not send --drb back to the parser after parsing options" do
       config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
     end
   end
 
-
-  # TODO #drb_argv may not be the best name
   # TODO ensure all options are output
   # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
   describe "#drb_argv" do
     it "preserves extra arguments" do
       File.stub(:exist?) { false }
       config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
+    end
+
+    it "includes --fail-fast" do
+      config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
     end
 
     context "--drb specified in ARGV" do

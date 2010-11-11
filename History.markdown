@@ -8,6 +8,9 @@
   * Raise exception with helpful message when rspec-1 is loaded alongside
     rspec-2 (Justin Ko)
 
+* Bug fixes
+  * Make sure --fail-fast makes it across drb
+
 ### 2.1.0 / 2010-11-07
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.0.1...v2.1.0)
