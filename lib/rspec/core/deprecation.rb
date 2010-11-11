@@ -31,7 +31,7 @@ ADDITIONAL
 
   class HashWithDeprecationNotice < Hash
 
-    def initialize(method, alternate_method=nil, &block)
+    def initialize(method, alternate_method=nil)
       @method, @alternate_method = method, alternate_method
     end
 

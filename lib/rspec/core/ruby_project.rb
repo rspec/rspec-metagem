@@ -27,9 +27,9 @@ module RSpec
         ascend_until {|path| File.exists?(File.join(path, dir))}
       end
 
-      def ascend_until(&block) # :nodoc:
+      def ascend_until # :nodoc:
         Pathname(File.expand_path('.')).ascend do |path|
-          return path if block.call(path)
+          return path if yield(path)
         end
       end
 

@@ -70,9 +70,9 @@ module RSpec
 
     private
 
-      def with_pending_capture(&block)
+      def with_pending_capture
         @pending_declared_in_example = catch(:pending_declared_in_example) do
-          block.call
+          yield
           throw :pending_declared_in_example, false
         end
       end
