@@ -338,7 +338,7 @@ EOM
     private
 
       def raise_if_rspec_1_is_loaded
-        if defined?(Spec::VERSION::MAJOR) && Spec::VERSION::MAJOR == 1
+        if defined?(Spec) && defined?(Spec::VERSION::MAJOR) && Spec::VERSION::MAJOR == 1
           raise <<-MESSAGE
 
 #{'*'*80}
