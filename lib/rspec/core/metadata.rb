@@ -2,14 +2,44 @@ module RSpec
   module Core
     class Metadata < Hash
 
+      module LocationKeys
+        def [](key)
+          return super if has_key?(key)
+          case key
+          when :location
+            self[key] = location
+          when :file_path, :line_number
+            self[:file_path], self[:line_number] = file_and_line_number
+            self[key]
+          else
+            super
+          end
+        end
+
+        def location
+          "#{self[:file_path]}:#{self[:line_number]}"
+        end
+
+        def file_and_line_number
+          first_caller_from_outside_rspec =~ /(.+?):(\d+)(|:\d+)/
+          return [$1, $2.to_i]
+        end
+
+        def first_caller_from_outside_rspec
+          self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+        end
+      end
+
       def initialize(superclass_metadata=nil)
         @superclass_metadata = superclass_metadata
         if @superclass_metadata
           update(@superclass_metadata)
           example_group = {:example_group => @superclass_metadata[:example_group]}
+        else
+          example_group = {}
         end
 
-        store(:example_group, example_group || {})
+        store(:example_group, example_group.extend(LocationKeys))
         yield self if block_given?
       end
 
@@ -27,13 +57,12 @@ module RSpec
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
 
+        self[:example_group][:caller] = user_metadata.delete(:caller) || caller
         self[:example_group][:describes] = described_class_from(*args)
         self[:example_group][:description] = description_from(*args)
         self[:example_group][:full_description] = full_description_from(*args)
 
         self[:example_group][:block] = user_metadata.delete(:example_group_block)
-        self[:example_group][:file_path], self[:example_group][:line_number] = file_and_line_number_from(user_metadata.delete(:caller) || caller)
-        self[:example_group][:location] = location_from(self[:example_group])
 
         update(user_metadata)
       end
@@ -60,17 +89,16 @@ EOM
         end
       end
 
-      def for_example(description, options)
-        dup.configure_for_example(description,options)
+      def for_example(description, user_metadata)
+        dup.extend(LocationKeys).configure_for_example(description, user_metadata)
       end
 
-      def configure_for_example(description, options)
+      def configure_for_example(description, user_metadata)
         store(:description, description.to_s)
         store(:full_description, "#{self[:example_group][:full_description]} #{self[:description]}")
         store(:execution_result, {})
-        self[:file_path], self[:line_number] = file_and_line_number_from(options.delete(:caller) || caller)
-        self[:location] = location_from(self)
-        update(options)
+        store(:caller, user_metadata.delete(:caller) || caller)
+        update(user_metadata)
       end
 
       def apply?(predicate, filters)
@@ -155,20 +183,6 @@ EOM
         else
           args.first
         end
-      end
-
-      def file_and_line_number_from(list)
-        entry = first_caller_from_outside_rspec_from_caller(list)
-        entry =~ /(.+?):(\d+)(|:\d+)/
-        return [$1, $2.to_i]
-      end
-
-      def first_caller_from_outside_rspec_from_caller(list)
-        list.detect {|l| l !~ /\/lib\/rspec\/core/}
-      end
-
-      def location_from(metadata)
-        "#{metadata[:file_path]}:#{metadata[:line_number]}"
       end
     end
   end
