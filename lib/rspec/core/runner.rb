@@ -23,8 +23,8 @@ module RSpec
       end
 
       def self.running_in_drb?
-        (DRb.current_server rescue false) &&
-        !!((DRb.current_server.uri) =~ /druby\:\/\/127.0.0.1\:/)
+        (DRb.current_server rescue false) && 
+         DRb.current_server.uri =~ /druby\:\/\/127.0.0.1\:/
       end
 
       def self.trap_interrupt

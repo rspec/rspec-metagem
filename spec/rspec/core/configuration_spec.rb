@@ -241,12 +241,12 @@ module RSpec::Core
     describe "run_all_when_everything_filtered?" do
 
       it "defaults to false" do
-        config.run_all_when_everything_filtered?.should == false
+        config.run_all_when_everything_filtered?.should be_false
       end
 
       it "can be queried with question method" do
         config.run_all_when_everything_filtered = true
-        config.run_all_when_everything_filtered?.should == true
+        config.run_all_when_everything_filtered?.should be_true
       end
     end
 

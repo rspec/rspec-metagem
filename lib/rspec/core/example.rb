@@ -23,9 +23,7 @@ module RSpec
         @example_group_class
       end
 
-      def pending?
-        !!pending
-      end
+      alias_method :pending?, :pending
 
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
@@ -36,16 +34,7 @@ module RSpec
         begin
           unless pending
             with_pending_capture do
-              with_around_hooks do
-                begin
-                  run_before_each
-                  @example_group_instance.instance_eval(&@example_block)
-                rescue Exception => e
-                  set_exception(e)
-                ensure
-                  run_after_each
-                end
-              end
+              with_around_hooks &core_example
             end
           end
         rescue Exception => e
@@ -56,6 +45,19 @@ module RSpec
         end
 
         finish(reporter)
+      end
+
+      def core_example
+        lambda do
+          begin
+            run_before_each
+            @example_group_instance.instance_eval(&@example_block)
+          rescue Exception => e
+            set_exception(e)
+          ensure
+            run_after_each
+          end
+        end
       end
 
       def set_exception(exception)

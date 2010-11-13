@@ -13,7 +13,7 @@ module RSpec
         else
           define_method("#{name}=") {|val| settings[name] = val}
           define_method(name)       { settings.has_key?(name) ? settings[name] : opts[:default] }
-          define_method("#{name}?") { !!(send name) }
+          define_method("#{name}?") { send name }
         end
       end
 
@@ -68,7 +68,7 @@ module RSpec
       #
       #   RSpec.configuration.foo=(value)
       #   RSpec.configuration.foo()
-      #   RSpec.configuration.foo?() # returns !!foo
+      #   RSpec.configuration.foo?() # returns true if foo returns anything but nil or false
       #
       # Intended for extension frameworks like rspec-rails, so they can add config
       # settings that are domain specific. For example:
@@ -153,7 +153,7 @@ module RSpec
       end
 
       def color_enabled?
-        !!color_enabled
+        color_enabled
       end
 
       def color_enabled=(bool)
