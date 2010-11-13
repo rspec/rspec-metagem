@@ -34,7 +34,16 @@ module RSpec
         begin
           unless pending
             with_pending_capture do
-              with_around_hooks &core_example
+              with_around_hooks do
+                begin
+                  run_before_each
+                  @example_group_instance.instance_eval(&@example_block)
+                rescue Exception => e
+                  set_exception(e)
+                ensure
+                  run_after_each
+                end
+              end
             end
           end
         rescue Exception => e
@@ -45,19 +54,6 @@ module RSpec
         end
 
         finish(reporter)
-      end
-
-      def core_example
-        lambda do
-          begin
-            run_before_each
-            @example_group_instance.instance_eval(&@example_block)
-          rescue Exception => e
-            set_exception(e)
-          ensure
-            run_after_each
-          end
-        end
       end
 
       def set_exception(exception)
