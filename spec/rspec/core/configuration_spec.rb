@@ -638,7 +638,7 @@ module RSpec::Core
     end
 
     describe "#configure_group" do
-      it "extends with modules" do
+      it "extends with 'extend'" do
         mod = Module.new
         group = ExampleGroup.describe("group", :foo => :bar)
 
@@ -647,11 +647,20 @@ module RSpec::Core
         group.should be_a(mod)
       end
 
-      it "includes modules" do
+      it "extends with 'module'" do
         mod = Module.new
         group = ExampleGroup.describe("group", :foo => :bar)
 
         config.include(mod, :foo => :bar)
+        config.configure_group(group)
+        group.included_modules.should include(mod)
+      end
+
+      it "requires only one matching filter" do
+        mod = Module.new
+        group = ExampleGroup.describe("group", :foo => :bar)
+
+        config.include(mod, :foo => :bar, :baz => :bam)
         config.configure_group(group)
         group.included_modules.should include(mod)
       end
