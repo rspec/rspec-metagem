@@ -7,9 +7,11 @@ module RSpec
           return super if has_key?(key)
           case key
           when :location
-            self[key] = location
+            store(:location, location)
           when :file_path, :line_number
-            self[:file_path], self[:line_number] = file_and_line_number
+            file_path, line_number = file_and_line_number
+            store(:file_path, file_path)
+            store(:line_number, line_number)
             self[key]
           else
             super
@@ -57,12 +59,11 @@ module RSpec
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
 
-        self[:example_group][:caller] = user_metadata.delete(:caller) || caller
-        self[:example_group][:describes] = described_class_from(*args)
-        self[:example_group][:description] = description_from(*args)
-        self[:example_group][:full_description] = full_description_from(*args)
-
-        self[:example_group][:block] = user_metadata.delete(:example_group_block)
+        self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
+        self[:example_group].store(:describes, described_class_from(*args))
+        self[:example_group].store(:description, description_from(*args))
+        self[:example_group].store(:full_description, full_description_from(*args))
+        self[:example_group].store(:block, user_metadata.delete(:example_group_block))
 
         update(user_metadata)
       end
