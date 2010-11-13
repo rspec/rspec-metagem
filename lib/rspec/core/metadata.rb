@@ -116,8 +116,7 @@ EOM
         end
       end
 
-      def apply_condition(key, value, metadata=nil)
-        metadata ||= self
+      def apply_condition(key, value, metadata=self)
         case value
         when Hash
           value.all? { |k, v| apply_condition(k, v, metadata[key]) }
