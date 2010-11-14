@@ -223,18 +223,17 @@ An error occurred in an after(:all) hook.
           RSpec.clear_remaining_example_groups if top_level?
           return
         end
-        example_group_instance = new
         reporter.example_group_started(self)
 
         begin
-          eval_before_alls(example_group_instance)
-          result_for_this_group = run_examples(example_group_instance, reporter)
+          eval_before_alls(new)
+          result_for_this_group = run_examples(reporter)
           results_for_descendants = children.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           fail_filtered_examples(ex, reporter)
         ensure
-          eval_after_alls(example_group_instance)
+          eval_after_alls(new)
           reporter.example_group_finished(self)
         end
       end
@@ -253,18 +252,14 @@ An error occurred in an after(:all) hook.
         RSpec.configuration.fail_fast?
       end
 
-      def self.run_examples(instance, reporter)
+      def self.run_examples(reporter)
         filtered_examples.map do |example|
           next if RSpec.wants_to_quit
-          begin
-            set_ivars(instance, before_all_ivars)
-            succeeded = example.run(instance, reporter)
-            RSpec.wants_to_quit = true if fail_fast? && !succeeded
-            succeeded
-          ensure
-            clear_ivars(instance)
-            clear_memoized(instance)
-          end
+          instance = new
+          set_ivars(instance, before_all_ivars)
+          succeeded = example.run(instance, reporter)
+          RSpec.wants_to_quit = true if fail_fast? && !succeeded
+          succeeded
         end.all?
       end
 
@@ -284,14 +279,6 @@ An error occurred in an after(:all) hook.
 
       def self.set_ivars(instance, ivars)
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
-      end
-
-      def self.clear_ivars(instance)
-        instance.instance_variables.each { |ivar| instance.send(:remove_instance_variable, ivar) }
-      end
-
-      def self.clear_memoized(instance)
-        instance.__memoized.clear
       end
 
       def described_class
