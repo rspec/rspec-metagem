@@ -75,8 +75,12 @@ module RSpec
         end
       end
 
-      def with_around_hooks(&wrapped_example)
-        @example_group_class.eval_around_eachs(@example_group_instance, wrapped_example).call
+      def with_around_hooks
+        if @example_group_class.around_hooks.empty?
+          yield
+        else
+          @example_group_class.eval_around_eachs(@example_group_instance, Proc.new).call
+        end
       end
 
       def start(reporter)
