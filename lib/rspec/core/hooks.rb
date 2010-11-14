@@ -57,7 +57,7 @@ module RSpec
 
       class BeforeHooks < HookCollection
         def run_all(example_group_instance)
-          each {|h| h.run_in(example_group_instance) }
+          each {|h| h.run_in(example_group_instance) } unless empty?
         end
 
         def run_all!(example_group_instance)
@@ -67,7 +67,7 @@ module RSpec
 
       class AfterHooks < HookCollection
         def run_all(example_group_instance)
-          reverse.each {|h| h.run_in(example_group_instance) }
+          reverse.each {|h| h.run_in(example_group_instance) } unless empty?
         end
 
         def run_all!(example_group_instance)
