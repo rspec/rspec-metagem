@@ -97,10 +97,10 @@ module RSpec::Core
           spec_command.should =~ /rcov.*--exclude "mocks"/
         end
 
-        it "ensures that -Ispec and -Ilib are in the resulting command" do
+        it "ensures that -Ispec:lib is in the resulting command" do
           task.rcov = true
           task.rcov_opts = '--exclude "mocks"'
-          spec_command.should =~ /rcov.*-Ispec,lib/
+          spec_command.should =~ /rcov.*-Ispec:lib/
         end
       end
     end
