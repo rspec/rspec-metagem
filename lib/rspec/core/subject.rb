@@ -88,9 +88,10 @@ module RSpec
         # onto the subject in an expression.
         #   
         #   describe Person do
-        #     let(:person) do
-        #       person = Person.new
-        #       person.phone_numbers << "555-1212"
+        #     subject do
+        #       Person.new.tap do |person|
+        #         person.phone_numbers << "555-1212"
+        #       end
         #     end
         #
         #     its("phone_numbers.first") { should == "555-1212" }
