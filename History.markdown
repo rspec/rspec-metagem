@@ -4,9 +4,14 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.1.0...master)
 
+* Deprecations
+  * --debug/-d on command line is deprecated and now has no effect
+
 * Enhancements
   * Raise exception with helpful message when rspec-1 is loaded alongside
     rspec-2 (Justin Ko)
+  * debugger statements _just work_ as long as ruby-debug is installed
+    * otherwise you get warned, but not fired
 
 * Bug fixes
   * Make sure --fail-fast makes it across drb

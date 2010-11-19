@@ -1,4 +1,16 @@
-# New features in rspec-core-2.1
+# rspec-core-2.2
+
+## Command line
+
+### --debug/-d is now deprecated
+
+This command line option is now has no effect (other than a deprecation
+warning). To use the debugger, just add a `debugger` statement anywhere in your
+code. As long as you have ruby-debug installed, it will just work. If you
+don't, then you'll get a friendly warning telling you what's going on, but
+execution will continue.
+
+# rspec-core-2.1
 
 ## Command line
 
@@ -61,7 +73,7 @@ JRuby installation to a newer release that allows the example to pass, RSpec
 will report it as a failure (`Expected pending '...' to fail.  No Error was raised.`),
 so that know that you can remove the call to `pending`.
 
-# New features in rspec-core-2.0
+# rspec-core-2.0
 
 ### Runner
 
