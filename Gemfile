@@ -18,9 +18,9 @@ gem "syntax"
 gem "relish", "~> 0.0.3"
 gem "guard-rspec"
 gem "growl"
-gem "rb-fsevent"
 
 unless RUBY_PLATFORM == "java"
+  gem "rb-fsevent"
   gem "ruby-prof"
   case RUBY_VERSION
   when /^1.9.2/
