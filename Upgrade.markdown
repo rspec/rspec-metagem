@@ -1,4 +1,25 @@
-# rspec-core-2.2
+# rspec-core-2.2 (in development)
+
+## FASTER!
+
+Made several small optimizations that all add up to a considerable improvement
+in performance. Using a simple benchmark:
+
+    generate 5000 example groups,
+    each with one example,
+    each with one passing expectation
+
+Run using ruby-1.9.2 on Mac OS X w/ 3.06 G
+
+* rspec-2.1
+  * loaded in 0.85 on avg
+  * ran in 2.61 on avg
+* rspec-2.2
+  * loaded in 0.73 on avg (~15% improvement)
+  * ran in 0.94 on avg    (~64% improvement**)
+    
+** this does _not_ mean your suite will be 64% faster, but it does mean that
+   the overhead incurred by RSpec in your suite should be roughly 64% less.
 
 ## Command line
 
