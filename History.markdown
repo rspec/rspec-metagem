@@ -10,6 +10,7 @@
 
 * Bug fixes
   * Make sure --fail-fast makes it across drb
+  * Pass -Ilib:spec to rcov
 
 ### 2.1.0 / 2010-11-07
 
