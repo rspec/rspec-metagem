@@ -66,6 +66,14 @@ module RSpec
         finish(reporter)
       end
 
+      class Procsy < Proc
+        attr_reader :metadata
+        alias_method :run, :call
+        def initialize(metadata)
+          @metadata = metadata
+        end
+      end
+
     private
 
       def with_pending_capture
@@ -79,7 +87,7 @@ module RSpec
         if @example_group_class.around_hooks.empty?
           yield
         else
-          @example_group_class.eval_around_eachs(@example_group_instance, Proc.new).call
+          @example_group_class.eval_around_eachs(@example_group_instance, Procsy.new(metadata)).call
         end
       end
 

@@ -9,7 +9,7 @@ Feature: around hooks
   example, if your database library offers a transaction method that receives
   a block, you can use an around hook as described in the first scenario:
 
-  Scenario: use the example as a block within the block passed to around()
+  Scenario: use the example as a proc within the block passed to around()
     Given a file named "example_spec.rb" with:
       """
       class Database
@@ -41,7 +41,7 @@ Feature: around hooks
   Scenario: invoke the example using run()
     Given a file named "example_spec.rb" with:
       """
-      describe "around filter" do
+      describe "around hook" do
         around(:each) do |example|
           puts "around each before"
           example.run
@@ -60,6 +60,22 @@ Feature: around hooks
       in the example
       around each after
       """
+
+  Scenario: access the example metadata
+    Given a file named "example_spec.rb" with:
+      """
+      describe "something" do
+        around(:each) do |example|
+          puts example.metadata[:foo]
+          example.run
+        end
+
+        it "does something", :foo => "this should show up in the output" do
+        end
+      end
+      """
+    When I run "rspec example_spec.rb"
+    Then the output should contain "this should show up in the output"
 
   Scenario: define a global around hook
     Given a file named "example_spec.rb" with:
