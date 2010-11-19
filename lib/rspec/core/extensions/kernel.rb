@@ -1,4 +1,7 @@
 module Kernel
+
+  private
+
   def method_missing(m, *a)
     if m.to_s == 'debugger'
       begin
