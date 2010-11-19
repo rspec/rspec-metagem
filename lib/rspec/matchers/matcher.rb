@@ -107,11 +107,11 @@ module RSpec
       
     private
 
-      def method_missing(name, *args, &block)
-        if $matcher_execution_context.respond_to?(name)
-          $matcher_execution_context.send name, *args, &block
+      def method_missing(method, *args, &block)
+        if $matcher_execution_context.respond_to?(method)
+          $matcher_execution_context.send method, *args, &block
         else
-          super(name, *args, &block)
+          super(method, *args, &block)
         end
       end
     

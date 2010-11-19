@@ -1,8 +1,11 @@
 module RSpec
   module Matchers
-    def method_missing(sym, *args, &block) # :nodoc:
-      return Matchers::BePredicate.new(sym, *args, &block) if sym.to_s =~ /^be_/
-      return Matchers::Has.new(sym, *args, &block) if sym.to_s =~ /^have_/
+
+    private
+
+    def method_missing(method, *args, &block) # :nodoc:
+      return Matchers::BePredicate.new(method, *args, &block) if method.to_s =~ /^be_/
+      return Matchers::Has.new(method, *args, &block) if method.to_s =~ /^have_/
       super
     end
   end

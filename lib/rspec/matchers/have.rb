@@ -73,10 +73,10 @@ EOF
     
       private
       
-      def method_missing(sym, *args, &block)
-        @collection_name = sym
+      def method_missing(method, *args, &block)
+        @collection_name = method
         if inflector = (defined?(ActiveSupport::Inflector) && ActiveSupport::Inflector.respond_to?(:pluralize) ? ActiveSupport::Inflector : (defined?(Inflector) ? Inflector : nil))
-          @plural_collection_name = inflector.pluralize(sym.to_s)
+          @plural_collection_name = inflector.pluralize(method.to_s)
         end
         @args = args
         @block = block
