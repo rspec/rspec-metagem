@@ -7,18 +7,20 @@ module RSpec
       class HtmlFormatter < BaseTextFormatter
         include ERB::Util # for the #h method
 
-        def method_missing(m, *a, &b)
-          # no-op
-        end
-
-        def message(message)
-        end
-
         def initialize(output)
           super(output)
           @example_group_number = 0
           @example_number = 0
           @header_red = nil
+        end
+
+        private
+        def method_missing(m, *a, &b)
+          # no-op
+        end
+
+        public
+        def message(message)
         end
 
         # The number of the currently running example_group

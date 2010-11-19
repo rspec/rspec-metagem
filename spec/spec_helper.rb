@@ -4,6 +4,7 @@ require 'autotest/rspec2'
 Dir['./spec/support/**/*.rb'].map {|f| require f}
 
 class NullObject
+  private
   def method_missing(method, *args, &block)
     # ignore
   end
