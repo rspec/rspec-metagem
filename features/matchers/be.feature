@@ -6,12 +6,10 @@ Feature: be matchers
     * obj.should be_false # passes if obj is falsey (nil or false)
     * obj.should be_nil # passes if obj is nil
     * obj.should be # passes if obj is not nil
-    * obj.should be == expected # passes if obj == expected
     * obj.should be < expected # passes if obj < expected
     * obj.should be > expected # passes if obj > expected
     * obj.should be <= expected # passes if obj <= expected
     * obj.should be >= expected # passes if obj >= expected
-    * obj.should be === expected # passes if obj === expected
 
   Scenario: be_true matcher
     Given a file named "be_true_spec.rb" with:
@@ -125,35 +123,27 @@ Feature: be matchers
     Given a file named "be_operators_spec.rb" with:
       """
       describe 17 do
-        it { should be == 17 }
         it { should be < 20 }
         it { should be > 15 }
         it { should be <= 17 }
         it { should be >= 17 }
-        it { should_not be == 16 }
         it { should_not be < 15 }
         it { should_not be > 20 }
         it { should_not be <= 16 }
         it { should_not be >= 18 }
-        specify { String.should be === "a string" }
-        specify { String.should_not be === :a_symbol }
 
         # deliberate failures
-        it { should be == 16 }
         it { should be < 15 }
         it { should be > 20 }
         it { should be <= 16 }
         it { should be >= 18 }
-        specify { String.should be === :a_symbol }
       end
       """
     When I run "rspec be_operators_spec.rb"
     Then the output should contain all of these:
-      | 18 examples, 6 failures           |
-      | expected == 16, got 17            |
+      | 12 examples, 4 failures           |
       | expected < 15, got 17             |
       | expected > 20, got 17             |
       | expected <= 16, got 17            |
       | expected >= 18, got 17            |
-      | expected === a_symbol, got String |
 
