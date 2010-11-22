@@ -176,6 +176,21 @@ module RSpec::Core
         end
       end
 
+      context "in a nested group" do
+        it "inherits the described class/module from the outer group" do
+          group = ExampleGroup.describe(String) do
+            describe Array do
+              example "desribes is String" do
+                described_class.should eq(String)
+              end
+            end
+          end
+
+          group.run.should be_true, "expected examples in group to pass"
+        end
+      end
+
+
     end
 
     describe '#described_class' do
@@ -492,8 +507,8 @@ module RSpec::Core
     describe Object, "describing nested example_groups", :little_less_nested => 'yep' do
 
       describe "A sample nested group", :nested_describe => "yep" do
-        it "sets the described class to the constant Object" do
-          example.example_group.describes.should == Object
+        it "sets the described class to the described class of the outer most group" do
+          example.example_group.describes.should eq(ExampleGroup)
         end
 
         it "sets the description to 'A sample nested describe'" do

@@ -178,10 +178,8 @@ EOM
       end
 
       def described_class_from(*args)
-        if args.first.is_a?(String) || args.first.is_a?(Symbol)
-          superclass_metadata[:example_group][:describes]
-        else
-          args.first
+        superclass_metadata[:example_group][:describes] || begin
+          args.first unless args.first.is_a?(String) || args.first.is_a?(Symbol)
         end
       end
     end

@@ -157,6 +157,19 @@ module RSpec
             m[:example_group][:describes].should be(String)
           end
         end
+
+        context "with describes from a superclass metadata" do
+          it "returns the superclass' described class" do
+            sm = Metadata.new
+            sm.process(String)
+
+            m = Metadata.new(sm)
+            m.process(Array)
+
+            m = m.for_example("example", {})
+            m[:example_group][:describes].should be(String)
+          end
+        end
       end
 
       describe ":description" do
