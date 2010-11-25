@@ -73,7 +73,7 @@ module RSpec
 
         def example_failed(example)
           counter = 0
-          exception = example.metadata[:execution_result][:exception_encountered]
+          exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
           failure_style = 'failed'
           failure_style = RSpec::Core::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'

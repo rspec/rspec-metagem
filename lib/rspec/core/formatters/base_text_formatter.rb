@@ -130,13 +130,13 @@ module RSpec
         end
 
         def dump_backtrace(example)
-          format_backtrace(example.execution_result[:exception_encountered].backtrace, example).each do |backtrace_info|
+          format_backtrace(example.execution_result[:exception].backtrace, example).each do |backtrace_info|
             output.puts grey("#{long_padding}# #{backtrace_info}")
           end
         end
 
         def dump_pending_example_fixed(example, index)
-          if RSpec::Core::PendingExampleFixedError === example.execution_result[:exception_encountered]
+          if RSpec::Core::PendingExampleFixedError === example.execution_result[:exception]
             output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
             output.puts blue("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
             true
@@ -144,7 +144,7 @@ module RSpec
         end
 
         def dump_failure(example, index)
-          exception = example.execution_result[:exception_encountered]
+          exception = example.execution_result[:exception]
           output.puts "#{short_padding}#{index.next}) #{example.full_description}"
           output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
           exception.message.split("\n").each { |line| output.puts "#{long_padding}#{red(line)}" }

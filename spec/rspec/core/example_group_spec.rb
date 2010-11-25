@@ -374,7 +374,7 @@ module RSpec::Core
         example = group.example("equality") { 1.should == 2}
         group.run
 
-        example.metadata[:execution_result][:exception_encountered].message.should == "error in before each"
+        example.metadata[:execution_result][:exception].message.should == "error in before each"
       end
 
       it "treats an error in before(:all) as a failure" do
@@ -385,8 +385,8 @@ module RSpec::Core
 
         example.metadata.should_not be_nil
         example.metadata[:execution_result].should_not be_nil
-        example.metadata[:execution_result][:exception_encountered].should_not be_nil
-        example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
+        example.metadata[:execution_result][:exception].should_not be_nil
+        example.metadata[:execution_result][:exception].message.should == "error in before all"
       end
 
       it "treats an error in before(:all) as a failure for a spec in a nested group" do
@@ -402,8 +402,8 @@ module RSpec::Core
 
         example.metadata.should_not be_nil
         example.metadata[:execution_result].should_not be_nil
-        example.metadata[:execution_result][:exception_encountered].should_not be_nil
-        example.metadata[:execution_result][:exception_encountered].message.should == "error in before all"
+        example.metadata[:execution_result][:exception].should_not be_nil
+        example.metadata[:execution_result][:exception].message.should == "error in before all"
       end
 
       context "when an error occurs in an after(:all) hook" do

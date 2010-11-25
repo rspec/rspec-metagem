@@ -82,7 +82,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
         group.run
 
-        example.metadata[:execution_result][:exception_encountered].message.should == "FOO"
+        example.metadata[:execution_result][:exception].message.should == "FOO"
       end
     end
 

@@ -98,7 +98,7 @@ module RSpec
 
       def finish(reporter)
         if @exception
-          record_finished 'failed', :exception_encountered => @exception
+          record_finished 'failed', :exception => @exception
           reporter.example_failed self
           false
         elsif @pending_declared_in_example

@@ -8,11 +8,11 @@ module RSpec::Core::Formatters
       examples = [
         double("example 1",
                :description => "first example",
-               :execution_result => {:status => 'failed', :exception_encountered => Exception.new }
+               :execution_result => {:status => 'failed', :exception => Exception.new }
               ),
         double("example 2",
                :description => "second example",
-               :execution_result => {:status => 'failed', :exception_encountered => Exception.new }
+               :execution_result => {:status => 'failed', :exception => Exception.new }
               )
       ]
 

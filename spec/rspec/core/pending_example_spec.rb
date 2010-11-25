@@ -24,7 +24,7 @@ RSpec::Matchers.define :fail_with do |exception_klass|
     case
       when example.metadata[:pending] then "was pending"
       when result[:status] != 'failed' then result[:status]
-      when !result[:exception_encountered].is_a?(exception_klass) then "failed with a #{result[:exception_encountered].class}"
+      when !result[:exception].is_a?(exception_klass) then "failed with a #{result[:exception].class}"
       else nil
     end
   end

@@ -36,7 +36,7 @@ module RSpec
 
         def example_failed(example)
           super(example)
-          output.puts failure_output(example, example.execution_result[:exception_encountered])
+          output.puts failure_output(example, example.execution_result[:exception])
         end
 
         def failure_output(example, exception)
