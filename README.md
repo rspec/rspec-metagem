@@ -5,7 +5,7 @@ RSpec::Matchers, a library of standard matchers.
 
 ## Documentation
 
-The [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
+The [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-1)
 are the most comprehensive and up-to-date docs for end-users.
 
 The [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames) provides
@@ -19,7 +19,7 @@ tracker](https://github.com/rspec/rspec-expectations/issues).
 ## Install
 
     gem install rspec               # for rspec-core, rspec-expectations, rspec-mocks
-    gem install rspec-expecctations # for rspec-core only
+    gem install rspec-expecctations # for rspec-expectations only
 
 ## Matchers
 
