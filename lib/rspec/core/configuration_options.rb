@@ -28,7 +28,7 @@ module RSpec
         argv << "--color"     if options[:color_enabled]
         argv << "--profile"   if options[:profile_examples]
         argv << "--backtrace" if options[:full_backtrace]
-        argv << "--autotest"  if options[:autotest]
+        argv << "--tty"       if options[:tty]
         argv << "--fail-fast"  if options[:fail_fast]
         argv << "--format"       << options[:formatter]               if options[:formatter]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]

@@ -256,7 +256,7 @@ module RSpec::Core
           it "does not set color_enabled" do
             config.output_stream = StringIO.new
             config.output_stream.stub(:tty?) { false }
-            config.autotest = false
+            config.tty = false
             config.color_enabled = true
             config.color_enabled.should be_false
           end
@@ -266,17 +266,17 @@ module RSpec::Core
           it "does not set color_enabled" do
             config.output_stream = StringIO.new
             config.output_stream.stub(:tty?) { true }
-            config.autotest = false
+            config.tty = false
             config.color_enabled = true
             config.color_enabled.should be_true
           end
         end
 
-        context "with autotest output" do
+        context "with tty set" do
           it "does not set color_enabled" do
             config.output_stream = StringIO.new
             config.output_stream.stub(:tty?) { false }
-            config.autotest = true
+            config.tty = true
             config.color_enabled = true
             config.color_enabled.should be_true
           end

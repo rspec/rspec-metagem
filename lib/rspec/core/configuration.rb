@@ -34,7 +34,7 @@ module RSpec
       add_setting :files_to_run
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
-      add_setting :autotest
+      add_setting :tty
 
       def initialize
         @color_enabled = false
@@ -149,7 +149,7 @@ module RSpec
       end
 
       def color_enabled
-        @color_enabled && (output_to_tty? || autotest?)
+        @color_enabled && output_to_tty?
       end
 
       def color_enabled?
@@ -346,7 +346,7 @@ MESSAGE
 
       def output_to_tty?
         begin
-          settings[:output_stream].tty?
+          output_stream.tty? || tty?
         rescue NoMethodError
           false
         end

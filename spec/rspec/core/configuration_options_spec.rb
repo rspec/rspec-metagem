@@ -193,8 +193,8 @@ describe RSpec::Core::ConfigurationOptions do
       it "renders all the original arguments except --drb" do
         File.stub(:exist?) { true }
         IO.stub(:read) { "--drb --color" }
-        config_options_object(*%w[ --autotest --format s --line_number 1 --example pattern --profile --backtrace ]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --autotest --format s --line_number 1 --example pattern ])
+        config_options_object(*%w[ --tty --format s --line_number 1 --example pattern --profile --backtrace ]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --tty --format s --line_number 1 --example pattern ])
       end
     end
 

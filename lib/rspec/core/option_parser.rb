@@ -96,8 +96,8 @@ module RSpec::Core
           options[:drb_port] = o.to_i
         end
 
-        parser.on('--autotest') do |o|
-          options[:autotest] = true
+        parser.on('--tty') do |o|
+          options[:tty] = true
         end
 
         parser.on('--fail-fast', 'Use the fail_fast option to tell RSpec to abort the run on first failure.') do |o|
