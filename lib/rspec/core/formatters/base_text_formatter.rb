@@ -15,32 +15,9 @@ module RSpec
           output.puts
           output.puts "Failures:"
           failed_examples.each_with_index do |example, index|
-            output.puts if index > 0
-            exception = example.execution_result[:exception_encountered]
-            short_padding = '  '
-            padding = '     '
-            if exception.is_a?(RSpec::Core::PendingExampleFixedError)
-              output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
-              output.puts "#{padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised."
-            else
-              output.puts "#{short_padding}#{index.next}) #{example.full_description}"
-              output.puts "#{padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
-              exception.message.split("\n").each do |line|
-                output.puts "#{padding}#{red(line)}"
-              end
-
-              example.example_group.ancestors.push(example.example_group).each do |group|
-                if group.metadata[:shared_group_name]
-                  output.puts "#{padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
-                              "#{backtrace_line(group.metadata[:example_group][:location])}"
-                  break
-                end
-              end
-            end
-
-            format_backtrace(exception.backtrace, example).each do |backtrace_info|
-              output.puts grey("#{padding}# #{backtrace_info}")
-            end
+            output.puts
+            dump_pending_example_fixed(example, index) || dump_failure(example, index)
+            dump_backtrace(example)
           end
         end
 
@@ -69,7 +46,7 @@ module RSpec
           output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
           sorted_examples.each do |example|
             output.puts "  #{example.full_description}"
-            output.puts grey("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.metadata[:location])}")
+            output.puts grey("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.location)}")
           end
         end
 
@@ -86,8 +63,8 @@ module RSpec
             output.puts "Pending:"
             pending_examples.each do |pending_example|
               output.puts yellow("  #{pending_example.full_description}")
-              output.puts grey("    # #{pending_example.metadata[:execution_result][:pending_message]}")
-              output.puts grey("    # #{format_caller(pending_example.metadata[:location])}")
+              output.puts grey("    # #{pending_example.execution_result[:pending_message]}")
+              output.puts grey("    # #{format_caller(pending_example.location)}")
             end
           end
         end
@@ -134,6 +111,14 @@ module RSpec
           color(text, "\e[90m")
         end
 
+        def short_padding
+          '  '
+        end
+
+        def long_padding
+          '     '
+        end
+
       private
 
         def pluralize(count, string)
@@ -144,8 +129,36 @@ module RSpec
           backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
-      end
+        def dump_backtrace(example)
+          format_backtrace(example.execution_result[:exception_encountered].backtrace, example).each do |backtrace_info|
+            output.puts grey("#{long_padding}# #{backtrace_info}")
+          end
+        end
 
+        def dump_pending_example_fixed(example, index)
+          if RSpec::Core::PendingExampleFixedError === example.execution_result[:exception_encountered]
+            output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
+            output.puts blue("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
+            true
+          end
+        end
+
+        def dump_failure(example, index)
+          exception = example.execution_result[:exception_encountered]
+          output.puts "#{short_padding}#{index.next}) #{example.full_description}"
+          output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
+          exception.message.split("\n").each { |line| output.puts "#{long_padding}#{red(line)}" }
+
+          example.example_group.ancestors.push(example.example_group).each do |group|
+            if group.metadata[:shared_group_name]
+              output.puts "#{long_padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
+                "#{backtrace_line(group.metadata[:example_group][:location])}"
+              break
+            end
+          end
+        end
+
+      end
     end
   end
 end

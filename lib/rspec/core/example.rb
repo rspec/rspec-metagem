@@ -10,7 +10,7 @@ module RSpec
         end
       end
 
-      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending
+      delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending, :location
 
       def initialize(example_group_class, desc, options, example_block=nil)
         @example_group_class, @options, @example_block = example_group_class, options, example_block
