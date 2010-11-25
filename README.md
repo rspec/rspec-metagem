@@ -5,8 +5,16 @@ RSpec::Matchers, a library of standard matchers.
 
 ## Documentation
 
-* [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
-* [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames)
+The [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
+are the most comprehensive and up-to-date docs for end-users.
+
+The [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames) provides
+additional information for contributors and/or extenders.
+
+All of the documentation is open source and a work in progress. If you find it
+lacking or confusing, you can help improve it by submitting requests and
+patches to the [rspec-expectations issue
+tracker](https://github.com/rspec/rspec-expectations/issues).
 
 ## Install
 
