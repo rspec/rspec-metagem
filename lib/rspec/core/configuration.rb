@@ -160,14 +160,8 @@ module RSpec
         return unless bool
         @color_enabled = true
         if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
-          using_stdout = settings[:output_stream] == $stdout
-          using_stderr = settings[:error_stream]  == $stderr
-          begin
-            require 'Win32/Console/ANSI'
-            settings[:output_stream] = $stdout if using_stdout
-            settings[:error_stream]  = $stderr if using_stderr
-          rescue LoadError
-            warn "You must 'gem install win32console' to use colour on Windows"
+          unless ENV['ANSICON']
+            warn "You must use ANSICON 1.31 or later (http://adoxa.110mb.com/ansicon/) to use colour on Windows"
             @color_enabled = false
           end
         end

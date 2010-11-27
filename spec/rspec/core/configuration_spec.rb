@@ -285,75 +285,47 @@ module RSpec::Core
         context "on windows" do
           before do
             @original_host  = RbConfig::CONFIG['host_os']
-            @original_stdout = $stdout
-            @original_stderr = $stderr
-            RbConfig::CONFIG['host_os'] = 'mswin'
+            RbConfig::CONFIG['host_os'] = 'mingw'
             config.stub(:require)
             config.stub(:warn)
           end
 
           after do
             RbConfig::CONFIG['host_os'] = @original_host
-            $stdout = @original_stdout
-            $stderr = @original_stderr
           end
 
-          context "with win32console available" do
-            it "requires win32console" do
-              config.should_receive(:require).
-                with("Win32/Console/ANSI")
+          context "with ANSICON available" do
+            before(:all) do
+              @original_ansicon = ENV['ANSICON']
+              ENV['ANSICON'] = 'ANSICON'
+            end
+
+            after(:all) do
+              ENV['ANSICON'] = @original_ansicon
+            end
+            
+            it "enables colors" do
+              config.output_stream = StringIO.new
+              config.output_stream.stub(:tty?) { true }
               config.color_enabled = true
+              config.color_enabled.should be_true
             end
 
-            context "with $stdout/err assigned to config.output/error_stream" do
-              it "reassigns new $stdout to output_stream" do
-                config.output_stream = $stdout
-                substitute_stdout = StringIO.new
-                config.stub(:require) do |what|
-                  $stdout = substitute_stdout if what =~ /Win32/
-                end
-                config.color_enabled = true
-                config.output_stream.should eq(substitute_stdout)
+            it "leaves output stream intact" do
+              config.output_stream = $stdout
+              config.stub(:require) do |what|
+                config.output_stream = 'foo' if what =~ /Win32/
               end
-
-              it "reassigns new $stderr to error_stream" do
-                config.error_stream = $stderr
-                substitute_stderr = StringIO.new
-                config.stub(:require) do |what|
-                  $stderr = substitute_stderr if what =~ /Win32/
-                end
-                config.color_enabled = true
-                config.error_stream.should eq(substitute_stderr)
-              end
+              config.color_enabled = true
+              config.output_stream.should eq($stdout)
             end
-
-            context "without $stdout/err assigned to config.output/error_stream" do
-              it "leaves output stream intact" do
-                config.output_stream = output_stream = StringIO.new
-                config.stub(:require) do |what|
-                  $stdout = StringIO.new if what =~ /Win32/
-                end
-                config.color_enabled = true
-                config.output_stream.should eq(output_stream)
-              end
-
-              it "leaves error stream intact" do
-                config.error_stream = error_stream = StringIO.new
-                config.stub(:require) do |what|
-                  $stderr = StringIO.new if what =~ /Win32/
-                end
-                config.color_enabled = true
-                config.error_stream.should eq(error_stream)
-              end
-            end
-
           end
 
-          context "with win32console NOT available" do
-            it "warns to install win32console" do
+          context "with ANSICON NOT available" do
+            it "warns to install ANSICON" do
               config.stub(:require) { raise LoadError }
               config.should_receive(:warn).
-                with(/You must 'gem install win32console'/)
+                with(/You must use ANSICON/)
               config.color_enabled = true
             end
 
