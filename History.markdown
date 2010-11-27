@@ -4,8 +4,10 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.1.0...master)
 
-* Deprecations
+* Deprecations/changes
   * --debug/-d on command line is deprecated and now has no effect
+  * win32console is now ignored; Windows users must use ANSICON for color support
+    (Bosko Ivanisevic)
 
 * Enhancements
   * Raise exception with helpful message when rspec-1 is loaded alongside
