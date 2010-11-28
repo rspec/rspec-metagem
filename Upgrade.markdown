@@ -1,4 +1,4 @@
-# rspec-core-2.2 (in development)
+# rspec-core-2.2
 
 ## FASTER!
 
