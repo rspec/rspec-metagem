@@ -1,5 +1,9 @@
 ## rspec-expectations release history (incomplete)
 
+### 2.2.0 / 2010-11-28
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.1.0...v2.2.0)
+
 ### 2.1.0 / 2010-11-07
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.1...v2.1.0)
