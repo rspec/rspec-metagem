@@ -10,6 +10,7 @@
     (Bosko Ivanisevic)
 
 * Enhancements
+  * When developing locally rspec-core now works with the rspec-dev setup or your local gems
   * Raise exception with helpful message when rspec-1 is loaded alongside
     rspec-2 (Justin Ko)
   * debugger statements _just work_ as long as ruby-debug is installed
