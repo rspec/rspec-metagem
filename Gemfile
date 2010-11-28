@@ -1,7 +1,12 @@
 source "http://rubygems.org"
 
 %w[rspec-core rspec-expectations rspec-mocks].each do |lib|
-  gem lib, :path => File.expand_path("../../#{lib}", __FILE__)
+  library_path = File.expand_path("../../#{lib}", __FILE__)
+  if File.exist?(library_path)
+    gem lib, :path => library_path
+  else
+    gem lib
+  end
 end
 
 gem "rake"
