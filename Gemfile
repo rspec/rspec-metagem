@@ -30,3 +30,7 @@ platforms :ruby_18, :ruby_19 do
   gem "rb-fsevent"
   gem "ruby-prof"
 end
+
+platforms :jruby do
+  gem "jruby-openssl"
+end
