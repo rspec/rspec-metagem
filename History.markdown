@@ -1,6 +1,6 @@
 ## rspec-core release history (incomplete)
 
-### 2.2.1 / in development
+### 2.2.1 / 2010-11-28
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...master)
 
