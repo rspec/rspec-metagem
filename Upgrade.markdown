@@ -94,7 +94,7 @@ JRuby installation to a newer release that allows the example to pass, RSpec
 will report it as a failure (`Expected pending '...' to fail.  No Error was raised.`),
 so that know that you can remove the call to `pending`.
 
-# rspec-core-2.0
+# New features in rspec-core-2.0
 
 ### Runner
 

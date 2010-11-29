@@ -503,10 +503,17 @@ module RSpec::Core
       end
     end
 
-    describe "#debug=" do
-      it "is deprecated" do
-        RSpec.should_receive(:warn_deprecation)
+    describe "#debug=true" do
+      it "requires 'ruby-debug'" do
+        config.should_receive(:require).with('ruby-debug')
         config.debug = true
+      end
+    end
+
+    describe "#debug=false" do
+      it "does not require 'ruby-debug'" do
+        config.should_not_receive(:require).with('ruby-debug')
+        config.debug = false
       end
     end
 

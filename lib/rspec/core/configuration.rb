@@ -176,11 +176,21 @@ module RSpec
       end
 
       def debug=(bool)
-        RSpec.warn_deprecation <<-WARNING
-The debug option (config.debug = true or --debug/-d on the command line)
-is deprecated and no longer has any effect. This message will be removed
-from future versions of RSpec.
-WARNING
+        return unless bool
+        begin
+          require 'ruby-debug'
+        rescue LoadError
+          raise <<-EOM
+
+#{'*'*50}
+You must install ruby-debug to run rspec with the --debug option.
+
+If you have ruby-debug installed as a ruby gem, then you need to either
+require 'rubygems' or configure the RUBYOPT environment variable with
+the value 'rubygems'.
+#{'*'*50}
+EOM
+        end
       end
 
       def line_number=(line_number)
