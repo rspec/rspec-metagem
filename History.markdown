@@ -7,6 +7,8 @@
 * Bug fixes
   * alias_method instead of override Kernel#method_missing (John Wilger)
   * changed --autotest to --tty in generated command (MIKAMI Yoshiyuki) 
+  * revert change to debugger (had introduced conflict with Rails)
+    * also restored --debugger/-debug option
 
 ### 2.2.0 / 2010-11-28
 
