@@ -2,6 +2,8 @@ module Kernel
 
   private
 
+  alias_method :method_missing_without_debugger, :method_missing
+
   def method_missing(m, *a)
     if m.to_s == 'debugger'
       begin
@@ -19,7 +21,7 @@ To use the debugger statement, you must install ruby-debug.
 EOM
       end
     else
-      super
+      method_missing_without_debugger(m, *a)
     end
   end
 end
