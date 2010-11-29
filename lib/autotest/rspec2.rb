@@ -41,7 +41,7 @@ class Autotest::Rspec2 < Autotest
 
   def make_test_cmd(files_to_test)
     files_to_test.empty? ? '' :
-      "#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} --autotest #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
+      "#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} --tty #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
   end
 
   def bundle_exec

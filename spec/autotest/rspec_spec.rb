@@ -39,6 +39,12 @@ describe Autotest::Rspec2 do
         cmd.should match(/'#{File.expand_path(file_to_test)}'/)
       end
     end
+
+    it "gives '--tty' to #{Autotest::Rspec2::SPEC_PROGRAM}, not '--autotest'" do
+      cmd = rspec_autotest.make_test_cmd(@files_to_test)
+      cmd.should match(' --tty ')
+      cmd.should_not match(' --autotest ')
+    end
   end
 
   describe "mappings" do
