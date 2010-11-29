@@ -1,8 +1,20 @@
 ## rspec-core release history (incomplete)
 
+### 2.3.0 / in development
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.2.1...master)
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...v2.2.1)
+
+* Bug fixes
+  * alias_method instead of override Kernel#method_missing (John Wilger)
+  * changed --autotest to --tty in generated command (MIKAMI Yoshiyuki) 
+  * revert change to debugger (had introduced conflict with Rails)
+    * also restored --debugger/-debug option
+
 ### 2.2.1 / 2010-11-28
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...v2.2.1)
 
 * Bug fixes
   * alias_method instead of override Kernel#method_missing (John Wilger)
