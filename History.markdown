@@ -1,5 +1,13 @@
 ## rspec-core release history (incomplete)
 
+### 2.2.1 / in development
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...master)
+
+* Bug fixes
+  * alias_method instead of override Kernel#method_missing (John Wilger)
+  * changed --autotest to --tty in generated command (MIKAMI Yoshiyuki) 
+
 ### 2.2.0 / 2010-11-28
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.1.0...v2.2.0)
