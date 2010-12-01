@@ -22,6 +22,8 @@ gem "syntax"
 gem "relish", "~> 0.0.3"
 gem "guard-rspec"
 gem "growl"
+gem "autotest-fsevent"
+gem "autotest-growl"
 
 gem "ruby-debug", :platforms => :ruby_18
 gem "ruby-debug19", :platforms => :ruby_19
