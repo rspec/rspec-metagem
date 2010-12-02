@@ -7,6 +7,8 @@ module RSpec
         RSpec.world.shared_example_groups[name] = block
       end
 
+      alias :shared_examples_for :share_examples_for
+
       def share_as(name, &block)
         if Object.const_defined?(name)
           mod = Object.const_get(name)
@@ -31,7 +33,6 @@ module RSpec
         RSpec.world.shared_example_groups[shared_const] = block
       end
 
-      alias :shared_examples_for :share_examples_for
 
     private
 

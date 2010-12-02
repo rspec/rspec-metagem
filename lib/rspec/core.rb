@@ -19,6 +19,7 @@ require 'rspec/core/command_line'
 require 'rspec/core/drb_command_line'
 require 'rspec/core/runner'
 require 'rspec/core/example'
+require 'rspec/core/shared_context'
 require 'rspec/core/shared_example_group'
 require 'rspec/core/example_group'
 require 'rspec/core/version'
@@ -26,6 +27,8 @@ require 'rspec/core/errors'
 
 module RSpec
   autoload :Matchers, 'rspec/matchers'
+
+  SharedContext = Core::SharedContext
 
   module Core
     def self.install_directory
