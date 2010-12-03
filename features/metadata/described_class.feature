@@ -8,7 +8,7 @@ Feature: described class
       """
       describe Fixnum do
         it "is available as described_class" do
-          described_class.should == Fixnum
+          described_class.should eq(Fixnum)
         end
       end
       """
