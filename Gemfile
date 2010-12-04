@@ -22,7 +22,11 @@ gem "syntax"
 gem "relish", "~> 0.0.3"
 gem "guard-rspec"
 gem "growl"
-gem "autotest-fsevent"
+
+if RUBY_PLATFORM =~ /darwin/
+  gem "autotest-fsevent"
+end
+
 gem "autotest-growl"
 
 gem "ruby-debug", :platforms => :ruby_18
