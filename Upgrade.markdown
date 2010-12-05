@@ -1,3 +1,16 @@
+# rspec-core-2.3
+
+## config.expect_with
+
+Use this to configure RSpec to use rspec/expectations (default),
+test/unit/assertions, or both:
+
+    RSpec.configure do |config|
+      config.expect_with :rspec          # => rspec/expectations
+      config.expect_with :stdlib         # => test/unit/assertions
+      config.expect_with :rspec, :stdlib # => both
+    end
+
 # rspec-core-2.2
 
 ## FASTER!
