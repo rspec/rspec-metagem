@@ -26,7 +26,6 @@ module RSpec
       add_setting :profile_examples
       add_setting :fail_fast, :default => false
       add_setting :run_all_when_everything_filtered
-      add_setting :expectation_framework, :default => :rspec
       add_setting :filter
       add_setting :exclusion_filter
       add_setting :filename_pattern, :default => '**/*_spec.rb'
@@ -168,31 +167,41 @@ module RSpec
         end
       end
 
-      # Returns the configured expectation framework adapter module
-      def expectation_framework
-        settings[:expectation_framework] ||= begin
+      # Returns the configured expectation framework adapter module(s)
+      def expectation_frameworks
+        settings[:expectation_frameworks] ||= begin
                                                require 'rspec/core/expecting/with_rspec'
-                                               RSpec::Core::ExpectationFrameworkAdapter
+                                               [RSpec::Core::ExpectationFrameworkAdapter]
                                              end
       end
 
-      # Delegates to expectation_framework=(framework)
-      def expect_with(framework)
-        self.expectation_framework = framework
+      # Delegates to expect_with=([framework])
+      def expectation_framework=(framework)
+        expect_with([framework])
       end
 
-      # Sets the expectation framework module.
+      # Sets the expectation framework module(s).
       #
-      # +framework+ can be a Symbol or a Module.
+      # +frameworks+ can be :rspec, :stdlib, or both 
       #
-      # Given :rspec, configures rspec-expectations.
-      def expectation_framework=(framework)
-        case framework
-        when :rspec
-          require 'rspec/core/expecting/with_rspec'
-          settings[:expectation_framework] = RSpec::Core::ExpectationFrameworkAdapter
-        else
-          raise ArgumentError, "#{expectation_framework.inspect} is not supported"
+      # Given :rspec, configures rspec/expectations.
+      # Given :stdlib, configures test/unit/assertions
+      # Given both, configures both
+      def expect_with(*frameworks)
+        settings[:expectation_frameworks] = []
+        frameworks.each do |framework|
+          case framework
+          when Symbol
+            case framework
+            when :rspec
+              require 'rspec/core/expecting/with_rspec'
+            when :stdlib
+              require 'rspec/core/expecting/with_stdlib'
+            else
+              raise ArgumentError, "#{framework.inspect} is not supported"
+            end
+            settings[:expectation_frameworks] << RSpec::Core::ExpectationFrameworkAdapter
+          end
         end
       end
 
@@ -370,7 +379,9 @@ EOM
       end
 
       def configure_expectation_framework
-        RSpec::Core::ExampleGroup.send(:include, expectation_framework)
+        expectation_frameworks.each do |framework|
+          RSpec::Core::ExampleGroup.send(:include, framework)
+        end
       end
 
       def load_spec_files
