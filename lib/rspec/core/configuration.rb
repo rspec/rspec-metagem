@@ -118,12 +118,9 @@ module RSpec
 
       # Returns the configured mock framework adapter module
       def mock_framework
-        case settings[:mock_framework]
-        when nil
+        settings[:mock_framework] ||= begin
           require 'rspec/core/mocking/with_rspec'
           RSpec::Core::MockFrameworkAdapter
-        else
-          settings[:mock_framework]
         end
       end
 
