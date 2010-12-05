@@ -274,7 +274,7 @@ describe "should include(:key1 => value1, :key2 => value2)" do
     it "fails if target lacks both of the keys" do
       lambda {
         {:a => 1, :b => 1}.should include(:c => 1, :d => 1)
-      }.should fail_with(%Q|expected {:a=>1, :b=>1} to include {:c=>1, :d=>1}|)
+      }.should fail_with(%r|expected {:a=>1, :b=>1} to include {.*}|)
     end
   end
 
