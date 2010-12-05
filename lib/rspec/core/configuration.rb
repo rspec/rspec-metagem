@@ -26,7 +26,6 @@ module RSpec
       add_setting :profile_examples
       add_setting :fail_fast, :default => false
       add_setting :run_all_when_everything_filtered
-      add_setting :mock_framework, :default => :rspec
       add_setting :expectation_framework, :default => :rspec
       add_setting :filter
       add_setting :exclusion_filter
@@ -113,21 +112,36 @@ module RSpec
       end
 
       def mock_with(mock_framework)
-        settings[:mock_framework] = mock_framework
+        self.mock_framework = mock_framework
       end
 
-      def require_mock_framework_adapter
-        require case mock_framework.to_s
-        when /rspec/i
-          'rspec/core/mocking/with_rspec'
-        when /mocha/i
-          'rspec/core/mocking/with_mocha'
-        when /rr/i
-          'rspec/core/mocking/with_rr'
-        when /flexmock/i
-          'rspec/core/mocking/with_flexmock'
+      def mock_framework
+        case settings[:mock_framework]
+        when nil
+          require 'rspec/core/mocking/with_rspec'
+          RSpec::Core::MockFrameworkAdapter
         else
-          'rspec/core/mocking/with_absolutely_nothing'
+          settings[:mock_framework]
+        end
+      end
+
+      def mock_framework=(framework)
+        case framework
+        when String, Symbol
+          require case framework.to_s
+                  when /rspec/i
+                    'rspec/core/mocking/with_rspec'
+                  when /mocha/i
+                    'rspec/core/mocking/with_mocha'
+                  when /rr/i
+                    'rspec/core/mocking/with_rr'
+                  when /flexmock/i
+                    'rspec/core/mocking/with_flexmock'
+                  else
+                    'rspec/core/mocking/with_absolutely_nothing'
+                  end
+          settings[:mock_framework] = RSpec::Core::MockFrameworkAdapter
+        else
         end
       end
 
@@ -314,8 +328,7 @@ EOM
       end
 
       def configure_mock_framework
-        require_mock_framework_adapter
-        RSpec::Core::ExampleGroup.send(:include, RSpec::Core::MockFrameworkAdapter)
+        RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
 
       def configure_expectation_framework

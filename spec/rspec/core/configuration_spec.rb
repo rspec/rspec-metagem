@@ -29,36 +29,38 @@ module RSpec::Core
       end
     end
 
-    describe "mock_framework" do
+    describe "#mock_framework" do
       before(:each) do
         config.stub(:require)
       end
 
       it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')
-        config.require_mock_framework_adapter
+        config.mock_framework
       end
+    end
 
+    describe "#mock_framework=" do
       [:rspec, :mocha, :rr, :flexmock].each do |framework|
-        it "uses #{framework.inspect} framework when set explicitly" do
-          config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
-          config.mock_framework = framework
-          config.require_mock_framework_adapter
+        context "with #{framework}" do
+          it "requires the adapter for #{framework.inspect}" do
+            config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
+            config.mock_framework = framework
+          end
         end
       end
 
       it "uses the null adapter when set to any unknown key" do
         config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
         config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
-        config.require_mock_framework_adapter
       end
+    end
 
-      it "supports mock_with for backward compatibility with rspec-1.x" do
-        config.should_receive(:require).with('rspec/core/mocking/with_rspec')
+    describe "#mock_with" do
+      it "delegates to mock_framework=" do
+        config.should_receive(:mock_framework=).with(:rspec)
         config.mock_with :rspec
-        config.require_mock_framework_adapter
       end
-
     end
 
     describe "expectation_framework" do
@@ -71,14 +73,14 @@ module RSpec::Core
       [:rspec].each do |framework|
         it "uses #{framework.inspect} framework when set explicitly" do
           config.should_receive(:require).with("rspec/core/expecting/with_#{framework}")
-          config.mock_framework = framework
+          config.expectation_framework = framework
           config.require_expectation_framework_adapter
         end
       end
 
       it "supports expect_with for backward compatibility with rspec-1.x" do
         config.should_receive(:require).with('rspec/core/expecting/with_rspec')
-        config.mock_with :rspec
+        config.expect_with :rspec
         config.require_expectation_framework_adapter
       end
 
