@@ -30,10 +30,6 @@ module RSpec::Core
     end
 
     describe "#mock_framework" do
-      before(:each) do
-        config.stub(:require)
-      end
-
       it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')
         config.mock_framework
@@ -52,6 +48,7 @@ module RSpec::Core
 
       context "with a module" do
         it "sets the mock_framework_adapter to that module" do
+          config.stub(:require)
           mod = Module.new
           config.mock_framework = mod
           config.mock_framework.should eq(mod)
@@ -71,32 +68,35 @@ module RSpec::Core
       end
     end
 
-    describe "expectation_framework" do
-
+    describe "#expectation_framework" do
       it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/expecting/with_rspec')
-        config.require_expectation_framework_adapter
+        config.expectation_framework
       end
+    end
 
+    describe "#expectation_framework=" do
       [:rspec].each do |framework|
-        it "uses #{framework.inspect} framework when set explicitly" do
-          config.should_receive(:require).with("rspec/core/expecting/with_#{framework}")
-          config.expectation_framework = framework
-          config.require_expectation_framework_adapter
+        context "with #{framework}" do
+          it "requires the adapter for #{framework.inspect}" do
+            config.should_receive(:require).with("rspec/core/expecting/with_#{framework}")
+            config.expectation_framework = framework
+          end
         end
       end
+    end
 
-      it "supports expect_with for backward compatibility with rspec-1.x" do
-        config.should_receive(:require).with('rspec/core/expecting/with_rspec')
+    describe "#expect_with" do
+      it "delegates to expectation_framework=" do
+        config.should_receive(:expectation_framework=).with(:rspec)
         config.expect_with :rspec
-        config.require_expectation_framework_adapter
       end
 
       it "raises ArgumentError if framework is not supported" do
-        config.expectation_framework = :not_supported
-        expect { config.require_expectation_framework_adapter }.to raise_error(ArgumentError)
+        expect do
+          config.expectation_framework = :not_supported
+        end.to raise_error(ArgumentError)
       end
-
     end
 
     context "setting the files to run" do

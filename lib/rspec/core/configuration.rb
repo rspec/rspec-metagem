@@ -111,17 +111,17 @@ module RSpec
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
-      # Delegates to mock_framework=(framework)
-      def mock_with(framework)
-        self.mock_framework = framework
-      end
-
       # Returns the configured mock framework adapter module
       def mock_framework
         settings[:mock_framework] ||= begin
-          require 'rspec/core/mocking/with_rspec'
-          RSpec::Core::MockFrameworkAdapter
-        end
+                                        require 'rspec/core/mocking/with_rspec'
+                                        RSpec::Core::MockFrameworkAdapter
+                                      end
+      end
+
+      # Delegates to mock_framework=(framework)
+      def mock_with(framework)
+        self.mock_framework = framework
       end
 
       # Sets the mock framework adapter module.
@@ -168,14 +168,29 @@ module RSpec
         end
       end
 
-      def expect_with(expectation_framework)
-        settings[:expectation_framework] = expectation_framework
+      # Returns the configured expectation framework adapter module
+      def expectation_framework
+        settings[:expectation_framework] ||= begin
+                                               require 'rspec/core/expecting/with_rspec'
+                                               RSpec::Core::ExpectationFrameworkAdapter
+                                             end
       end
 
-      def require_expectation_framework_adapter
-        require case expectation_framework.to_s
-        when /rspec/i
-          'rspec/core/expecting/with_rspec'
+      # Delegates to expectation_framework=(framework)
+      def expect_with(framework)
+        self.expectation_framework = framework
+      end
+
+      # Sets the expectation framework module.
+      #
+      # +framework+ can be a Symbol or a Module.
+      #
+      # Given :rspec, configures rspec-expectations.
+      def expectation_framework=(framework)
+        case framework
+        when :rspec
+          require 'rspec/core/expecting/with_rspec'
+          settings[:expectation_framework] = RSpec::Core::ExpectationFrameworkAdapter
         else
           raise ArgumentError, "#{expectation_framework.inspect} is not supported"
         end
@@ -355,8 +370,7 @@ EOM
       end
 
       def configure_expectation_framework
-        require_expectation_framework_adapter
-        RSpec::Core::ExampleGroup.send(:include, RSpec::Core::ExpectationFrameworkAdapter)
+        RSpec::Core::ExampleGroup.send(:include, expectation_framework)
       end
 
       def load_spec_files
