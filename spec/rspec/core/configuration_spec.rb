@@ -50,6 +50,14 @@ module RSpec::Core
         end
       end
 
+      context "with a module" do
+        it "sets the mock_framework_adapter to that module" do
+          mod = Module.new
+          config.mock_framework = mod
+          config.mock_framework.should eq(mod)
+        end
+      end
+
       it "uses the null adapter when set to any unknown key" do
         config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
         config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of

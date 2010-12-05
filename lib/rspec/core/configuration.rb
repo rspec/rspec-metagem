@@ -111,10 +111,12 @@ module RSpec
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
-      def mock_with(mock_framework)
-        self.mock_framework = mock_framework
+      # Delegates to mock_framework=(framework)
+      def mock_with(framework)
+        self.mock_framework = framework
       end
 
+      # Returns the configured mock framework adapter module
       def mock_framework
         case settings[:mock_framework]
         when nil
@@ -125,8 +127,32 @@ module RSpec
         end
       end
 
+      # Sets the mock framework adapter module.
+      #
+      # +framework+ can be a Symbol or a Module.
+      #
+      # Given any of :rspec, :mocha, :flexmock, or :rr, configures the named
+      # framework.
+      #
+      # Given :nothing, configures no framework. Use this if you don't use any
+      # mocking framework to save a little bit of overhead.
+      #
+      # Given a Module, includes that module in every example group. The module
+      # should adhere to RSpec's mock framework adapter API:
+      #
+      #   setup_mocks_for_rspec
+      #     - called before each example
+      #
+      #   verify_mocks_for_rspec
+      #     - called after each example. Framework should raise an exception
+      #       when expectations fail
+      #
+      #   teardown_mocks_for_rspec
+      #     - called after verify_mocks_for_rspec (even if there are errors)
       def mock_framework=(framework)
         case framework
+        when Module
+          settings[:mock_framework] = framework
         when String, Symbol
           require case framework.to_s
                   when /rspec/i
@@ -358,8 +384,6 @@ EOM
 MESSAGE
         end
       end
-
-    private
 
       def output_to_tty?
         begin

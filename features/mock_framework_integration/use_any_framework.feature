@@ -1,4 +1,3 @@
-@wip
 Feature: mock with an alternative framework
 
   In addition to rspec, mocha, flexmock, and RR, you can choose an alternate
