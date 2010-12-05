@@ -360,12 +360,7 @@ EOF
 
   describe RSpec::Matchers::Have do
     it "has method_missing as private" do
-      with_ruby 1.8 do
-        described_class.private_instance_methods.should include("method_missing")
-      end
-      with_ruby 1.9 do
-        described_class.private_instance_methods.should include(:method_missing)
-      end
+      described_class.private_instance_methods.should include_method(:method_missing)
     end
 
     it "does not respond_to? method_missing (because it's private)" do

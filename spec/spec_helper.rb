@@ -19,8 +19,10 @@ Dir['./spec/support/**/*'].each do |f|
   require f
 end
 
-def with_ruby(version)
-  yield if RUBY_PLATFORM =~ Regexp.compile("^#{version}")
+RSpec::Matchers.define :include_method do |expected|
+  match do |actual|
+    actual.map { |m| m.to_s }.include?(expected.to_s)
+  end
 end
 
 module RSpec
