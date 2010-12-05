@@ -21,7 +21,7 @@ describe "should ==" do
   
 end
 
-describe "unsupported operators", :ruby => '1.9' do
+describe "unsupported operators", :unless => RUBY_VERSION.to_f == 1.9 do
   it "raises an appropriate error for should != expected" do
     expect {
       "apple".should != "pear"

@@ -1,4 +1,4 @@
-# This file contains various classes used by the specs.
+# various classes used by the specs
 module RSpec
   module Expectations
     module Helper

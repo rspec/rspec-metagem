@@ -15,54 +15,10 @@ require 'rspec/expectations'
 require 'rspec/core'
 require 'rspec/mocks'
 
-Dir['./spec/support/**/*'].each do |f|
-  require f
-end
-
-RSpec::Matchers.define :include_method do |expected|
-  match do |actual|
-    actual.map { |m| m.to_s }.include?(expected.to_s)
-  end
-end
-
-module RSpec
-  module Ruby
-    class << self
-      def version
-        RUBY_VERSION
-      end
-    end
-  end
-end
-
-module RSpec  
-  module Matchers
-    def fail
-      raise_error(RSpec::Expectations::ExpectationNotMetError)
-    end
-
-    def fail_with(message)
-      raise_error(RSpec::Expectations::ExpectationNotMetError, message)
-    end
-  end
-end
+Dir['./spec/support/**/*'].each {|f| require f}
 
 RSpec::configure do |config|
-  config.mock_with(:rspec)
-  config.include RSpec::Mocks::Methods
   config.color_enabled = true
   config.filter_run :focused => true
-
-  config.filter_run_excluding :ruby => lambda {|version|
-    case version.to_s
-    when "!jruby"
-      RUBY_ENGINE != "jruby"
-    when /^> (.*)/
-      !(RUBY_VERSION.to_s > $1)
-    else
-      !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
-    end
-  }
-
   config.run_all_when_everything_filtered = true
 end
