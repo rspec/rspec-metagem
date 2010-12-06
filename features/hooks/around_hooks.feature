@@ -236,36 +236,36 @@ Feature: around hooks
 
   Scenario: multiple around hooks in the same scope
     Given a file named "example_spec.rb" with:
-    """
-    describe "if there are multiple around hooks in the same scope" do
-      around(:each) do |example|
-        puts "first around hook before"
-        example.run
-        puts "first around hook after"
-      end
+      """
+      describe "if there are multiple around hooks in the same scope" do
+        around(:each) do |example|
+          puts "first around hook before"
+          example.run
+          puts "first around hook after"
+        end
 
-      around(:each) do |example|
-        puts "second around hook before"
-        example.run
-        puts "second around hook after"
-      end
+        around(:each) do |example|
+          puts "second around hook before"
+          example.run
+          puts "second around hook after"
+        end
 
-      it "they should all be run" do
-        puts "in the example"
-        1.should == 1
+        it "they should all be run" do
+          puts "in the example"
+          1.should == 1
+        end
       end
-    end
-    """
+      """
     When I run "rspec example_spec.rb"
     Then the output should contain "1 example, 0 failure"
     And the output should contain:
-    """
-    first around hook before
-    second around hook before
-    in the example
-    second around hook after
-    first around hook after
-    """
+      """
+      first around hook before
+      second around hook before
+      in the example
+      second around hook after
+      first around hook after
+      """
 
   Scenario: around hooks in multiple scopes
     Given a file named "example_spec.rb" with:

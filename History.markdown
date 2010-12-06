@@ -4,6 +4,16 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.2.1...master)
 
+* Enhancements
+  * config.expect_with
+    * :rspec          # => rspec/expectations
+    * :stdlib         # => test/unit/assertions
+    * :rspec, :stdlib # => both
+
+* Bug fixes
+  * fix dev Gemfile to work on non-mac-os machines (Lake Denman)
+  * ensure explicit subject is only eval'd once (Laszlo Bacsi)
+
 ### 2.2.1 / 2010-11-28
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.2.0...v2.2.1)

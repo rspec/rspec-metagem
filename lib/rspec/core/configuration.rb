@@ -26,8 +26,6 @@ module RSpec
       add_setting :profile_examples
       add_setting :fail_fast, :default => false
       add_setting :run_all_when_everything_filtered
-      add_setting :mock_framework, :default => :rspec
-      add_setting :expectation_framework, :default => :rspec
       add_setting :filter
       add_setting :exclusion_filter
       add_setting :filename_pattern, :default => '**/*_spec.rb'
@@ -112,35 +110,98 @@ module RSpec
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
-      def mock_with(mock_framework)
-        settings[:mock_framework] = mock_framework
+      # Returns the configured mock framework adapter module
+      def mock_framework
+        settings[:mock_framework] ||= begin
+                                        require 'rspec/core/mocking/with_rspec'
+                                        RSpec::Core::MockFrameworkAdapter
+                                      end
       end
 
-      def require_mock_framework_adapter
-        require case mock_framework.to_s
-        when /rspec/i
-          'rspec/core/mocking/with_rspec'
-        when /mocha/i
-          'rspec/core/mocking/with_mocha'
-        when /rr/i
-          'rspec/core/mocking/with_rr'
-        when /flexmock/i
-          'rspec/core/mocking/with_flexmock'
+      # Delegates to mock_framework=(framework)
+      def mock_with(framework)
+        self.mock_framework = framework
+      end
+
+      # Sets the mock framework adapter module.
+      #
+      # +framework+ can be a Symbol or a Module.
+      #
+      # Given any of :rspec, :mocha, :flexmock, or :rr, configures the named
+      # framework.
+      #
+      # Given :nothing, configures no framework. Use this if you don't use any
+      # mocking framework to save a little bit of overhead.
+      #
+      # Given a Module, includes that module in every example group. The module
+      # should adhere to RSpec's mock framework adapter API:
+      #
+      #   setup_mocks_for_rspec
+      #     - called before each example
+      #
+      #   verify_mocks_for_rspec
+      #     - called after each example. Framework should raise an exception
+      #       when expectations fail
+      #
+      #   teardown_mocks_for_rspec
+      #     - called after verify_mocks_for_rspec (even if there are errors)
+      def mock_framework=(framework)
+        case framework
+        when Module
+          settings[:mock_framework] = framework
+        when String, Symbol
+          require case framework.to_s
+                  when /rspec/i
+                    'rspec/core/mocking/with_rspec'
+                  when /mocha/i
+                    'rspec/core/mocking/with_mocha'
+                  when /rr/i
+                    'rspec/core/mocking/with_rr'
+                  when /flexmock/i
+                    'rspec/core/mocking/with_flexmock'
+                  else
+                    'rspec/core/mocking/with_absolutely_nothing'
+                  end
+          settings[:mock_framework] = RSpec::Core::MockFrameworkAdapter
         else
-          'rspec/core/mocking/with_absolutely_nothing'
         end
       end
 
-      def expect_with(expectation_framework)
-        settings[:expectation_framework] = expectation_framework
+      # Returns the configured expectation framework adapter module(s)
+      def expectation_frameworks
+        settings[:expectation_frameworks] ||= begin
+                                               require 'rspec/core/expecting/with_rspec'
+                                               [RSpec::Core::ExpectationFrameworkAdapter]
+                                             end
       end
 
-      def require_expectation_framework_adapter
-        require case expectation_framework.to_s
-        when /rspec/i
-          'rspec/core/expecting/with_rspec'
-        else
-          raise ArgumentError, "#{expectation_framework.inspect} is not supported"
+      # Delegates to expect_with=([framework])
+      def expectation_framework=(framework)
+        expect_with([framework])
+      end
+
+      # Sets the expectation framework module(s).
+      #
+      # +frameworks+ can be :rspec, :stdlib, or both 
+      #
+      # Given :rspec, configures rspec/expectations.
+      # Given :stdlib, configures test/unit/assertions
+      # Given both, configures both
+      def expect_with(*frameworks)
+        settings[:expectation_frameworks] = []
+        frameworks.each do |framework|
+          case framework
+          when Symbol
+            case framework
+            when :rspec
+              require 'rspec/core/expecting/with_rspec'
+            when :stdlib
+              require 'rspec/core/expecting/with_stdlib'
+            else
+              raise ArgumentError, "#{framework.inspect} is not supported"
+            end
+            settings[:expectation_frameworks] << RSpec::Core::ExpectationFrameworkAdapter
+          end
         end
       end
 
@@ -314,13 +375,13 @@ EOM
       end
 
       def configure_mock_framework
-        require_mock_framework_adapter
-        RSpec::Core::ExampleGroup.send(:include, RSpec::Core::MockFrameworkAdapter)
+        RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
 
       def configure_expectation_framework
-        require_expectation_framework_adapter
-        RSpec::Core::ExampleGroup.send(:include, RSpec::Core::ExpectationFrameworkAdapter)
+        expectation_frameworks.each do |framework|
+          RSpec::Core::ExampleGroup.send(:include, framework)
+        end
       end
 
       def load_spec_files
@@ -345,8 +406,6 @@ EOM
 MESSAGE
         end
       end
-
-    private
 
       def output_to_tty?
         begin

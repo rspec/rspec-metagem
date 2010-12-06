@@ -32,6 +32,25 @@ module RSpec::Core
     end
 
     describe "explicit subject" do
+      [false, nil].each do |falsy_value|
+        context "with a value of #{falsy_value.inspect}" do
+          it "is evaluated once per example" do
+            group = ExampleGroup.describe(Array)
+            group.before do
+              Object.should_receive(:this_question?).once.and_return(falsy_value)
+            end
+            group.subject do
+              Object.this_question?
+            end
+            group.example do
+              subject
+              subject
+            end
+            group.run.should be_true, "expected subject block to be evaluated only once"
+          end
+        end
+      end
+
       describe "defined in a top level group" do
         it "replaces the implicit subject in that group" do
           group = ExampleGroup.describe(Array)

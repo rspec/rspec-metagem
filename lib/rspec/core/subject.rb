@@ -28,7 +28,11 @@ module RSpec
         #     end
         #   end
         def subject
-          @original_subject ||= instance_eval(&self.class.subject)
+          if defined?(@original_subject)
+            @original_subject
+          else
+            @original_subject = instance_eval(&self.class.subject)
+          end
         end
 
         begin
@@ -86,7 +90,7 @@ module RSpec
         # The attribute can be a +Symbol+ or a +String+. Given a +String+
         # with dots, the result is as though you concatenated that +String+
         # onto the subject in an expression.
-        #   
+        #
         #   describe Person do
         #     subject do
         #       Person.new.tap do |person|
