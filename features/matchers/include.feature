@@ -131,6 +131,5 @@ Feature: include matcher
       | expected {:a=>7, :b=>5} to include {:a=>5, :b=>7}     |
       | expected {:a=>7, :b=>5} to include :a and :d          |
       | expected {:a=>7, :b=>5} not to include :a and :d      |
-      | expected {:a=>7, :b=>5} to include {:a=>7, :d=>3}     |
-      | expected {:a=>7, :b=>5} not to include {:a=>7, :d=>3} |
-
+    And the output should match /expected \{:a=>7, :b=>5\} to include \{(?::a=>7, :d=>3)|(?::d=>3, :a=>7)\}/
+    And the output should match /expected \{:a=>7, :b=>5\} not to include \{(?::a=>7, :d=>3)|(?::d=>3, :a=>7)\}/
