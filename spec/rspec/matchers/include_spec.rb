@@ -276,7 +276,7 @@ describe "should include(:key1 => value1, :key2 => value2)" do
         {:a => 1, :b => 1}.should include(:c => 1, :d => 1)
       rescue Exception => e
       ensure
-        e.message.should match(/expected {:a=>1, :b=>1} to include {.*}/)
+        e.message.should match(/expected \{:a=>1, :b=>1\} to include/)
         e.message.match(/include (.*)$/) do |m|
           eval(m[1]).should eq({:c=>1,:d=>1})
         end
