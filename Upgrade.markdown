@@ -1,5 +1,15 @@
 # rspec-core-2.3
 
+## autotest integration
+
+Add a .rspec file to the project's root directory to tell RSpec to tell
+Autotest to use RSpec's specialized Autotest class.
+
+NOTE that rspec-core-2.0, 2.1, and 2.2 required an autotest/discover.rb file in
+the project's root directory. This worked with some, but not all versions of
+autotest and/or the autotest command that ships with ZenTest. This new approach
+will work regardless of which version of autotest/ZenTest you are using.
+
 ## config.expect_with
 
 Use this to configure RSpec to use rspec/expectations (default),

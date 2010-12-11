@@ -5,6 +5,10 @@
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.2.1...master)
 
 * Enhancements
+  * tell autotest to use "rspec2" if it sees a .rspec file in the project's
+    root directory
+    * replaces the need for ./autotest/discover.rb, which will not work with
+      all versions of ZenTest and/or autotest
   * config.expect_with
     * :rspec          # => rspec/expectations
     * :stdlib         # => test/unit/assertions
