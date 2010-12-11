@@ -18,6 +18,9 @@ module RSpec
     #   "spread".should_not include("red")
     def include(*expected)
       Matcher.new :include, *expected do |*_expected|
+
+        diffable
+
         match_for_should do |actual|
           perform_match(:all?, :all?, actual, _expected)
         end

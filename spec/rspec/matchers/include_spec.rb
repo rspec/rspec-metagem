@@ -33,7 +33,7 @@ describe "should include(expected)" do
     it "fails if target does not include expected" do
       lambda {
         {:key => 'value'}.should include(:other)
-      }.should fail_with(%Q|expected {:key=>"value"} to include :other|)
+      }.should fail_matching(%Q|expected {:key=>"value"} to include :other|)
     end
   end
 end
@@ -71,7 +71,7 @@ describe "should include(with, multiple, args)" do
     it 'fails if target is missing any item as a key' do
       lambda {
         {:key => 'value'}.should include(:key, :other)
-      }.should fail_with(%Q|expected {:key=>"value"} to include :key and :other|)
+      }.should fail_matching(%Q|expected {:key=>"value"} to include :key and :other|)
     end
   end
 end
@@ -109,7 +109,7 @@ describe "should_not include(expected)" do
     it "fails if target includes expected key" do
       lambda {
         {:key => 'value'}.should_not include(:key)
-      }.should fail_with(%Q|expected {:key=>"value"} not to include :key|)
+      }.should fail_matching(%Q|expected {:key=>"value"} not to include :key|)
     end
   end
 
@@ -142,13 +142,13 @@ describe "should_not include(with, multiple, args)" do
     it "fails if the target includes all of the expected keys" do
       expect {
         { :a => 1, :b => 2 }.should_not include(:a, :b)
-      }.to fail_with(%q|expected {:a=>1, :b=>2} not to include :a and :b|)
+      }.to fail_matching(%Q|expected {:a=>1, :b=>2} not to include :a and :b|)
     end
 
     it "fails if the target includes some (but not all) of the expected keys" do
       expect {
         { :a => 1, :b => 2 }.should_not include(:d, :b)
-      }.to fail_with(%q|expected {:a=>1, :b=>2} not to include :d and :b|)
+      }.to fail_matching(%Q|expected {:a=>1, :b=>2} not to include :d and :b|)
     end
   end
 
@@ -184,13 +184,13 @@ describe "should include(:key => value)" do
     it "fails if target has a different value for key" do
       lambda {
         {:key => 'different'}.should include(:key => 'value')
-      }.should fail_with(%Q|expected {:key=>"different"} to include {:key=>"value"}|)
+      }.should fail_matching(%Q|expected {:key=>"different"} to include {:key=>"value"}|)
     end
 
     it "fails if target has a different key" do
       lambda {
         {:other => 'value'}.should include(:key => 'value')
-      }.should fail_with(%Q|expected {:other=>"value"} to include {:key=>"value"}|)
+      }.should fail_matching(%Q|expected {:other=>"value"} to include {:key=>"value"}|)
     end
   end
 
@@ -198,7 +198,7 @@ describe "should include(:key => value)" do
     it "fails if the target does not contain the given hash" do
       lambda {
         ['a', 'b'].should include(:key => 'value')
-      }.should fail_with(%q|expected ["a", "b"] to include {:key=>"value"}|)
+      }.should fail_matching(%q|expected ["a", "b"] to include {:key=>"value"}|)
     end
 
     it "passes if the target contains the given hash" do
@@ -212,13 +212,13 @@ describe "should_not include(:key => value)" do
     it "fails if target includes the key/value pair" do
       lambda {
         {:key => 'value'}.should_not include(:key => 'value')
-      }.should fail_with(%Q|expected {:key=>"value"} not to include {:key=>"value"}|)
+      }.should fail_matching(%Q|expected {:key=>"value"} not to include {:key=>"value"}|)
     end
 
     it "fails if target includes the key/value pair among others" do
       lambda {
         {:key => 'value', :other => 'different'}.should_not include(:key => 'value')
-      }.should fail_with(%Q|expected {:key=>"value", :other=>"different"} not to include {:key=>"value"}|)
+      }.should fail_matching(%Q|expected {:key=>"value", :other=>"different"} not to include {:key=>"value"}|)
     end
 
     it "passes if target has a different value for key" do
@@ -238,7 +238,7 @@ describe "should_not include(:key => value)" do
     it "fails if the target contains the given hash" do
       lambda {
         ['a', { :key => 'value' } ].should_not include(:key => 'value')
-      }.should fail_with(%Q|expected ["a", {:key=>"value"}] not to include {:key=>"value"}|)
+      }.should fail_matching(%Q|expected ["a", {:key=>"value"}] not to include {:key=>"value"}|)
     end
   end
 end
@@ -256,19 +256,19 @@ describe "should include(:key1 => value1, :key2 => value2)" do
     it "fails if target has a different value for one of the keys" do
       lambda {
         {:a => 1, :b => 2}.should include(:a => 2, :b => 2)
-      }.should fail_with(%Q|expected {:a=>1, :b=>2} to include {:a=>2, :b=>2}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>2} to include {:a=>2, :b=>2}|)
     end
 
     it "fails if target has a different value for both of the keys" do
       lambda {
         {:a => 1, :b => 1}.should include(:a => 2, :b => 2)
-      }.should fail_with(%Q|expected {:a=>1, :b=>1} to include {:a=>2, :b=>2}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>1} to include {:a=>2, :b=>2}|)
     end
 
     it "fails if target lacks one of the keys" do
       lambda {
         {:a => 1, :b => 1}.should include(:a => 1, :c => 1)
-      }.should fail_with(%Q|expected {:a=>1, :b=>1} to include {:a=>1, :c=>1}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>1} to include {:a=>1, :c=>1}|)
     end
 
     it "fails if target lacks both of the keys" do
@@ -288,7 +288,7 @@ describe "should include(:key1 => value1, :key2 => value2)" do
     it "fails if the target does not contain the given hash" do
       lambda {
         ['a', 'b'].should include(:a => 1, :b => 1)
-      }.should fail_with(%q|expected ["a", "b"] to include {:a=>1, :b=>1}|)
+      }.should fail_matching(%Q|expected ["a", "b"] to include {:a=>1, :b=>1}|)
     end
 
     it "passes if the target contains the given hash" do
@@ -302,20 +302,20 @@ describe "should_not include(:key1 => value1, :key2 => value2)" do
     it "fails if target includes the key/value pairs" do
       lambda {
         {:a => 1, :b => 2}.should_not include(:a => 1, :b => 2)
-      }.should fail_with(%Q|expected {:a=>1, :b=>2} not to include {:a=>1, :b=>2}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>2} not to include {:a=>1, :b=>2}|)
     end
 
     it "fails if target includes the key/value pairs among others" do
       hash = {:a => 1, :b => 2, :c => 3}
       lambda {
         hash.should_not include(:a => 1, :b => 2)
-      }.should fail_with(%Q|expected #{hash.inspect} not to include {:a=>1, :b=>2}|)
+      }.should fail_matching(%Q|expected #{hash.inspect} not to include {:a=>1, :b=>2}|)
     end
 
     it "fails if target has a different value for one of the keys" do
       lambda {
         {:a => 1, :b => 2}.should_not include(:a => 2, :b => 2)
-      }.should fail_with(%Q|expected {:a=>1, :b=>2} not to include {:a=>2, :b=>2}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>2} not to include {:a=>2, :b=>2}|)
     end
 
     it "passes if target has a different value for both of the keys" do
@@ -325,7 +325,7 @@ describe "should_not include(:key1 => value1, :key2 => value2)" do
     it "fails if target lacks one of the keys" do
       lambda {
         {:a => 1, :b => 1}.should_not include(:a => 1, :c => 1)
-      }.should fail_with(%Q|expected {:a=>1, :b=>1} not to include {:a=>1, :c=>1}|)
+      }.should fail_matching(%Q|expected {:a=>1, :b=>1} not to include {:a=>1, :c=>1}|)
     end
 
     it "passes if target lacks both of the keys" do
@@ -341,7 +341,7 @@ describe "should_not include(:key1 => value1, :key2 => value2)" do
     it "fails if the target contains the given hash" do
       lambda {
         ['a', { :a => 1, :b => 2 } ].should_not include(:a => 1, :b => 2)
-      }.should fail_with(%Q|expected ["a", {:a=>1, :b=>2}] not to include {:a=>1, :b=>2}|)
+      }.should fail_matching(%Q|expected ["a", {:a=>1, :b=>2}] not to include {:a=>1, :b=>2}|)
     end
   end
 end
