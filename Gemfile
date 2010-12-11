@@ -12,7 +12,7 @@ end
 gem "rake"
 gem "cucumber", "0.9.4"
 gem "aruba", "0.2.2"
-gem "autotest"
+gem "ZenTest", "~> 4.4.2"
 gem "rcov"
 gem "mocha"
 gem "rr"
