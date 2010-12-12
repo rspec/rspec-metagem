@@ -1,8 +1,8 @@
 ## rspec-expectations release history (incomplete)
 
-### 2.3.0 / in development
+### 2.3.0 / 2010-12-12
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.2.0...master)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.2.1...v2.3.0)
 
 * Enhancements
   * diff strings when include matcher fails (Mike Sassak)
