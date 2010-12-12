@@ -177,8 +177,8 @@ module RSpec
         store_before_all_ivars(example_group_instance)
       end
 
-      def self.eval_around_eachs(example_group_instance, procsy)
-        around_hooks.reverse.inject(procsy) do |procsy, around_hook|
+      def self.eval_around_eachs(example_group_instance, initial_procsy)
+        around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
           Example::Procsy.new(procsy.metadata) do
             example_group_instance.instance_eval_with_args(procsy, &around_hook)
           end
