@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 
+### rspec libs
 %w[rspec-core rspec-expectations rspec-mocks].each do |lib|
   library_path = File.expand_path("../../#{lib}", __FILE__)
   if File.exist?(library_path)
@@ -9,34 +10,38 @@ source "http://rubygems.org"
   end
 end
 
-gem "rake"
+### dev dependencies
+gem "rake", "0.8.7"
 gem "cucumber", "0.9.4"
 gem "aruba", "0.2.2"
+gem "rcov", "0.9.9"
+gem "relish", "0.2.0"
+gem "guard-rspec", "0.1.9"
+gem "growl", "1.0.3"
 gem "ZenTest", "~> 4.4.2"
-gem "rcov"
-gem "mocha"
-gem "rr"
-gem "flexmock"
-gem "nokogiri"
-gem "syntax"
-gem "relish", "~> 0.0.3"
-gem "guard-rspec"
-gem "growl"
+gem "nokogiri", "1.4.4"
 
 if RUBY_PLATFORM =~ /darwin/
-  gem "autotest-fsevent"
+  gem "autotest-fsevent", "~> 0.2.4"
+  gem "autotest-growl", "~> 0.2.9"
 end
 
-gem "autotest-growl"
-
 gem "ruby-debug", :platforms => :ruby_18
-gem "ruby-debug19", :platforms => :ruby_19
+gem "ruby-debug19", "~> 0.11.6", :platforms => :ruby_19
 
 platforms :ruby_18, :ruby_19 do
-  gem "rb-fsevent"
-  gem "ruby-prof"
+  gem "rb-fsevent", "~> 0.3.9"
+  gem "ruby-prof", "~> 0.9.2"
 end
 
 platforms :jruby do
   gem "jruby-openssl"
 end
+
+### rspec-core only
+gem "mocha", "~> 0.9.10"
+gem "rr", "~> 1.0.2"
+gem "flexmock", "~> 0.8.11"
+
+### optional runtime deps
+gem "syntax", "1.0.0"
