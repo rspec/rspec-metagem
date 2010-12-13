@@ -1,4 +1,4 @@
-Feature: basic structure
+Feature: basic structure (describe it)
 
   RSpec is a DSL for creating executable examples of how code is expected to
   behave, organized in groups. It uses the words "describe" and "it" so we can

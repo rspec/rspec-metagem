@@ -1,4 +1,4 @@
-Feature: Shared example group
+Feature: shared example group
 
   Shared example groups let you describe behaviour of types or modules. When
   declared, a shared group's content is stored. It is only realized in the
