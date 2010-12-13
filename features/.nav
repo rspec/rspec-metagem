@@ -43,4 +43,4 @@
 - spec_files:
   - arbitrary_file_suffix.feature
 - Changelog.md
-- Upgrade_notes.md
+- Upgrade.md
