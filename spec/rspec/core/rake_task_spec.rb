@@ -136,5 +136,37 @@ module RSpec::Core
         task.__send__(:files_to_run).should eq(["path/to/file"])
       end
     end
+
+    context "with pattern matching files with quotes" do
+      before do
+        @tmp_dir = File.expand_path(File.join(File.dirname(__FILE__), "rake_task_tmp_dir"))
+        @task = RakeTask.new do |t|
+          t.pattern = File.join(@tmp_dir, "*.rb")
+        end
+        FileUtils.mkdir_p @tmp_dir
+        spec_file_content = <<-END
+describe "spec" do
+  it "should pass" do
+    1.should == 1
+  end
+end
+END
+        ["first_file.rb", "second_\"file.rb", "third_'file.rb"].each do |file_name|
+          File.open(File.join(@tmp_dir, file_name), "w") do |h|
+            h.write spec_file_content
+          end
+        end
+      end
+
+      after do
+        FileUtils.rm_rf @tmp_dir
+      end
+
+      it "sets files to run" do
+        `/usr/bin/env ruby #{@task.send(:spec_command)}`
+        $?.exitstatus.should == 0
+        #@task.send(:files_to_run).should eq([])
+      end
+    end
   end
 end

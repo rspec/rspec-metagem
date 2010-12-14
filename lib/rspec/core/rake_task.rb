@@ -149,7 +149,7 @@ module RSpec
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ]
         else
-          FileList[ pattern ].map { |f| %["#{f}"] }
+          FileList[ pattern ].map { |f| f.gsub(/"/, '\"').gsub(/'/, "\\\\'") }
         end
       end
 
