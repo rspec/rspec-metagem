@@ -516,7 +516,10 @@ module RSpec::Core
     describe "#debug=true" do
       it "requires 'ruby-debug'" do
         config.should_receive(:require).with('ruby-debug')
+        Object.const_set("Debugger", debugger = mock("Debugger"))
+        debugger.should_receive(:start)
         config.debug = true
+        Object.send(:remove_const, :Debugger)
       end
     end
 

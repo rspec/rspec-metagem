@@ -240,6 +240,7 @@ module RSpec
         return unless bool
         begin
           require 'ruby-debug'
+          Debugger.start
         rescue LoadError
           raise <<-EOM
 
