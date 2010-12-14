@@ -1,3 +1,5 @@
+- Upgrade.md
+- Changelog.md
 - example_groups:
   - basic_structure.feature
   - shared_example_group.feature
@@ -42,5 +44,3 @@
   - custom_formatter.feature
 - spec_files:
   - arbitrary_file_suffix.feature
-- Changelog.md
-- Upgrade.md
