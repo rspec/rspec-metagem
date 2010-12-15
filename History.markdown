@@ -7,10 +7,12 @@
 * Enhancements
   * start the debugger on -d so the stack trace is visible when it stops
     (Clifford Heath)
+  * HTML Formatter _finally_ properly displays nested groups (Jarmo Pertman)
 
 * Bug fixes
   * send debugger warning message to $stdout if RSpec.configuration.error_stream
     has not been defined yet. 
+  * eliminate some warnings when running RSpec's own suite (Jarmo Pertman)
 
 ### 2.3.0 / 2010-12-12
 
