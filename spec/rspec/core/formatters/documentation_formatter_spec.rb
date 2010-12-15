@@ -49,7 +49,7 @@ module RSpec::Core::Formatters
 
       group.run(RSpec::Core::Reporter.new(formatter))
 
-      output.string.should eql "
+      output.string.should eql("
 root
   context 1
     nested example 1.1
@@ -60,7 +60,7 @@ root
   context 2
     nested example 2.1
     nested example 2.2
-"
+")
     end
   end
 end

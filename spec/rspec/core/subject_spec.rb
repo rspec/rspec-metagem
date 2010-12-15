@@ -85,7 +85,7 @@ module RSpec::Core
           subject { self }
           def ok?; true; end
 
-          it { should eq self }
+          it { should eq(self) }
           it { should be_ok }
         end
 
