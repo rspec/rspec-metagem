@@ -49,7 +49,7 @@ module RSpec
             @output.puts "</div>"
           end
           @output.puts "<div class=\"example_group\">"
-          @output.puts "  <dl>"
+          @output.puts "  <dl #{current_indentation}>"
           @output.puts "  <dt id=\"example_group_#{example_group_number}\">#{h(example_group.description)}</dt>"
           @output.flush
         end
@@ -145,6 +145,10 @@ module RSpec
           @output.puts "</body>"
           @output.puts "</html>"
           @output.flush
+        end
+        
+        def current_indentation
+          "style=\"margin-left: #{(example_group.ancestors.size - 1) * 15}px;\""
         end
 
         def html_header
