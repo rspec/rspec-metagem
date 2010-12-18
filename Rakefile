@@ -57,10 +57,10 @@ task :clobber do
   rm_rf 'coverage'
 end
 
-desc "Push cukes to relishapp using the relish-client-gem"
+desc "Push docs/cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
   raise "rake relish[VERSION]" unless args[:version]
-  sh "relish push --organization rspec --project rspec-core -v #{args[:version]}"
+  sh "relish push rspec/rspec-core:#{args[:version]}"
 end
 
 Rake::RDocTask.new do |rdoc|
