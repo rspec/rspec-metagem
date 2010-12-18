@@ -55,10 +55,10 @@ Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-desc "Push cukes to relishapp using the relish-client-gem"
+desc "Push docs/cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
   raise "rake relish[VERSION]" unless args[:version]
-  sh "bundle exec relish push --organization rspec --project rspec-expectations -v #{args[:version]}"
+  sh "relish push rspec/rspec-expectations:#{args[:version]}"
 end
 
 task :clobber do
