@@ -130,6 +130,9 @@ MESSAGE
     #
     # Allows you to specify that a Proc will cause some value to change.
     #
+    # You can either pass <tt>receiver</tt> and <tt>message</tt>, or a block,
+    # but not both.
+    #
     # == Examples
     #
     #   lambda {
