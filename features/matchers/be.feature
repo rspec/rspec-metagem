@@ -1,15 +1,11 @@
-Feature: be matchers
+Feature: "be" matchers
 
   There are several related "be" matchers:
 
-    * obj.should be_true # passes if obj is truthy (not nil or false)
-    * obj.should be_false # passes if obj is falsey (nil or false)
-    * obj.should be_nil # passes if obj is nil
-    * obj.should be # passes if obj is not nil
-    * obj.should be < expected # passes if obj < expected
-    * obj.should be > expected # passes if obj > expected
-    * obj.should be <= expected # passes if obj <= expected
-    * obj.should be >= expected # passes if obj >= expected
+      obj.should be_true  # passes if obj is truthy (not nil or false)
+      obj.should be_false # passes if obj is falsy (nil or false)
+      obj.should be_nil   # passes if obj is nil
+      obj.should be       # passes if obj is not nil
 
   Scenario: be_true matcher
     Given a file named "be_true_spec.rb" with:
@@ -84,13 +80,32 @@ Feature: be matchers
       end
       """
     When I run "rspec be_nil_spec.rb"
-    Then the output should contain all of these:
-      | 10 examples, 5 failures   |
-      | expected not nil, got nil |
-      | expected nil, got false   |
-      | expected nil, got true    |
-      | expected nil, got 7       |
-      | expected nil, got "foo"   |
+    Then the output should contain "10 examples, 5 failures"
+    And the output should contain:
+      """
+           expected: not nil
+                got: nil
+      """
+    And the output should contain:
+      """
+           expected: nil
+                got: false
+      """
+    And the output should contain:
+      """
+           expected: nil
+                got: true
+      """
+    And the output should contain:
+      """
+           expected: nil
+                got: 7
+      """
+    And the output should contain:
+      """
+           expected: nil
+                got: "foo"
+      """
 
   Scenario: be matcher
     Given a file named "be_spec.rb" with:
@@ -118,32 +133,3 @@ Feature: be matchers
       | expected "foo" to evaluate to false |
       | expected nil to evaluate to true    |
       | expected false to evaluate to true  |
-
-  Scenario: be operator matchers
-    Given a file named "be_operators_spec.rb" with:
-      """
-      describe 17 do
-        it { should be < 20 }
-        it { should be > 15 }
-        it { should be <= 17 }
-        it { should be >= 17 }
-        it { should_not be < 15 }
-        it { should_not be > 20 }
-        it { should_not be <= 16 }
-        it { should_not be >= 18 }
-
-        # deliberate failures
-        it { should be < 15 }
-        it { should be > 20 }
-        it { should be <= 16 }
-        it { should be >= 18 }
-      end
-      """
-    When I run "rspec be_operators_spec.rb"
-    Then the output should contain all of these:
-      | 12 examples, 4 failures           |
-      | expected < 15, got 17             |
-      | expected > 20, got 17             |
-      | expected <= 16, got 17            |
-      | expected >= 18, got 17            |
-

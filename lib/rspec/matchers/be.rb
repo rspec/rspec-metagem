@@ -2,7 +2,7 @@ require 'rspec/matchers/dsl'
 
 RSpec::Matchers.define :be_true do
   match do |actual|
-    !!actual
+    actual
   end
 end
 
@@ -18,11 +18,11 @@ RSpec::Matchers.define :be_nil do
   end
 
   failure_message_for_should do |actual|
-    "expected nil, got #{actual.inspect}"
+    "expected: nil\n     got: #{actual.inspect}"
   end
 
   failure_message_for_should_not do
-    "expected not nil, got nil"
+    "expected: not nil\n     got: nil"
   end
 end
 
@@ -96,7 +96,7 @@ module RSpec
       end
 
       def failure_message_for_should
-        "expected #{@operator} #{@expected}, got #{@actual.inspect}"
+        "expected: #{@operator} #{@expected}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{@actual.inspect}"
       end
       
       def failure_message_for_should_not

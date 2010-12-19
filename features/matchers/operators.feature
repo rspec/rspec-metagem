@@ -1,114 +1,87 @@
 Feature: Operator matchers
 
   RSpec provides a number of matchers that are based on Ruby's built-in
-  operators.  These mostly work like you expect.  For example, each of these pass:
+  operators. These pretty much work like you expect. For example, each of these
+  pass:
 
-    * 7.should == 7
-    * 25.2.should < 100
-    * 8.should > 7
-    * 17.should <= 17
-    * 3.should >= 2
-    * [1, 2, 3].should == [1, 2, 3]
-    * "this is a string".should =~ /^this/
-    * "this is a string".should_not =~ /^that/
-    * String.should === "this is a string"
+      7.should == 7
+      [1, 2, 3].should == [1, 2, 3]
+      "this is a string".should =~ /^this/
+      "this is a string".should_not =~ /^that/
+      String.should === "this is a string"
+
+  You can also use comparison operators combined with the "be" matcher like
+  this:
+
+      37.should be < 100
+      37.should be <= 38
+      37.should be >= 2
+      37.should be > 7
 
   RSpec also provides a `=~` matcher for arrays that disregards differences in
   the ording between the actual and expected array.  For example:
 
-    * [1, 2, 3].should =~ [2, 3, 1] # pass
-    * [:a, :c, :b].should =~ [:a, :c] # fail
+      [1, 2, 3].should =~ [2, 3, 1] # pass
+      [:a, :c, :b].should =~ [:a, :c] # fail
 
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
       """
       describe 18 do
         it { should == 18 }
-        it { should < 20 }
-        it { should > 15 }
-        it { should <= 19 }
-        it { should >= 17 }
+        it { should be < 20 }
+        it { should be > 15 }
+        it { should be <= 19 }
+        it { should be >= 17 }
 
         it { should_not == 28 }
-        it { should_not < 15 }
-        it { should_not > 20 }
-        it { should_not <= 17 }
-        it { should_not >= 19 }
 
         # deliberate failures
         it { should == 28 }
-        it { should < 15 }
-        it { should > 20 }
-        it { should <= 17 }
-        it { should >= 19 }
+        it { should be < 15 }
+        it { should be > 20 }
+        it { should be <= 17 }
+        it { should be >= 19 }
 
         it { should_not == 18 }
-        it { should_not < 20 }
-        it { should_not > 15 }
-        it { should_not <= 19 }
-        it { should_not >= 17 }
       end
       """
      When I run "rspec numeric_operator_matchers_spec.rb"
-     Then the output should contain "20 examples, 10 failures"
+     Then the output should contain "12 examples, 6 failures"
       And the output should contain:
       """
            Failure/Error: it { should == 28 }
-           expected: 28,
+           expected: 28
                 got: 18 (using ==)
       """
       And the output should contain:
       """
-           Failure/Error: it { should < 15 }
-           expected: < 15,
+           Failure/Error: it { should be < 15 }
+           expected: < 15
                 got:   18
       """
       And the output should contain:
       """
-           Failure/Error: it { should > 20 }
-           expected: > 20,
+           Failure/Error: it { should be > 20 }
+           expected: > 20
                 got:   18
       """
       And the output should contain:
       """
-           Failure/Error: it { should <= 17 }
-           expected: <= 17,
+           Failure/Error: it { should be <= 17 }
+           expected: <= 17
                 got:    18
       """
       And the output should contain:
       """
-           Failure/Error: it { should >= 19 }
-           expected: >= 19,
+           Failure/Error: it { should be >= 19 }
+           expected: >= 19
                 got:    18
       """
       And the output should contain:
       """
            Failure/Error: it { should_not == 18 }
-           expected not: == 18,
-                    got:    18
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not < 20 }
-           expected not: < 20,
-                    got:   18
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not > 15 }
-           expected not: > 15,
-                    got:   18
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not <= 19 }
-           expected not: <= 19,
-                    got:    18
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not >= 17 }
-           expected not: >= 17,
+           expected not: == 18
                     got:    18
       """
 
@@ -159,79 +132,79 @@ Feature: Operator matchers
       And the output should contain:
       """
            Failure/Error: it { should == "Peach" }
-           expected: "Peach",
+           expected: "Peach"
                 got: "Strawberry" (using ==)
       """
       And the output should contain:
       """
            Failure/Error: it { should < "Cranberry" }
-           expected: < "Cranberry",
+           expected: < "Cranberry"
                 got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should > "Zuchini" }
-           expected: > "Zuchini",
+           expected: > "Zuchini"
                 got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should <= "Potato" }
-           expected: <= "Potato",
+           expected: <= "Potato"
                 got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should >= "Tomato" }
-           expected: >= "Tomato",
+           expected: >= "Tomato"
                 got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should =~ /apple/ }
-           expected: /apple/,
+           expected: /apple/
                 got: "Strawberry" (using =~)
       """
       And the output should contain:
       """
            Failure/Error: it { should_not == "Strawberry" }
-           expected not: == "Strawberry",
+           expected not: == "Strawberry"
                     got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not < "Tomato" }
-           expected not: < "Tomato",
+           expected not: < "Tomato"
                     got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not > "Apple" }
-           expected not: > "Apple",
+           expected not: > "Apple"
                     got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not <= "Turnip" }
-           expected not: <= "Turnip",
+           expected not: <= "Turnip"
                     got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not >= "Banana" }
-           expected not: >= "Banana",
+           expected not: >= "Banana"
                     got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not =~ /berry/ }
-           expected not: =~ /berry/,
+           expected not: =~ /berry/
                     got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: Symbol.should === subject
-           expected: "Strawberry",
+           expected: "Strawberry"
                 got: Symbol (using ===)
       """
 
@@ -260,13 +233,13 @@ Feature: Operator matchers
       And the output should contain:
       """
            Failure/Error: it { should_not == [1, 2, 3] }
-           expected not: == [1, 2, 3],
+           expected not: == [1, 2, 3]
                     got:    [1, 2, 3]
       """
       And the output should contain:
       """
            Failure/Error: it { should == [1, 3, 2] }
-           expected: [1, 3, 2],
+           expected: [1, 3, 2]
                 got: [1, 2, 3] (using ==)
       """
       And the output should contain:
