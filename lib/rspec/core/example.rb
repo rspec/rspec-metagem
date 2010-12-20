@@ -69,8 +69,9 @@ module RSpec
       class Procsy < Proc
         attr_reader :metadata
         alias_method :run, :call
-        def initialize(metadata)
+        def initialize(metadata, &block)
           @metadata = metadata
+          super(&block)
         end
       end
 
