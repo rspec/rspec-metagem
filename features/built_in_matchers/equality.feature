@@ -1,4 +1,4 @@
-Feature: Equality matchers
+Feature: equality matchers
 
   Ruby exposes several different methods for handling equality:
 

@@ -1,4 +1,4 @@
-Feature: Access running example
+Feature: access running example
 
   In order to take advantage of services that are available
     in my examples when I'm writing matchers

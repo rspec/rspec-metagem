@@ -1,4 +1,4 @@
-Feature: Expect change
+Feature: expect change
 
   Expect some code (wrapped in a proc) to change the state of some object.
   

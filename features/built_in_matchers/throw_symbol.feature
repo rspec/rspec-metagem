@@ -1,4 +1,4 @@
-Feature: Throw symbol matcher
+Feature: throw_symbol matcher
 
   The throw_symbol matcher is used to specify that a block of code
   throws a symbol.  The most basic form passes if any symbol is thrown:

@@ -1,4 +1,4 @@
-Feature: Define diffable matcher
+Feature: define diffable matcher
 
   When a matcher is defined as diffable, and the --diff
   flag is set, the output will include a diff of the submitted

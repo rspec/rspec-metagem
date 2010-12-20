@@ -1,4 +1,4 @@
-Feature: Define matcher outside rspec
+Feature: define matcher outside rspec
 
   In order to express my domain clearly in my code examples
   As a non-rspec user
