@@ -90,17 +90,13 @@ Feature: Operator matchers
       """
       describe "Strawberry" do
         it { should == "Strawberry" }
-        it { should < "Tomato" }
-        it { should > "Apple" }
-        it { should <= "Turnip" }
-        it { should >= "Banana" }
+        it { should be < "Tomato" }
+        it { should be > "Apple" }
+        it { should be <= "Turnip" }
+        it { should be >= "Banana" }
         it { should =~ /berry/ }
 
         it { should_not == "Peach" }
-        it { should_not < "Cranberry" }
-        it { should_not > "Zuchini" }
-        it { should_not <= "Potato" }
-        it { should_not >= "Tomato" }
         it { should_not =~ /apple/ }
 
         it "reports that it is a string using ===" do
@@ -109,17 +105,13 @@ Feature: Operator matchers
 
         # deliberate failures
         it { should == "Peach" }
-        it { should < "Cranberry" }
-        it { should > "Zuchini" }
-        it { should <= "Potato" }
-        it { should >= "Tomato" }
+        it { should be < "Cranberry" }
+        it { should be > "Zuchini" }
+        it { should be <= "Potato" }
+        it { should be >= "Tomato" }
         it { should =~ /apple/ }
 
         it { should_not == "Strawberry" }
-        it { should_not < "Tomato" }
-        it { should_not > "Apple" }
-        it { should_not <= "Turnip" }
-        it { should_not >= "Banana" }
         it { should_not =~ /berry/ }
 
         it "fails a spec asserting that it is a symbol" do
@@ -128,7 +120,7 @@ Feature: Operator matchers
       end
       """
      When I run "rspec string_operator_matchers_spec.rb"
-     Then the output should contain "26 examples, 13 failures"
+     Then the output should contain "18 examples, 9 failures"
       And the output should contain:
       """
            Failure/Error: it { should == "Peach" }
@@ -137,25 +129,25 @@ Feature: Operator matchers
       """
       And the output should contain:
       """
-           Failure/Error: it { should < "Cranberry" }
+           Failure/Error: it { should be < "Cranberry" }
            expected: < "Cranberry"
                 got:   "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: it { should > "Zuchini" }
+           Failure/Error: it { should be > "Zuchini" }
            expected: > "Zuchini"
                 got:   "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: it { should <= "Potato" }
+           Failure/Error: it { should be <= "Potato" }
            expected: <= "Potato"
                 got:    "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: it { should >= "Tomato" }
+           Failure/Error: it { should be >= "Tomato" }
            expected: >= "Tomato"
                 got:    "Strawberry"
       """
@@ -169,30 +161,6 @@ Feature: Operator matchers
       """
            Failure/Error: it { should_not == "Strawberry" }
            expected not: == "Strawberry"
-                    got:    "Strawberry"
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not < "Tomato" }
-           expected not: < "Tomato"
-                    got:   "Strawberry"
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not > "Apple" }
-           expected not: > "Apple"
-                    got:   "Strawberry"
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not <= "Turnip" }
-           expected not: <= "Turnip"
-                    got:    "Strawberry"
-      """
-      And the output should contain:
-      """
-           Failure/Error: it { should_not >= "Banana" }
-           expected not: >= "Banana"
                     got:    "Strawberry"
       """
       And the output should contain:

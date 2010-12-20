@@ -96,7 +96,7 @@ module RSpec
       end
 
       def failure_message_for_should
-        "expected: #{@operator} #{@expected}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{@actual.inspect}"
+        "expected: #{@operator} #{@expected.inspect}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{@actual.inspect}"
       end
       
       def failure_message_for_should_not

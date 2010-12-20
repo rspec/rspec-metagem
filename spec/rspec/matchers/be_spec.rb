@@ -347,7 +347,7 @@ describe "should be ===" do
   end
 
   it "fails when === operator returns false" do
-    lambda { Hash.should be === "not a hash" }.should fail_with(%[expected: === not a hash\n     got:     Hash])
+    lambda { Hash.should be === "not a hash" }.should fail_with(%[expected: === "not a hash"\n     got:     Hash])
   end
 end
 
