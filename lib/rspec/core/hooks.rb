@@ -51,7 +51,9 @@ module RSpec
 
       class HookCollection < Array
         def find_hooks_for(group)
-          dup.reject {|hook| !hook.options_apply?(group)}
+          a = dup
+          a.reject! {|hook| !hook.options_apply?(group)}
+          a
         end
       end
 
