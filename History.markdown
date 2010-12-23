@@ -14,6 +14,8 @@
     has not been defined yet. 
   * eliminate some warnings when running RSpec's own suite (Jarmo Pertman)
   * fix bug due to change in behavior of reject in Ruby 1.9.3-dev (Shota Fukumori)
+  * fix bug when running in jruby: be explicit about passing block to super
+    (John Firebaugh)
 
 ### 2.3.0 / 2010-12-12
 
