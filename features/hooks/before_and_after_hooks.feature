@@ -1,19 +1,16 @@
 Feature: before and after hooks
 
-  As a developer using RSpec
-  I want to execute arbitrary code before and after each example
-  So that I can control the environment in which it is run
+  Use `before` and `after` hooks to execute arbitrary code before and/or
+  after the body of an example is run:
 
-    This is supported by the before and after methods which each take a symbol
-    indicating the scope, and a block of code to execute.
+      before(:each) # run before each example
+      before(:all)  # run one time only, before all of the examples in a group
 
-    before(:each) blocks are run before each example
-    before(:all) blocks are run once before all of the examples in a group
+      after(:each) # run after each example
+      after(:all)  # run one time only, after all of the examples in a group
 
-    after(:each) blocks are run after each example
-    after(:all) blocks are run once after all of the examples in a group
+  Before and after blocks are called in the following order:
 
-    Before and after blocks are called in the following order:
       before suite
       before all
       before each
@@ -21,10 +18,10 @@ Feature: before and after hooks
       after  all
       after  suite
 
-    Before and after blocks can be defined in the example groups to which they
-    apply or in a configuration. When defined in a configuration, they can be
-    applied to all groups or subsets of all groups defined by example group
-    types.
+  `before` and `after` hooks can be defined directly in the example groups they
+  should run in, or in a global RSpec.configure block.  When defined in a
+  configuration, they can be applied to all groups or subsets of all groups
+  filtered by metadata associated with each example and/or group.
 
   Scenario: define before(:each) block
     Given a file named "before_each_spec.rb" with:
