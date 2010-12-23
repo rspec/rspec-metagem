@@ -13,6 +13,7 @@
   * send debugger warning message to $stdout if RSpec.configuration.error_stream
     has not been defined yet. 
   * eliminate some warnings when running RSpec's own suite (Jarmo Pertman)
+  * fix bug due to changes to how reject works in Ruby 1.9.3-dev (Shota Fukumori)
 
 ### 2.3.0 / 2010-12-12
 
