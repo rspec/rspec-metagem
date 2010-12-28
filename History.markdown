@@ -17,6 +17,7 @@
   * fix bug due to change in behavior of reject in Ruby 1.9.3-dev (Shota Fukumori)
   * fix bug when running in jruby: be explicit about passing block to super
     (John Firebaugh)
+  * rake task doesn't choke on paths with quotes (Janmejay Singh)
 
 ### 2.3.0 / 2010-12-12
 
