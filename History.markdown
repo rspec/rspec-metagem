@@ -8,6 +8,7 @@
   * start the debugger on -d so the stack trace is visible when it stops
     (Clifford Heath)
   * HTML Formatter _finally_ properly displays nested groups (Jarmo Pertman)
+  * apply hook filtering to examples as well as groups (Myron Marston)
 
 * Bug fixes
   * send debugger warning message to $stdout if RSpec.configuration.error_stream
