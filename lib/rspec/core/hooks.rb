@@ -10,8 +10,8 @@ module RSpec
           @block = block
         end
 
-        def options_apply?(group)
-          !group || group.apply?(:all?, options)
+        def options_apply?(example_or_group)
+          !example_or_group || example_or_group.apply?(:all?, options)
         end
 
         def to_proc
@@ -50,8 +50,8 @@ module RSpec
       end
 
       class HookCollection < Array
-        def find_hooks_for(group)
-          self.class.new(select {|hook| hook.options_apply?(group)})
+        def find_hooks_for(example_or_group)
+          self.class.new(select {|hook| hook.options_apply?(example_or_group)})
         end
       end
 
@@ -112,12 +112,12 @@ module RSpec
         hooks[hook][scope].run_all!(example_group_instance)
       end
 
-      def run_hook_filtered(hook, scope, group, example_group_instance)
-        find_hook(hook, scope, group).run_all(example_group_instance)
+      def run_hook_filtered(hook, scope, group, example_group_instance, example = nil)
+        find_hook(hook, scope, group, example).run_all(example_group_instance)
       end
 
-      def find_hook(hook, scope, example_group_class)
-        hooks[hook][scope].find_hooks_for(example_group_class)
+      def find_hook(hook, scope, example_group_class, example = nil)
+        hooks[hook][scope].find_hooks_for(example || example_group_class)
       end
 
     private

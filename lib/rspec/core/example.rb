@@ -2,7 +2,7 @@ module RSpec
   module Core
     class Example
 
-      attr_reader :metadata, :options
+      attr_reader :metadata, :options, :example_group_instance
 
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
@@ -21,6 +21,15 @@ module RSpec
 
       def example_group
         @example_group_class
+      end
+
+      def around_hooks
+        @around_hooks ||= example_group.around_hooks_for(self)
+      end
+
+      def apply?(predicate, filters)
+        @metadata.apply?(predicate, filters) ||
+        @example_group_class.apply?(predicate, filters)
       end
 
       alias_method :pending?, :pending
@@ -85,10 +94,10 @@ module RSpec
       end
 
       def with_around_hooks
-        if @example_group_class.around_hooks.empty?
+        if around_hooks.empty?
           yield
         else
-          @example_group_class.eval_around_eachs(@example_group_instance, Procsy.new(metadata)).call
+          @example_group_class.eval_around_eachs(self, Procsy.new(metadata)).call
         end
       end
 
@@ -124,11 +133,11 @@ module RSpec
 
       def run_before_each
         @example_group_instance.setup_mocks_for_rspec if @example_group_instance.respond_to?(:setup_mocks_for_rspec)
-        @example_group_class.eval_before_eachs(@example_group_instance)
+        @example_group_class.eval_before_eachs(self)
       end
 
       def run_after_each
-        @example_group_class.eval_after_eachs(@example_group_instance)
+        @example_group_class.eval_after_eachs(self)
         @example_group_instance.verify_mocks_for_rspec if @example_group_instance.respond_to?(:verify_mocks_for_rspec)
       ensure
         @example_group_instance.teardown_mocks_for_rspec if @example_group_instance.respond_to?(:teardown_mocks_for_rspec)

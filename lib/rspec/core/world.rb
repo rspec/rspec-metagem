@@ -81,8 +81,8 @@ module RSpec
 
       include RSpec::Core::Hooks
 
-      def find_hook(hook, scope, group)
-        @configuration.find_hook(hook, scope, group)
+      def find_hook(hook, scope, group, example = nil)
+        @configuration.find_hook(hook, scope, group, example)
       end
 
     private

@@ -19,9 +19,7 @@ Feature: before and after hooks
       after  suite
 
   `before` and `after` hooks can be defined directly in the example groups they
-  should run in, or in a global RSpec.configure block.  When defined in a
-  configuration, they can be applied to all groups or subsets of all groups
-  filtered by metadata associated with each example and/or group.
+  should run in, or in a global RSpec.configure block.
 
   Scenario: define before(:each) block
     Given a file named "before_each_spec.rb" with:

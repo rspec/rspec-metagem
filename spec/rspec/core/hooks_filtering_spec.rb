@@ -81,6 +81,60 @@ module RSpec::Core
         group.run
         filters.should == []
       end
+
+      context "when the hook filters apply to individual examples instead of example groups" do
+        let(:each_filters) { [] }
+        let(:all_filters) { [] }
+
+        let(:group) do
+          md = example_metadata
+          ExampleGroup.describe do
+            it("example", md) { }
+          end
+        end
+
+        def filters
+          each_filters + all_filters
+        end
+
+        before(:each) do
+          af, ef = all_filters, each_filters
+
+          RSpec.configure do |c|
+            c.before(:all,  :foo => :bar) { af << "before all in config"}
+            c.around(:each, :foo => :bar) {|example| ef << "around each in config"; example.run}
+            c.before(:each, :foo => :bar) { ef << "before each in config"}
+            c.after(:each,  :foo => :bar) { ef << "after each in config"}
+            c.after(:all,   :foo => :bar) { af << "after all in config"}
+          end
+
+          group.run
+        end
+
+        describe 'an example with matching metadata' do
+          let(:example_metadata) { { :foo => :bar } }
+
+          it "runs the `:each` hooks" do
+            each_filters.should == [
+              'around each in config',
+              'before each in config',
+              'after each in config'
+            ]
+          end
+
+          it "does not run the `:all` hooks" do
+            all_filters.should be_empty
+          end
+        end
+
+        describe 'an example without matching metadata' do
+          let(:example_metadata) { { :foo => :bazz } }
+
+          it "does not run any of the hooks" do
+            filters.should be_empty
+          end
+        end
+      end
     end
 
     describe "hooks with multiple filters" do

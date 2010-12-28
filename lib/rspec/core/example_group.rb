@@ -177,22 +177,22 @@ module RSpec
         store_before_all_ivars(example_group_instance)
       end
 
-      def self.eval_around_eachs(example_group_instance, initial_procsy)
-        around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
+      def self.eval_around_eachs(example, initial_procsy)
+        example.around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
           Example::Procsy.new(procsy.metadata) do
-            example_group_instance.instance_eval_with_args(procsy, &around_hook)
+            example.example_group_instance.instance_eval_with_args(procsy, &around_hook)
           end
         end
       end
 
-      def self.eval_before_eachs(example_group_instance)
-        world.run_hook_filtered(:before, :each, self, example_group_instance)
-        ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example_group_instance) }
+      def self.eval_before_eachs(example)
+        world.run_hook_filtered(:before, :each, self, example.example_group_instance, example)
+        ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example.example_group_instance) }
       end
 
-      def self.eval_after_eachs(example_group_instance)
-        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example_group_instance) }
-        world.run_hook_filtered(:after, :each, self, example_group_instance)
+      def self.eval_after_eachs(example)
+        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example.example_group_instance) }
+        world.run_hook_filtered(:after, :each, self, example.example_group_instance, example)
       end
 
       def self.eval_after_alls(example_group_instance)
@@ -215,8 +215,8 @@ An error occurred in an after(:all) hook.
         world.run_hook_filtered(:after, :all, self, example_group_instance) if top_level?
       end
 
-      def self.around_hooks
-        @around_hooks ||= (world.find_hook(:around, :each, self) + ancestors.reverse.inject([]){|l,a| l + a.find_hook(:around, :each, self)})
+      def self.around_hooks_for(example)
+        world.find_hook(:around, :each, self, example) + ancestors.reverse.inject([]){|l,a| l + a.find_hook(:around, :each, self, example)}
       end
 
       def self.run(reporter)
