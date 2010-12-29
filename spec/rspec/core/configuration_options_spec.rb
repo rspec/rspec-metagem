@@ -1,6 +1,6 @@
 require 'spec_helper'
-
 require 'ostruct'
+require 'tmpdir'
 
 describe RSpec::Core::ConfigurationOptions do
 
@@ -10,7 +10,7 @@ describe RSpec::Core::ConfigurationOptions do
     coo
   end
 
-  def options_from_args(*args)
+  def parse_options(*args)
     config_options_object(*args).options
   end
 
@@ -32,109 +32,103 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe 'color_enabled' do
-    example "-c, --colour, or --color are parsed as true" do
-      options_from_args('-c').should include(:color_enabled => true)
-      options_from_args('--color').should include(:color_enabled => true)
-      options_from_args('--colour').should include(:color_enabled => true)
-    end
-
-    example "--no-color is parsed as false" do
-      options_from_args('--no-color').should include(:color_enabled => false)
+  describe "-c, --color, and --colour" do
+    it "sets :color_enabled => true" do
+      parse_options('-c').should include(:color_enabled => true)
+      parse_options('--color').should include(:color_enabled => true)
+      parse_options('--colour').should include(:color_enabled => true)
     end
   end
 
-  describe 'load path additions' do
-    example "-I parses like it does w/ ruby command" do
-      options_from_args('-I', 'a_dir').should include(:libs => ['a_dir'])
+  describe "--no-color" do
+    it "sets :color_enabled => false" do
+      parse_options('--no-color').should include(:color_enabled => false)
     end
-    example "-I can be used more than once" do
-      options_from_args('-I', 'dir_1', '-I', 'dir_2').should include(:libs => ['dir_1','dir_2'])
+  end
+
+  describe "-I" do
+    example "adds to :libs" do
+      parse_options('-I', 'a_dir').should include(:libs => ['a_dir'])
+    end
+    example "can be used more than once" do
+      parse_options('-I', 'dir_1', '-I', 'dir_2').should include(:libs => ['dir_1','dir_2'])
     end
   end
 
   describe '--require' do
-    example "--requires files" do
-      options_from_args('--require', 'a/path').should include(:requires => ['a/path'])
+    example "requires files" do
+      parse_options('--require', 'a/path').should include(:requires => ['a/path'])
     end
-    example "--require can be used more than once" do
-      options_from_args('--require', 'path/1', '--require', 'path/2').should include(:requires => ['path/1','path/2'])
-    end
-  end
-
-  describe  'format' do
-    example '-f or --format with an argument should parse' do
-      options_from_args('--format', 'd').should include(:formatter => 'd')
-      options_from_args('-f', 'd').should include(:formatter => 'd')
-      options_from_args('-fd').should include(:formatter => 'd')
-    end
-
-    example "-f/--format can accept a class name" do
-      options_from_args('-fSome::Formatter::Class').should include(:formatter => 'Some::Formatter::Class')
+    example "can be used more than once" do
+      parse_options('--require', 'path/1', '--require', 'path/2').should include(:requires => ['path/1','path/2'])
     end
   end
 
-  describe 'profile_examples' do
-    example "-p or --profile should be parsed as true" do
-      options_from_args('-p').should include(:profile_examples => true)
-      options_from_args('--profile').should include(:profile_examples => true)
+  describe "--format, -f" do
+    it "sets :formatter" do
+      parse_options('--format', 'd').should include(:formatter => 'd')
+      parse_options('-f', 'd').should include(:formatter => 'd')
+      parse_options('-fd').should include(:formatter => 'd')
+    end
+
+    example "can accept a class name" do
+      parse_options('-fSome::Formatter::Class').should include(:formatter => 'Some::Formatter::Class')
     end
   end
 
-  describe 'line_number' do
-    it "is parsed from -l or --line_number" do
-      options_from_args('-l','3').should include(:line_number => '3')
-      options_from_args('--line_number','3').should include(:line_number => '3')
+  describe "--profile, -p" do
+    it "sets :profile_examples => true" do
+      parse_options('-p').should include(:profile_examples => true)
+      parse_options('--profile').should include(:profile_examples => true)
     end
   end
 
-  describe "example" do
-    it "is parsed from --example or -e" do
-      options_from_args('--example','foo').should include(:full_description => /foo/)
-      options_from_args('-e','bar').should include(:full_description => /bar/)
+  describe '--line_number' do
+    it "sets :line_number" do
+      parse_options('-l','3').should include(:line_number => '3')
+      parse_options('--line_number','3').should include(:line_number => '3')
     end
   end
 
-  describe "files_or_directories_to_run" do
-    it "parses files from '-c file.rb dir/file.rb'" do
-      options_from_args("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+  describe "--example" do
+    it "sets :full_description" do
+      parse_options('--example','foo').should include(:full_description => /foo/)
+      parse_options('-e','bar').should include(:full_description => /bar/)
     end
-
-    it "parses dir from 'dir'" do
-      options_from_args("dir").should include(:files_or_directories_to_run => ["dir"])
-    end
-
-    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      options_from_args("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
-    end
-
-    it "provides no files or directories if spec directory does not exist" do
-      FileTest.stub(:directory?).with("spec").and_return false
-      options_from_args().should include(:files_or_directories_to_run => [])
-    end
-
-    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      options_from_args("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
-
-    end
-
   end
 
-  describe "--backtrace (-b)" do
+  describe "--backtrace, -b" do
     it "sets full_backtrace on config" do
-      options_from_args("--backtrace").should include(:full_backtrace => true)
-      options_from_args("-b").should include(:full_backtrace => true)
+      parse_options("--backtrace").should include(:full_backtrace => true)
+      parse_options("-b").should include(:full_backtrace => true)
     end
   end
 
-  describe "--debug (-d)" do
-    it "sets debug on config" do
-      options_from_args("--debug").should include(:debug => true)
-      options_from_args("-d").should include(:debug => true)
+  describe "--debug, -d" do
+    it "sets :debug => true" do
+      parse_options("--debug").should include(:debug => true)
+      parse_options("-d").should include(:debug => true)
     end
   end
 
-  describe "--drb (-X)" do
+  describe "--fail-fast" do
+    it "defaults to false" do
+      parse_options[:fail_fast].should be_false
+    end
+
+    it "sets fail_fast on config" do
+      parse_options("--fail-fast")[:fail_fast].should be_true
+    end
+  end
+
+  describe "--options" do
+    it "sets :custom_options_file" do
+      parse_options(*%w[-O my.opts]).should include(:custom_options_file => "my.opts")
+      parse_options(*%w[--options my.opts]).should include(:custom_options_file => "my.opts")
+    end
+  end
+
+  describe "--drb, -X" do
     context "combined with --debug" do
       it "turns off the debugger if --drb is specified first" do
         config_options_object("--drb", "--debug").drb_argv.should_not include("--debug")
@@ -170,8 +164,32 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "files_or_directories_to_run" do
+    it "parses files from '-c file.rb dir/file.rb'" do
+      parse_options("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+    end
+
+    it "parses dir from 'dir'" do
+      parse_options("dir").should include(:files_or_directories_to_run => ["dir"])
+    end
+
+    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+    end
+
+    it "provides no files or directories if spec directory does not exist" do
+      FileTest.stub(:directory?).with("spec").and_return false
+      parse_options().should include(:files_or_directories_to_run => [])
+    end
+
+    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+
+    end
+
+  end
+
   # TODO ensure all options are output
-  # TODO check if we need to spec that the short options are "expanded" ("-v" becomes "--version" currently)
   describe "#drb_argv" do
     it "preserves extra arguments" do
       File.stub(:exist?) { false }
@@ -180,6 +198,10 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "includes --fail-fast" do
       config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
+    end
+
+    it "includes --options" do
+      config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
     end
 
     context "--drb specified in ARGV" do
@@ -217,97 +239,71 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "--fail-fast" do
-    it "sets fail_fast on config" do
-      options_from_args("--fail-fast").should include(:fail_fast => true)
-    end
-  end
+  describe "sources: ~/.rspec, ./.rspec, custom, SPEC_OPTS, and CLI" do
+    let(:local_options_file)  { File.join(Dir.tmpdir, ".rspec-local") }
+    let(:global_options_file) { File.join(Dir.tmpdir, ".rspec-global") }
+    let(:custom_options_file) { File.join(Dir.tmpdir, "custom.options") }
 
-  describe "options file (override)" do
-    let(:config) { OpenStruct.new }
-
-    it "loads automatically" do
-      File.stub(:exist?) { true }
-      IO.stub(:read) { "--format doc" }
-
-      config_options = RSpec::Core::ConfigurationOptions.new([])
-      config_options.parse_options
-      config_options.configure(config)
-      config.formatter.should == 'doc'
-    end
-
-    it "merges options from the global and local .rspec and the command line" do
-      File.stub(:exist?){ true }
-      IO.stub(:read) do |path|
-        case path
-        when ".rspec"
-          "--format documentation"
-        when /\.rspec/
-          "--line 37"
-        else
-          raise "Unexpected path: #{path}"
-        end
-      end
-      config_options = RSpec::Core::ConfigurationOptions.new(["--no-color"])
-      config_options.parse_options
-
-      config_options.configure(config)
-
-      config.formatter.should == "documentation"
-      config.line_number.should == "37"
-      config.color_enabled.should be_false
+    before do
+      @orig_spec_opts = ENV["SPEC_OPTS"]
+      @orig_global_options_file = RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE
+      @orig_local_options_file  = RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE
+      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :GLOBAL_OPTIONS_FILE
+      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :LOCAL_OPTIONS_FILE
+      RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE = global_options_file
+      RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE  = local_options_file
+      FileUtils.rm local_options_file if File.exist? local_options_file
+      FileUtils.rm global_options_file if File.exist? global_options_file
+      FileUtils.rm custom_options_file if File.exist? custom_options_file
     end
 
-    it "prefers local options over global" do
-      File.stub(:exist?){ true }
-      IO.stub(:read) do |path|
-        case path
-        when ".rspec"
-          "--format local"
-        when /\.rspec/
-          "--format global"
-        else
-          raise "Unexpected path: #{path}"
-        end
-      end
-      config_options = RSpec::Core::ConfigurationOptions.new([])
-      config_options.parse_options
-
-      config_options.configure(config)
-
-      config.formatter.should == "local"
+    after do
+      ENV["SPEC_OPTS"] = @orig_spec_opts
+      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :GLOBAL_OPTIONS_FILE
+      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :LOCAL_OPTIONS_FILE
+      RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE = @orig_global_options_file
+      RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE  = @orig_local_options_file
     end
 
-    it "prefers CLI options over file options" do
-      config_options = RSpec::Core::ConfigurationOptions.new(['--format', 'progress'])
-      config_options.stub(:parse_options_file).and_return(:formatter => 'documentation')
-
-      config_options.parse_options
-      config_options.configure(config)
-
-      config.formatter.should == 'progress'
+    def write_options(scope, options)
+      File.open(send("#{scope}_options_file"), 'w') { |f| f.write(options) }
     end
 
-    context "with SPEC_OPTS" do
-      before do
-        @orig_spec_opts = ENV["SPEC_OPTS"]
-      end
+    it "merges global, local, SPEC_OPTS, and CLI" do
+      write_options(:global, "--color")
+      write_options(:local,  "--line 37")
+      ENV["SPEC_OPTS"] = "--format documentation"
+      options = parse_options("--drb")
+      options[:color_enabled].should be_true
+      options[:line_number].should eq("37")
+      options[:formatter].should eq("documentation")
+      options[:drb].should be_true
+    end
 
-      after do
-        ENV["SPEC_OPTS"] = @orig_spec_opts
-      end
+    it "prefers CLI over SPEC_OPTS" do
+      ENV["SPEC_OPTS"] = "--format spec_opts"
+      parse_options("--format", "cli")[:formatter].should eq('cli')
+    end
 
-      it "prefers SPEC_OPTS options over file options" do
-        config = OpenStruct.new
-        ENV["SPEC_OPTS"] = "--format documentation"
-        config_options = RSpec::Core::ConfigurationOptions.new(['--format', 'progress'])
+    it "prefers SPEC_OPTS over file options" do
+      write_options(:local,  "--format local")
+      write_options(:global, "--format global")
+      ENV["SPEC_OPTS"] = "--format spec_opts"
+      parse_options[:formatter].should eq('spec_opts')
+    end
 
-        config_options.parse_options
-        config_options.configure(config)
+    it "prefers local file options over global" do
+      write_options(:local,  "--format local")
+      write_options(:global, "--format global")
+      parse_options[:formatter].should eq('local')
+    end
 
-        config.formatter.should == 'documentation'
+    context "with custom options file" do
+      it "ignores local and global options files" do
+        write_options(:local, "--color")
+        write_options(:global, "--color")
+        parse_options("-O", custom_options_file)[:color_enabled].should be_false
       end
     end
   end
 end
-

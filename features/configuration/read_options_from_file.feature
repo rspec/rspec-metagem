@@ -8,7 +8,7 @@ Feature: read command line configuration options from files
 
   Options declared in the local file override those in the global file, while
   those declared in RSpec.configure will override any ".rspec" file.
-  
+
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
       """
@@ -31,6 +31,43 @@ Feature: read command line configuration options from files
       end
       """
     When I run "rspec ./spec/example_spec.rb"
+    Then the output should contain "1 example, 0 failures"
+
+  Scenario: custom options file
+    Given a file named "my.options" with:
+      """
+      --format documentation
+      """
+    And a file named "spec/example_spec.rb" with:
+      """
+      describe "formatter set in custom options file" do
+        it "sets formatter" do
+          RSpec.configuration.formatter.
+            should be_a(RSpec::Core::Formatters::DocumentationFormatter)
+        end
+      end
+      """
+    When I run "rspec spec/example_spec.rb --options my.options"
+    Then the output should contain "1 example, 0 failures"
+
+  Scenario: RSpec ignores ./.rspec when custom options file is used
+    Given a file named "my.options" with:
+      """
+      --format documentation
+      """
+    And a file named ".rspec" with:
+      """
+      --color
+      """
+    And a file named "spec/example_spec.rb" with:
+      """
+      describe "custom options file" do
+        it "causes .rspec to be ignored" do
+          RSpec.configuration.color_enabled.should be_false
+        end
+      end
+      """
+    When I run "rspec spec/example_spec.rb --options my.options"
     Then the output should contain "1 example, 0 failures"
 
   Scenario: formatter set in RSpec.configure overrides .rspec
