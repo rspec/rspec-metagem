@@ -18,6 +18,7 @@
   * fix bug when running in jruby: be explicit about passing block to super
     (John Firebaugh)
   * rake task doesn't choke on paths with quotes (Janmejay Singh)
+  * restore --options option from rspec-1
 
 ### 2.3.0 / 2010-12-12
 
