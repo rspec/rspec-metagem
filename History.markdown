@@ -20,6 +20,7 @@
   * rake task doesn't choke on paths with quotes (Janmejay Singh)
   * restore --options option from rspec-1
   * require 'ostruct' to fix bug with its([key]) (Kim Burgestrand)
+  * --configure option generates .rspec file instead of autotest/discover.rb
 
 ### 2.3.0 / 2010-12-12
 

@@ -3,18 +3,20 @@ Feature: configure
   Use the --configure option on the command line to generate configuration
   files.
 
-  The only supported argument, so far, is "autotest", which creates an
-  autotest/discover.rb file in your project root directory.
+  The only supported argument, so far, is "autotest", which creates a .rspec
+  file in your project root directory. When autotest sees this file, it knows
+  to load RSpec's Autotest subclass.
 
-  Background:
-    Given a directory named "rspec_project"
+  Scenario: generate .rspec file for autotest
+    When I run "rspec --configure autotest"
+    Then the following files should exist:
+      | .rspec |
+    And the stdout should contain ".rspec file did not exist, so it was created."
 
-  Scenario: generate autotest directory and discover file
-    When I cd to "rspec_project"
-    And I run "rspec --configure autotest"
-    Then the following directories should exist:
-      | autotest |
-    And the following files should exist:
-      | autotest/discover.rb |
-    And the file "autotest/discover.rb" should contain "Autotest.add_discovery"
-    And the stdout should contain "autotest/discover.rb has been added"
+  Scenario: .rspec file already exists
+    Given a file named ".rspec" with:
+      """
+      --color
+      """
+    When I run "rspec --configure autotest"
+    Then the stdout should contain ".rspec file already exists, so nothing was changed."
