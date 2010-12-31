@@ -19,6 +19,7 @@
     (John Firebaugh)
   * rake task doesn't choke on paths with quotes (Janmejay Singh)
   * restore --options option from rspec-1
+  * require 'ostruct' to fix bug with its([key]) (Kim Burgestrand)
 
 ### 2.3.0 / 2010-12-12
 
