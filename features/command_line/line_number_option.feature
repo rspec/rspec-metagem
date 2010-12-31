@@ -1,8 +1,8 @@
-Feature: line number option
+Feature: --line option
 
   To run a single example or group, you can use the --line option:
 
-    rspec path/to/example_spec.rb --line 37
+      rspec path/to/example_spec.rb --line 37
 
   Scenario: standard examples
     Given a file named "example_spec.rb" with:

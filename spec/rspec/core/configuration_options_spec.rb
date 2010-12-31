@@ -27,7 +27,7 @@ describe RSpec::Core::ConfigurationOptions do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
       config.should_receive(:requires=).ordered
-      config.should_receive(:formatter=).ordered
+      config.should_receive(:add_formatter).ordered
       opts.configure(config)
     end
   end
@@ -66,13 +66,13 @@ describe RSpec::Core::ConfigurationOptions do
 
   describe "--format, -f" do
     it "sets :formatter" do
-      parse_options('--format', 'd').should include(:formatter => 'd')
-      parse_options('-f', 'd').should include(:formatter => 'd')
-      parse_options('-fd').should include(:formatter => 'd')
+      parse_options('--format', 'd').should include(:formatters => [['d']])
+      parse_options('-f', 'd').should include(:formatters => [['d']])
+      parse_options('-fd').should include(:formatters => [['d']])
     end
 
     example "can accept a class name" do
-      parse_options('-fSome::Formatter::Class').should include(:formatter => 'Some::Formatter::Class')
+      parse_options('-fSome::Formatter::Class').should include(:formatters => [['Some::Formatter::Class']])
     end
   end
 
@@ -207,7 +207,7 @@ describe RSpec::Core::ConfigurationOptions do
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
         config_options_object(*%w[ --drb --color --format s --line_number 1 --example pattern --profile --backtrace -I path/a -I path/b --require path/c --require path/d]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern -I path/a -I path/b --require path/c --require path/d])
+          drb_argv.should eq(%w[ --color --profile --backtrace --line_number 1 --example pattern --format s -I path/a -I path/b --require path/c --require path/d])
       end
     end
 
@@ -216,7 +216,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --tty --format s --line_number 1 --example pattern --profile --backtrace ]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --tty --format s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --tty --line_number 1 --example pattern --format s])
       end
     end
 
@@ -225,7 +225,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --line_number 1 --example pattern --format s])
       end
     end
 
@@ -234,7 +234,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.stub(:exist?) { true }
         IO.stub(:read) { "--drb --color" }
         config_options_object(*%w[ --drb --format s --line_number 1 --example pattern --profile --backtrace]).
-          drb_argv.should eq(%w[ --color --profile --backtrace --format s --line_number 1 --example pattern ])
+          drb_argv.should eq(%w[ --color --profile --backtrace --line_number 1 --example pattern --format s ])
       end
     end
   end
@@ -272,30 +272,30 @@ describe RSpec::Core::ConfigurationOptions do
     it "merges global, local, SPEC_OPTS, and CLI" do
       write_options(:global, "--color")
       write_options(:local,  "--line 37")
-      ENV["SPEC_OPTS"] = "--format documentation"
+      ENV["SPEC_OPTS"] = "--debug"
       options = parse_options("--drb")
       options[:color_enabled].should be_true
       options[:line_number].should eq("37")
-      options[:formatter].should eq("documentation")
+      options[:debug].should be_true
       options[:drb].should be_true
     end
 
     it "prefers CLI over SPEC_OPTS" do
       ENV["SPEC_OPTS"] = "--format spec_opts"
-      parse_options("--format", "cli")[:formatter].should eq('cli')
+      parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
 
     it "prefers SPEC_OPTS over file options" do
       write_options(:local,  "--format local")
       write_options(:global, "--format global")
       ENV["SPEC_OPTS"] = "--format spec_opts"
-      parse_options[:formatter].should eq('spec_opts')
+      parse_options[:formatters].should eq([['spec_opts']])
     end
 
     it "prefers local file options over global" do
       write_options(:local,  "--format local")
       write_options(:global, "--format global")
-      parse_options[:formatter].should eq('local')
+      parse_options[:formatters].should eq([['local']])
     end
 
     context "with custom options file" do

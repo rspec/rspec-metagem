@@ -8,14 +8,8 @@ module RSpec::Core
 
     let(:output_file){ mock File }
 
-    it "deprecates the --formatter option" do
-      RSpec.should_receive(:deprecate)
-      Parser.parse!(%w[--formatter doc])
-    end
-
-    it "converts --formatter to --format" do
-      options = Parser.parse!(%w[--formatter doc])
-      options.should eq( {:formatter=>"doc"} )
+    before do
+      File.stub(:open).with("foo.txt",'w') { (output_file) }
     end
 
     it "does not parse empty args" do
@@ -24,16 +18,58 @@ module RSpec::Core
       parser.parse!([])
     end
 
-    it "parses output stream from --out" do
-      File.should_receive(:open).with("foo.txt",'w').and_return(output_file)
-      options = Parser.parse!(%w[--out foo.txt])
-      options.should eq( {:output_stream=>output_file} )
+    describe "--formatter" do
+      it "is deprecated" do
+        RSpec.should_receive(:deprecate)
+        Parser.parse!(%w[--formatter doc])
+      end
+
+      it "gets converted to --format" do
+        options = Parser.parse!(%w[--formatter doc])
+        options[:formatters].first.should eq(["doc"])
+      end
     end
 
-    it "parses output stream from -o" do
-      File.should_receive(:open).with("foo.txt",'w').and_return(output_file)
-      options = Parser.parse!(%w[-o foo.txt])
-      options.should eq( {:output_stream=>output_file} )
+    describe "--format" do
+      it "defines the formatter" do
+        options = Parser.parse!(%w[--format doc])
+        options[:formatters].first.should eq(["doc"])
+      end
+    end
+
+    describe "-f" do
+      it "defines the formatter" do
+        options = Parser.parse!(%w[-f doc])
+        options[:formatters].first.should eq(["doc"])
+      end
+    end
+
+    %w[--out -o].each do |option|
+      describe option do
+        let(:options) { Parser.parse!([option, 'foo.txt']) }
+
+        it "sets the output stream for the formatter" do
+          options[:formatters].last.should eq(['progress', output_file])
+        end
+
+        context "with multiple formatters" do
+          context "after last formatter" do
+            it "sets the output stream for the last formatter" do
+              options = Parser.parse!(['-f', 'progress', '-f', 'doc', option, 'foo.txt'])
+              options[:formatters][0].should eq(['progress'])
+              options[:formatters][1].should eq(['doc', output_file])
+            end
+          end
+
+          context "after first formatter" do
+            it "sets the output stream for the first formatter" do
+              options = Parser.parse!(['-f', 'progress', option, 'foo.txt', '-f', 'doc'])
+              options[:formatters][0].should eq(['progress', output_file])
+              options[:formatters][1].should eq(['doc'])
+            end
+          end
+        end
+      end
     end
   end
 end

@@ -9,6 +9,7 @@
     (Clifford Heath)
   * HTML Formatter _finally_ properly displays nested groups (Jarmo Pertman)
   * apply hook filtering to examples as well as groups (Myron Marston)
+  * support multiple formatters, each with their own output
 
 * Bug fixes
   * send debugger warning message to $stdout if RSpec.configuration.error_stream

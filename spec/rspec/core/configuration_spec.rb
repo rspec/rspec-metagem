@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tmpdir'
 
 module RSpec::Core
 
@@ -350,47 +351,71 @@ module RSpec::Core
     end
 
     describe 'formatter=' do
+      it "delegates to add_formatter (better API for user-facing configuration)" do
+        config.should_receive(:add_formatter).with('these','options')
+        config.add_formatter('these','options')
+      end
+    end
 
-      it "sets formatter_to_use based on name" do
-        config.formatter = :documentation
-        config.formatter.should be_an_instance_of(Formatters::DocumentationFormatter)
-        config.formatter = 'documentation'
-        config.formatter.should be_an_instance_of(Formatters::DocumentationFormatter)
+    describe "add_formatter" do
+
+      it "adds to the list of formatters" do
+        config.add_formatter :documentation
+        config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
       end
 
-      it "sets a formatter based on its class" do
+      it "finds a formatter by name (w/ Symbol)" do
+        config.add_formatter :documentation
+        config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
+      end
+
+      it "finds a formatter by name (w/ String)" do
+        config.add_formatter 'documentation'
+        config.formatters.first.should be_an_instance_of(Formatters::DocumentationFormatter)
+      end
+
+      it "finds a formatter by class" do
         formatter_class = Class.new(Formatters::BaseTextFormatter)
-        config.formatter = formatter_class
-        config.formatter.should be_an_instance_of(formatter_class)
+        config.add_formatter formatter_class
+        config.formatters.first.should be_an_instance_of(formatter_class)
       end
 
-      it "sets a formatter based on its class name" do
+      it "finds a formatter by class name" do
         Object.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.formatter = "CustomFormatter"
-        config.formatter.should be_an_instance_of(CustomFormatter)
+        config.add_formatter "CustomFormatter"
+        config.formatters.first.should be_an_instance_of(CustomFormatter)
       end
 
-      it "sets a formatter based on its class fully qualified name" do
+      it "finds a formatter by class fully qualified name" do
         RSpec.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.formatter = "RSpec::CustomFormatter"
-        config.formatter.should be_an_instance_of(RSpec::CustomFormatter)
+        config.add_formatter "RSpec::CustomFormatter"
+        config.formatters.first.should be_an_instance_of(RSpec::CustomFormatter)
       end
 
-      it "requires and sets a formatter based on its class fully qualified name" do
+      it "requires a formatter file based on its fully qualified name" do
         config.should_receive(:require).with('rspec/custom_formatter2') do
           RSpec.const_set("CustomFormatter2", Class.new(Formatters::BaseFormatter))
         end
-        config.formatter = "RSpec::CustomFormatter2"
-        config.formatter.should be_an_instance_of(RSpec::CustomFormatter2)
+        config.add_formatter "RSpec::CustomFormatter2"
+        config.formatters.first.should be_an_instance_of(RSpec::CustomFormatter2)
       end
 
       it "raises NameError if class is unresolvable" do
         config.should_receive(:require).with('rspec/custom_formatter3')
-        lambda { config.formatter = "RSpec::CustomFormatter3" }.should raise_error(NameError)
+        lambda { config.add_formatter "RSpec::CustomFormatter3" }.should raise_error(NameError)
       end
 
       it "raises ArgumentError if formatter is unknown" do
-        lambda { config.formatter = :progresss }.should raise_error(ArgumentError)
+        lambda { config.add_formatter :progresss }.should raise_error(ArgumentError)
+      end
+
+      context "with a 2nd arg defining the output" do
+        it "sets that as the output" do
+          file = File.join(Dir.tmpdir, 'output.txt')
+          config.add_formatter('doc', file)
+          config.formatters.first.should be_a(RSpec::Core::Formatters::DocumentationFormatter)
+          config.formatters.first.output.should eq(file)
+        end
       end
 
     end

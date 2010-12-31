@@ -1,18 +1,18 @@
-Feature: tag option
+Feature: --tag option
 
-  Use the --tag (or -t) option to filter the examples to be run by tag.
+  Use the --tag (or -t) option to filter the examples by tags.
   
   The tag can be a simple name or a name:value pair. In the first case,
   examples with :name => true will be filtered. In the second case, examples
-  with :name => value will be filtered, where value is always a string.
-  In both cases, name is converted to a symbol.
+  with :name => value will be filtered, where value is always a string.  In
+  both cases, name is converted to a symbol.
   
-  Tags can also be used to exclude examples by adding a ~ before the tag.
-  For example ~tag will exclude all examples marked with :tag => true and
+  Tags can also be used to exclude examples by adding a ~ before the tag.  For
+  example ~tag will exclude all examples marked with :tag => true and
   ~tag:value will exclude all examples marked with :tag => value.
   
   To be compatible with the Cucumber syntax, tags can optionally start with
-  a @, that will be ignored.
+  an @ symbol, which will be ignored.
 
   Background:
     Given a file named "tagged_spec.rb" with:

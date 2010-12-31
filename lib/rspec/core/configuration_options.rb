@@ -18,8 +18,14 @@ module RSpec
         keys = options.keys
         keys.unshift(:requires) if keys.delete(:requires)
         keys.unshift(:libs)     if keys.delete(:libs)
+        formatters = options[:formatters] if keys.delete(:formatters)
         keys.each do |key|
           config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
+        end
+        if formatters
+          formatters.each do |pair|
+            config.add_formatter(*pair)
+          end
         end
       end
 
@@ -30,10 +36,17 @@ module RSpec
         argv << "--backtrace" if options[:full_backtrace]
         argv << "--tty"       if options[:tty]
         argv << "--fail-fast"  if options[:fail_fast]
-        argv << "--format"       << options[:formatter]               if options[:formatter]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
         argv << "--options"      << options[:custom_options_file]            if options[:custom_options_file]
         argv << "--example"      << options[:full_description].source if options[:full_description]
+        if options[:formatters]
+          options[:formatters].each do |pair|
+            argv << "--format" << pair.shift
+            unless pair.empty?
+              argv << "--out" << pair.shift
+            end
+          end
+        end
         (options[:libs] || []).each do |path|
           argv << "-I" << path
         end

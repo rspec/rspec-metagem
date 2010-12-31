@@ -14,3 +14,7 @@ Then /^the example(s)? should( all)? pass$/ do |*|
   Then %q{the output should contain "0 failures"}
   Then %q{the exit status should be 0}
 end
+
+Then /^the file "([^"]*)" should contain:$/ do |file, partial_content|
+  check_file_content(file, partial_content, true)
+end

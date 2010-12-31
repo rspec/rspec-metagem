@@ -47,12 +47,18 @@ module RSpec::Core
                 '  [d]ocumentation (group and example names)',
                 '  [h]tml',
                 '  [t]extmate',
-                '  custom formatter class name') do |o|
-          options[:formatter] = o
+                '  custom formatter class name') do |f|
+          options[:formatters] ||= []
+          options[:formatters] << [f]
         end
 
-        parser.on('-o', '--out FILE', 'output to a file instead of STDOUT') do |o|
-          options[:output_stream] = File.open(o,'w')
+        parser.on('-o', '--out FILE',
+                  'Write output to a file instead of STDOUT. This option applies',
+                  'to the previously specified --format, or the default format if',
+                  'no format is specified.'
+                 ) do |o|
+          options[:formatters] ||= [['progress']]
+          options[:formatters].last << File.open(o,'w')
         end
 
         parser.on_tail('-h', '--help', "You're looking at it.") do

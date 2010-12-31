@@ -1,4 +1,4 @@
-Feature: configure
+Feature: --configure option
 
   Use the --configure option on the command line to generate configuration
   files.

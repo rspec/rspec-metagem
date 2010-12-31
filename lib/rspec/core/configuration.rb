@@ -263,28 +263,33 @@ EOM
         filter_run({ :full_description => /#{description}/ }, true)
       end
 
-      attr_writer :formatter_class
-
-      def formatter_class
-        @formatter_class ||= begin
-                               require 'rspec/core/formatters/progress_formatter'
-                               RSpec::Core::Formatters::ProgressFormatter
-                             end
-      end
-
-      def formatter=(formatter_to_use)
-        self.formatter_class =
+      def add_formatter(formatter_to_use, output=nil)
+        formatter_class =
           built_in_formatter(formatter_to_use) ||
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+
+        formatters << formatter_class.new(output || self.output)
       end
 
-      def formatter
-        @formatter ||= formatter_class.new(output)
+      alias_method :formatter=, :add_formatter
+
+      def formatters
+        @formatters ||= []
       end
 
       def reporter
-        @reporter ||= Reporter.new(formatter)
+        @reporter ||= begin
+                        add_formatter('progress') if formatters.empty?
+                        Reporter.new(*formatters)
+                      end
+      end
+
+      def default_formatter
+        @default_formatter ||= begin
+                                 require 'rspec/core/formatters/progress_formatter'
+                                 RSpec::Core::Formatters::ProgressFormatter.new(output)
+                               end
       end
 
       def files_or_directories_to_run=(*files)
