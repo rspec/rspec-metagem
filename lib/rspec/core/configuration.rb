@@ -285,13 +285,6 @@ EOM
                       end
       end
 
-      def default_formatter
-        @default_formatter ||= begin
-                                 require 'rspec/core/formatters/progress_formatter'
-                                 RSpec::Core::Formatters::ProgressFormatter.new(output)
-                               end
-      end
-
       def files_or_directories_to_run=(*files)
         self.files_to_run = files.flatten.collect do |file|
           if File.directory?(file)
