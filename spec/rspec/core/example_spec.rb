@@ -122,13 +122,28 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
       
     context "in before(:each)" do
-      it "sets the example to pending" do
+      it "sets each example to pending" do
         group = RSpec::Core::ExampleGroup.describe do
           before(:each) { pending }
+          example {}
           example {}
         end
         group.run
         group.examples.first.should be_pending
+        group.examples.last.should be_pending
+      end
+    end
+
+    context "in before(:all)" do
+      it "sets each example to pending" do
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:all) { pending }
+          example {}
+          example {}
+        end
+        group.run
+        group.examples.first.should be_pending
+        group.examples.last.should be_pending
       end
     end
 
@@ -143,18 +158,5 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
     end
 
-    context "in before(:all)" do
-      pending "is not supported" do
-        group = RSpec::Core::ExampleGroup.describe do
-          before(:all) { pending }
-          example {}
-        end
-        group.run
-        group.examples.first.should be_pending
-        expect do
-          group.run
-        end.to raise_error(/undefined method `metadata'/)
-      end
-    end
   end
 end

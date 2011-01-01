@@ -4,6 +4,8 @@ module RSpec
       DEFAULT_MESSAGE = 'No reason given'
 
       def pending(*args)
+        return self.class.before(:each) { pending(*args) } unless example
+
         options = args.last.is_a?(Hash) ? args.pop : {}
         message = args.first || DEFAULT_MESSAGE
 

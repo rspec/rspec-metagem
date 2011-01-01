@@ -11,6 +11,7 @@
   * support multiple formatters, each with their own output
   * show exception classes in failure messages unless they come from RSpec
     matchers or message expectations
+  * before(:all) { pending } sets all examples to pending
 
 * Bug fixes
   * fix bug due to change in behavior of reject in Ruby 1.9.3-dev (Shota Fukumori)
