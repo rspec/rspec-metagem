@@ -46,25 +46,25 @@ module RSpec::Core
 
     %w[--out -o].each do |option|
       describe option do
-        let(:options) { Parser.parse!([option, 'foo.txt']) }
+        let(:options) { Parser.parse!([option, 'out.txt']) }
 
         it "sets the output stream for the formatter" do
-          options[:formatters].last.should eq(['progress', output_file])
+          options[:formatters].last.should eq(['progress', 'out.txt'])
         end
 
         context "with multiple formatters" do
           context "after last formatter" do
             it "sets the output stream for the last formatter" do
-              options = Parser.parse!(['-f', 'progress', '-f', 'doc', option, 'foo.txt'])
+              options = Parser.parse!(['-f', 'progress', '-f', 'doc', option, 'out.txt'])
               options[:formatters][0].should eq(['progress'])
-              options[:formatters][1].should eq(['doc', output_file])
+              options[:formatters][1].should eq(['doc', 'out.txt'])
             end
           end
 
           context "after first formatter" do
             it "sets the output stream for the first formatter" do
-              options = Parser.parse!(['-f', 'progress', option, 'foo.txt', '-f', 'doc'])
-              options[:formatters][0].should eq(['progress', output_file])
+              options = Parser.parse!(['-f', 'progress', option, 'out.txt', '-f', 'doc'])
+              options[:formatters][0].should eq(['progress', 'out.txt'])
               options[:formatters][1].should eq(['doc'])
             end
           end

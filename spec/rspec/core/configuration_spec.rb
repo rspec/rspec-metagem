@@ -410,11 +410,11 @@ module RSpec::Core
       end
 
       context "with a 2nd arg defining the output" do
-        it "sets that as the output" do
-          file = File.join(Dir.tmpdir, 'output.txt')
-          config.add_formatter('doc', file)
-          config.formatters.first.should be_a(RSpec::Core::Formatters::DocumentationFormatter)
-          config.formatters.first.output.should eq(file)
+        it "creates a file at that path and sets it as the output" do
+          path = File.join(Dir.tmpdir, 'output.txt')
+          config.add_formatter('doc', path)
+          config.formatters.first.output.should be_a(File)
+          config.formatters.first.output.path.should eq(path)
         end
       end
 

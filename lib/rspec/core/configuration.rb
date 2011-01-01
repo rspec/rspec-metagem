@@ -269,7 +269,7 @@ EOM
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
-        formatters << formatter_class.new(output || self.output)
+        formatters << formatter_class.new(output ? File.new(output, 'w') : self.output)
       end
 
       alias_method :formatter=, :add_formatter

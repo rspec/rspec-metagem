@@ -58,7 +58,7 @@ module RSpec::Core
                   'no format is specified.'
                  ) do |o|
           options[:formatters] ||= [['progress']]
-          options[:formatters].last << File.open(o,'w')
+          options[:formatters].last << o
         end
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
