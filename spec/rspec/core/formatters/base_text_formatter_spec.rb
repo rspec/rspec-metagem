@@ -46,6 +46,30 @@ module RSpec::Core::Formatters
         output.string.should =~ /(\s+)expected \"that\"\n\1     got \"this\"/m
       end
 
+      context "with an exception class other than RSpec" do
+        it "does not show the error class" do
+          group.example("example name") { raise NameError.new('foo') }
+          run_all_and_dump_failures
+          output.string.should =~ /NameError/m
+        end
+      end
+
+      context "with a failed expectation (rspec-expectations)" do
+        it "does not show the error class" do
+          group.example("example name") { "this".should eq("that") }
+          run_all_and_dump_failures
+          output.string.should_not =~ /RSpec/m
+        end
+      end
+
+      context "with a failed message expectation (rspec-mocks)" do
+        it "does not show the error class" do
+          group.example("example name") { "this".should_receive("that") }
+          run_all_and_dump_failures
+          output.string.should_not =~ /RSpec/m
+        end
+      end
+
       context 'for #share_examples_for' do
         it 'outputs the name and location' do
 
@@ -153,7 +177,7 @@ module RSpec::Core::Formatters
         formatter.dump_profile
         filename = __FILE__.split(File::SEPARATOR).last
 
-        output.string.should =~ /#{filename}\:135/
+        output.string.should =~ /#{filename}\:#{__LINE__ - 21}/
       end
     end
   end
