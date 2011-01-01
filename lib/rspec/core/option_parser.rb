@@ -47,9 +47,9 @@ module RSpec::Core
                 '  [d]ocumentation (group and example names)',
                 '  [h]tml',
                 '  [t]extmate',
-                '  custom formatter class name') do |f|
+                '  custom formatter class name') do |o|
           options[:formatters] ||= []
-          options[:formatters] << [f]
+          options[:formatters] << [o]
         end
 
         parser.on('-o', '--out FILE',
