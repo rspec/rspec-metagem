@@ -1,8 +1,8 @@
 ## rspec-core release history (incomplete)
 
-### 2.4.0 / in development
+### 2.4.0 / 2011-01-02
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.3.1...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.3.1...v2.4.0)
 
 * Enhancements
   * start the debugger on -d so the stack trace is visible when it stops
