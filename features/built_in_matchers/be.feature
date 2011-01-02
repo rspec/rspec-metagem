@@ -83,28 +83,28 @@ Feature: "be" matchers
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """
-           expected: not nil
-                got: nil
+             expected: not nil
+                  got: nil
       """
     And the output should contain:
       """
-           expected: nil
-                got: false
+             expected: nil
+                  got: false
       """
     And the output should contain:
       """
-           expected: nil
-                got: true
+             expected: nil
+                  got: true
       """
     And the output should contain:
       """
-           expected: nil
-                got: 7
+             expected: nil
+                  got: 7
       """
     And the output should contain:
       """
-           expected: nil
-                got: "foo"
+             expected: nil
+                  got: "foo"
       """
 
   Scenario: be matcher

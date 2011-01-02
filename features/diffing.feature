@@ -24,12 +24,12 @@ Feature: diffing
     When I run "rspec example_spec.rb"
     Then the output should contain:
       """
-           Diff:
-           @@ -1,4 +1,4 @@
-            this is the
-           -  expected
-           +  actual
-                string
+             Diff:
+             @@ -1,4 +1,4 @@
+              this is the
+             -  expected
+             +  actual
+                  string
       """
 
   Scenario: diff for a multiline string and a regexp
@@ -50,12 +50,12 @@ Feature: diffing
     When I run "rspec example_spec.rb"
     Then the output should contain:
       """
-           Diff:
-           @@ -1,2 +1,4 @@
-           -/expected/m
-           +this is the
-           +  actual
-           +    string
+             Diff:
+             @@ -1,2 +1,4 @@
+             -/expected/m
+             +this is the
+             +  actual
+             +    string
       """
 
   Scenario: no diff for a single line strings

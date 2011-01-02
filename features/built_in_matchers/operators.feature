@@ -51,38 +51,38 @@ Feature: operator matchers
       And the output should contain:
       """
            Failure/Error: it { should == 28 }
-           expected: 28
-                got: 18 (using ==)
+             expected: 28
+                  got: 18 (using ==)
       """
       And the output should contain:
       """
            Failure/Error: it { should be < 15 }
-           expected: < 15
-                got:   18
+             expected: < 15
+                  got:   18
       """
       And the output should contain:
       """
            Failure/Error: it { should be > 20 }
-           expected: > 20
-                got:   18
+             expected: > 20
+                  got:   18
       """
       And the output should contain:
       """
            Failure/Error: it { should be <= 17 }
-           expected: <= 17
-                got:    18
+             expected: <= 17
+                  got:    18
       """
       And the output should contain:
       """
            Failure/Error: it { should be >= 19 }
-           expected: >= 19
-                got:    18
+             expected: >= 19
+                  got:    18
       """
       And the output should contain:
       """
            Failure/Error: it { should_not == 18 }
-           expected not: == 18
-                    got:    18
+             expected not: == 18
+                      got:    18
       """
 
   Scenario: string operator matchers
@@ -124,56 +124,56 @@ Feature: operator matchers
       And the output should contain:
       """
            Failure/Error: it { should == "Peach" }
-           expected: "Peach"
-                got: "Strawberry" (using ==)
+             expected: "Peach"
+                  got: "Strawberry" (using ==)
       """
       And the output should contain:
       """
            Failure/Error: it { should be < "Cranberry" }
-           expected: < "Cranberry"
-                got:   "Strawberry"
+             expected: < "Cranberry"
+                  got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should be > "Zuchini" }
-           expected: > "Zuchini"
-                got:   "Strawberry"
+             expected: > "Zuchini"
+                  got:   "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should be <= "Potato" }
-           expected: <= "Potato"
-                got:    "Strawberry"
+             expected: <= "Potato"
+                  got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should be >= "Tomato" }
-           expected: >= "Tomato"
-                got:    "Strawberry"
+             expected: >= "Tomato"
+                  got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should =~ /apple/ }
-           expected: /apple/
-                got: "Strawberry" (using =~)
+             expected: /apple/
+                  got: "Strawberry" (using =~)
       """
       And the output should contain:
       """
            Failure/Error: it { should_not == "Strawberry" }
-           expected not: == "Strawberry"
-                    got:    "Strawberry"
+             expected not: == "Strawberry"
+                      got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: it { should_not =~ /berry/ }
-           expected not: =~ /berry/
-                    got:    "Strawberry"
+             expected not: =~ /berry/
+                      got:    "Strawberry"
       """
       And the output should contain:
       """
            Failure/Error: Symbol.should === subject
-           expected: "Strawberry"
-                got: Symbol (using ===)
+             expected: "Strawberry"
+                  got: Symbol (using ===)
       """
 
   Scenario: array operator matchers
@@ -201,21 +201,21 @@ Feature: operator matchers
       And the output should contain:
       """
            Failure/Error: it { should_not == [1, 2, 3] }
-           expected not: == [1, 2, 3]
-                    got:    [1, 2, 3]
+             expected not: == [1, 2, 3]
+                      got:    [1, 2, 3]
       """
       And the output should contain:
       """
            Failure/Error: it { should == [1, 3, 2] }
-           expected: [1, 3, 2]
-                got: [1, 2, 3] (using ==)
+             expected: [1, 3, 2]
+                  got: [1, 2, 3] (using ==)
       """
       And the output should contain:
       """
            Failure/Error: it { should =~ [1, 2, 1] }
-           expected collection contained:  [1, 1, 2]
-           actual collection contained:    [1, 2, 3]
-           the missing elements were:      [1]
-           the extra elements were:        [3]
+             expected collection contained:  [1, 1, 2]
+             actual collection contained:    [1, 2, 3]
+             the missing elements were:      [1]
+             the extra elements were:        [3]
       """
 
