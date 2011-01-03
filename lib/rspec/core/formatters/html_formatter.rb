@@ -72,7 +72,7 @@ module RSpec
         end
 
         def example_failed(example)
-          counter = 0
+          super(example)
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
           failure_style = 'failed'
@@ -84,7 +84,7 @@ module RSpec
           move_progress
           @output.puts "    <dd class=\"spec #{failure_style}\">"
           @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
-          @output.puts "      <div class=\"failure\" id=\"failure_#{counter}\">"
+          @output.puts "      <div class=\"failure\" id=\"failure_#{@failed_examples.size}\">"
           @output.puts "        <div class=\"message\"><pre>#{h(exception.message)}</pre></div>" unless exception.nil?
           @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(exception.backtrace, example).join("\n")}</pre></div>" if exception
           @output.puts extra unless extra == ""
