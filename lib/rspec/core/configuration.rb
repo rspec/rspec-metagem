@@ -368,7 +368,6 @@ EOM
 
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.apply?(:any?, filters)
-          next if self.class < mod
           group.send(include_or_extend, mod)
         end
       end
