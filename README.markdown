@@ -19,18 +19,18 @@ components of rspec that you're not using.
 
 ### rspec-core
 
-* [Cucumber features](http://relishapp.com/rspec/rspec-core/v/2-0)
-* [RDoc](http://rubydoc.info/gems/rspec-core/2.0.1/frames)
+* [Cucumber features](http://relishapp.com/rspec/rspec-core)
+* [RDoc](http://rubydoc.info/gems/rspec-core/2.4.0/frames)
 
 ### rspec-expectations
 
-* [Cucumber features](http://relishapp.com/rspec/rspec-expectations/v/2-0)
-* [RDoc](http://rubydoc.info/gems/rspec-expectations/2.0.1/frames)
+* [Cucumber features](http://relishapp.com/rspec/rspec-expectations)
+* [RDoc](http://rubydoc.info/gems/rspec-expectations/2.4.0/frames)
 
 ### rspec-mocks
 
-* [Cucumber features](http://relishapp.com/rspec/rspec-mocks/v/2-0)
-* [RDoc](http://rubydoc.info/gems/rspec-mocks/2.0.1/frames)
+* [Cucumber features](http://relishapp.com/rspec/rspec-mocks)
+* [RDoc](http://rubydoc.info/gems/rspec-mocks/2.4.0/frames)
 
 ## Install
 
