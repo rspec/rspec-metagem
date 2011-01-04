@@ -1,4 +1,34 @@
-## rspec-core release history (incomplete)
+### 2.4.0 / 2011-01-02
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.3.1...v2.4.0)
+
+* Enhancements
+  * start the debugger on -d so the stack trace is visible when it stops
+    (Clifford Heath)
+  * apply hook filtering to examples as well as groups (Myron Marston)
+  * support multiple formatters, each with their own output
+  * show exception classes in failure messages unless they come from RSpec
+    matchers or message expectations
+  * before(:all) { pending } sets all examples to pending
+
+* Bug fixes
+  * fix bug due to change in behavior of reject in Ruby 1.9.3-dev (Shota Fukumori)
+  * fix bug when running in jruby: be explicit about passing block to super
+    (John Firebaugh)
+  * rake task doesn't choke on paths with quotes (Janmejay Singh)
+  * restore --options option from rspec-1
+  * require 'ostruct' to fix bug with its([key]) (Kim Burgestrand)
+  * --configure option generates .rspec file instead of autotest/discover.rb
+
+### 2.3.1 / 2010-12-16
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.3.0...v2.3.1)
+
+* Bug fixes
+  * send debugger warning message to $stdout if RSpec.configuration.error_stream
+    has not been defined yet. 
+  * HTML Formatter _finally_ properly displays nested groups (Jarmo Pertman)
+  * eliminate some warnings when running RSpec's own suite (Jarmo Pertman)
 
 ### 2.3.0 / 2010-12-12
 
