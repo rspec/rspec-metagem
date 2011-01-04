@@ -1,5 +1,12 @@
 ## rspec-core release history (incomplete)
 
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.4.0...master)
+
+* Bug fixes
+  * fix dom IDs in HTML formatter (Brian Faherty)
+
 ### 2.4.0 / 2011-01-02
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.3.1...v2.4.0)
