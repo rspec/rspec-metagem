@@ -313,13 +313,36 @@ a {
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'</pre></div>
-    <pre class="ruby"><code><span class="linenum">30</span>            <span class="ident">teardown_mocks_for_rspec</span>
-<span class="linenum">31</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">32</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">33</span>        <span class="keyword">end</span>
-<span class="linenum">34</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyHash.java:1063:in `fetch'
+org/jruby/RubyProc.java:274:in `call'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyIO.java:1111:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyDir.java:335:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyKernel.java:2078:in `instance_exec'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:233:in `call'</pre></div>
+    <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
+<span class="linenum">19</span>        <span class="number">1</span><span class="punct">.</span><span class="ident">should</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
+<span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -347,12 +370,35 @@ expected: 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'</pre></div>
-    <pre class="ruby"><code><span class="linenum">30</span>        <span class="keyword">end</span>
-<span class="linenum">31</span>
-<span class="offending"><span class="linenum">32</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
-<span class="linenum">33</span>      <span class="keyword">end</span></code></pre>
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyHash.java:1063:in `fetch'
+org/jruby/RubyProc.java:274:in `call'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyIO.java:1111:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyDir.java:335:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyKernel.java:2078:in `instance_exec'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:233:in `call'</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">33</span>    <span class="number">1</span><span class="punct">.</span><span class="ident">should</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
+<span class="linenum">34</span>  <span class="keyword">end</span>
+<span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -370,8 +416,30 @@ org/jruby/RubyArray.java:2336:in `collect'</pre></div>
         <div class="backtrace"><pre>(erb):1:in `result'
 org/jruby/RubyKernel.java:1088:in `eval'
 ./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'</pre></div>
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyHash.java:1063:in `fetch'
+org/jruby/RubyProc.java:274:in `call'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyIO.java:1111:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
+org/jruby/RubyDir.java:335:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyKernel.java:2061:in `instance_eval'
+org/jruby/RubyKernel.java:2078:in `instance_exec'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:229:in `call'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyArray.java:2336:in `collect'
+org/jruby/RubyProc.java:274:in `call'
+org/jruby/RubyProc.java:233:in `call'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>

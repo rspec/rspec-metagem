@@ -5,7 +5,7 @@ require 'nokogiri'
 module RSpec
   module Core
     module Formatters
-      describe HtmlFormatter do
+      describe HtmlFormatter, :if => RUBY_VERSION =~ /^(1.8.7|1.9.2|1.9.3)$/ do
         let(:jruby?) { ::RUBY_PLATFORM == 'java' }
         let(:root)   { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
         let(:suffix) { jruby? ? '-jruby' : '' }
