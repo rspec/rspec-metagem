@@ -1,11 +1,11 @@
 Feature: exist matcher
 
   The exist matcher is used to specify that something exists
-  (as indicated by #exist?):
+  (as indicated by #exist? or #exists?):
 
-    obj.should exist # passes if obj.exist?
+    obj.should exist # passes if obj.exist? or obj.exists?
 
-  Scenario: basic usage
+  Scenario Outline: basic usage
     Given a file named "exist_matcher_spec.rb" with:
       """
       class Planet
@@ -19,7 +19,7 @@ Feature: exist matcher
           "<Planet: #{name}>"
         end
 
-        def exist?
+        def <predicate_method>
           %w[Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune].include?(name)
         end
       end
@@ -41,4 +41,9 @@ Feature: exist matcher
       | 4 examples, 2 failures                |
       | expected <Planet: Earth> not to exist |
       | expected <Planet: Tatooine> to exist  |
+
+    Examples:
+      | predicate_method |
+      | exist?           |
+      | exists?          |
 
