@@ -6,6 +6,7 @@
 
 * Bug fixes
   * fix dom IDs in HTML formatter (Brian Faherty)
+  * fix bug with --drb + formatters when not running in drb
 
 ### 2.4.0 / 2011-01-02
 

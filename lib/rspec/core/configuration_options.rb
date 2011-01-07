@@ -31,20 +31,18 @@ module RSpec
 
       def drb_argv
         argv = []
-        argv << "--color"     if options[:color_enabled]
-        argv << "--profile"   if options[:profile_examples]
-        argv << "--backtrace" if options[:full_backtrace]
-        argv << "--tty"       if options[:tty]
-        argv << "--fail-fast"  if options[:fail_fast]
+        argv << "--color"        if options[:color_enabled]
+        argv << "--profile"      if options[:profile_examples]
+        argv << "--backtrace"    if options[:full_backtrace]
+        argv << "--tty"          if options[:tty]
+        argv << "--fail-fast"    if options[:fail_fast]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
-        argv << "--options"      << options[:custom_options_file]            if options[:custom_options_file]
+        argv << "--options"      << options[:custom_options_file]     if options[:custom_options_file]
         argv << "--example"      << options[:full_description].source if options[:full_description]
         if options[:formatters]
           options[:formatters].each do |pair|
-            argv << "--format" << pair.shift
-            unless pair.empty?
-              argv << "--out" << pair.shift
-            end
+            argv << "--format" << pair[0]
+            argv << "--out" << pair[1] if pair[1]
           end
         end
         (options[:libs] || []).each do |path|

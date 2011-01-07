@@ -162,6 +162,7 @@ describe RSpec::Core::ConfigurationOptions do
     it "does not send --drb back to the parser after parsing options" do
       config_options_object("--drb", "--color").drb_argv.should_not include("--drb")
     end
+
   end
 
   describe "files_or_directories_to_run" do
@@ -202,6 +203,25 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "includes --options" do
       config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
+    end
+
+    context "with formatters" do
+      it "includes the formatters" do
+        coo = config_options_object("--format", "d")
+        coo.drb_argv.should eq(["--format", "d"])
+      end
+
+      it "leaves formatters intact" do
+        coo = config_options_object("--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["d"]])
+      end
+
+      it "leaves output intact" do
+        coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["p","foo.txt"],["d"]])
+      end
     end
 
     context "--drb specified in ARGV" do
