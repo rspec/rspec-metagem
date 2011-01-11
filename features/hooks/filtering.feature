@@ -127,9 +127,15 @@ Feature: Global Hook Filtering
         it("example 1") { }
         it("example 2") { }
       end
+
+      describe "group 3" do
+        describe "subgroup 1", :foo => :bar do
+          it("example 1") { }
+        end
+      end
       """
     When I run "rspec filter_before_all_hooks_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the output should contain "5 examples, 0 failures"
     And the output should contain:
       """
       group 1
@@ -140,6 +146,11 @@ Feature: Global Hook Filtering
       In hook
         example 1
         example 2
+
+      group 3
+        subgroup 1
+      In hook
+          example 1
       """
 
   Scenario: Filter after(:all) hooks using arbitrary metadata
@@ -158,9 +169,15 @@ Feature: Global Hook Filtering
         it("example 1") { }
         it("example 2") { }
       end
+
+      describe "group 3" do
+        describe "subgroup 1", :foo => :bar do
+          it("example 1") { }
+        end
+      end
       """
     When I run "rspec filter_after_all_hooks_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the output should contain "5 examples, 0 failures"
     And the output should contain:
       """
       group 1
@@ -170,5 +187,10 @@ Feature: Global Hook Filtering
       group 2
         example 1
         example 2
+      In hook
+
+      group 3
+        subgroup 1
+          example 1
       In hook
       """

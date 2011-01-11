@@ -173,7 +173,7 @@ module RSpec
       def self.eval_before_alls(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
-        world.run_hook_filtered(:before, :all, self, example_group_instance) if top_level?
+        world.run_hook_filtered(:before, :all, self, example_group_instance)
         run_hook!(:before, :all, example_group_instance)
         store_before_all_ivars(example_group_instance)
       end
@@ -213,7 +213,7 @@ An error occurred in an after(:all) hook.
         EOS
         end
 
-        world.run_hook_filtered(:after, :all, self, example_group_instance) if top_level?
+        world.run_hook_filtered(:after, :all, self, example_group_instance)
       end
 
       def self.around_hooks_for(example)
