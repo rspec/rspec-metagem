@@ -14,7 +14,7 @@ end
 gem "rake", "0.8.7"
 gem "cucumber", "0.9.4"
 gem "aruba", "0.2.2"
-gem "rcov", "0.9.9"
+gem "rcov", "0.9.9", :platforms => :mri
 gem "relish", "0.2.0"
 gem "guard-rspec", "0.1.9"
 gem "growl", "1.0.3"
@@ -26,10 +26,15 @@ if RUBY_PLATFORM =~ /darwin/
   gem "autotest-growl", "~> 0.2.9"
 end
 
-gem "ruby-debug", :platforms => :ruby_18
-gem "ruby-debug19", "~> 0.11.6", :platforms => :ruby_19
+gem "ruby-debug", :platforms => :mri_18
+gem "ruby-debug19", "~> 0.11.6", :platforms => :mri_19
 
-platforms :ruby_18, :ruby_19 do
+case RUBY_VERSION
+  when '1.9.1'; gem 'ruby-debug-base19', '0.11.23'
+  when '1.9.2'; gem 'ruby-debug-base19', '0.11.24'
+end
+
+platforms :mri_18, :mri_19 do
   gem "rb-fsevent", "~> 0.3.9"
   gem "ruby-prof", "~> 0.9.2"
 end
