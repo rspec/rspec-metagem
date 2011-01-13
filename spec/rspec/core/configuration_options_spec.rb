@@ -272,7 +272,7 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "sources: ~/.rspec, ./.rspec, custom, SPEC_OPTS, and CLI" do
+  describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
     let(:local_options_file)  { File.join(Dir.tmpdir, ".rspec-local") }
     let(:global_options_file) { File.join(Dir.tmpdir, ".rspec-global") }
     let(:custom_options_file) { File.join(Dir.tmpdir, "custom.options") }
@@ -313,16 +313,15 @@ describe RSpec::Core::ConfigurationOptions do
       options[:drb].should be_true
     end
 
-    it "prefers CLI over SPEC_OPTS" do
+    it "prefers SPEC_OPTS over CLI" do
       ENV["SPEC_OPTS"] = "--format spec_opts"
-      parse_options("--format", "cli")[:formatters].should eq([['cli']])
+      parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
     end
 
-    it "prefers SPEC_OPTS over file options" do
+    it "prefers CLI over file options" do
       write_options(:local,  "--format local")
       write_options(:global, "--format global")
-      ENV["SPEC_OPTS"] = "--format spec_opts"
-      parse_options[:formatters].should eq([['spec_opts']])
+      parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
 
     it "prefers local file options over global" do

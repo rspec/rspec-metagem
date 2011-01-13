@@ -68,8 +68,8 @@ module RSpec
                        options_to_merge << global_options
                        options_to_merge << local_options
                      end
-                     options_to_merge << env_options
                      options_to_merge << command_line_options
+                     options_to_merge << env_options
 
                      options_to_merge.inject do |merged, options|
                        merged.merge(options)
