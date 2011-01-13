@@ -228,6 +228,21 @@ module RSpec::Core
 
     end
 
+    [:focus, :focused].each do |example_alias|
+      describe "##{example_alias}" do
+        let(:group) { ExampleGroup.describe }
+        subject { group.send example_alias, "a focused example" }
+
+        it 'defines an example that can be filtered with :focused => true' do
+          subject.metadata.should include(:focused => true)
+        end
+
+        it 'defines an example that can be filtered with :focus => true' do
+          subject.metadata.should include(:focus => true)
+        end
+      end
+    end
+
     describe "#before, after, and around hooks" do
 
       it "runs the before alls in order" do
