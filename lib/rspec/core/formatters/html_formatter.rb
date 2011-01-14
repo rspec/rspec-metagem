@@ -67,7 +67,7 @@ module RSpec
 
         def example_passed(example)
           move_progress
-          @output.puts "    <dd class=\"spec passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span></dd>"
+          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span></dd>"
           @output.flush
         end
 
@@ -75,7 +75,6 @@ module RSpec
           super(example)
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
-          failure_style = 'failed'
           failure_style = RSpec::Core::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
@@ -83,7 +82,7 @@ module RSpec
           @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{example_group_number}');</script>" unless @example_group_red
           @example_group_red = true
           move_progress
-          @output.puts "    <dd class=\"spec #{failure_style}\">"
+          @output.puts "    <dd class=\"example #{failure_style}\">"
           @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
           @output.puts "      <div class=\"failure\" id=\"failure_#{@failed_examples.size}\">"
           @output.puts "        <div class=\"message\"><pre>#{h(exception.message)}</pre></div>" unless exception.nil?
@@ -100,7 +99,7 @@ module RSpec
           @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{example_group_number}');</script>" unless @example_group_red
           @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{example_group_number}');</script>" unless @example_group_red
           move_progress
-          @output.puts "    <dd class=\"spec not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
+          @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
           @output.flush
         end
 
@@ -196,18 +195,18 @@ EOF
     <h1>RSpec Code Examples</h1>
   </div>
 
+  <div id="display-filters">
+    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending</label>
+  </div>
+
   <div id="summary">
     <p id="totals">&nbsp;</p>
     <p id="duration">&nbsp;</p>
   </div>
 </div>
 
-<div id="rspec-filters">
-  Show only :
-  <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed tests</label>
-  <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed tests</label>
-  <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending tests</label>
-</div>
 
 <div class="results">
 EOF
@@ -216,10 +215,11 @@ EOF
         def global_scripts
           <<-EOF
 
-function addClassToId(element_id, classname) {
+function addClass(element_id, classname) {
   document.getElementById(element_id).className += (" " + classname);
 }
-function removeClassFromId(element_id, classname) {
+
+function removeClass(element_id, classname) {
   var elem = document.getElementById(element_id);
   var classlist = elem.className.replace(classname,'');
   elem.className = classlist;
@@ -228,39 +228,35 @@ function removeClassFromId(element_id, classname) {
 function moveProgressBar(percentDone) {
   document.getElementById("rspec-header").style.width = percentDone +"%";
 }
+
 function makeRed(element_id) {
-  removeClassFromId(element_id, 'passed');
-  removeClassFromId(element_id, 'not_implemented');
-  addClassToId(element_id,'failed');
+  removeClass(element_id, 'passed');
+  removeClass(element_id, 'not_implemented');
+  addClass(element_id,'failed');
 }
 
 function makeYellow(element_id) {
   var elem = document.getElementById(element_id);
   if (elem.className.indexOf("failed") == -1) {  // class doesn't includes failed
     if (elem.className.indexOf("not_implemented") == -1) { // class doesn't include not_implemented
-      removeClassFromId(element_id, 'passed');
-      addClassToId(element_id,'not_implemented');
+      removeClass(element_id, 'passed');
+      addClass(element_id,'not_implemented');
     }
   }
 }
 
 function apply_filters() {
-  d1 = new Date();
   var passed_filter = document.getElementById('passed_checkbox').checked;
   var failed_filter = document.getElementById('failed_checkbox').checked;
   var pending_filter = document.getElementById('pending_checkbox').checked;
-  // alert("apply_filters " + passed_filter + "," + failed_filter + "," + pending_filter);
 
-  assign_display_style("spec passed", passed_filter);
-  assign_display_style("spec failed", failed_filter);
-  assign_display_style("spec not_implemented", pending_filter);
+  assign_display_style("example passed", passed_filter);
+  assign_display_style("example failed", failed_filter);
+  assign_display_style("example not_implemented", pending_filter);
 
   assign_display_style_for_group("example_group passed", passed_filter);
   assign_display_style_for_group("example_group not_implemented", pending_filter, pending_filter || passed_filter);
   assign_display_style_for_group("example_group failed", failed_filter, failed_filter || pending_filter || passed_filter);
-
-  d2 = new Date();
-//  alert(d2.getTime()-d1.getTime());
 }
 
 function get_display_style(display_flag) {
@@ -309,19 +305,21 @@ EOF
   position: absolute;
 }
 
-#rspec-filters {
-  margin: 0; padding: 5px 10px;
+#label {
+  float:left;
+}
+
+#display-filters {
+  float:left;
+  padding: 28px 0 0 40%;
   font-family: "Lucida Grande", Helvetica, sans-serif;
-  text-align: right;
 }
 
 #summary {
-  margin: 0; padding: 5px 10px;
+  float:right;
+  padding: 5px 10px;
   font-family: "Lucida Grande", Helvetica, sans-serif;
   text-align: right;
-  top: 0px;
-  right: 0px;
-  float:right;
 }
 
 #summary p {
@@ -355,25 +353,25 @@ dd {
 }
 
 
-dd.spec.passed {
+dd.example.passed {
   border-left: 5px solid #65C400;
   border-bottom: 1px solid #65C400;
   background: #DBFFB4; color: #3D7700;
 }
 
-dd.spec.not_implemented {
+dd.example.not_implemented {
   border-left: 5px solid #FAF834;
   border-bottom: 1px solid #FAF834;
   background: #FCFB98; color: #131313;
 }
 
-dd.spec.pending_fixed {
+dd.example.pending_fixed {
   border-left: 5px solid #0000C2;
   border-bottom: 1px solid #0000C2;
   color: #0000C2; background: #D3FBFF;
 }
 
-dd.spec.failed {
+dd.example.failed {
   border-left: 5px solid #C20000;
   border-bottom: 1px solid #C20000;
   color: #C20000; background: #FFFBD3;
