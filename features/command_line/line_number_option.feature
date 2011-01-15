@@ -22,9 +22,9 @@ Feature: --line option
       end
       """
     When I run "rspec example_spec.rb --line 5 --format doc"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass
     Then the output should contain "should be > 8"
-    But the stdout should not contain "should be < 10"
+    But the output should not contain "should be < 10"
 
   Scenario: one liner
     Given a file named "example_spec.rb" with:
@@ -40,6 +40,6 @@ Feature: --line option
       end
       """
     When I run "rspec example_spec.rb --line 5 --format doc"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass
     Then the output should contain "should be > 8"
-    But the stdout should not contain "should be < 10"
+    But the output should not contain "should be < 10"

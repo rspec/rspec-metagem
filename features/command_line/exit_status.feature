@@ -13,7 +13,7 @@ Feature: exit status
       """
     When I run "rspec ok_spec.rb"
     Then the exit status should be 0
-    And the stdout should contain "1 example, 0 failures"
+    And the examples should all pass
 
   Scenario: exit with 1 when one example fails
     Given a file named "ko_spec.rb" with:
@@ -26,7 +26,7 @@ Feature: exit status
       """
     When I run "rspec ko_spec.rb"
     Then the exit status should be 1
-    And the stdout should contain "1 example, 1 failure"
+    And the output should contain "1 example, 1 failure"
 
   Scenario: exit with 1 when a nested examples fails
     Given a file named "nested_ko_spec.rb" with:
@@ -41,7 +41,7 @@ Feature: exit status
       """
     When I run "rspec nested_ko_spec.rb"
     Then the exit status should be 1
-    And the stdout should contain "1 example, 1 failure"
+    And the output should contain "1 example, 1 failure"
       
   Scenario: exit with 0 when no examples are run
     Given a file named "a_no_examples_spec.rb" with:
@@ -49,4 +49,4 @@ Feature: exit status
       """
     When I run "rspec a_no_examples_spec.rb"
     Then the exit status should be 0
-    And the stdout should contain "0 examples, 0 failures"
+    And the output should contain "0 examples"

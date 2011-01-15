@@ -82,7 +82,7 @@ Feature: attribute of subject
       end
       """
     When I run "rspec example_spec.rb"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass
 
   Scenario: specify value for key in a hash
     Given a file named "example_spec.rb" with:
@@ -99,4 +99,4 @@ Feature: attribute of subject
       end
       """
     When I run "rspec example_spec.rb"
-    Then the output should contain "2 examples, 0 failures"
+    Then the examples should all pass

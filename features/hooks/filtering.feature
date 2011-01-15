@@ -23,7 +23,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_before_each_hooks_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       group 1
@@ -56,7 +56,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_after_each_hooks_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       group 1
@@ -93,7 +93,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_around_each_hooks_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       group 1
@@ -135,7 +135,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_before_all_hooks_spec.rb --format documentation"
-    Then the output should contain "5 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       group 1
@@ -177,7 +177,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_after_all_hooks_spec.rb --format documentation"
-    Then the output should contain "5 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       group 1

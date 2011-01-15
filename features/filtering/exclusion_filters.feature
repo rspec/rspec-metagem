@@ -79,7 +79,7 @@ Feature: exclusion filters
       """
     When I run "rspec ./spec/sample_spec.rb --format doc"
     Then the output should match /No examples were matched. Perhaps \{.*:broken=>true.*\} is excluding everything?/
-    And  the output should contain "0 examples, 0 failures"
+    And  the examples should all pass
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 

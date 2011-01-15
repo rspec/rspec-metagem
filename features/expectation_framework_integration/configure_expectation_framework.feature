@@ -21,8 +21,7 @@ Feature: configure expectation framework
       end
       """
     When I run "rspec example_spec.rb"
-    Then the output should contain "1 example, 0 failures"
-    And the exit status should be 0
+    Then the examples should all pass
 
   Scenario: configure test/unit assertions
     Given a file named "example_spec.rb" with:
@@ -38,8 +37,7 @@ Feature: configure expectation framework
       end
       """
     When I run "rspec example_spec.rb"
-    Then the output should contain "1 example, 0 failures"
-    And the exit status should be 0
+    Then the examples should all pass
 
   Scenario: configure rspec/expecations AND test/unit assertions
     Given a file named "example_spec.rb" with:
@@ -59,5 +57,4 @@ Feature: configure expectation framework
       end
       """
     When I run "rspec example_spec.rb"
-    Then the output should contain "2 examples, 0 failures"
-    And the exit status should be 0
+    Then the examples should all pass

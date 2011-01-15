@@ -11,7 +11,7 @@ Feature: --configure option
     When I run "rspec --configure autotest"
     Then the following files should exist:
       | .rspec |
-    And the stdout should contain ".rspec file did not exist, so it was created."
+    And the output should contain ".rspec file did not exist, so it was created."
 
   Scenario: .rspec file already exists
     Given a file named ".rspec" with:
@@ -19,4 +19,4 @@ Feature: --configure option
       --color
       """
     When I run "rspec --configure autotest"
-    Then the stdout should contain ".rspec file already exists, so nothing was changed."
+    Then the output should contain ".rspec file already exists, so nothing was changed."

@@ -13,7 +13,7 @@ Feature: implicit subject
       end
       """
     When I run "rspec ./top_level_subject_spec.rb"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass
 
   Scenario: subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
@@ -27,4 +27,4 @@ Feature: implicit subject
       end
       """
     When I run "rspec nested_subject_spec.rb"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass

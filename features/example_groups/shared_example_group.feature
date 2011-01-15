@@ -46,7 +46,7 @@ Feature: shared example group
     end
     """
     When I run "rspec collection_spec.rb --format documentation"
-    Then the output should contain "6 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       Array
@@ -98,7 +98,7 @@ Feature: shared example group
     end
     """
     When I run "rspec shared_example_group_spec.rb --format documentation"
-    Then the output should contain "2 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       Array
@@ -134,7 +134,7 @@ Feature: shared example group
     end
     """
     When I run "rspec shared_example_group_params_spec.rb --format documentation"
-    Then the output should contain "4 examples, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       Array with 3 items
@@ -168,7 +168,7 @@ Feature: shared example group
       end
       """
     When I run "rspec shared_example_group_spec.rb --format documentation"
-    Then the output should contain "1 example, 0 failures"
+    Then the examples should all pass
     And the output should contain:
       """
       String
