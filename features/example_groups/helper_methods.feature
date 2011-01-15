@@ -1,52 +1,40 @@
-Feature: Helper methods
+Feature: Arbitrary helper methods
 
-  Helper methods defined in an example group can be used in any examples in
-  that group or any subgroups.  Examples in parent or sibling example groups
-  will not have access.
+  You can define methods in any example group using Ruby's `def` keyword or
+  `define_method` method. These _helper_ methods are exposed to examples in the
+  group in which they are defined and groups nested within that group, but not
+  parent or sibling groups.
 
-  Scenario: Helper methods can be accessed from examples in group and subgroups
-    Given a file named "helper_method_spec.rb" with:
+  Scenario: use a method defined in the same group
+    Given a file named "example_spec.rb" with:
       """
-      describe "helper methods" do
-        def my_helper
-          "foo"
+      describe "an example" do
+        def help
+          :available
         end
 
-        it "has access to the helper method" do
-          my_helper.should == "foo"
+        it "has access to methods defined in its group" do
+          help.should be(:available)
+        end
+      end
+      """
+    When I run "rspec example_spec.rb"
+    Then the examples should all pass
+
+  Scenario: use a method defined in a parent group
+    Given a file named "example_spec.rb" with:
+      """
+      describe "an example" do
+        def help
+          :available
         end
 
-        describe "a subgroup" do
-          it "also has access to the helper method" do
-            my_helper.should == "foo"
+        describe "in a nested group" do
+          it "has access to methods defined in its parent group" do
+            help.should be(:available)
           end
         end
       end
       """
-    When I run "rspec helper_method_spec.rb"
-    Then the output should contain "2 examples, 0 failures"
-
-  Scenario: Helper methods cannot be accessed from examples in parent or sibling groups
-    Given a file named "helper_methods_spec.rb" with:
-      """
-      describe "helper methods" do
-        describe "subgroup 1" do
-          def my_helper
-            "foo"
-          end
-        end
-
-        it "does not have access in the parent group" do
-          expect { my_helper }.to raise_error(/undefined local variable or method `my_helper'/)
-        end
-
-        describe "subgroup 2" do
-          it "does not have access in a sibling group" do
-            expect { my_helper }.to raise_error(/undefined local variable or method `my_helper'/)
-          end
-        end
-      end
-      """
-    When I run "rspec helper_methods_spec.rb"
-    Then the output should contain "2 examples, 0 failures"
-
+    When I run "rspec example_spec.rb"
+    Then the examples should all pass
