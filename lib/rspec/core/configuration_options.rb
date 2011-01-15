@@ -39,6 +39,11 @@ module RSpec
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
         argv << "--options"      << options[:custom_options_file]     if options[:custom_options_file]
         argv << "--example"      << options[:full_description].source if options[:full_description]
+        if options[:filter]
+          options[:filter].each_pair do |k, v|
+            argv << "--tag" << k.to_s
+          end
+        end
         if options[:formatters]
           options[:formatters].each do |pair|
             argv << "--format" << pair[0]
@@ -107,7 +112,7 @@ module RSpec
         config_string = options_file_as_erb_string(path)
         config_string.split(/\n+/).map {|l| l.split}.flatten
       end
-      
+
       def options_file_as_erb_string(path)
         require 'erb'
         ERB.new(IO.read(path)).result(binding)

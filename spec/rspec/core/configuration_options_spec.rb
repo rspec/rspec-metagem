@@ -205,6 +205,19 @@ describe RSpec::Core::ConfigurationOptions do
       config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
     end
 
+    context "with tags" do
+      it "includes the tags" do
+        coo = config_options_object("--tag", "tag")
+        coo.drb_argv.should eq(["--tag", "tag"])
+      end
+
+      it "leaves tags intact" do
+        coo = config_options_object("--tag", "tag")
+        coo.drb_argv
+        coo.options[:filter].should eq( {:tag=>true} )
+      end
+    end
+
     context "with formatters" do
       it "includes the formatters" do
         coo = config_options_object("--format", "d")
