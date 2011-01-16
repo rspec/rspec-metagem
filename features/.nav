@@ -3,16 +3,20 @@
 - example_groups:
   - basic_structure.feature
   - shared_example_group.feature
+- pending:
+  - pending_examples.feature
 - hooks:
   - before_and_after_hooks.feature
   - around_hooks.feature
-- pending:
-  - pending_examples.feature
+  - filtering.feature
 - subject:
   - implicit_subject.feature
   - explicit_subject.feature
   - attribute_of_subject.feature
   - implicit_receiver.feature
+- helper_methods:
+  - let.feature
+  - arbitrary_methods.feature
 - metadata:
   - described_class.feature
 - filtering:

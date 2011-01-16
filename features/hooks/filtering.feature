@@ -1,11 +1,11 @@
-Feature: Global Hook Filtering
+Feature: filters
 
-  Before/After/Around hooks defined in the RSpec configuration block
-  can be filtered using metadata.  Arbitrary metadata can be applied
-  to an example or example group, and used to make a hook only apply
-  to examples with the given metadata.
+  `before`/`after`/`around` hooks defined in the RSpec configuration block can
+  be filtered using metadata.  Arbitrary metadata can be applied to an example
+  or example group, and used to make a hook only apply to examples with the
+  given metadata.
 
-  Scenario: Filter before(:each) hooks using arbitrary metadata
+  Scenario: filter `before(:each)` hooks using arbitrary metadata
     Given a file named "filter_before_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -23,8 +23,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_before_each_hooks_spec.rb --format documentation"
-    Then the examples should all pass
-    And the output should contain:
+    Then the output should contain:
       """
       group 1
         example 1
@@ -38,7 +37,7 @@ Feature: Global Hook Filtering
         example 2
       """
 
-  Scenario: Filter after(:each) hooks using arbitrary metadata
+  Scenario: filter `after(:each)` hooks using arbitrary metadata
     Given a file named "filter_after_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -56,8 +55,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_after_each_hooks_spec.rb --format documentation"
-    Then the examples should all pass
-    And the output should contain:
+    Then the output should contain:
       """
       group 1
         example 1
@@ -71,7 +69,7 @@ Feature: Global Hook Filtering
         example 2
       """
 
-  Scenario: Filter around(:each) hooks using arbitrary metadata
+  Scenario: filter around(:each) hooks using arbitrary metadata
     Given a file named "filter_around_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -93,8 +91,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_around_each_hooks_spec.rb --format documentation"
-    Then the examples should all pass
-    And the output should contain:
+    Then the output should contain:
       """
       group 1
         example 1
@@ -111,7 +108,7 @@ Feature: Global Hook Filtering
         example 2
       """
 
-  Scenario: Filter before(:all) hooks using arbitrary metadata
+  Scenario: filter before(:all) hooks using arbitrary metadata
     Given a file named "filter_before_all_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -135,8 +132,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_before_all_hooks_spec.rb --format documentation"
-    Then the examples should all pass
-    And the output should contain:
+    Then the output should contain:
       """
       group 1
         example 1
@@ -153,7 +149,7 @@ Feature: Global Hook Filtering
           example 1
       """
 
-  Scenario: Filter after(:all) hooks using arbitrary metadata
+  Scenario: filter after(:all) hooks using arbitrary metadata
     Given a file named "filter_after_all_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -177,8 +173,7 @@ Feature: Global Hook Filtering
       end
       """
     When I run "rspec filter_after_all_hooks_spec.rb --format documentation"
-    Then the examples should all pass
-    And the output should contain:
+    Then the output should contain:
       """
       group 1
         example 1
