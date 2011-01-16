@@ -4,10 +4,16 @@ class RSpecCommandError < StandardError; end
 
 class Autotest::Rspec2 < Autotest
 
+  attr_reader :cli_args, :skip_bundler
+  alias_method :skip_bundler?, :skip_bundler
+
   SPEC_PROGRAM = File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec'))
 
   def initialize
-    super
+    super()
+    @cli_args = ARGV.dup << "--tty"
+    @skip_bundler = @cli_args.delete("--skip-bundler")
+    ARGV.clear
     clear_mappings
     setup_rspec_project_mappings
 
@@ -41,7 +47,7 @@ class Autotest::Rspec2 < Autotest
 
   def make_test_cmd(files_to_test)
     files_to_test.empty? ? '' :
-      "#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} --tty #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
+      "#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} #{cli_args.join(' ')} #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
   end
 
   def bundle_exec
@@ -60,7 +66,7 @@ class Autotest::Rspec2 < Autotest
   end
 
   def using_bundler?
-    File.exists?('./Gemfile')
+    File.exists?('./Gemfile') unless skip_bundler?
   end
 
 end

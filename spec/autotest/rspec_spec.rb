@@ -1,6 +1,26 @@
 require "spec_helper"
 
 describe Autotest::Rspec2 do
+  context "with ARGV" do
+    before { @orig_argv = ARGV.dup; ARGV.clear }
+    after  { ARGV.clear; ARGV.concat(@orig_argv) }
+
+    it "passes ARGV to command" do
+      ARGV.concat(%w[-c -f d])
+      rspec_autotest.cli_args.should eq(%w[-c -f d --tty])
+    end
+
+    it "extracts --skip-bundler" do
+      ARGV.concat(%w[--skip-bundler])
+      rspec_autotest.cli_args.should eq(%w[--tty])
+    end
+
+    it "excludes bundler from command with --skip-bundler" do
+      ARGV.concat(%w[--skip-bundler])
+      rspec_autotest.make_test_cmd({'a' => 'b'}).should_not match(/bundle exec/)
+    end
+  end
+
   let(:rspec_autotest) { Autotest::Rspec2.new }
   let(:spec_cmd) { File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec')) }
   let(:ruby_cmd) { "ruby" }

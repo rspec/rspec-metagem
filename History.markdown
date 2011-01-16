@@ -4,6 +4,10 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.4.0...master)
 
+* Enhancements
+  * Autotest::Rspec2 parses command line args passed to autotest after '--'
+  * --skip-bundler option for autotest command
+
 * Bug fixes
   * fix dom IDs in HTML formatter (Brian Faherty)
   * fix bug with --drb + formatters when not running in drb
