@@ -150,11 +150,11 @@ module RSpec::Core
       end
 
       it "escapes the quotes" do
-        @task.__send__(:files_to_run).should eq([
+        @task.__send__(:files_to_run).should =~ [
           File.join(@tmp_dir, "first_spec.rb"),
           File.join(@tmp_dir, "second_\\\"spec.rb"),
           File.join(@tmp_dir, "third_\\'spec.rb") 
-        ])
+        ]
       end
     end
   end
