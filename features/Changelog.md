@@ -86,7 +86,7 @@
   * debugger statements _just work_ as long as ruby-debug is installed
     * otherwise you get warned, but not fired
   * Expose example.metadata in around hooks
-  * Performance improvments (see [Upgrade.markdown](https://github.com/rspec/rspec-core/blob/master/Upgrade.markdown))
+  * Performance improvments (much faster now)
 
 * Bug fixes
   * Make sure --fail-fast makes it across drb
