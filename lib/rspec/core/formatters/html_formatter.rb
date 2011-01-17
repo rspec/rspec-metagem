@@ -48,9 +48,9 @@ module RSpec
             @output.puts "  </dl>"
             @output.puts "</div>"
           end
-          @output.puts "<div class=\"example_group\">"
+          @output.puts "<div id=\"div_group_#{example_group_number}\" class=\"example_group passed\">"
           @output.puts "  <dl #{current_indentation}>"
-          @output.puts "  <dt id=\"example_group_#{example_group_number}\">#{h(example_group.description)}</dt>"
+          @output.puts "  <dt id=\"example_group_#{example_group_number}\" class=\"passed\">#{h(example_group.description)}</dt>"
           @output.flush
         end
 
@@ -79,6 +79,7 @@ module RSpec
           failure_style = RSpec::Core::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
+          @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{example_group_number}');</script>" unless @example_group_red
           @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{example_group_number}');</script>" unless @example_group_red
           @example_group_red = true
           move_progress
@@ -96,6 +97,7 @@ module RSpec
         def example_pending(example)
           message = example.metadata[:execution_result][:pending_message]
           @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>" unless @header_red
+          @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{example_group_number}');</script>" unless @example_group_red
           @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{example_group_number}');</script>" unless @example_group_red
           move_progress
           @output.puts "    <dd class=\"spec not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
@@ -135,7 +137,8 @@ module RSpec
           if dry_run?
             totals = "This was a dry-run"
           else
-            totals = "#{example_count} example#{'s' unless example_count == 1}, #{failure_count} failure#{'s' unless failure_count == 1}"
+            totals =  "#{example_count} example#{'s' unless example_count == 1}, "
+            totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
             totals << ", #{pending_count} pending" if pending_count > 0
           end
           @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{duration} seconds</strong>\";</script>"
@@ -199,30 +202,94 @@ EOF
   </div>
 </div>
 
+<div id="rspec-filters">
+  Show only :
+  <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed tests</label>
+  <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed tests</label>
+  <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending tests</label>
+</div>
+
 <div class="results">
 EOF
         end
 
         def global_scripts
           <<-EOF
+
+function addClassToId(element_id, classname) {
+  document.getElementById(element_id).className += (" " + classname);
+}
+function removeClassFromId(element_id, classname) {
+  var elem = document.getElementById(element_id);
+  var classlist = elem.className.replace(classname,'');
+  elem.className = classlist;
+}
+
 function moveProgressBar(percentDone) {
   document.getElementById("rspec-header").style.width = percentDone +"%";
 }
 function makeRed(element_id) {
-  document.getElementById(element_id).style.background = '#C40D0D';
-  document.getElementById(element_id).style.color = '#FFFFFF';
+  removeClassFromId(element_id, 'passed');
+  removeClassFromId(element_id, 'not_implemented');
+  addClassToId(element_id,'failed');
 }
 
 function makeYellow(element_id) {
-  if (element_id == "rspec-header" && document.getElementById(element_id).style.background != '#C40D0D')
-  {
-    document.getElementById(element_id).style.background = '#FAF834';
-    document.getElementById(element_id).style.color = '#000000';
+  var elem = document.getElementById(element_id);
+  if (elem.className.indexOf("failed") == -1) {  // class doesn't includes failed
+    if (elem.className.indexOf("not_implemented") == -1) { // class doesn't include not_implemented
+      removeClassFromId(element_id, 'passed');
+      addClassToId(element_id,'not_implemented');
+    }
   }
-  else
-  {
-    document.getElementById(element_id).style.background = '#FAF834';
-    document.getElementById(element_id).style.color = '#000000';
+}
+
+function apply_filters() {
+  d1 = new Date();
+  var passed_filter = document.getElementById('passed_checkbox').checked;
+  var failed_filter = document.getElementById('failed_checkbox').checked;
+  var pending_filter = document.getElementById('pending_checkbox').checked;
+  // alert("apply_filters " + passed_filter + "," + failed_filter + "," + pending_filter);
+
+  assign_display_style("spec passed", passed_filter);
+  assign_display_style("spec failed", failed_filter);
+  assign_display_style("spec not_implemented", pending_filter);
+
+  assign_display_style_for_group("example_group passed", passed_filter);
+  assign_display_style_for_group("example_group not_implemented", pending_filter, pending_filter || passed_filter);
+  assign_display_style_for_group("example_group failed", failed_filter, failed_filter || pending_filter || passed_filter);
+
+  d2 = new Date();
+//  alert(d2.getTime()-d1.getTime());
+}
+
+function get_display_style(display_flag) {
+  var style_mode = 'none';
+  if (display_flag == true) {
+    style_mode = 'block';
+  }
+  return style_mode;
+}
+
+function assign_display_style(classname, display_flag) {
+  var style_mode = get_display_style(display_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    elems[i].style.display = style_mode;
+  }
+}
+
+function assign_display_style_for_group(classname, display_flag, subgroup_flag) {
+  var display_style_mode = get_display_style(display_flag);
+  var subgroup_style_mode = get_display_style(subgroup_flag);
+  var elems = document.getElementsByClassName(classname)
+  for (var i=0; i<elems.length;i++) {
+    var style_mode = display_style_mode;
+    if ((display_flag != subgroup_flag) && (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
+      elems[i].style.display = subgroup_style_mode;
+    } else {
+      elems[i].style.display = display_style_mode;
+    }
   }
 }
 EOF
@@ -240,6 +307,12 @@ EOF
   font-family: "Lucida Grande", Helvetica, sans-serif;
   font-size: 1.8em;
   position: absolute;
+}
+
+#rspec-filters {
+  margin: 0; padding: 5px 10px;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  text-align: right;
 }
 
 #summary {
@@ -281,16 +354,11 @@ dd {
   padding: 3px 3px 3px 18px;
 }
 
+
 dd.spec.passed {
   border-left: 5px solid #65C400;
   border-bottom: 1px solid #65C400;
   background: #DBFFB4; color: #3D7700;
-}
-
-dd.spec.failed {
-  border-left: 5px solid #C20000;
-  border-bottom: 1px solid #C20000;
-  color: #C20000; background: #FFFBD3;
 }
 
 dd.spec.not_implemented {
@@ -304,6 +372,39 @@ dd.spec.pending_fixed {
   border-bottom: 1px solid #0000C2;
   color: #0000C2; background: #D3FBFF;
 }
+
+dd.spec.failed {
+  border-left: 5px solid #C20000;
+  border-bottom: 1px solid #C20000;
+  color: #C20000; background: #FFFBD3;
+}
+
+
+dt.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+dt.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+dt.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+
+#rspec-header.not_implemented {
+  color: #000000; background: #FAF834;
+}
+
+#rspec-header.pending_fixed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
+#rspec-header.failed {
+  color: #FFFFFF; background: #C40D0D;
+}
+
 
 .backtrace {
   color: #000;
