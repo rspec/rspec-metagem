@@ -1,5 +1,12 @@
 ## rspec-expectations release history (incomplete)
 
+### dev
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.4.0...master)
+
+* Enhancements
+  * `should exist` works with `exist?` or `exists?` (Myron Marston)
+
 ### 2.4.0 / 2011-01-02
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.3.0...v2.4.0)
