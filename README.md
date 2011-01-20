@@ -22,7 +22,7 @@ tracker](https://github.com/rspec/rspec-core/issues).
 
 ## Upgrading from rspec-1.x
 
-See [Upgrade.markdown](http://github.com/rspec/rspec-core/blob/master/Upgrade.markdown)
+See [features/Upgrade.md](http://github.com/rspec/rspec-core/blob/master/features/Upgrade.md)
 
 
 This will install the rspec, rspec-core, rspec-expectations and rspec-mocks
