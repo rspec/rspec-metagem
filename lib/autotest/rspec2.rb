@@ -1,4 +1,5 @@
 require 'autotest'
+require 'rspec/core/deprecation'
 
 class RSpecCommandError < StandardError; end
 
@@ -46,12 +47,40 @@ class Autotest::Rspec2 < Autotest
   end
 
   def make_test_cmd(files_to_test)
+    if File.exist?('./Gemfile') && prefix !~ /bundle exec/ && !skip_bundler?
+      RSpec.warn_deprecation <<-WARNING
+
+****************************************************************************
+DEPRECATION WARNING: you are using deprecated behaviour that will be removed
+from a future version of RSpec.
+
+RSpec's autotest extension is relying on the presence of a Gemfile in the
+project root directory to generate a command including 'bundle exec'.
+
+You have two options to disable this message:
+
+If you want to include 'bundle exec' in the command, add a .autotest file to
+the project root with the following content:
+
+  require 'autotest/bundler'
+
+If you prefer to skip 'bundle exec', pass the --skip-bundler to autotest as
+an extra argument, like this:
+
+  autotest -- --skip-bundler
+*****************************************************************
+WARNING
+    end
     files_to_test.empty? ? '' :
-      "#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} #{cli_args.join(' ')} #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
+      "#{prefix}#{bundle_exec}#{ruby} #{require_rubygems}-S #{SPEC_PROGRAM} #{cli_args.join(' ')} #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
   end
 
   def bundle_exec
-    using_bundler? ? "bundle exec " : ""
+    if using_bundler? && prefix !~ /bundle exec/
+      "bundle exec "
+    else
+      ""
+    end
   end
 
   def require_rubygems
@@ -66,7 +95,11 @@ class Autotest::Rspec2 < Autotest
   end
 
   def using_bundler?
-    File.exists?('./Gemfile') unless skip_bundler?
+    gemfile?  unless skip_bundler?
+  end
+
+  def gemfile?
+    File.exist?('./Gemfile')
   end
 
 end
