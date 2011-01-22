@@ -14,6 +14,10 @@
   * fix regression so now SPEC_OPTS take precedence over CLI options again
     (Roman Chernyatchik)
 
+* Deprecations
+  * implicit inclusion of 'bundle exec' when Gemfile present (use autotest's
+    bundler plugin instead)
+
 ### 2.4.0 / 2011-01-02
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.3.1...v2.4.0)
