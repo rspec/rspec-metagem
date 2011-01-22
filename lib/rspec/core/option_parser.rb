@@ -23,7 +23,7 @@ module RSpec::Core
 
     def parser(options)
       OptionParser.new do |parser|
-        parser.banner = "Usage: rspec [options] [files or directories]"
+        parser.banner = "Usage: rspec [options] [files or directories]\n\n"
 
         parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
           options[:full_backtrace] = true
@@ -106,11 +106,7 @@ module RSpec::Core
           options[:drb_port] = o.to_i
         end
 
-        parser.on('--tty') do |o|
-          options[:tty] = true
-        end
-
-        parser.on('--fail-fast', 'Use the fail_fast option to tell RSpec to abort the run on first failure.') do |o|
+        parser.on('--fail-fast', 'Abort the run on first failure.') do |o|
           options[:fail_fast] = true
         end
 
@@ -125,6 +121,10 @@ module RSpec::Core
 
           options[filter_type] ||= {}
           options[filter_type][name] = value
+        end
+
+        parser.on('--tty', 'Used internally by rspec when sending commands to other processes') do |o|
+          options[:tty] = true
         end
       end
     end
