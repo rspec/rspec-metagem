@@ -161,7 +161,7 @@ module RSpec
                             cmd_parts << "bundle exec" if gemfile? unless skip_bundler
                             cmd_parts << runner
                             if rcov
-                              cmd_parts << ["-Ispec:lib", rcov_opts]
+                              cmd_parts << ["-Ispec#{File::PATH_SEPARATOR}lib", rcov_opts]
                             else
                               cmd_parts << rspec_opts
                             end
