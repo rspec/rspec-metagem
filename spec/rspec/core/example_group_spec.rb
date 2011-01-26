@@ -636,6 +636,17 @@ module RSpec::Core
     end
 
     describe "#its" do
+      subject do
+        Class.new do
+          def initialize
+            @call_count = 0
+          end
+          def attribute_call_count 
+            @call_count += 1
+          end
+        end.new
+      end
+      its(:attribute_call_count) { should_not == 2 }
       context "with nil value" do
         subject do
           Class.new do
