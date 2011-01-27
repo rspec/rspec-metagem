@@ -180,7 +180,7 @@ module RSpec
 
       def self.eval_around_eachs(example, initial_procsy)
         example.around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
-          Example::Procsy.new(procsy.metadata) do
+          Example.procsy(procsy.metadata) do
             example.example_group_instance.instance_eval_with_args(procsy, &around_hook)
           end
         end

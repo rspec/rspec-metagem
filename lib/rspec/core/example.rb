@@ -75,12 +75,20 @@ module RSpec
         finish(reporter)
       end
 
-      class Procsy < Proc
+      def self.procsy(metadata, &block)
+        Proc.new(&block).extend(Procsy).with(metadata)
+      end
+
+      module Procsy
         attr_reader :metadata
-        alias_method :run, :call
-        def initialize(metadata, &block)
+
+        def self.extended(object)
+          def object.run; call; end
+        end
+
+        def with(metadata)
           @metadata = metadata
-          super(&block)
+          self
         end
       end
 
@@ -97,7 +105,7 @@ module RSpec
         if around_hooks.empty?
           yield
         else
-          @example_group_class.eval_around_eachs(self, Procsy.new(metadata, &block)).call
+          @example_group_class.eval_around_eachs(self, Example.procsy(metadata, &block)).call
         end
       end
 
