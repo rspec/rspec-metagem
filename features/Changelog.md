@@ -15,6 +15,7 @@
   * include --tag options in drb args (monocle)
   * fix regression so now SPEC_OPTS take precedence over CLI options again
     (Roman Chernyatchik)
+  * only call its(:attribute) once (failing example from Brian Dunn)
 
 * Deprecations
   * implicit inclusion of 'bundle exec' when Gemfile present (use autotest's
