@@ -646,7 +646,9 @@ module RSpec::Core
           end
         end.new
       end
-      its(:attribute_call_count) { should_not == 2 }
+
+      its(:attribute_call_count) { should eq(1) }
+
       context "with nil value" do
         subject do
           Class.new do
