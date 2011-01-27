@@ -1,5 +1,6 @@
 - Upgrade.md
 - Changelog.md
+- Autotest.md
 - example_groups:
   - basic_structure.feature
   - shared_example_group.feature
