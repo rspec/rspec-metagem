@@ -25,7 +25,7 @@ module RSpec
 
         def lines_around(file, line)
           if File.file?(file)
-            lines = File.open(file).read.split("\n")
+            lines = File.read(file).split("\n")
             min = [0, line-3].max
             max = [line+1, lines.length-1].min
             selected_lines = []

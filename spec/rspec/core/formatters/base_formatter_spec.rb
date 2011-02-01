@@ -31,6 +31,29 @@ describe RSpec::Core::Formatters::BaseFormatter do
         formatter.send(:read_failed_line, exception, example)
       }.should_not raise_error
     end
+
+    context "when String alias to_int to_i" do
+      before do
+        class String
+          alias :to_int :to_i
+        end
+      end
+
+      after do
+        class String
+          undef to_int
+        end
+      end
+
+      it "doesn't hang when file exists" do
+        exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
+
+        example = mock(:Example, :file_path => __FILE__)
+        formatter.send(:read_failed_line, exception, example).should
+          eql %Q{        exception = mock(:Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"])\n}
+      end
+
+    end
   end
 
 end
