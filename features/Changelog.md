@@ -16,6 +16,8 @@
   * fix regression so now SPEC_OPTS take precedence over CLI options again
     (Roman Chernyatchik)
   * only call its(:attribute) once (failing example from Brian Dunn)
+  * fix bizarre bug where rspec would hang after String.alias :to_int :to_i
+    (Damian Nurzynski)
 
 * Deprecations
   * implicit inclusion of 'bundle exec' when Gemfile present (use autotest's
