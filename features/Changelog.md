@@ -1,4 +1,4 @@
-## rspec-expectations release history (incomplete)
+## rspec-expectations release history
 
 ### dev
 
@@ -6,6 +6,9 @@
 
 * Enhancements
   * `should exist` works with `exist?` or `exists?` (Myron Marston)
+
+* Documentation
+  * improved docs for raise_error matcher (James Almond)
 
 ### 2.4.0 / 2011-01-02
 
