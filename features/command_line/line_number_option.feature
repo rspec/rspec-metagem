@@ -1,8 +1,8 @@
-Feature: --line option
+Feature: --line_number option
 
-  To run a single example or group, you can use the --line option:
+  To run a single example or group, you can use the --line_number option:
 
-      rspec path/to/example_spec.rb --line 37
+      rspec path/to/example_spec.rb --line_number 37
 
   Scenario: standard examples
     Given a file named "example_spec.rb" with:
@@ -21,7 +21,7 @@ Feature: --line option
         
       end
       """
-    When I run "rspec example_spec.rb --line 5 --format doc"
+    When I run "rspec example_spec.rb --line_number 5 --format doc"
     Then the examples should all pass
     Then the output should contain "should be > 8"
     But the output should not contain "should be < 10"
@@ -39,7 +39,7 @@ Feature: --line option
         
       end
       """
-    When I run "rspec example_spec.rb --line 5 --format doc"
+    When I run "rspec example_spec.rb --line_number 5 --format doc"
     Then the examples should all pass
     Then the output should contain "should be > 8"
     But the output should not contain "should be < 10"

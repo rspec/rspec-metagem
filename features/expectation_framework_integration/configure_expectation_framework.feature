@@ -5,8 +5,8 @@ Feature: configure expectation framework
 
   * rspec/expectations (explicitly)
   * stdlib assertions
-  ** test/unit assertions in ruby 1.8
-  ** minitest assertions in ruby 1.9
+    * test/unit assertions in ruby 1.8
+    * minitest assertions in ruby 1.9
   * rspec/expecations _and_ stlib assertions
 
   Scenario: configure rspec-expectations (explicitly)
