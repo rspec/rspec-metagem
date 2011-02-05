@@ -6,6 +6,7 @@
 
 * Enhancements
   * `should exist` works with `exist?` or `exists?` (Myron Marston)
+  * `expect { ... }.not_to do_something` (in addition to `to_not`)
 
 * Documentation
   * improved docs for raise_error matcher (James Almond)
