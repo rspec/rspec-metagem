@@ -3,6 +3,7 @@ module RSpec
     module BlockAliases
       alias_method :to,     :should
       alias_method :to_not, :should_not
+      alias_method :not_to, :should_not
     end
 
     # Extends the submitted block with aliases to and to_not
