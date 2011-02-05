@@ -1,10 +1,13 @@
 source "http://rubygems.org"
 
 ### rspec libs
-gem "rspec-core", :path => "."
-%w[rspec-expectations rspec-mocks].each do |dependency|
-  path = "../#{dependency}"
-  gem dependency, :path => (path if File.exist?(path))
+%w[rspec-core rspec-expectations rspec-mocks].each do |lib|
+  library_path = File.expand_path("../../#{lib}", __FILE__)
+  if File.exist?(library_path)
+    gem lib, :path => library_path
+  else
+    gem lib
+  end
 end
 
 ### dev dependencies
