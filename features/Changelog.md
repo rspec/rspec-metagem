@@ -1,6 +1,6 @@
-### dev
+### 2.5.0 / 2011-02-05
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.4.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.4.0...v2.5.0)
 
 * Enhancements
   * Autotest::Rspec2 parses command line args passed to autotest after '--'
