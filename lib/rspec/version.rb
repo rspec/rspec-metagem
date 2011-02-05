@@ -1,5 +1,5 @@
 module RSpec # :nodoc:
   module Version # :nodoc:
-    STRING = '2.4.0'
+    STRING = '2.5.0'
   end
 end
