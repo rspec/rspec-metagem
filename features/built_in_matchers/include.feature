@@ -118,18 +118,4 @@ Feature: include matcher
       end
       """
     When I run "rspec hash_include_matcher_spec.rb"
-    Then the output should contain all of these:
-      | 22 examples, 13 failures                              |
-      | expected {:a=>7, :b=>5} not to include :a             |
-      | expected {:a=>7, :b=>5} not to include :b and :a      |
-      | expected {:a=>7, :b=>5} not to include {:a=>7}        |
-      | expected {:a=>7, :b=>5} not to include {:a=>7, :b=>5} |
-      | expected {:a=>7, :b=>5} to include :c                 |
-      | expected {:a=>7, :b=>5} to include :c and :d          |
-      | expected {:a=>7, :b=>5} to include {:d=>2}            |
-      | expected {:a=>7, :b=>5} to include {:a=>5}            |
-      | expected {:a=>7, :b=>5} to include {:a=>5, :b=>7}     |
-      | expected {:a=>7, :b=>5} to include :a and :d          |
-      | expected {:a=>7, :b=>5} not to include :a and :d      |
-    And the output should match /expected \{:a=>7, :b=>5\} to include \{(?::a=>7, :d=>3)|(?::d=>3, :a=>7)\}/
-    And the output should match /expected \{:a=>7, :b=>5\} not to include \{(?::a=>7, :d=>3)|(?::d=>3, :a=>7)\}/
+    Then the output should contain "13 failure"
