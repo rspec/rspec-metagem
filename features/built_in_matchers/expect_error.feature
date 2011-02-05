@@ -44,8 +44,8 @@ Feature: raise_error matcher
       """
       describe "matching error message with string" do
         it "matches the error message" do
-          expect { raise StandardError, 'this message exactly'}
-            .to raise_error(StandardError, 'this message exactly')
+          expect { raise StandardError, 'this message exactly'}.
+            to raise_error(StandardError, 'this message exactly')
         end
       end
       """
@@ -57,8 +57,8 @@ Feature: raise_error matcher
       """
       describe "matching error message with regex" do
         it "matches the error message" do
-          expect { raise StandardError, "my message" }
-            .to raise_error(StandardError, /my mess/)
+          expect { raise StandardError, "my message" }.
+            to raise_error(StandardError, /my mess/)
         end
       end
       """
@@ -96,8 +96,8 @@ Feature: raise_error matcher
       """
       describe Object, "#public_instance_methods" do
         it "does not raise" do
-          expect { Object.public_instance_methods }
-            .to_not raise_error(NameError)
+          expect { Object.public_instance_methods }.
+            to_not raise_error(NameError)
         end
       end
       """
