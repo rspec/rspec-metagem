@@ -1,3 +1,20 @@
+### 2.5.1 / 2011-02-05
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.5.0...v2.5.1)
+
+NOTE: this release breaks compatibility with rspec/autotest/bundler
+integration, but does so in order to greatly simplify it.
+
+With this release, if you want the generated autotest command to include
+'bundle exec', require Autotest's bundler plugin in a .autotest file in the
+project's root directory or in your home directory:
+
+    require "autotest/bundler"
+
+Now you can just type 'autotest' on the commmand line and it will work as you expect.
+
+If you don't want 'bundle exec', there is nothing you have to do.
+
 ### 2.5.0 / 2011-02-05
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.4.0...v2.5.0)
