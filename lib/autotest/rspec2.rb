@@ -5,15 +5,10 @@ class RSpecCommandError < StandardError; end
 
 class Autotest::Rspec2 < Autotest
 
-  attr_reader :cl_args, :skip_bundler
-  alias_method :skip_bundler?, :skip_bundler
-
   SPEC_PROGRAM = File.expand_path('../../../bin/rspec', __FILE__)
 
   def initialize
     super()
-    @cl_args = ARGV.dup << "--tty"
-    @skip_bundler = @cl_args.delete("--skip-bundler")
     clear_mappings
     setup_rspec_project_mappings
 
@@ -46,9 +41,8 @@ class Autotest::Rspec2 < Autotest
   end
 
   def make_test_cmd(files_to_test)
-    warn_about_bundler if rspec_wants_bundler? && !autotest_wants_bundler?
     files_to_test.empty? ? '' :
-      "#{prefix}#{ruby}#{suffix} -S #{SPEC_PROGRAM} #{cl_args.join(' ')} #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
+      "#{prefix}#{ruby}#{suffix} -S #{SPEC_PROGRAM} --tty #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
   end
 
   def normalize(files_to_test)
@@ -58,55 +52,12 @@ class Autotest::Rspec2 < Autotest
     end
   end
 
-  def warn_about_bundler
-    RSpec.warn_deprecation <<-WARNING
-
-****************************************************************************
-DEPRECATION WARNING: you are using deprecated behaviour that will be removed
-from a future version of RSpec.
-
-RSpec's autotest extension is relying on the presence of a Gemfile in the
-project root directory to generate a command including 'bundle exec'.
-
-You have two options to suppress this message:
-
-If you want to include 'bundle exec' in the command, add a .autotest file to
-the project root with the following content:
-
-  require 'autotest/bundler'
-
-If you want to _not_include 'bundle exec' in the command, pass --skip-bundler
-to autotest as an extra argument, like this:
-
-  autotest -- --skip-bundler
-*****************************************************************
-WARNING
-  end
-
-  alias_method :autotest_prefix, :prefix
-
-  def rspec_prefix
-    (rspec_wants_bundler? && !autotest_wants_bundler?) ? "bundle exec " : ""
-  end
-
-  def prefix
-    skip_bundler? ? "#{rspec_prefix}#{autotest_prefix}".gsub("bundle exec","") : "#{rspec_prefix}#{autotest_prefix}"
-  end
-
-  def autotest_wants_bundler?
-    autotest_prefix =~ /bundle exec/
-  end
-
   def suffix
     using_bundler? ? "" : defined?(:Gem) ? " -rrubygems" : ""
   end
 
-  def rspec_wants_bundler?
-    gemfile? && !skip_bundler?
-  end
-
   def using_bundler?
-    rspec_wants_bundler? || autotest_wants_bundler?
+    prefix =~ /bundle exec/
   end
 
   def gemfile?

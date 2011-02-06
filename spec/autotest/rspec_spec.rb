@@ -6,135 +6,13 @@ describe Autotest::Rspec2 do
   let(:ruby_cmd) { "ruby" }
 
   before do
-    RSpec.stub(:warn_deprecation)
     File.stub(:exist?) { false }
-    @orig_argv = ARGV.dup; ARGV.clear
   end
 
-  after  { ARGV.clear; ARGV.concat(@orig_argv) }
-
-  context "with ARGV" do
-    it "passes ARGV to command" do
-      ARGV.concat(%w[-c -f d])
-      rspec_autotest.cl_args.should eq(%w[-c -f d --tty])
-    end
-
-    context "with --skip-bundler" do
-      before do
-        ARGV.concat(%w[--skip-bundler])
-      end
-      it "extracts --skip-bundler" do
-        rspec_autotest.cl_args.should eq(%w[--tty])
-      end
-
-      it "sets skip_bundler? true" do
-        rspec_autotest.skip_bundler?.should be_true
-      end
-    end
-  end
-
-  describe "handling bundler" do
-    context "gemfile, no prefix" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { true }
-      end
-
-      it "warns of deprecation of implicit inclusion of 'bundle exec'" do
-        RSpec.should_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({})
-      end
-
-      it "includes bundle exec" do
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should match(/bundle exec/)
-      end
-    end
-
-    context "gemfile, no prefix, --skip-bundler" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { true }
-        ARGV.concat(%w[--skip-bundler])
-      end
-
-      it "does not warn" do
-        RSpec.should_not_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({})
-      end
-
-      it "does not include bundle exec" do
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should_not match(/bundle exec/)
-      end
-    end
-
-    context "no gemfile, prefix" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { false }
-      end
-
-      it "does not warn" do
-        RSpec.should_not_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({'a' => 'b'})
-      end
-
-      it "includes bundle exec" do
-        rspec_autotest.prefix = "bundle exec "
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should match(/bundle exec/)
-      end
-    end
-
-    context "gemfile, prefix" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { true }
-        rspec_autotest.prefix = "bundle exec "
-      end
-
-      it "does not warn" do
-        RSpec.should_not_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({'a' => 'b'})
-      end
-
-      it "includes bundle exec" do
-        rspec_autotest.prefix = "bundle exec "
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should match(/bundle exec/)
-      end
-    end
-
-    context "gemfile, prefix, --skip-bundler" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { true }
-        rspec_autotest.prefix = "bundle exec "
-        rspec_autotest.stub(:skip_bundler?) { true }
-      end
-
-      it "does not warn" do
-        RSpec.should_not_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({'a' => 'b'})
-      end
-
-      it "does not include bundle exec" do
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should_not match(/bundle exec/)
-      end
-    end
-
-    context "no gemfile, no prefix" do
-      before do
-        File.stub(:exist?).with("./Gemfile") { false }
-      end
-
-      it "does not warn" do
-        RSpec.should_not_receive(:warn_deprecation)
-        rspec_autotest.make_test_cmd({'a' => 'b'})
-      end
-
-      it "does not include bundle exec" do
-        rspec_autotest.
-          make_test_cmd({'a' => 'b'}).should_not match(/bundle exec/)
-      end
-    end
+  it "uses autotest's prefix" do
+    rspec_autotest.prefix = "this is the prefix "
+    rspec_autotest.
+      make_test_cmd({'a' => 'b'}).should match(/this is the prefix/)
   end
 
   describe "commands" do
