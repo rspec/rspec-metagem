@@ -248,6 +248,7 @@ An error occurred in an after(:all) hook.
           child.fail_filtered_examples(exception, reporter)
           reporter.example_group_finished(child)
         end
+        false
       end
 
       def self.fail_fast?

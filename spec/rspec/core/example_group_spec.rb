@@ -387,7 +387,7 @@ module RSpec::Core
         group = ExampleGroup.describe
         group.before(:each) { raise "error in before each" }
         example = group.example("equality") { 1.should == 2}
-        group.run
+        group.run.should == false
 
         example.metadata[:execution_result][:exception].message.should == "error in before each"
       end
@@ -396,7 +396,7 @@ module RSpec::Core
         group = ExampleGroup.describe
         group.before(:all) { raise "error in before all" }
         example = group.example("equality") { 1.should == 2}
-        group.run
+        group.run.should == false
 
         example.metadata.should_not be_nil
         example.metadata[:execution_result].should_not be_nil
