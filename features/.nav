@@ -28,11 +28,12 @@
 - command_line:
   - configure.feature
   - example_name_option.feature
-  - exit_status.feature
-  - line_number_appended_to_path.feature
+  - format_option.feature
   - line_number_option.feature
-  - rake_task.feature
   - tag.feature
+  - line_number_appended_to_path.feature
+  - exit_status.feature
+  - rake_task.feature
 - configuration:
   - read_options_from_file.feature
   - fail_fast.feature
@@ -49,3 +50,5 @@
   - custom_formatter.feature
 - spec_files:
   - arbitrary_file_suffix.feature
+
+
