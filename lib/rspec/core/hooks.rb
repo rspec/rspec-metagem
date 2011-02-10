@@ -7,7 +7,7 @@ module RSpec
 
         def initialize(options, &block)
           @options = options
-          raise "no block given for '#{self.class::TYPE}' hook" unless block
+          raise "no block given for #{self.class::TYPE} hook" unless block
           @block = block
         end
 
