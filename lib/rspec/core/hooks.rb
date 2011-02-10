@@ -7,6 +7,7 @@ module RSpec
 
         def initialize(options, &block)
           @options = options
+          raise "no block given for '#{self.class::TYPE}' hook" unless block
           @block = block
         end
 
@@ -24,6 +25,7 @@ module RSpec
       end
 
       class BeforeHook < Hook
+        TYPE = 'before'
         def run_in(example_group_instance)
           if example_group_instance
             example_group_instance.instance_eval(&self)
@@ -34,6 +36,7 @@ module RSpec
       end
 
       class AfterHook < Hook
+        TYPE = 'after'
         def run_in(example_group_instance)
           if example_group_instance
             example_group_instance.instance_eval_with_rescue(&self)
@@ -44,6 +47,7 @@ module RSpec
       end
 
       class AroundHook < Hook
+        TYPE = 'around'
         def call(wrapped_example)
           @block.call(wrapped_example)
         end
