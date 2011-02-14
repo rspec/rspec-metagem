@@ -12,3 +12,11 @@ root directory or your home directory:
 
     # in .autotest
     require "autotest/bundler"
+
+### Upgrading from previous versions of rspec
+
+Previous versions of RSpec used a different mechanism for telling autotest to
+invoke RSpec's autotest extension: generating autotest/discover.rb in the
+project's root directory. This is no longer necessary with the new approach of
+RSpec looking for a `.rspec` file, so feel free to delete the
+`autotest/discover.rb` file in the project root if you have one.
