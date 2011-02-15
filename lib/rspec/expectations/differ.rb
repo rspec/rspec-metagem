@@ -15,15 +15,15 @@ module RSpec
         output = ""
         diffs = Diff::LCS.diff(data_old, data_new)
         return output if diffs.empty?
-        oldhunk = hunk = nil  
+        oldhunk = hunk = nil
         file_length_difference = 0
         diffs.each do |piece|
           begin
             hunk = Diff::LCS::Hunk.new(
               data_old, data_new, piece, context_lines, file_length_difference
             )
-            file_length_difference = hunk.file_length_difference      
-            next unless oldhunk      
+            file_length_difference = hunk.file_length_difference
+            next unless oldhunk
             # Hunks may overlap, which is why we need to be careful when our
             # diff includes lines of context. Otherwise, we might print
             # redundant lines.
@@ -36,14 +36,14 @@ module RSpec
             oldhunk = hunk
             output << "\n"
           end
-        end  
+        end
         #Handle the last remaining hunk
         output << oldhunk.diff(format) << "\n"
-      end  
+      end
 
       def diff_as_object(actual,expected)
-        actual = String === actual ? actual : PP.pp(actual,"")
-        expected = String === expected ? expected : PP.pp(expected,"")
+        actual = object_to_string(actual)
+        expected = object_to_string(expected)
         diff_as_string(actual, expected)
       end
 
@@ -56,7 +56,21 @@ module RSpec
       def context_lines
         3
       end
+
+      def object_to_string(object)
+        case object
+        when Hash
+          object.keys.sort_by { |k| k.to_s }.map do |k|
+            %(#{PP.singleline_pp(k, "")} => #{PP.singleline_pp(object[k], "")})
+          end.join(",\n")
+        when String
+          object
+        else
+          PP.pp(object,"")
+        end
+      end
     end
 
   end
 end
+

@@ -93,4 +93,24 @@ EOD
     diff.should == expected_diff
   end
 
+  it "outputs unified diff message of two hashes" do
+    expected = { :foo => 'bar', :baz => 'quux', :metasyntactic => 'variable', :delta => 'charlie', :width =>'quite wide' }
+    actual   = { :foo => 'bar', :metasyntactic => 'variable', :delta => 'charlotte', :width =>'quite wide' }
+
+    expected_diff = <<'EOD'
+
+@@ -1,4 +1,5 @@
+-:delta => "charlotte",
++:baz => "quux",
++:delta => "charlie",
+ :foo => "bar",
+ :metasyntactic => "variable",
+ :width => "quite wide"
+EOD
+
+
+    diff = @differ.diff_as_object(expected,actual)
+    diff.should == expected_diff
+  end
+
 end
