@@ -236,6 +236,7 @@ An error occurred in an after(:all) hook.
           fail_filtered_examples(ex, reporter)
         ensure
           eval_after_alls(new)
+          before_all_ivars.clear
           reporter.example_group_finished(self)
         end
       end
