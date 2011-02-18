@@ -108,14 +108,14 @@ module RSpec
         #
         #   describe "a configuration Hash" do
         #     subject do
-        #       { :max_users => 3,
+        #       { :max_users => 3,
         #         'admin' => :all_permissions }
         #     end
         #
         #     its([:max_users]) { should == 3 }
         #     its(['admin']) { should == :all_permissions }
         #
-        #     # You can still access to its regular methods this way:
+        #     # You can still access to its regular methods this way:
         #     its(:keys) { should include(:max_users) }
         #     its(:count) { should == 2 }
         #   end
