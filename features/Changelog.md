@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...master)
+
+* Bug fixes
+  * Removed non-ascii characters that were choking rcov (Geoffrey Byers)
+
 ### 2.5.0 / 2011-02-05
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.4.0...v2.5.0)
