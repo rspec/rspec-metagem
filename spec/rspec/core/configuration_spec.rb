@@ -712,5 +712,56 @@ module RSpec::Core
         group.included_modules.should include(mod2)
       end
     end
+
+    describe "#for_groups_matching" do
+      let(:group) { ExampleGroup.describe(Array, :factory => true) }
+      let(:different_group) { ExampleGroup.describe(Array) }
+
+      before do
+        config.for_groups_matching :factory => true do
+          def new_method
+            'new_method'
+          end
+
+          subject { metadata[:example_group][:description].upcase }
+          let(:factory) { 'Factory' }
+        end
+        [group, different_group].each {|g| config.configure_group(g) }
+      end
+
+      context "for groups matching filters" do
+        it "defines methods" do
+          group.new_method.should == 'new_method'
+        end
+
+        it "defines subject" do
+          group.subject.call.should == 'ARRAY'
+        end
+
+        it "defines let" do
+          group.example('let') { factory.should eql('Factory') }
+          group.context('child').example('let') { factory.should eql('Factory') }
+          group.run.should be_true, 'defined let should equal "Factory" for matching groups'
+        end
+      end
+
+      context "for groups not matching filters given" do
+        it "doesn't define new methods" do
+          expect { different_group.new_method }.to raise_error(NoMethodError)
+        end
+
+        it "doesn't change the subject" do
+          different_group.subject.call.should == []
+        end
+
+        it "doesn't define let" do
+          different_group.example('let') do
+            expect { factory }.to raise_error(NameError)
+          end
+          different_group.run.should be_true, 'defined let should raise NameError for not matching group'
+        end
+      end
+    end
+
   end
 end
