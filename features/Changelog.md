@@ -4,6 +4,8 @@
 
 * Bug fixes
   * don't stumble over an exception without a message (Hans Hasselberg)
+  * remove non-ascii characters from comments that were choking rcov (Geoffrey
+    Byers)
 
 ### 2.5.1 / 2011-02-06
 
