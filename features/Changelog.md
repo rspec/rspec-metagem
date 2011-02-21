@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...master)
+
+* Bug fixes
+  * don't stumble over an exception without a message (Hans Hasselberg)
+
 ### 2.5.1 / 2011-02-06
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.5.0...v2.5.1)
