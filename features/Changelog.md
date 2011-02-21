@@ -2,6 +2,15 @@
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...master)
 
+* Enhancements
+  * `config.for_groups_matching` (Damian Nurzynski)
+      * extend groups matching specific metadata with:
+          * method definitions
+          * subject declarations
+          * let/let! declarations
+          * etc (anything you can do in a group)
+
+
 * Bug fixes
   * don't stumble over an exception without a message (Hans Hasselberg)
   * remove non-ascii characters from comments that were choking rcov (Geoffrey
