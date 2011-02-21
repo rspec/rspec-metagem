@@ -20,6 +20,7 @@
   - arbitrary_methods.feature
 - metadata:
   - described_class.feature
+  - user_defined.feature
 - filtering:
   - inclusion_filters.feature
   - exclusion_filters.feature
