@@ -1,6 +1,8 @@
 module RSpec
   module Core
     module Pending
+      class PendingDeclaredInExample < StandardError; end
+
       DEFAULT_MESSAGE = 'No reason given'
 
       def pending(*args)
@@ -19,11 +21,11 @@ module RSpec
           begin
             result = yield
             example.metadata[:pending] = false
-          rescue Exception => e
+          rescue Exception
           end
           raise RSpec::Core::PendingExampleFixedError.new if result
         end
-        throw :pending_declared_in_example, message
+        raise PendingDeclaredInExample.new(message)
       end
     end
   end

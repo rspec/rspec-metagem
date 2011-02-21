@@ -319,11 +319,11 @@ a {
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46
 ./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:45</pre></div>
-    <pre class="ruby"><code><span class="linenum">22</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span> <span class="punct">=&gt;</span> <span class="ident">e</span>
-<span class="linenum">23</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">24</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">25</span>        <span class="keyword">end</span>
-<span class="linenum">26</span>        <span class="ident">throw</span> <span class="symbol">:pending_declared_in_example</span><span class="punct">,</span> <span class="ident">message</span></code></pre>
+    <pre class="ruby"><code><span class="linenum">24</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span>
+<span class="linenum">25</span>          <span class="keyword">end</span>
+<span class="offending"><span class="linenum">26</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
+<span class="linenum">27</span>        <span class="keyword">end</span>
+<span class="linenum">28</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
       </div>
     </dd>
   </dl>

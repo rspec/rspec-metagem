@@ -119,6 +119,19 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.run
         group.examples.first.should be_pending
       end
+
+      it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
+        blah = nil
+        group = RSpec::Core::ExampleGroup.describe do
+          around do |example|
+            example.run
+            blah = :success
+          end
+          example { pending }
+        end
+        group.run
+        blah.should be(:success)
+      end
     end
       
     context "in before(:each)" do

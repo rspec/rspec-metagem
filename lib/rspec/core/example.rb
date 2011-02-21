@@ -42,16 +42,16 @@ module RSpec
 
         begin
           unless pending
-            with_pending_capture do
-              with_around_hooks do
-                begin
-                  run_before_each
-                  @example_group_instance.instance_eval(&@example_block)
-                rescue Exception => e
-                  set_exception(e)
-                ensure
-                  run_after_each
-                end
+            with_around_hooks do
+              begin
+                run_before_each
+                @example_group_instance.instance_eval(&@example_block)
+              rescue Pending::PendingDeclaredInExample => e
+                @pending_declared_in_example = e.message
+              rescue Exception => e
+                set_exception(e)
+              ensure
+                run_after_each
               end
             end
           end
@@ -93,13 +93,6 @@ module RSpec
       end
 
     private
-
-      def with_pending_capture
-        @pending_declared_in_example = catch(:pending_declared_in_example) do
-          yield
-          throw :pending_declared_in_example, false
-        end
-      end
 
       def with_around_hooks(&block)
         if around_hooks.empty?
