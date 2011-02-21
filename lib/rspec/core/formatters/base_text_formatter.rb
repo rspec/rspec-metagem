@@ -148,7 +148,7 @@ module RSpec
           output.puts "#{short_padding}#{index.next}) #{example.full_description}"
           output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{red(exception.class.name << ":")}" unless exception.class.name =~ /RSpec/
-          exception.message.split("\n").each { |line| output.puts "#{long_padding}  #{red(line)}" }
+          exception.message.split("\n").each { |line| output.puts "#{long_padding}  #{red(line)}" } if exception.message
 
           example.example_group.ancestors.push(example.example_group).each do |group|
             if group.metadata[:shared_group_name]
