@@ -714,51 +714,62 @@ module RSpec::Core
     end
 
     describe "#for_groups_matching" do
-      let(:group) { ExampleGroup.describe(Array, :factory => true) }
-      let(:different_group) { ExampleGroup.describe(Array) }
+      let(:matching_group) { ExampleGroup.describe(Array, :extended => true) }
+      let(:non_matching_group) { ExampleGroup.describe(Array) }
 
       before do
-        config.for_groups_matching :factory => true do
-          def new_method
-            'new_method'
+        config.for_groups_matching :extended => true do
+          def method_defined_in_config
+            'method defined in config'
           end
-
-          subject { metadata[:example_group][:description].upcase }
-          let(:factory) { 'Factory' }
+          subject { "subject defined in config" }
+          let(:let_declaration_in_config) { 'value returned by let declared in config' }
+          let(:let_bang_declaration_in_config) { 'value returned by let bang declared in config' }
         end
-        [group, different_group].each {|g| config.configure_group(g) }
+        [matching_group, non_matching_group].each {|g| config.configure_group(g) }
       end
 
       context "for groups matching filters" do
         it "defines methods" do
-          group.new_method.should == 'new_method'
+          matching_group.new.method_defined_in_config.should == 'method defined in config'
         end
 
         it "defines subject" do
-          group.subject.call.should == 'ARRAY'
+          matching_group.subject.call.should eq("subject defined in config")
         end
 
         it "defines let" do
-          group.example('let') { factory.should eql('Factory') }
-          group.context('child').example('let') { factory.should eql('Factory') }
-          group.run.should be_true, 'defined let should equal "Factory" for matching groups'
+          matching_group.example('let') { let_declaration_in_config.should eq('value returned by let declared in config') }
+          matching_group.run.should be_true, "expected method declared with let to be accessible in example group"
+        end
+
+        it "defines let!" do
+          matching_group.example('let!') { let_bang_declaration_in_config.should eq('value returned by let bang declared in config') }
+          matching_group.run.should be_true, "expected method declared with let! to be accessible in example group"
         end
       end
 
       context "for groups not matching filters given" do
         it "doesn't define new methods" do
-          expect { different_group.new_method }.to raise_error(NoMethodError)
+          expect { non_matching_group.new.method_defined_in_config }.to raise_error(NoMethodError)
         end
 
         it "doesn't change the subject" do
-          different_group.subject.call.should == []
+          non_matching_group.subject.call.should eq([])
         end
 
         it "doesn't define let" do
-          different_group.example('let') do
-            expect { factory }.to raise_error(NameError)
+          non_matching_group.example('let') do
+            expect { let_declaration_in_config }.to raise_error(NameError)
           end
-          different_group.run.should be_true, 'defined let should raise NameError for not matching group'
+          non_matching_group.run.should be_true, 'defined let should raise NameError for not matching group'
+        end
+
+        it "doesn't define let!" do
+          non_matching_group.example('let') do
+            expect { let_bang_declaration_in_config }.to raise_error(NameError)
+          end
+          non_matching_group.run.should be_true, 'defined let should raise NameError for not matching group'
         end
       end
     end

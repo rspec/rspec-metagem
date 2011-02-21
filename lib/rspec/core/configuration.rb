@@ -372,24 +372,26 @@ EOM
         end
       end
 
-      # Allows user to define a block evaluated in the context of any
-      # example group that match filters given.
+      # Extend groups matching submitted metadata with methods, subject declarations
+      # and let/let! declarations.
       #
       # Example:
       #
-      # RSpec.configure do |c|
-      #   c.for_matching_groups :type => :model do
-      #     subject { Factory described_class.to_s.underscore }
-      #     let(:valid_attributes) { Factory.attributes_for described_class.to_sym }
+      #   RSpec.configure do |c|
+      #     c.for_matching_groups :type => :model do
+      #       def a_method
+      #         "a value"
+      #       end
+      #       subject { Factory described_class.to_s.underscore }
+      #       let(:valid_attributes) { Factory.attributes_for described_class.to_sym }
+      #     end
       #   end
-      # end
-      #
       def for_groups_matching(filters = {}, &block)
         mod = Module.new
-        (class << mod; self; end).send(:define_method, :included) do |base|
-          base.instance_eval(&block)
+        (class << mod; self; end).send(:define_method, :extended) do |host|
+          host.class_eval(&block)
         end
-        self.include(mod, filters)
+        self.extend(mod, filters)
       end
 
       def configure_mock_framework

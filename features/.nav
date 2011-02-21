@@ -38,6 +38,7 @@
   - read_options_from_file.feature
   - fail_fast.feature
   - custom_settings.feature
+  - for_groups_matching.feature
 - expectation_framework_integration:
   - configure_expectation_framework.feature
 - mock_framework_integration:
@@ -50,5 +51,3 @@
   - custom_formatter.feature
 - spec_files:
   - arbitrary_file_suffix.feature
-
-
