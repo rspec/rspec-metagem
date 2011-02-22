@@ -100,3 +100,23 @@ Feature: attribute of subject
       """
     When I run "rspec example_spec.rb"
     Then the examples should all pass
+
+  Scenario: specify value for key in a hash-like object
+    Given a file named "example_spec.rb" with:
+      """
+      require 'matrix'
+
+      describe Matrix do
+        context "with values [[1, 2], [3, 4]]" do
+          subject do
+            Matrix[[1, 2], [3, 4]]
+          end
+
+          its([0, 1]) { should eq(2) }
+          its([1, 0]) { should eq(3) }
+          its([1, 2]) { should be_nil }
+        end
+      end
+      """
+    When I run "rspec example_spec.rb"
+    Then the examples should all pass

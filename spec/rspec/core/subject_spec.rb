@@ -134,23 +134,43 @@ module RSpec::Core
         its("name.size.class") { should eq(Fixnum) }
       end
 
-      context "when it is a Hash" do
+      context "when it responds to #[]" do
         subject do
-          { :attribute => 'value',
-            'another_attribute' => 'another_value' }
+          Class.new do
+            def [](*objects)
+              objects.map do |object|
+                "#{object.class}: #{object.to_s}"
+              end.join("; ")
+            end
+
+            def name
+              "George"
+            end
+          end.new
         end
-        its([:attribute]) { should == 'value' }
-        its([:attribute]) { should_not == 'another_value' }
-        its([:another_attribute]) { should == 'another_value' }
-        its([:another_attribute]) { should_not == 'value' }
-        its(:keys) { should =~ ['another_attribute', :attribute] }
+        its([:a]) { should == 'Symbol: a' }
+        its(['a']) { should == 'String: a' }
+        its([:b, 'c', 4]) { should == 'Symbol: b; String: c; Fixnum: 4' }
+        its(:name) { should = "George" }
         context "when referring to an attribute without the proper array syntax" do
           context "it raises an error" do
-            its(:attribute) do
+            its(:age) do
               expect do
-                should eq('value')
+                should eq(64)
               end.to raise_error(NoMethodError)
             end
+          end
+        end
+      end
+
+      context "when it does not respond to #[]" do
+        subject { Object.new }
+
+        context "it raises an error" do
+          its([:a]) do
+            expect do
+              should == 'Symbol: a'
+            end.to raise_error(NoMethodError)
           end
         end
       end

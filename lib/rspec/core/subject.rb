@@ -124,8 +124,8 @@ module RSpec
             example do
               self.class.class_eval do
                 define_method(:subject) do
-                  @_subject ||= if super().is_a?(Hash) && attribute.is_a?(Array)
-                                  OpenStruct.new(super()).send(attribute.first)
+                  @_subject ||= if attribute.is_a?(Array)
+                                  super()[*attribute]
                                 else
                                   attribute.to_s.split('.').inject(super()) do |target, method|
                                     target.send(method)
