@@ -1,7 +1,5 @@
 module RSpec
-
   module Core
-
     module Formatters
 
       module Helpers
@@ -22,7 +20,5 @@ module RSpec
       end
 
     end
-
   end
-
 end

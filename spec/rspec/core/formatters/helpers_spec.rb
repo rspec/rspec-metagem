@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rspec/core/formatters/helpers'
 require 'stringio'
 
 describe RSpec::Core::Formatters::Helpers do
