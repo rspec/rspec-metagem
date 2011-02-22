@@ -9,7 +9,7 @@
           * subject declarations
           * let/let! declarations
           * etc (anything you can do in a group)
-
+  * `its([:key])` works for any subject with #[]. (Peter Jaros)
 
 * Bug fixes
   * don't stumble over an exception without a message (Hans Hasselberg)
