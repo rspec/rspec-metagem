@@ -9,6 +9,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     example_group.example('example description')
   end
 
+  it_behaves_like "metadata hash builder" do
+    def metadata_hash(*args)
+      example = example_group.example('example description', *args)
+      example.metadata
+    end
+  end
+
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
       described_class.should == RSpec::Core::Example

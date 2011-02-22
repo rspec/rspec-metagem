@@ -30,6 +30,17 @@ module RSpec::Core
       end
     end
 
+    describe "#treat_symbols_as_metadata_keys_with_true_values?" do
+      it 'can be set to true' do
+        config.treat_symbols_as_metadata_keys_with_true_values = true
+        config.treat_symbols_as_metadata_keys_with_true_values?.should be_true
+      end
+
+      it 'defaults to false' do
+        config.treat_symbols_as_metadata_keys_with_true_values?.should be_false
+      end
+    end
+
     describe "#mock_framework" do
       it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')

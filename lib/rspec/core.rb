@@ -9,6 +9,7 @@ require 'rspec/core/subject'
 require 'rspec/core/let'
 require 'rspec/core/metadata'
 require 'rspec/core/pending'
+require 'rspec/core/metadata_hash_builder'
 
 require 'rspec/core/world'
 require 'rspec/core/configuration'

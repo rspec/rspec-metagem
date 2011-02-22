@@ -13,6 +13,44 @@ end
 module RSpec::Core
 
   describe ExampleGroup do
+    it_behaves_like "metadata hash builder" do
+      def metadata_hash(*args)
+        group = ExampleGroup.describe('example description', *args)
+        group.metadata
+      end
+    end
+
+    context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to false' do
+      before(:each) do
+        RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = false }
+        Kernel.stub(:warn)
+      end
+
+      it 'processes string args as part of the description' do
+        group = ExampleGroup.describe("some", "separate", "strings")
+        group.description.should == "some separate strings"
+      end
+
+      it 'processes symbol args as part of the description' do
+        group = ExampleGroup.describe(:some, :separate, :symbols)
+        group.description.should == "some separate symbols"
+      end
+    end
+
+    context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to true' do
+      let(:group) { ExampleGroup.describe(:symbol) }
+      before(:each) do
+        RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = true }
+      end
+
+      it 'does not treat the first argument as a metadata key even if it is a symbol' do
+        group.metadata.should_not include(:symbol)
+      end
+
+      it 'treats the first argument as part of the description when it is a symbol' do
+        group.description.should == "symbol"
+      end
+    end
 
     describe "top level group" do
       it "runs its children" do

@@ -8,6 +8,7 @@ module RSpec
       include Subject::InstanceMethods
       include Let
       include Pending
+      extend MetadataHashBuilder
 
       attr_accessor :example
 
@@ -41,7 +42,8 @@ module RSpec
 
       def self.define_example_method(name, extra_options={})
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
-          def self.#{name}(desc=nil, options={}, &block)
+          def self.#{name}(desc=nil, *args, &block)
+            options = build_metadata_hash_from(args)
             options.update(:pending => true) unless block
             options.update(#{extra_options.inspect})
             examples << RSpec::Core::Example.new(self, desc, options, block)
@@ -150,6 +152,9 @@ module RSpec
       end
 
       def self.set_it_up(*args)
+        symbol_description = args.shift if args.first.is_a?(Symbol)
+        args << build_metadata_hash_from(args)
+        args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
         world.configure_group(self)
       end

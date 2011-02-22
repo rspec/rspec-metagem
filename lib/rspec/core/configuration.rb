@@ -33,6 +33,7 @@ module RSpec
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
       add_setting :tty
+      add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
 
       def initialize
         @color_enabled = false

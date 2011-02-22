@@ -8,6 +8,17 @@ Feature: User-defined metadata
   Metadata defined on an example group is available (and can be overriden)
   by any sub-group or from any example in that group or a sub-group.
 
+  In addition, there is a configuration option (which will be the default
+  behavior in RSpec 3) that allows you to specify metadata using just
+  symbols:
+
+    RSpec.configure do |c|
+      c.treat_symbols_as_metadata_keys_with_true_values = true
+    end
+
+  Each symbol passed as an argument to `describe`, `context` or `it` will
+  be a key in the metadata hash, with a corresponding value of `true`.
+
   Scenario: define group metadata using a hash
     Given a file named "define_group_metadata_with_hash_spec.rb" with:
       """
@@ -69,4 +80,32 @@ Feature: User-defined metadata
       end
       """
     When I run "rspec override_metadata_spec.rb"
+    Then the examples should all pass
+
+  Scenario: less verbose metadata
+    Given a file named "less_verbose_metadata_spec.rb" with:
+      """
+      RSpec.configure do |c|
+        c.treat_symbols_as_metadata_keys_with_true_values = true
+      end
+
+      describe "a group with simple metadata", :fast, :simple, :bug => 73 do
+        it 'has `:fast => true` metadata' do
+          example.metadata[:fast].should == true
+        end
+
+        it 'has `:simple => true` metadata' do
+          example.metadata[:simple].should == true
+        end
+
+        it 'can still use a hash for metadata' do
+          example.metadata[:bug].should == 73
+        end
+
+        it 'can define simple metadata on an example', :special do
+          example.metadata[:special].should == true
+        end
+      end
+      """
+    When I run "rspec less_verbose_metadata_spec.rb"
     Then the examples should all pass
