@@ -19,26 +19,3 @@ RSpec::Matchers.define :map_specs do |specs|
     autotest
   end
 end
-
-RSpec::Matchers.define :have_interface_for do |method|
-  match do |object|
-    @method = method
-    @object = object
-    object.respond_to?(method) && actual_arity == @expected_arity
-  end
-
-  chain :with do |arity|
-    @expected_arity = arity
-  end
-
-  chain(:argument) {}
-  chain(:arguments) {}
-
-  failure_message_for_should do
-    "#{@object} should have method :#{@method} with #{@expected_arity} argument(s), but it had #{actual_arity}"
-  end
-
-  def actual_arity
-    @object.method(@method).arity
-  end
-end
