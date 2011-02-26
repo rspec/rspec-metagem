@@ -46,7 +46,7 @@ end
 ### rspec-core only
 gem "mocha", "~> 0.9.10"
 gem "rr", "~> 1.0.2"
-gem "flexmock", "~> 0.8.11"
+gem "flexmock", "0.8.8"
 
 ### optional runtime deps
 gem "syntax", "1.0.0"
