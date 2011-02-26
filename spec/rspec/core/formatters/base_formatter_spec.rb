@@ -34,13 +34,13 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
     context "when String alias to_int to_i" do
       before do
-        class String
+        String.class_eval do
           alias :to_int :to_i
         end
       end
 
       after do
-        class String
+        String.class_eval do
           undef to_int
         end
       end
