@@ -16,6 +16,64 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe "auto-generated example descriptions" do
+    let(:generated_description) { "the generated description" }
+    let(:rspec_example) { example_group.specify { 5.should == 5 } }
+    before(:each) { RSpec::Matchers.stub(:generated_description => generated_description) }
+
+    def expect_with(*frameworks)
+      # this is stubbed to prevent us from actually including stdlib assertions,
+      # as the additional methods have naming conflicts with some of our custom
+      # matchers
+      RSpec.configuration.stub(:require).with(%r|rspec/core/expecting/|)
+      RSpec.configure { |c| c.expect_with *frameworks }
+      RSpec.configuration.configure_expectation_framework
+
+      if frameworks.include?(:stdlib)
+        example_group.class_eval do
+          def assert(val)
+            raise "Expected #{val} to be true" unless val
+          end
+        end
+      end
+    end
+
+    context "when `expect_with :rspec` is configured" do
+      before(:each) { expect_with :rspec }
+
+      it "generates a description for an example with no description" do
+        expect {
+          example_group.run
+        }.to change { rspec_example.metadata[:description] }.from("").to(generated_description)
+      end
+    end
+
+    context "when `expect_with :rspec, :stdlib` is configured" do
+      before(:each) { expect_with :rspec, :stdlib }
+
+      it "generates a description for an example with no description" do
+        expect {
+          example_group.run
+        }.to change { rspec_example.metadata[:description] }.from("").to(generated_description)
+      end
+    end
+
+    context "when `expect_with :stdlib` is configured" do
+      let!(:stdlib_example) { example_group.specify { assert 5 == 5 } }
+      before(:each) { expect_with :stdlib }
+
+      it "does not attempt to get the generated description from RSpec::Matchers" do
+        RSpec::Matchers.should_not_receive(:generated_description)
+        example_group.run
+      end
+
+      it "fails an example with no description" do
+        example_group.run
+        stdlib_example.should have_failed_with(NotImplementedError)
+      end
+    end
+  end
+
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
       described_class.should == RSpec::Core::Example

@@ -69,3 +69,7 @@ RSpec::Matchers.define :pass do
   end
 end
 
+RSpec::Matchers.module_eval do
+  alias have_failed_with fail_with
+  alias have_passed pass
+end

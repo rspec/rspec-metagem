@@ -3,6 +3,7 @@ require 'spec_helper'
 module RSpec::Core
 
   describe Subject do
+    before(:each) { RSpec.configuration.configure_expectation_framework }
 
     describe "implicit subject" do
       describe "with a class" do

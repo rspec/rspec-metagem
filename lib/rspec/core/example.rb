@@ -59,7 +59,12 @@ module RSpec
           set_exception(e)
         ensure
           @example_group_instance.example = nil
-          assign_auto_description
+
+          begin
+            assign_auto_description
+          rescue Exception => e
+            set_exception(e)
+          end
         end
 
         finish(reporter)
@@ -146,8 +151,15 @@ module RSpec
 
       def assign_auto_description
         if description.empty? and !pending?
-          metadata[:description] = RSpec::Matchers.generated_description
-          RSpec::Matchers.clear_generated_description
+          if RSpec.configuration.expecting_with_rspec?
+            metadata[:description] = RSpec::Matchers.generated_description
+            RSpec::Matchers.clear_generated_description
+          else
+            raise NotImplementedError.new(
+              "Generated descriptions are only supported when you use rspec-expectations.  " +
+              "You must give every example an explicit description."
+            )
+          end
         end
       end
 

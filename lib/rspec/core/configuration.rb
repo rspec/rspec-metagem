@@ -34,6 +34,7 @@ module RSpec
       add_setting :backtrace_clean_patterns
       add_setting :tty
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
+      add_setting :expecting_with_rspec
 
       def initialize
         @color_enabled = false
@@ -170,13 +171,11 @@ module RSpec
 
       # Returns the configured expectation framework adapter module(s)
       def expectation_frameworks
-        settings[:expectation_frameworks] ||= begin
-                                               require 'rspec/core/expecting/with_rspec'
-                                               [RSpec::Core::ExpectationFrameworkAdapter]
-                                             end
+        expect_with :rspec unless settings[:expectation_frameworks]
+        settings[:expectation_frameworks]
       end
 
-      # Delegates to expect_with=([framework])
+      # Delegates to expect_with([framework])
       def expectation_framework=(framework)
         expect_with([framework])
       end
@@ -196,6 +195,7 @@ module RSpec
             case framework
             when :rspec
               require 'rspec/core/expecting/with_rspec'
+              self.expecting_with_rspec = true
             when :stdlib
               require 'rspec/core/expecting/with_stdlib'
             else
