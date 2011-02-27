@@ -7,8 +7,8 @@ Gem::Specification.new do |s|
   s.name        = "rspec"
   s.version     = RSpec::Version::STRING
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["David Chelimsky", "Chad Humphries"]
-  s.email       = "dchelimsky@gmail.com;chad.humphries@gmail.com"
+  s.authors     = ["Steven Baker", "David Chelimsky"]
+  s.email       = "rspec-users@rubyforge.org;"
   s.homepage    = "http://github.com/rspec/rspec"
   s.summary     = "rspec-#{RSpec::Version::STRING}"
   s.description = "Meta-gem that depends on the other rspec gems"
