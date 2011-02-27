@@ -7,10 +7,10 @@ Gem::Specification.new do |s|
   s.version     = RSpec::Core::Version::STRING
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Chad Humphries", "David Chelimsky"]
-  s.email       = "dchelimsky@gmail.com;chad.humphries@gmail.com"
-  s.homepage    = "http://github.com/rspec/rspec-core"
+  s.email       = "rspec-users@rubyforge.org;"
+  s.homepage    = "http://github.com/rspec"
   s.summary     = "rspec-core-#{RSpec::Core::Version::STRING}"
-  s.description = "RSpec runner and example groups"
+  s.description = "BDD for Ruby. RSpec runner and example groups."
 
   s.rubygems_version   = "1.3.7"
   s.rubyforge_project  = "rspec"
