@@ -9,9 +9,9 @@ Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Steven Baker", "David Chelimsky"]
   s.email       = "rspec-users@rubyforge.org;"
-  s.homepage    = "http://github.com/rspec/rspec"
+  s.homepage    = "http://github.com/rspec"
   s.summary     = "rspec-#{RSpec::Version::STRING}"
-  s.description = "Meta-gem that depends on the other rspec gems"
+  s.description = "BDD for Ruby"
 
   s.rubygems_version   = "1.3.7"
   s.rubyforge_project  = "rspec"
