@@ -50,8 +50,6 @@ module RSpec::Core
         config.stub(:run_hook)
 
         config.should_receive(:load_spec_files)
-        config.should_receive(:configure_mock_framework)
-        config.should_receive(:configure_expectation_framework)
 
         world.should_receive(:announce_inclusion_filter)
         world.should_receive(:announce_exclusion_filter)

@@ -151,7 +151,24 @@ module RSpec
         @top_level ||= superclass == ExampleGroup
       end
 
+      def self.ensure_example_groups_are_configured
+        unless @example_groups_configured
+          RSpec.configuration.configure_mock_framework
+          RSpec.configuration.configure_expectation_framework
+          @example_groups_configured = true
+        end
+      end
+
       def self.set_it_up(*args)
+        # Ruby 1.9 has a bug that can lead to infinite recursion and a
+        # SystemStackError if you include a module in a superclass after
+        # including it in a subclass: https://gist.github.com/845896
+        # To prevent this, we must include any modules in RSpec::Core::ExampleGroup
+        # before users create example groups and have a chance to include
+        # the same module in a subclass of RSpec::Core::ExampleGroup.
+        # So we need to configure example groups here.
+        ensure_example_groups_are_configured
+
         symbol_description = args.shift if args.first.is_a?(Symbol)
         args << build_metadata_hash_from(args)
         args.unshift(symbol_description) if symbol_description
