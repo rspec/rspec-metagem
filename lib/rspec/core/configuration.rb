@@ -362,11 +362,6 @@ EOM
       end
 
       def configure_group(group)
-        modules = {
-          :include => group.included_modules.dup,
-          :extend  => group.ancestors.dup
-        }
-
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.apply?(:any?, filters)
           group.send(include_or_extend, mod)
