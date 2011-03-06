@@ -9,183 +9,176 @@ Feature: filters
     Given a file named "filter_before_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
-        config.before(:each, :foo => :bar) { puts "In hook" }
+        config.before(:each, :foo => :bar) do
+          invoked_hooks << :before_each_foo_bar
+        end
       end
 
-      describe "group 1" do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
-      end
+      describe "a filtered before :each hook" do
+        let(:invoked_hooks) { [] }
 
-      describe "group 2", :foo => :bar do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
+        describe "group without matching metadata" do
+          it "does not run the hook" do
+            invoked_hooks.should be_empty
+          end
+
+          it "runs the hook for an example with matching metadata", :foo => :bar do
+            invoked_hooks.should == [:before_each_foo_bar]
+          end
+        end
+
+        describe "group with matching metadata", :foo => :bar do
+          it "runs the hook" do
+            invoked_hooks.should == [:before_each_foo_bar]
+          end
+        end
       end
       """
-    When I run "rspec filter_before_each_hooks_spec.rb --format documentation"
-    Then the output should contain:
-      """
-      group 1
-        example 1
-      In hook
-        example 2
-
-      group 2
-      In hook
-        example 1
-      In hook
-        example 2
-      """
+    When I run "rspec filter_before_each_hooks_spec.rb"
+    Then the examples should all pass
 
   Scenario: filter `after(:each)` hooks using arbitrary metadata
     Given a file named "filter_after_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
-        config.after(:each, :foo => :bar) { puts "In hook" }
+        config.after(:each, :foo => :bar) do
+          raise "boom!"
+        end
       end
 
-      describe "group 1" do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
-      end
+      describe "a filtered after :each hook" do
+        describe "group without matching metadata" do
+          it "does not run the hook" do
+            # should pass
+          end
 
-      describe "group 2", :foo => :bar do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
+          it "runs the hook for an example with matching metadata", :foo => :bar do
+            # should fail
+          end
+        end
+
+        describe "group with matching metadata", :foo => :bar do
+          it "runs the hook" do
+            # should fail
+          end
+        end
       end
       """
-    When I run "rspec filter_after_each_hooks_spec.rb --format documentation"
-    Then the output should contain:
-      """
-      group 1
-        example 1
-      In hook
-        example 2
-
-      group 2
-      In hook
-        example 1
-      In hook
-        example 2
-      """
+    When I run "rspec filter_after_each_hooks_spec.rb"
+    Then the output should contain "3 examples, 2 failures"
 
   Scenario: filter around(:each) hooks using arbitrary metadata
     Given a file named "filter_around_each_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
         config.around(:each, :foo => :bar) do |example|
-          puts "Start hook"
+          order << :before_around_each_foo_bar
           example.run
-          puts "End hook"
+          order.should == [:before_around_each_foo_bar, :example]
         end
       end
 
-      describe "group 1" do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
-      end
+      describe "a filtered around(:each) hook" do
+        let(:order) { [] }
 
-      describe "group 2", :foo => :bar do
-        it("example 1") { }
-        it("example 2", :foo => :bar) { }
+        describe "a group without matching metadata" do
+          it "does not run the hook" do
+            order.should be_empty
+          end
+
+          it "runs the hook for an example with matching metadata", :foo => :bar do
+            order.should == [:before_around_each_foo_bar]
+            order << :example
+          end
+        end
+
+        describe "a group with matching metadata", :foo => :bar do
+          it "runs the hook for an example with matching metadata", :foo => :bar do
+            order.should == [:before_around_each_foo_bar]
+            order << :example
+          end
+        end
       end
       """
-    When I run "rspec filter_around_each_hooks_spec.rb --format documentation"
-    Then the output should contain:
-      """
-      group 1
-        example 1
-      Start hook
-      End hook
-        example 2
-
-      group 2
-      Start hook
-      End hook
-        example 1
-      Start hook
-      End hook
-        example 2
-      """
+    When I run "rspec filter_around_each_hooks_spec.rb"
+    Then the examples should all pass
 
   Scenario: filter before(:all) hooks using arbitrary metadata
     Given a file named "filter_before_all_hooks_spec.rb" with:
       """
       RSpec.configure do |config|
-        config.before(:all, :foo => :bar) { puts "In hook" }
+        config.before(:all, :foo => :bar) { @hook = :before_all_foo_bar }
       end
 
-      describe "group 1" do
-        it("example 1") { }
-        it("example 2") { }
-      end
+      describe "a filtered before(:all) hook" do
+        describe "a group without matching metadata" do
+          it "does not run the hook" do
+            @hook.should be_nil
+          end
 
-      describe "group 2", :foo => :bar do
-        it("example 1") { }
-        it("example 2") { }
-      end
+          describe "a nested subgroup with matching metadata", :foo => :bar do
+            it "runs the hook" do
+              @hook.should == :before_all_foo_bar
+            end
+          end
+        end
 
-      describe "group 3" do
-        describe "subgroup 1", :foo => :bar do
-          it("example 1") { }
+        describe "a group with matching metadata", :foo => :bar do
+          it "runs the hook" do
+            @hook.should == :before_all_foo_bar
+          end
+
+          describe "a nested subgroup" do
+            it "runs the hook" do
+              @hook.should == :before_all_foo_bar
+            end
+          end
         end
       end
       """
-    When I run "rspec filter_before_all_hooks_spec.rb --format documentation"
-    Then the output should contain:
-      """
-      group 1
-        example 1
-        example 2
-
-      group 2
-      In hook
-        example 1
-        example 2
-
-      group 3
-        subgroup 1
-      In hook
-          example 1
-      """
+    When I run "rspec filter_before_all_hooks_spec.rb"
+    Then the examples should all pass
 
   Scenario: filter after(:all) hooks using arbitrary metadata
     Given a file named "filter_after_all_hooks_spec.rb" with:
       """
+      example_msgs = []
+
       RSpec.configure do |config|
-        config.after(:all, :foo => :bar) { puts "In hook" }
+        config.after(:all, :foo => :bar) do
+          puts "after :all"
+        end
       end
 
-      describe "group 1" do
-        it("example 1") { }
-        it("example 2") { }
-      end
+      describe "a filtered after(:all) hook" do
+        describe "a group without matching metadata" do
+          it "does not run the hook" do
+            puts "unfiltered"
+          end
+        end
 
-      describe "group 2", :foo => :bar do
-        it("example 1") { }
-        it("example 2") { }
-      end
+        describe "a group with matching metadata", :foo => :bar do
+          it "runs the hook" do
+            puts "filtered 1"
+          end
+        end
 
-      describe "group 3" do
-        describe "subgroup 1", :foo => :bar do
-          it("example 1") { }
+        describe "another group without matching metadata" do
+          describe "a nested subgroup with matching metadata", :foo => :bar do
+            it "runs the hook" do
+              puts "filtered 2"
+            end
+          end
         end
       end
       """
-    When I run "rspec filter_after_all_hooks_spec.rb --format documentation"
-    Then the output should contain:
+    When I run "rspec filter_after_all_hooks_spec.rb"
+    Then the examples should all pass
+    And the output should contain:
       """
-      group 1
-        example 1
-        example 2
-
-      group 2
-        example 1
-        example 2
-      In hook
-
-      group 3
-        subgroup 1
-          example 1
-      In hook
+      unfiltered
+      .filtered 1
+      .after :all
+      filtered 2
+      .after :all
       """
