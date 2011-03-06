@@ -8,7 +8,7 @@ module RSpec
       include Subject::InstanceMethods
       include Let
       include Pending
-      extend MetadataHashBuilder
+      extend MetadataHashBuilder::WithDeprecationWarning
 
       attr_accessor :example
 

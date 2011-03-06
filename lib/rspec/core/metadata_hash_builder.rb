@@ -1,31 +1,41 @@
 module RSpec
   module Core
     module MetadataHashBuilder
-      def build_metadata_hash_from(args)
-        metadata = args.last.is_a?(Hash) ? args.pop : {}
+      module Common
+        def build_metadata_hash_from(args)
+          metadata = args.last.is_a?(Hash) ? args.pop : {}
 
-        if RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values?
-          add_symbols_to_hash(metadata, args)
-        else
-          warn_about_deprecated_symbol_usage(args)
+          if RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values?
+            add_symbols_to_hash(metadata, args)
+          else
+            warn_about_symbol_usage(args)
+          end
+
+          metadata
         end
 
-        metadata
+        private
+
+          def add_symbols_to_hash(hash, args)
+            while args.last.is_a?(Symbol)
+              hash[args.pop] = true
+            end
+          end
+
+          def warn_about_symbol_usage(args)
+            symbols = args.select { |a| a.is_a?(Symbol) }
+            return if symbols.empty?
+            Kernel.warn symbol_metadata_warning(symbols)
+          end
       end
 
-      private
+      module WithDeprecationWarning
+        include Common
 
-        def add_symbols_to_hash(hash, args)
-          while args.last.is_a?(Symbol)
-            hash[args.pop] = true
-          end
-        end
+        private
 
-        def warn_about_deprecated_symbol_usage(args)
-          symbols = args.select { |a| a.is_a?(Symbol) }
-          return if symbols.empty?
-
-          Kernel.warn <<-NOTICE
+          def symbol_metadata_warning(symbols)
+            <<-NOTICE
 
 *****************************************************************
 DEPRECATION WARNING: you are using deprecated behaviour that will
@@ -48,7 +58,8 @@ a string such as "#method_name" to remove this warning.
 *****************************************************************
 
 NOTICE
+          end
         end
-    end
+      end
   end
 end
