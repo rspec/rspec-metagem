@@ -27,7 +27,7 @@ describe RSpec::Core do
 
     context "when an example group has already been defined" do
       before(:each) do
-        RSpec.world.stub(:example_groups).and_return([stub.as_null_object])
+        RSpec.world.stub(:example_groups).and_return([double.as_null_object])
       end
 
       it "prints a deprecation warning" do
