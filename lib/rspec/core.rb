@@ -54,12 +54,33 @@ module RSpec
   end
 
   def self.configure
+    warn_about_deprecated_configure if RSpec.world.example_groups.any?
     yield configuration if block_given?
   end
 
   def self.clear_remaining_example_groups
     world.example_groups.clear
   end
+
+  private
+
+    def self.warn_about_deprecated_configure
+      warn <<-NOTICE
+
+*****************************************************************
+DEPRECATION WARNING: you are using deprecated behaviour that will
+be removed from RSpec 3.
+
+You have set some configuration options after an example group has
+already been defined.  In RSpec 3, this will not be allowed.  All
+configuration should happen before the first example group is
+defined.  The configuration is happening at:
+
+  #{caller[1]}
+*****************************************************************
+
+NOTICE
+    end
 end
 
 require 'rspec/core/backward_compatibility'

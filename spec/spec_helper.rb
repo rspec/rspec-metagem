@@ -50,6 +50,27 @@ def in_editor?
   ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
 end
 
+class << RSpec
+  alias_method :original_warn_about_deprecated_configure, :warn_about_deprecated_configure
+
+  def warn_about_deprecated_configure
+    # no-op: in our specs we don't want to see the warning.
+  end
+
+  alias_method :null_warn_about_deprecated_configure, :warn_about_deprecated_configure
+
+  def allowing_configure_warning
+    (class << self; self; end).class_eval do
+      alias_method :warn_about_deprecated_configure, :original_warn_about_deprecated_configure
+      begin
+        yield
+      ensure
+        alias_method :warn_about_deprecated_configure, :null_warn_about_deprecated_configure
+      end
+    end
+  end
+end
+
 RSpec.configure do |c|
   c.color_enabled = !in_editor?
   c.filter_run :focus => true
