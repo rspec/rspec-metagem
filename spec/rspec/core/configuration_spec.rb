@@ -111,6 +111,28 @@ module RSpec::Core
       end
     end
 
+    describe "#expecting_with_rspec?" do
+      before(:each) do
+        # prevent minitest assertions from being required and included,
+        # as that causes problems in some of our specs.
+        config.stub(:require)
+      end
+
+      it "returns false by default" do
+        config.should_not be_expecting_with_rspec
+      end
+
+      it "returns true when `expect_with :rspec` has been configured" do
+        config.expect_with :rspec
+        config.should be_expecting_with_rspec
+      end
+
+      it "returns false when `expect_with :stdlib` has been configured" do
+        config.expect_with :stdlib
+        config.should_not be_expecting_with_rspec
+      end
+    end
+
     context "setting the files to run" do
 
       it "loads files not following pattern if named explicitly" do
