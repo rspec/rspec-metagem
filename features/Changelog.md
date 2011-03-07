@@ -11,6 +11,9 @@
           * etc (anything you can do in a group)
   * `its([:key])` works for any subject with #[]. (Peter Jaros)
   * `treat_symbols_as_metadata_keys_with_true_values` (Myron Marston)
+  * Print a deprecation warning when you configure RSpec after defining
+    an example.  All configuration should happen before any examples are
+    defined. (Myron Marston)
 
 * Bug fixes
   * don't stumble over an exception without a message (Hans Hasselberg)
@@ -18,6 +21,9 @@
     Byers)
   * fixed backtrace so it doesn't include lines from before the autorun at_exit
     hook (Myron Marston)
+  * Include RSpec::Matchers when first example group is defined, rather
+    than just before running the examples.  This works around an obscure
+    bug in ruby 1.9 that can cause infinite recursion. (Myron Marston)
 
 ### 2.5.1 / 2011-02-06
 
