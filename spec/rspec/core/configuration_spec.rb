@@ -248,6 +248,13 @@ module RSpec::Core
         end
       end
 
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.include(InstanceLevelMethods, *args)
+          config.include_or_extend_modules.last.last
+        end
+      end
+
       context "with no filter" do
         it "includes the given module into each example group" do
           RSpec.configure do |c|
@@ -278,6 +285,13 @@ module RSpec::Core
 
       module ThatThingISentYou
         def that_thing
+        end
+      end
+
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.extend(ThatThingISentYou, *args)
+          config.include_or_extend_modules.last.last
         end
       end
 

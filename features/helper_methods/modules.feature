@@ -10,6 +10,9 @@ Feature: Define helper methods in a module
   groups by passing a metadata hash as the last argument.  Only groups
   that match the given metadata will include or extend the module.
 
+  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
+  to `true`, you can specify metadata using only symbols.
+
   Background:
     Given a file named "helpers.rb" with:
       """
@@ -112,3 +115,35 @@ Feature: Define helper methods in a module
     Then the examples should all pass
     And the output should contain "In a matching group, help is available"
     And the output should contain "In a non-matching group, help is not available"
+
+  Scenario: use symbols as metadata
+    Given a file named "symbols_as_metadata_spec.rb" with:
+      """
+      require './helpers'
+
+      RSpec.configure do |c|
+        c.treat_symbols_as_metadata_keys_with_true_values = true
+        c.include Helpers, :include_helpers
+        c.extend  Helpers, :extend_helpers
+      end
+
+      describe "an example group with matching include metadata", :include_helpers do
+        puts "In a group not matching the extend filter, help is #{help rescue 'not available'}"
+
+        it "has access the helper methods defined in the module" do
+          help.should be(:available)
+        end
+      end
+
+      describe "an example group with matching extend metadata", :extend_helpers do
+        puts "In a group matching the extend filter, help is #{help}"
+
+        it "does not have access to the helper methods defined in the module" do
+          expect { help }.to raise_error(NameError)
+        end
+      end
+      """
+    When I run "rspec symbols_as_metadata_spec.rb"
+    Then the examples should all pass
+    And the output should contain "In a group not matching the extend filter, help is not available"
+    And the output should contain "In a group matching the extend filter, help is available"

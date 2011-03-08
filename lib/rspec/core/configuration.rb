@@ -362,11 +362,13 @@ EOM
         self.exclusion_filter = (exclusion_filter || {}).merge(options)
       end
 
-      def include(mod, filters={})
+      def include(mod, *args)
+        filters = build_metadata_hash_from(args)
         include_or_extend_modules << [:include, mod, filters]
       end
 
-      def extend(mod, filters={})
+      def extend(mod, *args)
+        filters = build_metadata_hash_from(args)
         include_or_extend_modules << [:extend, mod, filters]
       end
 
