@@ -2,6 +2,55 @@ require "spec_helper"
 
 module RSpec::Core
   describe Hooks do
+    class HooksHost
+      include Hooks
+    end
+
+    [:before, :after, :around].each do |type|
+      [nil, :each, :all].each do |scope|
+        next if type == :around && scope == :all
+
+        describe "##{type}(#{scope ? scope.inspect : 'default scope' })" do
+          it_behaves_like "metadata hash builder" do
+            define_method :metadata_hash do |*args|
+              instance = HooksHost.new
+              args.unshift scope if scope
+              hooks = instance.send(type, *args) { }
+              hooks.first.options
+            end
+          end
+        end
+      end
+    end
+
+    [:before, :after].each do |type|
+      [:each, :all, :suite].each do |scope|
+        [true, false].each do |config_value|
+          context "when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to #{config_value}" do
+            before(:each) do
+              RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = config_value }
+            end
+
+            describe "##{type}(#{scope.inspect})" do
+              let(:instance) { HooksHost.new }
+              let!(:hook) do
+                hooks = instance.send(type, scope) { }
+                hooks.first
+              end
+
+              it "does not make #{scope.inspect} a metadata key" do
+                hook.options.should be_empty
+              end
+
+              it "is scoped to #{scope.inspect}" do
+                instance.hooks[type][scope].should include(hook)
+              end
+            end
+          end
+        end
+      end
+    end
+
     describe "#around" do
       context "when not running the example within the around block" do
         it "does not run the example" do

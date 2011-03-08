@@ -1,6 +1,7 @@
 module RSpec
   module Core
     module Hooks
+      include MetadataHashBuilder::WithConfigWarning
 
       class Hook
         attr_reader :options
@@ -141,11 +142,14 @@ module RSpec
 
     private
 
-      def scope_and_options_from(scope=:each, options={})
-        if Hash === scope
-          options = scope
-          scope = :each
+      def scope_and_options_from(*args)
+        scope = if [:each, :all, :suite].include?(args.first)
+          args.shift
+        else
+          :each
         end
+
+        options = build_metadata_hash_from(args)
         return scope, options
       end
     end

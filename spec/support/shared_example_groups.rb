@@ -25,7 +25,7 @@ shared_examples_for "metadata hash builder" do
     end
 
     it 'prints a deprecation warning about any symbols given as arguments' do
-      warning_receiver.should_receive(:warn).with(/you have passed symbols \(\[:foo, :bar\]\) as additional\s+arguments for a doc string/i)
+      warning_receiver.should_receive(:warn).with(/In RSpec 3, these symbols will be treated as metadata keys/)
       metadata_hash(:foo, :bar, :key => 'value')
     end
 

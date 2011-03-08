@@ -29,6 +29,31 @@ module RSpec
           end
       end
 
+      module WithConfigWarning
+        include Common
+
+        private
+
+          def symbol_metadata_warning(symbols)
+            <<-NOTICE
+
+*****************************************************************
+WARNING: You have passed symbols (#{symbols.inspect}) as metadata
+arguments to a configuration option.
+
+In RSpec 3, these symbols will be treated as metadata keys with
+a value of `true`.  To get this behavior now (and prevent this
+warning), you can set a configuration option:
+
+RSpec.configure do |c|
+  c.treat_symbols_as_metadata_keys_with_true_values = true
+end
+*****************************************************************
+
+NOTICE
+          end
+      end
+
       module WithDeprecationWarning
         include Common
 
@@ -39,12 +64,12 @@ module RSpec
 
 *****************************************************************
 DEPRECATION WARNING: you are using deprecated behaviour that will
-be removed from RSpec 3.0.
+be removed from RSpec 3.
 
 You have passed symbols (#{symbols.inspect}) as additional
 arguments for a doc string.
 
-In RSpec 3.0, these symbols will be treated as metadata keys with
+In RSpec 3, these symbols will be treated as metadata keys with
 a value of `true`.  To get this behavior now (and prevent this
 warning), you can set a configuration option:
 

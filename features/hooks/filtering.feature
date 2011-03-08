@@ -5,6 +5,9 @@ Feature: filters
   or example group, and used to make a hook only apply to examples with the
   given metadata.
 
+  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
+  to `true`, you can specify metadata using only symbols.
+
   Scenario: filter `before(:each)` hooks using arbitrary metadata
     Given a file named "filter_before_each_hooks_spec.rb" with:
       """
@@ -182,3 +185,43 @@ Feature: filters
       filtered 2
       .after :all
       """
+
+  Scenario: Use symbols as metadata
+    Given a file named "less_verbose_metadata_filter.rb" with:
+      """
+      RSpec.configure do |c|
+        c.treat_symbols_as_metadata_keys_with_true_values = true
+        c.before(:each, :before_each) { puts "before each" }
+        c.after(:each,  :after_each) { puts "after each" }
+        c.around(:each, :around_each) do |example|
+          puts "around each (before)"
+          example.run
+          puts "around each (after)"
+        end
+        c.before(:all, :before_all) { puts "before all" }
+        c.after(:all,  :after_all) { puts "after all" }
+      end
+
+      describe "group 1", :before_all, :after_all do
+        it("") { puts "example 1" }
+        it("", :before_each) { puts "example 2" }
+        it("", :after_each) { puts "example 3" }
+        it("", :around_each) { puts "example 4" }
+      end
+      """
+    When I run "rspec less_verbose_metadata_filter.rb"
+    Then the examples should all pass
+    And the output should contain:
+      """
+      before all
+      example 1
+      .before each
+      example 2
+      .example 3
+      after each
+      .around each (before)
+      example 4
+      around each (after)
+      .after all
+      """
+

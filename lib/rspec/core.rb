@@ -4,12 +4,12 @@ require 'rspec/core/deprecation'
 require 'rspec/core/backward_compatibility'
 require 'rspec/core/reporter'
 
+require 'rspec/core/metadata_hash_builder'
 require 'rspec/core/hooks'
 require 'rspec/core/subject'
 require 'rspec/core/let'
 require 'rspec/core/metadata'
 require 'rspec/core/pending'
-require 'rspec/core/metadata_hash_builder'
 
 require 'rspec/core/world'
 require 'rspec/core/configuration'
