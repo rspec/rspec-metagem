@@ -152,10 +152,10 @@ module RSpec
       end
 
       def self.ensure_example_groups_are_configured
-        unless @example_groups_configured
+        unless defined?(@@example_groups_configured)
           RSpec.configuration.configure_mock_framework
           RSpec.configuration.configure_expectation_framework
-          @example_groups_configured = true
+          @@example_groups_configured = true
         end
       end
 
