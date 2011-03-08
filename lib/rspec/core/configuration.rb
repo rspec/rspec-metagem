@@ -334,7 +334,15 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
-      def filter_run_including(options={}, force_overwrite = false)
+      def filter_run_including(*args)
+        force_overwrite = if args.last.is_a?(Hash) || args.last.is_a?(Symbol)
+          false
+        else
+          args.pop
+        end
+
+        options = build_metadata_hash_from(args)
+
         if filter and filter[:line_number] || filter[:full_description]
           warn "Filtering by #{options.inspect} is not possible since " \
                "you are already filtering by #{filter.inspect}"

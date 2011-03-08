@@ -464,6 +464,13 @@ module RSpec::Core
     end
 
     describe "#filter_run" do
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.filter_run *args
+          config.filter
+        end
+      end
+
       it "sets the filter" do
         config.filter_run :focus => true
         config.filter[:focus].should == true

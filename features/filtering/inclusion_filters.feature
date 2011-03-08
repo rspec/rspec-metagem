@@ -4,6 +4,9 @@ Feature: inclusion filters
   most common use case is to focus on a subset of examples as you're focused on
   a particular problem.
 
+  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
+  to `true`, you can specify metadata using only symbols.
+
   Background:
     Given a file named "spec/spec_helper.rb" with:
       """
@@ -81,3 +84,23 @@ Feature: inclusion filters
      And the output should contain "after all in focused group"
      And the output should not contain "before all in unfocused group"
      And the output should not contain "after all in unfocused group"
+
+  Scenario: Use symbols as metadata
+    Given a file named "symbols_as_metadata_spec.rb" with:
+      """
+      RSpec.configure do |c|
+        c.treat_symbols_as_metadata_keys_with_true_values = true
+        c.filter_run :current_example
+      end
+
+      describe "something" do
+        it "does one thing" do
+        end
+
+        it "does another thing", :current_example do
+        end
+      end
+      """
+    When I run "rspec symbols_as_metadata_spec.rb --format doc"
+    Then the output should contain "does another thing"
+    And the output should not contain "does one thing"
