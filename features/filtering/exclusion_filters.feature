@@ -2,6 +2,9 @@ Feature: exclusion filters
 
   You can exclude examples from a run by declaring an exclusion filter and
   then tagging examples, or entire groups, with that filter.
+
+  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
+  to `true`, you can specify metadata using only symbols.
   
   Scenario: exclude an example
     Given a file named "spec/sample_spec.rb" with:
@@ -113,3 +116,24 @@ Feature: exclusion filters
      And the output should contain "after all in included group"
      And the output should not contain "before all in excluded group"
      And the output should not contain "after all in excluded group"
+
+  Scenario: Use symbols as metadata
+    Given a file named "symbols_as_metadata_spec.rb" with:
+      """
+      RSpec.configure do |c|
+        c.treat_symbols_as_metadata_keys_with_true_values = true
+        c.filter_run_excluding :broken
+      end
+
+      describe "something" do
+        it "does one thing" do
+        end
+
+        # tag example for exclusion by adding metadata
+        it "does another thing", :broken do
+        end
+      end
+      """
+    When I run "rspec symbols_as_metadata_spec.rb --format doc"
+    Then the output should contain "does one thing"
+    And the output should not contain "does another thing"

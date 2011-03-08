@@ -48,10 +48,10 @@ module RSpec
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
 
-        filter_run_excluding(
+        self.exclusion_filter = {
           :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
           :unless => lambda { |value| value }
-        )
+        }
       end
 
       # :call-seq:
@@ -357,7 +357,8 @@ EOM
 
       alias_method :filter_run, :filter_run_including
 
-      def filter_run_excluding(options={})
+      def filter_run_excluding(*args)
+        options = build_metadata_hash_from(args)
         self.exclusion_filter = (exclusion_filter || {}).merge(options)
       end
 
