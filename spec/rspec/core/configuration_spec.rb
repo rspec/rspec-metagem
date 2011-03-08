@@ -127,6 +127,16 @@ module RSpec::Core
         config.should be_expecting_with_rspec
       end
 
+      it "returns true when `expect_with :rspec, :stdlib` has been configured" do
+        config.expect_with :rspec, :stdlib
+        config.should be_expecting_with_rspec
+      end
+
+      it "returns true when `expect_with :stdlib, :rspec` has been configured" do
+        config.expect_with :stdlib, :rspec
+        config.should be_expecting_with_rspec
+      end
+
       it "returns false when `expect_with :stdlib` has been configured" do
         config.expect_with :stdlib
         config.should_not be_expecting_with_rspec
