@@ -41,6 +41,7 @@
   - fail_fast.feature
   - custom_settings.feature
   - for_groups_matching.feature
+  - alias_example_to.feature
 - expectation_framework_integration:
   - configure_expectation_framework.feature
 - mock_framework_integration:
