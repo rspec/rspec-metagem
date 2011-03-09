@@ -18,6 +18,7 @@
 - helper_methods:
   - let.feature
   - arbitrary_methods.feature
+  - modules.feature
 - metadata:
   - described_class.feature
   - user_defined.feature
