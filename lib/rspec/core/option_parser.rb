@@ -1,3 +1,6 @@
+# http://www.ruby-doc.org/stdlib/libdoc/optparse/rdoc/classes/OptionParser.html
+require 'optparse'
+
 module RSpec::Core
   class Parser
     def self.parse!(args)
