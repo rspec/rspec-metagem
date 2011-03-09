@@ -1,6 +1,7 @@
 Feature: for groups matching
 
-  Define block evaluated in the context of any example group matching filters given.
+  Use `for_groups_matching` to define a block that will be evaluated
+  in the context of any example groups that have matching metadata.
 
   Scenario: define method for groups matching metadata
     Given a file named "for_groups_matching_spec.rb" with:
