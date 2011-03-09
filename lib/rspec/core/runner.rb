@@ -42,7 +42,12 @@ module RSpec
         options.parse_options
 
         if options.options[:drb]
-          run_over_drb(options, err, out) || run_in_process(options, err, out)
+          begin
+            run_over_drb(options, err, out)
+          rescue DRb::DRbConnError
+            err.puts "No DRb server is running. Running in local process instead ..."
+            run_in_process(options, err, out)
+          end
         else
           run_in_process(options, err, out)
         end
