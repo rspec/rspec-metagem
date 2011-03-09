@@ -784,6 +784,17 @@ module RSpec::Core
       end
     end
 
+    describe "#alias_example_to" do
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.alias_example_to :my_example, *args
+          group = ExampleGroup.describe("group")
+          example = group.my_example("description")
+          example.metadata
+        end
+      end
+    end
+
     describe "#for_groups_matching" do
       let(:matching_group) { ExampleGroup.describe(Array, :extended => true) }
       let(:non_matching_group) { ExampleGroup.describe(Array) }

@@ -305,7 +305,8 @@ EOM
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
-      def alias_example_to(new_name, extra_options={})
+      def alias_example_to(new_name, *args)
+        extra_options = build_metadata_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
