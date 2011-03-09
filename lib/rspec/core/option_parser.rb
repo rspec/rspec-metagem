@@ -36,7 +36,7 @@ module RSpec::Core
           options[:color_enabled] = o
         end
 
-        parser.on('-d', '--debug', 'Enable debugging') do |o|
+        parser.on('-d', '--debugger', 'Enable debugging') do |o|
           options[:debug] = true
         end
 
