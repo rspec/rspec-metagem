@@ -796,6 +796,15 @@ module RSpec::Core
     end
 
     describe "#for_groups_matching" do
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.for_groups_matching(*args) { }
+          config.include_or_extend_modules.last.last
+        end
+      end
+    end
+
+    describe "#for_groups_matching" do
       let(:matching_group) { ExampleGroup.describe(Array, :extended => true) }
       let(:non_matching_group) { ExampleGroup.describe(Array) }
 

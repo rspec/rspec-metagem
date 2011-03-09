@@ -394,12 +394,12 @@ EOM
       #       let(:valid_attributes) { Factory.attributes_for described_class.to_sym }
       #     end
       #   end
-      def for_groups_matching(filters = {}, &block)
+      def for_groups_matching(*args, &block)
         mod = Module.new
         (class << mod; self; end).send(:define_method, :extended) do |host|
           host.class_eval(&block)
         end
-        self.extend(mod, filters)
+        self.extend(mod, *args)
       end
 
       def configure_mock_framework
