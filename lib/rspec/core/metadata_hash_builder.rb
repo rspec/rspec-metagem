@@ -48,6 +48,9 @@ warning), you can set a configuration option:
 RSpec.configure do |c|
   c.treat_symbols_as_metadata_keys_with_true_values = true
 end
+
+Note that this config setting should go before your other config
+settings so that they can use symbols as metadata.
 *****************************************************************
 
 NOTICE
