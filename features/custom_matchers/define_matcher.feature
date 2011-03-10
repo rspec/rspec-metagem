@@ -309,3 +309,32 @@ Feature: define matcher
       | 4 examples, 2 failures               |
       | expected 9 to be a multiple of 2     |
       | expected 9 not to be a multiple of 3 |
+
+  Scenario: include a module with helper methods in the matcher
+    Given a file named "include_module_spec.rb" with:
+      """
+      module MatcherHelpers
+        def is_multiple?(actual, expected)
+          actual % expected == 0
+        end
+      end
+
+      RSpec::Matchers.define :be_a_multiple_of do |expected|
+        include MatcherHelpers
+        match { |actual| is_multiple?(actual, expected) }
+      end
+
+      describe 9 do
+        it { should be_a_multiple_of(3) }
+        it { should_not be_a_multiple_of(4) }
+
+        # deliberate failures
+        it { should be_a_multiple_of(2) }
+        it { should_not be_a_multiple_of(3) }
+      end
+      """
+    When I run "rspec include_module_spec.rb"
+    Then the output should contain all of these:
+      | 4 examples, 2 failures               |
+      | expected 9 to be a multiple of 2     |
+      | expected 9 not to be a multiple of 3 |

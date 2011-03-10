@@ -1,10 +1,56 @@
 require 'spec_helper'
 
 class UnexpectedError < StandardError; end
+module MatcherHelperModule
+  def self.included(base)
+    base.module_eval do
+      def included_method; end
+    end
+  end
+
+  def self.extended(base)
+    base.instance_eval do
+      def extended_method; end
+    end
+  end
+
+  def greeting
+    "Hello, World"
+  end
+end
 
 module RSpec
   module Matchers
     describe Matcher do
+      context "with an included module" do
+        let(:matcher) do
+          RSpec::Matchers::Matcher.new(:be_a_greeting) do
+            include MatcherHelperModule
+            match { |actual| actual == greeting }
+          end
+        end
+
+        it "has access to the module's methods" do
+          matcher.matches?("Hello, World")
+        end
+
+        it "runs the module's included hook" do
+          matcher.should respond_to(:included_method)
+        end
+
+        it "does not run the module's extended hook" do
+          matcher.should_not respond_to(:extended_method)
+        end
+
+        it 'allows multiple modules to be included at once' do
+          m = RSpec::Matchers::Matcher.new(:multiple_modules) do
+            include Enumerable, Comparable
+          end
+          m.should be_a(Enumerable)
+          m.should be_a(Comparable)
+        end
+      end
+
       context "without overrides" do
         before(:each) do
           @matcher = RSpec::Matchers::Matcher.new(:be_a_multiple_of, 3) do |multiple|

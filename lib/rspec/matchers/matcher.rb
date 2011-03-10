@@ -51,6 +51,10 @@ module RSpec
           !matches?(actual)
       end
 
+      def include(*args)
+        singleton_class.__send__(:include, *args)
+      end
+
       def define_method(name, &block) # :nodoc:
         singleton_class.__send__(:define_method, name, &block)
       end
