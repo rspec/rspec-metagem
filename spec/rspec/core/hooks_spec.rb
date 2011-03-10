@@ -7,16 +7,45 @@ module RSpec::Core
     end
 
     [:before, :after, :around].each do |type|
-      [nil, :each, :all].each do |scope|
+      [:each, :all].each do |scope|
         next if type == :around && scope == :all
 
-        describe "##{type}(#{scope ? scope.inspect : 'default scope' })" do
+        describe "##{type}(#{scope})" do
           it_behaves_like "metadata hash builder" do
             define_method :metadata_hash do |*args|
               instance = HooksHost.new
               args.unshift scope if scope
               hooks = instance.send(type, *args) { }
               hooks.first.options
+            end
+          end
+        end
+      end
+
+      [true, false].each do |config_value|
+        context "when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to #{config_value}" do
+          before(:each) do
+            Kernel.stub(:warn)
+            RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = config_value }
+          end
+
+          describe "##{type}(no scope)" do
+            let(:instance) { HooksHost.new }
+
+            it "defaults to :each scope if no arguments are given" do
+              hooks = instance.send(type) { }
+              hook = hooks.first
+              instance.hooks[type][:each].should include(hook)
+            end
+
+            it "defaults to :each scope if the only argument is a metadata hash" do
+              hooks = instance.send(type, :foo => :bar) { }
+              hook = hooks.first
+              instance.hooks[type][:each].should include(hook)
+            end
+
+            it "raises an error if only metadata symbols are given as arguments" do
+              expect { instance.send(type, :foo, :bar) { } }.to raise_error(ArgumentError)
             end
           end
         end
