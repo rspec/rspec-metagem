@@ -20,16 +20,8 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
   end
 
   context "without server running" do
-    it "prints error" do
-      run_with []
-
-      err.rewind
-      err.read.should =~ /No DRb server is running/
-    end
-
-    it "returns false" do
-      result = run_with []
-      result.should be_false
+    it "raises an error" do
+      lambda { run_with [] }.should raise_error(DRb::DRbConnError)
     end
   end
 
@@ -136,7 +128,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
     it "integrates via Runner.new.run" do
       err, out = StringIO.new, StringIO.new
       result = RSpec::Core::Runner.run(%W[ --drb --drb-port #{@drb_port} #{dummy_spec_filename}], err, out)
-      result.should be_true
+      result.should be_false
     end
 
     def run_spec_via_druby
