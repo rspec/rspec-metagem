@@ -4,21 +4,17 @@ Feature: basic structure (describe/it)
   behave, organized in groups. It uses the words "describe" and "it" so we can
   express concepts like a conversation:
 
-    "Describe an account when it is first opened."
-    "It has a balance of zero."
+      "Describe an account when it is first opened."
+      "It has a balance of zero."
 
-  The describe() method creates a subclass of RSpec::Core::ExampleGroup. The
-  block passed to describe() is evaluated in the context of that class, so any
-  class methods of ExampleGroup are at your disposal within that block.
+  The `describe` method creates an example group.  Within the block passed to
+  `describe` you can declare nested groups using the `describe` or `context`
+  methods, or you can declare examples using the `it` or `specify` methods.
 
-  Within a group, you can declare nested groups using the describe() or
-  context() methods. A nested group is actually a subclass of the outer group,
-  so it has access to same methods as the outer group, as well as any class
-  methods defined in the outer group.
-
-  The it() method accepts a block, which is later executed in the context of
-  an instance of the group in which it is declared.
-
+  Under the hood, an example group is a class in which the block passed to
+  `describe` or `context` is evaluated. The blocks passed to `it` are evaluated
+  in the context of an _instance_ of that class.
+  
   Scenario: one group, one example
     Given a file named "sample_spec.rb" with:
     """
