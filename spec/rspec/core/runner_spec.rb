@@ -22,24 +22,49 @@ module RSpec::Core
 
     describe "#run" do
       context "with --drb or -X" do
-        before(:each) do
-          @err = @out = StringIO.new
+        let(:err) { StringIO.new }
+        let(:out) { StringIO.new }
 
+        before(:each) do
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
           RSpec::Core::ConfigurationOptions.stub(:new) { @options }
-
-          @drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
-          RSpec::Core::DRbCommandLine.stub(:new => @drb_proxy)
         end
 
-        it "builds a DRbCommandLine" do
-          RSpec::Core::DRbCommandLine.should_receive(:new)
-          RSpec::Core::Runner.run(%w[ --drb ], @err, @out)
+        def run_specs
+          RSpec::Core::Runner.run(%w[ --drb ], err, out)
         end
 
-        it "runs specs over the proxy" do
-          @drb_proxy.should_receive(:run).with(@err, @out)
-          RSpec::Core::Runner.run(%w[ --drb ], @err, @out)
+        context 'and a DRb server is running' do
+          it "builds a DRbCommandLine and runs the specs" do
+            drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
+            drb_proxy.should_receive(:run).with(err, out)
+
+            RSpec::Core::DRbCommandLine.should_receive(:new).and_return(drb_proxy)
+
+            run_specs
+          end
+        end
+
+        context 'and a DRb server is not running' do
+          before(:each) do
+            RSpec::Core::DRbCommandLine.should_receive(:new).and_raise(DRb::DRbConnError)
+          end
+
+          it "outputs a message" do
+            err.should_receive(:puts).with(
+              "No DRb server is running. Running in local process instead ..."
+            )
+            run_specs
+          end
+
+          it "builds a CommandLine and runs the specs" do
+            process_proxy = double(RSpec::Core::CommandLine, :run => true)
+            process_proxy.should_receive(:run).with(err, out)
+
+            RSpec::Core::CommandLine.should_receive(:new).and_return(process_proxy)
+
+            run_specs
+          end
         end
       end
     end
