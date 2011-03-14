@@ -1,5 +1,3 @@
-require 'ostruct'
-
 module RSpec
   module Core
     module Subject
