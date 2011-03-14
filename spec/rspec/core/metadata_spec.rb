@@ -240,13 +240,13 @@ module RSpec
 
         %w[# . ::].each do |char|
           context "with a nested description starting with #{char}" do
-          it "removes the space" do
-            parent = Metadata.new
-            parent.process("Object")
-            child = Metadata.new(parent)
-            child.process("#{char}method")
-            child[:example_group][:full_description].should eq("Object#{char}method")
-          end
+            it "removes the space" do
+              parent = Metadata.new
+              parent.process("Object")
+              child = Metadata.new(parent)
+              child.process("#{char}method")
+              child[:example_group][:full_description].should eq("Object#{char}method")
+            end
           end
         end
       end
