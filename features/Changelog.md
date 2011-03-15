@@ -14,6 +14,8 @@
   * Print a deprecation warning when you configure RSpec after defining
     an example.  All configuration should happen before any examples are
     defined. (Myron Marston)
+  * Pass the exit status of a DRb run to the invoking process. This causes
+    specs run via DRb to not just return true or false. (Ilkka Laukkanen)
 
 * Bug fixes
   * don't stumble over an exception without a message (Hans Hasselberg)
@@ -95,7 +97,7 @@ If you don't want 'bundle exec', there is nothing you have to do.
 
 * Bug fixes
   * send debugger warning message to $stdout if RSpec.configuration.error_stream
-    has not been defined yet. 
+    has not been defined yet.
   * HTML Formatter _finally_ properly displays nested groups (Jarmo Pertman)
   * eliminate some warnings when running RSpec's own suite (Jarmo Pertman)
 
@@ -123,7 +125,7 @@ If you don't want 'bundle exec', there is nothing you have to do.
 
 * Bug fixes
   * alias_method instead of override Kernel#method_missing (John Wilger)
-  * changed --autotest to --tty in generated command (MIKAMI Yoshiyuki) 
+  * changed --autotest to --tty in generated command (MIKAMI Yoshiyuki)
   * revert change to debugger (had introduced conflict with Rails)
     * also restored --debugger/-debug option
 
