@@ -26,7 +26,7 @@ describe "should have_sym(*args)" do
       Object.new.should have_key(:a)
     }.should raise_error(NoMethodError)
   end
-  
+
   it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
     def o.has_sym?(*args)
@@ -60,7 +60,7 @@ describe "should_not have_sym(*args)" do
       Object.new.should have_key(:a)
     }.should raise_error(NoMethodError)
   end
-  
+
   it "reraises an exception thrown in #has_sym?(*args)" do
     o = Object.new
     def o.has_sym?(*args)
