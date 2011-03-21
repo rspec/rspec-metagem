@@ -1,23 +1,21 @@
 module RSpec
   module Matchers
-    
-    #Based on patch from Wilson Bilkovich
     class Change #:nodoc:
       def initialize(receiver=nil, message=nil, &block)
         @message = message
         @value_proc = block || lambda {receiver.__send__(message)}
-        @to = @from = @minimum = @maximum = @amount = nil
-        @given_from = @given_to = false
+        @expected_after = @expected_before = @minimum = @maximum = @expected_delta = nil
+        @eval_before = @eval_after = false
       end
       
       def matches?(event_proc)
         raise_block_syntax_error if block_given?
         
-        @before = evaluate_value_proc
+        @actual_before = evaluate_value_proc
         event_proc.call
-        @after = evaluate_value_proc
+        @actual_after = evaluate_value_proc
       
-        (!change_expected? || changed?) && matches_before? && matches_after? && matches_amount? && matches_min? && matches_max?
+        (!change_expected? || changed?) && matches_before? && matches_after? && matches_expected_delta? && matches_min? && matches_max?
       end
 
       def raise_block_syntax_error
@@ -32,31 +30,31 @@ MESSAGE
       end
       
       def failure_message_for_should
-        if @given_from && !given_matches_actual?(@from, @before)
-          "#{message} should have initially been #{@from.inspect}, but was #{@before.inspect}"
-        elsif @given_to && !given_matches_actual?(@to, @after)
-          "#{message} should have been changed to #{@to.inspect}, but is now #{@after.inspect}"
-        elsif @amount
-          "#{message} should have been changed by #{@amount.inspect}, but was changed by #{actual_delta.inspect}"
+        if @eval_before && !expected_matches_actual?(@expected_before, @actual_before)
+          "#{message} should have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
+        elsif @eval_after && !expected_matches_actual?(@expected_after, @actual_after)
+          "#{message} should have been changed to #{@expected_after.inspect}, but is now #{@actual_after.inspect}"
+        elsif @expected_delta
+          "#{message} should have been changed by #{@expected_delta.inspect}, but was changed by #{actual_delta.inspect}"
         elsif @minimum
           "#{message} should have been changed by at least #{@minimum.inspect}, but was changed by #{actual_delta.inspect}"
         elsif @maximum
           "#{message} should have been changed by at most #{@maximum.inspect}, but was changed by #{actual_delta.inspect}"
         else
-          "#{message} should have changed, but is still #{@before.inspect}"
+          "#{message} should have changed, but is still #{@actual_before.inspect}"
         end
       end
       
       def actual_delta
-        @after - @before
+        @actual_after - @actual_before
       end
       
       def failure_message_for_should_not
-        "#{message} should not have changed, but did change from #{@before.inspect} to #{@after.inspect}"
+        "#{message} should not have changed, but did change from #{@actual_before.inspect} to #{@actual_after.inspect}"
       end
       
-      def by(amount)
-        @amount = amount
+      def by(expected_delta)
+        @expected_delta = expected_delta
         self
       end
       
@@ -71,14 +69,14 @@ MESSAGE
       end      
       
       def to(to)
-        @given_to = true
-        @to = to
+        @eval_after = true
+        @expected_after = to
         self
       end
       
-      def from (from)
-        @given_from = true
-        @from = from
+      def from (before)
+        @eval_before = true
+        @expected_before = before
         self
       end
       
@@ -93,37 +91,36 @@ MESSAGE
       end
 
       def change_expected?
-        @amount != 0
+        @expected_delta != 0
       end
 
       def changed?
-        @before != @after
+        @actual_before != @actual_after
       end
 
       def matches_before?
-        @given_from ? given_matches_actual?(@from, @before) : true
+        @eval_before ? expected_matches_actual?(@expected_before, @actual_before) : true
       end
 
       def matches_after?
-        @given_to ? given_matches_actual?(@to, @after) : true
+        @eval_after ? expected_matches_actual?(@expected_after, @actual_after) : true
       end
 
-      def given_matches_actual?(given, actual)
-        given === actual
-      end
-
-      def matches_amount?
-        @amount ? (@before + @amount == @after) : true
+      def matches_expected_delta?
+        @expected_delta ? (@actual_before + @expected_delta == @actual_after) : true
       end
 
       def matches_min?
-        @minimum ? (@after - @before >= @minimum) : true
+        @minimum ? (@actual_after - @actual_before >= @minimum) : true
       end
 
       def matches_max?
-        @maximum ? (@after - @before <= @maximum) : true
+        @maximum ? (@actual_after - @actual_before <= @maximum) : true
       end
       
+      def expected_matches_actual?(expected, actual)
+        expected === actual
+      end
     end
     
     # :call-seq:
