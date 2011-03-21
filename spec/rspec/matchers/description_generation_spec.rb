@@ -88,8 +88,8 @@ describe "Matchers should be able to generate their own descriptions" do
     object = Object.new
     def object.has_taste_for?(*args); true; end
 
-    object.should have_taste_for("blood", "victory")
-    RSpec::Matchers.generated_description.should == 'should have taste for "blood", "victory"'
+    object.should have_taste_for("wine", "cheese")
+    RSpec::Matchers.generated_description.should == 'should have taste for "wine", "cheese"'
   end
 
   it "should have n items" do

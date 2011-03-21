@@ -4,6 +4,7 @@
 
 * Enhancments
   * `change` matcher accepts Regexps (Robert Davis)
+  * better descriptions for have_xxx matchers (Magnus Bergmark)
 
 * Bug fixes
   * Removed non-ascii characters that were choking rcov (Geoffrey Byers)
