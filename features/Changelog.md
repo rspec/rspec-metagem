@@ -8,6 +8,8 @@
 
 * Bug fixes
   * Removed non-ascii characters that were choking rcov (Geoffrey Byers)
+  * change matcher dups arrays and hashes so their before/after states can be
+    compared correctly.
 
 ### 2.5.0 / 2011-02-05
 

@@ -14,7 +14,7 @@ describe "should change(actual, message)" do
     end
 
     it "passes when actual is modified by the block" do
-      expect {@instance.some_value = 6}.to change(@instance, :some_value)
+      expect {@instance.some_value = 6.0}.to change(@instance, :some_value)
     end
 
     it "fails when actual is not modified by the block" do
@@ -42,6 +42,57 @@ describe "should change(actual, message)" do
       expect do
         expect {}.to change(@instance, :some_value)
       end.to fail_with("some_value should have changed, but is still true")
+    end
+  end
+
+  context "with nil value" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = nil
+    end
+
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value = false}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail_with("some_value should have changed, but is still nil")
+    end
+  end
+
+  context "with an array" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = []
+    end
+
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value << 1}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail_with("some_value should have changed, but is still []")
+    end
+  end
+
+  context "with a hash" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = {:a => 'a'}
+    end
+
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value[:a] = 'A'}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail
     end
   end
 end

@@ -26,7 +26,12 @@ MESSAGE
       end
       
       def evaluate_value_proc
-        @value_proc.call
+        case val = @value_proc.call
+        when Array, Hash
+          val.dup
+        else
+          val
+        end
       end
       
       def failure_message_for_should
