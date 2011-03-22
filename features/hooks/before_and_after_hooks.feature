@@ -145,9 +145,6 @@ Feature: before and after hooks
       """
       an error in before(:all)
         fails this example, too (FAILED - 1)
-        nested group
-          yet another level deep
-      after all ran
       """
 
   Scenario: failure in after(:all) block
