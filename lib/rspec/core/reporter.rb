@@ -39,11 +39,11 @@ module RSpec::Core
     end
 
     def example_group_started(group)
-      notify :example_group_started, group
+      notify :example_group_started, group unless group.descendant_filtered_examples.empty?
     end
 
     def example_group_finished(group)
-      notify :example_group_finished, group
+      notify :example_group_finished, group unless group.descendant_filtered_examples.empty?
     end
 
     def example_started(example)

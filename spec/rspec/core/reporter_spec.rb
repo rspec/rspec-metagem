@@ -30,13 +30,17 @@ module RSpec::Core
       it "passes example_group_started and example_group_finished messages to that formatter in that order" do
         order = []
 
-        formatter = stub("formatter")
+        formatter = stub("formatter").as_null_object
         formatter.stub(:example_group_started) { |group| order << "Started: #{group.description}" }
         formatter.stub(:example_group_finished) { |group| order << "Finished: #{group.description}" }
 
         group = ExampleGroup.describe("root")
-        group.describe("context 1")
-        group.describe("context 2")
+        group.describe("context 1") do
+          example("ignore") {}
+        end
+        group.describe("context 2") do
+          example("ignore") {}
+        end
 
         group.run(Reporter.new(formatter))
 
@@ -48,6 +52,18 @@ module RSpec::Core
            "Finished: context 2",
            "Finished: root"
         ]
+      end
+    end
+
+    context "given an example group with no examples" do
+      it "does not pass example_group_started or example_group_finished to formatter" do
+        formatter = stub("formatter").as_null_object
+        formatter.should_not_receive(:example_group_started)
+        formatter.should_not_receive(:example_group_finished)
+
+        group = ExampleGroup.describe("root")
+
+        group.run(Reporter.new(formatter))
       end
     end
 

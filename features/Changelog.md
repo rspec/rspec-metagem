@@ -26,6 +26,7 @@
   * Include RSpec::Matchers when first example group is defined, rather
     than just before running the examples.  This works around an obscure
     bug in ruby 1.9 that can cause infinite recursion. (Myron Marston)
+  * Don't send example_group_[started|finished] to formatters for empty groups.
 
 ### 2.5.1 / 2011-02-06
 
