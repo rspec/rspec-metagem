@@ -78,7 +78,7 @@ RSpec.configure do |c|
   c.filter_run_excluding :ruby => lambda {|version|
     case version.to_s
     when "!jruby"
-      RUBY_ENGINE != "jruby"
+      RUBY_ENGINE == "jruby"
     when /^> (.*)/
       !(RUBY_VERSION.to_s > $1)
     else
