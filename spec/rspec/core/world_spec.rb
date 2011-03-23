@@ -138,7 +138,15 @@ module RSpec::Core
       let(:group) do
         RSpec::Core::ExampleGroup.describe("group") do
 
-          example("example") {}
+            example("example") {}
+
+        end
+      end
+
+      let(:second_group) do
+        RSpec::Core::ExampleGroup.describe("second_group") do
+
+          example("second_example") {}
 
         end
       end
@@ -146,26 +154,41 @@ module RSpec::Core
       let(:group_declaration_line) { group.metadata[:example_group][:line_number] }
       let(:example_declaration_line) { group_declaration_line + 2 }
 
-      before { world.register(group) }
+      context "with one example" do
+        before { world.register(group) }
 
-      it "returns nil if no example or group precedes the line" do
-        world.preceding_declaration_line(group_declaration_line - 1).should be_nil
+        it "returns nil if no example or group precedes the line" do
+          world.preceding_declaration_line(group_declaration_line - 1).should be_nil
+        end
+
+        it "returns the argument line number if a group starts on that line" do
+          world.preceding_declaration_line(group_declaration_line).should eq(group_declaration_line)
+        end
+
+        it "returns the argument line number if an example starts on that line" do
+          world.preceding_declaration_line(example_declaration_line).should eq(example_declaration_line)
+        end
+
+        it "returns line number of a group that immediately precedes the argument line" do
+          world.preceding_declaration_line(group_declaration_line + 1).should eq(group_declaration_line)
+        end
+
+        it "returns line number of an example that immediately precedes the argument line" do
+          world.preceding_declaration_line(example_declaration_line + 1).should eq(example_declaration_line)
+        end
       end
 
-      it "returns the argument line number if a group starts on that line" do
-        world.preceding_declaration_line(group_declaration_line).should eq(group_declaration_line)
-      end
+      context "with two exaples and the second example is registre first" do
+        let(:second_group_declaration_line) { second_group.metadata[:example_group][:line_number] }
 
-      it "returns the argument line number if an example starts on that line" do
-        world.preceding_declaration_line(example_declaration_line).should eq(example_declaration_line)
-      end
+        before do 
+          world.register(second_group)
+          world.register(group)
+        end
 
-      it "returns line number of a group that immediately precedes the argument line" do
-        world.preceding_declaration_line(group_declaration_line + 1).should eq(group_declaration_line)
-      end
-
-      it "returns line number of an example that immediately precedes the argument line" do
-        world.preceding_declaration_line(example_declaration_line + 1).should eq(example_declaration_line)
+        it 'return line number of group if a group start on that line' do
+          world.preceding_declaration_line(second_group_declaration_line).should eq(second_group_declaration_line)
+        end
       end
     end
 

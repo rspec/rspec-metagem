@@ -54,7 +54,7 @@ module RSpec
       end
 
       def preceding_declaration_line(filter_line)
-        declaration_line_numbers.inject(nil) do |highest_prior_declaration_line, line|
+        declaration_line_numbers.sort.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
         end
       end
