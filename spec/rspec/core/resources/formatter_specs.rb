@@ -48,7 +48,13 @@ describe "a failing spec with odd backtraces" do
       ["/foo.html.erb:1:in `<main>': foo (RuntimeError)",
         "   from /lib/ruby/1.9.1/erb.rb:753:in `eval'"]
     end
-
+    
+    def e.message
+      # Redefining message steps around this behaviour 
+      # on JRuby: http://jira.codehaus.org/browse/JRUBY-5637
+      self.class.name
+    end
+    
     raise e
   end
 end

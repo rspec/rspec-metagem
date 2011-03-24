@@ -26,7 +26,7 @@ if RUBY_PLATFORM =~ /darwin/
   gem "autotest-growl", "~> 0.2.9"
 end
 
-gem "ruby-debug", :platforms => :mri_18
+gem "ruby-debug", :platforms => [:mri_18, :jruby]
 gem "ruby-debug19", "~> 0.11.6", :platforms => :mri_19
 
 case RUBY_VERSION
