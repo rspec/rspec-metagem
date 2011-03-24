@@ -18,15 +18,18 @@
     specs run via DRb to not just return true or false. (Ilkka Laukkanen)
 
 * Bug fixes
-  * don't stumble over an exception without a message (Hans Hasselberg)
-  * remove non-ascii characters from comments that were choking rcov (Geoffrey
+  * Don't stumble over an exception without a message (Hans Hasselberg)
+  * Remove non-ascii characters from comments that were choking rcov (Geoffrey
     Byers)
-  * fixed backtrace so it doesn't include lines from before the autorun at_exit
+  * Fixed backtrace so it doesn't include lines from before the autorun at_exit
     hook (Myron Marston)
   * Include RSpec::Matchers when first example group is defined, rather
     than just before running the examples.  This works around an obscure
     bug in ruby 1.9 that can cause infinite recursion. (Myron Marston)
   * Don't send example_group_[started|finished] to formatters for empty groups.
+  * Get specs passing on jruby (Sidu Ponnappa)
+  * Fix bug where mixing nested groups and outer-level examples gave
+    unpredictable :line_number behavior (Artur Małecki)
 
 ### 2.5.1 / 2011-02-06
 
