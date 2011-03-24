@@ -12,6 +12,6 @@ Feature: described class
         end
       end
       """
-    When I run "rspec ./spec/example_spec.rb"
-    Then the examples should all pass
+    When I run "rspec spec/example_spec.rb"
+    Then the example should pass
 
