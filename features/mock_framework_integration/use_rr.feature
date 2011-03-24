@@ -1,3 +1,4 @@
+@no-jruby
 Feature: mock with rr
 
   As an RSpec user who likes to mock
@@ -18,6 +19,5 @@ Feature: mock with rr
         end
       end
       """
-    When I run "rspec ./rr_example_spec.rb"
+    When I run "rspec rr_example_spec.rb"
     Then the examples should all pass 
-    And the exit status should be 0

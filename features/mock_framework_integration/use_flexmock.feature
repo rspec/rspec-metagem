@@ -20,4 +20,3 @@ Feature: mock with flexmock
       """
     When I run "rspec ./flexmock_example_spec.rb"
     Then the examples should all pass 
-    And the exit status should be 0

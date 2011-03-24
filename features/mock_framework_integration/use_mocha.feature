@@ -20,4 +20,3 @@ Feature: mock with mocha
       """
     When I run "rspec ./mocha_example_spec.rb"
     Then the examples should all pass 
-    And the exit status should be 0
