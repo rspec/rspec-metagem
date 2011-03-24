@@ -20,12 +20,13 @@
   - arbitrary_methods.feature
   - modules.feature
 - metadata:
+  - current_example.feature
   - described_class.feature
   - user_defined.feature
 - filtering:
   - inclusion_filters.feature
   - exclusion_filters.feature
-  - implicit_filters.feature
+  - if_and_unless.feature
   - run_all_when_everything_filtered.feature
 - command_line:
   - configure.feature

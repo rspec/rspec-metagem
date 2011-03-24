@@ -1,4 +1,4 @@
-Feature: implicit filters
+Feature: :if and :unless
 
   The `:if` and `:unless` metadata keys can be used to filter examples without
   needing to configure an exclusion filter.
