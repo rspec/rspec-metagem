@@ -19,7 +19,7 @@ describe "failed_results_re for autotest" do
     it "matches a failure" do
       re = Autotest::Rspec2.new.failed_results_re
       example_output.should =~ re
-      example_output[re, 2].should == __FILE__.sub(File.expand_path('.'),'.')
+      example_output.should include(__FILE__.sub(File.expand_path('.'),'.'))
     end
   end
 
@@ -31,7 +31,7 @@ describe "failed_results_re for autotest" do
     it "matches a failure" do
       re = Autotest::Rspec2.new.failed_results_re
       example_output.should =~ re
-      example_output[re, 2].should == __FILE__.sub(File.expand_path('.'),'.')
+      example_output.should include(__FILE__.sub(File.expand_path('.'),'.'))
     end
   end
 end
