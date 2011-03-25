@@ -46,7 +46,7 @@ Feature: operator matchers
         it { should_not == 18 }
       end
       """
-     When I run "rspec numeric_operator_matchers_spec.rb"
+     When I run `rspec numeric_operator_matchers_spec.rb`
      Then the output should contain "12 examples, 6 failures"
       And the output should contain:
       """
@@ -119,7 +119,7 @@ Feature: operator matchers
         end
       end
       """
-     When I run "rspec string_operator_matchers_spec.rb"
+     When I run `rspec string_operator_matchers_spec.rb`
      Then the output should contain "18 examples, 9 failures"
       And the output should contain:
       """
@@ -196,7 +196,7 @@ Feature: operator matchers
         it { should =~ [1, 2, 1] }
       end
       """
-     When I run "rspec array_operator_matchers_spec.rb"
+     When I run `rspec array_operator_matchers_spec.rb`
      Then the output should contain "11 examples, 3 failures"
       And the output should contain:
       """

@@ -60,7 +60,7 @@ Feature: specify types of objects
         it { should be_a(String) }
       end
       """
-    When I run "rspec be_kind_of_matcher_spec.rb"
+    When I run `rspec be_kind_of_matcher_spec.rb`
     Then the output should contain all of these:
       | 24 examples, 12 failures                 |
       | expected 17 not to be a kind of Fixnum   |
@@ -105,7 +105,7 @@ Feature: specify types of objects
         it { should be_an_instance_of(String) }
       end
       """
-    When I run "rspec be_instance_of_matcher_spec.rb"
+    When I run `rspec be_instance_of_matcher_spec.rb`
     Then the output should contain all of these:
       | 16 examples, 8 failures                     |
       | expected 17 not to be an instance of Fixnum |

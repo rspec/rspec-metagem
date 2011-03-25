@@ -40,7 +40,7 @@ Feature: Test::Unit integration
         end
       end
       """
-     When I run "ruby rspec_expectations_test.rb"
+     When I run `ruby rspec_expectations_test.rb`
      Then the output should contain "4 tests, 0 assertions, 1 failures, 0 errors" or "4 tests, 0 assertions, 0 failures, 1 errors"
       And the output should contain "expected empty? to return true, got false"
       And the output should contain "be_an_int is deprecated"

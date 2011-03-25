@@ -23,7 +23,7 @@ Feature: satisfy matcher
         it { should satisfy { |v| v > 15 } }
       end
       """
-    When I run "rspec satisfy_matcher_spec.rb"
+    When I run `rspec satisfy_matcher_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures           |
       | expected 10 not to satisfy block |

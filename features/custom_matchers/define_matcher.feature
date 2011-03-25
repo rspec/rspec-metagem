@@ -34,7 +34,7 @@ Feature: define matcher
       end
 
       """
-    When I run "rspec ./matcher_with_default_message_spec.rb --format documentation"
+    When I run `rspec ./matcher_with_default_message_spec.rb --format documentation`
     Then the exit status should not be 0
 
     And the output should contain "should be a multiple of 3"
@@ -65,7 +65,7 @@ Feature: define matcher
         it {should be_a_multiple_of(4)}
       end
       """
-    When I run "rspec ./matcher_with_failure_message_spec.rb"
+    When I run `rspec ./matcher_with_failure_message_spec.rb`
     Then the exit status should not be 0
     And the stdout should contain "1 example, 1 failure"
     And the stdout should contain "expected that 9 would be a multiple of 4"
@@ -89,7 +89,7 @@ Feature: define matcher
         it {should_not be_a_multiple_of(3)}
       end
       """
-    When I run "rspec ./matcher_with_failure_for_message_spec.rb"
+    When I run `rspec ./matcher_with_failure_for_message_spec.rb`
     Then the exit status should not be 0
     And the stdout should contain "1 example, 1 failure"
     And the stdout should contain "expected that 9 would not be a multiple of 3"
@@ -116,7 +116,7 @@ Feature: define matcher
         it {should_not be_a_multiple_of(4)}
       end
       """
-    When I run "rspec ./matcher_overriding_description_spec.rb --format documentation"
+    When I run `rspec ./matcher_overriding_description_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "2 examples, 0 failures"
     And the stdout should contain "should be multiple of 3"
@@ -141,7 +141,7 @@ Feature: define matcher
         it {should have_7_fingers}
       end
       """
-    When I run "rspec ./matcher_with_no_args_spec.rb --format documentation"
+    When I run `rspec ./matcher_with_no_args_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should have 7 fingers"
@@ -161,7 +161,7 @@ Feature: define matcher
         it {should be_the_sum_of(1,2,3,4)}
       end
       """
-    When I run "rspec ./matcher_with_multiple_args_spec.rb --format documentation"
+    When I run `rspec ./matcher_with_multiple_args_spec.rb --format documentation`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
     And the stdout should contain "should be the sum of 1, 2, 3, and 4"
@@ -187,7 +187,7 @@ Feature: define matcher
         end
       end
       """
-    When I run "rspec ./matcher_with_internal_helper_spec.rb"
+    When I run `rspec ./matcher_with_internal_helper_spec.rb`
     Then the exit status should be 0
     And the stdout should contain "1 example, 0 failures"
 
@@ -220,7 +220,7 @@ Feature: define matcher
       end
       """
 
-    When I run "rspec ./scoped_matcher_spec.rb"
+    When I run `rspec ./scoped_matcher_spec.rb`
     Then the stdout should contain "2 examples, 0 failures"
 
   Scenario: scoped in an example group
@@ -254,7 +254,7 @@ Feature: define matcher
       end
       """
 
-    When I run "rspec scoped_matcher_spec.rb"
+    When I run `rspec scoped_matcher_spec.rb`
     Then the output should contain "3 examples, 0 failures"
 
   Scenario: matcher with separate logic for should and should_not
@@ -279,7 +279,7 @@ Feature: define matcher
         it { should_not contain(1, 4) }
       end
       """
-    When I run "rspec matcher_with_separate_should_not_logic_spec.rb"
+    When I run `rspec matcher_with_separate_should_not_logic_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures                    |
       | expected [1, 2, 3] to contain 1 and 4     |
@@ -304,7 +304,7 @@ Feature: define matcher
         it { should_not be_a_multiple_of(3) }
       end
       """
-    When I run "rspec define_method_spec.rb"
+    When I run `rspec define_method_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures               |
       | expected 9 to be a multiple of 2     |
@@ -333,7 +333,7 @@ Feature: define matcher
         it { should_not be_a_multiple_of(3) }
       end
       """
-    When I run "rspec include_module_spec.rb"
+    When I run `rspec include_module_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures               |
       | expected 9 to be a multiple of 2     |

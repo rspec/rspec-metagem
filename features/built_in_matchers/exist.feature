@@ -36,7 +36,7 @@ Feature: exist matcher
         it { should exist } # deliberate failure
       end
       """
-    When I run "rspec exist_matcher_spec.rb"
+    When I run `rspec exist_matcher_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures                |
       | expected <Planet: Earth> not to exist |

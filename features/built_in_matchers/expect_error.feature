@@ -24,7 +24,7 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_error_spec.rb"
+    When I run `rspec expect_error_spec.rb`
     Then the example should pass
 
   Scenario: expect specific error
@@ -36,7 +36,7 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_error_spec.rb"
+    When I run `rspec expect_error_spec.rb`
     Then the example should pass
 
   Scenario: expect specific error message using a string
@@ -49,7 +49,7 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_error_with_message.rb"
+    When I run `rspec expect_error_with_message.rb`
     Then the example should pass
 
   Scenario: expect specific error message using a regular expression
@@ -62,7 +62,7 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_error_with_regex.rb"
+    When I run `rspec expect_error_with_regex.rb`
     Then the example should pass
 
   Scenario: set expectations on error object passed to block
@@ -76,7 +76,7 @@ Feature: raise_error matcher
         end
       end
       """
-      When I run "rspec expect_error_with_block_spec.rb"
+      When I run `rspec expect_error_with_block_spec.rb`
       Then the example should pass
 
   Scenario: expect no error at all
@@ -88,7 +88,7 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_no_error_spec.rb"
+    When I run `rspec expect_no_error_spec.rb`
     Then the example should pass
     
   Scenario: expect no occurence of a specific error
@@ -101,5 +101,5 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run "rspec expect_no_error_spec.rb"
+    When I run `rspec expect_no_error_spec.rb`
     Then the example should pass

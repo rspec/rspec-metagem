@@ -28,7 +28,7 @@ Feature: throw_symbol matcher
         specify { expect { 5 + 5         }.to     throw_symbol }
       end
       """
-    When I run "rspec throw_symbol_matcher_spec.rb"
+    When I run `rspec throw_symbol_matcher_spec.rb`
     Then the output should contain all of these:
       | 6 examples, 3 failures                      |
       | expected no Symbol to be thrown, got :foo   |
@@ -51,7 +51,7 @@ Feature: throw_symbol matcher
         specify { expect { throw :bar    }.to     throw_symbol(:foo) }
       end
       """
-    When I run "rspec throw_symbol_matcher_spec.rb"
+    When I run `rspec throw_symbol_matcher_spec.rb`
     Then the output should contain all of these:
       | 8 examples, 4 failures                          |
       | expected :foo not to be thrown, got :foo        |
@@ -75,7 +75,7 @@ Feature: throw_symbol matcher
         specify { expect { throw :foo    }.to     throw_symbol(:foo, 7) }
       end
       """
-    When I run "rspec throw_symbol_argument_matcher_spec.rb"
+    When I run `rspec throw_symbol_argument_matcher_spec.rb`
     Then the output should contain all of these:
       | 8 examples, 4 failures                                       |
       | expected :foo with 7 not to be thrown, got :foo with 7       |

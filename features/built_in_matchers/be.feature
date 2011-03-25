@@ -25,7 +25,7 @@ Feature: "be" matchers
         specify { false.should be_true }
       end
       """
-    When I run "rspec be_true_spec.rb"
+    When I run `rspec be_true_spec.rb`
     Then the output should contain all of these:
       | 10 examples, 5 failures       |
       | expected true not to be true  |
@@ -52,7 +52,7 @@ Feature: "be" matchers
         specify { "foo".should be_false }
       end
       """
-    When I run "rspec be_false_spec.rb"
+    When I run `rspec be_false_spec.rb`
     Then the output should contain all of these:
       | 10 examples, 5 failures        |
       | expected nil not to be false   |
@@ -79,7 +79,7 @@ Feature: "be" matchers
         specify { "foo".should be_nil }
       end
       """
-    When I run "rspec be_nil_spec.rb"
+    When I run `rspec be_nil_spec.rb`
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """
@@ -125,7 +125,7 @@ Feature: "be" matchers
         specify { false.should be }
       end
       """
-    When I run "rspec be_spec.rb"
+    When I run `rspec be_spec.rb`
     Then the output should contain all of these:
       | 10 examples, 5 failures             |
       | expected true to evaluate to false  |

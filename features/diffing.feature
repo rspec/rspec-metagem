@@ -21,7 +21,7 @@ Feature: diffing
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
              Diff:
@@ -47,7 +47,7 @@ Feature: diffing
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
              Diff:
@@ -69,7 +69,7 @@ Feature: diffing
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should not contain "Diff:"
 
   Scenario: no diff for numbers
@@ -81,5 +81,5 @@ Feature: diffing
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should not contain "Diff:"

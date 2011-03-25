@@ -41,7 +41,7 @@ Feature: respond_to matcher
         it { should_not respond_to(:length, :flatten) }
       end
       """
-    When I run "rspec respond_to_matcher_spec.rb"
+    When I run `rspec respond_to_matcher_spec.rb`
     Then the output should contain all of these:
       | 10 examples, 6 failures                                    |
       | expected "a string" to respond to :to_model                |
@@ -69,7 +69,7 @@ Feature: respond_to matcher
         it { should_not respond_to(:between?).with(2).arguments }
       end
       """
-    When I run "rspec respond_to_matcher_argument_checking_spec.rb"
+    When I run `rspec respond_to_matcher_argument_checking_spec.rb`
     Then the output should contain all of these:
       | 8 examples, 4 failures                                  |
       | expected 7 to respond to :zero? with 1 argument         |

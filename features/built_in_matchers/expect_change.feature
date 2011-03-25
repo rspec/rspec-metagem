@@ -35,7 +35,7 @@ Feature: expect change
         end
       end
       """
-    When I run "rspec spec/example_spec.rb"
+    When I run `rspec spec/example_spec.rb`
     Then the output should contain "1 failure"
     Then the output should contain "should have been changed by 2, but was changed by 1"
 
@@ -54,6 +54,6 @@ Feature: expect change
         end
       end
       """
-    When I run "rspec spec/example_spec.rb"
+    When I run `rspec spec/example_spec.rb`
     Then the output should contain "2 failures"
     Then the output should contain "should not have changed, but did change from 1 to 2"

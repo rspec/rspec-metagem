@@ -19,6 +19,6 @@ Feature: define matcher with fluent interface
         it { should be_bigger_than(4).but_smaller_than(6) }
       end
       """
-    When I run "rspec between_spec.rb --format documentation"
+    When I run `rspec between_spec.rb --format documentation`
     Then the output should contain "1 example, 0 failures"
     And  the output should contain "should be bigger than 4"

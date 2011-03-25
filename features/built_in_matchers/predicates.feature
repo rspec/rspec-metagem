@@ -46,7 +46,7 @@ Feature: predicate matchers
         it { should be_zero } # deliberate failure
       end
       """
-    When I run "rspec should_be_zero_spec.rb"
+    When I run `rspec should_be_zero_spec.rb`
     Then the output should contain "2 examples, 1 failure"
      And the output should contain "expected zero? to return true, got false"
 
@@ -61,7 +61,7 @@ Feature: predicate matchers
         it { should_not be_empty } # deliberate failure
       end
       """
-    When I run "rspec should_not_be_empty_spec.rb"
+    When I run `rspec should_not_be_empty_spec.rb`
     Then the output should contain "2 examples, 1 failure"
      And the output should contain "expected empty? to return false, got true"
 
@@ -74,7 +74,7 @@ Feature: predicate matchers
         it { should have_key(:bar) } # deliberate failure
       end
       """
-    When I run "rspec should_have_key_spec.rb"
+    When I run `rspec should_have_key_spec.rb`
     Then the output should contain "2 examples, 1 failure"
      And the output should contain "expected #has_key?(:bar) to return true, got false"
 
@@ -99,7 +99,7 @@ Feature: predicate matchers
          end
        end
        """
-     When I run "rspec should_not_have_all_string_keys_spec.rb"
+     When I run `rspec should_not_have_all_string_keys_spec.rb`
      Then the output should contain "2 examples, 1 failure"
       And the output should contain "expected #has_all_string_keys?(nil) to return false, got true"
 
@@ -121,7 +121,7 @@ Feature: predicate matchers
          it { should be_multiple_of(5) }
        end
        """
-     When I run "rspec predicate_matcher_argument_spec.rb"
+     When I run `rspec predicate_matcher_argument_spec.rb`
      Then the output should contain "4 examples, 2 failures"
       And the output should contain "expected multiple_of?(4) to return false, got true"
       And the output should contain "expected multiple_of?(5) to return true, got false"

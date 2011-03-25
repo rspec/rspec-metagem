@@ -20,7 +20,7 @@ Feature: define diffable matcher
         it {should be_just_like("that")}
       end
       """
-    When I run "rspec ./diffable_matcher_spec.rb --diff"
+    When I run `rspec ./diffable_matcher_spec.rb --diff`
     Then the exit status should not be 0
 
     And the output should contain "should be just like that"

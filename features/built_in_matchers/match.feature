@@ -24,7 +24,7 @@ Feature: match matcher
         it { should match(/foo/) }
       end
       """
-    When I run "rspec string_match_spec.rb"
+    When I run `rspec string_match_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures                 |
       | expected "a string" not to match /str/ |
@@ -42,7 +42,7 @@ Feature: match matcher
         it { should match("drinks") }
       end
       """
-    When I run "rspec regexp_match_spec.rb"
+    When I run `rspec regexp_match_spec.rb`
     Then the output should contain all of these:
       | 4 examples, 2 failures             |
       | expected /foo/ not to match "food" |

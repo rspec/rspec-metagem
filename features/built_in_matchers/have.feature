@@ -51,7 +51,7 @@ Feature: have(n).items matcher
         it { should have_at_most(2).items }
       end
       """
-     When I run "rspec have_items_spec.rb"
+     When I run `rspec have_items_spec.rb`
      Then the output should contain "16 examples, 8 failures"
       And the output should contain "expected target not to have 3 items, got 3"
       And the output should contain "expected 2 items, got 3"
@@ -93,7 +93,7 @@ Feature: have(n).items matcher
         it { should have_at_most(4).words }
       end
       """
-     When I run "rspec have_words_spec.rb"
+     When I run `rspec have_words_spec.rb`
      Then the output should contain "16 examples, 8 failures"
       And the output should contain "expected target not to have 5 words, got 5"
       And the output should contain "expected 4 words, got 5"

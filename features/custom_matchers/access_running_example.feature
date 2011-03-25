@@ -28,7 +28,7 @@ Feature: access running example
         end
       end
       """
-    When I run "rspec ./example_spec.rb"
+    When I run `rspec ./example_spec.rb`
     Then the output should contain "1 example, 0 failures"
 
   Scenario: call method _not_ defined on example from matcher
@@ -46,7 +46,7 @@ Feature: access running example
         end
       end
       """
-    When I run "rspec ./example_spec.rb"
+    When I run `rspec ./example_spec.rb`
     Then the output should contain "1 example, 1 failure"
     And the output should contain "undefined local variable"
     And the output should contain "RSpec::Matchers::Matcher"

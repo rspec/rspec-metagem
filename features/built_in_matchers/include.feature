@@ -47,7 +47,7 @@ Feature: include matcher
         it { should_not include(1, 9) }
       end
       """
-    When I run "rspec array_include_matcher_spec.rb"
+    When I run `rspec array_include_matcher_spec.rb`
     Then the output should contain all of these:
       | 14 examples, 7 failures                       |
       | expected [1, 3, 7] to include 4               |
@@ -74,7 +74,7 @@ Feature: include matcher
         it { should_not include("str", "foo") }
       end
       """
-    When I run "rspec string_include_matcher_spec.rb"
+    When I run `rspec string_include_matcher_spec.rb`
     Then the output should contain all of these:
       | 8 examples, 4 failures                             |
       | expected "a string" to include "foo"               |
@@ -117,5 +117,5 @@ Feature: include matcher
         it { should_not include(:a => 7, :d => 3) }
       end
       """
-    When I run "rspec hash_include_matcher_spec.rb"
+    When I run `rspec hash_include_matcher_spec.rb`
     Then the output should contain "13 failure"

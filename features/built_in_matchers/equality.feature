@@ -42,7 +42,7 @@ Feature: equality matchers
         end
       end
       """
-    When I run "rspec compare_using_eq.rb"
+    When I run `rspec compare_using_eq.rb`
     Then the output should contain "3 examples, 0 failures"
 
   Scenario: compare using ==
@@ -66,7 +66,7 @@ Feature: equality matchers
         end
       end
       """
-    When I run "rspec compare_using_==.rb"
+    When I run `rspec compare_using_==.rb`
     Then the output should contain "3 examples, 0 failures"
 
   Scenario: compare using eql (eql?)
@@ -89,7 +89,7 @@ Feature: equality matchers
 
       end
       """
-    When I run "rspec compare_using_eql.rb"
+    When I run `rspec compare_using_eql.rb`
     Then the output should contain "3 examples, 0 failures"
 
   Scenario: compare using equal (equal?)
@@ -113,7 +113,7 @@ Feature: equality matchers
 
       end
       """
-    When I run "rspec compare_using_equal.rb"
+    When I run `rspec compare_using_equal.rb`
     Then the output should contain "3 examples, 0 failures"
 
   Scenario: compare using be (equal?)
@@ -137,6 +137,6 @@ Feature: equality matchers
 
       end
       """
-    When I run "rspec compare_using_be.rb"
+    When I run `rspec compare_using_be.rb`
     Then the output should contain "3 examples, 0 failures"
 
