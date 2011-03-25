@@ -46,41 +46,41 @@ Feature: --example option
       """
 
   Scenario: no matches
-    When I run "rspec . --example nothing_like_this"
+    When I run `rspec . --example nothing_like_this`
     Then the examples should all pass
 
   Scenario: match on one word
-    When I run "rspec . --example example"
+    When I run `rspec . --example example`
     Then the examples should all pass
 
   Scenario: one match in each context
-    When I run "rspec . --example 'first example'"
+    When I run `rspec . --example 'first example'`
     Then the examples should all pass
 
   Scenario: one match in one file using just the example name
-    When I run "rspec . --example 'first example in first group'"
+    When I run `rspec . --example 'first example in first group'`
     Then the examples should all pass
 
   Scenario: one match in one file using the example name and the group name
-    When I run "rspec . --example 'first group first example in first group'"
+    When I run `rspec . --example 'first group first example in first group'`
     Then the examples should all pass
 
   Scenario: one match in one file using regexp
-    When I run "rspec . --example 'first .* first example'"
+    When I run `rspec . --example 'first .* first example'`
     Then the examples should all pass
 
   Scenario: all examples in one group
-    When I run "rspec . --example 'first group'"
+    When I run `rspec . --example 'first group'`
     Then the examples should all pass
 
   Scenario: one match in one file with group name
-    When I run "rspec . --example 'second group first example'"
+    When I run `rspec . --example 'second group first example'`
     Then the examples should all pass
 
   Scenario: all examples in one group including examples in nested groups
-    When I run "rspec . --example 'third group'"
+    When I run `rspec . --example 'third group'`
     Then the examples should all pass
 
   Scenario: Object#method
-    When I run "rspec . --example 'Array#length'"
+    When I run `rspec . --example 'Array#length'`
     Then the examples should all pass

@@ -9,5 +9,5 @@ Feature: arbitrary file suffix
         end
       end
       """
-    When I run "rspec a.spec"
+    When I run `rspec a.spec`
     Then the examples should all pass

@@ -29,7 +29,7 @@ Feature: custom settings
         end
       end
       """
-    When I run "rspec ./additional_setting_spec.rb"
+    When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
   Scenario: default to true
@@ -55,7 +55,7 @@ Feature: custom settings
         end
       end
       """
-    When I run "rspec ./additional_setting_spec.rb"
+    When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
   Scenario: overridden in a subsequent RSpec.configure block
@@ -79,6 +79,6 @@ Feature: custom settings
         end
       end
       """
-    When I run "rspec ./additional_setting_spec.rb"
+    When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 

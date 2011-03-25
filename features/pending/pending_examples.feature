@@ -10,7 +10,7 @@ Feature: pending examples
         it "is a pending example"
       end
       """
-    When I run "rspec example_without_block_spec.rb"
+    When I run `rspec example_without_block_spec.rb`
     Then the exit status should be 0
     And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain "Not Yet Implemented"
@@ -26,7 +26,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_without_block_spec.rb"
+    When I run `rspec pending_without_block_spec.rb`
     Then the exit status should be 0
     And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
@@ -48,7 +48,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_with_failing_block_spec.rb"
+    When I run `rspec pending_with_failing_block_spec.rb`
     Then the exit status should be 0
     And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
@@ -70,7 +70,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_with_passing_block_spec.rb"
+    When I run `rspec pending_with_passing_block_spec.rb`
     Then the exit status should not be 0
     And the output should contain "1 example, 1 failure"
     And the output should contain "FIXED"
@@ -86,7 +86,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_with_xit_spec.rb"
+    When I run `rspec pending_with_xit_spec.rb`
     Then the exit status should be 0
     And the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
@@ -107,7 +107,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_with_no_docstring_spec.rb --format documentation"
+    When I run `rspec pending_with_no_docstring_spec.rb --format documentation`
     Then the exit status should be 0
     And the output should contain "2 examples, 0 failures, 1 pending"
     And the output should contain:
@@ -129,7 +129,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec pending_with_no_docstring_spec.rb --format documentation"
+    When I run `rspec pending_with_no_docstring_spec.rb --format documentation`
     Then the exit status should be 0
     And the output should contain "2 examples, 0 failures, 1 pending"
     And the output should contain:
@@ -182,7 +182,7 @@ Feature: pending examples
         end
       end
       """
-    When I run "rspec ./conditionally_pending_spec.rb"
+    When I run `rspec ./conditionally_pending_spec.rb`
     Then the output should contain "8 examples, 4 failures, 2 pending"
     And the output should contain:
       """

@@ -25,7 +25,7 @@ Feature: text formatter
         end
       end
       """
-    When I run "ruby ./integer_spec.rb ./string_spec.rb"
+    When I run `ruby ./integer_spec.rb ./string_spec.rb`
     Then the backtrace-normalized output should contain:
       """
       Failures:

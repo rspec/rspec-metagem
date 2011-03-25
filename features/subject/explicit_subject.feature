@@ -13,7 +13,7 @@ Feature: explicit subject
         end
       end
       """
-    When I run "rspec top_level_subject_spec.rb"
+    When I run `rspec top_level_subject_spec.rb`
     Then the examples should all pass
 
   Scenario: subject in a nested group
@@ -28,7 +28,7 @@ Feature: explicit subject
         end
       end
       """
-    When I run "rspec nested_subject_spec.rb"
+    When I run `rspec nested_subject_spec.rb`
     Then the examples should all pass
 
   Scenario: access subject from before block
@@ -42,7 +42,7 @@ Feature: explicit subject
         end
       end
       """
-    When I run "rspec top_level_subject_spec.rb"
+    When I run `rspec top_level_subject_spec.rb`
     Then the examples should all pass
 
   Scenario: invoke helper method from subject block
@@ -58,7 +58,7 @@ Feature: explicit subject
         end
       end
       """
-    When I run "rspec helper_subject_spec.rb"
+    When I run `rspec helper_subject_spec.rb`
     Then the examples should all pass
 
   Scenario: subject block is invoked at most once per example
@@ -74,5 +74,5 @@ Feature: explicit subject
         end
       end
       """
-    When I run "rspec nil_subject_spec.rb"
+    When I run `rspec nil_subject_spec.rb`
     Then the examples should all pass

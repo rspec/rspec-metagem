@@ -38,11 +38,11 @@ Feature: --format option
       """
 
   Scenario: progress bar format (default)
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain ".F*"
 
   Scenario: documentation format
-    When I run "rspec example_spec.rb --format documentation"
+    When I run `rspec example_spec.rb --format documentation`
     Then the output should contain:
       """
       something
@@ -52,7 +52,7 @@ Feature: --format option
       """
 
   Scenario: documentation format saved to a file
-    When I run "rspec example_spec.rb --format documentation --out rspec.txt"
+    When I run `rspec example_spec.rb --format documentation --out rspec.txt`
     Then the file "rspec.txt" should contain:
       """
       something
@@ -62,7 +62,7 @@ Feature: --format option
       """
 
   Scenario: multiple formats
-    When I run "rspec example_spec.rb --format progress --format documentation --out rspec.txt"
+    When I run `rspec example_spec.rb --format progress --format documentation --out rspec.txt`
     Then the output should contain ".F*"
     And the file "rspec.txt" should contain:
       """

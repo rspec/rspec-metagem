@@ -23,7 +23,7 @@ Feature: basic structure (describe/it)
       end
     end
     """
-    When I run "rspec sample_spec.rb -fn"
+    When I run `rspec sample_spec.rb -fn`
     Then the output should contain:
       """
       something
@@ -44,7 +44,7 @@ Feature: basic structure (describe/it)
       end
     end
     """
-    When I run "rspec nested_example_groups_spec.rb -fdoc"
+    When I run `rspec nested_example_groups_spec.rb -fdoc`
     Then the output should contain:
       """
       something

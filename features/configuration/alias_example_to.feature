@@ -22,7 +22,7 @@ Feature: alias_example_to
         end
       end
       """
-    When I run "rspec alias_example_to_spec.rb --format doc"
+    When I run `rspec alias_example_to_spec.rb --format doc`
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"
 
@@ -43,6 +43,6 @@ Feature: alias_example_to
         end
       end
       """
-    When I run "rspec use_symbols_as_metadata_spec.rb --format doc"
+    When I run `rspec use_symbols_as_metadata_spec.rb --format doc`
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"

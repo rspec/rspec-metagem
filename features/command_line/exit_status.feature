@@ -11,7 +11,7 @@ Feature: exit status
         end
       end
       """
-    When I run "rspec ok_spec.rb"
+    When I run `rspec ok_spec.rb`
     Then the exit status should be 0
     And the examples should all pass
 
@@ -24,7 +24,7 @@ Feature: exit status
         end
       end
       """
-    When I run "rspec ko_spec.rb"
+    When I run `rspec ko_spec.rb`
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
 
@@ -39,7 +39,7 @@ Feature: exit status
         end
       end
       """
-    When I run "rspec nested_ko_spec.rb"
+    When I run `rspec nested_ko_spec.rb`
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
       
@@ -47,6 +47,6 @@ Feature: exit status
     Given a file named "a_no_examples_spec.rb" with:
       """
       """
-    When I run "rspec a_no_examples_spec.rb"
+    When I run `rspec a_no_examples_spec.rb`
     Then the exit status should be 0
     And the output should contain "0 examples"

@@ -18,7 +18,7 @@ Feature: arbitrary helper methods
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
 
   Scenario: use a method defined in a parent group
@@ -36,5 +36,5 @@ Feature: arbitrary helper methods
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass

@@ -21,7 +21,7 @@ Feature: fail fast
         end
       end
       """
-    When I run "rspec spec/example_spec.rb"
+    When I run `rspec spec/example_spec.rb`
     Then the examples should all pass
 
   Scenario: fail_fast with first example failing (only runs the one example)
@@ -37,7 +37,7 @@ Feature: fail fast
         end
       end
       """
-    When I run "rspec spec/example_spec.rb -fd"
+    When I run `rspec spec/example_spec.rb -fd`
     Then the output should contain "1 example, 1 failure"
 
   Scenario: fail_fast with multiple files, second example failing (only runs the first two examples)
@@ -73,5 +73,5 @@ Feature: fail fast
         end
       end
       """
-    When I run "rspec spec"
+    When I run `rspec spec`
     Then the output should contain "2 examples, 1 failure"

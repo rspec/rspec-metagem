@@ -38,7 +38,7 @@ Feature: Define helper methods in a module
         end
       end
       """
-    When I run "rspec include_module_spec.rb"
+    When I run `rspec include_module_spec.rb`
     Then the examples should all pass
 
   Scenario: extend a module in all example groups
@@ -58,7 +58,7 @@ Feature: Define helper methods in a module
         end
       end
       """
-    When I run "rspec extend_module_spec.rb"
+    When I run `rspec extend_module_spec.rb`
     Then the examples should all pass
     And the output should contain "Help is available"
 
@@ -83,7 +83,7 @@ Feature: Define helper methods in a module
         end
       end
       """
-    When I run "rspec include_module_in_some_groups_spec.rb"
+    When I run `rspec include_module_in_some_groups_spec.rb`
     Then the examples should all pass
 
   Scenario: extend a module in only some example groups
@@ -111,7 +111,7 @@ Feature: Define helper methods in a module
         end
       end
       """
-    When I run "rspec extend_module_in_only_some_groups_spec.rb"
+    When I run `rspec extend_module_in_only_some_groups_spec.rb`
     Then the examples should all pass
     And the output should contain "In a matching group, help is available"
     And the output should contain "In a non-matching group, help is not available"
@@ -143,7 +143,7 @@ Feature: Define helper methods in a module
         end
       end
       """
-    When I run "rspec symbols_as_metadata_spec.rb"
+    When I run `rspec symbols_as_metadata_spec.rb`
     Then the examples should all pass
     And the output should contain "In a group not matching the extend filter, help is not available"
     And the output should contain "In a group matching the extend filter, help is available"

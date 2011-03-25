@@ -19,5 +19,5 @@ Feature: mock with rr
         end
       end
       """
-    When I run "rspec rr_example_spec.rb"
+    When I run `rspec rr_example_spec.rb`
     Then the examples should all pass 

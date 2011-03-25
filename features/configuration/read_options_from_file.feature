@@ -30,7 +30,7 @@ Feature: read command line configuration options from files
         end
       end
       """
-    When I run "rspec ./spec/example_spec.rb"
+    When I run `rspec ./spec/example_spec.rb`
     Then the examples should all pass
 
   Scenario: custom options file
@@ -47,7 +47,7 @@ Feature: read command line configuration options from files
         end
       end
       """
-    When I run "rspec spec/example_spec.rb --options my.options"
+    When I run `rspec spec/example_spec.rb --options my.options`
     Then the examples should all pass
 
   Scenario: RSpec ignores ./.rspec when custom options file is used
@@ -67,7 +67,7 @@ Feature: read command line configuration options from files
         end
       end
       """
-    When I run "rspec spec/example_spec.rb --options my.options"
+    When I run `rspec spec/example_spec.rb --options my.options`
     Then the examples should all pass
 
   Scenario: using ERB in .rspec
@@ -83,5 +83,5 @@ Feature: read command line configuration options from files
         end
       end
       """
-    When I run "rspec ./spec/example_spec.rb"
+    When I run `rspec ./spec/example_spec.rb`
     Then the examples should all pass

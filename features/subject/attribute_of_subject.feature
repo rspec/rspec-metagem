@@ -28,7 +28,7 @@ Feature: attribute of subject
         end
       end
       """
-    When I run "rspec example_spec.rb --format documentation"
+    When I run `rspec example_spec.rb --format documentation`
     Then the output should contain:
       """
       Array
@@ -59,7 +59,7 @@ Feature: attribute of subject
         end
       end
       """
-    When I run "rspec example_spec.rb --format documentation"
+    When I run `rspec example_spec.rb --format documentation`
     Then the output should contain:
       """
       Person
@@ -81,7 +81,7 @@ Feature: attribute of subject
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
 
   Scenario: specify value for key in a hash
@@ -98,7 +98,7 @@ Feature: attribute of subject
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
 
   Scenario: specify value for key in a hash-like object
@@ -118,5 +118,5 @@ Feature: attribute of subject
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass

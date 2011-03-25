@@ -19,7 +19,7 @@ Feature: rake task
         end
       end
       """
-    When I run "rake"
+    When I run `rake`
     Then the stderr should contain "ruby -S rspec"
     Then the exit status should be 0
 
@@ -40,7 +40,7 @@ Feature: rake task
         end
       end
       """
-    When I run "rake"
+    When I run `rake`
     Then the exit status should be 1
       
   Scenario: fail_on_error = false with failing spec (exit status is 0)
@@ -62,7 +62,7 @@ Feature: rake task
         end
       end
       """
-    When I run "rake"
+    When I run `rake`
     Then the exit status should be 0
       
 

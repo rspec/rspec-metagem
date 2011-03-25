@@ -29,7 +29,7 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec spec/sample_spec.rb --format doc"
+    When I run `rspec spec/sample_spec.rb --format doc`
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"
 
@@ -51,7 +51,7 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec spec/sample_spec.rb --format doc"
+    When I run `rspec spec/sample_spec.rb --format doc`
     Then the output should contain "group 1 example 1"
     And  the output should contain "group 1 example 2"
     And  the output should not contain "group 2 example 1"
@@ -79,7 +79,7 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec ./spec/before_after_all_inclusion_filter_spec.rb"
+    When I run `rspec ./spec/before_after_all_inclusion_filter_spec.rb`
     Then the output should contain "before all in focused group"
      And the output should contain "after all in focused group"
      And the output should not contain "before all in unfocused group"
@@ -101,6 +101,6 @@ Feature: inclusion filters
         end
       end
       """
-    When I run "rspec symbols_as_metadata_spec.rb --format doc"
+    When I run `rspec symbols_as_metadata_spec.rb --format doc`
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"

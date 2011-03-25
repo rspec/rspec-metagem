@@ -23,7 +23,7 @@ Feature: exclusion filters
         end
       end
       """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
+    When I run `rspec ./spec/sample_spec.rb --format doc`
     Then the output should contain "does one thing"
     And the output should not contain "does another thing"
 
@@ -47,7 +47,7 @@ Feature: exclusion filters
         end
       end
       """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
+    When I run `rspec ./spec/sample_spec.rb --format doc`
     Then the output should contain "group 2 example 1"
     And  the output should not contain "group 1 example 1"
     And  the output should not contain "group 1 example 2"
@@ -80,7 +80,7 @@ Feature: exclusion filters
         end
       end
       """
-    When I run "rspec ./spec/sample_spec.rb --format doc"
+    When I run `rspec ./spec/sample_spec.rb --format doc`
     Then the output should match /No examples were matched. Perhaps \{.*:broken=>true.*\} is excluding everything?/
     And  the examples should all pass
     And  the output should not contain "group 1"
@@ -111,7 +111,7 @@ Feature: exclusion filters
         end
       end
       """
-    When I run "rspec ./spec/before_after_all_exclusion_filter_spec.rb"
+    When I run `rspec ./spec/before_after_all_exclusion_filter_spec.rb`
     Then the output should contain "before all in included group"
      And the output should contain "after all in included group"
      And the output should not contain "before all in excluded group"
@@ -134,6 +134,6 @@ Feature: exclusion filters
         end
       end
       """
-    When I run "rspec symbols_as_metadata_spec.rb --format doc"
+    When I run `rspec symbols_as_metadata_spec.rb --format doc`
     Then the output should contain "does one thing"
     And the output should not contain "does another thing"

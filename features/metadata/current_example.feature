@@ -12,6 +12,6 @@ Feature: current example
         end
       end
       """
-    When I run "rspec spec/example_spec.rb"
+    When I run `rspec spec/example_spec.rb`
     Then the example should pass
 

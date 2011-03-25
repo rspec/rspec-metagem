@@ -30,7 +30,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
       open transaction
@@ -53,7 +53,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
       around each before
@@ -74,7 +74,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "this should show up in the output"
 
   Scenario: define a global around hook
@@ -94,7 +94,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
       around each before
@@ -125,7 +125,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
       around each before
@@ -158,7 +158,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain:
       """
       before all
@@ -189,7 +189,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failure"
 
   Scenario: implicitly pending examples are detected as Not Yet Implemented
@@ -203,7 +203,7 @@ Feature: around hooks
         it "should be detected as Not Yet Implemented"
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
@@ -226,7 +226,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
@@ -256,7 +256,7 @@ Feature: around hooks
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failure"
     And the output should contain:
       """
@@ -316,7 +316,7 @@ Feature: around hooks
       end
     end
     """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failure"
     And the output should contain:
     """

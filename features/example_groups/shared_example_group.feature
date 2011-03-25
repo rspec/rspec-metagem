@@ -45,7 +45,7 @@ Feature: shared example group
       it_behaves_like "a collection"
     end
     """
-    When I run "rspec collection_spec.rb --format documentation"
+    When I run `rspec collection_spec.rb --format documentation`
     Then the examples should all pass
     And the output should contain:
       """
@@ -97,7 +97,7 @@ Feature: shared example group
       end
     end
     """
-    When I run "rspec shared_example_group_spec.rb --format documentation"
+    When I run `rspec shared_example_group_spec.rb --format documentation`
     Then the examples should all pass
     And the output should contain:
       """
@@ -133,7 +133,7 @@ Feature: shared example group
       it_should_behave_like "a measurable object", 6, [:size, :length]
     end
     """
-    When I run "rspec shared_example_group_params_spec.rb --format documentation"
+    When I run `rspec shared_example_group_params_spec.rb --format documentation`
     Then the examples should all pass
     And the output should contain:
       """
@@ -167,7 +167,7 @@ Feature: shared example group
         end
       end
       """
-    When I run "rspec shared_example_group_spec.rb --format documentation"
+    When I run `rspec shared_example_group_spec.rb --format documentation`
     Then the examples should all pass
     And the output should contain:
       """

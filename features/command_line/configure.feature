@@ -8,7 +8,7 @@ Feature: --configure option
   to load RSpec's Autotest subclass.
 
   Scenario: generate .rspec file for autotest
-    When I run "rspec --configure autotest"
+    When I run `rspec --configure autotest`
     Then the following files should exist:
       | .rspec |
     And the output should contain ".rspec file did not exist, so it was created."
@@ -18,5 +18,5 @@ Feature: --configure option
       """
       --color
       """
-    When I run "rspec --configure autotest"
+    When I run `rspec --configure autotest`
     Then the output should contain ".rspec file already exists, so nothing was changed."

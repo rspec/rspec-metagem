@@ -18,5 +18,5 @@ Feature: mock with mocha
         end
       end
       """
-    When I run "rspec ./mocha_example_spec.rb"
+    When I run `rspec ./mocha_example_spec.rb`
     Then the examples should all pass 

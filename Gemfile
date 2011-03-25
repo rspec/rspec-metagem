@@ -12,8 +12,8 @@ end
 
 ### dev dependencies
 gem "rake", "0.8.7"
-gem "cucumber", "0.9.4"
-gem "aruba", "0.2.2"
+gem "cucumber", "~> 0.10.2"
+gem "aruba", "~> 0.3.5"
 gem "rcov", "0.9.9", :platforms => :mri
 gem "relish", "0.2.0"
 gem "guard-rspec", "0.1.9"

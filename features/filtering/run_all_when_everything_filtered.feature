@@ -31,7 +31,7 @@ Feature: run all when everything filtered
         end
       end
       """
-    When I run "rspec spec/sample_spec.rb --format doc"
+    When I run `rspec spec/sample_spec.rb --format doc`
     Then the output should contain "No examples were matched by {:focus=>true}, running all"
     And the examples should all pass
     And the output should contain:

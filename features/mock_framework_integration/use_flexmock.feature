@@ -18,5 +18,5 @@ Feature: mock with flexmock
         end
       end
       """
-    When I run "rspec ./flexmock_example_spec.rb"
+    When I run `rspec ./flexmock_example_spec.rb`
     Then the examples should all pass 

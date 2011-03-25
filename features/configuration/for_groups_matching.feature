@@ -23,7 +23,7 @@ Feature: for groups matching
         end
       end
       """
-    When I run "rspec for_groups_matching_spec.rb"
+    When I run `rspec for_groups_matching_spec.rb`
     Then the examples should all pass
 
   Scenario: define method using let for groups matching metadata
@@ -41,7 +41,7 @@ Feature: for groups matching
         end
       end
       """
-    When I run "rspec for_groups_matching_spec.rb"
+    When I run `rspec for_groups_matching_spec.rb`
     Then the examples should all pass
 
   Scenario: define subject for groups matching metadata
@@ -59,7 +59,7 @@ Feature: for groups matching
         end
       end
       """
-    When I run "rspec for_groups_matching_spec.rb"
+    When I run `rspec for_groups_matching_spec.rb`
     Then the examples should all pass
 
   Scenario: Use symbols as metadata
@@ -84,5 +84,5 @@ Feature: for groups matching
         end
       end
       """
-    When I run "rspec use_symbols_as_metadata_spec.rb"
+    When I run `rspec use_symbols_as_metadata_spec.rb`
     Then the examples should all pass

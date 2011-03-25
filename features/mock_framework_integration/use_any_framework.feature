@@ -100,7 +100,7 @@ Feature: mock with an alternative framework
         end
       end
       """
-    When I run "rspec example_spec.rb --format doc"
+    When I run `rspec example_spec.rb --format doc`
     Then the exit status should be 1
     And the output should contain "2 examples, 1 failure" 
     And the output should contain "fails when message is received (FAILED - 1)" 

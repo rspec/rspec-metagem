@@ -24,7 +24,7 @@ Feature: let and let!
         end
       end
       """
-    When I run "rspec let_spec.rb"
+    When I run `rspec let_spec.rb`
     Then the examples should all pass
 
   Scenario: use let! to define a memoized helper method that is called in a before hook
@@ -46,5 +46,5 @@ Feature: let and let!
         end
       end
       """
-    When I run "rspec let_bang_spec.rb"
+    When I run `rspec let_bang_spec.rb`
     Then the examples should all pass

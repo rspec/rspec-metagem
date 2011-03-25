@@ -24,7 +24,7 @@ Feature: :if and :unless
         it("no :if group no :if example") { }
       end
       """
-    When I run "rspec implicit_if_filter_spec.rb --format doc"
+    When I run `rspec implicit_if_filter_spec.rb --format doc`
     Then the output should contain all of these:
       | :if => true group :if => true example  |
       | :if => true group no :if example       |
@@ -58,7 +58,7 @@ Feature: :if and :unless
         it("no :unless group no :unless example") { }
       end
       """
-    When I run "rspec implicit_unless_filter_spec.rb --format doc"
+    When I run `rspec implicit_unless_filter_spec.rb --format doc`
     Then the output should contain all of these:
       | :unless => true group :unless => false example  |
       | :unless => false group :unless => false example |
@@ -94,7 +94,7 @@ Feature: :if and :unless
         it("unfocused :unless => false example", :unless => false) { }
       end
       """
-    When I run "rspec explicit_inclusion_filter_spec.rb --format doc"
+    When I run `rspec explicit_inclusion_filter_spec.rb --format doc`
     Then the output should contain all of these:
       | focused example                  |
       | focused :if => true example      |
@@ -127,7 +127,7 @@ Feature: :if and :unless
         it("excluded :unless => false example", :unless => false) { }
       end
       """
-    When I run "rspec explicit_exclusion_filter_spec.rb --format doc"
+    When I run `rspec explicit_exclusion_filter_spec.rb --format doc`
     Then the output should contain all of these:
       | included example                  |
       | included :if => true example      |
@@ -156,7 +156,7 @@ Feature: :if and :unless
         it(":unless => :exclude_me_for_unless example", :unless => :exclude_me_for_unless) { }
       end
       """
-    When I run "rspec override_implicit_filters_spec.rb --format doc"
+    When I run `rspec override_implicit_filters_spec.rb --format doc`
     Then the output should contain all of these:
       | :if => true example      |
       | :if => false example     |

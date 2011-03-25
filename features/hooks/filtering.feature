@@ -37,7 +37,7 @@ Feature: filters
         end
       end
       """
-    When I run "rspec filter_before_each_hooks_spec.rb"
+    When I run `rspec filter_before_each_hooks_spec.rb`
     Then the examples should all pass
 
   Scenario: filter `after(:each)` hooks using arbitrary metadata
@@ -67,7 +67,7 @@ Feature: filters
         end
       end
       """
-    When I run "rspec filter_after_each_hooks_spec.rb"
+    When I run `rspec filter_after_each_hooks_spec.rb`
     Then the output should contain "3 examples, 2 failures"
 
   Scenario: filter around(:each) hooks using arbitrary metadata
@@ -103,7 +103,7 @@ Feature: filters
         end
       end
       """
-    When I run "rspec filter_around_each_hooks_spec.rb"
+    When I run `rspec filter_around_each_hooks_spec.rb`
     Then the examples should all pass
 
   Scenario: filter before(:all) hooks using arbitrary metadata
@@ -139,7 +139,7 @@ Feature: filters
         end
       end
       """
-    When I run "rspec filter_before_all_hooks_spec.rb"
+    When I run `rspec filter_before_all_hooks_spec.rb`
     Then the examples should all pass
 
   Scenario: filter after(:all) hooks using arbitrary metadata
@@ -175,7 +175,7 @@ Feature: filters
         end
       end
       """
-    When I run "rspec filter_after_all_hooks_spec.rb"
+    When I run `rspec filter_after_all_hooks_spec.rb`
     Then the examples should all pass
     And the output should contain:
       """
@@ -209,7 +209,7 @@ Feature: filters
         it("", :around_each) { puts "example 4" }
       end
       """
-    When I run "rspec less_verbose_metadata_filter.rb"
+    When I run `rspec less_verbose_metadata_filter.rb`
     Then the examples should all pass
     And the output should contain:
       """

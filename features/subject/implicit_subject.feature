@@ -12,7 +12,7 @@ Feature: implicit subject
         end
       end
       """
-    When I run "rspec ./top_level_subject_spec.rb"
+    When I run `rspec ./top_level_subject_spec.rb`
     Then the examples should all pass
 
   Scenario: subject in a nested group
@@ -26,5 +26,5 @@ Feature: implicit subject
         end
       end
       """
-    When I run "rspec nested_subject_spec.rb"
+    When I run `rspec nested_subject_spec.rb`
     Then the examples should all pass

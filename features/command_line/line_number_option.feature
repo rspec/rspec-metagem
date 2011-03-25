@@ -21,7 +21,7 @@ Feature: --line_number option
         
       end
       """
-    When I run "rspec example_spec.rb --line_number 5 --format doc"
+    When I run `rspec example_spec.rb --line_number 5 --format doc`
     Then the examples should all pass
     Then the output should contain "should be > 8"
     But the output should not contain "should be < 10"
@@ -39,7 +39,7 @@ Feature: --line_number option
         
       end
       """
-    When I run "rspec example_spec.rb --line_number 5 --format doc"
+    When I run `rspec example_spec.rb --line_number 5 --format doc`
     Then the examples should all pass
     Then the output should contain "should be > 8"
     But the output should not contain "should be < 10"

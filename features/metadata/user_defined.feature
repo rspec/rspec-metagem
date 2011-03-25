@@ -42,7 +42,7 @@ Feature: User-defined metadata
         end
       end
       """
-    When I run "rspec define_group_metadata_with_hash_spec.rb"
+    When I run `rspec define_group_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
   Scenario: define example metadata using a hash
@@ -61,7 +61,7 @@ Feature: User-defined metadata
         end
       end
       """
-    When I run "rspec define_example_metadata_with_hash_spec.rb"
+    When I run `rspec define_example_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
   Scenario: override user-defined metadata
@@ -79,7 +79,7 @@ Feature: User-defined metadata
         end
       end
       """
-    When I run "rspec override_metadata_spec.rb"
+    When I run `rspec override_metadata_spec.rb`
     Then the examples should all pass
 
   Scenario: less verbose metadata
@@ -107,5 +107,5 @@ Feature: User-defined metadata
         end
       end
       """
-    When I run "rspec less_verbose_metadata_spec.rb"
+    When I run `rspec less_verbose_metadata_spec.rb`
     Then the examples should all pass

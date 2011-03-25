@@ -12,7 +12,7 @@ Feature: implicit receiver
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
 
   Scenario: explicit subject
@@ -25,5 +25,5 @@ Feature: implicit receiver
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass

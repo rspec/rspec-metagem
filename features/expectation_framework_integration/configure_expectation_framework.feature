@@ -26,7 +26,7 @@ Feature: configure expectation framework
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
 
   Scenario: configure test/unit assertions
@@ -44,7 +44,7 @@ Feature: configure expectation framework
         specify { assert 5 < 6 }
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the output should contain "2 examples, 1 failure"
      And the output should contain:
        """
@@ -69,5 +69,5 @@ Feature: configure expectation framework
         end
       end
       """
-    When I run "rspec example_spec.rb"
+    When I run `rspec example_spec.rb`
     Then the examples should all pass
