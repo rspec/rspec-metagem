@@ -4,6 +4,7 @@
 - example_groups:
   - basic_structure.feature
   - shared_example_group.feature
+  - shared_context.feature
 - pending:
   - pending_examples.feature
 - hooks:
@@ -41,7 +42,6 @@
   - read_options_from_file.feature
   - fail_fast.feature
   - custom_settings.feature
-  - for_groups_matching.feature
   - alias_example_to.feature
 - expectation_framework_integration:
   - configure_expectation_framework.feature

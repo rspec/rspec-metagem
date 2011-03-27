@@ -2,12 +2,26 @@ module RSpec
   module Core
     module SharedExampleGroup
 
-      def share_examples_for(name, &block)
-        ensure_shared_example_group_name_not_taken(name)
-        RSpec.world.shared_example_groups[name] = block
+      def share_examples_for(*args, &block)
+        if String === args.first || Symbol === args.first
+          name = args.shift
+          ensure_shared_example_group_name_not_taken(name)
+          RSpec.world.shared_example_groups[name] = block
+        end
+
+        unless args.empty?
+          mod = Module.new
+          (class << mod; self; end).send(:define_method, :extended) do |host|
+            host.class_eval(&block)
+          end
+          RSpec.configuration.extend(mod, *args)
+        else
+        end
       end
 
       alias :shared_examples_for :share_examples_for
+      alias :shared_examples     :share_examples_for
+      alias :shared_context      :share_examples_for
 
       def share_as(name, &block)
         if Object.const_defined?(name)

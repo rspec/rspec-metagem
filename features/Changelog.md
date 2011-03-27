@@ -3,7 +3,7 @@
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...master)
 
 * Enhancements
-  * `config.for_groups_matching` (Damian Nurzynski)
+  * `shared_context` (Damian Nurzynski)
       * extend groups matching specific metadata with:
           * method definitions
           * subject declarations

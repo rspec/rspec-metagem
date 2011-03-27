@@ -65,7 +65,7 @@ module RSpec
       alias_example_to :pending, :pending => true
       alias_example_to :xit,     :pending => true
 
-      def self.define_shared_group_method(new_name, report_label=nil)
+      def self.define_nested_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, *args, &customization_block)
             shared_block = world.shared_example_groups[name]
@@ -81,13 +81,17 @@ module RSpec
         END_RUBY
       end
 
-      define_shared_group_method :it_should_behave_like
+      define_nested_shared_group_method :it_should_behave_like
 
       class << self
-        alias_method :alias_it_should_behave_like_to, :define_shared_group_method
+        alias_method :alias_it_should_behave_like_to, :define_nested_shared_group_method
       end
 
       alias_it_should_behave_like_to :it_behaves_like, "behaves like"
+
+      def self.include_context(name)
+        module_eval(&world.shared_example_groups[name])
+      end
 
       def self.examples
         @examples ||= []

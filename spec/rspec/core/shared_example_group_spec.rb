@@ -6,7 +6,6 @@ module RSpec::Core
 
     %w[share_examples_for shared_examples_for].each do |method_name|
       describe method_name do
-
         it "is exposed to the global namespace" do
           Kernel.should respond_to(method_name)
         end
@@ -19,32 +18,49 @@ module RSpec::Core
           end.should raise_error(ArgumentError, "Shared example group 'shared group' already exists")
         end
 
-        it "captures the given name and block in the Worlds collection of shared example groups" do
-          implementation = lambda {}
-          RSpec.world.shared_example_groups.should_receive(:[]=).with(:foo, implementation)
-          send(method_name, :foo, &implementation)
-        end
-
-      end
-    end
-
-    describe "#share_as" do
-      it "is exposed to the global namespace" do
-        Kernel.should respond_to("share_as")
-      end
-
-      it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
-        share_as('Cornucopia') do
-          it "is plentiful" do
-            5.should == 4
+        context "given a string" do
+          it "captures the given string and block in the World's collection of shared example groups" do
+            implementation = lambda {}
+            RSpec.world.shared_example_groups.should_receive(:[]=).with("name", implementation)
+            send(method_name, "name", &implementation)
           end
         end
-        group = ExampleGroup.describe('group') { include Cornucopia }
-        phantom_group = group.children.first
-        phantom_group.description.should eql("")
-        phantom_group.metadata[:shared_group_name].should eql('Cornucopia')
-        phantom_group.examples.length.should == 1
-        phantom_group.examples.first.metadata[:description].should == "is plentiful"
+
+        context "given a symbol" do
+          it "captures the given symbol and block in the World's collection of shared example groups" do
+            implementation = lambda {}
+            RSpec.world.shared_example_groups.should_receive(:[]=).with(:name, implementation)
+            send(method_name, :name, &implementation)
+          end
+        end
+
+        context "given a hash" do
+          it "delegates extend on configuration" do
+            implementation = Proc.new { def bar; 'bar'; end }
+            send(method_name, :foo => :bar, &implementation)
+            a = RSpec.configuration.include_or_extend_modules.first
+            a[0].should eq(:extend)
+            Class.new.extend(a[1]).new.bar.should eq('bar')
+            a[2].should eq(:foo => :bar)
+          end
+        end
+
+        context "given a string and a hash" do
+          it "captures the given string and block in the World's collection of shared example groups" do
+            implementation = lambda {}
+            RSpec.world.shared_example_groups.should_receive(:[]=).with("name", implementation)
+            send(method_name, "name", :foo => :bar, &implementation)
+          end
+
+          it "delegates extend on configuration" do
+            implementation = Proc.new { def bar; 'bar'; end }
+            send(method_name, "name", :foo => :bar, &implementation)
+            a = RSpec.configuration.include_or_extend_modules.first
+            a[0].should eq(:extend)
+            Class.new.extend(a[1]).new.bar.should eq('bar')
+            a[2].should eq(:foo => :bar)
+          end
+        end
       end
     end
 
@@ -146,6 +162,26 @@ module RSpec::Core
         lambda do
           group.it_should_behave_like("a group that does not exist")
         end.should raise_error(/Could not find shared example group named/)
+      end
+    end
+
+    describe "#share_as" do
+      it "is exposed to the global namespace" do
+        Kernel.should respond_to("share_as")
+      end
+
+      it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
+        share_as('Cornucopia') do
+          it "is plentiful" do
+            5.should == 4
+          end
+        end
+        group = ExampleGroup.describe('group') { include Cornucopia }
+        phantom_group = group.children.first
+        phantom_group.description.should eql("")
+        phantom_group.metadata[:shared_group_name].should eql('Cornucopia')
+        phantom_group.examples.length.should == 1
+        phantom_group.examples.first.metadata[:description].should == "is plentiful"
       end
     end
   end

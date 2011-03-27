@@ -276,7 +276,6 @@ module RSpec::Core
     end
 
     describe "#before, after, and around hooks" do
-
       it "runs the before alls in order" do
         group = ExampleGroup.describe
         order = []
@@ -800,6 +799,24 @@ module RSpec::Core
 
           group.run(reporter).should be_false
         end
+      end
+    end
+
+    describe "#include_context" do
+      before do
+        shared_context "named this" do
+          def foo; 'foo'; end
+        end
+      end
+
+      it "includes the named context" do
+        group = ExampleGroup.describe do
+          include_context "named this"
+          it "accesses foo" do
+            foo.should eq('foo')
+          end
+        end
+        group.run.should be_true
       end
     end
 

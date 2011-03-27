@@ -380,28 +380,6 @@ EOM
         end
       end
 
-      # Extend groups matching submitted metadata with methods, subject declarations
-      # and let/let! declarations.
-      #
-      # Example:
-      #
-      #   RSpec.configure do |c|
-      #     c.for_matching_groups :type => :model do
-      #       def a_method
-      #         "a value"
-      #       end
-      #       subject { Factory described_class.to_s.underscore }
-      #       let(:valid_attributes) { Factory.attributes_for described_class.to_sym }
-      #     end
-      #   end
-      def for_groups_matching(*args, &block)
-        mod = Module.new
-        (class << mod; self; end).send(:define_method, :extended) do |host|
-          host.class_eval(&block)
-        end
-        self.extend(mod, *args)
-      end
-
       def configure_mock_framework
         RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
