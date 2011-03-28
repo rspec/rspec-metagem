@@ -9,12 +9,6 @@ end
 
 require 'test/unit'
 
-# Make it easy to instantiate test cases for our specs.
-# Test::Unit::TestCase#initialize is picky about what arguments it expects.
-class Test::Unit::TestCase
-  def initialize; end
-end
-
 add_to_load_path("rspec-expectations", :prepend)
 add_to_load_path("rspec-core")
 add_to_load_path("rspec-mocks")
