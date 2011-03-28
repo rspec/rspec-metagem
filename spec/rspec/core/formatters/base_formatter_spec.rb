@@ -46,7 +46,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
       end
 
       it "doesn't hang when file exists" do
-        pending("This issue still exists on JRuby, but should be resolved shortly: https://github.com/rspec/rspec-core/issues/295", :if => RUBY_ENGINE == 'jruby')
+        pending("This issue still exists on JRuby, but should be resolved shortly: https://github.com/rspec/rspec-core/issues/295", :if => RUBY_PLATFORM == 'java')
         exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
 
         example = mock(:Example, :file_path => __FILE__)
