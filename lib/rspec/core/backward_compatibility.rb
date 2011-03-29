@@ -20,7 +20,10 @@ WARNING
           begin
             super
           rescue Exception => e
-            while e.backtrace.first =~ /lib\/rspec\/(.*)\/backward_compatibility\.rb/
+            while e.backtrace.first !~ Regexp.compile(__FILE__)
+              e.backtrace.shift
+            end
+            while e.backtrace.first =~ Regexp.compile(__FILE__)
               e.backtrace.shift
             end
             raise e
@@ -48,7 +51,10 @@ WARNING
         begin
           super
         rescue Exception => e
-          while e.backtrace.first =~ /(lib\/rspec\/(.*)\/backward_compatibility\.rb|lib\/rake\.rb)/
+          while e.backtrace.first !~ Regexp.compile(__FILE__)
+            e.backtrace.shift
+          end
+          while e.backtrace.first =~ Regexp.compile(__FILE__)
             e.backtrace.shift
           end
           raise e
