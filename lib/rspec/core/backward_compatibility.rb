@@ -20,12 +20,7 @@ WARNING
           begin
             super
           rescue Exception => e
-            while e.backtrace.first !~ Regexp.compile(__FILE__)
-              e.backtrace.shift
-            end
-            while e.backtrace.first =~ Regexp.compile(__FILE__)
-              e.backtrace.shift
-            end
+            e.backtrace.reject! {|l| l =~ Regexp.compile(__FILE__) }
             raise e
           end
         end
@@ -51,12 +46,7 @@ WARNING
         begin
           super
         rescue Exception => e
-          while e.backtrace.first !~ Regexp.compile(__FILE__)
-            e.backtrace.shift
-          end
-          while e.backtrace.first =~ Regexp.compile(__FILE__)
-            e.backtrace.shift
-          end
+          e.backtrace.reject! {|l| l =~ Regexp.compile(__FILE__) }
           raise e
         end
       end

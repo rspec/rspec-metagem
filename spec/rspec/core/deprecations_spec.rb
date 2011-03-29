@@ -19,7 +19,7 @@ describe "deprecations" do
         ConstantThatDoesNotExist
       rescue Exception => exception
       end
-      exception.backtrace[0].should =~ Regexp.compile("#{__FILE__}:#{__LINE__ - 3}")
+      exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }.should be_nil
     end
   end
 
@@ -59,7 +59,7 @@ describe "deprecations" do
         Spec::Rake::ConstantThatDoesNotExist
       rescue Exception => exception
       end
-      exception.backtrace[0].should =~ Regexp.compile("#{__FILE__}:#{__LINE__ - 3}")
+      exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }.should be_nil
     end
   end
 
