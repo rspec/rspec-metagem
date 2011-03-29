@@ -3,7 +3,33 @@ module RSpec
   module Expectations
     module ConstMissing
       def const_missing(name)
-        name == :Rspec ? RSpec : super(name)
+        case name
+        when :Rspec, :Spec
+          RSpec.warn_deprecation <<-WARNING
+*****************************************************************
+DEPRECATION WARNING: you are using a deprecated constant that will
+be removed from a future version of RSpec.
+
+#{caller(0)[2]}
+
+* #{name} is deprecated.
+* RSpec is the new top-level module in RSpec-2
+***************************************************************
+WARNING
+          RSpec
+        else
+          begin
+            super
+          rescue Exception => e
+            while e.backtrace.first !~ Regexp.compile(__FILE__)
+              e.backtrace.shift
+            end
+            while e.backtrace.first =~ Regexp.compile(__FILE__)
+              e.backtrace.shift
+            end
+            raise e
+          end
+        end
       end
     end
 
