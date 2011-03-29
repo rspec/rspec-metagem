@@ -42,7 +42,7 @@ module RSpec::Core
 
         parser.on('-e', '--example PATTERN', "Run examples whose full descriptions match this pattern",
                 "(PATTERN is compiled into a Ruby regular expression)") do |o|
-          options[:full_description] = /#{o}/
+          options[:full_description] = Regexp.compile(Regexp.escape(o))
         end
 
         parser.on('-f', '--format FORMATTER', 'Choose a formatter',

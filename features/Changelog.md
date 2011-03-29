@@ -30,6 +30,7 @@
   * Get specs passing on jruby (Sidu Ponnappa)
   * Fix bug where mixing nested groups and outer-level examples gave
     unpredictable :line_number behavior (Artur Małecki)
+  * Regexp.escape the argument to --example (tip from Elliot Winkler)
 
 ### 2.5.1 / 2011-02-06
 

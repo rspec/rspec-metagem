@@ -71,5 +71,13 @@ module RSpec::Core
         end
       end
     end
+
+    describe "--example" do
+      it "escapes the arg" do
+        options = Parser.parse!(["--example", "this (and that)"])
+        "this (and that)".should match(options[:full_description])
+      end
+    end
+
   end
 end
