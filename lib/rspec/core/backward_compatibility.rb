@@ -17,7 +17,14 @@ be removed from a future version of RSpec.
 WARNING
           RSpec
         else
-          super(name)
+          begin
+            super
+          rescue Exception => e
+            while e.backtrace.first =~ /lib\/rspec\/(.*)\/backward_compatibility\.rb/
+              e.backtrace.shift
+            end
+            raise e
+          end
         end
       end
     end
@@ -38,7 +45,14 @@ WARNING
         require 'rspec/core/rake_task'
         RSpec::Core::RakeTask
       else
-        super(name)
+        begin
+          super
+        rescue Exception => e
+          while e.backtrace.first =~ /(lib\/rspec\/(.*)\/backward_compatibility\.rb|lib\/rake\.rb)/
+            e.backtrace.shift
+          end
+          raise e
+        end
       end
     end
 

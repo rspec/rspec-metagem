@@ -11,6 +11,16 @@ describe "deprecations" do
       RSpec.stub(:warn_deprecation)
       Spec.should == RSpec
     end
+
+    it "doesn't include backward compatibility in const_missing backtrace" do
+      RSpec.stub(:warn_deprecation)
+      exception = nil
+      begin
+        ConstantThatDoesNotExist
+      rescue Exception => exception
+      end
+      exception.backtrace[0].should =~ Regexp.compile("#{__FILE__}:#{__LINE__ - 3}")
+    end
   end
 
   describe RSpec::Core::ExampleGroup do
@@ -41,5 +51,16 @@ describe "deprecations" do
       RSpec.should_receive(:deprecate)
       Spec::Rake::SpecTask
     end
+
+    it "doesn't include backward compatibility in const_missing backtrace" do
+      RSpec.stub(:warn_deprecation)
+      exception = nil
+      begin
+        Spec::Rake::ConstantThatDoesNotExist
+      rescue Exception => exception
+      end
+      exception.backtrace[0].should =~ Regexp.compile("#{__FILE__}:#{__LINE__ - 3}")
+    end
   end
+
 end
