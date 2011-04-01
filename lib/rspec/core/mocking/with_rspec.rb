@@ -3,7 +3,9 @@ require 'rspec/mocks'
 module RSpec
   module Core
     module MockFrameworkAdapter
-
+      
+      def self.framework_name; :rspec end
+      
       def setup_mocks_for_rspec
         RSpec::Mocks::setup(self)
       end

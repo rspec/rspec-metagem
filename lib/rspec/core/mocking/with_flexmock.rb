@@ -8,6 +8,8 @@ require 'flexmock/rspec'
 module RSpec
   module Core
     module MockFrameworkAdapter
+      
+      def self.framework_name; :flexmock end
 
       include FlexMock::MockContainer
       def setup_mocks_for_rspec

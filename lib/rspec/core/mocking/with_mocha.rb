@@ -4,6 +4,8 @@ require 'mocha/object'
 module RSpec
   module Core
     module MockFrameworkAdapter
+      
+      def self.framework_name; :mocha end
 
       # Mocha::Standalone was deprecated as of Mocha 0.9.7.
       begin
