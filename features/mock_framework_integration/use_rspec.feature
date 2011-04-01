@@ -16,6 +16,12 @@ Feature: mock with rspec
           target.should_receive(:foo)
           target.foo
         end
+
+        describe "RSpec.configuration.mock_framework.framework_name" do
+          it "returns :rspec" do
+            RSpec.configuration.mock_framework.framework_name.should eq(:rspec)
+          end
+        end
       end
       """
     When I run `rspec ./rspec_example_spec.rb`

@@ -16,6 +16,12 @@ Feature: mock with mocha
           target.expects(:foo).once
           target.foo
         end
+
+        describe "RSpec.configuration.mock_framework.framework_name" do
+          it "returns :mocha" do
+            RSpec.configuration.mock_framework.framework_name.should eq(:mocha)
+          end
+        end
       end
       """
     When I run `rspec ./mocha_example_spec.rb`

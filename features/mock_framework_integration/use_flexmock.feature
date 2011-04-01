@@ -16,6 +16,12 @@ Feature: mock with flexmock
           flexmock(target).should_receive(:foo).once
           target.foo
         end
+
+        describe "RSpec.configuration.mock_framework.framework_name" do
+          it "returns :flexmock" do
+            RSpec.configuration.mock_framework.framework_name.should eq(:flexmock)
+          end
+        end
       end
       """
     When I run `rspec ./flexmock_example_spec.rb`

@@ -17,6 +17,12 @@ Feature: mock with rr
           mock(target).foo
           target.foo
         end
+
+        describe "RSpec.configuration.mock_framework.framework_name" do
+          it "returns :rr" do
+            RSpec.configuration.mock_framework.framework_name.should eq(:rr)
+          end
+        end
       end
       """
     When I run `rspec rr_example_spec.rb`
