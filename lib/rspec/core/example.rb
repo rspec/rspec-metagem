@@ -58,7 +58,10 @@ module RSpec
         rescue Exception => e
           set_exception(e)
         ensure
-          @example_group_instance.example = nil
+          @example_group_instance.instance_variables.each do |ivar|
+            @example_group_instance.instance_variable_set(ivar, nil)
+          end
+          @example_group_instance = nil
 
           begin
             assign_auto_description
