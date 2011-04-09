@@ -1,26 +1,25 @@
-Feature: has_SOMETHING() matcher
+Feature: has_(predicate) matcher
 
-  RSpec provides a helper such that:
+  RSpec provides a predicate matcher such that:
 
-    * subject.should have_key(x)
-    * subject.should have_item_with_name(x)
+    * obj.should have_key(x)
+    * obj.should have_item_with_name(x)
 
-  call the appropriate predicate method.
+  will set an expectation on the appropriate predicate method:
 
-  Scenario: have_item_with_name(x) on an object that implements #has_item_with_name?
+	* obj.has_key?(x)
+	* obj.has_item_with_name?(x)
+
+  Scenario: predicate method usage
     Given a file named "have_item_with_name_spec.rb" with:
       """
-      class O
-        def initialize(array)
-          @array = array
-        end
-
+      class Array
         def has_item_with_name?(name)
-          @array.include?(name)
+          self.include?(name)
         end
       end
 
-      describe O.new(%w(francois jake)) do
+      describe ["francois", "jake"] do
         it { should     have_item_with_name("francois") }
         it { should_not have_item_with_name("john") }
       end
