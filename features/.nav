@@ -9,6 +9,7 @@
   - exist.feature
   - expect_change.feature
   - expect_error.feature
+  - has.feature
   - have.feature
   - include.feature
   - match.feature
