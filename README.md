@@ -1,6 +1,9 @@
 # RSpec Core
 
-Behaviour Driven Development for Ruby
+RSpec Core provides the structure for writing executable examples of how your
+code should behave.
+
+[![build status](http://travis-ci.org/rspec/rspec-core.png)](http://travis-ci.org/rspec/rspec-core)
 
 ## Documentation
 
