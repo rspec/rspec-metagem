@@ -21,17 +21,14 @@ gem "growl", "1.0.3"
 gem "ZenTest", "~> 4.4.2"
 gem "nokogiri", "1.4.4"
 
-if RUBY_PLATFORM =~ /darwin/
-  gem "autotest-fsevent", "~> 0.2.4"
-  gem "autotest-growl", "~> 0.2.9"
+platforms :mri_18 do
+  gem 'ruby-debug'
 end
 
-gem "ruby-debug", :platforms => [:mri_18, :jruby]
-gem "ruby-debug19", "~> 0.11.6", :platforms => :mri_19
-
-case RUBY_VERSION
-  when '1.9.1'; gem 'ruby-debug-base19', '0.11.23'
-  when '1.9.2'; gem 'ruby-debug-base19', '0.11.24'
+platforms :mri_19 do
+  gem 'linecache19', '0.5.11' # 0.5.12 cannot install on 1.9.1, and 0.5.11 appears to work with both 1.9.1 & 1.9.2
+  gem 'ruby-debug19'
+  gem 'ruby-debug-base19', RUBY_VERSION == '1.9.1' ? '0.11.23' : '~> 0.11.24'
 end
 
 platforms :mri_18, :mri_19 do
