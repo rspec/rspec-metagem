@@ -3,6 +3,8 @@
 rspec-expectations adds `should` and `should_not` to every object and includes
 RSpec::Matchers, a library of standard matchers.
 
+[![build status](http://travis-ci.org/rspec/rspec-expectations.png)](http://travis-ci.org/rspec/rspec-expectations)
+
 ## Documentation
 
 The [Cucumber features](http://relishapp.com/rspec/rspec-expectations)
