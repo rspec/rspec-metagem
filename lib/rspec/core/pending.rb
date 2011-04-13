@@ -19,9 +19,14 @@ module RSpec
         example.metadata[:execution_result][:pending_message] = message
         if block_given?
           begin
-            result = yield
+            result = begin
+                       yield
+                       example.example_group_instance.instance_eval { verify_mocks_for_rspec }
+                     end
             example.metadata[:pending] = false
           rescue Exception
+          ensure
+            teardown_mocks_for_rspec
           end
           raise RSpec::Core::PendingExampleFixedError.new if result
         end

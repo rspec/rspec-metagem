@@ -72,10 +72,10 @@ describe "an example" do
   end
 
   context "with a block" do
-    def run_example(*pending_args)
+    def run_example(*pending_args, &block)
       group = RSpec::Core::ExampleGroup.describe('group') do
         it "does something" do
-          pending(*pending_args) { yield }
+          pending(*pending_args) { block.call if block }
         end
       end
       example = group.examples.first
@@ -130,6 +130,16 @@ describe "an example" do
         it "is listed as pending with the default message when no message is given" do
           run_example(:unless => false).should be_pending_with(RSpec::Core::Pending::DEFAULT_MESSAGE)
         end
+      end
+    end
+
+    context "that fails due to a failed message expectation" do
+      def run_example(*pending_args)
+        super(*pending_args) { "foo".should_receive(:bar) }
+      end
+
+      it "passes" do
+        run_example("just because").should be_pending
       end
     end
 

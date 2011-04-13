@@ -312,18 +312,18 @@ a {
       <span class="failed_spec_name">fails</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=18">./spec/rspec/core/resources/formatter_specs.rb:18</a> :in `block (3 levels) in <top (required)>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
-    <pre class="ruby"><code><span class="linenum">24</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span>
-<span class="linenum">25</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">26</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">27</span>        <span class="keyword">end</span>
-<span class="linenum">28</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=18">./spec/rspec/core/resources/formatter_specs.rb:18</a> :in `block (3 levels) in <top (required)>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
+    <pre class="ruby"><code><span class="linenum">29</span>            <span class="ident">teardown_mocks_for_rspec</span>
+<span class="linenum">30</span>          <span class="keyword">end</span>
+<span class="offending"><span class="linenum">31</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
+<span class="linenum">32</span>        <span class="keyword">end</span>
+<span class="linenum">33</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -350,13 +350,13 @@ expected 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=33">./spec/rspec/core/resources/formatter_specs.rb:33</a> :in `block (2 levels) in <top (required)>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
+        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=33">./spec/rspec/core/resources/formatter_specs.rb:33</a> :in `block (2 levels) in <top (required)>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
     <pre class="ruby"><code><span class="linenum">27</span>        <span class="keyword">end</span>
 <span class="linenum">28</span>
 <span class="offending"><span class="linenum">29</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
@@ -376,13 +376,13 @@ expected 2
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `<main>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=41">./spec/rspec/core/resources/formatter_specs.rb:41</a> :in `block (2 levels) in <top (required)>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/myron/code/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=41">./spec/rspec/core/resources/formatter_specs.rb:41</a> :in `block (2 levels) in <top (required)>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `block (2 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (5 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `open'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `block (4 levels) in <module:Formatters>'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `chdir'
+<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `block (3 levels) in <module:Formatters>'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
