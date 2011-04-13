@@ -31,6 +31,7 @@
   * Fix bug where mixing nested groups and outer-level examples gave
     unpredictable :line_number behavior (Artur Małecki)
   * Regexp.escape the argument to --example (tip from Elliot Winkler)
+  * Correctly pass/fail pending block with message expectations
 
 ### 2.5.1 / 2011-02-06
 
