@@ -135,7 +135,7 @@ module RSpec::Core
         it "requires a block" do
           lambda {
             Hooks::BeforeHook.new :foo => :bar
-          }.should raise_error "no block given for before hook"
+          }.should raise_error("no block given for before hook")
         end
       end
     end
