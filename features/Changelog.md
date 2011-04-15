@@ -16,6 +16,7 @@
     defined. (Myron Marston)
   * Pass the exit status of a DRb run to the invoking process. This causes
     specs run via DRb to not just return true or false. (Ilkka Laukkanen)
+  * Refactoring of ConfigurationOptions#parse_options (Rodrigo Rosenfeld Rosas)
 
 * Bug fixes
   * Don't stumble over an exception without a message (Hans Hasselberg)
