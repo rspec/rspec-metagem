@@ -76,6 +76,8 @@ module RSpec
           @configuration.reporter.message(
             "No examples were matched. Perhaps #{exclusion_filter.inspect} is excluding everything?")
           example_groups.clear
+        else
+          @configuration.reporter.message "Run filtered excluding #{exclusion_filter.inspect}"
         end
       end
 
