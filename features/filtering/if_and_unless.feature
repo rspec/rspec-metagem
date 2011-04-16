@@ -162,5 +162,7 @@ Feature: :if and :unless
       | :if => false example     |
       | :unless => true example  |
       | :unless => false example |
-    And the output should not contain "exclude_me"
+    And the output should not contain any of these:
+      | :if => :exclude_me example                |
+      | :unless => :exclude_me_for_unless example |
 
