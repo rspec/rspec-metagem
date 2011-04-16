@@ -82,3 +82,7 @@ Feature: --tag option
       """
     Then the examples should all pass
 
+  Scenario: filter examples with a simple tag, exclude examples with another tag
+    When I run `rspec . --tag focus --tag ~skip`
+    Then the output should contain "Run filtered using {:focus=>true}, excluding {:skip=>true}"
+    And the examples should all pass
