@@ -18,7 +18,7 @@ Feature: shared context
         end
       end
 
-      shared_examples_for "group including shared context" do
+      shared_examples "group including shared context" do
         it "has access to methods defined in shared context" do
           shared_method.should eq("it works")
         end

@@ -2,7 +2,7 @@ module RSpec
   module Core
     module SharedExampleGroup
 
-      def share_examples_for(*args, &block)
+      def shared_context(*args, &block)
         if String === args.first || Symbol === args.first
           name = args.shift
           ensure_shared_example_group_name_not_taken(name)
@@ -19,9 +19,9 @@ module RSpec
         end
       end
 
-      alias :shared_examples_for :share_examples_for
-      alias :shared_examples     :share_examples_for
-      alias :shared_context      :share_examples_for
+      alias :shared_examples     :shared_context
+      alias :share_examples_for  :shared_context
+      alias :shared_examples_for :shared_context
 
       def share_as(name, &block)
         if Object.const_defined?(name)

@@ -13,7 +13,7 @@ Feature: shared example group
     """
     require "set"
 
-    shared_examples_for "a collection" do
+    shared_examples "a collection" do
       let(:collection) { described_class.new([7, 2, 4]) }
 
       context "initialized with 3 items" do
@@ -75,7 +75,7 @@ Feature: shared example group
     """
     require "set"
 
-    shared_examples_for "a collection object" do
+    shared_examples "a collection object" do
       describe "<<" do
         it "adds objects to the end of the collection" do
           collection << 1
@@ -115,7 +115,7 @@ Feature: shared example group
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """
-    shared_examples_for "a measurable object" do |measurement, measurement_methods|
+    shared_examples "a measurable object" do |measurement, measurement_methods|
       measurement_methods.each do |measurement_method|
         it "should return #{measurement} from ##{measurement_method}" do
           subject.send(measurement_method).should == measurement
@@ -155,7 +155,7 @@ Feature: shared example group
         c.alias_it_should_behave_like_to :it_has_behavior, 'has behavior:'
       end
 
-      shared_examples_for 'sortability' do
+      shared_examples 'sortability' do
         it 'responds to <=>' do
           sortable.should respond_to(:<=>)
         end
