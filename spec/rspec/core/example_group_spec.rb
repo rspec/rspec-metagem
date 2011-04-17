@@ -119,49 +119,119 @@ module RSpec::Core
     describe "filtering" do
       let(:world) { World.new }
 
-      it "includes all examples in an explicitly included group" do
-        world.stub(:inclusion_filter).and_return({ :awesome => true })
-        group = ExampleGroup.describe("does something", :awesome => true)
-        group.stub(:world) { world }
+      shared_examples "matching filters" do
+        context "inclusion" do
+          before { world.stub(:inclusion_filter).and_return(filter_metadata) }
 
-        examples = [
-          group.example("first"),
-          group.example("second")
-        ]
-        group.filtered_examples.should == examples
+          it "includes examples in groups matching filter" do
+            group = ExampleGroup.describe("does something", spec_metadata)
+            group.stub(:world) { world }
+            all_examples = [ group.example("first"), group.example("second") ]
+
+            group.filtered_examples.should == all_examples
+          end
+
+          it "includes examples directly matching filter" do
+            group = ExampleGroup.describe("does something")
+            group.stub(:world) { world }
+            filtered_examples = [
+              group.example("first", spec_metadata),
+              group.example("second", spec_metadata)
+            ]
+            group.example("third (not-filtered)")
+
+            group.filtered_examples.should == filtered_examples
+          end
+        end
+
+        context "exclusion" do
+          before { world.stub(:exclusion_filter).and_return(filter_metadata) }
+          it "excludes examples in groups matching filter" do
+            group = ExampleGroup.describe("does something", spec_metadata)
+            group.stub(:world) { world }
+            all_examples = [ group.example("first"), group.example("second") ]
+
+            group.filtered_examples.should be_empty
+          end
+
+          it "excludes examples directly matching filter" do
+            group = ExampleGroup.describe("does something")
+            group.stub(:world) { world }
+            filtered_examples = [
+              group.example("first", spec_metadata),
+              group.example("second", spec_metadata)
+            ]
+            unfiltered_example = group.example("third (not-filtered)")
+
+            group.filtered_examples.should == [unfiltered_example]
+          end
+        end
       end
 
-      it "includes explicitly included examples" do
-        world.stub(:inclusion_filter).and_return({ :include_me => true })
-        group = ExampleGroup.describe
-        group.stub(:world) { world }
-        example = group.example("does something", :include_me => true)
-        group.example("don't run me")
-        group.filtered_examples.should == [example]
+      context "matching false" do
+        let(:spec_metadata)    { { :awesome => false }}
+
+        context "against false" do
+          let(:filter_metadata)  { { :awesome => false }}
+          include_examples "matching filters"
+        end
+
+        context "against 'false'" do
+          let(:filter_metadata)  { { :awesome => 'false' }}
+          include_examples "matching filters"
+        end
+
+        context "against :false" do
+          let(:filter_metadata)  { { :awesome => :false }}
+          include_examples "matching filters"
+        end
       end
 
-      it "excludes all examples in an excluded group" do
-        world.stub(:exclusion_filter).and_return({ :include_me => false })
-        group = ExampleGroup.describe("does something", :include_me => false)
-        group.stub(:world) { world }
+      context "matching true" do
+        let(:spec_metadata)    { { :awesome => true }}
 
-        examples = [
-          group.example("first"),
-          group.example("second")
-        ]
-        group.filtered_examples.should == []
+        context "against true" do
+          let(:filter_metadata)  { { :awesome => true }}
+          include_examples "matching filters"
+        end
+
+        context "against 'true'" do
+          let(:filter_metadata)  { { :awesome => 'true' }}
+          include_examples "matching filters"
+        end
+
+        context "against :true" do
+          let(:filter_metadata)  { { :awesome => :true }}
+          include_examples "matching filters"
+        end
       end
 
-      it "filters out excluded examples" do
-        world.stub(:exclusion_filter).and_return({ :exclude_me => true })
-        group = ExampleGroup.describe("does something")
-        group.stub(:world) { world }
+      context "matching a string" do
+        let(:spec_metadata)    { { :type => 'special' }}
 
-        examples = [
-          group.example("first", :exclude_me => true),
-          group.example("second")
-        ]
-        group.filtered_examples.should == [examples[1]]
+        context "against a string" do
+          let(:filter_metadata)  { { :type => 'special' }}
+          include_examples "matching filters"
+        end
+
+        context "against a symbol" do
+          let(:filter_metadata)  { { :type => :special }}
+          include_examples "matching filters"
+        end
+      end
+
+      context "matching a symbol" do
+        let(:spec_metadata)    { { :type => :special }}
+
+        context "against a string" do
+          let(:filter_metadata)  { { :type => 'special' }}
+          include_examples "matching filters"
+        end
+
+        context "against a symbol" do
+          let(:filter_metadata)  { { :type => :special }}
+          include_examples "matching filters"
+        end
       end
 
       context "with no filters" do

@@ -142,7 +142,7 @@ EOM
             metadata[key] == value
           end
         else
-          metadata[key] == value
+          metadata[key].to_s == value.to_s
         end
       end
 
