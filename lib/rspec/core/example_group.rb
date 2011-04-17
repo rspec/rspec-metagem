@@ -93,6 +93,10 @@ module RSpec
         module_eval(&world.shared_example_groups[name])
       end
 
+      class << self
+        alias_method :include_examples, :include_context
+      end
+
       def self.examples
         @examples ||= []
       end

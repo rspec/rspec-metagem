@@ -820,5 +820,21 @@ module RSpec::Core
       end
     end
 
+    describe "#include_examples" do
+      before do
+        shared_examples "named this" do
+          example("does something") do
+          end
+        end
+      end
+
+      it "includes the named examples" do
+        group = ExampleGroup.describe do
+          include_examples "named this"
+        end
+        group.examples.first.description.should eq("does something")
+      end
+    end
+
   end
 end
