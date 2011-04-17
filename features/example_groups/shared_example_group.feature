@@ -1,14 +1,18 @@
-Feature: shared example group
+Feature: shared examples
 
-  Shared example groups let you describe behaviour of types or modules. When
+  Shared examples let you describe behaviour of types or modules. When
   declared, a shared group's content is stored. It is only realized in the
   context of another example group, which provides any context the shared group
   needs to run.
 
-  A shared group is included in another group using the it_behaves_like() or
-  it_should_behave_like() methods.
+  A shared group is included in another group using any of:
+  
+      include_examples "name"      # include the examples in the current context
 
-  Scenario: shared example group applied to two groups
+      it_behaves_like "name"       # include the examples in a nested context
+      it_should_behave_like "name" # include the examples in a nested context
+
+  Scenario: shared examples group included in two groups
     Given a file named "collection_spec.rb" with:
     """
     require "set"
@@ -86,13 +90,13 @@ Feature: shared example group
     end
 
     describe Array do
-      it_should_behave_like "a collection object" do
+      it_behaves_like "a collection object" do
         let(:collection) { Array.new }
       end
     end
 
     describe Set do
-      it_should_behave_like "a collection object" do
+      it_behaves_like "a collection object" do
         let(:collection) { Set.new }
       end
     end
@@ -102,12 +106,12 @@ Feature: shared example group
     And the output should contain:
       """
       Array
-        it should behave like a collection object
+        behaves like a collection object
           <<
             adds objects to the end of the collection
 
       Set
-        it should behave like a collection object
+        behaves like a collection object
           <<
             adds objects to the end of the collection
       """
