@@ -1,6 +1,6 @@
-### 2.6.0.rc1 / 2011-04-17
+### 2.6.0.rc2 / 2011-04-18
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...v2.6.1.rc1)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...v2.6.1.rc2)
 
 * Enhancements
   * `shared_context` (Damian Nurzynski)
