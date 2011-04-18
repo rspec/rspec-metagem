@@ -24,6 +24,10 @@ Gem::Specification.new do |s|
   s.require_path     = "lib"
 
   %w[core expectations mocks].each do |name|
-    s.add_runtime_dependency "rspec-#{name}", "~> #{RSpec::Version::STRING.split('.')[0..1].concat(['0']).join('.')}"
+    if RSpec::Version::STRING =~ /[a-zA-Z]+/
+      s.add_runtime_dependency "rspec-#{name}", "= #{RSpec::Version::STRING}"
+    else
+      s.add_runtime_dependency "rspec-#{name}", "~> #{RSpec::Version::STRING.split('.')[0..1].concat(['0']).join('.')}"
+    end
   end
 end
