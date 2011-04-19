@@ -1,3 +1,36 @@
+# rspec-core-2.6
+
+## new APIs for sharing content
+
+Use `shared_context` together with `include_context` to share before/after
+hooks, let declarations, and method definitions across example groups.
+
+Use `shared_examples` together with `include_examples` to share examples
+across different contexts.
+
+All of the old APIs are still supported, but these 4 are easy to remember, and
+serve most use cases.
+
+See `shared_context` and `shared_examples` under "Example Groups" for more
+information.
+
+## `treat_symbols_as_metadata_keys_with_true_values`
+
+Yes it's a long name, but it's a great feature, and it's going to be the
+default behavior in rspec-3. This lets you add metadata to a group or example
+like this:
+
+    describe "something", :awesome do
+      ...
+
+And then you can run that group (or example) using the tags feature:
+
+    rspec spec --tag awesome
+
+We're making this an opt-in for rspec-2.6 because `describe "string", :symbol`
+is a perfectly legal construct in pre-2.6 releases and we want to maintain
+compatibility in minor releases as much as is possible.
+
 # rspec-core-2.3
 
 ## `config.expect_with`
@@ -106,7 +139,7 @@ The most obvious use is for filtering the run. For example:
     end
 
 When you run the `rspec` command, rspec will run only the examples that have
-`:focus => true` in the hash. 
+`:focus => true` in the hash.
 
 You can also add `run_all_when_everything_filtered` to the config:
 
@@ -207,7 +240,7 @@ A few things changed in the Rake task used to run specs:
     the `rspec` command no longer supports the `--options` command line option
     so the options must be embedded directly in the Rakefile, or stored in the
     `.rspec` files mentioned above.
-    
+
 3.  In RSpec-1, the rake task would read in rcov options from an `rcov.opts`
     file. This is ignored by RSpec-2. RCov options are now set directly on the Rake
     task:
