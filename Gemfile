@@ -1,7 +1,7 @@
 source "http://rubygems.org"
 
 ### rspec libs
-%w[rspec-core rspec-expectations rspec-mocks].each do |lib|
+%w[rspec rspec-core rspec-expectations rspec-mocks].each do |lib|
   library_path = File.expand_path("../../#{lib}", __FILE__)
   if File.exist?(library_path)
     gem lib, :path => library_path
@@ -12,8 +12,8 @@ end
 
 ### dev dependencies
 gem "rake", "0.8.7"
-# gem "cucumber", "~> 0.10.2"
-# gem "aruba", :git => "git://github.com/aslakhellesoy/aruba"
+gem "cucumber", "~> 0.10.2"
+gem "aruba", "~> 0.3.6"
 gem "rcov", "0.9.9", :platforms => :mri
 gem "relish", "0.2.0"
 gem "guard-rspec", "0.1.9"
