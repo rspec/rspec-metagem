@@ -6,14 +6,23 @@ rspec-expectations is used to set expectations in executable examples.
       end
     end
 
-## should and should_not
+## Basic structure
 
-rspec-expectations adds `should` and `should_not` to every object. Each of
-these can accept a matcher and, in most cases, an optional custom failure
-message (see [customized
-message](/rspec/rspec-expectations/v/2-3/customized-message)).
+The basic structure of an rspec expectation is:
 
-## Matchers
+    actual.should matcher(expected)
+    actual.should_not matcher(expected)
+
+## `should` and `should_not`
+
+`rspec-expectations` adds `should` and `should_not` to every object in
+the system. These methods each accept a matcher as an argument. This allows
+each matcher to work in a positive or negative mode:
+
+    5.should eq(5)
+    5.should_not eq(4)
+
+## What is a matcher?
 
 A Matcher is any object that responds to the following methods:
 
@@ -27,9 +36,9 @@ These methods are also part of the matcher protocol, but are optional:
     description
 
 RSpec ships with a number of [built-in
-matchers](/rspec/rspec-expectations/v/2-3/dir/built-in-matchers) and a DSL for
+matchers](/rspec/rspec-expectations/v/2-6-rc/dir/built-in-matchers) and a DSL for
 writing your own [custom
-matchers](/rspec/rspec-expectations/v/2-3/dir/custom-matchers).
+matchers](/rspec/rspec-expecations/v/2-6-rc/dir/custom-matchers).
 
 ## Issues
 
