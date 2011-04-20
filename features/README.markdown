@@ -1,4 +1,4 @@
-rspec-expectations is used to set expectations in executable examples.
+rspec-expectations is used to define expected outcomes.
 
     describe Account do
       it "has a balance of zero when first created" do
@@ -35,10 +35,8 @@ These methods are also part of the matcher protocol, but are optional:
     failure_message_for_should_not
     description
 
-RSpec ships with a number of [built-in
-matchers](/rspec/rspec-expectations/v/2-6-rc/dir/built-in-matchers) and a DSL for
-writing your own [custom
-matchers](/rspec/rspec-expecations/v/2-6-rc/dir/custom-matchers).
+RSpec ships with a number of built-in matchers and a DSL for writing custom
+matchers.
 
 ## Issues
 

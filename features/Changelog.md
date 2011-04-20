@@ -1,6 +1,6 @@
 ### 2.6.0.rc2 / 2011-04-18
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.1.rc2)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0.rc2)
 
 * Enhancments
   * `change` matcher accepts Regexps (Robert Davis)

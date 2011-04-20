@@ -2,16 +2,16 @@ Feature: predicate matchers
 
   Ruby objects commonly provide predicate methods:
 
-    * 7.zero?                  # => false
-    * 0.zero?                  # => true
-    * [1].empty?               # => false
-    * [].empty?                # => true
-    * { :a => 5 }.has_key?(:b) # => false
-    * { :b => 5 }.has_key?(:b) # => true
+      7.zero?                  # => false
+      0.zero?                  # => true
+      [1].empty?               # => false
+      [].empty?                # => true
+      { :a => 5 }.has_key?(:b) # => false
+      { :b => 5 }.has_key?(:b) # => true
 
   You could use a basic equality matcher to set expectations on these:
 
-    7.zero?.should == true # fails with "expected true, got false (using ==)"
+      7.zero?.should == true # fails with "expected true, got false (using ==)"
 
   ...but RSpec provides dynamic predicate matchers that are more readable and
   provide better failure output.
@@ -19,19 +19,19 @@ Feature: predicate matchers
   For any predicate method, RSpec gives you a corresponding matcher.  Simply
   prefix the method with "be_" and remove the question mark.  Examples:
 
-    * 7.should_not be_zero       # calls 7.zero?
-    * [].should be_empty         # calls [].empty?
-    * x.should be_multiple_of(3) # calls x.multiple_of?(3)
+      7.should_not be_zero       # calls 7.zero?
+      [].should be_empty         # calls [].empty?
+      x.should be_multiple_of(3) # calls x.multiple_of?(3)
 
   Alternately, for a predicate method that begins with "has_" like Hash#has_key?,
   RSpec allows you to use an alternate form since "be_has_key" makes no sense.
 
-    * hash.should have_key(:foo)       # calls hash.has_key?(:foo)
-    * array.should_not have_odd_values # calls array.has_odd_values?
+      hash.should have_key(:foo)       # calls hash.has_key?(:foo)
+      array.should_not have_odd_values # calls array.has_odd_values?
 
   In either case, RSpec provides nice, clear error messages, such as:
 
-    expected zero? to return true, got false
+      expected zero? to return true, got false
 
   Any arguments passed to the matcher will be passed on to the predicate method.
 

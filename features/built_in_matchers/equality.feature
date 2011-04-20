@@ -2,9 +2,9 @@ Feature: equality matchers
 
   Ruby exposes several different methods for handling equality:
 
-    a.equal?(b) # object identity - a and b refer to the same object
-    a.eql?(b)   # object equivalence - a and b have the same value
-    a == b      # object equivalence - a and b have the same value with type conversions
+      a.equal?(b) # object identity - a and b refer to the same object
+      a.eql?(b)   # object equivalence - a and b have the same value
+      a == b      # object equivalence - a and b have the same value with type conversions
 
   Note that these descriptions are guidelines but are not forced by the
   language. Any object can implement any of these methods with its own
@@ -12,14 +12,17 @@ Feature: equality matchers
 
   rspec-expectations ships with matchers that align with each of these methods:
 
-    a.should equal(b) # passes if a.equal?(b)
-    a.should eql(b)   # passes if a.eql?(b)
-    a.should == b     # passes if a == b
+      a.should equal(b) # passes if a.equal?(b)
+      a.should eql(b)   # passes if a.eql?(b)
+      a.should == b     # passes if a == b
 
   It also ships with two matchers that have more of a DSL feel to them:
 
-    a.should be(b) # passes if a.equal?(b)
-    a.should eq(b) # passes if a == b
+      a.should be(b) # passes if a.equal?(b)
+      a.should eq(b) # passes if a == b
+
+  These are a useful pair if you wish to avoid the warning that Ruby emits on
+  `a.should == b`
 
   Scenario: compare using eq (==)
     Given a file named "compare_using_eq.rb" with:

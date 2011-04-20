@@ -5,7 +5,7 @@ Feature: exist matcher
 
     obj.should exist # passes if obj.exist? or obj.exists?
 
-  Scenario Outline: basic usage
+  Scenario: basic usage
     Given a file named "exist_matcher_spec.rb" with:
       """
       class Planet
@@ -19,21 +19,21 @@ Feature: exist matcher
           "<Planet: #{name}>"
         end
 
-        def <predicate_method>
+        def exist? # also works with exists?
           %w[Mercury Venus Earth Mars Jupiter Saturn Uranus Neptune].include?(name)
         end
       end
 
       describe "Earth" do
-        subject { Planet.new("Earth") }
-        it { should exist }
-        it { should_not exist } # deliberate failure
+        let(:earth) { Planet.new("Earth") }
+        specify { earth.should exist }
+        specify { earth.should_not exist } # deliberate failure
       end
 
       describe "Tatooine" do
-        subject { Planet.new("Tatooine") }
-        it { should_not exist }
-        it { should exist } # deliberate failure
+        let(:tatooine) { Planet.new("Tatooine") }
+        it { tatooine.should exist } # deliberate failure
+        it { tatooine.should_not exist }
       end
       """
     When I run `rspec exist_matcher_spec.rb`
@@ -41,9 +41,3 @@ Feature: exist matcher
       | 4 examples, 2 failures                |
       | expected <Planet: Earth> not to exist |
       | expected <Planet: Tatooine> to exist  |
-
-    Examples:
-      | predicate_method |
-      | exist?           |
-      | exists?          |
-

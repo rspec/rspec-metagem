@@ -12,14 +12,15 @@
     actual.should eq(expected)  # passes if actual == expected
     actual.should be(expected)  # passes if actual.equal?(expected)
 
-## Near-equality (for floats)
+## Comparisons
 
-    actual.should be_within(delta).of(expected)
-
-## Regular expressions
-
+    actual.should be >  expected
+    actual.should be >= expected
+    actual.should be <= expected
+    actual.should be <  expected
     actual.should =~ /expression/
     actual.should match(/expression/)
+    actual.should be_within(delta).of(expected)
 
 ## Types/classes
 
@@ -45,13 +46,6 @@
     expect { ... }.to throw_symbol
     expect { ... }.to throw_symbol(:symbol)
     expect { ... }.to throw_symbol(:symbol, 'value')
-
-## Operator matchers
-
-    actual.should be >  expected
-    actual.should be >= expected
-    actual.should be <= expected
-    actual.should be <  expected
 
 ## Predicate matchers
 
