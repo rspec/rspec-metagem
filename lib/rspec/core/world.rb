@@ -72,11 +72,11 @@ module RSpec
       def announce_inclusion_filter(announcements)
         if inclusion_filter
           if @configuration.run_all_when_everything_filtered? && RSpec.world.example_count.zero?
-            @configuration.reporter.message "No examples were matched by #{inclusion_filter.inspect}, running all"
+            @configuration.reporter.message "No examples were matched by #{inclusion_filter.description}, running all"
             @configuration.clear_inclusion_filter
             filtered_examples.clear
           else
-            announcements << "using #{inclusion_filter.inspect}"
+            announcements << "using #{inclusion_filter.description}"
           end
         end
       end
@@ -84,10 +84,10 @@ module RSpec
       def announce_exclusion_filter(announcements)
         if exclusion_filter && RSpec.world.example_count.zero?
           @configuration.reporter.message(
-            "No examples were matched. Perhaps #{exclusion_filter.inspect} is excluding everything?")
+            "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
           example_groups.clear
         else
-          announcements << "excluding #{exclusion_filter.inspect}"
+          announcements << "excluding #{exclusion_filter.description}"
         end
       end
 

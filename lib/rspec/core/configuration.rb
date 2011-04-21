@@ -36,6 +36,11 @@ module RSpec
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
       add_setting :expecting_with_rspec
 
+      DEFAULT_EXCLUSION_FILTERS = {
+        :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
+        :unless => lambda { |value| value }
+      }
+
       def initialize
         @color_enabled = false
         self.include_or_extend_modules = []
@@ -48,10 +53,7 @@ module RSpec
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
 
-        self.exclusion_filter = {
-          :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
-          :unless => lambda { |value| value }
-        }
+        self.exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
       end
 
       # :call-seq:
@@ -333,6 +335,24 @@ EOM
       #         # sortability examples here
       def alias_it_should_behave_like_to(new_name, report_label = '')
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
+      end
+
+      PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+
+      def exclusion_filter=(filter)
+        def filter.description
+          reject { |k, v| DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '')
+        end
+
+        settings[:exclusion_filter] = filter
+      end
+
+      def filter=(filter)
+        def filter.description
+          inspect.gsub(PROC_HEX_NUMBER, '')
+        end
+
+        settings[:filter] = filter
       end
 
       def filter_run_including(*args)

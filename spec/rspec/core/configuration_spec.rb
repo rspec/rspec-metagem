@@ -517,6 +517,18 @@ module RSpec::Core
       end
     end
 
+    describe "#filter" do
+      describe "#description" do
+        it 'does not include the unnecessary hex number for lambdas' do
+          # check the assumption of this example
+          lambda { }.inspect.should include('0x')
+
+          config.filter_run :bar => lambda { }
+          config.filter.description.should_not include('0x')
+        end
+      end
+    end
+
     describe "#filter_run_excluding" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
@@ -540,6 +552,36 @@ module RSpec::Core
     end
 
     describe "#exclusion_filter" do
+      describe "#description" do
+        it 'returns `{}` when it only contains the default filters' do
+          config.exclusion_filter.description.should == {}.inspect
+        end
+
+        it 'includes other filters' do
+          config.exclusion_filter[:foo] = :bar
+          config.exclusion_filter.description.should == { :foo => :bar }.inspect
+        end
+
+        it 'includes an overriden :if filter' do
+          config.exclusion_filter[:if] = :custom_filter
+          config.exclusion_filter.description.should == { :if => :custom_filter }.inspect
+        end
+
+        it 'includes an overriden :unless filter' do
+          config.exclusion_filter[:unless] = :custom_filter
+          config.exclusion_filter.description.should == { :unless => :custom_filter }.inspect
+        end
+
+        it 'does not include the unnecessary hex number for lambdas' do
+          # check the assumption of this example
+          lambda { }.inspect.should include('0x')
+
+          config.exclusion_filter[:foo] = lambda { }
+          config.filter_run_excluding :bar => lambda { }
+          config.exclusion_filter.description.should_not include('0x')
+        end
+      end
+
       describe "the default :if filter" do
         it "does not exclude a spec with no :if metadata" do
           config.exclusion_filter[:if].call(nil, {}).should be_false
