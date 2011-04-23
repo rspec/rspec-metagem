@@ -519,13 +519,6 @@ module RSpec::Core
 
     describe "#filter" do
       describe "#description" do
-        # it 'does not include the unnecessary hex number for lambdas' do
-          # check the assumption of this example
-          # lambda { }.inspect.should include('0x')
-
-          # config.filter_run :bar => lambda { }
-          # config.filter.description.should_not include('0x')
-        # end
         it 'cleans up the description' do
           # check the assumptions of this example
           project_dir = File.expand_path('.')
