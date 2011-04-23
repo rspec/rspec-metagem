@@ -337,23 +337,21 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
-      PROC_HEX_NUMBER = /0x[0-9a-f]+@/
-      PROJECT_DIR = File.expand_path('.')
+      module Describable
+        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+        PROJECT_DIR = File.expand_path('.')
 
-      def exclusion_filter=(filter)
-        def filter.description
+        def description
           reject { |k, v| DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
         end
+      end
 
-        settings[:exclusion_filter] = filter
+      def exclusion_filter=(filter)
+        settings[:exclusion_filter] = filter.extend(Describable)
       end
 
       def filter=(filter)
-        def filter.description
-          inspect.gsub(PROC_HEX_NUMBER, '')
-        end
-
-        settings[:filter] = filter
+        settings[:filter] = filter.extend(Describable)
       end
 
       def filter_run_including(*args)
