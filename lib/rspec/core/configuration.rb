@@ -338,10 +338,11 @@ EOM
       end
 
       PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+      PROJECT_DIR = File.expand_path('.')
 
       def exclusion_filter=(filter)
         def filter.description
-          reject { |k, v| DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '')
+          reject { |k, v| DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
         end
 
         settings[:exclusion_filter] = filter

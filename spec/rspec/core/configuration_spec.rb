@@ -572,13 +572,18 @@ module RSpec::Core
           config.exclusion_filter.description.should == { :unless => :custom_filter }.inspect
         end
 
-        it 'does not include the unnecessary hex number for lambdas' do
-          # check the assumption of this example
+        it 'cleans up the description' do
+          # check the assumptions of this example
+          project_dir = File.expand_path('.')
+          lambda { }.inspect.should include(project_dir)
           lambda { }.inspect.should include('0x')
+          lambda { }.inspect.should include(' (lambda)') if RUBY_VERSION > '1.9'
 
           config.exclusion_filter[:foo] = lambda { }
           config.filter_run_excluding :bar => lambda { }
           config.exclusion_filter.description.should_not include('0x')
+          config.exclusion_filter.description.should_not include(project_dir)
+          config.exclusion_filter.description.should_not include(' (lambda)')
         end
       end
 
