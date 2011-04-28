@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc2...master)
+
+* Enhancements
+  * Clean up messages for filters.
+
 ### 2.6.0.rc2 / 2011-04-18
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...v2.6.0.rc2)

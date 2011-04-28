@@ -5,8 +5,9 @@ class Foo; end
 
 module RSpec::Core
 
-  describe World do
-    let(:world) { RSpec::Core::World.new }
+  describe RSpec::Core::World do
+    let(:configuration) { RSpec::Core::Configuration.new }
+    let(:world) { RSpec::Core::World.new(configuration) }
 
     describe "#example_groups" do
       it "contains all registered example groups" do
@@ -192,6 +193,103 @@ module RSpec::Core
       end
     end
 
-  end
+    describe "#announce_filters" do
+      let(:reporter) { double('reporter').as_null_object }
+      before { world.stub(:reporter) { reporter } }
 
+      context "with no examples" do
+        before { world.stub(:example_count) { 0 } }
+
+        context "with no filters" do
+          it "announces" do
+            reporter.should_receive(:message).
+              with("No examples found.")
+            world.announce_filters
+          end
+        end
+
+        context "with an inclusion filter" do
+          it "announces" do
+            configuration.inclusion_filter = { :foo => 'bar' }
+            reporter.should_receive(:message).
+              with("No examples matched #{{ :foo => 'bar' }.inspect}.")
+            world.announce_filters
+          end
+        end
+
+        context "with an inclusion filter and run_all_when_everything_filtered" do
+          it "announces" do
+            configuration.stub(:run_all_when_everything_filtered?) { true }
+            configuration.inclusion_filter = { :foo => 'bar' }
+            reporter.should_receive(:message).
+              with("No examples matched #{{ :foo => 'bar' }.inspect}. Running all.")
+            world.announce_filters
+          end
+        end
+
+        context "with an exclusion filter" do
+          it "announces" do
+            configuration.exclusion_filter = { :foo => 'bar' }
+            reporter.should_receive(:message).
+              with("No examples were matched. Perhaps #{{ :foo => 'bar' }.inspect} is excluding everything?")
+            world.announce_filters
+          end
+        end
+      end
+    end
+
+    describe "#inclusion_filter" do
+      describe "#description" do
+        it 'cleans up the description' do
+          # check the assumptions of this example
+          project_dir = File.expand_path('.')
+          lambda { }.inspect.should include(project_dir)
+          lambda { }.inspect.should include('0x')
+          lambda { }.inspect.should include(' (lambda)') if RUBY_VERSION > '1.9'
+
+          configuration.filter_run :foo => lambda { }
+          world.inclusion_filter.description.should_not include('0x')
+          world.inclusion_filter.description.should_not include(project_dir)
+          world.inclusion_filter.description.should_not include(' (lambda)')
+        end
+      end
+    end
+
+    describe "#exclusion_filter" do
+      describe "#description" do
+        it 'returns `{}` when it only contains the default filters' do
+          world.exclusion_filter.description.should == {}.inspect
+        end
+
+        it 'includes other filters' do
+          configuration.exclusion_filter[:foo] = :bar
+          world.exclusion_filter.description.should == { :foo => :bar }.inspect
+        end
+
+        it 'includes an overriden :if filter' do
+          configuration.exclusion_filter[:if] = :custom_filter
+          world.exclusion_filter.description.should == { :if => :custom_filter }.inspect
+        end
+
+        it 'includes an overriden :unless filter' do
+          configuration.exclusion_filter[:unless] = :custom_filter
+          world.exclusion_filter.description.should == { :unless => :custom_filter }.inspect
+        end
+
+        it 'cleans up the description' do
+          # check the assumptions of this example
+          project_dir = File.expand_path('.')
+          lambda { }.inspect.should include(project_dir)
+          lambda { }.inspect.should include('0x')
+          lambda { }.inspect.should include(' (lambda)') if RUBY_VERSION > '1.9'
+
+          configuration.exclusion_filter[:foo] = lambda { }
+          configuration.filter_run_excluding :bar => lambda { }
+          world.exclusion_filter.description.should_not include('0x')
+          world.exclusion_filter.description.should_not include(project_dir)
+          world.exclusion_filter.description.should_not include(' (lambda)')
+        end
+      end
+    end
+  end
 end

@@ -2,6 +2,29 @@ module RSpec
   module Core
     class World
 
+      module Describable
+        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+        PROJECT_DIR = File.expand_path('.')
+
+        def description
+          reject { |k, v| RSpec::Core::Configuration::CONDITIONAL_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+        end
+
+        def empty_without_conditional_filters?
+          reject { |k, v| RSpec::Core::Configuration::CONDITIONAL_FILTERS[k] == v }.empty?
+        end
+
+        def reject
+          super rescue {}
+        end
+
+        def empty?
+          super rescue false
+        end
+      end
+
+      include RSpec::Core::Hooks
+
       attr_reader :example_groups, :filtered_examples, :wants_to_quit
       attr_writer :wants_to_quit
 
@@ -24,11 +47,11 @@ module RSpec
       end
 
       def inclusion_filter
-        @configuration.filter
+        @configuration.inclusion_filter.extend(Describable)
       end
 
       def exclusion_filter
-        @configuration.exclusion_filter
+        @configuration.exclusion_filter.extend(Describable)
       end
 
       def configure_group(group)
@@ -59,39 +82,52 @@ module RSpec
         end
       end
 
+      def reporter
+        @configuration.reporter
+      end
+
       def announce_filters
         filter_announcements = []
+
+        if @configuration.run_all_when_everything_filtered? && example_count.zero?
+          reporter.message( "No examples matched #{inclusion_filter.description}. Running all.")
+          filtered_examples.clear
+          @configuration.clear_inclusion_filter
+        end
+
         announce_inclusion_filter filter_announcements
         announce_exclusion_filter filter_announcements
 
-        unless filter_announcements.empty?
-          @configuration.reporter.message("Run filtered #{filter_announcements.join(', ')}")
+        if example_count.zero?
+          example_groups.clear
+          if filter_announcements.empty?
+            reporter.message("No examples found.")
+          elsif inclusion_filter
+            message = "No examples matched #{inclusion_filter.description}."
+            if @configuration.run_all_when_everything_filtered?
+              message << " Running all."
+            end
+            reporter.message(message)
+          elsif exclusion_filter
+            reporter.message(
+              "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
+          end
+        else
+          reporter.message("Run filtered #{filter_announcements.join(', ')}")
         end
       end
 
       def announce_inclusion_filter(announcements)
         if inclusion_filter
-          if @configuration.run_all_when_everything_filtered? && RSpec.world.example_count.zero?
-            @configuration.reporter.message "No examples were matched by #{inclusion_filter.description}, running all"
-            @configuration.clear_inclusion_filter
-            filtered_examples.clear
-          else
-            announcements << "using #{inclusion_filter.description}"
-          end
-        end
-      end
-      
-      def announce_exclusion_filter(announcements)
-        if exclusion_filter && RSpec.world.example_count.zero?
-          @configuration.reporter.message(
-            "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
-          example_groups.clear
-        else
-          announcements << "excluding #{exclusion_filter.description}"
+          announcements << "including #{inclusion_filter.description}"
         end
       end
 
-      include RSpec::Core::Hooks
+      def announce_exclusion_filter(announcements)
+        unless exclusion_filter.empty_without_conditional_filters?
+          announcements << "excluding #{exclusion_filter.description}"
+        end
+      end
 
       def find_hook(hook, scope, group, example = nil)
         @configuration.find_hook(hook, scope, group, example)

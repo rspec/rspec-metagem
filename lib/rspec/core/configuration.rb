@@ -26,8 +26,9 @@ module RSpec
       add_setting :profile_examples
       add_setting :fail_fast
       add_setting :run_all_when_everything_filtered
-      add_setting :filter
       add_setting :exclusion_filter
+      add_setting :inclusion_filter
+      add_setting :filter, :alias => :inclusion_filter
       add_setting :filename_pattern, :default => '**/*_spec.rb'
       add_setting :files_to_run
       add_setting :include_or_extend_modules
@@ -36,7 +37,7 @@ module RSpec
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
       add_setting :expecting_with_rspec
 
-      DEFAULT_EXCLUSION_FILTERS = {
+      CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
         :unless => lambda { |value| value }
       }
@@ -53,7 +54,7 @@ module RSpec
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
 
-        self.exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
+        self.exclusion_filter = CONDITIONAL_FILTERS.dup
       end
 
       # :call-seq:
@@ -107,7 +108,7 @@ module RSpec
       end
 
       def clear_inclusion_filter # :nodoc:
-        self.filter = nil
+        self.inclusion_filter = nil
       end
 
       def cleaned_from_backtrace?(line)
@@ -337,21 +338,12 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
-      module Describable
-        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
-        PROJECT_DIR = File.expand_path('.')
-
-        def description
-          reject { |k, v| DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
-        end
-      end
-
       def exclusion_filter=(filter)
-        settings[:exclusion_filter] = filter.extend(Describable)
+        settings[:exclusion_filter] = filter
       end
 
-      def filter=(filter)
-        settings[:filter] = filter.extend(Describable)
+      def inclusion_filter=(filter)
+        settings[:inclusion_filter] = filter
       end
 
       def filter_run_including(*args)
@@ -363,14 +355,14 @@ EOM
 
         options = build_metadata_hash_from(args)
 
-        if filter and filter[:line_number] || filter[:full_description]
+        if inclusion_filter and inclusion_filter[:line_number] || inclusion_filter[:full_description]
           warn "Filtering by #{options.inspect} is not possible since " \
-               "you are already filtering by #{filter.inspect}"
+               "you are already filtering by #{inclusion_filter.inspect}"
         else
           if force_overwrite
-            self.filter = options
+            self.inclusion_filter = options
           else
-            self.filter = (filter || {}).merge(options)
+            self.inclusion_filter = (inclusion_filter || {}).merge(options)
           end
         end
       end
