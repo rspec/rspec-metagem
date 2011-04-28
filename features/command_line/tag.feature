@@ -33,19 +33,19 @@ Feature: --tag option
 
   Scenario: filter examples with a simple tag
     When I run `rspec . --tag focus`
-    Then the output should contain "Run filtered using {:focus=>true}"
+    Then the output should contain "Run filtered including {:focus=>true}"
     And the examples should all pass
 
   Scenario: filter examples with a simple tag and @
     When I run `rspec . --tag @focus`
-    Then the output should contain "Run filtered using {:focus=>true}"
+    Then the output should contain "Run filtered including {:focus=>true}"
     Then the examples should all pass
 
   Scenario: filter examples with a name:value tag
     When I run `rspec . --tag type:special`
     Then the output should contain:
       """
-      Run filtered using {:type=>"special"}
+      Run filtered including {:type=>"special"}
       """
     And the output should contain "2 examples"
     And the examples should all pass
@@ -54,7 +54,7 @@ Feature: --tag option
     When I run `rspec . --tag @type:special`
     Then the output should contain:
       """
-      Run filtered using {:type=>"special"}
+      Run filtered including {:type=>"special"}
       """
     And the examples should all pass
   
@@ -86,5 +86,5 @@ Feature: --tag option
 
   Scenario: filter examples with a simple tag, exclude examples with another tag
     When I run `rspec . --tag focus --tag ~skip`
-    Then the output should contain "Run filtered using {:focus=>true}, excluding {:skip=>true}"
+    Then the output should contain "Run filtered including {:focus=>true}, excluding {:skip=>true}"
     And the examples should all pass

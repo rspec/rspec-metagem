@@ -32,7 +32,7 @@ Feature: run all when everything filtered
       end
       """
     When I run `rspec spec/sample_spec.rb --format doc`
-    Then the output should contain "No examples were matched by {:focus=>true}, running all"
+    Then the output should contain "No examples matched {:focus=>true}"
     And the examples should all pass
     And the output should contain:
       """
