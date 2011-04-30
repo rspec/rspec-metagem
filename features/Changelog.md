@@ -1,9 +1,9 @@
-### dev
+### 2.6.0.rc3 / 2011-04-30
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc2...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc2...v2.6.0.rc3)
 
 * Enhancements
-  * Clean up messages for filters.
+  * Clean up messages for filters/tags.
 
 ### 2.6.0.rc2 / 2011-04-18
 
