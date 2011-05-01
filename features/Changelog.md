@@ -1,6 +1,6 @@
-### 2.6.0.rc3 / 2011-04-30
+### 2.6.0.rc4 / 2011-05-01
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc2...v2.6.0.rc3)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc2...v2.6.0.rc4)
 
 ### 2.6.0.rc2 / 2011-04-18
 
