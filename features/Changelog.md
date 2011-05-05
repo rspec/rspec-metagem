@@ -4,6 +4,7 @@
 
 * Enhancements
   * Restore --pattern/-P command line option from rspec-1
+  * Support false as well as true in config.full_backtrace= (Andreas Tolf Tolfsen)
 
 ### 2.6.0.rc4 / 2011-05-01
 

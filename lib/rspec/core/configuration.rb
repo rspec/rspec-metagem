@@ -43,18 +43,19 @@ module RSpec
         :unless => lambda { |value| value }
       }
 
+      DEFAULT_BACKTRACE_PATTERNS = [
+        /\/lib\d*\/ruby\//,
+        /bin\//,
+        /gems/,
+        /spec\/spec_helper\.rb/,
+        /lib\/rspec\/(core|expectations|matchers|mocks)/
+      ]
+
       def initialize
         @color_enabled = false
         self.include_or_extend_modules = []
         self.files_to_run = []
-        self.backtrace_clean_patterns = [
-          /\/lib\d*\/ruby\//,
-          /bin\//,
-          /gems/,
-          /spec\/spec_helper\.rb/,
-          /lib\/rspec\/(core|expectations|matchers|mocks)/
-        ]
-
+        self.backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         self.exclusion_filter = CONDITIONAL_FILTERS.dup
       end
 
@@ -210,8 +211,8 @@ module RSpec
         end
       end
 
-      def full_backtrace=(bool)
-        settings[:backtrace_clean_patterns] = []
+      def full_backtrace=(true_or_false)
+        settings[:backtrace_clean_patterns] = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
       end
 
       def color_enabled

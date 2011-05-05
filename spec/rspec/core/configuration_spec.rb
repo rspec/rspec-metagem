@@ -583,9 +583,18 @@ module RSpec::Core
     end
 
     describe "#full_backtrace=" do
-      it "clears the backtrace clean patterns" do
-        config.full_backtrace = true
-        config.backtrace_clean_patterns.should == []
+      context "given true" do
+        it "clears the backtrace clean patterns" do
+          config.full_backtrace = true
+          config.backtrace_clean_patterns.should == []
+        end
+      end
+
+      context "given false" do
+        it "restores backtrace clean patterns" do
+          config.full_backtrace = false
+          config.backtrace_clean_patterns.should == RSpec::Core::Configuration::DEFAULT_BACKTRACE_PATTERNS
+        end
       end
 
       it "doesn't impact other instances of config" do
