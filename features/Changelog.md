@@ -4,6 +4,7 @@
 
 * Bug fixes
   * CommandLine returns exit status (0/1) instead of true/false
+  * Create path to formatter output file if it doesn't exist (marekj).
 
 ### 2.6.0.rc6 / 2011-05-06
 
