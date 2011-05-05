@@ -2,6 +2,9 @@
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc2...v2.6.0.rc4)
 
+* Enhancements
+  * range.should cover(*values) (Anders Furseth)
+
 ### 2.6.0.rc2 / 2011-04-18
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0.rc2)

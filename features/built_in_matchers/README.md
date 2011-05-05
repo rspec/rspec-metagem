@@ -65,3 +65,7 @@
     [1,2,3].should include(1, 2)
     {:a => 'b'}.should include(:a => 'b')
     "this string".should include("is str")
+
+## Ranges (1.9 only)
+
+    (1..10).should cover(3)
