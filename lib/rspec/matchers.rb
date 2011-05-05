@@ -181,6 +181,7 @@ require 'rspec/matchers/be_kind_of'
 require 'rspec/matchers/be_within'
 require 'rspec/matchers/block_aliases'
 require 'rspec/matchers/change'
+require 'rspec/matchers/cover' if (1..2).respond_to? :cover?
 require 'rspec/matchers/eq'
 require 'rspec/matchers/eql'
 require 'rspec/matchers/equal'
