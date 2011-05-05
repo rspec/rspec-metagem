@@ -29,7 +29,8 @@ module RSpec
       add_setting :exclusion_filter
       add_setting :inclusion_filter
       add_setting :filter, :alias => :inclusion_filter
-      add_setting :filename_pattern, :default => '**/*_spec.rb'
+      add_setting :pattern, :default => '**/*_spec.rb'
+      add_setting :filename_pattern, :alias => :pattern
       add_setting :files_to_run
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
@@ -292,7 +293,7 @@ EOM
       def files_or_directories_to_run=(*files)
         self.files_to_run = files.flatten.collect do |file|
           if File.directory?(file)
-            filename_pattern.split(",").collect do |pattern|
+            pattern.split(",").collect do |pattern|
               Dir["#{file}/#{pattern.strip}"]
             end
           else

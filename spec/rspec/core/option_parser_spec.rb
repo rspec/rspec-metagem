@@ -2,13 +2,10 @@ require "spec_helper"
 
 module RSpec::Core
   describe OptionParser do
-    before do
-      RSpec.stub(:deprecate)
-    end
-
     let(:output_file){ mock File }
 
     before do
+      RSpec.stub(:deprecate)
       File.stub(:open).with("foo.txt",'w') { (output_file) }
     end
 
@@ -30,17 +27,12 @@ module RSpec::Core
       end
     end
 
-    describe "--format" do
-      it "defines the formatter" do
-        options = Parser.parse!(%w[--format doc])
-        options[:formatters].first.should eq(["doc"])
-      end
-    end
-
-    describe "-f" do
-      it "defines the formatter" do
-        options = Parser.parse!(%w[-f doc])
-        options[:formatters].first.should eq(["doc"])
+    %w[--format -f].each do |option|
+      describe option do
+        it "defines the formatter" do
+          options = Parser.parse!([option, 'doc'])
+          options[:formatters].first.should eq(["doc"])
+        end
       end
     end
 
@@ -72,10 +64,21 @@ module RSpec::Core
       end
     end
 
-    describe "--example" do
-      it "escapes the arg" do
-        options = Parser.parse!(["--example", "this (and that)"])
-        "this (and that)".should match(options[:full_description])
+    %w[--example -e].each do |option|
+      describe option do
+        it "escapes the arg" do
+          options = Parser.parse!([option, "this (and that)"])
+          "this (and that)".should match(options[:full_description])
+        end
+      end
+    end
+
+    %w[--pattern -P].each do |option|
+      describe option do
+        it "sets the filename pattern" do
+          options = Parser.parse!([option, 'spec/**/*.spec'])
+          options[:pattern].should eq('spec/**/*.spec')
+        end
       end
     end
 

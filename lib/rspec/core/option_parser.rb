@@ -86,6 +86,10 @@ module RSpec::Core
           options[:profile_examples] = o
         end
 
+        parser.on('-P', '--pattern PATTERN', 'Load files those matching this pattern. Default is "spec/**/*_spec.rb"') do |o|
+          options[:pattern] = o
+        end
+
         parser.on('-r', '--require PATH', 'Require a file') do |path|
           options[:requires] ||= []
           options[:requires] << path

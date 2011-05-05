@@ -143,16 +143,14 @@ module RSpec::Core
       end
     end
 
-    context "setting the files to run" do
-
+    describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
         file = "./spec/rspec/core/resources/a_bar.rb"
         config.files_or_directories_to_run = file
         config.files_to_run.should == [file]
       end
 
-      describe "with default --pattern" do
-
+      context "with default pattern" do
         it "loads files named _spec.rb" do
           dir = "./spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
@@ -164,80 +162,70 @@ module RSpec::Core
           config.files_or_directories_to_run = file
           config.files_to_run.should == [file]
         end
+      end
+    end
 
+    %w[pattern= filename_pattern=].each do |setter|
+      describe "##{setter}" do
+        context "with single pattern" do
+          before { config.send(setter, "**/*_foo.rb") }
+          it "loads files following pattern" do
+            file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+            config.files_or_directories_to_run = file
+            config.files_to_run.should include(file)
+          end
+
+          it "loads files in directories following pattern" do
+            dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+            config.files_or_directories_to_run = dir
+            config.files_to_run.should include("#{dir}/a_foo.rb")
+          end
+
+          it "does not load files in directories not following pattern" do
+            dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+            config.files_or_directories_to_run = dir
+            config.files_to_run.should_not include("#{dir}/a_bar.rb")
+          end
+        end
+
+        context "with multiple patterns" do
+          it "supports comma separated values" do
+            config.send(setter, "**/*_foo.rb,**/*_bar.rb")
+            dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+            config.files_or_directories_to_run = dir
+            config.files_to_run.should include("#{dir}/a_foo.rb")
+            config.files_to_run.should include("#{dir}/a_bar.rb")
+          end
+
+          it "supports comma separated values with spaces" do
+            config.send(setter, "**/*_foo.rb, **/*_bar.rb")
+            dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+            config.files_or_directories_to_run = dir
+            config.files_to_run.should include("#{dir}/a_foo.rb")
+            config.files_to_run.should include("#{dir}/a_bar.rb")
+          end
+        end
+      end
+    end
+
+    describe "path with line number" do
+      it "assigns the line number as the filter" do
+        config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+        config.filter.should == {:line_number => 37}
+      end
+    end
+
+    context "with full_description" do
+      it "overrides :focused" do
+        config.filter_run :focused => true
+        config.full_description = "foo"
+        config.filter.should_not have_key(:focused)
       end
 
-      describe "with explicit pattern (single)" do
-
-        before do
-          config.filename_pattern = "**/*_foo.rb"
-        end
-
-        it "loads files following pattern" do
-          file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
-          config.files_or_directories_to_run = file
-          config.files_to_run.should include(file)
-        end
-
-        it "loads files in directories following pattern" do
-          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-          config.files_or_directories_to_run = dir
-          config.files_to_run.should include("#{dir}/a_foo.rb")
-        end
-
-        it "does not load files in directories not following pattern" do
-          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-          config.files_or_directories_to_run = dir
-          config.files_to_run.should_not include("#{dir}/a_bar.rb")
-        end
-
+      it "assigns the example name as the filter on description" do
+        config.full_description = "foo"
+        config.filter.should == {:full_description => /foo/}
       end
-
-      context "with explicit pattern (comma,separated,values)" do
-
-        before do
-          config.filename_pattern = "**/*_foo.rb,**/*_bar.rb"
-        end
-
-        it "supports comma separated values" do
-          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-          config.files_or_directories_to_run = dir
-          config.files_to_run.should include("#{dir}/a_foo.rb")
-          config.files_to_run.should include("#{dir}/a_bar.rb")
-        end
-
-        it "supports comma separated values with spaces" do
-          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-          config.files_or_directories_to_run = dir
-          config.files_to_run.should include("#{dir}/a_foo.rb")
-          config.files_to_run.should include("#{dir}/a_bar.rb")
-        end
-
-      end
-
-      context "with line number" do
-
-        it "assigns the line number as the filter" do
-          config.files_or_directories_to_run = "path/to/a_spec.rb:37"
-          config.filter.should == {:line_number => 37}
-        end
-
-      end
-
-      context "with full_description" do
-        it "overrides :focused" do
-          config.filter_run :focused => true
-          config.full_description = "foo"
-          config.filter.should_not have_key(:focused)
-        end
-
-        it "assigns the example name as the filter on description" do
-          config.full_description = "foo"
-          config.filter.should == {:full_description => /foo/}
-        end
-
-      end
-
     end
 
     describe "#include" do
@@ -306,7 +294,7 @@ module RSpec::Core
 
     end
 
-    describe "run_all_when_everything_filtered?" do
+    describe "#run_all_when_everything_filtered?" do
 
       it "defaults to false" do
         config.run_all_when_everything_filtered?.should be_false
@@ -407,14 +395,14 @@ module RSpec::Core
       end
     end
 
-    describe 'formatter=' do
+    describe '#formatter=' do
       it "delegates to add_formatter (better API for user-facing configuration)" do
         config.should_receive(:add_formatter).with('these','options')
         config.add_formatter('these','options')
       end
     end
 
-    describe "add_formatter" do
+    describe "#add_formatter" do
 
       it "adds to the list of formatters" do
         config.add_formatter :documentation
@@ -573,7 +561,7 @@ module RSpec::Core
       end
     end
 
-    describe "line_number=" do
+    describe "#line_number=" do
       before { config.stub(:warn) }
 
       it "sets the line number" do
