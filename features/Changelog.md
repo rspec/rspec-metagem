@@ -1,3 +1,9 @@
+### 2.6.0.rc5 / 2011-05-06
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc4...v2.6.0.rc5)
+
+No changes this release (releasing to align with rc5 of other rspec gems).
+
 ### 2.6.0.rc4 / 2011-05-01
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc2...v2.6.0.rc4)
