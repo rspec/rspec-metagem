@@ -1,6 +1,6 @@
-### dev
+### 2.6.0.rc5 / 2011-05-06
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc4...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc4...v2.6.0.rc5)
 
 * Enhancements
   * Restore --pattern/-P command line option from rspec-1
