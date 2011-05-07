@@ -21,7 +21,7 @@ module RSpec
         @configuration.reporter.report(@world.example_count) do |reporter|
           begin
             @configuration.run_hook(:before, :suite)
-            @world.example_groups.map {|g| g.run(reporter)}.all?
+            @world.example_groups.map {|g| g.run(reporter)}.all? ? 0 : 1
           ensure
             @configuration.run_hook(:after, :suite)
           end

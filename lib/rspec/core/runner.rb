@@ -7,7 +7,7 @@ module RSpec
       def self.autorun
         return if autorun_disabled? || installed_at_exit? || running_in_drb?
         @installed_at_exit = true
-        at_exit { run(ARGV, $stderr, $stdout) ? exit(0) : exit(1) }
+        at_exit { exit(run(ARGV, $stderr, $stdout)) }
       end
       AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
 

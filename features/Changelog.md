@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc6...master)
+
+* Bug fixes
+  * CommandLine returns exit status (0/1) instead of true/false
+
 ### 2.6.0.rc6 / 2011-05-06
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0.rc4...v2.6.0.rc6)

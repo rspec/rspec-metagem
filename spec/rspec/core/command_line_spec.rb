@@ -4,6 +4,42 @@ require 'tmpdir'
 
 module RSpec::Core
   describe CommandLine do
+
+    describe "#run" do
+      include_context "spec files"
+
+      let(:out)    { StringIO.new }
+      let(:err)    { StringIO.new }
+
+      def config_options(argv=[])
+        options = RSpec::Core::ConfigurationOptions.new(argv)
+        options.parse_options
+        options
+      end
+
+      def command_line(args)
+        RSpec::Core::CommandLine.new(config_options(args))
+      end
+
+      def config_options(argv=[])
+        options = RSpec::Core::ConfigurationOptions.new(argv)
+        options.parse_options
+        options
+      end
+
+      it "returns 0 if spec passes" do
+        err, out = StringIO.new, StringIO.new
+        result = command_line([passing_spec_filename]).run(err, out)
+        result.should be(0)
+      end
+
+      it "returns 1 if spec passes" do
+        err, out = StringIO.new, StringIO.new
+        result = command_line([failing_spec_filename]).run(err, out)
+        result.should be(1)
+      end
+    end
+
     context "given an Array of options" do
       it "assigns ConfigurationOptions built from Array to @options" do
         config_options = ConfigurationOptions.new(%w[--color])
