@@ -22,7 +22,6 @@ module RSpec
       end
 
       def self.register
-        RSpec::Core::Runner.autorun
         world.register(self)
       end
 

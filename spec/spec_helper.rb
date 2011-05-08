@@ -1,4 +1,4 @@
-require 'rspec/core'
+require 'rspec/autorun'
 require 'autotest/rspec2'
 
 Dir['./spec/support/**/*.rb'].map {|f| require f}
