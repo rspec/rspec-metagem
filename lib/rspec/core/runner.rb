@@ -67,6 +67,7 @@ module RSpec
           end
         else
           run_in_process(options, err, out)
+          RSpec.clear_world
         end
       end
 
