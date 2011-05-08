@@ -9,6 +9,13 @@ Feature: around hooks
   example, if your database library offers a transaction method that receives
   a block, you can use an around hook as described in the first scenario:
 
+  WARNING: around hooks do not share state with the example the way before and
+  after hooks do. This means that you can not share instance variables between
+  around hooks and examples.
+
+  Also, mock frameworks are set up and torn down within the context of running
+  the example, so you can not interact with them directly in around hooks.
+
   Scenario: use the example as a proc within the block passed to around()
     Given a file named "example_spec.rb" with:
       """
