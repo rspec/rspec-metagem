@@ -7,8 +7,6 @@ Feature: text formatter
   Scenario: Backtrace formatting for failing specs in multiple files
     Given a file named "string_spec.rb" with:
       """
-      require 'rspec/core'
-
       describe String do
         it "has a failing example" do
           "foo".reverse.should == "ofo"
@@ -17,7 +15,7 @@ Feature: text formatter
       """
     And a file named "integer_spec.rb" with:
       """
-      require 'rspec/core'
+      require 'rspec/autorun'
 
       describe Integer do
         it "has a failing example" do
@@ -40,6 +38,6 @@ Feature: text formatter
            Failure/Error: "foo".reverse.should == "ofo"
              expected: "ofo"
                   got: "oof" (using ==)
-           # ./string_spec.rb:5
+           # ./string_spec.rb:3
       """
 
