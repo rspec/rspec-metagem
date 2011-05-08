@@ -1,4 +1,5 @@
 require "rbconfig"
+require 'fileutils'
 
 module RSpec
   module Core
@@ -269,19 +270,13 @@ EOM
         filter_run({ :full_description => /#{description}/ }, true)
       end
 
-      def add_formatter(formatter_to_use, output=nil)
+      def add_formatter(formatter_to_use, path=nil)
         formatter_class =
           built_in_formatter(formatter_to_use) ||
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
-        formatters << formatter_class.new(output ? output_file(output) : self.output)
-      end
-
-      def output_file(output)
-        require 'fileutils'
-        FileUtils.mkdir_p(File.dirname(output))
-        File.new(output, 'w')
+        formatters << formatter_class.new(path ? file_at(path) : output)
       end
 
       alias_method :formatter=, :add_formatter
@@ -492,6 +487,12 @@ MESSAGE
         word.downcase!
         word
       end
+
+      def file_at(path)
+        FileUtils.mkdir_p(File.dirname(path))
+        File.new(path, 'w')
+      end
+
     end
   end
 end
