@@ -236,6 +236,17 @@ module RSpec::Core
           end
         end
       end
+
+      context "with examples" do
+        before { world.stub(:example_count) { 1 } }
+
+        context "with no filters" do
+          it "does not announce" do
+            reporter.should_not_receive(:message)
+            world.announce_filters
+          end
+        end
+      end
     end
 
     describe "#inclusion_filter" do

@@ -112,7 +112,7 @@ module RSpec
             reporter.message(
               "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
           end
-        else
+        elsif !filter_announcements.empty?
           reporter.message("Run filtered #{filter_announcements.join(', ')}")
         end
       end
