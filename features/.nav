@@ -5,6 +5,15 @@
   - basic_structure.feature
   - shared_example_group.feature
   - shared_context.feature
+- command_line:
+  - configure.feature
+  - example_name_option.feature
+  - format_option.feature
+  - line_number_option.feature
+  - tag.feature
+  - line_number_appended_to_path.feature
+  - exit_status.feature
+  - rake_task.feature
 - pending:
   - pending_examples.feature
 - hooks:
@@ -29,15 +38,6 @@
   - exclusion_filters.feature
   - if_and_unless.feature
   - run_all_when_everything_filtered.feature
-- command_line:
-  - configure.feature
-  - example_name_option.feature
-  - format_option.feature
-  - line_number_option.feature
-  - tag.feature
-  - line_number_appended_to_path.feature
-  - exit_status.feature
-  - rake_task.feature
 - configuration:
   - read_options_from_file.feature
   - fail_fast.feature
