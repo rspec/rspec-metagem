@@ -60,6 +60,10 @@ module RSpec
         self.exclusion_filter = CONDITIONAL_FILTERS.dup
       end
 
+      def reset
+        @reporter = nil
+      end
+
       # :call-seq:
       #   add_setting(:name)
       #   add_setting(:name, :default => "default_value")

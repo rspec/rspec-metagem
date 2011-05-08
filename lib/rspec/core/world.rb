@@ -41,6 +41,10 @@ module RSpec
         }
       end
 
+      def reset
+        example_groups.clear
+      end
+
       def register(example_group)
         example_groups << example_group
         example_group

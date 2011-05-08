@@ -49,10 +49,11 @@ module RSpec
     @world ||= RSpec::Core::World.new
   end
 
-  # Sets the world to nil. Used internally to ensure examples get reloaded
-  # between multiple runs in the same process.
-  def self.clear_world
-    @world = nil
+  # Used internally to ensure examples get reloaded between multiple runs in
+  # the same process.
+  def self.reset
+    world.reset
+    configuration.reset
   end
 
   def self.configuration

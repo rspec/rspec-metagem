@@ -24,8 +24,9 @@ module RSpec::Core
       let(:err) { StringIO.new }
       let(:out) { StringIO.new }
 
-      it "clears the world" do
-        RSpec.should_receive(:clear_world)
+      it "resets world and configuration" do
+        RSpec.configuration.should_receive(:reset)
+        RSpec.world.should_receive(:reset)
         RSpec::Core::Runner.run([], err, out)
       end
 

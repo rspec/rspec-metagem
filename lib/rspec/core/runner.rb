@@ -67,8 +67,9 @@ module RSpec
           end
         else
           run_in_process(options, err, out)
-          RSpec.clear_world
         end
+      ensure
+        RSpec.reset
       end
 
       def self.run_over_drb(options, err, out) # :nodoc:
