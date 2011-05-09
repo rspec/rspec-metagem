@@ -19,15 +19,15 @@ module RSpec
     def cover(*expected_values)
       Matcher.new :cover, *expected_values do |*_expected_values|
         match_for_should do |actual|
-          _expected_values.all? &cover_value
+          _expected_values.all? &covered_by(actual)
         end
 
         match_for_should_not do |actual|
-          _expected_values.none? &cover_value
+          _expected_values.none? &covered_by(actual)
         end
 
-        def cover_value
-          lambda {|value| actual.cover?(value)}
+        def covered_by(range)
+          lambda {|value| range.cover?(value)}
         end
       end
     end
