@@ -16,14 +16,14 @@ module RSpec
     #   (1..10).should_not cover(5)    # will fail
     #
     # == Warning: Ruby >= 1.9 only
-    def cover(*expected_values)
-      Matcher.new :cover, *expected_values do |*_expected_values|
-        match_for_should do |actual|
-          _expected_values.all? &covered_by(actual)
+    def cover(*values)
+      Matcher.new :cover, *values do |*_values|
+        match_for_should do |range|
+          _values.all? &covered_by(range)
         end
 
-        match_for_should_not do |actual|
-          _expected_values.none? &covered_by(actual)
+        match_for_should_not do |range|
+          _values.none? &covered_by(range)
         end
 
         def covered_by(range)
