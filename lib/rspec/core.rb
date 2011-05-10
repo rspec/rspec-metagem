@@ -1,6 +1,7 @@
-require 'rspec/core/extensions'
+require 'rspec/core/applicable'
 require 'rspec/core/load_path'
 require 'rspec/core/deprecation'
+require 'rspec/core/extensions'
 require 'rspec/core/backward_compatibility'
 require 'rspec/core/reporter'
 
@@ -25,17 +26,13 @@ require 'rspec/core/shared_example_group'
 require 'rspec/core/example_group'
 require 'rspec/core/version'
 require 'rspec/core/errors'
+require 'rspec/core/backward_compatibility'
+require 'rspec/monkey'
 
 module RSpec
   autoload :Matchers, 'rspec/matchers'
 
   SharedContext = Core::SharedContext
-
-  module Core
-    def self.install_directory
-      @install_directory ||= File.expand_path(File.dirname(__FILE__))
-    end
-  end
 
   def self.wants_to_quit
     world.wants_to_quit
@@ -89,6 +86,3 @@ defined.  The configuration is happening at:
 NOTICE
     end
 end
-
-require 'rspec/core/backward_compatibility'
-require 'rspec/monkey'

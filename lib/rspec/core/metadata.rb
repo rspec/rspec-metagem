@@ -102,12 +102,6 @@ EOM
         update(user_metadata)
       end
 
-      def apply?(predicate, filters)
-        filters.send(predicate) do |key, value|
-          apply_condition(key, value)
-        end
-      end
-
       def relevant_line_numbers(metadata)
         line_numbers = [metadata[:line_number]]
         if metadata[:example_group]
@@ -115,6 +109,10 @@ EOM
         else
           line_numbers
         end
+      end
+
+      def apply?
+        @apply ||= proc {|key, value| apply_condition(key, value)}
       end
 
       def apply_condition(key, value, metadata=self)
