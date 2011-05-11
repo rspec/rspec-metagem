@@ -1,14 +1,15 @@
 module RSpec
   module Core
     class ExampleGroup
+      extend  MetadataHashBuilder::WithDeprecationWarning
       extend  Extensions::ModuleEvalWithArgs
-      include Extensions::InstanceEvalWithArgs
-      extend  Hooks
       extend  Subject::ClassMethods
+      extend  Hooks
+
+      include Extensions::InstanceEvalWithArgs
       include Subject::InstanceMethods
-      include Let
       include Pending
-      extend MetadataHashBuilder::WithDeprecationWarning
+      include Let
 
       attr_accessor :example
 
