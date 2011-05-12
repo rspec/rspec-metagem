@@ -24,7 +24,6 @@ module RSpec
       end
 
       include RSpec::Core::Hooks
-      include RSpec::Core::Applicable
 
       attr_reader :example_groups, :filtered_examples, :wants_to_quit
       attr_writer :wants_to_quit
@@ -72,13 +71,13 @@ module RSpec
       end
 
       def apply_inclusion_filters(examples, conditions={})
-        examples.select {|example| conditions.any?(&apply_to?(example))}
+        examples.select(&apply?(:any?, conditions))
       end
 
       alias_method :find, :apply_inclusion_filters
 
       def apply_exclusion_filters(examples, conditions={})
-        examples.reject {|example| conditions.any?(&apply_to?(example))}
+        examples.reject(&apply?(:any?, conditions))
       end
 
       def preceding_declaration_line(filter_line)
@@ -139,6 +138,10 @@ module RSpec
       end
 
     private
+
+      def apply?(predicate, conditions)
+        lambda {|example| example.metadata.apply?(predicate, conditions)}
+      end
 
       def declaration_line_numbers
         @line_numbers ||= example_groups.inject([]) do |lines, g|

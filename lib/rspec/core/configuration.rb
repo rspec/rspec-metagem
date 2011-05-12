@@ -5,7 +5,6 @@ module RSpec
   module Core
     class Configuration
       include RSpec::Core::Hooks
-      include RSpec::Core::Applicable
 
       def self.add_setting(name, opts={})
         if opts[:alias]
@@ -394,7 +393,7 @@ EOM
 
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
-          next unless filters.empty? || filters.any?(&apply_to?(group))
+          next unless filters.empty? || group.apply?(:any?, filters)
           group.send(include_or_extend, mod)
         end
       end

@@ -4,8 +4,6 @@ module RSpec
       include MetadataHashBuilder::WithConfigWarning
 
       class Hook
-        include RSpec::Core::Applicable
-
         attr_reader :options
 
         def initialize(options, &block)
@@ -14,8 +12,8 @@ module RSpec
           @block = block
         end
 
-        def with_conditions_applicable_to?(example_or_group)
-          !example_or_group || options.all?(&apply_to?(example_or_group))
+        def options_apply?(example_or_group)
+          !example_or_group || example_or_group.apply?(:all?, options)
         end
 
         def to_proc
@@ -57,12 +55,12 @@ module RSpec
       end
 
       class HookCollection < Array
-        def with_conditions_applicable_to(example_or_group)
-          self.class.new(select {|hook| hook.with_conditions_applicable_to?(example_or_group)})
+        def find_hooks_for(example_or_group)
+          self.class.new(select {|hook| hook.options_apply?(example_or_group)})
         end
 
-        def without_conditions_applicable_to(example_or_group)
-          self.class.new(reject {|hook| hook.with_conditions_applicable_to?(example_or_group)})
+        def without_hooks_for(example_or_group)
+          self.class.new(reject {|hook| hook.options_apply?(example_or_group)})
         end
       end
 
@@ -128,13 +126,13 @@ module RSpec
       end
 
       def find_hook(hook, scope, example_group_class, example = nil)
-        found_hooks = hooks[hook][scope].with_conditions_applicable_to(example || example_group_class)
+        found_hooks = hooks[hook][scope].find_hooks_for(example || example_group_class)
 
         # ensure we don't re-run :all hooks that were applied to any of the parent groups
         if scope == :all
           super_klass = example_group_class.superclass
           while super_klass != RSpec::Core::ExampleGroup
-            found_hooks = found_hooks.without_conditions_applicable_to(super_klass)
+            found_hooks = found_hooks.without_hooks_for(super_klass)
             super_klass = super_klass.superclass
           end
         end
