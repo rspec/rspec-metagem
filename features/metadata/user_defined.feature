@@ -5,7 +5,7 @@ Feature: User-defined metadata
   `context` or `it`.  RSpec supports many configuration options that apply
   only to certain examples or groups based on the metadata.
 
-  Metadata defined on an example group is available (and can be overriden)
+  Metadata defined on an example group is available (and can be overridden)
   by any sub-group or from any example in that group or a sub-group.
 
   In addition, there is a configuration option (which will be the default
