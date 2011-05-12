@@ -1,23 +1,11 @@
-### 2.6.0.rc6 / 2011-05-06
+### 2.6.0 / 2011-05-12
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc4...v2.6.0.rc6)
-
-No changes this release (releasing to align with rc5 of other rspec gems).
-
-### 2.6.0.rc4 / 2011-05-01
-
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0.rc2...v2.6.0.rc4)
-
-* Enhancements
-  * range.should cover(*values) (Anders Furseth)
-
-### 2.6.0.rc2 / 2011-04-18
-
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0.rc2)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0)
 
 * Enhancments
   * `change` matcher accepts Regexps (Robert Davis)
   * better descriptions for have_xxx matchers (Magnus Bergmark)
+  * range.should cover(*values) (Anders Furseth)
 
 * Bug fixes
   * Removed non-ascii characters that were choking rcov (Geoffrey Byers)
