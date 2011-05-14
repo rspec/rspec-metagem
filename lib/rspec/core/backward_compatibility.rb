@@ -13,7 +13,7 @@ be removed from a future version of RSpec.
 
 * #{name} is deprecated.
 * RSpec is the new top-level module in RSpec-2
-***************************************************************
+*****************************************************************
 WARNING
           RSpec
         else
