@@ -60,6 +60,13 @@ module RSpec
     @configuration ||= RSpec::Core::Configuration.new
   end
 
+  # Yields the global configuration object
+  #
+  # == Examples
+  #
+  # RSpec.configure do |config|
+  #   config.format = 'documentation'
+  # end
   def self.configure
     warn_about_deprecated_configure if RSpec.world.example_groups.any?
     yield configuration if block_given?
