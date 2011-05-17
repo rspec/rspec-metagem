@@ -21,7 +21,7 @@ tracker](https://github.com/rspec/rspec-expectations/issues).
 ## Install
 
     gem install rspec               # for rspec-core, rspec-expectations, rspec-mocks
-    gem install rspec-expecctations # for rspec-expectations only
+    gem install rspec-expectations  # for rspec-expectations only
 
 ## Matchers
 
