@@ -34,8 +34,8 @@ module RSpec
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
-            examples = apply_exclusion_filters(examples, exclusion_filter) if exclusion_filter
-            examples = apply_inclusion_filters(examples, inclusion_filter) if inclusion_filter
+            examples = apply_exclusion_filters(examples, exclusion_filter)
+            examples = apply_inclusion_filters(examples, inclusion_filter)
             examples.uniq
           end
         }
@@ -106,13 +106,13 @@ module RSpec
           example_groups.clear
           if filter_announcements.empty?
             reporter.message("No examples found.")
-          elsif inclusion_filter
+          elsif !inclusion_filter.empty?
             message = "No examples matched #{inclusion_filter.description}."
             if @configuration.run_all_when_everything_filtered?
               message << " Running all."
             end
             reporter.message(message)
-          elsif exclusion_filter
+          elsif !exclusion_filter.empty?
             reporter.message(
               "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
           end
@@ -122,7 +122,7 @@ module RSpec
       end
 
       def announce_inclusion_filter(announcements)
-        if inclusion_filter
+        unless inclusion_filter.empty?
           announcements << "including #{inclusion_filter.description}"
         end
       end
@@ -139,8 +139,8 @@ module RSpec
 
     private
 
-      def apply?(predicate, conditions)
-        lambda {|example| example.metadata.apply?(predicate, conditions)}
+      def apply?(predicate, filter)
+        lambda {|example| filter.empty? || example.metadata.apply?(predicate, filter)}
       end
 
       def declaration_line_numbers

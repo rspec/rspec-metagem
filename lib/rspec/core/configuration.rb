@@ -349,10 +349,17 @@ EOM
         settings[:exclusion_filter] = filter
       end
 
+      def exclusion_filter
+        settings[:exclusion_filter] || {}
+      end
+
       def inclusion_filter=(filter)
         settings[:inclusion_filter] = filter
       end
 
+      def inclusion_filter
+        settings[:inclusion_filter] || {}
+      end
       def filter_run_including(*args)
         force_overwrite = if args.last.is_a?(Hash) || args.last.is_a?(Symbol)
           false
@@ -362,7 +369,7 @@ EOM
 
         options = build_metadata_hash_from(args)
 
-        if inclusion_filter and inclusion_filter[:line_number] || inclusion_filter[:full_description]
+        if inclusion_filter[:line_number] || inclusion_filter[:full_description]
           warn "Filtering by #{options.inspect} is not possible since " \
                "you are already filtering by #{inclusion_filter.inspect}"
         else

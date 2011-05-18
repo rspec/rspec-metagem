@@ -527,7 +527,20 @@ module RSpec::Core
       end
     end
 
+    describe "#inclusion_filter" do
+      it "returns {} even if set to nil" do
+        config.inclusion_filter = nil
+        config.inclusion_filter.should eq({})
+      end
+    end
+
+
     describe "#exclusion_filter" do
+      it "returns {} even if set to nil" do
+        config.exclusion_filter = nil
+        config.exclusion_filter.should eq({})
+      end
+
       describe "the default :if filter" do
         it "does not exclude a spec with no :if metadata" do
           config.exclusion_filter[:if].call(nil, {}).should be_false
