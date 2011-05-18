@@ -1,3 +1,10 @@
+### 2.6.1 / not released
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0...master.6.1)
+
+* Bug fixes
+  * Don't extend nil when filters are nil
+
 ### 2.6.0 / 2011-05-12
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.5.1...v2.6.0)
