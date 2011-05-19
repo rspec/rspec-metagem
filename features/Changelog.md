@@ -4,6 +4,7 @@
 
 * Bug fixes
   * Don't extend nil when filters are nil
+  * `require 'rspec/autorun'` when running rcov.
 
 ### 2.6.0 / 2011-05-12
 

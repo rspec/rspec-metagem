@@ -26,6 +26,8 @@ require 'rspec/core/example_group'
 require 'rspec/core/version'
 require 'rspec/core/errors'
 
+require 'rspec/autorun' if $0.split(File::SEPARATOR).last == 'rcov'
+
 module RSpec
   autoload :Matchers, 'rspec/matchers'
 
