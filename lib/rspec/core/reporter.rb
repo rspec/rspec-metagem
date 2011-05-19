@@ -11,11 +11,11 @@ module RSpec::Core
       begin
         yield self
       ensure
-        conclude
+        finish
       end
     end
 
-    def conclude
+    def finish
       begin
         stop
         notify :start_dump
@@ -27,7 +27,7 @@ module RSpec::Core
       end
     end
 
-    alias_method :abort, :conclude
+    alias_method :abort, :finish
 
     def start(expected_example_count)
       @start = Time.now
