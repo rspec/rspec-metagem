@@ -14,6 +14,17 @@ describe RSpec::Core::ConfigurationOptions do
     config_options_object(*args).options
   end
 
+  it "warns when HOME env var is not set" do
+    begin
+      orig_home = ENV.delete("HOME")
+      coo = RSpec::Core::ConfigurationOptions.new([])
+      coo.should_receive(:warn)
+      coo.parse_options
+    ensure
+      ENV["HOME"] = orig_home
+    end
+  end
+
   describe "#configure" do
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
@@ -286,23 +297,16 @@ describe RSpec::Core::ConfigurationOptions do
 
     before do
       @orig_spec_opts = ENV["SPEC_OPTS"]
-      @orig_global_options_file = RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE
-      @orig_local_options_file  = RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE
-      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :GLOBAL_OPTIONS_FILE
-      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :LOCAL_OPTIONS_FILE
-      RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE = global_options_file
-      RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE  = local_options_file
-      FileUtils.rm local_options_file if File.exist? local_options_file
-      FileUtils.rm global_options_file if File.exist? global_options_file
-      FileUtils.rm custom_options_file if File.exist? custom_options_file
+      RSpec::Core::ConfigurationOptions::send :public, :global_options_file
+      RSpec::Core::ConfigurationOptions::send :public, :local_options_file
+      RSpec::Core::ConfigurationOptions::any_instance.stub(:global_options_file) { global_options_file }
+      RSpec::Core::ConfigurationOptions::any_instance.stub(:local_options_file) { local_options_file }
     end
 
     after do
       ENV["SPEC_OPTS"] = @orig_spec_opts
-      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :GLOBAL_OPTIONS_FILE
-      RSpec::Core::ConfigurationOptions::__send__ :remove_const, :LOCAL_OPTIONS_FILE
-      RSpec::Core::ConfigurationOptions::GLOBAL_OPTIONS_FILE = @orig_global_options_file
-      RSpec::Core::ConfigurationOptions::LOCAL_OPTIONS_FILE  = @orig_local_options_file
+      RSpec::Core::ConfigurationOptions::send :private, :global_options_file
+      RSpec::Core::ConfigurationOptions::send :private, :local_options_file
     end
 
     def write_options(scope, options)

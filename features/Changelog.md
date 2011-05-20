@@ -1,3 +1,10 @@
+### 2.6.2 / 2011-05-20
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.1...v2.6.2)
+
+* Bug fixes
+  * Warn rather than raise when HOME env var is not defined
+
 ### 2.6.1 / 2011-05-19
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.0...v2.6.1)

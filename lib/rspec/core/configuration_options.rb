@@ -2,9 +2,6 @@ module RSpec
   module Core
 
     class ConfigurationOptions
-      LOCAL_OPTIONS_FILE  = ".rspec"
-      GLOBAL_OPTIONS_FILE = File.join(File.expand_path("~"), ".rspec")
-
       attr_reader :options
 
       def initialize(args)
@@ -80,11 +77,11 @@ module RSpec
       end
 
       def local_options
-        @local_options ||= options_from(LOCAL_OPTIONS_FILE)
+        @local_options ||= options_from(local_options_file)
       end
 
       def global_options
-        @global_options ||= options_from(GLOBAL_OPTIONS_FILE)
+        @global_options ||= options_from(global_options_file)
       end
 
       def options_from(path)
@@ -92,7 +89,7 @@ module RSpec
       end
 
       def args_from_options_file(path)
-        return [] unless File.exist?(path)
+        return [] unless path && File.exist?(path)
         config_string = options_file_as_erb_string(path)
         config_string.split(/\n+/).map {|l| l.split}.flatten
       end
@@ -105,6 +102,20 @@ module RSpec
       def custom_options_file
         command_line_options[:custom_options_file]
       end
+
+      def local_options_file
+        ".rspec"
+      end
+
+      def global_options_file
+        begin
+          File.join(File.expand_path("~"), ".rspec")
+        rescue ArgumentError
+          warn "Unable to find ~/.rspec because the HOME environment variable is not set"
+          nil
+        end
+      end
+
     end
   end
 end
