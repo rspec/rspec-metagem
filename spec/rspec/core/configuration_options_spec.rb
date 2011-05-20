@@ -30,6 +30,13 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:add_formatter).ordered
       opts.configure(config)
     end
+    
+    it "merges the :exclusion_filter option with the default exclusion_filter" do
+      opts = config_options_object(*%w[--tag ~slow])
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      config.exclusion_filter.should have_key(:slow)
+    end
   end
 
   describe "-c, --color, and --colour" do
