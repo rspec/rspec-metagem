@@ -16,6 +16,7 @@ module RSpec
         keys.unshift(:requires) if keys.delete(:requires)
         keys.unshift(:libs)     if keys.delete(:libs)
         formatters = options[:formatters] if keys.delete(:formatters)
+        config.exclusion_filter.merge! options[:exclusion_filter] if keys.delete(:exclusion_filter)
         keys.each do |key|
           config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
         end
