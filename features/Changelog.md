@@ -4,6 +4,7 @@
 
 * Bug fixes
   * Warn rather than raise when HOME env var is not defined
+  * Properly merge command-line exclusions with default :if and :unless (joshcooper)
 
 ### 2.6.1 / 2011-05-19
 
