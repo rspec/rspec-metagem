@@ -39,6 +39,18 @@ module RSpec
           dump_profile if profile_examples? && failure_count == 0
           output.puts "\nFinished in #{format_seconds(duration)} seconds\n"
           output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
+          dump_commands_to_rerun_failed_examples
+        end
+
+        def dump_commands_to_rerun_failed_examples
+          return if failed_examples.empty?
+          output.puts
+          output.puts("Failed examples:")
+          output.puts
+
+          failed_examples.each do |example|
+            output.puts(red("rspec #{BaseFormatter::relative_path(example.location)}") + " " + grey("# #{example.full_description}"))
+          end
         end
 
         def dump_profile
