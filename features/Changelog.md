@@ -1,4 +1,4 @@
-### 2.6.2 / 2011-05-20
+### 2.6.2 / 2011-05-21
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.1...v2.6.2)
 
