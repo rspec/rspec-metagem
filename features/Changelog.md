@@ -1,3 +1,12 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.2...master)
+
+* Bug fixes
+  * Explicitly convert exit code to integer, avoiding TypeError when return
+    value of run is IO object proxied by DRb::DRbObject (Julian Scheid)
+
+
 ### 2.6.2 / 2011-05-21
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.1...v2.6.2)
