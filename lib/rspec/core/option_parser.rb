@@ -40,8 +40,7 @@ module RSpec::Core
           options[:debug] = true
         end
 
-        parser.on('-e', '--example PATTERN', "Run examples whose full descriptions match this pattern",
-                "(PATTERN is compiled into a Ruby regular expression)") do |o|
+        parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING") do |o|
           options[:full_description] = Regexp.compile(Regexp.escape(o))
         end
 
