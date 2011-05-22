@@ -1,10 +1,14 @@
-### dev
+### 2.6.3 / not released
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.2...master)
 
+* Minor output enhancment
+  * Add dump of shell commands to re-run failed examples
+
 * Bug fixes
   * Explicitly convert exit code to integer, avoiding TypeError when return
-    value of run is IO object proxied by DRb::DRbObject (Julian Scheid)
+    value of run is IO object proxied by `DRb::DRbObject` (Julian Scheid)
+  * Clarify behavior of `--example` command line option
 
 
 ### 2.6.2 / 2011-05-21
