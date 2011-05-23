@@ -23,21 +23,9 @@ require "rake/rdoctask"
 require "rspec/core/rake_task"
 require "rspec/core/version"
 
-cucumber_loaded = false
-
 begin
   require "cucumber/rake/task"
-
   Cucumber::Rake::Task.new(:cucumber)
-
-  class Cucumber::Rake::Task::ForkedCucumberRunner
-    # When cucumber shells out, we still need it to run in the context of our
-    # bundle.
-    def run
-      sh "bundle exec #{RUBY} " + args.join(" ")
-    end
-  end
-  cucumber_loaded = true
 rescue LoadError => e
   puts "unable to load cucumber, some tasks unavailable"
   task :cucumber do
@@ -52,7 +40,6 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
 end
 
-
 namespace :rcov do
   task :cleanup do
     rm_rf 'coverage.data'
@@ -64,7 +51,7 @@ namespace :rcov do
     t.rcov_opts << %[--no-html --aggregate coverage.data]
   end
 
-  if cucumber_loaded
+  if defined?(Cucumber)
     Cucumber::Rake::Task.new :cucumber do |t|
       t.cucumber_opts = %w{--format progress}
       t.rcov = true
