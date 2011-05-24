@@ -1,15 +1,12 @@
-### 2.6.3 / not released
+### 2.6.3 / 2011-05-24
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.2...master)
-
-* Minor output enhancment
-  * Add dump of shell commands to re-run failed examples
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.2...v2.6.3)
 
 * Bug fixes
   * Explicitly convert exit code to integer, avoiding TypeError when return
     value of run is IO object proxied by `DRb::DRbObject` (Julian Scheid)
   * Clarify behavior of `--example` command line option
-
+  * Build using a rubygems-1.6.2 to avoid downstream yaml parsing error
 
 ### 2.6.2 / 2011-05-21
 
