@@ -41,6 +41,12 @@ describe "have matcher" do
       owner.should have(:no).items_in_collection_with_size_method
     end
 
+    it "converts a String argument to Integer" do
+      owner = create_collection_owner_with(3)
+      owner.should have('3').items_in_collection_with_length_method
+      owner.should have('3').items_in_collection_with_size_method
+    end
+
     it "fails if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
       lambda {
@@ -364,7 +370,7 @@ EOF
     end
 
     it "does not respond_to? method_missing (because it's private)" do
-      formatter = described_class.new({ }, StringIO.new)
+      formatter = described_class.new(0, StringIO.new)
       formatter.should_not respond_to(:method_missing)
     end
 
