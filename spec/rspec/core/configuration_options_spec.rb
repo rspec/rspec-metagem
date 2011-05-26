@@ -14,7 +14,7 @@ describe RSpec::Core::ConfigurationOptions do
     config_options_object(*args).options
   end
 
-  it "warns when HOME env var is not set" do
+  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
     begin
       orig_home = ENV.delete("HOME")
       coo = RSpec::Core::ConfigurationOptions.new([])

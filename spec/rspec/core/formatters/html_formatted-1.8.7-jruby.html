@@ -312,18 +312,14 @@ a {
       <span class="failed_spec_name">fails</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18
-./spec/rspec/core/formatters/html_formatter_spec.rb:24
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45</pre></div>
-    <pre class="ruby"><code><span class="linenum">24</span>          <span class="keyword">rescue</span> <span class="constant">Exception</span>
-<span class="linenum">25</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">26</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">27</span>        <span class="keyword">end</span>
-<span class="linenum">28</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
+org/jruby/RubyKernel.java:2021:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'</pre></div>
+    <pre class="ruby"><code><span class="linenum">29</span>            <span class="ident">teardown_mocks_for_rspec</span>
+<span class="linenum">30</span>          <span class="keyword">end</span>
+<span class="offending"><span class="linenum">31</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
+<span class="linenum">32</span>        <span class="keyword">end</span>
+<span class="linenum">33</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -350,13 +346,9 @@ expected 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33
-./spec/rspec/core/formatters/html_formatter_spec.rb:24
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
+org/jruby/RubyKernel.java:2021:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'</pre></div>
     <pre class="ruby"><code><span class="linenum">27</span>        <span class="keyword">end</span>
 <span class="linenum">28</span>
 <span class="offending"><span class="linenum">29</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
@@ -375,7 +367,11 @@ expected 2
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
-        <div class="backtrace"><pre>(erb):1</pre></div>
+        <div class="backtrace"><pre>(erb):1:in `result'
+org/jruby/RubyKernel.java:1088:in `eval'
+./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
+org/jruby/RubyKernel.java:2021:in `instance_eval'
+org/jruby/RubyArray.java:2336:in `collect'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
