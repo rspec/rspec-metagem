@@ -39,6 +39,11 @@ module RSpec
             argv << "--tag" << k.to_s
           end
         end
+        if options[:exclusion_filter]
+          options[:exclusion_filter].each_pair do |k, v|
+            argv << "--tag" << "~#{k.to_s}"
+          end
+        end
         if options[:formatters]
           options[:formatters].each do |pair|
             argv << "--format" << pair[0]

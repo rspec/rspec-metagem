@@ -224,15 +224,26 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     context "with tags" do
-      it "includes the tags" do
+      it "includes the inclusion tags" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv.should eq(["--tag", "tag"])
       end
 
-      it "leaves tags intact" do
+      it "leaves inclusion tags intact" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv
         coo.options[:filter].should eq( {:tag=>true} )
+      end
+
+      it "includes the exclusion tags" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv.should eq(["--tag", "~tag"])
+      end
+
+      it "leaves exclusion tags intact" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv
+        coo.options[:exclusion_filter].should eq( {:tag=>true} )
       end
     end
 
