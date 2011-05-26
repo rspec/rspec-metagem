@@ -87,7 +87,7 @@ a string such as "#method_name" to remove this warning.
 
 NOTICE
           end
-        end
       end
+    end
   end
 end
