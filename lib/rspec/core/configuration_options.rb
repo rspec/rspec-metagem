@@ -12,15 +12,15 @@ module RSpec
         keys = options.keys
         keys.unshift(:requires) if keys.delete(:requires)
         keys.unshift(:libs)     if keys.delete(:libs)
-        
+
         formatters = options[:formatters] if keys.delete(:formatters)
-        
+
         config.exclusion_filter.merge! options[:exclusion_filter] if keys.delete(:exclusion_filter)
-        
+
         keys.each do |key|
           config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
         end
-        
+
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
       end
 
@@ -33,7 +33,16 @@ module RSpec
         argv << "--fail-fast"    if options[:fail_fast]
         argv << "--line_number"  << options[:line_number]             if options[:line_number]
         argv << "--options"      << options[:custom_options_file]     if options[:custom_options_file]
-        argv << "--example"      << options[:full_description].source if options[:full_description]
+        if options[:full_description]
+          # The argument to --example is regexp-escaped before being stuffed
+          # into a regexp when received for the first time (see OptionParser).
+          # Hence, merely grabbing the source of this regexp will retain the
+          # backslashes, so we must remove them. Note that we have to make the
+          # assumption that any backslashes present were inserted by RSpec
+          # and not intentionally added by the user.
+          source = options[:full_description].source.gsub("\\", "")
+          argv << "--example" << source
+        end
         if options[:filter]
           options[:filter].each_pair do |k, v|
             argv << "--tag" << k.to_s
