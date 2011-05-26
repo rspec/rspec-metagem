@@ -1,3 +1,8 @@
+### Dev
+
+* Bug fixes
+  * Support exclusion filters in DRb. (Yann Lugrin)
+
 ### 2.6.3 / 2011-05-24
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.2...v2.6.3)
