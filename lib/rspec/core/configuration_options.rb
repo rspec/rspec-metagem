@@ -37,11 +37,8 @@ module RSpec
           # The argument to --example is regexp-escaped before being stuffed
           # into a regexp when received for the first time (see OptionParser).
           # Hence, merely grabbing the source of this regexp will retain the
-          # backslashes, so we must remove them. Note that we have to make the
-          # assumption that any backslashes present were inserted by RSpec
-          # and not intentionally added by the user.
-          source = options[:full_description].source.gsub("\\", "")
-          argv << "--example" << source
+          # backslashes, so we must remove them.
+          argv << "--example" << options[:full_description].source.delete('\\')
         end
         if options[:filter]
           options[:filter].each_pair do |k, v|

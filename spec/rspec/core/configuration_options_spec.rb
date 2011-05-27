@@ -227,6 +227,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "includes --example" do
         config_options_object(*%w[--example foo]).drb_argv.should include("--example", "foo")
       end
+      
       it "unescapes characters which were escaped upon storing --example originally" do
         config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
       end
