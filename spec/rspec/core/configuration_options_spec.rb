@@ -41,7 +41,7 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:add_formatter).ordered
       opts.configure(config)
     end
-    
+
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
       config = RSpec::Core::Configuration.new
@@ -221,6 +221,15 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "includes --options" do
       config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
+    end
+
+    context "with --example" do
+      it "includes --example" do
+        config_options_object(*%w[--example foo]).drb_argv.should include("--example", "foo")
+      end
+      it "unescapes characters which were escaped upon storing --example originally" do
+        config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
+      end
     end
 
     context "with tags" do
