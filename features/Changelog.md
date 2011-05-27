@@ -2,6 +2,7 @@
 
 * Bug fixes
   * Support exclusion filters in DRb. (Yann Lugrin)
+  * Fix --example escaping when run over DRb. (Elliot Winkler)
 
 ### 2.6.3 / 2011-05-24
 
