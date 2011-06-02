@@ -1,6 +1,6 @@
 module RSpec
   module Core
-    module ObjectExtensions
+    module DSL
       def describe(*args, &example_group_block)
         RSpec::Core::ExampleGroup.describe(*args, &example_group_block).register
       end
@@ -8,6 +8,4 @@ module RSpec
   end
 end
 
-class Object
-  include RSpec::Core::ObjectExtensions
-end
+include RSpec::Core::DSL
