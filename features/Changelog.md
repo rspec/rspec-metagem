@@ -3,6 +3,8 @@
 * Bug fixes
   * Support exclusion filters in DRb. (Yann Lugrin)
   * Fix --example escaping when run over DRb. (Elliot Winkler)
+  * Use standard ANSI codes for color formatting so colors work in a wider set
+    of color schemes.
 
 ### 2.6.3 / 2011-05-24
 

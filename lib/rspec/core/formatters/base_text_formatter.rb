@@ -49,7 +49,7 @@ module RSpec
           output.puts
 
           failed_examples.each do |example|
-            output.puts(red("rspec #{BaseFormatter::relative_path(example.location)}") + " " + grey("# #{example.full_description}"))
+            output.puts(red("rspec #{BaseFormatter::relative_path(example.location)}") + " " + cyan("# #{example.full_description}"))
           end
         end
 
@@ -58,7 +58,7 @@ module RSpec
           output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
           sorted_examples.each do |example|
             output.puts "  #{example.full_description}"
-            output.puts grey("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.location)}")
+            output.puts cyan("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.location)}")
           end
         end
 
@@ -75,8 +75,8 @@ module RSpec
             output.puts "Pending:"
             pending_examples.each do |pending_example|
               output.puts yellow("  #{pending_example.full_description}")
-              output.puts grey("    # #{pending_example.execution_result[:pending_message]}")
-              output.puts grey("    # #{format_caller(pending_example.location)}")
+              output.puts cyan("    # #{pending_example.execution_result[:pending_message]}")
+              output.puts cyan("    # #{format_caller(pending_example.location)}")
             end
           end
         end
@@ -95,20 +95,12 @@ module RSpec
           color(text, "\e[1m")
         end
 
-        def white(text)
-          color(text, "\e[37m")
-        end
-
-        def green(text)
-          color(text, "\e[32m")
-        end
-
         def red(text)
           color(text, "\e[31m")
         end
 
-        def magenta(text)
-          color(text, "\e[35m")
+        def green(text)
+          color(text, "\e[32m")
         end
 
         def yellow(text)
@@ -119,8 +111,16 @@ module RSpec
           color(text, "\e[34m")
         end
 
-        def grey(text)
-          color(text, "\e[90m")
+        def magenta(text)
+          color(text, "\e[35m")
+        end
+
+        def cyan(text)
+          color(text, "\e[36m")
+        end
+
+        def white(text)
+          color(text, "\e[37m")
         end
 
         def short_padding
@@ -143,7 +143,7 @@ module RSpec
 
         def dump_backtrace(example)
           format_backtrace(example.execution_result[:exception].backtrace, example).each do |backtrace_info|
-            output.puts grey("#{long_padding}# #{backtrace_info}")
+            output.puts cyan("#{long_padding}# #{backtrace_info}")
           end
         end
 
