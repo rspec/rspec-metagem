@@ -16,6 +16,21 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe "#exception" do
+    it "supplies the first exception raised, if any" do
+      example = example_group.example { raise "first" }
+      example_group.after { raise "second" }
+      example_group.run
+      example.exception.message.should eq("first")
+    end
+
+    it "returns nil if there is no exception" do
+      example = example_group.example('example') { }
+      example_group.run
+      example.exception.should be_nil
+    end
+  end
+
   describe "auto-generated example descriptions" do
     let(:generated_description) { "the generated description" }
     let(:rspec_example) { example_group.specify { 5.should == 5 } }
@@ -269,4 +284,5 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
   end
+
 end

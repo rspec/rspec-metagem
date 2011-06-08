@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...master)
+
+* Enhancements
+  * Add example.exception (useful for extensions)
+
 ### 2.6.4 / 2011-06-06
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.3...v2.6.4)

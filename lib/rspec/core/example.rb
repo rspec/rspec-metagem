@@ -4,6 +4,10 @@ module RSpec
 
       attr_reader :metadata, :options, :example_group_instance
 
+      # Returns the first exception raised, if any, in the context of running
+      # this example.
+      attr_reader :exception
+
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
           define_method(key) {@metadata[key]}
@@ -23,7 +27,7 @@ module RSpec
         @example_group_class
       end
 
-      def around_hooks
+      def around_hooks # :nodoc:
         @around_hooks ||= example_group.around_hooks_for(self)
       end
 
