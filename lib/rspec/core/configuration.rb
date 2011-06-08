@@ -38,6 +38,7 @@ module RSpec
       add_setting :tty
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
       add_setting :expecting_with_rspec
+      add_setting :default_directory, :default => 'spec'
 
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -297,20 +298,9 @@ EOM
       end
 
       def files_or_directories_to_run=(*files)
-        self.files_to_run = files.flatten.collect do |file|
-          if File.directory?(file)
-            pattern.split(",").collect do |pattern|
-              Dir["#{file}/#{pattern.strip}"]
-            end
-          else
-            if file =~ /(\:(\d+))$/
-              self.line_number = $2
-              file.sub($1,'')
-            else
-              file
-            end
-          end
-        end.flatten
+        self.files_to_run = get_files_to_run(files)
+        # if you comment out the next line, the "block not supplied" error goes away
+        self.files_to_run = get_files_to_run(default_directory) if files_to_run.empty?
       end
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
@@ -474,6 +464,23 @@ MESSAGE
             eval(formatter_ref)
           end
         end
+      end
+      
+      def get_files_to_run(*files)
+        files.flatten.collect do |file|
+          if File.directory?(file)
+            pattern.split(",").collect do |pattern|
+              Dir["#{file}/#{pattern.strip}"]
+            end
+          else
+            if file =~ /(\:(\d+))$/
+              self.line_number = $2
+              file.sub($1,'')
+            else
+              file
+            end
+          end
+        end.flatten
       end
 
       def string_const?(str)

@@ -147,20 +147,27 @@ module RSpec::Core
       it "loads files not following pattern if named explicitly" do
         file = "./spec/rspec/core/resources/a_bar.rb"
         config.files_or_directories_to_run = file
-        config.files_to_run.should == [file]
+        config.files_to_run.should eq([file])
       end
 
       context "with default pattern" do
         it "loads files named _spec.rb" do
           dir = "./spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
-          config.files_to_run.should == ["#{dir}/a_spec.rb"]
+          config.files_to_run.should eq(["#{dir}/a_spec.rb"])
         end
 
         it "loads files in Windows" do
           file = "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
           config.files_or_directories_to_run = file
-          config.files_to_run.should == [file]
+          config.files_to_run.should eq([file])
+        end
+      end
+      
+      context "with default default_directory" do
+        it "loads files named _spec.rb" do
+          config.files_or_directories_to_run = []
+          config.files_to_run.should_not be_empty
         end
       end
     end
@@ -225,6 +232,12 @@ module RSpec::Core
       it "assigns the example name as the filter on description" do
         config.full_description = "foo"
         config.filter.should == {:full_description => /foo/}
+      end
+    end
+    
+    describe "#default_directory" do
+      it 'defaults to "spec"' do
+        config.default_directory.should eq('spec')
       end
     end
 
