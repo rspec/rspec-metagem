@@ -8,13 +8,13 @@ accident.  As it doesn't add a new API, we decided to leave it in rather than
 roll back this release.
 
 * Enhancements
-  * Add summary of commands to run individual failed examples.
+    * Add summary of commands to run individual failed examples.
 
 * Bug fixes
-  * Support exclusion filters in DRb. (Yann Lugrin)
-  * Fix --example escaping when run over DRb. (Elliot Winkler)
-  * Use standard ANSI codes for color formatting so colors work in a wider set
-    of color schemes.
+    * Support exclusion filters in DRb. (Yann Lugrin)
+    * Fix --example escaping when run over DRb. (Elliot Winkler)
+    * Use standard ANSI codes for color formatting so colors work in a wider set
+      of color schemes.
 
 ### 2.6.3 / 2011-05-24
 
