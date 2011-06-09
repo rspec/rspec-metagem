@@ -1,7 +1,7 @@
 Feature: default_path
 
   Use `config.default_path` to set the spec directory that contains
-  all of the examples. With this option, Executing `rspec` is equivalent to
+  all of the examples. With this option, executing `rspec` is equivalent to
   `rspec [default_path]`. The default option is set to "spec".
 
   Scenario: the default default_path is spec
