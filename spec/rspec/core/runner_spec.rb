@@ -25,6 +25,7 @@ module RSpec::Core
       let(:out) { StringIO.new }
 
       it "resets world and configuration" do
+        RSpec.configuration.stub(:files_to_run) { [] }
         RSpec.configuration.should_receive(:reset)
         RSpec.world.should_receive(:reset)
         RSpec::Core::Runner.run([], err, out)
@@ -58,6 +59,7 @@ module RSpec::Core
           end
 
           it "outputs a message" do
+            RSpec.configuration.stub(:files_to_run) { [] }
             err.should_receive(:puts).with(
               "No DRb server is running. Running in local process instead ..."
             )

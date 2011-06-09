@@ -156,6 +156,7 @@ module RSpec::Core
 
       before do
         config.stub(:run_hook)
+        config.stub(:files_to_run) { [] }
       end
 
       it "doesn't override output_stream" do

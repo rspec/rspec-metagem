@@ -298,10 +298,30 @@ EOM
       end
 
       def files_or_directories_to_run=(*files)
+        files = files.flatten
+        if files.empty? && default_directory
+          files << default_directory
+        end
         self.files_to_run = get_files_to_run(files)
-        # if you comment out the next line, the "block not supplied" error goes away
-        self.files_to_run = get_files_to_run(default_directory) if files_to_run.empty?
       end
+
+      def get_files_to_run(*files)
+        files.flatten.collect do |file|
+          if File.directory?(file)
+            pattern.split(",").collect do |pattern|
+              Dir["#{file}/#{pattern.strip}"]
+            end
+          else
+            if file =~ /(\:(\d+))$/
+              self.line_number = $2
+              file.sub($1,'')
+            else
+              file
+            end
+          end
+        end.flatten
+      end
+
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
@@ -350,6 +370,7 @@ EOM
       def inclusion_filter
         settings[:inclusion_filter] || {}
       end
+
       def filter_run_including(*args)
         force_overwrite = if args.last.is_a?(Hash) || args.last.is_a?(Symbol)
           false
@@ -466,23 +487,6 @@ MESSAGE
         end
       end
       
-      def get_files_to_run(*files)
-        files.flatten.collect do |file|
-          if File.directory?(file)
-            pattern.split(",").collect do |pattern|
-              Dir["#{file}/#{pattern.strip}"]
-            end
-          else
-            if file =~ /(\:(\d+))$/
-              self.line_number = $2
-              file.sub($1,'')
-            else
-              file
-            end
-          end
-        end.flatten
-      end
-
       def string_const?(str)
         str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
       end
