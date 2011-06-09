@@ -38,7 +38,7 @@ module RSpec
       add_setting :tty
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
       add_setting :expecting_with_rspec
-      add_setting :default_directory, :default => 'spec'
+      add_setting :default_path, :default => 'spec'
 
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -299,8 +299,8 @@ EOM
 
       def files_or_directories_to_run=(*files)
         files = files.flatten
-        if files.empty? && default_directory
-          files << default_directory
+        if files.empty? && default_path
+          files << default_path
         end
         self.files_to_run = get_files_to_run(files)
       end

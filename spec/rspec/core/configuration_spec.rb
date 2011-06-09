@@ -164,7 +164,7 @@ module RSpec::Core
         end
       end
       
-      context "with default default_directory" do
+      context "with default default_path" do
         it "loads files named _spec.rb" do
           config.files_or_directories_to_run = []
           config.files_to_run.should_not be_empty
@@ -235,9 +235,9 @@ module RSpec::Core
       end
     end
     
-    describe "#default_directory" do
+    describe "#default_path" do
       it 'defaults to "spec"' do
-        config.default_directory.should eq('spec')
+        config.default_path.should eq('spec')
       end
     end
 

@@ -1,3 +1,14 @@
+# rspec-core-2.7 (not yet released - coming soon)
+
+## `--default_path`
+
+Add the following to `.rspec`:
+
+    # in .rspec
+    --default_path spec
+
+And now you can just type `rspec` to run all the specs in the `spec` directory.
+
 # rspec-core-2.6
 
 ## new APIs for sharing content

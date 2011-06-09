@@ -3,7 +3,8 @@
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...master)
 
 * Enhancements
-  * Add example.exception (useful for extensions)
+  * Add example.exception (David Chelimsky)
+  * --default_path command line option (Justin Ko)
 
 ### 2.6.4 / 2011-06-06
 

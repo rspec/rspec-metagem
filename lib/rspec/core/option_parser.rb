@@ -133,8 +133,9 @@ module RSpec::Core
           options[:tty] = true
         end
         
-        parser.on('--default_directory DIRECTORY', 'Set the default directory where RSpec looks for examples.') do |dir|
-          options[:default_directory] = dir
+        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
+                                         'Can be a path to a file or a directory') do |path|
+          options[:default_path] = path
         end
       end
     end
