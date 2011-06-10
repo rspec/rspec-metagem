@@ -1,2 +1,7 @@
-default: --require features --strict --format progress --tags ~@wip<%= RUBY_PLATFORM == 'java' ? ' --tags ~@no-jruby' : '' %> features
+<%
+exclusions = []
+exclusions << ' --tags ~@no-jruby' if RUBY_PLATFORM == 'java'
+exclusions << ' --tags ~@no-ruby-186' if RUBY_VERSION == '1.8.6'
+%>
+default: --require features --strict --format progress --tags ~@wip<%= exclusions.join %> features
 wip:     --require features --tags @wip:3 --wip features

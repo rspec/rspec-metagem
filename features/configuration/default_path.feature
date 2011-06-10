@@ -1,10 +1,20 @@
+@no-ruby-186
 Feature: default_path
 
-  Use `config.default_path` to set the spec directory that contains
-  all of the examples. With this option, executing `rspec` is equivalent to
-  `rspec [default_path]`. The default option is set to "spec".
+  As of rspec-2.7 (not yet released), you can just type `rspec` to run all
+  specs that live in the `spec` directory.
 
-  Scenario: the default default_path is spec
+  This is supported by a `--default_path` option, which is set to `spec` by
+  default. If you prefer to keep your specs in a different directory, or assign
+  an individual file to the `--default_path`, you can do so on the command line
+  or in a configuration file (`.rspec`, `~/.rspec`, or a custom file).
+
+  NOTE: this option is not supported on `RSpec.configuration`, as it needs to
+  be set before spec files get loaded.
+
+  WARNING: this feature is not supported on Ruby-1.8.6
+
+  Scenario: run `rspec` with default default_path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
       """
       describe "an example" do
@@ -12,29 +22,20 @@ Feature: default_path
         end
       end
       """
-    When I run `rspec -f doc`
-    Then the output should contain "passes"
+    When I run `rspec`
+    Then the output should contain "1 example, 0 failures"
     
-  Scenario: changing the default_path
-  
-    Because this is a configuration that happens *before* spec files are
-    loaded, we have to use a `.rspec` configuration file here. Normally, you
-    would just do the following:
-    
-        RSpec.configure do |config|
-          config.default_path = :the_directory
-        end
-    
+  Scenario: run `rspec` with customized default_path
     Given a file named ".rspec" with:
       """
-      --default_path specs
+      --default_path behavior
       """
-    Given a file named "specs/example_spec.rb" with:
+    Given a file named "behavior/example_spec.rb" with:
       """      
       describe "an example" do
         it "passes" do
         end
       end
       """
-    When I run `rspec -f doc`
-    Then the output should contain "passes"
+    When I run `rspec`
+    Then the output should contain "1 example, 0 failures"
