@@ -19,7 +19,6 @@ end
 require "rake"
 require "yaml"
 
-require "rdoc/task"
 require "rspec/core/rake_task"
 require "rspec/core/version"
 
@@ -69,13 +68,6 @@ task :relish, :version do |t, args|
   sh "cp Changelog.md features/"
   sh "relish push rspec/rspec-core:#{args[:version]}"
   sh "rm features/Changelog.md"
-end
-
-RDoc::Task.new do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "rspec-core #{RSpec::Core::Version::STRING}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
 task :default => [:spec, :cucumber]
