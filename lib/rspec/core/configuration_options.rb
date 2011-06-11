@@ -9,9 +9,7 @@ module RSpec
       end
 
       def configure(config)
-        keys = options.keys
-        keys.unshift(:requires) if keys.delete(:requires)
-        keys.unshift(:libs)     if keys.delete(:libs)
+        keys = order(options.keys, :libs, :requires, :default_path)
 
         formatters = options[:formatters] if keys.delete(:formatters)
 
@@ -70,6 +68,13 @@ module RSpec
       end
 
     private
+
+      def order(keys, *ordered)
+        ordered.reverse.each do |key|
+          keys.unshift(key) if keys.delete(key)
+        end
+        keys
+      end
 
       def file_options
         custom_options_file ? custom_options : global_options.merge(local_options)

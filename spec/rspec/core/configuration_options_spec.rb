@@ -203,9 +203,17 @@ describe RSpec::Core::ConfigurationOptions do
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
       parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
-
     end
+  end
 
+  describe "default_path" do
+    it "gets set before files_or_directories_to_run" do
+      config = double("config").as_null_object
+      config.should_receive(:default_path=).ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts = config_options_object("--default_path", "foo")
+      opts.configure(config)
+    end
   end
 
   # TODO ensure all options are output

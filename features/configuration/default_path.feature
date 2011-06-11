@@ -1,4 +1,3 @@
-@no-ruby-186
 Feature: default_path
 
   As of rspec-2.7 (not yet released), you can just type `rspec` to run all
@@ -6,13 +5,11 @@ Feature: default_path
 
   This is supported by a `--default_path` option, which is set to `spec` by
   default. If you prefer to keep your specs in a different directory, or assign
-  an individual file to the `--default_path`, you can do so on the command line
-  or in a configuration file (`.rspec`, `~/.rspec`, or a custom file).
+  an individual file to `--default_path`, you can do so on the command line or
+  in a configuration file (`.rspec`, `~/.rspec`, or a custom file).
 
   NOTE: this option is not supported on `RSpec.configuration`, as it needs to
-  be set before spec files get loaded.
-
-  WARNING: this feature is not supported on Ruby-1.8.6
+  be set before spec files are loaded.
 
   Scenario: run `rspec` with default default_path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
