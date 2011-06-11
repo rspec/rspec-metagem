@@ -13,4 +13,4 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../../Gemfile",
 require 'rubygems'
 require 'bundler/setup'
 
-load Gem.bin_path('diff-lcs', 'htmldiff')
+load Gem.bin_path('rspec-mocks', 'htmldiff')

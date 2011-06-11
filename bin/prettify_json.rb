@@ -13,4 +13,4 @@ ENV['BUNDLE_GEMFILE'] ||= File.expand_path("../../Gemfile",
 require 'rubygems'
 require 'bundler/setup'
 
-load Gem.bin_path('json', 'prettify_json.rb')
+load Gem.bin_path('rspec-mocks', 'prettify_json.rb')
