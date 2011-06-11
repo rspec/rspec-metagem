@@ -299,17 +299,16 @@ EOM
 
       def files_or_directories_to_run=(*files)
         files = files.flatten
-        if files.empty? && default_path
-          files << default_path
-        end
+        files << default_path if files.empty? && default_path
         self.files_to_run = get_files_to_run(files)
       end
 
-      def get_files_to_run(*files)
-        files.flatten.collect do |file|
+      def get_files_to_run(files)
+        patterns = pattern.split(",")
+        files.map do |file|
           if File.directory?(file)
-            pattern.split(",").collect do |pattern|
-              Dir["#{file}/#{pattern.strip}"]
+            patterns.map do |pattern|
+              Dir["#{file}/{#{pattern.strip}}"]
             end
           else
             if file =~ /(\:(\d+))$/
@@ -321,7 +320,6 @@ EOM
           end
         end.flatten
       end
-
 
       # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
       # crazy_slow as an example variant that has the crazy_slow speed option
