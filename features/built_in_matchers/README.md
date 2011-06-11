@@ -49,11 +49,13 @@
 
 ## Predicate matchers
 
-    actual.should be_xxx # passes if actual.xxx?
+    actual.should be_xxx         # passes if actual.xxx?
+    actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
 
-### Example
+### Examples
 
     [].should be_empty # passes because [].empty? returns true
+    { :a => 1 }.should have_key(:a) # passes because the hash has the key :a
 
 ## Collection membership
 
