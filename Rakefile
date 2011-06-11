@@ -74,10 +74,17 @@ task :relish, :version do |t, args|
   sh "rm features/Changelog.md"
 end
 
-task :clobber do
+namespace :clobber do
+  desc "delete generated .rbc files"
+  task :rbc do
+    sh %q{find . -name "*.rbc" | xargs rm}
+  end
+end
+
+desc "delete generated files"
+task :clobber => ["clobber:rbc"] do
   rm_rf 'doc'
   rm_rf 'pkg'
   rm_rf 'tmp'
   rm_rf 'coverage'
 end
-
