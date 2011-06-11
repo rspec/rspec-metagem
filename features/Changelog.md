@@ -1,9 +1,15 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...master)
+
+* Enhancements
+  * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
+
 ### 2.6.0 / 2011-05-12
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0)
 
 * Enhancements
-  * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
   * `change` matcher accepts Regexps (Robert Davis)
   * better descriptions for have_xxx matchers (Magnus Bergmark)
   * range.should cover(*values) (Anders Furseth)
