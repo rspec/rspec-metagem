@@ -11,14 +11,15 @@ source "http://rubygems.org"
 end
 
 ### dev dependencies
-gem "rake", "~> 0.9"
-gem "cucumber", "~> 0.10.2"
-gem "aruba", "~> 0.3.6"
+gem "rake", "0.9.2"
+gem "rdoc", "3.6.1"
+gem "cucumber", "0.10.6"
+gem "aruba", "0.3.6"
 gem "rcov", "0.9.9", :platforms => :mri
 gem "relish", "0.2.0"
 gem "guard-rspec", "0.1.9"
 gem "growl", "1.0.3"
-gem "ZenTest", "~> 4.4.2"
+gem "ZenTest", "4.4.2"
 gem "nokogiri", "1.4.4"
 
 platforms :mri_18 do
