@@ -2,7 +2,11 @@ module RSpec
   module Matchers
     class Have #:nodoc:
       def initialize(expected, relativity=:exactly)
-        @expected = (expected == :no ? 0 : expected.to_i)
+        @expected = case expected
+                    when :no then 0
+                    when String then expected.to_i
+                    else expected
+                    end
         @relativity = relativity
         @actual = @collection_name = @plural_collection_name = nil
       end
