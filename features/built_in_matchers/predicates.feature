@@ -101,7 +101,7 @@ Feature: predicate matchers
        """
      When I run `rspec should_not_have_all_string_keys_spec.rb`
      Then the output should contain "2 examples, 1 failure"
-      And the output should contain "expected #has_all_string_keys?(nil) to return false, got true"
+      And the output should contain "expected #has_all_string_keys? to return false, got true"
 
    Scenario: matcher arguments are passed on to the predicate method
      Given a file named "predicate_matcher_argument_spec.rb" with:

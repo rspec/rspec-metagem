@@ -11,6 +11,22 @@ describe "should have_sym(*args)" do
     }.should fail_with("expected #has_key?(:a) to return true, got false")
   end
 
+  it 'does not include any args in the failure message if no args were given to the matcher' do
+    o = Object.new
+    def o.has_some_stuff?; false; end
+    expect {
+      o.should have_some_stuff
+    }.to fail_with("expected #has_some_stuff? to return true, got false")
+  end
+
+  it 'includes multiple args in the failure message if multiple args were given to the matcher' do
+    o = Object.new
+    def o.has_some_stuff?(*_); false; end
+    expect {
+      o.should have_some_stuff(:a, 7, "foo")
+    }.to fail_with('expected #has_some_stuff?(:a, 7, "foo") to return true, got false')
+  end
+
   it "fails if #has_sym?(*args) returns nil" do
     klass = Class.new do
       def has_foo?
@@ -18,7 +34,7 @@ describe "should have_sym(*args)" do
     end
     lambda {
       klass.new.should have_foo
-    }.should fail_with("expected #has_foo?(nil) to return true, got false")
+    }.should fail_with(/expected #has_foo.* to return true, got false/)
   end
 
   it "fails if target does not respond to #has_sym?" do
@@ -67,6 +83,22 @@ describe "should_not have_sym(*args)" do
       raise "Funky exception"
     end
     lambda { o.should_not have_sym(:foo) }.should raise_error("Funky exception")
+  end
+
+  it 'does not include any args in the failure message if no args were given to the matcher' do
+    o = Object.new
+    def o.has_some_stuff?; true; end
+    expect {
+      o.should_not have_some_stuff
+    }.to fail_with("expected #has_some_stuff? to return false, got true")
+  end
+
+  it 'includes multiple args in the failure message if multiple args were given to the matcher' do
+    o = Object.new
+    def o.has_some_stuff?(*_); true; end
+    expect {
+      o.should_not have_some_stuff(:a, 7, "foo")
+    }.to fail_with('expected #has_some_stuff?(:a, 7, "foo") to return false, got true')
   end
 end
 

@@ -4,6 +4,7 @@
 
 * Enhancements
   * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
+  * Improved failure message for the have_xxx matcher (Myron Marston)
 
 ### 2.6.0 / 2011-05-12
 

@@ -10,15 +10,15 @@ module RSpec
       end
 
       def failure_message_for_should
-        "expected ##{predicate(@expected)}(#{@args[0].inspect}) to return true, got false"
+        "expected ##{predicate(@expected)}#{failure_message_args_description} to return true, got false"
       end
 
       def failure_message_for_should_not
-        "expected ##{predicate(@expected)}(#{@args[0].inspect}) to return false, got true"
+        "expected ##{predicate(@expected)}#{failure_message_args_description} to return false, got true"
       end
 
       def description
-        [method_description(@expected), args_description(@args)].compact.join(' ')
+        [method_description(@expected), args_description].compact.join(' ')
       end
 
     private
@@ -30,9 +30,14 @@ module RSpec
         method.to_s.gsub('_', ' ')
       end
 
-      def args_description(args)
-        return nil if args.empty?
-        args.map { |arg| arg.inspect }.join(', ')
+      def args_description
+        return nil if @args.empty?
+        @args.map { |arg| arg.inspect }.join(', ')
+      end
+
+      def failure_message_args_description
+        desc = args_description
+        "(#{desc})" if desc
       end
     end
   end
