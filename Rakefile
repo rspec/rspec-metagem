@@ -3,7 +3,6 @@ Bundler.setup
 Bundler::GemHelper.install_tasks
 
 require 'rake'
-require 'rake/rdoctask'
 require 'rspec/core/rake_task'
 require 'rspec/expectations/version'
 
@@ -40,13 +39,6 @@ namespace :spec do
 end
 
 task :default => [:spec, :cucumber]
-
-Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "rspec-expectations #{RSpec::Expectations::Version::STRING}"
-  rdoc.rdoc_files.include('README*')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
