@@ -15,7 +15,7 @@ gem "rake", "~> 0.9"
 gem "cucumber", "~> 0.10.2"
 gem "aruba", "~> 0.3.6"
 gem "rcov", "0.9.9", :platforms => :mri
-gem "relish", "0.2.0"
+gem "relish", "0.4.0"
 gem "guard-rspec", "0.1.9"
 gem "growl", "1.0.3"
 gem "nokogiri", "1.4.4"
