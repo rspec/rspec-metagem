@@ -12,7 +12,6 @@ Gem::Specification.new do |s|
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
   s.description = "rspec expectations (should[_not] and matchers)"
 
-  s.rubygems_version   = "1.3.7"
   s.rubyforge_project  = "rspec"
 
   s.files            = `git ls-files`.split("\n")
@@ -24,4 +23,3 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency     'diff-lcs',    '~> 1.1.2'
 end
-
