@@ -1,3 +1,5 @@
 --no-document
 --no-private
 --exclude features
+-
+License.txt
