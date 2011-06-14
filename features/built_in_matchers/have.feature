@@ -4,8 +4,8 @@ Feature: have(n).items matcher
   size of a collection.  There are three basic forms:
 
     * collection.should have(x).items
-    * collection.should have_at_least(x).items
-    * collection.should have_at_most(x).items
+    * collection.should have\_at\_least(x).items
+    * collection.should have\_at\_most(x).items
 
   In addition, #have_exactly is provided as an alias to #have.
 
