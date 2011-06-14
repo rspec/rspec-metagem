@@ -12,6 +12,11 @@ describe "#let" do
     end.new
   end
 
+  let(:nil_value) do
+    @called += 1
+    nil
+  end
+
   it "generates an instance method" do
     counter.count.should == 1
   end
@@ -19,6 +24,14 @@ describe "#let" do
   it "caches the value" do
     counter.count.should == 1
     counter.count.should == 2
+  end
+
+  it "caches a nil value" do
+    @called = 0
+    nil_value
+    nil_value
+
+    @called.should == 1
   end
 end
 
