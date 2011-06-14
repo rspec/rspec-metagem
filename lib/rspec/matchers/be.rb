@@ -1,35 +1,36 @@
 require 'rspec/matchers/dsl'
 
-RSpec::Matchers.define :be_true do
-  match do |actual|
-    actual
-  end
-end
-
-RSpec::Matchers.define :be_false do
-  match do |actual|
-    !actual
-  end
-end
-
-RSpec::Matchers.define :be_nil do
-  match do |actual|
-    actual.nil?
-  end
-
-  failure_message_for_should do |actual|
-    "expected: nil\n     got: #{actual.inspect}"
-  end
-
-  failure_message_for_should_not do
-    "expected: not nil\n     got: nil"
-  end
-end
-
 module RSpec
   module Matchers
 
-    class Be #:nodoc:
+    # @method be_true
+    RSpec::Matchers.define :be_true do
+      match do |actual|
+        actual
+      end
+    end
+
+    RSpec::Matchers.define :be_false do
+      match do |actual|
+        !actual
+      end
+    end
+
+    RSpec::Matchers.define :be_nil do
+      match do |actual|
+        actual.nil?
+      end
+
+      failure_message_for_should do |actual|
+        "expected: nil\n     got: #{actual.inspect}"
+      end
+
+      failure_message_for_should_not do
+        "expected: not nil\n     got: nil"
+      end
+    end
+
+    class Be
       include RSpec::Matchers::Pretty
       
       def initialize(*args, &block)
@@ -177,36 +178,26 @@ it is a bit confusing.
 
     end
 
-    # :call-seq:
-    #   should be_true
-    #   should be_false
-    #   should be_nil
-    #   should be_[arbitrary_predicate](*args)
-    #   should_not be_nil
-    #   should_not be_[arbitrary_predicate](*args)
+    # @example
+    #   actual.should be_true
+    #   actual.should be_false
+    #   actual.should be_nil
+    #   actual.should be_[arbitrary_predicate](*args)
+    #   actual.should_not be_nil
+    #   actual.should_not be_[arbitrary_predicate](*args)
     #
-    # Given true, false, or nil, will pass if actual value is
-    # true, false or nil (respectively). Given no args means
-    # the caller should satisfy an if condition (to be or not to be). 
+    # Given true, false, or nil, will pass if actual value is true, false or
+    # nil (respectively). Given no args means the caller should satisfy an if
+    # condition (to be or not to be). 
     #
-    # Predicates are any Ruby method that ends in a "?" and returns true or false.
-    # Given be_ followed by arbitrary_predicate (without the "?"), RSpec will match
-    # convert that into a query against the target object.
+    # Predicates are any Ruby method that ends in a "?" and returns true or
+    # false.  Given be_ followed by arbitrary_predicate (without the "?"),
+    # RSpec will match convert that into a query against the target object.
     #
-    # The arbitrary_predicate feature will handle any predicate
-    # prefixed with "be_an_" (e.g. be_an_instance_of), "be_a_" (e.g. be_a_kind_of)
-    # or "be_" (e.g. be_empty), letting you choose the prefix that best suits the predicate.
-    #
-    # == Examples 
-    #
-    #   target.should be_true
-    #   target.should be_false
-    #   target.should be_nil
-    #   target.should_not be_nil
-    #
-    #   collection.should be_empty #passes if target.empty?
-    #   target.should_not be_empty #passes unless target.empty?
-    #   target.should_not be_old_enough(16) #passes unless target.old_enough?(16)
+    # The arbitrary_predicate feature will handle any predicate prefixed with
+    # "be_an_" (e.g. be_an_instance_of), "be_a_" (e.g. be_a_kind_of) or "be_"
+    # (e.g. be_empty), letting you choose the prefix that best suits the
+    # predicate.
     def be(*args)
       args.empty? ?
         Matchers::Be.new : equal(*args)

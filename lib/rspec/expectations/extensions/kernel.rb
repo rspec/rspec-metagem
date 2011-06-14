@@ -1,51 +1,25 @@
 module Kernel
-  # :call-seq:
-  #   should(matcher)
-  #   should == expected
-  #   should === expected
-  #   should =~ expected
-  #
-  #   receiver.should(matcher)
-  #     => Passes if matcher.matches?(receiver)
-  #
-  #   receiver.should == expected #any value
-  #     => Passes if (receiver == expected)
-  #
-  #   receiver.should === expected #any value
-  #     => Passes if (receiver === expected)
-  #
-  #   receiver.should =~ regexp
-  #     => Passes if (receiver =~ regexp)
-  #
-  # See RSpec::Matchers for more information about matchers
-  #
-  # == Warning
-  #
-  # NOTE that this does NOT support receiver.should != expected.
-  # Instead, use receiver.should_not == expected
+  # Passes if +matcher+ returns true.  Available on every +Object+.
+  # @example
+  #   actual.should eq(expected)
+  #   actual.should be > 4
+  # @param [Matcher]
+  #   matcher
+  # @param [String] message optional message to display when the expectation fails
+  # @return [PositiveExpectationHandler]
+  # @see RSpec::Matchers
   def should(matcher=nil, message=nil, &block)
     RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
   end
-  
-  # :call-seq:
-  #   should_not(matcher)
-  #   should_not == expected
-  #   should_not === expected
-  #   should_not =~ expected
-  #
-  #   receiver.should_not(matcher)
-  #     => Passes unless matcher.matches?(receiver)
-  #
-  #   receiver.should_not == expected
-  #     => Passes unless (receiver == expected)
-  #
-  #   receiver.should_not === expected
-  #     => Passes unless (receiver === expected)
-  #
-  #   receiver.should_not =~ regexp
-  #     => Passes unless (receiver =~ regexp)
-  #
-  # See RSpec::Matchers for more information about matchers
+
+  # Passes if +matcher+ returns false.  Available on every +Object+.
+  # @example
+  #   actual.should_not eq(expected)
+  # @param [Matcher]
+  #   matcher
+  # @param [String] message optional message to display when the expectation fails
+  # @return [NegativeExpectationHandler]
+  # @see RSpec::Matchers
   def should_not(matcher=nil, message=nil, &block)
     RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
   end
