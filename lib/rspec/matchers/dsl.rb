@@ -1,7 +1,8 @@
 module RSpec
   module Matchers
     module DSL
-      # See RSpec::Matchers
+      # Defines a custom matcher.
+      # @see RSpec::Matchers
       def define(name, &declarations)
         define_method name do |*expected|
           $matcher_execution_context = self

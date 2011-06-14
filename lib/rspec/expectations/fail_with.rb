@@ -1,16 +1,19 @@
 module RSpec
   module Expectations
     class << self
+      # @private
       def differ
         @differ ||= Differ.new
       end
       
-      # raises a RSpec::Expectations::ExpectationNotMetError with message
+      # Raises an RSpec::Expectations::ExpectationNotMetError with message.
+      # @param [String] message
+      # @param [Object] expected
+      # @param [Object] actual
       #
-      # When a differ has been assigned and fail_with is passed
-      # <code>expected</code> and <code>actual</code>, passes them
-      # to the differ to append a diff message to the failure message.
-      def fail_with(message, expected=nil, actual=nil) # :nodoc:
+      # Adds a diff to the failure message when +expected+ and +actual+ are
+      # both present.
+      def fail_with(message, expected=nil, actual=nil)
         if !message
           raise ArgumentError, "Failure message is nil. Does your matcher define the " +
                                "appropriate failure_message_for_* method to return a string?"

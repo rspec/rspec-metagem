@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    class Change #:nodoc:
+    class Change
       def initialize(receiver=nil, message=nil, &block)
         @message = message
         @value_proc = block || lambda {receiver.__send__(message)}
@@ -128,19 +128,11 @@ MESSAGE
       end
     end
     
-    # :call-seq:
-    #   should change(receiver, message)
-    #   should change(receiver, message).by(value)
-    #   should change(receiver, message).from(old).to(new)
-    #   should_not change(receiver, message)
-    #
-    #   should change {...}
-    #   should change {...}.by(value)
-    #   should change {...}.from(old).to(new)
-    #   should_not change {...}
-    #
     # Applied to a proc, specifies that its execution will cause some value to
     # change.
+    #
+    # @param [Object] receiver
+    # @param [Symbol] message the message to send the receiver
     #
     # You can either pass <tt>receiver</tt> and <tt>message</tt>, or a block,
     # but not both.

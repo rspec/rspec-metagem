@@ -5,11 +5,9 @@ require 'rspec/expectations/errors'
 require 'rspec/expectations/deprecation'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
-require 'rspec/expectations/backward_compatibility'
 require 'rspec/expectations/differ'
 
 module RSpec
-  
   # RSpec::Expectations lets you set expectations on your objects.
   #
   #   result.should == 37

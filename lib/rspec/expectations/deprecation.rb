@@ -1,9 +1,9 @@
 module RSpec
-
-  # This is defined in rspec-core, but we can't assume it's loaded since
-  # rspec-expectations should be usable w/o rspec-core.
   unless respond_to?(:deprecate)
     class << self
+      # Used internally by RSpec to display standard deprecation warnings.
+      # This is also defined in rspec-core, but we can't assume it's loaded
+      # since rspec-expectations should be usable w/o rspec-core.
       def deprecate(method, alternate_method=nil, version=nil)
         version_string = version ? "rspec-#{version}" : "a future version of RSpec"
 
@@ -27,10 +27,12 @@ ADDITIONAL
         warn_deprecation(message)
       end
 
+      # Used internally by RSpec to display custom deprecation warnings.  This
+      # is also defined in rspec-core, but we can't assume it's loaded since
+      # rspec-expectations should be usable w/o rspec-core.
       def warn_deprecation(message)
         send :warn, message
       end
     end
   end
 end
-
