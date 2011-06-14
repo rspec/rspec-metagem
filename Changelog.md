@@ -6,6 +6,9 @@
   * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
   * Improved failure message for the have_xxx matcher (Myron Marston)
 
+* Bug fixes
+  * Fix typo in have(n).xyz documentation (Jean Boussier)
+
 ### 2.6.0 / 2011-05-12
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0)
