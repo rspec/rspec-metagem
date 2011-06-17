@@ -73,8 +73,8 @@ module RSpec::Core
           options[:libs] << dir
         end
 
-        parser.on('-l', '--line_number LINE', 'Specify the line number of a single example to run') do |o|
-          options[:line_number] = o
+        parser.on('-l', '--line_number LINE', 'Specify the line number of an example to run.  May be specified multiple times.') do |o|
+          (options[:line_numbers] ||= []) << o
         end
 
         parser.on('-O', '--options PATH', 'Specify the path to an options file') do |path|

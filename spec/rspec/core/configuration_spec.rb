@@ -216,9 +216,9 @@ module RSpec::Core
     end
 
     describe "path with line number" do
-      it "assigns the line number as the filter" do
+      it "assigns the line number as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37"
-        config.filter.should == {:line_number => 37}
+        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37]}}
       end
     end
 
@@ -228,11 +228,37 @@ module RSpec::Core
         config.full_description = "foo"
         config.filter.should_not have_key(:focused)
       end
+    end
 
-      it "assigns the example name as the filter on description" do
-        config.full_description = "foo"
-        config.filter.should == {:full_description => /foo/}
+    context "with line number" do
+
+      it "assigns the file and line number as a location filter" do
+        config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37]}}
       end
+
+      it "assigns multiple files with line numbers as location filters" do
+        config.files_or_directories_to_run = "path/to/a_spec.rb:37", "other_spec.rb:44"
+        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37],
+                                                File.expand_path("other_spec.rb") => [44]}}
+      end
+
+      it "assigns files with multiple line numbers as location filters" do
+        config.files_or_directories_to_run = "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
+        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}}
+      end
+    end
+
+    context "with multiple line numbers" do
+      it "assigns the file and line numbers as a location filter" do
+        config.files_or_directories_to_run = "path/to/a_spec.rb:1:3:5:7"
+        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}}
+      end
+    end
+
+    it "assigns the example name as the filter on description" do
+      config.full_description = "foo"
+      config.filter.should == {:full_description => /foo/}
     end
     
     describe "#default_path" do
@@ -499,11 +525,11 @@ module RSpec::Core
         config.filter[:filter2].should == false
       end
 
-      it "warns if :line_number is already a filter" do
-        config.filter_run :line_number => 100
+      it "warns if :line_numbers is already a filter" do
+        config.filter_run :line_numbers => [100]
         config.should_receive(:warn).with(
           "Filtering by {:focus=>true} is not possible since you " \
-          "are already filtering by {:line_number=>100}"
+          "are already filtering by {:line_numbers=>[100]}"
         )
         config.filter_run :focus => true
       end
@@ -587,24 +613,24 @@ module RSpec::Core
       end
     end
 
-    describe "#line_number=" do
+    describe "line_numbers=" do
       before { config.stub(:warn) }
 
-      it "sets the line number" do
-        config.line_number = '37'
-        config.filter.should == {:line_number => 37}
+      it "sets the line numbers" do
+        config.line_numbers = ['37']
+        config.filter.should == {:line_numbers => [37]}
       end
 
       it "overrides :focused" do
         config.filter_run :focused => true
-        config.line_number = '37'
-        config.filter.should == {:line_number => 37}
+        config.line_numbers = ['37']
+        config.filter.should == {:line_numbers => [37]}
       end
 
       it "prevents :focused" do
-        config.line_number = '37'
+        config.line_numbers = ['37']
         config.filter_run :focused => true
-        config.filter.should == {:line_number => 37}
+        config.filter.should == {:line_numbers => [37]}
       end
     end
 

@@ -84,6 +84,7 @@ RSpec.configure do |c|
       !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
     end
   }
+  c.alias_it_should_behave_like_to 'it_has_behavior'
   c.around do |example|
     sandboxed { example.run }
   end

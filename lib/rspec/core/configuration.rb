@@ -267,8 +267,18 @@ EOM
         end
       end
 
-      def line_number=(line_number)
-        filter_run({ :line_number => line_number.to_i }, true)
+      # Run examples defined on +line_numbers+ in all files to run.
+      def line_numbers=(line_numbers)
+        filter_run({ :line_numbers => line_numbers.map{|l| l.to_i} }, true)
+      end
+
+      def add_location(file_path, line_numbers)
+        # Filter locations is a hash of expanded paths to arrays of line numbers
+        # to match against.
+        #
+        filter_locations = ((self.filter || {})[:locations] ||= {})
+        (filter_locations[File.expand_path(file_path)] ||= []).push *line_numbers
+        filter_run({ :locations => filter_locations })
       end
 
       def full_description=(description)
@@ -311,9 +321,9 @@ EOM
               Dir["#{file}/{#{pattern.strip}}"]
             end
           else
-            if file =~ /(\:(\d+))$/
-              self.line_number = $2
-              file.sub($1,'')
+            if file =~ /^(.*?)((?:\:\d+)+)$/
+              self.add_location $1, $2[1..-1].split(":").map{|n| n.to_i}
+              $1
             else
               file
             end
@@ -378,7 +388,7 @@ EOM
 
         options = build_metadata_hash_from(args)
 
-        if inclusion_filter[:line_number] || inclusion_filter[:full_description]
+        if inclusion_filter and inclusion_filter[:line_numbers] || inclusion_filter[:full_description]
           warn "Filtering by #{options.inspect} is not possible since " \
                "you are already filtering by #{inclusion_filter.inspect}"
         else

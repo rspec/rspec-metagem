@@ -120,7 +120,17 @@ EOM
       def apply_condition(key, value, metadata=self)
         case value
         when Hash
-          value.all? { |k, v| apply_condition(k, v, metadata[key]) }
+          if key == :locations
+            file_path     = (self[:example_group] || {})[:file_path]
+            expanded_path = file_path && File.expand_path( file_path )
+            if expanded_path && line_numbers = value[expanded_path]
+              self.apply_condition(:line_numbers, line_numbers)
+            else
+              true
+            end
+          else
+            value.all? { |k, v| apply_condition(k, v, metadata[key]) }
+          end
         when Regexp
           metadata[key] =~ value
         when Proc
@@ -135,9 +145,10 @@ EOM
           else
             value.call(metadata[key]) rescue false
           end
-        when Fixnum
-          if key == :line_number
-            relevant_line_numbers(metadata).include?(world.preceding_declaration_line(value))
+        when Enumerable
+          if key == :line_numbers
+            preceding_declaration_lines = value.map{|v| world.preceding_declaration_line(v)}
+            not (relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
           else
             metadata[key] == value
           end

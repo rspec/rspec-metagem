@@ -1,6 +1,6 @@
 Feature: line number appended to file path
 
-  To run a single example or group, you can append the line number to the path, e.g.
+  To run one or more examples or groups, you can append the line number to the path, e.g.
 
       rspec path/to/example_spec.rb:37
   
@@ -25,6 +25,15 @@ Feature: line number appended to file path
         
         end
 
+      end
+      """
+    And a file named "example2_spec.rb" with:
+      """
+      describe "yet another group" do
+        it "first example in second file" do
+        end
+        it "second example in second file" do
+        end
       end
       """
 
@@ -104,3 +113,28 @@ Feature: line number appended to file path
     And the output should contain "second example in outer group"
     But the output should not contain "first example in outer group"
     And the output should not contain "example in nested group"
+
+  Scenario: specified multiple times for different files
+    When I run `rspec example_spec.rb:7 example2_spec.rb:4 --format doc`
+    Then the examples should all pass
+    And the output should contain "second example in outer group"
+    And the output should contain "second example in second file"
+    But the output should not contain "first example in outer group"
+    And the output should not contain "nested group"
+    And the output should not contain "first example in second file"
+
+  Scenario: specified multiple times for the same file with multiple arguments
+    When I run `rspec example_spec.rb:7 example_spec.rb:11 --format doc`
+    Then the examples should all pass
+    And the output should contain "second example in outer group"
+    And the output should contain "nested group"
+    But the output should not contain "first example in outer group"
+    And the output should not contain "second file"
+
+  Scenario: specified multiple times for the same file with a single argument
+    When I run `rspec example_spec.rb:7:11 --format doc`
+    Then the examples should all pass
+    And the output should contain "second example in outer group"
+    And the output should contain "nested group"
+    But the output should not contain "first example in outer group"
+    And the output should not contain "second file"

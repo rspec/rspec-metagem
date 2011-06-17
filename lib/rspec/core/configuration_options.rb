@@ -29,7 +29,6 @@ module RSpec
         argv << "--backtrace"    if options[:full_backtrace]
         argv << "--tty"          if options[:tty]
         argv << "--fail-fast"    if options[:fail_fast]
-        argv << "--line_number"  << options[:line_number]             if options[:line_number]
         argv << "--options"      << options[:custom_options_file]     if options[:custom_options_file]
         if options[:full_description]
           # The argument to --example is regexp-escaped before being stuffed
@@ -37,6 +36,9 @@ module RSpec
           # Hence, merely grabbing the source of this regexp will retain the
           # backslashes, so we must remove them.
           argv << "--example" << options[:full_description].source.delete('\\')
+        end
+        if options[:line_numbers]
+          argv += options[:line_numbers].inject([]){|a,l| a << "--line_number" << l}
         end
         if options[:filter]
           options[:filter].each_pair do |k, v|

@@ -24,46 +24,99 @@ module RSpec
       describe "#apply_condition" do
 
         let(:parent_group_metadata) { Metadata.new.process('parent group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
-        let(:parent_group_line_number) { parent_group_metadata[:example_group][:line_number] }
         let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
-        let(:group_line_number) { group_metadata[:example_group][:line_number] }
         let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"], :if => true) }
-        let(:example_line_number) { example_metadata[:line_number] }
         let(:next_example_metadata) { group_metadata.for_example('next_example', :caller => ["foo_spec.rb:#{example_line_number + 2}"]) }
         let(:world) { World.new }
 
         before { RSpec.stub(:world) { world } }
 
-        it "matches the group when the line_number is the example group line number" do
-          world.should_receive(:preceding_declaration_line).and_return(group_line_number)
-          # this call doesn't really make sense since apply_condition is only called
-          # for example metadata not group metadata
-          group_metadata.apply_condition(:line_number, group_line_number).should be_true
+        shared_examples_for "matching by line number" do
+          let(:preceeding_declaration_lines) {{
+            parent_group_metadata[:example_group][:line_number] => parent_group_metadata[:example_group][:line_number],
+            group_metadata[:example_group][:line_number] => group_metadata[:example_group][:line_number],
+            example_metadata[:line_number] => example_metadata[:line_number],
+            (example_metadata[:line_number] + 1) => example_metadata[:line_number],
+            (example_metadata[:line_number] + 2) => example_metadata[:line_number] + 2,
+          }}
+          before do
+            world.should_receive(:preceding_declaration_line).at_least(:once).and_return do |v|
+              preceeding_declaration_lines[v]
+            end
+          end
+
+          it "matches the group when the line_number is the example group line number" do
+            # this call doesn't really make sense since apply_condition is only called
+            # for example metadata not group metadata
+            group_metadata.apply_condition(condition_key, group_condition).should be_true
+          end
+
+          it "matches the example when the line_number is the grandparent example group line number" do
+            example_metadata.apply_condition(condition_key, parent_group_condition).should be_true
+          end
+
+          it "matches the example when the line_number is the parent example group line number" do
+            example_metadata.apply_condition(condition_key, group_condition).should be_true
+          end
+
+          it "matches the example when the line_number is the example line number" do
+            example_metadata.apply_condition(condition_key, example_condition).should be_true
+          end
+
+          it "matches when the line number is between this example and the next" do
+            example_metadata.apply_condition(condition_key, between_examples_condition).should be_true
+          end
+
+          it "does not match when the line number matches the next example" do
+            example_metadata.apply_condition(condition_key, next_example_condition).should be_false
+          end
         end
 
-        it "matches the example when the line_number is the grandparent example group line number" do
-          world.should_receive(:preceding_declaration_line).and_return(parent_group_line_number)
-          example_metadata.apply_condition(:line_number, parent_group_line_number).should be_true
+        context "with a single line number" do
+          let(:condition_key){ :line_numbers }
+          let(:parent_group_condition) { [parent_group_metadata[:example_group][:line_number]] }
+          let(:group_condition) { [group_metadata[:example_group][:line_number]] }
+          let(:example_condition) { [example_metadata[:line_number]] }
+          let(:between_examples_condition) { [group_metadata[:example_group][:line_number] + 1] }
+          let(:next_example_condition) { [example_metadata[:line_number] + 2] }
+
+          it_has_behavior "matching by line number"
         end
 
-        it "matches the example when the line_number is the parent example group line number" do
-          world.should_receive(:preceding_declaration_line).and_return(group_line_number)
-          example_metadata.apply_condition(:line_number, group_line_number).should be_true
+        context "with multiple line numbers" do
+          let(:condition_key){ :line_numbers }
+          let(:parent_group_condition) { [-1, parent_group_metadata[:example_group][:line_number]] }
+          let(:group_condition) { [-1, group_metadata[:example_group][:line_number]] }
+          let(:example_condition) { [-1, example_metadata[:line_number]] }
+          let(:between_examples_condition) { [-1, group_metadata[:example_group][:line_number] + 1] }
+          let(:next_example_condition) { [-1, example_metadata[:line_number] + 2] }
+
+          it_has_behavior "matching by line number"
         end
 
-        it "matches the example when the line_number is the example line number" do
-          world.should_receive(:preceding_declaration_line).and_return(example_line_number)
-          example_metadata.apply_condition(:line_number, example_line_number).should be_true
-        end
+        context "with locations" do
+          let(:condition_key){ :locations }
+          let(:parent_group_condition) do
+            {File.expand_path(parent_group_metadata[:example_group][:file_path]) => [parent_group_metadata[:example_group][:line_number]]}
+          end
+          let(:group_condition) do
+            {File.expand_path(group_metadata[:example_group][:file_path]) => [group_metadata[:example_group][:line_number]]}
+          end
+          let(:example_condition) do
+            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number]]}
+          end
+          let(:between_examples_condition) do
+            {File.expand_path(group_metadata[:example_group][:file_path]) => [group_metadata[:example_group][:line_number] + 1]}
+          end
+          let(:next_example_condition) do
+            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number] + 2]}
+          end
 
-        it "matches when the line number is between this example and the next" do
-          world.should_receive(:preceding_declaration_line).and_return(example_line_number)
-          example_metadata.apply_condition(:line_number, example_line_number + 1).should be_true
-        end
+          it_has_behavior "matching by line number"
 
-        it "does not match when the line number matches the next example" do
-          world.should_receive(:preceding_declaration_line).and_return(example_line_number + 2)
-          example_metadata.apply_condition(:line_number, example_line_number + 2).should be_false
+          it "ignores location filters for other files" do
+            example_metadata.apply_condition(:locations, {"/path/to/other_spec.rb" => [3,5,7]}).should be_true
+          end
         end
 
         it "matches a proc that evaluates to true" do
