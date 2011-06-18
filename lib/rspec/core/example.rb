@@ -110,7 +110,7 @@ module RSpec
         if around_hooks.empty?
           yield
         else
-          @example_group_class.eval_around_eachs(self, Example.procsy(metadata, &block)).call
+          @example_group_class.run_around_each_hooks(self, Example.procsy(metadata, &block)).call
         end
       end
 
@@ -146,11 +146,11 @@ module RSpec
 
       def run_before_each
         @example_group_instance.setup_mocks_for_rspec if @example_group_instance.respond_to?(:setup_mocks_for_rspec)
-        @example_group_class.eval_before_eachs(self)
+        @example_group_class.run_before_each_hooks(self)
       end
 
       def run_after_each
-        @example_group_class.eval_after_eachs(self)
+        @example_group_class.run_after_each_hooks(self)
         @example_group_instance.verify_mocks_for_rspec if @example_group_instance.respond_to?(:verify_mocks_for_rspec)
       ensure
         @example_group_instance.teardown_mocks_for_rspec if @example_group_instance.respond_to?(:teardown_mocks_for_rspec)

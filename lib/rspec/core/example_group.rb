@@ -200,7 +200,7 @@ module RSpec
         ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
       end
 
-      def self.eval_before_alls(example_group_instance)
+      def self.run_before_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
         world.run_hook_filtered(:before, :all, self, example_group_instance)
@@ -208,7 +208,7 @@ module RSpec
         store_before_all_ivars(example_group_instance)
       end
 
-      def self.eval_around_eachs(example, initial_procsy)
+      def self.run_around_each_hooks(example, initial_procsy)
         example.around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
           Example.procsy(procsy.metadata) do
             example.example_group_instance.instance_eval_with_args(procsy, &around_hook)
@@ -216,17 +216,17 @@ module RSpec
         end
       end
 
-      def self.eval_before_eachs(example)
+      def self.run_before_each_hooks(example)
         world.run_hook_filtered(:before, :each, self, example.example_group_instance, example)
         ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example.example_group_instance) }
       end
 
-      def self.eval_after_eachs(example)
+      def self.run_after_each_hooks(example)
         ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example.example_group_instance) }
         world.run_hook_filtered(:after, :each, self, example.example_group_instance, example)
       end
 
-      def self.eval_after_alls(example_group_instance)
+      def self.run_after_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
 
@@ -258,14 +258,14 @@ An error occurred in an after(:all) hook.
         reporter.example_group_started(self)
 
         begin
-          eval_before_alls(new)
+          run_before_all_hooks(new)
           result_for_this_group = run_examples(reporter)
           results_for_descendants = children.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           fail_filtered_examples(ex, reporter)
         ensure
-          eval_after_alls(new)
+          run_after_all_hooks(new)
           before_all_ivars.clear
           reporter.example_group_finished(self)
         end
