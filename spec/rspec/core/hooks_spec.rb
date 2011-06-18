@@ -43,10 +43,6 @@ module RSpec::Core
               hook = hooks.first
               instance.hooks[type][:each].should include(hook)
             end
-
-            it "raises an error if only metadata symbols are given as arguments" do
-              expect { instance.send(type, :foo, :bar) { } }.to raise_error(ArgumentError)
-            end
           end
         end
       end
