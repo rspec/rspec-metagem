@@ -322,8 +322,9 @@ EOM
             end
           else
             if file =~ /^(.*?)((?:\:\d+)+)$/
-              self.add_location $1, $2[1..-1].split(":").map{|n| n.to_i}
-              $1
+              path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+              add_location path, lines
+              path
             else
               file
             end
