@@ -95,7 +95,6 @@ module RSpec
         }
       end
 
-      # Registers a block that is executed before examples.
       def before(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:before][scope] << BeforeHook.new(options, &block)
@@ -145,7 +144,14 @@ module RSpec
     private
 
       def scope_and_options_from(*args)
-        scope = [:each, :all, :suite].include?(args.first) ? args.shift : :each
+        scope = if [:each, :all, :suite].include?(args.first)
+          args.shift
+        elsif args.any? { |a| a.is_a?(Symbol) }
+          raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")
+        else
+          :each
+        end
+
         options = build_metadata_hash_from(args)
         return scope, options
       end
