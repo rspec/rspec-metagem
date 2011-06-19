@@ -104,7 +104,7 @@ EOM
 
       def apply?(predicate, filters)
         filters.send(predicate) do |key, value|
-          apply_condition(key, value)
+          apply_filter(key, value)
         end
       end
 
@@ -117,19 +117,19 @@ EOM
         end
       end
 
-      def apply_condition(key, value, metadata=self)
+      def apply_filter(key, value, metadata=self)
         case value
         when Hash
           if key == :locations
             file_path     = (self[:example_group] || {})[:file_path]
             expanded_path = file_path && File.expand_path( file_path )
             if expanded_path && line_numbers = value[expanded_path]
-              self.apply_condition(:line_numbers, line_numbers)
+              self.apply_filter(:line_numbers, line_numbers)
             else
               true
             end
           else
-            value.all? { |k, v| apply_condition(k, v, metadata[key]) }
+            value.all? { |k, v| apply_filter(k, v, metadata[key]) }
           end
         when Regexp
           metadata[key] =~ value

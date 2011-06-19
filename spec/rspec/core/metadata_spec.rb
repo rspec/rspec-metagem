@@ -21,7 +21,7 @@ module RSpec
         end
       end
 
-      describe "#apply_condition" do
+      describe "#apply_filter" do
 
         let(:parent_group_metadata) { Metadata.new.process('parent group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
@@ -46,29 +46,29 @@ module RSpec
           end
 
           it "matches the group when the line_number is the example group line number" do
-            # this call doesn't really make sense since apply_condition is only called
+            # this call doesn't really make sense since apply_filter is only called
             # for example metadata not group metadata
-            group_metadata.apply_condition(condition_key, group_condition).should be_true
+            group_metadata.apply_filter(condition_key, group_condition).should be_true
           end
 
           it "matches the example when the line_number is the grandparent example group line number" do
-            example_metadata.apply_condition(condition_key, parent_group_condition).should be_true
+            example_metadata.apply_filter(condition_key, parent_group_condition).should be_true
           end
 
           it "matches the example when the line_number is the parent example group line number" do
-            example_metadata.apply_condition(condition_key, group_condition).should be_true
+            example_metadata.apply_filter(condition_key, group_condition).should be_true
           end
 
           it "matches the example when the line_number is the example line number" do
-            example_metadata.apply_condition(condition_key, example_condition).should be_true
+            example_metadata.apply_filter(condition_key, example_condition).should be_true
           end
 
           it "matches when the line number is between this example and the next" do
-            example_metadata.apply_condition(condition_key, between_examples_condition).should be_true
+            example_metadata.apply_filter(condition_key, between_examples_condition).should be_true
           end
 
           it "does not match when the line number matches the next example" do
-            example_metadata.apply_condition(condition_key, next_example_condition).should be_false
+            example_metadata.apply_filter(condition_key, next_example_condition).should be_false
           end
         end
 
@@ -115,21 +115,21 @@ module RSpec
           it_has_behavior "matching by line number"
 
           it "ignores location filters for other files" do
-            example_metadata.apply_condition(:locations, {"/path/to/other_spec.rb" => [3,5,7]}).should be_true
+            example_metadata.apply_filter(:locations, {"/path/to/other_spec.rb" => [3,5,7]}).should be_true
           end
         end
 
         it "matches a proc that evaluates to true" do
-          example_metadata.apply_condition(:if, lambda { |v| v }).should be_true
+          example_metadata.apply_filter(:if, lambda { |v| v }).should be_true
         end
 
         it "does not match a proc that evaluates to false" do
-          example_metadata.apply_condition(:if, lambda { |v| !v }).should be_false
+          example_metadata.apply_filter(:if, lambda { |v| !v }).should be_false
         end
 
         it "passes the metadata hash as the second argument if a given proc expects 2 args" do
           passed_metadata = nil
-          example_metadata.apply_condition(:if, lambda { |v, m| passed_metadata = m })
+          example_metadata.apply_filter(:if, lambda { |v, m| passed_metadata = m })
           passed_metadata.should == example_metadata
         end
       end
