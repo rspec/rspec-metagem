@@ -1,11 +1,10 @@
 require 'spec_helper'
 
 module RSpec::Core
-  
-  module ExampleModule; end
-  class  ExampleClass;  end
-
   describe SharedExampleGroup do
+    
+    ExampleModule = Module.new
+    ExampleClass = Class.new
 
     %w[share_examples_for shared_examples_for].each do |method_name|
       describe method_name do
