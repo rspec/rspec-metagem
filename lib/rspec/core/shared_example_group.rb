@@ -3,7 +3,7 @@ module RSpec
     module SharedExampleGroup
 
       def shared_context(*args, &block)
-        if String === args.first || Symbol === args.first || Module === args.first
+        if [String, Symbol, Module].any? {|cls| cls === args.first }
           object = args.shift
           ensure_shared_example_group_name_not_taken(object)
           RSpec.world.shared_example_groups[object] = block
