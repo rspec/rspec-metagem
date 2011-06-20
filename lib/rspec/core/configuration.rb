@@ -253,15 +253,17 @@ module RSpec
         begin
           require 'ruby-debug'
           Debugger.start
-        rescue LoadError
+        rescue LoadError => e
           raise <<-EOM
 
 #{'*'*50}
-You must install ruby-debug to run rspec with the --debug option.
+#{e.message}
 
-If you have ruby-debug installed as a ruby gem, then you need to either
-require 'rubygems' or configure the RUBYOPT environment variable with
-the value 'rubygems'.
+If you have it installed as a ruby gem, then you need to either require
+'rubygems' or configure the RUBYOPT environment variable with the value
+'rubygems'.
+
+#{e.backtrace.join("\n")}
 #{'*'*50}
 EOM
         end
