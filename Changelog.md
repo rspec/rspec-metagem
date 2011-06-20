@@ -7,6 +7,8 @@
   * --default_path command line option (Justin Ko)
   * support multiple --line_number options (David J. Hamilton)
       * also supports path/to/file.rb:5:9 (runs examples on lines 5 and 9)
+  * Allow classes/modules to be used as shared example group identifiers
+    (Arthur Gunn)
 
 * Bug fixes
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
