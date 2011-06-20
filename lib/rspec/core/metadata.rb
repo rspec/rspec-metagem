@@ -145,6 +145,8 @@ EOM
           else
             value.call(metadata[key]) rescue false
           end
+        when String
+          metadata[key].to_s == value.to_s
         when Enumerable
           if key == :line_numbers
             preceding_declaration_lines = value.map{|v| world.preceding_declaration_line(v)}
