@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 module RSpec::Core
+  
+  module ExampleModule; end
+  class  ExampleClass;  end
 
   describe SharedExampleGroup do
 
@@ -17,20 +20,15 @@ module RSpec::Core
             group.send(method_name, 'shared group') {}
           end.should raise_error(ArgumentError, "Shared example group 'shared group' already exists")
         end
-
-        context "given a string" do
-          it "captures the given string and block in the World's collection of shared example groups" do
-            implementation = lambda {}
-            RSpec.world.shared_example_groups.should_receive(:[]=).with("name", implementation)
-            send(method_name, "name", &implementation)
-          end
-        end
-
-        context "given a symbol" do
-          it "captures the given symbol and block in the World's collection of shared example groups" do
-            implementation = lambda {}
-            RSpec.world.shared_example_groups.should_receive(:[]=).with(:name, implementation)
-            send(method_name, :name, &implementation)
+        
+        ["name", :name, ExampleModule, ExampleClass].each do |object|
+          type = object.class.name.downcase
+          context "given a #{type}" do
+            it "captures the given #{type} and block in the World's collection of shared example groups" do
+              implementation = lambda {}
+              RSpec.world.shared_example_groups.should_receive(:[]=).with(object, implementation)
+              send(method_name, object, &implementation)
+            end
           end
         end
 
@@ -69,6 +67,13 @@ module RSpec::Core
         shared_examples_for("thing") {}
         group = ExampleGroup.describe('fake group')
         group.it_should_behave_like("thing")
+        group.should have(1).children
+      end
+      
+      it "creates a nested group for a class" do
+        shared_examples_for(ExampleClass) {}
+        group = ExampleGroup.describe('fake group')
+        group.it_should_behave_like(ExampleClass)
         group.should have(1).children
       end
 
