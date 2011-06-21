@@ -8,47 +8,70 @@ Feature: shared examples
   A shared group is included in another group using any of:
   
       include_examples "name"      # include the examples in the current context
-
       it_behaves_like "name"       # include the examples in a nested context
       it_should_behave_like "name" # include the examples in a nested context
 
-  Scenario: shared examples group included in two groups
+  WARNING: Files containing shared groups must be loaded before the files that
+  use them.  While there are conventions to handle this, RSpec does _not_ do
+  anything special (like autoload). Doing so would require a strict naming
+  convention for files that would break existing suites.
+
+  CONVENTIONS:
+
+  1.  The simplest approach is to require files with shared examples explicitly
+      from the files that use them. Keep in mind that RSpec adds the `spec`
+      directory to the `LOAD_PATH`, so you can say `require
+      'shared_examples_for_widgets'` to require a file at
+      `#{PROJECT_ROOT}/spec/shared_examples_for_widgets.rb`.
+
+  2.  Put files containing shared examples in `spec/support/` and require files
+      in that directory from `spec/spec_helper.rb`:
+
+          Dir["spec/support/**/*.rb"].each {|f| require f}
+
+      This is included in the generated `spec/spec_helper.rb` file in
+      `rspec-rails`
+
+  3. When all of the groups that include the shared group, just declare
+     the shared group in the same file.
+
+  Scenario: shared examples group included in two groups in one file
     Given a file named "collection_spec.rb" with:
-    """
-    require "set"
+      """
+      require "set"
 
-    shared_examples "a collection" do
-      let(:collection) { described_class.new([7, 2, 4]) }
+      shared_examples "a collection" do
+        let(:collection) { described_class.new([7, 2, 4]) }
 
-      context "initialized with 3 items" do
-        it "says it has three items" do
-          collection.size.should eq(3)
-        end
-      end
-
-      describe "#include?" do
-        context "with an an item that is in the collection" do
-          it "returns true" do
-            collection.include?(7).should be_true
+        context "initialized with 3 items" do
+          it "says it has three items" do
+            collection.size.should eq(3)
           end
         end
 
-        context "with an an item that is not in the collection" do
-          it "returns false" do
-            collection.include?(9).should be_false
+        describe "#include?" do
+          context "with an an item that is in the collection" do
+            it "returns true" do
+              collection.include?(7).should be_true
+            end
+          end
+
+          context "with an an item that is not in the collection" do
+            it "returns false" do
+              collection.include?(9).should be_false
+            end
           end
         end
       end
-    end
 
-    describe Array do
-      it_behaves_like "a collection"
-    end
+      describe Array do
+        it_behaves_like "a collection"
+      end
 
-    describe Set do
-      it_behaves_like "a collection"
-    end
-    """
+      describe Set do
+        it_behaves_like "a collection"
+      end
+      """
     When I run `rspec collection_spec.rb --format documentation`
     Then the examples should all pass
     And the output should contain:
