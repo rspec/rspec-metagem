@@ -3,7 +3,7 @@
 - Autotest.md
 - example_groups:
   - basic_structure.feature
-  - shared_example_group.feature
+  - shared_examples.feature
   - shared_context.feature
 - command_line:
   - configure.feature
