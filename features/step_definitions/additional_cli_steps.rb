@@ -1,6 +1,6 @@
 Then /^the output should contain all of these:$/ do |table|
   table.raw.flatten.each do |string|
-    assert_partial_output(string)
+    assert_partial_output(string, all_output)
   end
 end
 

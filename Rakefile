@@ -32,27 +32,29 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.verbose = false
 end
 
-namespace :rcov do
-  task :cleanup do
-    rm_rf 'coverage.data'
+if RUBY_VERSION.to_f == 1.8
+  namespace :rcov do
+    task :cleanup do
+      rm_rf 'coverage.data'
+    end
+
+    RSpec::Core::RakeTask.new :spec do |t|
+      t.rcov = true
+      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+      t.rcov_opts << %[--no-html --aggregate coverage.data]
+    end
+
+    Cucumber::Rake::Task.new :cucumber do |t|
+      t.cucumber_opts = %w{--format progress}
+      t.rcov = true
+      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
+      t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
+    end
   end
 
-  RSpec::Core::RakeTask.new :spec do |t|
-    t.rcov = true
-    t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-    t.rcov_opts << %[--no-html --aggregate coverage.data]
-  end
-
-  Cucumber::Rake::Task.new :cucumber do |t|
-    t.cucumber_opts = %w{--format progress}
-    t.rcov = true
-    t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-    t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
-  end
-
+  task :rcov => ["rcov:cleanup", "rcov:spec", "rcov:cucumber"]
 end
 
-task :rcov => ["rcov:cleanup", "rcov:spec", "rcov:cucumber"]
 
 desc "delete generated files"
 task :clobber do
