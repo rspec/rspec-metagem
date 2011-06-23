@@ -10,3 +10,4 @@ Gemfile.lock
 .bundle
 *.rbc
 .yardoc
+bin
