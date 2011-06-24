@@ -12,6 +12,7 @@
 
 * Bug fixes
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
+  * Nest `at_exit` in another `at_exit` to ensure ours runs last (Travis Vachon)
 
 ### 2.6.4 / 2011-06-06
 
