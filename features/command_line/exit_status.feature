@@ -42,7 +42,7 @@ Feature: exit status
     When I run `rspec nested_ko_spec.rb`
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
-      
+
   Scenario: exit with 0 when no examples are run
     Given a file named "a_no_examples_spec.rb" with:
       """
@@ -50,3 +50,17 @@ Feature: exit status
     When I run `rspec a_no_examples_spec.rb`
     Then the exit status should be 0
     And the output should contain "0 examples"
+
+  Scenario: exit with 1 when one example fails even if a nested exit handler calls exit(0)
+    Given a file named "ko_with_exit_handler_spec.rb" with:
+      """
+      describe "KO" do
+        it "fails" do
+          at_exit { exit(0) }
+          raise "KO"
+        end
+      end
+      """
+    When I run `rspec ko_with_exit_handler_spec.rb`
+    Then the exit status should be 1
+    And the output should contain "1 example, 1 failure"
