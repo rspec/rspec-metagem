@@ -320,7 +320,11 @@ EOM
         files.map do |file|
           if File.directory?(file)
             patterns.map do |pattern|
-              Dir["#{file}/{#{pattern.strip}}"]
+              if pattern =~ /#{file}/
+                Dir[pattern.strip]
+              else
+                Dir["#{file}/{#{pattern.strip}}"]
+              end
             end
           else
             if file =~ /^(.*?)((?:\:\d+)+)$/

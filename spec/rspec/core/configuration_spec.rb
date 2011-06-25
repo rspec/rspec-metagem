@@ -145,14 +145,21 @@ module RSpec::Core
 
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
-        file = "./spec/rspec/core/resources/a_bar.rb"
+        file = "spec/rspec/core/resources/a_bar.rb"
         config.files_or_directories_to_run = file
+        config.files_to_run.should eq([file])
+      end
+
+      it "prevents repitition of dir when part of the pattern" do
+        file = "spec/rspec/core/resources/a_bar.rb"
+        config.pattern = "spec/**/a_bar.rb"
+        config.files_or_directories_to_run = "spec"
         config.files_to_run.should eq([file])
       end
 
       context "with default pattern" do
         it "loads files named _spec.rb" do
-          dir = "./spec/rspec/core/resources"
+          dir = "spec/rspec/core/resources"
           config.files_or_directories_to_run = dir
           config.files_to_run.should eq(["#{dir}/a_spec.rb"])
         end
