@@ -27,7 +27,6 @@ Cucumber::Rake::Task.new(:cucumber)
 
 desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_path = 'bin/rspec'
   t.rspec_opts = %w[--color]
   t.verbose = false
 end
