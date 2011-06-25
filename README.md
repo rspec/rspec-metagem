@@ -3,7 +3,7 @@
 RSpec Core provides the structure for writing executable examples of how your
 code should behave.
 
-[![build status](http://travis-ci.org/rspec/rspec-core.png)](http://travis-ci.org/rspec/rspec-core)
+[![build status](https://travis-ci.org/rspec/rspec-core.png)](http://travis-ci.org/rspec/rspec-core)
 
 ## Documentation
 
