@@ -9,7 +9,7 @@ module RSpec
       end
 
       def configure(config)
-        keys = order(options.keys, :libs, :requires, :default_path)
+        keys = order(options.keys, :libs, :requires, :default_path, :pattern)
 
         formatters = options[:formatters] if keys.delete(:formatters)
 

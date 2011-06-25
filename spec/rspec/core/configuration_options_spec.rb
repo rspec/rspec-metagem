@@ -42,6 +42,22 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "sends default_path before files_or_directories_to_run" do
+      opts = config_options_object(*%w[--default_path spec])
+      config = double("config").as_null_object
+      config.should_receive(:default_path=).ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
+    it "sends pattern before files_or_directories_to_run" do
+      opts = config_options_object(*%w[--pattern **/*.spec])
+      config = double("config").as_null_object
+      config.should_receive(:pattern=).ordered
+      config.should_receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
       config = RSpec::Core::Configuration.new

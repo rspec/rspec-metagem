@@ -12,6 +12,7 @@
 
 * Bug fixes
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
+  * Fix --pattern option (wasn't being recognized) (David Chelimsky)
 
 ### 2.6.4 / 2011-06-06
 
