@@ -33,7 +33,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "auto-generated example descriptions" do
     let(:generated_description) { "the generated description" }
-    let(:rspec_example) { example_group.specify { 5.should == 5 } }
+    let(:rspec_example) { example_group.specify { 5.should eq(5) } }
     before(:each) { RSpec::Matchers.stub(:generated_description => generated_description) }
 
     def expect_with(*frameworks)
@@ -92,7 +92,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "accessing metadata within a running example" do
     it "has a reference to itself when running" do
-      example.description.should == "has a reference to itself when running"
+      example.description.should eq("has a reference to itself when running")
     end
 
     it "can access the example group's top level metadata as if it were its own" do
@@ -103,7 +103,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "accessing options within a running example" do
     it "can look up option values by key", :demo => :data do
-      example.options[:demo].should == :data
+      example.options[:demo].should eq(:data)
     end
   end
 
@@ -120,7 +120,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
-        example('example') { 1.should == 1 }
+        example('example') { 1.should eq(1) }
       end
       group.run
       after_run.should be_true, "expected after(:each) to be run"
@@ -130,7 +130,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
-        example('example') { 1.should == 2 }
+        example('example') { 1.should eq(2) }
       end
       group.run
       after_run.should be_true, "expected after(:each) to be run"
@@ -152,7 +152,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group = RSpec::Core::ExampleGroup.describe do
           after(:each) { after_run = true }
           after(:each) { raise "FOO" }
-          example('example') { 1.should == 1 }
+          example('example') { 1.should eq(1) }
         end
         group.run
         after_run.should be_true, "expected after(:each) to be run"
@@ -161,11 +161,11 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "stores the exception" do
         group = RSpec::Core::ExampleGroup.describe
         group.after(:each) { raise "FOO" }
-        example = group.example('example') { 1.should == 1 }
+        example = group.example('example') { 1.should eq(1) }
 
         group.run
 
-        example.metadata[:execution_result][:exception].message.should == "FOO"
+        example.metadata[:execution_result][:exception].message.should eq("FOO")
       end
     end
 

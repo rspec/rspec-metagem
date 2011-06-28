@@ -259,7 +259,7 @@ Feature: around hooks
 
         it "they should all be run" do
           puts "in the example"
-          1.should == 1
+          1.should eq(1)
         end
       end
       """

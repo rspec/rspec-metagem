@@ -279,7 +279,7 @@ EOM
         # to match against.
         #
         filter_locations = ((self.filter || {})[:locations] ||= {})
-        (filter_locations[File.expand_path(file_path)] ||= []).push *line_numbers
+        (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
         filter_run({ :locations => filter_locations })
       end
 
@@ -370,10 +370,12 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
+      undef_method :exclusion_filter=
       def exclusion_filter=(filter)
         settings[:exclusion_filter] = filter
       end
 
+      undef_method :exclusion_filter
       def exclusion_filter
         settings[:exclusion_filter] || {}
       end

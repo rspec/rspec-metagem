@@ -11,12 +11,6 @@ module RSpec::Core
       let(:out)    { StringIO.new }
       let(:err)    { StringIO.new }
 
-      def config_options(argv=[])
-        options = RSpec::Core::ConfigurationOptions.new(argv)
-        options.parse_options
-        options
-      end
-
       def command_line(args)
         RSpec::Core::CommandLine.new(config_options(args))
       end

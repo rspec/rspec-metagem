@@ -100,7 +100,7 @@ Feature: pending examples
       """
       describe "an example" do
         it "checks something" do
-          (3+4).should == 7
+          (3+4).should eq(7)
         end
         specify do
           pending
@@ -122,10 +122,10 @@ Feature: pending examples
       """
       describe "an example" do
         it "checks something" do
-          (3+4).should == 7
+          (3+4).should eq(7)
         end
         pending do
-          "string".reverse.should == "gnirts"
+          "string".reverse.should eq("gnirts")
         end
       end
       """

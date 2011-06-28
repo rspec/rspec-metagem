@@ -12,7 +12,7 @@ describe RSpec::Core::Formatters::ProgressFormatter do
 
    it "produces line break on start dump" do
      @formatter.start_dump
-     @output.string.should == "\n"
+     @output.string.should eq("\n")
    end
 
    it "produces standard summary without pending when pending has a 0 count" do
@@ -24,7 +24,7 @@ describe RSpec::Core::Formatters::ProgressFormatter do
 
    it "pushes nothing on start" do
      @formatter.start(4)
-     @output.string.should == ""
+     @output.string.should eq("")
    end
 
 end

@@ -136,7 +136,7 @@ module RSpec::Core
           shared_examples_for("thing") { |p| eval_count += 1 }
           group = ExampleGroup.describe('fake group')
           shared_group = group.it_should_behave_like("thing", :a)
-          eval_count.should == 1
+          eval_count.should eq(1)
         end
       end
 
@@ -177,15 +177,15 @@ module RSpec::Core
       it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
         share_as('Cornucopia') do
           it "is plentiful" do
-            5.should == 4
+            5.should eq(4)
           end
         end
         group = ExampleGroup.describe('group') { include Cornucopia }
         phantom_group = group.children.first
         phantom_group.description.should eql("")
         phantom_group.metadata[:shared_group_name].should eql('Cornucopia')
-        phantom_group.examples.length.should == 1
-        phantom_group.examples.first.metadata[:description].should == "is plentiful"
+        phantom_group.examples.length.should eq(1)
+        phantom_group.examples.first.metadata[:description].should eq("is plentiful")
       end
     end
   end

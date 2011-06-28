@@ -150,7 +150,7 @@ EOM
         when Enumerable
           if key == :line_numbers
             preceding_declaration_lines = value.map{|v| world.preceding_declaration_line(v)}
-            not (relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
+            !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
           else
             metadata[key] == value
           end

@@ -15,12 +15,12 @@ Feature: let and let!
         let(:count) { $count += 1 }
 
         it "memoizes the value" do
-          count.should == 1
-          count.should == 1
+          count.should eq(1)
+          count.should eq(1)
         end
 
         it "is not cached across examples" do
-          count.should == 2
+          count.should eq(2)
         end
       end
       """
@@ -42,7 +42,7 @@ Feature: let and let!
         it "calls the helper method in a before hook" do
           invocation_order << :example
           invocation_order.should == [:let!, :example]
-          count.should == 1
+          count.should eq(1)
         end
       end
       """

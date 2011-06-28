@@ -41,14 +41,14 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
     context "without RSPEC_DRB environment variable set" do
       it "defaults to 8989" do
         with_RSPEC_DRB_set_to(nil) do
-          command_line([]).drb_port.should == 8989
+          command_line([]).drb_port.should eq(8989)
         end
       end
 
       it "sets the DRb port" do
         with_RSPEC_DRB_set_to(nil) do
-          command_line(["--drb-port", "1234"]).drb_port.should == 1234
-          command_line(["--drb-port", "5678"]).drb_port.should == 5678
+          command_line(["--drb-port", "1234"]).drb_port.should eq(1234)
+          command_line(["--drb-port", "5678"]).drb_port.should eq(5678)
         end
       end
     end
@@ -58,7 +58,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       context "without config variable set" do
         it "uses RSPEC_DRB value" do
           with_RSPEC_DRB_set_to('9000') do
-            command_line([]).drb_port.should == "9000"
+            command_line([]).drb_port.should eq("9000")
           end
         end
       end
@@ -66,7 +66,7 @@ describe "::DRbCommandLine", :ruby => "!jruby" do
       context "and config variable set" do
         it "uses configured value" do
           with_RSPEC_DRB_set_to('9000') do
-            command_line(%w[--drb-port 5678]).drb_port.should == 5678
+            command_line(%w[--drb-port 5678]).drb_port.should eq(5678)
           end
         end
       end

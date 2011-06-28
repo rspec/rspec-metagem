@@ -49,35 +49,35 @@ module RSpec::Core
       let(:example_groups) { [group1, group2, group3, group4] }
 
       it "finds no groups when given no search parameters" do
-        world.apply_inclusion_filters([]).should == []
+        world.apply_inclusion_filters([]).should eq([])
       end
 
       it "finds matching groups when filtering on :describes (described class or module)" do
-        world.apply_inclusion_filters(example_groups, :example_group => { :describes => Bar }).should == [group1, group2, group3]
+        world.apply_inclusion_filters(example_groups, :example_group => { :describes => Bar }).should eq([group1, group2, group3])
       end
 
       it "finds matching groups when filtering on :description with text" do
-        world.apply_inclusion_filters(example_groups, :example_group => { :description => 'Bar find group-1' }).should == [group1]
+        world.apply_inclusion_filters(example_groups, :example_group => { :description => 'Bar find group-1' }).should eq([group1])
       end
 
       it "finds matching groups when filtering on :description with a lambda" do
-        world.apply_inclusion_filters(example_groups, :example_group => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should == [group1, group3]
+        world.apply_inclusion_filters(example_groups, :example_group => { :description => lambda { |v| v.include?('-1') || v.include?('-3') } }).should eq([group1, group3])
       end
 
       it "finds matching groups when filtering on :description with a regular expression" do
-        world.apply_inclusion_filters(example_groups, :example_group => { :description => /find group/ }).should == [group1, group2, group3]
+        world.apply_inclusion_filters(example_groups, :example_group => { :description => /find group/ }).should eq([group1, group2, group3])
       end
 
       it "finds one group when searching for :pending => true" do
-        world.apply_inclusion_filters(example_groups, :pending => true ).should == [group2]
+        world.apply_inclusion_filters(example_groups, :pending => true ).should eq([group2])
       end
 
       it "finds matching groups when filtering on arbitrary metadata with a number" do
-        world.apply_inclusion_filters(example_groups, :foo => 1 ).should == [group1]
+        world.apply_inclusion_filters(example_groups, :foo => 1 ).should eq([group1])
       end
 
       it "finds matching groups when filtering on arbitrary metadata with an array" do
-        world.apply_inclusion_filters(example_groups, :array => [1,2,3,4]).should == [group3]
+        world.apply_inclusion_filters(example_groups, :array => [1,2,3,4]).should eq([group3])
       end
 
       it "finds no groups when filtering on arbitrary metadata with an array but the arrays do not match" do
@@ -85,11 +85,11 @@ module RSpec::Core
       end
 
       it "finds matching examples when filtering on arbitrary metadata" do
-        world.apply_inclusion_filters(group4.examples, :awesome => true).should == [group4.examples[1], group4.examples[2]]
+        world.apply_inclusion_filters(group4.examples, :awesome => true).should eq([group4.examples[1], group4.examples[2]])
       end
 
       it "finds matching examples for example that match any of the filters" do
-        world.apply_inclusion_filters(group4.examples, :awesome => true, :something => :else).should == [group4.examples[1], group4.examples[2]]
+        world.apply_inclusion_filters(group4.examples, :awesome => true, :something => :else).should eq([group4.examples[1], group4.examples[2]])
       end
     end
 
@@ -105,7 +105,7 @@ module RSpec::Core
 
         world.register(group1)
 
-        world.apply_exclusion_filters(group1.examples, :network_access => true).should == []
+        world.apply_exclusion_filters(group1.examples, :network_access => true).should eq([])
 
         group2 = ExampleGroup.describe(Bar, "find group-1") do
           it("foo", :network_access => true) {}
@@ -114,7 +114,7 @@ module RSpec::Core
 
         world.register(group2)
 
-        world.apply_exclusion_filters(group2.examples, :network_access => true).should == [group2.examples.last]
+        world.apply_exclusion_filters(group2.examples, :network_access => true).should eq([group2.examples.last])
       end
 
       it "finds nothing if a regexp matches the exclusion filter" do
@@ -123,14 +123,14 @@ module RSpec::Core
           it("bar") {}
         end
         world.register(group)
-        world.apply_exclusion_filters(group.examples, :name => /exclude/).should == []
-        world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo").should == []
+        world.apply_exclusion_filters(group.examples, :name => /exclude/).should eq([])
+        world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo").should eq([])
         world.apply_exclusion_filters(group.examples, :name => /exclude/, :another => "foo", :example_group => {
-          :describes => lambda { |b| b == Bar } } ).should == []
+          :describes => lambda { |b| b == Bar } } ).should eq([])
 
-        world.apply_exclusion_filters(group.examples, :name => /exclude not/).should == group.examples
-        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should == []
-        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should == []
+        world.apply_exclusion_filters(group.examples, :name => /exclude not/).should eq(group.examples)
+        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should eq([])
+        world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should eq([])
       end
     end
 
@@ -269,22 +269,22 @@ module RSpec::Core
     describe "#exclusion_filter" do
       describe "#description" do
         it 'returns `{}` when it only contains the default filters' do
-          world.exclusion_filter.description.should == {}.inspect
+          world.exclusion_filter.description.should eq({}.inspect)
         end
 
         it 'includes other filters' do
           configuration.exclusion_filter[:foo] = :bar
-          world.exclusion_filter.description.should == { :foo => :bar }.inspect
+          world.exclusion_filter.description.should eq({ :foo => :bar }.inspect)
         end
 
         it 'includes an overriden :if filter' do
           configuration.exclusion_filter[:if] = :custom_filter
-          world.exclusion_filter.description.should == { :if => :custom_filter }.inspect
+          world.exclusion_filter.description.should eq({ :if => :custom_filter }.inspect)
         end
 
         it 'includes an overriden :unless filter' do
           configuration.exclusion_filter[:unless] = :custom_filter
-          world.exclusion_filter.description.should == { :unless => :custom_filter }.inspect
+          world.exclusion_filter.description.should eq({ :unless => :custom_filter }.inspect)
         end
 
         it 'cleans up the description' do

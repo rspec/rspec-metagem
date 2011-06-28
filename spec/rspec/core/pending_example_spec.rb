@@ -30,10 +30,10 @@ describe "an example" do
       it "does not have an auto-generated description" do
         group = RSpec::Core::ExampleGroup.describe('group') do
           it "checks something" do
-            (3+4).should == 7
+            (3+4).should eq(7)
           end
           pending do
-            "string".reverse.should == "gnirts"
+            "string".reverse.should eq("gnirts")
           end
         end
         example = group.examples.last
@@ -45,7 +45,7 @@ describe "an example" do
       it "does not show any message" do
         group = RSpec::Core::ExampleGroup.describe('group') do
           it "checks something" do
-            (3+4).should == 7
+            (3+4).should eq(7)
           end
           specify do
             pending
@@ -145,7 +145,7 @@ describe "an example" do
 
     context "that passes" do
       def run_example(*pending_args)
-        super(*pending_args) { 3.should == 3 }
+        super(*pending_args) { 3.should eq(3) }
       end
 
       context "when given no options" do

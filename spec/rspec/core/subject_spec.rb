@@ -20,13 +20,13 @@ module RSpec::Core
 
       describe "with a string" do
         it "return the string" do
-          ExampleGroup.describe("Foo").subject.call.should == 'Foo'
+          ExampleGroup.describe("Foo").subject.call.should eq("Foo")
         end
       end
 
       describe "with a number" do
         it "returns the number" do
-          ExampleGroup.describe(15).subject.call.should == 15
+          ExampleGroup.describe(15).subject.call.should eq(15)
         end
       end
 
@@ -149,9 +149,9 @@ module RSpec::Core
             end
           end.new
         end
-        its([:a]) { should == 'Symbol: a' }
-        its(['a']) { should == 'String: a' }
-        its([:b, 'c', 4]) { should == 'Symbol: b; String: c; Fixnum: 4' }
+        its([:a]) { should eq("Symbol: a") }
+        its(['a']) { should eq("String: a") }
+        its([:b, 'c', 4]) { should eq("Symbol: b; String: c; Fixnum: 4") }
         its(:name) { should = "George" }
         context "when referring to an attribute without the proper array syntax" do
           context "it raises an error" do
@@ -170,7 +170,7 @@ module RSpec::Core
         context "it raises an error" do
           its([:a]) do
             expect do
-              should == 'Symbol: a'
+              should eq("Symbol: a")
             end.to raise_error(NoMethodError)
           end
         end
@@ -181,12 +181,12 @@ module RSpec::Core
           group = ExampleGroup.describe(Array) do
             subject { [1, 'a'] }
 
-            its(:last) { should == 'a' }
+            its(:last) { should eq("a") }
 
             describe '.first' do
               def subject; super().first; end
 
-              its(:next) { should == 2 }
+              its(:next) { should eq(2) }
             end
           end
 

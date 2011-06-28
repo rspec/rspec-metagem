@@ -57,12 +57,12 @@ module RSpec
         #      let(:thing) { Thing.new }
         #
         #      it "is not invoked implicitly" do
-        #        Thing.count.should == 0
+        #        Thing.count.should eq(0)
         #      end
         #
         #      it "can be invoked explicitly" do
         #        thing
-        #        Thing.count.should == 1
+        #        Thing.count.should eq(1)
         #      end
         #    end
         #
@@ -70,12 +70,12 @@ module RSpec
         #      let!(:thing) { Thing.new }
         #
         #      it "is invoked implicitly" do
-        #        Thing.count.should == 1
+        #        Thing.count.should eq(1)
         #      end
         #
         #      it "returns memoized version on first invocation" do
         #        thing
-        #        Thing.count.should == 1
+        #        Thing.count.should eq(1)
         #      end
         #    end
         #  end

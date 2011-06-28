@@ -225,7 +225,7 @@ module RSpec::Core
     describe "path with line number" do
       it "assigns the line number as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37"
-        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37]}}
+        config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
     end
 
@@ -297,7 +297,7 @@ module RSpec::Core
 
           group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
-          group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
+          group.new.you_call_this_a_blt?.should eq("egad man, where's the mayo?!?!?")
         end
       end
 
@@ -309,7 +309,7 @@ module RSpec::Core
 
           group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
           group.should_not respond_to(:you_call_this_a_blt?)
-          group.new.you_call_this_a_blt?.should == "egad man, where's the mayo?!?!?"
+          group.new.you_call_this_a_blt?.should eq("egad man, where's the mayo?!?!?")
         end
       end
 
@@ -514,22 +514,22 @@ module RSpec::Core
     describe "#filter_run" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
-          config.filter_run *args
+          config.filter_run(*args)
           config.filter
         end
       end
 
       it "sets the filter" do
         config.filter_run :focus => true
-        config.filter[:focus].should == true
+        config.filter[:focus].should be(true)
       end
 
       it "merges with existing filters" do
         config.filter_run :filter1 => true
         config.filter_run :filter2 => false
 
-        config.filter[:filter1].should == true
-        config.filter[:filter2].should == false
+        config.filter[:filter1].should be(true)
+        config.filter[:filter2].should be(false)
       end
 
       it "warns if :line_numbers is already a filter" do
@@ -554,22 +554,22 @@ module RSpec::Core
     describe "#filter_run_excluding" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
-          config.filter_run_excluding *args
+          config.filter_run_excluding(*args)
           config.exclusion_filter
         end
       end
 
       it "sets the filter" do
         config.filter_run_excluding :slow => true
-        config.exclusion_filter[:slow].should == true
+        config.exclusion_filter[:slow].should be(true)
       end
 
       it "merges with existing filters" do
         config.filter_run_excluding :filter1 => true
         config.filter_run_excluding :filter2 => false
 
-        config.exclusion_filter[:filter1].should == true
-        config.exclusion_filter[:filter2].should == false
+        config.exclusion_filter[:filter1].should be(true)
+        config.exclusion_filter[:filter2].should be(false)
       end
     end
 
@@ -625,19 +625,19 @@ module RSpec::Core
 
       it "sets the line numbers" do
         config.line_numbers = ['37']
-        config.filter.should == {:line_numbers => [37]}
+        config.filter.should eq({:line_numbers => [37]})
       end
 
       it "overrides :focused" do
         config.filter_run :focused => true
         config.line_numbers = ['37']
-        config.filter.should == {:line_numbers => [37]}
+        config.filter.should eq({:line_numbers => [37]})
       end
 
       it "prevents :focused" do
         config.line_numbers = ['37']
         config.filter_run :focused => true
-        config.filter.should == {:line_numbers => [37]}
+        config.filter.should eq({:line_numbers => [37]})
       end
     end
 
@@ -645,14 +645,14 @@ module RSpec::Core
       context "given true" do
         it "clears the backtrace clean patterns" do
           config.full_backtrace = true
-          config.backtrace_clean_patterns.should == []
+          config.backtrace_clean_patterns.should eq([])
         end
       end
 
       context "given false" do
         it "restores backtrace clean patterns" do
           config.full_backtrace = false
-          config.backtrace_clean_patterns.should == RSpec::Core::Configuration::DEFAULT_BACKTRACE_PATTERNS
+          config.backtrace_clean_patterns.should eq(RSpec::Core::Configuration::DEFAULT_BACKTRACE_PATTERNS)
         end
       end
 
@@ -779,12 +779,12 @@ module RSpec::Core
 
         it "delegates the getter to the other option" do
           config.another_custom_option = "this value"
-          config.custom_option.should == "this value"
+          config.custom_option.should eq("this value")
         end
 
         it "delegates the setter to the other option" do
           config.custom_option = "this value"
-          config.another_custom_option.should == "this value"
+          config.another_custom_option.should eq("this value")
         end
 
         it "delegates the predicate to the other option" do

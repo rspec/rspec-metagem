@@ -8,7 +8,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
   describe "backtrace_line" do
     it "trims current working directory" do
-      formatter.__send__(:backtrace_line, File.expand_path(__FILE__)).should == "./spec/rspec/core/formatters/base_formatter_spec.rb"
+      formatter.__send__(:backtrace_line, File.expand_path(__FILE__)).should eq("./spec/rspec/core/formatters/base_formatter_spec.rb")
     end
 
     it "leaves the original line intact" do

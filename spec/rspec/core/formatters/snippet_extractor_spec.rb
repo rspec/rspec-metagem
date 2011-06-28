@@ -10,7 +10,7 @@ module RSpec
         end
 
         it "falls back on a default message when it doesn't find the file" do
-         RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should == "# Couldn't get snippet for blech"
+         RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should eq("# Couldn't get snippet for blech")
         end
       end
     end

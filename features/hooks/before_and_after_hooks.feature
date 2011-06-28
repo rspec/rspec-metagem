@@ -187,12 +187,12 @@ Feature: before and after hooks
       describe "stuff in before blocks" do
         describe "with :all" do
           it "should be available in the example" do
-            @before_all.should == "before all"
+            @before_all.should eq("before all")
           end
         end
         describe "with :each" do
           it "should be available in the example" do
-            @before_each.should == "before each"
+            @before_each.should eq("before each")
           end
         end
       end
@@ -363,7 +363,7 @@ Feature: before and after hooks
 
         describe "nested in parallel" do
           it "access state set in before(:all)" do
-            @value.should == 123
+            @value.should eq(123)
           end
         end
       end

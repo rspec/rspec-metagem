@@ -28,12 +28,12 @@ module RSpec::Core
 
       it 'processes string args as part of the description' do
         group = ExampleGroup.describe("some", "separate", "strings")
-        group.description.should == "some separate strings"
+        group.description.should eq("some separate strings")
       end
 
       it 'processes symbol args as part of the description' do
         group = ExampleGroup.describe(:some, :separate, :symbols)
-        group.description.should == "some separate symbols"
+        group.description.should eq("some separate symbols")
       end
     end
 
@@ -48,7 +48,7 @@ module RSpec::Core
       end
 
       it 'treats the first argument as part of the description when it is a symbol' do
-        group.description.should == "symbol"
+        group.description.should eq("symbol")
       end
     end
 
@@ -95,7 +95,7 @@ module RSpec::Core
               describe("grandchild 2") {}
             end
           end
-          group.descendants.size.should == 4
+          group.descendants.size.should eq(4)
         end
       end
     end
@@ -104,7 +104,7 @@ module RSpec::Core
       it "is known by parent" do
         parent = ExampleGroup.describe
         child = parent.describe
-        parent.children.should == [child]
+        parent.children.should eq([child])
       end
 
       it "is not registered in world" do
@@ -112,7 +112,7 @@ module RSpec::Core
         parent = ExampleGroup.describe
         world.register(parent)
         child = parent.describe
-        world.example_groups.should == [parent]
+        world.example_groups.should eq([parent])
       end
     end
 
@@ -128,7 +128,7 @@ module RSpec::Core
             group.stub(:world) { world }
             all_examples = [ group.example("first"), group.example("second") ]
 
-            group.filtered_examples.should == all_examples
+            group.filtered_examples.should eq(all_examples)
           end
 
           it "includes examples directly matching filter" do
@@ -140,7 +140,7 @@ module RSpec::Core
             ]
             group.example("third (not-filtered)")
 
-            group.filtered_examples.should == filtered_examples
+            group.filtered_examples.should eq(filtered_examples)
           end
         end
 
@@ -163,7 +163,7 @@ module RSpec::Core
             ]
             unfiltered_example = group.example("third (not-filtered)")
 
-            group.filtered_examples.should == [unfiltered_example]
+            group.filtered_examples.should eq([unfiltered_example])
           end
         end
       end
@@ -239,7 +239,7 @@ module RSpec::Core
           group = ExampleGroup.describe
           group.stub(:world) { world }
           example = group.example("does something")
-          group.filtered_examples.should == [example]
+          group.filtered_examples.should eq([example])
         end
       end
 
@@ -249,7 +249,7 @@ module RSpec::Core
           group = ExampleGroup.describe
           group.stub(:world) { world }
           example = group.example("does something")
-          group.filtered_examples.should == []
+          group.filtered_examples.should eq([])
         end
       end
     end
@@ -258,7 +258,7 @@ module RSpec::Core
 
       context "with a constant as the first parameter" do
         it "is that constant" do
-          ExampleGroup.describe(Object) { }.describes.should == Object
+          ExampleGroup.describe(Object) { }.describes.should eq(Object)
         end
       end
 
@@ -308,7 +308,7 @@ module RSpec::Core
     describe '#description' do
       it "grabs the description from the metadata" do
         group = ExampleGroup.describe(Object, "my desc") { }
-        group.description.should == group.metadata[:example_group][:description]
+        group.description.should eq(group.metadata[:example_group][:description])
       end
     end
 
@@ -318,15 +318,15 @@ module RSpec::Core
       end
 
       it "adds the the file_path to metadata" do
-        ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should == __FILE__
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should eq(__FILE__)
       end
 
       it "has a reader for file_path" do
-        ExampleGroup.describe(Object) { }.file_path.should == __FILE__
+        ExampleGroup.describe(Object) { }.file_path.should eq(__FILE__)
       end
 
       it "adds the line_number to metadata" do
-        ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number].should == __LINE__
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number].should eq(__LINE__)
       end
     end
 
@@ -454,7 +454,7 @@ module RSpec::Core
 
         group.run
 
-        order.should == [
+        order.should eq([
           :before_all_defined_in_config,
           :top_level_before_all,
           :before_each,
@@ -470,7 +470,7 @@ module RSpec::Core
           :nested_after_all,
           :top_level_after_all,
           :after_all_defined_in_config
-        ]
+        ])
       end
 
       context "after(:all)" do
@@ -509,22 +509,22 @@ module RSpec::Core
       it "treats an error in before(:each) as a failure" do
         group = ExampleGroup.describe
         group.before(:each) { raise "error in before each" }
-        example = group.example("equality") { 1.should == 2}
-        group.run.should == false
+        example = group.example("equality") { 1.should eq(2) }
+        group.run.should be(false)
 
-        example.metadata[:execution_result][:exception].message.should == "error in before each"
+        example.metadata[:execution_result][:exception].message.should eq("error in before each")
       end
 
       it "treats an error in before(:all) as a failure" do
         group = ExampleGroup.describe
         group.before(:all) { raise "error in before all" }
-        example = group.example("equality") { 1.should == 2}
-        group.run.should == false
+        example = group.example("equality") { 1.should eq(2) }
+        group.run.should be_false
 
         example.metadata.should_not be_nil
         example.metadata[:execution_result].should_not be_nil
         example.metadata[:execution_result][:exception].should_not be_nil
-        example.metadata[:execution_result][:exception].message.should == "error in before all"
+        example.metadata[:execution_result][:exception].message.should eq("error in before all")
       end
 
       it "treats an error in before(:all) as a failure for a spec in a nested group" do
@@ -533,7 +533,7 @@ module RSpec::Core
           before(:all) { raise "error in before all" }
 
           describe "nested" do
-            example = it("equality") { 1.should == 2}
+            example = it("equality") { 1.should eq(2) }
           end
         end
         group.run
@@ -541,7 +541,7 @@ module RSpec::Core
         example.metadata.should_not be_nil
         example.metadata[:execution_result].should_not be_nil
         example.metadata[:execution_result][:exception].should_not be_nil
-        example.metadata[:execution_result][:exception].message.should == "error in before all"
+        example.metadata[:execution_result][:exception].message.should eq("error in before all")
       end
 
       context "when an error occurs in an after(:all) hook" do
@@ -552,7 +552,7 @@ module RSpec::Core
         let(:group) do
           ExampleGroup.describe do
             after(:all) { raise "error in after all" }
-            it("equality") { 1.should == 1 }
+            it("equality") { 1.should eq(1) }
           end
         end
 
@@ -561,7 +561,7 @@ module RSpec::Core
           example = group.examples.first
           example.metadata.should_not be_nil
           example.metadata[:execution_result].should_not be_nil
-          example.metadata[:execution_result][:status].should == "passed"
+          example.metadata[:execution_result][:status].should eq("passed")
         end
 
         it "rescues the error and prints it out" do
@@ -576,7 +576,7 @@ module RSpec::Core
         group.before(:all) { running_example = example }
         group.example("no-op") { }
         group.run
-        running_example.should == nil
+        running_example.should be(nil)
       end
 
       it "has access to example options within before(:each)" do
@@ -585,7 +585,7 @@ module RSpec::Core
         group.before(:each) { option = example.options[:data] }
         group.example("no-op", :data => :sample) { }
         group.run
-        option.should == :sample
+        option.should eq(:sample)
       end
 
       it "has access to example options within after(:each)" do
@@ -594,7 +594,7 @@ module RSpec::Core
         group.after(:each) { option = example.options[:data] }
         group.example("no-op", :data => :sample) { }
         group.run
-        option.should == :sample
+        option.should eq(:sample)
       end
 
       it "has no 'running example' within after(:all)" do
@@ -603,7 +603,7 @@ module RSpec::Core
         group.after(:all) { running_example = example }
         group.example("no-op") { }
         group.run
-        running_example.should == nil
+        running_example.should be(nil)
       end
     end
 
@@ -612,7 +612,7 @@ module RSpec::Core
       it "allows adding an example using 'it'" do
         group = ExampleGroup.describe
         group.it("should do something") { }
-        group.examples.size.should == 1
+        group.examples.size.should eq(1)
       end
 
       it "allows adding a pending example using 'xit'" do
@@ -635,9 +635,9 @@ module RSpec::Core
         group.it("should 1") { }
         group.it("should 2") { }
         group.it("should 3") { }
-        group.examples[0].description.should == 'should 1'
-        group.examples[1].description.should == 'should 2'
-        group.examples[2].description.should == 'should 3'
+        group.examples[0].description.should eq('should 1')
+        group.examples[1].description.should eq('should 2')
+        group.examples[2].description.should eq('should 3')
       end
 
     end
@@ -650,7 +650,7 @@ module RSpec::Core
         end
 
         it "sets the description to 'A sample nested describe'" do
-          example.example_group.description.should == 'A sample nested group'
+          example.example_group.description.should eq('A sample nested group')
         end
 
         it "has top level metadata from the example_group and its ancestors" do
@@ -670,8 +670,8 @@ module RSpec::Core
 
       it "returns true if all examples pass" do
         group = ExampleGroup.describe('group') do
-          example('ex 1') { 1.should == 1 }
-          example('ex 2') { 1.should == 1 }
+          example('ex 1') { 1.should eq(1) }
+          example('ex 2') { 1.should eq(1) }
         end
         group.stub(:filtered_examples) { group.examples }
         group.run(reporter).should be_true
@@ -679,8 +679,8 @@ module RSpec::Core
 
       it "returns false if any of the examples fail" do
         group = ExampleGroup.describe('group') do
-          example('ex 1') { 1.should == 1 }
-          example('ex 2') { 1.should == 2 }
+          example('ex 1') { 1.should eq(1) }
+          example('ex 2') { 1.should eq(2) }
         end
         group.stub(:filtered_examples) { group.examples }
         group.run(reporter).should be_false
@@ -688,8 +688,8 @@ module RSpec::Core
 
       it "runs all examples, regardless of any of them failing" do
         group = ExampleGroup.describe('group') do
-          example('ex 1') { 1.should == 2 }
-          example('ex 2') { 1.should == 1 }
+          example('ex 1') { 1.should eq(2) }
+          example('ex 2') { 1.should eq(1) }
         end
         group.stub(:filtered_examples) { group.examples }
         group.filtered_examples.each do |example|
@@ -709,11 +709,11 @@ module RSpec::Core
       end
 
       it "can access a before each ivar at the same level" do
-        @before_each_top_level.should == 'before_each_top_level'
+        @before_each_top_level.should eq('before_each_top_level')
       end
 
       it "can access a before all ivar at the same level" do
-        @before_all_top_level.should == 'before_all_top_level'
+        @before_all_top_level.should eq('before_all_top_level')
       end
 
       it "can access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do
@@ -726,11 +726,11 @@ module RSpec::Core
 
       describe "but now I am nested" do
         it "can access a parent example groups before each ivar at a nested level" do
-          @before_each_top_level.should == 'before_each_top_level'
+          @before_each_top_level.should eq('before_each_top_level')
         end
 
         it "can access a parent example groups before all ivar at a nested level" do
-          @before_all_top_level.should == "before_all_top_level"
+          @before_all_top_level.should eq("before_all_top_level")
         end
 
         it "changes to before all ivars from within an example do not persist outside the current describe" do
@@ -739,7 +739,7 @@ module RSpec::Core
 
         describe "accessing a before_all ivar that was changed in a parent example_group" do
           it "does not have access to the modified version" do
-            @before_all_top_level.should == 'before_all_top_level'
+            @before_all_top_level.should eq('before_all_top_level')
           end
         end
       end
@@ -749,12 +749,12 @@ module RSpec::Core
     describe "ivars are not shared across examples" do
       it "(first example)" do
         @a = 1
-        @b.should be_nil
+        defined?(@b).should be_false
       end
 
       it "(second example)" do
         @b = 2
-        @a.should be_nil
+        defined?(@a).should be_false
       end
     end
 
@@ -769,7 +769,7 @@ module RSpec::Core
           end
         end
 
-        group.top_level_description.should == "top"
+        group.top_level_description.should eq("top")
       end
     end
 
@@ -826,7 +826,7 @@ module RSpec::Core
             it "does something" do
               # pass
             end
-            describe ("nested") do
+            describe "nested" do
               it "does something else" do
                 # pass
               end
@@ -843,7 +843,7 @@ module RSpec::Core
             it "does something (wrong - fail)" do
               raise "fail"
             end
-            describe ("nested") do
+            describe "nested" do
               it "does something else" do
                 # pass
               end
@@ -860,7 +860,7 @@ module RSpec::Core
             it "does something" do
               # pass
             end
-            describe ("nested") do
+            describe "nested" do
               it "does something else (wrong -fail)" do
                 raise "fail"
               end

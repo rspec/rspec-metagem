@@ -75,14 +75,14 @@ module RSpec
         #
         #   # This ...
         #   describe Array do
-        #     its(:size) { should == 0 }
+        #     its(:size) { should eq(0) }
         #   end
         #
         #   # ... generates the same runtime structure as this:
         #   describe Array do
         #     describe "size" do
-        #       it "should == 0" do
-        #         subject.size.should == 0
+        #       it "should eq(0)" do
+        #         subject.size.should eq(0)
         #       end
         #     end
         #   end
@@ -98,7 +98,7 @@ module RSpec
         #       end
         #     end
         #
-        #     its("phone_numbers.first") { should == "555-1212" }
+        #     its("phone_numbers.first") { should eq("555-1212") }
         #   end
         #
         # When the subject is a +Hash+, you can refer to the Hash keys by
@@ -110,12 +110,12 @@ module RSpec
         #         'admin' => :all_permissions }
         #     end
         #
-        #     its([:max_users]) { should == 3 }
-        #     its(['admin']) { should == :all_permissions }
+        #     its([:max_users]) { should eq(3) }
+        #     its(['admin']) { should eq(:all_permissions) }
         #
         #     # You can still access to its regular methods this way:
         #     its(:keys) { should include(:max_users) }
-        #     its(:count) { should == 2 }
+        #     its(:count) { should eq(2) }
         #   end
         def its(attribute, &block)
           describe(attribute) do
