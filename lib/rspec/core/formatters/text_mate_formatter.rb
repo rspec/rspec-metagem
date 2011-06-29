@@ -1,3 +1,4 @@
+require 'cgi'
 require 'rspec/core/formatters/html_formatter'
 
 module RSpec
@@ -7,6 +8,7 @@ module RSpec
       class TextMateFormatter < HtmlFormatter
         def backtrace_line(line)
           if line = super(line)
+            line = CGI.escapeHTML(line)
             line.sub!(/([^:]*\.e?rb):(\d*)/) do
               "<a href=\"txmt://open?url=file://#{File.expand_path($1)}&line=#{$2}\">#{$1}:#{$2}</a> "
             end
