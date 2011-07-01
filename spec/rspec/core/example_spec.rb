@@ -200,14 +200,15 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           after(:each)  { @after_each = :after_each }
           after(:all)   { @after_all  = :after_all }
         end
-        example = group.example("does something") do
-          @in_example = :in_example
+        group.example("does something") do
+          @before_all.should eq :before_all
+          @before_each.should eq :before_each
         end
-        example_group_instance = group.new
-        example.run(example_group_instance, double('reporter').as_null_object)
-
-        %w[@before_all @before_each @after_each @after_all].each do |ivar|
-          example_group_instance.instance_variable_get(ivar).should be_nil
+        group.run(double.as_null_object).should be_true
+        group.new do |example|
+          %w[@before_all @before_each @after_each @after_all].each do |ivar|
+            example.instance_variable_get(ivar).should be_nil
+          end
         end
       end
 

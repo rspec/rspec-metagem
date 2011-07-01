@@ -22,7 +22,7 @@ module RSpec
           err, out = StringIO.new, StringIO.new
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.run(err, out)
-          out.string.gsub /\d+\.\d+ seconds/, 'x seconds'
+          out.string.gsub(/\d+\.\d+ seconds/, 'x seconds')
 
         end
 
@@ -58,7 +58,7 @@ module RSpec
             expected_doc = Nokogiri::HTML(expected_html)
             expected_doc.search("div.backtrace").remove
 
-            actual_doc.inner_html.should == expected_doc.inner_html
+            actual_doc.inner_html.should eq(expected_doc.inner_html)
 
             backtrace_lines.each do |backtrace_line|
               backtrace_line['href'].should include("txmt://open?url=")
