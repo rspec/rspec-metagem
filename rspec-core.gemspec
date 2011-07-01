@@ -16,8 +16,8 @@ Gem::Specification.new do |s|
 
   s.files            = `git ls-files -- lib/*`.split("\n")
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
-  s.bindir           = 'executables'
-  s.executables      = `git ls-files -- executables/*`.split("\n").map{ |f| File.basename(f) }
+  s.bindir           = 'exe'
+  s.executables      = `git ls-files -- exe/*`.split("\n").map{ |f| File.basename(f) }
   s.extra_rdoc_files = [ "README.md" ]
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
