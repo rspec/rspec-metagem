@@ -8,10 +8,6 @@ module RSpec
 
         def snippet(error)
           raw_code, line = snippet_for(error.backtrace[0])
-
-          # skip over whiny_nils in the backtrace
-          raw_code, line = snippet_for(error.backtrace[1]) if error.backtrace[0] =~ /active_support\/whiny_nil\.rb/
-
           highlighted = @@converter.convert(raw_code, false)
           highlighted << "\n<span class=\"comment\"># gem install syntax to get syntax highlighting</span>" if @@converter.is_a?(NullConverter)
           post_process(highlighted, line)
