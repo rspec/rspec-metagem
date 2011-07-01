@@ -145,23 +145,27 @@ module RSpec::Core
 
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
-        file = "spec/rspec/core/resources/a_bar.rb"
-        config.files_or_directories_to_run = file
-        config.files_to_run.should eq([file])
+        config.files_or_directories_to_run = "spec/rspec/core/resources/a_bar.rb"
+        config.files_to_run.should eq([      "spec/rspec/core/resources/a_bar.rb"])
       end
 
-      it "prevents repitition of dir when part of the pattern" do
-        file = "spec/rspec/core/resources/a_bar.rb"
-        config.pattern = "spec/**/a_bar.rb"
+      it "prevents repitition of dir when start of the pattern" do
+        config.pattern = "spec/**/a_spec.rb"
         config.files_or_directories_to_run = "spec"
-        config.files_to_run.should eq([file])
+        config.files_to_run.should eq(["spec/rspec/core/resources/a_spec.rb"])
+      end
+
+      it "does not prevent repitition of dir when later of the pattern" do
+        config.pattern = "rspec/**/a_spec.rb"
+        config.files_or_directories_to_run = "spec"
+        config.files_to_run.should eq(["spec/rspec/core/resources/a_spec.rb"])
       end
 
       context "with default pattern" do
         it "loads files named _spec.rb" do
           dir = "spec/rspec/core/resources"
-          config.files_or_directories_to_run = dir
-          config.files_to_run.should eq(["#{dir}/a_spec.rb"])
+          config.files_or_directories_to_run = "spec/rspec/core/resources"
+          config.files_to_run.should eq([      "spec/rspec/core/resources/a_spec.rb"])
         end
 
         it "loads files in Windows" do
