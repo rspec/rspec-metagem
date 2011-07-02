@@ -47,7 +47,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       run_all_and_dump_failures
 
       output.string.should =~ /group name example name/m
-      output.string.should =~ /(\s+)expected \"that\"\n\1     got \"this\"/m
+      output.string.should =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
     end
 
     context "with an exception without a message" do
