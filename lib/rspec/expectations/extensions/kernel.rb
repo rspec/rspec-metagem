@@ -6,7 +6,7 @@ module Kernel
   # @param [Matcher]
   #   matcher
   # @param [String] message optional message to display when the expectation fails
-  # @return [PositiveExpectationHandler]
+  # @return [Boolean] true if the expectation succeeds (else raises)
   # @see RSpec::Matchers
   def should(matcher=nil, message=nil, &block)
     RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
@@ -18,7 +18,7 @@ module Kernel
   # @param [Matcher]
   #   matcher
   # @param [String] message optional message to display when the expectation fails
-  # @return [NegativeExpectationHandler]
+  # @return [Boolean] false if the negative expectation succeeds (else raises)
   # @see RSpec::Matchers
   def should_not(matcher=nil, message=nil, &block)
     RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
