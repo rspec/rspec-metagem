@@ -34,7 +34,7 @@ Feature: attribute of subject
       Array
         when first created
           size
-            should == 0
+            should eq 0
       """
 
   Scenario: specify value of a nested attribute
@@ -65,7 +65,7 @@ Feature: attribute of subject
       Person
         with one phone number (555-1212)
           phone_numbers.first
-            should == 555-1212
+            should eq 555-1212
       """
 
   Scenario: specify value of an attribute of a hash
