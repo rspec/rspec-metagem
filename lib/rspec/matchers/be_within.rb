@@ -16,7 +16,7 @@ module RSpec
         end
 
         match do |actual|
-          unless @_expected
+          unless defined?(@_expected)
             raise ArgumentError.new("You must set an expected value using #of: be_within(#{_delta_}).of(expected_value)")
           end
           (actual - @_expected).abs < _delta_

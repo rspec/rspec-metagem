@@ -151,9 +151,12 @@ end
 
 describe "should >=" do
   
-  it "passes if >= passes" do
-    4.should > 3
+  it "passes if actual == expected" do
     4.should >= 4
+  end
+
+  it "passes if actual > expected" do
+    4.should >= 3
   end
 
   it "fails if > fails" do
@@ -178,9 +181,12 @@ end
 
 describe "should <=" do
   
-  it "passes if <= passes" do
-    4.should <= 5
+  it "passes if actual == expected" do
     4.should <= 4
+  end
+
+  it "passes if actual < expected" do
+    4.should <= 5
   end
 
   it "fails if > fails" do

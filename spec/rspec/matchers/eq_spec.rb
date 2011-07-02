@@ -18,13 +18,13 @@ module RSpec
       it "describes itself" do
         matcher = eq(1)
         matcher.matches?(1)
-        matcher.description.should == "== 1"
+        matcher.description.should == "eq 1"
       end
       
       it "provides message, expected and actual on #failure_message" do
         matcher = eq("1")
         matcher.matches?(1)
-        matcher.failure_message_for_should.should == "\nexpected \"1\"\n     got 1\n\n(compared using ==)\n"
+        matcher.failure_message_for_should.should == "\nexpected: \"1\"\n     got: 1\n\n(compared using ==)\n"
       end
       
       it "provides message, expected and actual on #negative_failure_message" do

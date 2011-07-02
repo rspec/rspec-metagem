@@ -24,8 +24,8 @@ module RSpec
         failure_message_for_should do |actual|
           <<-MESSAGE
 
-expected #{_expected_.inspect}
-     got #{actual.inspect}
+expected: #{_expected_.inspect}
+     got: #{actual.inspect}
 
 (compared using ==)
 MESSAGE
@@ -41,7 +41,7 @@ MESSAGE
         end
 
         description do
-          "== #{_expected_}"
+          "eq #{_expected_}"
         end
       end
     end

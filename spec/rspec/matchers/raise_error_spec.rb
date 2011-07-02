@@ -161,11 +161,11 @@ describe "should raise_error(NamedError, error_message) { |err| ... }" do
       raise "example message"
     }.should raise_error(RuntimeError, "example message") { |err|
       ran = true
-      err.class.should == RuntimeError
-      err.message.should == "example message"
+      err.class.should eq RuntimeError
+      err.message.should eq "example message"
     }
 
-    ran.should == true
+    ran.should be(true)
   end
 
   it "yielded block fails on it's own right" do
@@ -176,13 +176,13 @@ describe "should raise_error(NamedError, error_message) { |err| ... }" do
         raise "example message"
       }.should raise_error(RuntimeError, "example message") { |err|
         ran = true
-        5.should == 4
+        5.should eq 4
         passed = true
       }
     }.should fail_with(/expected: 4/m)
 
-    ran.should == true
-    passed.should == false
+    ran.should be(true)
+    passed.should be(false)
   end
 
   it "does NOT yield exception if no error was thrown" do
