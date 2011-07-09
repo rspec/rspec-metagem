@@ -245,31 +245,31 @@ module RSpec::Core
 
       it "assigns the file and line number as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37"
-        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37]}}
+        config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
 
       it "assigns multiple files with line numbers as location filters" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37", "other_spec.rb:44"
-        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37],
-                                                File.expand_path("other_spec.rb") => [44]}}
+        config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37],
+                                                File.expand_path("other_spec.rb") => [44]}})
       end
 
       it "assigns files with multiple line numbers as location filters" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
-        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}}
+        config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}})
       end
     end
 
     context "with multiple line numbers" do
       it "assigns the file and line numbers as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:1:3:5:7"
-        config.filter.should == {:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}}
+        config.filter.should eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
       end
     end
 
     it "assigns the example name as the filter on description" do
       config.full_description = "foo"
-      config.filter.should == {:full_description => /foo/}
+      config.filter.should eq({:full_description => /foo/})
     end
     
     describe "#default_path" do

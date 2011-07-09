@@ -44,7 +44,7 @@ module RSpec::Core
 
         group.run(Reporter.new(formatter))
 
-        order.should == [
+        order.should eq [
            "Started: root",
            "Started: context 1",
            "Finished: context 1",

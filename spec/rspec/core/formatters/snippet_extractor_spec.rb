@@ -6,7 +6,7 @@ module RSpec
     module Formatters
       describe SnippetExtractor do
         it "falls back on a default message when it doesn't understand a line" do
-          RSpec::Core::Formatters::SnippetExtractor.new.snippet_for("blech").should == ["# Couldn't get snippet for blech", 1]
+          RSpec::Core::Formatters::SnippetExtractor.new.snippet_for("blech").should eq(["# Couldn't get snippet for blech", 1])
         end
 
         it "falls back on a default message when it doesn't find the file" do

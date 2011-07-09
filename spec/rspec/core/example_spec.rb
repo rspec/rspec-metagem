@@ -86,7 +86,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
-      described_class.should == RSpec::Core::Example
+      described_class.should eq RSpec::Core::Example
     end
   end
 

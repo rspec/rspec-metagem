@@ -130,7 +130,7 @@ module RSpec
         it "passes the metadata hash as the second argument if a given proc expects 2 args" do
           passed_metadata = nil
           example_metadata.apply_filter(:if, lambda { |v, m| passed_metadata = m })
-          passed_metadata.should == example_metadata
+          passed_metadata.should eq example_metadata
         end
       end
 
@@ -148,15 +148,15 @@ module RSpec
         end
 
         it "creates an empty execution result" do
-          mfe[:execution_result].should == {}
+          mfe[:execution_result].should eq({})
         end
 
         it "extracts file path from caller" do
-          mfe[:file_path].should == __FILE__
+          mfe[:file_path].should eq __FILE__
         end
 
         it "extracts line number from caller" do
-          mfe[:line_number].should == line_number
+          mfe[:line_number].should eq line_number
         end
 
         it "extracts location from caller" do
@@ -311,7 +311,7 @@ module RSpec
                     "./lib/rspec/core/foo.rb",
                     "#{__FILE__}:#{__LINE__}"
           ])
-          m[:example_group][:file_path].should == __FILE__
+          m[:example_group][:file_path].should eq __FILE__
         end
       end
 
@@ -319,19 +319,19 @@ module RSpec
         it "finds the line number with the first non-rspec lib file in the backtrace" do
           m = Metadata.new
           m.process({})
-          m[:example_group][:line_number].should == __LINE__ - 1
+          m[:example_group][:line_number].should eq(__LINE__ - 1)
         end
 
         it "finds the line number with the first spec file with drive letter" do
           m = Metadata.new
           m.process(:caller => [ "C:/path/to/file_spec.rb:#{__LINE__}" ])
-          m[:example_group][:line_number].should == __LINE__ - 1
+          m[:example_group][:line_number].should eq(__LINE__ - 1)
         end
 
         it "uses the number after the first : for ruby 1.9" do
           m = Metadata.new
           m.process(:caller => [ "#{__FILE__}:#{__LINE__}:999" ])
-          m[:example_group][:line_number].should == __LINE__ - 1
+          m[:example_group][:line_number].should eq(__LINE__ - 1)
         end
       end
 
@@ -343,7 +343,7 @@ module RSpec
           child = Metadata.new(parent)
           child.process()
 
-          child[:example_group][:example_group].should == parent[:example_group]
+          child[:example_group][:example_group].should eq parent[:example_group]
         end
       end
     end

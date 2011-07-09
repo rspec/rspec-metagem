@@ -119,7 +119,7 @@ module RSpec::Core
           end
           group.run
 
-          passed_params.should == { :param1 => :value1, :param2 => :value2 }
+          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
         end
 
         it "adds shared instance methods to nested group" do

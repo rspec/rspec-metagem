@@ -9,7 +9,7 @@ describe "deprecations" do
 
     it "returns RSpec" do
       RSpec.stub(:warn_deprecation)
-      Spec.should == RSpec
+      Spec.should eq RSpec
     end
 
     it "doesn't include backward compatibility in const_missing backtrace" do
@@ -32,7 +32,7 @@ describe "deprecations" do
 
       it "delegates to example" do
         RSpec.stub(:warn_deprecation)
-        running_example.should == example
+        running_example.should eq example
       end
     end
   end

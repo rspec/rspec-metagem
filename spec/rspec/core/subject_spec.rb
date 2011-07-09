@@ -8,13 +8,13 @@ module RSpec::Core
     describe "implicit subject" do
       describe "with a class" do
         it "returns an instance of the class" do
-          ExampleGroup.describe(Array).subject.call.should == []
+          ExampleGroup.describe(Array).subject.call.should eq []
         end
       end
 
       describe "with a Module" do
         it "returns the Module" do
-          ExampleGroup.describe(Enumerable).subject.call.should == Enumerable
+          ExampleGroup.describe(Enumerable).subject.call.should eq Enumerable
         end
       end
 
@@ -56,7 +56,7 @@ module RSpec::Core
         it "replaces the implicit subject in that group" do
           group = ExampleGroup.describe(Array)
           group.subject { [1,2,3] }
-          group.subject.call.should == [1,2,3]
+          group.subject.call.should eq [1,2,3]
         end
       end
 
@@ -69,13 +69,13 @@ module RSpec::Core
 
         it "is available in a nested group (subclass)" do
           nested_group = group.describe("I'm nested!") { }
-          nested_group.subject.call.should == [4,5,6]
+          nested_group.subject.call.should eq [4,5,6]
         end
 
         it "is available in a doubly nested group (subclass)" do
           nested_group = group.describe("Nesting level 1") { }
           doubly_nested_group = nested_group.describe("Nesting level 2") { }
-          doubly_nested_group.subject.call.should == [4,5,6]
+          doubly_nested_group.subject.call.should eq [4,5,6]
         end
       end
     end

@@ -21,7 +21,7 @@ describe RSpec::Core do
 
     it "yields the current configuration" do
       RSpec.configure do |config|
-        config.should == RSpec::configuration
+        config.should eq RSpec::configuration
       end
     end
 

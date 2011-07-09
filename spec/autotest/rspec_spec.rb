@@ -86,14 +86,14 @@ describe Autotest::Rspec2 do
     let(:spec_file)    { "spec/autotest/some_spec.rb" }
 
     it "returns no failures if no failures were given in the output" do
-      rspec_autotest.consolidate_failures([[]]).should == {}
+      rspec_autotest.consolidate_failures([[]]).should eq({})
     end
 
     it "returns a hash with the spec filename => spec name for each failure or error" do
       failures = [ [ "false should be false", spec_file ] ]
-      rspec_autotest.consolidate_failures(failures).should == {
+      rspec_autotest.consolidate_failures(failures).should eq({
         spec_file => ["false should be false"]
-      }
+      })
     end
 
     context "when subject file appears before the spec file in the backtrace" do
