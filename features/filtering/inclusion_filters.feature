@@ -1,18 +1,17 @@
 Feature: inclusion filters
 
-  You can restrict which examples are run by declaring an inclusion filter. The
+  You can constrain which examples are run by declaring an inclusion filter. The
   most common use case is to focus on a subset of examples as you're focused on
   a particular problem.
 
-  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
-  to `true`, you can specify metadata using only symbols.
+  You can specify metadata using only symbols if you set the
+  `treat_symbols_as_metadata_keys_with_true_values` config option to `true`.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
       """
       RSpec.configure do |c|
-        # filter_run is short-form alias for filter_run_including
-        c.filter_run :focus => true
+        c.filter_run_including :focus => true
       end
       """
 

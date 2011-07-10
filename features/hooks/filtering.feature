@@ -1,12 +1,21 @@
 Feature: filters
 
-  `before`/`after`/`around` hooks defined in the RSpec configuration block can
-  be filtered using metadata.  Arbitrary metadata can be applied to an example
-  or example group, and used to make a hook only apply to examples with the
-  given metadata.
+  `before`, `after`, and `around` hooks defined in the block passed to
+  `RSpec.configure` can be constrained to specific examples and/or groups using
+  metadata as a filter.
 
-  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
-  to `true`, you can specify metadata using only symbols.
+      RSpec.configure do |c|
+        c.before(:each, :type => :model) do
+          # ...
+        end
+      end
+
+      describe "something", :type => :model do
+        # ...
+      end
+
+  You can specify metadata using only symbols if you set the
+  `treat_symbols_as_metadata_keys_with_true_values` config option to `true`.
 
   Scenario: filter `before(:each)` hooks using arbitrary metadata
     Given a file named "filter_before_each_hooks_spec.rb" with:
