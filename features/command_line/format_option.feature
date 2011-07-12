@@ -19,6 +19,14 @@ Feature: --format option
 
     $ rspec spec --format documentation:rspec.output.txt
 
+  `rspec --help` lists available formatters:
+
+      [p]rogress (default - dots)
+      [d]ocumentation (group and example names)
+      [h]tml
+      [t]extmate
+      custom formatter class name
+
   Background:
     Given a file named "example_spec.rb" with:
       """
