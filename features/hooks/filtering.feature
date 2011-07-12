@@ -6,12 +6,10 @@ Feature: filters
 
       RSpec.configure do |c|
         c.before(:each, :type => :model) do
-          # ...
         end
       end
 
       describe "something", :type => :model do
-        # ...
       end
 
   You can specify metadata using only symbols if you set the
