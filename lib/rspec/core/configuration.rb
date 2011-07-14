@@ -311,8 +311,12 @@ EOM
 
       def files_or_directories_to_run=(*files)
         files = files.flatten
-        files << default_path if files.empty? && default_path
+        files << default_path if command == 'rspec' && default_path && files.empty?
         self.files_to_run = get_files_to_run(files)
+      end
+
+      def command
+        $0.split(File::SEPARATOR).last
       end
 
       def get_files_to_run(files)

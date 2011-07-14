@@ -176,9 +176,16 @@ module RSpec::Core
       end
       
       context "with default default_path" do
-        it "loads files named _spec.rb" do
+        it "loads files in the default path when run by rspec" do
+          config.stub(:command) { 'rspec' }
           config.files_or_directories_to_run = []
           config.files_to_run.should_not be_empty
+        end
+
+        it "does not load files in the default path when run by ruby" do
+          config.stub(:command) { 'ruby' }
+          config.files_or_directories_to_run = []
+          config.files_to_run.should be_empty
         end
       end
     end
