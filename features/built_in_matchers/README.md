@@ -29,10 +29,10 @@
 
 ## Truthiness and existentialism
 
-    actual.should be_true  # passes if actual is anything but nil or false
-    actual.should be_false # passes if actual is nil or false
+    actual.should be_true  # passes if actual is truthy (not nil or false)
+    actual.should be_false # passes if actual is falsy (nil or false)
     actual.should be_nil   # passes if actual is nil
-    actual.should be       # passes if actual is not nil
+    actual.should be       # passes if actual is truthy (not nil or false)
 
 ## Expecting errors
 

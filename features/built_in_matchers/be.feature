@@ -5,7 +5,7 @@ Feature: "be" matchers
       obj.should be_true  # passes if obj is truthy (not nil or false)
       obj.should be_false # passes if obj is falsy (nil or false)
       obj.should be_nil   # passes if obj is nil
-      obj.should be       # passes if obj is not nil
+      obj.should be       # passes if obj is truthy (not nil or false)
 
   Scenario: be_true matcher
     Given a file named "be_true_spec.rb" with:
