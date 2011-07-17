@@ -20,7 +20,7 @@ Feature: rake task
       end
       """
     When I run `rake`
-    Then the stderr should contain "ruby -S rspec"
+    Then the output should contain "ruby -S rspec"
     Then the exit status should be 0
 
   Scenario: default options with failing spec (exit status is 1)

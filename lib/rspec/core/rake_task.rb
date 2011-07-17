@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require 'rspec/core'
 require 'rspec/core/deprecation'
 require 'rake'
@@ -133,11 +131,12 @@ module RSpec
               puts "No examples matching #{pattern} could be found"
             else
               begin
-                ruby(spec_command)
+                puts spec_command if verbose
+                success = system(spec_command)
               rescue
                 puts failure_message if failure_message
-                raise("ruby #{spec_command} failed") if fail_on_error
               end
+              raise("ruby #{spec_command} failed") if fail_on_error unless success
             end
           end
         end
@@ -155,10 +154,12 @@ module RSpec
 
       def spec_command
         @spec_command ||= begin
-                            cmd_parts = [ruby_opts]
+                            cmd_parts = []
+                            cmd_parts << "bundle exec" if gemfile? unless skip_bundler
+                            cmd_parts << RUBY
+                            cmd_parts << ruby_opts
                             cmd_parts << "-w" if warning?
                             cmd_parts << "-S"
-                            cmd_parts << "bundle exec" if gemfile? unless skip_bundler
                             cmd_parts << runner
                             if rcov
                               cmd_parts << ["-Ispec#{File::PATH_SEPARATOR}lib", rcov_opts]

@@ -5,6 +5,10 @@ module RSpec::Core
   describe RakeTask do
     let(:task) { RakeTask.new }
 
+    def ruby
+      FileUtils::RUBY
+    end
+
     before do
       File.stub(:exist?) { false }
     end
@@ -26,7 +30,7 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        spec_command.should =~ /^-S rspec/
+        spec_command.should =~ /^#{ruby} -S rspec/
       end
     end
 
@@ -60,7 +64,7 @@ module RSpec::Core
     context "with rcov" do
       it "renders rcov" do
         with_rcov do
-          spec_command.should =~ /^-S rcov/
+          spec_command.should =~ /^#{ruby} -S rcov/
         end
       end
     end
@@ -69,7 +73,7 @@ module RSpec::Core
       it "renders bundle exec rcov" do
         with_bundler do
           with_rcov do
-            spec_command.should =~ /^-S bundle exec rcov/
+            spec_command.should =~ /^bundle exec #{ruby} -S rcov/
           end
         end
       end
@@ -78,7 +82,7 @@ module RSpec::Core
     context "with ruby options" do
       it "renders them before -S" do
         task.ruby_opts = "-w"
-        spec_command.should =~ /^-w -S rspec/
+        spec_command.should =~ /^#{ruby} -w -S rspec/
       end
     end
 
