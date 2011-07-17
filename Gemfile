@@ -47,6 +47,6 @@ group :development do
 
   platforms :mri_18, :mri_19 do
     gem "rb-fsevent", "~> 0.3.9"
-    gem "ruby-prof", "~> 0.9.2"
+    gem "ruby-prof", "~> 0.10.0"
   end
 end
