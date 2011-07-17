@@ -314,33 +314,12 @@ a {
         <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=18">./spec/rspec/core/resources/formatter_specs.rb:18</a> :in `(root)'
 org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyHash.java:1062:in `fetch'
-org/jruby/RubyProc.java:268:in `call'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyIO.java:1122:in `open'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyKernel.java:2045:in `instance_exec'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 org/jruby/RubyArray.java:2336:in `collect'</pre></div>
-    <pre class="ruby"><code><span class="linenum">29</span>            <span class="ident">teardown_mocks_for_rspec</span>
-<span class="linenum">30</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">31</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">32</span>        <span class="keyword">end</span>
-<span class="linenum">33</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+    <pre class="ruby"><code><span class="linenum">30</span>            <span class="ident">teardown_mocks_for_rspec</span>
+<span class="linenum">31</span>          <span class="keyword">end</span>
+<span class="offending"><span class="linenum">32</span>          <span class="keyword">raise</span> <span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Core</span><span class="punct">::</span><span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
+<span class="linenum">33</span>        <span class="keyword">end</span>
+<span class="linenum">34</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -369,26 +348,6 @@ expected: 2
 </pre></div>
         <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=33">./spec/rspec/core/resources/formatter_specs.rb:33</a> :in `(root)'
 org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyHash.java:1062:in `fetch'
-org/jruby/RubyProc.java:268:in `call'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyIO.java:1122:in `open'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyKernel.java:2045:in `instance_exec'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 org/jruby/RubyArray.java:2336:in `collect'</pre></div>
     <pre class="ruby"><code><span class="linenum">30</span>        <span class="keyword">end</span>
 <span class="linenum">31</span>
@@ -412,26 +371,6 @@ org/jruby/RubyArray.java:2336:in `collect'</pre></div>
 org/jruby/RubyKernel.java:1088:in `eval'
 <a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&line=41">./spec/rspec/core/resources/formatter_specs.rb:41</a> :in `(root)'
 org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=24">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:24</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyHash.java:1062:in `fetch'
-org/jruby/RubyProc.java:268:in `call'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyIO.java:1122:in `open'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=47">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:47</a> :in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-<a href="txmt://open?url=file:///Users/david/projects/ruby/rspec2/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&line=46">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:46</a> :in `Formatters'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyKernel.java:2028:in `instance_eval'
-org/jruby/RubyKernel.java:2045:in `instance_exec'
-org/jruby/RubyProc.java:268:in `call'
-org/jruby/RubyProc.java:228:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 org/jruby/RubyArray.java:2336:in `collect'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
@@ -441,7 +380,7 @@ org/jruby/RubyArray.java:2336:in `collect'</pre></div>
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///foo.html.erb&line=1">/foo.html.erb:1</a> :in `<main>': foo (RuntimeError)</pre></div>
+        <div class="backtrace"><pre><a href="txmt://open?url=file:///foo.html.erb&line=1">/foo.html.erb:1</a> :in `&lt;main&gt;': foo (RuntimeError)</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>
