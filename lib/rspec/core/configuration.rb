@@ -39,6 +39,7 @@ module RSpec
       add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
       add_setting :expecting_with_rspec
       add_setting :default_path, :default => 'spec'
+      add_setting :show_failures_in_pending_blocks, :default => false
 
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },

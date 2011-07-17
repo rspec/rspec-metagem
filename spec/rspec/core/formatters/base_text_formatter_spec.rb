@@ -165,6 +165,154 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
+  describe "#dump_pending" do
+    let(:group) { RSpec::Core::ExampleGroup.describe("group name") }
+
+    before { RSpec.configuration.stub(:color_enabled?) { false } }
+
+    def run_all_and_dump_pending
+      group.run(formatter)
+      formatter.dump_pending
+    end
+
+    context "with show_failures_in_pending_blocks setting enabled" do
+      before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { true } }
+
+      it "preserves formatting" do
+        group.example("example name") { pending { "this".should eq("that") } }
+
+        run_all_and_dump_pending
+
+        output.string.should =~ /group name example name/m
+        output.string.should =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
+      end
+
+      context "with an exception without a message" do
+        it "does not throw NoMethodError" do
+          exception_without_message = Exception.new()
+          exception_without_message.stub(:message) { nil }
+          group.example("example name") { pending { raise exception_without_message } }
+          expect { run_all_and_dump_pending }.not_to raise_error(NoMethodError)
+        end
+      end
+
+      context "with an exception class other than RSpec" do
+        it "does not show the error class" do
+          group.example("example name") { pending { raise NameError.new('foo') } }
+          run_all_and_dump_pending
+          output.string.should =~ /NameError/m
+        end
+      end
+
+      context "with a failed expectation (rspec-expectations)" do
+        it "does not show the error class" do
+          group.example("example name") { pending { "this".should eq("that") } }
+          run_all_and_dump_pending
+          output.string.should_not =~ /RSpec/m
+        end
+      end
+
+      context "with a failed message expectation (rspec-mocks)" do
+        it "does not show the error class" do
+          group.example("example name") { pending { "this".should_receive("that") } }
+          run_all_and_dump_pending
+          output.string.should_not =~ /RSpec/m
+        end
+      end
+
+      context 'for #share_examples_for' do
+        it 'outputs the name and location' do
+
+          share_examples_for 'foo bar' do
+            it("example name") { pending { "this".should eq("that") } }
+          end
+
+          line = __LINE__.next
+          group.it_should_behave_like('foo bar')
+
+          run_all_and_dump_pending
+
+          output.string.should include(
+            'Shared Example Group: "foo bar" called from ' +
+            "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+          )
+        end
+
+        context 'that contains nested example groups' do
+          it 'outputs the name and location' do
+            share_examples_for 'foo bar' do
+              describe 'nested group' do
+                it("example name") { pending { "this".should eq("that") } }
+              end
+            end
+
+            line = __LINE__.next
+            group.it_should_behave_like('foo bar')
+
+            run_all_and_dump_pending
+
+            output.string.should include(
+              'Shared Example Group: "foo bar" called from ' +
+              "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+            )
+          end
+        end
+      end
+
+      context 'for #share_as' do
+        it 'outputs the name and location' do
+
+          share_as :FooBar2 do
+            it("example name") { pending { "this".should eq("that") } }
+          end
+
+          line = __LINE__.next
+          group.send(:include, FooBar2)
+
+          run_all_and_dump_pending
+
+          output.string.should include(
+            'Shared Example Group: "FooBar2" called from ' +
+            "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+          )
+        end
+
+        context 'that contains nested example groups' do
+          it 'outputs the name and location' do
+
+            share_as :NestedFoo2 do
+              describe 'nested group' do
+                describe 'hell' do
+                  it("example name") { pending { "this".should eq("that") } }
+                end
+              end
+            end
+
+            line = __LINE__.next
+            group.send(:include, NestedFoo2)
+
+            run_all_and_dump_pending
+
+            output.string.should include(
+              'Shared Example Group: "NestedFoo2" called from ' +
+              "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+            )
+          end
+        end
+      end
+    end
+
+    context "with show_failures_in_pending_blocks setting disabled" do
+      before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { false } }
+
+      it "does not output the failure information" do
+        group.example("example name") { pending { "this".should eq("that") } }
+        run_all_and_dump_pending
+        output.string.should_not =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
+      end
+    end
+  end
+
   describe "#dump_profile" do
     before do
       formatter.stub(:examples) do

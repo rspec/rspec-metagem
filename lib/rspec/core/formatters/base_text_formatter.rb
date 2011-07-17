@@ -77,6 +77,11 @@ module RSpec
               output.puts yellow("  #{pending_example.full_description}")
               output.puts cyan("    # #{pending_example.execution_result[:pending_message]}")
               output.puts cyan("    # #{format_caller(pending_example.location)}")
+              if pending_example.execution_result[:exception] \
+                && RSpec.configuration.show_failures_in_pending_blocks?
+                dump_failure_info(pending_example)
+                dump_backtrace(pending_example)
+              end
             end
           end
         end
@@ -156,8 +161,12 @@ module RSpec
         end
 
         def dump_failure(example, index)
-          exception = example.execution_result[:exception]
           output.puts "#{short_padding}#{index.next}) #{example.full_description}"
+          dump_failure_info(example)
+        end
+
+        def dump_failure_info(example)
+          exception = example.execution_result[:exception]
           output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{red(exception.class.name << ":")}" unless exception.class.name =~ /RSpec/
           exception.message.split("\n").each { |line| output.puts "#{long_padding}  #{red(line)}" } if exception.message
@@ -170,7 +179,6 @@ module RSpec
             end
           end
         end
-
       end
     end
   end

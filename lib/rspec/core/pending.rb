@@ -24,7 +24,8 @@ module RSpec
                        example.example_group_instance.instance_eval { verify_mocks_for_rspec }
                      end
             example.metadata[:pending] = false
-          rescue Exception
+          rescue Exception => e
+            example.execution_result[:exception] = e
           ensure
             teardown_mocks_for_rspec
           end
