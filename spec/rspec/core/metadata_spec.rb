@@ -130,7 +130,7 @@ module RSpec
         it "passes the metadata hash as the second argument if a given proc expects 2 args" do
           passed_metadata = nil
           example_metadata.apply_filter(:if, lambda { |v, m| passed_metadata = m })
-          passed_metadata.should eq example_metadata
+          passed_metadata.should eq(example_metadata)
         end
       end
 
@@ -152,11 +152,11 @@ module RSpec
         end
 
         it "extracts file path from caller" do
-          mfe[:file_path].should eq __FILE__
+          mfe[:file_path].should eq(__FILE__)
         end
 
         it "extracts line number from caller" do
-          mfe[:line_number].should eq line_number
+          mfe[:line_number].should eq(line_number)
         end
 
         it "extracts location from caller" do
@@ -311,7 +311,7 @@ module RSpec
                     "./lib/rspec/core/foo.rb",
                     "#{__FILE__}:#{__LINE__}"
           ])
-          m[:example_group][:file_path].should eq __FILE__
+          m[:example_group][:file_path].should eq(__FILE__)
         end
       end
 
@@ -343,7 +343,7 @@ module RSpec
           child = Metadata.new(parent)
           child.process()
 
-          child[:example_group][:example_group].should eq parent[:example_group]
+          child[:example_group][:example_group].should eq(parent[:example_group])
         end
       end
     end

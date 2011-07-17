@@ -86,7 +86,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
-      described_class.should eq RSpec::Core::Example
+      described_class.should eq(RSpec::Core::Example)
     end
   end
 
@@ -201,8 +201,8 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           after(:all)   { @after_all  = :after_all }
         end
         group.example("does something") do
-          @before_all.should eq :before_all
-          @before_each.should eq :before_each
+          @before_all.should eq(:before_all)
+          @before_each.should eq(:before_each)
         end
         group.run(double.as_null_object).should be_true
         group.new do |example|
