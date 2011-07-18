@@ -64,7 +64,7 @@ Feature: configure expectation framework
           assert 5 > 4, "expected 5 to be greater than 4"
         end
 
-        it "is less than 4" do
+        it "is less than 6" do
           5.should be < 6
         end
       end
