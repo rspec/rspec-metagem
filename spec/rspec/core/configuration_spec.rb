@@ -71,6 +71,18 @@ module RSpec::Core
         config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
         config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
       end
+
+      context 'when there are already some example groups defined' do
+        before(:each) do
+          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
+        end
+
+        it 'raises an error since this setting must be applied before any groups are defined' do
+          expect {
+            config.mock_framework = :rspec
+          }.to raise_error(/must be configured before any example groups are defined/)
+        end
+      end
     end
 
     describe "#mock_with" do
@@ -108,6 +120,18 @@ module RSpec::Core
         expect do
           config.expect_with :not_supported
         end.to raise_error(ArgumentError)
+      end
+
+      context 'when there are already some example groups defined' do
+        before(:each) do
+          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
+        end
+
+        it 'raises an error since this setting must be applied before any groups are defined' do
+          expect {
+            config.expect_with :rspec
+          }.to raise_error(/must be configured before any example groups are defined/)
+        end
       end
     end
 
