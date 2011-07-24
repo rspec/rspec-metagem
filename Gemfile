@@ -33,6 +33,7 @@ group :development do
   gem "relish", "0.2.0"
   gem "guard-rspec", "0.1.9"
   gem "growl", "1.0.3"
+  gem "spork", "0.9.0.rc9"
 
   platforms :mri_18 do
     gem "rcov", "0.9.9"
