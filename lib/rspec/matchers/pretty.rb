@@ -7,7 +7,7 @@ module RSpec
 
       def to_sentence(words)
         return "" unless words
-        words = Array(words).map{|w| w.inspect}
+        words = Array(words).map { |w| to_word(w) }
         case words.length
           when 0
             ""
@@ -32,6 +32,10 @@ module RSpec
           end
         end
         result
+      end
+
+      def to_word(item)
+        item.is_a?(Matcher) ? item.description : item.inspect
       end
 
       def name_to_sentence

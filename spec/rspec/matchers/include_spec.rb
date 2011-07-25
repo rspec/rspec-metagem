@@ -386,3 +386,41 @@ describe "#include matcher" do
     end
   end
 end
+
+RSpec::Matchers.define :string_containing_string do |expected|
+  match do |actual|
+    actual.include?(expected)
+  end
+  description do
+    "a string containing '#{expected}'"
+  end
+end
+
+describe "should include(matcher)" do
+  context 'for an array target' do
+    it "passes if target includes an object that satisfies the matcher" do
+      ['foo', 'bar', 'baz'].should include(string_containing_string("ar"))
+    end
+    
+    it "fails if target doesn't include object that satisfies the matcher" do
+      lambda {
+        ['foo', 'bar', 'baz'].should include(string_containing_string("abc"))
+      }.should fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'abc'|)
+    end
+  end
+end
+
+describe "should include(multiple, matcher, arguments)" do
+  context 'for an array target' do
+    
+    it "passes if target includes items satisfying all matchers" do
+      ['foo', 'bar', 'baz'].should include(string_containing_string("ar"), string_containing_string('oo'))
+    end
+
+    it "fails if target does not include an item satisfying any one of the items" do
+      lambda {
+        ['foo', 'bar', 'baz'].should include(string_containing_string("ar"), string_containing_string("abc"))
+      }.should fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'ar' and a string containing 'abc'|)
+    end
+  end
+end

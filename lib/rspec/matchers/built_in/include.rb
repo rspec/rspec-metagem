@@ -34,6 +34,8 @@ module RSpec
               }
             elsif comparing_hash_keys?(actuals, expected)
               actuals.has_key?(expected)
+            elsif comparing_with_matcher?(actual, expected)
+              actual.any? { |value| expected.matches?(value) }
             else
               actuals.include?(expected)
             end
@@ -46,6 +48,10 @@ module RSpec
 
         def comparing_hash_values?(actual, expected)
           actual.is_a?(Hash) && expected.is_a?(Hash)
+        end
+
+        def comparing_with_matcher?(actual, expected)
+          actual.is_a?(Array) && expected.is_a?(Matcher)
         end
       end
     end
