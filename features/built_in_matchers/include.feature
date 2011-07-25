@@ -167,8 +167,8 @@ Feature: include matcher
       """
     When I run `rspec fuzzy_include_matcher_spec.rb`
     Then the output should contain all of these:
-      | 8 examples, 4 failures                                                       |
-      | expected "[Joe, Fred, John, Luke, David]" to include as user named 'Richard' |
-      | expected "[Joe, Fred, John, Luke, David]" not to include a user named 'Fred' |
-      | expected "[Joe, Fred, John, Luke, David]" to include a user named 'Sarah'    |
-      | expected "[Joe, Fred, John, Luke, David]" not to include a user named 'Luke' |
+      | 8 examples, 4 failures                                                     |
+      | expected [Joe, Fred, John, Luke, David] to include a user named 'Richard'  |
+      | expected [Joe, Fred, John, Luke, David] not to include a user named 'Fred' |
+      | expected [Joe, Fred, John, Luke, David] to include a user named 'Sarah'    |
+      | expected [Joe, Fred, John, Luke, David] not to include a user named 'Luke' |

@@ -411,8 +411,7 @@ describe "should include(matcher)" do
 end
 
 describe "should include(multiple, matcher, arguments)" do
-  context 'for an array target' do
-    
+  context 'for an array target' do 
     it "passes if target includes items satisfying all matchers" do
       ['foo', 'bar', 'baz'].should include(string_containing_string("ar"), string_containing_string('oo'))
     end
