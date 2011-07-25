@@ -123,3 +123,52 @@ Feature: include matcher
       """
     When I run `rspec hash_include_matcher_spec.rb`
     Then the output should contain "13 failure"
+    
+  Scenario: fuzzy usage with matchers
+    Given a file named "fuzzy_include_matcher_spec.rb" with:
+      """
+      require 'ostruct'
+      
+      class User < OpenStruct
+        def inspect
+          name
+        end
+      end
+      
+      RSpec::Matchers.define :a_user_named do |expected|
+        match do |actual|
+          actual.is_a?(User) && (actual.name == expected)
+        end
+        description do
+          "a user named '#{expected}'"
+        end
+      end
+      
+      describe "Collection of users" do
+        subject do
+          [User.new(:name => "Joe"),
+           User.new(:name => "Fred"),
+           User.new(:name => "John"),
+           User.new(:name => "Luke"),
+           User.new(:name => "David")]
+        end
+        
+        it { should include( a_user_named "Joe" ) }
+        it { should include( a_user_named "Luke" ) }
+        it { should_not include( a_user_named "Richard" ) }
+        it { should_not include( a_user_named "Hayley" ) }
+        
+        # deliberate failures
+        it { should include( a_user_named "Richard" ) }
+        it { should_not include( a_user_named "Fred" ) }
+        it { should include( a_user_named "Sarah" ) }
+        it { should_not include( a_user_named "Luke" ) }
+      end
+      """
+    When I run `rspec fuzzy_include_matcher_spec.rb`
+    Then the output should contain all of these:
+      | 8 examples, 4 failures                                                       |
+      | expected "[Joe, Fred, John, Luke, David]" to include as user named 'Richard' |
+      | expected "[Joe, Fred, John, Luke, David]" not to include a user named 'Fred' |
+      | expected "[Joe, Fred, John, Luke, David]" to include a user named 'Sarah'    |
+      | expected "[Joe, Fred, John, Luke, David]" not to include a user named 'Luke' |
