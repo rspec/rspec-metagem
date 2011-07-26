@@ -18,7 +18,7 @@ module RSpec
         class NotHashSubclass; end
         
         [StringSubclass.new("baz")].should include( be_kind_of(String) )
-        [NotHashSubclass.new].should_not include( be_instance_of(Hash) )
+        [NotHashSubclass.new].should_not include( be_kind_of(Hash) )
       end
       
       it "works with be_[some predicate]" do
