@@ -34,7 +34,7 @@ module RSpec
       private
 
         def safe_sort(array)
-          array.all?{|item| item.respond_to?(:<=>)} ? array.sort : array
+          array.sort rescue array
         end
 
         def difference_between_arrays(array_1, array_2)

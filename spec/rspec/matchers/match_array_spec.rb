@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 class UnsortableObject
-  # ruby-1.9.2 adds <=> to Object
-  undef_method :<=> rescue nil
-
   def initialize(id)
     @id = id
   end
