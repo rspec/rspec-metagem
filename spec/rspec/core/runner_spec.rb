@@ -7,6 +7,7 @@ module RSpec::Core
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
         RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
+        RSpec::Core::Runner.stub(:run).and_return(-1)
         RSpec::Core::Runner.should_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end

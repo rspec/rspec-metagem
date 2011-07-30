@@ -27,6 +27,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Fix --pattern option (wasn't being recognized) (David Chelimsky)
   * Only implicitly require "rspec/autorun" with the `rspec` command (David
     Chelimsky)
+  * Ensure that rspec's at_exit defines the exit code (Daniel Doubrovkine)
 
 ### 2.6.4 / 2011-06-06
 
