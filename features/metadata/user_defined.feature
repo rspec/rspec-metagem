@@ -12,9 +12,11 @@ Feature: User-defined metadata
   behavior in RSpec 3) that allows you to specify metadata using just
   symbols:
 
-    RSpec.configure do |c|
-      c.treat_symbols_as_metadata_keys_with_true_values = true
-    end
+  ```ruby
+  RSpec.configure do |c|
+    c.treat_symbols_as_metadata_keys_with_true_values = true
+  end
+  ```
 
   Each symbol passed as an argument to `describe`, `context` or `it` will
   be a key in the metadata hash, with a corresponding value of `true`.
