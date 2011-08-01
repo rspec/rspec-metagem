@@ -10,11 +10,11 @@ shared_context "spec files" do
   def create_passing_spec_file
     File.open(passing_spec_filename, 'w') do |f|
       f.write %q{
-          describe "passing spec" do
-            it "passes" do
-              1.should eq(1)
-            end
+        describe "passing spec" do
+          it "passes" do
+            1.should eq(1)
           end
+        end
       }
     end
   end
@@ -22,11 +22,11 @@ shared_context "spec files" do
   def create_failing_spec_file
     File.open(failing_spec_filename, 'w') do |f|
       f.write %q{
-          describe "failing spec" do
-            it "fails" do
-              1.should eq(2)
-            end
+        describe "failing spec" do
+          it "fails" do
+            1.should eq(2)
           end
+        end
       }
     end
   end

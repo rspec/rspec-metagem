@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "::DRbCommandLine", :ruby => "!jruby" do
+describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }
   let(:out)    { StringIO.new }
   let(:err)    { StringIO.new }
