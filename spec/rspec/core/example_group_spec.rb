@@ -888,6 +888,19 @@ module RSpec::Core
         end
         group.run.should be_true
       end
+
+      it "should raise proper error message when shared context is not found" do
+        expect do
+          group = ExampleGroup.describe do
+            include_context "not exist"
+            
+            it "accesses foo" do
+              foo.should eq('foo')
+            end
+          end
+        end.to raise_error(ArgumentError,'shared context "not exist" not found')
+      end
+
     end
 
     describe "#include_examples" do
