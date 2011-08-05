@@ -894,8 +894,9 @@ module RSpec::Core
           ExampleGroup.describe do
             include_context "shared stuff"
           end
-        end.to raise_error(ArgumentError,%q|could not find shared context "shared stuff"|)
+        end.to raise_error(ArgumentError,%q|Could not find shared context "shared stuff"|)
       end
+
     end
 
     describe "#include_examples" do
@@ -912,7 +913,124 @@ module RSpec::Core
         end
         group.examples.first.description.should eq("does something")
       end
+
+      it "raises a helpful error message when shared context is not found" do
+        expect do
+          ExampleGroup.describe do
+            include_examples "shared stuff"
+          end
+        end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
+      end
     end
 
+    describe "#it_should_behave_like" do
+      it "creates a nested group" do
+        shared_examples_for("thing") {}
+        group = ExampleGroup.describe('fake group')
+        group.it_should_behave_like("thing")
+        group.should have(1).children
+      end
+
+      it "creates a nested group for a class" do
+        klass = Class.new
+        shared_examples_for(klass) {}
+        group = ExampleGroup.describe('fake group')
+        group.it_should_behave_like(klass)
+        group.should have(1).children
+      end
+
+      it "adds shared examples to nested group" do
+        shared_examples_for("thing") do
+          it("does something")
+        end
+        group = ExampleGroup.describe('fake group')
+        shared_group = group.it_should_behave_like("thing")
+        shared_group.should have(1).examples
+      end
+
+      it "adds shared instance methods to nested group" do
+        shared_examples_for("thing") do
+          def foo; end
+        end
+        group = ExampleGroup.describe('fake group')
+        shared_group = group.it_should_behave_like("thing")
+        shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+      end
+
+      it "adds shared class methods to nested group" do
+        shared_examples_for("thing") do
+          def self.foo; end
+        end
+        group = ExampleGroup.describe('fake group')
+        shared_group = group.it_should_behave_like("thing")
+        shared_group.methods.map{|m| m.to_s}.should include("foo")
+      end
+
+      context "given some parameters" do
+        it "passes the parameters to the shared example group" do
+          passed_params = {}
+
+          shared_examples_for("thing") do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
+          group = ExampleGroup.describe("group") do
+            it_should_behave_like "thing", :value1, :value2
+          end
+          group.run
+
+          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+        end
+
+        it "adds shared instance methods to nested group" do
+          shared_examples_for("thing") do |param1|
+            def foo; end
+          end
+          group = ExampleGroup.describe('fake group')
+          shared_group = group.it_should_behave_like("thing", :a)
+          shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+        end
+
+        it "evals the shared example group only once" do
+          eval_count = 0
+          shared_examples_for("thing") { |p| eval_count += 1 }
+          group = ExampleGroup.describe('fake group')
+          shared_group = group.it_should_behave_like("thing", :a)
+          eval_count.should eq(1)
+        end
+      end
+
+      context "given a block" do
+        it "evaluates the block in nested group" do
+          scopes = []
+          shared_examples_for("thing") do
+            it("gets run in the nested group") do
+              scopes << self.class
+            end
+          end
+          group = ExampleGroup.describe("group") do
+            it_should_behave_like "thing" do
+              it("gets run in the same nested group") do
+                scopes << self.class
+              end
+            end
+          end
+          group.run
+
+          scopes[0].should be(scopes[1])
+        end
+      end
+
+      it "raises a helpful error message when shared context is not found" do
+        expect do
+          ExampleGroup.describe do
+            it_should_behave_like "shared stuff"
+          end
+        end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
+      end
+    end
   end
 end

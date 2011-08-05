@@ -68,8 +68,8 @@ module RSpec
       def self.define_nested_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, *args, &customization_block)
-            shared_block = world.shared_example_groups[name]
-            raise "Could not find shared example group named \#{name.inspect}" unless shared_block
+            shared_block = find_shared("examples", name)
+            raise "Could not find shared examples \#{name.inspect}" unless shared_block
 
             group = describe("#{report_label || "it should behave like"} \#{name}") do
               module_eval_with_args(*args, &shared_block)
@@ -90,15 +90,19 @@ module RSpec
       alias_it_should_behave_like_to :it_behaves_like, "behaves like"
 
       def self.include_context(name)
-        if world.shared_example_groups.has_key?(name)
-          module_eval(&world.shared_example_groups[name])
-        else
-          raise ArgumentError, "could not find shared context #{name.inspect}"
-        end          
+        module_eval(&find_shared("context", name))
       end
 
-      class << self
-        alias_method :include_examples, :include_context
+      def self.include_examples(name)
+        module_eval(&find_shared("examples", name))
+      end
+
+      def self.find_shared(label, name)
+        if world.shared_example_groups.has_key?(name)
+          world.shared_example_groups[name]
+        else
+          raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
+        end          
       end
 
       def self.examples
