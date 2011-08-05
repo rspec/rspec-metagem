@@ -9,6 +9,8 @@
       * also supports path/to/file.rb:5:9 (runs examples on lines 5 and 9)
   * Allow classes/modules to be used as shared example group identifiers
     (Arthur Gunn)
+  * Friendly error message when shared context cannot be found (Sławosz
+    Sławiński)
 
 * Bug fixes
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)

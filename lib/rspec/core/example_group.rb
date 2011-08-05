@@ -90,9 +90,8 @@ module RSpec
       alias_it_should_behave_like_to :it_behaves_like, "behaves like"
 
       def self.include_context(name)
-        group = world.shared_example_groups[name]
-        if group
-          module_eval(&group)
+        if world.shared_example_groups.has_key?(name)
+          module_eval(&world.shared_example_groups[name])
         else
           raise ArgumentError, "shared context \"#{name}\" not found"
         end          
