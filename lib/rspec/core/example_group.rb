@@ -93,7 +93,7 @@ module RSpec
         if world.shared_example_groups.has_key?(name)
           module_eval(&world.shared_example_groups[name])
         else
-          raise ArgumentError, "shared context \"#{name}\" not found"
+          raise ArgumentError, "could not find shared context #{name.inspect}"
         end          
       end
 
