@@ -11,6 +11,7 @@
     (Arthur Gunn)
   * Friendly error message when shared context cannot be found (Sławosz
     Sławiński)
+  * Clear formatters when resetting config (John Bintz)
 
 * Bug fixes
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
