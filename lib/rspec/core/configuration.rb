@@ -66,6 +66,7 @@ module RSpec
 
       def reset
         @reporter = nil
+        @formatters = []
       end
 
       # :call-seq:

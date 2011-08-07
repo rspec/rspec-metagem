@@ -886,5 +886,13 @@ module RSpec::Core
       end
     end
 
+    describe "#reset" do
+      it "resets the reporter and formatters" do
+        config.reporter
+        config.formatters.should_not be_empty
+        config.reset
+        config.formatters.should be_empty
+      end
+    end
   end
 end
