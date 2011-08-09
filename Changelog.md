@@ -14,6 +14,7 @@
   * Clear formatters when resetting config (John Bintz)
 
 * Bug fixes
+  * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal Casebook)
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
   * Fix --pattern option (wasn't being recognized) (David Chelimsky)
 
