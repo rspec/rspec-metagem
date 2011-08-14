@@ -25,6 +25,8 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
     Casebook)
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
   * Fix --pattern option (wasn't being recognized) (David Chelimsky)
+  * Only implicitly require "rspec/autorun" with the `rspec` command (David
+    Chelimsky)
 
 ### 2.6.4 / 2011-06-06
 
