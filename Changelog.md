@@ -1,6 +1,13 @@
-### dev
+### 2.7.0 (not yet released)
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...master)
+
+NOTE: RSpec's release policy dictates that there should not be any backward
+incompatible changes in minor releases, but we're making an exception to
+release a change to how RSpec interacts with other command line tools.
+
+As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
+`rspec` command (which already does this for you).
 
 * Enhancements
   * Add example.exception (David Chelimsky)
@@ -14,7 +21,8 @@
   * Clear formatters when resetting config (John Bintz)
 
 * Bug fixes
-  * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal Casebook)
+  * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
+    Casebook)
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
   * Fix --pattern option (wasn't being recognized) (David Chelimsky)
 
