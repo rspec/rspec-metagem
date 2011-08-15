@@ -6,7 +6,7 @@ require 'rake/tasklib'
 module RSpec
   module Core
     class RakeTask < ::Rake::TaskLib
-      include ::Rake::DSL
+      include ::Rake::DSL if defined?(::Rake::DSL)
 
       # Name of task.
       #
