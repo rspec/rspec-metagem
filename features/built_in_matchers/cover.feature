@@ -28,7 +28,7 @@ Feature: cover matcher
         it { should_not cover(8) }
         it { should_not cover(4, 6, 8) }
 
-        # both of these should fail since it covers 1 but not 9
+        # both of these should fail since it covers 5 but not 11
         it { should cover(5, 11) }
         it { should_not cover(5, 11) }
       end
