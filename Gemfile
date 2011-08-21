@@ -15,7 +15,7 @@ gem "rake", "0.9.2"
 gem "cucumber", "1.0.1"
 gem "aruba", "0.4.2"
 gem "ZenTest", "4.4.2"
-gem "nokogiri", "1.4.4"
+gem "nokogiri", "1.5.0"
 
 platforms :jruby do
   gem "jruby-openssl"
@@ -36,7 +36,7 @@ group :development do
   gem "spork", "0.9.0.rc9"
 
   platforms :mri_18 do
-    gem "rcov", "0.9.9"
+    gem "rcov", "0.9.10"
     gem 'ruby-debug'
   end
 
