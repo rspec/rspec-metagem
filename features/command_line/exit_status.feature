@@ -42,7 +42,7 @@ Feature: exit status
     When I run `rspec nested_ko_spec.rb`
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
-      
+
   Scenario: exit with 0 when no examples are run
     Given a file named "a_no_examples_spec.rb" with:
       """
@@ -50,3 +50,19 @@ Feature: exit status
     When I run `rspec a_no_examples_spec.rb`
     Then the exit status should be 0
     And the output should contain "0 examples"
+
+  Scenario: exit with 1 when an at_exit hook sets the exit code
+    Given a file named "exit_at_spec.rb" with:
+      """
+      require 'rspec/autorun'
+
+      describe "exit_at" do
+        it "fails" do
+          at_exit { exit 0 }
+          1.should == 2
+        end
+      end
+      """
+    When I run `rspec exit_at_spec.rb`
+    Then the exit status should be 1
+    And the output should contain "1 example, 1 failure"
