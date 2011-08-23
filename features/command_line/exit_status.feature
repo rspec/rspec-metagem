@@ -1,7 +1,7 @@
 Feature: exit status
 
-  In order to fail the build when it should, the spec CLI exits with an
-  appropriate exit status
+  The rspec command exits with an exit status of 0 if all examples pass,
+  and 1 if any examples fail.
 
   Scenario: exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:
@@ -51,15 +51,16 @@ Feature: exit status
     Then the exit status should be 0
     And the output should contain "0 examples"
 
+  @wip
   Scenario: exit with rspec's exit code when an at_exit hook is added upstream
     Given a file named "exit_at_spec.rb" with:
       """
       require 'rspec/autorun'
 
-      describe "exit_at" do
-        it "fails" do
-          at_exit { nil } # this would result in an exit code of 0
-          1.should == 2
+      describe "exit 0 at_exit" do
+        it "does not interfere with rspec's exit code" do
+          at_exit { exit 0 }
+          fail
         end
       end
       """
