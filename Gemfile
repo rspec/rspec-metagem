@@ -35,8 +35,11 @@ group :development do
   gem "growl", "1.0.3"
   gem "spork", "0.9.0.rc9"
 
-  platforms :mri_18 do
+  platforms :mri_18, :jruby do
     gem "rcov", "0.9.10"
+  end
+
+  platforms :mri_18 do
     gem 'ruby-debug'
   end
 
