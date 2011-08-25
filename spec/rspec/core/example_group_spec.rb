@@ -607,19 +607,29 @@ module RSpec::Core
       end
     end
 
+    matcher :add_a_pending_example_with do |method_name|
+      match do |group|
+        group = ExampleGroup.describe
+        group.send(method_name, "is pending") { }
+        group.run
+        group.examples.first.should be_pending
+      end
+    end
+
+    %w[pending xit xspecify xexample].each do |method_name|
+      describe "##{method_name}" do
+        it "generates a pending example" do
+          ExampleGroup.describe.should add_a_pending_example_with(method_name)
+        end
+      end
+    end
+
     describe "adding examples" do
 
       it "allows adding an example using 'it'" do
         group = ExampleGroup.describe
         group.it("should do something") { }
         group.examples.size.should eq(1)
-      end
-
-      it "allows adding a pending example using 'xit'" do
-        group = ExampleGroup.describe
-        group.xit("is pending") { }
-        group.run
-        group.examples.first.should be_pending
       end
 
       it "exposes all examples at examples" do

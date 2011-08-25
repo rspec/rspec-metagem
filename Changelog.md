@@ -19,6 +19,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Friendly error message when shared context cannot be found (Sławosz
     Sławiński)
   * Clear formatters when resetting config (John Bintz)
+  * Add xspecify and xexample as temp-pending methods (David Chelimsky)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal

@@ -60,10 +60,14 @@ module RSpec
 
       alias_example_to :it
       alias_example_to :specify
-      alias_example_to :focused, :focused => true, :focus => true
-      alias_example_to :focus,   :focused => true, :focus => true
-      alias_example_to :pending, :pending => true
-      alias_example_to :xit,     :pending => true
+
+      alias_example_to :pending,  :pending => true
+      alias_example_to :xexample, :pending => true
+      alias_example_to :xit,      :pending => true
+      alias_example_to :xspecify, :pending => true
+
+      alias_example_to :focused,  :focused => true, :focus => true
+      alias_example_to :focus,    :focused => true, :focus => true
 
       def self.define_nested_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)

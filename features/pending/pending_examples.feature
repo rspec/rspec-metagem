@@ -77,22 +77,35 @@ Feature: pending examples
     And the output should contain "Expected pending 'something else getting finished' to fail. No Error was raised."
     And the output should contain "pending_with_passing_block_spec.rb:3"
 
-  Scenario: temporarily pending by changing "it" to "xit"
-    Given a file named "pending_with_xit_spec.rb" with:
+  Scenario: temporarily pending by prefixing `it`, `specify`, or `example` with an x
+    Given a file named "temporarily_pending_spec.rb" with:
       """
       describe "an example" do
         xit "is pending using xit" do
-          true.should be(true)
+        end
+
+        xspecify "is pending using xspecify" do
+        end
+
+        xexample "is pending using xexample" do
         end
       end
       """
-    When I run `rspec pending_with_xit_spec.rb`
+    When I run `rspec temporarily_pending_spec.rb`
     Then the exit status should be 0
-    And the output should contain "1 example, 0 failures, 1 pending"
+    And the output should contain "3 examples, 0 failures, 3 pending"
     And the output should contain:
       """
       Pending:
         an example is pending using xit
+          # Not Yet Implemented
+          # ./temporarily_pending_spec.rb:2
+        an example is pending using xspecify
+          # Not Yet Implemented
+          # ./temporarily_pending_spec.rb:5
+        an example is pending using xexample
+          # Not Yet Implemented
+          # ./temporarily_pending_spec.rb:8
       """
 
   Scenario: example with no docstring and pending method using documentation formatter
