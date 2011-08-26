@@ -15,32 +15,65 @@ Feature: raise_error matcher
   In addition to the basic form, above, there are a number of ways to specify
   details of an error/exception:
 
+      expect { raise "oops" }.to raise_error
+      expect { raise "oops" }.to raise_error(RuntimeError)
+      expect { raise "oops" }.to raise_error("oops")
+      expect { raise "oops" }.to raise_error(/op/)
+      expect { raise "oops" }.to raise_error(RuntimeError, "oops")
+      expect { raise "oops" }.to raise_error(RuntimeError, /op/)
+
   Scenario: expect any error
-    Given a file named "expect_error_spec.rb" with:
+    Given a file named "example_spec" with:
       """
-      describe "calling a method that does not exist" do
+      describe "calling a missing method" do
         it "raises" do
           expect { Object.new.foo }.to raise_error
         end
       end
       """
-    When I run `rspec expect_error_spec.rb`
+    When I run `rspec example_spec`
     Then the example should pass
 
   Scenario: expect specific error
-    Given a file named "expect_error_spec.rb" with:
+    Given a file named "example_spec" with:
       """
-      describe "calling a method that does not exist" do
+      describe "calling a missing method" do
         it "raises" do
           expect { Object.new.foo }.to raise_error(NameError)
         end
       end
       """
-    When I run `rspec expect_error_spec.rb`
+    When I run `rspec example_spec`
     Then the example should pass
 
-  Scenario: expect specific error message using a string
-    Given a file named "expect_error_with_message.rb" with:
+  Scenario: match message with a string
+    Given a file named "example_spec.rb" with:
+      """
+      describe "matching error message with string" do
+        it "matches the error message" do
+          expect { raise StandardError, 'this message exactly'}.
+            to raise_error('this message exactly')
+        end
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the example should pass
+
+  Scenario: match message with a regexp
+    Given a file named "example_spec.rb" with:
+      """
+      describe "matching error message with regex" do
+        it "matches the error message" do
+          expect { raise StandardError, "my message" }.
+            to raise_error(/my mess/)
+        end
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the example should pass
+
+  Scenario: match type + message with string
+    Given a file named "example_spec.rb" with:
       """
       describe "matching error message with string" do
         it "matches the error message" do
@@ -49,11 +82,11 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run `rspec expect_error_with_message.rb`
+    When I run `rspec example_spec.rb`
     Then the example should pass
 
-  Scenario: expect specific error message using a regular expression
-    Given a file named "expect_error_with_regex.rb" with:
+  Scenario: match type + message with regexp
+    Given a file named "example_spec.rb" with:
       """
       describe "matching error message with regex" do
         it "matches the error message" do
@@ -62,11 +95,11 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run `rspec expect_error_with_regex.rb`
+    When I run `rspec example_spec.rb`
     Then the example should pass
 
   Scenario: set expectations on error object passed to block
-    Given a file named "expect_error_with_block_spec.rb" with:
+    Given a file named "example_spec" with:
       """
       describe "#foo" do
         it "raises NameError" do
@@ -76,23 +109,11 @@ Feature: raise_error matcher
         end
       end
       """
-      When I run `rspec expect_error_with_block_spec.rb`
+      When I run `rspec example_spec`
       Then the example should pass
 
-  Scenario: expect no error at all
-    Given a file named "expect_no_error_spec.rb" with:
-      """
-      describe "#to_s" do
-        it "does not raise" do
-          expect { Object.new.to_s }.to_not raise_error
-        end
-      end
-      """
-    When I run `rspec expect_no_error_spec.rb`
-    Then the example should pass
-    
   Scenario: expect no occurence of a specific error
-    Given a file named "expect_no_error_spec.rb" with:
+    Given a file named "example_spec" with:
       """
       describe Object, "#public_instance_methods" do
         it "does not raise" do
@@ -101,5 +122,17 @@ Feature: raise_error matcher
         end
       end
       """
-    When I run `rspec expect_no_error_spec.rb`
+    When I run `rspec example_spec`
+    Then the example should pass
+
+  Scenario: expect no error at all
+    Given a file named "example_spec" with:
+      """
+      describe "#to_s" do
+        it "does not raise" do
+          expect { Object.new.to_s }.to_not raise_error
+        end
+      end
+      """
+    When I run `rspec example_spec`
     Then the example should pass
