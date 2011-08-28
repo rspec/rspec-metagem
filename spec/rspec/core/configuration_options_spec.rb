@@ -204,6 +204,14 @@ describe RSpec::Core::ConfigurationOptions do
 
   end
 
+  describe "--no-drb" do
+    it "disables drb" do
+      parse_options("--no-drb").should include(:drb => false)
+      parse_options("--drb", "--no-drb").should include(:drb => false)
+    end
+  end
+
+
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
       parse_options("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
@@ -256,7 +264,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "includes --example" do
         config_options_object(*%w[--example foo]).drb_argv.should include("--example", "foo")
       end
-      
+
       it "unescapes characters which were escaped upon storing --example originally" do
         config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
       end

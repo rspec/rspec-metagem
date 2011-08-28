@@ -99,8 +99,8 @@ module RSpec::Core
           exit
         end
 
-        parser.on('-X', '--drb', 'Run examples via DRb') do |o|
-          options[:drb] = true
+        parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
+          options[:drb] = o
         end
 
         parser.on('--configure COMMAND', 'Generate configuration files') do |cmd|
@@ -132,7 +132,7 @@ module RSpec::Core
         parser.on('--tty', 'Used internally by rspec when sending commands to other processes') do |o|
           options[:tty] = true
         end
-        
+
         parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
                                          'Can be a path to a file or a directory') do |path|
           options[:default_path] = path
