@@ -20,6 +20,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
     Sławiński)
   * Clear formatters when resetting config (John Bintz)
   * Add xspecify and xexample as temp-pending methods (David Chelimsky)
+  * Add --no-drb option (Iain Hecker)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal

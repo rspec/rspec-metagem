@@ -78,6 +78,14 @@ describe RSpec::Core::ConfigurationOptions do
     it "sets :color_enabled => false" do
       parse_options('--no-color').should include(:color_enabled => false)
     end
+
+    it "overrides previous :color_enabled => true" do
+      parse_options('--color', '--no-color').should include(:color_enabled => false)
+    end
+
+    it "gets overriden by a subsequent :color_enabled => true" do
+      parse_options('--no-color', '--color').should include(:color_enabled => true)
+    end
   end
 
   describe "-I" do
@@ -207,7 +215,14 @@ describe RSpec::Core::ConfigurationOptions do
   describe "--no-drb" do
     it "disables drb" do
       parse_options("--no-drb").should include(:drb => false)
+    end
+
+    it "overrides a previous drb => true" do
       parse_options("--drb", "--no-drb").should include(:drb => false)
+    end
+
+    it "gets overriden by a subsquent drb => true" do
+      parse_options("--no-drb", "--drb").should include(:drb => true)
     end
   end
 
