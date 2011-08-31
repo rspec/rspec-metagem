@@ -1,37 +1,45 @@
 require "spec_helper"
 
 describe "failed_results_re for autotest" do
-  let(:output) { StringIO.new }
-  let(:formatter) { RSpec::Core::Formatters::BaseTextFormatter.new(output) }
-  let(:example_output) do
-    group = RSpec::Core::ExampleGroup.describe("group name")
-    group.example("example name") { "this".should eq("that") }
-    group.run(formatter)
-    formatter.dump_failures
-    output.string
+  def run_example
+    group = RSpec::Core::ExampleGroup.describe("group")
+    example = group.example("example") { yield }
+    io = StringIO.new
+    formatter = RSpec::Core::Formatters::BaseTextFormatter.new(io)
+    reporter = RSpec::Core::Reporter.new(formatter)
+
+    group.run(reporter)
+    reporter.report(1) {}
+    io.string
   end
 
-  context "output does not have color enabled" do
-    before do
-      RSpec.configuration.stub(:color_enabled?) { false }
+  shared_examples "autotest failed_results_re" do
+    it "matches a failure" do
+      output = run_example { fail }
+      output.should match(Autotest::Rspec2.new.failed_results_re)
+      output.should include(__FILE__.sub(File.expand_path('.'),'.'))
     end
 
-    it "matches a failure" do
-      re = Autotest::Rspec2.new.failed_results_re
-      example_output.should =~ re
-      example_output.should include(__FILE__.sub(File.expand_path('.'),'.'))
+    it "does not match when there are no failures" do
+      output = run_example { } # pass
+      output.should_not match(Autotest::Rspec2.new.failed_results_re)
+      output.should_not include(__FILE__.sub(File.expand_path('.'),'.'))
     end
   end
 
-  context "output has color enabled" do
+  context "with color enabled" do
     before do
-      RSpec.configuration.stub(:color_enabled?) { true }
+      RSpec.configuration.stub(:color_enabled? => true)
     end
 
-    it "matches a failure" do
-      re = Autotest::Rspec2.new.failed_results_re
-      example_output.should =~ re
-      example_output.should include(__FILE__.sub(File.expand_path('.'),'.'))
+    include_examples "autotest failed_results_re"
+  end
+
+  context "with color disabled " do
+    before do
+      RSpec.configuration.stub(:color_enabled? => false)
     end
+
+    include_examples "autotest failed_results_re"
   end
 end
