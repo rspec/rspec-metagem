@@ -21,6 +21,8 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Clear formatters when resetting config (John Bintz)
   * Add xspecify and xexample as temp-pending methods (David Chelimsky)
   * Add --no-drb option (Iain Hecker)
+  * Provide more accurate run time by registering start time before code
+    is loaded (David Chelimsky)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
