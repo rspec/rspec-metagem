@@ -3,7 +3,7 @@ module RSpec::Core
     def initialize(*formatters)
       @formatters = formatters
       @example_count = @failure_count = @pending_count = 0
-      @duration = @start = nil
+      @duration = nil
     end
 
     def report(count)
@@ -30,7 +30,6 @@ module RSpec::Core
     alias_method :abort, :finish
 
     def start(expected_example_count)
-      @start = Time.now
       notify :start, expected_example_count
     end
 
@@ -66,7 +65,7 @@ module RSpec::Core
     end
 
     def stop
-      @duration = Time.now - @start if @start
+      @duration = Time.now - $rspec_start_time
       notify :stop
     end
 
