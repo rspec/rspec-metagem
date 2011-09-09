@@ -24,6 +24,8 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Provide more accurate run time by registering start time before code
     is loaded (David Chelimsky)
   * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
+  * Rake task decides whether to use bundler or not based on presence
+    of BUNDLE_GEMFILE (David Chelimsky)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal

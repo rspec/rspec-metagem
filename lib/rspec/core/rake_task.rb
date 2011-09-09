@@ -20,19 +20,29 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
+      # Deprecated and has no effect. The rake task now checks
+      # ENV['BUNDLE_GEMFILE'] instead.
+      #
       # By default, if there is a Gemfile, the generated command will include
       # 'bundle exec'. Set this to true to ignore the presence of a Gemfile, and
       # not add 'bundle exec' to the command.
       #
       # default:
       #   false
-      attr_accessor :skip_bundler
+      def skip_bundler=(*)
+        RSpec.deprecate("RSpec::Core::RakeTask#skip_bundler=", 'ENV["BUNDLE_GEMFILE"]')
+      end
 
-      # Name of Gemfile to use
+      # Deprecated and has no effect. The rake task now checks
+      # ENV['BUNDLE_GEMFILE'] instead.
+      #
+      # Name of Gemfile to use.
       #
       # default:
       #   Gemfile
-      attr_accessor :gemfile
+      def gemfile=(*)
+        RSpec.deprecate("RSpec::Core::RakeTask#gemfile=", 'ENV["BUNDLE_GEMFILE"]')
+      end
 
       # Deprecated. Use ruby_opts="-w" instead.
       #
@@ -114,9 +124,8 @@ module RSpec
       def initialize(*args)
         @name = args.shift || :spec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
-        @warning, @rcov, @skip_bundler = false, false, false
+        @warning, @rcov = false, false
         @verbose, @fail_on_error = true, true
-        @gemfile = 'Gemfile'
 
         yield self if block_given?
 
@@ -156,7 +165,7 @@ module RSpec
       def spec_command
         @spec_command ||= begin
                             cmd_parts = []
-                            cmd_parts << "bundle exec" if gemfile? unless skip_bundler
+                            cmd_parts << "bundle exec" if bundler?
                             cmd_parts << RUBY
                             cmd_parts << ruby_opts
                             cmd_parts << "-w" if warning?
@@ -189,8 +198,8 @@ module RSpec
         lambda {|s| s == ""}
       end
 
-      def gemfile?
-        File.exist?(gemfile)
+      def bundler?
+        ENV["BUNDLE_GEMFILE"] if ENV["BUNDLE_GEMFILE"] unless ENV["BUNDLE_GEMFILE"] == ""
       end
 
     end

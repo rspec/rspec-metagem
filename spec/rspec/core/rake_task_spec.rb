@@ -10,14 +10,20 @@ module RSpec::Core
       FileUtils::RUBY
     end
 
-    before do
-      File.stub(:exist?) { false }
+    def with_bundle_gemfile(val)
+      begin
+        orig = ENV['BUNDLE_GEMFILE']
+        ENV['BUNDLE_GEMFILE'] = val
+        yield
+      ensure
+        ENV['BUNDLE_GEMFILE'] = orig
+      end
     end
 
-    def with_bundler
-      task.skip_bundler = false
-      File.stub(:exist?) { true }
-      yield
+    def without_bundler
+      with_bundle_gemfile nil do
+        yield
+      end
     end
 
     def with_rcov
@@ -29,50 +35,39 @@ module RSpec::Core
       task.__send__(:spec_command)
     end
 
-    context "default" do
+    context "default (BUNDLE_GEMFILE nil)" do
       it "renders rspec" do
-        spec_command.should =~ /^#{ruby} -S rspec/
+        with_bundle_gemfile nil do
+          spec_command.should =~ /^#{ruby} -S rspec/
+        end
       end
     end
 
-    context "with bundler" do
-      context "with Gemfile" do
-        it "renders bundle exec rspec" do
-          File.stub(:exist?) { true }
-          task.skip_bundler = false
-          spec_command.should match(/bundle exec/)
+    context "default (BUNDLE_GEMFILE '')" do
+      it "renders rspec" do
+        with_bundle_gemfile '' do
+          spec_command.should =~ /^#{ruby} -S rspec/
         end
       end
+    end
 
-      context "with non-standard Gemfile" do
-        it "renders bundle exec rspec" do
-          File.stub(:exist?) {|f| f =~ /AltGemfile/}
-          task.gemfile = 'AltGemfile'
-          task.skip_bundler = false
-          spec_command.should match(/bundle exec/)
-        end
-      end
-
-      context "without Gemfile" do
-        it "renders bundle exec rspec" do
-          File.stub(:exist?) { false }
-          task.skip_bundler = false
-          spec_command.should_not match(/bundle exec/)
-        end
+    context "with bundler (BUNDLE_GEMFILE non-blank)" do
+      it "renders bundle exec rspec" do
+        spec_command.should match(/bundle exec/)
       end
     end
 
     context "with rcov" do
       it "renders rcov" do
-        with_rcov do
-          spec_command.should =~ /^#{ruby} -S rcov/
+        without_bundler do
+          with_rcov do
+            spec_command.should =~ /^#{ruby} -S rcov/
+          end
         end
       end
-    end
 
-    context "with bundler and rcov" do
-      it "renders bundle exec rcov" do
-        with_bundler do
+      context "with bundler" do
+        it "renders bundle exec rcov" do
           with_rcov do
             spec_command.should =~ /^bundle exec #{ruby} -S rcov/
           end
@@ -82,8 +77,10 @@ module RSpec::Core
 
     context "with ruby options" do
       it "renders them before -S" do
-        task.ruby_opts = "-w"
-        spec_command.should =~ /^#{ruby} -w -S rspec/
+        without_bundler do
+          task.ruby_opts = "-w"
+          spec_command.should =~ /^#{ruby} -w -S rspec/
+        end
       end
     end
 
