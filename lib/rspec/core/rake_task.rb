@@ -122,7 +122,7 @@ module RSpec
 
         @rcov_path  ||= 'rcov'
         @rspec_path ||= 'rspec'
-        @pattern    ||= './spec/**/*_spec.rb'
+        @pattern    ||= './spec/**/*/**/*_spec.rb'
 
         desc("Run RSpec code examples") unless ::Rake.application.last_comment
 

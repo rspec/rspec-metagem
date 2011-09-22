@@ -161,5 +161,36 @@ module RSpec::Core
         ])
       end
     end
+
+    context "with paths including symlinked directories" do
+      it "finds the files" do
+        task = RakeTask.new
+        base_dir = File.expand_path('./tmp/base')
+        FileUtils.rm_rf base_dir
+
+        models_dir = File.expand_path('./tmp/base/spec/models')
+        FileUtils.rm_rf models_dir
+        FileUtils.mkdir_p models_dir
+        FileUtils.touch(File.join(models_dir, "any_model_spec.rb"))
+
+        target_parent_dir = File.expand_path('./tmp/target_parent_dir')
+        FileUtils.rm_rf target_parent_dir
+        FileUtils.mkdir_p target_parent_dir
+
+        target_dir = File.expand_path('./tmp/target_parent_dir/controllers')
+        FileUtils.rm_rf target_dir
+        FileUtils.mkdir_p target_dir
+        FileUtils.touch(File.join(target_dir, "any_controller_spec.rb"))
+
+        controllers_dir = File.expand_path('./tmp/base/spec/controllers')
+        FileUtils.ln_s target_dir, controllers_dir
+
+        File.exists?(controllers_dir).should be_true
+
+        FileUtils.cd(base_dir) do
+          task.__send__(:files_to_run).sort.should eq(["./spec/controllers/any_controller_spec.rb", "./spec/models/any_model_spec.rb"])
+        end
+      end
+    end
   end
 end
