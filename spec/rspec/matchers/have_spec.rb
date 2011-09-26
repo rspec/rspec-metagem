@@ -23,6 +23,7 @@ describe "have matcher" do
     (1..n).each do |number|
       owner.add_to_collection_with_length_method(number)
       owner.add_to_collection_with_size_method(number)
+      owner.add_to_collection_with_count_method(number)
     end
     owner
   end
@@ -33,18 +34,21 @@ describe "have matcher" do
       owner = create_collection_owner_with(3)
       owner.should have(3).items_in_collection_with_length_method
       owner.should have(3).items_in_collection_with_size_method
+      owner.should have(3).items_in_collection_with_count_method
     end
 
     it "converts :no to 0" do
       owner = create_collection_owner_with(0)
       owner.should have(:no).items_in_collection_with_length_method
       owner.should have(:no).items_in_collection_with_size_method
+      owner.should have(:no).items_in_collection_with_count_method
     end
 
     it "converts a String argument to Integer" do
       owner = create_collection_owner_with(3)
       owner.should have('3').items_in_collection_with_length_method
       owner.should have('3').items_in_collection_with_size_method
+      owner.should have('3').items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
@@ -55,6 +59,9 @@ describe "have matcher" do
       lambda {
         owner.should have(4).items_in_collection_with_size_method
       }.should fail_with("expected 4 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have(4).items_in_collection_with_count_method
+      }.should fail_with("expected 4 items_in_collection_with_count_method, got 3")
     end
 
     it "fails if target has a collection of items with > n members" do
@@ -65,6 +72,9 @@ describe "have matcher" do
       lambda {
         owner.should have(2).items_in_collection_with_size_method
       }.should fail_with("expected 2 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have(2).items_in_collection_with_count_method
+      }.should fail_with("expected 2 items_in_collection_with_count_method, got 3")
     end
   end
 
@@ -128,7 +138,7 @@ describe "have matcher" do
       end.new
       lambda do
         owner.should have(3).items
-      end.should raise_error("expected items to be a collection but it does not respond to #length or #size")
+      end.should raise_error("expected items to be a collection but it does not respond to #length, #size or #count")
     end
   end
 
@@ -138,12 +148,14 @@ describe "have matcher" do
       owner = create_collection_owner_with(3)
       owner.should_not have(4).items_in_collection_with_length_method
       owner.should_not have(4).items_in_collection_with_size_method
+      owner.should_not have(4).items_in_collection_with_count_method
     end
 
     it "passes if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
       owner.should_not have(2).items_in_collection_with_length_method
       owner.should_not have(2).items_in_collection_with_size_method
+      owner.should_not have(2).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with n members" do
@@ -154,6 +166,9 @@ describe "have matcher" do
       lambda {
         owner.should_not have(3).items_in_collection_with_size_method
         }.should fail_with("expected target not to have 3 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should_not have(3).items_in_collection_with_count_method
+        }.should fail_with("expected target not to have 3 items_in_collection_with_count_method, got 3")
     end
   end
 
@@ -163,12 +178,14 @@ describe "have matcher" do
       owner = create_collection_owner_with(3)
       owner.should have_exactly(3).items_in_collection_with_length_method
       owner.should have_exactly(3).items_in_collection_with_size_method
+      owner.should have_exactly(3).items_in_collection_with_count_method
     end
 
     it "converts :no to 0" do
       owner = create_collection_owner_with(0)
       owner.should have_exactly(:no).items_in_collection_with_length_method
       owner.should have_exactly(:no).items_in_collection_with_size_method
+      owner.should have_exactly(:no).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
@@ -179,6 +196,9 @@ describe "have matcher" do
       lambda {
         owner.should have_exactly(4).items_in_collection_with_size_method
       }.should fail_with("expected 4 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have_exactly(4).items_in_collection_with_count_method
+      }.should fail_with("expected 4 items_in_collection_with_count_method, got 3")
     end
 
     it "fails if target has a collection of items with > n members" do
@@ -189,6 +209,9 @@ describe "have matcher" do
       lambda {
         owner.should have_exactly(2).items_in_collection_with_size_method
       }.should fail_with("expected 2 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have_exactly(2).items_in_collection_with_count_method
+      }.should fail_with("expected 2 items_in_collection_with_count_method, got 3")
     end
   end
 
@@ -198,12 +221,14 @@ describe "have matcher" do
       owner = create_collection_owner_with(3)
       owner.should have_at_least(3).items_in_collection_with_length_method
       owner.should have_at_least(3).items_in_collection_with_size_method
+      owner.should have_at_least(3).items_in_collection_with_count_method
     end
 
     it "passes if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
       owner.should have_at_least(2).items_in_collection_with_length_method
       owner.should have_at_least(2).items_in_collection_with_size_method
+      owner.should have_at_least(2).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
@@ -214,6 +239,9 @@ describe "have matcher" do
       lambda {
         owner.should have_at_least(4).items_in_collection_with_size_method
       }.should fail_with("expected at least 4 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have_at_least(4).items_in_collection_with_count_method
+      }.should fail_with("expected at least 4 items_in_collection_with_count_method, got 3")
     end
 
     it "provides educational negative failure messages" do
@@ -221,10 +249,12 @@ describe "have matcher" do
       owner = create_collection_owner_with(3)
       length_matcher = have_at_least(3).items_in_collection_with_length_method
       size_matcher = have_at_least(3).items_in_collection_with_size_method
+      count_matcher = have_at_least(3).items_in_collection_with_count_method
 
       #when
       length_matcher.matches?(owner)
       size_matcher.matches?(owner)
+      count_matcher.matches?(owner)
 
       #then
       length_matcher.failure_message_for_should_not.should eq <<-EOF
@@ -242,6 +272,13 @@ Instead of having to figure out the meaning of this:
 We recommend that you use this instead:
   should have_at_most(2).items_in_collection_with_size_method
 EOF
+      count_matcher.failure_message_for_should_not.should eq <<-EOF
+Isn't life confusing enough?
+Instead of having to figure out the meaning of this:
+  should_not have_at_least(3).items_in_collection_with_count_method
+We recommend that you use this instead:
+  should have_at_most(2).items_in_collection_with_count_method
+EOF
     end
   end
 
@@ -250,6 +287,7 @@ EOF
       owner = create_collection_owner_with(3)
       owner.should have_at_most(3).items_in_collection_with_length_method
       owner.should have_at_most(3).items_in_collection_with_size_method
+      owner.should have_at_most(3).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with > n members" do
@@ -260,12 +298,16 @@ EOF
       lambda {
         owner.should have_at_most(2).items_in_collection_with_size_method
       }.should fail_with("expected at most 2 items_in_collection_with_size_method, got 3")
+      lambda {
+        owner.should have_at_most(2).items_in_collection_with_count_method
+      }.should fail_with("expected at most 2 items_in_collection_with_count_method, got 3")
     end
 
     it "passes if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
       owner.should have_at_most(4).items_in_collection_with_length_method
       owner.should have_at_most(4).items_in_collection_with_size_method
+      owner.should have_at_most(4).items_in_collection_with_count_method
     end
 
     it "provides educational negative failure messages" do
@@ -273,10 +315,12 @@ EOF
       owner = create_collection_owner_with(3)
       length_matcher = have_at_most(3).items_in_collection_with_length_method
       size_matcher = have_at_most(3).items_in_collection_with_size_method
+      count_matcher = have_at_most(3).items_in_collection_with_count_method
 
       #when
       length_matcher.matches?(owner)
       size_matcher.matches?(owner)
+      count_matcher.matches?(owner)
 
       #then
       length_matcher.failure_message_for_should_not.should eq <<-EOF
@@ -293,6 +337,14 @@ Instead of having to figure out the meaning of this:
   should_not have_at_most(3).items_in_collection_with_size_method
 We recommend that you use this instead:
   should have_at_least(4).items_in_collection_with_size_method
+EOF
+
+      count_matcher.failure_message_for_should_not.should eq <<-EOF
+Isn't life confusing enough?
+Instead of having to figure out the meaning of this:
+  should_not have_at_most(3).items_in_collection_with_count_method
+We recommend that you use this instead:
+  should have_at_least(4).items_in_collection_with_count_method
 EOF
     end
   end

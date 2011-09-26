@@ -24,21 +24,28 @@ module RSpec
           collection = collection_owner.__send__(@collection_name, *@args, &@block)
         elsif (@plural_collection_name && collection_owner.respond_to?(@plural_collection_name))
           collection = collection_owner.__send__(@plural_collection_name, *@args, &@block)
-        elsif (collection_owner.respond_to?(:length) || collection_owner.respond_to?(:size))
+        elsif (collection_owner.respond_to?(:length) || collection_owner.respond_to?(:size) || collection_owner.respond_to?(:count))
           collection = collection_owner
         else
           collection_owner.__send__(@collection_name, *@args, &@block)
         end
-        @actual = collection.size if collection.respond_to?(:size)
-        @actual = collection.length if collection.respond_to?(:length)
-        raise not_a_collection if @actual.nil?
+        @actual = case
+          when collection.respond_to?(:size)
+            collection.size
+          when collection.respond_to?(:length)
+            collection.length
+          when collection.respond_to?(:count)
+            collection.count
+          else
+            raise not_a_collection
+          end
         return @actual >= @expected if @relativity == :at_least
         return @actual <= @expected if @relativity == :at_most
         return @actual == @expected
       end
       
       def not_a_collection
-        "expected #{@collection_name} to be a collection but it does not respond to #length or #size"
+        "expected #{@collection_name} to be a collection but it does not respond to #length, #size or #count"
       end
     
       def failure_message_for_should
@@ -119,6 +126,9 @@ EOF
     #   team.should have(11).players
     #
     #   # Passes if [1,2,3].length == 3
+    #   [1,2,3].should have(3).items #"items" is pure sugar
+    #
+    #   # Passes if ['a', 'b', 'c'].count == 3
     #   [1,2,3].should have(3).items #"items" is pure sugar
     #
     #   # Passes if "this string".length == 11
