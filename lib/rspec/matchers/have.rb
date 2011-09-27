@@ -19,31 +19,34 @@ module RSpec
         }
       end
     
-      def matches?(collection_owner)
-        if collection_owner.respond_to?(@collection_name)
-          collection = collection_owner.__send__(@collection_name, *@args, &@block)
-        elsif (@plural_collection_name && collection_owner.respond_to?(@plural_collection_name))
-          collection = collection_owner.__send__(@plural_collection_name, *@args, &@block)
-        elsif (collection_owner.respond_to?(:length) || collection_owner.respond_to?(:size) || collection_owner.respond_to?(:count))
-          collection = collection_owner
-        else
-          collection_owner.__send__(@collection_name, *@args, &@block)
+      def matches?(collection_or_owner)
+        collection = determine_collection(collection_or_owner)
+        query_method = determine_query_method(collection)
+        raise not_a_collection unless query_method
+        @actual = collection.send(query_method)
+        case @relativity
+        when :at_least then @actual >= @expected
+        when :at_most  then @actual <= @expected
+        else                @actual == @expected
         end
-        @actual = case
-          when collection.respond_to?(:size)
-            collection.size
-          when collection.respond_to?(:length)
-            collection.length
-          when collection.respond_to?(:count)
-            collection.count
-          else
-            raise not_a_collection
-          end
-        return @actual >= @expected if @relativity == :at_least
-        return @actual <= @expected if @relativity == :at_most
-        return @actual == @expected
       end
-      
+
+      def determine_collection(collection_or_owner)
+        if collection_or_owner.respond_to?(@collection_name)
+          collection_or_owner.__send__(@collection_name, *@args, &@block)
+        elsif (@plural_collection_name && collection_or_owner.respond_to?(@plural_collection_name))
+          collection_or_owner.__send__(@plural_collection_name, *@args, &@block)
+        elsif determine_query_method(collection_or_owner)
+          collection_or_owner
+        else
+          collection_or_owner.__send__(@collection_name, *@args, &@block)
+        end
+      end
+
+      def determine_query_method(collection)
+        [:size, :length, :count].detect {|m| collection.respond_to?(m)}
+      end
+
       def not_a_collection
         "expected #{@collection_name} to be a collection but it does not respond to #length, #size or #count"
       end
@@ -78,8 +81,8 @@ EOF
         "have #{relative_expectation} #{@collection_name}"
       end
       
-      def respond_to?(sym)
-        @expected.respond_to?(sym) || super
+      def respond_to?(m)
+        @expected.respond_to?(m) || super
       end
     
       private
