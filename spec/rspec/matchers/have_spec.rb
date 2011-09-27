@@ -394,7 +394,6 @@ EOF
     before(:each) do
       @collection = Object.new
       def @collection.floozles; [1,2] end
-      def @collection.send(*args); raise "DOH! Library developers shouldn't use #send!" end
     end
 
     it "works in the straightforward case" do
