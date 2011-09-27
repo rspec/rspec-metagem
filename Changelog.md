@@ -5,6 +5,7 @@
 * Enhancements
   * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
   * Improved failure message for the have_xxx matcher (Myron Marston)
+  * HaveMatcher supports #count (Matthew Bellantoni)
 
 * Bug fixes
   * Fix typo in have(n).xyz documentation (Jean Boussier)
