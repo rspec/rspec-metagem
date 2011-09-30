@@ -2,7 +2,7 @@ module RSpec
   module Core
     class Metadata < Hash
 
-      module LocationKeys
+      module MetadataHash
         def [](key)
           return super if has_key?(key)
           case key
@@ -13,6 +13,14 @@ module RSpec
             store(:file_path, file_path)
             store(:line_number, line_number)
             self[key]
+          when :execution_result
+            store(:execution_result, {})
+          when :describes
+            store(:describes, described_class_from(*self[:description_args]))
+          when :description
+            store(:description, description_from(*self[:description_args]))
+          when :full_description
+            store(:full_description, full_description)
           else
             super
           end
@@ -30,17 +38,48 @@ module RSpec
         def first_caller_from_outside_rspec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
+
+        def description_from(*args)
+          args.inject("") do |result, a|
+            a = a.to_s.strip
+            if result == ""
+              a
+            elsif a =~ /^(#|::|\.)/
+              "#{result}#{a}"
+            else
+              "#{result} #{a}"
+            end
+          end
+        end
+
+        def full_description
+          x = self
+          all_args = [self[:description_args]].compact
+          while x.has_key?(:example_group)
+            x = x[:example_group]
+            all_args.unshift x[:description_args]
+          end
+          description_from(*all_args.flatten)
+        end
+
+        def described_class_from(*args)
+          x = self
+          while x.has_key?(:example_group)
+            x = x[:example_group]
+          end
+          y = x[:description_args].first 
+          String === y || Symbol === y ? nil :y
+        end
       end
 
       attr_reader :parent_group_metadata
 
       def initialize(parent_group_metadata=nil)
         if parent_group_metadata
-          @parent_group_metadata = parent_group_metadata
-          update(@parent_group_metadata)
-          store(:example_group, {:example_group => @parent_group_metadata[:example_group]}.extend(LocationKeys))
+          update(parent_group_metadata)
+          store(:example_group, {:example_group => parent_group_metadata[:example_group]}.extend(MetadataHash))
         else
-          store(:example_group, {}.extend(LocationKeys))
+          store(:example_group, {}.extend(MetadataHash))
         end
 
         yield self if block_given?
@@ -62,9 +101,6 @@ module RSpec
 
         self[:example_group].store(:description_args, args)
         self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
-        self[:example_group].store(:describes, described_class_from(*args))
-        self[:example_group].store(:description, description_from(*args))
-        self[:example_group].store(:full_description, full_description_from(*args))
         self[:example_group].store(:block, user_metadata.delete(:example_group_block))
 
         update(user_metadata)
@@ -93,21 +129,11 @@ EOM
       end
 
       def for_example(description, user_metadata)
-        dup.extend(LocationKeys).configure_for_example(description, user_metadata)
-      end
-
-      def [](key)
-        return super if has_key?(key)
-        case key
-        when :execution_result
-          store(:execution_result, {})
-        when :full_description
-          store(:full_description, full_description_from(self[:example_group][:full_description], self[:description]))
-        end
+        dup.extend(MetadataHash).configure_for_example(description, user_metadata)
       end
 
       def configure_for_example(description, user_metadata)
-        store(:description, description.to_s)
+        store(:description_args, [description])
         store(:caller, user_metadata.delete(:caller) || caller)
         update(user_metadata)
       end
@@ -175,29 +201,6 @@ EOM
         RSpec.world
       end
 
-      def description_from(*args)
-        args.inject("") do |result, a|
-          a = a.to_s.strip
-          if result == ""
-            a
-          elsif a =~ /^(#|::|\.)/
-            "#{result}#{a}"
-          else
-            "#{result} #{a}"
-          end
-        end
-      end
-
-      def full_description_from(*args)
-        parent_group_metadata && description_from(parent_group_metadata[:example_group][:full_description], *args) ||
-          description_from(*args)
-      end
-
-      def described_class_from(*args)
-        parent_group_metadata && parent_group_metadata[:example_group][:describes] || begin
-          args.first unless String === args.first || Symbol === args.first
-        end
-      end
     end
   end
 end
