@@ -32,16 +32,17 @@ module RSpec
         end
       end
 
-      def initialize(superclass_metadata=nil)
-        @superclass_metadata = superclass_metadata
-        if @superclass_metadata
-          update(@superclass_metadata)
-          example_group = {:example_group => @superclass_metadata[:example_group]}
+      attr_reader :parent_group_metadata
+
+      def initialize(parent_group_metadata=nil)
+        if parent_group_metadata
+          @parent_group_metadata = parent_group_metadata
+          update(@parent_group_metadata)
+          store(:example_group, {:example_group => @parent_group_metadata[:example_group]}.extend(LocationKeys))
         else
-          example_group = {}
+          store(:example_group, {}.extend(LocationKeys))
         end
 
-        store(:example_group, example_group.extend(LocationKeys))
         yield self if block_given?
       end
 
@@ -165,10 +166,6 @@ EOM
         RSpec.world
       end
 
-      def superclass_metadata
-        @superclass_metadata ||= { :example_group => {} }
-      end
-
       def description_from(*args)
         args.inject("") do |result, a|
           a = a.to_s.strip
@@ -183,16 +180,13 @@ EOM
       end
 
       def full_description_from(*args)
-        if superclass_metadata[:example_group][:full_description]
-          description_from(superclass_metadata[:example_group][:full_description], *args)
-        else
+        parent_group_metadata && description_from(parent_group_metadata[:example_group][:full_description], *args) ||
           description_from(*args)
-        end
       end
 
       def described_class_from(*args)
-        superclass_metadata[:example_group][:describes] || begin
-          args.first unless args.first.is_a?(String) || args.first.is_a?(Symbol)
+        parent_group_metadata && parent_group_metadata[:example_group][:describes] || begin
+          args.first unless String === args.first || Symbol === args.first
         end
       end
     end
