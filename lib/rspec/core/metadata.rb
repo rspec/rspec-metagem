@@ -60,6 +60,7 @@ module RSpec
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
 
+        self[:example_group].store(:description_args, args)
         self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
         self[:example_group].store(:describes, described_class_from(*args))
         self[:example_group].store(:description, description_from(*args))
@@ -95,10 +96,18 @@ EOM
         dup.extend(LocationKeys).configure_for_example(description, user_metadata)
       end
 
+      def [](key)
+        return super if has_key?(key)
+        case key
+        when :execution_result
+          store(:execution_result, {})
+        when :full_description
+          store(:full_description, full_description_from(self[:example_group][:full_description], self[:description]))
+        end
+      end
+
       def configure_for_example(description, user_metadata)
         store(:description, description.to_s)
-        store(:full_description, "#{self[:example_group][:full_description]} #{self[:description]}")
-        store(:execution_result, {})
         store(:caller, user_metadata.delete(:caller) || caller)
         update(user_metadata)
       end
