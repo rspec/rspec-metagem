@@ -174,7 +174,7 @@ module RSpec
   end
 end
 
-require 'rspec/matchers/extensions/instance_exec'
+require 'rspec/matchers/extensions/instance_eval_with_args'
 require 'rspec/matchers/pretty'
 require 'rspec/matchers/matcher'
 require 'rspec/matchers/operator_matcher'

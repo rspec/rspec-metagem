@@ -1,15 +1,23 @@
 module RSpec
   module Matchers
-    module InstanceExec
-      unless respond_to?(:instance_exec)
+    module Extensions
+      module InstanceEvalWithArgs
         # based on Bounded Spec InstanceExec (Mauricio Fernandez)
         # http://eigenclass.org/hiki/bounded+space+instance_exec
-        # - uses singleton_class of matcher instead of global
-        #   InstanceExecHelper module
-        # - this keeps it scoped to this class only, which is the
-        #   only place we need it
+        # - uses singleton_class instead of global InstanceExecHelper module
+        # - this keeps it scoped to classes/modules that include this module
         # - only necessary for ruby 1.8.6
-        def instance_exec(*args, &block)
+        def instance_eval_with_args(*args, &block)
+          return instance_exec(*args, &block) if respond_to?(:instance_exec)
+
+          # If there are no args and the block doesn't expect any, there's no
+          # need to fake instance_exec with our hack below.
+          # Notes:
+          #   * lambda { }.arity # => -1
+          #   * lambda { || }.arity # => 0
+          #   * lambda { |*a| }.arity # -1
+          return instance_eval(&block) if block.arity < 1 && args.empty?
+
           singleton_class = (class << self; self; end)
           begin
             orig_critical, Thread.critical = Thread.critical, true
