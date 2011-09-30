@@ -101,7 +101,6 @@ module RSpec
 
         self[:example_group].store(:description_args, args)
         self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
-        self[:example_group].store(:block, user_metadata.delete(:example_group_block))
 
         update(user_metadata)
       end
