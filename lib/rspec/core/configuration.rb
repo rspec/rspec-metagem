@@ -438,7 +438,7 @@ EOM
 
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
-          next unless filters.empty? || group.apply?(:any?, filters)
+          next unless filters.empty? || group.any_apply?(filters)
           group.send(include_or_extend, mod)
         end
       end
