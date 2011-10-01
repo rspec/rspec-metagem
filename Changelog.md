@@ -32,6 +32,8 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Only implicitly require "rspec/autorun" with the `rspec` command (David
     Chelimsky)
   * Ensure that rspec's at_exit defines the exit code (Daniel Doubrovkine)
+  * Show the correct snippet in the HTML and TextMate formatters (Brian
+    Faherty)
 
 ### 2.6.4 / 2011-06-06
 
