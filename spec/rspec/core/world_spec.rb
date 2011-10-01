@@ -49,7 +49,7 @@ module RSpec::Core
       let(:example_groups) { [group1, group2, group3, group4] }
 
       it "finds no groups when given no search parameters" do
-        world.apply_inclusion_filters([]).should eq([])
+        world.apply_inclusion_filters([],{}).should eq([])
       end
 
       it "finds matching groups when filtering on :describes (described class or module)" do
@@ -131,6 +131,15 @@ module RSpec::Core
         world.apply_exclusion_filters(group.examples, :name => /exclude not/).should eq(group.examples)
         world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo").should eq([])
         world.apply_exclusion_filters(group.examples, :name => /exclude/, "another_condition" => "foo1").should eq([])
+      end
+
+      it "finds all if filters are empty" do
+        group = ExampleGroup.describe(Bar) do
+          example("foo") {}
+          example("bar") {}
+        end
+        world.register(group)
+        world.apply_exclusion_filters(group.examples, {}).should eq(group.examples)
       end
     end
 

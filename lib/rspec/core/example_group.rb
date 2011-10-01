@@ -309,8 +309,12 @@ An error occurred in an after(:all) hook.
         end.all?
       end
 
-      def self.apply?(predicate, filters)
-        metadata.apply?(predicate, filters)
+      def self.any_apply?(filters)
+        metadata.any_apply?(filters)
+      end
+
+      def self.all_apply?(filters)
+        metadata.all_apply?(filters)
       end
 
       def self.declaration_line_numbers
