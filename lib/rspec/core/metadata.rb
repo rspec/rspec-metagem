@@ -137,12 +137,10 @@ EOM
         update(user_metadata)
       end
 
-      def any_apply?(filters)
-        filters.any? {|k,v| filter_applies?(k,v)}
-      end
-
-      def all_apply?(filters)
-        filters.all? {|k,v| filter_applies?(k,v)}
+      def apply?(predicate, filters)
+        filters.send(predicate) do |key, value|
+          apply_filter(key, value)
+        end
       end
 
       def relevant_line_numbers(metadata)
@@ -154,19 +152,19 @@ EOM
         end
       end
 
-      def filter_applies?(key, value, metadata=self)
+      def apply_filter(key, value, metadata=self)
         case value
         when Hash
           if key == :locations
             file_path     = (self[:example_group] || {})[:file_path]
             expanded_path = file_path && File.expand_path( file_path )
             if expanded_path && line_numbers = value[expanded_path]
-              self.filter_applies?(:line_numbers, line_numbers)
+              self.apply_filter(:line_numbers, line_numbers)
             else
               true
             end
           else
-            value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+            value.all? { |k, v| apply_filter(k, v, metadata[key]) }
           end
         when Regexp
           metadata[key] =~ value
