@@ -31,12 +31,9 @@ module RSpec
         @around_hooks ||= example_group.around_hooks_for(self)
       end
 
-      def any_apply?(filters)
-        @metadata.any_apply?(filters) || @example_group_class.any_apply?(filters)
-      end
-
-      def all_apply?(filters)
-        @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
+      def apply?(predicate, filters)
+        @metadata.apply?(predicate, filters) ||
+        @example_group_class.apply?(predicate, filters)
       end
 
       alias_method :pending?, :pending

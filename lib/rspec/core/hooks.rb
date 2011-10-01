@@ -13,7 +13,7 @@ module RSpec
         end
 
         def options_apply?(example_or_group)
-          example_or_group.all_apply?(options)
+          !example_or_group || example_or_group.apply?(:all?, options)
         end
 
         def to_proc
@@ -77,7 +77,7 @@ module RSpec
 
       class AfterHooks < HookCollection
         def run_all(example_group_instance)
-          reverse.each {|h| h.run_in(example_group_instance) } 
+          reverse.each {|h| h.run_in(example_group_instance) } unless empty?
         end
 
         def run_all!(example_group_instance)

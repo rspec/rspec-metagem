@@ -70,14 +70,14 @@ module RSpec
         example_groups.collect {|g| g.descendants}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
       end
 
-      def apply_inclusion_filters(examples, filters)
-        filters.empty? ? examples : examples.select {|e| e.any_apply?(filters)}
+      def apply_inclusion_filters(examples, conditions={})
+        examples.select(&apply?(:any?, conditions))
       end
 
       alias_method :find, :apply_inclusion_filters
 
-      def apply_exclusion_filters(examples, filters)
-        filters.empty? ? examples : examples.reject {|e| e.any_apply?(filters)}
+      def apply_exclusion_filters(examples, conditions={})
+        examples.reject(&apply?(:any?, conditions))
       end
 
       def preceding_declaration_line(filter_line)
@@ -138,6 +138,10 @@ module RSpec
       end
 
     private
+
+      def apply?(predicate, filter)
+        lambda {|example| filter.empty? || example.metadata.apply?(predicate, filter)}
+      end
 
       def declaration_line_numbers
         @line_numbers ||= example_groups.inject([]) do |lines, g|
