@@ -1,5 +1,6 @@
 require "spec_helper"
 require "rspec/core/rake_task"
+require 'tempfile'
 
 module RSpec::Core
   describe RakeTask do
@@ -142,53 +143,41 @@ module RSpec::Core
     end
 
     context "with paths with quotes" do
-      before do
-        @tmp_dir = File.expand_path('./tmp/rake_task_example/')
-        FileUtils.mkdir_p @tmp_dir
-        @task = RakeTask.new do |t|
-          t.pattern = File.join(@tmp_dir, "*spec.rb")
+      it "escapes the quotes" do
+        task = RakeTask.new do |t|
+          t.pattern = File.join(Dir.tmpdir, "*spec.rb")
         end
         ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb"].each do |file_name|
-          FileUtils.touch(File.join(@tmp_dir, file_name))
+          FileUtils.touch(File.join(Dir.tmpdir, file_name))
         end
-      end
-
-      it "escapes the quotes" do
-        @task.__send__(:files_to_run).sort.should eq([
-          File.join(@tmp_dir, "first_spec.rb"),
-          File.join(@tmp_dir, "second_\\\"spec.rb"),
-          File.join(@tmp_dir, "third_\\\'spec.rb") 
+        task.__send__(:files_to_run).sort.should eq([
+          File.join(Dir.tmpdir, "first_spec.rb"),
+          File.join(Dir.tmpdir, "second_\\\"spec.rb"),
+          File.join(Dir.tmpdir, "third_\\\'spec.rb")
         ])
       end
     end
 
     context "with paths including symlinked directories" do
       it "finds the files" do
-        task = RakeTask.new
-        base_dir = File.expand_path('./tmp/base')
-        FileUtils.rm_rf base_dir
+        project_dir = File.join(Dir.tmpdir, "project")
+        FileUtils.rm_rf project_dir
 
-        models_dir = File.expand_path('./tmp/base/spec/models')
-        FileUtils.rm_rf models_dir
-        FileUtils.mkdir_p models_dir
-        FileUtils.touch(File.join(models_dir, "any_model_spec.rb"))
+        foos_dir = File.join(project_dir, "spec/foos")
+        FileUtils.mkdir_p foos_dir
+        FileUtils.touch(File.join(foos_dir, "foo_spec.rb"))
 
-        target_parent_dir = File.expand_path('./tmp/target_parent_dir')
-        FileUtils.rm_rf target_parent_dir
-        FileUtils.mkdir_p target_parent_dir
+        bars_dir = File.join(Dir.tmpdir, "shared/spec/bars")
+        FileUtils.mkdir_p bars_dir
+        FileUtils.touch(File.join(bars_dir, "bar_spec.rb"))
 
-        target_dir = File.expand_path('./tmp/target_parent_dir/controllers')
-        FileUtils.rm_rf target_dir
-        FileUtils.mkdir_p target_dir
-        FileUtils.touch(File.join(target_dir, "any_controller_spec.rb"))
+        FileUtils.ln_s bars_dir, File.join(project_dir, "spec/bars")
 
-        controllers_dir = File.expand_path('./tmp/base/spec/controllers')
-        FileUtils.ln_s target_dir, controllers_dir
-
-        File.exists?(controllers_dir).should be_true
-
-        FileUtils.cd(base_dir) do
-          task.__send__(:files_to_run).sort.should eq(["./spec/controllers/any_controller_spec.rb", "./spec/models/any_model_spec.rb"])
+        FileUtils.cd(project_dir) do
+          RakeTask.new.__send__(:files_to_run).sort.should eq([
+            "./spec/bars/bar_spec.rb",
+            "./spec/foos/foo_spec.rb"
+          ])
         end
       end
     end
