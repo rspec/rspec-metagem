@@ -2,6 +2,8 @@ module RSpec
   module Core
     class Metadata < Hash
 
+      # Used to extend metadata Hashes to support lazy evaluation of locations
+      # and descriptions.
       module MetadataHash
         def [](key)
           return super if has_key?(key)
@@ -12,7 +14,7 @@ module RSpec
             file_path, line_number = file_and_line_number
             store(:file_path, file_path)
             store(:line_number, line_number)
-            self[key]
+            super
           when :execution_result
             store(:execution_result, {})
           when :describes
@@ -25,6 +27,8 @@ module RSpec
             super
           end
         end
+
+      private
 
         def location
           "#{self[:file_path]}:#{self[:line_number]}"
@@ -75,16 +79,6 @@ module RSpec
         yield self if block_given?
       end
 
-      RESERVED_KEYS = [
-        :description,
-        :example_group,
-        :execution_result,
-        :file_path,
-        :full_description,
-        :line_number,
-        :location
-      ]
-
       def process(*args)
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
@@ -95,36 +89,8 @@ module RSpec
         update(user_metadata)
       end
 
-      def ensure_valid_keys(user_metadata)
-        RESERVED_KEYS.each do |key|
-          if user_metadata.keys.include?(key)
-            raise <<-EOM
-#{"*"*50}
-:#{key} is not allowed
-
-RSpec reserves some hash keys for its own internal use,
-including :#{key}, which is used on:
-
-  #{caller(0)[4]}.
-
-Here are all of RSpec's reserved hash keys:
-
-  #{RESERVED_KEYS.join("\n  ")}
-#{"*"*50}
-EOM
-            raise ":#{key} is not allowed"
-          end
-        end
-      end
-
       def for_example(description, user_metadata)
         dup.extend(MetadataHash).configure_for_example(description, user_metadata)
-      end
-
-      def configure_for_example(description, user_metadata)
-        store(:description_args, [description])
-        store(:caller, user_metadata.delete(:caller) || caller)
-        update(user_metadata)
       end
 
       def any_apply?(filters)
@@ -135,15 +101,6 @@ EOM
         filters.all? {|k,v| filter_applies?(k,v)}
       end
 
-      def relevant_line_numbers(metadata)
-        line_numbers = [metadata[:line_number]]
-        if metadata[:example_group]
-          line_numbers + relevant_line_numbers(metadata[:example_group])
-        else
-          line_numbers
-        end
-      end
-
       def filter_applies?(key, value, metadata=self)
         case value
         when Hash
@@ -151,7 +108,7 @@ EOM
             file_path     = (self[:example_group] || {})[:file_path]
             expanded_path = file_path && File.expand_path( file_path )
             if expanded_path && line_numbers = value[expanded_path]
-              self.filter_applies?(:line_numbers, line_numbers)
+              filter_applies?(:line_numbers, line_numbers)
             else
               true
             end
@@ -186,10 +143,59 @@ EOM
         end
       end
 
+    protected
+
+      def configure_for_example(description, user_metadata)
+        store(:description_args, [description])
+        store(:caller, user_metadata.delete(:caller) || caller)
+        update(user_metadata)
+      end
+
     private
+
+      RESERVED_KEYS = [
+        :description,
+        :example_group,
+        :execution_result,
+        :file_path,
+        :full_description,
+        :line_number,
+        :location
+      ]
+
+      def ensure_valid_keys(user_metadata)
+        RESERVED_KEYS.each do |key|
+          if user_metadata.keys.include?(key)
+            raise <<-EOM
+#{"*"*50}
+:#{key} is not allowed
+
+RSpec reserves some hash keys for its own internal use,
+including :#{key}, which is used on:
+
+  #{caller(0)[4]}.
+
+Here are all of RSpec's reserved hash keys:
+
+  #{RESERVED_KEYS.join("\n  ")}
+#{"*"*50}
+EOM
+            raise ":#{key} is not allowed"
+          end
+        end
+      end
 
       def world
         RSpec.world
+      end
+
+      def relevant_line_numbers(metadata)
+        line_numbers = [metadata[:line_number]]
+        if metadata[:example_group]
+          line_numbers + relevant_line_numbers(metadata[:example_group])
+        else
+          line_numbers
+        end
       end
 
     end
