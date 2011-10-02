@@ -306,12 +306,13 @@ module RSpec
 
         it "concats nested example group descriptions" do
           parent = Metadata.new
-          parent.process(Object, 'parent')
+          parent.process('parent')
 
           child = Metadata.new(parent)
           child.process('child')
 
-          child[:example_group][:full_description].should eq("Object parent child")
+          child[:example_group][:full_description].should eq("parent child")
+          child.for_example('example', child)[:full_description].should eq("parent child example")
         end
 
         %w[# . ::].each do |char|

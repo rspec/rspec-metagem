@@ -49,10 +49,10 @@ module RSpec
         end
 
         def full_description_for(m)
-          parts = [m[:description]]
+          parts = [m[:description_args]]
           while m.has_key?(:example_group)
             m = m[:example_group]
-            parts.unshift m[:full_description]
+            parts.unshift m[:description_args]
           end
           build_description_from(*parts.flatten)
         end
