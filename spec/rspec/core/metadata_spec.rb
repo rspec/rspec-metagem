@@ -211,8 +211,8 @@ module RSpec
           end
         end
 
-        context "with describes from a superclass metadata" do
-          it "returns the superclass' described class" do
+        context "with describes from a parent group metadata" do
+          it "returns the parent group's described class" do
             sm = Metadata.new
             sm.process(String)
 
@@ -222,13 +222,37 @@ module RSpec
             m = m.for_example("example", {})
             m[:example_group][:describes].should be(String)
           end
+
+          it "can override a parent group's described class" do
+            parent = Metadata.new
+            parent.process(String)
+
+            child = Metadata.new(parent)
+            child.process(Hash)
+            child[:example_group][:describes] = Hash
+
+            grandchild = Metadata.new(child)
+            grandchild.process(Array)
+
+            grandchild.for_example("example", {}).tap do |e|
+              e[:example_group][:describes].should be(Hash)
+            end
+
+            child.for_example("example", {}).tap do |e|
+              e[:example_group][:describes].should be(Hash)
+            end
+
+            parent.for_example("example", {}).tap do |e|
+              e[:example_group][:describes].should be(String)
+            end
+          end
         end
       end
 
       describe ":description" do
         it "just has the example description" do
           m = Metadata.new
-          m.process('group')
+          m.process("group")
 
           m = m.for_example("example", {})
           m[:description].should eq("example")
@@ -237,7 +261,7 @@ module RSpec
         context "with a string" do
           it "provides the submitted description" do
             m = Metadata.new
-            m.process('group')
+            m.process("group")
 
             m[:example_group][:description].should eq("group")
           end
@@ -246,7 +270,7 @@ module RSpec
         context "with a non-string" do
           it "provides the submitted description" do
             m = Metadata.new
-            m.process('group')
+            m.process("group")
 
             m[:example_group][:description].should eq("group")
           end
@@ -258,6 +282,15 @@ module RSpec
             m.process(Object, 'group')
 
             m[:example_group][:description].should eq("Object group")
+          end
+        end
+
+        context "with empty args" do
+          it "returns empty string for [:example_group][:description]" do
+            m = Metadata.new
+            m.process()
+
+            m[:example_group][:description].should eq("")
           end
         end
       end

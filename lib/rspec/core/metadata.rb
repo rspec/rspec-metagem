@@ -16,11 +16,11 @@ module RSpec
           when :execution_result
             store(:execution_result, {})
           when :describes
-            store(:describes, described_class_from(*self[:description_args]))
-          when :description
-            store(:description, description_from(*self[:description_args]))
+            store(:describes, described_class_for(self))
           when :full_description
-            store(:full_description, full_description)
+            store(:full_description, full_description_for(self))
+          when :description
+            store(:description, build_description_from(*self[:description_args]))
           else
             super
           end
@@ -39,40 +39,30 @@ module RSpec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        def description_from(*args)
-          args.inject("") do |result, a|
-            a = a.to_s.strip
-            if result == ""
-              a
-            elsif a =~ /^(#|::|\.)/
-              "#{result}#{a}"
-            else
-              "#{result} #{a}"
-            end
+        def described_class_for(m)
+          while m.has_key?(:example_group)
+            return m[:example_group][:describes] if m[:example_group].has_key?(:describes)
+            m = m[:example_group]
           end
+          candidate = m[:description_args].first
+          String === candidate || Symbol === candidate ? nil : candidate
         end
 
-        def full_description
-          x = self
-          all_args = [self[:description_args]].compact
-          while x.has_key?(:example_group)
-            x = x[:example_group]
-            all_args.unshift x[:description_args]
+        def full_description_for(m)
+          parts = [m[:description]]
+          while m.has_key?(:example_group)
+            m = m[:example_group]
+            parts.unshift m[:full_description]
           end
-          description_from(*all_args.flatten)
+          build_description_from(*parts.flatten)
         end
 
-        def described_class_from(*args)
-          x = self
-          while x.has_key?(:example_group)
-            x = x[:example_group]
-          end
-          y = x[:description_args].first 
-          String === y || Symbol === y ? nil :y
+        def build_description_from(*parts)
+          parts.map {|p| p.to_s}.reduce do |desc, p|
+            p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
+          end || ""
         end
       end
-
-      attr_reader :parent_group_metadata
 
       def initialize(parent_group_metadata=nil)
         if parent_group_metadata
