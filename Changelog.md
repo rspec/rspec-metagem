@@ -23,6 +23,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Add --no-drb option (Iain Hecker)
   * Provide more accurate run time by registering start time before code
     is loaded (David Chelimsky)
+  * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
