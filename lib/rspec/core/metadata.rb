@@ -44,21 +44,11 @@ module RSpec
         end
 
         def described_class_for(m)
-          while m.has_key?(:example_group)
-            return m[:example_group][:describes] if m[:example_group].has_key?(:describes)
-            m = m[:example_group]
-          end
-          candidate = m[:description_args].first
-          String === candidate || Symbol === candidate ? nil : candidate
+          m[:example_group][:describes]
         end
 
         def full_description_for(m)
-          parts = [m[:description_args]]
-          while m.has_key?(:example_group)
-            m = m[:example_group]
-            parts.unshift m[:description_args]
-          end
-          build_description_from(*parts.flatten)
+          build_description_from(m[:example_group][:full_description], *m[:description_args])
         end
 
         def build_description_from(*parts)
@@ -68,12 +58,48 @@ module RSpec
         end
       end
 
+      module GroupMetadataHash
+        include MetadataHash
+
+        def described_class_for(*)
+          ancestors.each do |g|
+            return g[:describes] if g.has_key?(:describes)
+          end
+
+          ancestors.reverse.each do |g|
+            candidate = g[:description_args].first
+            return candidate unless String === candidate || Symbol === candidate
+          end
+
+          nil
+        end
+
+        def full_description_for(*)
+          build_description_from(*ancestors.reverse.map do |a|
+            a.has_key?(:full_description) ? a[:full_description] : a[:description_args]
+          end.flatten)
+        end
+
+      private
+
+        def ancestors
+          @ancestors ||= begin
+                           groups = [group = self]
+                           while group.has_key?(:example_group)
+                             groups << group[:example_group]
+                             group = group[:example_group]
+                           end
+                           groups
+                         end
+        end
+      end
+
       def initialize(parent_group_metadata=nil)
         if parent_group_metadata
           update(parent_group_metadata)
-          store(:example_group, {:example_group => parent_group_metadata[:example_group]}.extend(MetadataHash))
+          store(:example_group, {:example_group => parent_group_metadata[:example_group]}.extend(GroupMetadataHash))
         else
-          store(:example_group, {}.extend(MetadataHash))
+          store(:example_group, {}.extend(GroupMetadataHash))
         end
 
         yield self if block_given?

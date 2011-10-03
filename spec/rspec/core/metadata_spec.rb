@@ -186,7 +186,6 @@ module RSpec
             m = Metadata.new
             m.process('group')
 
-            m = m.for_example("example", {})
             m[:example_group][:describes].should be_nil
           end
         end
@@ -196,7 +195,6 @@ module RSpec
             m = Metadata.new
             m.process(:group)
 
-            m = m.for_example("example", {})
             m[:example_group][:describes].should be_nil
           end
         end
@@ -206,12 +204,11 @@ module RSpec
             m = Metadata.new
             m.process(String)
 
-            m = m.for_example("example", {})
             m[:example_group][:describes].should be(String)
           end
         end
 
-        context "with describes from a parent group metadata" do
+        context "in a nested group" do
           it "returns the parent group's described class" do
             sm = Metadata.new
             sm.process(String)
@@ -219,8 +216,17 @@ module RSpec
             m = Metadata.new(sm)
             m.process(Array)
 
-            m = m.for_example("example", {})
             m[:example_group][:describes].should be(String)
+          end
+
+          it "returns own described class if parent doesn't have one" do
+            sm = Metadata.new
+            sm.process("foo")
+
+            m = Metadata.new(sm)
+            m.process(Array)
+
+            m[:example_group][:describes].should be(Array)
           end
 
           it "can override a parent group's described class" do
@@ -228,23 +234,15 @@ module RSpec
             parent.process(String)
 
             child = Metadata.new(parent)
-            child.process(Hash)
+            child.process(Fixnum)
             child[:example_group][:describes] = Hash
 
             grandchild = Metadata.new(child)
             grandchild.process(Array)
 
-            grandchild.for_example("example", {}).tap do |e|
-              e[:example_group][:describes].should be(Hash)
-            end
-
-            child.for_example("example", {}).tap do |e|
-              e[:example_group][:describes].should be(Hash)
-            end
-
-            parent.for_example("example", {}).tap do |e|
-              e[:example_group][:describes].should be(String)
-            end
+            grandchild[:example_group][:describes].should be(Hash)
+            child[:example_group][:describes].should be(Hash)
+            parent[:example_group][:describes].should be(String)
           end
         end
       end
