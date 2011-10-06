@@ -6,6 +6,8 @@
   * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
   * Improved failure message for the have_xxx matcher (Myron Marston)
   * HaveMatcher supports #count (Matthew Bellantoni)
+  * Change matcher dups Enumerable before the action, supporting custom
+    Enumerable types like CollectionProxy in Rails (David Chelimsky)
 
 * Bug fixes
   * Fix typo in have(n).xyz documentation (Jean Boussier)

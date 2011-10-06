@@ -27,7 +27,7 @@ MESSAGE
       
       def evaluate_value_proc
         case val = @value_proc.call
-        when Array, Hash
+        when Enumerable
           val.dup
         else
           val

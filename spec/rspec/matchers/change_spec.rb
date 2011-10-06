@@ -95,6 +95,44 @@ describe "should change(actual, message)" do
       end.to fail
     end
   end
+
+  context "with an arbitrary enumerable" do
+    before(:each) do
+      @instance = SomethingExpected.new
+      @instance.some_value = Class.new do
+        include Enumerable
+
+        attr_reader :elements
+
+        def initialize(*elements)
+          @elements = elements.dup
+        end
+
+        def <<(element)
+          elements << element
+        end
+
+        def dup
+          self.class.new *elements
+        end
+
+        def ==(other)
+          elements == other.elements
+        end
+      end.new
+    end
+
+    it "passes when actual is modified by the block" do
+      expect {@instance.some_value << 1}.to change(@instance, :some_value)
+    end
+
+    it "fails when actual is not modified by the block" do
+      expect do
+        expect {}.to change(@instance, :some_value)
+      end.to fail_with(/^some_value should have changed, but is still/)
+    end
+
+  end
 end
 
 describe "should_not change(actual, message)" do
