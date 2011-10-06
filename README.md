@@ -3,7 +3,7 @@
 rspec-expectations adds `should` and `should_not` to every object and includes
 RSpec::Matchers, a library of standard matchers.
 
-[![build status](http://travis-ci.org/rspec/rspec-expectations.png)](http://travis-ci.org/rspec/rspec-expectations)
+[![build status](https://secure.travis-ci.org/rspec/rspec-expectations.png)](http://travis-ci.org/rspec/rspec-expectations)
 
 ## Documentation
 
