@@ -22,7 +22,7 @@ end
 
 group :development do
   gem "rcov", "0.9.9", :platforms => :mri
-  gem "relish", "0.4.0"
+  gem "relish", "~> 0.5.0"
   gem "guard-rspec", "0.1.9"
   gem "growl", "1.0.3"
 
