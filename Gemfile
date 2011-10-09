@@ -30,7 +30,7 @@ gem "flexmock", "0.8.8"
 gem "syntax", "1.0.0"
 
 group :development do
-  gem "relish", "0.2.0"
+  gem "relish", "~> 0.5.0"
   gem "guard-rspec", "0.1.9"
   gem "growl", "1.0.3"
   gem "spork", "0.9.0.rc9"
