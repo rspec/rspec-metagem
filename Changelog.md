@@ -1,3 +1,11 @@
+### 2.7.0.rc2 (in dev)
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0.rc1...master)
+
+Enhancements
+  * Rake task no longer does anything to invoke bundler since Bundler already
+    handles it for us. Thanks to Andre Arko for the tip.
+
 ### 2.7.0.rc1 / 2011-10-09
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...v2.7.0.rc1)
@@ -24,8 +32,8 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Provide more accurate run time by registering start time before code
     is loaded (David Chelimsky)
   * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
-  * Rake task no longer does anything to invoke bundler since Bundler already
-    handles it for us. Thanks to Andre Arko for the tip.
+  * Rake task decides whether to use bundler or not based on presence
+    of BUNDLE_GEMFILE (David Chelimsky)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
