@@ -1,6 +1,6 @@
-### 2.7.0 (not yet released)
+### 2.7.0.rc1 / 2011-10-09
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...v2.7.0.rc1)
 
 NOTE: RSpec's release policy dictates that there should not be any backward
 incompatible changes in minor releases, but we're making an exception to
