@@ -700,6 +700,23 @@ module RSpec::Core
       end
     end
 
+    describe "#cleaned_from_backtrace? defaults" do
+      it "returns true for rspec files" do
+        config.cleaned_from_backtrace?("lib/rspec/core.rb").
+          should be_true
+      end
+
+      it "returns true for spec_helper" do
+        config.cleaned_from_backtrace?("spec/spec_helper.rb").
+          should be_true
+      end
+
+      it "returns true for java files (for JRuby)" do
+        config.cleaned_from_backtrace?("org/jruby/RubyArray.java:2336").
+          should be_true
+      end
+    end
+
     describe "#debug=true" do
       before do
         if defined?(Debugger)

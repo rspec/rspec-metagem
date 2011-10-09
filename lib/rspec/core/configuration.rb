@@ -50,6 +50,7 @@ module RSpec
 
       DEFAULT_BACKTRACE_PATTERNS = [
         /\/lib\d*\/ruby\//,
+        /org\/jruby\//,
         /bin\//,
         /gems/,
         /spec\/spec_helper\.rb/,
