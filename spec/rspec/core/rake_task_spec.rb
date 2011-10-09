@@ -10,22 +10,6 @@ module RSpec::Core
       FileUtils::RUBY
     end
 
-    def with_bundle_gemfile(val)
-      begin
-        orig = ENV['BUNDLE_GEMFILE']
-        ENV['BUNDLE_GEMFILE'] = val
-        yield
-      ensure
-        ENV['BUNDLE_GEMFILE'] = orig
-      end
-    end
-
-    def without_bundler
-      with_bundle_gemfile nil do
-        yield
-      end
-    end
-
     def with_rcov
       task.rcov = true
       yield
@@ -35,52 +19,24 @@ module RSpec::Core
       task.__send__(:spec_command)
     end
 
-    context "default (BUNDLE_GEMFILE nil)" do
+    context "default" do
       it "renders rspec" do
-        with_bundle_gemfile nil do
-          spec_command.should =~ /^#{ruby} -S rspec/
-        end
-      end
-    end
-
-    context "default (BUNDLE_GEMFILE '')" do
-      it "renders rspec" do
-        with_bundle_gemfile '' do
-          spec_command.should =~ /^#{ruby} -S rspec/
-        end
-      end
-    end
-
-    context "with bundler (BUNDLE_GEMFILE non-blank)" do
-      it "renders bundle exec rspec" do
-        spec_command.should match(/bundle exec/)
+        spec_command.should =~ /^#{ruby} -S rspec/
       end
     end
 
     context "with rcov" do
       it "renders rcov" do
-        without_bundler do
           with_rcov do
             spec_command.should =~ /^#{ruby} -S rcov/
           end
         end
-      end
-
-      context "with bundler" do
-        it "renders bundle exec rcov" do
-          with_rcov do
-            spec_command.should =~ /^bundle exec #{ruby} -S rcov/
-          end
-        end
-      end
     end
 
     context "with ruby options" do
       it "renders them before -S" do
-        without_bundler do
           task.ruby_opts = "-w"
           spec_command.should =~ /^#{ruby} -w -S rspec/
-        end
       end
     end
 

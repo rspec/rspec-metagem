@@ -30,7 +30,7 @@ module RSpec
       # default:
       #   false
       def skip_bundler=(*)
-        RSpec.deprecate("RSpec::Core::RakeTask#skip_bundler=", 'ENV["BUNDLE_GEMFILE"]')
+        RSpec.deprecate("RSpec::Core::RakeTask#skip_bundler=")
       end
 
       # Deprecated and has no effect. The rake task now checks
@@ -165,7 +165,6 @@ module RSpec
       def spec_command
         @spec_command ||= begin
                             cmd_parts = []
-                            cmd_parts << "bundle exec" if bundler?
                             cmd_parts << RUBY
                             cmd_parts << ruby_opts
                             cmd_parts << "-w" if warning?
@@ -197,11 +196,6 @@ module RSpec
       def blank
         lambda {|s| s == ""}
       end
-
-      def bundler?
-        ENV["BUNDLE_GEMFILE"] if ENV["BUNDLE_GEMFILE"] unless ENV["BUNDLE_GEMFILE"] == ""
-      end
-
     end
   end
 end
