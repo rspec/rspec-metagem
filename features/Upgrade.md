@@ -7,9 +7,13 @@ here are more detailed explanations for those items that warrant them.
 
 ### `rspec` command with no arguments
 
-Now you can just type `rspec` to run all the specs in the `spec` directory.  If
-you keep your specs in a different directory, you can override the default with
-the `--default_path` argument (on the command line or in `.rspec`). e.g.
+Now you can just type
+
+    rspec
+
+to run all the specs in the `spec` directory.  If you keep your specs in a
+different directory, you can override the default with the `--default_path`
+argument in a config file:
 
     # in .rspec
     --default_path specs
