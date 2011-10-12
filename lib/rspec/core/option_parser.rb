@@ -116,6 +116,10 @@ module RSpec::Core
           options[:fail_fast] = true
         end
 
+        parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs.') do |o|
+          options[:failure_exit_code] = o.to_i
+        end
+
         parser.on('-t', '--tag TAG[:VALUE]', 'Run examples with the specified tag',
                 'To exclude examples, add ~ before the tag (e.g. ~slow)',
                 '(TAG is always converted to a symbol)') do |tag|

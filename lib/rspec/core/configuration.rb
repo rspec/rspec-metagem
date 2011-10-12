@@ -28,6 +28,7 @@ module RSpec
       add_setting :drb_port
       add_setting :profile_examples
       add_setting :fail_fast
+      add_setting :failure_exit_code, :default => 1
       add_setting :run_all_when_everything_filtered
       add_setting :exclusion_filter
       add_setting :inclusion_filter
