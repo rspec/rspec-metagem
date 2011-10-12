@@ -27,10 +27,16 @@ module RSpec::Core
         result.should be(0)
       end
 
-      it "returns 1 if spec passes" do
+      it "returns 1 if spec fails" do
         err, out = StringIO.new, StringIO.new
         result = command_line([failing_spec_filename]).run(err, out)
         result.should be(1)
+      end
+
+      it "returns 2 if spec fails and --failure-exit-code is 2" do
+        err, out = StringIO.new, StringIO.new
+        result = command_line([failing_spec_filename, "--failure-exit-code", "2"]).run(err, out)
+        result.should be(2)
       end
     end
 

@@ -168,6 +168,18 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "--failure-exit-code" do
+    it "sets :failure_exit_code" do
+      parse_options('--failure-exit-code', '0').should include(:failure_exit_code => 0)
+      parse_options('--failure-exit-code', '1').should include(:failure_exit_code => 1)
+      parse_options('--failure-exit-code', '2').should include(:failure_exit_code => 2)
+    end
+
+    it "overrides previous :failure_exit_code" do
+      parse_options('--failure-exit-code', '2', '--failure-exit-code', '3').should include(:failure_exit_code => 3)
+    end
+  end
+
   describe "--options" do
     it "sets :custom_options_file" do
       parse_options(*%w[-O my.opts]).should include(:custom_options_file => "my.opts")

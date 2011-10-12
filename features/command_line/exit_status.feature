@@ -1,7 +1,8 @@
 Feature: exit status
 
   The rspec command exits with an exit status of 0 if all examples pass,
-  and 1 if any examples fail.
+  and 1 if any examples fail. The failure exit code can be overridden
+  using the --failure-exit-code option.
 
   Scenario: exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:
@@ -50,6 +51,19 @@ Feature: exit status
     When I run `rspec a_no_examples_spec.rb`
     Then the exit status should be 0
     And the output should contain "0 examples"
+
+  Scenario: exit with 2 when one example fails and --failure-exit-code is 2
+    Given a file named "ko_spec.rb" with:
+      """
+      describe "KO" do
+        it "fails" do
+          raise "KO"
+        end
+      end
+      """
+    When I run `rspec --failure-exit-code 2 ko_spec.rb`
+    Then the exit status should be 2
+    And the output should contain "1 example, 1 failure"
 
   @wip
   Scenario: exit with rspec's exit code when an at_exit hook is added upstream
