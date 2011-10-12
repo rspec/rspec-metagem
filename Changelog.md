@@ -5,6 +5,7 @@
 Enhancements
   * Rake task no longer does anything to invoke bundler since Bundler already
     handles it for us. Thanks to Andre Arko for the tip.
+  * Add --failure-exit-code option (Chris Griego)
 
 ### 2.7.0.rc1 / 2011-10-09
 
