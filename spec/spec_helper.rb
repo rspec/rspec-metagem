@@ -17,6 +17,7 @@ end
 Spork.prefork do
   require 'rspec/autorun'
   require 'autotest/rspec2'
+  require 'aruba/api'
 
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
@@ -77,6 +78,9 @@ Spork.prefork do
       else
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       end
+    }
+    c.include Aruba::Api, :example_group => {
+      :file_path => /spec\/command_line/
     }
     c.alias_it_should_behave_like_to 'it_has_behavior'
     c.around do |example|
