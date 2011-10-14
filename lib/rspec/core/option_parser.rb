@@ -81,6 +81,10 @@ module RSpec::Core
           options[:custom_options_file] = path
         end
 
+        parser.on('--order', '--order STRATEGY', 'Run examples in a specified order strategy') do |o|
+          options[:order] = o
+        end
+
         parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
           options[:profile_examples] = o
         end
