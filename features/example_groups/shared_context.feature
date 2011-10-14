@@ -2,7 +2,7 @@ Feature: shared context
 
   Use `shared_context` to define a block that will be evaluated in the context
   of example groups either explicitly, using `include_context`, or implicitly by
-  matching metdata.
+  matching metadata.
 
   Background:
     Given a file named "shared_stuff.rb" with:
