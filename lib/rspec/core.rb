@@ -33,12 +33,6 @@ module RSpec
 
   SharedContext = Core::SharedContext
 
-  module Core
-    def self.install_directory
-      @install_directory ||= File.expand_path(File.dirname(__FILE__))
-    end
-  end
-
   # Used internally to determine what to do when a SIGINT is received
   def self.wants_to_quit
     world.wants_to_quit
