@@ -1,6 +1,6 @@
-### 2.7.0.rc1 / 2011-10-09
+### 2.7.0 / 2011-10-16
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...v2.7.0.rc1)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...v2.7.0)
 
 * Enhancements
   * HaveMatcher converts argument using #to_i (Alex Bepple & Pat Maddox)
