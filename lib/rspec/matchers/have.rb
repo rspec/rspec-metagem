@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    class Have #:nodoc:
+    class Have
       def initialize(expected, relativity=:exactly)
         @expected = case expected
                     when :no then 0

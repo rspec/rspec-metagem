@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     
-    class Satisfy #:nodoc:
+    class Satisfy
       def initialize(&block)
         @block = block
       end

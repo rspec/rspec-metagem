@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     
-    class RespondTo #:nodoc:
+    class RespondTo
       def initialize(*names)
         @names = names
         @expected_arity = nil

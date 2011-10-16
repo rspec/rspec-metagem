@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
 
-    class MatchArray #:nodoc:
+    class MatchArray
       include RSpec::Matchers::Pretty
       
       def initialize(expected)

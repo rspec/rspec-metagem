@@ -1,14 +1,11 @@
 module RSpec
   module Matchers
-    # :call-seq:
-    #   should be_within(delta).of(expected)
-    #   should_not be_within(delta).of(expected)
-    #
     # Passes if actual == expected +/- delta
     #
-    # == Example
+    # == Examples
     #
     #   result.should be_within(0.5).of(3.0)
+    #   result.should_not be_within(0.5).of(3.0)
     def be_within(delta)
       Matcher.new :be_within, delta do |_delta_|
         chain :of do |_expected_|

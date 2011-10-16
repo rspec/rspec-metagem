@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    class RaiseError #:nodoc:
+    class RaiseError
       def initialize(expected_error_or_message=Exception, expected_message=nil, &block)
         @block = block
         @actual_error = nil

@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     
-    class ThrowSymbol #:nodoc:
+    class ThrowSymbol
       def initialize(expected_symbol = nil, expected_arg=nil)
         @expected_symbol = expected_symbol
         @expected_arg = expected_arg

@@ -62,7 +62,7 @@ module RSpec
 
     end
 
-    class PositiveOperatorMatcher < OperatorMatcher #:nodoc:
+    class PositiveOperatorMatcher < OperatorMatcher
       def __delegate_operator(actual, operator, expected)
         if actual.__send__(operator, expected)
           true
@@ -75,7 +75,7 @@ module RSpec
 
     end
 
-    class NegativeOperatorMatcher < OperatorMatcher #:nodoc:
+    class NegativeOperatorMatcher < OperatorMatcher
       def __delegate_operator(actual, operator, expected)
         return false unless actual.__send__(operator, expected)
         return fail_with_message("expected not: #{operator} #{expected.inspect}\n         got: #{operator.gsub(/./, ' ')} #{actual.inspect}")

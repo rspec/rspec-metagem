@@ -1,10 +1,6 @@
 module RSpec
   module Matchers
-    # :call-seq:
-    #   should eql(expected)
-    #   should_not eql(expected)
-    #
-    # Passes if actual and expected are of equal value, but not necessarily the same object.
+    # Passes if +actual.eql?(expected)+
     #
     # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more information about equality in Ruby.
     #

@@ -55,7 +55,7 @@ module RSpec
         singleton_class.__send__(:include, *args)
       end
 
-      def define_method(name, &block) # :nodoc:
+      def define_method(name, &block)
         singleton_class.__send__(:define_method, name, &block)
       end
 
@@ -119,7 +119,7 @@ module RSpec
         end
       end
     
-      def making_declared_methods_public # :nodoc:
+      def making_declared_methods_public
         # Our home-grown instance_exec in ruby 1.8.6 results in any methods
         # declared in the block eval'd by instance_exec in the block to which we
         # are yielding here are scoped private. This is NOT the case for Ruby

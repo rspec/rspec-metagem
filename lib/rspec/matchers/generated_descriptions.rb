@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     class << self
-      attr_accessor :last_matcher, :last_should # :nodoc:
+      attr_accessor :last_matcher, :last_should
     end
 
     def self.clear_generated_description
