@@ -11,33 +11,31 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
 
 * Enhancements
   * Add example.exception (David Chelimsky)
-  * --default_path command line option (Justin Ko)
-  * support multiple --line_number options (David J. Hamilton)
-      * also supports path/to/file.rb:5:9 (runs examples on lines 5 and 9)
+  * `--default_path` command line option (Justin Ko)
+  * support multiple `--line_number` options (David J. Hamilton)
+      * also supports `path/to/file.rb:5:9` (runs examples on lines 5 and 9)
   * Allow classes/modules to be used as shared example group identifiers
     (Arthur Gunn)
   * Friendly error message when shared context cannot be found (Sławosz
     Sławiński)
   * Clear formatters when resetting config (John Bintz)
-  * Add xspecify and xexample as temp-pending methods (David Chelimsky)
-  * Add --no-drb option (Iain Hecker)
+  * Add `xspecify` and xexample as temp-pending methods (David Chelimsky)
+  * Add `--no-drb` option (Iain Hecker)
   * Provide more accurate run time by registering start time before code
     is loaded (David Chelimsky)
   * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
-  * Rake task decides whether to use bundler or not based on presence
-    of BUNDLE_GEMFILE (David Chelimsky)
   * Rake task no longer does anything to invoke bundler since Bundler already
     handles it for us. Thanks to Andre Arko for the tip.
-  * Add --failure-exit-code option (Chris Griego)
+  * Add `--failure-exit-code` option (Chris Griego)
 
 * Bug fixes
-  * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
+  * Include `Rake::DSL` to remove deprecation warnings in Rake > 0.8.7 (Pivotal
     Casebook)
   * Only eval `let` block once even if it returns `nil` (Adam Meehan)
-  * Fix --pattern option (wasn't being recognized) (David Chelimsky)
-  * Only implicitly require "rspec/autorun" with the `rspec` command (David
+  * Fix `--pattern` option (wasn't being recognized) (David Chelimsky)
+  * Only implicitly `require "rspec/autorun"` with the `rspec` command (David
     Chelimsky)
-  * Ensure that rspec's at_exit defines the exit code (Daniel Doubrovkine)
+  * Ensure that rspec's `at_exit` defines the exit code (Daniel Doubrovkine)
   * Show the correct snippet in the HTML and TextMate formatters (Brian
     Faherty)
 
