@@ -1,6 +1,8 @@
 module RSpec
   module Core
     module ConstMissing
+      # Used to print deprecation warnings for Rspec and Spec constants (use
+      # RSpec instead)
       def const_missing(name)
         case name
         when :Rspec, :Spec
@@ -29,6 +31,7 @@ WARNING
   end
 
   module Runner
+    # @deprecated use RSpec.configure instead.
     def self.configure(&block)
       RSpec.deprecate("Spec::Runner.configure", "RSpec.configure")
       RSpec.configure(&block)
@@ -36,6 +39,8 @@ WARNING
   end
 
   module Rake
+    # Used to print deprecation warnings for Rake::SpecTask constant (use
+    # RSpec::Core::RakeTask instead)
     def self.const_missing(name)
       case name
       when :SpecTask
