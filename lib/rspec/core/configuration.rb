@@ -121,7 +121,7 @@ module RSpec
         @settings ||= {}
       end
 
-      def clear_inclusion_filter # :nodoc:
+      def clear_inclusion_filter
         self.inclusion_filter = nil
       end
 

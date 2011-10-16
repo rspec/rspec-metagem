@@ -154,7 +154,7 @@ module RSpec
 
     private
 
-      def files_to_run # :nodoc:
+      def files_to_run
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ]
         else

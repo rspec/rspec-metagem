@@ -152,7 +152,7 @@ module RSpec
           block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
 
-        attr_reader :explicit_subject_block # :nodoc:
+        attr_reader :explicit_subject_block
 
         private
 
