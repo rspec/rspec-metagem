@@ -2,8 +2,8 @@ module RSpec
   module Core
     module Formatters
       # This class extracts code snippets by looking at the backtrace of the passed error
-      class SnippetExtractor #:nodoc:
-        class NullConverter; def convert(code, pre); code; end; end #:nodoc:
+      class SnippetExtractor
+        class NullConverter; def convert(code, pre); code; end; end
         
         begin
           require 'syntax/convertors/html'

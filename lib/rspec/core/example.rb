@@ -27,7 +27,7 @@ module RSpec
         @example_group_class
       end
 
-      def around_hooks # :nodoc:
+      def around_hooks
         @around_hooks ||= example_group.around_hooks_for(self)
       end
 

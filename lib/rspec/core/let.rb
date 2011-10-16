@@ -86,12 +86,12 @@ module RSpec
       end
 
       module InstanceMethods
-        def __memoized # :nodoc:
+        def __memoized
           @__memoized ||= {}
         end
       end
 
-      def self.included(mod) # :nodoc:
+      def self.included(mod)
         mod.extend ClassMethods
         mod.__send__ :include, InstanceMethods
       end

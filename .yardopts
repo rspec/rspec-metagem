@@ -1,0 +1,4 @@
+--no-private
+--exclude features
+-
+lib/**/*.rb

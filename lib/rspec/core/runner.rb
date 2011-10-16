@@ -16,20 +16,20 @@ module RSpec
         @autorun_disabled = true
       end
 
-      def self.autorun_disabled? # :nodoc:
+      def self.autorun_disabled?
         @autorun_disabled ||= false
       end
 
-      def self.installed_at_exit? # :nodoc:
+      def self.installed_at_exit?
         @installed_at_exit ||= false
       end
 
-      def self.running_in_drb? # :nodoc:
+      def self.running_in_drb?
         (DRb.current_server rescue false) &&
          DRb.current_server.uri =~ /druby\:\/\/127.0.0.1\:/
       end
 
-      def self.trap_interrupt # :nodoc:
+      def self.trap_interrupt
         trap('INT') do
           exit!(1) if RSpec.wants_to_quit
           RSpec.wants_to_quit = true
@@ -72,11 +72,11 @@ module RSpec
         RSpec.reset
       end
 
-      def self.run_over_drb(options, err, out) # :nodoc:
+      def self.run_over_drb(options, err, out)
         DRbCommandLine.new(options).run(err, out)
       end
 
-      def self.run_in_process(options, err, out) # :nodoc:
+      def self.run_in_process(options, err, out)
         CommandLine.new(options, RSpec::configuration, RSpec::world).run(err, out)
       end
 
