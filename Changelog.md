@@ -1,15 +1,6 @@
-### 2.7.0.rc2 (in dev)
+### 2.7.0 / 2011-10-16
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0.rc1...master)
-
-Enhancements
-  * Rake task no longer does anything to invoke bundler since Bundler already
-    handles it for us. Thanks to Andre Arko for the tip.
-  * Add --failure-exit-code option (Chris Griego)
-
-### 2.7.0.rc1 / 2011-10-09
-
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...v2.7.0.rc1)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...v2.7.0)
 
 NOTE: RSpec's release policy dictates that there should not be any backward
 incompatible changes in minor releases, but we're making an exception to
@@ -35,6 +26,9 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
   * Rake task decides whether to use bundler or not based on presence
     of BUNDLE_GEMFILE (David Chelimsky)
+  * Rake task no longer does anything to invoke bundler since Bundler already
+    handles it for us. Thanks to Andre Arko for the tip.
+  * Add --failure-exit-code option (Chris Griego)
 
 * Bug fixes
   * Include Rake::DSL to remove deprecation warnings in Rake > 0.8.7 (Pivotal
