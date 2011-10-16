@@ -18,6 +18,7 @@ class Autotest::Rspec2 < Autotest
     self.completed_re = /\n(?:\e\[\d*m)?\d* examples?/m
   end
 
+  # Adds conventional spec-to-file mappings to Autotest configuation.
   def setup_rspec_project_mappings
     add_mapping(%r%^spec/.*_spec\.rb$%) { |filename, _|
       filename
@@ -30,6 +31,7 @@ class Autotest::Rspec2 < Autotest
     }
   end
 
+  # Overrides Autotest's implementation to read rspec output
   def consolidate_failures(failed)
     filters = new_hash_of_arrays
     failed.each do |spec, trace|
@@ -40,26 +42,30 @@ class Autotest::Rspec2 < Autotest
     return filters
   end
 
+  # Overrides Autotest's implementation to generate the rspec command to run
   def make_test_cmd(files_to_test)
     files_to_test.empty? ? '' :
       "#{prefix}#{ruby}#{suffix} -S #{SPEC_PROGRAM} --tty #{normalize(files_to_test).keys.flatten.map { |f| "'#{f}'"}.join(' ')}"
   end
 
+  # Generates a map of filenames to Arrays for Autotest
   def normalize(files_to_test)
     files_to_test.keys.inject({}) do |result, filename|
-      result[File.expand_path(filename)] = []
-      result
+      result.merge!(File.expand_path(filename) => [])
     end
   end
 
+  # @private
   def suffix
     using_bundler? ? "" : defined?(:Gem) ? " -rrubygems" : ""
   end
 
+  # @private
   def using_bundler?
     prefix =~ /bundle exec/
   end
 
+  # @private
   def gemfile?
     File.exist?('./Gemfile')
   end
