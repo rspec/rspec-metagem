@@ -39,6 +39,10 @@ describe "should include(expected)" do
 end
 
 describe "should include(with, multiple, args)" do
+  it "has a description" do
+    matcher = include("a")
+    matcher.description.should eq("include \"a\"")
+  end
   context "for a string target" do
     it "passes if target includes all items" do
       "a string".should include("str", "a")

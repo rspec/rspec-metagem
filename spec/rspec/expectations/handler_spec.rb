@@ -76,7 +76,7 @@ module RSpec
             :diffable? => true,
             :failure_message_for_should => "message",
             :matches? => false,
-            :expected => [1],
+            :expected => 1,
             :actual   => 2
           )
           actual = Object.new

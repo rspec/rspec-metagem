@@ -195,11 +195,32 @@ module RSpec
     def eql(expected)
       Eql.new(expected)
     end
+
+    # :call-seq:
+    #   should include(expected)
+    #   should_not include(expected)
+    #
+    # Passes if actual includes expected. This works for
+    # collections and Strings. You can also pass in multiple args
+    # and it will only pass if all args are found in collection.
+    #
+    # == Examples
+    #
+    #   [1,2,3].should include(3)
+    #   [1,2,3].should include(2,3) #would pass
+    #   [1,2,3].should include(2,3,4) #would fail
+    #   [1,2,3].should_not include(4)
+    #   "spread".should include("read")
+    #   "spread".should_not include("red")
+    def include(*expected)
+      Include.new(*expected)
+    end
   end
 end
 
 require 'rspec/matchers/extensions/instance_eval_with_args'
 require 'rspec/matchers/pretty'
+require 'rspec/matchers/base_matcher'
 require 'rspec/matchers/matcher'
 require 'rspec/matchers/operator_matcher'
 require 'rspec/matchers/be'
