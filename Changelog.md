@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0...master)
+
+* Bug fixes
+  * tell autotest the correct place to find the rspec command (David Chelimsky)
+
 ### 2.7.0 / 2011-10-16
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.6.4...v2.7.0)

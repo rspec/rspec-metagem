@@ -5,7 +5,7 @@ class RSpecCommandError < StandardError; end
 
 class Autotest::Rspec2 < Autotest
 
-  SPEC_PROGRAM = File.expand_path('../../../bin/rspec', __FILE__)
+  SPEC_PROGRAM = File.expand_path('../../../exe/rspec', __FILE__)
 
   def initialize
     super()
