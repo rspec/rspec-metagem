@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe Autotest::Rspec2 do
   let(:rspec_autotest) { Autotest::Rspec2.new }
-  let(:spec_cmd) { File.expand_path(File.join(File.dirname(__FILE__), '..', '..', 'bin', 'rspec')) }
+  let(:spec_cmd) { File.expand_path("../../../exe/rspec", __FILE__) }
   let(:ruby_cmd) { "ruby" }
 
   before do
