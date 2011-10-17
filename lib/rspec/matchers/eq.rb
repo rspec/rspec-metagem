@@ -28,7 +28,7 @@ module RSpec
       end
 
       def description
-        "eq #{@expected}"
+        "eq #{@expected.inspect}"
       end
     end
   end

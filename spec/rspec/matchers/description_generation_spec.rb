@@ -7,12 +7,12 @@ describe "Matchers should be able to generate their own descriptions" do
 
   it "should eq expected" do
     "this".should eq "this"
-    RSpec::Matchers.generated_description.should eq "should eq this"
+    RSpec::Matchers.generated_description.should eq "should eq \"this\""
   end
 
   it "should not eq expected" do
     "this".should_not eq "that"
-    RSpec::Matchers.generated_description.should eq "should not eq that"
+    RSpec::Matchers.generated_description.should eq "should not eq \"that\""
   end
 
   it "should be empty (arbitrary predicate)" do
