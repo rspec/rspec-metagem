@@ -181,8 +181,8 @@ describe "should raise_error(NamedError, error_message) { |err| ... }" do
       }
     }.should fail_with(/expected: 4/m)
 
-    ran.should be(true)
-    passed.should be(false)
+    ran.should    be_true
+    passed.should be_false
   end
 
   it "does NOT yield exception if no error was thrown" do

@@ -30,7 +30,7 @@ module RSpec
       it "provides message, expected and actual on #negative_failure_message" do
         matcher = eq(1)
         matcher.matches?(1)
-        matcher.failure_message_for_should_not.should == "\nexpected 1 not to equal 1\n\n(compared using ==)\n"
+        matcher.failure_message_for_should_not.should == "\nexpected: value != 1\n     got: 1\n\n(compared using ==)\n"
       end
     end
   end
