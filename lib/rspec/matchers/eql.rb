@@ -23,6 +23,5 @@ module RSpec
         "eql #{@expected.inspect}"
       end
     end
-
   end
 end
