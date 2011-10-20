@@ -1,6 +1,6 @@
 ### 2.7.1 / 2011-10-20
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0...v2.7.1)
 
 * Bug fixes
   * tell autotest the correct place to find the rspec executable
