@@ -50,7 +50,7 @@ describe Autotest::Rspec2 do
       end
     end
 
-    it "gives '--tty' to #{Autotest::Rspec2::SPEC_PROGRAM}, not '--autotest'" do
+    it "gives '--tty' to #{Autotest::Rspec2::RSPEC_EXECUTABLE}, not '--autotest'" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
       cmd.should match(' --tty ')
       cmd.should_not match(' --autotest ')
