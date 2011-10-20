@@ -4,8 +4,7 @@ module RSpec
       include BaseMatcher
 
       def matches?(actual)
-        @actual = actual
-        @actual.equal?(@expected)
+        super(actual).eql?(expected)
       end
 
       def failure_message_for_should
@@ -35,10 +34,6 @@ MESSAGE
 
       def diffable?
         true
-      end
-
-      def description
-        "equal #{@expected.inspect}"
       end
 
     private

@@ -17,6 +17,14 @@ module RSpec
         @expected = expected
       end
 
+      def matches?(actual)
+        @actual = actual
+      end
+
+      def does_not_match?(actual)
+        @actual = actual
+      end
+
       def failure_message_for_should
         "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
       end
@@ -26,7 +34,11 @@ module RSpec
       end
 
       def description
-        split_words(name)
+        expected ? "#{name_to_sentence} #{expected.inspect}" : name_to_sentence
+      end
+
+      def diffable?
+        false
       end
     end
   end

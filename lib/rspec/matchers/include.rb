@@ -8,22 +8,18 @@ module RSpec
       end
 
       def matches?(actual)
-        @actual = actual
-        perform_match(:all?, :all?, actual, expected)
+        perform_match(:all?, :all?, super(actual), expected)
       end
 
       def does_not_match?(actual)
-        @actual = actual
-        perform_match(:none?, :any?, actual, expected)
-      end
-
-      def diffable?
-        false
+        perform_match(:none?, :any?, super(actual), expected)
       end
 
       def description
         "include#{expected_to_sentence}"
       end
+
+    private
 
       def perform_match(predicate, hash_predicate, actual, expected)
         expected.send(predicate) do |expected|
