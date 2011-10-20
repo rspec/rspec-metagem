@@ -43,6 +43,8 @@ module RSpec
       add_setting :expecting_with_rspec
       add_setting :default_path, :default => 'spec'
       add_setting :show_failures_in_pending_blocks, :default => false
+      add_setting :randomize, :default => false
+      add_setting :seed 
 
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -458,6 +460,14 @@ EOM
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
+      end
+
+      def order(collection)
+        if randomize?
+          srand seed if seed
+          collection.sort_by! { rand collection.size }
+        end
+        collection
       end
 
     private

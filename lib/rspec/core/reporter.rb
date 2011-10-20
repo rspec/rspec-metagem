@@ -6,22 +6,23 @@ module RSpec::Core
       @duration = nil
     end
 
-    def report(count)
+    def report(count, seed)
       start(count)
       begin
         yield self
       ensure
-        finish
+        finish(seed)
       end
     end
 
-    def finish
+    def finish(seed)
       begin
         stop
         notify :start_dump
         notify :dump_pending
         notify :dump_failures
         notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
+        notify :seed, seed
       ensure
         notify :close
       end

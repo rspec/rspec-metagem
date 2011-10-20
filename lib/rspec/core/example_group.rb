@@ -110,9 +110,9 @@ module RSpec
       end
 
       def self.examples
-        @examples ||= []
+        RSpec.configuration.order(@examples ||= [])
       end
-
+      
       def self.filtered_examples
         world.filtered_examples[self]
       end
@@ -156,7 +156,7 @@ module RSpec
       end
 
       def self.children
-        @children ||= []
+        RSpec.configuration.order(@children ||= [])
       end
 
       def self.descendants
