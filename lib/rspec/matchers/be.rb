@@ -6,31 +6,30 @@ module RSpec
       include BaseMatcher
 
       def matches?(actual)
-        @actual = actual
-        actual
+        super(actual)
       end
     end
 
-    def be_true
-      BeTrue.new
-    end
+    class BeFalse
+      include BaseMatcher
 
-    RSpec::Matchers.define :be_false do
-      match do |actual|
-        !actual
+      def matches?(actual)
+        !super(actual)
       end
     end
 
-    RSpec::Matchers.define :be_nil do
-      match do |actual|
-        actual.nil?
+    class BeNil
+      include BaseMatcher
+
+      def matches?(actual)
+        super(actual).nil?
       end
 
-      failure_message_for_should do |actual|
+      def failure_message_for_should
         "expected: nil\n     got: #{actual.inspect}"
       end
 
-      failure_message_for_should_not do
+      def failure_message_for_should_not
         "expected: not nil\n     got: nil"
       end
     end

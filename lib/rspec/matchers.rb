@@ -227,6 +227,19 @@ module RSpec
     def include(*expected)
       Include.new(*expected)
     end
+
+    def be_true
+      BeTrue.new
+    end
+
+    def be_false
+      BeFalse.new
+    end
+
+    def be_nil
+      BeNil.new
+    end
+
   end
 end
 
