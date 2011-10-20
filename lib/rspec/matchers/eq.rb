@@ -1,7 +1,8 @@
 module RSpec
   module Matchers
-    class Eq < BaseMatcher
-      attr_reader :actual
+    class Eq
+      include BaseMatcher
+
       def matches?(actual)
         @actual = actual
         @actual == @expected

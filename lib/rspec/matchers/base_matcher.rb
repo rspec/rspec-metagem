@@ -1,6 +1,14 @@
 module RSpec
   module Matchers
-    class BaseMatcher
+    # Used _internally_ as a base class for matchers that ship with
+    # rspec-expectations.
+    #
+    # == Warning
+    #
+    # This class is for internal use, and subject to change without notice.  We
+    # strongly recommend that you do not base your custom matchers on this
+    # class. If/when this changes, we will announce it and remove this warning.
+    module BaseMatcher
       include RSpec::Matchers::Pretty
 
       attr_reader :actual, :expected
@@ -16,21 +24,6 @@ module RSpec
       def failure_message_for_should_not
         "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
       end
-
-
-      # from matcher.rb
-      def name_to_sentence
-        split_words(name)
-      end
-
-      def expected_to_sentence
-        to_sentence(@expected)
-      end
-
-      def name
-        defined?(@name) ? @name : self.class.name.split("::").last.downcase
-      end
-
     end
   end
 end

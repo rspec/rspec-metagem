@@ -32,6 +32,18 @@ module RSpec
         end
         result
       end
+
+      def name_to_sentence
+        split_words(name)
+      end
+
+      def expected_to_sentence
+        to_sentence(@expected)
+      end
+
+      def name
+        defined?(@name) ? @name : self.class.name.split("::").last.downcase
+      end
     end
   end
 end

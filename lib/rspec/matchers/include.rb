@@ -1,14 +1,8 @@
 module RSpec
   module Matchers
-    # Used _internally_ as a base class for matchers that ship with
-    # rspec-expectations.
-    #
-    # == Warning
-    #
-    # This class is for internal use, and subject to change without notice.  We
-    # strongly recommend that you do not base your custom matchers on this
-    # class. If/when this changes, we will announce it and remove this warning.
-    class Include < BaseMatcher
+    class Include
+      include BaseMatcher
+
       def initialize(*expected)
         super(expected)
       end

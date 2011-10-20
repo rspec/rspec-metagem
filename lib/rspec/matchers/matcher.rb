@@ -147,14 +147,6 @@ module RSpec
         @messages[key].arity == 1 ? @messages[key].call(@actual) : @messages[key].call
       end
 
-      def name_to_sentence
-        split_words(@name)
-      end
-
-      def expected_to_sentence
-        to_sentence(@expected)
-      end
-
       unless method_defined?(:singleton_class)
         def singleton_class
           class << self; self; end
