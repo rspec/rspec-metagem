@@ -2,12 +2,17 @@ require 'rspec/matchers/dsl'
 
 module RSpec
   module Matchers
+    class BeTrue
+      include BaseMatcher
 
-    # @method be_true
-    RSpec::Matchers.define :be_true do
-      match do |actual|
+      def matches?(actual)
+        @actual = actual
         actual
       end
+    end
+
+    def be_true
+      BeTrue.new
     end
 
     RSpec::Matchers.define :be_false do

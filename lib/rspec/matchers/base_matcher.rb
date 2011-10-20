@@ -13,7 +13,7 @@ module RSpec
 
       attr_reader :actual, :expected
 
-      def initialize(expected)
+      def initialize(expected=nil)
         @expected = expected
       end
 
@@ -23,6 +23,10 @@ module RSpec
 
       def failure_message_for_should_not
         "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
+      end
+
+      def description
+        split_words(name)
       end
     end
   end
