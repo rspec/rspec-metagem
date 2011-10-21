@@ -125,7 +125,6 @@ describe 'command line' do
       it 'runs the example groups and examples in the same order' do
         2.times do
           run_simple 'rspec spec/randomize_spec.rb --randomize --seed 123', false
-          run_simple 'rspec spec/randomize_spec.rb --randomize --seed 123', false
         end
 
         output = only_processes.last(2).map {|p| p.stdout(@aruba_keep_ansi) }.join
