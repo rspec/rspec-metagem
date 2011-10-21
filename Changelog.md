@@ -1,3 +1,10 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...master)
+
+* Enhancements
+  * Use classes for the built-in matchers (they're faster).
+
 ### 2.7.0 / 2011-10-16
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...v2.7.0)
