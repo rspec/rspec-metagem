@@ -243,6 +243,19 @@ module RSpec
     def exist(*args)
       Exist.new(*args)
     end
+
+    # Passes if actual.kind_of?(expected)
+    #
+    # == Examples
+    #
+    #   5.should be_kind_of(Fixnum)
+    #   5.should be_kind_of(Numeric)
+    #   5.should_not be_kind_of(Float)
+    def be_a_kind_of(expected)
+      BeKindOf.new(expected)
+    end
+    
+    alias_method :be_kind_of, :be_a_kind_of
   end
 end
 

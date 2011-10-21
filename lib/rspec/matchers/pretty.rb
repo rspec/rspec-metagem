@@ -7,7 +7,7 @@ module RSpec
 
       def to_sentence(words)
         return "" unless words
-        words = words.map{|w| w.inspect}
+        words = Array(words).map{|w| w.inspect}
         case words.length
           when 0
             ""
