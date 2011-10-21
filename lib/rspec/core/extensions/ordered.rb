@@ -4,7 +4,7 @@ module RSpec
       module Ordered
         def ordered
           if RSpec.configuration.randomize?
-            srand RSpec.configuration.seed if RSpec.configuration.seed
+            srand RSpec.configuration.seed
             sort_by { rand size }
           else
             self

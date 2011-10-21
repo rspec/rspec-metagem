@@ -916,5 +916,26 @@ module RSpec::Core
         config.formatters.should be_empty
       end
     end
+
+    describe '#seed_to_report' do
+      context 'with randomize set to true' do
+        before do
+          config.randomize = true
+          config.seed = 123
+        end
+
+        it 'returns the seed' do
+          config.seed_to_report.should eq(123)
+        end
+      end
+
+      context 'with randomize set to false' do
+        before { config.randomize = false }
+
+        it 'returns nil' do
+          config.seed_to_report.should be_nil
+        end
+      end
+    end
   end
 end

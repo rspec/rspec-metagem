@@ -106,8 +106,8 @@ describe 'command line' do
       """
     end
 
-    def get_failures(output, number)
-      output.scan(/\s{1}#{number}\).+/).uniq
+    def get_failures(number)
+      all_stdout.scan(/\s{1}#{number}\).+/).uniq
     end
 
     it 'runs the example groups and examples in random order' do
@@ -116,9 +116,13 @@ describe 'command line' do
       end
       
       1.upto(85) do |number|
-        get_failures(all_stdout, number).size.should be > 1,
+        get_failures(number).size.should be > 1,
           "Failure messages for ##{number} are the same"
       end
+
+      all_stdout.should match(
+        /This run was randomized by the following seed: \d+/
+      )
     end
 
     context 'given a seed' do
@@ -127,12 +131,14 @@ describe 'command line' do
           run_simple 'rspec spec/randomize_spec.rb --randomize --seed 123', false
         end
 
-        output = only_processes.last(2).map {|p| p.stdout(@aruba_keep_ansi) }.join
-
         1.upto(85) do |number|
-          get_failures(output, number).size.should eq(1),
+          get_failures(number).size.should eq(1),
             "Failure messages for ##{number} are not the same"
         end
+
+        all_stdout.should match(
+          /This run was randomized by the following seed: 123/
+        )
       end
     end
   end

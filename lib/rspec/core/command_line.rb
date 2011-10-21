@@ -18,7 +18,7 @@ module RSpec
         @configuration.load_spec_files
         @world.announce_filters
 
-        @configuration.reporter.report(@world.example_count, @configuration.seed) do |reporter|
+        @configuration.reporter.report(@world.example_count, @configuration.seed_to_report) do |reporter|
           begin
             @configuration.run_hook(:before, :suite)
             @world.example_groups.ordered.map {|g| g.run(reporter)}.all? ? 0 : @configuration.failure_exit_code
