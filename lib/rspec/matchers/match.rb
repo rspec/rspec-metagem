@@ -1,9 +1,13 @@
 module RSpec
   module Matchers
-    # :call-seq:
-    #   should match(pattern)
-    #   should_not match(pattern)
-    #
+    class Match
+      include BaseMatcher
+
+      def matches?(actual)
+        super(actual).match(expected)
+      end
+    end
+
     # Given a Regexp or String, passes if actual.match(pattern)
     #
     # == Examples
@@ -11,11 +15,7 @@ module RSpec
     #   email.should match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   email.should match("@example.com")
     def match(expected)
-      Matcher.new :match, expected do |_expected_|
-        match do |actual|
-          actual.match(_expected_)
-        end
-      end
+      Match.new(expected)
     end
   end
 end

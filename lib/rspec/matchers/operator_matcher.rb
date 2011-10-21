@@ -1,6 +1,5 @@
 module RSpec
   module Matchers
-
     class OperatorMatcher
       class << self
         def registry
@@ -82,6 +81,5 @@ module RSpec
       end
 
     end
-
   end
 end

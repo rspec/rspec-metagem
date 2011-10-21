@@ -1,6 +1,5 @@
 module RSpec
   module Matchers
-    
     class Satisfy
       def initialize(&block)
         @block = block
@@ -25,10 +24,6 @@ module RSpec
       end
     end
     
-    # :call-seq:
-    #   should satisfy {}
-    #   should_not satisfy {}
-    #
     # Passes if the submitted block returns true. Yields target to the
     # block.
     #

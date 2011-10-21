@@ -1,6 +1,5 @@
 module RSpec
   module Matchers
-    
     class RespondTo
       def initialize(*names)
         @names = names
@@ -69,10 +68,6 @@ module RSpec
       end
     end
     
-    # :call-seq:
-    #   should respond_to(*names)
-    #   should_not respond_to(*names)
-    #
     # Matches if the target object responds to all of the names
     # provided. Names can be Strings or Symbols.
     #

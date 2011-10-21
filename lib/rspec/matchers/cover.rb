@@ -1,9 +1,21 @@
 module RSpec
   module Matchers
-    # :call-seq:
-    #   should cover(expected)
-    #   should_not cover(expected)
-    #
+    class Cover
+      include BaseMatcher
+
+      def initialize(*expected)
+        super(expected)
+      end
+
+      def matches?(range)
+        expected.all? {|e| range.cover?(e)}
+      end
+
+      def does_not_match?(range)
+        expected.none? {|e| range.cover?(e)}
+      end
+    end
+
     # Passes if actual covers expected. This works for
     # Ranges. You can also pass in multiple args
     # and it will only pass if all args are found in Range.
@@ -17,19 +29,7 @@ module RSpec
     #
     # == Warning: Ruby >= 1.9 only
     def cover(*values)
-      Matcher.new :cover, *values do |*_values|
-        match_for_should do |range|
-          _values.all? &covered_by(range)
-        end
-
-        match_for_should_not do |range|
-          _values.none? &covered_by(range)
-        end
-
-        def covered_by(range)
-          lambda {|value| range.cover?(value)}
-        end
-      end
+      Cover.new(*values)
     end
   end
 end

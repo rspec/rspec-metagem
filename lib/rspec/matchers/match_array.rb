@@ -1,6 +1,5 @@
 module RSpec
   module Matchers
-
     class MatchArray
       include RSpec::Matchers::Pretty
       
@@ -46,13 +45,8 @@ module RSpec
           end
           difference
         end
-
-
     end
 
-    # :call-seq:
-    #   should =~ expected
-    #
     # Passes if actual contains all of the expected regardless of order. 
     # This works for collections. Pass in multiple args  and it will only 
     # pass if all args are found in collection.
