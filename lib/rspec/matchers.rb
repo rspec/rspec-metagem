@@ -240,6 +240,9 @@ module RSpec
       BeNil.new
     end
 
+    def exist(*args)
+      Exist.new(*args)
+    end
   end
 end
 
