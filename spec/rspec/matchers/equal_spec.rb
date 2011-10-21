@@ -12,7 +12,7 @@ module RSpec
       end
 
       it "does not match when !actual.equal?(expected)" do
-        1.should_not equal("1")
+        "1".should_not equal("1")
       end
       
       it "describes itself" do

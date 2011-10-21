@@ -4,7 +4,7 @@ module RSpec
       include BaseMatcher
 
       def matches?(actual)
-        super(actual).eql?(expected)
+        super(actual).equal?(expected)
       end
 
       def failure_message_for_should

@@ -21,10 +21,6 @@ module RSpec
         @actual = actual
       end
 
-      def does_not_match?(actual)
-        @actual = actual
-      end
-
       def failure_message_for_should
         "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
       end

@@ -12,7 +12,8 @@ module RSpec
       end
 
       def does_not_match?(actual)
-        perform_match(:none?, :any?, super(actual), expected)
+        @actual = actual
+        perform_match(:none?, :any?, actual, expected)
       end
 
       def description
