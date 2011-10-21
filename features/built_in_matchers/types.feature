@@ -62,11 +62,11 @@ Feature: specify types of objects
       """
     When I run `rspec be_kind_of_matcher_spec.rb`
     Then the output should contain all of these:
-      | 24 examples, 12 failures               |
-      | expected 17 not to be kind of Fixnum   |
-      | expected 17 not to be kind of Integer  |
-      | expected 17 not to be kind of MyModule |
-      | expected 17 to be kind of String       |
+      | 24 examples, 12 failures                 |
+      | expected 17 not to be a kind of Fixnum   |
+      | expected 17 not to be a kind of Integer  |
+      | expected 17 not to be a kind of MyModule |
+      | expected 17 to be a kind of String       |
 
   Scenario: be_(an_)instance_of matcher
     Given a file named "be_instance_of_matcher_spec.rb" with:
