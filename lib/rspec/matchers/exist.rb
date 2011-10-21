@@ -8,6 +8,7 @@ module RSpec
       end
 
       def matches?(actual)
+        super(actual)
         predicates = [:exist?, :exists?].select { |p| actual.respond_to?(p) }
         existance_values = predicates.map { |p| actual.send(p, *@args) }
         uniq_truthy_values = existance_values.map { |v| !!v }.uniq
