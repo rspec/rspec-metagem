@@ -114,7 +114,7 @@ module RSpec
       end
       
       def self.filtered_examples
-        RSpec.configuration.order(world.filtered_examples[self])
+        world.filtered_examples[self]
       end
 
       def self.descendant_filtered_examples
@@ -156,7 +156,7 @@ module RSpec
       end
 
       def self.children
-        RSpec.configuration.order(@children ||= [])
+        @children ||= [].extend(Extensions::Ordered)
       end
 
       def self.descendants
@@ -272,7 +272,7 @@ An error occurred in an after(:all) hook.
         begin
           run_before_all_hooks(new)
           result_for_this_group = run_examples(reporter)
-          results_for_descendants = children.map {|child| child.run(reporter)}.all?
+          results_for_descendants = children.ordered.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           fail_filtered_examples(ex, reporter)
@@ -299,7 +299,7 @@ An error occurred in an after(:all) hook.
       end
 
       def self.run_examples(reporter)
-        filtered_examples.map do |example|
+        filtered_examples.ordered.map do |example|
           next if RSpec.wants_to_quit
           instance = new
           set_ivars(instance, before_all_ivars)

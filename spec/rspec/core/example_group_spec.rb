@@ -683,7 +683,7 @@ module RSpec::Core
           example('ex 1') { 1.should eq(1) }
           example('ex 2') { 1.should eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples }
+        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered) }
         group.run(reporter).should be_true
       end
 
@@ -692,7 +692,7 @@ module RSpec::Core
           example('ex 1') { 1.should eq(1) }
           example('ex 2') { 1.should eq(2) }
         end
-        group.stub(:filtered_examples) { group.examples }
+        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered) }
         group.run(reporter).should be_false
       end
 
@@ -701,7 +701,7 @@ module RSpec::Core
           example('ex 1') { 1.should eq(2) }
           example('ex 2') { 1.should eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples }
+        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered) }
         group.filtered_examples.each do |example|
           example.should_receive(:run)
         end

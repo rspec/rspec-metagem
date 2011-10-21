@@ -462,14 +462,6 @@ EOM
         raise_if_rspec_1_is_loaded
       end
 
-      def order(collection)
-        if randomize?
-          srand seed if seed
-          collection.sort_by! { rand collection.size }
-        end
-        collection
-      end
-
     private
 
       def assert_no_example_groups_defined(config_option)
