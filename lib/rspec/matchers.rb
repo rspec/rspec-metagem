@@ -269,6 +269,16 @@ module RSpec
     end
     
     alias_method :be_instance_of, :be_an_instance_of
+
+    # Passes if actual == expected +/- delta
+    #
+    # == Examples
+    #
+    #   result.should be_within(0.5).of(3.0)
+    #   result.should_not be_within(0.5).of(3.0)
+    def be_within(delta)
+      BeWithin.new(delta)
+    end
   end
 end
 

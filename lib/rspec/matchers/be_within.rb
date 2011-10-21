@@ -1,35 +1,36 @@
 module RSpec
   module Matchers
-    # Passes if actual == expected +/- delta
-    #
-    # == Examples
-    #
-    #   result.should be_within(0.5).of(3.0)
-    #   result.should_not be_within(0.5).of(3.0)
-    def be_within(delta)
-      Matcher.new :be_within, delta do |_delta_|
-        chain :of do |_expected_|
-          @_expected = _expected_
-        end
+    class BeWithin
+      include BaseMatcher
 
-        match do |actual|
-          unless defined?(@_expected)
-            raise ArgumentError.new("You must set an expected value using #of: be_within(#{_delta_}).of(expected_value)")
-          end
-          (actual - @_expected).abs < _delta_
-        end
+      attr_reader :delta
 
-        failure_message_for_should do |actual|
-          "expected #{actual} to #{description}"
-        end
+      def initialize(delta)
+        @delta = delta
+      end
 
-        failure_message_for_should_not do |actual|
-          "expected #{actual} not to #{description}"
+      def matches?(actual)
+        unless defined?(@expected)
+          raise ArgumentError.new("You must set an expected value using #of: be_within(#{delta}).of(expected_value)")
         end
+        (super(actual) - expected).abs < delta
+      end
 
-        description do
-          "be within #{_delta_} of #{@_expected}"
-        end
+      def of(expected)
+        @expected = expected
+        self
+      end
+
+      def failure_message_for_should
+        "expected #{actual} to #{description}"
+      end
+
+      def failure_message_for_should_not
+        "expected #{actual} not to #{description}"
+      end
+
+      def description
+        "be within #{delta} of #{expected}"
       end
     end
   end
