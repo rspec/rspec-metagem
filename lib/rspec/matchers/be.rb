@@ -10,12 +10,20 @@ module RSpec
       end
     end
 
+    def be_true
+      BeTrue.new
+    end
+
     class BeFalse
       include BaseMatcher
 
       def matches?(actual)
         !super(actual)
       end
+    end
+
+    def be_false
+      BeFalse.new
     end
 
     class BeNil
@@ -32,6 +40,10 @@ module RSpec
       def failure_message_for_should_not
         "expected: not nil\n     got: nil"
       end
+    end
+
+    def be_nil
+      BeNil.new
     end
 
     class Be

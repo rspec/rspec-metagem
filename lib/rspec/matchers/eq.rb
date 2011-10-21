@@ -19,6 +19,18 @@ module RSpec
         true
       end
     end
+
+    # Passes if <tt>actual == expected</tt>.
+    #
+    # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more information about equality in Ruby.
+    #
+    # == Examples
+    #
+    #   5.should eq(5)
+    #   5.should_not eq(3)
+    def eq(expected)
+      Eq.new(expected)
+    end
   end
 end
 

@@ -42,5 +42,21 @@ module RSpec
         actual.is_a?(Hash) && expected.is_a?(Hash)
       end
     end
+
+    # Passes if actual includes expected. This works for
+    # collections and Strings. You can also pass in multiple args
+    # and it will only pass if all args are found in collection.
+    #
+    # == Examples
+    #
+    #   [1,2,3].should include(3)
+    #   [1,2,3].should include(2,3) #would pass
+    #   [1,2,3].should include(2,3,4) #would fail
+    #   [1,2,3].should_not include(4)
+    #   "spread".should include("read")
+    #   "spread".should_not include("red")
+    def include(*expected)
+      Include.new(*expected)
+    end
   end
 end
