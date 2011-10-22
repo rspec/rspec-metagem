@@ -83,6 +83,7 @@ module RSpec::Core
 
         parser.on('-s', '--seed SEED', Integer, 'Sets the seed for randomization') do |seed|
           options[:seed] = seed.to_i
+          options[:randomize] = true
         end
         
         parser.on('--rand', '--randomize', 'Run examples in a random order') do
