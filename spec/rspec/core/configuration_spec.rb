@@ -507,9 +507,9 @@ module RSpec::Core
       end
 
       it "finds a formatter by class name" do
-        Object.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.add_formatter "CustomFormatter"
-        config.formatters.first.should be_an_instance_of(CustomFormatter)
+        Object.const_set("ACustomFormatter", Class.new(Formatters::BaseFormatter))
+        config.add_formatter "ACustomFormatter"
+        config.formatters.first.should be_an_instance_of(ACustomFormatter)
       end
 
       it "finds a formatter by class fully qualified name" do
