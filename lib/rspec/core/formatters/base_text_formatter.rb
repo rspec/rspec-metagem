@@ -86,6 +86,11 @@ module RSpec
           end
         end
 
+        def seed(number)
+          output.puts
+          output.puts "This run was randomized by the following seed: #{number}"
+        end
+
         def close
           output.close if IO === output && output != $stdout
         end

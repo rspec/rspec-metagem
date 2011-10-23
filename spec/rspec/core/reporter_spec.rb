@@ -10,7 +10,7 @@ module RSpec::Core
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
         it "sends #{message} to the formatter(s)" do
           formatter.should_receive(message)
-          reporter.abort
+          reporter.abort(nil)
         end
       end
     end

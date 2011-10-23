@@ -81,6 +81,15 @@ module RSpec::Core
           options[:custom_options_file] = path
         end
 
+        parser.on('-s', '--seed SEED', Integer, 'Sets the seed for randomization') do |seed|
+          options[:seed] = seed.to_i
+          options[:randomize] = true
+        end
+        
+        parser.on('--rand', '--randomize', 'Run examples in a random order') do
+          options[:randomize] = true
+        end
+
         parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
           options[:profile_examples] = o
         end
