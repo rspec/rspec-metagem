@@ -16,6 +16,7 @@ gem "cucumber", "1.0.1"
 gem "aruba", "0.4.2"
 gem "ZenTest", "4.4.2"
 gem "nokogiri", "1.5.0"
+gem "fakefs", "0.4.0", :require => false
 
 platforms :jruby do
   gem "jruby-openssl"
@@ -34,7 +35,6 @@ group :development do
   gem "guard-rspec", "0.5.0"
   gem "growl", "1.0.3"
   gem "spork", "0.9.0.rc9"
-  gem "fakefs", "0.4.0", :require => false
 
   platforms :mri_18, :jruby do
     gem "rcov", "0.9.10"
