@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'command line' do
+describe 'command line', :ui do
   before :all do
     write_file 'spec/randomize_spec.rb', """
       describe 'group 1' do

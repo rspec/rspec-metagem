@@ -1,6 +1,7 @@
+require 'erb'
+
 module RSpec
   module Core
-
     class ConfigurationOptions
       attr_reader :options
 
@@ -113,8 +114,7 @@ module RSpec
       end
 
       def options_file_as_erb_string(path)
-        require 'erb'
-        ERB.new(IO.read(path)).result(binding)
+        ERB.new(File.read(path)).result(binding)
       end
 
       def custom_options_file
@@ -133,7 +133,6 @@ module RSpec
           nil
         end
       end
-
     end
   end
 end

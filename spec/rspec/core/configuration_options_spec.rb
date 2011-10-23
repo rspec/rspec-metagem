@@ -1,8 +1,18 @@
 require 'spec_helper'
 require 'ostruct'
-require 'tmpdir'
+require 'fakefs/safe'
 
 describe RSpec::Core::ConfigurationOptions do
+  before do
+    FakeFS.activate!
+    @orig_spec_opts = ENV["SPEC_OPTS"]
+    ENV.delete("SPEC_OPTS")
+  end
+
+  after do
+    ENV["SPEC_OPTS"] = @orig_spec_opts
+    FakeFS.deactivate!
+  end
 
   def config_options_object(*args)
     coo = RSpec::Core::ConfigurationOptions.new(args)
@@ -204,15 +214,13 @@ describe RSpec::Core::ConfigurationOptions do
       end
 
       it "turns off the debugger option if --drb is specified in the options file" do
-        File.stub(:exist?) { true }
-        IO.stub(:read) { "--drb" }
+        File.open("./.rspec", "w") {|f| f << "--drb"}
         config_options_object("--debug").drb_argv.should_not include("--debug")
         config_options_object("-d"     ).drb_argv.should_not include("--debug")
       end
 
       it "turns off the debugger option if --debug is specified in the options file" do
-        File.stub(:exist?) { true }
-        IO.stub(:read) { "--debug" }
+        File.open("./.rspec", "w") {|f| f << "--debug"}
         config_options_object("--drb").drb_argv.should_not include("--debug")
         config_options_object("-X"   ).drb_argv.should_not include("--debug")
       end
@@ -349,8 +357,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     context "--drb specified in the options file" do
       it "renders all the original arguments except --drb" do
-        File.stub(:exist?) { true }
-        IO.stub(:read) { "--drb --color" }
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --tty --format s --example pattern --line_number 1 --profile --backtrace ]).
           drb_argv.should eq(%w[ --color --profile --backtrace --tty --example pattern --line_number 1 --format s])
       end
@@ -358,8 +365,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     context "--drb specified in ARGV and the options file" do
       it "renders all the original arguments except --drb" do
-        File.stub(:exist?) { true }
-        IO.stub(:read) { "--drb --color" }
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s])
       end
@@ -367,8 +373,7 @@ describe RSpec::Core::ConfigurationOptions do
 
     context "--drb specified in ARGV and in as ARGV-specified --options file" do
       it "renders all the original arguments except --drb and --options" do
-        File.stub(:exist?) { true }
-        IO.stub(:read) { "--drb --color" }
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
         config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
           drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s ])
       end
@@ -376,31 +381,13 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
-    let(:local_options_file)  { File.join(Dir.tmpdir, ".rspec-local") }
-    let(:global_options_file) { File.join(Dir.tmpdir, ".rspec-global") }
-    let(:custom_options_file) { File.join(Dir.tmpdir, "custom.options") }
-
-    before do
-      @orig_spec_opts = ENV["SPEC_OPTS"]
-      RSpec::Core::ConfigurationOptions::send :public, :global_options_file
-      RSpec::Core::ConfigurationOptions::send :public, :local_options_file
-      RSpec::Core::ConfigurationOptions::any_instance.stub(:global_options_file) { global_options_file }
-      RSpec::Core::ConfigurationOptions::any_instance.stub(:local_options_file) { local_options_file }
-    end
-
-    after do
-      ENV["SPEC_OPTS"] = @orig_spec_opts
-      RSpec::Core::ConfigurationOptions::send :private, :global_options_file
-      RSpec::Core::ConfigurationOptions::send :private, :local_options_file
-    end
-
     def write_options(scope, options)
-      File.open(send("#{scope}_options_file"), 'w') { |f| f.write(options) }
+      File.open(scope == :local ? './.rspec' : '~/.rspec', 'w') { |f| f.write(options) }
     end
 
     it "merges global, local, SPEC_OPTS, and CLI" do
-      write_options(:global, "--color")
-      write_options(:local,  "--line 37")
+      File.open("./.rspec", "w") {|f| f << "--line 37"}
+      File.open("~/.rspec", "w") {|f| f << "--color"}
       ENV["SPEC_OPTS"] = "--debug"
       options = parse_options("--drb")
       options[:color_enabled].should be_true
@@ -415,22 +402,25 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     it "prefers CLI over file options" do
-      write_options(:local,  "--format local")
-      write_options(:global, "--format global")
+      File.open("./.rspec", "w") {|f| f << "--format local"}
+      File.open("~/.rspec", "w") {|f| f << "--format global"}
       parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
 
     it "prefers local file options over global" do
-      write_options(:local,  "--format local")
-      write_options(:global, "--format global")
+      File.open("./.rspec", "w") {|f| f << "--format local"}
+      File.open("~/.rspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
     end
 
     context "with custom options file" do
       it "ignores local and global options files" do
-        write_options(:local, "--color")
-        write_options(:global, "--color")
-        parse_options("-O", custom_options_file)[:color_enabled].should be_false
+        File.open("./.rspec", "w") {|f| f << "--format local"}
+        File.open("~/.rspec", "w") {|f| f << "--format global"}
+        File.open("./custom.opts", "w") {|f| f << "--color"}
+        options = parse_options("-O", "./custom.opts")
+        options[:format].should be_nil
+        options[:color_enabled].should be_true
       end
     end
   end

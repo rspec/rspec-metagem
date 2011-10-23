@@ -25,9 +25,14 @@ require "rspec/core/version"
 require "cucumber/rake/task"
 Cucumber::Rake::Task.new(:cucumber)
 
-desc "Run all examples"
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = %w[--color]
+desc "Run non-ui examples"
+RSpec::Core::RakeTask.new(:spec)
+
+namespace :spec do
+  desc "Run ui examples"
+  RSpec::Core::RakeTask.new(:ui) do |t|
+    t.rspec_opts = %w[--options .rspec.ui]
+  end
 end
 
 if RUBY_VERSION.to_f == 1.8
@@ -53,7 +58,6 @@ if RUBY_VERSION.to_f == 1.8
   task :rcov => ["rcov:cleanup", "rcov:spec", "rcov:cucumber"]
 end
 
-
 desc "delete generated files"
 task :clobber do
   sh %q{find . -name "*.rbc" | xargs rm}
@@ -70,4 +74,4 @@ task :relish, :version do |t, args|
   sh "rm features/Changelog.md"
 end
 
-task :default => [:spec, :cucumber]
+task :default => [:spec, "spec:ui", :cucumber]
