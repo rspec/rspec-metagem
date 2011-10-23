@@ -1,3 +1,10 @@
+### DEV
+
+* Enhancements
+  * Randomization (Justin Ko)
+    * Run your examples in random order: `--random` `--rand`
+    * Pass a seed: `--seed 123`
+    
 ### 2.7.1 / 2011-10-20
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0...v2.7.1)
