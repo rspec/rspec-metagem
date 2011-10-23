@@ -1,6 +1,6 @@
 # rspec-core
 
-RSpec Core provides the structure for writing executable examples of how your
+rspec-core provides the structure for writing executable examples of how your
 code should behave.
 
 ## Install
