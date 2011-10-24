@@ -63,10 +63,9 @@ module RSpec
   # Yields the global configuration object
   #
   # @example
-  #
-  # RSpec.configure do |config|
-  #   config.format = 'documentation'
-  # end
+  #     RSpec.configure do |config|
+  #       config.format = 'documentation'
+  #     end
   def self.configure
     yield configuration if block_given?
   end
@@ -80,13 +79,13 @@ module RSpec
   # your code should behave.  It uses the words "describe" and "it" so we can
   # express concepts like a conversation:
   #
-  #     "Describe an account when it is first opened."
-  #     "It has a balance of zero."
+  #     "Describe an order."
+  #     "It sums the prices of its line items."
   #
   # ## Basic structure
   #
   #     describe Order do
-  #       it "sums the prices of the items in its line items" do
+  #       it "sums the prices of its line items" do
   #         order = Order.new
   #         order.add_entry(LineItem.new(:item => Item.new(
   #           :price => Money.new(1.11, :USD)
