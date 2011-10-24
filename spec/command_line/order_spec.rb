@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'command line', :ui do
   before :all do
-    write_file 'spec/randomize_spec.rb', """
+    write_file 'spec/order_spec.rb', """
       describe 'group 1' do
         specify('group 1 example 1')  {}
         specify('group 1 example 2')  {}
@@ -52,9 +52,9 @@ describe 'command line', :ui do
     """
   end
 
-  describe '--randomize' do
+  describe '--order rand' do
     it 'runs the examples and groups in a different order each time' do
-      2.times { run_command 'rspec spec/randomize_spec.rb --randomize -f doc' }
+      2.times { run_command 'rspec spec/order_spec.rb --order rand -f doc' }
 
       top_level_groups      {|first_run, second_run| first_run.should_not eq(second_run)}
       nested_groups         {|first_run, second_run| first_run.should_not eq(second_run)}
@@ -67,9 +67,9 @@ describe 'command line', :ui do
     end
   end
 
-  describe '--seed' do
+  describe '--order rand:SEED' do
     it 'runs the examples and groups in the same order each time' do
-      2.times { run_command 'rspec spec/randomize_spec.rb --seed 123 -f doc' }
+      2.times { run_command 'rspec spec/order_spec.rb --order rand:123 -f doc' }
 
       top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
       nested_groups         {|first_run, second_run| first_run.should eq(second_run)}

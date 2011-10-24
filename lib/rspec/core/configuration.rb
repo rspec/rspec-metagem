@@ -43,8 +43,7 @@ module RSpec
       add_setting :expecting_with_rspec
       add_setting :default_path, :default => 'spec'
       add_setting :show_failures_in_pending_blocks, :default => false
-      add_setting :randomize, :default => false
-      add_setting :seed, :default => srand % 0xFFFF
+      add_setting :order
 
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -60,12 +59,15 @@ module RSpec
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
 
+      attr_accessor :seed
+
       def initialize
         @color_enabled = false
         self.include_or_extend_modules = []
         self.files_to_run = []
         self.backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         self.exclusion_filter = CONDITIONAL_FILTERS.dup
+        self.seed = srand % 0xFFFF
       end
 
       def reset
@@ -464,6 +466,16 @@ EOM
 
       def seed_to_report
         randomize? ? seed : nil
+      end
+
+      def randomize?
+        order ? !!order.match(/rand/) : false
+      end
+
+      def orderby=(type)
+        order, seed = type.to_s.split(':')
+        self.order = order
+        self.seed = seed.to_i if seed
       end
 
     private
