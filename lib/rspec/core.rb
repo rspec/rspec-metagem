@@ -62,7 +62,7 @@ module RSpec
 
   # Yields the global configuration object
   #
-  # == Examples
+  # @example
   #
   # RSpec.configure do |config|
   #   config.format = 'documentation'
@@ -74,6 +74,125 @@ module RSpec
   # Used internally to clear remaining groups when fail_fast is set
   def self.clear_remaining_example_groups
     world.example_groups.clear
+  end
+
+  # rspec-core provides the structure for writing executable examples of how
+  # your code should behave.  It uses the words "describe" and "it" so we can
+  # express concepts like a conversation:
+  #
+  #     "Describe an account when it is first opened."
+  #     "It has a balance of zero."
+  #
+  # ## Basic structure
+  #
+  #     describe Order do
+  #       it "sums the prices of the items in its line items" do
+  #         order = Order.new
+  #         order.add_entry(LineItem.new(:item => Item.new(
+  #           :price => Money.new(1.11, :USD)
+  #         )
+  #         order.add_entry(LineItem.new(:item => Item.new(
+  #           :price => Money.new(2.22, :USD),
+  #           :quantity => 2
+  #         )
+  #         order.total.should eq(Money.new(5.55, :USD))
+  #       end
+  #     end
+  #
+  # The `describe` method creates an example group.  Within the block passed to
+  # `describe` you can declare examples using the `it` method.
+  #
+  # Under the hood, an example group is a class in which the block passed to
+  # `describe` is evaluated. The blocks passed to `it` are evaluated in the
+  # context of an _instance_ of that class.
+  #
+  # ## Nested groups
+  #
+  # You can also declare nested nested groups using the `describe` or `context`
+  # methods:
+  #
+  #     describe Order to
+  #       context "with no items" do
+  #         it "behaves one way" do
+  #           # ...
+  #         end
+  #       end
+  #
+  #       context "with one item" do
+  #         it "behaves another way" do
+  #           # ...
+  #         end
+  #       end
+  #     end
+  #
+  # ## Aliases
+  #
+  # You can declare example groups using either `describe` or `context`, though
+  # only `describe` is available at the top level.
+  #
+  # You can declare examples within a group using any of `it`, `specify`, or
+  # `example`.
+  #
+  # ## Shared examples
+  #
+  # Declare a shared example group using `shared_examples`, and then include it
+  # in each group using `include_examples`.
+  #
+  #     shared_examples "collections" do |collection_class|
+  #       it "is empty when first created" do
+  #         collection_class.new.should be_empty
+  #       end
+  #     end
+  #
+  #     describe Array do
+  #       include_examples "collections", Array
+  #     end
+  #
+  # ## Metadata
+  #
+  # rspec-core stores a metadata hash with every example and group, which
+  # contains like their descriptions, the locations at which they were
+  # declared, etc, etc. This hash powers many of rspec-core's features,
+  # including output formatters (which access descriptions and locations),
+  # and filtering before and after hooks.
+  #
+  # Although you probably won't ever need this unless you are writing an
+  # extension, you can access it from an example like this:
+  #
+  #     it "does something" do
+  #       example.metadata[:description].should eq("does something")
+  #     end
+  #
+  # ### `described_class`
+  #
+  # When a class is passed to `describe`, you can access it from an example
+  # using the `described_class` method, which is a wrapper for
+  # `example.metadata[:described_class]`.
+  #
+  #     describe Widget do
+  #       example do
+  #         described_class.should equal(Widget)
+  #       end
+  #     end
+  #
+  # This is useful in extensions or shared example groups in which the specific
+  # class is unknown. Taking the shared examples example from above, we can
+  # clean it up a bit using `described_class`:
+  #
+  #     shared_examples "collections" do
+  #       it "is empty when first created" do
+  #         described.new.should be_empty
+  #       end
+  #     end
+  #
+  #     describe Array do
+  #       include_examples "collections"
+  #     end
+  #
+  #     describe Hash do
+  #       include_examples "collections"
+  #     end
+  module Core
   end
 end
 

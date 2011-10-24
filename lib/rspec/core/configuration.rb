@@ -75,44 +75,43 @@ module RSpec
         @formatters.clear if @formatters
       end
 
-      # :call-seq:
-      #   add_setting(:name)
-      #   add_setting(:name, :default => "default_value")
-      #   add_setting(:name, :alias => :other_setting)
+      # @override add_setting(:name)
+      # @override add_setting(:name, :default => "default_value")
+      # @override add_setting(:name, :alias => :other_setting)
       #
       # Use this to add custom settings to the RSpec.configuration object.
       #
-      #   RSpec.configuration.add_setting :foo
-      #
-      # Creates three methods on the configuration object, a setter, a getter,
-      # and a predicate:
-      #
-      #   RSpec.configuration.foo=(value)
-      #   RSpec.configuration.foo()
-      #   RSpec.configuration.foo?() # returns true if foo returns anything but nil or false
+      #     RSpec.configuration.add_setting :foo
       #
       # Intended for extension frameworks like rspec-rails, so they can add config
       # settings that are domain specific. For example:
       #
-      #   RSpec.configure do |c|
-      #     c.add_setting :use_transactional_fixtures, :default => true
-      #     c.add_setting :use_transactional_examples, :alias => :use_transactional_fixtures
-      #   end
+      #     RSpec.configure do |c|
+      #       c.add_setting :use_transactional_fixtures, :default => true
+      #       c.add_setting :use_transactional_examples, :alias => :use_transactional_fixtures
+      #     end
       #
-      # == Options
+      # `add_setting` creates three methods on the configuration object, a
+      # setter, a getter, and a predicate:
       #
-      # +add_setting+ takes an optional hash that supports the following
+      #     RSpec.configuration.foo=(value)
+      #     RSpec.configuration.foo
+      #     RSpec.configuration.foo? # returns true if foo returns anything but nil or false
+      #
+      # ### Options
+      #
+      # `add_setting` takes an optional hash that supports the following
       # keys:
       #
-      #   :default => "default value"
+      #     :default => "default value"
       #
       # This sets the default value for the getter and the predicate (which
-      # will return +true+ as long as the value is not +false+ or +nil+).
+      # will return `true` as long as the value is not `false` or `nil`).
       #
-      #   :alias => :other_setting
+      #     :alias => :other_setting
       #
       # Aliases its setter, getter, and predicate, to those for the
-      # +other_setting+.
+      # `other_setting`.
       def add_setting(name, opts={})
         self.class.add_setting(name, opts)
       end
@@ -148,7 +147,7 @@ module RSpec
 
       # Sets the mock framework adapter module.
       #
-      # +framework+ can be a Symbol or a Module.
+      # `framework` can be a Symbol or a Module.
       #
       # Given any of :rspec, :mocha, :flexmock, or :rr, configures the named
       # framework.
@@ -204,7 +203,7 @@ module RSpec
 
       # Sets the expectation framework module(s).
       #
-      # +frameworks+ can be :rspec, :stdlib, or both 
+      # `frameworks` can be :rspec, :stdlib, or both 
       #
       # Given :rspec, configures rspec/expectations.
       # Given :stdlib, configures test/unit/assertions
@@ -281,7 +280,7 @@ EOM
         end
       end
 
-      # Run examples defined on +line_numbers+ in all files to run.
+      # Run examples defined on `line_numbers` in all files to run.
       def line_numbers=(line_numbers)
         filter_run({ :line_numbers => line_numbers.map{|l| l.to_i} }, true)
       end

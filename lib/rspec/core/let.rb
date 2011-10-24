@@ -6,7 +6,7 @@ module RSpec
         # Generates a method whose return value is memoized
         # after the first call.
         #
-        # == Examples
+        # @example
         #
         #  describe Thing do
         #    let(:thing) { Thing.new }
@@ -30,7 +30,7 @@ module RSpec
         # purpose of setting up state and providing a memoized
         # reference to that state.
         #
-        # == Examples
+        # @example
         #
         #  class Thing
         #    def self.count

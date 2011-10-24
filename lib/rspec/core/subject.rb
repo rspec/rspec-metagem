@@ -11,7 +11,7 @@ module RSpec
         # declared in the example group, then +subject+ will return a new
         # instance of that class.
         #
-        # == Examples
+        # @example
         #
         #   # explicit subject defined by the subject method
         #   describe Person do
@@ -45,7 +45,7 @@ module RSpec
           # an implicit subject (see +subject+), this supports very concise
           # expressions.
           #
-          # == Examples
+          # @example
           #
           #   describe Person do
           #     it { should be_eligible_to_vote }
@@ -57,7 +57,7 @@ module RSpec
           # Just like +should+, +should_not+ delegates to the subject (implicit or
           # explicit) of the example group.
           #
-          # == Examples
+          # @example
           #
           #   describe Person do
           #     it { should_not be_eligible_to_vote }
@@ -139,7 +139,7 @@ module RSpec
         # Defines an explicit subject for an example group which can then be the
         # implicit receiver (through delegation) of calls to +should+.
         #
-        # == Examples
+        # @example
         #
         #   describe CheckingAccount, "with $50" do
         #     subject { CheckingAccount.new(:amount => 50, :currency => :USD) }
