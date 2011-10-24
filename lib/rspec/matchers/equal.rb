@@ -47,7 +47,7 @@ MESSAGE
     #
     # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more information about equality in Ruby.
     #
-    # == Examples
+    # @example
     #
     #   5.should equal(5) # Fixnums are equal
     #   "5".should_not equal("5") # Strings that look the same are not the same object

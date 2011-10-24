@@ -141,7 +141,7 @@ MESSAGE
     # do/end, as <tt>{ ... }</tt> binds to the +change+ method, whereas do/end
     # would errantly bind to the +should+ or +should_not+ method.
     #
-    # == Examples
+    # @example
     #
     #   lambda {
     #     team.add_player(player) 

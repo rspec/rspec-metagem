@@ -53,7 +53,7 @@ module RSpec
     #
     # NOTE: there is no should_not version of array.should =~ other_array
     # 
-    # == Examples
+    # @example
     #
     #   [1,2,3].should   =~ [1,2,3]   # => would pass
     #   [1,2,3].should   =~ [2,3,1]   # => would pass

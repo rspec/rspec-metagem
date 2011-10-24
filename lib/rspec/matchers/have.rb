@@ -102,28 +102,22 @@ EOF
       end
     end
 
-    # :call-seq:
-    #   should have(number).named_collection__or__sugar
-    #   should_not have(number).named_collection__or__sugar
+    # Passes if receiver is a collection with the submitted number of items OR
+    # if the receiver OWNS a collection with the submitted number of items.
     #
-    # Passes if receiver is a collection with the submitted
-    # number of items OR if the receiver OWNS a collection
-    # with the submitted number of items.
+    # If the receiver OWNS the collection, you must use the name of the
+    # collection. So if a `Team` instance has a collection named `#players`,
+    # you must use that name to set the expectation.
     #
-    # If the receiver OWNS the collection, you must use the name
-    # of the collection. So if a <tt>Team</tt> instance has a
-    # collection named <tt>#players</tt>, you must use that name
-    # to set the expectation.
+    # If the receiver IS the collection, you can use any name you like for
+    # `named_collection`. We'd recommend using either "elements", "members", or
+    # "items" as these are all standard ways of describing the things IN a
+    # collection.
     #
-    # If the receiver IS the collection, you can use any name
-    # you like for <tt>named_collection</tt>. We'd recommend using
-    # either "elements", "members", or "items" as these are all
-    # standard ways of describing the things IN a collection.
+    # This also works for Strings, letting you set expectations about their
+    # lengths.
     #
-    # This also works for Strings, letting you set an expectation
-    # about its length
-    #
-    # == Examples
+    # @example
     #
     #   # Passes if team.players.size == 11
     #   team.should have(11).players
@@ -141,26 +135,26 @@ EOF
     end
     alias :have_exactly :have
 
-    # :call-seq:
-    #   should have_at_least(number).items
-    #
     # Exactly like have() with >=.
     #
-    # == Warning
+    # @example
+    #   "this".should have_at_least(3).letters
     #
-    # +should_not+ +have_at_least+ is not supported
+    # ### Warning:
+    #
+    # `should_not have_at_least` is not supported
     def have_at_least(n)
       Matchers::Have.new(n, :at_least)
     end
 
-    # :call-seq:
-    #   should have_at_most(number).items
-    #
     # Exactly like have() with <=.
     #
-    # == Warning
+    # @example
+    #   should have_at_most(number).items
     #
-    # +should_not+ +have_at_most+ is not supported
+    # ### Warning:
+    #
+    # `should_not have_at_most` is not supported
     def have_at_most(n)
       Matchers::Have.new(n, :at_most)
     end

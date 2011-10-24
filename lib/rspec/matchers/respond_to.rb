@@ -71,7 +71,7 @@ module RSpec
     # Matches if the target object responds to all of the names
     # provided. Names can be Strings or Symbols.
     #
-    # == Examples
+    # @example
     # 
     def respond_to(*names)
       Matchers::RespondTo.new(*names)

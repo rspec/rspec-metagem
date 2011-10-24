@@ -23,6 +23,10 @@ module RSpec
       end
     end
 
+    # Passes if `actual.exist?` or `actual.exists?`
+    #
+    # @example
+    #   File.should exist("path/to/file")
     def exist(*args)
       Exist.new(*args)
     end

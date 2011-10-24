@@ -96,7 +96,7 @@ module RSpec
     # Given a Symbol and an arg, matches if the given proc throws the
     # specified Symbol with the specified arg.
     #
-    # == Examples
+    # @example
     #
     #   lambda { do_something_risky }.should throw_symbol
     #   lambda { do_something_risky }.should throw_symbol(:that_was_risky)

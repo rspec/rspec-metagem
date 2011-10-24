@@ -3,7 +3,7 @@ module RSpec
     # Used _internally_ as a base class for matchers that ship with
     # rspec-expectations.
     #
-    # == Warning
+    # ### Warning:
     #
     # This class is for internal use, and subject to change without notice.  We
     # strongly recommend that you do not base your custom matchers on this

@@ -47,7 +47,7 @@ module RSpec
     # collections and Strings. You can also pass in multiple args
     # and it will only pass if all args are found in collection.
     #
-    # == Examples
+    # @example
     #
     #   [1,2,3].should include(3)
     #   [1,2,3].should include(2,3) #would pass

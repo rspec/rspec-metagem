@@ -10,7 +10,7 @@ module RSpec
 
     # Passes if actual.instance_of?(expected)
     #
-    # == Examples
+    # @example
     #
     #   5.should be_instance_of(Fixnum)
     #   5.should_not be_instance_of(Numeric)

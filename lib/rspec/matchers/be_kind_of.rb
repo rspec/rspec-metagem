@@ -10,7 +10,7 @@ module RSpec
 
     # Passes if actual.kind_of?(expected)
     #
-    # == Examples
+    # @example
     #
     #   5.should be_kind_of(Fixnum)
     #   5.should be_kind_of(Numeric)

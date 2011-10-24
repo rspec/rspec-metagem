@@ -34,7 +34,7 @@ module RSpec
     # If you do find yourself in such a situation, you could always write
     # a custom matcher, which would likely make your specs more expressive.
     #
-    # == Examples
+    # @example
     #
     #   5.should satisfy { |n|
     #     n > 3

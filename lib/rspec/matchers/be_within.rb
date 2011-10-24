@@ -36,7 +36,7 @@ module RSpec
 
     # Passes if actual == expected +/- delta
     #
-    # == Examples
+    # @example
     #
     #   result.should be_within(0.5).of(3.0)
     #   result.should_not be_within(0.5).of(3.0)

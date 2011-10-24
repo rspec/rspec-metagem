@@ -24,7 +24,7 @@ module RSpec
     #
     # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more information about equality in Ruby.
     #
-    # == Examples
+    # @example
     #
     #   5.should eq(5)
     #   5.should_not eq(3)

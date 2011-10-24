@@ -7,8 +7,9 @@ module RSpec
     end
 
     # Extends the submitted block with aliases to and to_not
-    # for should and should_not. Allows expectations like this:
+    # for should and should_not.
     #
+    # @example
     #   expect { this_block }.to change{this.expression}.from(old_value).to(new_value)
     #   expect { this_block }.to raise_error
     def expect(&block)

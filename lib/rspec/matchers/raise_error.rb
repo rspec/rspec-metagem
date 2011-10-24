@@ -96,7 +96,7 @@ module RSpec
     # With a named error and messsage specified as a Regexp, matches only if both match.
     # Pass an optional block to perform extra verifications on the exception matched
     #
-    # == Examples
+    # @example
     #
     #   lambda { do_something_risky }.should raise_error
     #   lambda { do_something_risky }.should raise_error(PoorRiskDecisionError)

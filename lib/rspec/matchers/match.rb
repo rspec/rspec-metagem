@@ -10,7 +10,7 @@ module RSpec
 
     # Given a Regexp or String, passes if actual.match(pattern)
     #
-    # == Examples
+    # @example
     #
     #   email.should match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   email.should match("@example.com")
