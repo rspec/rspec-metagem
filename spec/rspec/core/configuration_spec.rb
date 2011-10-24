@@ -918,9 +918,9 @@ module RSpec::Core
     end
 
     describe '#seed_to_report' do
-      context 'with randomize set to true' do
+      context 'with order set to :random' do
         before do
-          config.randomize = true
+          config.order = :random
           config.seed = 123
         end
 
@@ -929,8 +929,8 @@ module RSpec::Core
         end
       end
 
-      context 'with randomize set to false' do
-        before { config.randomize = false }
+      context 'with order set to nil' do
+        before { config.order = nil }
 
         it 'returns nil' do
           config.seed_to_report.should be_nil
