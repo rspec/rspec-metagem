@@ -1,9 +1,9 @@
 ### DEV
 
 * Enhancements
-  * Randomization (Justin Ko)
-    * Run your examples in random order: `--random` `--rand`
-    * Pass a seed: `--seed 123`
+  * --order (Justin Ko)
+    * Run your examples in random order: `--order rand`
+    * Pass a seed: `--order random:123`
     
 ### 2.7.1 / 2011-10-20
 
