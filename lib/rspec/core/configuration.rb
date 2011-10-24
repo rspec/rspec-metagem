@@ -469,7 +469,7 @@ EOM
       end
 
       def randomize?
-        order ? !!order.match(/rand/) : false
+        order ? !!order.to_s.match(/rand/) : false
       end
 
       def orderby=(type)
