@@ -9,6 +9,12 @@ describe 'command line', :ui do
         specify('group 1 example 3')  {}
         specify('group 1 example 4')  {}
         specify('group 1 example 5')  {}
+        specify('group 1 example 6')  {}
+        specify('group 1 example 5')  {}
+        specify('group 1 example 7')  {}
+        specify('group 1 example 8')  {}
+        specify('group 1 example 9')  {}
+        specify('group 1 example 10') {}
 
         describe 'group 1-1' do
           specify('group 1-1 example 1')  {}
@@ -16,18 +22,33 @@ describe 'command line', :ui do
           specify('group 1-1 example 3')  {}
           specify('group 1-1 example 4')  {}
           specify('group 1-1 example 5')  {}
+          specify('group 1-1 example 6')  {}
+          specify('group 1-1 example 7')  {}
+          specify('group 1-1 example 8')  {}
+          specify('group 1-1 example 9')  {}
+          specify('group 1-1 example 10') {}
         end
 
         describe('group 1-2')  { specify('example') {} }
         describe('group 1-3')  { specify('example') {} }
         describe('group 1-4')  { specify('example') {} }
         describe('group 1-5')  { specify('example') {} }
+        describe('group 1-6')  { specify('example') {} }
+        describe('group 1-7')  { specify('example') {} }
+        describe('group 1-8')  { specify('example') {} }
+        describe('group 1-9')  { specify('example') {} }
+        describe('group 1-10') { specify('example') {} }
       end
 
       describe('group 2')  { specify('example') {} }
       describe('group 3')  { specify('example') {} }
       describe('group 4')  { specify('example') {} }
       describe('group 5')  { specify('example') {} }
+      describe('group 6')  { specify('example') {} }
+      describe('group 7')  { specify('example') {} }
+      describe('group 8')  { specify('example') {} }
+      describe('group 9')  { specify('example') {} }
+      describe('group 10') { specify('example') {} }
     """
   end
 
