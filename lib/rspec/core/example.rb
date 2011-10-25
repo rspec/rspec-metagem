@@ -2,12 +2,6 @@ module RSpec
   module Core
     class Example
 
-      attr_reader :metadata, :options, :example_group_instance
-
-      # Returns the first exception raised, if any, in the context of running
-      # this example.
-      attr_reader :exception
-
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
           define_method(key) {@metadata[key]}
@@ -16,6 +10,24 @@ module RSpec
 
       delegate_to_metadata :description, :full_description, :execution_result, :file_path, :pending, :location
 
+      # @attr_reader
+      #
+      # Returns the first exception raised in the context of running this
+      # example (nil if no exception is raised)
+      attr_reader :exception
+
+      # @attr_reader
+      #
+      # Returns the metadata object associated with this example.
+      attr_reader :metadata
+      
+      # @attr_reader
+      # @api private
+      #
+      # Returns the example_group_instance that provides the context for
+      # running this example.
+      attr_reader :example_group_instance
+
       def initialize(example_group_class, desc, options, example_block=nil)
         @example_group_class, @options, @example_block = example_group_class, options, example_block
         @metadata  = @example_group_class.metadata.for_example(desc, options)
@@ -23,16 +35,15 @@ module RSpec
         @pending_declared_in_example = false
       end
 
+      # @deprecated access options via metadata instead
+      def options
+        @options
+      end
+
+      # Returns the example group class that provides the context for running
+      # this example.
       def example_group
         @example_group_class
-      end
-
-      def around_hooks
-        @around_hooks ||= example_group.around_hooks_for(self)
-      end
-
-      def all_apply?(filters)
-        @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
       end
 
       alias_method :pending?, :pending
@@ -76,16 +87,6 @@ module RSpec
         finish(reporter)
       end
 
-      def set_exception(exception)
-        @exception ||= exception
-      end
-
-      def fail_fast(reporter, exception)
-        start(reporter)
-        set_exception(exception)
-        finish(reporter)
-      end
-
       def self.procsy(metadata, &block)
         Proc.new(&block).extend(Procsy).with(metadata)
       end
@@ -101,6 +102,34 @@ module RSpec
           @metadata = metadata
           self
         end
+      end
+
+      # @api private
+      def all_apply?(filters)
+        @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
+      end
+
+      # @api private
+      def around_hooks
+        @around_hooks ||= example_group.around_hooks_for(self)
+      end
+
+      # @api private
+      #
+      # Used internally to set an exception in an after hook, which
+      # captures the exception but doesn't raise it.
+      def set_exception(exception)
+        @exception ||= exception
+      end
+
+      # @api private
+      #
+      # Used internally to set an exception and fail without actually executing
+      # the example when an exception is raised in before(:all).
+      def fail_with_exception(reporter, exception)
+        start(reporter)
+        set_exception(exception)
+        finish(reporter)
       end
 
     private

@@ -284,7 +284,7 @@ An error occurred in an after(:all) hook.
       end
 
       def self.fail_filtered_examples(exception, reporter)
-        filtered_examples.each { |example| example.fail_fast(reporter, exception) }
+        filtered_examples.each { |example| example.fail_with_exception(reporter, exception) }
 
         children.each do |child|
           reporter.example_group_started(child)

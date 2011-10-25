@@ -103,7 +103,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "accessing options within a running example" do
     it "can look up option values by key", :demo => :data do
-      example.options[:demo].should eq(:data)
+      example.metadata[:demo].should eq(:data)
     end
   end
 
