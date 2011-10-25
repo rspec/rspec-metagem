@@ -104,6 +104,11 @@ module RSpec::Core
             options = Parser.parse!([option, 'foo:false'])
             options[:inclusion_filter].should eq(:foo => false)
           end
+
+          it "merges muliple invocations" do
+            options = Parser.parse!([option, 'foo:false', option, 'bar:true', option, 'foo:true'])
+            options[:inclusion_filter].should eq(:foo => true, :bar => true)
+          end
         end
 
         context "with ~" do
