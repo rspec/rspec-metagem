@@ -7,11 +7,11 @@ module RSpec
         PROJECT_DIR = File.expand_path('.')
 
         def description
-          reject { |k, v| RSpec::Core::Configuration::CONDITIONAL_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+          reject { |k, v| RSpec::Core::Configuration::DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
         end
 
         def empty_without_conditional_filters?
-          reject { |k, v| RSpec::Core::Configuration::CONDITIONAL_FILTERS[k] == v }.empty?
+          reject { |k, v| RSpec::Core::Configuration::DEFAULT_EXCLUSION_FILTERS[k] == v }.empty?
         end
 
         def reject
@@ -97,7 +97,7 @@ module RSpec
         if @configuration.run_all_when_everything_filtered? && example_count.zero?
           reporter.message( "No examples matched #{inclusion_filter.description}. Running all.")
           filtered_examples.clear
-          @configuration.clear_inclusion_filter
+          @configuration.inclusion_filter.clear
         end
 
         announce_inclusion_filter filter_announcements

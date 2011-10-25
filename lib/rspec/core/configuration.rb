@@ -8,6 +8,9 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
+      # @api private
+      #
+      # Delegated to by the `add_setting` instance method.
       def self.add_setting(name, opts={})
         if opts[:alias]
           alias_method name, opts[:alias]
@@ -45,7 +48,7 @@ module RSpec
       add_setting :show_failures_in_pending_blocks, :default => false
       add_setting :order
 
-      CONDITIONAL_FILTERS = {
+      DEFAULT_EXCLUSION_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
         :unless => lambda { |value| value }
       }
@@ -66,7 +69,7 @@ module RSpec
         self.include_or_extend_modules = []
         self.files_to_run = []
         self.backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
-        self.exclusion_filter = CONDITIONAL_FILTERS.dup
+        self.exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
         self.seed = srand % 0xFFFF
       end
 
@@ -75,16 +78,15 @@ module RSpec
         @formatters.clear if @formatters
       end
 
-      # @override add_setting(:name)
-      # @override add_setting(:name, :default => "default_value")
-      # @override add_setting(:name, :alias => :other_setting)
+      # @overload add_setting(name)
+      # @overload add_setting(name, options_hash)
       #
-      # Use this to add custom settings to the RSpec.configuration object.
+      # Adds a custom setting to the RSpec.configuration object.
       #
       #     RSpec.configuration.add_setting :foo
       #
-      # Intended for extension frameworks like rspec-rails, so they can add config
-      # settings that are domain specific. For example:
+      # Used internally and by extension frameworks like rspec-rails, so they
+      # can add config settings that are domain specific. For example:
       #
       #     RSpec.configure do |c|
       #       c.add_setting :use_transactional_fixtures, :default => true
@@ -100,34 +102,24 @@ module RSpec
       #
       # ### Options
       #
-      # `add_setting` takes an optional hash that supports the following
-      # keys:
+      # `add_setting` takes an optional hash that supports the keys `:default`
+      # and `:alias`.
+      #
+      # Use `:default` to set a default value for the generated getter and
+      # predicate methods:
       #
       #     :default => "default value"
       #
-      # This sets the default value for the getter and the predicate (which
-      # will return `true` as long as the value is not `false` or `nil`).
+      # Use `:alias` to alias the setter, getter, and predicate to another name:
       #
       #     :alias => :other_setting
       #
-      # Aliases its setter, getter, and predicate, to those for the
-      # `other_setting`.
       def add_setting(name, opts={})
         self.class.add_setting(name, opts)
       end
 
-      def puts(message)
-        output_stream.puts(message)
-      end
-
-      def settings
-        @settings ||= {}
-      end
-
-      def clear_inclusion_filter
-        self.inclusion_filter = nil
-      end
-
+      # Used by formatters to ask whether a backtrace line should be displayed
+      # or not, based on the line matching any `backtrace_clean_patterns`.
       def cleaned_from_backtrace?(line)
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
@@ -289,15 +281,17 @@ EOM
         filter_run :full_description => /#{description}/
       end
 
-      def add_location(file_path, line_numbers)
-        # Filter locations is a hash of expanded paths to arrays of line numbers
-        # to match against.
-        #
-        filter_locations = ((self.filter || {})[:locations] ||= {})
-        (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
-        filter_run(:locations => filter_locations)
-      end
-
+      # @overload add_formatter(formatter)
+      #
+      # Adds a formatter to the formatters collection. `formatter` can be a
+      # string representing any of the built-in formatters (see
+      # `built_in_formatter`), or a custom formatter class.
+      #
+      # ### Note
+      #
+      # For internal purposes, `add_formatter` also accepts the name of a class
+      # and path to a file that contains that class definition, but you should
+      # consider that a private api that may change at any time without notice.
       def add_formatter(formatter_to_use, path=nil)
         formatter_class =
           built_in_formatter(formatter_to_use) ||
@@ -353,8 +347,27 @@ EOM
         end.flatten
       end
 
-      # E.g. alias_example_to :crazy_slow, :speed => 'crazy_slow' defines
-      # crazy_slow as an example variant that has the crazy_slow speed option
+      # Creates a method that delegates to `example` including the submitted
+      # `args`. Used internally to add variants of `example` like `pending`:
+      #
+      # @example
+      #     alias_example_to :pending, :pending => true
+      #
+      #     # This lets you do this:
+      #
+      #     describe Thing do
+      #       pending "does something" do
+      #         thing = Thing.new
+      #       end
+      #     end
+      #
+      #     # ... which is the equivalent of
+      #
+      #     describe Thing do
+      #       it "does something", :pending => true do
+      #         thing = Thing.new
+      #       end
+      #     end
       def alias_example_to(new_name, *args)
         extra_options = build_metadata_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
@@ -385,6 +398,16 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
+      # Adds key/value pairs to the `inclusion_filter`. If the
+      # `treat_symbols_as_metadata_keys_with_true_values` config option is set
+      # to true and `args` includes any symbols that are not part of a hash,
+      # each symbol is treated as a key in the hash with the value `true`.
+      #
+      # @example
+      #     filter_run_including :x => 'y'
+      #
+      #     # with treat_symbols_as_metadata_keys_with_true_values = true
+      #     filter_run_including :foo # results in {:foo => true}
       def filter_run_including(*args)
         filter = build_metadata_hash_from(args)
         if already_set_standalone_filter?
@@ -398,41 +421,56 @@ EOM
 
       alias_method :filter_run, :filter_run_including
 
+      # Clears and reassigns the `inclusion_filter`. Set to `nil` if you don't
+      # want any inclusion filter at all.
       def inclusion_filter=(filter)
         filter = build_metadata_hash_from([filter])
         filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
       end
 
+      # Returns the `inclusion_filter`. If none has been set, returns an empty
+      # hash.
       def inclusion_filter
         settings[:inclusion_filter] ||= {}
       end
 
+      # Adds key/value pairs to the `exclusion_filter`. If the
+      # `treat_symbols_as_metadata_keys_with_true_values` config option is set
+      # to true and `args` excludes any symbols that are not part of a hash,
+      # each symbol is treated as a key in the hash with the value `true`.
+      #
+      # @example
+      #     filter_run_excluding :x => 'y'
+      #
+      #     # with treat_symbols_as_metadata_keys_with_true_values = true
+      #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
         exclusion_filter.merge!(build_metadata_hash_from(args))
       end
 
+      # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
+      # want any exclusion filter at all.
       def exclusion_filter=(filter)
         # TODO - need to handle Symbols
         filter ? exclusion_filter.replace(filter) : exclusion_filter.clear
       end
 
+      # Returns the `exclusion_filter`. If none has been set, returns an empty
+      # hash.
       def exclusion_filter
         settings[:exclusion_filter] ||= {}
       end
 
       STANDALONE_FILTERS = [:line_numbers, :full_description]
 
+      # @api private
       def already_set_standalone_filter?
         contains_standalone_filter?(inclusion_filter)
       end
 
+      # @api private
       def contains_standalone_filter?(filter)
         STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
-      end
-
-      def warn_already_set_standalone_filter(options)
-        warn "Filtering by #{options.inspect} is not possible since " \
-          "you are already filtering by #{inclusion_filter.inspect}"
       end
 
       def include(mod, *args)
@@ -445,6 +483,10 @@ EOM
         include_or_extend_modules << [:extend, mod, filters]
       end
 
+      # @api private
+      #
+      # Used internally to extend a group with modules using `include` and/or
+      # `extend`.
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.any_apply?(filters)
@@ -482,6 +524,23 @@ EOM
       end
 
     private
+
+      def settings
+        @settings ||= {}
+      end
+
+      def add_location(file_path, line_numbers)
+        # filter_locations is a hash of expanded paths to arrays of line
+        # numbers to match against.
+        filter_locations = ((self.filter || {})[:locations] ||= {})
+        (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
+        filter_run(:locations => filter_locations)
+      end
+
+      def warn_already_set_standalone_filter(options)
+        warn "Filtering by #{options.inspect} is not possible since " \
+          "you are already filtering by #{inclusion_filter.inspect}"
+      end
 
       def assert_no_example_groups_defined(config_option)
         if RSpec.world.example_groups.any?
