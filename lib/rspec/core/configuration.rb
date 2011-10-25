@@ -282,7 +282,11 @@ EOM
 
       # Run examples defined on `line_numbers` in all files to run.
       def line_numbers=(line_numbers)
-        filter_run({ :line_numbers => line_numbers.map{|l| l.to_i} }, true)
+        filter_run :line_numbers => line_numbers.map{|l| l.to_i}
+      end
+
+      def full_description=(description)
+        filter_run :full_description => /#{description}/
       end
 
       def add_location(file_path, line_numbers)
@@ -291,11 +295,7 @@ EOM
         #
         filter_locations = ((self.filter || {})[:locations] ||= {})
         (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
-        filter_run({ :locations => filter_locations })
-      end
-
-      def full_description=(description)
-        filter_run({ :full_description => /#{description}/ }, true)
+        filter_run(:locations => filter_locations)
       end
 
       def add_formatter(formatter_to_use, path=nil)
@@ -385,50 +385,54 @@ EOM
         RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
       end
 
-      undef_method :exclusion_filter=
-      def exclusion_filter=(filter)
-        settings[:exclusion_filter] = filter
-      end
-
-      undef_method :exclusion_filter
-      def exclusion_filter
-        settings[:exclusion_filter] || {}
-      end
-
-      def inclusion_filter=(filter)
-        settings[:inclusion_filter] = filter
-      end
-
-      def inclusion_filter
-        settings[:inclusion_filter] || {}
-      end
-
       def filter_run_including(*args)
-        force_overwrite = if args.last.is_a?(Hash) || args.last.is_a?(Symbol)
-          false
+        filter = build_metadata_hash_from(args)
+        if already_set_standalone_filter?
+          warn_already_set_standalone_filter(filter)
+        elsif contains_standalone_filter?(filter)
+          inclusion_filter.replace(filter)
         else
-          args.pop
-        end
-
-        options = build_metadata_hash_from(args)
-
-        if inclusion_filter and inclusion_filter[:line_numbers] || inclusion_filter[:full_description]
-          warn "Filtering by #{options.inspect} is not possible since " \
-               "you are already filtering by #{inclusion_filter.inspect}"
-        else
-          if force_overwrite
-            self.inclusion_filter = options
-          else
-            self.inclusion_filter = (inclusion_filter || {}).merge(options)
-          end
+          inclusion_filter.merge!(filter)
         end
       end
 
       alias_method :filter_run, :filter_run_including
 
+      def inclusion_filter=(filter)
+        filter = build_metadata_hash_from([filter])
+        filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
+      end
+
+      def inclusion_filter
+        settings[:inclusion_filter] ||= {}
+      end
+
       def filter_run_excluding(*args)
-        options = build_metadata_hash_from(args)
-        self.exclusion_filter = (exclusion_filter || {}).merge(options)
+        exclusion_filter.merge!(build_metadata_hash_from(args))
+      end
+
+      def exclusion_filter=(filter)
+        # TODO - need to handle Symbols
+        filter ? exclusion_filter.replace(filter) : exclusion_filter.clear
+      end
+
+      def exclusion_filter
+        settings[:exclusion_filter] ||= {}
+      end
+
+      STANDALONE_FILTERS = [:line_numbers, :full_description]
+
+      def already_set_standalone_filter?
+        contains_standalone_filter?(inclusion_filter)
+      end
+
+      def contains_standalone_filter?(filter)
+        STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
+      end
+
+      def warn_already_set_standalone_filter(options)
+        warn "Filtering by #{options.inspect} is not possible since " \
+          "you are already filtering by #{inclusion_filter.inspect}"
       end
 
       def include(mod, *args)

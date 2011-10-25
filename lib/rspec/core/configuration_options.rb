@@ -10,17 +10,17 @@ module RSpec
       end
 
       def configure(config)
-        keys = order(options.keys, :libs, :requires, :default_path, :pattern)
+        formatters       = options.delete(:formatters)
+        inclusion_filter = options.delete(:inclusion_filter)
+        exclusion_filter = options.delete(:exclusion_filter)
 
-        formatters = options[:formatters] if keys.delete(:formatters)
-
-        config.exclusion_filter.merge! options[:exclusion_filter] if keys.delete(:exclusion_filter)
-
-        keys.each do |key|
-          config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
+        order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
+          config.send("#{key}=", options[key])
         end
 
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
+        config.filter_run_including inclusion_filter          if inclusion_filter
+        config.filter_run_excluding exclusion_filter          if exclusion_filter
       end
 
       def drb_argv
