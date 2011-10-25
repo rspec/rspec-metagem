@@ -314,7 +314,7 @@ describe RSpec::Core::ConfigurationOptions do
       it "leaves inclusion tags intact" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv
-        coo.options[:filter].should eq( {:tag=>true} )
+        coo.options[:inclusion_filter].should eq( {:tag=>true} )
       end
 
       it "includes the exclusion tags" do

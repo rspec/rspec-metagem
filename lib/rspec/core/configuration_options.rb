@@ -41,8 +41,8 @@ module RSpec
         if options[:line_numbers]
           argv += options[:line_numbers].inject([]){|a,l| a << "--line_number" << l}
         end
-        if options[:filter]
-          options[:filter].each_pair do |k, v|
+        if options[:inclusion_filter]
+          options[:inclusion_filter].each_pair do |k, v|
             argv << "--tag" << k.to_s
           end
         end
