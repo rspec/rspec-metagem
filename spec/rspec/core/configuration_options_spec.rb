@@ -295,6 +295,10 @@ describe RSpec::Core::ConfigurationOptions do
       config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
     end
 
+    it "includes --order" do
+      config_options_object(*%w[--order random]).drb_argv.should include('--order', 'random')
+    end
+
     context "with --example" do
       it "includes --example" do
         config_options_object(*%w[--example foo]).drb_argv.should include("--example", "foo")

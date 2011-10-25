@@ -30,7 +30,8 @@ module RSpec
         argv << "--backtrace"    if options[:full_backtrace]
         argv << "--tty"          if options[:tty]
         argv << "--fail-fast"    if options[:fail_fast]
-        argv << "--options"      << options[:custom_options_file]     if options[:custom_options_file]
+        argv << "--options"      << options[:custom_options_file] if options[:custom_options_file]
+        argv << "--order"        << options[:orderby]             if options[:orderby]
         if options[:full_description]
           # The argument to --example is regexp-escaped before being stuffed
           # into a regexp when received for the first time (see OptionParser).
