@@ -43,12 +43,16 @@ module RSpec
         end
         if options[:inclusion_filter]
           options[:inclusion_filter].each_pair do |k, v|
-            argv << "--tag" << k.to_s
+            tag = k.to_s
+            tag << ":#{v.to_s}" if v.is_a?(String)
+            argv << "--tag" << tag
           end
         end
         if options[:exclusion_filter]
           options[:exclusion_filter].each_pair do |k, v|
-            argv << "--tag" << "~#{k.to_s}"
+            tag = "~#{k.to_s}"
+            tag << ":#{v.to_s}" if v.is_a?(String)
+            argv << "--tag" << tag
           end
         end
         if options[:formatters]

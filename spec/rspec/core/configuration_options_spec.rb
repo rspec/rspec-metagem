@@ -311,10 +311,21 @@ describe RSpec::Core::ConfigurationOptions do
         coo.drb_argv.should eq(["--tag", "tag"])
       end
 
+      it "includes the inclusion tags with values" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv.should eq(["--tag", "tag:foo"])
+      end
+
       it "leaves inclusion tags intact" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv
         coo.options[:inclusion_filter].should eq( {:tag=>true} )
+      end
+
+      it "leaves inclusion tags with values intact" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv
+        coo.options[:inclusion_filter].should eq( {:tag=>'foo'} )
       end
 
       it "includes the exclusion tags" do
@@ -322,10 +333,21 @@ describe RSpec::Core::ConfigurationOptions do
         coo.drb_argv.should eq(["--tag", "~tag"])
       end
 
+      it "includes the exclusion tags with values" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv.should eq(["--tag", "~tag:foo"])
+      end
+
       it "leaves exclusion tags intact" do
         coo = config_options_object("--tag", "~tag")
         coo.drb_argv
         coo.options[:exclusion_filter].should eq( {:tag=>true} )
+      end
+
+      it "leaves exclusion tags with values intact" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv
+        coo.options[:exclusion_filter].should eq( {:tag=>'foo'} )
       end
     end
 
