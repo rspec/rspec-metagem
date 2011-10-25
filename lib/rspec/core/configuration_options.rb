@@ -15,7 +15,7 @@ module RSpec
         exclusion_filter = options.delete(:exclusion_filter)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
-          config.send("#{key}=", options[key])
+          config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
         end
 
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
