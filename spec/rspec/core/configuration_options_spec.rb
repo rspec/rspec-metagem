@@ -10,10 +10,11 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   after do
+    FakeFS::FileSystem.clear
     ENV["SPEC_OPTS"] = @orig_spec_opts
     FakeFS.deactivate!
   end
-
+   
   def config_options_object(*args)
     coo = RSpec::Core::ConfigurationOptions.new(args)
     coo.parse_options
@@ -407,10 +408,6 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
-    def write_options(scope, options)
-      File.open(scope == :local ? './.rspec' : '~/.rspec', 'w') { |f| f.write(options) }
-    end
-
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--line 37"}
       File.open("~/.rspec", "w") {|f| f << "--color"}
