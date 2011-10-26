@@ -88,7 +88,8 @@ module RSpec
 
         def seed(number)
           output.puts
-          output.puts "This run was randomized by the following seed: #{number}"
+          output.puts "Randomized with seed #{number}"
+          output.puts
         end
 
         def close

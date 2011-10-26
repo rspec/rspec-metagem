@@ -62,7 +62,7 @@ describe 'command line', :ui do
       examples('group 1-1') {|first_run, second_run| first_run.should_not eq(second_run)}
 
       all_stdout.should match(
-        /This run was randomized by the following seed: \d+/
+        /Randomized with seed \d+/
       )
     end
   end
@@ -77,7 +77,7 @@ describe 'command line', :ui do
       examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
 
       all_stdout.should match(
-        /This run was randomized by the following seed: 123/
+        /Randomized with seed 123/
       )
     end
   end
