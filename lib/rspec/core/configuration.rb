@@ -66,10 +66,10 @@ module RSpec
 
       def initialize
         @color_enabled = false
-        self.include_or_extend_modules = []
-        self.files_to_run = []
-        self.backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
-        self.exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
+        settings[:include_or_extend_modules] = []
+        settings[:files_to_run] = []
+        settings[:backtrace_clean_patterns] = DEFAULT_BACKTRACE_PATTERNS.dup
+        settings[:exclusion_filter] = DEFAULT_EXCLUSION_FILTERS.dup
         self.seed = srand % 0xFFFF
       end
 
@@ -451,8 +451,8 @@ EOM
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
       # want any exclusion filter at all.
       def exclusion_filter=(filter)
-        # TODO - need to handle Symbols
-        filter ? exclusion_filter.replace(filter) : exclusion_filter.clear
+        filter = build_metadata_hash_from([filter])
+        filter.empty? ? exclusion_filter.clear : exclusion_filter.replace(filter)
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty

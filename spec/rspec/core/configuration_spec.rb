@@ -543,46 +543,51 @@ module RSpec::Core
           config.formatters.first.output.path.should eq(path)
         end
       end
-
     end
 
-    describe "#filter_run" do
+    describe "#filter_run_including" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
-          config.filter_run(*args)
-          config.filter
+          config.filter_run_including(*args)
+          config.inclusion_filter
         end
       end
 
-      it "sets the filter" do
-        config.filter_run :focus => true
-        config.filter[:focus].should be(true)
+      it "sets the filter with a hash" do
+        config.filter_run_including :foo => true
+        config.inclusion_filter[:foo].should be(true)
+      end
+
+      it "sets the filter with a symbol" do
+        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+        config.filter_run_including :foo
+        config.inclusion_filter[:foo].should be(true)
       end
 
       it "merges with existing filters" do
-        config.filter_run :filter1 => true
-        config.filter_run :filter2 => false
+        config.filter_run_including :foo => true
+        config.filter_run_including :bar => false
 
-        config.filter[:filter1].should be(true)
-        config.filter[:filter2].should be(false)
+        config.inclusion_filter[:foo].should be(true)
+        config.inclusion_filter[:bar].should be(false)
       end
 
       it "warns if :line_numbers is already a filter" do
-        config.filter_run :line_numbers => [100]
+        config.filter_run_including :line_numbers => [100]
         config.should_receive(:warn).with(
-          "Filtering by {:focus=>true} is not possible since you " \
+          "Filtering by {:foo=>true} is not possible since you " \
           "are already filtering by {:line_numbers=>[100]}"
         )
-        config.filter_run :focus => true
+        config.filter_run_including :foo => true
       end
 
       it "warns if :full_description is already a filter" do
-        config.filter_run :full_description => 'foo'
+        config.filter_run_including :full_description => 'bar'
         config.should_receive(:warn).with(
-          "Filtering by {:focus=>true} is not possible since you " \
-          "are already filtering by {:full_description=>\"foo\"}"
+          "Filtering by {:foo=>true} is not possible since you " \
+          "are already filtering by {:full_description=>\"bar\"}"
         )
-        config.filter_run :focus => true
+        config.filter_run_including :foo => true
       end
     end
 
@@ -595,16 +600,22 @@ module RSpec::Core
       end
 
       it "sets the filter" do
-        config.filter_run_excluding :slow => true
-        config.exclusion_filter[:slow].should be(true)
+        config.filter_run_excluding :foo => true
+        config.exclusion_filter[:foo].should be(true)
+      end
+
+      it "sets the filter using a symbol" do
+        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+        config.filter_run_excluding :foo
+        config.exclusion_filter[:foo].should be(true)
       end
 
       it "merges with existing filters" do
-        config.filter_run_excluding :filter1 => true
-        config.filter_run_excluding :filter2 => false
+        config.filter_run_excluding :foo => true
+        config.filter_run_excluding :bar => false
 
-        config.exclusion_filter[:filter1].should be(true)
-        config.exclusion_filter[:filter2].should be(false)
+        config.exclusion_filter[:foo].should be(true)
+        config.exclusion_filter[:bar].should be(false)
       end
     end
 
@@ -615,6 +626,13 @@ module RSpec::Core
       end
     end
 
+    describe "#inclusion_filter=" do
+      it "treats symbols as hash keys with true values when told to" do
+        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+        config.inclusion_filter = :foo
+        config.inclusion_filter.should eq({:foo => true})
+      end
+    end
 
     describe "#exclusion_filter" do
       it "returns {} even if set to nil" do
@@ -652,6 +670,14 @@ module RSpec::Core
         it "does not exclude a spec with { :unless => nil } metadata" do
           config.exclusion_filter[:unless].call(nil).should be_false
         end
+      end
+    end
+
+    describe "#exclusion_filter=" do
+      it "treats symbols as hash keys with true values when told to" do
+        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
+        config.exclusion_filter = :foo
+        config.exclusion_filter.should eq({:foo => true})
       end
     end
 
