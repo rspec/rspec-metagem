@@ -23,56 +23,12 @@ module RSpec
         config.filter_run_excluding exclusion_filter          if exclusion_filter
       end
 
-      def drb_argv
-        argv = []
-        argv << "--color"        if options[:color_enabled]
-        argv << "--profile"      if options[:profile_examples]
-        argv << "--backtrace"    if options[:full_backtrace]
-        argv << "--tty"          if options[:tty]
-        argv << "--fail-fast"    if options[:fail_fast]
-        argv << "--options"      << options[:custom_options_file] if options[:custom_options_file]
-        argv << "--order"        << options[:orderby]             if options[:orderby]
-        if options[:full_description]
-          # The argument to --example is regexp-escaped before being stuffed
-          # into a regexp when received for the first time (see OptionParser).
-          # Hence, merely grabbing the source of this regexp will retain the
-          # backslashes, so we must remove them.
-          argv << "--example" << options[:full_description].source.delete('\\')
-        end
-        if options[:line_numbers]
-          argv += options[:line_numbers].inject([]){|a,l| a << "--line_number" << l}
-        end
-        if options[:inclusion_filter]
-          options[:inclusion_filter].each_pair do |k, v|
-            tag = k.to_s
-            tag << ":#{v.to_s}" if v.is_a?(String)
-            argv << "--tag" << tag
-          end
-        end
-        if options[:exclusion_filter]
-          options[:exclusion_filter].each_pair do |k, v|
-            tag = "~#{k.to_s}"
-            tag << ":#{v.to_s}" if v.is_a?(String)
-            argv << "--tag" << tag
-          end
-        end
-        if options[:formatters]
-          options[:formatters].each do |pair|
-            argv << "--format" << pair[0]
-            argv << "--out" << pair[1] if pair[1]
-          end
-        end
-        (options[:libs] || []).each do |path|
-          argv << "-I" << path
-        end
-        (options[:requires] || []).each do |path|
-          argv << "--require" << path
-        end
-        argv + options[:files_or_directories_to_run]
-      end
-
       def parse_options
         @options ||= [file_options, command_line_options, env_options].inject {|merged, o| merged.merge o}
+      end
+
+      def drb_argv
+        DrbOptions.new(options).options
       end
 
     private

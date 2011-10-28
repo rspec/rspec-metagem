@@ -1,0 +1,131 @@
+require "spec_helper"
+
+describe RSpec::Core::DrbOptions do
+  include ConfigOptionsHelper
+
+  # TODO ensure all options are output
+  describe "#drb_argv" do
+    it "preserves extra arguments" do
+      File.stub(:exist?) { false }
+      config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
+    end
+
+    it "includes --fail-fast" do
+      config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
+    end
+
+    it "includes --options" do
+      config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
+    end
+
+    it "includes --order" do
+      config_options_object(*%w[--order random]).drb_argv.should include('--order', 'random')
+    end
+
+    context "with --example" do
+      it "includes --example" do
+        config_options_object(*%w[--example foo]).drb_argv.should include("--example", "foo")
+      end
+
+      it "unescapes characters which were escaped upon storing --example originally" do
+        config_options_object("--example", "foo\\ bar").drb_argv.should include("--example", "foo bar")
+      end
+    end
+
+    context "with tags" do
+      it "includes the inclusion tags" do
+        coo = config_options_object("--tag", "tag")
+        coo.drb_argv.should eq(["--tag", "tag"])
+      end
+
+      it "includes the inclusion tags with values" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv.should eq(["--tag", "tag:foo"])
+      end
+
+      it "leaves inclusion tags intact" do
+        coo = config_options_object("--tag", "tag")
+        coo.drb_argv
+        coo.options[:inclusion_filter].should eq( {:tag=>true} )
+      end
+
+      it "leaves inclusion tags with values intact" do
+        coo = config_options_object("--tag", "tag:foo")
+        coo.drb_argv
+        coo.options[:inclusion_filter].should eq( {:tag=>'foo'} )
+      end
+
+      it "includes the exclusion tags" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv.should eq(["--tag", "~tag"])
+      end
+
+      it "includes the exclusion tags with values" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv.should eq(["--tag", "~tag:foo"])
+      end
+
+      it "leaves exclusion tags intact" do
+        coo = config_options_object("--tag", "~tag")
+        coo.drb_argv
+        coo.options[:exclusion_filter].should eq( {:tag=>true} )
+      end
+
+      it "leaves exclusion tags with values intact" do
+        coo = config_options_object("--tag", "~tag:foo")
+        coo.drb_argv
+        coo.options[:exclusion_filter].should eq( {:tag=>'foo'} )
+      end
+    end
+
+    context "with formatters" do
+      it "includes the formatters" do
+        coo = config_options_object("--format", "d")
+        coo.drb_argv.should eq(["--format", "d"])
+      end
+
+      it "leaves formatters intact" do
+        coo = config_options_object("--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["d"]])
+      end
+
+      it "leaves output intact" do
+        coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
+        coo.drb_argv
+        coo.options[:formatters].should eq([["p","foo.txt"],["d"]])
+      end
+    end
+
+    context "--drb specified in ARGV" do
+      it "renders all the original arguments except --drb" do
+        config_options_object(*%w[ --drb --color --format s --example pattern --line_number 1 --profile --backtrace -I path/a -I path/b --require path/c --require path/d]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s -I path/a -I path/b --require path/c --require path/d])
+      end
+    end
+
+    context "--drb specified in the options file" do
+      it "renders all the original arguments except --drb" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --tty --format s --example pattern --line_number 1 --profile --backtrace ]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --tty --example pattern --line_number 1 --format s])
+      end
+    end
+
+    context "--drb specified in ARGV and the options file" do
+      it "renders all the original arguments except --drb" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s])
+      end
+    end
+
+    context "--drb specified in ARGV and in as ARGV-specified --options file" do
+      it "renders all the original arguments except --drb and --options" do
+        File.open("./.rspec", "w") {|f| f << "--drb --color"}
+        config_options_object(*%w[ --drb --format s --example pattern --line_number 1 --profile --backtrace]).
+          drb_argv.should eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s ])
+      end
+    end
+  end
+end
