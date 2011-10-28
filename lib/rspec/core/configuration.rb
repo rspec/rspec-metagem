@@ -320,10 +320,12 @@ EOM
         self.files_to_run = get_files_to_run(files)
       end
 
+      # @api private
       def command
         $0.split(File::SEPARATOR).last
       end
 
+      # @api private
       def get_files_to_run(files)
         patterns = pattern.split(",")
         files.map do |file|
