@@ -23,22 +23,22 @@ require 'rspec/core/command_line'
 require 'rspec/core/drb_command_line'
 require 'rspec/core/runner'
 require 'rspec/core/example'
-require 'rspec/core/shared_context'
 require 'rspec/core/shared_example_group'
 require 'rspec/core/example_group'
 require 'rspec/core/version'
 require 'rspec/core/errors'
 
 module RSpec
-  autoload :Matchers, 'rspec/matchers'
+  autoload :Matchers,      'rspec/matchers'
+  autoload :SharedContext, 'rspec/core/shared_context'
 
-  SharedContext = Core::SharedContext
-
+  # @api private
   # Used internally to determine what to do when a SIGINT is received
   def self.wants_to_quit
     world.wants_to_quit
   end
 
+  # @api private
   # Used internally to determine what to do when a SIGINT is received
   def self.wants_to_quit=(maybe)
     world.wants_to_quit=(maybe)
@@ -49,6 +49,7 @@ module RSpec
     @world ||= RSpec::Core::World.new
   end
 
+  # @api private
   # Used internally to ensure examples get reloaded between multiple runs in
   # the same process.
   def self.reset

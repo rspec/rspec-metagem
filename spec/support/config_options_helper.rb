@@ -1,7 +1,7 @@
 require 'fakefs/safe'
 
 module ConfigOptionsHelper
-  extend RSpec::Core::SharedContext
+  extend RSpec::SharedContext
 
   before do
     FakeFS.activate!

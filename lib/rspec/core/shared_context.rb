@@ -13,4 +13,6 @@ module RSpec
 
     end
   end
+
+  SharedContext = Core::SharedContext
 end
