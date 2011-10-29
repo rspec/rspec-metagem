@@ -24,7 +24,7 @@ module RSpec
       end
 
       def parse_options
-        @options ||= [*file_options, command_line_options, env_options].inject do |merged, pending|
+        @options ||= (file_options << command_line_options << env_options).inject do |merged, pending|
           resolve_opposite_filters(merged, pending, :inclusion_filter, :exclusion_filter)
           resolve_opposite_filters(merged, pending, :exclusion_filter, :inclusion_filter)
           merged.merge(pending)
