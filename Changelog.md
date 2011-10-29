@@ -4,6 +4,7 @@
   * --order (Justin Ko)
     * Run your examples in random order: `--order rand`
     * Pass a seed: `--order random:123`
+  * SharedContext supports `let` (David Chelimsky)
 
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)

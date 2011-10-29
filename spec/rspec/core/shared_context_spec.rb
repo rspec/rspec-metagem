@@ -9,7 +9,7 @@ describe RSpec::SharedContext do
     RSpec::SharedContext
   end
 
-  it "expose before and after hooks" do
+  it "supports before and after hooks" do
     before_all_hook = false
     before_each_hook = false
     after_each_hook = false
@@ -32,5 +32,21 @@ describe RSpec::SharedContext do
     before_each_hook.should be_true
     after_each_hook.should be_true
     after_all_hook.should be_true
+  end
+
+  it "supports let" do
+    whatever = nil
+    shared = Module.new do
+      extend RSpec::SharedContext
+      let(:foo) { 'foo' }
+    end
+    group = RSpec::Core::ExampleGroup.describe do
+      include shared
+      example { whatever = foo }
+    end
+
+    group.run
+
+    whatever.should eq('foo')
   end
 end

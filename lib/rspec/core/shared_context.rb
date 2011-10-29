@@ -2,6 +2,7 @@ module RSpec
   module Core
     module SharedContext
       include Hooks
+      include Let::ClassMethods
 
       def included(group)
         [:before, :after].each do |type|
