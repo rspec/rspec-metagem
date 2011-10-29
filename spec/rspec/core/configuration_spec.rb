@@ -192,7 +192,7 @@ module RSpec::Core
           config.files_to_run.should eq([file])
         end
       end
-      
+
       context "with default default_path" do
         it "loads files in the default path when run by rspec" do
           config.stub(:command) { 'rspec' }
@@ -296,7 +296,7 @@ module RSpec::Core
       config.full_description = "foo"
       config.filter.should eq({:full_description => /foo/})
     end
-    
+
     describe "#default_path" do
       it 'defaults to "spec"' do
         config.default_path.should eq('spec')
@@ -434,7 +434,7 @@ module RSpec::Core
             after(:all) do
               ENV['ANSICON'] = @original_ansicon
             end
-            
+
             it "enables colors" do
               config.output_stream = StringIO.new
               config.output_stream.stub(:tty?) { true }
@@ -844,9 +844,16 @@ module RSpec::Core
       end
 
       context "with :alias => " do
-        before do
+        it "is deprecated" do
+          RSpec::should_receive(:warn).with /deprecated/
           config.add_setting :custom_option
           config.add_setting :another_custom_option, :alias => :custom_option
+        end
+      end
+
+      context "with :alias_with => " do
+        before do
+          config.add_setting :custom_option, :alias_with => :another_custom_option
         end
 
         it "delegates the getter to the other option" do

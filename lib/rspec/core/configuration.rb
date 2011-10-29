@@ -14,10 +14,15 @@ module RSpec
 
       # @api private
       #
-      # Delegated to by the `add_setting` instance method.
+      # Invoked by the `add_setting` instance method. Use that method on a
+      # `Configuration` instance rather than this class method.
       def self.add_setting(name, opts={})
         raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
         if opts[:alias]
+          RSpec.warn_deprecation <<-MESSAGE
+The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
+Called from #{caller(0)[4]}
+MESSAGE
           alias_method name, opts[:alias]
           alias_method "#{name}=", "#{opts[:alias]}="
           define_predicate_for name
@@ -25,20 +30,24 @@ module RSpec
           attr_accessor name
           define_predicate_for name
         end
+        if opts[:alias_with]
+          [opts[:alias_with]].flatten.each do |alias_name|
+            alias_method alias_name, name
+            alias_method "#{alias_name}=", "#{name}="
+            define_predicate_for alias_name
+          end
+        end
       end
 
       add_setting :error_stream
-      add_setting :output_stream
-      add_setting :output, :alias => :output_stream
-      add_setting :out, :alias => :output_stream
+      add_setting :output_stream, :alias_with => [:output, :out]
       add_setting :drb
       add_setting :drb_port
       add_setting :profile_examples
       add_setting :fail_fast
       add_setting :failure_exit_code
       add_setting :run_all_when_everything_filtered
-      add_setting :pattern
-      add_setting :filename_pattern, :alias => :pattern
+      add_setting :pattern, :alias_with => :filename_pattern
       add_setting :files_to_run
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
@@ -95,8 +104,9 @@ module RSpec
       # can add config settings that are domain specific. For example:
       #
       #     RSpec.configure do |c|
-      #       c.add_setting :use_transactional_fixtures, :default => true
-      #       c.add_setting :use_transactional_examples, :alias => :use_transactional_fixtures
+      #       c.add_setting :use_transactional_fixtures,
+      #         :default => true,
+      #         :alias_with => :use_transactional_examples
       #     end
       #
       # `add_setting` creates three methods on the configuration object, a
@@ -109,16 +119,18 @@ module RSpec
       # ### Options
       #
       # `add_setting` takes an optional hash that supports the keys `:default`
-      # and `:alias`.
+      # and `:alias_with`.
       #
       # Use `:default` to set a default value for the generated getter and
       # predicate methods:
       #
-      #     :default => "default value"
+      #     add_setting(:foo, :default => "default value")
       #
-      # Use `:alias` to alias the setter, getter, and predicate to another name:
+      # Use `:alias_with` to alias the setter, getter, and predicate to another
+      # name, or names:
       #
-      #     :alias => :other_setting
+      #     add_setting(:foo, :alias_with => :bar)
+      #     add_setting(:foo, :alias_with => [:bar, :baz])
       #
       def add_setting(name, opts={})
         default = opts.delete(:default)
@@ -204,7 +216,7 @@ module RSpec
 
       # Sets the expectation framework module(s).
       #
-      # `frameworks` can be :rspec, :stdlib, or both 
+      # `frameworks` can be :rspec, :stdlib, or both
       #
       # Given :rspec, configures rspec/expectations.
       # Given :stdlib, configures test/unit/assertions
@@ -610,7 +622,7 @@ MESSAGE
           end
         end
       end
-      
+
       def string_const?(str)
         str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
       end

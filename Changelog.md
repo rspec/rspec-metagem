@@ -1,13 +1,18 @@
-### DEV
+### 2.8.0 (in development)
 
 * Enhancements
   * --order (Justin Ko)
     * Run your examples in random order: `--order rand`
     * Pass a seed: `--order random:123`
   * SharedContext supports `let` (David Chelimsky)
+  * Override opposing tags from the command line (David Chelimsky)
 
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
+
+* Deprecations
+  * :alias option on `configuration.add_setting`. Use `:alias_with` on the
+    original setting declaration instead.
     
 ### 2.7.1 / 2011-10-20
 
