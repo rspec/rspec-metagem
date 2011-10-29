@@ -48,12 +48,19 @@ module RSpec::Core
       end
     end
 
-    describe "#mock_framework=" do
+    describe "#mock_framework="do
+      it "delegates to mock_with" do
+        config.should_receive(:mock_with).with(:rspec)
+        config.mock_with :rspec
+      end
+    end
+
+    describe "#mock_with" do
       [:rspec, :mocha, :rr, :flexmock].each do |framework|
         context "with #{framework}" do
           it "requires the adapter for #{framework.inspect}" do
             config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
-            config.mock_framework = framework
+            config.mock_with framework
           end
         end
       end
@@ -62,33 +69,23 @@ module RSpec::Core
         it "sets the mock_framework_adapter to that module" do
           config.stub(:require)
           mod = Module.new
-          config.mock_framework = mod
+          config.mock_with mod
           config.mock_framework.should eq(mod)
         end
       end
 
       it "uses the null adapter when set to any unknown key" do
         config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
-        config.mock_framework = :crazy_new_mocking_framework_ive_not_yet_heard_of
+        config.mock_with :crazy_new_mocking_framework_ive_not_yet_heard_of
       end
 
       context 'when there are already some example groups defined' do
-        before(:each) do
-          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
-        end
-
         it 'raises an error since this setting must be applied before any groups are defined' do
+          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
           expect {
-            config.mock_framework = :rspec
+            config.mock_with :rspec
           }.to raise_error(/must be configured before any example groups are defined/)
         end
-      end
-    end
-
-    describe "#mock_with" do
-      it "delegates to mock_framework=" do
-        config.should_receive(:mock_framework=).with(:rspec)
-        config.mock_with :rspec
       end
     end
 
@@ -101,7 +98,7 @@ module RSpec::Core
 
     describe "#expectation_framework=" do
       it "delegates to expect_with=" do
-        config.should_receive(:expect_with).with([:rspec])
+        config.should_receive(:expect_with).with(:rspec)
         config.expectation_framework = :rspec
       end
     end
@@ -123,11 +120,8 @@ module RSpec::Core
       end
 
       context 'when there are already some example groups defined' do
-        before(:each) do
-          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
-        end
-
         it 'raises an error since this setting must be applied before any groups are defined' do
+          RSpec.world.stub(:example_groups).and_return([double.as_null_object])
           expect {
             config.expect_with :rspec
           }.to raise_error(/must be configured before any example groups are defined/)

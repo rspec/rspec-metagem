@@ -67,6 +67,7 @@ module RSpec
       def initialize
         @expectation_frameworks = []
         @include_or_extend_modules = []
+        @mock_framework = nil
         @files_to_run = []
         @formatters = []
         @color_enabled = false
@@ -142,8 +143,8 @@ module RSpec
       end
 
       # Delegates to mock_framework=(framework)
-      def mock_with(framework)
-        self.mock_framework = framework
+      def mock_framework=(framework)
+        mock_with framework
       end
 
       # Sets the mock framework adapter module.
@@ -168,7 +169,7 @@ module RSpec
       #
       #   teardown_mocks_for_rspec
       #     - called after verify_mocks_for_rspec (even if there are errors)
-      def mock_framework=(framework)
+      def mock_with(framework)
         assert_no_example_groups_defined(:mock_framework)
         case framework
         when Module
@@ -196,9 +197,9 @@ module RSpec
         @expectation_frameworks
       end
 
-      # Delegates to expect_with([framework])
+      # Delegates to expect_with(framework)
       def expectation_framework=(framework)
-        expect_with([framework])
+        expect_with(framework)
       end
 
       # Sets the expectation framework module(s).
