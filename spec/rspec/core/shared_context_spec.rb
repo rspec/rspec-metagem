@@ -35,18 +35,34 @@ describe RSpec::SharedContext do
   end
 
   it "supports let" do
-    whatever = nil
     shared = Module.new do
       extend RSpec::SharedContext
       let(:foo) { 'foo' }
     end
     group = RSpec::Core::ExampleGroup.describe do
       include shared
-      example { whatever = foo }
     end
 
-    group.run
+    group.new.foo.should eq('foo')
+  end
 
-    whatever.should eq('foo')
+  %w[describe context].each do |method_name|
+    it "supports nested example groups using #{method_name}" do
+      whatever = nil
+      shared = Module.new do
+        extend RSpec::SharedContext
+        send(method_name, "nested using describe") do
+          example {}
+        end
+      end
+      group = RSpec::Core::ExampleGroup.describe do
+        include shared
+      end
+
+      group.run
+
+      group.children.length.should eq(1)
+      group.children.first.examples.length.should eq(1)
+    end
   end
 end

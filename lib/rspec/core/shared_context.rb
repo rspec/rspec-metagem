@@ -10,8 +10,20 @@ module RSpec
             group.hooks[type][scope].concat hooks[type][scope]
           end
         end
+        _nested_group_declarations.each do |name, block, *args|
+          group.describe name, *args, &block
+        end
       end
 
+      def describe(name, *args, &block)
+        _nested_group_declarations << [name, block, *args]
+      end
+
+      alias_method :context, :describe
+
+      def _nested_group_declarations
+        @_nested_group_declarations ||= []
+      end
     end
   end
 
