@@ -14,7 +14,7 @@ end
 gem "rake", "0.9.2"
 gem "cucumber", "1.0.1"
 gem "aruba", "0.4.2"
-gem "ZenTest", "4.4.2"
+gem "ZenTest", "4.6.2"
 gem "nokogiri", "1.5.0"
 gem "fakefs", "0.4.0", :require => false
 
