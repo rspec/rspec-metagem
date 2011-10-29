@@ -66,8 +66,17 @@ Spork.prefork do
   end
 
   RSpec.configure do |c|
+    # structural
+    c.alias_it_should_behave_like_to 'it_has_behavior'
+    c.around {|example| sandboxed { example.run }}
+    c.include Aruba::Api, :example_group => {
+      :file_path => /spec\/command_line/
+    }
+
+    # runtime options
+    c.treat_symbols_as_metadata_keys_with_true_values = true
     c.color_enabled = !in_editor?
-    c.filter_run :focus => true
+    c.filter_run :focus
     c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|
       case version.to_s
@@ -79,18 +88,9 @@ Spork.prefork do
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       end
     }
-    c.include Aruba::Api, :example_group => {
-      :file_path => /spec\/command_line/
-    }
-    c.alias_it_should_behave_like_to 'it_has_behavior'
-    c.around do |example|
-      sandboxed { example.run }
-    end
-    c.treat_symbols_as_metadata_keys_with_true_values = true
     c.order = :random
   end
 end
 
 Spork.each_run do
 end
-
