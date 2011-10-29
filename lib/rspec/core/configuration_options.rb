@@ -24,7 +24,11 @@ module RSpec
       end
 
       def parse_options
-        @options ||= [file_options, command_line_options, env_options].inject {|merged, o| merged.merge o}
+        @options ||= [*file_options, command_line_options, env_options].inject do |merged, pending|
+          resolve_opposite_filters(merged, pending, :inclusion_filter, :exclusion_filter)
+          resolve_opposite_filters(merged, pending, :exclusion_filter, :inclusion_filter)
+          merged.merge(pending)
+        end
       end
 
       def drb_argv
@@ -32,6 +36,16 @@ module RSpec
       end
 
     private
+
+      def resolve_opposite_filters(current,pending,filter,opposite_filter)
+        if current[filter] && pending[opposite_filter]
+          current[filter].each_pair do |key, value|
+            if pending[opposite_filter][key] == value
+              current[filter].delete(key)
+            end
+          end
+        end
+      end
 
       def order(keys, *ordered)
         ordered.reverse.each do |key|
@@ -41,7 +55,7 @@ module RSpec
       end
 
       def file_options
-        custom_options_file ? custom_options : global_options.merge(local_options)
+        custom_options_file ? [custom_options] : [global_options, local_options]
       end
 
       def env_options

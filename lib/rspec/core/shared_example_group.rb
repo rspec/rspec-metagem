@@ -15,7 +15,6 @@ module RSpec
             host.class_eval(&block)
           end
           RSpec.configuration.extend(mod, *args)
-        else
         end
       end
 

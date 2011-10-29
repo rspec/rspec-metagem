@@ -289,6 +289,30 @@ describe RSpec::Core::ConfigurationOptions do
       parse_options[:formatters].should eq([['local']])
     end
 
+    it "overwrites opposite tags according to precedence (inclusion overwrites exclusion)" do
+      File.open("./.rspec", "w") {|f| f << "--tag foo"}
+      File.open("~/.rspec", "w") {|f| f << "--tag ~foo"}
+      parsed = parse_options
+      parsed[:inclusion_filter].should eq(:foo => true)
+      parsed[:exclusion_filter].should be_empty
+    end
+
+    it "does not overwrite opposite tags with different values" do
+      File.open("./.rspec", "w") {|f| f << "--tag foo:baa"}
+      File.open("~/.rspec", "w") {|f| f << "--tag ~foo:brr"}
+      parsed = parse_options
+      parsed[:inclusion_filter].should eq(:foo => 'baa')
+      parsed[:exclusion_filter].should eq(:foo => 'brr')
+    end
+
+    it "overwrites opposite tags according to precedence (exclusion overwrites inclusion)" do
+      File.open("./.rspec", "w") {|f| f << "--tag ~foo"}
+      File.open("~/.rspec", "w") {|f| f << "--tag foo"}
+      parsed = parse_options
+      parsed[:inclusion_filter].should be_empty
+      parsed[:exclusion_filter].should eq(:foo => true)
+    end
+
     context "with custom options file" do
       it "ignores local and global options files" do
         File.open("./.rspec", "w") {|f| f << "--format local"}
