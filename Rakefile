@@ -26,7 +26,9 @@ require "cucumber/rake/task"
 Cucumber::Rake::Task.new(:cucumber)
 
 desc "Run non-ui examples"
-RSpec::Core::RakeTask.new(:spec)
+RSpec::Core::RakeTask.new(:spec) do |t|
+  t.ruby_opts = '-w'
+end
 
 namespace :spec do
   desc "Run ui examples"
