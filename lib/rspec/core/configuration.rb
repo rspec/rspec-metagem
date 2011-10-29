@@ -8,18 +8,22 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
+      def self.define_predicate_for(name)
+        alias_method "#{name}?", name
+      end
+
       # @api private
       #
       # Delegated to by the `add_setting` instance method.
       def self.add_setting(name, opts={})
+        raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
         if opts[:alias]
           alias_method name, opts[:alias]
           alias_method "#{name}=", "#{opts[:alias]}="
-          alias_method "#{name}?", "#{opts[:alias]}?"
+          define_predicate_for name
         else
-          define_method("#{name}=") {|val| settings[name] = val}
-          define_method(name)       { settings.has_key?(name) ? settings[name] : opts[:default] }
-          define_method("#{name}?") { send name }
+          attr_accessor name
+          define_predicate_for name
         end
       end
 
@@ -31,22 +35,20 @@ module RSpec
       add_setting :drb_port
       add_setting :profile_examples
       add_setting :fail_fast
-      add_setting :failure_exit_code, :default => 1
+      add_setting :failure_exit_code
       add_setting :run_all_when_everything_filtered
-      add_setting :exclusion_filter
-      add_setting :inclusion_filter
-      add_setting :filter, :alias => :inclusion_filter
-      add_setting :pattern, :default => '**/*_spec.rb'
+      add_setting :pattern
       add_setting :filename_pattern, :alias => :pattern
       add_setting :files_to_run
       add_setting :include_or_extend_modules
       add_setting :backtrace_clean_patterns
       add_setting :tty
-      add_setting :treat_symbols_as_metadata_keys_with_true_values, :default => false
+      add_setting :treat_symbols_as_metadata_keys_with_true_values
       add_setting :expecting_with_rspec
-      add_setting :default_path, :default => 'spec'
-      add_setting :show_failures_in_pending_blocks, :default => false
+      add_setting :default_path
+      add_setting :show_failures_in_pending_blocks
       add_setting :order
+      add_setting :seed
 
       DEFAULT_EXCLUSION_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -62,20 +64,23 @@ module RSpec
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
 
-      attr_accessor :seed
-
       def initialize
+        @expectation_frameworks = []
+        @include_or_extend_modules = []
+        @files_to_run = []
+        @formatters = []
         @color_enabled = false
-        settings[:include_or_extend_modules] = []
-        settings[:files_to_run] = []
-        settings[:backtrace_clean_patterns] = DEFAULT_BACKTRACE_PATTERNS.dup
-        settings[:exclusion_filter] = DEFAULT_EXCLUSION_FILTERS.dup
-        self.seed = srand % 0xFFFF
+        @pattern = '**/*_spec.rb'
+        @failure_exit_code = 1
+        @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
+        @default_path = 'spec'
+        @exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
+        @seed = srand % 0xFFFF
       end
 
       def reset
         @reporter = nil
-        @formatters.clear if @formatters
+        @formatters.clear
       end
 
       # @overload add_setting(name)
@@ -115,7 +120,11 @@ module RSpec
       #     :alias => :other_setting
       #
       def add_setting(name, opts={})
-        self.class.add_setting(name, opts)
+        default = opts.delete(:default)
+        (class << self; self; end).class_eval do
+          add_setting(name, opts)
+        end
+        send("#{name}=", default) if default
       end
 
       # Used by formatters to ask whether a backtrace line should be displayed
@@ -126,10 +135,10 @@ module RSpec
 
       # Returns the configured mock framework adapter module
       def mock_framework
-        settings[:mock_framework] ||= begin
-                                        require 'rspec/core/mocking/with_rspec'
-                                        RSpec::Core::MockFrameworkAdapter
-                                      end
+        @mock_framework ||= begin
+                              require 'rspec/core/mocking/with_rspec'
+                              RSpec::Core::MockFrameworkAdapter
+                            end
       end
 
       # Delegates to mock_framework=(framework)
@@ -163,7 +172,7 @@ module RSpec
         assert_no_example_groups_defined(:mock_framework)
         case framework
         when Module
-          settings[:mock_framework] = framework
+          @mock_framework = framework
         when String, Symbol
           require case framework.to_s
                   when /rspec/i
@@ -177,15 +186,14 @@ module RSpec
                   else
                     'rspec/core/mocking/with_absolutely_nothing'
                   end
-          settings[:mock_framework] = RSpec::Core::MockFrameworkAdapter
-        else
+          @mock_framework = RSpec::Core::MockFrameworkAdapter
         end
       end
 
       # Returns the configured expectation framework adapter module(s)
       def expectation_frameworks
-        expect_with :rspec unless settings[:expectation_frameworks]
-        settings[:expectation_frameworks]
+        expect_with :rspec if @expectation_frameworks.empty?
+        @expectation_frameworks
       end
 
       # Delegates to expect_with([framework])
@@ -202,35 +210,30 @@ module RSpec
       # Given both, configures both
       def expect_with(*frameworks)
         assert_no_example_groups_defined(:expect_with)
-        settings[:expectation_frameworks] = []
+        @expectation_frameworks.clear
         frameworks.each do |framework|
           case framework
-          when Symbol
-            case framework
-            when :rspec
-              require 'rspec/core/expecting/with_rspec'
-              self.expecting_with_rspec = true
-            when :stdlib
-              require 'rspec/core/expecting/with_stdlib'
-            else
-              raise ArgumentError, "#{framework.inspect} is not supported"
-            end
-            settings[:expectation_frameworks] << RSpec::Core::ExpectationFrameworkAdapter
+          when :rspec
+            require 'rspec/core/expecting/with_rspec'
+            self.expecting_with_rspec = true
+          when :stdlib
+            require 'rspec/core/expecting/with_stdlib'
+          else
+            raise ArgumentError, "#{framework.inspect} is not supported"
           end
+          @expectation_frameworks << RSpec::Core::ExpectationFrameworkAdapter
         end
       end
 
       def full_backtrace=(true_or_false)
-        settings[:backtrace_clean_patterns] = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
+        @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
       end
 
       def color_enabled
         @color_enabled && output_to_tty?
       end
 
-      def color_enabled?
-        color_enabled
-      end
+      define_predicate_for :color_enabled
 
       def color_enabled=(bool)
         return unless bool
@@ -430,11 +433,15 @@ EOM
         filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
       end
 
+      alias_method :filter=, :inclusion_filter=
+
       # Returns the `inclusion_filter`. If none has been set, returns an empty
       # hash.
       def inclusion_filter
-        settings[:inclusion_filter] ||= {}
+        @inclusion_filter ||= {}
       end
+
+      alias_method :filter, :inclusion_filter
 
       # Adds key/value pairs to the `exclusion_filter`. If the
       # `treat_symbols_as_metadata_keys_with_true_values` config option is set
@@ -460,7 +467,7 @@ EOM
       # Returns the `exclusion_filter`. If none has been set, returns an empty
       # hash.
       def exclusion_filter
-        settings[:exclusion_filter] ||= {}
+        @exclusion_filter ||= {}
       end
 
       STANDALONE_FILTERS = [:line_numbers, :full_description]
@@ -526,10 +533,6 @@ EOM
       end
 
     private
-
-      def settings
-        @settings ||= {}
-      end
 
       def add_location(file_path, line_numbers)
         # filter_locations is a hash of expanded paths to arrays of line
