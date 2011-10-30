@@ -18,7 +18,7 @@ Feature: --order (new in rspec-core-2.8)
 
   You can also specify a seed
 
-  ## Examples
+  <h3>Examples</h3>
 
       --order default
       --order rand
