@@ -22,14 +22,14 @@ module RSpec
 
     private
 
-      def perform_match(predicate, hash_predicate, actual, expected)
-        expected.send(predicate) do |expected|
-          if comparing_hash_values?(actual, expected)
-            expected.send(hash_predicate) {|k,v| actual[k] == v}
-          elsif comparing_hash_keys?(actual, expected)
-            actual.has_key?(expected)
+      def perform_match(predicate, hash_predicate, actuals, expecteds)
+        expecteds.send(predicate) do |expected|
+          if comparing_hash_values?(actuals, expected)
+            expected.send(hash_predicate) {|k,v| actuals[k] == v}
+          elsif comparing_hash_keys?(actuals, expected)
+            actuals.has_key?(expected)
           else
-            actual.include?(expected)
+            actuals.include?(expected)
           end
         end
       end

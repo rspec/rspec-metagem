@@ -113,7 +113,7 @@ describe "should change(actual, message)" do
         end
 
         def dup
-          self.class.new *elements
+          self.class.new(*elements)
         end
 
         def ==(other)

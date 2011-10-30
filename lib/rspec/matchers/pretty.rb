@@ -39,7 +39,7 @@ module RSpec
       end
 
       def expected_to_sentence
-        to_sentence(@expected)
+        to_sentence(@expected) if defined?(@expected)
       end
 
       def name
@@ -55,7 +55,6 @@ module RSpec
         word.downcase!
         word
       end
-
     end
   end
 end
