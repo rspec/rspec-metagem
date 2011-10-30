@@ -46,9 +46,9 @@ group :development do
 
   platforms :mri_19 do
     if RUBY_VERSION == '1.9.2'
-      gem 'linecache19'
-      gem 'ruby-debug19'
-      gem 'ruby-debug-base19'
+      gem 'linecache19', '~> 0.5.12'
+      gem 'ruby-debug19', '~> 0.11.6'
+      gem 'ruby-debug-base19', '~> 0.11.25'
     end
   end
 
