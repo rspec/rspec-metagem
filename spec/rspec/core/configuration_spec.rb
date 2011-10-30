@@ -993,9 +993,9 @@ module RSpec::Core
       end
     end
 
-    describe '#orderby=' do
+    describe '#order=' do
       context 'given "random:123"' do
-        before { config.orderby = 'random:123' }
+        before { config.order = 'random:123' }
 
         it 'sets order to "random"' do
           config.order.should eq('random')

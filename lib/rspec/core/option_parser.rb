@@ -85,7 +85,7 @@ module RSpec::Core
                   '[rand] randomized',
                   '[random] alias for rand',
                   'append ":SEED" to specify a seed. Example: --order random:123') do |o|
-          options[:orderby] = o
+          options[:order] = o
         end
 
         parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|

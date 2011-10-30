@@ -536,13 +536,13 @@ EOM
       end
 
       def randomize?
-        order ? !!order.to_s.match(/rand/) : false
+        order ? order.to_s.match(/rand/) : false
       end
 
-      def orderby=(type)
+      def order=(type)
         order, seed = type.to_s.split(':')
-        self.order = order
-        self.seed = seed.to_i if seed
+        @order = order
+        @seed = seed.to_i if seed
       end
 
     private

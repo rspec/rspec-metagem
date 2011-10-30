@@ -12,7 +12,7 @@ class RSpec::Core::DrbOptions
     argv << "--tty"          if @submitted_options[:tty]
     argv << "--fail-fast"    if @submitted_options[:fail_fast]
     argv << "--options"      << @submitted_options[:custom_options_file] if @submitted_options[:custom_options_file]
-    argv << "--order"        << @submitted_options[:orderby]             if @submitted_options[:orderby]
+    argv << "--order"        << @submitted_options[:order]               if @submitted_options[:order]
 
     add_full_description(argv)
     add_line_numbers(argv)
