@@ -6,6 +6,7 @@
     * Pass a seed: `--order random:123`
   * SharedContext supports `let` (David Chelimsky)
   * Override opposing tags from the command line (David Chelimsky)
+  * Eliminate ruby warnings (Matijs van Zuijlen)
 
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
