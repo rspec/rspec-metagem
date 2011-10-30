@@ -845,7 +845,7 @@ module RSpec::Core
 
       context "with :alias => " do
         it "is deprecated" do
-          RSpec::should_receive(:warn).with /deprecated/
+          RSpec::should_receive(:warn).with(/deprecated/)
           config.add_setting :custom_option
           config.add_setting :another_custom_option, :alias => :custom_option
         end
@@ -922,9 +922,9 @@ module RSpec::Core
     describe "#alias_example_to" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
-          config.alias_example_to :my_example, *args
+          config.alias_example_to :my_example_method, *args
           group = ExampleGroup.describe("group")
-          example = group.my_example("description")
+          example = group.my_example_method("description")
           example.metadata
         end
       end
