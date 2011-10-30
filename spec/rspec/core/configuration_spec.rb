@@ -954,7 +954,7 @@ module RSpec::Core
       end
     end
 
-    describe '#seed_to_report' do
+    describe '#seed' do
       context 'with order set to :random' do
         before do
           config.order = :random
@@ -962,7 +962,7 @@ module RSpec::Core
         end
 
         it 'returns the seed' do
-          config.seed_to_report.should eq(123)
+          config.seed.should eq(123)
         end
       end
 
@@ -970,7 +970,7 @@ module RSpec::Core
         before { config.order = nil }
 
         it 'returns nil' do
-          config.seed_to_report.should be_nil
+          config.seed.should be_nil
         end
       end
     end

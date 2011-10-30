@@ -531,8 +531,8 @@ EOM
         raise_if_rspec_1_is_loaded
       end
 
-      def seed_to_report
-        randomize? ? seed : nil
+      def seed
+        @seed if randomize?
       end
 
       def randomize?
