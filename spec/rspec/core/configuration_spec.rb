@@ -1005,6 +1005,21 @@ module RSpec::Core
           config.seed.should eq(123)
         end
       end
+
+      context 'given "default"' do
+        before do
+          config.order = 'rand:123'
+          config.order = 'default'
+        end
+
+        it "sets the order to nil" do
+          config.order.should be_nil
+        end
+
+        it "sets the seed to nil" do
+          config.seed.should be_nil
+        end
+      end
     end
   end
 end

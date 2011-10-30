@@ -545,8 +545,13 @@ EOM
 
       def order=(type)
         order, seed = type.to_s.split(':')
-        @order = order
-        @seed = seed.to_i if seed
+        if order == 'default'
+          @order = nil
+          @seed = nil
+        else
+          @order = order
+          @seed = seed.to_i if seed
+        end
       end
 
     private

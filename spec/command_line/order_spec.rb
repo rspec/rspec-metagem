@@ -91,6 +91,18 @@ describe 'command line', :ui do
     end
   end
 
+  describe '--order default on CLI with --order rand in .rspec' do
+    it "overrides --order rand with --order default" do
+      write_file '.rspec', '--order rand'
+
+      run_command 'rspec spec/order_spec.rb --order default -f doc'
+
+      all_output.should_not match(/Randomized/)
+
+      all_output.should match(/group 1.*group 1 example 1.*group 1 example 2.*group 1-1.*group 1-2.*group 2.*/m)
+    end
+  end
+
   def examples(group)
     yield split_in_half(all_stdout.scan(/^\s+#{group} example.*$/))
   end
