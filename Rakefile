@@ -16,6 +16,7 @@ end
 desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.rspec_opts = %w[--color]
+  t.ruby_opts = %w[-w]
 end
 
 if RUBY_VERSION.to_f == 1.8
