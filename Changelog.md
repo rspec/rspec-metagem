@@ -2,8 +2,10 @@
 
 * Enhancements
   * --order (Justin Ko)
-    * Run your examples in random order: `--order rand`
-    * Pass a seed: `--order random:123`
+    * run examples in random order: `--order rand`
+    * specify the seed: `--order rand:123`
+  * --seed SEED
+    * equivalent of `--order rand:SEED`
   * SharedContext supports `let` (David Chelimsky)
   * Override opposing tags from the command line (David Chelimsky)
   * Eliminate Ruby warnings (Matijs van Zuijlen)
