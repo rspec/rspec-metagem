@@ -33,7 +33,7 @@ end
 namespace :spec do
   desc "Run ui examples"
   RSpec::Core::RakeTask.new(:ui) do |t|
-    t.rspec_opts = %w[--options .rspec.ui]
+    t.rspec_opts = %w[--tag ui]
   end
 end
 
