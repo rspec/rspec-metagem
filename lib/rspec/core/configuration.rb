@@ -530,9 +530,7 @@ EOM
         raise_if_rspec_1_is_loaded
       end
 
-      def seed
-        @seed if randomize?
-      end
+      attr_reader :seed
 
       def seed=(seed)
         @order = 'rand'

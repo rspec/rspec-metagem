@@ -955,23 +955,9 @@ module RSpec::Core
     end
 
     describe '#seed' do
-      context 'with order set to :random' do
-        before do
-          config.order = :random
-          config.seed = 123
-        end
-
-        it 'returns the seed' do
-          config.seed.should eq(123)
-        end
-      end
-
-      context 'with order set to nil' do
-        before { config.order = nil }
-
-        it 'returns nil' do
-          config.seed.should be_nil
-        end
+      it 'returns the seed as an int' do
+        config.seed = '123'
+        config.seed.should eq(123)
       end
     end
 
