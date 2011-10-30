@@ -4,6 +4,7 @@
 
 * Enhancements
   * Use classes for the built-in matchers (they're faster).
+  * Eliminate Ruby warnings (Matijs van Zuijlen)
 
 ### 2.7.0 / 2011-10-16
 
