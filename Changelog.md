@@ -9,6 +9,7 @@
 
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
+  * Fix bug where full descriptions of groups nested 3 deep  were repeated.
 
 * Deprecations
   * :alias option on `configuration.add_setting`. Use `:alias_with` on the

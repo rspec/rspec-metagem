@@ -76,7 +76,7 @@ module RSpec
 
         def full_description_for(*)
           build_description_from(*ancestors.reverse.map do |a|
-            a.has_key?(:full_description) ? a[:full_description] : a[:description_args]
+            a[:description_args]
           end.flatten)
         end
 

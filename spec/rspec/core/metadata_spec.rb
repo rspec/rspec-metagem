@@ -22,7 +22,6 @@ module RSpec
       end
 
       describe "#filter_applies?" do
-
         let(:parent_group_metadata) { Metadata.new.process('parent group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
         let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"], :if => true) }
@@ -313,13 +312,29 @@ module RSpec
           child.for_example('example', child)[:full_description].should eq("parent child example")
         end
 
+        it "concats nested example group descriptions three deep" do
+          grandparent = Metadata.new
+          grandparent.process('grandparent')
+
+          parent = Metadata.new(grandparent)
+          parent.process('parent')
+
+          child = Metadata.new(parent)
+          child.process('child')
+
+          grandparent[:example_group][:full_description].should eq("grandparent")
+          parent[:example_group][:full_description].should eq("grandparent parent")
+          child[:example_group][:full_description].should eq("grandparent parent child")
+          child.for_example('example', child)[:full_description].should eq("grandparent parent child example")
+        end
+
         %w[# . ::].each do |char|
           context "with a 2nd arg starting with #{char}" do
-          it "removes the space" do
-            m = Metadata.new
-            m.process(Array, "#{char}method")
-            m[:example_group][:full_description].should eq("Array#{char}method")
-          end
+            it "removes the space" do
+              m = Metadata.new
+              m.process(Array, "#{char}method")
+              m[:example_group][:full_description].should eq("Array#{char}method")
+            end
           end
         end
 
