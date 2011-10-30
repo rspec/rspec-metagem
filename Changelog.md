@@ -1,4 +1,4 @@
-### dev
+### 2.8.0 (in development)
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...master)
 
