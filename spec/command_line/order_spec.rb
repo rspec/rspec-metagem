@@ -56,14 +56,12 @@ describe 'command line', :ui do
     it 'runs the examples and groups in a different order each time' do
       2.times { run_command 'rspec spec/order_spec.rb --order rand -f doc' }
 
+      all_output.should match(/Randomized with seed \d+/)
+
       top_level_groups      {|first_run, second_run| first_run.should_not eq(second_run)}
       nested_groups         {|first_run, second_run| first_run.should_not eq(second_run)}
       examples('group 1')   {|first_run, second_run| first_run.should_not eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should_not eq(second_run)}
-
-      all_stdout.should match(
-        /Randomized with seed \d+/
-      )
     end
   end
 
@@ -71,14 +69,25 @@ describe 'command line', :ui do
     it 'runs the examples and groups in the same order each time' do
       2.times { run_command 'rspec spec/order_spec.rb --order rand:123 -f doc' }
 
+      all_output.should match(/Randomized with seed 123/)
+
       top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
       nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
+    end
+  end
 
-      all_stdout.should match(
-        /Randomized with seed 123/
-      )
+  describe '--seed SEED' do
+    it "forces '--order rand' and runs the examples and groups in the same order each time" do
+      2.times { run_command 'rspec spec/order_spec.rb --seed 123 -f doc' }
+
+      all_output.should match(/Randomized with seed \d+/)
+
+      top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
+      nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
+      examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
+      examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
     end
   end
 

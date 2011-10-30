@@ -82,10 +82,14 @@ module RSpec::Core
         end
         
         parser.on('--order TYPE', 'Run examples by the specified order type',
-                  '[rand] randomized',
-                  '[random] alias for rand',
-                  'append ":SEED" to specify a seed. Example: --order random:123') do |o|
+                  '  [rand] randomized',
+                  '  [random] alias for rand',
+                  '  [random:SEED] e.g. --order random:123') do |o|
           options[:order] = o
+        end
+
+        parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
+          options[:order] = "rand:#{seed}"
         end
 
         parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|

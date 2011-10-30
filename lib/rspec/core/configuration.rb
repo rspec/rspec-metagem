@@ -57,7 +57,6 @@ MESSAGE
       add_setting :default_path
       add_setting :show_failures_in_pending_blocks
       add_setting :order
-      add_setting :seed
 
       DEFAULT_EXCLUSION_FILTERS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
@@ -535,8 +534,13 @@ EOM
         @seed if randomize?
       end
 
+      def seed=(seed)
+        @order = 'rand'
+        @seed = seed.to_i
+      end
+
       def randomize?
-        order ? order.to_s.match(/rand/) : false
+        order.to_s.match(/rand/)
       end
 
       def order=(type)
