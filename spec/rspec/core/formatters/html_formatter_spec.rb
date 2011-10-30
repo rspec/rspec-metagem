@@ -16,7 +16,7 @@ module RSpec
 
         let(:generated_html) do
           options = RSpec::Core::ConfigurationOptions.new(
-            %w[spec/rspec/core/resources/formatter_specs.rb --format html]
+            %w[spec/rspec/core/resources/formatter_specs.rb --format html --order default]
           )
           options.parse_options
           err, out = StringIO.new, StringIO.new

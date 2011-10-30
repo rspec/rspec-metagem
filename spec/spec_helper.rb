@@ -88,7 +88,6 @@ Spork.prefork do
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       end
     }
-    c.order = :random
   end
 end
 
