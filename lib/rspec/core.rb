@@ -1,4 +1,3 @@
-$rspec_start_time ||= Time.now
 require 'rspec/core/dsl'
 require 'rspec/core/extensions'
 require 'rspec/core/load_path'

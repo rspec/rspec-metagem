@@ -13,6 +13,9 @@
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
   * Fix bug where full descriptions of groups nested 3 deep  were repeated.
+  * Restore report of time to run to start after files are loaded.
+    * fixes bug where run times were cumalitive in spork
+    * fixes compatibility with time-series metrics
 
 * Deprecations
   * :alias option on `configuration.add_setting`. Use `:alias_with` on the
@@ -50,6 +53,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
   * Add `--no-drb` option (Iain Hecker)
   * Provide more accurate run time by registering start time before code
     is loaded (David Chelimsky)
+    * reverted in 2.8.0
   * Rake task default pattern finds specs in symlinked dirs (Kelly Felkins)
   * Rake task no longer does anything to invoke bundler since Bundler already
     handles it for us. Thanks to Andre Arko for the tip.
