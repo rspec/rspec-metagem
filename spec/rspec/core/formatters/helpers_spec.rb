@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'rspec/core/formatters/helpers'
 
 describe RSpec::Core::Formatters::Helpers do
-  let(:helper) { helper = Object.new.extend(RSpec::Core::Formatters::Helpers) }
+  let(:helper) { Object.new.extend(RSpec::Core::Formatters::Helpers) }
 
   describe "format seconds" do
     context "sub second times" do

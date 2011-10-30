@@ -3,7 +3,7 @@ require "spec_helper"
 describe "failed_results_re for autotest" do
   def run_example
     group = RSpec::Core::ExampleGroup.describe("group")
-    example = group.example("example") { yield }
+    group.example("example") { yield }
     io = StringIO.new
     formatter = RSpec::Core::Formatters::BaseTextFormatter.new(io)
     reporter = RSpec::Core::Reporter.new(formatter)

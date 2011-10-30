@@ -111,7 +111,7 @@ module RSpec::Core
         world = RSpec::Core::World.new
         parent = ExampleGroup.describe
         world.register(parent)
-        child = parent.describe
+        parent.describe
         world.example_groups.should eq([parent])
       end
     end
@@ -149,7 +149,7 @@ module RSpec::Core
           it "excludes examples in groups matching filter" do
             group = ExampleGroup.describe("does something", spec_metadata)
             group.stub(:world) { world }
-            all_examples = [ group.example("first"), group.example("second") ]
+            [ group.example("first"), group.example("second") ]
 
             group.filtered_examples.should be_empty
           end
@@ -157,7 +157,7 @@ module RSpec::Core
           it "excludes examples directly matching filter" do
             group = ExampleGroup.describe("does something")
             group.stub(:world) { world }
-            filtered_examples = [
+            [
               group.example("first", spec_metadata),
               group.example("second", spec_metadata)
             ]
@@ -248,7 +248,7 @@ module RSpec::Core
           world.stub(:inclusion_filter).and_return({ :awesome => false })
           group = ExampleGroup.describe
           group.stub(:world) { world }
-          example = group.example("does something")
+          group.example("does something")
           group.filtered_examples.should eq([])
         end
       end
@@ -1008,7 +1008,7 @@ module RSpec::Core
           eval_count = 0
           shared_examples_for("thing") { |p| eval_count += 1 }
           group = ExampleGroup.describe('fake group')
-          shared_group = group.it_should_behave_like("thing", :a)
+          group.it_should_behave_like("thing", :a)
           eval_count.should eq(1)
         end
       end

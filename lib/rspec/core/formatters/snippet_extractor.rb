@@ -8,7 +8,7 @@ module RSpec
         begin
           require 'syntax/convertors/html'
           @@converter = Syntax::Convertors::HTML.for_syntax "ruby"
-        rescue LoadError => e
+        rescue LoadError
           @@converter = NullConverter.new
         end
 

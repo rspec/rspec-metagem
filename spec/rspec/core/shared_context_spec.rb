@@ -48,7 +48,6 @@ describe RSpec::SharedContext do
 
   %w[describe context].each do |method_name|
     it "supports nested example groups using #{method_name}" do
-      whatever = nil
       shared = Module.new do
         extend RSpec::SharedContext
         send(method_name, "nested using describe") do

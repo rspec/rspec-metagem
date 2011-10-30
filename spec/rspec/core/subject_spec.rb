@@ -152,7 +152,7 @@ module RSpec::Core
         its([:a]) { should eq("Symbol: a") }
         its(['a']) { should eq("String: a") }
         its([:b, 'c', 4]) { should eq("Symbol: b; String: c; Fixnum: 4") }
-        its(:name) { should = "George" }
+        its(:name) { should eq("George") }
         context "when referring to an attribute without the proper array syntax" do
           context "it raises an error" do
             its(:age) do

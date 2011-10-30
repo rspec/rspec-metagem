@@ -181,7 +181,6 @@ module RSpec::Core
 
       context "with default pattern" do
         it "loads files named _spec.rb" do
-          dir = "spec/rspec/core/resources"
           config.files_or_directories_to_run = "spec/rspec/core/resources"
           config.files_to_run.should eq([      "spec/rspec/core/resources/a_spec.rb"])
         end
@@ -799,7 +798,9 @@ module RSpec::Core
     describe "#add_setting" do
       describe "with no modifiers" do
         context "with no additional options" do
-          before { config.add_setting :custom_option }
+          before do
+            config.add_setting :custom_option
+          end
 
           it "defaults to nil" do
             config.custom_option.should be_nil
@@ -816,7 +817,9 @@ module RSpec::Core
         end
 
         context "with :default => 'a value'" do
-          before { config.add_setting :custom_option, :default => 'a value' }
+          before do
+            config.add_setting :custom_option, :default => 'a value'
+          end
 
           it "defaults to 'a value'" do
             config.custom_option.should eq("a value")
@@ -921,6 +924,13 @@ module RSpec::Core
 
     describe "#alias_example_to" do
       it_behaves_like "metadata hash builder" do
+        after do
+          RSpec::Core::ExampleGroup.module_eval do
+            class << self
+              undef :my_example_method if method_defined? :my_example_method
+            end
+          end
+        end
         def metadata_hash(*args)
           config.alias_example_to :my_example_method, *args
           group = ExampleGroup.describe("group")

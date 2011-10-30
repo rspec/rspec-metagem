@@ -27,7 +27,7 @@ Cucumber::Rake::Task.new(:cucumber)
 
 desc "Run non-ui examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
-  t.ruby_opts = '-w'
+  t.ruby_opts = %w[-w]
 end
 
 namespace :spec do

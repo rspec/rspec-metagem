@@ -49,7 +49,7 @@ module RSpec
         end
 
         def extract_backtrace_from(doc)
-          backtrace = doc.search("div.backtrace").
+          doc.search("div.backtrace").
             collect {|e| e.at("pre").inner_html}.
             collect {|e| e.split("\n")}.flatten.
             select  {|e| e =~ /formatter_specs\.rb/}
@@ -72,6 +72,7 @@ module RSpec
               actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
               File.expand_path(actual_path).should eq(File.expand_path(expected_path))
               actual_line_number.should eq(expected_line_number)
+              actual_suffix.should eq(expected_suffix)
             end
           end
         end
