@@ -9,8 +9,8 @@ module RSpec::Core
     # @api
     # @overload report(count, &block)
     # @overload report(count, seed, &block)
-    # @param [Fixnum] count the number of examples being run
-    # @param [Fixnum] seed (optional) the seed used to randomize the spec run
+    # @param [Integer] count the number of examples being run
+    # @param [Integer] seed the seed used to randomize the spec run
     # @param [Block] block yields itself for further reporting.
     #
     # Initializes the report run and yields itself for further reporting. The
