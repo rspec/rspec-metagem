@@ -31,6 +31,8 @@ gem "flexmock", "0.8.8"
 gem "syntax", "1.0.0"
 
 group :development do
+  gem 'interactive_rspec'
+  gem 'yard'
   gem "relish", "~> 0.5.0"
   gem "guard-rspec", "0.5.0"
   gem "growl", "1.0.3"
@@ -57,4 +59,3 @@ group :development do
     gem "ruby-prof", "~> 0.10.0"
   end
 end
-gem 'interactive_rspec'
