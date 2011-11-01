@@ -82,5 +82,22 @@ module RSpec::Core
         reporter.example_started(example)
       end
     end
+
+    describe "#report" do
+      it "supports one arg (count)" do
+        Reporter.new.report(1) {}
+      end
+
+      it "supports two args (count, seed)" do
+        Reporter.new.report(1, 2) {}
+      end
+
+      it "yields itself" do
+        reporter = Reporter.new
+        yielded = nil
+        reporter.report(3) {|r| yielded = r}
+        yielded.should eq(reporter)
+      end
+    end
   end
 end

@@ -57,3 +57,4 @@ group :development do
     gem "ruby-prof", "~> 0.10.0"
   end
 end
+gem 'interactive_rspec'

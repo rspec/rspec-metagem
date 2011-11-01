@@ -6,29 +6,36 @@ module RSpec::Core
       @duration = @start = nil
     end
 
-    def report(count, seed)
-      start(count)
+    # @api
+    # @overload report(count, &block)
+    # @overload report(count, seed, &block)
+    # @param [Fixnum] count the number of examples being run
+    # @param [Fixnum] seed (optional) the seed used to randomize the spec run
+    # @param [Block] block yields itself for further reporting.
+    #
+    # Initializes the report run and yields itself for further reporting. The
+    # block is required, so that the reporter can manage cleaning up after the
+    # run.
+    #
+    # ### WARNING
+    #
+    # The `seed` argument is an internal API and is not guaranteed to be
+    # supported in the future.
+    #
+    # @example
+    #
+    #     reporter.report(group.examples.size) do |r|
+    #       example_groups.map {|g| g.run(r) }
+    #     end
+    #
+    def report(expected_example_count, seed=nil)
+      start(expected_example_count)
       begin
         yield self
       ensure
         finish(seed)
       end
     end
-
-    def finish(seed)
-      begin
-        stop
-        notify :start_dump
-        notify :dump_pending
-        notify :dump_failures
-        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
-        notify :seed, seed if seed
-      ensure
-        notify :close
-      end
-    end
-
-    alias_method :abort, :finish
 
     def start(expected_example_count)
       @start = Time.now
@@ -65,6 +72,21 @@ module RSpec::Core
       @pending_count += 1
       notify :example_pending, example
     end
+
+    def finish(seed)
+      begin
+        stop
+        notify :start_dump
+        notify :dump_pending
+        notify :dump_failures
+        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
+        notify :seed, seed if seed
+      ensure
+        notify :close
+      end
+    end
+
+    alias_method :abort, :finish
 
     def stop
       @duration = Time.now - @start if @start

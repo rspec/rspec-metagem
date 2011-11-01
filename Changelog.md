@@ -9,6 +9,8 @@
   * SharedContext supports `let` (David Chelimsky)
   * Override opposing tags from the command line (David Chelimsky)
   * Eliminate Ruby warnings (Matijs van Zuijlen)
+  * Make reporter.report an API (David Chelimsky)
+    * supports extension tools like interative_rspec
 
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
