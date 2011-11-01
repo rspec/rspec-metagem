@@ -17,7 +17,7 @@ module RSpec::Core
     # block is required, so that the reporter can manage cleaning up after the
     # run.
     #
-    # ### WARNING
+    # ### Warning
     #
     # The `seed` argument is an internal API and is not guaranteed to be
     # supported in the future.
