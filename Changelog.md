@@ -18,6 +18,8 @@
   * Restore report of time to run to start after files are loaded.
     * fixes bug where run times were cumalitive in spork
     * fixes compatibility with time-series metrics
+  * Don't error out when config.mock_with or expect_with is re-specifying the
+    current config (Myron Marston)
 
 * Deprecations
   * :alias option on `configuration.add_setting`. Use `:alias_with` on the
