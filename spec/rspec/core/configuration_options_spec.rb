@@ -57,24 +57,24 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   describe "-c, --color, and --colour" do
-    it "sets :color_enabled => true" do
-      parse_options('-c').should include(:color_enabled => true)
-      parse_options('--color').should include(:color_enabled => true)
-      parse_options('--colour').should include(:color_enabled => true)
+    it "sets :color => true" do
+      parse_options('-c').should include(:color => true)
+      parse_options('--color').should include(:color => true)
+      parse_options('--colour').should include(:color => true)
     end
   end
 
   describe "--no-color" do
-    it "sets :color_enabled => false" do
-      parse_options('--no-color').should include(:color_enabled => false)
+    it "sets :color => false" do
+      parse_options('--no-color').should include(:color => false)
     end
 
-    it "overrides previous :color_enabled => true" do
-      parse_options('--color', '--no-color').should include(:color_enabled => false)
+    it "overrides previous :color => true" do
+      parse_options('--color', '--no-color').should include(:color => false)
     end
 
-    it "gets overriden by a subsequent :color_enabled => true" do
-      parse_options('--no-color', '--color').should include(:color_enabled => true)
+    it "gets overriden by a subsequent :color => true" do
+      parse_options('--no-color', '--color').should include(:color => true)
     end
   end
 
@@ -266,7 +266,7 @@ describe RSpec::Core::ConfigurationOptions do
       File.open("~/.rspec", "w") {|f| f << "--color"}
       ENV["SPEC_OPTS"] = "--debug"
       options = parse_options("--drb")
-      options[:color_enabled].should be_true
+      options[:color].should be_true
       options[:line_numbers].should eq(["37"])
       options[:debug].should be_true
       options[:drb].should be_true
@@ -320,7 +320,7 @@ describe RSpec::Core::ConfigurationOptions do
         File.open("./custom.opts", "w") {|f| f << "--color"}
         options = parse_options("-O", "./custom.opts")
         options[:format].should be_nil
-        options[:color_enabled].should be_true
+        options[:color].should be_true
       end
     end
   end

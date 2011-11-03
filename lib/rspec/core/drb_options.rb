@@ -6,7 +6,7 @@ class RSpec::Core::DrbOptions
 
   def options
     argv = []
-    argv << "--color"        if @submitted_options[:color_enabled]
+    argv << "--color"        if @submitted_options[:color]
     argv << "--profile"      if @submitted_options[:profile_examples]
     argv << "--backtrace"    if @submitted_options[:full_backtrace]
     argv << "--tty"          if @submitted_options[:tty]

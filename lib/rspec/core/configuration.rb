@@ -8,8 +8,8 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
-      def self.define_predicate_for(name)
-        alias_method "#{name}?", name
+      def self.define_predicate_for(*names)
+        names.each {|name| alias_method "#{name}?", name}
       end
 
       # @api private
@@ -78,7 +78,7 @@ MESSAGE
         @mock_framework = nil
         @files_to_run = []
         @formatters = []
-        @color_enabled = false
+        @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
@@ -254,22 +254,26 @@ MESSAGE
         @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
       end
 
-      def color_enabled
-        @color_enabled && output_to_tty?
+      def color
+        @color && output_to_tty?
       end
 
-      define_predicate_for :color_enabled
-
-      def color_enabled=(bool)
+      def color=(bool)
         return unless bool
-        @color_enabled = true
+        @color = true
         if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
           unless ENV['ANSICON']
             warn "You must use ANSICON 1.31 or later (http://adoxa.110mb.com/ansicon/) to use colour on Windows"
-            @color_enabled = false
+            @color = false
           end
         end
       end
+
+      # TODO - deprecate color_enabled - probably not until the last 2.x
+      # release before 3.0
+      alias_method :color_enabled, :color
+      alias_method :color_enabled=, :color=
+      define_predicate_for :color_enabled, :color
 
       def libs=(libs)
         libs.map {|lib| $LOAD_PATH.unshift lib}

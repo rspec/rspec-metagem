@@ -75,7 +75,7 @@ Spork.prefork do
 
     # runtime options
     c.treat_symbols_as_metadata_keys_with_true_values = true
-    c.color_enabled = !in_editor?
+    c.color = !in_editor?
     c.filter_run :focus
     c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|

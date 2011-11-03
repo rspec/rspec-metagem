@@ -12,6 +12,12 @@
   * Make reporter.report an API (David Chelimsky)
     * supports extension tools like interative_rspec
 
+* Changes
+  * change `config.color_enabled` (getter/setter/predicate) to `color` to align
+    with `--[no]-color` CLI option.
+    * `color_enabled` is still supported for now, but will likley be deprecated
+      in a 2.x release so we can remove it in 3.0.
+
 * Bug fixes
   * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
   * Fix bug where full descriptions of groups nested 3 deep  were repeated.
