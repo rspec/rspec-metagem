@@ -95,7 +95,7 @@ module RSpec::Core
         # this is necessary to ensure that color works correctly on windows
         config.should_receive(:error_stream=).ordered
         config.should_receive(:output_stream=).ordered
-        config.should_receive(:color=).ordered
+        config.should_receive(:force).with(:color => true).ordered
         command_line.run(err, out) rescue nil
       end
 

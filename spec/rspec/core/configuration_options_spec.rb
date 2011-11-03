@@ -54,6 +54,13 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
       config.exclusion_filter.should have_key(:slow)
     end
+
+    it "forces color_enabled" do
+      opts = config_options_object(*%w[--color])
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:force).with(:color => true)
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color, and --colour" do

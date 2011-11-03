@@ -85,6 +85,11 @@ MESSAGE
         @default_path = 'spec'
         @exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
         @seed = srand % 0xFFFF
+        @dominant_options = {}
+      end
+
+      def force(hash)
+        @dominant_options.merge!(hash)
       end
 
       def reset
@@ -255,7 +260,8 @@ MESSAGE
       end
 
       def color
-        @color && output_to_tty?
+        return false unless output_to_tty?
+        value_for(:color, @color)
       end
 
       def color=(bool)
@@ -570,6 +576,14 @@ EOM
       end
 
     private
+
+      def value_for(key, default=nil)
+        # TODO - not sure about this name, but that's partially due to the need
+        # for a default value.  Once we align the CLI options with the
+        # RSpec.configure options we can glean the default from the key, then
+        # this name makes more sense.
+        @dominant_options.has_key?(key) ? @dominant_options[key] : default
+      end
 
       def add_location(file_path, line_numbers)
         # filter_locations is a hash of expanded paths to arrays of line

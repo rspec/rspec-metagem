@@ -512,6 +512,14 @@ module RSpec::Core
           end
         end
       end
+
+      it "prefers incoming cli_args" do
+        config.output_stream = StringIO.new
+        config.output_stream.stub :tty? => true
+        config.force :color => true
+        config.color = false
+        config.color.should be_true
+      end
     end
 
     describe '#formatter=' do
