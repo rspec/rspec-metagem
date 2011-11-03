@@ -51,7 +51,7 @@ module RSpec::Core
     describe "#mock_framework="do
       it "delegates to mock_with" do
         config.should_receive(:mock_with).with(:rspec)
-        config.mock_with :rspec
+        config.mock_framework = :rspec
       end
     end
 
