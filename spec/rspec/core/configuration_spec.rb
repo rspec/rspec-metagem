@@ -422,89 +422,92 @@ module RSpec::Core
       end
     end
 
-    describe "#color_enabled=" do
-      context "given true" do
-        context "with non-tty output and no autotest" do
-          it "does not set color_enabled" do
-            config.output_stream = StringIO.new
-            config.output_stream.stub(:tty?) { false }
-            config.tty = false
-            config.color_enabled = true
-            config.color_enabled.should be_false
-          end
-        end
-
-        context "with tty output" do
-          it "does not set color_enabled" do
-            config.output_stream = StringIO.new
-            config.output_stream.stub(:tty?) { true }
-            config.tty = false
-            config.color_enabled = true
-            config.color_enabled.should be_true
-          end
-        end
-
-        context "with tty set" do
-          it "does not set color_enabled" do
-            config.output_stream = StringIO.new
-            config.output_stream.stub(:tty?) { false }
-            config.tty = true
-            config.color_enabled = true
-            config.color_enabled.should be_true
-          end
-        end
-
-        context "on windows" do
-          before do
-            @original_host  = RbConfig::CONFIG['host_os']
-            RbConfig::CONFIG['host_os'] = 'mingw'
-            config.stub(:require)
-            config.stub(:warn)
-          end
-
-          after do
-            RbConfig::CONFIG['host_os'] = @original_host
-          end
-
-          context "with ANSICON available" do
-            before(:all) do
-              @original_ansicon = ENV['ANSICON']
-              ENV['ANSICON'] = 'ANSICON'
+    %w[color color_enabled].each do |color_option|
+      describe "##{color_option}=" do
+        context "given true" do
+          context "with non-tty output and no autotest" do
+            it "does not set color_enabled" do
+              config.output_stream = StringIO.new
+              config.output_stream.stub(:tty?) { false }
+              config.tty = false
+              config.send "#{color_option}=", true
+              config.send(color_option).should be_false
             end
+          end
 
-            after(:all) do
-              ENV['ANSICON'] = @original_ansicon
-            end
-
-            it "enables colors" do
+          context "with tty output" do
+            it "does not set color_enabled" do
               config.output_stream = StringIO.new
               config.output_stream.stub(:tty?) { true }
-              config.color_enabled = true
-              config.color_enabled.should be_true
-            end
-
-            it "leaves output stream intact" do
-              config.output_stream = $stdout
-              config.stub(:require) do |what|
-                config.output_stream = 'foo' if what =~ /Win32/
-              end
-              config.color_enabled = true
-              config.output_stream.should eq($stdout)
+              config.tty = false
+              config.send "#{color_option}=", true
+              config.send(color_option).should be_true
             end
           end
 
-          context "with ANSICON NOT available" do
-            it "warns to install ANSICON" do
-              config.stub(:require) { raise LoadError }
-              config.should_receive(:warn).
-                with(/You must use ANSICON/)
-              config.color_enabled = true
+          context "with tty set" do
+            it "does not set color_enabled" do
+              config.output_stream = StringIO.new
+              config.output_stream.stub(:tty?) { false }
+              config.tty = true
+              config.send "#{color_option}=", true
+              config.send(color_option).should be_true
+            end
+          end
+
+          context "on windows" do
+            before do
+              @original_host  = RbConfig::CONFIG['host_os']
+              RbConfig::CONFIG['host_os'] = 'mingw'
+              config.stub(:require)
+              config.stub(:warn)
             end
 
-            it "sets color_enabled to false" do
-              config.stub(:require) { raise LoadError }
-              config.color_enabled = true
-              config.color_enabled.should be_false
+            after do
+              RbConfig::CONFIG['host_os'] = @original_host
+            end
+
+            context "with ANSICON available" do
+              before(:all) do
+                @original_ansicon = ENV['ANSICON']
+                ENV['ANSICON'] = 'ANSICON'
+              end
+
+              after(:all) do
+                ENV['ANSICON'] = @original_ansicon
+              end
+
+              it "enables colors" do
+                config.output_stream = StringIO.new
+                config.output_stream.stub(:tty?) { true }
+                config.send "#{color_option}=", true
+                config.send(color_option).should be_true
+              end
+
+              it "leaves output stream intact" do
+                config.output_stream = $stdout
+                config.stub(:require) do |what|
+                  config.output_stream = 'foo' if what =~ /Win32/
+                end
+                config.send "#{color_option}=", true
+                config.output_stream.should eq($stdout)
+              end
+            end
+
+            context "with ANSICON NOT available" do
+              it "warns to install ANSICON" do
+                config.stub(:require) { raise LoadError }
+                config.should_receive(:warn).
+                  with(/You must use ANSICON/)
+                config.send "#{color_option}=", true
+              end
+
+              it "sets color_enabled to false" do
+                config.stub(:require) { raise LoadError }
+                config.send "#{color_option}=", true
+                config.color_enabled = true
+                config.send(color_option).should be_false
+              end
             end
           end
         end
