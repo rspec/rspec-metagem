@@ -223,18 +223,22 @@ MESSAGE
       def expect_with(*frameworks)
         assert_no_example_groups_defined(:expect_with)
         @expectation_frameworks.clear
-        frameworks.each do |framework|
+
+        modules = frameworks.map do |framework|
           case framework
           when :rspec
-            require 'rspec/core/expecting/with_rspec'
+            require 'rspec/expectations'
             self.expecting_with_rspec = true
+            ::RSpec::Matchers
           when :stdlib
-            require 'rspec/core/expecting/with_stdlib'
+            require 'test/unit/assertions'
+            ::Test::Unit::Assertions
           else
             raise ArgumentError, "#{framework.inspect} is not supported"
           end
-          @expectation_frameworks << RSpec::Core::ExpectationFrameworkAdapter
         end
+
+        @expectation_frameworks.push(*modules)
       end
 
       def full_backtrace=(true_or_false)

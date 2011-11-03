@@ -1,6 +1,9 @@
 require 'spec_helper'
 require 'tmpdir'
 
+# so the stdlib module is available...
+module Test; module Unit; module Assertions; end; end; end
+
 module RSpec::Core
 
   describe Configuration do
@@ -91,7 +94,7 @@ module RSpec::Core
 
     describe "#expectation_framework" do
       it "defaults to :rspec" do
-        config.should_receive(:require).with('rspec/core/expecting/with_rspec')
+        config.should_receive(:require).with('rspec/expectations')
         config.expectation_frameworks
       end
     end
@@ -104,10 +107,13 @@ module RSpec::Core
     end
 
     describe "#expect_with" do
-      [:rspec, :stdlib].each do |framework|
+      [
+        [:rspec,  'rspec/expectations'],
+        [:stdlib, 'test/unit/assertions']
+      ].each do |(framework, required_file)|
         context "with #{framework}" do
-          it "requires the adapter for #{framework.inspect}" do
-            config.should_receive(:require).with("rspec/core/expecting/with_#{framework}")
+          it "requires #{required_file}" do
+            config.should_receive(:require).with(required_file)
             config.expect_with framework
           end
         end
