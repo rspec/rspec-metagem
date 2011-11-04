@@ -221,6 +221,38 @@ module RSpec::Core
         config.files_to_run.should eq(["spec/rspec/core/resources/a_spec.rb"])
       end
 
+      context "with <path>:<line_number>" do
+        it "overrides inclusion filters set on config" do
+          config.filter_run_including :foo => :bar
+          config.files_or_directories_to_run = "path/to/file.rb:37"
+          config.inclusion_filter.size.should eq(1)
+          config.inclusion_filter[:locations].keys.first.should match(/path\/to\/file\.rb$/)
+          config.inclusion_filter[:locations].values.first.should eq([37])
+        end
+
+        it "overrides inclusion filters set before config" do
+          config.force(:inclusion_filter => {:foo => :bar})
+          config.files_or_directories_to_run = "path/to/file.rb:37"
+          config.inclusion_filter.size.should eq(1)
+          config.inclusion_filter[:locations].keys.first.should match(/path\/to\/file\.rb$/)
+          config.inclusion_filter[:locations].values.first.should eq([37])
+        end
+
+        it "clears exclusion filters set on config" do
+          config.exclusion_filter = { :foo => :bar }
+          config.files_or_directories_to_run = "path/to/file.rb:37"
+          config.exclusion_filter.should be_empty,
+            "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
+        end
+
+        it "clears exclusion filters set before config" do
+          config.force(:exclusion_filter => { :foo => :bar })
+          config.files_or_directories_to_run = "path/to/file.rb:37"
+          config.exclusion_filter.should be_empty,
+            "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
+        end
+      end
+
       context "with default pattern" do
         it "loads files named _spec.rb" do
           config.files_or_directories_to_run = "spec/rspec/core/resources"
@@ -300,7 +332,7 @@ module RSpec::Core
     end
 
     context "with full_description" do
-      it "overrides :focused" do
+      it "overrides filters" do
         config.filter_run :focused => true
         config.full_description = "foo"
         config.filter.should_not have_key(:focused)
@@ -748,13 +780,13 @@ module RSpec::Core
         config.filter.should eq({:line_numbers => [37]})
       end
 
-      it "overrides :focused" do
+      it "overrides filters" do
         config.filter_run :focused => true
         config.line_numbers = ['37']
         config.filter.should eq({:line_numbers => [37]})
       end
 
-      it "prevents :focused" do
+      it "prevents subsequent filters" do
         config.line_numbers = ['37']
         config.filter_run :focused => true
         config.filter.should eq({:line_numbers => [37]})

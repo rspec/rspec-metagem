@@ -610,9 +610,14 @@ EOM
 
       def add_location(file_path, line_numbers)
         # filter_locations is a hash of expanded paths to arrays of line
-        # numbers to match against.
-        filter_locations = @inclusion_filter[:locations] ||= {}
-        (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
+        # numbers to match against. e.g.
+        #   { "path/to/file.rb" => [37, 42] }
+        filter_locations = @inclusion_filter[:locations] ||= Hash.new {|h,k| h[k] = []}
+        @preferred_options.delete(:exclusion_filter)
+        @preferred_options.delete(:inclusion_filter)
+        exclusion_filter.clear
+        inclusion_filter.clear
+        filter_locations[File.expand_path(file_path)].push(*line_numbers)
         filter_run(:locations => filter_locations)
       end
 
