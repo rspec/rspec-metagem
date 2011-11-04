@@ -40,7 +40,12 @@ MESSAGE
           alias_method "#{name}=", "#{opts[:alias]}="
           define_predicate_for name
         else
-          attr_accessor name
+          attr_writer name
+          eval <<-CODE
+            def #{name}
+              value_for(#{name.inspect}, instance_variable_get("@#{name}"))
+            end
+          CODE
           define_predicate_for name
         end
         if opts[:alias_with]

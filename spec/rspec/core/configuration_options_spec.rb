@@ -35,7 +35,7 @@ describe RSpec::Core::ConfigurationOptions do
     it "sends default_path before files_or_directories_to_run" do
       opts = config_options_object(*%w[--default_path spec])
       config = double("config").as_null_object
-      config.should_receive(:default_path=).ordered
+      config.should_receive(:force).with(:default_path => 'spec').ordered
       config.should_receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
     end
@@ -43,7 +43,7 @@ describe RSpec::Core::ConfigurationOptions do
     it "sends pattern before files_or_directories_to_run" do
       opts = config_options_object(*%w[--pattern **/*.spec])
       config = double("config").as_null_object
-      config.should_receive(:pattern=).ordered
+      config.should_receive(:force).with(:pattern => '**/*.spec').ordered
       config.should_receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
     end
@@ -76,18 +76,30 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
-    it "sets full_description" do
-      opts = config_options_object("--example", "this and that")
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:full_description=).with(/this\ and\ that/)
-      opts.configure(config)
-    end
-
-    it "sets line_numbers" do
-      opts = config_options_object(*%w[--line_number 37])
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:line_numbers=).with(["37"])
-      opts.configure(config)
+    [
+      ["--failure-exit-code", "3", :failure_exit_code, 3 ],
+      ["--pattern", "foo/bar", :pattern, "foo/bar"],
+      ["--example", "this and that", :full_description, /this\ and\ that/],
+      ["--failure-exit-code", "37", :failure_exit_code, 37],
+      ["--default_path", "behavior", :default_path, "behavior"],
+      ["--order", "mtime", :order, "mtime"],
+      ["--drb", nil, :drb, true],
+      ["--drb-port", "37", :drb_port, 37],
+      ["--line_number", "42", :line_numbers, ["42"]],
+      ["--seed", "37", :order, "rand:37"],
+      ["--backtrace", nil, :full_backtrace, true],
+      ["--profile", nil, :profile_examples, true],
+      ["--tty", nil, :tty, true]
+    ].each do |cli_option, cli_value, config_key, config_value|
+      it "forces #{config_key}" do
+        opts = config_options_object(*[cli_option, cli_value].compact)
+        config = RSpec::Core::Configuration.new
+        config.should_receive(:force) do |pair|
+          pair.keys.first.should eq(config_key)
+          pair.values.first.should eq(config_value)
+        end
+        opts.configure(config)
+      end
     end
   end
 
@@ -288,7 +300,7 @@ describe RSpec::Core::ConfigurationOptions do
   describe "default_path" do
     it "gets set before files_or_directories_to_run" do
       config = double("config").as_null_object
-      config.should_receive(:default_path=).ordered
+      config.should_receive(:force).with(:default_path => 'foo').ordered
       config.should_receive(:files_or_directories_to_run=).ordered
       opts = config_options_object("--default_path", "foo")
       opts.configure(config)

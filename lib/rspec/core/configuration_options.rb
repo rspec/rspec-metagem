@@ -13,13 +13,7 @@ module RSpec
         formatters = options.delete(:formatters)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
-          # temp to get through refactoring - eventually all options will be
-          # set using force
-          if [:color, :inclusion_filter, :exclusion_filter].include? key
-            config.force key => options[key]
-          else
-            config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
-          end
+          force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key]) 
         end
 
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
@@ -38,6 +32,12 @@ module RSpec
       end
 
     private
+
+      NON_FORCED_OPTIONS = [:requires, :libs, :files_or_directories_to_run]
+
+      def force?(key)
+        !NON_FORCED_OPTIONS.include?(key)
+      end
 
       def order(keys, *ordered)
         ordered.reverse.each do |key|

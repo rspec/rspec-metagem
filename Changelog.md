@@ -8,6 +8,7 @@
     * equivalent of `--order rand:SEED`
   * SharedContext supports `let` (David Chelimsky)
   * Override opposing tags from the command line (David Chelimsky)
+  * Override RSpec.configure tags from the command line (David Chelimsky)
   * Eliminate Ruby warnings (Matijs van Zuijlen)
   * Make reporter.report an API (David Chelimsky)
     * supports extension tools like interative_rspec
