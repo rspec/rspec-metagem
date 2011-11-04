@@ -285,5 +285,4 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
   end
-
 end

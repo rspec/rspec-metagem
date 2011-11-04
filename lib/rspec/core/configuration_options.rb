@@ -12,8 +12,12 @@ module RSpec
       def configure(config)
         formatters = options.delete(:formatters)
 
-        config.line_numbers     = line_numbers     if line_numbers     = options.delete(:line_numbers)
-        config.full_description = full_description if full_description = options.delete(:full_description)
+        if line_numbers = options.delete(:line_numbers)
+          config.line_numbers = line_numbers
+        end
+        if full_description = options.delete(:full_description)
+          config.full_description = full_description
+        end
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
           # temp to get through refactoring - eventually all options will be

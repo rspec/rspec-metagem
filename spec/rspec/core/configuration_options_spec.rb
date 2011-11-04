@@ -75,6 +75,20 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:force).with(:exclusion_filter => {:foo => 'bar'})
       opts.configure(config)
     end
+
+    it "sets full_description" do
+      opts = config_options_object("--example", "this and that")
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:full_description=).with(/this\ and\ that/)
+      opts.configure(config)
+    end
+
+    it "sets line_numbers" do
+      opts = config_options_object(*%w[--line_number 37])
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:line_numbers=).with(["37"])
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color, and --colour" do
