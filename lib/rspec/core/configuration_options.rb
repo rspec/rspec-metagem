@@ -11,6 +11,8 @@ module RSpec
 
       def configure(config)
         formatters = options.delete(:formatters)
+        config.order = options.delete(:order) if options.has_key?(:order)
+        config.seed = options.delete(:seed) if options.has_key?(:seed)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
           force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key]) 

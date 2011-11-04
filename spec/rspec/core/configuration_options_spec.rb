@@ -81,10 +81,8 @@ describe RSpec::Core::ConfigurationOptions do
       ["--pattern", "foo/bar", :pattern, "foo/bar"],
       ["--failure-exit-code", "37", :failure_exit_code, 37],
       ["--default_path", "behavior", :default_path, "behavior"],
-      ["--order", "mtime", :order, "mtime"],
       ["--drb", nil, :drb, true],
       ["--drb-port", "37", :drb_port, 37],
-      ["--seed", "37", :order, "rand:37"],
       ["--backtrace", nil, :full_backtrace, true],
       ["--profile", nil, :profile_examples, true],
       ["--tty", nil, :tty, true]
@@ -98,6 +96,20 @@ describe RSpec::Core::ConfigurationOptions do
         end
         opts.configure(config)
       end
+    end
+
+    it "sets order directly" do
+      opts = config_options_object("--order", "rand")
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      config.order.should eq("rand")
+    end
+
+    it "sets seed directly" do
+      opts = config_options_object("--seed", "37")
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      config.seed.should eq(37)
     end
   end
 
