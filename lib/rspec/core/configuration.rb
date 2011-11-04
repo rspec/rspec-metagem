@@ -43,7 +43,7 @@ MESSAGE
           attr_writer name
           eval <<-CODE
             def #{name}
-              value_for(#{name.inspect}, instance_variable_get("@#{name}"))
+              value_for(#{name.inspect}, defined?(@#{name}) ? @#{name} : nil)
             end
           CODE
           define_predicate_for name
@@ -583,6 +583,7 @@ EOM
         order.to_s.match(/rand/)
       end
 
+      remove_method :order=
       def order=(type)
         order, seed = type.to_s.split(':')
         if order == 'default'
