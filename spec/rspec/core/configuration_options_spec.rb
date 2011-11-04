@@ -79,13 +79,11 @@ describe RSpec::Core::ConfigurationOptions do
     [
       ["--failure-exit-code", "3", :failure_exit_code, 3 ],
       ["--pattern", "foo/bar", :pattern, "foo/bar"],
-      ["--example", "this and that", :full_description, /this\ and\ that/],
       ["--failure-exit-code", "37", :failure_exit_code, 37],
       ["--default_path", "behavior", :default_path, "behavior"],
       ["--order", "mtime", :order, "mtime"],
       ["--drb", nil, :drb, true],
       ["--drb-port", "37", :drb_port, 37],
-      ["--line_number", "42", :line_numbers, ["42"]],
       ["--seed", "37", :order, "rand:37"],
       ["--backtrace", nil, :full_backtrace, true],
       ["--profile", nil, :profile_examples, true],
