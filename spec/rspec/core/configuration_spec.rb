@@ -618,6 +618,12 @@ module RSpec::Core
         config.inclusion_filter[:bar].should be(false)
       end
 
+      it "gets overrided by forced options" do
+        config.force :exclusion_filter => { :foo => true }
+        config.filter_run_including :foo => true
+        config.inclusion_filter.should eq({})
+      end
+
       it "warns if :line_numbers is already a filter" do
         config.filter_run_including :line_numbers => [100]
         config.should_receive(:warn).with(
@@ -662,6 +668,13 @@ module RSpec::Core
 
         config.exclusion_filter[:foo].should be(true)
         config.exclusion_filter[:bar].should be(false)
+      end
+
+      it "gets overrided by forced options" do
+        config.exclusion_filter.clear
+        config.force :inclusion_filter => { :foo => true }
+        config.filter_run_excluding :foo => true
+        config.exclusion_filter.should eq({})
       end
     end
 

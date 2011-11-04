@@ -14,6 +14,19 @@ module RSpec
 
       # @api private
       #
+      # Used internally to have higher priority exclusion filters
+      def self.reconcile_opposing_filters(local, authoritative, filter, opposite_filter)
+        if local[filter] && authoritative[opposite_filter]
+          local[filter].each_pair do |key, value|
+            if authoritative[opposite_filter][key] == value
+              local[filter].delete(key)
+            end
+          end
+        end
+      end
+
+      # @api private
+      #
       # Invoked by the `add_setting` instance method. Use that method on a
       # `Configuration` instance rather than this class method.
       def self.add_setting(name, opts={})
@@ -83,13 +96,14 @@ MESSAGE
         @failure_exit_code = 1
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         @default_path = 'spec'
+        @inclusion_filter = {}
         @exclusion_filter = DEFAULT_EXCLUSION_FILTERS.dup
+        @preferred_options = {}
         @seed = srand % 0xFFFF
-        @dominant_options = {}
       end
 
       def force(hash)
-        @dominant_options.merge!(hash)
+        @preferred_options.merge!(hash)
       end
 
       def reset
@@ -453,9 +467,9 @@ EOM
         if already_set_standalone_filter?
           warn_already_set_standalone_filter(filter)
         elsif contains_standalone_filter?(filter)
-          inclusion_filter.replace(filter)
+          @inclusion_filter.replace(filter)
         else
-          inclusion_filter.merge!(filter)
+          @inclusion_filter.merge!(filter)
         end
       end
 
@@ -465,7 +479,7 @@ EOM
       # want any inclusion filter at all.
       def inclusion_filter=(filter)
         filter = build_metadata_hash_from([filter])
-        filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
+        filter.empty? ? @inclusion_filter.clear : @inclusion_filter.replace(filter)
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -473,7 +487,7 @@ EOM
       # Returns the `inclusion_filter`. If none has been set, returns an empty
       # hash.
       def inclusion_filter
-        @inclusion_filter ||= {}
+        value_for(:inclusion_filter, @inclusion_filter) || {}
       end
 
       alias_method :filter, :inclusion_filter
@@ -489,20 +503,20 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        exclusion_filter.merge!(build_metadata_hash_from(args))
+        @exclusion_filter.merge!(build_metadata_hash_from(args))
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
       # want any exclusion filter at all.
       def exclusion_filter=(filter)
         filter = build_metadata_hash_from([filter])
-        filter.empty? ? exclusion_filter.clear : exclusion_filter.replace(filter)
+        filter.empty? ? @exclusion_filter.clear : @exclusion_filter.replace(filter)
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
       # hash.
       def exclusion_filter
-        @exclusion_filter ||= {}
+        value_for(:exclusion_filter, @exclusion_filter) || {}
       end
 
       STANDALONE_FILTERS = [:line_numbers, :full_description]
@@ -578,17 +592,20 @@ EOM
     private
 
       def value_for(key, default=nil)
-        # TODO - not sure about this name, but that's partially due to the need
-        # for a default value.  Once we align the CLI options with the
-        # RSpec.configure options we can glean the default from the key, then
-        # this name makes more sense.
-        @dominant_options.has_key?(key) ? @dominant_options[key] : default
+        if [:inclusion_filter, :exclusion_filter].any? {|k| key == k}
+          local = { :inclusion_filter => @inclusion_filter, :exclusion_filter => @exclusion_filter }
+          Configuration.reconcile_opposing_filters(local, @preferred_options, :inclusion_filter, :exclusion_filter)
+          Configuration.reconcile_opposing_filters(local, @preferred_options, :exclusion_filter, :inclusion_filter)
+          @preferred_options.has_key?(key) ? default.merge(@preferred_options[key]) : default
+        else
+          @preferred_options.has_key?(key) ? @preferred_options[key] : default
+        end
       end
 
       def add_location(file_path, line_numbers)
         # filter_locations is a hash of expanded paths to arrays of line
         # numbers to match against.
-        filter_locations = ((self.filter || {})[:locations] ||= {})
+        filter_locations = @inclusion_filter[:locations] ||= {}
         (filter_locations[File.expand_path(file_path)] ||= []).push(*line_numbers)
         filter_run(:locations => filter_locations)
       end

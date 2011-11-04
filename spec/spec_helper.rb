@@ -77,6 +77,7 @@ Spork.prefork do
     c.treat_symbols_as_metadata_keys_with_true_values = true
     c.color = !in_editor?
     c.filter_run :focus
+    c.filter_run :foo
     c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|
       case version.to_s

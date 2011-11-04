@@ -10,29 +10,28 @@ module RSpec
       end
 
       def configure(config)
-        formatters       = options.delete(:formatters)
-        inclusion_filter = options.delete(:inclusion_filter)
-        exclusion_filter = options.delete(:exclusion_filter)
+        formatters = options.delete(:formatters)
+
+        config.line_numbers     = line_numbers     if line_numbers     = options.delete(:line_numbers)
+        config.full_description = full_description if full_description = options.delete(:full_description)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
           # temp to get through refactoring - eventually all options will be
           # set using force
-          if key == :color
-            config.force :color => options[key]
+          if [:color, :inclusion_filter, :exclusion_filter].include? key
+            config.force key => options[key]
           else
             config.send("#{key}=", options[key]) if config.respond_to?("#{key}=")
           end
         end
 
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
-        config.filter_run_including inclusion_filter          if inclusion_filter
-        config.filter_run_excluding exclusion_filter          if exclusion_filter
       end
 
       def parse_options
         @options ||= (file_options << command_line_options << env_options).inject do |merged, pending|
-          resolve_opposite_filters(merged, pending, :inclusion_filter, :exclusion_filter)
-          resolve_opposite_filters(merged, pending, :exclusion_filter, :inclusion_filter)
+          Configuration.reconcile_opposing_filters(merged, pending, :inclusion_filter, :exclusion_filter)
+          Configuration.reconcile_opposing_filters(merged, pending, :exclusion_filter, :inclusion_filter)
           merged.merge(pending)
         end
       end
@@ -42,16 +41,6 @@ module RSpec
       end
 
     private
-
-      def resolve_opposite_filters(current,pending,filter,opposite_filter)
-        if current[filter] && pending[opposite_filter]
-          current[filter].each_pair do |key, value|
-            if pending[opposite_filter][key] == value
-              current[filter].delete(key)
-            end
-          end
-        end
-      end
 
       def order(keys, *ordered)
         ordered.reverse.each do |key|

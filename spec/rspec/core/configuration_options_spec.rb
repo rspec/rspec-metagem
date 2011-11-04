@@ -61,6 +61,20 @@ describe RSpec::Core::ConfigurationOptions do
       config.should_receive(:force).with(:color => true)
       opts.configure(config)
     end
+
+    it "forces inclusion_filter" do
+      opts = config_options_object(*%w[--tag foo:bar])
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:force).with(:inclusion_filter => {:foo => 'bar'})
+      opts.configure(config)
+    end
+
+    it "forces exclusion_filter" do
+      opts = config_options_object(*%w[--tag ~foo:bar])
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:force).with(:exclusion_filter => {:foo => 'bar'})
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color, and --colour" do
@@ -277,6 +291,20 @@ describe RSpec::Core::ConfigurationOptions do
       options[:line_numbers].should eq(["37"])
       options[:debug].should be_true
       options[:drb].should be_true
+    end
+
+    it "merges positive tags" do
+      pending
+      File.open("./.rspec", "w") {|f| f << "--tag foo:bar"}
+      parse_options("--tag", "baz:bam")[:inclusion_filter].
+        should eq({:foo => 'bar', :baz => 'bam'})
+    end
+
+    it "merges negative tags" do
+      pending
+      File.open("./.rspec", "w") {|f| f << "--tag ~foo:bar"}
+      parse_options("--tag", "~baz:bam")[:exclusion_filter].
+        should eq({:foo => 'bar', :baz => 'bam'})
     end
 
     it "prefers SPEC_OPTS over CLI" do
