@@ -651,7 +651,7 @@ module RSpec::Core
       end
 
       it "gets overrided by forced options" do
-        config.force :exclusion_filter => { :foo => true }
+        config.force_exclude :foo => true
         config.filter_run_including :foo => true
         config.inclusion_filter.should eq({})
       end
@@ -704,7 +704,7 @@ module RSpec::Core
 
       it "gets overrided by forced options" do
         config.exclusion_filter.clear
-        config.force :inclusion_filter => { :foo => true }
+        config.force_include :foo => true
         config.filter_run_excluding :foo => true
         config.exclusion_filter.should eq({})
       end

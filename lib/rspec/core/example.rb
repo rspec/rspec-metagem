@@ -132,6 +132,10 @@ module RSpec
         finish(reporter)
       end
 
+      def any_apply?(filters)
+        metadata.any_apply?(filters)
+      end
+
     private
 
       def with_around_hooks(&block)

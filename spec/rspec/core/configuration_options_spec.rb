@@ -65,14 +65,14 @@ describe RSpec::Core::ConfigurationOptions do
     it "forces inclusion_filter" do
       opts = config_options_object(*%w[--tag foo:bar])
       config = RSpec::Core::Configuration.new
-      config.should_receive(:force).with(:inclusion_filter => {:foo => 'bar'})
+      config.should_receive(:force_include).with(:foo => 'bar')
       opts.configure(config)
     end
 
     it "forces exclusion_filter" do
       opts = config_options_object(*%w[--tag ~foo:bar])
       config = RSpec::Core::Configuration.new
-      config.should_receive(:force).with(:exclusion_filter => {:foo => 'bar'})
+      config.should_receive(:force_exclude).with(:foo => 'bar')
       opts.configure(config)
     end
 

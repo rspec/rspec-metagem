@@ -121,7 +121,11 @@ module RSpec::Core
 
       shared_examples "matching filters" do
         context "inclusion" do
-          before { world.stub(:inclusion_filter).and_return(filter_metadata) }
+          before do
+            filter = Filter.new
+            filter.include filter_metadata
+            world.stub(:filter => filter)
+          end
 
           it "includes examples in groups matching filter" do
             group = ExampleGroup.describe("does something", spec_metadata)
@@ -145,7 +149,12 @@ module RSpec::Core
         end
 
         context "exclusion" do
-          before { world.stub(:exclusion_filter).and_return(filter_metadata) }
+          before do
+            filter = Filter.new
+            filter.exclude filter_metadata
+            world.stub(:filter => filter)
+          end
+
           it "excludes examples in groups matching filter" do
             group = ExampleGroup.describe("does something", spec_metadata)
             group.stub(:world) { world }
@@ -245,7 +254,9 @@ module RSpec::Core
 
       context "with no examples or groups that match filters" do
         it "returns none" do
-          world.stub(:inclusion_filter).and_return({ :awesome => false })
+          filter = Filter.new
+          filter.include :awesome => false
+          world.stub(:filter => filter)
           group = ExampleGroup.describe
           group.stub(:world) { world }
           group.example("does something")

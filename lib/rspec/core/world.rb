@@ -2,27 +2,6 @@ module RSpec
   module Core
     class World
 
-      module Describable
-        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
-        PROJECT_DIR = File.expand_path('.')
-
-        def description
-          reject { |k, v| RSpec::Core::Configuration::DEFAULT_EXCLUSION_FILTERS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
-        end
-
-        def empty_without_conditional_filters?
-          reject { |k, v| RSpec::Core::Configuration::DEFAULT_EXCLUSION_FILTERS[k] == v }.empty?
-        end
-
-        def reject
-          super rescue {}
-        end
-
-        def empty?
-          super rescue false
-        end
-      end
-
       include RSpec::Core::Hooks
 
       attr_reader :example_groups, :filtered_examples, :wants_to_quit
@@ -31,13 +10,10 @@ module RSpec
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         @example_groups = [].extend(Extensions::Ordered)
-        @configuration.inclusion_filter.extend(Describable)
-        @configuration.exclusion_filter.extend(Describable)
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
-            examples = apply_exclusion_filters(examples, exclusion_filter)
-            examples = apply_inclusion_filters(examples, inclusion_filter)
+            examples = filter.filter(examples)
             examples.uniq
             examples.extend(Extensions::Ordered)
           end
@@ -48,17 +24,22 @@ module RSpec
         example_groups.clear
       end
 
+      # TODO - fix me
+      def filter
+        @configuration.instance_variable_get("@filter")
+      end
+
       def register(example_group)
         example_groups << example_group
         example_group
       end
 
       def inclusion_filter
-        @configuration.inclusion_filter.extend(Describable)
+        @configuration.inclusion_filter
       end
 
       def exclusion_filter
-        @configuration.exclusion_filter.extend(Describable)
+        @configuration.exclusion_filter
       end
 
       def configure_group(group)
@@ -71,16 +52,6 @@ module RSpec
 
       def example_count
         example_groups.collect {|g| g.descendants}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
-      end
-
-      def apply_inclusion_filters(examples, filters)
-        filters.empty? ? examples : examples.select {|e| e.metadata.any_apply?(filters)}
-      end
-
-      alias_method :find, :apply_inclusion_filters
-
-      def apply_exclusion_filters(examples, filters)
-        filters.empty? ? examples : examples.reject {|e| e.metadata.any_apply?(filters)}
       end
 
       def preceding_declaration_line(filter_line)
@@ -99,7 +70,7 @@ module RSpec
         if @configuration.run_all_when_everything_filtered? && example_count.zero?
           reporter.message( "No examples matched #{inclusion_filter.description}. Running all.")
           filtered_examples.clear
-          @configuration.inclusion_filter.clear
+          inclusion_filter.clear
         end
 
         announce_inclusion_filter filter_announcements

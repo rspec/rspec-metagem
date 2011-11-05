@@ -76,11 +76,6 @@ MESSAGE
       add_setting :show_failures_in_pending_blocks
       add_setting :order
 
-      DEFAULT_EXCLUSION_FILTERS = {
-        :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
-        :unless => lambda { |value| value }
-      }
-
       DEFAULT_BACKTRACE_PATTERNS = [
         /\/lib\d*\/ruby\//,
         /org\/jruby\//,
@@ -102,13 +97,20 @@ MESSAGE
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         @default_path = 'spec'
         @filter = Filter.new
-        @filter.exclude DEFAULT_EXCLUSION_FILTERS.dup
         @preferred_options = {}
         @seed = srand % 0xFFFF
       end
 
       def force(hash)
         @preferred_options.merge!(hash)
+      end
+
+      def force_include(hash)
+        @filter.include hash
+      end
+
+      def force_exclude(hash)
+        @filter.exclude hash
       end
 
       def reset
@@ -474,7 +476,7 @@ EOM
         elsif contains_standalone_filter?(filter)
           @filter.inclusions.replace(filter)
         else
-          @filter.include filter
+          @filter.include :late, filter
         end
       end
 
@@ -484,7 +486,7 @@ EOM
       # want any inclusion filter at all.
       def inclusion_filter=(filter)
         filter = build_metadata_hash_from([filter])
-        filter.empty? ? @filter.inclusions.clear : @filter.inclusions.replace(filter)
+        filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -492,7 +494,7 @@ EOM
       # Returns the `inclusion_filter`. If none has been set, returns an empty
       # hash.
       def inclusion_filter
-        value_for(:inclusion_filter, @filter.inclusions) || {}
+        @filter.inclusions
       end
 
       alias_method :filter, :inclusion_filter
@@ -508,20 +510,20 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        @filter.exclude build_metadata_hash_from(args)
+        @filter.exclude :late, build_metadata_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
       # want any exclusion filter at all.
       def exclusion_filter=(filter)
         filter = build_metadata_hash_from([filter])
-        filter.empty? ? @filter.exclusions.clear : @filter.exclusions.replace(filter)
+        filter.empty? ? exclusion_filter.clear : exclusion_filter.replace(filter)
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
       # hash.
       def exclusion_filter
-        value_for(:exclusion_filter, @filter.exclusions) || {}
+        @filter.exclusions
       end
 
       STANDALONE_FILTERS = [:line_numbers, :full_description]
@@ -598,14 +600,7 @@ EOM
     private
 
       def value_for(key, default=nil)
-        if [:inclusion_filter, :exclusion_filter].any? {|k| key == k}
-          local = { :inclusion_filter => @filter.inclusions, :exclusion_filter => @filter.exclusions }
-          Configuration.reconcile_opposing_filters(local, @preferred_options, :inclusion_filter, :exclusion_filter)
-          Configuration.reconcile_opposing_filters(local, @preferred_options, :exclusion_filter, :inclusion_filter)
-          @preferred_options.has_key?(key) ? default.merge(@preferred_options[key]) : default
-        else
-          @preferred_options.has_key?(key) ? @preferred_options[key] : default
-        end
+        @preferred_options.has_key?(key) ? @preferred_options[key] : default
       end
 
       def add_location(file_path, line_numbers)
