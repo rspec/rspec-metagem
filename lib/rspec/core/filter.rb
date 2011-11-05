@@ -6,6 +6,8 @@ module RSpec
         :unless => lambda { |value| value }
       }
 
+      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
+
       module Describable
         PROC_HEX_NUMBER = /0x[0-9a-f]+@/
         PROJECT_DIR = File.expand_path('.')
@@ -52,6 +54,17 @@ module RSpec
         extend(BackwardCompatibility)
       end
 
+      def add_location(file_path, line_numbers)
+        # filter_locations is a hash of expanded paths to arrays of line
+        # numbers to match against. e.g.
+        #   { "path/to/file.rb" => [37, 42] }
+        filter_locations = @inclusions[:locations] ||= Hash.new {|h,k| h[k] = []}
+        @exclusions.clear
+        @inclusions.clear
+        filter_locations[File.expand_path(file_path)].push(*line_numbers)
+        include :locations => filter_locations
+      end
+
       def empty?
         inclusions.empty? && exclusions.empty_without_conditional_filters?
       end
@@ -71,21 +84,35 @@ module RSpec
       end
 
       def exclude(*args)
-        @exclusions = update(@exclusions, @inclusions, *args)
+        update(@exclusions, @inclusions, *args)
       end
 
       def include(*args)
-        @inclusions = update(@inclusions, @exclusions, *args)
+        return if already_set_standalone_filter?
+
+        is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : update(@inclusions, @exclusions, *args)
       end
 
       def update(orig, opposite, *updates)
         if updates.length == 2
-          updated = updates.last.merge(orig)
-          opposite.each_key {|k| updated.delete(k)}
+          if updates[0] == :replace
+            updated = updates.last
+          else
+            updated = updates.last.merge(orig)
+            opposite.each_key {|k| updated.delete(k)}
+          end
           orig.replace(updated)
         else
           orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
         end
+      end
+
+      def already_set_standalone_filter?
+        is_standalone_filter?(inclusions)
+      end
+
+      def is_standalone_filter?(filter)
+        STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
       end
     end
   end

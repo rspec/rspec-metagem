@@ -136,5 +136,29 @@ module RSpec::Core
         filter.exclusions.description.should eq({ :unless => :custom_filter }.inspect)
       end
     end
+
+    it "clears the inclusion filter on include :line_numbers" do
+      filter = Filter.new
+      filter.stub(:warn)
+      filter.include :foo => :bar
+      filter.include :line_numbers => [100]
+      filter.inclusions.should eq(:line_numbers => [100])
+    end
+
+    it "clears the inclusion filter on include :locations" do
+      filter = Filter.new
+      # filter.stub(:warn)
+      filter.include :foo => :bar
+      filter.include :locations => { "path/to/file.rb" => [37] }
+      filter.inclusions.should eq(:locations => { "path/to/file.rb" => [37] })
+    end
+
+    it "clears the inclusion filter on include :full_description" do
+      filter = Filter.new
+      filter.stub(:warn)
+      filter.include :foo => :bar
+      filter.include :full_description => "this and that"
+      filter.inclusions.should eq(:full_description => "this and that")
+    end
   end
 end

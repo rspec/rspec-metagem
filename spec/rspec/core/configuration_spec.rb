@@ -656,23 +656,6 @@ module RSpec::Core
         config.inclusion_filter.should eq({})
       end
 
-      it "warns if :line_numbers is already a filter" do
-        config.filter_run_including :line_numbers => [100]
-        config.should_receive(:warn).with(
-          "Filtering by {:foo=>true} is not possible since you " \
-          "are already filtering by {:line_numbers=>[100]}"
-        )
-        config.filter_run_including :foo => true
-      end
-
-      it "warns if :full_description is already a filter" do
-        config.filter_run_including :full_description => 'bar'
-        config.should_receive(:warn).with(
-          "Filtering by {:foo=>true} is not possible since you " \
-          "are already filtering by {:full_description=>\"bar\"}"
-        )
-        config.filter_run_including :foo => true
-      end
     end
 
     describe "#filter_run_excluding" do
@@ -773,7 +756,7 @@ module RSpec::Core
     end
 
     describe "line_numbers=" do
-      before { config.stub(:warn) }
+      before { config.instance_variable_get("@filter").stub(:warn) }
 
       it "sets the line numbers" do
         config.line_numbers = ['37']

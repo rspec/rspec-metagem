@@ -386,7 +386,7 @@ EOM
           else
             if file =~ /^(.*?)((?:\:\d+)+)$/
               path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
-              add_location path, lines
+              @filter.add_location path, lines
               path
             else
               file
@@ -451,29 +451,31 @@ EOM
       # to true and `args` includes any symbols that are not part of a hash,
       # each symbol is treated as a key in the hash with the value `true`.
       #
+      # ### Note
+      #
+      # Filters set using this method can be overridden from the command line
+      # or config files (e.g. `.rspec`).
+      #
       # @example
       #     filter_run_including :x => 'y'
       #
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_including :foo # results in {:foo => true}
       def filter_run_including(*args)
-        filter = build_metadata_hash_from(args)
-        if already_set_standalone_filter?
-          warn_already_set_standalone_filter(filter)
-        elsif contains_standalone_filter?(filter)
-          @filter.inclusions.replace(filter)
-        else
-          @filter.include :late, filter
-        end
+        @filter.include :low_priority, build_metadata_hash_from(args)
       end
 
       alias_method :filter_run, :filter_run_including
 
       # Clears and reassigns the `inclusion_filter`. Set to `nil` if you don't
       # want any inclusion filter at all.
+      #
+      # ### Warning
+      #
+      # This overrides any inclusion filters/tags set on the command line or in
+      # configuration files.
       def inclusion_filter=(filter)
-        filter = build_metadata_hash_from([filter])
-        filter.empty? ? inclusion_filter.clear : inclusion_filter.replace(filter)
+        @filter.include :replace, build_metadata_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -491,38 +493,35 @@ EOM
       # to true and `args` excludes any symbols that are not part of a hash,
       # each symbol is treated as a key in the hash with the value `true`.
       #
+      # ### Note
+      #
+      # Filters set using this method can be overridden from the command line
+      # or config files (e.g. `.rspec`).
+      #
       # @example
       #     filter_run_excluding :x => 'y'
       #
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        @filter.exclude :late, build_metadata_hash_from(args)
+        @filter.exclude :low_priority, build_metadata_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
       # want any exclusion filter at all.
+      #
+      # ### Warning
+      #
+      # This overrides any exclusion filters/tags set on the command line or in
+      # configuration files.
       def exclusion_filter=(filter)
-        filter = build_metadata_hash_from([filter])
-        filter.empty? ? exclusion_filter.clear : exclusion_filter.replace(filter)
+        @filter.exclude :replace, build_metadata_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
       # hash.
       def exclusion_filter
         @filter.exclusions
-      end
-
-      STANDALONE_FILTERS = [:line_numbers, :full_description]
-
-      # @api private
-      def already_set_standalone_filter?
-        contains_standalone_filter?(inclusion_filter)
-      end
-
-      # @api private
-      def contains_standalone_filter?(filter)
-        STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
       end
 
       def include(mod, *args)
@@ -588,24 +587,6 @@ EOM
 
       def value_for(key, default=nil)
         @preferred_options.has_key?(key) ? @preferred_options[key] : default
-      end
-
-      def add_location(file_path, line_numbers)
-        # filter_locations is a hash of expanded paths to arrays of line
-        # numbers to match against. e.g.
-        #   { "path/to/file.rb" => [37, 42] }
-        filter_locations = @filter.inclusions[:locations] ||= Hash.new {|h,k| h[k] = []}
-        @preferred_options.delete(:exclusion_filter)
-        @preferred_options.delete(:inclusion_filter)
-        exclusion_filter.clear
-        inclusion_filter.clear
-        filter_locations[File.expand_path(file_path)].push(*line_numbers)
-        filter_run(:locations => filter_locations)
-      end
-
-      def warn_already_set_standalone_filter(options)
-        warn "Filtering by #{options.inspect} is not possible since " \
-          "you are already filtering by #{inclusion_filter.inspect}"
       end
 
       def assert_no_example_groups_defined(config_option)
