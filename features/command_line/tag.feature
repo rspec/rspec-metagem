@@ -33,19 +33,19 @@ Feature: --tag option
 
   Scenario: filter examples with a simple tag
     When I run `rspec . --tag focus`
-    Then the output should contain "Run filtered including {:focus=>true}"
+    Then the output should contain "include {:focus=>true}"
     And the examples should all pass
 
   Scenario: filter examples with a simple tag and @
     When I run `rspec . --tag @focus`
-    Then the output should contain "Run filtered including {:focus=>true}"
+    Then the output should contain "include {:focus=>true}"
     Then the examples should all pass
 
   Scenario: filter examples with a name:value tag
     When I run `rspec . --tag type:special`
     Then the output should contain:
       """
-      Run filtered including {:type=>"special"}
+      include {:type=>"special"}
       """
     And the output should contain "2 examples"
     And the examples should all pass
@@ -54,25 +54,25 @@ Feature: --tag option
     When I run `rspec . --tag @type:special`
     Then the output should contain:
       """
-      Run filtered including {:type=>"special"}
+      include {:type=>"special"}
       """
     And the examples should all pass
   
   Scenario: exclude examples with a simple tag
     When I run `rspec . --tag ~skip`
-    Then the output should contain "Run filtered excluding {:skip=>true}"
+    Then the output should contain "exclude {:skip=>true}"
     Then the examples should all pass
 
   Scenario: exclude examples with a simple tag and @
     When I run `rspec . --tag ~@skip`
-    Then the output should contain "Run filtered excluding {:skip=>true}"
+    Then the output should contain "exclude {:skip=>true}"
     Then the examples should all pass
     
   Scenario: exclude examples with a name:value tag
     When I run `rspec . --tag ~speed:slow`
     Then the output should contain:
       """
-      Run filtered excluding {:speed=>"slow"}
+      exclude {:speed=>"slow"}
       """
     Then the examples should all pass
   
@@ -80,11 +80,12 @@ Feature: --tag option
     When I run `rspec . --tag ~@speed:slow`
     Then the output should contain:
       """
-      Run filtered excluding {:speed=>"slow"}
+      exclude {:speed=>"slow"}
       """
     Then the examples should all pass
 
   Scenario: filter examples with a simple tag, exclude examples with another tag
     When I run `rspec . --tag focus --tag ~skip`
-    Then the output should contain "Run filtered including {:focus=>true}, excluding {:skip=>true}"
+    Then the output should contain "include {:focus=>true}"
+    And the output should contain "exclude {:skip=>true}"
     And the examples should all pass
