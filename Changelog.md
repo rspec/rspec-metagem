@@ -12,6 +12,7 @@
     * override RSpec.configure tags from the command line
     * --line_number 37 overrides all other filters
     * path/to/file.rb:37 overrides all other filters
+    * refactor: consolidate filter management in a FilterManger object
   * Eliminate Ruby warnings (Matijs van Zuijlen)
   * Make reporter.report an API (David Chelimsky)
     * supports extension tools like interative_rspec
@@ -34,7 +35,7 @@
 * Deprecations
   * :alias option on `configuration.add_setting`. Use `:alias_with` on the
     original setting declaration instead.
-    
+
 ### 2.7.1 / 2011-10-20
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.7.0...v2.7.1)
