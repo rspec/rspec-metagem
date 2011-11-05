@@ -13,7 +13,7 @@ module RSpec
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
-            examples = filter.filter(examples)
+            examples = filter_manager.prune(examples)
             examples.uniq
             examples.extend(Extensions::Ordered)
           end
@@ -24,9 +24,8 @@ module RSpec
         example_groups.clear
       end
 
-      # TODO - fix me
-      def filter
-        @configuration.instance_variable_get("@filter")
+      def filter_manager
+        @configuration.filter_manager
       end
 
       def register(example_group)
@@ -70,7 +69,7 @@ module RSpec
         announce_inclusion_filter filter_announcements
         announce_exclusion_filter filter_announcements
 
-        unless filter.empty?
+        unless filter_manager.empty?
           reporter.message("Run options:\n  #{filter_announcements.join("\n  ")}")
         end
 
@@ -82,7 +81,7 @@ module RSpec
 
         if example_count.zero?
           example_groups.clear
-          if filter.empty?
+          if filter_manager.empty?
             reporter.message("No examples found.")
           elsif exclusion_filter.empty_without_conditional_filters?
             message = everything_filtered_message

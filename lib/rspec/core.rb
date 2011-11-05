@@ -1,4 +1,4 @@
-require 'rspec/core/filter'
+require 'rspec/core/filter_manager'
 require 'rspec/core/dsl'
 require 'rspec/core/extensions'
 require 'rspec/core/load_path'

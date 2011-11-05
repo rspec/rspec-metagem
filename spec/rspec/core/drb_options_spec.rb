@@ -46,13 +46,13 @@ describe RSpec::Core::DrbOptions do
       it "leaves inclusion tags intact" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv
-        coo.filter.inclusions.should eq( {:tag=>true} )
+        coo.filter_manager.inclusions.should eq( {:tag=>true} )
       end
 
       it "leaves inclusion tags with values intact" do
         coo = config_options_object("--tag", "tag:foo")
         coo.drb_argv
-        coo.filter.inclusions.should eq( {:tag=>'foo'} )
+        coo.filter_manager.inclusions.should eq( {:tag=>'foo'} )
       end
 
       it "includes the exclusion tags" do
@@ -68,13 +68,13 @@ describe RSpec::Core::DrbOptions do
       it "leaves exclusion tags intact" do
         coo = config_options_object("--tag", "~tag")
         coo.drb_argv
-        coo.filter.exclusions.should include(:tag=>true)
+        coo.filter_manager.exclusions.should include(:tag=>true)
       end
 
       it "leaves exclusion tags with values intact" do
         coo = config_options_object("--tag", "~tag:foo")
         coo.drb_argv
-        coo.filter.exclusions.should include(:tag=>'foo')
+        coo.filter_manager.exclusions.should include(:tag=>'foo')
       end
     end
 

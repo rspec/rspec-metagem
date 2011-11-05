@@ -83,21 +83,23 @@ MESSAGE
         @failure_exit_code = 1
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         @default_path = 'spec'
-        @filter = Filter.new
+        @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
       end
+
+      attr_accessor :filter_manager
 
       def force(hash)
         @preferred_options.merge!(hash)
       end
 
       def force_include(hash)
-        @filter.include hash
+        filter_manager.include hash
       end
 
       def force_exclude(hash)
-        @filter.exclude hash
+        filter_manager.exclude hash
       end
 
       def reset
@@ -386,7 +388,7 @@ EOM
           else
             if file =~ /^(.*?)((?:\:\d+)+)$/
               path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
-              @filter.add_location path, lines
+              filter_manager.add_location path, lines
               path
             else
               file
@@ -462,7 +464,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_including :foo # results in {:foo => true}
       def filter_run_including(*args)
-        @filter.include :low_priority, build_metadata_hash_from(args)
+        filter_manager.include :low_priority, build_metadata_hash_from(args)
       end
 
       alias_method :filter_run, :filter_run_including
@@ -475,7 +477,7 @@ EOM
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        @filter.include :replace, build_metadata_hash_from([filter])
+        filter_manager.include :replace, build_metadata_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -483,7 +485,7 @@ EOM
       # Returns the `inclusion_filter`. If none has been set, returns an empty
       # hash.
       def inclusion_filter
-        @filter.inclusions
+        filter_manager.inclusions
       end
 
       alias_method :filter, :inclusion_filter
@@ -504,7 +506,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        @filter.exclude :low_priority, build_metadata_hash_from(args)
+        filter_manager.exclude :low_priority, build_metadata_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
@@ -515,13 +517,13 @@ EOM
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        @filter.exclude :replace, build_metadata_hash_from([filter])
+        filter_manager.exclude :replace, build_metadata_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
       # hash.
       def exclusion_filter
-        @filter.exclusions
+        filter_manager.exclusions
       end
 
       def include(mod, *args)

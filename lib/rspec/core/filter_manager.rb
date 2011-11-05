@@ -1,6 +1,6 @@
 module RSpec
   module Core
-    class Filter
+    class FilterManager
       DEFAULT_EXCLUSIONS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
         :unless => lambda { |value| value }
@@ -13,11 +13,11 @@ module RSpec
         PROJECT_DIR = File.expand_path('.')
 
         def description
-          reject { |k, v| RSpec::Core::Filter::DEFAULT_EXCLUSIONS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+          reject { |k, v| RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
         end
 
         def empty_without_conditional_filters?
-          reject { |k, v| RSpec::Core::Filter::DEFAULT_EXCLUSIONS[k] == v }.empty?
+          reject { |k, v| RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.empty?
         end
 
         def reject
