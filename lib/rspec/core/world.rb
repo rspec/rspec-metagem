@@ -31,6 +31,8 @@ module RSpec
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         @example_groups = [].extend(Extensions::Ordered)
+        @configuration.inclusion_filter.extend(Describable)
+        @configuration.exclusion_filter.extend(Describable)
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
