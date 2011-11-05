@@ -14,19 +14,6 @@ module RSpec
 
       # @api private
       #
-      # Used internally to have higher priority exclusion filters
-      def self.reconcile_opposing_filters(local, authoritative, filter, opposite_filter)
-        if local[filter] && authoritative[opposite_filter]
-          local[filter].each_pair do |key, value|
-            if authoritative[opposite_filter][key] == value
-              local[filter].delete(key)
-            end
-          end
-        end
-      end
-
-      # @api private
-      #
       # Invoked by the `add_setting` instance method. Use that method on a
       # `Configuration` instance rather than this class method.
       def self.add_setting(name, opts={})

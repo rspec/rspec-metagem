@@ -62,18 +62,8 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
-    it "forces inclusion_filter" do
-      opts = config_options_object(*%w[--tag foo:bar])
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:force_include).with(:foo => 'bar')
-      opts.configure(config)
-    end
-
-    it "forces exclusion_filter" do
-      opts = config_options_object(*%w[--tag ~foo:bar])
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:force_exclude).with(:foo => 'bar')
-      opts.configure(config)
+    it "assigns filter" do
+      pending
     end
 
     [
@@ -336,20 +326,6 @@ describe RSpec::Core::ConfigurationOptions do
       options[:drb].should be_true
     end
 
-    it "merges positive tags" do
-      pending
-      File.open("./.rspec", "w") {|f| f << "--tag foo:bar"}
-      parse_options("--tag", "baz:bam")[:inclusion_filter].
-        should eq({:foo => 'bar', :baz => 'bam'})
-    end
-
-    it "merges negative tags" do
-      pending
-      File.open("./.rspec", "w") {|f| f << "--tag ~foo:bar"}
-      parse_options("--tag", "~baz:bam")[:exclusion_filter].
-        should eq({:foo => 'bar', :baz => 'bam'})
-    end
-
     it "prefers SPEC_OPTS over CLI" do
       ENV["SPEC_OPTS"] = "--format spec_opts"
       parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
@@ -365,30 +341,6 @@ describe RSpec::Core::ConfigurationOptions do
       File.open("./.rspec", "w") {|f| f << "--format local"}
       File.open("~/.rspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
-    end
-
-    it "overwrites opposite tags according to precedence (inclusion overwrites exclusion)" do
-      File.open("./.rspec", "w") {|f| f << "--tag foo"}
-      File.open("~/.rspec", "w") {|f| f << "--tag ~foo"}
-      parsed = parse_options
-      parsed[:inclusion_filter].should eq(:foo => true)
-      parsed[:exclusion_filter].should be_empty
-    end
-
-    it "does not overwrite opposite tags with different values" do
-      File.open("./.rspec", "w") {|f| f << "--tag foo:baa"}
-      File.open("~/.rspec", "w") {|f| f << "--tag ~foo:brr"}
-      parsed = parse_options
-      parsed[:inclusion_filter].should eq(:foo => 'baa')
-      parsed[:exclusion_filter].should eq(:foo => 'brr')
-    end
-
-    it "overwrites opposite tags according to precedence (exclusion overwrites inclusion)" do
-      File.open("./.rspec", "w") {|f| f << "--tag ~foo"}
-      File.open("~/.rspec", "w") {|f| f << "--tag foo"}
-      parsed = parse_options
-      parsed[:inclusion_filter].should be_empty
-      parsed[:exclusion_filter].should eq(:foo => true)
     end
 
     context "with custom options file" do

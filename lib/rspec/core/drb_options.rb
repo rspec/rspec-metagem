@@ -1,7 +1,8 @@
 # Builds command line arguments to pass to the rspec command over DRb
 class RSpec::Core::DrbOptions
-  def initialize(submitted_options)
+  def initialize(submitted_options, filter)
     @submitted_options = submitted_options
+    @filter = filter
   end
 
   def options
@@ -16,8 +17,8 @@ class RSpec::Core::DrbOptions
 
     add_full_description(argv)
     add_line_numbers(argv)
-    add_filter(argv, :inclusion)
-    add_filter(argv, :exclusion)
+    add_filter(argv, :inclusion, @filter.inclusions)
+    add_filter(argv, :exclusion, @filter.exclusions)
     add_formatters(argv)
     add_libs(argv)
     add_requires(argv)
@@ -41,12 +42,13 @@ class RSpec::Core::DrbOptions
     end
   end
 
-  def add_filter(argv, name)
-    @submitted_options["#{name}_filter".to_sym].each_pair do |k, v|
+  def add_filter(argv, name, hash)
+    hash.each_pair do |k, v|
+      next if [:if,:unless].include?(k)
       tag = name == :inclusion ? k.to_s : "~#{k.to_s}"
       tag << ":#{v.to_s}" if v.is_a?(String)
       argv << "--tag" << tag
-    end if @submitted_options["#{name}_filter".to_sym]
+    end unless hash.empty?
   end
 
   def add_formatters(argv)

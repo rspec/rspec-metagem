@@ -12,8 +12,8 @@ module RSpec
       def configure(config)
         formatters = options.delete(:formatters)
 
-        config.force_exclude options.delete(:exclusion_filter) || {}
-        config.force_include options.delete(:inclusion_filter) || {}
+        # FIXME
+        config.instance_variable_set("@filter", filter)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
           force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key]) 
@@ -23,15 +23,17 @@ module RSpec
       end
 
       def parse_options
-        @options ||= (file_options << command_line_options << env_options).inject do |merged, pending|
-          Configuration.reconcile_opposing_filters(merged, pending, :inclusion_filter, :exclusion_filter)
-          Configuration.reconcile_opposing_filters(merged, pending, :exclusion_filter, :inclusion_filter)
+        @options ||= extract_filters_from(*all_configs).inject do |merged, pending|
           merged.merge(pending)
         end
       end
 
       def drb_argv
-        DrbOptions.new(options).options
+        DrbOptions.new(options, filter).options
+      end
+
+      def filter
+        @filter ||= Filter.new
       end
 
     private
@@ -47,6 +49,17 @@ module RSpec
           keys.unshift(key) if keys.delete(key)
         end
         keys
+      end
+
+      def extract_filters_from(*configs)
+        configs.compact.each do |config|
+          filter.include config.delete(:inclusion_filter) if config.has_key?(:inclusion_filter)
+          filter.exclude config.delete(:exclusion_filter) if config.has_key?(:exclusion_filter)
+        end
+      end
+
+      def all_configs
+        @all_configs ||= file_options << command_line_options << env_options
       end
 
       def file_options
