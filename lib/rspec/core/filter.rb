@@ -52,6 +52,10 @@ module RSpec
         extend(BackwardCompatibility)
       end
 
+      def empty?
+        inclusions.empty? && exclusions.empty_without_conditional_filters?
+      end
+
       def prune(examples)
         examples.select {|e| !exclude?(e) && include?(e)}
       end

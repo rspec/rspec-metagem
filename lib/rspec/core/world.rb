@@ -67,43 +67,48 @@ module RSpec
       def announce_filters
         filter_announcements = []
 
+        announce_inclusion_filter filter_announcements
+        announce_exclusion_filter filter_announcements
+
+        unless filter.empty?
+          reporter.message("Run options:\n  #{filter_announcements.join("\n  ")}")
+        end
+
         if @configuration.run_all_when_everything_filtered? && example_count.zero?
-          reporter.message( "No examples matched #{inclusion_filter.description}. Running all.")
+          reporter.message("#{everything_filtered_message}; ignoring #{inclusion_filter.description}")
           filtered_examples.clear
           inclusion_filter.clear
         end
 
-        announce_inclusion_filter filter_announcements
-        announce_exclusion_filter filter_announcements
-
         if example_count.zero?
           example_groups.clear
-          if filter_announcements.empty?
+          if filter.empty?
             reporter.message("No examples found.")
-          elsif !inclusion_filter.empty?
-            message = "No examples matched #{inclusion_filter.description}."
+          elsif exclusion_filter.empty_without_conditional_filters?
+            message = everything_filtered_message
             if @configuration.run_all_when_everything_filtered?
-              message << " Running all."
+              message << "; ignoring #{inclusion_filter.description}"
             end
             reporter.message(message)
-          elsif !exclusion_filter.empty?
-            reporter.message(
-              "No examples were matched. Perhaps #{exclusion_filter.description} is excluding everything?")
+          elsif inclusion_filter.empty?
+            reporter.message(everything_filtered_message)
           end
-        elsif !filter_announcements.empty?
-          reporter.message("Run filtered #{filter_announcements.join(', ')}")
         end
+      end
+
+      def everything_filtered_message
+        "\nAll examples were filtered out"
       end
 
       def announce_inclusion_filter(announcements)
         unless inclusion_filter.empty?
-          announcements << "including #{inclusion_filter.description}"
+          announcements << "include #{inclusion_filter.description}"
         end
       end
 
       def announce_exclusion_filter(announcements)
         unless exclusion_filter.empty_without_conditional_filters?
-          announcements << "excluding #{exclusion_filter.description}"
+          announcements << "exclude #{exclusion_filter.description}"
         end
       end
 

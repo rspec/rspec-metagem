@@ -94,7 +94,7 @@ module RSpec::Core
           it "announces" do
             configuration.filter_run_including :foo => 'bar'
             reporter.should_receive(:message).
-              with("No examples matched #{{ :foo => 'bar' }.inspect}.")
+              with(/All examples were filtered out/)
             world.announce_filters
           end
         end
@@ -104,7 +104,7 @@ module RSpec::Core
             configuration.stub(:run_all_when_everything_filtered?) { true }
             configuration.filter_run_including :foo => 'bar'
             reporter.should_receive(:message).
-              with("No examples matched #{{ :foo => 'bar' }.inspect}. Running all.")
+              with(/All examples were filtered out/)
             world.announce_filters
           end
         end
@@ -113,7 +113,7 @@ module RSpec::Core
           it "announces" do
             configuration.filter_run_excluding :foo => 'bar'
             reporter.should_receive(:message).
-              with("No examples were matched. Perhaps #{{ :foo => 'bar' }.inspect} is excluding everything?")
+              with(/All examples were filtered out/)
             world.announce_filters
           end
         end
