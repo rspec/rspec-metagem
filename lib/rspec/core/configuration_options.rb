@@ -11,8 +11,6 @@ module RSpec
 
       def configure(config)
         formatters = options.delete(:formatters)
-        config.order = options.delete(:order) if options.has_key?(:order)
-        config.seed = options.delete(:seed) if options.has_key?(:seed)
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
           force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key]) 
@@ -35,7 +33,7 @@ module RSpec
 
     private
 
-      NON_FORCED_OPTIONS = [:requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description]
+      NON_FORCED_OPTIONS = [:order, :seed, :requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description]
 
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)
