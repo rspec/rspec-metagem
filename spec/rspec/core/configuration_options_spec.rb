@@ -111,6 +111,13 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
       config.seed.should eq(37)
     end
+
+    it "sets debug directly" do
+      opts = config_options_object("--debug")
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:debug=).with(true)
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color, and --colour" do
