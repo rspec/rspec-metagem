@@ -19,14 +19,6 @@ module RSpec
         def empty_without_conditional_filters?
           reject { |k, v| RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.empty?
         end
-
-        def reject
-          super rescue {}
-        end
-
-        def empty?
-          super rescue false
-        end
       end
 
       module BackwardCompatibility
