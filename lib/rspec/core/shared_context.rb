@@ -21,6 +21,8 @@ module RSpec
 
       alias_method :context, :describe
 
+      private
+
       def _nested_group_declarations
         @_nested_group_declarations ||= []
       end

@@ -20,39 +20,26 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
-      # Deprecated and has no effect. The rake task now checks
-      # ENV['BUNDLE_GEMFILE'] instead.
-      #
-      # By default, if there is a Gemfile, the generated command will include
-      # 'bundle exec'. Set this to true to ignore the presence of a Gemfile, and
-      # not add 'bundle exec' to the command.
-      #
-      # default:
-      #   false
+      # @deprecated
+      # Has no effect. The rake task now checks ENV['BUNDLE_GEMFILE'] instead.
       def skip_bundler=(*)
         RSpec.deprecate("RSpec::Core::RakeTask#skip_bundler=")
       end
 
-      # Deprecated and has no effect. The rake task now checks
-      # ENV['BUNDLE_GEMFILE'] instead.
-      #
-      # Name of Gemfile to use.
-      #
-      # default:
-      #   Gemfile
+      # @deprecated
+      # Has no effect. The rake task now checks ENV['BUNDLE_GEMFILE'] instead.
       def gemfile=(*)
         RSpec.deprecate("RSpec::Core::RakeTask#gemfile=", 'ENV["BUNDLE_GEMFILE"]')
       end
 
-      # Deprecated. Use ruby_opts="-w" instead.
+      # @deprecated
+      # Use ruby_opts="-w" instead.
       #
       # When true, requests that the specs be run with the warning flag set.
       # e.g. "ruby -w"
       #
       # default:
       #   false
-      attr_reader :warning
-
       def warning=(true_or_false)
         RSpec.deprecate("RSpec::Core::RakeTask#warning=", 'ruby_opts="-w"')
         @warning = true_or_false
@@ -110,7 +97,8 @@ module RSpec
       #   nil
       attr_accessor :rspec_opts
 
-      # Deprecated. Use rspec_opts instead.
+      # @deprecated
+      # Use rspec_opts instead.
       #
       # Command line options to pass to rspec.
       #
@@ -167,7 +155,7 @@ module RSpec
                             cmd_parts = []
                             cmd_parts << RUBY
                             cmd_parts << ruby_opts
-                            cmd_parts << "-w" if warning?
+                            cmd_parts << "-w" if @warning
                             cmd_parts << "-S"
                             cmd_parts << runner
                             if rcov
@@ -187,10 +175,6 @@ module RSpec
 
       def runner
         rcov ? rcov_path : rspec_path
-      end
-
-      def warning?
-        warning
       end
 
       def blank

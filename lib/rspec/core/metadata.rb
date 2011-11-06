@@ -2,9 +2,11 @@ module RSpec
   module Core
     class Metadata < Hash
 
-      # Used to extend metadata Hashes to support lazy evaluation of locations
-      # and descriptions.
       module MetadataHash
+
+        # Supports lazy evaluation of some values. Extended by
+        # ExampleMetadataHash and GroupMetadataHash, which get mixed in to
+        # Metadata for ExampleGroups and Examples (respectively).
         def [](key)
           return super if has_key?(key)
           case key
@@ -58,8 +60,18 @@ module RSpec
         end
       end
 
+      # Mixed in to Metadata for an Example (extends MetadataHash) to support
+      # lazy evaluation of some values.
+      module ExampleMetadataHash
+        include MetadataHash
+      end
+
+      # Mixed in to Metadata for an ExampleGroup (extends MetadataHash) to
+      # support lazy evaluation of some values.
       module GroupMetadataHash
         include MetadataHash
+
+        private
 
         def described_class_for(*)
           ancestors.each do |g|
@@ -105,6 +117,7 @@ module RSpec
         yield self if block_given?
       end
 
+      # @api private
       def process(*args)
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
@@ -115,18 +128,22 @@ module RSpec
         update(user_metadata)
       end
 
+      # @api private
       def for_example(description, user_metadata)
-        dup.extend(MetadataHash).configure_for_example(description, user_metadata)
+        dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
       end
 
+      # @api private
       def any_apply?(filters)
         filters.any? {|k,v| filter_applies?(k,v)}
       end
 
+      # @api private
       def all_apply?(filters)
         filters.all? {|k,v| filter_applies?(k,v)}
       end
 
+      # @api private
       def filter_applies?(key, value, metadata=self)
         case value
         when Hash

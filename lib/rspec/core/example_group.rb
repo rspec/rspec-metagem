@@ -309,10 +309,12 @@ An error occurred in an after(:all) hook.
         end.all?
       end
 
+      # @api private
       def self.any_apply?(filters)
         metadata.any_apply?(filters)
       end
 
+      # @api private
       def self.all_apply?(filters)
         metadata.all_apply?(filters)
       end

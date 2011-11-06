@@ -86,6 +86,7 @@ module RSpec
       end
 
       module InstanceMethods
+        private
         def __memoized
           @__memoized ||= {}
         end

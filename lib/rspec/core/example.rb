@@ -132,6 +132,7 @@ module RSpec
         finish(reporter)
       end
 
+      # @api private
       def any_apply?(filters)
         metadata.any_apply?(filters)
       end
