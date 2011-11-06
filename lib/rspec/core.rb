@@ -193,6 +193,12 @@ module RSpec
   #     describe Hash do
   #       include_examples "collections"
   #     end
+  #
+  # ## The `rspec` command
+  #
+  # When you install the rspec-core gem, it installs the `rspec` executable,
+  # which you'll use to run rspec. The `rspec` comes with many useful options.
+  # Run `rspec --help` to see the complete list.
   module Core
   end
 end
