@@ -73,8 +73,6 @@ module RSpec
         examples.select {|e| !exclude?(e) && include?(e)}
       end
 
-      alias_method :filter, :prune
-
       def exclude?(example)
         @exclusions.empty? ? false : example.any_apply?(@exclusions)
       end
