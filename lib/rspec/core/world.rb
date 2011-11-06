@@ -70,7 +70,11 @@ module RSpec
         announce_exclusion_filter filter_announcements
 
         unless filter_manager.empty?
-          reporter.message("Run options:\n  #{filter_announcements.join("\n  ")}")
+          if filter_announcements.length == 1
+            reporter.message("Run options: #{filter_announcements[0]}")
+          else
+            reporter.message("Run options:\n  #{filter_announcements.join("\n  ")}")
+          end
         end
 
         if @configuration.run_all_when_everything_filtered? && example_count.zero?
