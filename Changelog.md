@@ -1,10 +1,10 @@
-### 2.8.0 (in development)
+### 2.8.0.rc1 / 2011-11-06
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...master)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...v2.8.0.rc1)
 
 * Enhancements
-  * Use classes for the built-in matchers (they're faster).
-  * Eliminate Ruby warnings (Matijs van Zuijlen)
+    * Use classes for the built-in matchers (they're faster).
+    * Eliminate Ruby warnings (Matijs van Zuijlen)
 
 ### 2.7.0 / 2011-10-16
 
