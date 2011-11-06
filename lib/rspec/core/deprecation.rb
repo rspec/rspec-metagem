@@ -27,6 +27,8 @@ ADDITIONAL
       warn_deprecation(message)
     end
 
+    # @api private
+    #
     # Used internally to print deprecation warnings
     def warn_deprecation(message)
       send :warn, message

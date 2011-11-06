@@ -121,10 +121,13 @@ module RSpec
         @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
       end
 
+      # @see Metadata
       def self.metadata
         @metadata if defined?(@metadata)
       end
 
+      # @api private
+      # @return [Metadata] belonging to the parent of a nested [ExampleGroup](ExampleGroup)
       def self.superclass_metadata
         @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end

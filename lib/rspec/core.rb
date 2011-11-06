@@ -44,6 +44,7 @@ module RSpec
     world.wants_to_quit=(maybe)
   end
 
+  # @api private
   # Internal container for global non-configuration data
   def self.world
     @world ||= RSpec::Core::World.new
@@ -57,21 +58,30 @@ module RSpec
     configuration.reset
   end
 
-  # Returns the global configuration object
+  # Returns the global [Configuration](Core/Configuration) object. While you
+  # _can_ use this method to access the configuration, the more common
+  # convention is to use [RSpec.configure](RSpec#configure-class_method).
+  #
+  # @example
+  #     RSpec.configuration.drb_port = 1234
+  # @see RSpec.configure
+  # @see Core::Configuration
   def self.configuration
     @configuration ||= RSpec::Core::Configuration.new
   end
 
-  # Yields the global configuration object
+  # @yield [Configuration] global configuration
   #
   # @example
   #     RSpec.configure do |config|
-  #       config.format = 'documentation'
+  #       config.add_formatter 'documentation'
   #     end
+  # @see Core::Configuration
   def self.configure
     yield configuration if block_given?
   end
 
+  # @api private
   # Used internally to clear remaining groups when fail_fast is set
   def self.clear_remaining_example_groups
     world.example_groups.clear
@@ -100,8 +110,8 @@ module RSpec
   #       end
   #     end
   #
-  # The `describe` method creates an example group.  Within the block passed to
-  # `describe` you can declare examples using the `it` method.
+  # The `describe` method creates an [ExampleGroup](Core/ExampleGroup).  Within the
+  # block passed to `describe` you can declare examples using the `it` method.
   #
   # Under the hood, an example group is a class in which the block passed to
   # `describe` is evaluated. The blocks passed to `it` are evaluated in the

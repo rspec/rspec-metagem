@@ -1,5 +1,9 @@
 module RSpec
   module Core
+    # Each ExampleGroup class and Example instance ...
+    #
+    # @see Example#metadata
+    # @see ExampleGroup.metadata
     class Metadata < Hash
 
       module MetadataHash
