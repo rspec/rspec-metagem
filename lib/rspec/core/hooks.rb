@@ -246,6 +246,24 @@ module RSpec
       # `before` hooks or examples.  When an exception is raised in an after
       # block, the exception is captured for later reporting, and subsequent
       # `after` blocks are run.
+      #
+      # ### Order
+      #
+      # `after` hooks are stored in three scopes, which are run in order:
+      # `:each`, `:all`, and `:suite`. They can also be declared in several
+      # different places: `RSpec.configure`, a parent group, the current group.
+      # They are run in the following order:
+      #
+      #     after(:each) declared in the current group
+      #     after(:each) declared in a parent group
+      #     after(:each) declared in RSpec.configure
+      #     after(:all) declared in the current group
+      #     after(:all) declared in a parent group
+      #     after(:all) declared in RSpec.configure
+      #
+      # This is the reverse of the order in which `before` hooks are run.
+      # Similarly, if more than one `after` is declared within any one scope,
+      # they are run in reverse order of that in which they are declared.
       def after(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:after][scope] << AfterHook.new(options, &block)
