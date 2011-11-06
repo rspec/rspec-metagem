@@ -28,9 +28,11 @@ module RSpec
         # TODO - add deprecation warning on :if/:unless
         def update(orig, opposite, *updates)
           if updates.last.has_key?(:unless)
+            RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(:unless => #{updates.last[:unless].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
             @exclusions[:unless] = updates.last.delete(:unless)
           end
           if updates.last.has_key?(:if)
+            RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(:if => #{updates.last[:if].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
             @exclusions[:if] = updates.last.delete(:if)
           end
 

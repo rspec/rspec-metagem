@@ -1,6 +1,8 @@
 module RSpec
 
   class << self
+    # @api private
+    #
     # Used internally to print deprecation warnings
     def deprecate(method, alternate_method=nil, version=nil)
       version_string = version ? "rspec-#{version}" : "a future version of RSpec"

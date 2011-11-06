@@ -124,13 +124,27 @@ module RSpec::Core
         filter_manager.exclusions.description.should eq({ :foo => :bar }.inspect)
       end
 
+      it 'deprecates an overridden :if filter' do
+        RSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :if => :custom_filter
+      end
+
+      it 'deprecates an overridden :unless filter' do
+        RSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude :unless => :custom_filter
+      end
+
       it 'includes an overriden :if filter' do
+        RSpec.stub(:warn_deprecation)
         filter_manager = FilterManager.new
         filter_manager.exclude :if => :custom_filter
         filter_manager.exclusions.description.should eq({ :if => :custom_filter }.inspect)
       end
 
       it 'includes an overriden :unless filter' do
+        RSpec.stub(:warn_deprecation)
         filter_manager = FilterManager.new
         filter_manager.exclude :unless => :custom_filter
         filter_manager.exclusions.description.should eq({ :unless => :custom_filter }.inspect)
