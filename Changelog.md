@@ -1,40 +1,42 @@
-### 2.8.0 (in development)
+### 2.8.0.rc1 / 2011-11-06
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.7.1...v2.8.0.rc1)
 
 * Enhancements
-  * --order (Justin Ko)
-    * run examples in random order: `--order rand`
-    * specify the seed: `--order rand:123`
-  * --seed SEED
-    * equivalent of `--order rand:SEED`
-  * SharedContext supports `let` (David Chelimsky)
-  * Filter improvements (David Chelimsky)
-    * override opposing tags from the command line
-    * override RSpec.configure tags from the command line
-    * --line_number 37 overrides all other filters
-    * path/to/file.rb:37 overrides all other filters
-    * refactor: consolidate filter management in a FilterManger object
-  * Eliminate Ruby warnings (Matijs van Zuijlen)
-  * Make reporter.report an API (David Chelimsky)
-    * supports extension tools like interative_rspec
+    * --order (Justin Ko)
+        * run examples in random order: `--order rand`
+        * specify the seed: `--order rand:123`
+    * --seed SEED
+        * equivalent of `--order rand:SEED`
+    * SharedContext supports `let` (David Chelimsky)
+    * Filter improvements (David Chelimsky)
+        * override opposing tags from the command line
+        * override RSpec.configure tags from the command line
+        * --line_number 37 overrides all other filters
+        * path/to/file.rb:37 overrides all other filters
+        * refactor: consolidate filter management in a FilterManger object
+    * Eliminate Ruby warnings (Matijs van Zuijlen)
+    * Make reporter.report an API (David Chelimsky)
+        * supports extension tools like interative_rspec
 
 * Changes
-  * change `config.color_enabled` (getter/setter/predicate) to `color` to align
-    with `--[no]-color` CLI option.
-    * `color_enabled` is still supported for now, but will likley be deprecated
-      in a 2.x release so we can remove it in 3.0.
+    * change `config.color_enabled` (getter/setter/predicate) to `color` to align
+      with `--[no]-color` CLI option.
+        * `color_enabled` is still supported for now, but will likley be deprecated
+          in a 2.x release so we can remove it in 3.0.
 
 * Bug fixes
-  * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
-  * Fix bug where full descriptions of groups nested 3 deep  were repeated.
-  * Restore report of time to run to start after files are loaded.
-    * fixes bug where run times were cumalitive in spork
-    * fixes compatibility with time-series metrics
-  * Don't error out when config.mock_with or expect_with is re-specifying the
-    current config (Myron Marston)
+    * Make sure the `bar` in `--tag foo:bar` makes it to DRb (Aaron Gibralter)
+    * Fix bug where full descriptions of groups nested 3 deep  were repeated.
+    * Restore report of time to run to start after files are loaded.
+        * fixes bug where run times were cumalitive in spork
+        * fixes compatibility with time-series metrics
+    * Don't error out when config.mock_with or expect_with is re-specifying the
+      current config (Myron Marston)
 
 * Deprecations
-  * :alias option on `configuration.add_setting`. Use `:alias_with` on the
-    original setting declaration instead.
+    * :alias option on `configuration.add_setting`. Use `:alias_with` on the
+      original setting declaration instead.
 
 ### 2.7.1 / 2011-10-20
 
