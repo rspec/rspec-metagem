@@ -165,7 +165,7 @@ module RSpec
         end
 
         def implicit_subject
-          described = describes || description
+          described = described_class || description
           Class === described ? proc { described.new } : proc { described }
         end
       end

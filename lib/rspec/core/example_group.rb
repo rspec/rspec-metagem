@@ -40,9 +40,9 @@ module RSpec
           end
         end
 
-        delegate_to_metadata :description, :describes, :file_path
+        delegate_to_metadata :description, :described_class, :file_path
         alias_method :display_name, :description
-        alias_method :described_class, :describes
+        alias_method :describes, :described_class
       end
 
       def self.define_example_method(name, extra_options={})

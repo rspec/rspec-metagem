@@ -23,7 +23,6 @@ module RSpec::Core
     context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to false' do
       before(:each) do
         RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = false }
-        Kernel.stub(:warn)
       end
 
       it 'processes string args as part of the description' do
@@ -32,6 +31,7 @@ module RSpec::Core
       end
 
       it 'processes symbol args as part of the description' do
+        Kernel.stub(:warn) # to silence Symbols as args warning
         group = ExampleGroup.describe(:some, :separate, :symbols)
         group.description.should eq("some separate symbols")
       end
@@ -39,6 +39,7 @@ module RSpec::Core
 
     context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to true' do
       let(:group) { ExampleGroup.describe(:symbol) }
+
       before(:each) do
         RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = true }
       end
@@ -265,17 +266,17 @@ module RSpec::Core
       end
     end
 
-    describe '#describes' do
+    describe '#described_class' do
 
       context "with a constant as the first parameter" do
         it "is that constant" do
-          ExampleGroup.describe(Object) { }.describes.should eq(Object)
+          ExampleGroup.describe(Object) { }.described_class.should eq(Object)
         end
       end
 
       context "with a string as the first parameter" do
         it "is nil" do
-          ExampleGroup.describe("i'm a computer") { }.describes.should be_nil
+          ExampleGroup.describe("i'm a computer") { }.described_class.should be_nil
         end
       end
 
@@ -284,7 +285,7 @@ module RSpec::Core
           it "is the top level constant" do
             group = ExampleGroup.describe(String) do
               describe :symbol do
-                example "describes is String" do
+                example "described_class is String" do
                   described_class.should eq(String)
                 end
               end
@@ -311,8 +312,8 @@ module RSpec::Core
     end
 
     describe '#described_class' do
-      it "is the same as describes" do
-        self.class.described_class.should eq(self.class.describes)
+      it "is the same as described_class" do
+        self.class.described_class.should eq(self.class.described_class)
       end
     end
 
@@ -667,7 +668,7 @@ module RSpec::Core
 
       describe "A sample nested group", :nested_describe => "yep" do
         it "sets the described class to the described class of the outer most group" do
-          example.example_group.describes.should eq(ExampleGroup)
+          example.example_group.described_class.should eq(ExampleGroup)
         end
 
         it "sets the description to 'A sample nested describe'" do

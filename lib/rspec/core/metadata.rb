@@ -23,8 +23,11 @@ module RSpec
             super
           when :execution_result
             store(:execution_result, {})
-          when :describes
-            store(:describes, described_class_for(self))
+          when :describes, :described_class
+            klass = described_class_for(self)
+            store(:described_class, klass)
+            # TODO (2011-11-07 DC) deprecate :describes as a key
+            store(:describes, klass)
           when :full_description
             store(:full_description, full_description_for(self))
           when :description
@@ -50,7 +53,7 @@ module RSpec
         end
 
         def described_class_for(m)
-          m[:example_group][:describes]
+          m[:example_group][:described_class]
         end
 
         def full_description_for(m)
@@ -79,7 +82,9 @@ module RSpec
 
         def described_class_for(*)
           ancestors.each do |g|
+            # TODO remove describes
             return g[:describes] if g.has_key?(:describes)
+            return g[:described_class] if g.has_key?(:described_class)
           end
 
           ancestors.reverse.each do |g|
