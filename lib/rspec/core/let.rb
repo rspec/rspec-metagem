@@ -2,7 +2,7 @@ module RSpec
   module Core
     module Let
 
-      module ClassMethods
+      module ExampleGroupMethods
         # Generates a method whose return value is memoized
         # after the first call.
         #
@@ -85,16 +85,16 @@ module RSpec
         end
       end
 
-      module InstanceMethods
-        private
+      module ExampleMethods
+        # @api private
         def __memoized
           @__memoized ||= {}
         end
       end
 
       def self.included(mod)
-        mod.extend ClassMethods
-        mod.__send__ :include, InstanceMethods
+        mod.extend ExampleGroupMethods
+        mod.__send__ :include, ExampleMethods
       end
 
     end

@@ -1,22 +1,27 @@
 module RSpec
   module Core
+    # ExampleGroup and Example are the main structural elements of rspec-core.
+    # Consider this example:
+    #
+    #     describe Thing do
+    #       it "does something" do
+    #       end
+    #     end
+    #
+    # The object returned by `describe Thing` is a subclass of ExampleGroup.
+    # The object returned by `it "does something"` is an instance of Example,
+    # which serves as a wrapper for an instance of the ExampleGroup in which it
+    # is declared.
     class ExampleGroup
       extend  MetadataHashBuilder::WithDeprecationWarning
       extend  Extensions::ModuleEvalWithArgs
-      extend  Subject::ClassMethods
+      extend  Subject::ExampleGroupMethods
       extend  Hooks
 
       include Extensions::InstanceEvalWithArgs
-      include Subject::InstanceMethods
+      include Subject::ExampleMethods
       include Pending
       include Let
-
-      attr_accessor :example
-
-      def running_example
-        RSpec.deprecate("running_example", "example")
-        example
-      end
 
       def self.world
         RSpec.world
@@ -106,13 +111,13 @@ module RSpec
           world.shared_example_groups[name]
         else
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
-        end          
+        end
       end
 
       def self.examples
         @examples ||= []
       end
-      
+
       def self.filtered_examples
         world.filtered_examples[self]
       end
@@ -205,7 +210,7 @@ module RSpec
 
       def self.store_before_all_ivars(example_group_instance)
         return if example_group_instance.instance_variables.empty?
-        example_group_instance.instance_variables.each { |ivar| 
+        example_group_instance.instance_variables.each { |ivar|
           before_all_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
         }
       end
@@ -336,10 +341,34 @@ An error occurred in an after(:all) hook.
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
+      # @attr_reader
+      # Returns the [Example](Example) object that wraps this instance of
+      # `ExampleGroup`
+      attr_accessor :example
+
+      # @deprecated use [example](ExampleGroup#example-instance_method)
+      def running_example
+        RSpec.deprecate("running_example", "example")
+        example
+      end
+
+      # Returns the class or module passed to the `describe` method (or alias).
+      # Returns nil if the subject is not a class or module.
+      # @example
+      #     describe Thing do
+      #       it "does something" do
+      #         described_class == Thing
+      #       end
+      #     end
+      #
+      #
       def described_class
         self.class.described_class
       end
 
+      # @api private
+      # instance_evals the block, capturing and reporting an exception if
+      # raised
       def instance_eval_with_rescue(&hook)
         begin
           instance_eval(&hook)

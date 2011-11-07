@@ -20,7 +20,7 @@ module RSpec
     #     end
     module SharedContext
       include Hooks
-      include Let::ClassMethods
+      include Let::ExampleGroupMethods
 
       def included(group)
         [:before, :after].each do |type|

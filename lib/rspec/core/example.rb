@@ -1,7 +1,16 @@
 module RSpec
   module Core
+    # Wrapper for an instance of a subclass of [ExampleGroup](ExampleGroup). An
+    # instance of `Example` is returned by the
+    # [example](ExampleGroup#example-instance_method) method available in
+    # examples, [before](Hooks#before-instance_method) and
+    # [after](Hooks#after-instance_method) hooks, and yielded to
+    # [around](Hooks#around-instance_method) hooks.
+    # @see ExampleGroup
     class Example
-
+      # @api private
+      #
+      # Used to define methods that delegate to this example's metadata
       def self.delegate_to_metadata(*keys)
         keys.each do |key|
           define_method(key) {@metadata[key]}
@@ -20,7 +29,7 @@ module RSpec
       #
       # Returns the metadata object associated with this example.
       attr_reader :metadata
-      
+
       # @attr_reader
       # @api private
       #
@@ -28,9 +37,14 @@ module RSpec
       # running this example.
       attr_reader :example_group_instance
 
-      def initialize(example_group_class, desc, options, example_block=nil)
-        @example_group_class, @options, @example_block = example_group_class, options, example_block
-        @metadata  = @example_group_class.metadata.for_example(desc, options)
+      # Creates a new instance of Example.
+      # @param example_group_class the subclass of ExampleGroup in which this Example is declared
+      # @param description the String passed to the `it` method (or alias)
+      # @param metadata additional args passed to `it` to be used as metadata
+      # @param example_block the block of code that represents the example
+      def initialize(example_group_class, description, metadata, example_block=nil)
+        @example_group_class, @options, @example_block = example_group_class, metadata, example_block
+        @metadata  = @example_group_class.metadata.for_example(description, metadata)
         @exception = nil
         @pending_declared_in_example = false
       end
@@ -48,6 +62,10 @@ module RSpec
 
       alias_method :pending?, :pending
 
+      # @api
+      # @param example_group_instance the instance of an ExampleGroup subclass
+      # instance_evals the block submitted to the constructor in the
+      # context of the instance of ExampleGroup
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
@@ -87,17 +105,28 @@ module RSpec
         finish(reporter)
       end
 
-      def self.procsy(metadata, &block)
-        Proc.new(&block).extend(Procsy).with(metadata)
+      # @api private
+      #
+      # Wraps the example block in a Proc so it can invoked using `run` or
+      # `call` in [around](../Hooks#around-instance_method) hooks.
+      def self.procsy(metadata, &proc)
+        Proc.new(&proc).extend(Procsy).with(metadata)
       end
 
+      # @api private
       module Procsy
         attr_reader :metadata
 
+        # @api private
+        # @param [Proc]
+        # Adds a `run` method to the extended Proc, allowing it to be invoked
+        # in an [around](../Hooks#around-instance_method) hook using either
+        # `run` or `call`.
         def self.extended(object)
           def object.run; call; end
         end
 
+        # @api private
         def with(metadata)
           @metadata = metadata
           self

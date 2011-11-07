@@ -1,7 +1,7 @@
 module RSpec
   module Core
     module Subject
-      module InstanceMethods
+      module ExampleMethods
 
         # Returns the subject defined by the example group. The subject block is
         # only executed once per example, the result of which is cached and
@@ -69,7 +69,7 @@ module RSpec
         end
       end
 
-      module ClassMethods
+      module ExampleGroupMethods
         # Creates a nested example group named by the submitted +attribute+,
         # and then generates an example using the submitted block.
         #
