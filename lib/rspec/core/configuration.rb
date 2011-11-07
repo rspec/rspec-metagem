@@ -78,6 +78,7 @@ MESSAGE
       add_setting :default_path
       add_setting :show_failures_in_pending_blocks
       add_setting :order
+      add_setting :seed
 
       DEFAULT_BACKTRACE_PATTERNS = [
         /\/lib\d*\/ruby\//,
@@ -106,7 +107,24 @@ MESSAGE
 
       attr_accessor :filter_manager
 
+      # @api private
+      #
+      # Used to set higher priority option values from the command line.
       def force(hash)
+        # TODO - remove the duplication between this and seed=
+        if hash.has_key?(:seed)
+          hash[:seed] = hash[:seed].to_i
+          hash[:order] = "rand"
+          self.seed = hash[:seed]
+        end
+
+        # TODO - remove the duplication between this and order=
+        if hash.has_key?(:order)
+          self.order = hash[:order]
+          order, seed = hash[:order].split(":")
+          hash[:order] = order
+          hash[:seed] = seed.to_i if seed
+        end
         @preferred_options.merge!(hash)
       end
 
@@ -578,19 +596,23 @@ EOM
         raise_if_rspec_1_is_loaded
       end
 
-      attr_reader :seed
-
+      remove_method :seed=
+      # @api
+      #
+      # Sets the seed value and sets `order='rand'`
       def seed=(seed)
+        # TODO - remove the duplication between this and force
         @order = 'rand'
         @seed = seed.to_i
       end
 
-      def randomize?
-        order.to_s.match(/rand/)
-      end
-
       remove_method :order=
+
+      # @api
+      #
+      # Sets the order and, if order is `'rand:<seed>'`, also sets the seed.
       def order=(type)
+        # TODO - remove the duplication between this and force
         order, seed = type.to_s.split(':')
         if order == 'default'
           @order = nil
@@ -599,6 +621,10 @@ EOM
           @order = order
           @seed = seed.to_i if seed
         end
+      end
+
+      def randomize?
+        order.to_s.match(/rand/)
       end
 
     private

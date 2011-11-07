@@ -1035,6 +1035,28 @@ module RSpec::Core
       end
     end
 
+    describe "#force" do
+      it "forces order" do
+        config.force :order => "default"
+        config.order = "rand"
+        config.order.should eq("default")
+      end
+
+      it "forces order and seed with :order => 'rand:37'" do
+        config.force :order => "rand:37"
+        config.order = "default"
+        config.order.should eq("rand")
+        config.seed.should eq(37)
+      end
+
+      it "forces order and seed with :seed => '37'" do
+        config.force :seed => "37"
+        config.order = "default"
+        config.seed.should eq(37)
+        config.order.should eq("rand")
+      end
+    end
+
     describe '#seed' do
       it 'returns the seed as an int' do
         config.seed = '123'
