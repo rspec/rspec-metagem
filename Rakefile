@@ -66,6 +66,8 @@ task :clobber do
   sh 'rm -rf pkg'
   sh 'rm -rf tmp'
   sh 'rm -rf coverage'
+  sh 'rm -rf .yardoc'
+  sh 'rm -rf doc'
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"
