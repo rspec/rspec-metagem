@@ -4,17 +4,17 @@
 
 Enhancements
 
-* --order (Justin Ko)
+* `--order` (Justin Ko)
     * run examples in random order: `--order rand`
     * specify the seed: `--order rand:123`
-* --seed SEED
+* `--seed SEED`
     * equivalent of `--order rand:SEED`
 * SharedContext supports `let` (David Chelimsky)
 * Filter improvements (David Chelimsky)
     * override opposing tags from the command line
     * override RSpec.configure tags from the command line
-    * --line_number 37 overrides all other filters
-    * path/to/file.rb:37 overrides all other filters
+    * `--line_number 37` overrides all other filters
+    * `path/to/file.rb:37` overrides all other filters
     * refactor: consolidate filter management in a FilterManger object
 * Eliminate Ruby warnings (Matijs van Zuijlen)
 * Make reporter.report an API (David Chelimsky)
@@ -34,7 +34,7 @@ Bug fixes
 * Restore report of time to run to start after files are loaded.
     * fixes bug where run times were cumalitive in spork
     * fixes compatibility with time-series metrics
-* Don't error out when config.mock_with or expect_with is re-specifying the
+* Don't error out when `config.mock_with` or `expect_with` is re-specifying the
   current config (Myron Marston)
 
 * Deprecations
@@ -62,7 +62,7 @@ As of 2.7.0, you must explicity `require "rspec/autorun"` unless you use the
 
 Enhancements
 
-* Add example.exception (David Chelimsky)
+* Add `example.exception` (David Chelimsky)
 * `--default_path` command line option (Justin Ko)
 * support multiple `--line_number` options (David J. Hamilton)
     * also supports `path/to/file.rb:5:9` (runs examples on lines 5 and 9)
