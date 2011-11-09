@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.name        = "rspec-core"
   s.version     = RSpec::Core::Version::STRING
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Chad Humphries", "David Chelimsky"]
+  s.authors     = ["Chad Humphries", "David Chelimsky", "Steven Baker"]
   s.email       = "rspec-users@rubyforge.org;"
   s.homepage    = "http://github.com/rspec"
   s.summary     = "rspec-core-#{RSpec::Core::Version::STRING}"
