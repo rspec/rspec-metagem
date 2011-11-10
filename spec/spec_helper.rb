@@ -18,6 +18,7 @@ Spork.prefork do
   require 'rspec/autorun'
   require 'autotest/rspec2'
   require 'aruba/api'
+  require 'fakefs/spec_helpers'
 
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
@@ -78,6 +79,7 @@ Spork.prefork do
     c.color = !in_editor?
     c.filter_run :focus
     c.filter_run :foo
+    c.include FakeFS::SpecHelpers, :fakefs
     c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|
       case version.to_s

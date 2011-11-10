@@ -28,7 +28,7 @@ module RSpec::Core
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
 
-        parser.on('-I DIRECTORY', 'specify $LOAD_PATH directory (may be used more than once)') do |dir|
+        parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
           options[:libs] ||= []
           options[:libs] << dir
         end
@@ -69,13 +69,12 @@ module RSpec::Core
           options[:drb] = o
         end
 
-        parser.on('--drb-port [PORT]', 'Port to connect to on the DRb server') do |o|
+        parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
           options[:drb_port] = o.to_i
         end
 
-        parser.on('--configure COMMAND', 'Generate configuration files') do |cmd|
-          CommandLineConfiguration.new(cmd).run
-          exit
+        parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
+          options[:tty] = true
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
@@ -83,8 +82,9 @@ module RSpec::Core
           exit
         end
 
-        parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
-          options[:tty] = true
+        parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|
+          warn "--configure is deprecated with no effect. Use --init instead."
+          exit
         end
 
         parser.separator("\n  **** Output formatting ****\n\n")

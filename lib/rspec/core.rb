@@ -15,7 +15,6 @@ require 'rspec/core/pending'
 
 require 'rspec/core/world'
 require 'rspec/core/configuration'
-require 'rspec/core/command_line_configuration'
 require 'rspec/core/project_initializer'
 require 'rspec/core/option_parser'
 require 'rspec/core/drb_options'
