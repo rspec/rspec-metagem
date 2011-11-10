@@ -2,7 +2,14 @@ module RSpec
   module Core
     module SharedExampleGroup
 
-      def shared_context(*args, &block)
+      # @overload shared_examples(name, &block)
+      # @overload shared_examples(name, tags, &block)
+      #
+      # Creates and stores (but does not evaluate) the block.
+      #
+      # @see ExampleGroup.include_examples
+      # @see ExampleGroup.include_context
+      def shared_examples(*args, &block)
         if [String, Symbol, Module].any? {|cls| cls === args.first }
           object = args.shift
           ensure_shared_example_group_name_not_taken(object)
@@ -18,9 +25,9 @@ module RSpec
         end
       end
 
-      alias :shared_examples     :shared_context
-      alias :share_examples_for  :shared_context
-      alias :shared_examples_for :shared_context
+      alias_method :shared_context,      :shared_examples
+      alias_method :share_examples_for,  :shared_examples
+      alias_method :shared_examples_for, :shared_examples
 
       def share_as(name, &block)
         if Object.const_defined?(name)
@@ -45,7 +52,6 @@ module RSpec
         shared_const = Object.const_set(name, mod)
         RSpec.world.shared_example_groups[shared_const] = block
       end
-
 
     private
 

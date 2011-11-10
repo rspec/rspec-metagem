@@ -98,10 +98,16 @@ module RSpec
 
       alias_it_should_behave_like_to :it_behaves_like, "behaves like"
 
+      # Includes shared content declared with `name`.
+      #
+      # @see SharedExampleGroup
       def self.include_context(name)
         module_eval(&find_shared("context", name))
       end
 
+      # Includes shared content declared with `name`.
+      #
+      # @see SharedExampleGroup
       def self.include_examples(name)
         module_eval(&find_shared("examples", name))
       end
