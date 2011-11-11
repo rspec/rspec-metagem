@@ -86,16 +86,15 @@ module RSpec
         # This is to support a use case that probably doesn't exist: overriding
         # the if/unless procs.
         def update(orig, opposite, *updates)
-          if updates.last.has_key?(:unless)
-            RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(:unless => #{updates.last[:unless].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
-            @exclusions[:unless] = updates.last.delete(:unless)
-          end
-          if updates.last.has_key?(:if)
-            RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(:if => #{updates.last[:if].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
-            @exclusions[:if] = updates.last.delete(:if)
-          end
+          _warn_deprecated_key(:unless, *updates) if updates.last.has_key?(:unless)
+          _warn_deprecated_key(:if, *updates)     if updates.last.has_key?(:if)
 
           super
+        end
+
+        def _warn_deprecated_key(key, *updates)
+          RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(#{key.inspect} => #{updates.last[key].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
+          @exclusions[key] = updates.last.delete(key)
         end
       end
 
