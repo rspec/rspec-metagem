@@ -420,27 +420,27 @@ EOM
       end
 
       # @api private
-      def get_files_to_run(files)
+      def get_files_to_run(paths)
         patterns = pattern.split(",")
-        files.map do |file|
-          if File.directory?(file)
-            patterns.map do |pattern|
-              if pattern =~ /^#{file}/
-                Dir[pattern.strip]
-              else
-                Dir["#{file}/{#{pattern.strip}}"]
-              end
-            end
-          else
-            if file =~ /^(.*?)((?:\:\d+)+)$/
-              path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
-              filter_manager.add_location path, lines
-              path
-            else
-              file
-            end
-          end
+        paths.map do |path|
+          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
         end.flatten
+      end
+
+      # @api private
+      def gather_directories(path, patterns)
+        patterns.map do |pattern|
+          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
+        end
+      end
+
+      # @api private
+      def extract_location(path)
+        if path =~ /^(.*?)((?:\:\d+)+)$/
+          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+          filter_manager.add_location path, lines
+        end
+        path
       end
 
       # Creates a method that delegates to `example` including the submitted
