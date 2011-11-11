@@ -1,3 +1,15 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc1...master)
+
+Enhancments
+
+* new `--init` command
+    * generates `spec/spec_helper.rb` (Peter Schröder)
+    * deletes obsolete files (on confirmation) 
+    * merged with and deprecates `--configure` command, which generated
+      `.rspec`
+
 ### 2.8.0.rc1 / 2011-11-06
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.7.1...v2.8.0.rc1)
