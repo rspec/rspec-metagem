@@ -4,8 +4,8 @@
 
 Enhancments
 
-* new `--init` command
-    * generates `spec/spec_helper.rb` (Peter Schröder)
+* new `--init` command (Peter Schröder)
+    * generates `spec/spec_helper.rb`
     * deletes obsolete files (on confirmation) 
     * merged with and deprecates `--configure` command, which generated
       `.rspec`
