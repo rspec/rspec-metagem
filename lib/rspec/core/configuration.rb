@@ -24,6 +24,31 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
+      # @api private
+      def self.define_reader(name)
+        eval <<-CODE
+          def #{name}
+            value_for(#{name.inspect}, defined?(@#{name}) ? @#{name} : nil)
+          end
+        CODE
+      end
+
+      # @api private
+      def self.deprecate_alias_key
+        RSpec.warn_deprecation <<-MESSAGE
+The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
+Called from #{caller(0)[5]}
+MESSAGE
+      end
+
+      # @api private
+      def self.define_aliases(name, alias_name)
+        alias_method alias_name, name
+        alias_method "#{alias_name}=", "#{name}="
+        define_predicate_for alias_name
+      end
+
+      # @api private
       def self.define_predicate_for(*names)
         names.each {|name| alias_method "#{name}?", name}
       end
@@ -35,28 +60,15 @@ module RSpec
       def self.add_setting(name, opts={})
         raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
         if opts[:alias]
-          RSpec.warn_deprecation <<-MESSAGE
-The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
-Called from #{caller(0)[4]}
-MESSAGE
-          alias_method name, opts[:alias]
-          alias_method "#{name}=", "#{opts[:alias]}="
-          define_predicate_for name
+          deprecate_alias_key
+          define_aliases(opts[:alias], name)
         else
           attr_writer name
-          eval <<-CODE
-            def #{name}
-              value_for(#{name.inspect}, defined?(@#{name}) ? @#{name} : nil)
-            end
-          CODE
+          define_reader name
           define_predicate_for name
         end
-        if opts[:alias_with]
-          [opts[:alias_with]].flatten.each do |alias_name|
-            alias_method alias_name, name
-            alias_method "#{alias_name}=", "#{name}="
-            define_predicate_for alias_name
-          end
+        [opts[:alias_with]].flatten.compact.each do |alias_name|
+          define_aliases(name, alias_name)
         end
       end
 
