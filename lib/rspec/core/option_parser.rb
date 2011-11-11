@@ -78,6 +78,11 @@ module RSpec::Core
           exit
         end
 
+        parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
+          ProjectInitializer.new(cmd).run
+          exit
+        end
+
         parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
           options[:tty] = true
         end
