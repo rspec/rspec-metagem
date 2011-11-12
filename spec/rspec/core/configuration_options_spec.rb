@@ -303,6 +303,10 @@ describe RSpec::Core::ConfigurationOptions do
   end
 
   describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
+    before(:each) do
+      FileUtils.mkpath(File.expand_path("~"))
+    end
+
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--line 37"}
       File.open("~/.rspec", "w") {|f| f << "--color"}
