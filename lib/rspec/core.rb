@@ -1,4 +1,4 @@
-if Kernel.respond_to?(:require_relative)
+if defined?(require_relative)
   def require_rspec(path)
     require_relative path
   end
