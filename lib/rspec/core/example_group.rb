@@ -108,8 +108,10 @@ module RSpec
       # Includes shared content declared with `name`.
       #
       # @see SharedExampleGroup
-      def self.include_examples(name)
-        module_eval(&find_shared("examples", name))
+      def self.include_examples(name, *args, &customization_block)
+        shared_block = find_shared("examples", name)
+        module_eval_with_args(*args, &shared_block)
+        module_eval(&customization_block) if customization_block
       end
 
       def self.find_shared(label, name)
