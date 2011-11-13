@@ -9,6 +9,7 @@ Enhancments
     * deletes obsolete files (on confirmation) 
     * merged with and deprecates `--configure` command, which generated
       `.rspec`
+* use `require_relative` when available (Ian Leitch)
 
 ### 2.8.0.rc1 / 2011-11-06
 
