@@ -1,4 +1,4 @@
-require 'rspec/core/extensions/kernel'
-require 'rspec/core/extensions/instance_eval_with_args'
-require 'rspec/core/extensions/module_eval_with_args'
-require 'rspec/core/extensions/ordered'
+require_rspec 'core/extensions/kernel'
+require_rspec 'core/extensions/instance_eval_with_args'
+require_rspec 'core/extensions/module_eval_with_args'
+require_rspec 'core/extensions/ordered'
