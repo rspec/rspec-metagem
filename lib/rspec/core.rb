@@ -1,32 +1,42 @@
-require 'rspec/core/filter_manager'
-require 'rspec/core/dsl'
-require 'rspec/core/extensions'
-require 'rspec/core/load_path'
-require 'rspec/core/deprecation'
-require 'rspec/core/backward_compatibility'
-require 'rspec/core/reporter'
+if Kernel.respond_to?(:require_relative)
+  def require_rspec(path)
+    require_relative path
+  end
+else
+  def require_rspec(path)
+    require "rspec/#{path}"
+  end
+end
 
-require 'rspec/core/metadata_hash_builder'
-require 'rspec/core/hooks'
-require 'rspec/core/subject'
-require 'rspec/core/let'
-require 'rspec/core/metadata'
-require 'rspec/core/pending'
+require_rspec 'core/filter_manager'
+require_rspec 'core/dsl'
+require_rspec 'core/extensions'
+require_rspec 'core/load_path'
+require_rspec 'core/deprecation'
+require_rspec 'core/backward_compatibility'
+require_rspec 'core/reporter'
 
-require 'rspec/core/world'
-require 'rspec/core/configuration'
-require 'rspec/core/project_initializer'
-require 'rspec/core/option_parser'
-require 'rspec/core/drb_options'
-require 'rspec/core/configuration_options'
-require 'rspec/core/command_line'
-require 'rspec/core/drb_command_line'
-require 'rspec/core/runner'
-require 'rspec/core/example'
-require 'rspec/core/shared_example_group'
-require 'rspec/core/example_group'
-require 'rspec/core/version'
-require 'rspec/core/errors'
+require_rspec 'core/metadata_hash_builder'
+require_rspec 'core/hooks'
+require_rspec 'core/subject'
+require_rspec 'core/let'
+require_rspec 'core/metadata'
+require_rspec 'core/pending'
+
+require_rspec 'core/world'
+require_rspec 'core/configuration'
+require_rspec 'core/project_initializer'
+require_rspec 'core/option_parser'
+require_rspec 'core/drb_options'
+require_rspec 'core/configuration_options'
+require_rspec 'core/command_line'
+require_rspec 'core/drb_command_line'
+require_rspec 'core/runner'
+require_rspec 'core/example'
+require_rspec 'core/shared_example_group'
+require_rspec 'core/example_group'
+require_rspec 'core/version'
+require_rspec 'core/errors'
 
 module RSpec
   autoload :Matchers,      'rspec/matchers'
@@ -91,5 +101,5 @@ module RSpec
   end
 end
 
-require 'rspec/core/backward_compatibility'
-require 'rspec/monkey'
+require_rspec 'core/backward_compatibility'
+require_rspec 'monkey'
