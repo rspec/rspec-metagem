@@ -98,6 +98,11 @@ module RSpec
       #
       # @see SharedExampleGroup
       def self.include_context(name, *args)
+        if block_given?
+          block_not_supported("context")
+          return
+        end
+
         find_and_execute_shared_block("context", name, *args)
       end
 
@@ -105,7 +110,16 @@ module RSpec
       #
       # @see SharedExampleGroup
       def self.include_examples(name, *args)
+        if block_given?
+          block_not_supported("examples")
+          return
+        end
+
         find_and_execute_shared_block("examples", name, *args)
+      end
+
+      def self.block_not_supported(label)
+        warn("Customization blocks not supported for include_#{label}.  Use it_behaves_like instead.")
       end
 
       def self.find_and_execute_shared_block(label, name, *args, &customization_block)

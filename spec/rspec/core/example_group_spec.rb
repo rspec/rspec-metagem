@@ -938,6 +938,18 @@ module RSpec::Core
           passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
         end
       end
+
+      context "given a block" do
+        it "warns the user that blocks are not supported" do
+          group = ExampleGroup.describe do
+            self.should_receive(:warn).with(/blocks not supported for include_context/)
+            include_context "named this with block" do
+              true
+            end
+          end
+          group.run
+        end
+      end
     end
 
     describe "#include_examples" do
@@ -997,6 +1009,18 @@ module RSpec::Core
           group = ExampleGroup.describe('fake group')
           group.include_examples("named this with params", :a)
           eval_count.should eq(1)
+        end
+      end
+
+      context "given a block" do
+        it "warns the user that blocks are not supported" do
+          group = ExampleGroup.describe do
+            self.should_receive(:warn).with(/blocks not supported for include_examples/)
+            include_examples "named this with block" do
+              true
+            end
+          end
+          group.run
         end
       end
     end
