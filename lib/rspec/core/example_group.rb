@@ -97,15 +97,15 @@ module RSpec
       # Includes shared content declared with `name`.
       #
       # @see SharedExampleGroup
-      def self.include_context(name, *args, &customization_block)
-        find_and_execute_shared_block("context", name, *args, &customization_block)
+      def self.include_context(name, *args)
+        find_and_execute_shared_block("context", name, *args)
       end
 
       # Includes shared content declared with `name`.
       #
       # @see SharedExampleGroup
-      def self.include_examples(name, *args, &customization_block)
-        find_and_execute_shared_block("examples", name, *args, &customization_block)
+      def self.include_examples(name, *args)
+        find_and_execute_shared_block("examples", name, *args)
       end
 
       def self.find_and_execute_shared_block(label, name, *args, &customization_block)

@@ -938,27 +938,6 @@ module RSpec::Core
           passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
         end
       end
-
-      context "given a block" do
-        it "evaluates the block in the group" do
-          scopes = []
-          shared_context "named this with a block" do
-            it("gets run in the group") do
-              scopes << self.class
-            end
-          end
-          group = ExampleGroup.describe("group") do
-            include_context "named this with a block" do
-              it("gets run in the same group") do
-                scopes << self.class
-              end
-            end
-          end
-          group.run
-
-          scopes[0].should be(scopes[1])
-        end
-      end
     end
 
     describe "#include_examples" do
@@ -1018,27 +997,6 @@ module RSpec::Core
           group = ExampleGroup.describe('fake group')
           group.include_examples("named this with params", :a)
           eval_count.should eq(1)
-        end
-      end
-
-      context "given a block" do
-        it "evaluates the block in the group" do
-          scopes = []
-          shared_examples "named this with a block" do
-            it("gets run in the group") do
-              scopes << self.class
-            end
-          end
-          group = ExampleGroup.describe("group") do
-            include_examples "named this with a block" do
-              it("gets run in the same group") do
-                scopes << self.class
-              end
-            end
-          end
-          group.run
-
-          scopes[0].should be(scopes[1])
         end
       end
     end
