@@ -77,12 +77,8 @@ module RSpec
       def self.define_nested_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, *args, &customization_block)
-            shared_block = find_shared("examples", name)
-            raise "Could not find shared examples \#{name.inspect}" unless shared_block
-
             group = describe("#{report_label || "it should behave like"} \#{name}") do
-              module_eval_with_args(*args, &shared_block)
-              module_eval(&customization_block) if customization_block
+              find_and_execute_shared_block("examples", name, *args, &customization_block)
             end
             group.metadata[:shared_group_name] = name
             group
@@ -101,15 +97,21 @@ module RSpec
       # Includes shared content declared with `name`.
       #
       # @see SharedExampleGroup
-      def self.include_context(name)
-        module_eval(&find_shared("context", name))
+      def self.include_context(name, *args, &customization_block)
+        find_and_execute_shared_block("context", name, *args, &customization_block)
       end
 
       # Includes shared content declared with `name`.
       #
       # @see SharedExampleGroup
       def self.include_examples(name, *args, &customization_block)
-        shared_block = find_shared("examples", name)
+        find_and_execute_shared_block("examples", name, *args, &customization_block)
+      end
+
+      def self.find_and_execute_shared_block(label, name, *args, &customization_block)
+        shared_block = find_shared(label, name)
+        raise "Could not find shared #{label} #{name.inspect}" unless shared_block
+
         module_eval_with_args(*args, &shared_block)
         module_eval(&customization_block) if customization_block
       end

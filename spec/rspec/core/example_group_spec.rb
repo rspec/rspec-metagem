@@ -919,6 +919,46 @@ module RSpec::Core
         end.to raise_error(ArgumentError,%q|Could not find shared context "shared stuff"|)
       end
 
+      context "given some parameters" do
+        it "passes the parameters to the shared context" do
+          passed_params = {}
+
+          shared_context "named this with params" do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
+          group = ExampleGroup.describe do
+            include_context "named this with params", :value1, :value2
+          end
+          group.run
+
+          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+        end
+      end
+
+      context "given a block" do
+        it "evaluates the block in the group" do
+          scopes = []
+          shared_context "named this with a block" do
+            it("gets run in the group") do
+              scopes << self.class
+            end
+          end
+          group = ExampleGroup.describe("group") do
+            include_context "named this with a block" do
+              it("gets run in the same group") do
+                scopes << self.class
+              end
+            end
+          end
+          group.run
+
+          scopes[0].should be(scopes[1])
+        end
+      end
     end
 
     describe "#include_examples" do
