@@ -134,7 +134,7 @@ module RSpec
               rescue
                 puts failure_message if failure_message
               end
-              raise("ruby #{spec_command} failed") if fail_on_error unless success
+              raise("#{spec_command} failed") if fail_on_error unless success
             end
           end
         end
@@ -156,18 +156,12 @@ module RSpec
                             cmd_parts << RUBY
                             cmd_parts << ruby_opts
                             cmd_parts << "-w" if @warning
-                            cmd_parts << "-S"
-                            cmd_parts << runner
-                            if rcov
-                              cmd_parts << ["-Ispec:lib", rcov_opts]
-                            else
-                              cmd_parts << rspec_opts
-                            end
+                            cmd_parts << "-S" << runner
+                            cmd_parts << "-Ispec:lib" << rcov_opts if rcov
                             cmd_parts << files_to_run
-                            if rcov && rspec_opts
-                              cmd_parts << ["--",  rspec_opts]
-                            end
-                            cmd_parts.flatten.compact.reject(&blank).join(" ")
+                            cmd_parts << "--" if rcov && rspec_opts
+                            cmd_parts << rspec_opts
+                            cmd_parts.flatten.reject(&blank).join(" ")
                           end
       end
 
@@ -178,7 +172,7 @@ module RSpec
       end
 
       def blank
-        lambda {|s| s == ""}
+        lambda {|s| s.nil? || s == ""}
       end
     end
   end

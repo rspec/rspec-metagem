@@ -75,7 +75,7 @@ module RSpec::Core
       context "with rcov=false (default)" do
         it "adds the rspec_opts" do
           task.rspec_opts = "-Ifoo"
-          spec_command.should =~ /rspec -Ifoo/
+          spec_command.should =~ /rspec.*-Ifoo/
         end
       end
     end
