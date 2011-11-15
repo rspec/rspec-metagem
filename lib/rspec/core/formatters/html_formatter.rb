@@ -67,7 +67,7 @@ module RSpec
 
         def example_passed(example)
           move_progress
-          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span><span class='duration'>#{sprintf("%.3f", example.execution_result[:run_time])}s</span></dd>"
+          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span><span class='duration'>#{sprintf("%.5f", example.execution_result[:run_time])}s</span></dd>"
           @output.flush
         end
 
@@ -84,7 +84,7 @@ module RSpec
           move_progress
           @output.puts "    <dd class=\"example #{failure_style}\">"
           @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
-          @output.puts "      <span class=\"duration\">#{sprintf('%.1f', example.execution_result[:run_time])}s</span>"
+          @output.puts "      <span class=\"duration\">#{sprintf('%.5f', example.execution_result[:run_time])}s</span>"
           @output.puts "      <div class=\"failure\" id=\"failure_#{@failed_examples.size}\">"
           @output.puts "        <div class=\"message\"><pre>#{h(exception.message)}</pre></div>" unless exception.nil?
           @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(exception.backtrace, example).join("\n")}</pre></div>" if exception
@@ -143,7 +143,7 @@ module RSpec
             totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
             totals << ", #{pending_count} pending" if pending_count > 0
           end
-          @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{duration} seconds</strong>\";</script>"
+          @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{sprintf("%.5f", duration)} seconds</strong>\";</script>"
           @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
           @output.puts "</div>"
           @output.puts "</div>"
