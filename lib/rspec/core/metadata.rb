@@ -61,7 +61,7 @@ module RSpec
         end
 
         def build_description_from(*parts)
-          parts.map {|p| p.to_s}.reduce do |desc, p|
+          parts.map {|p| p.to_s}.inject do |desc, p|
             p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
           end || ""
         end
