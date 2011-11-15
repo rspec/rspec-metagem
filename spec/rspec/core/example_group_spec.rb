@@ -919,6 +919,37 @@ module RSpec::Core
         end.to raise_error(ArgumentError,%q|Could not find shared context "shared stuff"|)
       end
 
+      context "given some parameters" do
+        it "passes the parameters to the shared context" do
+          passed_params = {}
+
+          shared_context "named this with params" do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
+          group = ExampleGroup.describe do
+            include_context "named this with params", :value1, :value2
+          end
+          group.run
+
+          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+        end
+      end
+
+      context "given a block" do
+        it "warns the user that blocks are not supported" do
+          group = ExampleGroup.describe do
+            self.should_receive(:warn).with(/blocks not supported for include_context/)
+            include_context "named this with block" do
+              true
+            end
+          end
+          group.run
+        end
+      end
     end
 
     describe "#include_examples" do
@@ -942,6 +973,55 @@ module RSpec::Core
             include_examples "shared stuff"
           end
         end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
+      end
+
+      context "given some parameters" do
+        it "passes the parameters to the named examples" do
+          passed_params = {}
+
+          shared_examples "named this with params" do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
+          group = ExampleGroup.describe do
+            include_examples "named this with params", :value1, :value2
+          end
+          group.run
+
+          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+        end
+
+        it "adds shared instance methods to the group" do
+          shared_examples "named this with params" do |param1|
+            def foo; end
+          end
+          group = ExampleGroup.describe('fake group')
+          group.include_examples("named this with params", :a)
+          group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+        end
+
+        it "evals the shared example group only once" do
+          eval_count = 0
+          shared_examples("named this with params") { |p| eval_count += 1 }
+          group = ExampleGroup.describe('fake group')
+          group.include_examples("named this with params", :a)
+          eval_count.should eq(1)
+        end
+      end
+
+      context "given a block" do
+        it "warns the user that blocks are not supported" do
+          group = ExampleGroup.describe do
+            self.should_receive(:warn).with(/blocks not supported for include_examples/)
+            include_examples "named this with block" do
+              true
+            end
+          end
+          group.run
+        end
       end
     end
 
