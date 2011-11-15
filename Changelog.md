@@ -11,6 +11,7 @@ Enhancments
       `.rspec`
 * use `require_relative` when available (Ian Leitch)
 * `include_context` and `include_examples` accept params (Calvin Bascom)
+* print the time for every example in the html formatter (Richie Vos)
 
 ### 2.8.0.rc1 / 2011-11-06
 
