@@ -894,89 +894,28 @@ module RSpec::Core
       end
     end
 
-    describe "#include_context" do
-      before do
-        shared_context "named this" do
-          def foo; 'foo'; end
-        end
-      end
-
-      it "includes the named context" do
-        group = ExampleGroup.describe do
-          include_context "named this"
-          it "accesses foo" do
-            foo.should eq('foo')
+    %w[include_examples include_context].each do |name|
+      describe "##{name}" do
+        before do
+          shared_examples "named this" do
+            example("does something") {}
           end
         end
-        group.run.should be_true
-      end
 
-      it "raises a helpful error message when shared context is not found" do
-        expect do
-          ExampleGroup.describe do
-            include_context "shared stuff"
-          end
-        end.to raise_error(ArgumentError,%q|Could not find shared context "shared stuff"|)
-      end
-
-      context "given some parameters" do
-        it "passes the parameters to the shared context" do
-          passed_params = {}
-
-          shared_context "named this with params" do |param1, param2|
-            it("has access to the given parameters") do
-              passed_params[:param1] = param1
-              passed_params[:param2] = param2
-            end
-          end
-
-          group = ExampleGroup.describe do
-            include_context "named this with params", :value1, :value2
-          end
-          group.run
-
-          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+        it "includes the named examples" do
+          group = ExampleGroup.describe
+          group.send(name, "named this")
+          group.examples.first.description.should eq("does something")
         end
-      end
 
-      context "given a block" do
-        it "warns the user that blocks are not supported" do
-          group = ExampleGroup.describe do
-            self.should_receive(:warn).with(/blocks not supported for include_context/)
-            include_context "named this with block" do
-              true
-            end
-          end
-          group.run
+        it "raises a helpful error message when shared content is not found" do
+          group = ExampleGroup.describe
+          expect do
+            group.send(name, "shared stuff")
+          end.to raise_error(ArgumentError, /Could not find .* "shared stuff"/)
         end
-      end
-    end
 
-    describe "#include_examples" do
-      before do
-        shared_examples "named this" do
-          example("does something") do
-          end
-        end
-      end
-
-      it "includes the named examples" do
-        group = ExampleGroup.describe do
-          include_examples "named this"
-        end
-        group.examples.first.description.should eq("does something")
-      end
-
-      it "raises a helpful error message when shared context is not found" do
-        expect do
-          ExampleGroup.describe do
-            include_examples "shared stuff"
-          end
-        end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
-      end
-
-      context "given some parameters" do
-        it "passes the parameters to the named examples" do
+        it "passes parameters to the shared content" do
           passed_params = {}
 
           shared_examples "named this with params" do |param1, param2|
@@ -986,9 +925,8 @@ module RSpec::Core
             end
           end
 
-          group = ExampleGroup.describe do
-            include_examples "named this with params", :value1, :value2
-          end
+          group = ExampleGroup.describe
+          group.send(name, "named this with params", :value1, :value2)
           group.run
 
           passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
@@ -999,7 +937,7 @@ module RSpec::Core
             def foo; end
           end
           group = ExampleGroup.describe('fake group')
-          group.include_examples("named this with params", :a)
+          group.send(name, "named this with params", :a)
           group.public_instance_methods.map{|m| m.to_s}.should include("foo")
         end
 
@@ -1007,20 +945,14 @@ module RSpec::Core
           eval_count = 0
           shared_examples("named this with params") { |p| eval_count += 1 }
           group = ExampleGroup.describe('fake group')
-          group.include_examples("named this with params", :a)
+          group.send(name, "named this with params", :a)
           eval_count.should eq(1)
         end
-      end
 
-      context "given a block" do
-        it "warns the user that blocks are not supported" do
-          group = ExampleGroup.describe do
-            self.should_receive(:warn).with(/blocks not supported for include_examples/)
-            include_examples "named this with block" do
-              true
-            end
-          end
-          group.run
+        it "warns the user that blocks are not supported when given a block" do
+          group = ExampleGroup.describe
+          group.should_receive(:warn).with(/blocks not supported for #{name}/)
+          group.send(name, "named this with block") {}
         end
       end
     end
@@ -1068,41 +1000,39 @@ module RSpec::Core
         shared_group.methods.map{|m| m.to_s}.should include("foo")
       end
 
-      context "given some parameters" do
-        it "passes the parameters to the shared example group" do
-          passed_params = {}
+      it "passes parameters to the shared example group" do
+        passed_params = {}
 
-          shared_examples_for("thing") do |param1, param2|
-            it("has access to the given parameters") do
-              passed_params[:param1] = param1
-              passed_params[:param2] = param2
-            end
+        shared_examples_for("thing") do |param1, param2|
+          it("has access to the given parameters") do
+            passed_params[:param1] = param1
+            passed_params[:param2] = param2
           end
-
-          group = ExampleGroup.describe("group") do
-            it_should_behave_like "thing", :value1, :value2
-          end
-          group.run
-
-          passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
         end
 
-        it "adds shared instance methods to nested group" do
-          shared_examples_for("thing") do |param1|
-            def foo; end
-          end
-          group = ExampleGroup.describe('fake group')
-          shared_group = group.it_should_behave_like("thing", :a)
-          shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+        group = ExampleGroup.describe("group") do
+          it_should_behave_like "thing", :value1, :value2
         end
+        group.run
 
-        it "evals the shared example group only once" do
-          eval_count = 0
-          shared_examples_for("thing") { |p| eval_count += 1 }
-          group = ExampleGroup.describe('fake group')
-          group.it_should_behave_like("thing", :a)
-          eval_count.should eq(1)
+        passed_params.should eq({ :param1 => :value1, :param2 => :value2 })
+      end
+
+      it "adds shared instance methods to nested group" do
+        shared_examples_for("thing") do |param1|
+          def foo; end
         end
+        group = ExampleGroup.describe('fake group')
+        shared_group = group.it_should_behave_like("thing", :a)
+        shared_group.public_instance_methods.map{|m| m.to_s}.should include("foo")
+      end
+
+      it "evals the shared example group only once" do
+        eval_count = 0
+        shared_examples_for("thing") { |p| eval_count += 1 }
+        group = ExampleGroup.describe('fake group')
+        group.it_should_behave_like("thing", :a)
+        eval_count.should eq(1)
       end
 
       context "given a block" do
