@@ -55,6 +55,7 @@ end
 desc "delete generated files"
 task :clobber => ["clobber:rbc"] do
   rm_rf 'doc'
+  rm_rf '.yardoc'
   rm_rf 'pkg'
   rm_rf 'tmp'
   rm_rf 'coverage'
