@@ -3,4 +3,5 @@
 --exclude features
 --markup markdown
 -
+Changelog.md
 License.txt
