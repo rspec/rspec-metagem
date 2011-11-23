@@ -68,6 +68,11 @@ task :clobber do
   sh 'rm -rf doc'
 end
 
+desc "generate rdoc"
+task :rdoc do
+  sh "yardoc"
+end
+
 desc "Push docs/cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
   raise "rake relish[VERSION]" unless args[:version]
