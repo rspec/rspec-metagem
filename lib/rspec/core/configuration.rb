@@ -24,7 +24,7 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
-      # @api private
+      # @private
       def self.define_reader(name)
         eval <<-CODE
           def #{name}
@@ -33,7 +33,7 @@ module RSpec
         CODE
       end
 
-      # @api private
+      # @private
       def self.deprecate_alias_key
         RSpec.warn_deprecation <<-MESSAGE
 The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
@@ -41,19 +41,19 @@ Called from #{caller(0)[5]}
 MESSAGE
       end
 
-      # @api private
+      # @private
       def self.define_aliases(name, alias_name)
         alias_method alias_name, name
         alias_method "#{alias_name}=", "#{name}="
         define_predicate_for alias_name
       end
 
-      # @api private
+      # @private
       def self.define_predicate_for(*names)
         names.each {|name| alias_method "#{name}?", name}
       end
 
-      # @api private
+      # @private
       #
       # Invoked by the `add_setting` instance method. Use that method on a
       # `Configuration` instance rather than this class method.
@@ -119,7 +119,7 @@ MESSAGE
 
       attr_accessor :filter_manager
 
-      # @api private
+      # @private
       #
       # Used to set higher priority option values from the command line.
       def force(hash)
@@ -414,12 +414,12 @@ EOM
         self.files_to_run = get_files_to_run(files)
       end
 
-      # @api private
+      # @private
       def command
         $0.split(File::SEPARATOR).last
       end
 
-      # @api private
+      # @private
       def get_files_to_run(paths)
         patterns = pattern.split(",")
         paths.map do |path|
@@ -427,14 +427,14 @@ EOM
         end.flatten
       end
 
-      # @api private
+      # @private
       def gather_directories(path, patterns)
         patterns.map do |pattern|
           pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
         end
       end
 
-      # @api private
+      # @private
       def extract_location(path)
         if path =~ /^(.*?)((?:\:\d+)+)$/
           path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
@@ -582,7 +582,7 @@ EOM
         include_or_extend_modules << [:extend, mod, filters]
       end
 
-      # @api private
+      # @private
       #
       # Used internally to extend a group with modules using `include` and/or
       # `extend`.

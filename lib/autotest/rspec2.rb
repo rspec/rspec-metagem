@@ -1,8 +1,6 @@
 require 'autotest'
 require 'rspec/core/deprecation'
 
-class RSpecCommandError < StandardError; end
-
 class Autotest::Rspec2 < Autotest
 
   RSPEC_EXECUTABLE = File.expand_path('../../../exe/rspec', __FILE__)

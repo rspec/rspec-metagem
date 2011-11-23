@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # @private
     module ConstMissing
       # Used to print deprecation warnings for Rspec and Spec constants (use
       # RSpec instead)
@@ -38,6 +39,7 @@ WARNING
     end
   end
 
+  # @private
   module Rake
     # Used to print deprecation warnings for Rake::SpecTask constant (use
     # RSpec::Core::RakeTask instead)

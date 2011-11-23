@@ -11,6 +11,10 @@ module RSpec
         @world         = world
       end
 
+      # Configures and runs a suite
+      #
+      # @param [IO] err
+      # @param [IO] out
       def run(err, out)
         @configuration.error_stream = err
         @configuration.output_stream ||= out

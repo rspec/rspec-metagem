@@ -86,7 +86,7 @@ module RSpec
       end
 
       module ExampleMethods
-        # @api private
+        # @private
         def __memoized
           @__memoized ||= {}
         end

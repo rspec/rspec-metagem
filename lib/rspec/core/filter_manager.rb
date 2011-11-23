@@ -83,8 +83,8 @@ module RSpec
       end
 
       module BackwardCompatibility
-        # This is to support a use case that probably doesn't exist: overriding
-        # the if/unless procs.
+        # Supports a use case that probably doesn't exist: overriding the
+        # if/unless procs.
         def update(orig, opposite, *updates)
           _warn_deprecated_key(:unless, *updates) if updates.last.has_key?(:unless)
           _warn_deprecated_key(:if, *updates)     if updates.last.has_key?(:if)
@@ -92,6 +92,8 @@ module RSpec
           super
         end
 
+        # Emits a deprecation warning for keys that will not be supported in
+        # the future.
         def _warn_deprecated_key(key, *updates)
           RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(#{key.inspect} => #{updates.last[key].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
           @exclusions[key] = updates.last.delete(key)

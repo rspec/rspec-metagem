@@ -1,6 +1,8 @@
 module RSpec
   module Core
     module Extensions
+      # Extends lists of example groups and examples to support ordering
+      # strategies like randomization.
       module Ordered
         def ordered
           if RSpec.configuration.randomize?

@@ -1,9 +1,13 @@
 module RSpec
   module Core
     module Extensions
+      # @private
       module ModuleEvalWithArgs
         include InstanceEvalWithArgs
 
+        # @private
+        #
+        # Used internally to support `module_exec` in Ruby 1.8.6.
         def module_eval_with_args(*args, &block)
           # ruby > 1.8.6
           return module_exec(*args, &block) if respond_to?(:module_exec)

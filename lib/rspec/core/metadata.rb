@@ -6,8 +6,10 @@ module RSpec
     # @see ExampleGroup.metadata
     class Metadata < Hash
 
+        # @private
       module MetadataHash
 
+        # @private
         # Supports lazy evaluation of some values. Extended by
         # ExampleMetadataHash and GroupMetadataHash, which get mixed in to
         # Metadata for ExampleGroups and Examples (respectively).
@@ -126,7 +128,7 @@ module RSpec
         yield self if block_given?
       end
 
-      # @api private
+      # @private
       def process(*args)
         user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
@@ -152,7 +154,7 @@ module RSpec
         filters.all? {|k,v| filter_applies?(k,v)}
       end
 
-      # @api private
+      # @private
       def filter_applies?(key, value, metadata=self)
         case value
         when Hash

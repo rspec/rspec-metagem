@@ -34,7 +34,7 @@ module RSpec
       end
 
       class << self
-        # @api private
+        # @private
         def self.delegate_to_metadata(*names)
           names.each do |name|
             define_method name do
@@ -113,12 +113,12 @@ module RSpec
         block_given? ? block_not_supported("examples") : find_and_eval_shared("examples", name, *args)
       end
 
-      # @api private
+      # @private
       def self.block_not_supported(label)
         warn("Customization blocks not supported for include_#{label}.  Use it_behaves_like instead.")
       end
 
-      # @api private
+      # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
           shared_block = world.shared_example_groups[name]
@@ -137,7 +137,7 @@ module RSpec
         world.filtered_examples[self]
       end
 
-      # @api private
+      # @private
       def self.descendant_filtered_examples
         @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
       end
@@ -147,7 +147,7 @@ module RSpec
         @metadata if defined?(@metadata)
       end
 
-      # @api private
+      # @private
       # @return [Metadata] belonging to the parent of a nested [ExampleGroup](ExampleGroup)
       def self.superclass_metadata
         @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
@@ -193,7 +193,7 @@ module RSpec
         alias_method :context, :describe
       end
 
-      # @api private
+      # @private
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
         subclass.set_it_up(*args)
@@ -201,27 +201,27 @@ module RSpec
         subclass
       end
 
-      # @api private
+      # @private
       def self.children
         @children ||= [].extend(Extensions::Ordered)
       end
 
-      # @api private
+      # @private
       def self.descendants
         @_descendants ||= [self] + children.inject([]) {|list, c| list + c.descendants}
       end
 
-      # @api private
+      # @private
       def self.ancestors
         @_ancestors ||= super().select {|a| a < RSpec::Core::ExampleGroup}
       end
 
-      # @api private
+      # @private
       def self.top_level?
         @top_level ||= superclass == ExampleGroup
       end
 
-      # @api private
+      # @private
       def self.ensure_example_groups_are_configured
         unless defined?(@@example_groups_configured)
           RSpec.configuration.configure_mock_framework
@@ -230,7 +230,7 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       def self.set_it_up(*args)
         # Ruby 1.9 has a bug that can lead to infinite recursion and a
         # SystemStackError if you include a module in a superclass after
@@ -248,12 +248,12 @@ module RSpec
         world.configure_group(self)
       end
 
-      # @api private
+      # @private
       def self.before_all_ivars
         @before_all_ivars ||= {}
       end
 
-      # @api private
+      # @private
       def self.store_before_all_ivars(example_group_instance)
         return if example_group_instance.instance_variables.empty?
         example_group_instance.instance_variables.each { |ivar|
@@ -261,7 +261,7 @@ module RSpec
         }
       end
 
-      # @api private
+      # @private
       def self.assign_before_all_ivars(ivars, example_group_instance)
         return if ivars.empty?
         ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
@@ -384,19 +384,19 @@ An error occurred in an after(:all) hook.
         metadata.all_apply?(filters)
       end
 
-      # @api private
+      # @private
       def self.declaration_line_numbers
         @declaration_line_numbers ||= [metadata[:example_group][:line_number]] +
           examples.collect {|e| e.metadata[:line_number]} +
           children.inject([]) {|l,c| l + c.declaration_line_numbers}
       end
 
-      # @api private
+      # @private
       def self.top_level_description
         ancestors.last.description
       end
 
-      # @api private
+      # @private
       def self.set_ivars(instance, ivars)
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
@@ -426,7 +426,7 @@ An error occurred in an after(:all) hook.
         self.class.described_class
       end
 
-      # @api private
+      # @private
       # instance_evals the block, capturing and reporting an exception if
       # raised
       def instance_eval_with_rescue(&hook)

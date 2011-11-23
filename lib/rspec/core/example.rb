@@ -8,7 +8,7 @@ module RSpec
     # [around](Hooks#around-instance_method) hooks.
     # @see ExampleGroup
     class Example
-      # @api private
+      # @private
       #
       # Used to define methods that delegate to this example's metadata
       def self.delegate_to_metadata(*keys)
@@ -31,7 +31,7 @@ module RSpec
       attr_reader :metadata
 
       # @attr_reader
-      # @api private
+      # @private
       #
       # Returns the example_group_instance that provides the context for
       # running this example.
@@ -105,7 +105,7 @@ module RSpec
         finish(reporter)
       end
 
-      # @api private
+      # @private
       #
       # Wraps the example block in a Proc so it can invoked using `run` or
       # `call` in [around](../Hooks#around-instance_method) hooks.
@@ -113,11 +113,11 @@ module RSpec
         Proc.new(&proc).extend(Procsy).with(metadata)
       end
 
-      # @api private
+      # @private
       module Procsy
         attr_reader :metadata
 
-        # @api private
+        # @private
         # @param [Proc]
         # Adds a `run` method to the extended Proc, allowing it to be invoked
         # in an [around](../Hooks#around-instance_method) hook using either
@@ -126,7 +126,7 @@ module RSpec
           def object.run; call; end
         end
 
-        # @api private
+        # @private
         def with(metadata)
           @metadata = metadata
           self
@@ -138,7 +138,7 @@ module RSpec
         @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
       end
 
-      # @api private
+      # @private
       def around_hooks
         @around_hooks ||= example_group.around_hooks_for(self)
       end
@@ -151,7 +151,7 @@ module RSpec
         @exception ||= exception
       end
 
-      # @api private
+      # @private
       #
       # Used internally to set an exception and fail without actually executing
       # the example when an exception is raised in before(:all).
