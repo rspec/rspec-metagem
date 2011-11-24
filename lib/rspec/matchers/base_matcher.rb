@@ -11,7 +11,7 @@ module RSpec
     module BaseMatcher
       include RSpec::Matchers::Pretty
 
-      attr_reader :actual, :expected
+      attr_reader :actual, :expected, :rescued_exception
 
       def initialize(expected=nil)
         @expected = expected
@@ -25,7 +25,7 @@ module RSpec
         begin
           yield
           true
-        rescue exception => e
+        rescue exception => @rescued_exception
           false
         end
       end

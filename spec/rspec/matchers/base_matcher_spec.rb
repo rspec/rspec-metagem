@@ -25,7 +25,12 @@ module RSpec::Matchers
           matcher.match_unless_raises(ArgumentError){ raise "foo" }
         end.to raise_error
       end
+
+      it "stores the rescued exception for use in messages" do
+        matcher.match_unless_raises(RuntimeError){ raise "foo" }
+        matcher.rescued_exception.should be_a(RuntimeError)
+        matcher.rescued_exception.message.should eq("foo")
+      end
     end
   end
-
 end
