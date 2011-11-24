@@ -21,6 +21,15 @@ module RSpec
         @actual = actual
       end
 
+      def match_unless_raises(exception=Exception)
+        begin
+          yield
+          true
+        rescue exception => e
+          false
+        end
+      end
+
       def failure_message_for_should
         "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
       end
