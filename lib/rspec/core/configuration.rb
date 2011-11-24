@@ -140,14 +140,17 @@ MESSAGE
         @preferred_options.merge!(hash)
       end
 
+      # @api private
       def force_include(hash)
         filter_manager.include hash
       end
 
+      # @api private
       def force_exclude(hash)
         filter_manager.exclude hash
       end
 
+      # @api private
       def reset
         @reporter = nil
         @formatters.clear
@@ -414,35 +417,6 @@ EOM
         self.files_to_run = get_files_to_run(files)
       end
 
-      # @private
-      def command
-        $0.split(File::SEPARATOR).last
-      end
-
-      # @private
-      def get_files_to_run(paths)
-        patterns = pattern.split(",")
-        paths.map do |path|
-          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
-        end.flatten
-      end
-
-      # @private
-      def gather_directories(path, patterns)
-        patterns.map do |pattern|
-          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
-        end
-      end
-
-      # @private
-      def extract_location(path)
-        if path =~ /^(.*?)((?:\:\d+)+)$/
-          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
-          filter_manager.add_location path, lines
-        end
-        path
-      end
-
       # Creates a method that delegates to `example` including the submitted
       # `args`. Used internally to add variants of `example` like `pending`:
       #
@@ -582,7 +556,7 @@ EOM
         include_or_extend_modules << [:extend, mod, filters]
       end
 
-      # @private
+      # @api private
       #
       # Used internally to extend a group with modules using `include` and/or
       # `extend`.
@@ -593,22 +567,26 @@ EOM
         end
       end
 
+      # @api private
       def configure_mock_framework
         RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
 
+      # @api private
       def configure_expectation_framework
         expectation_frameworks.each do |framework|
           RSpec::Core::ExampleGroup.send(:include, framework)
         end
       end
 
+      # @api private
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
       end
 
       remove_method :seed=
+
       # @api
       #
       # Sets the seed value and sets `order='rand'`
@@ -640,6 +618,31 @@ EOM
       end
 
     private
+
+      def get_files_to_run(paths)
+        patterns = pattern.split(",")
+        paths.map do |path|
+          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
+        end.flatten
+      end
+
+      def gather_directories(path, patterns)
+        patterns.map do |pattern|
+          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
+        end
+      end
+
+      def extract_location(path)
+        if path =~ /^(.*?)((?:\:\d+)+)$/
+          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+          filter_manager.add_location path, lines
+        end
+        path
+      end
+
+      def command
+        $0.split(File::SEPARATOR).last
+      end
 
       def value_for(key, default=nil)
         @preferred_options.has_key?(key) ? @preferred_options[key] : default

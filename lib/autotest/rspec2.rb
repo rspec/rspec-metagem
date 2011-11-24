@@ -53,19 +53,17 @@ class Autotest::Rspec2 < Autotest
     end
   end
 
-  # @private
+  private
+
   def suffix
     using_bundler? ? "" : defined?(:Gem) ? " -rrubygems" : ""
   end
 
-  # @private
   def using_bundler?
     prefix =~ /bundle exec/
   end
 
-  # @private
   def gemfile?
     File.exist?('./Gemfile')
   end
-
 end
