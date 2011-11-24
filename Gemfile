@@ -31,11 +31,20 @@ group :development do
   end
 
   platforms :mri_19 do
-    if RUBY_VERSION == '1.9.2'
-      gem 'linecache19', '~> 0.5.12'
-      gem 'ruby-debug19', '~> 0.11.6'
-      gem 'ruby-debug-base19', '~> 0.11.25'
-    end
+    warn <<-EOM if RUBY_VERSION == '1.9.3'
+    ruby-debug19 on ruby-1.9.3 requires gems that have not been released to
+    rubygems as of 2011-11-24:
+
+      ruby-debug-base19-0.11.26
+      linecache19-0.5.13
+
+    See http://blog.wyeworks.com/2011/11/1/ruby-1-9-3-and-ruby-debug if they
+    still haven't been released and you're having trouble using ruby-debug19.
+    EOM
+
+    gem 'ruby-debug19',      '~> 0.11.6'
+    gem 'ruby-debug-base19', '~> 0.11.25'
+    gem 'linecache19',       '~> 0.5.12'
   end
 
   platforms :mri_18, :mri_19 do
