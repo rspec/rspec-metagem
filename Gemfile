@@ -11,7 +11,7 @@ source "http://rubygems.org"
 end
 
 ### dev dependencies
-gem "rake", "0.9.2"
+gem "rake", "~> 0.9.2"
 gem "cucumber", "1.0.1"
 gem "aruba", "0.4.2"
 gem "ZenTest", "4.6.2"
@@ -47,10 +47,22 @@ group :development do
   end
 
   platforms :mri_19 do
-    if RUBY_VERSION == '1.9.2'
-      gem 'linecache19', '~> 0.5.12'
-      gem 'ruby-debug19', '~> 0.11.6'
+    gem 'ruby-debug19', '~> 0.11.6'
+    if RUBY_VERSION == '1.9.3'
+      if `gem list ruby-debug-base19` =~ /0\.11\.26/
+        gem 'ruby-debug-base19', '0.11.26'
+      else
+        warn "Download and install ruby-debug-base19-0.11.26 from http://rubyforge.org/frs/shownotes.php?release_id=46303"
+      end
+
+      if `gem list linecache19` =~ /0\.5\.13/
+        gem 'linecache19', '0.5.13'
+      else
+        warn "Download and install linecache19-0.5.13 from http://rubyforge.org/frs/download.php/75414/linecache19-0.5.13.gem"
+      end
+    else
       gem 'ruby-debug-base19', '~> 0.11.25'
+      gem 'linecache19',       '~> 0.5.12'
     end
   end
 
