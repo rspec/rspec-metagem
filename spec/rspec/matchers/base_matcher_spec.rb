@@ -31,6 +31,23 @@ module RSpec::Matchers
         matcher.rescued_exception.should be_a(RuntimeError)
         matcher.rescued_exception.message.should eq("foo")
       end
+
+    end
+
+    describe "#==" do
+      it "responds the same way as matches?" do
+        matcher = Class.new do
+          include BaseMatcher
+          def matches?(actual)
+            actual == expected
+          end
+        end
+        matcher.new(3).matches?(3).should be_true
+        matcher.new(3).should eq(3)
+
+        matcher.new(3).matches?(4).should be_false
+        matcher.new(3).should_not eq(4)
+      end
     end
   end
 end

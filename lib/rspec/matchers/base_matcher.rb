@@ -1,5 +1,7 @@
 module RSpec
   module Matchers
+    # @api private
+    #
     # Used _internally_ as a base class for matchers that ship with
     # rspec-expectations.
     #
@@ -44,6 +46,10 @@ module RSpec
 
       def diffable?
         false
+      end
+
+      def ==(other)
+        matches?(other)
       end
     end
   end
