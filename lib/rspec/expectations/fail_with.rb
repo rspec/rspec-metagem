@@ -11,7 +11,7 @@ module RSpec
       # @param [Object] expected
       # @param [Object] actual
       #
-      # Adds a diff to the failure message when +expected+ and +actual+ are
+      # Adds a diff to the failure message when `expected` and `actual` are
       # both present.
       def fail_with(message, expected=nil, actual=nil)
         if !message
@@ -22,10 +22,10 @@ module RSpec
         if actual && expected
           if all_strings?(actual, expected)
             if any_multiline_strings?(actual, expected)
-              message << "\nDiff:" << self.differ.diff_as_string(actual, expected)
+              message << "\nDiff:" << differ.diff_as_string(actual, expected)
             end
           elsif no_procs?(actual, expected) && no_numbers?(actual, expected)
-            message << "\nDiff:" << self.differ.diff_as_object(actual, expected)
+            message << "\nDiff:" << differ.diff_as_object(actual, expected)
           end
         end
 
