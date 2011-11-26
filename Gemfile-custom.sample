@@ -21,6 +21,8 @@ group :development do
       gem 'ruby-debug-base19', '0.11.25'
       gem 'linecache19',       '0.5.12'
     when '1.9.3'
+      # NOTE - see http://blog.wyeworks.com/2011/11/1/ruby-1-9-3-and-ruby-debug
+      # for help setting up ruby-debug19 on ruby 1.9.3
       gem 'ruby-debug19',      '0.11.6'
       gem 'ruby-debug-base19', '0.11.26'
       gem 'linecache19',       '0.5.13'
