@@ -14,6 +14,10 @@ describe RSpec::Core::DrbOptions do
       config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
     end
 
+    it "includes --failure-exit-code" do
+      config_options_object(*%w[--failure-exit-code 2]).drb_argv.should include("--failure-exit-code", "2")
+    end
+
     it "includes --options" do
       config_options_object(*%w[--options custom.opts]).drb_argv.should include("--options", "custom.opts")
     end

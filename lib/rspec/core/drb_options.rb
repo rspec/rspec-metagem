@@ -18,6 +18,7 @@ module RSpec::Core
       argv << "--options"      << @submitted_options[:custom_options_file] if @submitted_options[:custom_options_file]
       argv << "--order"        << @submitted_options[:order]               if @submitted_options[:order]
 
+      add_failure_exit_code(argv)
       add_full_description(argv)
       add_line_numbers(argv)
       add_filter(argv, :inclusion, @filter_manager.inclusions)
@@ -27,6 +28,12 @@ module RSpec::Core
       add_requires(argv)
 
       argv + @submitted_options[:files_or_directories_to_run]
+    end
+
+    def add_failure_exit_code(argv)
+      if @submitted_options[:failure_exit_code]
+        argv << "--failure-exit-code" << @submitted_options[:failure_exit_code].to_s
+      end
     end
 
     def add_full_description(argv)
