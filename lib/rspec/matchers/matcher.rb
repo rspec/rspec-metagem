@@ -6,11 +6,12 @@ module RSpec
       include RSpec::Matchers
 
       attr_reader :expected, :actual, :rescued_exception
-      def initialize(name, *expected, &declarations)
-        @name     = name
-        @expected = expected
-        @actual   = nil
-        @diffable = false
+
+      def initialize(name, &declarations)
+        @name         = name
+        @declarations = declarations
+        @actual       = nil
+        @diffable     = false
         @expected_exception, @rescued_exception = nil, nil
         @match_for_should_not_block = nil
 
@@ -19,12 +20,17 @@ module RSpec
           :failure_message_for_should => lambda {|actual| "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"},
           :failure_message_for_should_not => lambda {|actual| "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"}
         }
-        making_declared_methods_public do
-          instance_eval_with_args(*@expected, &declarations)
-        end
       end
-      
-      #Used internally by +should+ and +should_not+.
+
+      def for_expected(*expected)
+        @expected = expected
+        making_declared_methods_public do
+          instance_eval_with_args(*@expected, &@declarations)
+        end
+        self
+      end
+
+      # Used internally by +should+ and +should_not+.
       def matches?(actual)
         @actual = actual
         if @expected_exception
