@@ -146,7 +146,7 @@ FILTERING
 
         parser.on('-t', '--tag TAG[:VALUE]',
                   'Run examples with the specified tag, or exclude',
-                  'examples by ading ~ before the tag (e.g. ~slow)',
+                  'examples by adding ~ before the tag (e.g. ~slow)',
                   '(TAG is always converted to a symbol)') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
 
