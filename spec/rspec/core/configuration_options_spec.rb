@@ -279,16 +279,13 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb")
+        .should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
 
     it "provides no files or directories if spec directory does not exist" do
       FileTest.stub(:directory?).with("spec").and_return false
       parse_options().should include(:files_or_directories_to_run => [])
-    end
-
-    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
   end
 
