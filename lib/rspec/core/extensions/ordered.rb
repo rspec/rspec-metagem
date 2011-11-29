@@ -6,8 +6,8 @@ module RSpec
       module Ordered
         def ordered
           if RSpec.configuration.randomize?
-            srand RSpec.configuration.seed
-            sort_by { rand size }
+            Kernel.srand RSpec.configuration.seed
+            sort_by { Kernel.rand size }
           else
             self
           end
