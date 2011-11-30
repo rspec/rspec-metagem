@@ -61,8 +61,8 @@ module RSpec::Core
           options[:fail_fast] = true
         end
 
-        parser.on('--failure-exit-code CODE', 'Override the exit code used when there are failing specs') do |o|
-          options[:failure_exit_code] = o.to_i
+        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs') do |code|
+          options[:failure_exit_code] = code
         end
 
         parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
