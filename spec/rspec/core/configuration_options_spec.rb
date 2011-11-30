@@ -140,9 +140,9 @@ describe RSpec::Core::ConfigurationOptions do
 
   describe "--format, -f" do
     it "sets :formatter" do
-      parse_options('--format', 'd').should include(:formatters => [['d']])
-      parse_options('-f', 'd').should include(:formatters => [['d']])
-      parse_options('-fd').should include(:formatters => [['d']])
+      [['--format', 'd'], ['-f', 'd'], '-fd'].each do |args|
+        parse_options(*args).should include(:formatters => [['d']])
+      end
     end
 
     example "can accept a class name" do

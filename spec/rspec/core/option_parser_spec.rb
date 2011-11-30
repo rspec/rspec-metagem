@@ -109,6 +109,11 @@ module RSpec::Core
             options = Parser.parse!([option, 'foo:false', option, 'bar:true', option, 'foo:true'])
             options[:inclusion_filter].should eq(:foo => true, :bar => true)
           end
+
+          it "treats 'any_string' as 'any_string'" do
+            options = Parser.parse!([option, 'foo:any_string'])
+            options[:inclusion_filter].should eq(:foo => 'any_string')
+          end
         end
 
         context "with ~" do
