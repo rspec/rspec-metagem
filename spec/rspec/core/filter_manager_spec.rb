@@ -171,5 +171,14 @@ module RSpec::Core
       filter_manager.include :full_description => "this and that"
       filter_manager.inclusions.should eq(:full_description => "this and that")
     end
+
+    [:locations, :line_numbers, :full_description].each do |filter|
+      it "does nothing on include if already set standalone filter #{filter}" do
+        filter_manager = FilterManager.new
+        filter_manager.include filter => "a_value"
+        filter_manager.include :foo => :bar
+        filter_manager.inclusions.should eq(filter => "a_value")
+      end
+    end
   end
 end
