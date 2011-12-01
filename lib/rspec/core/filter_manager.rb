@@ -146,13 +146,12 @@ module RSpec
       end
 
       def update(orig, opposite, *updates)
-        if updates.length == 2
-          if updates[0] == :replace
-            updated = updates.last
-          else
-            updated = updates.last.merge(orig)
-            opposite.each_key {|k| updated.delete(k)}
-          end
+        case updates.first
+        when :replace
+          orig.replace(updates.last)
+        when :low_priority
+          updated = updates.last.merge(orig)
+          opposite.each_key {|k| updated.delete(k)}
           orig.replace(updated)
         else
           orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
