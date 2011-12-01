@@ -484,7 +484,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_including :foo # results in {:foo => true}
       def filter_run_including(*args)
-        filter_manager.include :low_priority, build_metadata_hash_from(args)
+        filter_manager.include_with_low_priority build_metadata_hash_from(args)
       end
 
       alias_method :filter_run, :filter_run_including
@@ -497,7 +497,7 @@ EOM
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        filter_manager.include :replace, build_metadata_hash_from([filter])
+        filter_manager.include! build_metadata_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -526,7 +526,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        filter_manager.exclude :low_priority, build_metadata_hash_from(args)
+        filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
@@ -537,7 +537,7 @@ EOM
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        filter_manager.exclude :replace, build_metadata_hash_from([filter])
+        filter_manager.exclude! build_metadata_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
