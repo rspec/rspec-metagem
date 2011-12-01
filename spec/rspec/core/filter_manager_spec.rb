@@ -23,7 +23,7 @@ module RSpec::Core
         filter_manager = FilterManager.new
         filter_manager.exclusions.clear # defaults
         filter_manager.send name, :foo => 1
-        filter_manager.send name, :weak, :foo => 2
+        filter_manager.send name, :low_priority, :foo => 2
         filter_manager.send(type).should eq(:foo => 1)
       end
     end
@@ -68,7 +68,7 @@ module RSpec::Core
         excluded = RSpec::Core::Metadata.new
         filter_manager = FilterManager.new
         filter_manager.include :foo => :bar
-        filter_manager.exclude :low, :foo => :bar
+        filter_manager.exclude :low_priority, :foo => :bar
         filter_manager.prune([included, excluded]).should eq([included])
       end
 
@@ -77,7 +77,7 @@ module RSpec::Core
         excluded = RSpec::Core::Metadata.new({:foo => :bar})
         filter_manager = FilterManager.new
         filter_manager.exclude :foo => :bar
-        filter_manager.include :low, :foo => :bar
+        filter_manager.include :low_priority, :foo => :bar
         filter_manager.prune([included, excluded]).should eq([included])
       end
     end
