@@ -26,6 +26,16 @@ module RSpec::Core
         filter_manager.send name, :low_priority, :foo => 2
         filter_manager.send(type).should eq(:foo => 1)
       end
+
+      it "replaces previous #{type} if priority is :replace" do
+        filter_manager = FilterManager.new
+        filter_manager.exclusions.clear # defaults
+        filter_manager.send name, :foo => 1
+        filter_manager.send name, :baz => 2
+        filter_manager.send name, :bar => 3
+        filter_manager.send name, :replace, :very => "high_priority"
+        filter_manager.send(type).should eq(:very => "high_priority")
+      end
     end
 
     describe "#prune" do
