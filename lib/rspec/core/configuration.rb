@@ -141,16 +141,6 @@ MESSAGE
       end
 
       # @api private
-      def force_include(hash)
-        filter_manager.include hash
-      end
-
-      # @api private
-      def force_exclude(hash)
-        filter_manager.exclude hash
-      end
-
-      # @api private
       def reset
         @reporter = nil
         @formatters.clear

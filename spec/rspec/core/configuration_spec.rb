@@ -649,13 +649,6 @@ module RSpec::Core
         config.inclusion_filter[:foo].should be(true)
         config.inclusion_filter[:bar].should be(false)
       end
-
-      it "gets overrided by forced options" do
-        config.force_exclude :foo => true
-        config.filter_run_including :foo => true
-        config.inclusion_filter.should eq({})
-      end
-
     end
 
     describe "#filter_run_excluding" do
@@ -683,13 +676,6 @@ module RSpec::Core
 
         config.exclusion_filter[:foo].should be(true)
         config.exclusion_filter[:bar].should be(false)
-      end
-
-      it "gets overrided by forced options" do
-        config.exclusion_filter.clear
-        config.force_include :foo => true
-        config.filter_run_excluding :foo => true
-        config.exclusion_filter.should eq({})
       end
     end
 
