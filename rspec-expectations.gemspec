@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
   s.name        = "rspec-expectations"
   s.version     = RSpec::Expectations::Version::STRING
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["David Chelimsky", "Steven Baker"]
+  s.license     = "MIT"
+  s.authors     = ["Steven Baker", "David Chelimsky"]
   s.email       = "rspec-users@rubyforge.org"
   s.homepage    = "http://github.com/rspec/rspec-expectations"
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
@@ -15,8 +16,9 @@ Gem::Specification.new do |s|
   s.rubyforge_project  = "rspec"
 
   s.files            = `git ls-files -- lib/*`.split("\n")
+  s.files           += ["License.txt"]
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
-  s.extra_rdoc_files = [ "README.md" ]
+  s.extra_rdoc_files = [ "README.md", "License.txt"]
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
