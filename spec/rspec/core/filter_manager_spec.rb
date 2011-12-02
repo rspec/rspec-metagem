@@ -180,14 +180,26 @@ module RSpec::Core
 
       it 'deprecates an overridden :if filter' do
         RSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
-                                                     filter_manager = FilterManager.new
-                                                     filter_manager.exclude :if => :custom_filter
+        filter_manager = FilterManager.new
+        filter_manager.exclude :if => :custom_filter
+      end
+
+      it 'deprecates an :if filter overridden with low priority' do
+        RSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude_with_low_priority :if => :custom_filter
       end
 
       it 'deprecates an overridden :unless filter' do
         RSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
-                                                     filter_manager = FilterManager.new
-                                                     filter_manager.exclude :unless => :custom_filter
+        filter_manager = FilterManager.new
+        filter_manager.exclude :unless => :custom_filter
+      end
+
+      it 'deprecates an :unless filter overridden with low priority' do
+        RSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        filter_manager = FilterManager.new
+        filter_manager.exclude_with_low_priority :unless => :custom_filter
       end
 
       it 'includes an overriden :if filter' do
