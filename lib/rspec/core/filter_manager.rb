@@ -152,15 +152,15 @@ module RSpec
       end
 
       def include(*args)
-        yield_unless_standalone(*args) { merge(@inclusions, @exclusions, *args) }
+        unless_standalone(*args) { merge(@inclusions, @exclusions, *args) }
       end
 
       def include!(*args)
-        yield_unless_standalone(*args) { replace(@inclusions, @exclusions, *args) }
+        unless_standalone(*args) { replace(@inclusions, @exclusions, *args) }
       end
 
       def include_with_low_priority(*args)
-        yield_unless_standalone(*args) { reverse_merge(@inclusions, @exclusions, *args) }
+        unless_standalone(*args) { reverse_merge(@inclusions, @exclusions, *args) }
       end
 
       def include?(example)
@@ -169,7 +169,7 @@ module RSpec
 
       private
 
-      def yield_unless_standalone(*args)
+      def unless_standalone(*args)
         is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : yield unless already_set_standalone_filter?
       end
 
