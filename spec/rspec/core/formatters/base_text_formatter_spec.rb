@@ -340,5 +340,30 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
       output.string.should =~ /#{filename}\:#{__LINE__ - 21}/
     end
+
+    context 'with --slow-color' do
+      let :output_stream do
+        output_stream = StringIO.new
+        output_stream.stub(:tty?).and_return(true)
+        output_stream
+      end
+
+      def output_for(color)
+        RSpec.configure do |config|
+          config.output_stream = output_stream
+          config.color_enabled = true
+          config.slow_color = color
+        end
+
+        formatter.dump_profile
+        output.string
+      end
+
+      it 'colors the slow times according to configuration.slow_color' do
+        output_for("red").should include("\e[31m")
+        output_for("blue").should include("\e[34m")
+        output_for("cyan").should include("\e[36m")
+      end
+    end
   end
 end

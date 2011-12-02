@@ -140,6 +140,21 @@ module RSpec::Core
       end
     end
 
+    %w[-s --slow-color --slow-colour].each do |option|
+      describe option do
+        it 'raises an error when given an invalid value' do
+          expect { Parser.parse! [option, 'fuchsia'] }.to raise_error
+        end
+
+        %w[red green yellow blue magenta cyan white].each do |color|
+          specify "#{color} is a valid option" do
+            options = Parser.parse!([option, color])
+            options[:slow_color].should eq(color)
+          end
+        end
+      end
+    end
+
     describe "--order" do
       it "is nil by default" do
         Parser.parse!([])[:order].should be_nil
