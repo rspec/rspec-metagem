@@ -219,7 +219,7 @@ module RSpec
 
       def ensure_valid_keys(user_metadata)
         RESERVED_KEYS.each do |key|
-          if user_metadata.keys.include?(key)
+          if user_metadata.has_key?(key)
             raise <<-EOM
 #{"*"*50}
 :#{key} is not allowed
@@ -234,7 +234,6 @@ Here are all of RSpec's reserved hash keys:
   #{RESERVED_KEYS.join("\n  ")}
 #{"*"*50}
 EOM
-            raise ":#{key} is not allowed"
           end
         end
       end
