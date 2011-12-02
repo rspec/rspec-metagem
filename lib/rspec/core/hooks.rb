@@ -99,10 +99,15 @@ module RSpec
       # @api public
       # @overload before(&block)
       # @overload before(scope, &block)
-      # @overload before(scope, tags, &block)
-      # @overload before(tags, &block)
+      # @overload before(scope, conditions, &block)
+      # @overload before(conditions, &block)
+      #
       # @param [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @param [Hash] tags
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `before(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @see #after
       # @see #around
       # @see ExampleGroup
@@ -122,12 +127,6 @@ module RSpec
       # Instance variables declared in `before(:each)` or `before(:all)` are
       # accessible within each example.
       #
-      # ### Exceptions
-      #
-      # When an exception is raised in a `before` block, RSpec skips any
-      # subsequent `before` blocks and the example, but runs all of the
-      # `after(:each)` and `after(:all)` hooks.
-      #
       # ### Order
       #
       # `before` hooks are stored in three scopes, which are run in order:
@@ -135,15 +134,54 @@ module RSpec
       # different places: `RSpec.configure`, a parent group, the current group.
       # They are run in the following order:
       #
-      #     before(:all) declared in RSpec.configure
-      #     before(:all) declared in a parent group
-      #     before(:all) declared in the current group
-      #     before(:each) declared in RSpec.configure
-      #     before(:each) declared in a parent group
-      #     before(:each) declared in the current group
+      #     before(:suite) # declared in RSpec.configure
+      #     before(:all)   # declared in RSpec.configure
+      #     before(:all)   # declared in a parent group
+      #     before(:all)   # declared in the current group
+      #     before(:each)  # declared in RSpec.configure
+      #     before(:each)  # declared in a parent group
+      #     before(:each)  # declared in the current group
       #
       # If more than one `before` is declared within any one scope, they are run
       # in the order in which they are declared.
+      #
+      # ### Conditions
+      #
+      # When you add a conditions hash to `before(:each)` or `before(:all)`,
+      # RSpec will only apply that hook to groups or examples that match the
+      # conditions. e.g.
+      #
+      #     RSpec.configure do |config|
+      #       config.before(:each, :authorized => true) do
+      #         log_in_as :authorized_user
+      #       end
+      #     end
+      #
+      #     describe Something, :authorized => true do
+      #       # the before hook will run in before each example in this group
+      #     end
+      #
+      #     describe SomethingElse do
+      #       it "does something", :authorized => true do
+      #         # the before hook will run before this example
+      #       end
+      #
+      #       it "does something else" do
+      #         # the hook will not run before this example
+      #       end
+      #     end
+      #
+      # ### Warning: `before(:suite, :with => :conditions)`
+      #
+      # The conditions hash is used to match against specific examples. Since
+      # `before(:suite)` is not run in relation to any specific example or
+      # group, conditions passed along with `:suite` are effectively ignored.
+      #
+      # ### Exceptions
+      #
+      # When an exception is raised in a `before` block, RSpec skips any
+      # subsequent `before` blocks and the example, but runs all of the
+      # `after(:each)` and `after(:all)` hooks.
       #
       # ### Warning: implicit before blocks
       #
