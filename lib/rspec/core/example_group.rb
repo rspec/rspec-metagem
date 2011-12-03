@@ -23,12 +23,12 @@ module RSpec
       include Pending
       include Let
 
-      # @api private
+      # @private
       def self.world
         RSpec.world
       end
 
-      # @api private
+      # @private
       def self.register
         world.register(self)
       end
@@ -45,10 +45,11 @@ module RSpec
 
         delegate_to_metadata :description, :described_class, :file_path
         alias_method :display_name, :description
+        # @private
         alias_method :describes, :described_class
       end
 
-      # @api private
+      # @private
       def self.define_example_method(name, extra_options={})
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{name}(desc=nil, *args, &block)
@@ -78,7 +79,7 @@ module RSpec
       alias_example_to :focused,  :focused => true, :focus => true
       alias_example_to :focus,    :focused => true, :focus => true
 
-      # @api private
+      # @private
       def self.define_nested_shared_group_method(new_name, report_label=nil)
         module_eval(<<-END_RUBY, __FILE__, __LINE__)
           def self.#{new_name}(name, *args, &customization_block)
@@ -127,12 +128,12 @@ module RSpec
         module_eval(&customization_block) if customization_block
       end
 
-      # The collection of examples in the group.
+      # @private
       def self.examples
         @examples ||= []
       end
 
-      # @api private
+      # @private
       def self.filtered_examples
         world.filtered_examples[self]
       end
@@ -142,6 +143,7 @@ module RSpec
         @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
       end
 
+      # The [Metadata](Metadata) object associated with this group.
       # @see Metadata
       def self.metadata
         @metadata if defined?(@metadata)
@@ -267,7 +269,7 @@ module RSpec
         ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
       end
 
-      # @api private
+      # @private
       def self.run_before_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
@@ -276,7 +278,7 @@ module RSpec
         store_before_all_ivars(example_group_instance)
       end
 
-      # @api private
+      # @private
       def self.run_around_each_hooks(example, initial_procsy)
         example.around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
           Example.procsy(procsy.metadata) do
@@ -285,19 +287,19 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       def self.run_before_each_hooks(example)
         world.run_hook_filtered(:before, :each, self, example.example_group_instance, example)
         ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example.example_group_instance) }
       end
 
-      # @api private
+      # @private
       def self.run_after_each_hooks(example)
         ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example.example_group_instance) }
         world.run_hook_filtered(:after, :each, self, example.example_group_instance, example)
       end
 
-      # @api private
+      # @private
       def self.run_after_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
@@ -318,7 +320,7 @@ An error occurred in an after(:all) hook.
         world.run_hook_filtered(:after, :all, self, example_group_instance)
       end
 
-      # @api private
+      # @private
       def self.around_hooks_for(example)
         world.find_hook(:around, :each, self, example) + ancestors.reverse.inject([]){|l,a| l + a.find_hook(:around, :each, self, example)}
       end
@@ -345,7 +347,7 @@ An error occurred in an after(:all) hook.
         end
       end
 
-      # @api private
+      # @private
       def self.run_examples(reporter)
         filtered_examples.ordered.map do |example|
           next if RSpec.wants_to_quit
@@ -357,7 +359,7 @@ An error occurred in an after(:all) hook.
         end.all?
       end
 
-      # @api private
+      # @private
       def self.fail_filtered_examples(exception, reporter)
         filtered_examples.each { |example| example.fail_with_exception(reporter, exception) }
 
@@ -369,17 +371,17 @@ An error occurred in an after(:all) hook.
         false
       end
 
-      # @api private
+      # @private
       def self.fail_fast?
         RSpec.configuration.fail_fast?
       end
 
-      # @api private
+      # @private
       def self.any_apply?(filters)
         metadata.any_apply?(filters)
       end
 
-      # @api private
+      # @private
       def self.all_apply?(filters)
         metadata.all_apply?(filters)
       end

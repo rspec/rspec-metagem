@@ -7,7 +7,9 @@ module RSpec
     #
     # @example Standard settings
     #     RSpec.configure do |c|
-    #       c.drb_port = 1234
+    #       c.drb          = true
+    #       c.drb_port     = 1234
+    #       c.default_path = 'behavior'
     #     end
     #
     # @example Hooks
@@ -72,25 +74,99 @@ MESSAGE
         end
       end
 
-      add_setting :error_stream
-      add_setting :output_stream, :alias_with => [:output, :out]
-      add_setting :drb
-      add_setting :drb_port
-      add_setting :profile_examples
-      add_setting :fail_fast
-      add_setting :failure_exit_code
-      add_setting :run_all_when_everything_filtered
-      add_setting :pattern, :alias_with => :filename_pattern
-      add_setting :files_to_run
-      add_setting :include_or_extend_modules
+      # @macro [attach] add_setting
+      #   @attribute $1
+      # Patterns to match against lines in backtraces presented in failure
+      # messages in order to filter them out (default:
+      # DEFAULT_BACKTRACE_PATTERNS).  You can either replace this list using
+      # the setter or modify it using the getter.
+      #
+      # To override this behavior and display a full backtrace, use
+      # `--backtrace` on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
       add_setting :backtrace_clean_patterns
-      add_setting :tty
-      add_setting :treat_symbols_as_metadata_keys_with_true_values
-      add_setting :expecting_with_rspec
+
+      # Path to use if no path is provided to the `rspec` command (default:
+      # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
+      # run all the examples in the `spec` directory.
       add_setting :default_path
-      add_setting :show_failures_in_pending_blocks
+
+      # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
+      # server, but you can use tools like spork.
+      add_setting :drb
+
+      # The drb_port (default: `8989`).
+      add_setting :drb_port
+
+      # Default: `$stderr`.
+      add_setting :error_stream
+
+      # Clean up and exit after the first failure (default: `false`).
+      add_setting :fail_fast
+
+      # The exit code to return if there are any failures (default: 1).
+      add_setting :failure_exit_code
+
+      # Determines the order in which examples are run (default: OS standard
+      # load order for files, declaration order for groups and examples).
       add_setting :order
+
+      # Default: `$stdout`.
+      # Also known as `output` and `out`
+      add_setting :output_stream, :alias_with => [:output, :out]
+
+      # Load files matching this pattern (default: `'**/*_spec.rb'`)
+      add_setting :pattern, :alias_with => :filename_pattern
+
+      # Report the times for the 10 slowest examples (default: `false`).
+      add_setting :profile_examples
+
+      # Run all examples if none match the configured filters (default: `false`).
+      add_setting :run_all_when_everything_filtered
+
+      # Seed for random ordering (default: generated randomly each run).
+      #
+      # When you run specs with `--order random`, RSpec generates a random seed
+      # for the randomization and prints it to the `output_stream` (assuming
+      # you're using RSpec's built-in formatters). If you discover an ordering
+      # dependency (i.e. examples fail intermittently depending on order), set
+      # this (on Configuration or on the command line with `--seed`) to run
+      # using the same seed while you debug the issue.
+      #
+      # We recommend, actually, that you use the command line approach so you
+      # don't accidentally leave the seed encoded.
       add_setting :seed
+
+      # When a block passed to pending fails (as expected), display the failure
+      # without reporting it as a failure (default: false).
+      add_setting :show_failures_in_pending_blocks
+
+      # Convert symbols to hashes with the symbol as a key with a value of
+      # `true` (default: false).
+      #
+      # This allows you to tag a group or example like this:
+      #
+      #     describe "something slow", :slow do
+      #       # ...
+      #     end
+      #
+      # ... instead of having to type:
+      #
+      #     describe "something slow", :slow => true do
+      #       # ...
+      #     end
+      add_setting :treat_symbols_as_metadata_keys_with_true_values
+
+      # @private
+      add_setting :tty
+      # @private
+      add_setting :include_or_extend_modules
+      # @private
+      add_setting :files_to_run
+      # @private
+      add_setting :expecting_with_rspec
+      # @private
+      attr_accessor :filter_manager
 
       DEFAULT_BACKTRACE_PATTERNS = [
         /\/lib\d*\/ruby\//,
@@ -116,8 +192,6 @@ MESSAGE
         @preferred_options = {}
         @seed = srand % 0xFFFF
       end
-
-      attr_accessor :filter_manager
 
       # @private
       #
@@ -147,7 +221,20 @@ MESSAGE
       end
 
       # @overload add_setting(name)
-      # @overload add_setting(name, options_hash)
+      # @overload add_setting(name, opts)
+      # @option opts [Symbol] :default
+      #
+      #   set a default value for the generated getter and predicate methods:
+      #
+      #       add_setting(:foo, :default => "default value")
+      #
+      # @option opts [Symbol] :alias_with
+      #
+      #   Use `:alias_with` to alias the setter, getter, and predicate to another
+      #   name, or names:
+      #
+      #       add_setting(:foo, :alias_with => :bar)
+      #       add_setting(:foo, :alias_with => [:bar, :baz])
       #
       # Adds a custom setting to the RSpec.configuration object.
       #
@@ -168,23 +255,6 @@ MESSAGE
       #     RSpec.configuration.foo=(value)
       #     RSpec.configuration.foo
       #     RSpec.configuration.foo? # returns true if foo returns anything but nil or false
-      #
-      # ### Options
-      #
-      # `add_setting` takes an optional hash that supports the keys `:default`
-      # and `:alias_with`.
-      #
-      # Use `:default` to set a default value for the generated getter and
-      # predicate methods:
-      #
-      #     add_setting(:foo, :default => "default value")
-      #
-      # Use `:alias_with` to alias the setter, getter, and predicate to another
-      # name, or names:
-      #
-      #     add_setting(:foo, :alias_with => :bar)
-      #     add_setting(:foo, :alias_with => [:bar, :baz])
-      #
       def add_setting(name, opts={})
         default = opts.delete(:default)
         (class << self; self; end).class_eval do

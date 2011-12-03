@@ -87,7 +87,7 @@ module RSpec
 
       class AroundHooks < HookCollection; end
 
-      # @api private
+      # @private
       def hooks
         @hooks ||= {
           :around => { :each => AroundHooks.new },
@@ -241,8 +241,8 @@ module RSpec
       #       before(:all) do
       #         File.open(file_to_parse, 'w') do |f|
       #           f.write <<-CONTENT
-      #             Stuff in the file
-      #           end
+      #             stuff in the file
+      #           CONTENT
       #         end
       #       end
       #
@@ -262,10 +262,15 @@ module RSpec
       # @api public
       # @overload after(&block)
       # @overload after(scope, &block)
-      # @overload after(scope, tags, &block)
-      # @overload after(tags, &block)
+      # @overload after(scope, conditions, &block)
+      # @overload after(conditions, &block)
+      #
       # @param [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @param [Hash] tags
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `after(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @see #before
       # @see #around
       # @see ExampleGroup
@@ -292,12 +297,12 @@ module RSpec
       # different places: `RSpec.configure`, a parent group, the current group.
       # They are run in the following order:
       #
-      #     after(:each) declared in the current group
-      #     after(:each) declared in a parent group
-      #     after(:each) declared in RSpec.configure
-      #     after(:all) declared in the current group
-      #     after(:all) declared in a parent group
-      #     after(:all) declared in RSpec.configure
+      #     after(:each) # declared in the current group
+      #     after(:each) # declared in a parent group
+      #     after(:each) # declared in RSpec.configure
+      #     after(:all)  # declared in the current group
+      #     after(:all)  # declared in a parent group
+      #     after(:all)  # declared in RSpec.configure
       #
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
@@ -310,11 +315,27 @@ module RSpec
       # @api public
       # @overload around(&block)
       # @overload around(scope, &block)
-      # @overload around(scope, tags, &block)
-      # @overload around(tags, &block)
+      # @overload around(scope, conditions, &block)
+      # @overload around(conditions, &block)
+      #
       # @param [Symbol] scope `:each` (defaults to `:each`)
-      # @param [Hash] tags
+      #   present for syntax parity with `before` and `after`, but `:each` is
+      #   the only supported value.
+      #
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `around(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @yield [Example] the example to run
+      #
+      # @note the syntax of `around` is similar to that of `before` and `after`
+      #   but the semantics are quite different. `before` and `after` hooks are
+      #   run in the context of of the examples with which they are associated,
+      #   whereas `around` hooks are actually responsible for running the
+      #   examples. Consequently, `around` hooks do not have direct access to
+      #   resources that are made available within the examples and their
+      #   associated `before` and `after` hooks.
       #
       # @note `:each` is the only supported scope.
       #
@@ -340,26 +361,26 @@ module RSpec
         hooks[:around][scope] << AroundHook.new(options, &block)
       end
 
-      # @api private
+      # @private
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
       def run_hook(hook, scope, example_group_instance=nil)
         hooks[hook][scope].run_all(example_group_instance)
       end
 
-      # @api private
+      # @private
       # Just like run_hook, except it removes the blocks as it evalutes them,
       # ensuring that they will only be run once.
       def run_hook!(hook, scope, example_group_instance)
         hooks[hook][scope].run_all!(example_group_instance)
       end
 
-      # @api private
+      # @private
       def run_hook_filtered(hook, scope, group, example_group_instance, example = nil)
         find_hook(hook, scope, group, example).run_all(example_group_instance)
       end
 
-      # @api private
+      # @private
       def find_hook(hook, scope, example_group_class, example = nil)
         found_hooks = hooks[hook][scope].find_hooks_for(example || example_group_class)
 
