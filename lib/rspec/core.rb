@@ -56,13 +56,13 @@ module RSpec
     world.wants_to_quit=(maybe)
   end
 
-  # @api private
+  # @private
   # Internal container for global non-configuration data
   def self.world
     @world ||= RSpec::Core::World.new
   end
 
-  # @api private
+  # @private
   # Used internally to ensure examples get reloaded between multiple runs in
   # the same process.
   def self.reset
@@ -82,6 +82,7 @@ module RSpec
     @configuration ||= RSpec::Core::Configuration.new
   end
 
+  # Yields the global configuration to a block.
   # @yield [Configuration] global configuration
   #
   # @example

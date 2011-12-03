@@ -1,6 +1,6 @@
 module RSpec
   class << self
-    # @api private
+    # @private
     #
     # Used internally to print deprecation warnings
     def deprecate(method, alternate_method=nil, version=nil)
@@ -26,7 +26,7 @@ ADDITIONAL
       warn_deprecation(message)
     end
 
-    # @api private
+    # @private
     #
     # Used internally to print deprecation warnings
     def warn_deprecation(message)
