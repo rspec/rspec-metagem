@@ -221,3 +221,8 @@ Finished in 0.000379 seconds
 1 example, 0 failures
 ```
 
+## Also see
+
+* [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
+* [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
+* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
