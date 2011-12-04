@@ -1,6 +1,6 @@
 group :development do
   gem 'interactive_rspec'
-  gem 'yard'
+  gem 'yard', "~> 0.7.4"
   gem "relish", "~> 0.5.0"
   gem "guard-rspec", "0.5.0"
   gem "growl", "1.0.3"
