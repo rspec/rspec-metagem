@@ -22,19 +22,21 @@ Minitest, or Cucumber, you can install it directly:
 
 Here's an example using rspec-core:
 
-    describe Order do
-      it "sums the prices of the items in its line items" do
-        order = Order.new
-        order.add_entry(LineItem.new(:item => Item.new(
-          :price => Money.new(1.11, :USD)
-        )
-        order.add_entry(LineItem.new(:item => Item.new(
-          :price => Money.new(2.22, :USD),
-          :quantity => 2
-        )
-        order.total.should eq(Money.new(5.55, :USD))
-      end
-    end
+```ruby
+describe Order do
+  it "sums the prices of the items in its line items" do
+    order = Order.new
+    order.add_entry(LineItem.new(:item => Item.new(
+      :price => Money.new(1.11, :USD)
+    )))
+    order.add_entry(LineItem.new(:item => Item.new(
+      :price => Money.new(2.22, :USD),
+      :quantity => 2
+    )))
+    order.total.should eq(Money.new(5.55, :USD))
+  end
+end
+```
 
 The `describe` and `it` methods come from rspec-core.  The `Order`, `LineItem`,
 and `Item` classes would be from _your_ code. The last line of the example
@@ -48,73 +50,97 @@ the example passes. If not, it fails with a message like:
 
 ### Equivalence
 
-    actual.should eq(expected)  # passes if actual == expected
-    actual.should == expected   # passes if actual == expected
-    actual.should eql(expected) # passes if actual.eql?(expected)
+```ruby
+actual.should eq(expected)  # passes if actual == expected
+actual.should == expected   # passes if actual == expected
+actual.should eql(expected) # passes if actual.eql?(expected)
+```
 
 ### Identity
 
-    actual.should be(expected)    # passes if actual.equal?(expected)
-    actual.should equal(expected) # passes if actual.equal?(expected)
+```ruby
+actual.should be(expected)    # passes if actual.equal?(expected)
+actual.should equal(expected) # passes if actual.equal?(expected)
+```
     
 ### Comparisons
 
-    actual.should be >  expected
-    actual.should be >= expected
-    actual.should be <= expected
-    actual.should be <  expected
-    actual.should be_within(delta).of(expected)
+```ruby
+actual.should be >  expected
+actual.should be >= expected
+actual.should be <= expected
+actual.should be <  expected
+actual.should be_within(delta).of(expected)
+```
 
 ### Regular expressions
 
-    actual.should =~ /expression/
-    actual.should match(/expression/)
+```ruby
+actual.should =~ /expression/
+actual.should match(/expression/)
+```
 
 ### Types/classes
 
-    actual.should be_an_instance_of(expected)
-    actual.should be_a_kind_of(expected)
+```ruby
+actual.should be_an_instance_of(expected)
+actual.should be_a_kind_of(expected)
+```
 
 ### Truthiness
 
-    actual.should be_true  # passes if actual is truthy (not nil or false)
-    actual.should be_false # passes if actual is falsy (nil or false)
-    actual.should be_nil   # passes if actual is nil
+```ruby
+actual.should be_true  # passes if actual is truthy (not nil or false)
+actual.should be_false # passes if actual is falsy (nil or false)
+actual.should be_nil   # passes if actual is nil
+```
 
 ### Expecting errors
 
-    expect { ... }.to raise_error
-    expect { ... }.to raise_error(ErrorClass)
-    expect { ... }.to raise_error("message")
-    expect { ... }.to raise_error(ErrorClass, "message")
+```ruby
+expect { ... }.to raise_error
+expect { ... }.to raise_error(ErrorClass)
+expect { ... }.to raise_error("message")
+expect { ... }.to raise_error(ErrorClass, "message")
+```
 
 ### Expecting throws
 
-    expect { ... }.to throw_symbol
-    expect { ... }.to throw_symbol(:symbol)
-    expect { ... }.to throw_symbol(:symbol, 'value')
+```ruby
+expect { ... }.to throw_symbol
+expect { ... }.to throw_symbol(:symbol)
+expect { ... }.to throw_symbol(:symbol, 'value')
+```
 
 ### Predicate matchers
 
-    actual.should be_xxx         # passes if actual.xxx?
-    actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
+```ruby
+actual.should be_xxx         # passes if actual.xxx?
+actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
+```
 
 See [RSpec::Matchers](../RSpec/Matchers) for more about predicate matchers.
 
 ### Ranges (Ruby >= 1.9 only)
 
-    (1..10).should cover(3)
+```ruby
+(1..10).should cover(3)
+```
 
 ### Collection membership
 
-    actual.should include(expected)
+```ruby
+actual.should include(expected)
+```
 
 #### Examples
 
-    [1,2,3].should include(1)
-    [1,2,3].should include(1, 2)
-    {:a => 'b'}.should include(:a => 'b')
-    "this string".should include("is str")
+```ruby
+[1,2,3].should include(1)
+[1,2,3].should include(1, 2)
+{:a => 'b'}.should include(:a => 'b')
+"this string".should include("is str")
+```
 
 ## Learn more
 
