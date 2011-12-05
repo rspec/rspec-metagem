@@ -6,7 +6,7 @@ module RSpec
     # @see ExampleGroup.metadata
     class Metadata < Hash
 
-        # @private
+      # @private
       module MetadataHash
 
         # @private
@@ -26,12 +26,12 @@ module RSpec
           when :execution_result
             store(:execution_result, {})
           when :describes, :described_class
-            klass = described_class_for(self)
+            klass = described_class
             store(:described_class, klass)
             # TODO (2011-11-07 DC) deprecate :describes as a key
             store(:describes, klass)
           when :full_description
-            store(:full_description, full_description_for(self))
+            store(:full_description, full_description)
           when :description
             store(:description, build_description_from(*self[:description_args]))
           else
@@ -54,12 +54,12 @@ module RSpec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        def described_class_for(m)
-          m[:example_group][:described_class]
+        def described_class
+          self[:example_group][:described_class]
         end
 
-        def full_description_for(m)
-          build_description_from(m[:example_group][:full_description], *m[:description_args])
+        def full_description
+          build_description_from(self[:example_group][:full_description], *self[:description_args])
         end
 
         def build_description_from(*parts)
@@ -80,9 +80,9 @@ module RSpec
       module GroupMetadataHash
         include MetadataHash
 
-        private
+      private
 
-        def described_class_for(*)
+        def described_class
           ancestors.each do |g|
             # TODO remove describes
             return g[:describes] if g.has_key?(:describes)
@@ -97,13 +97,9 @@ module RSpec
           nil
         end
 
-        def full_description_for(*)
-          build_description_from(*ancestors.reverse.map do |a|
-            a[:description_args]
-          end.flatten)
+        def full_description
+          build_description_from(*ancestors.reverse.map {|a| a[:description_args]}.flatten)
         end
-
-      private
 
         def ancestors
           @ancestors ||= begin
@@ -243,12 +239,8 @@ EOM
       end
 
       def relevant_line_numbers(metadata)
-        line_numbers = [metadata[:line_number]]
-        if metadata[:example_group]
-          line_numbers + relevant_line_numbers(metadata[:example_group])
-        else
-          line_numbers
-        end
+        return [metadata[:line_number]] unless metadata[:example_group]
+        [metadata[:line_number]] + relevant_line_numbers(metadata[:example_group])
       end
 
     end
