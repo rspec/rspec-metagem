@@ -155,13 +155,7 @@ module RSpec
         case value
         when Hash
           if key == :locations
-            file_path     = (self[:example_group] || {})[:file_path]
-            expanded_path = file_path && File.expand_path( file_path )
-            if expanded_path && line_numbers = value[expanded_path]
-              filter_applies?(:line_numbers, line_numbers)
-            else
-              true
-            end
+            filter_for_locations?(value, metadata)
           else
             value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
           end
@@ -180,14 +174,9 @@ module RSpec
             value.call(metadata[key]) rescue false
           end
         when String
-          metadata[key].to_s == value.to_s
+          metadata[key].to_s == value
         when Enumerable
-          if key == :line_numbers
-            preceding_declaration_lines = value.map{|v| world.preceding_declaration_line(v)}
-            !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
-          else
-            metadata[key] == value
-          end
+          key == :line_numbers ? within_examples_lines?(value, metadata) : metadata[key] == value
         else
           metadata[key].to_s == value.to_s
         end
@@ -234,13 +223,24 @@ EOM
         end
       end
 
-      def world
-        RSpec.world
+      def relevant_line_numbers(meta)
+        [meta[:line_number]] + (meta[:example_group] ? relevant_line_numbers(meta[:example_group]) : [])
       end
 
-      def relevant_line_numbers(metadata)
-        return [metadata[:line_number]] unless metadata[:example_group]
-        [metadata[:line_number]] + relevant_line_numbers(metadata[:example_group])
+      def within_examples_lines?(line_numbers, metadata)
+        preceding_declaration_lines = line_numbers.map{|n| RSpec.world.preceding_declaration_line(n)}
+        !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
+      end
+
+      def example_group_line_number(locations, metadata)
+        # An ExampleGroup always got one line number
+        locations[File.expand_path( metadata[:example_group][:file_path] )] if metadata[:example_group]
+      end
+
+      def filter_for_locations?(locations, metadata)
+        # it ignores location filters for other files
+        line_number = example_group_line_number(locations, metadata)
+        line_number ? within_examples_lines?(line_number, metadata) : true
       end
 
     end
