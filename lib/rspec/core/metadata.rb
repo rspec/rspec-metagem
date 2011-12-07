@@ -54,14 +54,6 @@ module RSpec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        def described_class
-          self[:example_group][:described_class]
-        end
-
-        def full_description
-          build_description_from(self[:example_group][:full_description], *self[:description_args])
-        end
-
         def build_description_from(*parts)
           parts.map {|p| p.to_s}.inject do |desc, p|
             p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
@@ -73,6 +65,14 @@ module RSpec
       # lazy evaluation of some values.
       module ExampleMetadataHash
         include MetadataHash
+
+        def described_class
+          self[:example_group].described_class
+        end
+
+        def full_description
+          build_description_from(self[:example_group][:full_description], *self[:description_args])
+        end
       end
 
       # Mixed in to Metadata for an ExampleGroup (extends MetadataHash) to
@@ -80,16 +80,13 @@ module RSpec
       module GroupMetadataHash
         include MetadataHash
 
-      private
-
         def described_class
-          ancestors.each do |g|
-            # TODO remove describes
-            return g[:describes] if g.has_key?(:describes)
+          container_stack.each do |g|
+            return g[:describes]       if g.has_key?(:describes)
             return g[:described_class] if g.has_key?(:described_class)
           end
 
-          ancestors.reverse.each do |g|
+          container_stack.reverse.each do |g|
             candidate = g[:description_args].first
             return candidate unless String === candidate || Symbol === candidate
           end
@@ -98,11 +95,11 @@ module RSpec
         end
 
         def full_description
-          build_description_from(*ancestors.reverse.map {|a| a[:description_args]}.flatten)
+          build_description_from(*container_stack.reverse.map {|a| a[:description_args]}.flatten)
         end
 
-        def ancestors
-          @ancestors ||= begin
+        def container_stack
+          @container_stack ||= begin
                            groups = [group = self]
                            while group.has_key?(:example_group)
                              groups << group[:example_group]
@@ -116,7 +113,7 @@ module RSpec
       def initialize(parent_group_metadata=nil)
         if parent_group_metadata
           update(parent_group_metadata)
-          store(:example_group, {:example_group => parent_group_metadata[:example_group]}.extend(GroupMetadataHash))
+          store(:example_group, {:example_group => parent_group_metadata[:example_group].extend(GroupMetadataHash)}.extend(GroupMetadataHash))
         else
           store(:example_group, {}.extend(GroupMetadataHash))
         end
@@ -152,34 +149,46 @@ module RSpec
 
       # @private
       def filter_applies?(key, value, metadata=self)
-        case value
-        when Hash
-          if key == :locations
-            filter_for_locations?(value, metadata)
-          else
-            value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
-          end
-        when Regexp
-          metadata[key] =~ value
-        when Proc
-          if value.arity == 2
-            # Pass the metadata hash to allow the proc to check if it even has the key.
-            # This is necessary for the implicit :if exclusion filter:
-            #   {            } # => run the example
-            #   { :if => nil } # => exclude the example
-            # The value of metadata[:if] is the same in these two cases but
-            # they need to be treated differently.
-            value.call(metadata[key], metadata) rescue false
-          else
-            value.call(metadata[key]) rescue false
-          end
-        when String
-          metadata[key].to_s == value
-        when Enumerable
-          key == :line_numbers ? within_examples_lines?(value, metadata) : metadata[key] == value
+        case key
+        when :line_numbers
+          metadata.line_number_filter_applies?(value)
+        when :locations
+          metadata.location_filter_applies?(value)
         else
-          metadata[key].to_s == value.to_s
+          case value
+          when Hash
+            value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+          when Enumerable
+            metadata[key] == value
+          when Regexp
+            metadata[key] =~ value
+          when Proc
+            if value.arity == 2
+              # Pass the metadata hash to allow the proc to check if it even has the key.
+              # This is necessary for the implicit :if exclusion filter:
+              #   {            } # => run the example
+              #   { :if => nil } # => exclude the example
+              # The value of metadata[:if] is the same in these two cases but
+              # they need to be treated differently.
+              value.call(metadata[key], metadata) rescue false
+            else
+              value.call(metadata[key]) rescue false
+            end
+          else
+            metadata[key].to_s == value.to_s
+          end
         end
+      end
+
+      def location_filter_applies?(locations)
+        # it ignores location filters for other files
+        line_number = example_group_declaration_line(locations)
+        line_number ? line_number_filter_applies?(line_number) : true
+      end
+
+      def line_number_filter_applies?(line_numbers)
+        preceding_declaration_lines = line_numbers.map {|n| RSpec.world.preceding_declaration_line(n)}
+        !(relevant_line_numbers & preceding_declaration_lines).empty?
       end
 
     protected
@@ -223,24 +232,14 @@ EOM
         end
       end
 
-      def relevant_line_numbers(meta)
-        [meta[:line_number]] + (meta[:example_group] ? relevant_line_numbers(meta[:example_group]) : [])
+      def example_group_declaration_line(locations)
+        locations[File.expand_path(self[:example_group][:file_path])] if self[:example_group]
       end
 
-      def within_examples_lines?(line_numbers, metadata)
-        preceding_declaration_lines = line_numbers.map{|n| RSpec.world.preceding_declaration_line(n)}
-        !(relevant_line_numbers(metadata) & preceding_declaration_lines).empty?
-      end
-
-      def example_group_line_number(locations, metadata)
-        # An ExampleGroup always got one line number
-        locations[File.expand_path( metadata[:example_group][:file_path] )] if metadata[:example_group]
-      end
-
-      def filter_for_locations?(locations, metadata)
-        # it ignores location filters for other files
-        line_number = example_group_line_number(locations, metadata)
-        line_number ? within_examples_lines?(line_number, metadata) : true
+      # TODO - make this a method on metadata - the problem is
+      # metadata[:example_group] is not always a kind of GroupMetadataHash.
+      def relevant_line_numbers(metadata=self)
+        [metadata[:line_number]] + (metadata[:example_group] ? relevant_line_numbers(metadata[:example_group]) : [])
       end
 
     end
