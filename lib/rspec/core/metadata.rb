@@ -158,8 +158,6 @@ module RSpec
           case value
           when Hash
             value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
-          when Enumerable
-            metadata[key] == value
           when Regexp
             metadata[key] =~ value
           when Proc
