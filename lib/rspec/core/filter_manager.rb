@@ -121,10 +121,9 @@ module RSpec
         # numbers to match against. e.g.
         #   { "path/to/file.rb" => [37, 42] }
         filter_locations = @inclusions[:locations] ||= Hash.new {|h,k| h[k] = []}
-        @exclusions.clear
-        @inclusions.clear
         filter_locations[File.expand_path(file_path)].push(*line_numbers)
-        include :locations => filter_locations
+        @exclusions.clear
+        @inclusions.replace(:locations => filter_locations)
       end
 
       def empty?
