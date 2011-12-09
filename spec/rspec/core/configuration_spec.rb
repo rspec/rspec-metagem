@@ -692,6 +692,12 @@ module RSpec::Core
         config.inclusion_filter = :foo
         config.inclusion_filter.should eq({:foo => true})
       end
+
+      it "overrides any inclusion filters set on the command line or in configuration files" do
+        config.force(:inclusion_filter => { :foo => :bar })
+        config.inclusion_filter = {:want => :this}
+        config.inclusion_filter.should eq({:want => :this})
+      end
     end
 
     describe "#exclusion_filter" do
@@ -738,6 +744,12 @@ module RSpec::Core
         RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.exclusion_filter = :foo
         config.exclusion_filter.should eq({:foo => true})
+      end
+
+      it "overrides any exclusion filters set on the command line or in configuration files" do
+        config.force(:exclusion_filter => { :foo => :bar })
+        config.exclusion_filter = {:want => :this}
+        config.exclusion_filter.should eq({:want => :this})
       end
     end
 
