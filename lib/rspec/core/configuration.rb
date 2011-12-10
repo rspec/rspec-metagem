@@ -157,10 +157,6 @@ MESSAGE
       #     end
       add_setting :treat_symbols_as_metadata_keys_with_true_values
 
-      # When profiling your specs, this option allows you to set the color
-      # of the slow spec times.
-      add_setting :slow_color
-
       # @private
       add_setting :tty
       # @private
@@ -188,7 +184,6 @@ MESSAGE
         @files_to_run = []
         @formatters = []
         @color = false
-        @slow_color = 'cyan'
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup

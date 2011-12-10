@@ -120,14 +120,6 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
-  describe "-s, --slow-color, and --slow-colour" do
-    it "sets :slow_color" do
-      parse_options('-s', 'cyan').should include(:slow_color => 'cyan')
-      parse_options('--slow-color', 'red').should include(:slow_color => 'red')
-      parse_options('--slow-colour', 'yellow').should include(:slow_color => 'yellow')
-    end
-  end
-
   describe "-I" do
     example "adds to :libs" do
       parse_options('-I', 'a_dir').should include(:libs => ['a_dir'])

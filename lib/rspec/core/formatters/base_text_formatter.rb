@@ -58,7 +58,7 @@ module RSpec
           output.puts "\nTop #{sorted_examples.size} slowest examples:\n"
           sorted_examples.each do |example|
             output.puts "  #{example.full_description}"
-            output.puts "    #{time_colorer(format_seconds example.execution_result[:run_time])} #{time_colorer("seconds")} #{format_caller(example.location)}"
+            output.puts cyan("    #{red(format_seconds(example.execution_result[:run_time]))} #{red("seconds")} #{format_caller(example.location)}")
           end
         end
 
@@ -140,10 +140,6 @@ module RSpec
 
         def long_padding
           '     '
-        end
-
-        def time_colorer(time_string)
-          send configuration.slow_color, time_string
         end
 
       private

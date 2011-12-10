@@ -554,12 +554,6 @@ module RSpec::Core
       end
     end
 
-    describe '#slow_color=' do
-      it 'defaults to cyan' do
-        config.slow_color.should eq('cyan')
-      end
-    end
-
     describe '#formatter=' do
       it "delegates to add_formatter (better API for user-facing configuration)" do
         config.should_receive(:add_formatter).with('these','options')

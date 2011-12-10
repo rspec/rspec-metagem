@@ -120,14 +120,6 @@ module RSpec::Core
           options[:profile_examples] = o
         end
 
-        valid_colors = %w[cyan yellow red green white blue magenta]
-        parser.on('-s', '--slow-color', '--slow-colour COLOR',
-                  "when using -p, allows overriding colour used to display the slowest times",
-                  "valid options: #{valid_colors.join ', '}",
-                  /^#{valid_colors.join '|'}$/) do |color|
-          options[:slow_color] = color
-        end
-
         parser.separator <<-FILTERING
 
   **** Filtering and tags ****
@@ -143,7 +135,6 @@ FILTERING
         parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb")') do |o|
           options[:pattern] = o
         end
-
 
         parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING") do |o|
           options[:full_description] = Regexp.compile(Regexp.escape(o))
