@@ -46,6 +46,15 @@ module RSpec
       #         end
       #       end
       #     end
+      #
+      # @note `before(:each)` hooks are eval'd when you use the `pending`
+      #   method within an example. If you want to declare an example `pending`
+      #   and bypass the `before` hooks as well, you can pass `:pending => true`
+      #   to the `it` method:
+      #
+      #       it "does something", :pending => true do
+      #         # ...
+      #       end
       def pending(*args)
         return self.class.before(:each) { pending(*args) } unless example
 
