@@ -8,17 +8,17 @@ module RSpec
         #
         # @example
         #
-        #  describe Thing do
-        #    let(:thing) { Thing.new }
+        #   describe Thing do
+        #     let(:thing) { Thing.new }
         #
-        #    it "does something" do
-        #      # first invocation, executes block, memoizes and returns result
-        #      thing.do_something
+        #     it "does something" do
+        #       # first invocation, executes block, memoizes and returns result
+        #       thing.do_something
         #
-        #      # second invocation, returns the memoized value
-        #      thing.should be_something
-        #    end
-        #  end
+        #       # second invocation, returns the memoized value
+        #       thing.should be_something
+        #     end
+        #   end
         def let(name, &block)
           define_method(name) do
             __memoized.fetch(name) {|k| __memoized[k] = instance_eval(&block) }
@@ -32,59 +32,60 @@ module RSpec
         #
         # @example
         #
-        #  class Thing
-        #    def self.count
-        #      @count ||= 0
-        #    end
+        #   class Thing
+        #     def self.count
+        #       @count ||= 0
+        #     end
         #
-        #    def self.count=(val)
-        #      @count += val
-        #    end
+        #     def self.count=(val)
+        #       @count += val
+        #     end
         #
-        #    def self.reset_count
-        #      @count = 0
-        #    end
+        #     def self.reset_count
+        #       @count = 0
+        #     end
         #
-        #    def initialize
-        #      self.class.count += 1
-        #    end
-        #  end
+        #     def initialize
+        #       self.class.count += 1
+        #     end
+        #   end
         #
-        #  describe Thing do
-        #    after(:each) { Thing.reset_count }
+        #   describe Thing do
+        #     after(:each) { Thing.reset_count }
         #
-        #    context "using let" do
-        #      let(:thing) { Thing.new }
+        #     context "using let" do
+        #       let(:thing) { Thing.new }
         #
-        #      it "is not invoked implicitly" do
-        #        Thing.count.should eq(0)
-        #      end
+        #       it "is not invoked implicitly" do
+        #         Thing.count.should eq(0)
+        #       end
         #
-        #      it "can be invoked explicitly" do
-        #        thing
-        #        Thing.count.should eq(1)
-        #      end
-        #    end
+        #       it "can be invoked explicitly" do
+        #         thing
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
         #
-        #    context "using let!" do
-        #      let!(:thing) { Thing.new }
+        #     context "using let!" do
+        #       let!(:thing) { Thing.new }
         #
-        #      it "is invoked implicitly" do
-        #        Thing.count.should eq(1)
-        #      end
+        #       it "is invoked implicitly" do
+        #         Thing.count.should eq(1)
+        #       end
         #
-        #      it "returns memoized version on first invocation" do
-        #        thing
-        #        Thing.count.should eq(1)
-        #      end
-        #    end
-        #  end
+        #       it "returns memoized version on first invocation" do
+        #         thing
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
+        #   end
         def let!(name, &block)
           let(name, &block)
           before { __send__(name) }
         end
       end
 
+      # @private
       module ExampleMethods
         # @private
         def __memoized

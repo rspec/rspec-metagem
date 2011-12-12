@@ -62,7 +62,7 @@ module RSpec
 
       alias_method :pending?, :pending
 
-      # @api
+      # @api private
       # @param example_group_instance the instance of an ExampleGroup subclass
       # instance_evals the block submitted to the constructor in the
       # context of the instance of ExampleGroup
@@ -133,7 +133,12 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
+      def any_apply?(filters)
+        metadata.any_apply?(filters)
+      end
+
+      # @private
       def all_apply?(filters)
         @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
       end
@@ -143,7 +148,7 @@ module RSpec
         @around_hooks ||= example_group.around_hooks_for(self)
       end
 
-      # @api private
+      # @private
       #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
@@ -161,11 +166,6 @@ module RSpec
         finish(reporter)
       end
 
-      # @api private
-      def any_apply?(filters)
-        metadata.any_apply?(filters)
-      end
-
     private
 
       def with_around_hooks(&block)
@@ -181,6 +181,7 @@ module RSpec
         record :started_at => Time.now
       end
 
+      # @private
       module NotPendingExampleFixed
         def pending_fixed?; false; end
       end

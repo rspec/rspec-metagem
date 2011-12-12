@@ -1,9 +1,29 @@
 module RSpec
   module Core
-    # Each ExampleGroup class and Example instance ...
+    # Each ExampleGroup class and Example instance owns an instance of
+    # Metadata, which is Hash extended to support lazy evaluation of values
+    # associated with keys that may or may not be used by any example or group.
+    #
+    # In addition to metadata that is used internally, this also stores
+    # user-supplied metadata, e.g.
+    #
+    #     describe Something, :type => :ui do
+    #       it "does something", :slow => true do
+    #         # ...
+    #       end
+    #     end
+    #
+    # `:type => :ui` is stored in the Metadata owned by the example group, and
+    # `:slow => true` is stored in the Metadata owned by the example. These can
+    # then be used to select which examples are run using the `--tag` option on
+    # the command line, or several methods on `Configuration` used to filter a
+    # run (e.g. `filter_run_including`, `filter_run_excluding`, etc).
     #
     # @see Example#metadata
     # @see ExampleGroup.metadata
+    # @see FilterManager
+    # @see Configuration#filter_run_including
+    # @see Configuration#filter_run_excluding
     class Metadata < Hash
 
       # @private
@@ -132,17 +152,17 @@ module RSpec
         update(user_metadata)
       end
 
-      # @api private
+      # @private
       def for_example(description, user_metadata)
         dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
       end
 
-      # @api private
+      # @private
       def any_apply?(filters)
         filters.any? {|k,v| filter_applies?(k,v)}
       end
 
-      # @api private
+      # @private
       def all_apply?(filters)
         filters.all? {|k,v| filter_applies?(k,v)}
       end
@@ -178,12 +198,14 @@ module RSpec
         end
       end
 
+      # @private
       def location_filter_applies?(locations)
         # it ignores location filters for other files
         line_number = example_group_declaration_line(locations)
         line_number ? line_number_filter_applies?(line_number) : true
       end
 
+      # @private
       def line_number_filter_applies?(line_numbers)
         preceding_declaration_lines = line_numbers.map {|n| RSpec.world.preceding_declaration_line(n)}
         !(relevant_line_numbers & preceding_declaration_lines).empty?

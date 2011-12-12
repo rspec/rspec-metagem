@@ -61,6 +61,10 @@ module RSpec
     #     end
     #
     # These declarations can also be overridden from the command line.
+    #
+    # @see RSpec.configure
+    # @see Configuration#filter_run_including
+    # @see Configuration#filter_run_excluding
     class FilterManager
       DEFAULT_EXCLUSIONS = {
         :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },

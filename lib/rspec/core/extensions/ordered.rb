@@ -1,9 +1,12 @@
 module RSpec
   module Core
+    # @private
     module Extensions
-      # Extends lists of example groups and examples to support ordering
+      # @private
+      # Used to extend lists of examples and groups to support ordering
       # strategies like randomization.
       module Ordered
+        # @private
         def ordered
           if RSpec.configuration.randomize?
             Kernel.srand RSpec.configuration.seed
