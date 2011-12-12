@@ -196,7 +196,7 @@ module RSpec
           reporter.example_pending self
           true
         elsif pending
-          record_finished 'pending', :pending_message => 'Not Yet Implemented'
+          record_finished 'pending', :pending_message => String === pending ? pending : Pending::NO_REASON_GIVEN
           reporter.example_pending self
           true
         else

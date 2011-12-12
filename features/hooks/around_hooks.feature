@@ -199,7 +199,7 @@ Feature: around hooks
     When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failure"
 
-  Scenario: implicitly pending examples are detected as Not Yet Implemented
+  Scenario: implicitly pending examples are detected as Not yet implemented
     Given a file named "example_spec.rb" with:
       """
       describe "implicit pending example" do
@@ -207,7 +207,7 @@ Feature: around hooks
           example.run
         end
 
-        it "should be detected as Not Yet Implemented"
+        it "should be detected as Not yet implemented"
       end
       """
     When I run `rspec example_spec.rb`
@@ -215,8 +215,8 @@ Feature: around hooks
     And the output should contain:
       """
       Pending:
-        implicit pending example should be detected as Not Yet Implemented
-          # Not Yet Implemented
+        implicit pending example should be detected as Not yet implemented
+          # Not yet implemented
       """
 
 

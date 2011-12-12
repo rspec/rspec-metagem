@@ -38,27 +38,11 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     it "returns true for pending_fixed? if pending fixed" do
       example = example_group.example do
-        pending("fixed") do
-          true
-        end
+        pending("fixed") {}
       end
       example_group.run
       example.exception.should be_pending_fixed
     end
-  end
-
-  describe "#failure_type" do
-    it "returns 'pending_fixed' for a PendingExampleFixedError" do
-      example = example_group.example do
-        pending("this message") do
-          true
-        end
-      end
-      example_group.run
-      example.exception.should be_pending_fixed
-    end
-
-
   end
 
   describe "auto-generated example descriptions" do

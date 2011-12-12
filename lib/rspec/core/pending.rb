@@ -15,7 +15,8 @@ module RSpec
         def pending_fixed?; true; end
       end
 
-      DEFAULT_MESSAGE = 'No reason given'
+      NO_REASON_GIVEN = 'No reason given'
+      NOT_YET_IMPLEMENTED = 'Not yet implemented'
 
       # @overload pending()
       # @overload pending(message)
@@ -71,7 +72,7 @@ module RSpec
         return self.class.before(:each) { pending(*args) } unless example
 
         options = args.last.is_a?(Hash) ? args.pop : {}
-        message = args.first || DEFAULT_MESSAGE
+        message = args.first || NO_REASON_GIVEN
 
         if options[:unless] || (options.has_key?(:if) && !options[:if])
           return block_given? ? yield : nil
