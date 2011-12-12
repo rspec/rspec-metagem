@@ -38,7 +38,6 @@ require_rspec 'core/example'
 require_rspec 'core/shared_example_group'
 require_rspec 'core/example_group'
 require_rspec 'core/version'
-require_rspec 'core/errors'
 
 module RSpec
   autoload :Matchers,      'rspec/matchers'

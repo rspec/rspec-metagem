@@ -3,6 +3,14 @@ module RSpec
     module Pending
       class PendingDeclaredInExample < StandardError; end
 
+      # If Test::Unit is loaed, we'll use its error as baseclass, so that Test::Unit
+      # will report unmet RSpec expectations as failures rather than errors.
+      begin
+        class PendingExampleFixedError < Test::Unit::AssertionFailedError; end
+      rescue
+        class PendingExampleFixedError < StandardError; end
+      end
+
       DEFAULT_MESSAGE = 'No reason given'
 
       # @overload pending()
@@ -79,7 +87,7 @@ module RSpec
           ensure
             teardown_mocks_for_rspec
           end
-          raise RSpec::Core::PendingExampleFixedError.new if result
+          raise PendingExampleFixedError.new if result
         end
         raise PendingDeclaredInExample.new(message)
       end

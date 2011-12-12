@@ -150,15 +150,15 @@ describe "an example" do
 
       context "when given no options" do
         it "fails with a PendingExampleFixedError" do
-          run_example("just because").should fail_with(RSpec::Core::PendingExampleFixedError)
-          run_example.should                 fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example("just because").should fail_with(RSpec::Core::Pending::PendingExampleFixedError)
+          run_example.should                 fail_with(RSpec::Core::Pending::PendingExampleFixedError)
         end
       end
 
       context "when given a truthy :if option" do
         it "fails with a PendingExampleFixedError" do
-          run_example("just because", :if => true).should fail_with(RSpec::Core::PendingExampleFixedError)
-          run_example(                :if => true).should fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example("just because", :if => true).should fail_with(RSpec::Core::Pending::PendingExampleFixedError)
+          run_example(                :if => true).should fail_with(RSpec::Core::Pending::PendingExampleFixedError)
         end
       end
 
@@ -178,8 +178,8 @@ describe "an example" do
 
       context "when given a falsey :unless option" do
         it "fails with a PendingExampleFixedError" do
-          run_example("just because", :unless => false).should fail_with(RSpec::Core::PendingExampleFixedError)
-          run_example(                :unless => false).should fail_with(RSpec::Core::PendingExampleFixedError)
+          run_example("just because", :unless => false).should fail_with(RSpec::Core::Pending::PendingExampleFixedError)
+          run_example(                :unless => false).should fail_with(RSpec::Core::Pending::PendingExampleFixedError)
         end
       end
     end

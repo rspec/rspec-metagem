@@ -75,7 +75,7 @@ module RSpec
           super(example)
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
-          failure_style = RSpec::Core::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
+          failure_style = RSpec::Core::Pending::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
           @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{example_group_number}');</script>" unless @example_group_red
