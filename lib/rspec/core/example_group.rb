@@ -63,21 +63,20 @@ module RSpec
       end
 
       define_example_method :example
+      define_example_method :it
+      define_example_method :specify
+
+      define_example_method :focused,  :focused => true, :focus => true
+      define_example_method :focus,    :focused => true, :focus => true
+
+      define_example_method :pending,  :pending => true
+      define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
+      define_example_method :xit,      :pending => 'Temporarily disabled with xit'
+      define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
 
       class << self
         alias_method :alias_example_to, :define_example_method
       end
-
-      alias_example_to :it
-      alias_example_to :specify
-
-      alias_example_to :pending,  :pending => true
-      alias_example_to :xexample, :pending => true
-      alias_example_to :xit,      :pending => true
-      alias_example_to :xspecify, :pending => true
-
-      alias_example_to :focused,  :focused => true, :focus => true
-      alias_example_to :focus,    :focused => true, :focus => true
 
       # @private
       def self.define_nested_shared_group_method(new_name, report_label=nil)

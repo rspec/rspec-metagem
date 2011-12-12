@@ -98,13 +98,13 @@ Feature: pending examples
       """
       Pending:
         an example is pending using xit
-          # No reason given
+          # Temporarily disabled with xit
           # ./temporarily_pending_spec.rb:2
         an example is pending using xspecify
-          # No reason given
+          # Temporarily disabled with xspecify
           # ./temporarily_pending_spec.rb:5
         an example is pending using xexample
-          # No reason given
+          # Temporarily disabled with xexample
           # ./temporarily_pending_spec.rb:8
       """
 
