@@ -181,8 +181,13 @@ module RSpec
         record :started_at => Time.now
       end
 
+      module NotPendingExampleFixed
+        def pending_fixed?; false; end
+      end
+
       def finish(reporter)
         if @exception
+          @exception.extend(NotPendingExampleFixed) unless @exception.respond_to?(:pending_fixed?)
           record_finished 'failed', :exception => @exception
           reporter.example_failed self
           false

@@ -11,6 +11,10 @@ module RSpec
         class PendingExampleFixedError < StandardError; end
       end
 
+      class PendingExampleFixedError
+        def pending_fixed?; true; end
+      end
+
       DEFAULT_MESSAGE = 'No reason given'
 
       # @overload pending()

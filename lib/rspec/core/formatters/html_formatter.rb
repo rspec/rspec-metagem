@@ -75,14 +75,13 @@ module RSpec
           super(example)
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
-          failure_style = RSpec::Core::Pending::PendingExampleFixedError === exception ? 'pending_fixed' : 'failed'
           @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
           @header_red = true
           @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{example_group_number}');</script>" unless @example_group_red
           @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{example_group_number}');</script>" unless @example_group_red
           @example_group_red = true
           move_progress
-          @output.puts "    <dd class=\"example #{failure_style}\">"
+          @output.puts "    <dd class=\"example #{exception.pending_fixed? ? 'pending_fixed' : 'failed'}\">"
           @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
           @output.puts "      <span class=\"duration\">#{sprintf('%.5f', example.execution_result[:run_time])}s</span>"
           @output.puts "      <div class=\"failure\" id=\"failure_#{@failed_examples.size}\">"

@@ -159,7 +159,7 @@ module RSpec
         end
 
         def dump_pending_example_fixed(example, index)
-          if RSpec::Core::Pending::PendingExampleFixedError === example.execution_result[:exception]
+          if example.execution_result[:exception].pending_fixed?
             output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
             output.puts blue("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
             true
