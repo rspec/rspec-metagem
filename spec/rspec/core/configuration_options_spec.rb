@@ -48,6 +48,13 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "assigns inclusion_filter" do
+      opts = config_options_object(*%w[--tag awesome])
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      config.inclusion_filter.should have_key(:awesome)
+    end
+
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
       config = RSpec::Core::Configuration.new
@@ -60,10 +67,6 @@ describe RSpec::Core::ConfigurationOptions do
       config = RSpec::Core::Configuration.new
       config.should_receive(:force).with(:color => true)
       opts.configure(config)
-    end
-
-    it "assigns filter" do
-      pending
     end
 
     [
