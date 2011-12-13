@@ -121,13 +121,13 @@ module RSpec
       end
 
       def add_location(file_path, line_numbers)
-        # filter_locations is a hash of expanded paths to arrays of line
+        # locations is a hash of expanded paths to arrays of line
         # numbers to match against. e.g.
         #   { "path/to/file.rb" => [37, 42] }
-        filter_locations = @inclusions[:locations] ||= Hash.new {|h,k| h[k] = []}
-        filter_locations[File.expand_path(file_path)].push(*line_numbers)
+        locations = @inclusions.delete(:locations) || Hash.new {|h,k| h[k] = []}
+        locations[File.expand_path(file_path)].push(*line_numbers)
+        @inclusions.replace(:locations => locations)
         @exclusions.clear
-        @inclusions.replace(:locations => filter_locations)
       end
 
       def empty?
