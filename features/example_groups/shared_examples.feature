@@ -27,7 +27,7 @@ Feature: shared examples
   2.  Put files containing shared examples in `spec/support/` and require files
       in that directory from `spec/spec_helper.rb`:
 
-          Dir["spec/support/**/*.rb"].each {|f| require f}
+          Dir["./spec/support/**/*.rb"].each {|f| require f}
 
       This is included in the generated `spec/spec_helper.rb` file in
       `rspec-rails`
