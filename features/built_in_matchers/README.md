@@ -1,16 +1,33 @@
+# Built-in Matchers
+
+Here is a list of matchers that ship with rspec-expectations. Each matcher
+can be used with `should` or `should_not` e.g.
+
+    result.should eq(3)
+    list.should_not be_empty
+
 ## Object identity
 
-    actual.should equal(expected) # passes if actual.equal?(expected)
+    actual.should be(expected) # passes if actual.equal?(expected)
     
 ## Object equivalence
 
-    actual.should == expected   # passes if actual == expected
-    actual.should eql(expected) # passes if actual.eql?(expected)
+    actual.should eq(expected) # passes if actual == expected
 
 ## Optional APIs for identity/equivalence
 
-    actual.should eq(expected)  # passes if actual == expected
-    actual.should be(expected)  # passes if actual.equal?(expected)
+    actual.should == expected     # passes if actual == expected
+    actual.should eql(expected)   # passes if actual.eql?(expected)
+    actual.should equal(expected) # passes if actual.equal?(expected)
+
+    # NOTE: this can't work in Ruby 1.8, so we don't support it at all:
+    #   actual.should != expected
+    # The reason is that Ruby 1.8 parses it as:
+    #   !(actual.should.==(expected)),
+    # so by the time RSpec sees it it has no way to know that it's
+    # been negated. Use either of these instead:
+    #   actual.should_not eq(expected)
+    #   actual.should_not == expected
 
 ## Comparisons
 
