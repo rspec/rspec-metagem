@@ -131,6 +131,22 @@ module RSpec
           example_metadata.filter_applies?(:if, lambda { |v, m| passed_metadata = m })
           passed_metadata.should eq(example_metadata)
         end
+    
+        context "with tag is Array" do
+          let(:metadata_with_array) { group_metadata.for_example('example_with_array', :tag => [:one, 2, 'three']) }
+          it "should match tag:one" do
+            metadata_with_array.filter_applies?(:tag, 'one').should be_true
+          end
+          it "should not match tag:4" do
+            metadata_with_array.filter_applies?(:tag, '4').should_not be_true
+          end
+          it "should match tag:'2'" do
+            metadata_with_array.filter_applies?(:tag, '2').should be_true
+          end
+          it "should match tag:one" do
+            metadata_with_array.filter_applies?(:tag, 'three').should be_true
+          end
+        end
       end
 
       describe "#for_example" do

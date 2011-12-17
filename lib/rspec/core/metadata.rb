@@ -59,7 +59,7 @@ module RSpec
           end
         end
 
-      private
+        private
 
         def location
           "#{self[:file_path]}:#{self[:line_number]}"
@@ -120,13 +120,13 @@ module RSpec
 
         def container_stack
           @container_stack ||= begin
-                           groups = [group = self]
-                           while group.has_key?(:example_group)
-                             groups << group[:example_group]
-                             group = group[:example_group]
-                           end
-                           groups
-                         end
+                                 groups = [group = self]
+                                 while group.has_key?(:example_group)
+                                   groups << group[:example_group]
+                                   group = group[:example_group]
+                                 end
+                                 groups
+                               end
         end
       end
 
@@ -193,7 +193,12 @@ module RSpec
               value.call(metadata[key]) rescue false
             end
           else
-            metadata[key].to_s == value.to_s
+            case metadata[key]
+            when Array
+              metadata[key].collect{|v| v.to_s}.include? value.to_s
+            else
+              metadata[key].to_s == value.to_s
+            end
           end
         end
       end
@@ -211,7 +216,7 @@ module RSpec
         !(relevant_line_numbers & preceding_declaration_lines).empty?
       end
 
-    protected
+      protected
 
       def configure_for_example(description, user_metadata)
         store(:description_args, [description])
@@ -219,7 +224,7 @@ module RSpec
         update(user_metadata)
       end
 
-    private
+      private
 
       RESERVED_KEYS = [
         :description,
@@ -235,19 +240,19 @@ module RSpec
         RESERVED_KEYS.each do |key|
           if user_metadata.has_key?(key)
             raise <<-EOM
-#{"*"*50}
+            #{"*"*50}
 :#{key} is not allowed
 
 RSpec reserves some hash keys for its own internal use,
 including :#{key}, which is used on:
 
-  #{caller(0)[4]}.
+            #{caller(0)[4]}.
 
 Here are all of RSpec's reserved hash keys:
 
-  #{RESERVED_KEYS.join("\n  ")}
-#{"*"*50}
-EOM
+            #{RESERVED_KEYS.join("\n  ")}
+            #{"*"*50}
+            EOM
           end
         end
       end
