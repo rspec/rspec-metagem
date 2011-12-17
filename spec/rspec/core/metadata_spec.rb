@@ -131,20 +131,34 @@ module RSpec
           example_metadata.filter_applies?(:if, lambda { |v, m| passed_metadata = m })
           passed_metadata.should eq(example_metadata)
         end
-    
-        context "with tag is Array" do
-          let(:metadata_with_array) { group_metadata.for_example('example_with_array', :tag => [:one, 2, 'three']) }
-          it "should match tag:one" do
+
+        context "with an Array" do
+          let(:metadata_with_array) {
+            group_metadata.for_example('example_with_array', :tag => [:one, 2, 'three', /four/])
+          }
+
+          it "matches a symbol" do
             metadata_with_array.filter_applies?(:tag, 'one').should be_true
+            metadata_with_array.filter_applies?(:tag, :one).should be_true
+            metadata_with_array.filter_applies?(:tag, 'two').should be_false
           end
-          it "should not match tag:4" do
-            metadata_with_array.filter_applies?(:tag, '4').should_not be_true
-          end
-          it "should match tag:'2'" do
-            metadata_with_array.filter_applies?(:tag, '2').should be_true
-          end
-          it "should match tag:one" do
+
+          it "matches a string" do
             metadata_with_array.filter_applies?(:tag, 'three').should be_true
+            metadata_with_array.filter_applies?(:tag, :three).should be_true
+            metadata_with_array.filter_applies?(:tag, 'tree').should be_false
+          end
+
+          it "matches an integer" do
+            metadata_with_array.filter_applies?(:tag, '2').should be_true
+            metadata_with_array.filter_applies?(:tag, 2).should be_true
+            metadata_with_array.filter_applies?(:tag, 3).should be_false
+          end
+
+          it "matches a regexp" do
+            metadata_with_array.filter_applies?(:tag, 'four').should be_true
+            metadata_with_array.filter_applies?(:tag, 'fourtune').should be_true
+            metadata_with_array.filter_applies?(:tag, 'fortune').should be_false
           end
         end
       end

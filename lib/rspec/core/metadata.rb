@@ -169,6 +169,8 @@ module RSpec
 
       # @private
       def filter_applies?(key, value, metadata=self)
+        return metadata[key].any? {|v| filter_applies?(key, v, {key => value})} if Array === metadata[key]
+
         case key
         when :line_numbers
           metadata.line_number_filter_applies?(value)
@@ -177,7 +179,7 @@ module RSpec
         else
           case value
           when Hash
-            value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+            value.all? {|k, v| filter_applies?(k, v, metadata[key])}
           when Regexp
             metadata[key] =~ value
           when Proc
@@ -193,12 +195,7 @@ module RSpec
               value.call(metadata[key]) rescue false
             end
           else
-            case metadata[key]
-            when Array
-              metadata[key].collect{|v| v.to_s}.include? value.to_s
-            else
-              metadata[key].to_s == value.to_s
-            end
+            metadata[key].to_s == value.to_s
           end
         end
       end
