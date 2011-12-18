@@ -42,14 +42,15 @@ module RSpec::Core
           options[:custom_options_file] = path
         end
 
-        parser.on('--order TYPE', 'Run examples by the specified order type',
-                  '  [rand] randomized',
+        parser.on('--order TYPE[:SEED]', 'Run examples by the specified order type',
+                  '  [default] files are ordered based on the underlying file system\'s order',
+                  '  [rand] randomize the order of files, groups and examples',
                   '  [random] alias for rand',
                   '  [random:SEED] e.g. --order random:123') do |o|
           options[:order] = o
         end
 
-        parser.on('--seed SEED', "Equivalent of --order rand:SEED") do |seed|
+        parser.on('--seed SEED', Integer, 'Equivalent of --order rand:SEED') do |seed|
           options[:order] = "rand:#{seed}"
         end
 
