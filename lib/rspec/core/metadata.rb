@@ -172,10 +172,9 @@ module RSpec
         return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key]
         return metadata.line_number_filter_applies?(value)       if key == :line_numbers
         return metadata.location_filter_applies?(value)          if key == :locations
+        return metadata.filters_apply?(key, value)               if Hash === value
 
         case value
-        when Hash
-          value.all? {|k, v| filter_applies?(k, v, metadata[key])}
         when Regexp
           metadata[key] =~ value
         when Proc
@@ -193,6 +192,11 @@ module RSpec
         else
           metadata[key].to_s == value.to_s
         end
+      end
+
+      # @private
+      def filters_apply?(key, value)
+        value.all? {|k, v| filter_applies?(k, v, self[key])}
       end
 
       # @private
