@@ -169,35 +169,35 @@ module RSpec
 
       # @private
       def filter_applies?(key, value, metadata=self)
-        return metadata[key].any? {|v| filter_applies?(key, v, {key => value})} if Array === metadata[key]
+        return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key]
+        return metadata.line_number_filter_applies?(value)       if key == :line_numbers
+        return metadata.location_filter_applies?(value)          if key == :locations
 
-        case key
-        when :line_numbers
-          metadata.line_number_filter_applies?(value)
-        when :locations
-          metadata.location_filter_applies?(value)
-        else
-          case value
-          when Hash
-            value.all? {|k, v| filter_applies?(k, v, metadata[key])}
-          when Regexp
-            metadata[key] =~ value
-          when Proc
-            if value.arity == 2
-              # Pass the metadata hash to allow the proc to check if it even has the key.
-              # This is necessary for the implicit :if exclusion filter:
-              #   {            } # => run the example
-              #   { :if => nil } # => exclude the example
-              # The value of metadata[:if] is the same in these two cases but
-              # they need to be treated differently.
-              value.call(metadata[key], metadata) rescue false
-            else
-              value.call(metadata[key]) rescue false
-            end
+        case value
+        when Hash
+          value.all? {|k, v| filter_applies?(k, v, metadata[key])}
+        when Regexp
+          metadata[key] =~ value
+        when Proc
+          if value.arity == 2
+            # Pass the metadata hash to allow the proc to check if it even has the key.
+            # This is necessary for the implicit :if exclusion filter:
+            #   {            } # => run the example
+            #   { :if => nil } # => exclude the example
+            # The value of metadata[:if] is the same in these two cases but
+            # they need to be treated differently.
+            value.call(metadata[key], metadata) rescue false
           else
-            metadata[key].to_s == value.to_s
+            value.call(metadata[key]) rescue false
           end
+        else
+          metadata[key].to_s == value.to_s
         end
+      end
+
+      # @private
+      def filter_applies_to_any_value?(key, value)
+        self[key].any? {|v| filter_applies?(key, v, {key => value})}
       end
 
       # @private
