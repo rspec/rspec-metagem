@@ -17,7 +17,7 @@ module RSpec::Core
         RSpec.deprecate("the --formatter option", "-f or --format")
         args[args.index("--formatter")] = "--format"
       end
-      options = {}
+      options = args.delete('--tty') ? {:tty => true} : {}
       parser(options).parse!(args)
       options
     end
@@ -72,10 +72,6 @@ module RSpec::Core
 
         parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
           options[:drb_port] = o.to_i
-        end
-
-        parser.on("--tty", "Used internally by rspec when sending commands to other processes") do |o|
-          options[:tty] = true
         end
 
         parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
