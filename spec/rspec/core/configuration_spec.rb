@@ -1041,6 +1041,16 @@ module RSpec::Core
         config.seed.should eq(37)
         config.order.should eq("rand")
       end
+
+      it "forces 'false' value" do
+        config.add_setting :custom_option
+        config.custom_option = true
+        config.custom_option?.should be_true
+        config.force :custom_option => false
+        config.custom_option?.should be_false
+        config.custom_option = true
+        config.custom_option?.should be_false
+      end
     end
 
     describe '#seed' do

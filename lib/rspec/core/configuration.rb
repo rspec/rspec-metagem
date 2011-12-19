@@ -109,7 +109,7 @@ MESSAGE
 
       # Determines the order in which examples are run (default: OS standard
       # load order for files, declaration order for groups and examples).
-      add_setting :order
+      define_reader :order
 
       # Default: `$stdout`.
       # Also known as `output` and `out`
@@ -135,7 +135,7 @@ MESSAGE
       #
       # We recommend, actually, that you use the command line approach so you
       # don't accidentally leave the seed encoded.
-      add_setting :seed
+      define_reader :seed
 
       # When a block passed to pending fails (as expected), display the failure
       # without reporting it as a failure (default: false).
@@ -197,19 +197,10 @@ MESSAGE
       #
       # Used to set higher priority option values from the command line.
       def force(hash)
-        # TODO - remove the duplication between this and seed=
         if hash.has_key?(:seed)
-          hash[:seed] = hash[:seed].to_i
-          hash[:order] = "rand"
-          self.seed = hash[:seed]
-        end
-
-        # TODO - remove the duplication between this and order=
-        if hash.has_key?(:order)
-          self.order = hash[:order]
-          order, seed = hash[:order].split(":")
-          hash[:order] = order
-          hash[:seed] = seed.to_i if seed
+          hash[:order], hash[:seed] = order_and_seed_from_seed(hash[:seed])
+        elsif hash.has_key?(:order)
+          set_order_and_seed(hash)
         end
         @preferred_options.merge!(hash)
       end
@@ -645,32 +636,18 @@ EOM
         raise_if_rspec_1_is_loaded
       end
 
-      remove_method :seed=
-
       # @api
       #
       # Sets the seed value and sets `order='rand'`
       def seed=(seed)
-        # TODO - remove the duplication between this and force
-        @order = 'rand'
-        @seed = seed.to_i
+        order_and_seed_from_seed(seed)
       end
-
-      remove_method :order=
 
       # @api
       #
       # Sets the order and, if order is `'rand:<seed>'`, also sets the seed.
       def order=(type)
-        # TODO - remove the duplication between this and force
-        order, seed = type.to_s.split(':')
-        if order == 'default'
-          @order = nil
-          @seed = nil
-        else
-          @order = order
-          @seed = seed.to_i if seed
-        end
+        order_and_seed_from_order(type)
       end
 
       def randomize?
@@ -797,6 +774,23 @@ MESSAGE
       def file_at(path)
         FileUtils.mkdir_p(File.dirname(path))
         File.new(path, 'w')
+      end
+
+      def order_and_seed_from_seed(value)
+        @order, @seed = 'rand', value.to_i
+      end
+
+      def set_order_and_seed(hash)
+        hash[:order], seed = order_and_seed_from_order(hash[:order])
+        hash[:seed] = seed if seed
+      end
+
+      def order_and_seed_from_order(type)
+        order, seed = type.to_s.split(':')
+        @order = order
+        @seed  = seed = seed.to_i if seed
+        @order, @seed = nil, nil if order == 'default'
+        return order, seed
       end
 
     end
