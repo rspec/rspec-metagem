@@ -28,49 +28,50 @@ module RSpec::Core
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
 
-        parser.on('-I PATH', 'specify PATH to add to $LOAD_PATH (may be used more than once)') do |dir|
+        parser.on('-I PATH', 'Specify PATH to add to $LOAD_PATH (may be used more than once).') do |dir|
           options[:libs] ||= []
           options[:libs] << dir
         end
 
-        parser.on('-r', '--require PATH', 'Require a file') do |path|
+        parser.on('-r', '--require PATH', 'Require a file.') do |path|
           options[:requires] ||= []
           options[:requires] << path
         end
 
-        parser.on('-O', '--options PATH', 'Specify the path to a custom options file') do |path|
+        parser.on('-O', '--options PATH', 'Specify the path to a custom options file.') do |path|
           options[:custom_options_file] = path
         end
 
-        parser.on('--order TYPE[:SEED]', 'Run examples by the specified order type',
-                  '  [default] files are ordered based on the underlying file system\'s order',
-                  '  [rand] randomize the order of files, groups and examples',
-                  '  [random] alias for rand',
+        parser.on('--order TYPE[:SEED]', 'Run examples by the specified order type.',
+                  '  [default] files are ordered based on the underlying file',
+                  '            system\'s order',
+                  '  [rand]    randomize the order of files, groups and examples',
+                  '  [random]  alias for rand',
                   '  [random:SEED] e.g. --order random:123') do |o|
           options[:order] = o
         end
 
-        parser.on('--seed SEED', Integer, 'Equivalent of --order rand:SEED') do |seed|
+        parser.on('--seed SEED', Integer, 'Equivalent of --order rand:SEED.') do |seed|
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('-d', '--debugger', 'Enable debugging') do |o|
+        parser.on('-d', '--debugger', 'Enable debugging.') do |o|
           options[:debug] = true
         end
 
-        parser.on('--fail-fast', 'Abort the run on first failure') do |o|
+        parser.on('--fail-fast', 'Abort the run on first failure.') do |o|
           options[:fail_fast] = true
         end
 
-        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs') do |code|
+        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs.') do |code|
           options[:failure_exit_code] = code
         end
 
-        parser.on('-X', '--[no-]drb', 'Run examples via DRb') do |o|
+        parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |o|
           options[:drb] = o
         end
 
-        parser.on('--drb-port PORT', 'Port to connect to on the DRb server') do |o|
+        parser.on('--drb-port PORT', 'Port to connect to the DRb server.') do |o|
           options[:drb_port] = o.to_i
         end
 
@@ -84,9 +85,9 @@ module RSpec::Core
           exit
         end
 
-        parser.separator("\n  **** Output formatting ****\n\n")
+        parser.separator("\n  **** Output ****\n\n")
 
-        parser.on('-f', '--format FORMATTER', 'Choose a formatter',
+        parser.on('-f', '--format FORMATTER', 'Choose a formatter.',
                 '  [p]rogress (default - dots)',
                 '  [d]ocumentation (group and example names)',
                 '  [h]tml',
@@ -98,28 +99,28 @@ module RSpec::Core
 
         parser.on('-o', '--out FILE',
                   'Write output to a file instead of STDOUT. This option applies',
-                  'to the previously specified --format, or the default format if',
-                  'no format is specified.'
+                  '  to the previously specified --format, or the default format',
+                  '  if no format is specified.'
                  ) do |o|
           options[:formatters] ||= [['progress']]
           options[:formatters].last << o
         end
 
-        parser.on('-b', '--backtrace', 'Enable full backtrace') do |o|
+        parser.on('-b', '--backtrace', 'Enable full backtrace.') do |o|
           options[:full_backtrace] = true
         end
 
-        parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output') do |o|
+        parser.on('-c', '--[no-]color', '--[no-]colour', 'Enable color in the output.') do |o|
           options[:color] = o
         end
 
-        parser.on('-p', '--profile', 'Enable profiling of examples with output of the top 10 slowest examples') do |o|
+        parser.on('-p', '--profile', 'Enable profiling of examples and list 10 slowest examples.') do |o|
           options[:profile_examples] = o
         end
 
         parser.separator <<-FILTERING
 
-  **** Filtering and tags ****
+  **** Filtering/tags ****
 
     In addition to the following options for selecting specific files, groups,
     or examples, you can select a single example by appending the line number to
@@ -129,7 +130,7 @@ module RSpec::Core
 
 FILTERING
 
-        parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb")') do |o|
+        parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb").') do |o|
           options[:pattern] = o
         end
 
@@ -137,14 +138,16 @@ FILTERING
           options[:full_description] = Regexp.compile(Regexp.escape(o))
         end
 
-        parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be specified multiple times)') do |o|
+        parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be',
+                                              '  used more than once).') do |o|
           (options[:line_numbers] ||= []) << o
         end
 
         parser.on('-t', '--tag TAG[:VALUE]',
-                  'Run examples with the specified tag, or exclude',
-                  'examples by adding ~ before the tag (e.g. ~slow)',
-                  '(TAG is always converted to a symbol)') do |tag|
+                  'Run examples with the specified tag, or exclude examples',
+                  'by adding ~ before the tag.',
+                  '  - e.g. ~slow',
+                  '  - TAG is always converted to a symbol') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
 
           name,value = tag.gsub(/^(~@|~|@)/, '').split(':')
@@ -154,14 +157,14 @@ FILTERING
           options[filter_type][name] = value.nil? ? true : eval(value) rescue value
         end
 
-        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples.',
-                                         'Can be a path to a file or a directory') do |path|
+        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples (can',
+                                         '  be a path to a file or a directory).') do |path|
           options[:default_path] = path
         end
 
         parser.separator("\n  **** Utility ****\n\n")
 
-        parser.on('-v', '--version', 'Show version') do
+        parser.on('-v', '--version', 'Display the version.') do
           puts RSpec::Core::Version::STRING
           exit
         end
