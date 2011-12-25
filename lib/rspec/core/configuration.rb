@@ -205,7 +205,7 @@ MESSAGE
         @preferred_options.merge!(hash)
       end
 
-      # @api private
+      # @private
       def reset
         @reporter = nil
         @formatters.clear
@@ -257,6 +257,9 @@ MESSAGE
       # Used by formatters to ask whether a backtrace line should be displayed
       # or not, based on the line matching any `backtrace_clean_patterns`.
       def cleaned_from_backtrace?(line)
+        # TODO (David 2011-12-25) why are we asking the configuration to do
+        # stuff? Either use the patterns directly or enapsulate the filtering
+        # in a BacktraceCleaner object.
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
@@ -462,6 +465,7 @@ EOM
                       end
       end
 
+      # @private
       def files_or_directories_to_run=(*files)
         files = files.flatten
         files << default_path if command == 'rspec' && default_path && files.empty?
@@ -597,17 +601,76 @@ EOM
         filter_manager.exclusions
       end
 
-      def include(mod, *args)
-        filters = build_metadata_hash_from(args)
-        include_or_extend_modules << [:include, mod, filters]
+      # Tells RSpec to include `mod` in example groups. Methods defined in
+      # `mod` are exposed to examples (not example groups).  Use `filters` to
+      # constrain the groups in which to include the module.
+      #
+      # @example
+      #
+      #     module AuthenticationHelpers
+      #       def login_as(user)
+      #         # ...
+      #       end
+      #     end
+      #
+      #     module UserHelpers
+      #       def users(username)
+      #         # ...
+      #       end
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.include(UserHelpers) # included in all modules
+      #       config.include(AuthenticationHelpers, :type => :request)
+      #     end
+      #
+      #     describe "edit profile", :type => :request do
+      #       it "can be viewed by owning user" do
+      #         login_as users(:jdoe)
+      #         get "/profiles/jdoe"
+      #         assert_select ".username", :text => 'jdoe'
+      #       end
+      #     end
+      #
+      # @see #extend
+      def include(mod, *filters)
+        include_or_extend_modules << [:include, mod, build_metadata_hash_from(filters)]
       end
 
-      def extend(mod, *args)
-        filters = build_metadata_hash_from(args)
-        include_or_extend_modules << [:extend, mod, filters]
+      # Tells RSpec to extend example groups with `mod`.  Methods defined in
+      # `mod` are exposed to example groups (not examples).  Use `filters` to
+      # constrain the groups to extend.
+      #
+      # Similar to `include`, but behavior is added to example groups, which
+      # are classes, rather than the examples, which are instances of those
+      # classes.
+      #
+      # @example
+      #
+      #     module UiHelpers
+      #       def run_in_browser
+      #         # ...
+      #       end
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.extend(UiHelpers, :type => :request)
+      #     end
+      #
+      #     describe "edit profile", :type => :request do
+      #       run_in_browser
+      #
+      #       it "does stuff in the client" do
+      #         # ...
+      #       end
+      #     end
+      #
+      # @see #include
+      def extend(mod, *filters)
+        include_or_extend_modules << [:extend, mod, build_metadata_hash_from(filters)]
       end
 
-      # @api private
+      # @private
       #
       # Used internally to extend a group with modules using `include` and/or
       # `extend`.
@@ -618,19 +681,19 @@ EOM
         end
       end
 
-      # @api private
+      # @private
       def configure_mock_framework
         RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
 
-      # @api private
+      # @private
       def configure_expectation_framework
         expectation_frameworks.each do |framework|
           RSpec::Core::ExampleGroup.send(:include, framework)
         end
       end
 
-      # @api private
+      # @private
       def load_spec_files
         files_to_run.map {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded

@@ -1,6 +1,10 @@
 require 'autotest'
 require 'rspec/core/deprecation'
 
+# Derived from the `Autotest` class, extends the `autotest` command to work
+# with RSpec.
+#
+# @note this will be extracted to a separate gem when we release rspec-3.
 class Autotest::Rspec2 < Autotest
 
   RSPEC_EXECUTABLE = File.expand_path('../../../exe/rspec', __FILE__)

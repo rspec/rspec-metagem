@@ -3,12 +3,10 @@ module RSpec
     # Exposes [ExampleGroup](ExampleGroup)-level methods to a module, so you
     # can include that module in an [ExampleGroup](ExampleGroup).
     #
-    # @note exposed as `RSpec::SharedContext`
-    #
     # @example
     #
     #     module LoggedInAsAdmin
-    #       extend RSpec::SharedContext
+    #       extend RSpec::Core::SharedContext
     #       before(:each) do
     #         log_in_as :admin
     #       end
