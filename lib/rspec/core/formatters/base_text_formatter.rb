@@ -16,20 +16,18 @@ module RSpec
           output.puts "Failures:"
           failed_examples.each_with_index do |example, index|
             output.puts
-            dump_pending_example_fixed(example, index) || dump_failure(example, index)
+            pending_fixed?(example) ? dump_pending_fixed(example, index) : dump_failure(example, index)
             dump_backtrace(example)
           end
         end
 
         def colorise_summary(summary)
-          if failure_count == 0
-            if pending_count > 0
-              yellow(summary)
-            else
-              green(summary)
-            end
-          else
+          if failure_count > 0
             red(summary)
+          elsif pending_count > 0
+            yellow(summary)
+          else
+            green(summary)
           end
         end
 
@@ -158,12 +156,13 @@ module RSpec
           end
         end
 
-        def dump_pending_example_fixed(example, index)
-          if example.execution_result[:exception].pending_fixed?
-            output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
-            output.puts blue("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
-            true
-          end
+        def dump_pending_fixed(example, index)
+          output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
+          output.puts blue("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
+        end
+
+        def pending_fixed?(example)
+          example.execution_result[:exception].pending_fixed?
         end
 
         def dump_failure(example, index)
@@ -176,14 +175,22 @@ module RSpec
           output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{red(exception.class.name << ":")}" unless exception.class.name =~ /RSpec/
           exception.message.split("\n").each { |line| output.puts "#{long_padding}  #{red(line)}" } if exception.message
-
-          example.example_group.ancestors.push(example.example_group).each do |group|
-            if group.metadata[:shared_group_name]
-              output.puts "#{long_padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
-                "#{backtrace_line(group.metadata[:example_group][:location])}"
-              break
-            end
+          if shared_group = find_shared_group(example)
+            dump_shared_failure_info(shared_group)
           end
+        end
+
+        def dump_shared_failure_info(group)
+          output.puts "#{long_padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
+            "#{backtrace_line(group.metadata[:example_group][:location])}"
+        end
+
+        def find_shared_group(example)
+          group_and_ancestors(example).find {|group| group.metadata[:shared_group_name]}
+        end
+
+        def group_and_ancestors(example)
+          example.example_group.ancestors.push(example.example_group)
         end
       end
     end
