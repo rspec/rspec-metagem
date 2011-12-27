@@ -1,3 +1,12 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc2...master)
+
+Bug fixes
+
+* For metadata filtering, restore passing the entire array to the proc, rather
+  than each item in the array (weidenfreak)
+
 ### 2.8.0.rc2 / 2011-12-19
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc1...v2.8.0.rc2)
@@ -6,7 +15,7 @@ Enhancments
 
 * new `--init` command (Peter Schröder)
     * generates `spec/spec_helper.rb`
-    * deletes obsolete files (on confirmation) 
+    * deletes obsolete files (on confirmation)
     * merged with and deprecates `--configure` command, which generated
       `.rspec`
 * use `require_relative` when available (Ian Leitch)
