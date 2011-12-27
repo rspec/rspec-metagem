@@ -169,7 +169,7 @@ module RSpec
 
       # @private
       def filter_applies?(key, value, metadata=self)
-        return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key]
+        return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key] && !(Proc === value)
         return metadata.line_number_filter_applies?(value)       if key == :line_numbers
         return metadata.location_filter_applies?(value)          if key == :locations
         return metadata.filters_apply?(key, value)               if Hash === value

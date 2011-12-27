@@ -160,6 +160,14 @@ module RSpec
             metadata_with_array.filter_applies?(:tag, 'fourtune').should be_true
             metadata_with_array.filter_applies?(:tag, 'fortune').should be_false
           end
+
+          it "matches a proc that evaluates to true" do
+            metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'three' }).should be_true
+          end
+
+          it "does not match a proc that evaluates to false" do
+            metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'nothing' }).should be_false
+          end
         end
       end
 
