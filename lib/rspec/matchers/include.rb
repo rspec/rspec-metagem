@@ -20,6 +20,10 @@ module RSpec
         "include#{expected_to_sentence}"
       end
 
+      def diffable?
+        true
+      end
+
     private
 
       def perform_match(predicate, hash_predicate, actuals, expecteds)
