@@ -1,3 +1,11 @@
+### dev
+
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc2...master)
+
+Enhancements
+
+* Better diff output for Hash (Philippe Creux)
+
 ### 2.8.0.rc2 / 2011-12-19
 
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc1...v2.8.0.rc2)
