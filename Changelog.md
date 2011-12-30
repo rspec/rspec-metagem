@@ -6,6 +6,10 @@ Bug fixes
 
 * For metadata filtering, restore passing the entire array to the proc, rather
   than each item in the array (weidenfreak)
+* Ensure each spec file is loaded only once
+    * Fixes a bug that caused all the examples in a file to be run when
+      referenced twice with line numbers in a command, e.g.
+        * `rspec path/to/file:37 path/to/file:42`
 
 ### 2.8.0.rc2 / 2011-12-19
 
