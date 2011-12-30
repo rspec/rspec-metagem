@@ -18,6 +18,12 @@ module RSpec::Core
         config.load_spec_files
       end
 
+      it "loads each file once, even if duplicated in list" do
+        config.files_to_run = ["a_spec.rb", "a_spec.rb"]
+        config.should_receive(:load).once
+        config.load_spec_files
+      end
+
       context "with rspec-1 loaded" do
         before do
           Object.const_set(:Spec, Module.new)

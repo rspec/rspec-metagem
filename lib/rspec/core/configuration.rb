@@ -695,7 +695,7 @@ EOM
 
       # @private
       def load_spec_files
-        files_to_run.map {|f| load File.expand_path(f) }
+        files_to_run.uniq.map {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
       end
 
