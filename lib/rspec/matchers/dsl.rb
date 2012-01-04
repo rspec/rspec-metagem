@@ -7,7 +7,7 @@ module RSpec
         matcher = RSpec::Matchers::Matcher.new(name, &declarations)
         define_method name do |*expected|
           $matcher_execution_context = self
-          matcher.for_expected *expected
+          matcher.for_expected(*expected)
         end
       end
 
