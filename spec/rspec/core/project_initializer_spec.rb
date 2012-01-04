@@ -20,7 +20,7 @@ module RSpec::Core
 
           it "generates a .rspec" do
             command_line_config.run
-            File.read('.rspec').should eq('')
+            File.read('.rspec').should =~ /--color\n--format progress/m
           end
         end
 
@@ -46,7 +46,7 @@ module RSpec::Core
 
           it "generates a spec/spec_helper.rb" do
             command_line_config.run
-            File.read('spec/spec_helper.rb').should eq('')
+            File.read('spec/spec_helper.rb').should =~ /RSpec\.configure do \|config\|/m
           end
         end
 
