@@ -64,7 +64,7 @@ module RSpec
             %(#{PP.singleline_pp(k, "")} => #{PP.singleline_pp(object[k], "")})
           end.join(",\n")
         when String
-          object.inspect
+          object =~ /\n/ ? object : object.inspect
         else
           PP.pp(object,"")
         end

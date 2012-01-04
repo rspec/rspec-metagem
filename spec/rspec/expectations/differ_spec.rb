@@ -56,7 +56,7 @@ EOD
     expected = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'charlie', :width, 'quite wide' ]
     actual   = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'tango'  , :width, 'very wide'  ]
 
-    expected_diff = <<'EOD'
+    expected_diff = <<EOD
 
 
 @@ -5,7 +5,7 @@
@@ -69,7 +69,6 @@ EOD
 - "very wide"]
 + "quite wide"]
 EOD
-
 
     diff = @differ.diff_as_object(expected,actual)
     diff.should == expected_diff
@@ -108,9 +107,38 @@ EOD
  :width => "quite wide"
 EOD
 
+    diff = @differ.diff_as_object(expected,actual)
+    diff.should == expected_diff
+  end
+
+  it "outputs unified diff of single line strings" do
+    expected = "this is one string"
+    actual   = "this is another string"
+
+    expected_diff = <<EOD
+
+@@ -1,2 +1,2 @@
+-"this is another string"
++"this is one string"
+EOD
 
     diff = @differ.diff_as_object(expected,actual)
     diff.should == expected_diff
   end
 
+  it "outputs unified diff of multi line strings" do
+    expected = "this is:\n  one string"
+    actual   = "this is:\n  another string"
+
+    expected_diff = <<EOD
+
+@@ -1,3 +1,3 @@
+ this is:
+-  another string
++  one string
+EOD
+
+    diff = @differ.diff_as_object(expected,actual)
+    diff.should == expected_diff
+  end
 end
