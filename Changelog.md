@@ -5,6 +5,7 @@
 Enhancements
 
 * Better diff output for Hash (Philippe Creux)
+* Eliminate Ruby warnings (Olek Janiszewski)
 
 ### 2.8.0.rc2 / 2011-12-19
 
