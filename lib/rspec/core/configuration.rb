@@ -799,6 +799,15 @@ EOM
         order.to_s.match(/rand/)
       end
 
+      # @private
+      DEFAULT_ORDERING = lambda { |list| list }
+
+      # @private
+      RANDOM_ORDERING = lambda do |list|
+        Kernel.srand RSpec.configuration.seed
+        list.sort_by { Kernel.rand(list.size) }
+      end
+
       # Sets a strategy by which to order examples.
       #
       # @example
@@ -814,6 +823,7 @@ EOM
       # @see #seed=
       def order_examples(&block)
         @example_ordering_block = block
+        @order = "custom" unless built_in_orderer?(block)
       end
 
       # @private
@@ -836,6 +846,7 @@ EOM
       # @see #seed=
       def order_groups(&block)
         @group_ordering_block = block
+        @order = "custom" unless built_in_orderer?(block)
       end
 
       # @private
@@ -985,7 +996,7 @@ MESSAGE
       end
 
       def order_and_seed_from_seed(value)
-        set_random_ordering
+        order_groups_and_examples(&RANDOM_ORDERING)
         @order, @seed = 'rand', value.to_i
       end
 
@@ -1000,20 +1011,17 @@ MESSAGE
         @seed  = seed = seed.to_i if seed
 
         if randomize?
-          set_random_ordering
+          order_groups_and_examples(&RANDOM_ORDERING)
         elsif order == 'default'
           @order, @seed = nil, nil
-          order_groups_and_examples { |list| list }
+          order_groups_and_examples(&DEFAULT_ORDERING)
         end
 
         return order, seed
       end
 
-      def set_random_ordering
-        order_groups_and_examples do |list|
-          Kernel.srand seed
-          list.sort_by { Kernel.rand(list.size) }
-        end
+      def built_in_orderer?(block)
+        [DEFAULT_ORDERING, RANDOM_ORDERING].include?(block)
       end
 
     end
