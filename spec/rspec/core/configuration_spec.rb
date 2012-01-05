@@ -1192,5 +1192,57 @@ module RSpec::Core
         end
       end
     end
+
+    describe "#order_examples" do
+      before { RSpec.stub(:configuration => config) }
+
+      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
+        examples = [1, 2, 3, 4]
+        examples.extend Extensions::Ordered::Examples
+        config.order_examples { |examples| examples.reverse }
+        examples.ordered.should eq([4, 3, 2, 1])
+      end
+    end
+
+    describe "#example_ordering_block" do
+      it 'defaults to a block that returns the passed argument' do
+        config.example_ordering_block.call([1, 2, 3]).should eq([1, 2, 3])
+      end
+    end
+
+    describe "#order_groups" do
+      before { RSpec.stub(:configuration => config) }
+
+      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
+        groups = [1, 2, 3, 4]
+        groups.extend Extensions::Ordered::ExampleGroups
+        config.order_groups { |groups| groups.reverse }
+        groups.ordered.should eq([4, 3, 2, 1])
+      end
+    end
+
+    describe "#group_ordering_block" do
+      it 'defaults to a block that returns the passed argument' do
+        config.group_ordering_block.call([1, 2, 3]).should eq([1, 2, 3])
+      end
+    end
+
+    describe "#order_groups_and_examples" do
+      let(:examples) { [1, 2, 3, 4].extend Extensions::Ordered::Examples }
+      let(:groups)   { [1, 2, 3, 4].extend Extensions::Ordered::ExampleGroups }
+
+      before do
+        RSpec.stub(:configuration => config)
+        config.order_groups_and_examples { |list| list.reverse }
+      end
+
+      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
+        examples.ordered.should eq([4, 3, 2, 1])
+      end
+
+      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
+        groups.ordered.should eq([4, 3, 2, 1])
+      end
+    end
   end
 end

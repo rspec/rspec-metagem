@@ -799,6 +799,68 @@ EOM
         order.to_s.match(/rand/)
       end
 
+      # Sets a strategy by which to order examples.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.order_examples do |examples|
+      #       examples.reverse
+      #     end
+      #   end
+      #
+      # @see #order_groups
+      # @see #order_groups_and_examples
+      # @see #order=
+      # @see #seed=
+      def order_examples(&block)
+        @example_ordering_block = block
+      end
+
+      # @private
+      def example_ordering_block
+        @example_ordering_block ||= lambda { |examples| examples }
+      end
+
+      # Sets a strategy by which to order groups.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.order_groups do |groups|
+      #       groups.reverse
+      #     end
+      #   end
+      #
+      # @see #order_examples
+      # @see #order_groups_and_examples
+      # @see #order=
+      # @see #seed=
+      def order_groups(&block)
+        @group_ordering_block = block
+      end
+
+      # @private
+      def group_ordering_block
+        @group_ordering_block ||= lambda { |groups| groups }
+      end
+
+      # Sets a strategy by which to order groups and examples.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.order_groups_and_examples do |groups_or_examples|
+      #       groups_or_examples.reverse
+      #     end
+      #   end
+      #
+      # @see #order_groups
+      # @see #order_examples
+      # @see #order=
+      # @see #seed=
+      def order_groups_and_examples(&block)
+        order_groups(&block)
+        order_examples(&block)
+      end
+
     private
 
       def get_files_to_run(paths)
