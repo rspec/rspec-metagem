@@ -9,14 +9,14 @@ module RSpec
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
-        @example_groups = [].extend(Extensions::Ordered)
+        @example_groups = [].extend(Extensions::Ordered::ExampleGroups)
         @shared_example_groups = {}
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
             examples = filter_manager.prune(examples)
             examples.uniq
-            examples.extend(Extensions::Ordered)
+            examples.extend(Extensions::Ordered::Examples)
           end
         }
       end

@@ -110,6 +110,39 @@ describe 'command line', :ui do
     end
   end
 
+  context 'when a custom order is configured' do
+    before do
+      write_file 'spec/custom_order_spec.rb', """
+        RSpec.configure do |config|
+          config.order_groups_and_examples do |list|
+            list.sort_by { |item| item.description }
+          end
+        end
+
+        describe 'group B' do
+          specify('group B example D')  {}
+          specify('group B example B')  {}
+          specify('group B example A')  {}
+          specify('group B example C')  {}
+        end
+
+        describe 'group A' do
+          specify('group A example 1')  {}
+        end
+      """
+    end
+
+    it 'orders the groups and examples by the provided strategy' do
+      run_command 'tmp/aruba/spec/custom_order_spec.rb -f doc'
+
+      top_level_groups    { |groups| groups.flatten.should eq(['group A', 'group B']) }
+      examples('group B') do |examples|
+        letters = examples.flatten.map { |e| e[/(.)\z/, 1] }
+        letters.should eq(['A', 'B', 'C', 'D'])
+      end
+    end
+  end
+
   def examples(group)
     yield split_in_half(stdout.string.scan(/^\s+#{group} example.*$/))
   end

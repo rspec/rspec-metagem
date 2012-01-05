@@ -21,16 +21,6 @@ module RSpec
             RSpec.configuration.example_ordering_block.call(self)
           end
         end
-
-        # @private
-        def ordered
-          if RSpec.configuration.randomize?
-            Kernel.srand RSpec.configuration.seed
-            sort_by { Kernel.rand size }
-          else
-            self
-          end
-        end
       end
     end
   end
