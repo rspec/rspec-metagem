@@ -1,5 +1,4 @@
 require "bundler"
-Bundler.setup
 Bundler::GemHelper.install_tasks
 
 task :build => :raise_if_psych_is_defined
