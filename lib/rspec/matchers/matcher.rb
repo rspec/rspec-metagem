@@ -171,7 +171,7 @@ module RSpec
       def diffable
         @diffable = true
       end
-      
+
       # Convenience for defining methods on this matcher to create a fluent
       # interface. The trick about fluent interfaces is that each method must
       # return self in order to chain methods together. `chain` handles that
@@ -196,7 +196,7 @@ module RSpec
           self
         end
       end
-      
+
       # @api private
       # Used internally by objects returns by +should+ and +should_not+.
       def diffable?
@@ -212,7 +212,19 @@ module RSpec
           !matches?(actual)
       end
 
+      def respond_to?(method, include_private=false)
+        $matcher_execution_context.respond_to?(method, include_private) || super
+      end
+
     private
+
+      def method_missing(method, *args, &block)
+        if $matcher_execution_context.respond_to?(method)
+          $matcher_execution_context.send method, *args, &block
+        else
+          super(method, *args, &block)
+        end
+      end
 
       def include(*args)
         singleton_class.__send__(:include, *args)
@@ -222,14 +234,6 @@ module RSpec
         singleton_class.__send__(:define_method, name, &block)
       end
 
-      def method_missing(method, *args, &block)
-        if $matcher_execution_context.respond_to?(method)
-          $matcher_execution_context.send method, *args, &block
-        else
-          super(method, *args, &block)
-        end
-      end
-    
       def making_declared_methods_public
         # Our home-grown instance_exec in ruby 1.8.6 results in any methods
         # declared in the block eval'd by instance_exec in the block to which we

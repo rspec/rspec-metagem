@@ -8,6 +8,7 @@ end
 
 describe "RSpec::Matchers method_missing hook" do
   subject { self }
+
   it_behaves_like "a well-behaved method_missing hook"
 
   context 'when invoked in a Test::Unit::TestCase' do
