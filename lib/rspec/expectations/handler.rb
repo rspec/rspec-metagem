@@ -1,7 +1,5 @@
 module RSpec
   module Expectations
-    class InvalidMatcherError < ArgumentError; end        
-    
     class PositiveExpectationHandler        
       def self.handle_matcher(actual, matcher, message=nil, &block)
         ::RSpec::Matchers.last_should = :should

@@ -171,7 +171,7 @@ describe "should change { block }" do
   it "warns if passed a block using do/end instead of {}" do
     expect do
       expect {}.to change do; end
-    end.to raise_error(RSpec::Matchers::MatcherError, /block passed to should or should_not/)
+    end.to raise_error(SyntaxError, /block passed to should or should_not/)
   end
   
   it "provides a #description" do
@@ -198,7 +198,7 @@ describe "should_not change { block }" do
   it "warns if passed a block using do/end instead of {}" do
     expect do
       expect {}.to_not change do; end
-    end.to raise_error(RSpec::Matchers::MatcherError, /block passed to should or should_not/)
+    end.to raise_error(SyntaxError, /block passed to should or should_not/)
   end
 end
 

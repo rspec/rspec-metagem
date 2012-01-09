@@ -189,7 +189,6 @@ require 'rspec/matchers/cover' if (1..2).respond_to? :cover?
 require 'rspec/matchers/eq'
 require 'rspec/matchers/eql'
 require 'rspec/matchers/equal'
-require 'rspec/matchers/errors'
 require 'rspec/matchers/exist'
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/has'

@@ -19,10 +19,9 @@ module RSpec
       end
 
       def raise_block_syntax_error
-        raise MatcherError.new(<<-MESSAGE
+        raise SyntaxError.new(<<-MESSAGE)
 block passed to should or should_not change must use {} instead of do/end
 MESSAGE
-        )
       end
       
       def evaluate_value_proc
