@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project  = "rspec"
 
   s.files            = `git ls-files -- lib/*`.split("\n")
-  s.files           += %w[README.md License.txt Changelog.txt .yardopts .document]
+  s.files           += %w[README.md License.txt Changelog.md .yardopts .document]
   s.test_files       = `git ls-files -- {spec,features}/*`.split("\n")
   s.bindir           = 'exe'
   s.executables      = `git ls-files -- exe/*`.split("\n").map{ |f| File.basename(f) }
@@ -34,5 +34,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mocha",    "~> 0.10.0"
   s.add_development_dependency "rr",       "~> 1.0.2"
   s.add_development_dependency "flexmock", "~> 0.9.0"
-
 end
