@@ -49,5 +49,5 @@ Feature: access running example
     When I run `rspec ./example_spec.rb`
     Then the output should contain "1 example, 1 failure"
     And the output should contain "undefined local variable"
-    And the output should contain "RSpec::Matchers::Matcher"
+    And the output should contain "RSpec::Matchers::DSL::Matcher"
     And the output should not contain "ExampleGroup"
