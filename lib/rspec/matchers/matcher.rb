@@ -1,3 +1,5 @@
+require 'set'
+
 module RSpec
   module Matchers
     module DSL
@@ -30,7 +32,7 @@ module RSpec
           :@name, :@declarations, :@diffable, :@messages,
           :@match_block, :@match_for_should_not_block,
           :@expected_exception
-        ]
+        ].to_set
 
         # @api private
         def for_expected(*expected)
