@@ -35,7 +35,7 @@ module RSpec
         # @api private
         def for_expected(*expected)
           instance_variables.each do |ivar|
-            instance_variable_set(ivar, nil) unless PERSISENT_INSTANCE_VARIABLES.include?(ivar)
+            instance_variable_set(ivar, nil) unless PERSISENT_INSTANCE_VARIABLES.include?(ivar.intern)
           end
           @expected = expected
           making_declared_methods_public do
