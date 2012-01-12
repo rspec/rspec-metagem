@@ -15,6 +15,18 @@ describe "a matcher defined using the matcher DSL" do
     expect { ignore.i_dont_exist }.to raise_error(NameError)
   end
 
+  it "clears user instance variables between invocations" do
+    RSpec::Matchers::define(:be_just_like) do |expected|
+      match do |actual|
+        @foo ||= expected
+        @foo == actual
+      end
+    end
+
+    3.should be_just_like(3)
+    4.should be_just_like(4)
+  end
+
   describe "#respond_to?" do
     it "returns true for methods in example scope" do
       RSpec::Matchers::define(:ignore) {}

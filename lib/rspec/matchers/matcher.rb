@@ -26,8 +26,17 @@ module RSpec
           }
         end
 
+        PERSISENT_INSTANCE_VARIABLES = [
+          :@name, :@declarations, :@diffable, :@messages,
+          :@match_block, :@match_for_should_not_block,
+          :@expected_exception
+        ]
+
         # @api private
         def for_expected(*expected)
+          instance_variables.each do |ivar|
+            instance_variable_set(ivar, nil) unless PERSISENT_INSTANCE_VARIABLES.include?(ivar)
+          end
           @expected = expected
           making_declared_methods_public do
             instance_eval_with_args(*@expected, &@declarations)
