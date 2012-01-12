@@ -38,7 +38,7 @@ module RSpec
 
     private
 
-      NON_FORCED_OPTIONS = [:debug, :requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description]
+      NON_FORCED_OPTIONS = [:debug, :requires, :libs, :files_or_directories_to_run, :line_numbers, :full_description].to_set
 
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)

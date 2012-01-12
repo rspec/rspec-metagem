@@ -52,9 +52,11 @@ module RSpec::Core
       end
     end
 
+    BOOLEAN_FILTERS = [:if, :unless].to_set
+
     def add_filter(argv, name, hash)
       hash.each_pair do |k, v|
-        next if [:if,:unless].include?(k)
+        next if BOOLEAN_FILTERS.include?(k)
         tag = name == :inclusion ? k.to_s : "~#{k}"
         tag << ":#{v}" if v.is_a?(String)
         argv << "--tag" << tag

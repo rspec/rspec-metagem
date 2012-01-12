@@ -398,8 +398,10 @@ module RSpec
 
     private
 
+      SCOPES = [:each, :all, :suite].to_set
+
       def scope_and_options_from(*args)
-        scope = if [:each, :all, :suite].include?(args.first)
+        scope = if SCOPES.include?(args.first)
           args.shift
         elsif args.any? { |a| a.is_a?(Symbol) }
           raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")

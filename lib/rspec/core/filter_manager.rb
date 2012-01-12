@@ -71,7 +71,7 @@ module RSpec
         :unless => lambda { |value| value }
       }
 
-      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
+      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description].to_set
 
       module Describable
         PROC_HEX_NUMBER = /0x[0-9a-f]+@/
