@@ -12,7 +12,7 @@ module RSpec
       autoload :BeAKindOf,      'rspec/matchers/built_in/be_kind_of'
       autoload :BeWithin,       'rspec/matchers/built_in/be_within'
       autoload :Change,         'rspec/matchers/built_in/change'
-      autoload :Cover,          'rspec/matchers/built_in/cover' if defined?("[].cover?")
+      autoload :Cover,          'rspec/matchers/built_in/cover' if (1..2).respond_to?(:cover?)
       autoload :Eq,             'rspec/matchers/built_in/eq'
       autoload :Eql,            'rspec/matchers/built_in/eql'
       autoload :Equal,          'rspec/matchers/built_in/equal'

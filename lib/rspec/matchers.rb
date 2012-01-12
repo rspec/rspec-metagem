@@ -353,7 +353,7 @@ module RSpec
     # ### Warning:: Ruby >= 1.9 only
     def cover(*values)
       BuiltIn::Cover.new(*values)
-    end if (1..2).respond_to?(:cover)
+    end if (1..2).respond_to?(:cover?)
 
     # Passes if <tt>actual == expected</tt>.
     #

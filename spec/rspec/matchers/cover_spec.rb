@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-if (1..2).respond_to?(:cover)
+if (1..2).respond_to?(:cover?)
   describe "should cover(expected)" do
     context "for a range target" do
       it "passes if target covers expected" do
