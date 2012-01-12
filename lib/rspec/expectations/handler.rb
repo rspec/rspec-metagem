@@ -4,7 +4,7 @@ module RSpec
       def self.handle_matcher(actual, matcher, message=nil, &block)
         ::RSpec::Matchers.last_should = :should
         ::RSpec::Matchers.last_matcher = matcher
-        return ::RSpec::Matchers::PositiveOperatorMatcher.new(actual) if matcher.nil?
+        return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) if matcher.nil?
 
         match = matcher.matches?(actual, &block)
         return match if match
@@ -25,7 +25,7 @@ module RSpec
       def self.handle_matcher(actual, matcher, message=nil, &block)
         ::RSpec::Matchers.last_should = :should_not
         ::RSpec::Matchers.last_matcher = matcher
-        return ::RSpec::Matchers::NegativeOperatorMatcher.new(actual) if matcher.nil?
+        return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) if matcher.nil?
         
         match = matcher.respond_to?(:does_not_match?) ?
                 !matcher.does_not_match?(actual, &block) :

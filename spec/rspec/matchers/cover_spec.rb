@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "should cover(expected)", :if => RSpec::Matchers.respond_to?(:cover) do
+describe "should cover(expected)", :if => defined?("[].cover?") do
   context "for a range target" do
     it "passes if target covers expected" do
       (1..10).should cover(5)
@@ -14,7 +14,7 @@ describe "should cover(expected)", :if => RSpec::Matchers.respond_to?(:cover) do
   end
 end
 
-describe "should cover(with, multiple, args)", :if => RSpec::Matchers.respond_to?(:cover) do
+describe "should cover(with, multiple, args)", :if => defined?("[].cover?") do
   context "for a range target" do
     it "passes if target covers all items" do
       (1..10).should cover(4, 6)
@@ -28,7 +28,7 @@ describe "should cover(with, multiple, args)", :if => RSpec::Matchers.respond_to
   end
 end
 
-describe "should_not cover(expected)", :if => RSpec::Matchers.respond_to?(:cover) do
+describe "should_not cover(expected)", :if => defined?("[].cover?") do
   context "for a range target" do
     it "passes if target does not cover expected" do
       (1..10).should_not cover(11)
@@ -42,7 +42,7 @@ describe "should_not cover(expected)", :if => RSpec::Matchers.respond_to?(:cover
   end
 end
 
-describe "should_not cover(with, multiple, args)", :if => RSpec::Matchers.respond_to?(:cover) do
+describe "should_not cover(with, multiple, args)", :if => defined?("[].cover?") do
   context "for a range target" do
     it "passes if the target does not cover any of the expected" do
       (1..10).should_not include(11, 12, 13)
@@ -61,5 +61,3 @@ describe "should_not cover(with, multiple, args)", :if => RSpec::Matchers.respon
     end
   end
 end
-
-

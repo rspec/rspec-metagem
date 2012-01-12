@@ -509,7 +509,7 @@ describe "should change{ block }.from(old).to(new)" do
   end
 end
 
-describe RSpec::Matchers::Change do
+describe RSpec::Matchers::BuiltIn::Change do
   it "works when the receiver has implemented #send" do
     @instance = SomethingExpected.new
     @instance.some_value = "string"

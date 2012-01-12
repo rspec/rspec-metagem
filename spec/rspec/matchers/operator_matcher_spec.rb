@@ -196,7 +196,7 @@ describe "should <=" do
 
 end
 
-describe RSpec::Matchers::PositiveOperatorMatcher do
+describe RSpec::Matchers::BuiltIn::PositiveOperatorMatcher do
 
   it "works when the target has implemented #send" do
     o = Object.new
@@ -208,7 +208,7 @@ describe RSpec::Matchers::PositiveOperatorMatcher do
 
 end
 
-describe RSpec::Matchers::NegativeOperatorMatcher do
+describe RSpec::Matchers::BuiltIn::NegativeOperatorMatcher do
 
   it "works when the target has implemented #send" do
     o = Object.new

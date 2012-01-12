@@ -390,7 +390,7 @@ EOF
     end
   end
 
-  describe RSpec::Matchers::Have, "for a collection owner that implements #send" do
+  describe RSpec::Matchers::BuiltIn::Have, "for a collection owner that implements #send" do
     before(:each) do
       @collection = Object.new
       def @collection.floozles; [1,2] end
@@ -415,7 +415,7 @@ EOF
     end
   end
 
-  describe RSpec::Matchers::Have do
+  describe RSpec::Matchers::BuiltIn::Have do
     it "has method_missing as private" do
       described_class.private_instance_methods.should include_method(:method_missing)
     end
