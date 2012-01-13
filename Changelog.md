@@ -1,3 +1,9 @@
+### dev
+
+Bug fixes
+
+* Restore `--full_backtrace` option
+
 ### 2.8.0 / 2012-01-04
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc2...v2.8.0)
