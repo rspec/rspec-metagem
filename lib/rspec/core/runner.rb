@@ -60,27 +60,17 @@ module RSpec
 
         if options.options[:drb]
           begin
-            run_over_drb(options, err, out)
+            DRbCommandLine.new(options).run(err, out)
           rescue DRb::DRbConnError
             err.puts "No DRb server is running. Running in local process instead ..."
-            run_in_process(options, err, out)
+            CommandLine.new(options).run(err, out)
           end
         else
-          run_in_process(options, err, out)
+          CommandLine.new(options).run(err, out)
         end
       ensure
         RSpec.reset
       end
-
-      def self.run_over_drb(options, err, out)
-        DRbCommandLine.new(options).run(err, out)
-      end
-
-      def self.run_in_process(options, err, out)
-        CommandLine.new(options, RSpec::configuration, RSpec::world).run(err, out)
-      end
-
     end
-
   end
 end
