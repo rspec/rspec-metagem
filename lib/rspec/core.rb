@@ -8,6 +8,7 @@ else
   end
 end
 
+require 'set'
 require_rspec 'core/filter_manager'
 require_rspec 'core/dsl'
 require_rspec 'core/extensions'
