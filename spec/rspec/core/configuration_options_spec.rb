@@ -301,6 +301,13 @@ describe RSpec::Core::ConfigurationOptions do
     end
   end
 
+  describe "#filter_manager" do
+    it "returns the same object as RSpec::configuration.filter_manager" do
+      config_options_object.filter_manager.
+        should be(RSpec::configuration.filter_manager)
+    end
+  end
+
   describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
     before(:each) do
       FileUtils.mkpath(File.expand_path("~"))

@@ -33,7 +33,7 @@ module RSpec
       end
 
       def filter_manager
-        @filter_manager ||= FilterManager.new
+        @filter_manager ||= RSpec::configuration.filter_manager
       end
 
     private
