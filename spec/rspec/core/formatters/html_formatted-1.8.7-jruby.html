@@ -155,6 +155,12 @@ dd {
   padding: 3px 3px 3px 18px;
 }
 
+dd .duration {
+  padding-left: 5px;
+  text-align: right;
+  right: 0px;
+  float:right;
+}
 
 dd.example.passed {
   border-left: 5px solid #65C400;
@@ -283,7 +289,7 @@ a {
     <script type="text/javascript">makeYellow('div_group_1');</script>
     <script type="text/javascript">makeYellow('example_group_1');</script>
     <script type="text/javascript">moveProgressBar('14.2');</script>
-    <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not Yet Implemented)</span></dd>
+    <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
   </dl>
 </div>
 <div id="div_group_2" class="example_group passed">
@@ -310,34 +316,14 @@ a {
     <script type="text/javascript">moveProgressBar('42.8');</script>
     <dd class="example pending_fixed">
       <span class="failed_spec_name">fails</span>
+      <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
-        <div class="message"><pre>RSpec::Core::PendingExampleFixedError</pre></div>
+        <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyHash.java:1063:in `fetch'
-org/jruby/RubyProc.java:274:in `call'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyIO.java:1111:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyKernel.java:2078:in `instance_exec'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:233:in `call'</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'</pre></div>
     <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
@@ -351,7 +337,7 @@ org/jruby/RubyProc.java:233:in `call'</pre></div>
   <dl style="margin-left: 0px;">
   <dt id="example_group_5" class="passed">passing spec</dt>
     <script type="text/javascript">moveProgressBar('57.1');</script>
-    <dd class="example passed"><span class="passed_spec_name">passes</span></dd>
+    <dd class="example passed"><span class="passed_spec_name">passes</span><span class='duration'>n.nnnns</span></dd>
   </dl>
 </div>
 <div id="div_group_6" class="example_group passed">
@@ -362,6 +348,7 @@ org/jruby/RubyProc.java:233:in `call'</pre></div>
     <script type="text/javascript">moveProgressBar('71.4');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails</span>
+      <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_2">
         <div class="message"><pre>
 expected: 2
@@ -370,30 +357,10 @@ expected: 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyHash.java:1063:in `fetch'
-org/jruby/RubyProc.java:274:in `call'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyIO.java:1111:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyKernel.java:2078:in `instance_exec'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:233:in `call'</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'</pre></div>
     <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    <span class="number">1</span><span class="punct">.</span><span class="ident">should</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
@@ -411,41 +378,22 @@ org/jruby/RubyProc.java:233:in `call'</pre></div>
     <script type="text/javascript">moveProgressBar('85.7');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace that has no file</span>
+      <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `result'
-org/jruby/RubyKernel.java:1088:in `eval'
 ./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:24:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyHash.java:1063:in `fetch'
-org/jruby/RubyProc.java:274:in `call'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyIO.java:1111:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `Formatters'
-org/jruby/RubyDir.java:335:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyKernel.java:2061:in `instance_eval'
-org/jruby/RubyKernel.java:2078:in `instance_exec'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:229:in `call'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyArray.java:2336:in `collect'
-org/jruby/RubyProc.java:274:in `call'
-org/jruby/RubyProc.java:233:in `call'</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `Formatters'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
     <script type="text/javascript">moveProgressBar('100.0');</script>
     <dd class="example failed">
       <span class="failed_spec_name">fails with a backtrace containing an erb file</span>
+      <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
         <div class="backtrace"><pre>/foo.html.erb:1:in `<main>': foo (RuntimeError)</pre></div>
@@ -454,7 +402,7 @@ org/jruby/RubyProc.java:233:in `call'</pre></div>
     </dd>
   </dl>
 </div>
-<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>x seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script>
 <script type="text/javascript">document.getElementById('totals').innerHTML = "7 examples, 4 failures, 2 pending";</script>
 </div>
 </div>

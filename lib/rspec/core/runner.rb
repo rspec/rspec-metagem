@@ -46,12 +46,12 @@ module RSpec
       # want files like spec_helper.rb to be reloaded, be sure to load `load`
       # instead of `require`.
       #
-      # ==== Parameters
+      # #### Parameters
       # * +args+ - an array of command-line-supported arguments
       # * +err+ - error stream (Default: $stderr)
       # * +out+ - output stream (Default: $stdout)
       #
-      # ==== Returns
+      # #### Returns
       # * +Fixnum+ - exit status code (0/1)
       def self.run(args, err=$stderr, out=$stdout)
         trap_interrupt

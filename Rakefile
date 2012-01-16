@@ -1,5 +1,4 @@
 require "bundler"
-Bundler.setup
 Bundler::GemHelper.install_tasks
 
 task :build => :raise_if_psych_is_defined
@@ -66,6 +65,11 @@ task :clobber do
   sh 'rm -rf coverage'
   sh 'rm -rf .yardoc'
   sh 'rm -rf doc'
+end
+
+desc "generate rdoc"
+task :rdoc do
+  sh "yardoc"
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"

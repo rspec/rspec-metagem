@@ -7,7 +7,9 @@ module RSpec
     #
     # @example Standard settings
     #     RSpec.configure do |c|
-    #       c.drb_port = 1234
+    #       c.drb          = true
+    #       c.drb_port     = 1234
+    #       c.default_path = 'behavior'
     #     end
     #
     # @example Hooks
@@ -24,7 +26,7 @@ module RSpec
 
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
-      # @api private
+      # @private
       def self.define_reader(name)
         eval <<-CODE
           def #{name}
@@ -33,7 +35,7 @@ module RSpec
         CODE
       end
 
-      # @api private
+      # @private
       def self.deprecate_alias_key
         RSpec.warn_deprecation <<-MESSAGE
 The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
@@ -41,19 +43,19 @@ Called from #{caller(0)[5]}
 MESSAGE
       end
 
-      # @api private
+      # @private
       def self.define_aliases(name, alias_name)
         alias_method alias_name, name
         alias_method "#{alias_name}=", "#{name}="
         define_predicate_for alias_name
       end
 
-      # @api private
+      # @private
       def self.define_predicate_for(*names)
         names.each {|name| alias_method "#{name}?", name}
       end
 
-      # @api private
+      # @private
       #
       # Invoked by the `add_setting` instance method. Use that method on a
       # `Configuration` instance rather than this class method.
@@ -72,25 +74,99 @@ MESSAGE
         end
       end
 
-      add_setting :error_stream
-      add_setting :output_stream, :alias_with => [:output, :out]
-      add_setting :drb
-      add_setting :drb_port
-      add_setting :profile_examples
-      add_setting :fail_fast
-      add_setting :failure_exit_code
-      add_setting :run_all_when_everything_filtered
-      add_setting :pattern, :alias_with => :filename_pattern
-      add_setting :files_to_run
-      add_setting :include_or_extend_modules
+      # @macro [attach] add_setting
+      #   @attribute $1
+      # Patterns to match against lines in backtraces presented in failure
+      # messages in order to filter them out (default:
+      # DEFAULT_BACKTRACE_PATTERNS).  You can either replace this list using
+      # the setter or modify it using the getter.
+      #
+      # To override this behavior and display a full backtrace, use
+      # `--backtrace` on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
       add_setting :backtrace_clean_patterns
-      add_setting :tty
-      add_setting :treat_symbols_as_metadata_keys_with_true_values
-      add_setting :expecting_with_rspec
+
+      # Path to use if no path is provided to the `rspec` command (default:
+      # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
+      # run all the examples in the `spec` directory.
       add_setting :default_path
+
+      # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
+      # server, but you can use tools like spork.
+      add_setting :drb
+
+      # The drb_port (default: `8989`).
+      add_setting :drb_port
+
+      # Default: `$stderr`.
+      add_setting :error_stream
+
+      # Clean up and exit after the first failure (default: `false`).
+      add_setting :fail_fast
+
+      # The exit code to return if there are any failures (default: 1).
+      add_setting :failure_exit_code
+
+      # Determines the order in which examples are run (default: OS standard
+      # load order for files, declaration order for groups and examples).
+      define_reader :order
+
+      # Default: `$stdout`.
+      # Also known as `output` and `out`
+      add_setting :output_stream, :alias_with => [:output, :out]
+
+      # Load files matching this pattern (default: `'**/*_spec.rb'`)
+      add_setting :pattern, :alias_with => :filename_pattern
+
+      # Report the times for the 10 slowest examples (default: `false`).
+      add_setting :profile_examples
+
+      # Run all examples if none match the configured filters (default: `false`).
+      add_setting :run_all_when_everything_filtered
+
+      # Seed for random ordering (default: generated randomly each run).
+      #
+      # When you run specs with `--order random`, RSpec generates a random seed
+      # for the randomization and prints it to the `output_stream` (assuming
+      # you're using RSpec's built-in formatters). If you discover an ordering
+      # dependency (i.e. examples fail intermittently depending on order), set
+      # this (on Configuration or on the command line with `--seed`) to run
+      # using the same seed while you debug the issue.
+      #
+      # We recommend, actually, that you use the command line approach so you
+      # don't accidentally leave the seed encoded.
+      define_reader :seed
+
+      # When a block passed to pending fails (as expected), display the failure
+      # without reporting it as a failure (default: false).
       add_setting :show_failures_in_pending_blocks
-      add_setting :order
-      add_setting :seed
+
+      # Convert symbols to hashes with the symbol as a key with a value of
+      # `true` (default: false).
+      #
+      # This allows you to tag a group or example like this:
+      #
+      #     describe "something slow", :slow do
+      #       # ...
+      #     end
+      #
+      # ... instead of having to type:
+      #
+      #     describe "something slow", :slow => true do
+      #       # ...
+      #     end
+      add_setting :treat_symbols_as_metadata_keys_with_true_values
+
+      # @private
+      add_setting :tty
+      # @private
+      add_setting :include_or_extend_modules
+      # @private
+      add_setting :files_to_run
+      # @private
+      add_setting :expecting_with_rspec
+      # @private
+      attr_accessor :filter_manager
 
       DEFAULT_BACKTRACE_PATTERNS = [
         /\/lib\d*\/ruby\//,
@@ -117,44 +193,39 @@ MESSAGE
         @seed = srand % 0xFFFF
       end
 
-      attr_accessor :filter_manager
-
-      # @api private
+      # @private
       #
       # Used to set higher priority option values from the command line.
       def force(hash)
-        # TODO - remove the duplication between this and seed=
         if hash.has_key?(:seed)
-          hash[:seed] = hash[:seed].to_i
-          hash[:order] = "rand"
-          self.seed = hash[:seed]
-        end
-
-        # TODO - remove the duplication between this and order=
-        if hash.has_key?(:order)
-          self.order = hash[:order]
-          order, seed = hash[:order].split(":")
-          hash[:order] = order
-          hash[:seed] = seed.to_i if seed
+          hash[:order], hash[:seed] = order_and_seed_from_seed(hash[:seed])
+        elsif hash.has_key?(:order)
+          set_order_and_seed(hash)
         end
         @preferred_options.merge!(hash)
       end
 
-      def force_include(hash)
-        filter_manager.include hash
-      end
-
-      def force_exclude(hash)
-        filter_manager.exclude hash
-      end
-
+      # @private
       def reset
         @reporter = nil
         @formatters.clear
       end
 
       # @overload add_setting(name)
-      # @overload add_setting(name, options_hash)
+      # @overload add_setting(name, opts)
+      # @option opts [Symbol] :default
+      #
+      #   set a default value for the generated getter and predicate methods:
+      #
+      #       add_setting(:foo, :default => "default value")
+      #
+      # @option opts [Symbol] :alias_with
+      #
+      #   Use `:alias_with` to alias the setter, getter, and predicate to another
+      #   name, or names:
+      #
+      #       add_setting(:foo, :alias_with => :bar)
+      #       add_setting(:foo, :alias_with => [:bar, :baz])
       #
       # Adds a custom setting to the RSpec.configuration object.
       #
@@ -175,23 +246,6 @@ MESSAGE
       #     RSpec.configuration.foo=(value)
       #     RSpec.configuration.foo
       #     RSpec.configuration.foo? # returns true if foo returns anything but nil or false
-      #
-      # ### Options
-      #
-      # `add_setting` takes an optional hash that supports the keys `:default`
-      # and `:alias_with`.
-      #
-      # Use `:default` to set a default value for the generated getter and
-      # predicate methods:
-      #
-      #     add_setting(:foo, :default => "default value")
-      #
-      # Use `:alias_with` to alias the setter, getter, and predicate to another
-      # name, or names:
-      #
-      #     add_setting(:foo, :alias_with => :bar)
-      #     add_setting(:foo, :alias_with => [:bar, :baz])
-      #
       def add_setting(name, opts={})
         default = opts.delete(:default)
         (class << self; self; end).class_eval do
@@ -203,6 +257,9 @@ MESSAGE
       # Used by formatters to ask whether a backtrace line should be displayed
       # or not, based on the line matching any `backtrace_clean_patterns`.
       def cleaned_from_backtrace?(line)
+        # TODO (David 2011-12-25) why are we asking the configuration to do
+        # stuff? Either use the patterns directly or enapsulate the filtering
+        # in a BacktraceCleaner object.
         backtrace_clean_patterns.any? { |regex| line =~ regex }
       end
 
@@ -408,39 +465,11 @@ EOM
                       end
       end
 
+      # @private
       def files_or_directories_to_run=(*files)
         files = files.flatten
         files << default_path if command == 'rspec' && default_path && files.empty?
         self.files_to_run = get_files_to_run(files)
-      end
-
-      # @api private
-      def command
-        $0.split(File::SEPARATOR).last
-      end
-
-      # @api private
-      def get_files_to_run(paths)
-        patterns = pattern.split(",")
-        paths.map do |path|
-          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
-        end.flatten
-      end
-
-      # @api private
-      def gather_directories(path, patterns)
-        patterns.map do |pattern|
-          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
-        end
-      end
-
-      # @api private
-      def extract_location(path)
-        if path =~ /^(.*?)((?:\:\d+)+)$/
-          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
-          filter_manager.add_location path, lines
-        end
-        path
       end
 
       # Creates a method that delegates to `example` including the submitted
@@ -510,7 +539,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_including :foo # results in {:foo => true}
       def filter_run_including(*args)
-        filter_manager.include :low_priority, build_metadata_hash_from(args)
+        filter_manager.include_with_low_priority build_metadata_hash_from(args)
       end
 
       alias_method :filter_run, :filter_run_including
@@ -523,7 +552,7 @@ EOM
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        filter_manager.include :replace, build_metadata_hash_from([filter])
+        filter_manager.include! build_metadata_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -552,7 +581,7 @@ EOM
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # results in {:foo => true}
       def filter_run_excluding(*args)
-        filter_manager.exclude :low_priority, build_metadata_hash_from(args)
+        filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
@@ -563,7 +592,7 @@ EOM
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        filter_manager.exclude :replace, build_metadata_hash_from([filter])
+        filter_manager.exclude! build_metadata_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
@@ -572,17 +601,76 @@ EOM
         filter_manager.exclusions
       end
 
-      def include(mod, *args)
-        filters = build_metadata_hash_from(args)
-        include_or_extend_modules << [:include, mod, filters]
+      # Tells RSpec to include `mod` in example groups. Methods defined in
+      # `mod` are exposed to examples (not example groups).  Use `filters` to
+      # constrain the groups in which to include the module.
+      #
+      # @example
+      #
+      #     module AuthenticationHelpers
+      #       def login_as(user)
+      #         # ...
+      #       end
+      #     end
+      #
+      #     module UserHelpers
+      #       def users(username)
+      #         # ...
+      #       end
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.include(UserHelpers) # included in all modules
+      #       config.include(AuthenticationHelpers, :type => :request)
+      #     end
+      #
+      #     describe "edit profile", :type => :request do
+      #       it "can be viewed by owning user" do
+      #         login_as users(:jdoe)
+      #         get "/profiles/jdoe"
+      #         assert_select ".username", :text => 'jdoe'
+      #       end
+      #     end
+      #
+      # @see #extend
+      def include(mod, *filters)
+        include_or_extend_modules << [:include, mod, build_metadata_hash_from(filters)]
       end
 
-      def extend(mod, *args)
-        filters = build_metadata_hash_from(args)
-        include_or_extend_modules << [:extend, mod, filters]
+      # Tells RSpec to extend example groups with `mod`.  Methods defined in
+      # `mod` are exposed to example groups (not examples).  Use `filters` to
+      # constrain the groups to extend.
+      #
+      # Similar to `include`, but behavior is added to example groups, which
+      # are classes, rather than the examples, which are instances of those
+      # classes.
+      #
+      # @example
+      #
+      #     module UiHelpers
+      #       def run_in_browser
+      #         # ...
+      #       end
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.extend(UiHelpers, :type => :request)
+      #     end
+      #
+      #     describe "edit profile", :type => :request do
+      #       run_in_browser
+      #
+      #       it "does stuff in the client" do
+      #         # ...
+      #       end
+      #     end
+      #
+      # @see #include
+      def extend(mod, *filters)
+        include_or_extend_modules << [:extend, mod, build_metadata_hash_from(filters)]
       end
 
-      # @api private
+      # @private
       #
       # Used internally to extend a group with modules using `include` and/or
       # `extend`.
@@ -593,46 +681,36 @@ EOM
         end
       end
 
+      # @private
       def configure_mock_framework
         RSpec::Core::ExampleGroup.send(:include, mock_framework)
       end
 
+      # @private
       def configure_expectation_framework
         expectation_frameworks.each do |framework|
           RSpec::Core::ExampleGroup.send(:include, framework)
         end
       end
 
+      # @private
       def load_spec_files
-        files_to_run.map {|f| load File.expand_path(f) }
+        files_to_run.uniq.map {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
       end
 
-      remove_method :seed=
       # @api
       #
       # Sets the seed value and sets `order='rand'`
       def seed=(seed)
-        # TODO - remove the duplication between this and force
-        @order = 'rand'
-        @seed = seed.to_i
+        order_and_seed_from_seed(seed)
       end
-
-      remove_method :order=
 
       # @api
       #
       # Sets the order and, if order is `'rand:<seed>'`, also sets the seed.
       def order=(type)
-        # TODO - remove the duplication between this and force
-        order, seed = type.to_s.split(':')
-        if order == 'default'
-          @order = nil
-          @seed = nil
-        else
-          @order = order
-          @seed = seed.to_i if seed
-        end
+        order_and_seed_from_order(type)
       end
 
       def randomize?
@@ -640,6 +718,31 @@ EOM
       end
 
     private
+
+      def get_files_to_run(paths)
+        patterns = pattern.split(",")
+        paths.map do |path|
+          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
+        end.flatten
+      end
+
+      def gather_directories(path, patterns)
+        patterns.map do |pattern|
+          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
+        end
+      end
+
+      def extract_location(path)
+        if path =~ /^(.*?)((?:\:\d+)+)$/
+          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+          filter_manager.add_location path, lines
+        end
+        path
+      end
+
+      def command
+        $0.split(File::SEPARATOR).last
+      end
 
       def value_for(key, default=nil)
         @preferred_options.has_key?(key) ? @preferred_options[key] : default
@@ -734,6 +837,23 @@ MESSAGE
       def file_at(path)
         FileUtils.mkdir_p(File.dirname(path))
         File.new(path, 'w')
+      end
+
+      def order_and_seed_from_seed(value)
+        @order, @seed = 'rand', value.to_i
+      end
+
+      def set_order_and_seed(hash)
+        hash[:order], seed = order_and_seed_from_order(hash[:order])
+        hash[:seed] = seed if seed
+      end
+
+      def order_and_seed_from_order(type)
+        order, seed = type.to_s.split(':')
+        @order = order
+        @seed  = seed = seed.to_i if seed
+        @order, @seed = nil, nil if order == 'default'
+        return order, seed
       end
 
     end

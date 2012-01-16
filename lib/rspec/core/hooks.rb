@@ -87,7 +87,7 @@ module RSpec
 
       class AroundHooks < HookCollection; end
 
-      # @api private
+      # @private
       def hooks
         @hooks ||= {
           :around => { :each => AroundHooks.new },
@@ -99,10 +99,15 @@ module RSpec
       # @api public
       # @overload before(&block)
       # @overload before(scope, &block)
-      # @overload before(scope, tags, &block)
-      # @overload before(tags, &block)
+      # @overload before(scope, conditions, &block)
+      # @overload before(conditions, &block)
+      #
       # @param [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @param [Hash] tags
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `before(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @see #after
       # @see #around
       # @see ExampleGroup
@@ -122,12 +127,6 @@ module RSpec
       # Instance variables declared in `before(:each)` or `before(:all)` are
       # accessible within each example.
       #
-      # ### Exceptions
-      #
-      # When an exception is raised in a `before` block, RSpec skips any
-      # subsequent `before` blocks and the example, but runs all of the
-      # `after(:each)` and `after(:all)` hooks.
-      #
       # ### Order
       #
       # `before` hooks are stored in three scopes, which are run in order:
@@ -135,15 +134,54 @@ module RSpec
       # different places: `RSpec.configure`, a parent group, the current group.
       # They are run in the following order:
       #
-      #     before(:all) declared in RSpec.configure
-      #     before(:all) declared in a parent group
-      #     before(:all) declared in the current group
-      #     before(:each) declared in RSpec.configure
-      #     before(:each) declared in a parent group
-      #     before(:each) declared in the current group
+      #     before(:suite) # declared in RSpec.configure
+      #     before(:all)   # declared in RSpec.configure
+      #     before(:all)   # declared in a parent group
+      #     before(:all)   # declared in the current group
+      #     before(:each)  # declared in RSpec.configure
+      #     before(:each)  # declared in a parent group
+      #     before(:each)  # declared in the current group
       #
       # If more than one `before` is declared within any one scope, they are run
       # in the order in which they are declared.
+      #
+      # ### Conditions
+      #
+      # When you add a conditions hash to `before(:each)` or `before(:all)`,
+      # RSpec will only apply that hook to groups or examples that match the
+      # conditions. e.g.
+      #
+      #     RSpec.configure do |config|
+      #       config.before(:each, :authorized => true) do
+      #         log_in_as :authorized_user
+      #       end
+      #     end
+      #
+      #     describe Something, :authorized => true do
+      #       # the before hook will run in before each example in this group
+      #     end
+      #
+      #     describe SomethingElse do
+      #       it "does something", :authorized => true do
+      #         # the before hook will run before this example
+      #       end
+      #
+      #       it "does something else" do
+      #         # the hook will not run before this example
+      #       end
+      #     end
+      #
+      # ### Warning: `before(:suite, :with => :conditions)`
+      #
+      # The conditions hash is used to match against specific examples. Since
+      # `before(:suite)` is not run in relation to any specific example or
+      # group, conditions passed along with `:suite` are effectively ignored.
+      #
+      # ### Exceptions
+      #
+      # When an exception is raised in a `before` block, RSpec skips any
+      # subsequent `before` blocks and the example, but runs all of the
+      # `after(:each)` and `after(:all)` hooks.
       #
       # ### Warning: implicit before blocks
       #
@@ -203,8 +241,8 @@ module RSpec
       #       before(:all) do
       #         File.open(file_to_parse, 'w') do |f|
       #           f.write <<-CONTENT
-      #             Stuff in the file
-      #           end
+      #             stuff in the file
+      #           CONTENT
       #         end
       #       end
       #
@@ -224,10 +262,15 @@ module RSpec
       # @api public
       # @overload after(&block)
       # @overload after(scope, &block)
-      # @overload after(scope, tags, &block)
-      # @overload after(tags, &block)
+      # @overload after(scope, conditions, &block)
+      # @overload after(conditions, &block)
+      #
       # @param [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @param [Hash] tags
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `after(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @see #before
       # @see #around
       # @see ExampleGroup
@@ -254,12 +297,12 @@ module RSpec
       # different places: `RSpec.configure`, a parent group, the current group.
       # They are run in the following order:
       #
-      #     after(:each) declared in the current group
-      #     after(:each) declared in a parent group
-      #     after(:each) declared in RSpec.configure
-      #     after(:all) declared in the current group
-      #     after(:all) declared in a parent group
-      #     after(:all) declared in RSpec.configure
+      #     after(:each) # declared in the current group
+      #     after(:each) # declared in a parent group
+      #     after(:each) # declared in RSpec.configure
+      #     after(:all)  # declared in the current group
+      #     after(:all)  # declared in a parent group
+      #     after(:all)  # declared in RSpec.configure
       #
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
@@ -272,11 +315,27 @@ module RSpec
       # @api public
       # @overload around(&block)
       # @overload around(scope, &block)
-      # @overload around(scope, tags, &block)
-      # @overload around(tags, &block)
+      # @overload around(scope, conditions, &block)
+      # @overload around(conditions, &block)
+      #
       # @param [Symbol] scope `:each` (defaults to `:each`)
-      # @param [Hash] tags
+      #   present for syntax parity with `before` and `after`, but `:each` is
+      #   the only supported value.
+      #
+      # @param [Hash] conditions
+      #   constrains this hook to examples matching these conditions e.g.
+      #   `around(:each, :ui => true) { ... }` will only run with examples or
+      #   groups declared with `:ui => true`.
+      #
       # @yield [Example] the example to run
+      #
+      # @note the syntax of `around` is similar to that of `before` and `after`
+      #   but the semantics are quite different. `before` and `after` hooks are
+      #   run in the context of of the examples with which they are associated,
+      #   whereas `around` hooks are actually responsible for running the
+      #   examples. Consequently, `around` hooks do not have direct access to
+      #   resources that are made available within the examples and their
+      #   associated `before` and `after` hooks.
       #
       # @note `:each` is the only supported scope.
       #
@@ -302,26 +361,26 @@ module RSpec
         hooks[:around][scope] << AroundHook.new(options, &block)
       end
 
-      # @api private
+      # @private
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
       def run_hook(hook, scope, example_group_instance=nil)
         hooks[hook][scope].run_all(example_group_instance)
       end
 
-      # @api private
+      # @private
       # Just like run_hook, except it removes the blocks as it evalutes them,
       # ensuring that they will only be run once.
       def run_hook!(hook, scope, example_group_instance)
         hooks[hook][scope].run_all!(example_group_instance)
       end
 
-      # @api private
+      # @private
       def run_hook_filtered(hook, scope, group, example_group_instance, example = nil)
         find_hook(hook, scope, group, example).run_all(example_group_instance)
       end
 
-      # @api private
+      # @private
       def find_hook(hook, scope, example_group_class, example = nil)
         found_hooks = hooks[hook][scope].find_hooks_for(example || example_group_class)
 
@@ -339,8 +398,10 @@ module RSpec
 
     private
 
+      SCOPES = [:each, :all, :suite].to_set
+
       def scope_and_options_from(*args)
-        scope = if [:each, :all, :suite].include?(args.first)
+        scope = if SCOPES.include?(args.first)
           args.shift
         elsif args.any? { |a| a.is_a?(Symbol) }
           raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")

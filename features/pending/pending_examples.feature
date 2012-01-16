@@ -13,7 +13,7 @@ Feature: pending examples
     When I run `rspec example_without_block_spec.rb`
     Then the exit status should be 0
     And the output should contain "1 example, 0 failures, 1 pending"
-    And the output should contain "Not Yet Implemented"
+    And the output should contain "Not yet implemented"
     And the output should contain "example_without_block_spec.rb:2"
 
   Scenario: pending any arbitary reason, with no block
@@ -98,13 +98,13 @@ Feature: pending examples
       """
       Pending:
         an example is pending using xit
-          # Not Yet Implemented
+          # Temporarily disabled with xit
           # ./temporarily_pending_spec.rb:2
         an example is pending using xspecify
-          # Not Yet Implemented
+          # Temporarily disabled with xspecify
           # ./temporarily_pending_spec.rb:5
         an example is pending using xexample
-          # Not Yet Implemented
+          # Temporarily disabled with xexample
           # ./temporarily_pending_spec.rb:8
       """
 
@@ -149,7 +149,7 @@ Feature: pending examples
       """
       an example
         checks something
-         (PENDING: Not Yet Implemented)
+         (PENDING: No reason given)
       """
 
   Scenario: conditionally pending examples

@@ -56,7 +56,7 @@ Feature: --format option
       something
         does something that passes
         does something that fails (FAILED - 1)
-        does something that is pending (PENDING: Not Yet Implemented)
+        does something that is pending (PENDING: No reason given)
       """
 
   Scenario: documentation format saved to a file
@@ -66,7 +66,7 @@ Feature: --format option
       something
         does something that passes
         does something that fails (FAILED - 1)
-        does something that is pending (PENDING: Not Yet Implemented)
+        does something that is pending (PENDING: No reason given)
       """
 
   Scenario: multiple formats
@@ -77,5 +77,5 @@ Feature: --format option
       something
         does something that passes
         does something that fails (FAILED - 1)
-        does something that is pending (PENDING: Not Yet Implemented)
+        does something that is pending (PENDING: No reason given)
       """

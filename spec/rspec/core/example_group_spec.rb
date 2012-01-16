@@ -11,7 +11,6 @@ class SelfObserver
 end
 
 module RSpec::Core
-
   describe ExampleGroup do
     it_behaves_like "metadata hash builder" do
       def metadata_hash(*args)
@@ -619,19 +618,26 @@ module RSpec::Core
       end
     end
 
-    matcher :add_a_pending_example_with do |method_name|
-      match do |group|
-        group = ExampleGroup.describe
-        group.send(method_name, "is pending") { }
-        group.run
-        group.examples.first.should be_pending
-      end
-    end
-
     %w[pending xit xspecify xexample].each do |method_name|
-      describe "##{method_name}" do
+      describe "::#{method_name}" do
+        before do
+          @group = ExampleGroup.describe
+          @group.send(method_name, "is pending") { }
+        end
+
         it "generates a pending example" do
-          ExampleGroup.describe.should add_a_pending_example_with(method_name)
+          @group.run
+          @group.examples.first.should be_pending
+        end
+
+        it "sets the pending message", :if => method_name == 'pending' do
+          @group.run
+          @group.examples.first.metadata[:execution_result][:pending_message].should eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        end
+
+        it "sets the pending message", :unless => method_name == 'pending' do
+          @group.run
+          @group.examples.first.metadata[:execution_result][:pending_message].should eq("Temporarily disabled with #{method_name}")
         end
       end
     end

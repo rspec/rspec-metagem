@@ -3,15 +3,20 @@ require "spec_helper"
 describe RSpec::Core::DrbOptions do
   include ConfigOptionsHelper
 
-  # TODO ensure all options are output
   describe "#drb_argv" do
     it "preserves extra arguments" do
       File.stub(:exist?) { false }
       config_options_object(*%w[ a --drb b --color c ]).drb_argv.should =~ %w[ --color a b c ]
     end
 
-    it "includes --fail-fast" do
-      config_options_object(*%w[--fail-fast]).drb_argv.should include("--fail-fast")
+    %w(--color --fail-fast --profile --backtrace --tty).each do |option|
+      it "includes #{option}" do
+        config_options_object("#{option}").drb_argv.should include("#{option}")
+      end
+    end
+
+    it "includes --failure-exit-code" do
+      config_options_object(*%w[--failure-exit-code 2]).drb_argv.should include("--failure-exit-code", "2")
     end
 
     it "includes --options" do
@@ -94,6 +99,49 @@ describe RSpec::Core::DrbOptions do
         coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
         coo.drb_argv
         coo.options[:formatters].should eq([["p","foo.txt"],["d"]])
+      end
+    end
+
+    context "with --out" do
+      it "combines with formatters" do
+        coo = config_options_object(*%w[--format h --out report.html])
+        coo.drb_argv.should       eq(%w[--format h --out report.html])
+      end
+    end
+
+    context "with --line_number" do
+      it "includes --line_number" do
+        config_options_object(*%w[--line_number 35]).drb_argv.should eq(%w[--line_number 35])
+      end
+
+      it "includes multiple lines" do
+        config_options_object(*%w[-l 90 -l 4 -l 55]).drb_argv.should eq(
+          %w[--line_number 90 --line_number 4 --line_number 55]
+        )
+      end
+    end
+
+    context "with -I libs" do
+      it "includes -I" do
+        config_options_object(*%w[-I a_dir]).drb_argv.should eq(%w[-I a_dir])
+      end
+
+      it "includes multiple paths" do
+        config_options_object(*%w[-I dir_1 -I dir_2 -I dir_3]).drb_argv.should eq(
+                               %w[-I dir_1 -I dir_2 -I dir_3]
+        )
+      end
+    end
+
+    context "with --require" do
+      it "includes --require" do
+        config_options_object(*%w[--require a_path]).drb_argv.should eq(%w[--require a_path])
+      end
+
+      it "includes multiple paths" do
+        config_options_object(*%w[--require dir/ --require file.rb]).drb_argv.should eq(
+                               %w[--require dir/ --require file.rb]
+        )
       end
     end
 

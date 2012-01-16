@@ -1,8 +1,10 @@
 require 'autotest'
 require 'rspec/core/deprecation'
 
-class RSpecCommandError < StandardError; end
-
+# Derived from the `Autotest` class, extends the `autotest` command to work
+# with RSpec.
+#
+# @note this will be extracted to a separate gem when we release rspec-3.
 class Autotest::Rspec2 < Autotest
 
   RSPEC_EXECUTABLE = File.expand_path('../../../exe/rspec', __FILE__)
@@ -55,19 +57,17 @@ class Autotest::Rspec2 < Autotest
     end
   end
 
-  # @private
+  private
+
   def suffix
     using_bundler? ? "" : defined?(:Gem) ? " -rrubygems" : ""
   end
 
-  # @private
   def using_bundler?
     prefix =~ /bundle exec/
   end
 
-  # @private
   def gemfile?
     File.exist?('./Gemfile')
   end
-
 end

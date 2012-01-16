@@ -18,6 +18,12 @@ module RSpec::Core
         config.load_spec_files
       end
 
+      it "loads each file once, even if duplicated in list" do
+        config.files_to_run = ["a_spec.rb", "a_spec.rb"]
+        config.should_receive(:load).once
+        config.load_spec_files
+      end
+
       context "with rspec-1 loaded" do
         before do
           Object.const_set(:Spec, Module.new)
@@ -649,13 +655,6 @@ module RSpec::Core
         config.inclusion_filter[:foo].should be(true)
         config.inclusion_filter[:bar].should be(false)
       end
-
-      it "gets overrided by forced options" do
-        config.force_exclude :foo => true
-        config.filter_run_including :foo => true
-        config.inclusion_filter.should eq({})
-      end
-
     end
 
     describe "#filter_run_excluding" do
@@ -684,13 +683,6 @@ module RSpec::Core
         config.exclusion_filter[:foo].should be(true)
         config.exclusion_filter[:bar].should be(false)
       end
-
-      it "gets overrided by forced options" do
-        config.exclusion_filter.clear
-        config.force_include :foo => true
-        config.filter_run_excluding :foo => true
-        config.exclusion_filter.should eq({})
-      end
     end
 
     describe "#inclusion_filter" do
@@ -705,6 +697,12 @@ module RSpec::Core
         RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.inclusion_filter = :foo
         config.inclusion_filter.should eq({:foo => true})
+      end
+
+      it "overrides any inclusion filters set on the command line or in configuration files" do
+        config.force(:inclusion_filter => { :foo => :bar })
+        config.inclusion_filter = {:want => :this}
+        config.inclusion_filter.should eq({:want => :this})
       end
     end
 
@@ -752,6 +750,12 @@ module RSpec::Core
         RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.exclusion_filter = :foo
         config.exclusion_filter.should eq({:foo => true})
+      end
+
+      it "overrides any exclusion filters set on the command line or in configuration files" do
+        config.force(:exclusion_filter => { :foo => :bar })
+        config.exclusion_filter = {:want => :this}
+        config.exclusion_filter.should eq({:want => :this})
       end
     end
 
@@ -1054,6 +1058,16 @@ module RSpec::Core
         config.order = "default"
         config.seed.should eq(37)
         config.order.should eq("rand")
+      end
+
+      it "forces 'false' value" do
+        config.add_setting :custom_option
+        config.custom_option = true
+        config.custom_option?.should be_true
+        config.force :custom_option => false
+        config.custom_option?.should be_false
+        config.custom_option = true
+        config.custom_option?.should be_false
       end
     end
 

@@ -48,6 +48,13 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
+    it "assigns inclusion_filter" do
+      opts = config_options_object(*%w[--tag awesome])
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      config.inclusion_filter.should have_key(:awesome)
+    end
+
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
       config = RSpec::Core::Configuration.new
@@ -62,22 +69,14 @@ describe RSpec::Core::ConfigurationOptions do
       opts.configure(config)
     end
 
-    it "assigns filter" do
-      pending
-    end
-
     [
       ["--failure-exit-code", "3", :failure_exit_code, 3 ],
       ["--pattern", "foo/bar", :pattern, "foo/bar"],
       ["--failure-exit-code", "37", :failure_exit_code, 37],
       ["--default_path", "behavior", :default_path, "behavior"],
-      ["--drb", nil, :drb, true],
       ["--order", "rand", :order, "rand"],
       ["--seed", "37", :order, "rand:37"],
-      ["--drb-port", "37", :drb_port, 37],
-      ["--backtrace", nil, :full_backtrace, true],
-      ["--profile", nil, :profile_examples, true],
-      ["--tty", nil, :tty, true]
+      ["--drb-port", "37", :drb_port, 37]
     ].each do |cli_option, cli_value, config_key, config_value|
       it "forces #{config_key}" do
         opts = config_options_object(*[cli_option, cli_value].compact)
@@ -140,9 +139,9 @@ describe RSpec::Core::ConfigurationOptions do
 
   describe "--format, -f" do
     it "sets :formatter" do
-      parse_options('--format', 'd').should include(:formatters => [['d']])
-      parse_options('-f', 'd').should include(:formatters => [['d']])
-      parse_options('-fd').should include(:formatters => [['d']])
+      [['--format', 'd'], ['-f', 'd'], '-fd'].each do |args|
+        parse_options(*args).should include(:formatters => [['d']])
+      end
     end
 
     example "can accept a class name" do
@@ -271,7 +270,9 @@ describe RSpec::Core::ConfigurationOptions do
 
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
-      parse_options("-c", "file.rb", "dir/file.rb").should include(:files_or_directories_to_run => ["file.rb", "dir/file.rb"])
+      parse_options("-c", "file.rb", "dir/file.rb").should include(
+        :files_or_directories_to_run => ["file.rb", "dir/file.rb"]
+      )
     end
 
     it "parses dir from 'dir'" do
@@ -279,16 +280,14 @@ describe RSpec::Core::ConfigurationOptions do
     end
 
     it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
+      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(
+        :files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"]
+      )
     end
 
     it "provides no files or directories if spec directory does not exist" do
       FileTest.stub(:directory?).with("spec").and_return false
       parse_options().should include(:files_or_directories_to_run => [])
-    end
-
-    it "parses dir and files from 'spec/file1_spec.rb, spec/file2_spec.rb'" do
-      parse_options("dir", "spec/file1_spec.rb", "spec/file2_spec.rb").should include(:files_or_directories_to_run => ["dir", "spec/file1_spec.rb", "spec/file2_spec.rb"])
     end
   end
 

@@ -1,8 +1,10 @@
 if defined?(require_relative)
+  # @private
   def require_rspec(path)
     require_relative path
   end
 else
+  # @private
   def require_rspec(path)
     require "rspec/#{path}"
   end
@@ -37,31 +39,30 @@ require_rspec 'core/example'
 require_rspec 'core/shared_example_group'
 require_rspec 'core/example_group'
 require_rspec 'core/version'
-require_rspec 'core/errors'
 
 module RSpec
   autoload :Matchers,      'rspec/matchers'
   autoload :SharedContext, 'rspec/core/shared_context'
 
-  # @api private
-  # Used internally to determine what to do when a SIGINT is received
+  # @private
   def self.wants_to_quit
+  # Used internally to determine what to do when a SIGINT is received
     world.wants_to_quit
   end
 
-  # @api private
+  # @private
   # Used internally to determine what to do when a SIGINT is received
   def self.wants_to_quit=(maybe)
     world.wants_to_quit=(maybe)
   end
 
-  # @api private
+  # @private
   # Internal container for global non-configuration data
   def self.world
     @world ||= RSpec::Core::World.new
   end
 
-  # @api private
+  # @private
   # Used internally to ensure examples get reloaded between multiple runs in
   # the same process.
   def self.reset
@@ -69,7 +70,7 @@ module RSpec
     configuration.reset
   end
 
-  # Returns the global [Configuration](Core/Configuration) object. While you
+  # Returns the global [Configuration](RSpec/Core/Configuration) object. While you
   # _can_ use this method to access the configuration, the more common
   # convention is to use [RSpec.configure](RSpec#configure-class_method).
   #
@@ -81,6 +82,7 @@ module RSpec
     @configuration ||= RSpec::Core::Configuration.new
   end
 
+  # Yields the global configuration to a block.
   # @yield [Configuration] global configuration
   #
   # @example
@@ -92,7 +94,7 @@ module RSpec
     yield configuration if block_given?
   end
 
-  # @api private
+  # @private
   # Used internally to clear remaining groups when fail_fast is set
   def self.clear_remaining_example_groups
     world.example_groups.clear

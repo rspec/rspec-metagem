@@ -3,7 +3,20 @@ module RSpec
     module Pending
       class PendingDeclaredInExample < StandardError; end
 
-      DEFAULT_MESSAGE = 'No reason given'
+      # If Test::Unit is loaed, we'll use its error as baseclass, so that Test::Unit
+      # will report unmet RSpec expectations as failures rather than errors.
+      begin
+        class PendingExampleFixedError < Test::Unit::AssertionFailedError; end
+      rescue
+        class PendingExampleFixedError < StandardError; end
+      end
+
+      class PendingExampleFixedError
+        def pending_fixed?; true; end
+      end
+
+      NO_REASON_GIVEN = 'No reason given'
+      NOT_YET_IMPLEMENTED = 'Not yet implemented'
 
       # @overload pending()
       # @overload pending(message)
@@ -46,11 +59,20 @@ module RSpec
       #         end
       #       end
       #     end
+      #
+      # @note `before(:each)` hooks are eval'd when you use the `pending`
+      #   method within an example. If you want to declare an example `pending`
+      #   and bypass the `before` hooks as well, you can pass `:pending => true`
+      #   to the `it` method:
+      #
+      #       it "does something", :pending => true do
+      #         # ...
+      #       end
       def pending(*args)
         return self.class.before(:each) { pending(*args) } unless example
 
         options = args.last.is_a?(Hash) ? args.pop : {}
-        message = args.first || DEFAULT_MESSAGE
+        message = args.first || NO_REASON_GIVEN
 
         if options[:unless] || (options.has_key?(:if) && !options[:if])
           return block_given? ? yield : nil
@@ -70,7 +92,7 @@ module RSpec
           ensure
             teardown_mocks_for_rspec
           end
-          raise RSpec::Core::PendingExampleFixedError.new if result
+          raise PendingExampleFixedError.new if result
         end
         raise PendingDeclaredInExample.new(message)
       end

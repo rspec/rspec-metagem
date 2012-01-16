@@ -20,16 +20,6 @@ RSpec::Matchers.define :map_specs do |specs|
   end
 end
 
-RSpec::Matchers.define :be_pending_with do |message|
-  match do |example|
-    example.metadata[:pending] && example.metadata[:execution_result][:pending_message] == message
-  end
-
-  failure_message_for_should do |example|
-    "expected example to pending with #{message.inspect}, got #{example.metadata[:execution_result][:pending_message].inspect}"
-  end
-end
-
 RSpec::Matchers.define :fail_with do |exception_klass|
   match do |example|
     failure_reason(example, exception_klass).nil?
@@ -70,6 +60,6 @@ RSpec::Matchers.define :pass do
 end
 
 RSpec::Matchers.module_eval do
-  alias have_failed_with fail_with
-  alias have_passed pass
+  alias_method :have_failed_with, :fail_with
+  alias_method :have_passed, :pass
 end

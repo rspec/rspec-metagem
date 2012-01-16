@@ -1,17 +1,39 @@
 ### dev
 
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc1...master)
+Bug fixes
+
+* Restore `--full_backtrace` option
+
+### 2.8.0 / 2012-01-04
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc2...v2.8.0)
+
+Bug fixes
+
+* For metadata filtering, restore passing the entire array to the proc, rather
+  than each item in the array (weidenfreak)
+* Ensure each spec file is loaded only once
+    * Fixes a bug that caused all the examples in a file to be run when
+      referenced twice with line numbers in a command, e.g.
+        * `rspec path/to/file:37 path/to/file:42`
+
+### 2.8.0.rc2 / 2011-12-19
+
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc1...v2.8.0.rc2)
 
 Enhancments
 
 * new `--init` command (Peter Schröder)
     * generates `spec/spec_helper.rb`
-    * deletes obsolete files (on confirmation) 
+    * deletes obsolete files (on confirmation)
     * merged with and deprecates `--configure` command, which generated
       `.rspec`
 * use `require_relative` when available (Ian Leitch)
 * `include_context` and `include_examples` accept params (Calvin Bascom)
 * print the time for every example in the html formatter (Richie Vos)
+* several tasty refactoring niblets (Sasha)
+* `it "does something", :x => [:foo,'bar',/baz/] (Ivan Neverov)
+    * supports matching n command line tag values with an example or group
 
 ### 2.8.0.rc1 / 2011-11-06
 
