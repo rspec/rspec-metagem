@@ -52,7 +52,7 @@ module RSpec::Core
       end
     end
 
-    CONDITIONAL_FILTERS = [:if, :unless].to_set
+    CONDITIONAL_FILTERS = [:if, :unless]
 
     def add_filter(argv, name, hash)
       hash.each_pair do |k, v|
