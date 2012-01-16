@@ -398,7 +398,7 @@ module RSpec
 
     private
 
-      SCOPES = [:each, :all, :suite].to_set
+      SCOPES = [:each, :all, :suite]
 
       def scope_and_options_from(*args)
         scope = if SCOPES.include?(args.first)
