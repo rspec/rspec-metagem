@@ -3,6 +3,8 @@
 Bug fixes
 
 * Restore `--full_backtrace` option
+* Ensure that values passed to `config.filter_run` are respected when running
+  over DRb (using spork).
 
 ### 2.8.0 / 2012-01-04
 
