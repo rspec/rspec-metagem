@@ -36,14 +36,16 @@ module RSpec
 
         # @api private
         def for_expected(*expected)
-          instance_variables.each do |ivar|
-            instance_variable_set(ivar, nil) unless PERSISENT_INSTANCE_VARIABLES.include?(ivar.intern)
-          end
           @expected = expected
-          making_declared_methods_public do
-            instance_eval_with_args(*@expected, &@declarations)
+          dup.instance_eval do
+            instance_variables.map {|ivar| ivar.intern}.each do |ivar|
+              instance_variable_set(ivar, nil) unless (PERSISENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
+            end
+            making_declared_methods_public do
+              instance_eval_with_args(*@expected, &@declarations)
+            end
+            self
           end
-          self
         end
 
         # @api private

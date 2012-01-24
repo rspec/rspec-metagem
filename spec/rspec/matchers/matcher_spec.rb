@@ -21,6 +21,22 @@ end
 
 module RSpec::Matchers::DSL
   describe Matcher do
+    it "can be stored aside and used later" do
+      # Supports using rspec-expectation matchers as argument matchers in
+      # rspec-mocks.
+      RSpec::Matchers.define :example_matcher do |expected|
+        match do |actual|
+          actual == expected
+        end
+      end
+
+      m1 = example_matcher(1)
+      m2 = example_matcher(2)
+
+      m1.matches?(1).should be_true
+      m2.matches?(2).should be_true
+    end
+
     context "with an included module" do
       let(:matcher) do
         RSpec::Matchers::DSL::Matcher.new(:be_a_greeting) do

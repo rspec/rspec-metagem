@@ -11,6 +11,8 @@ Bug fixes
 * Align respond_to? and method_missing in DSL-defined matchers.
 * Clear out user-defined instance variables between invocations of DSL-defined
   matchers.
+* Dup the instance of a DSL generated matcher so its state is not changed by
+  subsequent invocations.
 
 ### 2.8.0 / 2012-01-04
 
