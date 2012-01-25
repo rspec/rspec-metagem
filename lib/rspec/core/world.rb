@@ -4,12 +4,13 @@ module RSpec
 
       include RSpec::Core::Hooks
 
-      attr_reader :example_groups, :filtered_examples, :wants_to_quit
-      attr_writer :wants_to_quit
+      attr_reader :example_groups, :shared_example_groups, :filtered_examples
+      attr_accessor :wants_to_quit
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         @example_groups = [].extend(Extensions::Ordered)
+        @shared_example_groups = {}
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
@@ -22,6 +23,7 @@ module RSpec
 
       def reset
         example_groups.clear
+        shared_example_groups.clear
       end
 
       def filter_manager
@@ -45,12 +47,10 @@ module RSpec
         @configuration.configure_group(group)
       end
 
-      def shared_example_groups
-        @shared_example_groups ||= {}
-      end
-
       def example_count
-        example_groups.collect {|g| g.descendants}.flatten.inject(0) { |sum, g| sum += g.filtered_examples.size }
+        example_groups.collect {|g| g.descendants}.flatten.inject(0) do |sum, g|
+          sum += g.filtered_examples.size
+        end
       end
 
       def preceding_declaration_line(filter_line)

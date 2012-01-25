@@ -64,7 +64,7 @@ module RSpec::Core
       context "with two exaples and the second example is registre first" do
         let(:second_group_declaration_line) { second_group.metadata[:example_group][:line_number] }
 
-        before do 
+        before do
           world.register(second_group)
           world.register(group)
         end
