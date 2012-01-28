@@ -20,12 +20,7 @@ module RSpec
           @diffable     = false
           @expected_exception, @rescued_exception = nil, nil
           @match_for_should_not_block = nil
-
-          @messages = {
-            :description => lambda {"#{name_to_sentence}#{expected_to_sentence}"},
-            :failure_message_for_should => lambda {|actual| "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"},
-            :failure_message_for_should_not => lambda {|actual| "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"}
-          }
+          @messages = {}
         end
 
         PERSISENT_INSTANCE_VARIABLES = [
@@ -273,7 +268,23 @@ module RSpec
         end
 
         def call_cached(key)
-          @messages[key].arity == 1 ? @messages[key].call(@actual) : @messages[key].call
+          if @messages.has_key?(key)
+            @messages[key].arity == 1 ? @messages[key].call(@actual) : @messages[key].call
+          else
+            send("default_#{key}")
+          end
+        end
+
+        def default_description
+          "#{name_to_sentence}#{expected_to_sentence}"
+        end
+
+        def default_failure_message_for_should
+          "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
+        end
+
+        def default_failure_message_for_should_not
+          "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         unless method_defined?(:singleton_class)
