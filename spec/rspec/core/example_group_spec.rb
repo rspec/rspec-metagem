@@ -293,6 +293,22 @@ module RSpec::Core
             group.run.should be_true
           end
         end
+
+        context "and metadata redefinition after `described_class` call" do
+          it "is the redefined level constant" do
+            group = ExampleGroup.describe(String) do
+              described_class
+              metadata[:example_group][:described_class] = Object
+              describe :symbol do
+                example "described_class is Object" do
+                  described_class.should eq(Object)
+                end
+              end
+            end
+
+            group.run.should be_true
+          end
+        end
       end
 
       context "in a nested group" do
