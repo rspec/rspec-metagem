@@ -11,7 +11,7 @@ module RSpec
             minutes = duration.to_i / 60
             seconds = duration - minutes * 60
 
-            "#{minutes} minute(s) #{format_seconds(seconds)} seconds"
+            "#{pluralize(minutes, 'minute')} #{format_seconds(seconds)} seconds"
           else
             "#{format_seconds(duration)} seconds"
           end
@@ -26,6 +26,10 @@ module RSpec
         def strip_trailing_zeroes(string)
           stripped = string.sub(/[^1-9]+$/, '')
           stripped.empty? ? "0" : stripped
+        end
+
+        def pluralize(count, string)
+          "#{count} #{string}#{'s' unless count == 1}"
         end
 
       end

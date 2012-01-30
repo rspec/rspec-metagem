@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module RSpec::Core
   describe SharedExampleGroup do
-    
+
     ExampleModule = Module.new
     ExampleClass = Class.new
 
@@ -19,7 +19,7 @@ module RSpec::Core
             group.send(method_name, 'shared group') {}
           end.should raise_error(ArgumentError, "Shared example group 'shared group' already exists")
         end
-        
+
         ["name", :name, ExampleModule, ExampleClass].each do |object|
           type = object.class.name.downcase
           context "given a #{type}" do

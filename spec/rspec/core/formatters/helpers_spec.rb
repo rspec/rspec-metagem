@@ -5,9 +5,15 @@ describe RSpec::Core::Formatters::Helpers do
   let(:helper) { Object.new.extend(RSpec::Core::Formatters::Helpers) }
 
   describe "format duration" do
-    context '> 60' do
-      it "returns 'x minute(s) xx seconds' formatted string" do
-        helper.format_duration(135.14).should eq("2 minute(s) 15.14 seconds")
+    context '> 60 and < 120' do
+      it "returns 'x minute xx seconds' formatted string" do
+        helper.format_duration(70.14).should eq("1 minute 10.14 seconds")
+      end
+    end
+
+    context '> 120' do
+      it "returns 'x minutes xx seconds' formatted string" do
+        helper.format_duration(135.14).should eq("2 minutes 15.14 seconds")
       end
     end
 

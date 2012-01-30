@@ -142,10 +142,6 @@ module RSpec
 
       private
 
-        def pluralize(count, string)
-          "#{count} #{string}#{'s' unless count == 1}"
-        end
-
         def format_caller(caller_info)
           backtrace_line(caller_info.to_s.split(':in `block').first)
         end
