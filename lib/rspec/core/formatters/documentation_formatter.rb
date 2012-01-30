@@ -3,9 +3,7 @@ require 'rspec/core/formatters/base_text_formatter'
 module RSpec
   module Core
     module Formatters
-
       class DocumentationFormatter < BaseTextFormatter
-
         def initialize(output)
           super(output)
           @group_level = 0
@@ -15,7 +13,7 @@ module RSpec
           super(example_group)
 
           output.puts if @group_level == 0
-          output.puts "#{current_indentation}#{example_group.description}"
+          output.puts "#{current_indentation}#{example_group.description.strip}"
 
           @group_level += 1
         end
@@ -40,7 +38,7 @@ module RSpec
         end
 
         def failure_output(example, exception)
-          red("#{current_indentation}#{example.description} (FAILED - #{next_failure_index})")
+          red("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
         end
 
         def next_failure_index
@@ -49,11 +47,11 @@ module RSpec
         end
 
         def passed_output(example)
-          green("#{current_indentation}#{example.description}")
+          green("#{current_indentation}#{example.description.strip}")
         end
 
         def pending_output(example, message)
-          yellow("#{current_indentation}#{example.description} (PENDING: #{message})")
+          yellow("#{current_indentation}#{example.description.strip} (PENDING: #{message})")
         end
 
         def current_indentation
@@ -63,9 +61,7 @@ module RSpec
         def example_group_chain
           example_group.ancestors.reverse
         end
-
       end
-
     end
   end
 end
