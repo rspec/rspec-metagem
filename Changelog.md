@@ -1,5 +1,9 @@
 ### dev
 
+Enhancements
+
+* Support for "X minutes X seconds" spec run duration in formatter. (uzzz)
+
 Bug fixes
 
 * Restore `--full_backtrace` option
