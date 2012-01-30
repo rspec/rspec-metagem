@@ -3,6 +3,7 @@
 Enhancements
 
 * Support for "X minutes X seconds" spec run duration in formatter. (uzzz)
+* Strip whitespace from group and example names in doc formatter.
 
 Bug fixes
 
