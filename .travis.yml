@@ -1,7 +1,10 @@
+before_script:
+  - test `gem -v` != 1.8.* && (rubygems update --system)
 script: "bin/rake --trace 2>&1"
 bundler_args: "--binstubs"
 rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
+  - ree
   - jruby
