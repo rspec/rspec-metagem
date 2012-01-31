@@ -1,5 +1,5 @@
 before_install:
-  - test `gem -v` != 1.8.* && (rubygems update --system)
+  - if [[ `gem -v` != 1.8.* ]]; then gem update --system; fi
 script: "bin/rake --trace 2>&1"
 bundler_args: "--binstubs"
 rvm:
