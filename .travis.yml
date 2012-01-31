@@ -1,4 +1,4 @@
-before_script:
+before_install:
   - test `gem -v` != 1.8.* && (rubygems update --system)
 script: "bin/rake --trace 2>&1"
 bundler_args: "--binstubs"
