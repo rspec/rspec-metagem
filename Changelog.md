@@ -11,8 +11,8 @@ Bug fixes
 * Ensure that values passed to `config.filter_run` are respected when running
   over DRb (using spork).
 * Ensure shared example groups are reset after a run (as example groups are).
-* Remove `rescue nil` from calls to filters represented as Procs
-	
+* Remove `rescue false` from calls to filters represented as Procs
+
 ### 2.8.0 / 2012-01-04
 
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0.rc2...v2.8.0)
