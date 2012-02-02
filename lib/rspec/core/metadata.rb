@@ -185,9 +185,9 @@ module RSpec
             #   { :if => nil } # => exclude the example
             # The value of metadata[:if] is the same in these two cases but
             # they need to be treated differently.
-            value.call(metadata[key], metadata) rescue false
+            value.call(metadata[key], metadata)
           else
-            value.call(metadata[key]) rescue false
+            value.call(metadata[key])
           end
         else
           metadata[key].to_s == value.to_s
