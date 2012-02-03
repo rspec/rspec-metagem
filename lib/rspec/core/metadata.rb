@@ -188,8 +188,9 @@ module RSpec
           metadata[key] =~ value
         when Proc
           case value.arity
-          when 1 then value.call(metadata[key])
+          when 0 then value.call
           when 2 then value.call(metadata[key], metadata)
+          else value.call(metadata[key])
           end
         else
           metadata[key].to_s == value.to_s

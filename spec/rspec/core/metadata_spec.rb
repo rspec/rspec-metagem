@@ -118,6 +118,10 @@ module RSpec
           end
         end
 
+        it "matches a proc with no arguments that evaluates to true" do
+          example_metadata.filter_applies?(:if, lambda { true }).should be_true
+        end
+
         it "matches a proc that evaluates to true" do
           example_metadata.filter_applies?(:if, lambda { |v| v }).should be_true
         end
@@ -129,6 +133,12 @@ module RSpec
         it "matches a proc with an arity of 2" do
           example_metadata[:foo] = nil
           example_metadata.filter_applies?(:foo, lambda { |v, m| m == example_metadata }).should be_true
+        end
+
+        it "raises an error when the proc has an incorrect arity" do
+          expect {
+            example_metadata.filter_applies?(:if, lambda { |a,b,c| true })
+          }.to raise_error(ArgumentError)
         end
 
         context "with an Array" do
