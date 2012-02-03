@@ -7,7 +7,7 @@ module RSpec
       # Register an at_exit hook that runs the suite.
       def self.autorun
         return if autorun_disabled? || installed_at_exit? || running_in_drb?
-        at_exit { exit run(ARGV, $stderr, $stdout).to_i }
+        at_exit { exit run(ARGV, $stderr, $stdout).to_i unless $! }
         @installed_at_exit = true
       end
       AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
