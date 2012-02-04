@@ -30,7 +30,7 @@ describe Autotest::Rspec2 do
 
     it "makes the appropriate test command" do
       actual_command = rspec_autotest.make_test_cmd(@files_to_test)
-      expected_command = /#{ruby_cmd}.*#{spec_cmd} (.*)/
+      expected_command = /#{ruby_cmd}.*'#{spec_cmd}' (.*)/
 
       actual_command.should match(expected_command)
 
