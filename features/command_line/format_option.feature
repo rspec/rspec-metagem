@@ -46,7 +46,7 @@ Feature: --format option
       """
 
   Scenario: progress bar format (default)
-    When I run `rspec example_spec.rb`
+    When I run `rspec --format progress example_spec.rb`
     Then the output should contain ".F*"
 
   Scenario: documentation format
