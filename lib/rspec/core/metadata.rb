@@ -102,8 +102,8 @@ module RSpec
 
         def described_class
           container_stack.each do |g|
-            return g[:describes]       if g.has_key?(:describes)
             return g[:described_class] if g.has_key?(:described_class)
+            return g[:describes]       if g.has_key?(:describes)
           end
 
           container_stack.reverse.each do |g|
