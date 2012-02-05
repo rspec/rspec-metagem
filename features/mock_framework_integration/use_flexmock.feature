@@ -9,7 +9,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "mocking with RSpec" do
+      describe "mocking with Flexmock" do
         it "passes when it should" do
           receiver = flexmock('receiver')
           receiver.should_receive(:message).once
@@ -27,7 +27,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "mocking with RSpec" do
+      describe "mocking with Flexmock" do
         it "fails when it should" do
           receiver = flexmock('receiver')
           receiver.should_receive(:message).once
