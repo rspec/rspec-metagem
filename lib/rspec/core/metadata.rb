@@ -174,20 +174,15 @@ module RSpec
         return metadata.location_filter_applies?(value)          if key == :locations
         return metadata.filters_apply?(key, value)               if Hash === value
 
+        return false unless metadata.has_key?(key)
+
         case value
         when Regexp
           metadata[key] =~ value
         when Proc
-          if value.arity == 2
-            # Pass the metadata hash to allow the proc to check if it even has the key.
-            # This is necessary for the implicit :if exclusion filter:
-            #   {            } # => run the example
-            #   { :if => nil } # => exclude the example
-            # The value of metadata[:if] is the same in these two cases but
-            # they need to be treated differently.
-            value.call(metadata[key], metadata)
-          else
-            value.call(metadata[key])
+          case value.arity
+          when 1 then value.call(metadata[key])
+          when 2 then value.call(metadata[key], metadata)
           end
         else
           metadata[key].to_s == value.to_s

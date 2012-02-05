@@ -534,10 +534,26 @@ EOM
       # or config files (e.g. `.rspec`).
       #
       # @example
-      #     filter_run_including :x => 'y'
+      #     # given this declaration
+      #     describe "something", :foo => 'bar' do
+      #       # ...
+      #     end
+      #
+      #     # any of the following will include that group
+      #     config.filter_run_including :foo => 'bar'
+      #     config.filter_run_including :foo => /^ba/
+      #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
+      #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
+      #
+      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
+      #
+      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
+      #     # and the metadata itself e.g.
+      #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
-      #     filter_run_including :foo # results in {:foo => true}
+      #     filter_run_including :foo # same as filter_run_including :foo => true
       def filter_run_including(*args)
         filter_manager.include_with_low_priority build_metadata_hash_from(args)
       end
@@ -576,10 +592,26 @@ EOM
       # or config files (e.g. `.rspec`).
       #
       # @example
-      #     filter_run_excluding :x => 'y'
+      #     # given this declaration
+      #     describe "something", :foo => 'bar' do
+      #       # ...
+      #     end
+      #
+      #     # any of the following will exclude that group
+      #     config.filter_run_excluding :foo => 'bar'
+      #     config.filter_run_excluding :foo => /^ba/
+      #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
+      #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
+      #
+      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
+      #
+      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
+      #     # and the metadata itself e.g.
+      #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     # with treat_symbols_as_metadata_keys_with_true_values = true
-      #     filter_run_excluding :foo # results in {:foo => true}
+      #     filter_run_excluding :foo # same as filter_run_excluding :foo => true
       def filter_run_excluding(*args)
         filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
       end

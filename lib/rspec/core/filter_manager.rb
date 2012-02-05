@@ -67,7 +67,7 @@ module RSpec
     # @see Configuration#filter_run_excluding
     class FilterManager
       DEFAULT_EXCLUSIONS = {
-        :if     => lambda { |value, metadata| metadata.has_key?(:if) && !value },
+        :if     => lambda { |value| !value },
         :unless => lambda { |value| value }
       }
 

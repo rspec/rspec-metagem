@@ -713,20 +713,16 @@ module RSpec::Core
       end
 
       describe "the default :if filter" do
-        it "does not exclude a spec with no :if metadata" do
-          config.exclusion_filter[:if].call(nil, {}).should be_false
+        it "does not exclude a spec with  { :if => true } metadata" do
+          config.exclusion_filter[:if].call(true).should be_false
         end
 
-        it "does not exclude a spec with { :if => true } metadata" do
-          config.exclusion_filter[:if].call(true, {:if => true}).should be_false
+        it "excludes a spec with  { :if => false } metadata" do
+          config.exclusion_filter[:if].call(false).should be_true
         end
 
-        it "excludes a spec with { :if => false } metadata" do
-          config.exclusion_filter[:if].call(false, {:if => false}).should be_true
-        end
-
-        it "excludes a spec with { :if => nil } metadata" do
-          config.exclusion_filter[:if].call(false, {:if => nil}).should be_true
+        it "excludes a spec with  { :if => nil } metadata" do
+          config.exclusion_filter[:if].call(nil).should be_true
         end
       end
 
