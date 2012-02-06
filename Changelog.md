@@ -13,6 +13,8 @@ Bug fixes
   matchers.
 * Dup the instance of a DSL generated matcher so its state is not changed by
   subsequent invocations.
+* Treat expected args consistently across positive and negative expectations
+  (thanks to Ralf Kistner for the heads up)
 
 ### 2.8.0 / 2012-01-04
 
