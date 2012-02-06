@@ -46,19 +46,19 @@ if (1..2).respond_to?(:cover?)
   describe "should_not cover(with, multiple, args)" do
     context "for a range target" do
       it "passes if the target does not cover any of the expected" do
-        (1..10).should_not include(11, 12, 13)
+        (1..10).should_not cover(11, 12, 13)
       end
 
       it "fails if the target covers all of the expected" do
         expect {
-          (1..10).should_not include(4, 6)
-        }.to fail_with("expected 1..10 not to include 4 and 6")
+          (1..10).should_not cover(4, 6)
+        }.to fail_with("expected 1..10 not to cover 4 and 6")
       end
 
       it "fails if the target covers some (but not all) of the expected" do
         expect {
-          (1..10).should_not include(5, 11)
-        }.to fail_with("expected 1..10 not to include 5 and 11")
+          (1..10).should_not cover(5, 11)
+        }.to fail_with("expected 1..10 not to cover 5 and 11")
       end
     end
   end

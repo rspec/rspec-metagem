@@ -37,7 +37,7 @@ module RSpec
                     matcher.negative_failure_message
 
         if matcher.respond_to?(:diffable?) && matcher.diffable?
-          ::RSpec::Expectations.fail_with message, matcher.expected.first, matcher.actual
+          ::RSpec::Expectations.fail_with message, matcher.expected, matcher.actual
         else
           ::RSpec::Expectations.fail_with message
         end

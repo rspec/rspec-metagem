@@ -35,11 +35,11 @@ module RSpec
     private
 
       def no_procs?(*args)
-        args.none? {|a| Proc === a}
+        args.flatten.none? {|a| Proc === a}
       end
 
       def all_strings?(*args)
-        args.all? {|a| String === a}
+        args.flatten.all? {|a| String === a}
       end
 
       def any_multiline_strings?(*args)
@@ -47,7 +47,7 @@ module RSpec
       end
 
       def no_numbers?(*args)
-        args.none? {|a| Numeric === a}
+        args.flatten.none? {|a| Numeric === a}
       end
     end
   end

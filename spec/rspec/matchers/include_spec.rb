@@ -133,7 +133,7 @@ describe "#include matcher" do
       it "fails if the target includes all of the expected" do
         expect {
           "abc".should_not include("c", "a")
-        }.to fail_with(%q{expected "abc" not to include "c" and "a"})
+        }.to fail_with('expected "abc" not to include "c" and "a"')
       end
 
       it "fails if the target includes some (but not all) of the expected" do
