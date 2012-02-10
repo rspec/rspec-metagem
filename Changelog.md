@@ -25,6 +25,7 @@ Bug fixes
   the user got no feedback about what happened. (Myron Marston)
 * `--require` and `-I` are merged among different configuration sources (Andy
   Lindeman)
+* Delegate to mocha methods instead of aliasing them in mocha adapter.
 
 ### 2.10.1 / 2012-05-19
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.10.0...v2.10.1)
