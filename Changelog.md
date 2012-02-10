@@ -13,6 +13,8 @@ Bug fixes
 * Ensure shared example groups are reset after a run (as example groups are).
 * Remove `rescue false` from calls to filters represented as Procs
 * Ensure described_class gets the closest constant (pyromaniac)
+* In "autorun", don't run the specs in the at_exit hook if there was an
+  exception (most likely due to a SyntaxError). (sunaku)
 
 ### 2.8.0 / 2012-01-04
 
