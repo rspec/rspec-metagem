@@ -1,7 +1,11 @@
 Feature: explicit subject
 
-  Use subject() in the group scope to explicitly define the value that is
-  returned by the subject() method in the example scope.
+  Use `subject` in the group scope to explicitly define the value that is
+  returned by the `subject` method in the example scope.
+
+  Note that while the examples below demonstrate how `subject` can be used as a
+  user-facing concept, we recommend that you reserve it for support of custom
+  matchers and/or extension libraries that hide its use from examples.
 
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:

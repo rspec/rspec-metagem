@@ -1,10 +1,12 @@
 Feature: attribute of subject
 
-  Use the its() method as a short-hand to generate a nested example group with
+  WARNING: `its` will be extracted from rspec-core-3.0 into its own gem.
+
+  Use the `its` method as a short-hand to generate a nested example group with
   a single example that specifies the expected value of an attribute of the
   subject.  This can be used with an implicit or explicit subject.
 
-  its() accepts a symbol or a string, and a block representing the example.
+  `its` accepts a symbol or a string, and a block representing the example.
 
       its(:size)    { should eq(1) }
       its("length") { should eq(1) }

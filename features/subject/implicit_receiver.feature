@@ -1,6 +1,6 @@
 Feature: implicit receiver
 
-  When should() is called in an example without an explicit receiver, it is
+  When `should` is called in an example without an explicit receiver, it is
   invoked against the subject (explicit or implicit).
 
   Scenario: implicit subject
