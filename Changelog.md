@@ -15,6 +15,7 @@ Bug fixes
 * Ensure described_class gets the closest constant (pyromaniac)
 * In "autorun", don't run the specs in the at_exit hook if there was an
   exception (most likely due to a SyntaxError). (sunaku)
+* Don't extend groups with modules already used to extend ancestor groups.
 
 ### 2.8.0 / 2012-01-04
 
