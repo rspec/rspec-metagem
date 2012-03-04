@@ -719,8 +719,14 @@ EOM
       end
 
       # @private
-      def safe_extend(mod, host)
-        host.extend(mod) unless (class << host; self; end) < mod
+      if RUBY_VERSION.to_f >= 1.9
+        def safe_extend(mod, host)
+          host.extend(mod) unless (class << host; self; end) < mod
+        end
+      else
+        def safe_extend(mod, host)
+          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
+        end
       end
 
       # @private
