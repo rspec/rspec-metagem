@@ -1,4 +1,5 @@
 ### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...master)
 
 Enhancements
 
