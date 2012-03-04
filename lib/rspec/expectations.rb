@@ -1,5 +1,6 @@
 require 'rspec/expectations/extensions'
 require 'rspec/matchers'
+require 'rspec/expectations/expectation_target'
 require 'rspec/expectations/fail_with'
 require 'rspec/expectations/errors'
 require 'rspec/expectations/deprecation'

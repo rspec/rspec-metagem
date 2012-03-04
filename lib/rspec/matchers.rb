@@ -181,7 +181,6 @@ require 'rspec/matchers/matcher'
 require 'rspec/matchers/operator_matcher'
 require 'rspec/matchers/be_close'
 
-require 'rspec/matchers/block_aliases'
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/method_missing'
 require 'rspec/matchers/compatibility'
