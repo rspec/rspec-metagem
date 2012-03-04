@@ -1,18 +1,16 @@
 module RSpec
   module Expectations
-    class ExpecationTarget
-      attr_reader :target
-
+    class ExpectationTarget
       def initialize(target)
         @target = target
       end
 
       def to(matcher=nil, message=nil, &block)
-        RSpec::Expectations::PositiveExpectationHandler.handle_matcher(target, matcher, message, &block)
+        RSpec::Expectations::PositiveExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
 
       def to_not(matcher=nil, message=nil, &block)
-        RSpec::Expectations::NegativeExpectationHandler.handle_matcher(target, matcher, message, &block)
+        RSpec::Expectations::NegativeExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
       alias not_to to_not
     end
@@ -22,7 +20,7 @@ module RSpec
     def expect(*target, &target_block)
       target << target_block if block_given?
       raise ArgumentError.new("You must pass an argument or a block to #expect but not both.") unless target.size == 1
-      ::RSpec::Expectations::ExpecationTarget.new(target.first)
+      ::RSpec::Expectations::ExpectationTarget.new(target.first)
     end
   end
 end

@@ -2,7 +2,10 @@ require 'spec_helper'
 
 module RSpec
   module Expectations
-    describe ExpecationTarget do
+    # so our examples below can set expectations about the target
+    ExpectationTarget.send(:attr_reader, :target)
+
+    describe ExpectationTarget do
       context 'when constructed via #expect' do
         it 'constructs a new instance targetting the given argument' do
           expect(7).target.should eq(7)
