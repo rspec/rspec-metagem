@@ -1001,6 +1001,38 @@ module RSpec::Core
         group.included_modules.should include(mod1)
         group.included_modules.should include(mod2)
       end
+
+      module IncludeOrExtendMeOnce
+        def self.included(host)
+          raise "included again" if host.instance_methods.include?(:foobar)
+          host.class_eval { def foobar; end }
+        end
+
+        def self.extended(host)
+          raise "extended again" if host.respond_to?(:foobar)
+          def host.foobar; end
+        end
+      end
+
+      it "doesn't include a module when already included in ancestor" do
+        config.include(IncludeOrExtendMeOnce, :foo => :bar)
+
+        group = ExampleGroup.describe("group", :foo => :bar)
+        child = group.describe("child")
+
+        config.configure_group(group)
+        config.configure_group(child)
+      end
+
+      it "doesn't extend when ancestor is already extended with same module" do
+        config.extend(IncludeOrExtendMeOnce, :foo => :bar)
+
+        group = ExampleGroup.describe("group", :foo => :bar)
+        child = group.describe("child")
+
+        config.configure_group(group)
+        config.configure_group(child)
+      end
     end
 
     describe "#alias_example_to" do

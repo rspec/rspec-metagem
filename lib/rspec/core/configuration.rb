@@ -709,8 +709,18 @@ EOM
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.any_apply?(filters)
-          group.send(include_or_extend, mod)
+          send("safe_#{include_or_extend}", mod, group)
         end
+      end
+
+      # @private
+      def safe_include(mod, host)
+        host.send(:include,mod) unless host < mod
+      end
+
+      # @private
+      def safe_extend(mod, host)
+        host.extend(mod) unless (class << host; self; end) < mod
       end
 
       # @private
