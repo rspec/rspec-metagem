@@ -105,4 +105,3 @@ module RSpec
 end
 
 require_rspec 'core/backward_compatibility'
-require_rspec 'monkey'

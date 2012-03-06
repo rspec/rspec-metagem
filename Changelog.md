@@ -5,6 +5,8 @@ Enhancements
 
 * Support for "X minutes X seconds" spec run duration in formatter. (uzzz)
 * Strip whitespace from group and example names in doc formatter.
+* Removed spork-0.9 shim. If you're using spork-0.8.x, you'll need to upgrade
+  to 0.9.0.
 
 Bug fixes
 
