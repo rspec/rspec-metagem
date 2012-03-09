@@ -259,6 +259,11 @@ module RSpec
         hooks[:before][scope] << BeforeHook.new(options, &block)
       end
 
+      def prepend_before(*args, &block)
+        scope, options = scope_and_options_from(*args)
+        hooks[:before][scope].unshift(BeforeHook.new(options, &block))
+      end
+
       # @api public
       # @overload after(&block)
       # @overload after(scope, &block)

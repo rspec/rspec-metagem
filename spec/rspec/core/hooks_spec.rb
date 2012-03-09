@@ -15,7 +15,7 @@ module RSpec::Core
             define_method :metadata_hash do |*args|
               instance = HooksHost.new
               args.unshift scope if scope
-              hooks = instance.send(type, *args) { }
+              hooks = instance.send(type, *args) {}
               hooks.first.options
             end
           end
@@ -33,19 +33,19 @@ module RSpec::Core
             let(:instance) { HooksHost.new }
 
             it "defaults to :each scope if no arguments are given" do
-              hooks = instance.send(type) { }
+              hooks = instance.send(type) {}
               hook = hooks.first
               instance.hooks[type][:each].should include(hook)
             end
 
             it "defaults to :each scope if the only argument is a metadata hash" do
-              hooks = instance.send(type, :foo => :bar) { }
+              hooks = instance.send(type, :foo => :bar) {}
               hook = hooks.first
               instance.hooks[type][:each].should include(hook)
             end
 
             it "raises an error if only metadata symbols are given as arguments" do
-              expect { instance.send(type, :foo, :bar) { } }.to raise_error(ArgumentError)
+              expect { instance.send(type, :foo, :bar) {} }.to raise_error(ArgumentError)
             end
           end
         end
@@ -63,7 +63,7 @@ module RSpec::Core
             describe "##{type}(#{scope.inspect})" do
               let(:instance) { HooksHost.new }
               let!(:hook) do
-                hooks = instance.send(type, scope) { }
+                hooks = instance.send(type, scope) {}
                 hooks.first
               end
 
@@ -137,6 +137,35 @@ module RSpec::Core
             Hooks::BeforeHook.new :foo => :bar
           }.should raise_error("no block given for before hook")
         end
+      end
+    end
+
+    describe "prepend_before" do
+      it "should order before callbacks from global to local" do
+        fiddle = []
+        example_group = ExampleGroup.describe do
+          around do |example|
+            example.run
+          end
+          it "foo" do
+            examples << self
+          end
+        end
+        example_group.prepend_before(:all) { fiddle << "prepend_before(:all)" }
+        example_group.before(:all) { fiddle << "before(:all)" }
+        example_group.prepend_before(:each) { fiddle << "prepend_before(:each)" }
+        example_group.before(:each) { fiddle << "before(:each)" }
+        RSpec.configure { |config| config.prepend_before(:each) { fiddle << "config.prepend_before(:each)" } }
+        RSpec.configure { |config| config.prepend_before(:all) { fiddle << "config.prepend_before(:all)" } }
+        example_group.run
+        fiddle.should == [
+            'config.prepend_before(:all)',
+            'prepend_before(:all)',
+            'before(:all)',
+            "config.prepend_before(:each)",
+            'prepend_before(:each)',
+            'before(:each)'
+        ]
       end
     end
   end
