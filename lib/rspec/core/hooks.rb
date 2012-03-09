@@ -259,6 +259,11 @@ module RSpec
         hooks[:before][scope] << BeforeHook.new(options, &block)
       end
 
+      # Registers a block to be executed before all other before blocks of the same scope.
+      # This method prepends +block+ to existing before blocks.
+      #
+      # See #before for scoping semantics.
+      #
       def prepend_before(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:before][scope].unshift(BeforeHook.new(options, &block))
