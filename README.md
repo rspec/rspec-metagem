@@ -32,7 +32,7 @@ describe Order do
 end
 ```
 
-The `describe` method creates an [ExampleGroup](../RSpec/Core/ExampleGroup).  Within the
+The `describe` method creates an [ExampleGroup](http://rubydoc.info/gems/rspec-core/RSpec/Core/ExampleGroup).  Within the
 block passed to `describe` you can declare examples using the `it` method.
 
 Under the hood, an example group is a class in which the block passed to
