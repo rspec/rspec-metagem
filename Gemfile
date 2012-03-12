@@ -11,6 +11,8 @@ gemspec
   end
 end
 
+gem 'rake', '~> 0.9.2'
+
 platforms :jruby do
   gem "jruby-openssl"
 end
