@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency     'diff-lcs', '~> 1.1.3'
 
   s.add_development_dependency 'rake',     '~> 0.9.2'
-  s.add_development_dependency 'cucumber', '~> 1.1.0'
-  s.add_development_dependency 'aruba',    '~> 0.4.5'
-  s.add_development_dependency 'nokogiri', '1.5.0'
+  s.add_development_dependency 'cucumber', '~> 1.1.9'
+  s.add_development_dependency 'aruba',    '~> 0.4.11'
 end
