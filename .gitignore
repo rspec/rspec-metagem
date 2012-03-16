@@ -6,3 +6,4 @@ pkg
 Gemfile.lock
 .bundle
 *.rbc
+bin
