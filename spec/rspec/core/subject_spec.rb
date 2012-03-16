@@ -85,9 +85,11 @@ module RSpec::Core
         group = ExampleGroup.describe("group") do
           subject { self }
           def ok?; true; end
+          def not_ok?; false; end
 
           it { should eq(self) }
           it { should be_ok }
+          it { should_not be_not_ok }
         end
 
         group.run.should be_true
