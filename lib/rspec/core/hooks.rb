@@ -77,11 +77,11 @@ module RSpec
 
       class AfterHooks < HookCollection
         def run_all(example_group_instance)
-          reverse.each {|h| h.run_in(example_group_instance) }
+          each { |h| h.run_in(example_group_instance) } unless empty?
         end
 
         def run_all!(example_group_instance)
-          pop.run_in(example_group_instance) until empty?
+          shift.run_in(example_group_instance) until empty?
         end
       end
 
@@ -254,10 +254,12 @@ module RSpec
       #         File.delete(file_to_parse)
       #       end
       #     end
-      def before(*args, &block)
+      def append_before(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:before][scope] << BeforeHook.new(options, &block)
       end
+
+      alias_method :before, :append_before
 
       # Registers a block to be executed before all other before blocks of the same scope.
       # This method prepends +block+ to existing before blocks.
@@ -317,10 +319,22 @@ module RSpec
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
       # they are run in reverse order of that in which they are declared.
-      def after(*args, &block)
+      def prepend_after(*args, &block)
+        scope, options = scope_and_options_from(*args)
+        hooks[:after][scope].unshift(AfterHook.new(options, &block))
+      end
+
+      alias_method :after, :prepend_after
+
+      # Registers a block to be executed after each example.
+      # This method appends +block+ to existing after blocks.
+      #
+      def append_after(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:after][scope] << AfterHook.new(options, &block)
       end
+
+
 
       # @api public
       # @overload around(&block)

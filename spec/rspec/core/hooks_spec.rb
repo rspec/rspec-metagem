@@ -119,6 +119,7 @@ module RSpec::Core
             def yielder
               yield
             end
+
             around do |example|
               yielder { example.run }
             end
@@ -141,7 +142,7 @@ module RSpec::Core
     end
 
     describe "prepend_before" do
-      it "should order before callbacks from global to local" do
+      it "should prepend before callbacks so they are run prior to other before filters for the specified scope" do
         fiddle = []
         example_group = ExampleGroup.describe do
           around do |example|
@@ -167,6 +168,113 @@ module RSpec::Core
             'before(:each)'
         ]
       end
+    end
+
+    describe "#append_before" do
+
+      it "should order before callbacks from global to local" do
+        order = []
+        example_group = ExampleGroup.describe do
+          around do |example|
+            example.run
+          end
+          it "foo" do
+            examples << self
+          end
+        end
+        example_group.append_before(:each) do
+          order << :example_group_append_before_each
+        end
+        RSpec.configure { |config| config.append_before { order << :append_before_each } } # default is :each
+        RSpec.configure { |config| config.append_before(:all) { order << :append_before_all } }
+        RSpec.configure { |config| config.before(:all) { order << :before_all } }
+
+        example_group.append_before(:all) do
+          order << :example_group_append_before_all
+        end
+
+        example_group.run
+        order.should == [
+            :append_before_all,
+            :before_all,
+            :example_group_append_before_all,
+            :append_before_each,
+            :example_group_append_before_each,
+        ]
+      end
+    end
+
+    describe "#prepend_after" do
+
+      it "should order after callbacks from global to local" do
+        order = []
+        example_group = ExampleGroup.describe do
+          around do |example|
+            example.run
+          end
+          it "foo" do
+            examples << self
+          end
+        end
+
+        RSpec.configure { |config| config.prepend_after(:all) { order << :prepend__after_all } }
+        RSpec.configure { |config| config.prepend_after(:each) { order << :prepend__after_each } }
+        example_group.prepend_after(:all) do
+          order << :example_group_prepend_after_all
+        end
+        example_group.prepend_after(:each) do
+          order << :example_group_prepend_after_each
+        end
+        example_group.run
+        order.should == [
+            :example_group_prepend_after_each,
+            :prepend__after_each,
+            :example_group_prepend_after_all,
+            :prepend__after_all
+        ]
+      end
+    end
+
+    describe "#append_after" do
+
+      it "should append callbacks so they are run after other after filters for the specified scope" do
+        order = []
+        example_group = ExampleGroup.describe do
+          around do |example|
+            example.run
+          end
+          it "foo" do
+            examples << self
+          end
+        end
+
+        RSpec.configure { |config| config.append_after(:all) { order << :append__after_all } }
+        RSpec.configure { |config| config.after(:all) { order << :after_all } }
+        example_group.append_after(:all) do
+          order << :example_group_append__after_all
+        end
+
+        RSpec.configure { |config| config.append_after(:each) { order << :append_after_each } }
+
+        example_group.append_after(:each) do
+          order << :example_group_append__after_each
+        end
+
+        example_group.after(:each) do
+          order << :example_group__after_each
+        end
+
+        example_group.run
+        order.should == [
+            :example_group__after_each,
+            :example_group_append__after_each,
+            :append_after_each,
+            :example_group_append__after_all,
+            :after_all,
+            :append__after_all
+        ]
+      end
+
     end
   end
 end
