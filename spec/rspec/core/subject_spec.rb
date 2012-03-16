@@ -196,6 +196,24 @@ module RSpec::Core
         end
       end
 
+      context "memorize subject" do
+        subject do
+          Class.new do
+            def initialize
+              @counter = 0
+            end
+            def false_if_first_time
+              if @counter == 0
+                @counter += 1
+                false
+              else
+                true
+              end
+            end
+          end.new
+        end
+        its(:false_if_first_time) { should be_false }
+      end
     end
   end
 end

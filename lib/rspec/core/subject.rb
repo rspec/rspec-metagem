@@ -120,13 +120,16 @@ module RSpec
             example do
               self.class.class_eval do
                 define_method(:subject) do
-                  @_subject ||= if attribute.is_a?(Array)
+                  unless instance_variable_defined?(:@_subject)
+                    @_subject = if attribute.is_a?(Array)
                                   super()[*attribute]
                                 else
                                   attribute.to_s.split('.').inject(super()) do |target, method|
                                     target.send(method)
                                   end
                                 end
+                  end
+                  @_subject
                 end
               end
               instance_eval(&block)
