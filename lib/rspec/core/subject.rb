@@ -36,9 +36,7 @@ module RSpec
         end
 
         begin
-          require 'rspec/expectations/extensions/kernel'
-          alias_method :__should_for_example_group__,     :should
-          alias_method :__should_not_for_example_group__, :should_not
+          require 'rspec/expectations/handler'
 
           # When +should+ is called with no explicit receiver, the call is
           # delegated to the object returned by +subject+. Combined with
@@ -51,7 +49,7 @@ module RSpec
           #     it { should be_eligible_to_vote }
           #   end
           def should(matcher=nil, message=nil)
-            self == subject ? self.__should_for_example_group__(matcher) : subject.should(matcher,message)
+            RSpec::Expectations::PositiveExpectationHandler.handle_matcher(subject, matcher, message)
           end
 
           # Just like +should+, +should_not+ delegates to the subject (implicit or
@@ -63,7 +61,7 @@ module RSpec
           #     it { should_not be_eligible_to_vote }
           #   end
           def should_not(matcher=nil, message=nil)
-            self == subject ? self.__should_not_for_example_group__(matcher) : subject.should_not(matcher,message)
+            RSpec::Expectations::NegativeExpectationHandler.handle_matcher(subject, matcher, message)
           end
         rescue LoadError
         end
