@@ -1,12 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0.rc2...master)
-
-Bug fixes
-
-* `its` correctly memoizes nil or false values (Yamada Masaki)
-
-### 2.9.0.rc2 / 2012-03-12
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0.rc2)
+### 2.9.0 / 2012-03-17
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0)
 
 Enhancements
 
@@ -26,6 +19,7 @@ Bug fixes
 * In "autorun", don't run the specs in the at_exit hook if there was an
   exception (most likely due to a SyntaxError). (sunaku)
 * Don't extend groups with modules already used to extend ancestor groups.
+* `its` correctly memoizes nil or false values (Yamada Masaki)
 
 ### 2.8.0 / 2012-01-04
 
