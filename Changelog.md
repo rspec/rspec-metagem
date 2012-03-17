@@ -1,5 +1,5 @@
-### 2.9.0.rc2 / 2012-03-12
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0.rc2)
+### 2.9.0 / 2012-03-17
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0)
 
 Enhancements
 
