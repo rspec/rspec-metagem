@@ -1,3 +1,4 @@
+require 'rspec/expectations/extensions/kernel'
 module RSpec
   module Matchers
     module BlockAliases
