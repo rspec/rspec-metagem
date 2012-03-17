@@ -11,20 +11,10 @@ describe "#include matcher" do
         "abc".should include("a")
       end
 
-      it "passes if multiline target includes expected" do
-        "\nabc\ndef".should include("a")
-      end
-
       it "fails if target does not include expected" do
         lambda {
           "abc".should include("d")
         }.should fail_matching("expected \"abc\" to include \"d\"")
-      end
-
-      it "fails if multiline target does not include expected" do
-        lambda {
-          "abc\ndef".should include("g")
-        }.should raise_exception(/expected "abc\\ndef" to include "g"\nDiff/m)
       end
     end
 

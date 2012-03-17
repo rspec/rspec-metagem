@@ -5,7 +5,7 @@ module RSpec
         include BaseMatcher
 
         def initialize(*expected)
-          expected.length == 1 && String === expected.first ? super(expected.first) : super(expected)
+          super(expected)
         end
 
         def matches?(actual)
