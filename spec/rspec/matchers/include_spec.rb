@@ -16,6 +16,18 @@ describe "#include matcher" do
           "abc".should include("d")
         }.should fail_matching("expected \"abc\" to include \"d\"")
       end
+
+      it "includes a diff when actual is multiline" do
+        lambda {
+          "abc\ndef".should include("g")
+        }.should fail_matching("expected \"abc\\ndef\" to include \"g\"\nDiff")
+      end
+
+      it "includes a diff when actual is multiline and there are multiple expecteds" do
+        lambda {
+          "abc\ndef".should include("g", "h")
+        }.should fail_matching("expected \"abc\\ndef\" to include \"g\" and \"h\"\nDiff")
+      end
     end
 
     context "for an array target" do

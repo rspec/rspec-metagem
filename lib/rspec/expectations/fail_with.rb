@@ -22,7 +22,11 @@ module RSpec
         if actual && expected
           if all_strings?(actual, expected)
             if any_multiline_strings?(actual, expected)
-              message << "\nDiff:" << differ.diff_as_string(actual, expected)
+              if Array === expected
+                message << "\nDiff:" << differ.diff_as_string(actual, expected.join(","))
+              else
+                message << "\nDiff:" << differ.diff_as_string(actual, expected)
+              end
             end
           elsif no_procs?(actual, expected) && no_numbers?(actual, expected)
             message << "\nDiff:" << differ.diff_as_object(actual, expected)
