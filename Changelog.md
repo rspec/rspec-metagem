@@ -1,4 +1,11 @@
-### 2.9.0.rc2 / 2012-02-12
+### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0.rc2...master)
+
+Bug fixes
+
+* `its` correctly memoizes nil or false values (Yamada Masaki)
+
+### 2.9.0.rc2 / 2012-03-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0.rc2)
 
 Enhancements
