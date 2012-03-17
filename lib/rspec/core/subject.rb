@@ -67,6 +67,16 @@ module RSpec
           end
         rescue LoadError
         end
+
+        def _attribute_chain(attribute)
+          attribute.to_s.split('.')
+        end
+
+        def _nested_attribute(subject, attribute)
+          _attribute_chain(attribute).inject(subject) do |subject, attr|
+            subject.send(attr)
+          end
+        end
       end
 
       module ExampleGroupMethods
@@ -122,16 +132,11 @@ module RSpec
             example do
               self.class.class_eval do
                 define_method(:subject) do
-                  unless instance_variable_defined?(:@_subject)
-                    @_subject = if attribute.is_a?(Array)
-                                  super()[*attribute]
-                                else
-                                  attribute.to_s.split('.').inject(super()) do |target, method|
-                                    target.send(method)
-                                  end
-                                end
+                  if defined?(@_subject)
+                    @_subject
+                  else
+                    @_subject = Array === attribute ? super()[*attribute] : _nested_attribute(super(), attribute)
                   end
-                  @_subject
                 end
               end
               instance_eval(&block)
