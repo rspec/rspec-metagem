@@ -247,11 +247,10 @@ module RSpec
 
       alias_method :before, :append_before
 
-      # Registers a block to be executed before all other before blocks of the same scope.
-      # This method prepends +block+ to existing before blocks.
+      # Adds `block` to the front of the list of `before` blocks in the same
+      # scope (`:each`, `:all`, or `:suite`).
       #
       # See #before for scoping semantics.
-      #
       def prepend_before(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:before][scope].unshift(BeforeHook.new(options, &block))
@@ -312,15 +311,14 @@ module RSpec
 
       alias_method :after, :prepend_after
 
-      # Registers a block to be executed after each example.
-      # This method appends +block+ to existing after blocks.
+      # Adds `block` to the back of the list of `after` blocks in the same
+      # scope (`:each`, `:all`, or `:suite`).
       #
+      # See #after for scoping semantics.
       def append_after(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:after][scope] << AfterHook.new(options, &block)
       end
-
-
 
       # @api public
       # @overload around(&block)
