@@ -1,3 +1,12 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0...master)
+
+Enhancements
+
+* Add `prepend_before` and `append_after` hooks (preethiramdev)
+    * intended for extension libs
+    * restores rspec-1 behavior
+
 ### 2.9.0 / 2012-03-17
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0)
 
