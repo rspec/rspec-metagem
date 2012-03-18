@@ -63,9 +63,7 @@ module RSpec
         def without_hooks_for(example_or_group)
           self.class.new(reject {|hook| hook.options_apply?(example_or_group)})
         end
-      end
 
-      class BeforeHooks < HookCollection
         def run_all(example_group_instance)
           each {|h| h.run_in(example_group_instance) } unless empty?
         end
@@ -75,24 +73,12 @@ module RSpec
         end
       end
 
-      class AfterHooks < HookCollection
-        def run_all(example_group_instance)
-          each { |h| h.run_in(example_group_instance) } unless empty?
-        end
-
-        def run_all!(example_group_instance)
-          shift.run_in(example_group_instance) until empty?
-        end
-      end
-
-      class AroundHooks < HookCollection; end
-
       # @private
       def hooks
         @hooks ||= {
-          :around => { :each => AroundHooks.new },
-          :before => { :each => BeforeHooks.new, :all => BeforeHooks.new, :suite => BeforeHooks.new },
-          :after => { :each => AfterHooks.new, :all => AfterHooks.new, :suite => AfterHooks.new }
+          :around => { :each => HookCollection.new },
+          :before => { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new },
+          :after =>  { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new }
         }
       end
 
