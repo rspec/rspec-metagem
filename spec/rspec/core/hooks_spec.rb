@@ -141,140 +141,118 @@ module RSpec::Core
       end
     end
 
-    describe "prepend_before" do
-      it "should prepend before callbacks so they are run prior to other before filters for the specified scope" do
-        fiddle = []
-        example_group = ExampleGroup.describe do
-          around do |example|
-            example.run
-          end
-          it "foo" do
-            examples << self
-          end
+    [:all, :each].each do |scope|
+      describe "prepend_before(#{scope})" do
+        it "adds to the front of the list of before(:#{scope}) hooks" do
+          group = ExampleGroup.describe { example {} }
+          messages = []
+
+          RSpec.configure { |config| config.before(scope)         { messages << "config 3" } }
+          RSpec.configure { |config| config.prepend_before(scope) { messages << "config 2" } }
+          RSpec.configure { |config| config.before(scope)         { messages << "config 4" } }
+          RSpec.configure { |config| config.prepend_before(scope) { messages << "config 1" } }
+
+          group.before(scope)         { messages << "group 3" }
+          group.prepend_before(scope) { messages << "group 2" }
+          group.before(scope)         { messages << "group 4" }
+          group.prepend_before(scope) { messages << "group 1" }
+
+          group.run
+
+          messages.should eq([
+            'config 1',
+            'config 2',
+            'config 3',
+            'config 4',
+            'group 1',
+            'group 2',
+            'group 3',
+            'group 4'
+          ])
         end
-        example_group.prepend_before(:all) { fiddle << "prepend_before(:all)" }
-        example_group.before(:all) { fiddle << "before(:all)" }
-        example_group.prepend_before(:each) { fiddle << "prepend_before(:each)" }
-        example_group.before(:each) { fiddle << "before(:each)" }
-        RSpec.configure { |config| config.prepend_before(:each) { fiddle << "config.prepend_before(:each)" } }
-        RSpec.configure { |config| config.prepend_before(:all) { fiddle << "config.prepend_before(:all)" } }
-        example_group.run
-        fiddle.should == [
-            'config.prepend_before(:all)',
-            'prepend_before(:all)',
-            'before(:all)',
-            "config.prepend_before(:each)",
-            'prepend_before(:each)',
-            'before(:each)'
-        ]
-      end
-    end
-
-    describe "#append_before" do
-
-      it "should order before callbacks from global to local" do
-        order = []
-        example_group = ExampleGroup.describe do
-          around do |example|
-            example.run
-          end
-          it "foo" do
-            examples << self
-          end
-        end
-        example_group.append_before(:each) do
-          order << :example_group_append_before_each
-        end
-        RSpec.configure { |config| config.append_before { order << :append_before_each } } # default is :each
-        RSpec.configure { |config| config.append_before(:all) { order << :append_before_all } }
-        RSpec.configure { |config| config.before(:all) { order << :before_all } }
-
-        example_group.append_before(:all) do
-          order << :example_group_append_before_all
-        end
-
-        example_group.run
-        order.should == [
-            :append_before_all,
-            :before_all,
-            :example_group_append_before_all,
-            :append_before_each,
-            :example_group_append_before_each,
-        ]
-      end
-    end
-
-    describe "#prepend_after" do
-
-      it "should order after callbacks from global to local" do
-        order = []
-        example_group = ExampleGroup.describe do
-          around do |example|
-            example.run
-          end
-          it "foo" do
-            examples << self
-          end
-        end
-
-        RSpec.configure { |config| config.prepend_after(:all) { order << :prepend__after_all } }
-        RSpec.configure { |config| config.prepend_after(:each) { order << :prepend__after_each } }
-        example_group.prepend_after(:all) do
-          order << :example_group_prepend_after_all
-        end
-        example_group.prepend_after(:each) do
-          order << :example_group_prepend_after_each
-        end
-        example_group.run
-        order.should == [
-            :example_group_prepend_after_each,
-            :prepend__after_each,
-            :example_group_prepend_after_all,
-            :prepend__after_all
-        ]
-      end
-    end
-
-    describe "#append_after" do
-
-      it "should append callbacks so they are run after other after filters for the specified scope" do
-        order = []
-        example_group = ExampleGroup.describe do
-          around do |example|
-            example.run
-          end
-          it "foo" do
-            examples << self
-          end
-        end
-
-        RSpec.configure { |config| config.append_after(:all) { order << :append__after_all } }
-        RSpec.configure { |config| config.after(:all) { order << :after_all } }
-        example_group.append_after(:all) do
-          order << :example_group_append__after_all
-        end
-
-        RSpec.configure { |config| config.append_after(:each) { order << :append_after_each } }
-
-        example_group.append_after(:each) do
-          order << :example_group_append__after_each
-        end
-
-        example_group.after(:each) do
-          order << :example_group__after_each
-        end
-
-        example_group.run
-        order.should == [
-            :example_group__after_each,
-            :example_group_append__after_each,
-            :append_after_each,
-            :example_group_append__after_all,
-            :after_all,
-            :append__after_all
-        ]
       end
 
+      describe "append_before(#{scope})" do
+        it "adds to the back of the list of before(:#{scope}) hooks (same as `before`)" do
+          group = ExampleGroup.describe { example {} }
+          messages = []
+
+          RSpec.configure { |config| config.before(scope)        { messages << "config 1" } }
+          RSpec.configure { |config| config.append_before(scope) { messages << "config 2" } }
+          RSpec.configure { |config| config.before(scope)        { messages << "config 3" } }
+
+          group.before(scope)        { messages << "group 1" }
+          group.append_before(scope) { messages << "group 2" }
+          group.before(scope)        { messages << "group 3" }
+
+          group.run
+
+          messages.should eq([
+            'config 1',
+            'config 2',
+            'config 3',
+            'group 1',
+            'group 2',
+            'group 3'
+          ])
+        end
+      end
+
+      describe "prepend_after(#{scope})" do
+        it "adds to the front of the list of after(:#{scope}) hooks (same as `after`)" do
+          group = ExampleGroup.describe { example {} }
+          messages = []
+
+          RSpec.configure { |config| config.after(scope)         { messages << "config 3" } }
+          RSpec.configure { |config| config.prepend_after(scope) { messages << "config 2" } }
+          RSpec.configure { |config| config.after(scope)         { messages << "config 1" } }
+
+          group.after(scope)         { messages << "group 3" }
+          group.prepend_after(scope) { messages << "group 2" }
+          group.after(scope)         { messages << "group 1" }
+
+          group.run
+
+          messages.should eq([
+            'group 1',
+            'group 2',
+            'group 3',
+            'config 1',
+            'config 2',
+            'config 3'
+          ])
+        end
+      end
+
+      describe "append_after(#{scope})" do
+        it "adds to the back of the list of after(:#{scope}) hooks" do
+          group = ExampleGroup.describe { example {} }
+          messages = []
+
+          RSpec.configure { |config| config.after(scope)        { messages << "config 2" } }
+          RSpec.configure { |config| config.append_after(scope) { messages << "config 3" } }
+          RSpec.configure { |config| config.after(scope)        { messages << "config 1" } }
+          RSpec.configure { |config| config.append_after(scope) { messages << "config 4" } }
+
+          group.after(scope)        { messages << "group 2" }
+          group.append_after(scope) { messages << "group 3" }
+          group.after(scope)        { messages << "group 1" }
+          group.append_after(scope) { messages << "group 4" }
+
+          group.run
+
+          messages.should eq([
+            'group 1',
+            'group 2',
+            'group 3',
+            'group 4',
+            'config 1',
+            'config 2',
+            'config 3',
+            'config 4'
+          ])
+        end
+      end
     end
   end
 end
