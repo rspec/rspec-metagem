@@ -31,21 +31,13 @@ module RSpec
 
       class BeforeHook < Hook
         def run_in(example_group_instance)
-          if example_group_instance
-            example_group_instance.instance_eval(&self)
-          else
-            call
-          end
+          example_group_instance.instance_eval(&self)
         end
       end
 
       class AfterHook < Hook
         def run_in(example_group_instance)
-          if example_group_instance
-            example_group_instance.instance_eval_with_rescue(&self)
-          else
-            call
-          end
+          example_group_instance.instance_eval_with_rescue(&self)
         end
       end
 
@@ -372,7 +364,7 @@ module RSpec
       # @private
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
-      def run_hook(hook, scope, example_group_instance=nil)
+      def run_hook(hook, scope, example_group_instance=ExampleGroup.new)
         hooks[hook][scope].run_all(example_group_instance)
       end
 
