@@ -26,6 +26,9 @@ module RSpec
       autoload :RespondTo,      'rspec/matchers/built_in/respond_to'
       autoload :Satisfy,        'rspec/matchers/built_in/satisfy'
       autoload :ThrowSymbol,    'rspec/matchers/built_in/throw_symbol'
+      autoload :YieldControl,   'rspec/matchers/built_in/yield'
+      autoload :YieldWithArgs,  'rspec/matchers/built_in/yield'
+      autoload :YieldWithNoArgs, 'rspec/matchers/built_in/yield'
     end
   end
 end

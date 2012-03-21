@@ -554,6 +554,18 @@ module RSpec
       BuiltIn::ThrowSymbol.new(expected_symbol, expected_arg)
     end
 
+    def yield_control
+      BuiltIn::YieldControl.new
+    end
+
+    def yield_with_no_args
+      BuiltIn::YieldWithNoArgs.new
+    end
+
+    def yield_with_args(*args)
+      BuiltIn::YieldWithArgs.new(*args)
+    end
+
     # Passes if actual contains all of the expected regardless of order. 
     # This works for collections. Pass in multiple args  and it will only 
     # pass if all args are found in collection.
