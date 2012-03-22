@@ -5,7 +5,7 @@ module RSpec
       def differ
         @differ ||= Differ.new
       end
-      
+
       # Raises an RSpec::Expectations::ExpectationNotMetError with message.
       # @param [String] message
       # @param [Object] expected
@@ -22,11 +22,8 @@ module RSpec
         if actual && expected
           if all_strings?(actual, expected)
             if any_multiline_strings?(actual, expected)
-              if Array === expected
-                message << "\nDiff:" << differ.diff_as_string(actual, expected.join(","))
-              else
-                message << "\nDiff:" << differ.diff_as_string(actual, expected)
-              end
+              expected = expected.join(',') if Array === expected
+              message << "\nDiff:" << differ.diff_as_string(actual, expected)
             end
           elsif no_procs?(actual, expected) && no_numbers?(actual, expected)
             message << "\nDiff:" << differ.diff_as_object(actual, expected)
