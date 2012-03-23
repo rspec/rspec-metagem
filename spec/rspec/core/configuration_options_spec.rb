@@ -316,11 +316,12 @@ describe RSpec::Core::ConfigurationOptions do
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--line 37"}
       File.open("~/.rspec", "w") {|f| f << "--color"}
-      ENV["SPEC_OPTS"] = "--debug"
+      ENV["SPEC_OPTS"] = "--debug --example 'foo bar'"
       options = parse_options("--drb")
       options[:color].should be_true
       options[:line_numbers].should eq(["37"])
       options[:debug].should be_true
+      options[:full_description].should eq(/foo\ bar/)
       options[:drb].should be_true
     end
 

@@ -1,4 +1,5 @@
 require 'erb'
+require 'shellwords'
 
 module RSpec
   module Core
@@ -16,7 +17,7 @@ module RSpec
         config.filter_manager = filter_manager
 
         order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
-          force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key]) 
+          force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key])
         end
 
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
@@ -70,7 +71,7 @@ module RSpec
       end
 
       def env_options
-        ENV["SPEC_OPTS"] ? Parser.parse!(ENV["SPEC_OPTS"].split) : {}
+        ENV["SPEC_OPTS"] ? Parser.parse!(Shellwords.split(ENV["SPEC_OPTS"])) : {}
       end
 
       def command_line_options
