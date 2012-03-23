@@ -5,15 +5,12 @@ require 'pp'
 module RSpec
   module Expectations
     class Differ
-      def initialize(ignore=nil)
-      end
-
       # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
       def diff_as_string(data_new, data_old)
         data_old = data_old.split(/\n/).map! { |e| e.chomp }
         data_new = data_new.split(/\n/).map! { |e| e.chomp }
-        output = ""
         diffs = Diff::LCS.diff(data_old, data_new)
+        output = ""
         return output if diffs.empty?
         oldhunk = hunk = nil
         file_length_difference = 0
@@ -41,10 +38,18 @@ module RSpec
         output << oldhunk.diff(format) << "\n"
       end
 
-      def diff_as_object(actual,expected)
-        actual = object_to_string(actual)
-        expected = object_to_string(expected)
-        diff_as_string(actual, expected)
+      def diff_as_object(actual, expected)
+        actual_as_string = object_to_string(actual)
+        expected_as_string = object_to_string(expected)
+        diff = diff_as_string(actual_as_string, expected_as_string)
+
+        if diff.empty?
+          "#{actual}.==(#{expected}) returned false even though the diff " \
+          "between #{actual} and #{expected} is empty. Check the " \
+          "implementation of #{actual}.==."
+        else
+          diff
+        end
       end
 
     protected
