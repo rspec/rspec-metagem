@@ -45,11 +45,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe "auto-generated example descriptions" do
-    let(:generated_description) { "the generated description" }
-    let(:rspec_example) { example_group.specify { 5.should eq(5) } }
-    before(:each) { RSpec::Matchers.stub(:generated_description => generated_description) }
-
+  describe "when there is no explicit description" do
     def expect_with(*frameworks)
       RSpec.configuration.stub(:expecting_with_rspec?).and_return(frameworks.include?(:rspec))
 
@@ -65,35 +61,62 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     context "when `expect_with :rspec` is configured" do
       before(:each) { expect_with :rspec }
 
-      it "generates a description for an example with no description" do
-        expect {
-          example_group.run
-        }.to change { rspec_example.metadata[:description] }.from("").to(generated_description)
+      it "uses the matcher-generated description" do
+        example_group.example { 5.should eq(5) }
+        example_group.run
+        example_group.examples.first.description.should eq("should eq 5")
+      end
+
+      it "uses the file and line number if there is no matcher-generated description" do
+        example = example_group.example {}
+        example_group.run
+        example.description.should match(/example at #{__FILE__}:#{__LINE__ -2}/)
+      end
+
+      it "uses the file and line number if there is an error before the matcher" do
+        example = example_group.example { 5.should eq(5) }
+        example_group.before { raise }
+        example_group.run
+        example.description.should match(/example at #{__FILE__}:#{__LINE__ -3}/)
       end
     end
 
     context "when `expect_with :rspec, :stdlib` is configured" do
       before(:each) { expect_with :rspec, :stdlib }
 
-      it "generates a description for an example with no description" do
-        expect {
-          example_group.run
-        }.to change { rspec_example.metadata[:description] }.from("").to(generated_description)
+      it "uses the matcher-generated description" do
+        example_group.example { 5.should eq(5) }
+        example_group.run
+        example_group.examples.first.description.should eq("should eq 5")
+      end
+
+      it "uses the file and line number if there is no matcher-generated description" do
+        example = example_group.example {}
+        example_group.run
+        example.description.should match(/example at #{__FILE__}:#{__LINE__ -2}/)
+      end
+
+      it "uses the file and line number if there is an error before the matcher" do
+        example = example_group.example { 5.should eq(5) }
+        example_group.before { raise }
+        example_group.run
+        example.description.should match(/example at #{__FILE__}:#{__LINE__ -3}/)
       end
     end
 
     context "when `expect_with :stdlib` is configured" do
-      let!(:stdlib_example) { example_group.specify { assert 5 == 5 } }
       before(:each) { expect_with :stdlib }
 
       it "does not attempt to get the generated description from RSpec::Matchers" do
         RSpec::Matchers.should_not_receive(:generated_description)
+        example_group.example { assert 5 == 5 }
         example_group.run
       end
 
-      it "fails an example with no description" do
+      it "uses the file and line number" do
+        example = example_group.example { assert 5 == 5 }
         example_group.run
-        stdlib_example.should have_failed_with(NotImplementedError)
+        example.description.should match(/example at #{__FILE__}:#{__LINE__ -2}/)
       end
     end
   end

@@ -70,9 +70,10 @@ describe "an example" do
         end
         example = group.examples.last
         example.run(group.new, stub.as_null_object)
-        example.description.should be_empty
+        example.description.should match(/example at/)
       end
     end
+
     context "after another example with some assertion" do
       it "does not show any message" do
         group = RSpec::Core::ExampleGroup.describe('group') do
@@ -85,7 +86,7 @@ describe "an example" do
         end
         example = group.examples.last
         example.run(group.new, stub.as_null_object)
-        example.description.should be_empty
+        example.description.should match(/example at/)
       end
     end
   end

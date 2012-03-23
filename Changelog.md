@@ -10,6 +10,8 @@ Enhancements
 Bug fixes
 
 * Properly parse `SPEC_OPTS` options.
+* example.description returns the location of the example if there is no
+  explicit description or matcher-generated description.
 
 ### 2.9.0 / 2012-03-17
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0)
