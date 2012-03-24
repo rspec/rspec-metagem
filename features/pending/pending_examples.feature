@@ -127,7 +127,7 @@ Feature: pending examples
       """
       an example
         checks something
-         (PENDING: No reason given)
+        example at ./pending_with_no_docstring_spec.rb:5 (PENDING: No reason given)
       """
 
   Scenario: pending with no docstring using documentation formatter
@@ -149,7 +149,7 @@ Feature: pending examples
       """
       an example
         checks something
-         (PENDING: No reason given)
+        example at ./pending_with_no_docstring_spec.rb:5 (PENDING: No reason given)
       """
 
   Scenario: conditionally pending examples

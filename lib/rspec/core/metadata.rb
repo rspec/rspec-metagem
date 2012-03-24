@@ -26,6 +26,13 @@ module RSpec
     # @see Configuration#filter_run_excluding
     class Metadata < Hash
 
+      def self.relative_path(line)
+        line = line.sub(File.expand_path("."), ".")
+        line = line.sub(/\A([^:]+:\d+)$/, '\\1')
+        return nil if line == '-e:1'
+        line
+      end
+
       # @private
       module MetadataHash
 
@@ -67,7 +74,7 @@ module RSpec
 
         def file_and_line_number
           first_caller_from_outside_rspec =~ /(.+?):(\d+)(|:\d+)/
-          return [$1, $2.to_i]
+          return [Metadata::relative_path($1), $2.to_i]
         end
 
         def first_caller_from_outside_rspec

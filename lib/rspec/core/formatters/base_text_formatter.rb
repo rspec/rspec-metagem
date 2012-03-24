@@ -47,7 +47,7 @@ module RSpec
           output.puts
 
           failed_examples.each do |example|
-            output.puts(red("rspec #{BaseFormatter::relative_path(example.location)}") + " " + cyan("# #{example.full_description}"))
+            output.puts(red("rspec #{RSpec::Core::Metadata::relative_path(example.location)}") + " " + cyan("# #{example.full_description}"))
           end
         end
 

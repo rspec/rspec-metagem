@@ -70,6 +70,7 @@ Spork.prefork do
     # structural
     c.alias_it_should_behave_like_to 'it_has_behavior'
     c.around {|example| sandboxed { example.run }}
+    c.include(RSpecHelpers)
     c.include Aruba::Api, :example_group => {
       :file_path => /spec\/command_line/
     }

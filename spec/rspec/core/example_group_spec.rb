@@ -345,11 +345,11 @@ module RSpec::Core
       end
 
       it "adds the the file_path to metadata" do
-        ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should eq(__FILE__)
+        ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path].should eq(relative_path(__FILE__))
       end
 
       it "has a reader for file_path" do
-        ExampleGroup.describe(Object) { }.file_path.should eq(__FILE__)
+        ExampleGroup.describe(Object) { }.file_path.should eq(relative_path(__FILE__))
       end
 
       it "adds the line_number to metadata" do

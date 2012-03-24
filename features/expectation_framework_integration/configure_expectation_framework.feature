@@ -29,7 +29,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: configure test/unit assertions
+  Scenario: configure test/unit assertions (passing examples)
     Given a file named "example_spec.rb" with:
       """
       RSpec.configure do |config|
@@ -45,12 +45,25 @@ Feature: configure expectation framework
       end
       """
     When I run `rspec example_spec.rb`
-    Then the output should contain "2 examples, 1 failure"
-     And the output should contain:
-       """
-            NotImplementedError:
-              Generated descriptions are only supported when you use rspec-expectations.
-       """
+    Then the output should contain "2 examples, 0 failures"
+
+  Scenario: configure test/unit assertions (failing examples)
+    Given a file named "example_spec.rb" with:
+      """
+      RSpec.configure do |config|
+        config.expect_with :stdlib
+      end
+
+      describe 5 do
+        it "is greater than 6 (no it isn't!)" do
+          assert 5 > 6, "errantly expected 5 to be greater than 5"
+        end
+
+        specify { assert 5 > 6 }
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the output should contain "2 examples, 2 failures"
 
   Scenario: configure rspec/expecations AND test/unit assertions
     Given a file named "example_spec.rb" with:

@@ -188,7 +188,7 @@ module RSpec
         end
 
         it "extracts file path from caller" do
-          mfe[:file_path].should eq(__FILE__)
+          mfe[:file_path].should eq(relative_path(__FILE__))
         end
 
         it "extracts line number from caller" do
@@ -196,7 +196,7 @@ module RSpec
         end
 
         it "extracts location from caller" do
-          mfe[:location].should eq("#{__FILE__}:#{line_number}")
+          mfe[:location].should eq("#{relative_path(__FILE__)}:#{line_number}")
         end
 
         it "uses :caller if passed as an option" do
@@ -397,7 +397,7 @@ module RSpec
                     "./lib/rspec/core/foo.rb",
                     "#{__FILE__}:#{__LINE__}"
           ])
-          m[:example_group][:file_path].should eq(__FILE__)
+          m[:example_group][:file_path].should eq(relative_path(__FILE__))
         end
       end
 
