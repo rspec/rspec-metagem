@@ -57,6 +57,12 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         group.example("example name") { raise exception_without_message }
         expect { run_all_and_dump_failures }.not_to raise_error(NoMethodError)
       end
+
+      it "preserves ancestry" do
+        example = group.example("example name") { raise "something" }
+        run_all_and_dump_failures
+        example.example_group.ancestors.size.should == 1
+      end
     end
 
     context "with an exception class other than RSpec" do

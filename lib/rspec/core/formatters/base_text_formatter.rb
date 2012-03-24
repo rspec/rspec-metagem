@@ -186,7 +186,7 @@ module RSpec
         end
 
         def group_and_ancestors(example)
-          example.example_group.ancestors.push(example.example_group)
+          example.example_group.ancestors + [example.example_group]
         end
       end
     end
