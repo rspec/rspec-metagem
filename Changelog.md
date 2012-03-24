@@ -13,6 +13,7 @@ Bug fixes
 * example.description returns the location of the example if there is no
   explicit description or matcher-generated description.
 * RDoc fixes (Grzegorz Świrski)
+* Do not modify example ancestry when dumping errors (Michael Grosser)
 
 ### 2.9.0 / 2012-03-17
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.8.0...v2.9.0)
