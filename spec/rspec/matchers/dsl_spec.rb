@@ -5,7 +5,7 @@ describe "a matcher defined using the matcher DSL" do
     :answer
   end
 
-  it "able to use custom matchers inside custom matcher" do
+  it "supports calling custom matchers from within other custom matchers" do
     RSpec::Matchers.define :be_ok do
       match { |actual| actual.should == "ok" }
     end
