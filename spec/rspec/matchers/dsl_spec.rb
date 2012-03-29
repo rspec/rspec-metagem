@@ -5,6 +5,18 @@ describe "a matcher defined using the matcher DSL" do
     :answer
   end
 
+  it "able to use custom matchers inside custom matcher" do
+    RSpec::Matchers.define :be_ok do
+      match { |actual| actual.should == "ok" }
+    end
+
+    RSpec::Matchers.define :be_well do
+      match { |actual| actual.should be_ok }
+    end
+
+    "ok".should be_well
+  end
+
   it "has access to methods available in the scope of the example" do
     RSpec::Matchers::define(:ignore) {}
     ignore.question?.should eq(:answer)

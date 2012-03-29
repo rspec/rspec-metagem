@@ -222,7 +222,7 @@ module RSpec
         end
 
         def respond_to?(method, include_private=false)
-          $matcher_execution_context.respond_to?(method, include_private) || super
+          $matcher_execution_context != self && $matcher_execution_context.respond_to?(method, include_private) || super
         end
 
         private
