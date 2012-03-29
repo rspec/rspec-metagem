@@ -5,6 +5,8 @@ Bug fixes
 
 * Provide a helpful message if the diff between two objects is empty.
 * Fix bug diffing single strings with multiline strings
+* Fix for error with using custom matchers inside other custom matchers
+  (mirasrael)
 
 ### 2.9.0 / 2012-03-17
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0)
