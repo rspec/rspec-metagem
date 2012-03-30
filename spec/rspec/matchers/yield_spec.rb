@@ -137,8 +137,9 @@ describe "yield matchers" do
     end
 
     it 'fails if the block yields with the given arguments' do
-      pending "Not sure how to phrase this failure message yet"
-      expect { |b| _yield_with_args("a", "b", &b) }.not_to yield_with_args("a", "b")
+      expect {
+        expect { |b| _yield_with_args("a", "b", &b) }.not_to yield_with_args("a", "b")
+      }.to fail_with(/expected given block not to yield with arguments, but yielded with expected arguments/)
     end
   end
 

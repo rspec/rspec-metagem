@@ -56,11 +56,11 @@ module RSpec
         end
 
         def failure_message_for_should
-          "expected given block to yield with arguments, but #{failure_reason}"
+          "expected given block to yield with arguments, but #{positive_failure_reason}"
         end
 
         def failure_message_for_should_not
-          "expected given block not to yield with arguments, but did"
+          "expected given block not to yield with arguments, but #{negative_failure_reason}"
         end
 
         def diffable?
@@ -69,22 +69,32 @@ module RSpec
 
       private
 
-        def failure_reason
+        def positive_failure_reason
           if !@yielded
             "did not yield"
           else
-            @args_failure
+            @positive_args_failure
+          end
+        end
+
+        def negative_failure_reason
+          if all_args_match?
+            "yielded with expected arguments" +
+              "\nexpected not: #{expected.inspect}" +
+              "\n         got: #{actual.inspect} (compared using === and ==)"
+          else
+            "did"
           end
         end
 
         def args_match?
           if @expected.none? # expect {...}.to yield_with_args
-            @args_failure = "yielded with no arguments" if @actual.none?
+            @positive_args_failure = "yielded with no arguments" if @actual.none?
             return @actual.any?
           end
 
           unless match = all_args_match?
-            @args_failure = "yielded with unexpected arguments" +
+            @positive_args_failure = "yielded with unexpected arguments" +
               "\nexpected: #{expected.inspect}" +
               "\n     got: #{actual.inspect} (compared using === and ==)"
           end
