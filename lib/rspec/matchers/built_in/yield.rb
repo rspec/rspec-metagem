@@ -110,6 +110,42 @@ module RSpec
           end
         end
       end
+
+      class YieldSuccessiveArgs
+        attr_reader :expected, :actual
+
+        def initialize(*args)
+          @expected = args
+          @actual   = []
+        end
+
+        def matches?(block)
+          block.call(lambda { |a| @actual << a })
+          args_match?
+        end
+
+        def failure_message_for_should
+          "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
+            "\nexpected: #{expected.inspect}" +
+            "\n     got: #{actual.inspect} (compared using === and ==)"
+        end
+
+        def failure_message_for_should_not
+          "expected given block not to yield successively with arguments, but yielded with expected arguments" +
+              "\nexpected not: #{expected.inspect}" +
+              "\n         got: #{actual.inspect} (compared using === and ==)"
+        end
+
+      private
+
+        def args_match?
+          return false if @expected.size != @actual.size
+
+          @expected.zip(@actual).all? do |expected, actual|
+            expected === actual || actual == expected
+          end
+        end
+      end
     end
   end
 end

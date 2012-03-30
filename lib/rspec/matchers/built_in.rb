@@ -29,6 +29,7 @@ module RSpec
       autoload :YieldControl,   'rspec/matchers/built_in/yield'
       autoload :YieldWithArgs,  'rspec/matchers/built_in/yield'
       autoload :YieldWithNoArgs, 'rspec/matchers/built_in/yield'
+      autoload :YieldSuccessiveArgs, 'rspec/matchers/built_in/yield'
     end
   end
 end

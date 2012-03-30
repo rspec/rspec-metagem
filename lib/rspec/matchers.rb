@@ -566,6 +566,10 @@ module RSpec
       BuiltIn::YieldWithArgs.new(*args)
     end
 
+    def yield_successive_args(*args)
+      BuiltIn::YieldSuccessiveArgs.new(*args)
+    end
+
     # Passes if actual contains all of the expected regardless of order. 
     # This works for collections. Pass in multiple args  and it will only 
     # pass if all args are found in collection.
