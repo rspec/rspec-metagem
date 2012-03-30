@@ -153,4 +153,20 @@ describe "yield matchers" do
       }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
     end
   end
+
+  describe "expect {...}.to yield_with_args(String, Fixnum)" do
+    it "passes if the block yields objects of the given types" do
+      expect { |b| _yield_with_args("string", 15, &b) }.to yield_with_args(String, Fixnum)
+    end
+
+    it "passes if the block yields the given types" do
+      expect { |b| _yield_with_args(String, Fixnum, &b) }.to yield_with_args(String, Fixnum)
+    end
+
+    it "fails if the block yields objects of different types" do
+      expect {
+        expect { |b| _yield_with_args(15, "string", &b) }.to yield_with_args(String, Fixnum)
+      }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
+    end
+  end
 end

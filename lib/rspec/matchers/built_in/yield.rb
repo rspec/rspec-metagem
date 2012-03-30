@@ -86,7 +86,7 @@ module RSpec
           unless match = all_args_match?
             @args_failure = "yielded with unexpected arguments" +
               "\nexpected: #{expected.inspect}" +
-              "\n     got: #{actual.inspect} (compared using ===)"
+              "\n     got: #{actual.inspect} (compared using === and ==)"
           end
 
           match
@@ -96,7 +96,7 @@ module RSpec
           return false if @expected.size != @actual.size
 
           @expected.zip(@actual).all? do |expected, actual|
-            expected === actual
+            expected === actual || actual == expected
           end
         end
       end
