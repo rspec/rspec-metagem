@@ -6,8 +6,7 @@ module RSpec
       def define(name, &declarations)
         matcher = RSpec::Matchers::DSL::Matcher.new(name, &declarations)
         define_method name do |*expected|
-          $matcher_execution_context = self
-          matcher.for_expected(*expected)
+          matcher.for_expected(*expected).tap { |m| m.matcher_execution_context = @matcher_execution_context || self }
         end
       end
 
