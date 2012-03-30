@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "yield matchers" do
+module YieldHelpers
   # these helpers are prefixed with an underscore to prevent
   # collisions with the matchers (some of which have the same names)
   def _dont_yield
@@ -13,6 +13,10 @@ describe "yield matchers" do
   def _yield_with_args(*args)
     yield *args
   end
+end
+
+describe "yield_control matcher" do
+  include YieldHelpers
 
   describe "expect {...}.to yield_control" do
     it 'passes if the block yields, regardless of the number of yielded arguments' do
@@ -38,6 +42,10 @@ describe "yield matchers" do
       }.to fail_with(/expected given block not to yield control/)
     end
   end
+end
+
+describe "yield_with_no_args matcher" do
+  include YieldHelpers
 
   describe "expect {...}.to yield_with_no_args" do
     it 'passes if the block yields with no args' do
@@ -72,6 +80,10 @@ describe "yield matchers" do
       }.to fail_with(/expected given block not to yield with no arguments, but did/)
     end
   end
+end
+
+describe "yield_with_args matcher" do
+  include YieldHelpers
 
   describe "expect {...}.to yield_with_args" do
     it 'passes if the block yields with arguments' do
