@@ -11,6 +11,7 @@ module RSpec
       end
 
       class YieldControl
+        include BaseMatcher
         include YieldMatcherHelpers
 
         def matches?(block)
@@ -30,6 +31,7 @@ module RSpec
       end
 
       class YieldWithNoArgs
+        include BaseMatcher
         include YieldMatcherHelpers
 
         def matches?(block)
@@ -80,6 +82,12 @@ module RSpec
 
         def failure_message_for_should_not
           "expected given block not to yield with arguments, but #{negative_failure_reason}"
+        end
+
+        def description
+          desc = "yield with args"
+          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")" if @expected.any?
+          desc
         end
 
       private
@@ -151,6 +159,12 @@ module RSpec
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
               "\nexpected not: #{@expected.inspect}" +
               "\n         got: #{@actual.inspect} (compared using === and ==)"
+        end
+
+        def description
+          desc = "yield successive args"
+          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")"
+          desc
         end
 
       private

@@ -36,6 +36,10 @@ end
 describe "yield_control matcher" do
   include YieldHelpers
 
+  it 'has a description' do
+    yield_control.description.should eq("yield control")
+  end
+
   describe "expect {...}.to yield_control" do
     it 'passes if the block yields, regardless of the number of yielded arguments' do
       expect { |b| _yield_with_no_args(&b) }.to yield_control
@@ -74,6 +78,10 @@ end
 
 describe "yield_with_no_args matcher" do
   include YieldHelpers
+
+  it 'has a description' do
+    yield_with_no_args.description.should eq("yield with no args")
+  end
 
   describe "expect {...}.to yield_with_no_args" do
     it 'passes if the block yields with no args' do
@@ -122,6 +130,11 @@ end
 
 describe "yield_with_args matcher" do
   include YieldHelpers
+
+  it 'has a description' do
+    yield_with_args.description.should eq("yield with args")
+    yield_with_args(1, 3).description.should eq("yield with args(1, 3)")
+  end
 
   describe "expect {...}.to yield_with_args" do
     it 'passes if the block yields with arguments' do
@@ -234,6 +247,11 @@ end
 
 describe "yield_successive_args matcher" do
   include YieldHelpers
+
+  it 'has a description' do
+    yield_successive_args(1, 3).description.should eq("yield successive args(1, 3)")
+    yield_successive_args([:a, 1], [:b, 2]).description.should eq("yield successive args([:a, 1], [:b, 2])")
+  end
 
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do
     it 'passes when the block successively yields the given args' do
