@@ -3,17 +3,29 @@ module RSpec
     module Subject
       module ExampleMethods
 
-        # Returns the subject defined by the example group. The subject block is
-        # only executed once per example, the result of which is cached and
-        # returned by any subsequent calls to +subject+.
+        # Returns the subject defined by the example group. The subject block
+        # is only executed once per example, the result of which is cached and
+        # returned by any subsequent calls to `subject`.
         #
-        # If a class is passed to +describe+ and no subject is explicitly
-        # declared in the example group, then +subject+ will return a new
+        # If a class is passed to `describe` and no subject is explicitly
+        # declared in the example group, then `subject` will return a new
         # instance of that class.
+        #
+        # @note `subject` was contributed by Joe Ferris to support the one-liner
+        #   syntax embrassed by shoulda matchers:
+        #
+        #       describe Widget do
+        #         it { should validate_presence_of(:name) }
+        #       end
+        #
+        #   While the examples below demonstrate how to use `subject`
+        #   explicitly in specs, we think it works best for extensions like
+        #   shoulda, custom matchers, and shared example groups, where it is
+        #   not referenced explicitly in specs.
         #
         # @example
         #
-        #   # explicit subject defined by the subject method
+        #   # explicit declaration of subject
         #   describe Person do
         #     subject { Person.new(:birthdate => 19.years.ago) }
         #     it "should be eligible to vote" do
@@ -26,6 +38,11 @@ module RSpec
         #     it "should be eligible to vote" do
         #       subject.should be_eligible_to_vote
         #     end
+        #   end
+        #
+        #   describe Person do
+        #     # one liner syntax - should is invoked on subject
+        #     it { should be_eligible_to_vote }
         #   end
         def subject
           if defined?(@original_subject)
