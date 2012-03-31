@@ -44,7 +44,6 @@ module RSpec
       end
 
       class YieldWithArgs
-        attr_reader :expected, :actual
         def initialize(*args)
           @expected = args
         end
@@ -63,10 +62,6 @@ module RSpec
           "expected given block not to yield with arguments, but #{negative_failure_reason}"
         end
 
-        def diffable?
-          true
-        end
-
       private
 
         def positive_failure_reason
@@ -80,8 +75,8 @@ module RSpec
         def negative_failure_reason
           if all_args_match?
             "yielded with expected arguments" +
-              "\nexpected not: #{expected.inspect}" +
-              "\n         got: #{actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{@expected.inspect}" +
+              "\n         got: #{@actual.inspect} (compared using === and ==)"
           else
             "did"
           end
@@ -95,8 +90,8 @@ module RSpec
 
           unless match = all_args_match?
             @positive_args_failure = "yielded with unexpected arguments" +
-              "\nexpected: #{expected.inspect}" +
-              "\n     got: #{actual.inspect} (compared using === and ==)"
+              "\nexpected: #{@expected.inspect}" +
+              "\n     got: #{@actual.inspect} (compared using === and ==)"
           end
 
           match
@@ -112,8 +107,6 @@ module RSpec
       end
 
       class YieldSuccessiveArgs
-        attr_reader :expected, :actual
-
         def initialize(*args)
           @expected = args
           @actual   = []
@@ -126,14 +119,14 @@ module RSpec
 
         def failure_message_for_should
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
-            "\nexpected: #{expected.inspect}" +
-            "\n     got: #{actual.inspect} (compared using === and ==)"
+            "\nexpected: #{@expected.inspect}" +
+            "\n     got: #{@actual.inspect} (compared using === and ==)"
         end
 
         def failure_message_for_should_not
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
-              "\nexpected not: #{expected.inspect}" +
-              "\n         got: #{actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{@expected.inspect}" +
+              "\n         got: #{@actual.inspect} (compared using === and ==)"
         end
 
       private
