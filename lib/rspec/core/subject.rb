@@ -12,7 +12,7 @@ module RSpec
         # instance of that class.
         #
         # @note `subject` was contributed by Joe Ferris to support the one-liner
-        #   syntax embrassed by shoulda matchers:
+        #   syntax embraced by shoulda matchers:
         #
         #       describe Widget do
         #         it { should validate_presence_of(:name) }
