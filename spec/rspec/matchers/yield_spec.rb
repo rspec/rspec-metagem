@@ -15,6 +15,24 @@ module YieldHelpers
   end
 end
 
+class InstanceEvaler
+  include RSpec::Matchers::Extensions::InstanceEvalWithArgs
+
+  def yield_with_no_args(&block)
+    instance_eval_with_args(&block)
+  end
+
+  def yield_with_args(*args, &block)
+    instance_eval_with_args(*args, &block)
+  end
+
+  def each_arg(*args, &block)
+    args.each do |arg|
+      instance_eval_with_args(arg, &block)
+    end
+  end
+end
+
 describe "yield_control matcher" do
   include YieldHelpers
 
@@ -22,6 +40,10 @@ describe "yield_control matcher" do
     it 'passes if the block yields, regardless of the number of yielded arguments' do
       expect { |b| _yield_with_no_args(&b) }.to yield_control
       expect { |b| _yield_with_args(1, 2, &b) }.to yield_control
+    end
+
+    it 'passes if the block yields using instance_eval' do
+      expect { |b| InstanceEvaler.new.yield_with_no_args(&b) }.to yield_control
     end
 
     it 'fails if the block does not yield' do
@@ -50,6 +72,10 @@ describe "yield_with_no_args matcher" do
   describe "expect {...}.to yield_with_no_args" do
     it 'passes if the block yields with no args' do
       expect { |b| _yield_with_no_args(&b) }.to yield_with_no_args
+    end
+
+    it 'passes if the block yields with no args using instance_eval' do
+      expect { |b| InstanceEvaler.new.yield_with_no_args(&b) }.to yield_with_no_args
     end
 
     it 'fails if the block does not yield' do
@@ -122,6 +148,10 @@ describe "yield_with_args matcher" do
   describe "expect {...}.to yield_with_args(3, 17)" do
     it 'passes if the block yields with the given arguments' do
       expect { |b| _yield_with_args(3, 17, &b) }.to yield_with_args(3, 17)
+    end
+
+    it 'passes if the block yields with the given arguments using instance_eval' do
+      expect { |b| InstanceEvaler.new.yield_with_args(3, 17, &b) }.to yield_with_args(3, 17)
     end
 
     it 'fails if the block does not yield' do
@@ -208,6 +238,10 @@ describe "yield_successive_args matcher" do
   describe "expect {...}.to yield_successive_args(1, 2, 3)" do
     it 'passes when the block successively yields the given args' do
       expect { |b| [1, 2, 3].each(&b) }.to yield_successive_args(1, 2, 3)
+    end
+
+    it 'passes when the block successively yields the given args using instance_eval' do
+      expect { |b| InstanceEvaler.new.each_arg(1, 2, 3, &b) }.to yield_successive_args(1, 2, 3)
     end
 
     it 'fails when the block does not yield the expected args' do

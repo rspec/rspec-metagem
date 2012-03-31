@@ -19,8 +19,9 @@ module RSpec
 
       class YieldWithNoArgs
         def matches?(block)
-          @yielded, @args = false, nil
-          block.call(lambda { |*a| @yielded = true; @args = a })
+          yielded, args = false, nil
+          block.call(lambda { |*a| yielded = true; args = a })
+          @yielded, @args = yielded, args
           @yielded && @args.none?
         end
 
@@ -49,8 +50,9 @@ module RSpec
         end
 
         def matches?(block)
-          @yielded, @actual = false, nil
-          block.call(lambda { |*a| @yielded = true; @actual = a })
+          yielded, actual = false, nil
+          block.call(lambda { |*a| yielded = true; actual = a })
+          @yielded, @actual = yielded, actual
           @yielded && args_match?
         end
 
@@ -109,11 +111,12 @@ module RSpec
       class YieldSuccessiveArgs
         def initialize(*args)
           @expected = args
-          @actual   = []
         end
 
         def matches?(block)
-          block.call(lambda { |a| @actual << a })
+          actual = []
+          block.call(lambda { |a| actual << a })
+          @actual = actual
           args_match?
         end
 
