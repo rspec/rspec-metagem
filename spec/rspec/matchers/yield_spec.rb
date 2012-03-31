@@ -63,6 +63,12 @@ describe "yield_control matcher" do
         expect { |b| _yield_with_no_args(&b) }.not_to yield_control
       }.to fail_with(/expected given block not to yield control/)
     end
+
+    it 'fails if the expect block does not accept an argument' do
+      expect {
+        expect { }.not_to yield_control
+      }.to raise_error(/expect block must accept an argument/)
+    end
   end
 end
 
@@ -105,6 +111,12 @@ describe "yield_with_no_args matcher" do
         expect { |b| _yield_with_no_args(&b) }.not_to yield_with_no_args
       }.to fail_with(/expected given block not to yield with no arguments, but did/)
     end
+
+    it 'fails if the expect block does not accept an argument' do
+      expect {
+        expect { }.not_to yield_with_no_args
+      }.to raise_error(/expect block must accept an argument/)
+    end
   end
 end
 
@@ -142,6 +154,12 @@ describe "yield_with_args matcher" do
 
     it 'passes if the block yields with no arguments' do
       expect { |b| _yield_with_no_args(&b) }.not_to yield_with_args
+    end
+
+    it 'fails if the expect block does not accept an argument' do
+      expect {
+        expect { }.not_to yield_with_args
+      }.to raise_error(/expect block must accept an argument/)
     end
   end
 
@@ -268,6 +286,12 @@ describe "yield_successive_args matcher" do
       expect {
         expect { |b| [1, 2, 3].each(&b) }.not_to yield_successive_args(1, 2, 3)
       }.to fail_with(/expected given block not to yield successively/)
+    end
+
+    it 'fails if the expect block does not accept an argument' do
+      expect {
+        expect { }.not_to yield_successive_args(1, 2, 3)
+      }.to raise_error(/expect block must accept an argument/)
     end
   end
 

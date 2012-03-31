@@ -1,8 +1,20 @@
 module RSpec
   module Matchers
     module BuiltIn
+      module YieldMatcherHelpers
+      private
+        def assert_valid_expect_block(block)
+          return if block.arity == 1
+          raise "Your expect block must accept an argument to be used with this " +
+                "matcher. Pass the argument as a block on to the method you are testing."
+        end
+      end
+
       class YieldControl
+        include YieldMatcherHelpers
+
         def matches?(block)
+          assert_valid_expect_block block
           yielded = false
           block.call(lambda { |*| yielded = true })
           yielded
@@ -18,7 +30,10 @@ module RSpec
       end
 
       class YieldWithNoArgs
+        include YieldMatcherHelpers
+
         def matches?(block)
+          assert_valid_expect_block block
           yielded, args = false, nil
           block.call(lambda { |*a| yielded = true; args = a })
           @yielded, @args = yielded, args
@@ -45,11 +60,14 @@ module RSpec
       end
 
       class YieldWithArgs
+        include YieldMatcherHelpers
+
         def initialize(*args)
           @expected = args
         end
 
         def matches?(block)
+          assert_valid_expect_block block
           yielded, actual = false, nil
           block.call(lambda { |*a| yielded = true; actual = a })
           @yielded, @actual = yielded, actual
@@ -109,11 +127,14 @@ module RSpec
       end
 
       class YieldSuccessiveArgs
+        include YieldMatcherHelpers
+
         def initialize(*args)
           @expected = args
         end
 
         def matches?(block)
+          assert_valid_expect_block block
           actual = []
           block.call(lambda { |a| actual << a })
           @actual = actual
