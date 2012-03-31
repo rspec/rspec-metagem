@@ -3,8 +3,17 @@ module RSpec
     module Let
 
       module ExampleGroupMethods
-        # Generates a method whose return value is memoized
-        # after the first call.
+        # Generates a method whose return value is memoized after the first
+        # call. Useful for reducing duplication between examples that assign
+        # values to the same local variable.
+        #
+        # @note `let` _can_ enhance readability when used sparingly (1,2, or
+        #   maybe 3 declarations) in any given example group, but that can
+        #   quickly degrade with overuse. YMMV.
+        #
+        # @note `let` uses an `||=` conditional that has the potential to
+        #   behave in surprising ways in examples that spawn separate threads,
+        #   though we have yet to see this in practice. You've been warned.
         #
         # @example
         #
@@ -25,10 +34,9 @@ module RSpec
           end
         end
 
-        # Just like <tt>let()</tt>, except the block is invoked
-        # by an implicit <tt>before</tt> hook. This serves a dual
-        # purpose of setting up state and providing a memoized
-        # reference to that state.
+        # Just like `let`, except the block is invoked by an implicit `before`
+        # hook. This serves a dual purpose of setting up state and providing a
+        # memoized reference to that state.
         #
         # @example
         #
