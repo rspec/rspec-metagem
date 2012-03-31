@@ -58,7 +58,7 @@ describe "yield_with_no_args matcher" do
       }.to fail_with(/expected given block to yield with no arguments, but did not yield/)
     end
 
-    it 'fails if the block yeilds with args' do
+    it 'fails if the block yields with args' do
       expect {
         expect { |b| _yield_with_args(1, &b) }.to yield_with_no_args
       }.to fail_with(/expected given block to yield with no arguments, but yielded with arguments/)
