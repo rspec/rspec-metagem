@@ -11,6 +11,7 @@ module RSpec
         include RSpec::Matchers
 
         attr_reader :expected, :actual, :rescued_exception
+        attr_accessor :matcher_execution_context
 
         # @api private
         def initialize(name, &declarations)
@@ -23,7 +24,7 @@ module RSpec
           @messages = {}
         end
 
-        PERSISENT_INSTANCE_VARIABLES = [
+        PERSISTENT_INSTANCE_VARIABLES = [
           :@name, :@declarations, :@diffable, :@messages,
           :@match_block, :@match_for_should_not_block,
           :@expected_exception
@@ -34,7 +35,7 @@ module RSpec
           @expected = expected
           dup.instance_eval do
             instance_variables.map {|ivar| ivar.intern}.each do |ivar|
-              instance_variable_set(ivar, nil) unless (PERSISENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
+              instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
             end
             making_declared_methods_public do
               instance_eval_with_args(*@expected, &@declarations)
@@ -222,14 +223,14 @@ module RSpec
         end
 
         def respond_to?(method, include_private=false)
-          $matcher_execution_context != self && $matcher_execution_context.respond_to?(method, include_private) || super
+          super || @matcher_execution_context.respond_to?(method, include_private)
         end
 
         private
 
         def method_missing(method, *args, &block)
-          if $matcher_execution_context.respond_to?(method)
-            $matcher_execution_context.send method, *args, &block
+          if @matcher_execution_context.respond_to?(method)
+            @matcher_execution_context.send method, *args, &block
           else
             super(method, *args, &block)
           end

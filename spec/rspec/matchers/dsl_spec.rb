@@ -5,16 +5,20 @@ describe "a matcher defined using the matcher DSL" do
     :answer
   end
 
+  def ok
+    "ok"
+  end
+
   it "supports calling custom matchers from within other custom matchers" do
     RSpec::Matchers.define :be_ok do
-      match { |actual| actual.should == "ok" }
+      match { |actual| actual == ok }
     end
 
     RSpec::Matchers.define :be_well do
       match { |actual| actual.should be_ok }
     end
 
-    "ok".should be_well
+    ok.should be_well
   end
 
   it "has access to methods available in the scope of the example" do
