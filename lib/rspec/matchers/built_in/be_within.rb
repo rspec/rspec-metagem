@@ -14,7 +14,7 @@ module RSpec
           unless defined?(@expected)
             raise ArgumentError.new("You must set an expected value using #of: be_within(#{delta}).of(expected_value)")
           end
-          (super(actual) - expected).abs < delta
+          (super(actual) - expected).abs <= delta
         end
 
         def of(expected)

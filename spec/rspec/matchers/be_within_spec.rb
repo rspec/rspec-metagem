@@ -15,16 +15,16 @@ module RSpec
         be_within(0.5).of(5.0).matches?(4.51).should be_true
       end
 
-      it "does not match when actual == (expected - delta)" do
-        be_within(0.5).of(5.0).matches?(4.5).should be_false
+      it "matches when actual == (expected - delta)" do
+        be_within(0.5).of(5.0).matches?(4.5).should be_true
       end
 
       it "does not match when actual < (expected - delta)" do
         be_within(0.5).of(5.0).matches?(4.49).should be_false
       end
 
-      it "does not match when actual == (expected + delta)" do
-        be_within(0.5).of(5.0).matches?(5.5).should be_false
+      it "matches when actual == (expected + delta)" do
+        be_within(0.5).of(5.0).matches?(5.5).should be_true
       end
 
       it "does not match when actual > (expected + delta)" do

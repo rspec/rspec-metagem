@@ -23,21 +23,24 @@ Feature: be_within matcher
       """
       describe 27.5 do
         it { should be_within(0.5).of(27.9) }
+        it { should be_within(0.5).of(28.0) }
         it { should be_within(0.5).of(27.1) }
-        it { should_not be_within(0.5).of(28) }
-        it { should_not be_within(0.5).of(27) }
+        it { should be_within(0.5).of(27.0) }
+
+        it { should_not be_within(0.5).of(28.1) }
+        it { should_not be_within(0.5).of(26.9) }
 
         # deliberate failures
-        it { should_not be_within(0.5).of(27.9) }
-        it { should_not be_within(0.5).of(27.1) }
-        it { should be_within(0.5).of(28) }
-        it { should be_within(0.5).of(27) }
+        it { should_not be_within(0.5).of(28) }
+        it { should_not be_within(0.5).of(27) }
+        it { should be_within(0.5).of(28.1) }
+        it { should be_within(0.5).of(26.9) }
       end
       """
     When I run `rspec be_within_matcher_spec.rb`
     Then the output should contain all of these:
-      | 8 examples, 4 failures                     |
-      | expected 27.5 not to be within 0.5 of 27.9 |
-      | expected 27.5 not to be within 0.5 of 27.1 |
-      | expected 27.5 to be within 0.5 of 28       |
-      | expected 27.5 to be within 0.5 of 27       |
+      | 10 examples, 4 failures                     |
+      | expected 27.5 not to be within 0.5 of 28   |
+      | expected 27.5 not to be within 0.5 of 27   |
+      | expected 27.5 to be within 0.5 of 28.1     |
+      | expected 27.5 to be within 0.5 of 26.9     |
