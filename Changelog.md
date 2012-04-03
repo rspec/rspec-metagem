@@ -1,5 +1,12 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...master)
+
+Bug fixes
+
+* Fix `be_within` matcher to be inclusive of delta.
+
 ### 2.9.1 / 2012-04-03
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...2.9.1)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...v2.9.1)
 
 Bug fixes
 
@@ -8,7 +15,6 @@ Bug fixes
 * Fix for error with using custom matchers inside other custom matchers
   (mirasrael)
 * Fix using execution context methods in nested DSL matchers (mirasrael)
-* Fix `be_within` matcher to be inclusive of delta.
 
 ### 2.9.0 / 2012-03-17
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0)
