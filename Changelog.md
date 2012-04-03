@@ -1,5 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...master)
+### 2.9.1 / 2012-04-03
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...2.9.1)
 
 Bug fixes
 
