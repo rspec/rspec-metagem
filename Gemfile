@@ -11,6 +11,7 @@ gemspec
   end
 end
 
+gem 'relish'
 gem 'rake', '~> 0.9.2'
 
 platforms :jruby do
