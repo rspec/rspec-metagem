@@ -5,6 +5,24 @@ module RSpec
   module Core
     module Formatters
 
+      # The Reporter calls the Formatter with this protocol:
+      #
+      # * start(expected_example_count)
+      # * zero or more of the following
+      #   * example_group_started(group)
+      #   * example_started(example)
+      #   * example_passed(example)
+      #   * example_failed(example)
+      #   * example_pending(example)
+      #   * message(string)
+      # * stop
+      # * start_dump
+      # * dump_pending
+      # * dump_failures
+      # * dump_summary(duration, example_count, failure_count, pending_count)
+      # * seed(value)
+      # * close
+      #
       class BaseFormatter
         include Helpers
         attr_accessor :example_group
@@ -68,7 +86,8 @@ module RSpec
         end
 
         # This method is invoked after all of the examples have executed. The next method
-        # to be invoked after this one is #dump_failure (once for each failed example),
+        # to be invoked after this one is #dump_failures
+        # (BaseTextFormtter then calls #dump_failure once for each failed example.)
         def start_dump
         end
 
