@@ -154,11 +154,17 @@ end
 When you install the rspec-core gem, it installs the `rspec` executable,
 which you'll use to run rspec. The `rspec` comes with many useful options.
 Run `rspec --help` to see the complete list.
-## see also
 
-* [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
-* [http://github.com/rspec/rspec-expectations](http://github.com/rspec/rspec-expectations)
-* [http://github.com/rspec/rspec-mocks](http://github.com/rspec/rspec-mocks)
+## store command line options `.rspec`
+
+You can store command line options in a `.rspec` file in the project's root
+directory, and the `rspec` command will read them as though you typed them on
+the command line.
+
+## autotest integration
+
+rspec-core ships with an Autotest extension, which is loaded automatically if
+there is a `.rspec` file in the project's root directory.
 
 ## get started
 
