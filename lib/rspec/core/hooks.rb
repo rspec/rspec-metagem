@@ -3,74 +3,105 @@ module RSpec
     module Hooks
       include MetadataHashBuilder::WithConfigWarning
 
-      class Hook
+      module HookExtension
         attr_reader :options
 
-        def initialize(options, &block)
+        def with(options)
           @options = options
-          raise "no block given for #{display_name}" unless block
-          @block = block
+          self
         end
 
         def options_apply?(example_or_group)
           example_or_group.all_apply?(options)
         end
+      end
 
-        def to_proc
-          @block
-        end
+      module BeforeHookExtension
+        include HookExtension
 
-        def call
-          @block.call
+        def run(example)
+          example.instance_eval(&self)
         end
 
         def display_name
-          self.class.name.split('::').last.gsub('Hook','').downcase << " hook"
+          "before hook"
         end
       end
 
-      class BeforeHook < Hook
-        def run_in(example_group_instance)
-          example_group_instance.instance_eval(&self)
+      module AfterHookExtension
+        include HookExtension
+
+        def run(example)
+          example.instance_eval_with_rescue(&self)
+        end
+
+        def display_name
+          "after hook"
         end
       end
 
-      class AfterHook < Hook
-        def run_in(example_group_instance)
-          example_group_instance.instance_eval_with_rescue(&self)
-        end
-      end
+      module AroundHookExtension
+        include HookExtension
 
-      class AroundHook < Hook
-        def call(wrapped_example)
-          @block.call(wrapped_example)
+        def display_name
+          "around hook"
         end
       end
 
       class HookCollection < Array
-        def find_hooks_for(example_or_group)
-          self.class.new(select {|hook| hook.options_apply?(example_or_group)})
+        def for(example_or_group)
+          self.class.new(select {|hook| hook.options_apply?(example_or_group)}).
+            with(example_or_group)
         end
 
-        def without_hooks_for(example_or_group)
-          self.class.new(reject {|hook| hook.options_apply?(example_or_group)})
+        def with(example)
+          @example = example
+          self
         end
 
-        def run_all(example_group_instance)
-          each {|h| h.run_in(example_group_instance) } unless empty?
+        def run
+          each {|h| h.run(@example) } unless empty?
+        end
+      end
+
+      class GroupHookCollection < Array
+        def for(group)
+          @group = group
+          self
         end
 
-        def run_all!(example_group_instance)
-          shift.run_in(example_group_instance) until empty?
+        def run
+          shift.run(@group) until empty?
+        end
+      end
+
+      class AroundHookCollection < Array
+        def for(example, initial_procsy=nil)
+          self.class.new(select {|hook| hook.options_apply?(example)}).
+            with(example, initial_procsy)
+        end
+
+        def with(example, initial_procsy)
+          @example = example
+          @initial_procsy = initial_procsy
+          self
+        end
+
+        def run
+          inject(@initial_procsy) do |procsy, around_hook|
+            Example.procsy(procsy.metadata) do
+              @example.instance_eval_with_args(procsy, &around_hook)
+            end
+          end.call
         end
       end
 
       # @private
       def hooks
         @hooks ||= {
-          :around => { :each => HookCollection.new },
-          :before => { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new },
-          :after =>  { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new }
+          :around => { :each => AroundHookCollection.new },
+          :before => { :each => [], :all => [], :suite => HookCollection.new },
+          :after =>  { :each => [], :all => [], :suite => HookCollection.new }
         }
       end
 
@@ -234,7 +265,7 @@ module RSpec
       #     end
       def append_before(*args, &block)
         scope, options = scope_and_options_from(*args)
-        hooks[:before][scope] << BeforeHook.new(options, &block)
+        hooks[:before][scope] << block.extend(BeforeHookExtension).with(options)
       end
 
       alias_method :before, :append_before
@@ -245,7 +276,7 @@ module RSpec
       # See #before for scoping semantics.
       def prepend_before(*args, &block)
         scope, options = scope_and_options_from(*args)
-        hooks[:before][scope].unshift(BeforeHook.new(options, &block))
+        hooks[:before][scope].unshift block.extend(BeforeHookExtension).with(options)
       end
 
       # @api public
@@ -298,7 +329,7 @@ module RSpec
       # they are run in reverse order of that in which they are declared.
       def prepend_after(*args, &block)
         scope, options = scope_and_options_from(*args)
-        hooks[:after][scope].unshift(AfterHook.new(options, &block))
+        hooks[:after][scope].unshift block.extend(AfterHookExtension).with(options)
       end
 
       alias_method :after, :prepend_after
@@ -309,7 +340,7 @@ module RSpec
       # See #after for scoping semantics.
       def append_after(*args, &block)
         scope, options = scope_and_options_from(*args)
-        hooks[:after][scope] << AfterHook.new(options, &block)
+        hooks[:after][scope] << block.extend(AfterHookExtension).with(options)
       end
 
       # @api public
@@ -358,42 +389,53 @@ module RSpec
       #
       def around(*args, &block)
         scope, options = scope_and_options_from(*args)
-        hooks[:around][scope] << AroundHook.new(options, &block)
+        hooks[:around][scope].unshift block.extend(AroundHookExtension).with(options)
       end
 
       # @private
+      #
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
-      def run_hook(hook, scope, example_group_instance=ExampleGroup.new)
-        hooks[hook][scope].run_all(example_group_instance)
+      def run_hook(hook, scope, example_or_group=ExampleGroup.new, initial_procsy=nil)
+        case [hook, scope]
+        when [:before, :all]
+          before_all_hooks_for(example_or_group)
+        when [:after, :all]
+          after_all_hooks_for(example_or_group)
+        when [:around, :each]
+          around_each_hooks_for(example_or_group, initial_procsy)
+        when [:before, :each]
+          before_each_hooks_for(example_or_group)
+        when [:after, :each]
+          after_each_hooks_for(example_or_group)
+        when [:before, :suite], [:after, :suite]
+          hooks[hook][:suite].with(example_or_group)
+        end.run
       end
 
       # @private
-      # Just like run_hook, except it removes the blocks as it evalutes them,
-      # ensuring that they will only be run once.
-      def run_hook!(hook, scope, example_group_instance)
-        hooks[hook][scope].run_all!(example_group_instance)
+      def before_all_hooks_for(group)
+        GroupHookCollection.new(hooks[:before][:all]).for(group)
       end
 
       # @private
-      def run_hook_filtered(hook, scope, group, example_group_instance, example = nil)
-        find_hook(hook, scope, group, example).run_all(example_group_instance)
+      def after_all_hooks_for(group)
+        GroupHookCollection.new(hooks[:after][:all]).for(group)
       end
 
       # @private
-      def find_hook(hook, scope, example_group_class, example = nil)
-        found_hooks = hooks[hook][scope].find_hooks_for(example || example_group_class)
+      def around_each_hooks_for(example, initial_procsy=nil)
+        AroundHookCollection.new(ancestors.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
+      end
 
-        # ensure we don't re-run :all hooks that were applied to any of the parent groups
-        if scope == :all
-          super_klass = example_group_class.superclass
-          while super_klass != RSpec::Core::ExampleGroup
-            found_hooks = found_hooks.without_hooks_for(super_klass)
-            super_klass = super_klass.superclass
-          end
-        end
+      # @private
+      def before_each_hooks_for(example)
+        HookCollection.new(ancestors.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
+      end
 
-        found_hooks
+      # @private
+      def after_each_hooks_for(example)
+        HookCollection.new(ancestors.map {|a| a.hooks[:after][:each]}.flatten).for(example)
       end
 
     private

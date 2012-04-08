@@ -83,7 +83,7 @@ module RSpec
 
         begin
           unless pending
-            with_around_hooks do
+            with_around_each_hooks do
               begin
                 run_before_each
                 @example_group_instance.instance_eval(&@example_block)
@@ -119,7 +119,7 @@ module RSpec
       # Wraps the example block in a Proc so it can invoked using `run` or
       # `call` in [around](../Hooks#around-instance_method) hooks.
       def self.procsy(metadata, &proc)
-        Proc.new(&proc).extend(Procsy).with(metadata)
+        proc.extend(Procsy).with(metadata)
       end
 
       # @private
@@ -153,8 +153,8 @@ module RSpec
       end
 
       # @private
-      def around_hooks
-        @around_hooks ||= example_group.around_hooks_for(self)
+      def around_each_hooks
+        @around_each_hooks ||= example_group.around_each_hooks_for(self)
       end
 
       # @private
@@ -175,13 +175,28 @@ module RSpec
         finish(reporter)
       end
 
+      # @private
+      def instance_eval(&block)
+        @example_group_instance.instance_eval(&block)
+      end
+
+      # @private
+      def instance_eval_with_rescue(&block)
+        @example_group_instance.instance_eval_with_rescue(&block)
+      end
+
+      # @private
+      def instance_eval_with_args(*args, &block)
+        @example_group_instance.instance_eval_with_args(*args, &block)
+      end
+
     private
 
-      def with_around_hooks(&block)
-        if around_hooks.empty?
+      def with_around_each_hooks(&block)
+        if around_each_hooks.empty?
           yield
         else
-          @example_group_class.run_around_each_hooks(self, Example.procsy(metadata, &block)).call
+          @example_group_class.run_around_each_hooks(self, Example.procsy(metadata, &block))
         end
       end
 

@@ -115,10 +115,6 @@ module RSpec
         end
       end
 
-      def find_hook(hook, scope, group, example = nil)
-        @configuration.find_hook(hook, scope, group, example)
-      end
-
     private
 
       def declaration_line_numbers

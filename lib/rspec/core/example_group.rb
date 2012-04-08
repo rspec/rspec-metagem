@@ -247,6 +247,19 @@ module RSpec
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
         world.configure_group(self)
+        [:before, :after, :around].each do |_when|
+          RSpec.configuration.hooks[_when][:each].each do |hook|
+            unless ancestors.any? {|a| a.hooks[_when][:each].include? hook }
+              hooks[_when][:each] << hook # each's get filtered later per example
+            end
+          end
+          next if _when == :around # no around(:all) hooks
+          RSpec.configuration.hooks[_when][:all].each do |hook|
+            unless ancestors.any? {|a| a.hooks[_when][:all].include? hook }
+              hooks[_when][:all] << hook if hook.options_apply?(self)
+            end
+          end
+        end
       end
 
       # @private
@@ -271,30 +284,23 @@ module RSpec
       def self.run_before_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
-        world.run_hook_filtered(:before, :all, self, example_group_instance)
-        run_hook!(:before, :all, example_group_instance)
+        run_hook(:before, :all, example_group_instance)
         store_before_all_ivars(example_group_instance)
       end
 
       # @private
       def self.run_around_each_hooks(example, initial_procsy)
-        example.around_hooks.reverse.inject(initial_procsy) do |procsy, around_hook|
-          Example.procsy(procsy.metadata) do
-            example.example_group_instance.instance_eval_with_args(procsy, &around_hook)
-          end
-        end
+        run_hook(:around, :each, example, initial_procsy)
       end
 
       # @private
       def self.run_before_each_hooks(example)
-        world.run_hook_filtered(:before, :each, self, example.example_group_instance, example)
-        ancestors.reverse.each { |ancestor| ancestor.run_hook(:before, :each, example.example_group_instance) }
+        run_hook(:before, :each, example)
       end
 
       # @private
       def self.run_after_each_hooks(example)
-        ancestors.each { |ancestor| ancestor.run_hook(:after, :each, example.example_group_instance) }
-        world.run_hook_filtered(:after, :each, self, example.example_group_instance, example)
+        run_hook(:after, :each, example)
       end
 
       # @private
@@ -303,7 +309,7 @@ module RSpec
         assign_before_all_ivars(before_all_ivars, example_group_instance)
 
         begin
-          run_hook!(:after, :all, example_group_instance)
+          run_hook(:after, :all, example_group_instance)
         rescue => e
           # TODO: come up with a better solution for this.
           RSpec.configuration.reporter.message <<-EOS
@@ -314,13 +320,6 @@ An error occurred in an after(:all) hook.
 
         EOS
         end
-
-        world.run_hook_filtered(:after, :all, self, example_group_instance)
-      end
-
-      # @private
-      def self.around_hooks_for(example)
-        world.find_hook(:around, :each, self, example) + ancestors.reverse.inject([]){|l,a| l + a.find_hook(:around, :each, self, example)}
       end
 
       # Runs all the examples in this group

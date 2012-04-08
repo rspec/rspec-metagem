@@ -131,20 +131,11 @@ module RSpec::Core
           examples.should have(1).example
         end
       end
-
-      describe Hooks::Hook do
-        it "requires a block" do
-          lambda {
-            Hooks::BeforeHook.new :foo => :bar
-          }.should raise_error("no block given for before hook")
-        end
-      end
     end
 
     [:all, :each].each do |scope|
       describe "prepend_before(#{scope})" do
         it "adds to the front of the list of before(:#{scope}) hooks" do
-          group = ExampleGroup.describe { example {} }
           messages = []
 
           RSpec.configure { |config| config.before(scope)         { messages << "config 3" } }
@@ -152,6 +143,7 @@ module RSpec::Core
           RSpec.configure { |config| config.before(scope)         { messages << "config 4" } }
           RSpec.configure { |config| config.prepend_before(scope) { messages << "config 1" } }
 
+          group = ExampleGroup.describe { example {} }
           group.before(scope)         { messages << "group 3" }
           group.prepend_before(scope) { messages << "group 2" }
           group.before(scope)         { messages << "group 4" }
@@ -160,12 +152,12 @@ module RSpec::Core
           group.run
 
           messages.should eq([
+            'group 1',
+            'group 2',
             'config 1',
             'config 2',
             'config 3',
             'config 4',
-            'group 1',
-            'group 2',
             'group 3',
             'group 4'
           ])
@@ -174,13 +166,13 @@ module RSpec::Core
 
       describe "append_before(#{scope})" do
         it "adds to the back of the list of before(:#{scope}) hooks (same as `before`)" do
-          group = ExampleGroup.describe { example {} }
           messages = []
 
           RSpec.configure { |config| config.before(scope)        { messages << "config 1" } }
           RSpec.configure { |config| config.append_before(scope) { messages << "config 2" } }
           RSpec.configure { |config| config.before(scope)        { messages << "config 3" } }
 
+          group = ExampleGroup.describe { example {} }
           group.before(scope)        { messages << "group 1" }
           group.append_before(scope) { messages << "group 2" }
           group.before(scope)        { messages << "group 3" }
@@ -200,13 +192,13 @@ module RSpec::Core
 
       describe "prepend_after(#{scope})" do
         it "adds to the front of the list of after(:#{scope}) hooks (same as `after`)" do
-          group = ExampleGroup.describe { example {} }
           messages = []
 
           RSpec.configure { |config| config.after(scope)         { messages << "config 3" } }
           RSpec.configure { |config| config.prepend_after(scope) { messages << "config 2" } }
           RSpec.configure { |config| config.after(scope)         { messages << "config 1" } }
 
+          group = ExampleGroup.describe { example {} }
           group.after(scope)         { messages << "group 3" }
           group.prepend_after(scope) { messages << "group 2" }
           group.after(scope)         { messages << "group 1" }
@@ -226,7 +218,6 @@ module RSpec::Core
 
       describe "append_after(#{scope})" do
         it "adds to the back of the list of after(:#{scope}) hooks" do
-          group = ExampleGroup.describe { example {} }
           messages = []
 
           RSpec.configure { |config| config.after(scope)        { messages << "config 2" } }
@@ -234,6 +225,7 @@ module RSpec::Core
           RSpec.configure { |config| config.after(scope)        { messages << "config 1" } }
           RSpec.configure { |config| config.append_after(scope) { messages << "config 4" } }
 
+          group = ExampleGroup.describe { example {} }
           group.after(scope)        { messages << "group 2" }
           group.append_after(scope) { messages << "group 3" }
           group.after(scope)        { messages << "group 1" }
@@ -244,12 +236,12 @@ module RSpec::Core
           messages.should eq([
             'group 1',
             'group 2',
-            'group 3',
-            'group 4',
             'config 1',
             'config 2',
             'config 3',
-            'config 4'
+            'config 4',
+            'group 3',
+            'group 4'
           ])
         end
       end
