@@ -264,7 +264,6 @@ module RSpec
 
       # @private
       def self.assign_before_all_ivars(ivars, example_group_instance)
-        return if ivars.empty?
         ivars.each { |ivar, val| example_group_instance.instance_variable_set(ivar, val) }
       end
 
