@@ -534,6 +534,14 @@ module RSpec
       BuiltIn::Satisfy.new(&block)
     end
 
+    def start_with(expected)
+      BuiltIn::StartWith.new(expected)
+    end
+
+    def end_with(expected)
+      BuiltIn::EndWith.new(expected)
+    end
+
     # Given no argument, matches if a proc throws any Symbol.
     #
     # Given a Symbol, matches if the given proc throws the specified Symbol.
