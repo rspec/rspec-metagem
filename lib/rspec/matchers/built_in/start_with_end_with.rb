@@ -4,20 +4,28 @@ module RSpec
       class StartWith
         include BaseMatcher
         def initialize(expected)
-          @expected = expected.to_s
+          @expected = expected
         end
 
         def matches?(actual)
-          @actual = actual.to_s
-          @actual[0, @expected.length] == @expected
+          @actual = actual
+          if @actual.respond_to?(:[])
+            if @expected.respond_to?(:length)
+              @actual[0, @expected.length] == @expected
+            else
+              @actual[0] == @expected
+            end
+          else
+            # TODO: Spec this case
+          end
         end
 
         def failure_message_for_should
-          "expected '#{@actual}' to start with '#{@expected}'"
+          "expected #{@actual.inspect} to start with #{@expected.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected '#{@actual}' not to start with '#{@expected}'"
+          "expected #{@actual.inspect} not to start with #{@expected.inspect}"
         end
       end
 
@@ -29,15 +37,23 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          @actual[-@expected.length, @expected.length] == @expected
+          if @actual.respond_to?(:[])
+            if @expected.respond_to?(:length)
+              @actual[-@expected.length, @expected.length] == @expected
+            else
+              @actual[-1] == @expected
+            end
+          else
+            # TODO: Spec this case
+          end
         end
 
         def failure_message_for_should
-          "expected '#{@actual}' to end with '#{@expected}'"
+          "expected #{@actual.inspect} to end with #{@expected.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected '#{@actual}' not to end with '#{@expected}'"
+          "expected #{@actual.inspect} not to end with #{@expected.inspect}"
         end
       end
     end
