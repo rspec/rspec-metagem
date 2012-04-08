@@ -25,7 +25,7 @@ module RSpec
       autoload :RaiseError,     'rspec/matchers/built_in/raise_error'
       autoload :RespondTo,      'rspec/matchers/built_in/respond_to'
       autoload :StartWith,      'rspec/matchers/built_in/start_with_end_with'
-      autoload :EndWith,      'rspec/matchers/built_in/start_with_end_with'
+      autoload :EndWith,        'rspec/matchers/built_in/start_with_end_with'
       autoload :Satisfy,        'rspec/matchers/built_in/satisfy'
       autoload :ThrowSymbol,    'rspec/matchers/built_in/throw_symbol'
     end
