@@ -35,6 +35,12 @@ describe "should start_with" do
       }.should fail_with("expected [0, 1, 2, 3, 4] to start with [1, 2]")
     end
   end
+
+  context Object.new do
+    it "should raise an error if expected value can't be indexed'" do
+      expect { subject.should start_with 0 }.to raise_error(ArgumentError, /does not respond to :\[\]/)
+    end
+  end
 end
 
 describe "should_not start_with" do
@@ -107,6 +113,12 @@ describe "should end_with" do
       lambda {
         subject.should end_with [1, 2]
       }.should fail_with("expected [0, 1, 2, 3, 4] to end with [1, 2]")
+    end
+  end
+
+  context Object.new do
+    it "should raise an error if expected value can't be indexed'" do
+      expect { subject.should start_with 0 }.to raise_error(ArgumentError, /does not respond to :\[\]/)
     end
   end
 end

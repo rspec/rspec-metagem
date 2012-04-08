@@ -16,7 +16,7 @@ module RSpec
               @actual[0] == @expected
             end
           else
-            # TODO: Spec this case
+            raise ArgumentError.new("#{@expected.inspect} does not respond to :[]")
           end
         end
 
@@ -44,7 +44,7 @@ module RSpec
               @actual[-1] == @expected
             end
           else
-            # TODO: Spec this case
+            raise ArgumentError.new("#{@expected.inspect} does not respond to :[]")
           end
         end
 
