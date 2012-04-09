@@ -355,6 +355,20 @@ module RSpec
       BuiltIn::Cover.new(*values)
     end if (1..2).respond_to?(:cover?)
 
+    # Matches if the target ends with the expected value. In the case
+    # of strings tries to match the last expected.length characters of
+    # target. In the case of an array tries to match the last expected.length
+    # elements of target.
+    #
+    # @example
+    #
+    #   "A test string".should end_with 'string'
+    #   [0, 1, 2, 3, 4].should end_with 4
+    #   [0, 2, 3, 4, 4].should end_with [3, 4]
+    def end_with(expected)
+      BuiltIn::EndWith.new(expected)
+    end
+
     # Passes if <tt>actual == expected</tt>.
     #
     # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more information about equality in Ruby.
@@ -532,6 +546,20 @@ module RSpec
     #   }
     def satisfy(&block)
       BuiltIn::Satisfy.new(&block)
+    end
+
+    # Matches if the target starts with the expected value. In the case
+    # of strings tries to match the first expected.length characters of
+    # target. In the case of an array tries to match the first expected.length
+    # elements of target.
+    #
+    # @example
+    #
+    #   "A test string".should start_with 'A test'
+    #   [0, 1, 2, 3, 4].should start_with 0
+    #   [0, 2, 3, 4, 4].should start_with [0, 1]
+    def start_with(expected)
+      BuiltIn::StartWith.new(expected)
     end
 
     # Given no argument, matches if a proc throws any Symbol.
