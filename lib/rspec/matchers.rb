@@ -355,18 +355,18 @@ module RSpec
       BuiltIn::Cover.new(*values)
     end if (1..2).respond_to?(:cover?)
 
-    # Matches if the target ends with the expected value. In the case
-    # of strings tries to match the last expected.length characters of
-    # target. In the case of an array tries to match the last expected.length
-    # elements of target.
+    # Matches if the actual value ends with the expected value(s). In the case
+    # of a string, matches against the last `expected.length` characters of the
+    # actual string. In the case of an array, matches against the last
+    # `expected.length` elements of the actual array.
     #
     # @example
     #
-    #   "A test string".should end_with 'string'
+    #   "this string".should end_with "string"
     #   [0, 1, 2, 3, 4].should end_with 4
-    #   [0, 2, 3, 4, 4].should end_with [3, 4]
-    def end_with(expected)
-      BuiltIn::EndWith.new(expected)
+    #   [0, 2, 3, 4, 4].should end_with 3, 4
+    def end_with(*expected)
+      BuiltIn::EndWith.new(*expected)
     end
 
     # Passes if <tt>actual == expected</tt>.
@@ -548,18 +548,18 @@ module RSpec
       BuiltIn::Satisfy.new(&block)
     end
 
-    # Matches if the target starts with the expected value. In the case
-    # of strings tries to match the first expected.length characters of
-    # target. In the case of an array tries to match the first expected.length
-    # elements of target.
+    # Matches if the actual value starts with the expected value(s). In the
+    # case of a string, matches against the first `expected.length` characters
+    # of the actual string. In the case of an array, matches against the first
+    # `expected.length` elements of the actual array.
     #
     # @example
     #
-    #   "A test string".should start_with 'A test'
+    #   "this string".should start_with "this s"
     #   [0, 1, 2, 3, 4].should start_with 0
-    #   [0, 2, 3, 4, 4].should start_with [0, 1]
-    def start_with(expected)
-      BuiltIn::StartWith.new(expected)
+    #   [0, 2, 3, 4, 4].should start_with 0, 1
+    def start_with(*expected)
+      BuiltIn::StartWith.new(*expected)
     end
 
     # Given no argument, matches if a proc throws any Symbol.

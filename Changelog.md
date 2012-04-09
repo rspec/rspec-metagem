@@ -1,6 +1,10 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...master)
 
+Enhancements
+
+* Add new `start_with` and `end_with` matchers (Jeremy Wadsack)
+
 Bug fixes
 
 * Fix `be_within` matcher to be inclusive of delta.

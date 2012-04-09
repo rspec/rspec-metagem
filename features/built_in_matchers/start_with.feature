@@ -1,48 +1,46 @@
 Feature: start_with matcher
 
-  The start_with matcher is mostly sugar to make your string tests
-  read better
+  Use the `start_with` matcher to specify that a string or array starts with 
+  the expected characters or elements.
 
-    "A test string".should start_with "A test"
-    "A test string".should_not start_with "Something"
+    "this string".should start_with("this")
+    "this string".should_not start_with("that")
+    [0,1,2].should start_with(0, 1)
 
-  The test is case sensitive.
-
-  Scenario: string usage
-    Given a file named "string_start_with_matcher_spec.rb" with:
+  Scenario: with a string
+    Given a file named "example_spec.rb" with:
       """
-      describe "A test string" do
-        it { should start_with "A test" }
-        it { should_not start_with "Something" }
+      describe "this string" do
+        it { should start_with "this" }
+        it { should_not start_with "that" }
 
         # deliberate failures
-        it { should_not start_with "A test" }
-        it { should start_with "Something" }
+        it { should_not start_with "this" }
+        it { should start_with "that" }
       end
       """
-    When I run `rspec string_start_with_matcher_spec.rb`
+    When I run `rspec example_spec.rb`
     Then the output should contain all of these:
-      | 4 examples, 2 failures                              |
-      | expected "A test string" not to start with "A test" |
-      | expected "A test string" to start with "Something"  |
+      | 4 examples, 2 failures                          |
+      | expected "this string" not to start with "this" |
+      | expected "this string" to start with "that"     |
 
-  Scenario: array usage
-    Given a file named "array_start_with_matcher_spec.rb" with:
+  Scenario: with an array
+    Given a file named "example_spec.rb" with:
       """
       describe [0, 1, 2, 3, 4] do
         it { should start_with 0 }
-        it { should start_with [0, 1] }
-        it { should_not start_with "Something" }
-        it { should_not start_with [0, 1, 2, 3, 4, 5] }
+        it { should start_with(0, 1)}
+        it { should_not start_with(2) }
+        it { should_not start_with(0, 1, 2, 3, 4, 5) }
 
         # deliberate failures
         it { should_not start_with 0 }
-        it { should start_with "Something" }
+        it { should start_with 3 }
       end
       """
-    When I run `rspec array_start_with_matcher_spec.rb`
+    When I run `rspec example_spec.rb`
     Then the output should contain all of these:
-      | 6 examples, 2 failures                             |
-      | expected [0, 1, 2, 3, 4] not to start with 0       |
-      | expected [0, 1, 2, 3, 4] to start with "Something" |
-
+      | 6 examples, 2 failures                       |
+      | expected [0, 1, 2, 3, 4] not to start with 0 |
+      | expected [0, 1, 2, 3, 4] to start with 3     |
