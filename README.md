@@ -129,6 +129,8 @@ actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
 
 ```ruby
 actual.should include(expected)
+actual.should start_with(expected)
+actual.should end_with(expected)
 ```
 
 #### Examples
@@ -136,8 +138,14 @@ actual.should include(expected)
 ```ruby
 [1,2,3].should include(1)
 [1,2,3].should include(1, 2)
+[1,2,3].should start_with(1)
+[1,2,3].should start_with(1,2)
+[1,2,3].should end_with(3)
+[1,2,3].should end_with(2,3)
 {:a => 'b'}.should include(:a => 'b')
 "this string".should include("is str")
+"this string".should start_with("this")
+"this string".should end_with("ring")
 ```
 
 ## Also see
