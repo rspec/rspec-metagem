@@ -2,22 +2,39 @@ module RSpec
   module Matchers
     module BuiltIn
       class YieldProbe
-        def self.probe(block, &probe_block)
-          probe = new(&probe_block)
+        def self.probe(block)
+          probe = new
           assert_valid_expect_block!(block)
           block.call(probe)
           probe.assert_used!
           probe
         end
 
-        def initialize(&block)
-          @block = block
+        attr_accessor :num_yields, :yielded_args
+
+        def initialize
           @used = false
+          self.num_yields, self.yielded_args = 0, []
         end
 
         def to_proc
           @used = true
-          @block
+
+          probe = self
+          Proc.new do |*args|
+            probe.num_yields += 1
+            probe.yielded_args << args
+          end
+        end
+
+        def single_yield_args
+          yielded_args.first
+        end
+
+        def successive_yield_args
+          yielded_args.map do |arg_array|
+            arg_array.size == 1 ? arg_array.first : arg_array
+          end
         end
 
         def assert_used!
@@ -40,9 +57,8 @@ module RSpec
         include BaseMatcher
 
         def matches?(block)
-          yielded = false
-          YieldProbe.probe(block) { |*| yielded = true }
-          yielded
+          probe = YieldProbe.probe(block)
+          probe.num_yields > 0
         end
 
         def failure_message_for_should
@@ -58,10 +74,8 @@ module RSpec
         include BaseMatcher
 
         def matches?(block)
-          yielded, args = false, nil
-          YieldProbe.probe(block) { |*a| yielded = true; args = a }
-          @yielded, @args = yielded, args
-          @yielded && @args.none?
+          @probe = YieldProbe.probe(block)
+          @probe.num_yields > 0 && @probe.single_yield_args.none?
         end
 
         def failure_message_for_should
@@ -75,10 +89,10 @@ module RSpec
       private
 
         def failure_reason
-          if !@yielded
+          if @probe.num_yields.zero?
             "did not yield"
           else
-            "yielded with arguments: #{@args.inspect}"
+            "yielded with arguments: #{@probe.single_yield_args.inspect}"
           end
         end
       end
@@ -89,10 +103,9 @@ module RSpec
         end
 
         def matches?(block)
-          yielded, actual = false, nil
-          YieldProbe.probe(block) { |*a| yielded = true; actual = a }
-          @yielded, @actual = yielded, actual
-          @yielded && args_match?
+          @probe = YieldProbe.probe(block)
+          @actual = @probe.single_yield_args
+          @probe.num_yields > 0 && args_match?
         end
 
         def failure_message_for_should
@@ -112,7 +125,7 @@ module RSpec
       private
 
         def positive_failure_reason
-          if !@yielded
+          if @probe.num_yields.zero?
             "did not yield"
           else
             @positive_args_failure
@@ -159,9 +172,8 @@ module RSpec
         end
 
         def matches?(block)
-          actual = []
-          YieldProbe.probe(block) { |a| actual << a }
-          @actual = actual
+          @probe = YieldProbe.probe(block)
+          @actual = @probe.successive_yield_args
           args_match?
         end
 
