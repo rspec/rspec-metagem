@@ -31,6 +31,17 @@ module RSpec
           yielded_args.first
         end
 
+        def yielded_once?(matcher_name)
+          case num_yields
+          when 1 then true
+          when 0 then false
+          else
+            raise "The #{matcher_name} matcher is not designed to be used with a " +
+                  "method that yields multiple times. Use the yield_successive_args " +
+                  "matcher for that case."
+          end
+        end
+
         def successive_yield_args
           yielded_args.map do |arg_array|
             arg_array.size == 1 ? arg_array.first : arg_array
@@ -58,7 +69,7 @@ module RSpec
 
         def matches?(block)
           probe = YieldProbe.probe(block)
-          probe.num_yields > 0
+          probe.yielded_once?(:yield_control)
         end
 
         def failure_message_for_should
@@ -75,7 +86,7 @@ module RSpec
 
         def matches?(block)
           @probe = YieldProbe.probe(block)
-          @probe.num_yields > 0 && @probe.single_yield_args.none?
+          @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.none?
         end
 
         def failure_message_for_should
@@ -105,7 +116,7 @@ module RSpec
         def matches?(block)
           @probe = YieldProbe.probe(block)
           @actual = @probe.single_yield_args
-          @probe.num_yields > 0 && args_match?
+          @probe.yielded_once?(:yield_with_args) && args_match?
         end
 
         def failure_message_for_should

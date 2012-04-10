@@ -55,6 +55,12 @@ describe "yield_control matcher" do
         expect { |b| _dont_yield(&b) }.to yield_control
       }.to fail_with(/expected given block to yield control/)
     end
+
+    it 'raises an error if it yields multiple times' do
+      expect {
+        expect { |b| [1, 2].each(&b) }.to yield_control
+      }.to raise_error(/not designed.*yields multiple times/)
+    end
   end
 
   describe "expect {...}.not_to yield_control" do
@@ -108,6 +114,12 @@ describe "yield_with_no_args matcher" do
       expect {
         expect { |b| _yield_with_args(1, &b) }.to yield_with_no_args
       }.to fail_with(/expected given block to yield with no arguments, but yielded with arguments/)
+    end
+
+    it 'raises an error if it yields multiple times' do
+      expect {
+        expect { |b| [1, 2].each(&b) }.to yield_with_no_args
+      }.to raise_error(/not designed.*yields multiple times/)
     end
   end
 
@@ -163,6 +175,12 @@ describe "yield_with_args matcher" do
       expect {
         expect { |b| _yield_with_no_args(&b) }.to yield_with_args
       }.to fail_with(/expected given block to yield with arguments, but yielded with no arguments/)
+    end
+
+    it 'raises an error if it yields multiple times' do
+      expect {
+        expect { |b| [1, 2].each(&b) }.to yield_with_args
+      }.to raise_error(/not designed.*yields multiple times/)
     end
   end
 
