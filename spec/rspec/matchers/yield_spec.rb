@@ -73,6 +73,12 @@ describe "yield_control matcher" do
         expect { }.not_to yield_control
       }.to raise_error(/expect block must accept an argument/)
     end
+
+    it 'raises an error if the expect block arg is not passed to a method as a block' do
+      expect {
+        expect { |b| }.not_to yield_control
+      }.to raise_error(/must pass the argument.*as a block/)
+    end
   end
 end
 
@@ -125,6 +131,12 @@ describe "yield_with_no_args matcher" do
         expect { }.not_to yield_with_no_args
       }.to raise_error(/expect block must accept an argument/)
     end
+
+    it 'raises an error if the expect block arg is not passed to a method as a block' do
+      expect {
+        expect { |b| }.not_to yield_with_no_args
+      }.to raise_error(/must pass the argument.*as a block/)
+    end
   end
 end
 
@@ -173,6 +185,12 @@ describe "yield_with_args matcher" do
       expect {
         expect { }.not_to yield_with_args
       }.to raise_error(/expect block must accept an argument/)
+    end
+
+    it 'raises an error if the expect block arg is not passed to a method as a block' do
+      expect {
+        expect { |b| }.not_to yield_with_args
+      }.to raise_error(/must pass the argument.*as a block/)
     end
   end
 
@@ -310,6 +328,12 @@ describe "yield_successive_args matcher" do
       expect {
         expect { }.not_to yield_successive_args(1, 2, 3)
       }.to raise_error(/expect block must accept an argument/)
+    end
+
+    it 'raises an error if the expect block arg is not passed to a method as a block' do
+      expect {
+        expect { |b| }.not_to yield_successive_args(1, 2, 3)
+      }.to raise_error(/must pass the argument.*as a block/)
     end
   end
 

@@ -1,9 +1,35 @@
 module RSpec
   module Matchers
     module BuiltIn
-      module YieldMatcherHelpers
-      private
-        def assert_valid_expect_block(block)
+      class YieldProbe
+        def self.probe(block, &probe_block)
+          probe = new(&probe_block)
+          assert_valid_expect_block!(block)
+          block.call(probe)
+          probe.assert_used!
+          probe
+        end
+
+        def initialize(&block)
+          @block = block
+          @used = false
+        end
+
+        def to_proc
+          @used = true
+          @block
+        end
+
+        def assert_used!
+          return if @used
+          raise "You must pass the argument yielded to your expect block on " +
+                "to the method-under-test as a block. It acts as a probe that " +
+                "allows the matcher to detect whether or not the method-under-test " +
+                "yields, and, if so, how many times, and what the yielded arguments " +
+                "are."
+        end
+
+        def self.assert_valid_expect_block!(block)
           return if block.arity == 1
           raise "Your expect block must accept an argument to be used with this " +
                 "matcher. Pass the argument as a block on to the method you are testing."
@@ -12,12 +38,10 @@ module RSpec
 
       class YieldControl
         include BaseMatcher
-        include YieldMatcherHelpers
 
         def matches?(block)
-          assert_valid_expect_block block
           yielded = false
-          block.call(lambda { |*| yielded = true })
+          YieldProbe.probe(block) { |*| yielded = true }
           yielded
         end
 
@@ -32,12 +56,10 @@ module RSpec
 
       class YieldWithNoArgs
         include BaseMatcher
-        include YieldMatcherHelpers
 
         def matches?(block)
-          assert_valid_expect_block block
           yielded, args = false, nil
-          block.call(lambda { |*a| yielded = true; args = a })
+          YieldProbe.probe(block) { |*a| yielded = true; args = a }
           @yielded, @args = yielded, args
           @yielded && @args.none?
         end
@@ -62,16 +84,13 @@ module RSpec
       end
 
       class YieldWithArgs
-        include YieldMatcherHelpers
-
         def initialize(*args)
           @expected = args
         end
 
         def matches?(block)
-          assert_valid_expect_block block
           yielded, actual = false, nil
-          block.call(lambda { |*a| yielded = true; actual = a })
+          YieldProbe.probe(block) { |*a| yielded = true; actual = a }
           @yielded, @actual = yielded, actual
           @yielded && args_match?
         end
@@ -135,16 +154,13 @@ module RSpec
       end
 
       class YieldSuccessiveArgs
-        include YieldMatcherHelpers
-
         def initialize(*args)
           @expected = args
         end
 
         def matches?(block)
-          assert_valid_expect_block block
           actual = []
-          block.call(lambda { |a| actual << a })
+          YieldProbe.probe(block) { |a| actual << a }
           @actual = actual
           args_match?
         end
