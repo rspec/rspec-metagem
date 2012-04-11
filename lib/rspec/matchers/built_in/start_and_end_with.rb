@@ -10,7 +10,11 @@ module RSpec
 
         def matches?(actual)
           @actual = actual.respond_to?(:[]) ? actual : (raise ArgumentError.new("#{actual.inspect} does not respond to :[]"))
-          @expected.respond_to?(:length) ? subset_matches?(@expected, @actual) : element_matches?(@expected, @actual)
+          begin
+            @expected.respond_to?(:length) ? subset_matches?(@expected, @actual) : element_matches?(@expected, @actual)
+          rescue ArgumentError
+            raise ArgumentError.new("#{actual.inspect} does not have ordered elements")
+          end
         end
 
         def failure_message_for_should

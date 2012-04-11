@@ -40,6 +40,14 @@ describe "should start_with" do
       expect { Object.new.should start_with 0 }.to raise_error(ArgumentError, /does not respond to :\[\]/)
     end
   end
+
+  context "with a hash" do
+    it "raises an ArgumentError if trying to match more than one element" do
+      expect{
+        {a: 'b', b: 'b', c: 'c'}.should start_with({a: 'b', b: 'b'})
+      }.to raise_error(ArgumentError, /does not have ordered elements/)
+    end
+  end
 end
 
 describe "should_not start_with" do
@@ -118,6 +126,15 @@ describe "should end_with" do
       expect { Object.new.should end_with 0 }.to raise_error(ArgumentError, /does not respond to :\[\]/)
     end
   end
+
+  context "with a hash" do
+    it "raises an ArgumentError if trying to match more than one element" do
+      expect{
+        {a: 'b', b: 'b', c: 'c'}.should end_with({a: 'b', b: 'b'})
+      }.to raise_error(ArgumentError, /does not have ordered elements/)
+    end
+  end
+
 end
 
 describe "should_not end_with" do
