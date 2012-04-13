@@ -339,6 +339,11 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       output.string.should =~ /0(\.\d+)? seconds/
     end
 
+    it "prints ocuppied time" do
+      formatter.dump_profile
+      output.string.should =~ /Top 1 slowest examples \(0(\.\d+)? seconds, occupied 100.0% time\):/
+    end
+
     it "prints the path" do
       formatter.dump_profile
       filename = __FILE__.split(File::SEPARATOR).last
