@@ -321,13 +321,12 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
   describe "#dump_profile" do
     before do
-      formatter.stub(:examples) do
-        group = RSpec::Core::ExampleGroup.describe("group") do
-          example("example")
-        end
-        group.run(double('reporter').as_null_object)
-        group.examples
+      group = RSpec::Core::ExampleGroup.describe("group") do
+        example("example")
       end
+      group.run(double('reporter').as_null_object)
+
+      formatter.stub(:examples) { group.examples }
     end
 
     it "names the example" do
