@@ -348,7 +348,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
     it "prints ocuppied time" do
       formatter.dump_profile
-      output.string.should =~ /Top 1 slowest examples \(0(\.\d+)? seconds, occupied 100.0% time\):/
+      output.string.should =~ /Top 1 slowest examples \(0(\.\d+)? seconds, taken 100.0% of total time\):/
     end
   end
 end
