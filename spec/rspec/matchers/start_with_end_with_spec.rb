@@ -44,7 +44,7 @@ describe "should start_with" do
   context "with a hash" do
     it "raises an ArgumentError if trying to match more than one element" do
       expect{
-        {a: 'b', b: 'b', c: 'c'}.should start_with({a: 'b', b: 'b'})
+        {:a => 'b', :b => 'b', :c => 'c'}.should start_with({:a => 'b', :b => 'b'})
       }.to raise_error(ArgumentError, /does not have ordered elements/)
     end
   end
@@ -130,7 +130,7 @@ describe "should end_with" do
   context "with a hash" do
     it "raises an ArgumentError if trying to match more than one element" do
       expect{
-        {a: 'b', b: 'b', c: 'c'}.should end_with({a: 'b', b: 'b'})
+        {:a => 'b', :b => 'b', :c => 'c'}.should end_with({:a => 'b', :b =>'b'})
       }.to raise_error(ArgumentError, /does not have ordered elements/)
     end
   end
