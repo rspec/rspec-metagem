@@ -7,9 +7,9 @@ describe "should start_with" do
     end
 
     it "fails if it does not match the start of the actual string" do
-      lambda {
+      expect {
         "this string".should start_with "that str"
-      }.should fail_with("expected \"this string\" to start with \"that str\"")
+      }.to fail_with("expected \"this string\" to start with \"that str\"")
     end
   end
 
@@ -23,15 +23,15 @@ describe "should start_with" do
     end
 
     it "fails if it does not match the first element of the array" do
-      lambda {
+      expect {
         [0, 1, 2].should start_with 2
-      }.should fail_with("expected [0, 1, 2] to start with 2")
+      }.to fail_with("expected [0, 1, 2] to start with 2")
     end
 
     it "fails if it the first elements of the array do not match" do
-      lambda {
+      expect {
         [0, 1, 2].should start_with 1, 2
-      }.should fail_with("expected [0, 1, 2] to start with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] to start with [1, 2]")
     end
   end
 
@@ -57,9 +57,9 @@ describe "should_not start_with" do
     end
 
     it "fails if it does match the start of the actual string" do
-      lambda {
+      expect {
         "this string".should_not start_with "this str"
-      }.should fail_with("expected \"this string\" not to start with \"this str\"")
+      }.to fail_with("expected \"this string\" not to start with \"this str\"")
     end
   end
 
@@ -73,15 +73,15 @@ describe "should_not start_with" do
     end
 
     it "fails if it matches the first element of the array" do
-      lambda {
+      expect {
         [0, 1, 2].should_not start_with 0
-      }.should fail_with("expected [0, 1, 2] not to start with 0")
+      }.to fail_with("expected [0, 1, 2] not to start with 0")
     end
 
     it "fails if it the first elements of the array match" do
-      lambda {
+      expect {
         [0, 1, 2].should_not start_with 0, 1
-      }.should fail_with("expected [0, 1, 2] not to start with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] not to start with [0, 1]")
     end
   end
 end
@@ -93,9 +93,9 @@ describe "should end_with" do
     end
 
     it "fails if it does not match the end of the actual string" do
-      lambda {
+      expect {
         "this string".should end_with "is stringy"
-      }.should fail_with("expected \"this string\" to end with \"is stringy\"")
+      }.to fail_with("expected \"this string\" to end with \"is stringy\"")
     end
   end
 
@@ -109,15 +109,15 @@ describe "should end_with" do
     end
 
     it "fails if it does not match the last element of the array" do
-      lambda {
+      expect {
         [0, 1, 2].should end_with 1
-      }.should fail_with("expected [0, 1, 2] to end with 1")
+      }.to fail_with("expected [0, 1, 2] to end with 1")
     end
 
     it "fails if it the last elements of the array do not match" do
-      lambda {
+      expect {
         [0, 1, 2].should end_with [0, 1]
-      }.should fail_with("expected [0, 1, 2] to end with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] to end with [0, 1]")
     end
   end
 
@@ -144,9 +144,9 @@ describe "should_not end_with" do
     end
 
     it "fails if it matches the end of the actual string" do
-      lambda {
+      expect {
         "this string".should_not end_with "string"
-      }.should fail_with("expected \"this string\" not to end with \"string\"")
+      }.to fail_with("expected \"this string\" not to end with \"string\"")
     end
   end
 
@@ -160,15 +160,15 @@ describe "should_not end_with" do
     end
 
     it "fails if it matches the last element of the array" do
-      lambda {
+      expect {
         [0, 1, 2].should_not end_with 2
-      }.should fail_with("expected [0, 1, 2] not to end with 2")
+      }.to fail_with("expected [0, 1, 2] not to end with 2")
     end
 
     it "fails if it the last elements of the array match" do
-      lambda {
+      expect {
         [0, 1, 2].should_not end_with [1, 2]
-      }.should fail_with("expected [0, 1, 2] not to end with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] not to end with [1, 2]")
     end
   end
 end
