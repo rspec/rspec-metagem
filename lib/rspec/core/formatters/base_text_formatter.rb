@@ -57,6 +57,7 @@ module RSpec
 
           total, slows = [examples, sorted_examples].map {|exs|
             exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }}
+
           output.puts "\nTop #{sorted_examples.size} slowest examples (#{format_seconds(slows)} seconds, #{'%.1f' % ((slows / total) * 100)}% of total time):\n"
 
           sorted_examples.each do |example|
