@@ -6,6 +6,9 @@ Enhancements
 * Add `prepend_before` and `append_after` hooks (preethiramdev)
     * intended for extension libs
     * restores rspec-1 behavior
+* Reporting of profiled examples (moro)
+    * Report the total amount of time taken for the top slowest examples.
+    * Report what percentage the slowest examples took from the total runtime.
 
 Bug fixes
 
