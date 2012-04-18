@@ -443,16 +443,17 @@ module RSpec
       SCOPES = [:each, :all, :suite]
 
       def scope_and_options_from(*args)
-        scope = if SCOPES.include?(args.first)
+        return extract_scope_from(args), build_metadata_hash_from(args)
+      end
+
+      def extract_scope_from(args)
+        if SCOPES.include?(args.first)
           args.shift
         elsif args.any? { |a| a.is_a?(Symbol) }
           raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")
         else
           :each
         end
-
-        options = build_metadata_hash_from(args)
-        return scope, options
       end
     end
   end
