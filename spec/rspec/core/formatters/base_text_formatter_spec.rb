@@ -346,7 +346,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       output.string.should =~ /#{filename}\:#{__LINE__ - 21}/
     end
 
-    it "prints ocuppied time" do
+    it "prints the percentage taken from the total runtime" do
       formatter.dump_profile
       output.string.should =~ /Top 1 slowest examples \(0(\.\d+)? seconds, 100.0% of total time\):/
     end
