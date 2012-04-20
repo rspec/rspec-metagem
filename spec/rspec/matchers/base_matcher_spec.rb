@@ -15,11 +15,17 @@ module RSpec::Matchers::BuiltIn
         matcher.match_unless_raises { raise }.should be_false
       end
 
-      it "returns false if the submitted error is raised" do
+      it "returns false if the only submitted error is raised" do
         matcher.match_unless_raises(RuntimeError){ raise "foo" }.should be_false
       end
 
-      it "re-raises any error other than the one specified" do
+      it "returns false if any of several errors submitted is raised" do
+        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise "foo" }.should be_false
+        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise ArgumentError.new('') }.should be_false
+        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise NameError.new('') }.should be_false
+      end
+
+      it "re-raises any error other than one of those specified" do
         expect do
           matcher.match_unless_raises(ArgumentError){ raise "foo" }
         end.to raise_error

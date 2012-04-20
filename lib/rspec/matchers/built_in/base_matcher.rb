@@ -24,13 +24,14 @@ module RSpec
           @actual = actual
         end
 
-        def match_unless_raises(exception=Exception)
+        def match_unless_raises(*exceptions)
+          exceptions.unshift Exception if exceptions.empty?
           begin
             yield
-            true
-          rescue exception => @rescued_exception
-            false
+          rescue *exceptions => @rescued_exception
+            return false
           end
+          true
         end
 
         def failure_message_for_should
