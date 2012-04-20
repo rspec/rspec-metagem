@@ -70,14 +70,14 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "uses the file and line number if there is no matcher-generated description" do
         example = example_group.example {}
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ -2}/)
+        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
 
       it "uses the file and line number if there is an error before the matcher" do
         example = example_group.example { 5.should eq(5) }
         example_group.before { raise }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ -3}/)
+        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
       end
     end
 
@@ -93,14 +93,14 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "uses the file and line number if there is no matcher-generated description" do
         example = example_group.example {}
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ -2}/)
+        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
 
       it "uses the file and line number if there is an error before the matcher" do
         example = example_group.example { 5.should eq(5) }
         example_group.before { raise }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ -3}/)
+        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
       end
     end
 
@@ -116,7 +116,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "uses the file and line number" do
         example = example_group.example { assert 5 == 5 }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ -2}/)
+        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
     end
   end
