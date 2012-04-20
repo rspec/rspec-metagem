@@ -43,8 +43,8 @@ describe "should_not raise_error" do
   
   it "fails if anything is raised" do
     lambda {
-      lambda {raise}.should_not raise_error
-    }.should fail_with("expected no Exception, got RuntimeError")
+      lambda { raise RuntimeError, "example message" }.should_not raise_error
+    }.should fail_with("expected no Exception, got #<RuntimeError: example message>")
   end
 end
 
@@ -102,8 +102,8 @@ describe "should raise_error(NamedError)" do
   
   it "fails if another error is raised (NameError)" do
     lambda {
-      lambda { raise }.should raise_error(NameError)
-    }.should fail_with("expected NameError, got RuntimeError")
+      lambda { raise RuntimeError, "example message" }.should raise_error(NameError)
+    }.should fail_with("expected NameError, got #<RuntimeError: example message>")
   end
   
   it "fails if another error is raised (NameError)" do
@@ -142,8 +142,8 @@ describe "should raise_error(NamedError, error_message) with String" do
   
   it "fails if incorrect error is raised" do
     lambda {
-      lambda { raise }.should raise_error(NameError, "example message")
-    }.should fail_with("expected NameError with \"example message\", got RuntimeError")
+      lambda { raise RuntimeError, "example message" }.should raise_error(NameError, "example message")
+    }.should fail_with("expected NameError with \"example message\", got #<RuntimeError: example message>")
   end
   
   it "fails if correct error is raised with incorrect message" do
@@ -307,8 +307,8 @@ describe "should raise_error(NamedError, error_message) with Regexp" do
   
   it "fails if incorrect error is raised" do
     lambda {
-      lambda { raise }.should raise_error(NameError, /ample mess/)
-    }.should fail_with("expected NameError with message matching /ample mess/, got RuntimeError")
+      lambda { raise RuntimeError, "example message" }.should raise_error(NameError, /ample mess/)
+    }.should fail_with("expected NameError with message matching /ample mess/, got #<RuntimeError: example message>")
   end
   
   it "fails if correct error is raised with incorrect message" do
