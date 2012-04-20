@@ -88,8 +88,8 @@ module RSpec
         end
 
         def _nested_attribute(subject, attribute)
-          _attribute_chain(attribute).inject(subject) do |subject, attr|
-            subject.send(attr)
+          _attribute_chain(attribute).inject(subject) do |inner_subject, attr|
+            inner_subject.send(attr)
           end
         end
       end
