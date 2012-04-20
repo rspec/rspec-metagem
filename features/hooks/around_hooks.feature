@@ -165,7 +165,7 @@ Feature: around hooks
         end
       end
       """
-    When I run `rspec example_spec.rb`
+    When I run `rspec --format progress example_spec.rb`
     Then the output should contain:
       """
       before all

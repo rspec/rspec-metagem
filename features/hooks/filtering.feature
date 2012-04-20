@@ -182,7 +182,7 @@ Feature: filters
         end
       end
       """
-    When I run `rspec filter_after_all_hooks_spec.rb`
+    When I run `rspec --format progress filter_after_all_hooks_spec.rb`
     Then the examples should all pass
     And the output should contain:
       """
@@ -216,7 +216,7 @@ Feature: filters
         it("", :around_each) { puts "example 4" }
       end
       """
-    When I run `rspec less_verbose_metadata_filter.rb`
+    When I run `rspec --format progress less_verbose_metadata_filter.rb`
     Then the examples should all pass
     And the output should contain:
       """

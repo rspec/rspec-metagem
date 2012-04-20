@@ -227,7 +227,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run `rspec ensure_block_order_spec.rb`
+    When I run `rspec --format progress ensure_block_order_spec.rb`
     Then the output should contain:
       """
       before all
@@ -272,7 +272,7 @@ Feature: before and after hooks
         end
       end
       """
-    When I run `rspec configuration_spec.rb`
+    When I run `rspec --format progress configuration_spec.rb`
     Then the output should contain:
       """
       before suite
@@ -313,7 +313,7 @@ Feature: before and after hooks
 
       end
       """
-    When I run `rspec before_and_after_all_spec.rb`
+    When I run `rspec --format progress before_and_after_all_spec.rb`
     Then the examples should all pass
     And the output should contain:
       """
@@ -323,7 +323,7 @@ Feature: before and after hooks
       outer after all
       """
 
-    When I run `rspec before_and_after_all_spec.rb:14`
+    When I run `rspec --format progress before_and_after_all_spec.rb:14`
     Then the examples should all pass
     And the output should contain:
       """
@@ -333,7 +333,7 @@ Feature: before and after hooks
       outer after all
       """
 
-    When I run `rspec before_and_after_all_spec.rb:6`
+    When I run `rspec --format progress before_and_after_all_spec.rb:6`
     Then the examples should all pass
     And the output should contain:
       """
