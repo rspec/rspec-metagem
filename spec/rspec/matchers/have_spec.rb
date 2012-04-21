@@ -386,7 +386,7 @@ EOF
 
   describe "have(n).things on an object which is not a collection nor contains one" do
     it "fails" do
-      lambda { Object.new.should have(2).things }.should raise_error(NoMethodError, /undefined method `things' for #<Object:/)
+      lambda { Object.new.should have(2).things }.should raise_error(NoMethodError) {|e| e.name == "things" }
     end
   end
 
