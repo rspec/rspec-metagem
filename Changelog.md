@@ -5,10 +5,10 @@ Enhancements
 
 * Add new `start_with` and `end_with` matchers (Jeremy Wadsack)
 * Add new matchers for specifying yields (Myron Marson):
-  * `expect {...}.to yield_control`
-  * `expect {...}.to yield_with_args(1, 2, 3)`
-  * `expect {...}.to yield_with_no_args`
-  * `expect {...}.to yield_successive_args(1, 2, 3)`
+    * `expect {...}.to yield_control`
+    * `expect {...}.to yield_with_args(1, 2, 3)`
+    * `expect {...}.to yield_with_no_args`
+    * `expect {...}.to yield_successive_args(1, 2, 3)`
 
 Bug fixes
 
