@@ -9,6 +9,7 @@ Enhancements
     * `expect {...}.to yield_with_args(1, 2, 3)`
     * `expect {...}.to yield_with_no_args`
     * `expect {...}.to yield_successive_args(1, 2, 3)`
+* `match_unless_raises` takes multiple exception args
 
 Bug fixes
 
