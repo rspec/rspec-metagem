@@ -7,7 +7,7 @@ module RSpec
         matcher_template = RSpec::Matchers::DSL::Matcher.new(name, &declarations)
         define_method name do |*expected|
           matcher = matcher_template.for_expected(*expected)
-          matcher.matcher_execution_context = @matcher_execution_context || self
+          matcher.matcher_execution_context = @matcher_execution_context ||= self
           matcher
         end
       end
