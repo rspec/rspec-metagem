@@ -13,6 +13,7 @@ Enhancements
 Bug fixes
 
 * Fix `be_within` matcher to be inclusive of delta.
+* Fix message-specific specs to pass on Rubinius (John Firebaugh)
 
 ### 2.9.1 / 2012-04-03
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...v2.9.1)
