@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'ostruct'
 
-describe RSpec::Core::ConfigurationOptions do
+describe RSpec::Core::ConfigurationOptions, :fakefs do
   include ConfigOptionsHelper
 
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do

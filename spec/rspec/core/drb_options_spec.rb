@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe RSpec::Core::DrbOptions do
+describe RSpec::Core::DrbOptions, :fakefs do
   include ConfigOptionsHelper
 
   describe "#drb_argv" do
