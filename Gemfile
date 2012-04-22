@@ -11,8 +11,10 @@ gemspec
   end
 end
 
-gem 'relish'
-gem 'rake', '~> 0.9.2'
+### deps for rdoc.info
+gem 'yard',          '0.7.5', :require => false
+gem 'redcarpet',     '2.1.1'
+gem 'github-markup', '0.7.2'
 
 platforms :jruby do
   gem "jruby-openssl"
