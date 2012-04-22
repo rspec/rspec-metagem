@@ -1,4 +1,5 @@
 require "bundler"
+Bundler.setup
 Bundler::GemHelper.install_tasks
 
 require "rake"
@@ -10,7 +11,7 @@ require "rspec/core/version"
 require "cucumber/rake/task"
 Cucumber::Rake::Task.new(:cucumber)
 
-desc "Run non-ui examples"
+desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.ruby_opts = %w[-w]
 end
@@ -18,6 +19,7 @@ end
 namespace :spec do
   desc "Run ui examples"
   RSpec::Core::RakeTask.new(:ui) do |t|
+    t.ruby_opts = %w[-w]
     t.rspec_opts = %w[--tag ui]
   end
 end
