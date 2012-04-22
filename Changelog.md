@@ -13,7 +13,7 @@ Enhancements
 Bug fixes
 
 * Properly parse `SPEC_OPTS` options.
-* example.description returns the location of the example if there is no
+* `example.description` returns the location of the example if there is no
   explicit description or matcher-generated description.
 * RDoc fixes (Grzegorz Świrski)
 * Do not modify example ancestry when dumping errors (Michael Grosser)
