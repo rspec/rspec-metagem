@@ -11,7 +11,7 @@ module YieldHelpers
   end
 
   def _yield_with_args(*args)
-    yield *args
+    yield(*args)
   end
 end
 

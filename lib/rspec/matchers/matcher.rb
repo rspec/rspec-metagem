@@ -223,14 +223,14 @@ module RSpec
         end
 
         def respond_to?(method, include_private=false)
-          super || @matcher_execution_context.respond_to?(method, include_private)
+          super || matcher_execution_context.respond_to?(method, include_private)
         end
 
         private
 
         def method_missing(method, *args, &block)
-          if @matcher_execution_context.respond_to?(method)
-            @matcher_execution_context.send method, *args, &block
+          if matcher_execution_context.respond_to?(method)
+            matcher_execution_context.send method, *args, &block
           else
             super(method, *args, &block)
           end
