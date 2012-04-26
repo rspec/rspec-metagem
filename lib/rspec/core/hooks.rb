@@ -263,12 +263,12 @@ module RSpec
       #         File.delete(file_to_parse)
       #       end
       #     end
-      def append_before(*args, &block)
+      def before(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:before][scope] << block.extend(BeforeHookExtension).with(options)
       end
 
-      alias_method :before, :append_before
+      alias_method :append_before, :before
 
       # Adds `block` to the front of the list of `before` blocks in the same
       # scope (`:each`, `:all`, or `:suite`).
@@ -327,12 +327,12 @@ module RSpec
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
       # they are run in reverse order of that in which they are declared.
-      def prepend_after(*args, &block)
+      def after(*args, &block)
         scope, options = scope_and_options_from(*args)
         hooks[:after][scope].unshift block.extend(AfterHookExtension).with(options)
       end
 
-      alias_method :after, :prepend_after
+      alias_method :prepend_after, :after
 
       # Adds `block` to the back of the list of `after` blocks in the same
       # scope (`:each`, `:all`, or `:suite`).
