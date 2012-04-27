@@ -397,6 +397,33 @@ module RSpec
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
       def run_hook(hook, scope, example_or_group=ExampleGroup.new, initial_procsy=nil)
+        find_hook(hook, scope, example_or_group, initial_procsy).run
+      end
+
+      # @private
+      def around_each_hooks_for(example, initial_procsy=nil)
+        AroundHookCollection.new(ancestors.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
+      end
+
+    private
+
+      def before_all_hooks_for(group)
+        GroupHookCollection.new(hooks[:before][:all]).for(group)
+      end
+
+      def after_all_hooks_for(group)
+        GroupHookCollection.new(hooks[:after][:all]).for(group)
+      end
+
+      def before_each_hooks_for(example)
+        HookCollection.new(ancestors.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
+      end
+
+      def after_each_hooks_for(example)
+        HookCollection.new(ancestors.map {|a| a.hooks[:after][:each]}.flatten).for(example)
+      end
+
+      def find_hook(hook, scope, example_or_group, initial_procsy)
         case [hook, scope]
         when [:before, :all]
           before_all_hooks_for(example_or_group)
@@ -410,35 +437,8 @@ module RSpec
           after_each_hooks_for(example_or_group)
         when [:before, :suite], [:after, :suite]
           hooks[hook][:suite].with(example_or_group)
-        end.run
+        end
       end
-
-      # @private
-      def before_all_hooks_for(group)
-        GroupHookCollection.new(hooks[:before][:all]).for(group)
-      end
-
-      # @private
-      def after_all_hooks_for(group)
-        GroupHookCollection.new(hooks[:after][:all]).for(group)
-      end
-
-      # @private
-      def around_each_hooks_for(example, initial_procsy=nil)
-        AroundHookCollection.new(ancestors.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
-      end
-
-      # @private
-      def before_each_hooks_for(example)
-        HookCollection.new(ancestors.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
-      end
-
-      # @private
-      def after_each_hooks_for(example)
-        HookCollection.new(ancestors.map {|a| a.hooks[:after][:each]}.flatten).for(example)
-      end
-
-    private
 
       SCOPES = [:each, :all, :suite]
 

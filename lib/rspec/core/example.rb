@@ -12,9 +12,7 @@ module RSpec
       #
       # Used to define methods that delegate to this example's metadata
       def self.delegate_to_metadata(*keys)
-        keys.each do |key|
-          define_method(key) {@metadata[key]}
-        end
+        keys.each { |key| define_method(key) { @metadata[key] } }
       end
 
       delegate_to_metadata :full_description, :execution_result, :file_path, :pending, :location
@@ -249,10 +247,9 @@ module RSpec
       end
 
       def assign_auto_description
+        return unless RSpec.configuration.expecting_with_rspec?
         if metadata[:description].empty? and !pending?
-          if RSpec.configuration.expecting_with_rspec?
-            metadata[:description] = RSpec::Matchers.generated_description
-          end
+          metadata[:description] = RSpec::Matchers.generated_description
         end
         RSpec::Matchers.clear_generated_description
       end
@@ -260,7 +257,6 @@ module RSpec
       def record(results={})
         execution_result.update(results)
       end
-
     end
   end
 end
