@@ -351,6 +351,11 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
         options[:format].should be_nil
         options[:color].should be_true
       end
+      it "parses -e 'full spec description'" do
+        File.open("./custom.opts", "w") {|f| f << "-e 'The quick brown fox jumps over the lazy dog'"}
+        options = parse_options("-O", "./custom.opts")
+        options[:full_description].should == /The\ quick\ brown\ fox\ jumps\ over\ the\ lazy\ dog/
+      end
     end
   end
 end
