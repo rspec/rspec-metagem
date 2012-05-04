@@ -376,6 +376,11 @@ module RSpec::Core
       config.filter.should eq({:full_description => /foo/})
     end
 
+    it "assigns the example names as the filter on description if description is an array" do
+      config.full_description = [ "foo", "bar" ]
+      config.filter.should eq({:full_description => Regexp.union(/foo/, /bar/)})
+    end
+
     describe "#default_path" do
       it 'defaults to "spec"' do
         config.default_path.should eq('spec')
