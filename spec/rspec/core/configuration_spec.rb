@@ -64,10 +64,37 @@ module RSpec::Core
       end
     end
 
+    shared_examples "a configurable framework adapter" do |m|
+      it "yields a config object if the framework_module supports it" do
+        custom_config = Struct.new(:custom_setting).new
+        mod = Module.new
+        mod.stub(:configuration => custom_config)
+
+        config.send m, mod do |mod_config|
+          mod_config.custom_setting = true
+        end
+
+        custom_config.custom_setting.should be_true
+      end
+
+      it "raises if framework module doesn't support configuration" do
+        mod = Module.new
+
+        lambda do
+          config.send m, mod do |mod_config|
+          end
+        end.should raise_error /must respond to `configuration`/
+      end
+    end
+
     describe "#mock_with" do
+      before { config.stub(:require) }
+
+      it_behaves_like "a configurable framework adapter", :mock_with
+
       [:rspec, :mocha, :rr, :flexmock].each do |framework|
         context "with #{framework}" do
-          it "requires the adapter for #{framework.inspect}" do
+          it "requires the adapter for #{framework}" do
             config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
             config.mock_with framework
           end
@@ -76,7 +103,6 @@ module RSpec::Core
 
       context "with a module" do
         it "sets the mock_framework_adapter to that module" do
-          config.stub(:require)
           mod = Module.new
           config.mock_with mod
           config.mock_framework.should eq(mod)
@@ -89,8 +115,6 @@ module RSpec::Core
       end
 
       context 'when there are already some example groups defined' do
-        before(:each) { config.stub(:require) }
-
         it 'raises an error since this setting must be applied before any groups are defined' do
           RSpec.world.stub(:example_groups).and_return([double.as_null_object])
           expect {
@@ -129,22 +153,33 @@ module RSpec::Core
     end
 
     describe "#expect_with" do
-      before(:each) do
-        # we need to prevent stdlib from being required because it defines a
-        # `pass` method that conflicts with our `pass` matcher.
-        config.stub(:require)
-      end
+      before { config.stub(:require) }
+
+      it_behaves_like "a configurable framework adapter", :expect_with
 
       [
         [:rspec,  'rspec/expectations'],
         [:stdlib, 'test/unit/assertions']
-      ].each do |(framework, required_file)|
+      ].each do |framework, required_file|
         context "with #{framework}" do
           it "requires #{required_file}" do
             config.should_receive(:require).with(required_file)
             config.expect_with framework
           end
         end
+      end
+
+      it "supports multiple calls" do
+        config.expect_with :rspec
+        config.expect_with :stdlib
+        config.expectation_frameworks.should eq [RSpec::Matchers, Test::Unit::Assertions]
+      end
+
+      it "raises if block given with multiple args" do
+        lambda do
+          config.expect_with :rspec, :stdlib do |mod_config|
+          end
+        end.should raise_error /expect_with only accepts/
       end
 
       it "raises ArgumentError if framework is not supported" do
@@ -178,11 +213,7 @@ module RSpec::Core
     end
 
     describe "#expecting_with_rspec?" do
-      before(:each) do
-        # prevent minitest assertions from being required and included,
-        # as that causes problems in some of our specs.
-        config.stub(:require)
-      end
+      before { config.stub(:require) }
 
       it "returns false by default" do
         config.should_not be_expecting_with_rspec

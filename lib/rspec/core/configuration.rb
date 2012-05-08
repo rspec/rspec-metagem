@@ -278,24 +278,31 @@ MESSAGE
       #
       # `framework` can be a Symbol or a Module.
       #
-      # Given any of :rspec, :mocha, :flexmock, or :rr, configures the named
-      # framework.
+      # Given any of `:rspec`, `:mocha`, `:flexmock`, or `:rr`, configures the
+      # named framework.
       #
-      # Given :nothing, configures no framework. Use this if you don't use any
-      # mocking framework to save a little bit of overhead.
+      # Given `:nothing`, configures no framework. Use this if you don't use
+      # any mocking framework to save a little bit of overhead.
       #
       # Given a Module, includes that module in every example group. The module
       # should adhere to RSpec's mock framework adapter API:
       #
-      #   setup_mocks_for_rspec
-      #     - called before each example
+      #     setup_mocks_for_rspec
+      #       - called before each example
       #
-      #   verify_mocks_for_rspec
-      #     - called after each example. Framework should raise an exception
-      #       when expectations fail
+      #     verify_mocks_for_rspec
+      #       - called after each example. Framework should raise an exception
+      #         when expectations fail
       #
-      #   teardown_mocks_for_rspec
-      #     - called after verify_mocks_for_rspec (even if there are errors)
+      #     teardown_mocks_for_rspec
+      #       - called after verify_mocks_for_rspec (even if there are errors)
+      #
+      # If the module responds to `configuration` and `mock_with` receives a block,
+      # it will yield the configuration object to the block e.g.
+      #
+      #    config.mock_with OtherMockFrameworkAdapter do |mod_config|
+      #      mod_config.custom_setting = true
+      #    end
       def mock_with(framework)
         framework_module = case framework
         when Module
@@ -324,6 +331,11 @@ MESSAGE
           assert_no_example_groups_defined(:mock_framework)
         end
 
+        if block_given?
+          raise "#{framework_module} must respond to `configuration` so that expect_with can yield it." unless framework_module.respond_to?(:configuration)
+          yield framework_module.configuration
+        end
+
         @mock_framework = framework_module
       end
 
@@ -338,16 +350,33 @@ MESSAGE
         expect_with(framework)
       end
 
-      # Sets the expectation framework module(s).
+      # Sets the expectation framework module(s) to be included in each example
+      # group.
       #
-      # `frameworks` can be :rspec, :stdlib, or both
+      # `frameworks` can be `:rspec`, `:stdlib`, a custom module, or any
+      # combination thereof:
       #
-      # Given :rspec, configures rspec/expectations.
-      # Given :stdlib, configures test/unit/assertions
-      # Given both, configures both
+      #     config.expect_with :rspec
+      #     config.expect_with :stdlib
+      #     config.expect_with :rspec, :stdlib
+      #     config.expect_with OtherExpectationFramework
+      #
+      # RSpec will translate `:rspec` and `:stdlib` into the appropriate
+      # modules.
+      #
+      # ## Configuration
+      #
+      # If the module responds to `configuration`, `expect_with` will
+      # yield the `configuration` object if given a block:
+      #
+      #     config.expect_with OtherExpectationFramework do |custom_config|
+      #       custom_config.custom_setting = true
+      #     end
       def expect_with(*frameworks)
         modules = frameworks.map do |framework|
           case framework
+          when Module
+            framework
           when :rspec
             require 'rspec/expectations'
             self.expecting_with_rspec = true
@@ -364,7 +393,12 @@ MESSAGE
           assert_no_example_groups_defined(:expect_with)
         end
 
-        @expectation_frameworks.clear
+        if block_given?
+          raise "expect_with only accepts a block with a single argument. Call expect_with #{modules.length} times, once with each argument, instead." if modules.length > 1
+          raise "#{modules.first} must respond to `configuration` so that expect_with can yield it." unless modules.first.respond_to?(:configuration)
+          yield modules.first.configuration
+        end
+
         @expectation_frameworks.push(*modules)
       end
 
