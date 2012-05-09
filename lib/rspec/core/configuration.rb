@@ -300,9 +300,9 @@ MESSAGE
       # If the module responds to `configuration` and `mock_with` receives a block,
       # it will yield the configuration object to the block e.g.
       #
-      #    config.mock_with OtherMockFrameworkAdapter do |mod_config|
-      #      mod_config.custom_setting = true
-      #    end
+      #     config.mock_with OtherMockFrameworkAdapter do |mod_config|
+      #       mod_config.custom_setting = true
+      #     end
       def mock_with(framework)
         framework_module = case framework
         when Module
