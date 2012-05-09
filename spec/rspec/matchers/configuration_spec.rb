@@ -31,8 +31,10 @@ module RSpec
         end
       end
 
-      it 'does not raise an error if configured to :should twice' do
+      it 'is a no-op when configured to :should twice' do
         in_sub_process do
+          ::Kernel.stub(:method_added).and_raise("no methods should be added here")
+
           configure_syntax :should
           configure_syntax :should
         end
@@ -49,8 +51,10 @@ module RSpec
         end
       end
 
-      it 'does not raise an error if configured to :expect twice' do
+      it 'is a no-op when configured to :expect twice' do
         in_sub_process do
+          RSpec::Matchers.stub(:method_added).and_raise("no methods should be added here")
+
           configure_syntax :expect
           configure_syntax :expect
         end

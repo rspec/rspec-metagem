@@ -42,6 +42,8 @@ module RSpec
         should, should_not = @original_should, @original_should_not
 
         ::Kernel.module_eval do
+          return if method_defined?(:should)
+
           define_method(:should) do |*args, &block|
             should.bind(self).call(*args, &block)
           end
@@ -63,6 +65,8 @@ module RSpec
         expect = @original_expect
 
         RSpec::Matchers.module_eval do
+          return if method_defined?(:expect)
+
           define_method(:expect) do |*args, &block|
             expect.bind(self).call(*args, &block)
           end
