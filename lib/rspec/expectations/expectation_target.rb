@@ -15,13 +15,5 @@ module RSpec
       alias not_to to_not
     end
   end
-
-  module Matchers
-    def expect(*target, &target_block)
-      target << target_block if block_given?
-      raise ArgumentError.new("You must pass an argument or a block to #expect but not both.") unless target.size == 1
-      ::RSpec::Expectations::ExpectationTarget.new(target.first)
-    end
-  end
 end
 

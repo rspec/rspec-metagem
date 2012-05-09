@@ -10,7 +10,26 @@ module RSpec
     end
 
     shared_examples_for "configuring the expectation syntax" do
-      include InSubProcess
+      # We want a sandboxed method that ensures that we wind up with
+      # both syntaxes properly enabled when the example ends.
+      #
+      # On platforms that fork, using a sub process is the easiest,
+      # most robust way to achieve that.
+      #
+      # On jRuby we just re-enable both syntaxes at the end of the example;
+      # however, this is a generally inferior approach because it depends on
+      # the code-under-test working properly; if it doesn't work properly,
+      # it could leave things in a "broken" state where tons of other examples fail.
+      if RUBY_PLATFORM == "java"
+        def sandboxed
+          yield
+        ensure
+          configure_syntax([:should, :expect])
+        end
+      else
+        include InSubProcess
+        alias sandboxed in_sub_process
+      end
 
       it 'is configured to :should and :expect by default' do
         configured_syntax.should eq([:should, :expect])
@@ -21,7 +40,7 @@ module RSpec
       end
 
       it 'can limit the syntax to :should' do
-        in_sub_process do
+        sandboxed do
           configure_syntax :should
           configured_syntax.should eq([:should])
 
@@ -32,7 +51,7 @@ module RSpec
       end
 
       it 'is a no-op when configured to :should twice' do
-        in_sub_process do
+        sandboxed do
           ::Kernel.stub(:method_added).and_raise("no methods should be added here")
 
           configure_syntax :should
@@ -41,7 +60,7 @@ module RSpec
       end
 
       it 'can limit the syntax to :expect' do
-        in_sub_process do
+        sandboxed do
           configure_syntax :expect
           expect(configured_syntax).to eq([:expect])
 
@@ -52,7 +71,7 @@ module RSpec
       end
 
       it 'is a no-op when configured to :expect twice' do
-        in_sub_process do
+        sandboxed do
           RSpec::Matchers.stub(:method_added).and_raise("no methods should be added here")
 
           configure_syntax :expect
@@ -61,7 +80,7 @@ module RSpec
       end
 
       it 'can re-enable the :should syntax' do
-        in_sub_process do
+        sandboxed do
           configure_syntax :expect
           configure_syntax [:should, :expect]
           configured_syntax.should eq([:should, :expect])
@@ -73,7 +92,7 @@ module RSpec
       end
 
       it 'can re-enable the :expect syntax' do
-        in_sub_process do
+        sandboxed do
           configure_syntax :should
           configure_syntax [:should, :expect]
           configured_syntax.should eq([:should, :expect])
