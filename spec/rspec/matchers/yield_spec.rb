@@ -291,18 +291,18 @@ describe "yield_successive_args matcher" do
 
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do
     it 'passes when the block successively yields the given args' do
-      expect { |b| { :a => 1, :b => 2 }.each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
+      expect { |b| [ [:a, 1], [:b, 2] ].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
     end
 
     it 'fails when the block does not yield that many times' do
       expect {
-        expect { |b| { :a => 1 }.each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
+        expect { |b| [[:a, 1]].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
       }.to fail_with(/but yielded with unexpected arguments/)
     end
 
     it 'fails when the block yields the right number of times but with different arguments' do
       expect {
-        expect { |b| { :a => 1, :b => 3 }.each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
+        expect { |b| [ [:a, 1], [:b, 3] ].each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
       }.to fail_with(/but yielded with unexpected arguments/)
     end
   end
