@@ -663,19 +663,27 @@ module RSpec
       BuiltIn::YieldSuccessiveArgs.new(*args)
     end
 
-    # Passes if actual contains all of the expected regardless of order. 
-    # This works for collections. Pass in multiple args  and it will only 
+    # Passes if actual contains all of the expected regardless of order.
+    # This works for collections. Pass in multiple args and it will only
     # pass if all args are found in collection.
     #
-    # NOTE: there is no should_not version of array.should =~ other_array
-    # 
+    # @note This is also available using the `=~` operator with `should`,
+    #       but `=~` is not supported with `expect`.
+    # @note There is no should_not version of array.should =~ other_array
+    #
     # @example
     #
+    #   expect([1,2,3]).to match_array([1,2,3])
+    #   expect([1,2,3]).to match_array([1,3,2])
     #   [1,2,3].should   =~ [1,2,3]   # => would pass
     #   [1,2,3].should   =~ [2,3,1]   # => would pass
     #   [1,2,3,4].should =~ [1,2,3]   # => would fail
     #   [1,2,2,3].should =~ [1,2,3]   # => would fail
     #   [1,2,3].should   =~ [1,2,3,4] # => would fail
+    def match_array(array)
+      BuiltIn::MatchArray.new(array)
+    end
+
     OperatorMatcher.register(Array, '=~', BuiltIn::MatchArray)
   end
 end
