@@ -359,15 +359,14 @@ module RSpec::Core
 
     [:focus, :focused].each do |example_alias|
       describe "##{example_alias}" do
-        let(:group) { ExampleGroup.describe }
-        subject { group.send example_alias, "a focused example" }
+        let(:focused_example) { ExampleGroup.describe.send example_alias, "a focused example" }
 
         it 'defines an example that can be filtered with :focused => true' do
-          subject.metadata.should include(:focused => true)
+          focused_example.metadata[:focused].should be_true
         end
 
         it 'defines an example that can be filtered with :focus => true' do
-          subject.metadata.should include(:focus => true)
+          focused_example.metadata[:focus].should be_true
         end
       end
     end
