@@ -1,8 +1,13 @@
 module RSpec
   module Expectations
+    # @api private
+    # Provides methods for enabling and disabling the available
+    # syntaxes provided by rspec-expectations.
     module Syntax
       extend self
 
+      # @api private
+      # Enables the `should` syntax.
       def enable_should(syntax_host = ::Kernel)
         return if should_enabled?(syntax_host)
 
@@ -34,6 +39,8 @@ module RSpec
         end
       end
 
+      # @api private
+      # Disables the `should` syntax.
       def disable_should(syntax_host = ::Kernel)
         return unless should_enabled?(syntax_host)
 
@@ -43,6 +50,8 @@ module RSpec
         end
       end
 
+      # @api private
+      # Enables the `expect` syntax.
       def enable_expect(syntax_host = ::RSpec::Matchers)
         return if expect_enabled?(syntax_host)
 
@@ -55,6 +64,8 @@ module RSpec
         end
       end
 
+      # @api private
+      # Disables the `expect` syntax.
       def disable_expect(syntax_host = ::RSpec::Matchers)
         return unless expect_enabled?(syntax_host)
 
@@ -63,10 +74,14 @@ module RSpec
         end
       end
 
+      # @api private
+      # Indicates whether or not the `should` syntax is enabled.
       def should_enabled?(syntax_host = ::Kernel)
         syntax_host.method_defined?(:should)
       end
 
+      # @api private
+      # Indicates whether or not the `expect` syntax is enabled.
       def expect_enabled?(syntax_host = ::RSpec::Matchers)
         syntax_host.method_defined?(:expect)
       end

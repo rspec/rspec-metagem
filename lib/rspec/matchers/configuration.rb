@@ -2,7 +2,20 @@ require 'rspec/expectations/syntax'
 
 module RSpec
   module Matchers
+    # Provides configuration options for rspec-expectations.
     class Configuration
+      # Configures the supported syntax.
+      # @param [Array<Symbol>, Symbol] values the syntaxes to enable
+      # @example
+      #   RSpec.configure do |rspec|
+      #     rspec.expect_with :rspec do |c|
+      #       c.syntax = :should
+      #       # or
+      #       c.syntax = :expect
+      #       # or
+      #       c.syntax = [:should, :expect]
+      #     end
+      #   end
       def syntax=(values)
         if Array(values).include?(:expect)
           Expectations::Syntax.enable_expect
@@ -17,6 +30,8 @@ module RSpec
         end
       end
 
+      # The list of configured syntaxes.
+      # @return [Array<Symbol>] the list of configured syntaxes.
       def syntax
         syntaxes = []
         syntaxes << :should if Expectations::Syntax.should_enabled?
@@ -25,6 +40,8 @@ module RSpec
       end
     end
 
+    # The configuration object
+    # @return [RSpec::Matchers::Configuration] the configuration object
     def self.configuration
       @configuration ||= Configuration.new
     end
