@@ -8,6 +8,8 @@ Feature: --example option
 
   This allows you to run a single uniquely named example, all examples with
   similar names, all the examples in a uniquely named group, etc, etc.
+  
+  You can also use the option more than once to specify multiple example matches.
 
   Background:
     Given a file named "first_spec.rb" with:
@@ -84,3 +86,16 @@ Feature: --example option
   Scenario: Object#method
     When I run `rspec . --example 'Array#length'`
     Then the examples should all pass
+    
+  Scenario: Multiple applications of example name option
+    When I run `rspec . --example 'first group' --example 'second group' --format d`
+    Then the examples should all pass
+    And the output should contain all of these:
+      |first example in first group|
+      |second example in first group|
+      |first example in second group|
+      |second example in second group|
+    And the output should not contain any of these:
+      |first example in third group|
+      |nested group first example in nested group|
+      |nested group second example in nested group|

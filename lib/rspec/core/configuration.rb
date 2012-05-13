@@ -463,9 +463,9 @@ EOM
       end
 
       def full_description=(description)
-        filter_run :full_description => /#{description}/
+        filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
-
+      
       # @overload add_formatter(formatter)
       #
       # Adds a formatter to the formatters collection. `formatter` can be a

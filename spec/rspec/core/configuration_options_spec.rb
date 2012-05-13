@@ -170,8 +170,8 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
 
   describe "--example" do
     it "sets :full_description" do
-      parse_options('--example','foo').should include(:full_description => /foo/)
-      parse_options('-e','bar').should include(:full_description => /bar/)
+      parse_options('--example','foo').should include(:full_description => [/foo/])
+      parse_options('-e','bar').should include(:full_description => [/bar/])
     end
   end
 
@@ -321,7 +321,7 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
       options[:color].should be_true
       options[:line_numbers].should eq(["37"])
       options[:debug].should be_true
-      options[:full_description].should eq(/foo\ bar/)
+      options[:full_description].should eq([/foo\ bar/])
       options[:drb].should be_true
     end
 
@@ -354,7 +354,7 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
       it "parses -e 'full spec description'" do
         File.open("./custom.opts", "w") {|f| f << "-e 'The quick brown fox jumps over the lazy dog'"}
         options = parse_options("-O", "./custom.opts")
-        options[:full_description].should == /The\ quick\ brown\ fox\ jumps\ over\ the\ lazy\ dog/
+        options[:full_description].should eq([/The\ quick\ brown\ fox\ jumps\ over\ the\ lazy\ dog/])
       end
     end
   end
