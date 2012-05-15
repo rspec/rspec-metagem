@@ -6,6 +6,7 @@ Enhancements
   block if given
     * aids decoupling from rspec-core's configuation
 * Allow specifying multiple `--example` options. (Daniel Doubrovkine @dblock)
+* `subject(:article) { Article.new }`
 
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0...v2.10.0)

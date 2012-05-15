@@ -78,6 +78,20 @@ module RSpec::Core
           doubly_nested_group.subject.call.should eq([4,5,6])
         end
       end
+
+      describe "with a name" do
+        it "defines a method that returns the memoized subject" do
+          group = ExampleGroup.describe do
+            subject(:list) { [1,2,3] }
+            example do
+              list.should equal(list)
+              subject.should equal(subject)
+              subject.should equal(list)
+            end
+          end
+          group.run.should be_true
+        end
+      end
     end
 
     context "using 'self' as an explicit subject" do

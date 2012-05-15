@@ -2,14 +2,7 @@ module RSpec
   module Core
     module Subject
       module ExampleMethods
-
-        # Returns the subject defined by the example group. The subject block
-        # is only executed once per example, the result of which is cached and
-        # returned by any subsequent calls to `subject`.
-        #
-        # If a class is passed to `describe` and no subject is explicitly
-        # declared in the example group, then `subject` will return a new
-        # instance of that class.
+        # Returns the example group's `subject`.
         #
         # @note `subject` was contributed by Joe Ferris to support the one-liner
         #   syntax embraced by shoulda matchers:
@@ -19,9 +12,8 @@ module RSpec
         #       end
         #
         #   While the examples below demonstrate how to use `subject`
-        #   explicitly in specs, we think it works best for extensions like
-        #   shoulda, custom matchers, and shared example groups, where it is
-        #   not referenced explicitly in specs.
+        #   explicitly in examples, we recommend that you define a method with
+        #   an intention revealing name instead.
         #
         # @example
         #
@@ -30,6 +22,7 @@ module RSpec
         #     subject { Person.new(:birthdate => 19.years.ago) }
         #     it "should be eligible to vote" do
         #       subject.should be_eligible_to_vote
+        #       # ^ ^ explicit reference to subject not recommended
         #     end
         #   end
         #
@@ -37,13 +30,18 @@ module RSpec
         #   describe Person do
         #     it "should be eligible to vote" do
         #       subject.should be_eligible_to_vote
+        #       # ^ ^ explicit reference to subject not recommended
         #     end
         #   end
         #
+        #   # one-liner syntax - should is invoked on subject
         #   describe Person do
-        #     # one liner syntax - should is invoked on subject
         #     it { should be_eligible_to_vote }
         #   end
+        #
+        # @see ExampleGroupMethods#subject
+        # @see #should
+        #
         def subject
           if defined?(@original_subject)
             @original_subject
@@ -52,36 +50,36 @@ module RSpec
           end
         end
 
-        begin
-          require 'rspec/expectations/handler'
-
-          # When +should+ is called with no explicit receiver, the call is
-          # delegated to the object returned by +subject+. Combined with
-          # an implicit subject (see +subject+), this supports very concise
-          # expressions.
-          #
-          # @example
-          #
-          #   describe Person do
-          #     it { should be_eligible_to_vote }
-          #   end
-          def should(matcher=nil, message=nil)
-            RSpec::Expectations::PositiveExpectationHandler.handle_matcher(subject, matcher, message)
-          end
-
-          # Just like +should+, +should_not+ delegates to the subject (implicit or
-          # explicit) of the example group.
-          #
-          # @example
-          #
-          #   describe Person do
-          #     it { should_not be_eligible_to_vote }
-          #   end
-          def should_not(matcher=nil, message=nil)
-            RSpec::Expectations::NegativeExpectationHandler.handle_matcher(subject, matcher, message)
-          end
-        rescue LoadError
+        # When `should` is called with no explicit receiver, the call is
+        # delegated to the object returned by `subject`. Combined with an
+        # implicit subject this supports very concise expressions.
+        #
+        # @example
+        #
+        #   describe Person do
+        #     it { should be_eligible_to_vote }
+        #   end
+        #
+        # @see #subject
+        def should(matcher=nil, message=nil)
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(subject, matcher, message)
         end
+
+        # Just like `should`, `should_not` delegates to the subject (implicit or
+        # explicit) of the example group.
+        #
+        # @example
+        #
+        #   describe Person do
+        #     it { should_not be_eligible_to_vote }
+        #   end
+        #
+        # @see #subject
+        def should_not(matcher=nil, message=nil)
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(subject, matcher, message)
+        end
+
+        private
 
         def _attribute_chain(attribute)
           attribute.to_s.split('.')
@@ -95,7 +93,7 @@ module RSpec
       end
 
       module ExampleGroupMethods
-        # Creates a nested example group named by the submitted +attribute+,
+        # Creates a nested example group named by the submitted `attribute`,
         # and then generates an example using the submitted block.
         #
         # @example
@@ -114,8 +112,8 @@ module RSpec
         #     end
         #   end
         #
-        # The attribute can be a +Symbol+ or a +String+. Given a +String+
-        # with dots, the result is as though you concatenated that +String+
+        # The attribute can be a `Symbol` or a `String`. Given a `String`
+        # with dots, the result is as though you concatenated that `String`
         # onto the subject in an expression.
         #
         # @example
@@ -130,8 +128,8 @@ module RSpec
         #     its("phone_numbers.first") { should eq("555-1212") }
         #   end
         #
-        # When the subject is a +Hash+, you can refer to the Hash keys by
-        # specifying a +Symbol+ or +String+ in an array.
+        # When the subject is a `Hash`, you can refer to the Hash keys by
+        # specifying a `Symbol` or `String` in an array.
         #
         # @example
         #
@@ -165,8 +163,15 @@ module RSpec
           end
         end
 
-        # Defines an explicit subject for an example group which can then be the
-        # implicit receiver (through delegation) of calls to +should+.
+        # Declares a `subject` for an example group which can then be the
+        # implicit receiver (through delegation) of calls to `should`.
+        #
+        # Given a `name`, defines a method with that name which returns the
+        # `subject`. This lets you declare the subject once and access it
+        # implicitly in one-liners and explicitly using an intention revealing
+        # name.
+        #
+        # @param [String,Symbol] name optional name
         #
         # @example
         #
@@ -176,8 +181,18 @@ module RSpec
         #     it { should_not be_overdrawn }
         #   end
         #
-        # See +ExampleMethods#should+ for more information about this approach.
-        def subject(&block)
+        #   describe CheckingAccount, "with a non-zero starting balance" do
+        #     subject(:account) { CheckingAccount.new(:amount => 50, :currency => :USD) }
+        #     it { should_not be_overdrawn }
+        #     it "has a balance equal to the starting balance" do
+        #       account.balance.should eq(Money.new(50, :USD))
+        #     end
+        #   end
+        #
+        # @see ExampleMethods#subject
+        # @see ExampleMethods#should
+        def subject(name=nil, &block)
+          let(name) { subject } if name
           block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
 
@@ -198,7 +213,6 @@ module RSpec
           Class === described ? proc { described.new } : proc { described }
         end
       end
-
     end
   end
 end
