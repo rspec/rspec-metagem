@@ -41,7 +41,6 @@ module RSpec
         #
         # @see ExampleGroupMethods#subject
         # @see #should
-        #
         def subject
           if defined?(@original_subject)
             @original_subject
@@ -171,18 +170,20 @@ module RSpec
         # implicitly in one-liners and explicitly using an intention revealing
         # name.
         #
-        # @param [String,Symbol] name optional name
+        # @param [String,Symbol] name used to define an accessor with an
+        #   intention revealing name
+        # @param block defines the value to be returned by `subject` in examples
         #
         # @example
         #
         #   describe CheckingAccount, "with $50" do
-        #     subject { CheckingAccount.new(:amount => 50, :currency => :USD) }
-        #     it { should have_a_balance_of(50, :USD) }
+        #     subject { CheckingAccount.new(Money.new(50, :USD)) }
+        #     it { should have_a_balance_of(Money.new(50, :USD)) }
         #     it { should_not be_overdrawn }
         #   end
         #
         #   describe CheckingAccount, "with a non-zero starting balance" do
-        #     subject(:account) { CheckingAccount.new(:amount => 50, :currency => :USD) }
+        #     subject(:account) { CheckingAccount.new(Money.new(50, :USD)) }
         #     it { should_not be_overdrawn }
         #     it "has a balance equal to the starting balance" do
         #       account.balance.should eq(Money.new(50, :USD))
