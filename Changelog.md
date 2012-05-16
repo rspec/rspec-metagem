@@ -7,6 +7,10 @@ Enhancements
     * aids decoupling from rspec-core's configuation
 * Allow specifying multiple `--example` options. (Daniel Doubrovkine @dblock)
 * `subject(:article) { Article.new }`
+    * see http://blog.davidchelimsky.net/2012/05/13/spec-smell-explicit-use-of-subject/
+      for background.
+    * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
+      suggesting it.
 
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0...v2.10.0)
@@ -45,8 +49,8 @@ Bug fixes
   over DRb (using spork).
 * Ensure shared example groups are reset after a run (as example groups are).
 * Remove `rescue false` from calls to filters represented as Procs
-* Ensure described_class gets the closest constant (pyromaniac)
-* In "autorun", don't run the specs in the at_exit hook if there was an
+* Ensure `described_class` gets the closest constant (pyromaniac)
+* In "autorun", don't run the specs in the `at_exit` hook if there was an
   exception (most likely due to a SyntaxError). (sunaku)
 * Don't extend groups with modules already used to extend ancestor groups.
 * `its` correctly memoizes nil or false values (Yamada Masaki)
