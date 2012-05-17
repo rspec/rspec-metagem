@@ -14,6 +14,9 @@ module RSpec
           unless defined?(@expected)
             raise ArgumentError.new("You must set an expected value using #of: be_within(#{delta}).of(expected_value)")
           end
+          unless actual.is_a? Numeric
+            raise ArgumentError, "Expected a numeric value be within #{delta} of #{expected} but got #{actual.inspect}"
+          end
           (super(actual) - expected).abs <= delta
         end
 
