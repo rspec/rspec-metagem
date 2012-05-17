@@ -59,6 +59,10 @@ module RSpec
         matcher = be_within(0.5)
         expect { matcher.matches?(5.1) }.to raise_error(ArgumentError, /must set an expected value using #of/)
       end
+
+      it "raises an error if the actual value is not numeric" do
+        expect { be_within(0.1).of(0).matches?(nil) }.to raise_error(ArgumentError, /Expected a numeric value be within/)
+      end
     end
   end
 end
