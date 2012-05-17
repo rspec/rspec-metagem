@@ -1,3 +1,10 @@
+### dev
+
+Bug fixes
+
+* Allow only `Numeric` values to be the "actual" in the `be_within` matcher.
+  This prevents confusing error messages. (Su Zhang @zhangsu)
+
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...v2.10.0)
 
