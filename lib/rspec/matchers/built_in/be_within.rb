@@ -11,12 +11,9 @@ module RSpec
         end
 
         def matches?(actual)
-          unless defined?(@expected)
-            raise ArgumentError.new("You must set an expected value using #of: be_within(#{delta}).of(expected_value)")
-          end
-          unless actual.is_a? Numeric
-            raise ArgumentError, "The actual value (#{actual.inspect}) must be of a `Numeric` type"
-          end
+          check_presence_of_expected
+          check_actual_is_numeric(actual)
+
           (super(actual) - expected).abs <= delta
         end
 
@@ -35,6 +32,20 @@ module RSpec
 
         def description
           "be within #{delta} of #{expected}"
+        end
+
+        private
+
+        def check_presence_of_expected
+          unless defined?(@expected)
+            raise ArgumentError.new("You must set an expected value using #of: be_within(#{delta}).of(expected_value)")
+          end
+        end
+
+        def check_actual_is_numeric(actual)
+          unless actual.is_a? Numeric
+            raise ArgumentError, "The actual value (#{actual.inspect}) must be of a `Numeric` type"
+          end
         end
       end
     end
