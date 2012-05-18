@@ -115,13 +115,9 @@ module RSpec
       attr_reader :exclusions, :inclusions
 
       def initialize
-        reset
-        extend(BackwardCompatibility)
-      end
-
-      def reset
-        @inclusions = {}.extend(Describable)
         @exclusions = DEFAULT_EXCLUSIONS.dup.extend(Describable)
+        @inclusions = {}.extend(Describable)
+        extend(BackwardCompatibility)
       end
 
       def add_location(file_path, line_numbers)

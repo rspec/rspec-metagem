@@ -1101,11 +1101,6 @@ module RSpec::Core
         config.reset
         config.formatters.should be_empty
       end
-
-      it "resets the filter_manager" do
-        config.filter_manager.should_receive(:reset)
-        config.reset
-      end
     end
 
     describe "#force" do
