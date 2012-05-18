@@ -66,8 +66,8 @@ module RSpec
   # Used internally to ensure examples get reloaded between multiple runs in
   # the same process.
   def self.reset
-    world.reset
-    configuration.reset
+    @world = nil
+    @configuration = nil
   end
 
   # Returns the global [Configuration](RSpec/Core/Configuration) object. While you
