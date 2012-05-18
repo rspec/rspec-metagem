@@ -252,5 +252,21 @@ module RSpec::Core
         filter_manager.inclusions.should eq(filter => "a_value")
       end
     end
+
+    describe "#reset" do
+      it "clears the inclusions" do
+        filter_manager = FilterManager.new
+        filter_manager.include :foo => :bar
+        filter_manager.reset
+        filter_manager.inclusions.should be_empty
+      end
+
+      it "clears the exclusions" do
+        filter_manager = FilterManager.new
+        filter_manager.exclude :foo => :bar
+        filter_manager.reset
+        filter_manager.exclusions.should eq(FilterManager::DEFAULT_EXCLUSIONS)
+      end
+    end
   end
 end

@@ -209,6 +209,7 @@ MESSAGE
       def reset
         @reporter = nil
         @formatters.clear
+        filter_manager.reset
       end
 
       # @overload add_setting(name)

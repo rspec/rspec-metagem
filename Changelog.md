@@ -12,6 +12,10 @@ Enhancements
     * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
       suggesting it.
 
+Bug fixes
+
+* `RSpec.reset` also resets filters.
+
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0...v2.10.0)
 
