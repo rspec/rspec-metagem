@@ -2,7 +2,7 @@ module RSpec
   module Core
     # Adds the `describe` method to the top-level namespace.
     module DSL
-      # Generates a subclass of [ExampleGroup](ExampleGroup)
+      # Generates a subclass of {ExampleGroup}
       #
       # ## Examples:
       #

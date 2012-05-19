@@ -1,11 +1,9 @@
 module RSpec
   module Core
-    # Wrapper for an instance of a subclass of [ExampleGroup](ExampleGroup). An
-    # instance of `Example` is returned by the
-    # [example](ExampleGroup#example-instance_method) method exposed to
-    # examples, [before](Hooks#before-instance_method) and
-    # [after](Hooks#after-instance_method) hooks, and yielded to
-    # [around](Hooks#around-instance_method) hooks.
+    # Wrapper for an instance of a subclass of {ExampleGroup}. An instance of
+    # `Example` is returned by the {ExampleGroup#example example} method
+    # exposed to examples, {Hooks#before before} and {Hooks#after after} hooks,
+    # and yielded to {Hooks#around around} hooks.
     #
     # Useful for configuring logging and/or taking some action based
     # on the state of an example's metadata.
@@ -99,7 +97,7 @@ module RSpec
 
       # @api private
       # instance_evals the block passed to the constructor in the context of
-      # the instance of [ExampleGroup](../ExampleGroup).
+      # the instance of {ExampleGroup}.
       # @param example_group_instance the instance of an ExampleGroup subclass
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
@@ -149,8 +147,7 @@ module RSpec
       end
 
       # Used to extend a `Proc` with behavior that makes it look something like
-      # an [Example](../Example) in an [around](../Hooks#around-instance_method)
-      # hook.
+      # an {Example} in an {Hooks#around around} hook.
       #
       # @note Procsy, itself, is not a public API, but we're documenting it
       #   here to document how to interact with the object yielded to an
@@ -167,7 +164,7 @@ module RSpec
       #       end
       #     end
       module Procsy
-        # The `metadata` of the [Example](../Example) instance.
+        # The `metadata` of the {Example} instance.
         attr_reader :metadata
 
         # @api private

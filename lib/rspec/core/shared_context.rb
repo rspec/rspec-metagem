@@ -1,7 +1,7 @@
 module RSpec
   module Core
-    # Exposes [ExampleGroup](ExampleGroup)-level methods to a module, so you
-    # can include that module in an [ExampleGroup](ExampleGroup).
+    # Exposes {ExampleGroup}-level methods to a module, so you can include that
+    # module in an {ExampleGroup}.
     #
     # @example
     #

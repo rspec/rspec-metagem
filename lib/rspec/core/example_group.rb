@@ -1,6 +1,6 @@
 module RSpec
   module Core
-    # ExampleGroup and [Example](Example) are the main structural elements of
+    # ExampleGroup and {Example} are the main structural elements of
     # rspec-core.  Consider this example:
     #
     #     describe Thing do
@@ -69,7 +69,7 @@ module RSpec
         define_example_method :example
         # Defines an example within a group.
         #
-        # @see ExampleGroup::example
+        # @see example
         define_example_method :it
         # Defines an example within a group.
         # This is here primarily for backward compatibility with early versions
@@ -191,7 +191,7 @@ module RSpec
       end
 
       # @private
-      # @return [Metadata] belonging to the parent of a nested [ExampleGroup](ExampleGroup)
+      # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
       def self.superclass_metadata
         @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end
@@ -443,11 +443,11 @@ module RSpec
       end
 
       # @attr_reader
-      # Returns the [Example](Example) object that wraps this instance of
+      # Returns the {Example} object that wraps this instance of
       # `ExampleGroup`
       attr_accessor :example
 
-      # @deprecated use [example](ExampleGroup#example-instance_method)
+      # @deprecated use {ExampleGroup#example}
       def running_example
         RSpec.deprecate("running_example", "example")
         example
