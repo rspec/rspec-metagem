@@ -538,7 +538,7 @@ EOM
       #
       # Example:
       #
-      #     alias_it_should_behave_like_to(:it_has_behavior, 'has behavior:')
+      #     alias_it_behaves_like_to(:it_has_behavior, 'has behavior:')
       #
       # allows the user to include a shared example group like:
       #
@@ -553,9 +553,11 @@ EOM
       #     Entity
       #       has behavior: sortability
       #         # sortability examples here
-      def alias_it_should_behave_like_to(new_name, report_label = '')
-        RSpec::Core::ExampleGroup.alias_it_should_behave_like_to(new_name, report_label)
+      def alias_it_behaves_like_to(new_name, report_label = '')
+        RSpec::Core::ExampleGroup.alias_it_behaves_like_to(new_name, report_label)
       end
+
+      alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
 
       # Adds key/value pairs to the `inclusion_filter`. If the
       # `treat_symbols_as_metadata_keys_with_true_values` config option is set

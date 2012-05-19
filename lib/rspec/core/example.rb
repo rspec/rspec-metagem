@@ -2,10 +2,38 @@ module RSpec
   module Core
     # Wrapper for an instance of a subclass of [ExampleGroup](ExampleGroup). An
     # instance of `Example` is returned by the
-    # [example](ExampleGroup#example-instance_method) method available in
+    # [example](ExampleGroup#example-instance_method) method exposed to
     # examples, [before](Hooks#before-instance_method) and
     # [after](Hooks#after-instance_method) hooks, and yielded to
     # [around](Hooks#around-instance_method) hooks.
+    #
+    # Useful for configuring logging and/or taking some action based
+    # on the state of an example's metadata.
+    #
+    # @example
+    #
+    #     RSpec.configure do |config|
+    #       config.before do
+    #         log example.description
+    #       end
+    #
+    #       config.after do
+    #         log example.description
+    #       end
+    #
+    #       config.around do |ex|
+    #         log example.description
+    #         ex.run
+    #       end
+    #     end
+    #
+    #     shared_examples "auditable" do
+    #       it "does something" do
+    #         log "#{example.full_description}: #{auditable.inspect}"
+    #         auditable.should do_something
+    #       end
+    #     end
+    #
     # @see ExampleGroup
     class Example
       # @private
@@ -70,9 +98,9 @@ module RSpec
       alias_method :pending?, :pending
 
       # @api private
+      # instance_evals the block passed to the constructor in the context of
+      # the instance of [ExampleGroup](../ExampleGroup).
       # @param example_group_instance the instance of an ExampleGroup subclass
-      # instance_evals the block submitted to the constructor in the
-      # context of the instance of ExampleGroup
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
         @example_group_instance.example = self
@@ -112,7 +140,7 @@ module RSpec
         finish(reporter)
       end
 
-      # @private
+      # @api private
       #
       # Wraps the example block in a Proc so it can invoked using `run` or
       # `call` in [around](../Hooks#around-instance_method) hooks.
@@ -120,20 +148,40 @@ module RSpec
         proc.extend(Procsy).with(metadata)
       end
 
-      # @private
+      # Used to extend a `Proc` with behavior that makes it look something like
+      # an [Example](../Example) in an [around](../Hooks#around-instance_method)
+      # hook.
+      #
+      # @note Procsy, itself, is not a public API, but we're documenting it
+      #   here to document how to interact with the object yielded to an
+      #   `around` hook.
+      #
+      # @example
+      #
+      #     RSpec.configure do |c|
+      #       c.around do |ex| # ex is a Proc extended with Procsy
+      #         if ex.metadata[:key] == :some_value && some_global_condition
+      #           raise "some message"
+      #         end
+      #         ex.run         # run delegates to ex.call
+      #       end
+      #     end
       module Procsy
+        # The `metadata` of the [Example](../Example) instance.
         attr_reader :metadata
 
-        # @private
+        # @api private
         # @param [Proc]
         # Adds a `run` method to the extended Proc, allowing it to be invoked
         # in an [around](../Hooks#around-instance_method) hook using either
         # `run` or `call`.
-        def self.extended(object)
-          def object.run; call; end
+        def self.extended(proc)
+          # @api public
+          # Foo bar
+          def proc.run; call; end
         end
 
-        # @private
+        # @api private
         def with(metadata)
           @metadata = metadata
           self

@@ -1,7 +1,7 @@
 module RSpec
   module Core
-    # ExampleGroup and Example are the main structural elements of rspec-core.
-    # Consider this example:
+    # ExampleGroup and [Example](Example) are the main structural elements of
+    # rspec-core.  Consider this example:
     #
     #     describe Thing do
     #       it "does something" do
@@ -47,66 +47,108 @@ module RSpec
         alias_method :display_name, :description
         # @private
         alias_method :describes, :described_class
-      end
 
-      # @private
-      def self.define_example_method(name, extra_options={})
-        module_eval(<<-END_RUBY, __FILE__, __LINE__)
-          def self.#{name}(desc=nil, *args, &block)
-            options = build_metadata_hash_from(args)
-            options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
-            options.update(#{extra_options.inspect})
-            examples << RSpec::Core::Example.new(self, desc, options, block)
-            examples.last
-          end
-        END_RUBY
-      end
-
-      define_example_method :example
-      define_example_method :it
-      define_example_method :specify
-
-      define_example_method :focused,  :focused => true, :focus => true
-      define_example_method :focus,    :focused => true, :focus => true
-
-      define_example_method :pending,  :pending => true
-      define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
-      define_example_method :xit,      :pending => 'Temporarily disabled with xit'
-      define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
-
-      class << self
-        alias_method :alias_example_to, :define_example_method
-      end
-
-      # @private
-      def self.define_nested_shared_group_method(new_name, report_label=nil)
-        module_eval(<<-END_RUBY, __FILE__, __LINE__)
-          def self.#{new_name}(name, *args, &customization_block)
-            group = describe("#{report_label || "it should behave like"} \#{name}") do
-              find_and_eval_shared("examples", name, *args, &customization_block)
+        # @private
+        # @macro [attach] define_example_method
+        #   @param [String] name
+        #   @param [Hash] extra_options
+        #   @param [Block] implementation
+        def self.define_example_method(name, extra_options={})
+          module_eval(<<-END_RUBY, __FILE__, __LINE__)
+            def #{name}(desc=nil, *args, &block)
+              options = build_metadata_hash_from(args)
+              options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
+              options.update(#{extra_options.inspect})
+              examples << RSpec::Core::Example.new(self, desc, options, block)
+              examples.last
             end
-            group.metadata[:shared_group_name] = name
-            group
-          end
-        END_RUBY
+          END_RUBY
+        end
+
+        # Defines an example within a group.
+        define_example_method :example
+        # Defines an example within a group.
+        #
+        # @see ExampleGroup::example
+        define_example_method :it
+        # Defines an example within a group.
+        # This is here primarily for backward compatibility with early versions
+        # of RSpec which used `context` and `specify` instead of `describe` and
+        # `it`.
+        define_example_method :specify
+
+        # Shortcut to define an example with `:focus` => true
+        define_example_method :focus,   :focused => true, :focus => true
+        # Shortcut to define an example with `:focus` => true
+        define_example_method :focused, :focused => true, :focus => true
+
+        # Shortcut to define an example with :pending => true
+        define_example_method :pending,  :pending => true
+        # Shortcut to define an example with :pending => 'Temporarily disabled with xexample'
+        define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
+        # Shortcut to define an example with :pending => 'Temporarily disabled with xit'
+        define_example_method :xit,      :pending => 'Temporarily disabled with xit'
+        # Shortcut to define an example with :pending => 'Temporarily disabled with xspecify'
+        define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
+
+        # Works like `alias_method :name, :example` with the added benefit of
+        # assigning default metadata to the generated example.
+        #
+        # @note Use with caution. This extends the language used in your
+        #   specs, but does not add any additional documentation.  We use this
+        #   in rspec to define methods like `focus` and `xit`, but we also add
+        #   docs for those methods.
+        def alias_example_to name, extra={}
+          (class << self; self; end).define_example_method name, extra
+        end
+
+        # @private
+        # @macro [attach] define_nested_shared_group_method
+        #
+        #   @see SharedExampleGroup
+        def self.define_nested_shared_group_method(new_name, report_label=nil)
+          module_eval(<<-END_RUBY, __FILE__, __LINE__)
+            def #{new_name}(name, *args, &customization_block)
+              group = describe("#{report_label || "it should behave like"} \#{name}") do
+                find_and_eval_shared("examples", name, *args, &customization_block)
+              end
+              group.metadata[:shared_group_name] = name
+              group
+            end
+          END_RUBY
+        end
+
+        # Generates a nested example group and includes the shared content
+        # mapped to `name` in the nested group.
+        define_nested_shared_group_method :it_behaves_like, "behaves like"
+        # Generates a nested example group and includes the shared content
+        # mapped to `name` in the nested group.
+        define_nested_shared_group_method :it_should_behave_like
+
+        # Works like `alias_method :name, :it_behaves_like` with the added
+        # benefit of assigning default metadata to the generated example.
+        #
+        # @note Use with caution. This extends the language used in your
+        #   specs, but does not add any additional documentation.  We use this
+        #   in rspec to define `it_should_behave_like` (for backward
+        #   compatibility), but we also add docs for that method.
+        def alias_it_behaves_like_to name, *args, &block
+          (class << self; self; end).define_nested_shared_group_method name, *args, &block
+        end
       end
 
-      define_nested_shared_group_method :it_should_behave_like
-
-      class << self
-        alias_method :alias_it_should_behave_like_to, :define_nested_shared_group_method
-      end
-
-      alias_it_should_behave_like_to :it_behaves_like, "behaves like"
-
-      # Includes shared content declared with `name`.
+      # Includes shared content mapped to `name` directly in the group in which
+      # it is declared. Unlike `it_behaves_like`, this does not create a nested
+      # example group, nor does it accept a block.
       #
       # @see SharedExampleGroup
       def self.include_context(name, *args)
         block_given? ? block_not_supported("context") : find_and_eval_shared("context", name, *args)
       end
 
-      # Includes shared content declared with `name`.
+      # Includes shared content mapped to `name` directly in the group in which
+      # it is declared. Unlike `it_behaves_like`, this does not create a nested
+      # example group, nor does it accept a block.
       #
       # @see SharedExampleGroup
       def self.include_examples(name, *args)
@@ -121,7 +163,7 @@ module RSpec
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
-          shared_block = world.shared_example_groups[name]
+        shared_block = world.shared_example_groups[name]
 
         module_eval_with_args(*args, &shared_block)
         module_eval(&customization_block) if customization_block
@@ -314,11 +356,11 @@ module RSpec
           # TODO: come up with a better solution for this.
           RSpec.configuration.reporter.message <<-EOS
 
-An error occurred in an after(:all) hook.
-  #{e.class}: #{e.message}
-  occurred at #{e.backtrace.first}
+    An error occurred in an after(:all) hook.
+          #{e.class}: #{e.message}
+      occurred at #{e.backtrace.first}
 
-        EOS
+      EOS
         end
       end
 
