@@ -1,4 +1,5 @@
 ### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.10.1...master)
 
 Enhancements
 
@@ -11,6 +12,9 @@ Enhancements
       for background.
     * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
       suggesting it.
+
+### 2.10.1 / 2012-05-19
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.10.0...v2.10.1)
 
 Bug fixes
 
