@@ -8,7 +8,7 @@ Enhancements
     * aids decoupling from rspec-core's configuation
 * Allow specifying multiple `--example` options. (Daniel Doubrovkine @dblock)
 * `subject(:article) { Article.new }`
-    * see http://blog.davidchelimsky.net/2012/05/13/spec-smell-explicit-use-of-subject/
+    * see [http://blog.davidchelimsky.net/2012/05/13/spec-smell-explicit-use-of-subject/](http://blog.davidchelimsky.net/2012/05/13/spec-smell-explicit-use-of-subject/)
       for background.
     * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
       suggesting it.
