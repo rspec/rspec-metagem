@@ -35,7 +35,7 @@ Bug fixes
 * Properly parse `SPEC_OPTS` options.
 * `example.description` returns the location of the example if there is no
   explicit description or matcher-generated description.
-* RDoc fixes (Grzegorz M-E~Zwirski)
+* RDoc fixes (Grzegorz Świrski)
 * Do not modify example ancestry when dumping errors (Michael Grosser)
 
 ### 2.9.0 / 2012-03-17
