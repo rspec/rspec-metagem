@@ -15,6 +15,8 @@ Enhancements
 Bug fixes
 
 * `RSpec.reset` properly reinits configuration and world
+* Call `to_s` before `split` on exception messages that might not always be
+  Strings (slyphon)
 
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.9.0...v2.10.0)
