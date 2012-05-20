@@ -356,9 +356,9 @@ module RSpec
           # TODO: come up with a better solution for this.
           RSpec.configuration.reporter.message <<-EOS
 
-    An error occurred in an after(:all) hook.
-          #{e.class}: #{e.message}
-      occurred at #{e.backtrace.first}
+An error occurred in an after(:all) hook.
+  #{e.class}: #{e.message}
+  occurred at #{e.backtrace.first}
 
       EOS
         end
