@@ -13,6 +13,11 @@ Enhancements
     * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
       suggesting it.
 
+Bug fixes
+
+* Support alternative path separators. For example, on Windows, you can now do
+  this: `rspec spec\subdir`. (Jarmo Pertman @jarmo)
+
 ### 2.10.1 / 2012-05-19
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.10.0...v2.10.1)
 
