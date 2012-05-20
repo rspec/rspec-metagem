@@ -296,12 +296,12 @@ module RSpec::Core
           config.files_to_run.should eq([      "spec/rspec/core/resources/a_spec.rb"])
         end
 
-        it "loads files in Windows" do
+        it "loads files in Windows", :if => RSpec.windows_os? do
           config.files_or_directories_to_run = "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
           config.files_to_run.should eq([      "C:/path/to/project/spec/sub/foo_spec.rb"])
         end
 
-        it "loads files in Windows when directory is specified" do
+        it "loads files in Windows when directory is specified", :if => RSpec.windows_os? do
           config.files_or_directories_to_run = "spec\\rspec\\core\\resources"
           config.files_to_run.should eq([      "spec/rspec/core/resources/a_spec.rb"])
         end

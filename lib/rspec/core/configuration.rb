@@ -1,4 +1,3 @@
-require "rbconfig"
 require 'fileutils'
 
 module RSpec
@@ -414,7 +413,7 @@ MESSAGE
       def color=(bool)
         return unless bool
         @color = true
-        if bool && ::RbConfig::CONFIG['host_os'] =~ /mswin|mingw/
+        if bool && RSpec.windows_os?
           unless ENV['ANSICON']
             warn "You must use ANSICON 1.31 or later (http://adoxa.110mb.com/ansicon/) to use colour on Windows"
             @color = false
@@ -465,7 +464,7 @@ EOM
       def full_description=(description)
         filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
-      
+
       # @overload add_formatter(formatter)
       #
       # Adds a formatter to the formatters collection. `formatter` can be a
