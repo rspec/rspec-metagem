@@ -411,10 +411,9 @@ MESSAGE
       end
 
       def color=(bool)
-        return unless bool
-        @color = true
-        if bool && RSpec.windows_os?
-          unless ENV['ANSICON']
+        if bool
+          @color = true
+          if RSpec.windows_os? and not ENV['ANSICON']
             warn "You must use ANSICON 1.31 or later (http://adoxa.110mb.com/ansicon/) to use colour on Windows"
             @color = false
           end
