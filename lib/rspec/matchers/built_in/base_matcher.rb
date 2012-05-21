@@ -28,10 +28,10 @@ module RSpec
           exceptions.unshift Exception if exceptions.empty?
           begin
             yield
+            true
           rescue *exceptions => @rescued_exception
-            return false
+            false
           end
-          true
         end
 
         def failure_message_for_should
