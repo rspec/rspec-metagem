@@ -26,13 +26,32 @@ Feature: "be" matchers
       end
       """
     When I run `rspec be_true_spec.rb`
-    Then the output should contain all of these:
-      | 10 examples, 5 failures       |
-      | expected true not to be true  |
-      | expected 7 not to be true     |
-      | expected "foo" not to be true |
-      | expected nil to be true       |
-      | expected false to be true     |
+    Then the output should contain "10 examples, 5 failures"
+    And the output should contain:
+      """
+             expected: non-true value
+                  got: true
+      """
+    And the output should contain:
+      """
+             expected: non-true value
+                  got: 7
+      """
+    And the output should contain:
+      """
+             expected: non-true value
+                  got: "foo"
+      """
+    And the output should contain:
+      """
+             expected: true value
+                  got: nil
+      """
+    And the output should contain:
+      """
+             expected: true value
+                  got: false
+      """
 
   Scenario: be_false matcher
     Given a file named "be_false_spec.rb" with:
@@ -53,13 +72,32 @@ Feature: "be" matchers
       end
       """
     When I run `rspec be_false_spec.rb`
-    Then the output should contain all of these:
-      | 10 examples, 5 failures        |
-      | expected nil not to be false   |
-      | expected false not to be false |
-      | expected true to be false      |
-      | expected 7 to be false         |
-      | expected "foo" to be false     |
+    Then the output should contain "10 examples, 5 failures"
+    And the output should contain:
+      """
+             expected: non-false value
+                  got: nil
+      """
+    And the output should contain:
+      """
+             expected: non-false value
+                  got: false
+      """
+    And the output should contain:
+      """
+             expected: false value
+                  got: true
+      """
+    And the output should contain:
+      """
+             expected: false value
+                  got: 7
+      """
+    And the output should contain:
+      """
+             expected: false value
+                  got: "foo"
+      """
 
   Scenario: be_nil matcher
     Given a file named "be_nil_spec.rb" with:

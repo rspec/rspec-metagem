@@ -11,11 +11,11 @@ module RSpec
         end
 
         def failure_message_for_should
-          "expected: true value\n     got: #{@actual}"
+          "expected: true value\n     got: #{@actual.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected: a non-true value\n     got: #{@actual}"
+          "expected: non-true value\n     got: #{@actual.inspect}"
         end
       end
 
@@ -27,11 +27,11 @@ module RSpec
         end
 
         def failure_message_for_should
-          "expected: false value\n     got: #{@actual}"
+          "expected: false value\n     got: #{@actual.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected: a non-false value\n     got: #{@actual}"
+          "expected: non-false value\n     got: #{@actual.inspect}"
         end
       end
 
