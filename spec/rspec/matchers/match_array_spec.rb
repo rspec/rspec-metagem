@@ -14,6 +14,18 @@ class UnsortableObject
   end
 end
 
+describe "using match_array with expect" do
+  it "passes a valid positive expectation" do
+    expect([1, 2]).to match_array [2, 1]
+  end
+
+  it "fails an invalid positive expectation" do
+    expect {
+      expect([1, 2, 3]).to match_array [2, 1]
+    }.to fail_with(/expected collection contained/)
+  end
+end
+
 describe "array.should =~ other_array" do
   it "passes if target contains all items" do
     [1,2,3].should =~ [1,2,3]
