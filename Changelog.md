@@ -1,5 +1,10 @@
 ### dev
 
+Enhancements
+
+* Expand `expect` syntax so that it supports expections on bare values
+  in addition to blocks (Myron Marston).
+
 Bug fixes
 
 * Allow only `Numeric` values to be the "actual" in the `be_within` matcher.
@@ -11,7 +16,7 @@ Bug fixes
 Enhancements
 
 * Add new `start_with` and `end_with` matchers (Jeremy Wadsack)
-* Add new matchers for specifying yields (Myron Marson):
+* Add new matchers for specifying yields (Myron Marston):
     * `expect {...}.to yield_control`
     * `expect {...}.to yield_with_args(1, 2, 3)`
     * `expect {...}.to yield_with_no_args`
