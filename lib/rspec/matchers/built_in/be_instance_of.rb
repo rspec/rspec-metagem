@@ -4,8 +4,13 @@ module RSpec
       class BeAnInstanceOf
         include BaseMatcher
 
+        def initialize(expected)
+          @expected = expected
+        end
+
         def matches?(actual)
-          super(actual).instance_of?(expected)
+          @actual = actual
+          @actual.instance_of? @expected
         end
       end
     end

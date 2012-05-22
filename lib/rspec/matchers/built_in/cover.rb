@@ -5,11 +5,12 @@ module RSpec
         include BaseMatcher
 
         def initialize(*expected)
-          super(expected)
+          @expected = expected
         end
 
         def matches?(range)
-          expected.all? {|e| super(range).cover?(e)}
+          @actual = range
+          @expected.all? {|e| range.cover?(e)}
         end
 
         def does_not_match?(range)

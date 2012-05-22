@@ -43,10 +43,16 @@ module RSpec::Matchers::BuiltIn
       it "responds the same way as matches?" do
         matcher = Class.new do
           include BaseMatcher
+
+          def initialize(expected)
+            @expected = expected
+          end
+
           def matches?(actual)
-            actual == expected
+            (@actual = actual) == @expected
           end
         end
+
         matcher.new(3).matches?(3).should be_true
         matcher.new(3).should eq(3)
 

@@ -4,8 +4,13 @@ module RSpec
       class Match
         include BaseMatcher
 
+        def initialize(expected)
+          @expected = expected
+        end
+
         def matches?(actual)
-          super(actual).match(expected)
+          @actual = actual
+          @actual.match @expected
         end
       end
     end

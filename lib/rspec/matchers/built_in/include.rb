@@ -5,16 +5,17 @@ module RSpec
         include BaseMatcher
 
         def initialize(*expected)
-          super(expected)
+          @expected = expected
         end
 
         def matches?(actual)
-          perform_match(:all?, :all?, super(actual), expected)
+          @actual = actual
+          perform_match(:all?, :all?, @actual, @expected)
         end
 
         def does_not_match?(actual)
           @actual = actual
-          perform_match(:none?, :any?, actual, expected)
+          perform_match(:none?, :any?, @actual, @expected)
         end
 
         def description

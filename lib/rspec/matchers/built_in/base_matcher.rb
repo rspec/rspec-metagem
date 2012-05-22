@@ -16,14 +16,6 @@ module RSpec
 
         attr_reader :actual, :expected, :rescued_exception
 
-        def initialize(expected=nil)
-          @expected = expected
-        end
-
-        def matches?(actual)
-          @actual = actual
-        end
-
         def match_unless_raises(*exceptions)
           exceptions.unshift Exception if exceptions.empty?
           begin
@@ -35,15 +27,17 @@ module RSpec
         end
 
         def failure_message_for_should
-          "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
+          assert_ivars :@actual, :@expected
+          "expected #{@actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         def failure_message_for_should_not
-          "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
+          assert_ivars :@actual, :@expected
+          "expected #{@actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         def description
-          expected ? "#{name_to_sentence} #{expected.inspect}" : name_to_sentence
+          expected ? "#{name_to_sentence} #{@expected.inspect}" : name_to_sentence
         end
 
         def diffable?
@@ -52,6 +46,12 @@ module RSpec
 
         def ==(other)
           matches?(other)
+        end
+
+        private
+
+        def assert_ivars *ivars
+          raise "#{self.class.name} needs to supply #{to_sentence ivars}" unless ivars.all? { |v| instance_variables.map(&:intern).include? v }
         end
       end
     end

@@ -4,8 +4,12 @@ module RSpec
       class BeAKindOf
         include BaseMatcher
 
+        def initialize(expected)
+          @expected = expected
+        end
+
         def matches?(actual)
-          super(actual).kind_of?(expected)
+          (@actual = actual).kind_of?(@expected)
         end
       end
     end

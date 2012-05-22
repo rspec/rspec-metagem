@@ -237,7 +237,7 @@ describe "should be_true" do
   it "fails when actual equal?(false)" do
     lambda {
       false.should be_true
-    }.should fail_with("expected false to be true")
+    }.should fail_with("expected: true value\n     got: false")
   end
 end
 
@@ -253,7 +253,7 @@ describe "should be_false" do
   it "fails when actual equal?(true)" do
     lambda {
       true.should be_false
-    }.should fail_with("expected true to be false")
+    }.should fail_with("expected: false value\n     got: true")
   end
 end
 

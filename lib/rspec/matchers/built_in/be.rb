@@ -7,7 +7,15 @@ module RSpec
         include BaseMatcher
 
         def matches?(actual)
-          super(actual)
+          @actual = actual
+        end
+
+        def failure_message_for_should
+          "expected: true value\n     got: #{@actual}"
+        end
+
+        def failure_message_for_should_not
+          "expected: a non-true value\n     got: #{@actual}"
         end
       end
 
@@ -15,7 +23,15 @@ module RSpec
         include BaseMatcher
 
         def matches?(actual)
-          !super(actual)
+          !(@actual = actual)
+        end
+
+        def failure_message_for_should
+          "expected: false value\n     got: #{@actual}"
+        end
+
+        def failure_message_for_should_not
+          "expected: a non-false value\n     got: #{@actual}"
         end
       end
 
@@ -23,11 +39,11 @@ module RSpec
         include BaseMatcher
 
         def matches?(actual)
-          super(actual).nil?
+          (@actual = actual).nil?
         end
 
         def failure_message_for_should
-          "expected: nil\n     got: #{actual.inspect}"
+          "expected: nil\n     got: #{@actual.inspect}"
         end
 
         def failure_message_for_should_not
@@ -43,8 +59,7 @@ module RSpec
         end
 
         def matches?(actual)
-          @actual = actual
-          !!@actual
+          !!(@actual = actual)
         end
 
         def failure_message_for_should
@@ -96,7 +111,7 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          @actual.__send__(@operator, @expected)
+          @actual.send @operator, @expected
         end
 
         def failure_message_for_should
@@ -178,6 +193,5 @@ it is a bit confusing.
         end
       end
     end
-
   end
 end
