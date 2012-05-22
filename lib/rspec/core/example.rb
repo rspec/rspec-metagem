@@ -131,7 +131,7 @@ module RSpec
           begin
             assign_auto_description
           rescue Exception => e
-            set_exception(e)
+            set_exception(e, "while assigning the example description")
           end
         end
 
@@ -204,7 +204,20 @@ module RSpec
       #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
-      def set_exception(exception)
+      def set_exception(exception, context=nil)
+        if @exception
+          # An error has already been set; we don't want to override it,
+          # but we also don't want silence the error, so let's print it.
+          msg = <<-EOS
+
+An error occurred #{context}
+  #{exception.class}: #{exception.message}
+  occurred at #{exception.backtrace.first}
+
+          EOS
+          RSpec.configuration.reporter.message(msg)
+        end
+
         @exception ||= exception
       end
 
@@ -241,6 +254,8 @@ module RSpec
         else
           @example_group_class.run_around_each_hooks(self, Example.procsy(metadata, &block))
         end
+      rescue Exception => e
+        set_exception(e, "in an around(:each) hook")
       end
 
       def start(reporter)
@@ -287,6 +302,8 @@ module RSpec
       def run_after_each
         @example_group_class.run_after_each_hooks(self)
         @example_group_instance.verify_mocks_for_rspec if @example_group_instance.respond_to?(:verify_mocks_for_rspec)
+      rescue Exception => e
+        set_exception(e, "in an after(:each) hook")
       ensure
         @example_group_instance.teardown_mocks_for_rspec if @example_group_instance.respond_to?(:teardown_mocks_for_rspec)
       end

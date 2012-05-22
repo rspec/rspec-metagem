@@ -258,6 +258,30 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.run.should be_true
       end
     end
+
+    context "when the example and an around hook raise errors" do
+      it "prints the around hook error rather than silencing it" do
+        group = RSpec::Core::ExampleGroup.describe do
+          around(:each) { |e| e.run; raise "around" }
+          example("e") { raise "example" }
+        end
+
+        RSpec.configuration.reporter.should_receive(:message).with(/An error occurred/)
+        group.run
+      end
+    end
+
+    context "when the example and an after hook raise errors" do
+      it "prints the after hook error rather than silencing it" do
+        group = RSpec::Core::ExampleGroup.describe do
+          after(:each) { raise "after" }
+          example("e") { raise "example" }
+        end
+
+        RSpec.configuration.reporter.should_receive(:message).with(/An error occurred.*after/)
+        group.run
+      end
+    end
   end
 
   describe "#pending" do
