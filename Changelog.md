@@ -4,6 +4,11 @@ Enhancements
 
 * Expand `expect` syntax so that it supports expections on bare values
   in addition to blocks (Myron Marston).
+* Add configuration options to control available expectation syntaxes
+  (Myron Marston):
+  * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = :expect }`
+  * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = :should }`
+  * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = [:should, :expect] }`
 
 Bug fixes
 
