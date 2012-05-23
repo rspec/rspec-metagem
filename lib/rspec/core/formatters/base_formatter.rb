@@ -87,7 +87,7 @@ module RSpec
 
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is #dump_failures
-        # (BaseTextFormtter then calls #dump_failure once for each failed example.)
+        # (BaseTextFormatter then calls #dump_failure once for each failed example.)
         def start_dump
         end
 

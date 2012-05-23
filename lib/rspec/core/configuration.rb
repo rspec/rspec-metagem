@@ -843,6 +843,9 @@ MESSAGE
         when 'p', 'progress'
           require 'rspec/core/formatters/progress_formatter'
           RSpec::Core::Formatters::ProgressFormatter
+        when 'j', 'json'
+          require 'rspec/core/formatters/json_formatter'
+          RSpec::Core::Formatters::JsonFormatter
         end
       end
 
