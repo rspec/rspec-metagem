@@ -32,7 +32,7 @@ module RSpec
         include HookExtension
 
         def run(example)
-          example.instance_eval_with_rescue(&self)
+          example.instance_eval_with_rescue("in an after hook", &self)
         end
 
         def display_name

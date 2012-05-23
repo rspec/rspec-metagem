@@ -470,12 +470,12 @@ An error occurred in an after(:all) hook.
       # @private
       # instance_evals the block, capturing and reporting an exception if
       # raised
-      def instance_eval_with_rescue(&hook)
+      def instance_eval_with_rescue(context = nil, &hook)
         begin
           instance_eval(&hook)
         rescue Exception => e
           raise unless example
-          example.set_exception(e)
+          example.set_exception(e, context)
         end
       end
     end

@@ -266,8 +266,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example("e") { raise "example" }
         end
 
-        RSpec.configuration.reporter.should_receive(:message).with(/An error occurred/)
+        reported_msg = nil
+        # We can't use should_receive(:message).with(/.../) here,
+        # because if that fails, it would fail within our example-under-test,
+        # and since there's already two errors, it would just be reported again.
+        RSpec.configuration.reporter.stub(:message) { |msg| reported_msg = msg }
         group.run
+        reported_msg.should =~ /An error occurred in an around.* hook/i
       end
     end
 
@@ -278,8 +283,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example("e") { raise "example" }
         end
 
-        RSpec.configuration.reporter.should_receive(:message).with(/An error occurred.*after/)
+        reported_msg = nil
+        # We can't use should_receive(:message).with(/.../) here,
+        # because if that fails, it would fail within our example-under-test,
+        # and since there's already two errors, it would just be reported again.
+        RSpec.configuration.reporter.stub(:message) { |msg| reported_msg = msg }
         group.run
+        reported_msg.should =~ /An error occurred in an after.* hook/i
       end
     end
   end
