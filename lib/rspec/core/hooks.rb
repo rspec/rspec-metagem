@@ -263,8 +263,7 @@ module RSpec
       #       end
       #     end
       def before(*args, &block)
-        scope, options = scope_and_options_from(*args)
-        hooks[:before][scope] << block.extend(BeforeHookExtension).with(options)
+        register_hook :append, :before, *args, &block
       end
 
       alias_method :append_before, :before
@@ -274,8 +273,7 @@ module RSpec
       #
       # See #before for scoping semantics.
       def prepend_before(*args, &block)
-        scope, options = scope_and_options_from(*args)
-        hooks[:before][scope].unshift block.extend(BeforeHookExtension).with(options)
+        register_hook :prepend, :before, *args, &block
       end
 
       # @api public
@@ -327,8 +325,7 @@ module RSpec
       # Similarly, if more than one `after` is declared within any one scope,
       # they are run in reverse order of that in which they are declared.
       def after(*args, &block)
-        scope, options = scope_and_options_from(*args)
-        hooks[:after][scope].unshift block.extend(AfterHookExtension).with(options)
+        register_hook :prepend, :after, *args, &block
       end
 
       alias_method :prepend_after, :after
@@ -338,8 +335,7 @@ module RSpec
       #
       # See #after for scoping semantics.
       def append_after(*args, &block)
-        scope, options = scope_and_options_from(*args)
-        hooks[:after][scope] << block.extend(AfterHookExtension).with(options)
+        register_hook :append, :after, *args, &block
       end
 
       # @api public
@@ -387,8 +383,7 @@ module RSpec
       #     around(:each) {|ex| FakeFS(&ex)}
       #
       def around(*args, &block)
-        scope, options = scope_and_options_from(*args)
-        hooks[:around][scope].unshift block.extend(AroundHookExtension).with(options)
+        register_hook :prepend, :around, *args, &block
       end
 
       # @private
@@ -406,6 +401,14 @@ module RSpec
 
     private
 
+      SCOPES = [:each, :all, :suite]
+
+      EXTENSIONS = {
+        :before => BeforeHookExtension,
+        :after  => AfterHookExtension,
+        :around => AroundHookExtension
+      }
+
       def before_all_hooks_for(group)
         GroupHookCollection.new(hooks[:before][:all]).for(group)
       end
@@ -420,6 +423,11 @@ module RSpec
 
       def after_each_hooks_for(example)
         HookCollection.new(ancestors.map {|a| a.hooks[:after][:each]}.flatten).for(example)
+      end
+
+      def register_hook prepend_or_append, hook, *args, &block
+        scope, options = scope_and_options_from(*args)
+        hooks[hook][scope].send(prepend_or_append == :prepend ? :unshift : :push, block.extend(EXTENSIONS[hook]).with(options))
       end
 
       def find_hook(hook, scope, example_or_group, initial_procsy)
@@ -438,8 +446,6 @@ module RSpec
           hooks[hook][:suite].with(example_or_group)
         end
       end
-
-      SCOPES = [:each, :all, :suite]
 
       def scope_and_options_from(*args)
         return extract_scope_from(args), build_metadata_hash_from(args)
