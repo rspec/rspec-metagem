@@ -1,4 +1,4 @@
-# rspec-core
+# rspec-core [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/rspec/rspec-core)
 
 ```
 gem install rspec      # for rspec-core, rspec-expectations, rspec-mocks
