@@ -331,7 +331,7 @@ MESSAGE
         end
 
         if block_given?
-          raise "#{framework_module} must respond to `configuration` so that expect_with can yield it." unless framework_module.respond_to?(:configuration)
+          raise "#{framework_module} must respond to `configuration` so that mock_with can yield it." unless framework_module.respond_to?(:configuration)
           yield framework_module.configuration
         end
 

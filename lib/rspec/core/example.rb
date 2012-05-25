@@ -295,17 +295,17 @@ An error occurred #{context}
       end
 
       def run_before_each
-        @example_group_instance.setup_mocks_for_rspec if @example_group_instance.respond_to?(:setup_mocks_for_rspec)
+        @example_group_instance.setup_mocks_for_rspec
         @example_group_class.run_before_each_hooks(self)
       end
 
       def run_after_each
         @example_group_class.run_after_each_hooks(self)
-        @example_group_instance.verify_mocks_for_rspec if @example_group_instance.respond_to?(:verify_mocks_for_rspec)
+        @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
         set_exception(e, "in an after(:each) hook")
       ensure
-        @example_group_instance.teardown_mocks_for_rspec if @example_group_instance.respond_to?(:teardown_mocks_for_rspec)
+        @example_group_instance.teardown_mocks_for_rspec
       end
 
       def assign_auto_description
