@@ -1,4 +1,4 @@
-# RSpec Expectations
+# RSpec Expectations [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/rspec/rspec-expectations)
 
 RSpec::Expectations lets you express expected outcomes on an object in an
 example.
@@ -62,7 +62,7 @@ actual.should eql(expected) # passes if actual.eql?(expected)
 actual.should be(expected)    # passes if actual.equal?(expected)
 actual.should equal(expected) # passes if actual.equal?(expected)
 ```
-    
+
 ### Comparisons
 
 ```ruby
