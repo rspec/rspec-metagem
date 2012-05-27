@@ -1,20 +1,21 @@
 # rspec-core [![Build Status](https://secure.travis-ci.org/rspec/rspec-core.png?branch=master)](http://travis-ci.org/rspec/rspec-core) [![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/rspec/rspec-core)
 
-```
-gem install rspec      # for rspec-core, rspec-expectations, rspec-mocks
-gem install rspec-core # for rspec-core only
-```
+rspec-core provides the structure for writing executable examples of how your
+code should behave, and an `rspec` command with tools to constrain which
+examples get run and taylor the output.
 
-# overview
+## install
 
-rspec-core provides the structure for writing executable examples of how
-your code should behave.  It uses the words "describe" and "it" so we can
-express concepts like a conversation:
+    gem install rspec      # for rspec-core, rspec-expectations, rspec-mocks
+    gem install rspec-core # for rspec-core only
+    rspec --help
+
+## basic structure
+
+RSpec uses the words "describe" and "it" so we can express concepts like a conversation:
 
     "Describe an order."
     "It sums the prices of its line items."
-
-## basic structure
 
 ```ruby
 describe Order do
