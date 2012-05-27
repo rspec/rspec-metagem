@@ -95,8 +95,8 @@ hooks, `let` declarations, and nested groups/contexts.
 
 You can also use the names `shared_context` and `include_context`. These are
 pretty much the same as `shared_examples` and `include_examples`, providing
-more accurate naming for in which you share hooks, `let` declarations, helper
-methods, etc, but no examples.
+more accurate naming when you share hooks, `let` declarations, helper methods,
+etc, but no examples.
 
 ## metadata
 
