@@ -96,13 +96,32 @@ module RSpec
         end
       end
 
+      module RegistersGlobals
+        def register_globals host, globals
+          [:before, :after, :around].each do |position|
+            process host, globals, position, :each
+            next if position == :around # no around(:all) hooks
+            process host, globals, position, :all
+          end
+        end
+
+        private
+        def process host, globals, position, scope
+          globals[position][scope].each do |hook|
+            unless host.ancestors.any? { |a| a.hooks[position][scope].include? hook }
+              self[position][scope] << hook if scope == :each || hook.options_apply?(host)
+            end
+          end
+        end
+      end
+
       # @private
       def hooks
         @hooks ||= {
           :around => { :each => AroundHookCollection.new },
           :before => { :each => [], :all => [], :suite => HookCollection.new },
           :after =>  { :each => [], :all => [], :suite => HookCollection.new }
-        }
+        }.extend(RegistersGlobals)
       end
 
       # @api public

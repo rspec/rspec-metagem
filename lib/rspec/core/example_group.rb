@@ -289,19 +289,7 @@ module RSpec
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
         world.configure_group(self)
-        [:before, :after, :around].each do |_when|
-          RSpec.configuration.hooks[_when][:each].each do |hook|
-            unless ancestors.any? {|a| a.hooks[_when][:each].include? hook }
-              hooks[_when][:each] << hook # each's get filtered later per example
-            end
-          end
-          next if _when == :around # no around(:all) hooks
-          RSpec.configuration.hooks[_when][:all].each do |hook|
-            unless ancestors.any? {|a| a.hooks[_when][:all].include? hook }
-              hooks[_when][:all] << hook if hook.options_apply?(self)
-            end
-          end
-        end
+        hooks.register_globals(self, RSpec.configuration.hooks)
       end
 
       # @private
