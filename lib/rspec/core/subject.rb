@@ -193,7 +193,7 @@ module RSpec
         # @see ExampleMethods#subject
         # @see ExampleMethods#should
         def subject(name=nil, &block)
-          let(name) { subject } if name
+          define_method(name) { subject } if name
           block ? @explicit_subject_block = block : explicit_subject || implicit_subject
         end
 

@@ -105,7 +105,6 @@ module RSpec
         mod.extend ExampleGroupMethods
         mod.__send__ :include, ExampleMethods
       end
-
     end
   end
 end
