@@ -970,10 +970,19 @@ module RSpec::Core
           eval_count.should eq(1)
         end
 
-        it "warns the user that blocks are not supported when given a block" do
-          group = ExampleGroup.describe
-          group.should_receive(:warn).with(/blocks not supported for #{name}/)
-          group.send(name, "named this with block") {}
+        it "evals the block when given" do
+          key = "#{__FILE__}:#{__LINE__}"
+          shared_examples(key) do
+            it("does something") do
+              foo.should eq("bar")
+            end
+          end
+          group = ExampleGroup.describe do
+            send name, key do
+              def foo; "bar"; end
+            end
+          end
+          group.run.should be_true
         end
       end
     end

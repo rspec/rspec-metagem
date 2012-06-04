@@ -138,26 +138,21 @@ module RSpec
       end
 
       # Includes shared content mapped to `name` directly in the group in which
-      # it is declared. Unlike `it_behaves_like`, this does not create a nested
-      # example group, nor does it accept a block.
+      # it is declared, as opposed to `it_behaves_like`, which creates a nested
+      # group. If given a block, that block is also eval'd in the current context.
       #
       # @see SharedExampleGroup
-      def self.include_context(name, *args)
-        block_given? ? block_not_supported("context") : find_and_eval_shared("context", name, *args)
+      def self.include_context(name, *args, &block)
+        find_and_eval_shared("context", name, *args, &block)
       end
 
       # Includes shared content mapped to `name` directly in the group in which
-      # it is declared. Unlike `it_behaves_like`, this does not create a nested
-      # example group, nor does it accept a block.
+      # it is declared, as opposed to `it_behaves_like`, which creates a nested
+      # group. If given a block, that block is also eval'd in the current context.
       #
       # @see SharedExampleGroup
-      def self.include_examples(name, *args)
-        block_given? ? block_not_supported("examples") : find_and_eval_shared("examples", name, *args)
-      end
-
-      # @private
-      def self.block_not_supported(label)
-        warn("Customization blocks not supported for include_#{label}.  Use it_behaves_like instead.")
+      def self.include_examples(name, *args, &block)
+        find_and_eval_shared("examples", name, *args, &block)
       end
 
       # @private
