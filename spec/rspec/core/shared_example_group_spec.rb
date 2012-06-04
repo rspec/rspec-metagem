@@ -6,17 +6,17 @@ module RSpec::Core
     ExampleModule = Module.new
     ExampleClass = Class.new
 
-    %w[share_examples_for shared_examples_for].each do |method_name|
-      describe method_name do
+    %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
+      describe shared_method_name do
         it "is exposed to the global namespace" do
-          Kernel.should respond_to(method_name)
+          Kernel.should respond_to(shared_method_name)
         end
 
         it "raises an ArgumentError when adding a second shared example group with the same name" do
           group = ExampleGroup.describe('example group')
-          group.send(method_name, 'shared group') {}
+          group.send(shared_method_name, 'shared group') {}
           lambda do
-            group.send(method_name, 'shared group') {}
+            group.send(shared_method_name, 'shared group') {}
           end.should raise_error(ArgumentError, "Shared example group 'shared group' already exists")
         end
 
@@ -26,7 +26,7 @@ module RSpec::Core
             it "captures the given #{type} and block in the World's collection of shared example groups" do
               implementation = lambda {}
               RSpec.world.shared_example_groups.should_receive(:[]=).with(object, implementation)
-              send(method_name, object, &implementation)
+              send(shared_method_name, object, &implementation)
             end
           end
         end
@@ -34,7 +34,7 @@ module RSpec::Core
         context "given a hash" do
           it "delegates extend on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
-            send(method_name, :foo => :bar, &implementation)
+            send(shared_method_name, :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
             a[0].should eq(:extend)
             Class.new.extend(a[1]).new.bar.should eq('bar')
@@ -46,12 +46,12 @@ module RSpec::Core
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
             RSpec.world.shared_example_groups.should_receive(:[]=).with("name", implementation)
-            send(method_name, "name", :foo => :bar, &implementation)
+            send(shared_method_name, "name", :foo => :bar, &implementation)
           end
 
           it "delegates extend on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
-            send(method_name, "name", :foo => :bar, &implementation)
+            send(shared_method_name, "name", :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
             a[0].should eq(:extend)
             Class.new.extend(a[1]).new.bar.should eq('bar')
