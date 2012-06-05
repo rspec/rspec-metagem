@@ -163,6 +163,40 @@ actual.should end_with(expected)
 "this string".should end_with("ring")
 ```
 
+## Syntax Options
+
+In addition to the `should` syntax, rspec-expectations supports
+an additional `expect` syntax:
+
+```ruby
+# rather than:
+[1, 2, 3].should include(1)
+
+#...you can use:
+expect([1, 2, 3]).to include(1)
+
+# rather than:
+foo.should_not eq(bar)
+
+#...you can use:
+expect(foo).not_to eq(bar)
+```
+
+If you want your project to only use one of these syntaxes, you can
+configure it:
+
+```ruby
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+    # or
+    c.syntax = :should
+    # or
+    c.syntax = [:should, :expect]
+  end
+end
+```
+
 ## Also see
 
 * [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
