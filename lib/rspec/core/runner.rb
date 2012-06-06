@@ -1,5 +1,3 @@
-require 'drb/drb'
-
 module RSpec
   module Core
     class Runner
@@ -25,6 +23,7 @@ module RSpec
       end
 
       def self.running_in_drb?
+        defined?(DRb) &&
         (DRb.current_server rescue false) &&
          DRb.current_server.uri =~ /druby\:\/\/127.0.0.1\:/
       end
@@ -59,6 +58,7 @@ module RSpec
         options.parse_options
 
         if options.options[:drb]
+          require 'rspec/core/drb_command_line'
           begin
             DRbCommandLine.new(options).run(err, out)
           rescue DRb::DRbConnError

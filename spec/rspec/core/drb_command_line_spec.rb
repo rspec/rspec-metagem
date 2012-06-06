@@ -1,4 +1,5 @@
 require "spec_helper"
+require 'rspec/core/drb_command_line'
 
 describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }

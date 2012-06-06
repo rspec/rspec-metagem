@@ -1,3 +1,6 @@
+require 'drb/drb'
+require 'rspec/core/drb_options'
+
 module RSpec
   module Core
     class DRbCommandLine
