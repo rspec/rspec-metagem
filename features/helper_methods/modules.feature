@@ -33,7 +33,7 @@ Feature: Define helper methods in a module
       end
 
       describe "an example group" do
-        it "has access the helper methods defined in the module" do
+        it "has access to the helper methods defined in the module" do
           help.should be(:available)
         end
       end
@@ -72,7 +72,7 @@ Feature: Define helper methods in a module
       end
 
       describe "an example group with matching metadata", :foo => :bar do
-        it "has access the helper methods defined in the module" do
+        it "has access to the helper methods defined in the module" do
           help.should be(:available)
         end
       end
@@ -130,7 +130,7 @@ Feature: Define helper methods in a module
       describe "an example group with matching include metadata", :include_helpers do
         puts "In a group not matching the extend filter, help is #{help rescue 'not available'}"
 
-        it "has access the helper methods defined in the module" do
+        it "has access to the helper methods defined in the module" do
           help.should be(:available)
         end
       end
