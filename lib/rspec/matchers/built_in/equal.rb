@@ -21,7 +21,7 @@ expected #{inspect_object(@expected)}
 
 Compared using equal?, which compares object identity,
 but expected and actual are not the same object. Use
-'actual.should == expected' if you don't care about
+'actual.should eq(expected)' if you don't care about
 object identity in this example.
 
 MESSAGE
