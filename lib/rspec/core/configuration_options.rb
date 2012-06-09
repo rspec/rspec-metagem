@@ -25,7 +25,9 @@ module RSpec
 
       def parse_options
         @options ||= extract_filters_from(*all_configs).inject do |merged, pending|
-          merged.merge(pending)
+          merged.merge(pending) { |key, oldval, newval|
+            MERGED_OPTIONS.include?(key) ? oldval + newval : newval
+          }
         end
       end
 
@@ -43,6 +45,8 @@ module RSpec
         :debug, :requires, :libs, :profile, :drb, :files_or_directories_to_run,
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
+
+      MERGED_OPTIONS = [:requires].to_set
 
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)
