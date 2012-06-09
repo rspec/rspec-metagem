@@ -20,6 +20,7 @@ Bug fixes
 * When an example raises an error and an after or around hook does as
   well, print out the hook error. Previously, the error was silenced and
   the user got no feedback about what happened. (Myron Marston)
+* `--require` is merged among different configuration sources (Andy Lindeman)
 
 ### 2.10.1 / 2012-05-19
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.10.0...v2.10.1)
