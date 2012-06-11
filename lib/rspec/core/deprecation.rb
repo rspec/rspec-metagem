@@ -33,19 +33,4 @@ ADDITIONAL
       send :warn, message
     end
   end
-
-  # @private
-  class HashWithDeprecationNotice < Hash
-
-    def initialize(method, alternate_method=nil)
-      @method, @alternate_method = method, alternate_method
-    end
-
-    def []=(k,v)
-      RSpec.deprecate(@method, @alternate_method)
-      super(k,v)
-    end
-
-  end
-
 end
