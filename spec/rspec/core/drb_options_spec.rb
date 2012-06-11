@@ -1,4 +1,5 @@
 require "spec_helper"
+require 'rspec/core/drb_options'
 
 describe RSpec::Core::DrbOptions, :fakefs do
   include ConfigOptionsHelper
