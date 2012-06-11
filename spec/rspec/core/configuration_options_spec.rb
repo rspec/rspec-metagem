@@ -103,6 +103,14 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
       config.should_receive(:requires=).with(["file_from_opts", "file_from_env"])
       opts.configure(config)
     end
+
+    it "merges --I specified by multiple configuration sources" do
+      ENV['SPEC_OPTS'] = "-I dir_from_env"
+      opts = config_options_object(*%w[-I dir_from_opts])
+      config = RSpec::Core::Configuration.new
+      config.should_receive(:libs=).with(["dir_from_opts", "dir_from_env"])
+      opts.configure(config)
+    end
   end
 
   describe "-c, --color, and --colour" do

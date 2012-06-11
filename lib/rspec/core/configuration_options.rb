@@ -46,7 +46,7 @@ module RSpec
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
 
-      MERGED_OPTIONS = [:requires].to_set
+      MERGED_OPTIONS = [:requires, :libs].to_set
 
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)
