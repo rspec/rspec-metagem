@@ -34,6 +34,28 @@ describe RSpec::SharedContext do
     expect(after_all_hook).to be_true
   end
 
+  it "runs the before each hooks in configuration before those of the shared context" do
+    ordered_hooks = []
+    RSpec.configure do |c|
+      c.before(:each) { ordered_hooks << "config" }
+    end
+
+    RSpec.world.shared_context "before each stuff", :example => :before_each_hook_order do
+      before(:each) { ordered_hooks << "shared_context"}
+    end
+
+    group = RSpec::Core::ExampleGroup.describe :example => :before_each_hook_order do
+      before(:each) { ordered_hooks << "example_group" }
+      example {}
+    end
+
+    group.run
+
+    pending "Issue #632" do
+      ordered_hooks.should == ["config", "shared_context", "example_group"]
+    end
+  end
+
   it "supports let" do
     shared = Module.new do
       extend RSpec::SharedContext
