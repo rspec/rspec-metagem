@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'delegate'
 
 module RSpec
   module Matchers
@@ -6,6 +7,24 @@ module RSpec
       it 'returns a memoized configuration instance' do
         RSpec::Matchers.configuration.should be_a(RSpec::Matchers::Configuration)
         RSpec::Matchers.configuration.should be(RSpec::Matchers.configuration)
+      end
+
+      context 'on an interpreter that does not provide BasicObject', :unless => defined?(::BasicObject) do
+        before { RSpec::Expectations::Syntax.disable_should(Delegator) }
+
+        let(:klass) do
+          Class.new(SimpleDelegator) do
+            def delegated?; true; end
+          end
+        end
+
+        let(:instance) { klass.new(Object.new) }
+
+        it 'provides a means to manually add it Delegator' do
+          instance.should_not respond_to(:delegated?) # because #should is being delegated...
+          RSpec::Matchers.configuration.add_should_and_should_not_to Delegator
+          instance.should respond_to(:delegated?) # now it should work!
+        end
       end
     end
 
