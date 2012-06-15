@@ -32,24 +32,31 @@ module RSpec
       # @return [ExpectationTarget]
 
       # @api private
+      # Determines where we add `should` and `should_not`.
+      def default_should_host
+        @default_should_host ||= defined?(::BasicObject) ?
+                                 ::BasicObject : ::Kernel
+      end
+
+      # @api private
       # Enables the `should` syntax.
-      def enable_should(syntax_host = ::Kernel)
+      def enable_should(syntax_host = default_should_host)
         return if should_enabled?(syntax_host)
 
         syntax_host.module_eval do
           def should(matcher=nil, message=nil, &block)
-            RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
+            ::RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
 
           def should_not(matcher=nil, message=nil, &block)
-            RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
+            ::RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
         end
       end
 
       # @api private
       # Disables the `should` syntax.
-      def disable_should(syntax_host = ::Kernel)
+      def disable_should(syntax_host = default_should_host)
         return unless should_enabled?(syntax_host)
 
         syntax_host.module_eval do
@@ -84,7 +91,7 @@ module RSpec
 
       # @api private
       # Indicates whether or not the `should` syntax is enabled.
-      def should_enabled?(syntax_host = ::Kernel)
+      def should_enabled?(syntax_host = default_should_host)
         syntax_host.method_defined?(:should)
       end
 

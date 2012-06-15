@@ -20,6 +20,28 @@ describe Object, "#should" do
       @target.should @matcher
     }.should fail_with("the failure message")
   end
+
+  context "on interpretters that have BasicObject", :if => defined?(BasicObject) do
+    let(:proxy_class) do
+      Class.new(BasicObject) do
+        def initialize(target)
+          @target = target
+        end
+
+        def proxied?
+          true
+        end
+
+        def method_missing(name, *args)
+          @target.send(name, *args)
+        end
+      end
+    end
+
+    it 'works properly on BasicObject-subclassed proxy objects' do
+      proxy_class.new(Object.new).should be_proxied
+    end
+  end
 end
 
 describe Object, "#should_not" do
