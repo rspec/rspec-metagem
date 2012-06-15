@@ -9,11 +9,16 @@ Enhancements
   * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = :expect }`
   * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = :should }`
   * `RSpec.configuration.expect_with(:rspec) { |c| c.syntax = [:should, :expect] }`
+  * `RSpec.configuration.add_should_and_should_not_to Delegator`
 
 Bug fixes
 
 * Allow only `Numeric` values to be the "actual" in the `be_within` matcher.
   This prevents confusing error messages. (Su Zhang @zhangsu)
+* Define `should` and `should_not` on `BasicObject` rather than `Kernel`
+  on 1.9. This makes `should` and `should_not` work properly with
+  `BasicObject`-subclassed proxy objects like `Delegator`. (Myron
+  Marston)
 
 ### 2.10.0 / 2012-05-03
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...v2.10.0)
