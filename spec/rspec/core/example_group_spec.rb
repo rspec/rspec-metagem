@@ -865,7 +865,7 @@ module RSpec::Core
 
       context "with all examples passing" do
         it "returns true" do
-          group = describe("something") do
+          group = RSpec::Core::ExampleGroup.describe("something") do
             it "does something" do
               # pass
             end
@@ -882,7 +882,7 @@ module RSpec::Core
 
       context "with top level example failing" do
         it "returns false" do
-          group = describe("something") do
+          group = RSpec::Core::ExampleGroup.describe("something") do
             it "does something (wrong - fail)" do
               raise "fail"
             end
@@ -899,7 +899,7 @@ module RSpec::Core
 
       context "with nested example failing" do
         it "returns true" do
-          group = describe("something") do
+          group = RSpec::Core::ExampleGroup.describe("something") do
             it "does something" do
               # pass
             end

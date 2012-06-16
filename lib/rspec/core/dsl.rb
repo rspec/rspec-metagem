@@ -21,4 +21,6 @@ module RSpec
   end
 end
 
-include RSpec::Core::DSL
+extend RSpec::Core::DSL
+Module.send(:include, RSpec::Core::DSL)
+

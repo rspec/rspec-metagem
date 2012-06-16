@@ -12,6 +12,8 @@ Enhancements
       for background.
     * thanks to Bradley Schaefer for suggesting it and Avdi Grimm for almost
       suggesting it.
+* Limit monkey patching of `describe` onto just the objects
+  that need it rather than every object in the system (Myron Marston).
 
 Bug fixes
 
