@@ -48,7 +48,16 @@ module RSpec
         end
       end
 
+      module HookCollectionAliases
+        def self.included(host)
+          host.send :alias_method, :prepend, :unshift
+          host.send :alias_method, :append,  :push
+        end
+      end
+
       class HookCollection < Array
+        include HookCollectionAliases
+
         def for(example_or_group)
           self.class.new(select {|hook| hook.options_apply?(example_or_group)}).
             with(example_or_group)
@@ -64,18 +73,9 @@ module RSpec
         end
       end
 
-      class GroupHookCollection < Array
-        def for(group)
-          @group = group
-          self
-        end
-
-        def run
-          shift.run(@group) until empty?
-        end
-      end
-
       class AroundHookCollection < Array
+        include HookCollectionAliases
+
         def for(example, initial_procsy=nil)
           self.class.new(select {|hook| hook.options_apply?(example)}).
             with(example, initial_procsy)
@@ -93,6 +93,17 @@ module RSpec
               @example.instance_eval_with_args(procsy, &around_hook)
             end
           end.call
+        end
+      end
+
+      class GroupHookCollection < Array
+        def for(group)
+          @group = group
+          self
+        end
+
+        def run
+          shift.run(@group) until empty?
         end
       end
 
@@ -119,8 +130,8 @@ module RSpec
       def hooks
         @hooks ||= {
           :around => { :each => AroundHookCollection.new },
-          :before => { :each => [], :all => [], :suite => HookCollection.new },
-          :after =>  { :each => [], :all => [], :suite => HookCollection.new }
+          :before => { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new },
+          :after =>  { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new }
         }.extend(RegistersGlobals)
       end
 
@@ -446,7 +457,7 @@ module RSpec
 
       def register_hook prepend_or_append, hook, *args, &block
         scope, options = scope_and_options_from(*args)
-        hooks[hook][scope].send(prepend_or_append == :prepend ? :unshift : :push, block.extend(EXTENSIONS[hook]).with(options))
+        hooks[hook][scope].send(prepend_or_append, block.extend(EXTENSIONS[hook]).with(options))
       end
 
       def find_hook(hook, scope, example_or_group, initial_procsy)
