@@ -4,20 +4,15 @@ module RSpec
       class Equal
         include BaseMatcher
 
-        def initialize(expected)
-          @expected = expected
-        end
-
-        def matches?(actual)
-          @actual = actual
-          @actual.equal? @expected
+        def match(expected, actual)
+          actual.equal? expected
         end
 
         def failure_message_for_should
           return <<-MESSAGE
 
-expected #{inspect_object(@expected)}
-     got #{inspect_object(@actual)}
+expected #{inspect_object(expected)}
+     got #{inspect_object(actual)}
 
 Compared using equal?, which compares object identity,
 but expected and actual are not the same object. Use
@@ -30,8 +25,8 @@ MESSAGE
         def failure_message_for_should_not
           return <<-MESSAGE
 
-expected not #{inspect_object(@actual)}
-         got #{inspect_object(@expected)}
+expected not #{inspect_object(actual)}
+         got #{inspect_object(expected)}
 
 Compared using equal?, which compares object identity.
 

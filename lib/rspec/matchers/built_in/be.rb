@@ -6,44 +6,44 @@ module RSpec
       class BeTrue
         include BaseMatcher
 
-        def matches?(actual)
-          @actual = actual
+        def match(_, actual)
+          !!actual
         end
 
         def failure_message_for_should
-          "expected: true value\n     got: #{@actual.inspect}"
+          "expected: true value\n     got: #{actual.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected: non-true value\n     got: #{@actual.inspect}"
+          "expected: non-true value\n     got: #{actual.inspect}"
         end
       end
 
       class BeFalse
         include BaseMatcher
 
-        def matches?(actual)
-          !(@actual = actual)
+        def match(_, actual)
+          !actual
         end
 
         def failure_message_for_should
-          "expected: false value\n     got: #{@actual.inspect}"
+          "expected: false value\n     got: #{actual.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected: non-false value\n     got: #{@actual.inspect}"
+          "expected: non-false value\n     got: #{actual.inspect}"
         end
       end
 
       class BeNil
         include BaseMatcher
 
-        def matches?(actual)
-          (@actual = actual).nil?
+        def match(_, actual)
+          actual.nil?
         end
 
         def failure_message_for_should
-          "expected: nil\n     got: #{@actual.inspect}"
+          "expected: nil\n     got: #{actual.inspect}"
         end
 
         def failure_message_for_should_not
@@ -52,14 +52,14 @@ module RSpec
       end
 
       class Be
-        include RSpec::Matchers::Pretty
+        include BaseMatcher
 
         def initialize(*args, &block)
           @args = args
         end
 
-        def matches?(actual)
-          !!(@actual = actual)
+        def match(_, actual)
+          !!actual
         end
 
         def failure_message_for_should
@@ -68,10 +68,6 @@ module RSpec
 
         def failure_message_for_should_not
           "expected #{@actual.inspect} to evaluate to false"
-        end
-
-        def description
-          "be"
         end
 
         [:==, :<, :<=, :>=, :>, :===].each do |operator|

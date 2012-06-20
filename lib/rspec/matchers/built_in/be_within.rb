@@ -2,8 +2,6 @@ module RSpec
   module Matchers
     module BuiltIn
       class BeWithin
-        include BaseMatcher
-
         def initialize(delta)
           @delta = delta
         end

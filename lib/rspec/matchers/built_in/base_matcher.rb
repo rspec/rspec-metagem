@@ -16,6 +16,15 @@ module RSpec
 
         attr_reader :actual, :expected, :rescued_exception
 
+        def initialize(expected = nil)
+          @expected = expected
+        end
+
+        def matches?(actual)
+          @actual = actual
+          match(expected, actual)
+        end
+
         def match_unless_raises(*exceptions)
           exceptions.unshift Exception if exceptions.empty?
           begin
