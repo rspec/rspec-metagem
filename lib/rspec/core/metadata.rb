@@ -31,6 +31,8 @@ module RSpec
         line = line.sub(/\A([^:]+:\d+)$/, '\\1')
         return nil if line == '-e:1'
         line
+      rescue SecurityError
+        nil
       end
 
       # @private
