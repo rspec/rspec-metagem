@@ -136,8 +136,6 @@ module RSpec
         def backtrace_line(line)
           return nil if configuration.cleaned_from_backtrace?(line)
           RSpec::Core::Metadata::relative_path(line)
-        rescue SecurityError
-          nil
         end
 
         def read_failed_line(exception, example)
@@ -152,8 +150,6 @@ module RSpec
           else
             "Unable to find #{file_path} to read failed line"
           end
-        rescue SecurityError
-          "Unable to read failed line"
         end
 
         def find_failed_line(backtrace, path)

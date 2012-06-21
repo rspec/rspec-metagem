@@ -16,12 +16,6 @@ describe RSpec::Core::Formatters::BaseFormatter do
       formatter.__send__(:backtrace_line, original_line)
       original_line.should eq(File.expand_path(__FILE__))
     end
-
-    it "deals gracefully with a security error" do
-      safely do
-        formatter.__send__(:backtrace_line, __FILE__).should be_nil
-      end
-    end
   end
 
   describe "read_failed_line" do
@@ -36,16 +30,6 @@ describe RSpec::Core::Formatters::BaseFormatter do
       lambda {
         formatter.send(:read_failed_line, exception, example)
       }.should_not raise_error
-    end
-
-    it "deals gracefully with a security error" do
-      exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
-      example = mock(:Example, :file_path => __FILE__)
-      safely do
-        lambda {
-          formatter.send(:read_failed_line, exception, example).should == "Unable to read failed line"
-        }.should_not raise_error
-      end
     end
 
     context "when String alias to_int to_i" do

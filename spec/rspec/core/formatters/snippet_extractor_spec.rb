@@ -12,15 +12,6 @@ module RSpec
         it "falls back on a default message when it doesn't find the file" do
          RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should eq("# Couldn't get snippet for blech")
         end
-
-        it "falls back on a default message when it gets a security error" do
-          Thread.new {
-            $SAFE = 3
-            $SAFE.should == 3
-            RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should eq("# Couldn't get snippet for blech")
-          }.run
-          $SAFE.should == 0
-        end
       end
     end
   end
