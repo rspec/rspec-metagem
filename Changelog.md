@@ -14,6 +14,7 @@ Enhancements
       suggesting it.
 * Limit monkey patching of `describe` onto just the objects
   that need it rather than every object in the system (Myron Marston).
+* new JSON formatter (Alex Chaffee)
 
 Bug fixes
 
