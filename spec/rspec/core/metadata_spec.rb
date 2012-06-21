@@ -4,26 +4,6 @@ module RSpec
   module Core
     describe Metadata do
 
-      describe '.relative_path' do
-        let(:here) { File.expand_path(".") }
-        it "transforms absolute paths to relative paths" do
-          Metadata.relative_path(here).should == "."
-        end
-        it "transforms absolute paths to relative paths anywhere in its argument" do
-          Metadata.relative_path("foo #{here} bar").should == "foo . bar"
-        end
-        it "returns nil if passed an unparseable file:line combo" do
-          Metadata.relative_path("-e:1").should be_nil
-        end
-        # I have no idea what line = line.sub(/\A([^:]+:\d+)$/, '\\1') is supposed to do
-        it "gracefully returns nil if run in a secure thread" do
-          safely do
-            Metadata.relative_path(".").should be_nil
-          end
-        end
-
-      end
-
       describe "#process" do
         Metadata::RESERVED_KEYS.each do |key|
           it "prohibits :#{key} as a hash key" do
