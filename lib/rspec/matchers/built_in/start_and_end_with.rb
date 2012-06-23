@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class StartAndEndWith
-        include BaseMatcher
-
+      class StartAndEndWith < BaseMatcher
         def initialize(*expected)
           @expected = expected.length == 1 ? expected.first : expected
         end

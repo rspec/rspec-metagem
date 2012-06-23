@@ -2,9 +2,7 @@ module RSpec::Matchers::BuiltIn
   describe BaseMatcher do
     describe "#match_unless_raises" do
       let(:matcher) do
-        Class.new do
-          include BaseMatcher
-        end.new
+        Class.new(BaseMatcher).new
       end
 
       it "returns true if there are no errors" do
@@ -41,9 +39,7 @@ module RSpec::Matchers::BuiltIn
 
     describe "#==" do
       it "responds the same way as matches?" do
-        matcher = Class.new do
-          include BaseMatcher
-
+        matcher = Class.new(BaseMatcher) do
           def initialize(expected)
             @expected = expected
           end

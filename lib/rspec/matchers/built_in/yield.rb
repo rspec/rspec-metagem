@@ -64,9 +64,7 @@ module RSpec
         end
       end
 
-      class YieldControl
-        include BaseMatcher
-
+      class YieldControl < BaseMatcher
         def matches?(block)
           probe = YieldProbe.probe(block)
           probe.yielded_once?(:yield_control)
@@ -81,8 +79,7 @@ module RSpec
         end
       end
 
-      class YieldWithNoArgs
-        include BaseMatcher
+      class YieldWithNoArgs < BaseMatcher
 
         def matches?(block)
           @probe = YieldProbe.probe(block)

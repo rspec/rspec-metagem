@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class BeAKindOf
-        include BaseMatcher
-
+      class BeAKindOf < BaseMatcher
         def match(expected, actual)
           actual.kind_of? expected
         end

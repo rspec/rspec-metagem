@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class Exist
-        include BaseMatcher
-
+      class Exist < BaseMatcher
         def initialize(*expected)
           @expected = expected
         end

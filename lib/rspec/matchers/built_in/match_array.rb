@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class MatchArray
-        include BaseMatcher
-
+      class MatchArray < BaseMatcher
         def match(expected, actual)
           @extra_items = difference_between_arrays(actual, expected)
           @missing_items = difference_between_arrays(expected, actual)

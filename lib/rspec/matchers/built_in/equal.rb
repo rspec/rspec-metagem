@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class Equal
-        include BaseMatcher
-
+      class Equal < BaseMatcher
         def match(expected, actual)
           actual.equal? expected
         end

@@ -3,9 +3,7 @@ require 'rspec/matchers/dsl'
 module RSpec
   module Matchers
     module BuiltIn
-      class BeTrue
-        include BaseMatcher
-
+      class BeTrue < BaseMatcher
         def match(_, actual)
           !!actual
         end
@@ -19,9 +17,7 @@ module RSpec
         end
       end
 
-      class BeFalse
-        include BaseMatcher
-
+      class BeFalse < BaseMatcher
         def match(_, actual)
           !actual
         end
@@ -35,9 +31,7 @@ module RSpec
         end
       end
 
-      class BeNil
-        include BaseMatcher
-
+      class BeNil < BaseMatcher
         def match(_, actual)
           actual.nil?
         end
@@ -51,9 +45,7 @@ module RSpec
         end
       end
 
-      class Be
-        include BaseMatcher
-
+      class Be < BaseMatcher
         def initialize(*args, &block)
           @args = args
         end

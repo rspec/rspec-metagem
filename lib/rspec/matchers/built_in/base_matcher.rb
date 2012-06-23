@@ -11,7 +11,7 @@ module RSpec
       # This class is for internal use, and subject to change without notice.  We
       # strongly recommend that you do not base your custom matchers on this
       # class. If/when this changes, we will announce it and remove this warning.
-      module BaseMatcher
+      class BaseMatcher
         include RSpec::Matchers::Pretty
 
         attr_reader :actual, :expected, :rescued_exception

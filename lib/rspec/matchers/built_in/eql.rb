@@ -1,9 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class Eql
-        include BaseMatcher
-
+      class Eql < BaseMatcher
         def match(expected, actual)
           actual.eql? expected
         end
