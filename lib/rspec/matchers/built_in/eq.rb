@@ -3,7 +3,7 @@ module RSpec
     module BuiltIn
       class Eq < BaseMatcher
         def match(expected, actual)
-          expected == actual
+          actual == expected
         end
 
         def failure_message_for_should
