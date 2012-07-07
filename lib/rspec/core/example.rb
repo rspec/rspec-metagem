@@ -129,7 +129,7 @@ module RSpec
           @example_group_instance = nil
 
           begin
-            assign_auto_description
+            assign_generated_description
           rescue Exception => e
             set_exception(e, "while assigning the example description")
           end
@@ -308,7 +308,7 @@ An error occurred #{context}
         @example_group_instance.teardown_mocks_for_rspec
       end
 
-      def assign_auto_description
+      def assign_generated_description
         return unless RSpec.configuration.expecting_with_rspec?
         if metadata[:description].empty? and !pending?
           metadata[:description] = RSpec::Matchers.generated_description
