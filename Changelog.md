@@ -1,3 +1,12 @@
+### 2.11.1 / 2012-07-08
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.0...v2.11.1)
+
+Bug fix
+
+* Constrain `actual` in `be_within` matcher to values that respond to `-` instead
+  of requiring a specific type.
+    * `Time`, for example, is a legit alternative.
+
 ### 2.11.0 / 2012-07-07
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.10.0...v2.11.0)
 
