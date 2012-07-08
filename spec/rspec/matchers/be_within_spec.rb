@@ -50,7 +50,7 @@ module RSpec
       end
 
       it "works with Time" do
-        Time.now.should be_within(0.001).of(Time.now)
+        Time.now.should be_within(0.1).of(Time.now)
       end
 
       it "provides a description" do
