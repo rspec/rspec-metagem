@@ -8,8 +8,8 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          raise needs_expected unless defined? @expected 
-          raise needs_numeric  unless @actual.is_a? Numeric 
+          raise needs_expected     unless defined? @expected 
+          raise needs_subtractable unless @actual.respond_to? :-
           (@actual - @expected).abs <= @delta
         end
 
@@ -32,8 +32,8 @@ module RSpec
 
         private
 
-        def needs_numeric
-          ArgumentError.new "The actual value (#{@actual.inspect}) must be of a `Numeric` type"
+        def needs_subtractable
+          ArgumentError.new "The actual value (#{@actual.inspect}) must respond to `-`"
         end
 
         def needs_expected

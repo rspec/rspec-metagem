@@ -49,6 +49,10 @@ module RSpec
           matcher.failure_message_for_should_not.should == "expected 5.49 not to be within 0.5 of 5.0"
       end
 
+      it "works with Time" do
+        Time.now.should be_within(0.001).of(Time.now)
+      end
+
       it "provides a description" do
         matcher = be_within(0.5).of(5.0)
         matcher.matches?(5.1)
@@ -62,9 +66,9 @@ module RSpec
         )
       end
 
-      it "raises an error if the actual value is not of a Numeric type" do
+      it "raises an error if the actual does not respond to :-" do
         expect { be_within(0.1).of(0).matches?(nil) }.to raise_error(
-          ArgumentError, /The actual value \(nil\) must be of a `Numeric` type/
+          ArgumentError, /The actual value \(nil\) must respond to `-`/
         )
       end
     end
