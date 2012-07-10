@@ -189,35 +189,33 @@ RSpec.configure do |config|
 end
 ```
 
+See
+[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
+for more information.
+
 ### Motivation for `expect`
 
 We added the `expect` syntax to resolve some edge case issues, most notably
 that objects whose definitions wipe out all but a few methods were throwing
 `should` and `should_not` away. `expect` solves that by not monkey patching
-`Object` (or `Kernel`).
+those methods onto `Kernel` (or any global object).
+
+See
+[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
+for a detailed explanation.
 
 ### One-liners
 
-The one-liner syntax supported by rspec-core  uses `should` even when
-`config.syntax = :expect`:
+The one-liner syntax supported by
+[rspec-core](http://rubydoc.info/gems/rspec-core)  uses `should` even when
+`config.syntax = :expect`. It reads better than the alternative, and does not
+require a global monkey patch:
 
 ```ruby
 describe User do
   it { should validate_presence_of :email }
 end
 ```
-
-Even though it uses a different word, it reads better than the alternative:
-
-```ruby
-it { expect validate_presence_of :email }
-```
-
-See
-[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
-and
-[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
-for more information.
 
 ## Also see
 
