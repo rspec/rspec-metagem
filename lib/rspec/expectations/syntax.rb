@@ -28,8 +28,14 @@ module RSpec
       # @see RSpec::Matchers
 
       # @method expect
-      # Wraps `target` in an `ExpectationTarget`
+      # Supports `expect(actual).to matcher` syntax by wrapping `actual` in an
+      # `ExpectationTarget`.
+      # @example
+      #   expect(actual).to eq(expected)
+      #   expect(actual).to_not eq(expected)
       # @return [ExpectationTarget]
+      # @see ExpectationTarget#to
+      # @see ExpectationTarget#to_not
 
       # @api private
       # Determines where we add `should` and `should_not`.

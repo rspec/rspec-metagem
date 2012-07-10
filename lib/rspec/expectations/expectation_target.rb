@@ -3,6 +3,12 @@ module RSpec
     # Wraps the target of an expectation.
     # @example
     #   expect(something) # => ExpectationTarget wrapping something
+    #
+    #   # used with `to`
+    #   expect(actual).to eq(3)
+    #
+    #   # with `to_not`
+    #   expect(actual).to_not eq(3)
     class ExpectationTarget
       # @api private
       def initialize(target)

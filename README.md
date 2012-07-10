@@ -33,7 +33,7 @@ describe Order do
       :price => Money.new(2.22, :USD),
       :quantity => 2
     )))
-    order.total.should eq(Money.new(5.55, :USD))
+    expect(order.total).to eq(Money.new(5.55, :USD))
   end
 end
 ```
@@ -163,23 +163,15 @@ actual.should end_with(expected)
 "this string".should end_with("ring")
 ```
 
-## Syntax Options
+## `expect` syntax
 
 In addition to the `should` syntax, rspec-expectations supports
-an additional `expect` syntax:
+a new `expect` syntax as of version 2.11.0:
 
 ```ruby
-# rather than:
-[1, 2, 3].should include(1)
-
-#...you can use:
-expect([1, 2, 3]).to include(1)
-
-# rather than:
-foo.should_not eq(bar)
-
-#...you can use:
-expect(foo).not_to eq(bar)
+expect(actual).to eq expected
+expect(actual).to be > 3
+expect([1, 2, 3]).to_not include 4
 ```
 
 If you want your project to only use one of these syntaxes, you can
@@ -196,6 +188,36 @@ RSpec.configure do |config|
   end
 end
 ```
+
+### Motivation for `expect`
+
+We added the `expect` syntax to resolve some edge case issues, most notably
+that objects whose definitions wipe out all but a few methods were throwing
+`should` and `should_not` away. `expect` solves that by not monkey patching
+`Object` (or `Kernel`).
+
+### One-liners
+
+The one-liner syntax supported by rspec-core  uses `should` even when
+`config.syntax = :expect`:
+
+```ruby
+describe User do
+  it { should validate_presence_of :email }
+end
+```
+
+Even though it uses a different word, it reads better than the alternative:
+
+```ruby
+it { expect validate_presence_of :email }
+```
+
+See
+[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
+and
+[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
+for more information.
 
 ## Also see
 
