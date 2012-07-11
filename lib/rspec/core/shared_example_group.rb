@@ -38,7 +38,7 @@ module RSpec
         unless args.empty?
           mod = Module.new
           (class << mod; self; end).send :define_method, :extended  do |host|
-            host.class_eval &block
+            host.class_eval(&block)
           end
           RSpec.configuration.extend mod, *args
         end
