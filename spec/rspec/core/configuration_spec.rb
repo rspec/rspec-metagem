@@ -83,7 +83,7 @@ module RSpec::Core
         lambda do
           config.send m, mod do |mod_config|
           end
-        end.should raise_error /must respond to `configuration`/
+        end.should raise_error(/must respond to `configuration`/)
       end
     end
 
@@ -179,7 +179,7 @@ module RSpec::Core
         lambda do
           config.expect_with :rspec, :stdlib do |mod_config|
           end
-        end.should raise_error /expect_with only accepts/
+        end.should raise_error(/expect_with only accepts/)
       end
 
       it "raises ArgumentError if framework is not supported" do
