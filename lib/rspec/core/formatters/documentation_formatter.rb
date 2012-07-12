@@ -59,7 +59,7 @@ module RSpec
         end
 
         def example_group_chain
-          example_group.ancestors.reverse
+          example_group.parent_groups.reverse
         end
       end
     end

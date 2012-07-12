@@ -696,7 +696,7 @@ module RSpec::Core
           example.example_group.description.should eq('A sample nested group')
         end
 
-        it "has top level metadata from the example_group and its ancestors" do
+        it "has top level metadata from the example_group and its parent groups" do
           example.example_group.metadata.should include(:little_less_nested => 'yep', :nested_describe => 'yep')
         end
 

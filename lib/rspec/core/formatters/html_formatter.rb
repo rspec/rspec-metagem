@@ -152,7 +152,7 @@ module RSpec
         end
         
         def current_indentation
-          "style=\"margin-left: #{(example_group.ancestors.size - 1) * 15}px;\""
+          "style=\"margin-left: #{(example_group.parent_groups.size - 1) * 15}px;\""
         end
 
         def html_header

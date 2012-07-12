@@ -61,7 +61,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it "preserves ancestry" do
         example = group.example("example name") { raise "something" }
         run_all_and_dump_failures
-        example.example_group.ancestors.size.should == 1
+        example.example_group.parent_groups.size.should == 1
       end
     end
 

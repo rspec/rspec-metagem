@@ -119,7 +119,7 @@ module RSpec
         private
         def process host, globals, position, scope
           globals[position][scope].each do |hook|
-            unless host.ancestors.any? { |a| a.hooks[position][scope].include? hook }
+            unless host.parent_groups.any? { |a| a.hooks[position][scope].include? hook }
               self[position][scope] << hook if scope == :each || hook.options_apply?(host)
             end
           end
@@ -426,7 +426,7 @@ module RSpec
 
       # @private
       def around_each_hooks_for(example, initial_procsy=nil)
-        AroundHookCollection.new(ancestors.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
+        AroundHookCollection.new(parent_groups.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
       end
 
     private
@@ -448,11 +448,11 @@ module RSpec
       end
 
       def before_each_hooks_for(example)
-        HookCollection.new(ancestors.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
+        HookCollection.new(parent_groups.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
       end
 
       def after_each_hooks_for(example)
-        HookCollection.new(ancestors.map {|a| a.hooks[:after][:each]}.flatten).for(example)
+        HookCollection.new(parent_groups.map {|a| a.hooks[:after][:each]}.flatten).for(example)
       end
 
       def register_hook prepend_or_append, hook, *args, &block
