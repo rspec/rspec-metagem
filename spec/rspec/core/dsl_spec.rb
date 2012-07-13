@@ -1,19 +1,6 @@
 require 'spec_helper'
 
 main = self
-shared_examples_for "a DSL method" do |method_name|
-  it 'is available on the main object' do
-    main.should respond_to(method_name)
-  end
-
-  it "is available on modules (so #{method_name} can be used in a module)" do
-    Module.new.should respond_to(method_name)
-  end
-
-  it 'is not available on other types of objects' do
-    Object.new.should_not respond_to(method_name)
-  end
-end
 
 describe "The RSpec DSL" do
   methods = [
@@ -25,9 +12,13 @@ describe "The RSpec DSL" do
     :share_as
   ]
 
-  methods.each do |meth|
-    describe "##{meth}" do
-      include_examples "a DSL method", meth
+  methods.each do |method_name|
+    describe "##{method_name}" do
+      it "is not added to every object in the system" do
+        main.should respond_to(method_name)
+        Module.new.should respond_to(method_name)
+        Object.new.should_not respond_to(method_name)
+      end
     end
   end
 end
