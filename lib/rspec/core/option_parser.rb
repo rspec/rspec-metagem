@@ -134,8 +134,8 @@ FILTERING
           options[:pattern] = o
         end
 
-        parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING (may be',
-                                              '  used more than once)") do |o|
+        parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING (may be",
+                                            "  used more than once)") do |o|
           (options[:full_description] ||= []) << Regexp.compile(Regexp.escape(o))
         end
 
