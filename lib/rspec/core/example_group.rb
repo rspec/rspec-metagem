@@ -22,6 +22,7 @@ module RSpec
       include Subject::ExampleMethods
       include Pending
       include Let
+      include SharedExampleGroup
 
       # @private
       def self.world

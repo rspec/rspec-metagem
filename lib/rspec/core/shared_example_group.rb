@@ -93,4 +93,6 @@ module RSpec
   end
 end
 
-include RSpec::Core::SharedExampleGroup
+extend RSpec::Core::SharedExampleGroup
+Module.send(:include, RSpec::Core::SharedExampleGroup)
+
