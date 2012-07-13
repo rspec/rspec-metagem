@@ -1,6 +1,11 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...master)
 
+Enhancements
+
+* Add support for custom ordering strategies for groups and examples.
+  (Myron Marston)
+
 Bug fixes
 
 * Remove override of ExampleGroup#ancestors. This is a core ruby
