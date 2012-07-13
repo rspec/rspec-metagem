@@ -272,6 +272,20 @@ describe "should_not raise_error(NamedError, error_message) { |err| ... }" do
 
     ran.should == false
   end
+
+  it 'skips the error verification block when using the expect {...}.to syntax' do
+    ran = false
+
+    expect {
+      expect {
+        raise "example message"
+      }.not_to raise_error(RuntimeError, "example message") { |err|
+        ran = true
+      }
+    }.to fail_with("expected no RuntimeError with \"example message\", got #<RuntimeError: example message>")
+
+    ran.should == false
+  end
 end
 
 describe "should_not raise_error(NamedError, error_message) with String" do

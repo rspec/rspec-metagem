@@ -13,7 +13,7 @@ module RSpec
           end
         end
 
-        def matches?(given_proc)
+        def matches?(given_proc, negative_expectation = false)
           @raised_expected_error = false
           @with_expected_message = false
           @eval_block = false
@@ -29,11 +29,15 @@ module RSpec
             "http://eigenclass.org/hiki.rb?rcov-0.8.0"
           end
 
-          unless negative_expectation?
+          unless negative_expectation
             eval_block if @raised_expected_error && @with_expected_message && @block
           end
         ensure
           return (@raised_expected_error & @with_expected_message) ? (@eval_block ? @eval_block_passed : true) : false
+        end
+
+        def does_not_match?(given_proc)
+          !matches?(given_proc, :negative_expectation)
         end
 
         def eval_block
@@ -84,11 +88,6 @@ module RSpec
 
         def given_error
           @actual_error.nil? ? " but nothing was raised" : ", got #{@actual_error.inspect}"
-        end
-
-        def negative_expectation?
-          # YES - I'm a bad person... help me find a better way - ryand
-          caller.first(3).find { |s| s =~ /should_not/ }
         end
       end
     end
