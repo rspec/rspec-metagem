@@ -16,7 +16,7 @@ Feature: pending examples
     And the output should contain "Not yet implemented"
     And the output should contain "example_without_block_spec.rb:2"
 
-  Scenario: pending any arbitary reason, with no block
+  Scenario: pending any arbitrary reason, with no block
     Given a file named "pending_without_block_spec.rb" with:
       """
       describe "an example" do
@@ -37,7 +37,7 @@ Feature: pending examples
           # ./pending_without_block_spec.rb:2
       """
 
-  Scenario: pending any arbitary reason, with a block that fails
+  Scenario: pending any arbitrary reason, with a block that fails
     Given a file named "pending_with_failing_block_spec.rb" with:
       """
       describe "an example" do
@@ -59,7 +59,7 @@ Feature: pending examples
           # ./pending_with_failing_block_spec.rb:2
       """
 
-  Scenario: pending any arbitary reason, with a block that passes
+  Scenario: pending any arbitrary reason, with a block that passes
     Given a file named "pending_with_passing_block_spec.rb" with:
       """
       describe "an example" do
