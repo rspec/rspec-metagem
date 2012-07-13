@@ -6,14 +6,14 @@ Feature: mock with an alternative framework
 
   A mock framework adapter must expose three methods:
     
-  * setup_mocks_for_rspec
+  * `setup_mocks_for_rspec`
     * called before each example is run
-  * verify_mocks_for_rspec 
+  * `verify_mocks_for_rspec` 
     * called after each example is run
     * this is where message expectation failures should result in an error with
       the appropriate failure message
-  * teardown_mocks_for_rspec 
-    * called after verify_mocks_for_rspec
+  * `teardown_mocks_for_rspec` 
+    * called after `verify_mocks_for_rspec`
     * use this to clean up resources, restore objects to earlier state, etc
     * guaranteed to run even if there are failures
 

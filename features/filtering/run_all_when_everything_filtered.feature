@@ -1,6 +1,6 @@
 Feature: run all when everything filtered
 
-  Use the run_all_when_everything_filtered configuration option to do just
+  Use the `run_all_when_everything_filtered` configuration option to do just
   that.  This works well when paired with an inclusion filter like ":focus =>
   true", as it will run all the examples when none match the inclusion filter.
 
