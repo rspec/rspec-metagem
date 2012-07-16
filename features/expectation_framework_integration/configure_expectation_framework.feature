@@ -13,6 +13,22 @@ Feature: configure expectation framework
   provide a description to every example.  You cannot rely on the generated
   descriptions provided by rspec-expectations.
 
+  Scenario: rspec-expectations can be used by default if nothing is configured
+    Given a file named "example_spec.rb" with:
+      """
+      RSpec::Matchers.define :be_a_multiple_of do |factor|
+        match do |actual|
+          actual % factor == 0
+        end
+      end
+
+      describe 6 do
+        it { should be_a_multiple_of(3) }
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the examples should all pass
+
   Scenario: configure rspec-expectations (explicitly)
     Given a file named "example_spec.rb" with:
       """

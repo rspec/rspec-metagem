@@ -40,7 +40,6 @@ require_rspec 'core/example_group'
 require_rspec 'core/version'
 
 module RSpec
-  autoload :Matchers,      'rspec/matchers'
   autoload :SharedContext, 'rspec/core/shared_context'
 
   # @private
@@ -105,6 +104,22 @@ module RSpec
   end
 
   module Core
+  end
+
+  def self.const_missing(name)
+    case name
+      when :Matchers
+        # Load rspec-expectations when RSpec::Matchers is referenced. This allows
+        # people to define custom matchers (using `RSpec::Matchers.define`) before
+        # rspec-core has loaded rspec-expectations (since it delays the loading of
+        # it to allow users to configure a different assertion/expectation
+        # framework). `autoload` can't be used since it works with ruby's built-in
+        # require (e.g. for files that are available relative to a load path dir),
+        # but not with rubygems' extended require.
+        require 'rspec/expectations'
+        ::RSpec::Matchers
+      else super
+    end
   end
 end
 
