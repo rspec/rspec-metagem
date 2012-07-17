@@ -39,17 +39,9 @@ module RSpec
         syntaxes
       end
 
-      # Some methods for color config in Expectations.
-      # Expectations should be independent from Core, therefore
-      # color should fallback to being configurable here, if core
-      # is not available.
-      #
-      # Tests to see if --color is available within expectations
-      # should be made here
+      # color config for expectations
+      # fallback if rspec core not available
       if defined?(RSpec::Core)
-        def color=(bool)
-          RSpec.configuration.color = bool
-        end
         def color?
           RSpec.configuration.color
         end
