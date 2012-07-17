@@ -4,7 +4,12 @@ require 'ostruct'
 module RSpec
   module Expectations
     describe Differ do
+      context "without --color" do
+
       let(:differ) { RSpec::Expectations::Differ.new }
+      before { RSpec.configuration.color = false }
+
+        # color disabled context
 
       describe '#diff_as_string' do
         it "outputs unified diff of two strings" do
@@ -148,6 +153,9 @@ EOD
           diff.should == expected_diff
         end
       end
+    end # end context
+
+
     end
   end
 end

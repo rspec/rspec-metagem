@@ -39,6 +39,17 @@ module RSpec
         syntaxes
       end
 
+      if defined?(RSpec::Core)
+        def color?
+          RSpec.configuration.color
+        end
+      else
+        attr_writer :color
+        def color?
+          @color
+        end
+      end
+
       # Adds `should` and `should_not` to the given classes
       # or modules. This can be used to ensure `should` works
       # properly on things like proxy objects (particular

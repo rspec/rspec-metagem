@@ -36,6 +36,7 @@ module RSpec
         end
         #Handle the last remaining hunk
         output << oldhunk.diff(format) << "\n"
+        color_diff output
       end
 
       def diff_as_object(actual, expected)
@@ -48,7 +49,7 @@ module RSpec
           "between #{actual} and #{expected} is empty. Check the " \
           "implementation of #{actual}.==."
         else
-          diff
+          color_diff diff
         end
       end
 
@@ -60,6 +61,27 @@ module RSpec
 
       def context_lines
         3
+      end
+
+      def color(code, text)
+        "#{code}#{text}\e[0m"
+      end
+
+      def color_diff(diff)
+        return diff unless RSpec::Matchers.configuration.color?
+        lines = diff.lines.map do |line|
+          case line[0]
+          when "+"
+            color(line, "\e[33m") # yellow
+          when "-"
+            color(line, "\e[31m") # red
+          when "@"
+            line[1] == "@" ? color(line, "\e[34m") : line # blue
+          else
+            line
+          end
+        end
+        lines.join
       end
 
       def object_to_string(object)
