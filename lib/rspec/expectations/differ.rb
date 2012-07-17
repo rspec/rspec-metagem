@@ -64,19 +64,24 @@ module RSpec
       end
 
       def color(text, code)
-        "#{code}#{text}\e[0m"
+        "\e[#{code}m#{text}\e[0m"
       end
 
       def color_diff(diff)
         return diff unless RSpec::Matchers.configuration.color?
+
+        red = 31
+        green = 32
+        blue = 34
+
         lines = diff.lines.map do |line|
           case line[0]
           when "+"
-            color(line, "\e[33m") # yellow
+            color(line, green)
           when "-"
-            color(line, "\e[31m") # red
+            color(line, red)
           when "@"
-            line[1] == "@" ? color(line, "\e[34m") : line # blue
+            line[1] == "@" ? color(line, blue) : line
           else
             line
           end
