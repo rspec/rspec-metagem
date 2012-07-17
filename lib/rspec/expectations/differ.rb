@@ -63,7 +63,7 @@ module RSpec
         3
       end
 
-      def color(code, text)
+      def color(text, code)
         "#{code}#{text}\e[0m"
       end
 

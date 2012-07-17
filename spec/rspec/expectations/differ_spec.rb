@@ -6,8 +6,9 @@ module RSpec
     describe Differ do
       context "without --color" do
 
+      before { RSpec::Matchers.configuration.color = false }
+
       let(:differ) { RSpec::Expectations::Differ.new }
-      before { RSpec.configuration.color = false }
 
         # color disabled context
 
@@ -155,6 +156,21 @@ EOD
       end
     end # end context
 
+    context "with --color" do
+      before { RSpec::Matchers.configuration.color = true }
+
+      let(:differ) { RSpec::Expectations::Differ.new }
+
+      it "outputs coloured diffs" do
+        expected = "foo bar baz"
+        actual = "foo bang baz"
+        expected_diff = "\n\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[33m+foo bar baz\n\e[0m"
+
+
+        diff = differ.diff_as_string(expected,actual)
+        diff.should == expected_diff
+      end
+    end
 
     end
   end
