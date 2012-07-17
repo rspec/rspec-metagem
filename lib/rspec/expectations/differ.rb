@@ -75,13 +75,13 @@ module RSpec
         blue = 34
 
         lines = diff.lines.map do |line|
-          case line[0]
+          case line[0].chr
           when "+"
             color(line, green)
           when "-"
             color(line, red)
           when "@"
-            line[1] == "@" ? color(line, blue) : line
+            line[1].chr == "@" ? color(line, blue) : line
           else
             line
           end
