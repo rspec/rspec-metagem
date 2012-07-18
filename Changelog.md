@@ -14,6 +14,10 @@ Bug fixes
 * Limit monkey patching of shared example/context declaration
   methods (`shared_examples_for`, etc.) to just the objects
   that need it rather than every object in the system (Myron Marston).
+* Ignore mock expectation failures when the example has already failed.
+  Mock expectation failures have always been ignored in this situation,
+  but due to my changes in 27059bf1 it was printing a confusing message.
+  (Myron Marston).
 
 ### 2.11.0 / 2012-07-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.10.1...v2.11.0)
