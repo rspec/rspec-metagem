@@ -4,7 +4,13 @@ require 'ostruct'
 module RSpec
   module Expectations
     describe Differ do
+      context "without --color" do
+
+      before { RSpec::Matchers.configuration.stub(:color? => false) }
+
       let(:differ) { RSpec::Expectations::Differ.new }
+
+        # color disabled context
 
       describe '#diff_as_string' do
         it "outputs unified diff of two strings" do
@@ -148,6 +154,24 @@ EOD
           diff.should == expected_diff
         end
       end
+    end
+
+    context "with --color" do
+      before { RSpec::Matchers.configuration.stub(:color? => true) }
+
+      let(:differ) { RSpec::Expectations::Differ.new }
+
+      it "outputs colored diffs" do
+        expected = "foo bar baz"
+        actual = "foo bang baz"
+        expected_diff = "\n\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
+
+
+        diff = differ.diff_as_string(expected,actual)
+        diff.should == expected_diff
+      end
+    end
+
     end
   end
 end
