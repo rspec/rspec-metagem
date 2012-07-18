@@ -1,3 +1,14 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...master)
+
+Bug fixes
+
+* Fix the way we autoload RSpec::Matchers so that custom matchers can be
+  defined before rspec-core has been configured to definitely use
+  rspec-expectations. (Myron Marston)
+* Fix typo in --help message printed for -e option. (Jo Liss)
+* Fix ruby warnings. (Myron Marston)
+
 ### 2.11.0 / 2012-07-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.10.1...v2.11.0)
 
