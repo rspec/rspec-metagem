@@ -1,5 +1,5 @@
 ### dev
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.11.1...master)
 
 Enhancements
 
@@ -14,6 +14,17 @@ Bug fixes
 * Limit monkey patching of shared example/context declaration
   methods (`shared_examples_for`, etc.) to just the objects
   that need it rather than every object in the system (Myron Marston).
+
+### 2.11.1 / 2012-07-18
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...v2.11.1)
+
+Bug fixes
+
+* Fix the way we autoload RSpec::Matchers so that custom matchers can be
+  defined before rspec-core has been configured to definitely use
+  rspec-expectations. (Myron Marston)
+* Fix typo in --help message printed for -e option. (Jo Liss)
+* Fix ruby warnings. (Myron Marston)
 * Ignore mock expectation failures when the example has already failed.
   Mock expectation failures have always been ignored in this situation,
   but due to my changes in 27059bf1 it was printing a confusing message.
