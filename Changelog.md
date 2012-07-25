@@ -4,10 +4,16 @@ Enhancements
 
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
 
+Bug fixes
+
+* Define `should` and `should_not` on `Object` rather than `BasicObject`
+  on MacRuby. On MacRuby, `BasicObject` is defined but is not the root
+  of the object hierarchy. (Gabriel Gilder)
+
 ### 2.11.1 / 2012-07-08
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.0...v2.11.1)
 
-Bug fix
+Bug fixes
 
 * Constrain `actual` in `be_within` matcher to values that respond to `-` instead
   of requiring a specific type.
