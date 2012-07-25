@@ -40,7 +40,7 @@ module RSpec
       # @api private
       # Determines where we add `should` and `should_not`.
       def default_should_host
-        @default_should_host ||= Object.ancestors.last
+        @default_should_host ||= ::Object.ancestors.last
       end
 
       # @api private
