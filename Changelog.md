@@ -1,8 +1,12 @@
 ### dev
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...master)
 
 Enhancements
 
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
+
+### 2.11.2 / 2012-07-25
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.1...v2.11.2)
 
 Bug fixes
 
