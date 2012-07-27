@@ -1,6 +1,10 @@
 require "spec_helper"
 
 describe "should start_with" do
+  it_behaves_like "an RSpec matcher", :valid_value => "ab", :invalid_value => "bc" do
+    let(:matcher) { start_with("a") }
+  end
+
   context "with a string" do
     it "passes if it matches the start of the actual string" do
       "this string".should start_with "this str"
@@ -87,6 +91,10 @@ describe "should_not start_with" do
 end
 
 describe "should end_with" do
+  it_behaves_like "an RSpec matcher", :valid_value => "ab", :invalid_value => "bc" do
+    let(:matcher) { end_with("b") }
+  end
+
   context "with a string" do
     it "passes if it matches the end of the actual string" do
       "this string".should end_with "is string"

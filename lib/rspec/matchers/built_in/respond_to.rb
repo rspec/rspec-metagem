@@ -10,6 +10,7 @@ module RSpec
         def matches?(actual)
           find_failing_method_names(actual, :reject).empty?
         end
+        alias == matches?
 
         def does_not_match?(actual)
           find_failing_method_names(actual, :select).empty?

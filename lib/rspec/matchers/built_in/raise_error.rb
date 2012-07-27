@@ -35,6 +35,7 @@ module RSpec
         ensure
           return (@raised_expected_error & @with_expected_message) ? (@eval_block ? @eval_block_passed : true) : false
         end
+        alias == matches?
 
         def does_not_match?(given_proc)
           !matches?(given_proc, :negative_expectation)

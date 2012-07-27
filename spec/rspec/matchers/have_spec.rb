@@ -29,6 +29,9 @@ describe "have matcher" do
   end
 
   describe "should have(n).items" do
+    it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+      let(:matcher) { have(2).items }
+    end
 
     it "passes if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)

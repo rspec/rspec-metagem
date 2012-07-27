@@ -9,6 +9,7 @@ module RSpec
         def matches?(actual)
           actual.__send__(predicate(@expected), *@args)
         end
+        alias == matches?
 
         def failure_message_for_should
           "expected ##{predicate(@expected)}#{failure_message_args_description} to return true, got false"

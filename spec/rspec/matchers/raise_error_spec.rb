@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe "should raise_error" do
+  it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
+                                      :invalid_value => lambda { }) do
+    let(:matcher) { raise_error(/boom/) }
+  end
+
   it "passes if anything is raised" do
     lambda {raise}.should raise_error
   end

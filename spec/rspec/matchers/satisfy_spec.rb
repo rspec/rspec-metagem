@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "should satisfy { block }" do
+  it_behaves_like "an RSpec matcher", :valid_value => true, :invalid_value => false do
+    let(:matcher) { satisfy { |v| v } }
+  end
+
   it "describes itself" do
     satisfy.description.should eq("satisfy block")
   end

@@ -6,6 +6,10 @@ describe "#include matcher" do
   end
 
   describe "should include(with_one_arg)" do
+    it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+      let(:matcher) { include(2) }
+    end
+
     context "for a string target" do
       it "passes if target includes expected" do
         "abc".should include("a")

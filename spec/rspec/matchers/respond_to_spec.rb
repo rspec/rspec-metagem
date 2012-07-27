@@ -1,6 +1,9 @@
 require 'spec_helper'
 
 describe "should respond_to(:sym)" do
+  it_behaves_like "an RSpec matcher", :valid_value => "s", :invalid_value => 5 do
+    let(:matcher) { respond_to(:upcase) }
+  end
   
   it "passes if target responds to :sym" do
     Object.new.should respond_to(:methods)

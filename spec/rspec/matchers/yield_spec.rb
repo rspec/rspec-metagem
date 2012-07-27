@@ -35,6 +35,13 @@ end
 
 describe "yield_control matcher" do
   include YieldHelpers
+  extend  YieldHelpers
+
+  it_behaves_like "an RSpec matcher",
+      :valid_value => lambda { |b| _yield_with_no_args(&b) },
+      :invalid_value => lambda { |b| _dont_yield(&b) } do
+    let(:matcher) { yield_control }
+  end
 
   it 'has a description' do
     yield_control.description.should eq("yield control")
@@ -90,6 +97,13 @@ end
 
 describe "yield_with_no_args matcher" do
   include YieldHelpers
+  extend  YieldHelpers
+
+  it_behaves_like "an RSpec matcher",
+      :valid_value => lambda { |b| _yield_with_no_args(&b) },
+      :invalid_value => lambda { |b| _dont_yield(&b) } do
+    let(:matcher) { yield_with_no_args }
+  end
 
   it 'has a description' do
     yield_with_no_args.description.should eq("yield with no args")
@@ -154,6 +168,13 @@ end
 
 describe "yield_with_args matcher" do
   include YieldHelpers
+  extend  YieldHelpers
+
+  it_behaves_like "an RSpec matcher",
+      :valid_value => lambda { |b| _yield_with_args(1, &b) },
+      :invalid_value => lambda { |b| _dont_yield(&b) } do
+    let(:matcher) { yield_with_args }
+  end
 
   it 'has a description' do
     yield_with_args.description.should eq("yield with args")
@@ -283,6 +304,13 @@ end
 
 describe "yield_successive_args matcher" do
   include YieldHelpers
+  extend  YieldHelpers
+
+  it_behaves_like "an RSpec matcher",
+      :valid_value => lambda { |b| [1, 2].each(&b) },
+      :invalid_value => lambda { |b| _dont_yield(&b) } do
+    let(:matcher) { yield_successive_args(1, 2) }
+  end
 
   it 'has a description' do
     yield_successive_args(1, 3).description.should eq("yield successive args(1, 3)")

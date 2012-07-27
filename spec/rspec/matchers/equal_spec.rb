@@ -2,6 +2,9 @@ require 'spec_helper'
 module RSpec
   module Matchers
     describe "equal" do
+      it_behaves_like "an RSpec matcher", :valid_value => :a, :invalid_value => :b do
+        let(:matcher) { equal(:a) }
+      end
 
       def inspect_object(o)
         "#<#{o.class}:#{o.object_id}> => #{o.inspect}"

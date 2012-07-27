@@ -31,6 +31,7 @@ module RSpec
           else                @actual == @expected
           end
         end
+        alias == matches?
 
         def determine_collection(collection_or_owner)
           if collection_or_owner.respond_to?(@collection_name)

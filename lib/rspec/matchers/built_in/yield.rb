@@ -115,6 +115,7 @@ module RSpec
           @actual = @probe.single_yield_args
           @probe.yielded_once?(:yield_with_args) && args_match?
         end
+        alias == matches?
 
         def failure_message_for_should
           "expected given block to yield with arguments, but #{positive_failure_reason}"
@@ -184,6 +185,7 @@ module RSpec
           @actual = @probe.successive_yield_args
           args_match?
         end
+        alias == matches?
 
         def failure_message_for_should
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +

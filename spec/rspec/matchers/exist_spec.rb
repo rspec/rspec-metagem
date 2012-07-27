@@ -1,6 +1,12 @@
 require 'spec_helper'
+require 'ostruct'
 
 describe "exist matcher" do
+  it_behaves_like "an RSpec matcher", :valid_value => OpenStruct.new(:exist? => true),
+                                      :invalid_value => OpenStruct.new(:exist? => false) do
+    let(:matcher) { exist }
+  end
+
   context "when the object does not respond to #exist? or #exists?" do
     subject { mock }
 

@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe "should have_sym(*args)" do
+  it_behaves_like "an RSpec matcher", :valid_value => { :a => 1 },
+                                      :invalid_value => {} do
+    let(:matcher) { have_key(:a) }
+  end
+
   it "passes if #has_sym?(*args) returns true" do
     {:a => "A"}.should have_key(:a)
   end

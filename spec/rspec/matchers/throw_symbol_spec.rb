@@ -2,6 +2,11 @@ require 'spec_helper'
 
 module RSpec::Matchers::BuiltIn
   describe ThrowSymbol do
+    it_behaves_like("an RSpec matcher", :valid_value => lambda { throw :foo },
+                                        :invalid_value => lambda { }) do
+      let(:matcher) { throw_symbol(:foo) }
+    end
+
     describe "with no args" do
       before(:each) { @matcher = throw_symbol }
 

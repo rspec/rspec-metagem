@@ -18,6 +18,7 @@ module RSpec
 
           (!change_expected? || changed?) && matches_before? && matches_after? && matches_expected_delta? && matches_min? && matches_max?
         end
+        alias == matches?
 
         def raise_block_syntax_error
           raise SyntaxError.new(<<-MESSAGE)

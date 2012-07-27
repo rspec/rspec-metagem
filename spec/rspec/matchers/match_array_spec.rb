@@ -15,6 +15,10 @@ class UnsortableObject
 end
 
 describe "using match_array with expect" do
+  it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
+    let(:matcher) { match_array([2, 1]) }
+  end
+
   it "passes a valid positive expectation" do
     expect([1, 2]).to match_array [2, 1]
   end

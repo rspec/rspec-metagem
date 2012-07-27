@@ -2,6 +2,10 @@ require 'spec_helper'
 
 if (1..2).respond_to?(:cover?)
   describe "should cover(expected)" do
+    it_behaves_like "an RSpec matcher", :valid_value => (1..10), :invalid_value => (20..30) do
+      let(:matcher) { cover(5) }
+    end
+
     context "for a range target" do
       it "passes if target covers expected" do
         (1..10).should cover(5)

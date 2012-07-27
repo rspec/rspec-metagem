@@ -3,6 +3,10 @@ require 'spec_helper'
 module RSpec
   module Matchers
     describe "eq" do
+      it_behaves_like "an RSpec matcher", :valid_value => 1, :invalid_value => 2 do
+        let(:matcher) { eq(1) }
+      end
+
       it "is diffable" do
         eq(1).should be_diffable
       end

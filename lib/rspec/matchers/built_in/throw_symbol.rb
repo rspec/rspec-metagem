@@ -51,6 +51,7 @@ module RSpec
             end
           end
         end
+        alias == matches?
 
         def failure_message_for_should
           "expected #{expected} to be thrown, got #{caught}"

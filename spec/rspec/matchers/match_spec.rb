@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "should match(expected)" do
+  it_behaves_like "an RSpec matcher", :valid_value => 'ab', :invalid_value => 'bc' do
+    let(:matcher) { match(/a/) }
+  end
+
   it "passes when target (String) matches expected (Regexp)" do
     "string".should match(/tri/)
   end

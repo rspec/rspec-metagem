@@ -3,6 +3,10 @@ require 'spec_helper'
 module RSpec
   module Matchers
     describe "[actual.should] be_within(delta).of(expected)" do
+      it_behaves_like "an RSpec matcher", :valid_value => 5, :invalid_value => -5 do
+        let(:matcher) { be_within(2).of(4.0) }
+      end
+
       it "matches when actual == expected" do
         be_within(0.5).of(5.0).matches?(5.0).should be_true
       end
