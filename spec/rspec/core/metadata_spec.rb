@@ -186,26 +186,32 @@ module RSpec
         let(:line_number)        { __LINE__ - 1 }
 
         it "stores the description" do
+          mfe.fetch(:description).should eq("example description")
           mfe[:description].should eq("example description")
         end
 
         it "stores the full_description (group description + example description)" do
+          mfe.fetch(:full_description).should eq("group description example description")
           mfe[:full_description].should eq("group description example description")
         end
 
         it "creates an empty execution result" do
+          mfe.fetch(:execution_result).should eq({})
           mfe[:execution_result].should eq({})
         end
 
         it "extracts file path from caller" do
+          mfe.fetch(:file_path).should eq(relative_path(__FILE__))
           mfe[:file_path].should eq(relative_path(__FILE__))
         end
 
         it "extracts line number from caller" do
+          mfe.fetch(:line_number).should eq(line_number)
           mfe[:line_number].should eq(line_number)
         end
 
         it "extracts location from caller" do
+          mfe.fetch(:location).should eq("#{relative_path(__FILE__)}:#{line_number}")
           mfe[:location].should eq("#{relative_path(__FILE__)}:#{line_number}")
         end
 
@@ -215,6 +221,7 @@ module RSpec
         end
 
         it "merges arbitrary options" do
+          mfe.fetch(:arbitrary).should eq(:options)
           mfe[:arbitrary].should eq(:options)
         end
 

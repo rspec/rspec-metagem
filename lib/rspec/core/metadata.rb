@@ -41,7 +41,18 @@ module RSpec
         # ExampleMetadataHash and GroupMetadataHash, which get mixed in to
         # Metadata for ExampleGroups and Examples (respectively).
         def [](key)
-          return super if has_key?(key)
+          store_computed(key) unless has_key?(key)
+          super
+        end
+
+        def fetch(key, *args)
+          store_computed(key) unless has_key?(key)
+          super
+        end
+
+        private
+
+        def store_computed(key)
           case key
           when :location
             store(:location, location)
@@ -49,7 +60,6 @@ module RSpec
             file_path, line_number = file_and_line_number
             store(:file_path, file_path)
             store(:line_number, line_number)
-            super
           when :execution_result
             store(:execution_result, {})
           when :describes, :described_class
@@ -61,12 +71,8 @@ module RSpec
             store(:full_description, full_description)
           when :description
             store(:description, build_description_from(*self[:description_args]))
-          else
-            super
           end
         end
-
-        private
 
         def location
           "#{self[:file_path]}:#{self[:line_number]}"
