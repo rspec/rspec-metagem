@@ -14,6 +14,7 @@ Bug fixes
 * Limit monkey patching of shared example/context declaration
   methods (`shared_examples_for`, etc.) to just the objects
   that need it rather than every object in the system (Myron Marston).
+* Fix Metadata#fetch to support computed values (Sam Goldman).
 
 ### 2.11.1 / 2012-07-18
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...v2.11.1)
