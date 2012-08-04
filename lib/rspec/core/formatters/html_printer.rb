@@ -30,8 +30,8 @@ class HtmlPrinter
   end
 
   def print_example_failed( params )
-    percent_done, group_id, pending_fixed, description, run_time, failure_id, exception, extra_content = 
-      params.values_at( :percent_done, :group_id, :pending_fixed, :description, :run_time, :failure_id, :exception, :extra_content )
+    pending_fixed, description, run_time, failure_id, exception, extra_content = 
+      params.values_at( :pending_fixed, :description, :run_time, :failure_id, :exception, :extra_content )
     formatted_run_time = sprintf("%.5f", run_time)
 
     @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
@@ -48,13 +48,8 @@ class HtmlPrinter
   end
 
   def print_example_pending( params )
-    message = example.metadata[:execution_result][:pending_message]
-    @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>" unless @header_red
-    @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{example_group_number}');</script>" unless @example_group_red
-    @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{example_group_number}');</script>" unless @example_group_red
-    move_progress
-    @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
-    @output.flush
+    pending_message, description = params.values_at( :pending_message, :description )
+    @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
   end
 
   def move_progress( percent_done )
@@ -65,10 +60,18 @@ class HtmlPrinter
   def make_header_red
     @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>"
   end
+  
+  def make_header_yellow
+    @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>"
+  end
 
   def make_example_group_header_red(group_id)
     @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{group_id}');</script>"
     @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{group_id}');</script>"
+  end
+  def make_example_group_header_yellow(group_id)
+    @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{group_id}');</script>"
+    @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{group_id}');</script>"
   end
 
 

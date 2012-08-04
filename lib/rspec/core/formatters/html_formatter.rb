@@ -83,8 +83,6 @@ module RSpec
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
           params = {
-            :percent_done => percent_done,
-            :group_id => example_group_number,
             :pending_fixed => exception.pending_fixed?,
             :description => example.description,
             :run_time => example.execution_result[:run_time],
@@ -107,6 +105,7 @@ module RSpec
             @example_group_red = true
             @printer.make_example_group_header_red(example_group_number)
           end
+
           @printer.move_progress(percent_done)
 
           @printer.print_example_failed( params )
@@ -114,13 +113,15 @@ module RSpec
         end
 
         def example_pending(example)
-          message = example.metadata[:execution_result][:pending_message]
-          @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>" unless @header_red
-          @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{example_group_number}');</script>" unless @example_group_red
-          @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{example_group_number}');</script>" unless @example_group_red
-          move_progress
-          @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(example.description)} (PENDING: #{h(message)})</span></dd>"
-          @output.flush
+
+          @printer.make_header_yellow unless @header_red
+          @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
+          @printer.move_progress(percent_done)
+          @printer.print_example_pending({
+            description: example.description,
+            pending_message: example.metadata[:execution_result][:pending_message]
+          })
+          @printer.flush
         end
 
         # Override this method if you wish to output extra HTML for a failed spec. For example, you
