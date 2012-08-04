@@ -59,9 +59,8 @@ module RSpec
         end
 
         def start_dump
-          @output.puts "  </dl>"
-          @output.puts "</div>"
-          @output.flush
+          @printer.print_example_group_end
+          @printer.flush
         end
 
         def example_started(example)
@@ -70,31 +69,48 @@ module RSpec
         end
 
         def example_passed(example)
-          move_progress
-          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(example.description)}</span><span class='duration'>#{sprintf("%.5f", example.execution_result[:run_time])}s</span></dd>"
-          @output.flush
+          @printer.move_progress(percent_done)
+          @printer.print_example_passed({
+            :description => example.description,
+            :run_time => example.execution_result[:run_time]
+          })
+          @printer.flush
         end
 
         def example_failed(example)
           super(example)
+
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
-          @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>" unless @header_red
-          @header_red = true
-          @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{example_group_number}');</script>" unless @example_group_red
-          @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{example_group_number}');</script>" unless @example_group_red
-          @example_group_red = true
-          move_progress
-          @output.puts "    <dd class=\"example #{exception.pending_fixed? ? 'pending_fixed' : 'failed'}\">"
-          @output.puts "      <span class=\"failed_spec_name\">#{h(example.description)}</span>"
-          @output.puts "      <span class=\"duration\">#{sprintf('%.5f', example.execution_result[:run_time])}s</span>"
-          @output.puts "      <div class=\"failure\" id=\"failure_#{@failed_examples.size}\">"
-          @output.puts "        <div class=\"message\"><pre>#{h(exception.message)}</pre></div>" unless exception.nil?
-          @output.puts "        <div class=\"backtrace\"><pre>#{format_backtrace(exception.backtrace, example).join("\n")}</pre></div>" if exception
-          @output.puts extra unless extra == ""
-          @output.puts "      </div>"
-          @output.puts "    </dd>"
-          @output.flush
+          params = {
+            :percent_done => percent_done,
+            :group_id => example_group_number,
+            :pending_fixed => exception.pending_fixed?,
+            :description => example.description,
+            :run_time => example.execution_result[:run_time],
+            :failure_id => @failed_examples.size,
+            :extra_content => (extra == "") ? false : extra
+          }
+
+          if exception
+            params[:exception] = { 
+              :message => exception.message, 
+              :backtrace => format_backtrace(exception.backtrace, example).join("\n")
+            }
+          end
+
+          unless @header_red
+            @header_red = true
+            @printer.make_header_red 
+          end
+          unless @example_group_red
+            @example_group_red = true
+            @printer.make_example_group_header_red(example_group_number)
+          end
+          @printer.move_progress(percent_done)
+
+          @printer.print_example_failed( params )
+          @printer.flush
         end
 
         def example_pending(example)
