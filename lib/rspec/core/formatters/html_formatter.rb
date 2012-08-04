@@ -1,5 +1,6 @@
 require 'erb'
 require 'rspec/core/formatters/base_text_formatter'
+require 'rspec/core/formatters/html_printer'
 
 module RSpec
   module Core
@@ -12,6 +13,7 @@ module RSpec
           @example_group_number = 0
           @example_number = 0
           @header_red = nil
+          @printer = HtmlPrinter.new(output)
         end
 
         private
@@ -44,14 +46,16 @@ module RSpec
           super(example_group)
           @example_group_red = false
           @example_group_number += 1
+
           unless example_group_number == 1
-            @output.puts "  </dl>"
-            @output.puts "</div>"
+            @printer.print_example_group_end
           end
-          @output.puts "<div id=\"div_group_#{example_group_number}\" class=\"example_group passed\">"
-          @output.puts "  <dl #{current_indentation}>"
-          @output.puts "  <dt id=\"example_group_#{example_group_number}\" class=\"passed\">#{h(example_group.description)}</dt>"
-          @output.flush
+          @printer.print_example_group_start({
+            :group_id => example_group_number, 
+            :description => example_group.description, 
+            :number_of_parents => example_group.parent_groups.size
+          })
+          @printer.flush
         end
 
         def start_dump
