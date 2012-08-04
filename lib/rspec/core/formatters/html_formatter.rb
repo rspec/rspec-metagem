@@ -116,8 +116,8 @@ module RSpec
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
           @printer.print_example_pending({
-            description: example.description,
-            pending_message: example.metadata[:execution_result][:pending_message]
+            :description => example.description,
+            :pending_message => example.metadata[:execution_result][:pending_message]
           })
           @printer.flush
         end
