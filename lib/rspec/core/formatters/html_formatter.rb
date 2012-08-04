@@ -1,4 +1,3 @@
-require 'erb'
 require 'rspec/core/formatters/base_text_formatter'
 require 'rspec/core/formatters/html_printer'
 
@@ -6,7 +5,6 @@ module RSpec
   module Core
     module Formatters
       class HtmlFormatter < BaseTextFormatter
-        include ERB::Util # for the #h method
 
         def initialize(output)
           super(output)
@@ -38,9 +36,7 @@ module RSpec
         def start(example_count)
           super(example_count)
           @printer.print_html_start
-          #@output.puts html_header
-          #@output.puts report_header
-          @output.flush
+          @printer.flush
         end
 
         def example_group_started(example_group)
