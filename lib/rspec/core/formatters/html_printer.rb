@@ -41,7 +41,7 @@ class HtmlPrinter
     @output.puts "      <div class=\"failure\" id=\"failure_#{failure_id}\">"
     if exception
       @output.puts "        <div class=\"message\"><pre>#{h(exception[:message])}</pre></div>"
-      @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}}</pre></div>"
+      @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
     end
     @output.puts extra_content if extra_content
     @output.puts "      </div>"
