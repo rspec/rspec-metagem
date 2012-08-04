@@ -8,8 +8,8 @@ class HtmlPrinter
   end
 
   def print_html_start
-    @output.puts html_header
-    @output.puts report_header
+    @output.puts HTML_HEADER
+    @output.puts REPORT_HEADER
   end
 
   def print_example_group_end
@@ -110,41 +110,7 @@ class HtmlPrinter
   end
 
 
-  def html_header
-    <<-EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-  <title>RSpec results</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Expires" content="-1" />
-  <meta http-equiv="Pragma" content="no-cache" />
-  <style type="text/css">
-  body {
-    margin: 0;
-    padding: 0;
-    background: #fff;
-    font-size: 80%;
-  }
-  </style>
-  <script type="text/javascript">
-    // <![CDATA[
-#{global_scripts}
-    // ]]>
-  </script>
-  <style type="text/css">
-#{global_styles}
-  </style>
-</head>
-<body>
-EOF
-  end
-
-  def report_header
-    <<-EOF
+  REPORT_HEADER = <<-EOF
 <div class="rspec-report">
 
 <div id="rspec-header">
@@ -167,10 +133,8 @@ EOF
 
 <div class="results">
 EOF
-  end
 
-  def global_scripts
-    <<-EOF
+  GLOBAL_SCRIPTS = <<-EOF
 
 function addClass(element_id, classname) {
   document.getElementById(element_id).className += (" " + classname);
@@ -246,10 +210,8 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
   }
 }
 EOF
-  end
 
-  def global_styles
-    <<-EOF
+  GLOBAL_STYLES = <<-EOF
 #rspec-header {
   background: #65C400; color: #fff; height: 4em;
 }
@@ -412,9 +374,37 @@ a {
   background-color: #FFFBD3;
 }
 EOF
-  end
 
-  
+  HTML_HEADER = <<-EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>RSpec results</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Expires" content="-1" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <style type="text/css">
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 80%;
+  }
+  </style>
+  <script type="text/javascript">
+    // <![CDATA[
+#{GLOBAL_SCRIPTS}
+    // ]]>
+  </script>
+  <style type="text/css">
+#{GLOBAL_STYLES}
+  </style>
+</head>
+<body>
+EOF
 
 end
 end end end
