@@ -884,7 +884,7 @@ EOM
 
       def gather_directories(path, patterns)
         patterns.map do |pattern|
-          pattern =~ /^#{path}/ ? Dir[pattern.strip] : Dir["#{path}/{#{pattern.strip}}"]
+          pattern =~ /^#{path}/ ? Dir[pattern.strip].sort : Dir["#{path}/{#{pattern.strip}}"].sort
         end
       end
 

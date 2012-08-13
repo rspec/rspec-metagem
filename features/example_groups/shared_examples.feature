@@ -6,7 +6,7 @@ Feature: shared examples
   needs to run.
 
   A shared group is included in another group using any of:
-  
+
       include_examples "name"      # include the examples in the current context
       it_behaves_like "name"       # include the examples in a nested context
       it_should_behave_like "name" # include the examples in a nested context
@@ -27,7 +27,7 @@ Feature: shared examples
   2.  Put files containing shared examples in `spec/support/` and require files
       in that directory from `spec/spec_helper.rb`:
 
-          Dir["./spec/support/**/*.rb"].each {|f| require f}
+          Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
 
       This is included in the generated `spec/spec_helper.rb` file in
       `rspec-rails`
