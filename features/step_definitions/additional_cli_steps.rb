@@ -1,3 +1,5 @@
+require 'rspec/core'  # to fix annoying "undefined method `configuration' for RSpec:Module (NoMethodError)"
+
 Then /^the output should contain all of these:$/ do |table|
   table.raw.flatten.each do |string|
     assert_partial_output(string, all_output)

@@ -45,7 +45,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
       example = mock(:Example, :file_path => __FILE__)
       safely do
         lambda {
-          formatter.send(:read_failed_line, exception, example).should == "Unable to read failed line"
+          formatter.send(:read_failed_line, exception, example)
         }.should_not raise_error
       end
     end
