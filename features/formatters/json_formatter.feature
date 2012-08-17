@@ -17,7 +17,7 @@ Feature: JSON formatter
     """
     When I run `rspec various_spec.rb --format j`
     Then the output should contain all of these:
-          |"summary_line":"3 examples, 1 failure, 1 pending"}|
+          |"summary_line":"3 examples, 1 failure, 1 pending"|
           |"examples":[                                     |
           |"description":"fails"                             |
           |"full_description":"Various fails"                |
