@@ -4,7 +4,7 @@ module RSpec
       # This class extracts code snippets by looking at the backtrace of the passed error
       class SnippetExtractor
         class NullConverter; def convert(code, pre); code; end; end
-        
+
         begin
           require 'syntax/convertors/html'
           @@converter = Syntax::Convertors::HTML.for_syntax "ruby"
@@ -40,6 +40,8 @@ module RSpec
           else
             "# Couldn't get snippet for #{file}"
           end
+        rescue SecurityError
+          "# Couldn't get snippet for #{file}"
         end
 
         def post_process(highlighted, offending_line)

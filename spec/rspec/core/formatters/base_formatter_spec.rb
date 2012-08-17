@@ -19,7 +19,9 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
     it "deals gracefully with a security error" do
       safely do
-        formatter.__send__(:backtrace_line, __FILE__).should be_nil
+        formatter.__send__(:backtrace_line, __FILE__)
+        # on some rubies, this doesn't raise a SecurityError; this test just
+        # assures that if it *does* raise an error, the error is caught inside
       end
     end
   end

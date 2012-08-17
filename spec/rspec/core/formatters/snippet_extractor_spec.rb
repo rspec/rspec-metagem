@@ -14,12 +14,11 @@ module RSpec
         end
 
         it "falls back on a default message when it gets a security error" do
-          Thread.new {
-            $SAFE = 3
-            $SAFE.should == 3
-            RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should eq("# Couldn't get snippet for blech")
-          }.run
-          $SAFE.should == 0
+          message = nil
+          safely do
+            message = RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8)
+          end
+          message.should eq("# Couldn't get snippet for blech")
         end
       end
     end

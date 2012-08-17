@@ -18,7 +18,9 @@ module RSpec
         # I have no idea what line = line.sub(/\A([^:]+:\d+)$/, '\\1') is supposed to do
         it "gracefully returns nil if run in a secure thread" do
           safely do
-            Metadata.relative_path(".").should be_nil
+            value = Metadata.relative_path(".")
+            # on some rubies, File.expand_path is not a security error, so accept "." as well
+            [nil, "."].should include(value)
           end
         end
 
