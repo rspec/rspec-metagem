@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'ostruct'
+require 'rspec/core/drb_options'
 
 describe RSpec::Core::ConfigurationOptions, :fakefs do
   include ConfigOptionsHelper

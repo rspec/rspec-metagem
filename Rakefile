@@ -22,6 +22,11 @@ namespace :spec do
     t.ruby_opts = %w[-w]
     t.rspec_opts = %w[--tag ui]
   end
+
+  desc "Runs all specs together and then file-by-file"
+  task :ci do
+    sh "script/test_all"
+  end
 end
 
 if RUBY_VERSION.to_f == 1.8
@@ -73,4 +78,4 @@ task :relish, :version do |t, args|
   sh "rm features/Changelog.md"
 end
 
-task :default => [:spec, "spec:ui", :cucumber]
+task :default => ["spec:ci", :cucumber]

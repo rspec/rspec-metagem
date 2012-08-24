@@ -1,0 +1,17 @@
+#!/bin/bash
+
+set -e
+
+echo "Running all..."
+
+bundle exec rspec spec --format progress --profile
+
+echo
+echo "--------------------------------------------------------------------"
+echo
+
+for file in `find spec -iname '*_spec.rb'`; do
+  echo "Running just $file"
+  bundle exec rspec $file --format progress
+done
+
