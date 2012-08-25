@@ -67,15 +67,16 @@ module RSpec
         "\e[#{color_code}m#{text}\e[0m"
       end
 
-      # define methods for each color name
-      { 
-        :red => 31,
-        :green => 32,
-        :blue => 34
-      }.each do |color_name, color_code|
-        define_method color_name do |text|
-          color(text, color_code)
-        end
+      def red(text)
+        color(text, 31)
+      end
+
+      def green(text)
+        color(text, 32)
+      end
+
+      def blue(text)
+        color(text, 34)
       end
 
       def color_diff(diff)
