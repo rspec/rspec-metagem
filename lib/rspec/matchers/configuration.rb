@@ -43,7 +43,7 @@ module RSpec
       # fallback if rspec core not available
       if defined?(RSpec::Core)
         def color?
-          RSpec.configuration.color
+          RSpec.configuration.color_enabled?
         end
       else
         attr_writer :color
