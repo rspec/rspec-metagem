@@ -17,3 +17,4 @@ bin
 vendor
 Gemfile-custom
 .idea
+bundle
