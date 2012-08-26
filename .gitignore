@@ -13,4 +13,3 @@ Gemfile.lock
 bin
 .rbx
 Gemfile-custom
-bundle
