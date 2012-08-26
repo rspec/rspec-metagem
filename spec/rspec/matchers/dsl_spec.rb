@@ -22,13 +22,13 @@ describe "a matcher defined using the matcher DSL" do
   end
 
   it "has access to methods available in the scope of the example" do
-    RSpec::Matchers::define(:ignore) {}
-    ignore.question?.should eq(:answer)
+    RSpec::Matchers::define(:matcher_a) {}
+    matcher_a.question?.should eq(:answer)
   end
 
   it "raises when method is missing from local scope as well as matcher" do
-    RSpec::Matchers::define(:ignore) {}
-    expect { ignore.i_dont_exist }.to raise_error(NameError)
+    RSpec::Matchers::define(:matcher_b) {}
+    expect { matcher_b.i_dont_exist }.to raise_error(NameError)
   end
 
   it "clears user instance variables between invocations" do
@@ -45,13 +45,13 @@ describe "a matcher defined using the matcher DSL" do
 
   describe "#respond_to?" do
     it "returns true for methods in example scope" do
-      RSpec::Matchers::define(:ignore) {}
-      ignore.should respond_to(:question?)
+      RSpec::Matchers::define(:matcher_c) {}
+      matcher_c.should respond_to(:question?)
     end
 
     it "returns false for methods not defined in matcher or example scope" do
-      RSpec::Matchers::define(:ignore) {}
-      ignore.should_not respond_to(:i_dont_exist)
+      RSpec::Matchers::define(:matcher_d) {}
+      matcher_d.should_not respond_to(:i_dont_exist)
     end
   end
 end
