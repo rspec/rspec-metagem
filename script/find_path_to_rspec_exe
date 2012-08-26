@@ -1,7 +1,13 @@
 #!/usr/bin/env ruby
 
 require File.expand_path('../../bundle/bundler/setup', __FILE__)
-rspec_core_path = $LOAD_PATH.grep(/rspec-core\/lib$/).first
+$LOAD_PATH.each do |path|
+  next unless path =~ %r|rspec-core/lib$|
+  rspec_exe = File.expand_path('../exe/rspec', path)
 
-puts File.expand_path('../exe/rspec', rspec_core_path)
+  if File.exist?(rspec_exe)
+    puts rspec_exe
+    exit(0)
+  end
+end
 
