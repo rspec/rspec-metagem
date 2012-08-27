@@ -55,6 +55,7 @@ module RSpec
         #   @param [String] name
         #   @param [Hash] extra_options
         #   @param [Block] implementation
+        #   @yield [Example] the example object
         def self.define_example_method(name, extra_options={})
           define_method(name) do |*all_args, &block|
             desc, *args = *all_args
@@ -67,10 +68,22 @@ module RSpec
         end
 
         # Defines an example within a group.
+        # @example
+        #   example do
+        #   end
+        #
+        #   example "does something" do
+        #   end
+        #
+        #   example "does something", :with => 'addtional metadata' do
+        #   end
+        #
+        #   example "does something" do |ex|
+        #     # ex is a wrapper for the current running example
+        #   end
         define_example_method :example
         # Defines an example within a group.
-        #
-        # @see example
+        # @example
         define_example_method :it
         # Defines an example within a group.
         # This is here primarily for backward compatibility with early versions
@@ -79,17 +92,23 @@ module RSpec
         define_example_method :specify
 
         # Shortcut to define an example with `:focus` => true
+        # @see example
         define_example_method :focus,   :focused => true, :focus => true
         # Shortcut to define an example with `:focus` => true
+        # @see example
         define_example_method :focused, :focused => true, :focus => true
 
         # Shortcut to define an example with :pending => true
+        # @see example
         define_example_method :pending,  :pending => true
         # Shortcut to define an example with :pending => 'Temporarily disabled with xexample'
+        # @see example
         define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
         # Shortcut to define an example with :pending => 'Temporarily disabled with xit'
+        # @see example
         define_example_method :xit,      :pending => 'Temporarily disabled with xit'
         # Shortcut to define an example with :pending => 'Temporarily disabled with xspecify'
+        # @see example
         define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
 
         # Works like `alias_method :name, :example` with the added benefit of
