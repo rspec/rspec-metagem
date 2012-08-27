@@ -171,19 +171,19 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "accessing metadata within a running example" do
-    it "has a reference to itself when running" do
-      expect(example.description).to eq("has a reference to itself when running")
+    it "has a reference to itself when running" do |ex|
+      expect(ex.description).to eq("has a reference to itself when running")
     end
 
-    it "can access the example group's top level metadata as if it were its own" do
-      expect(example.example_group.metadata).to include(:parent_metadata => 'sample')
-      expect(example.metadata).to include(:parent_metadata => 'sample')
+    it "can access the example group's top level metadata as if it were its own" do |ex|
+      expect(ex.example_group.metadata).to include(:parent_metadata => 'sample')
+      expect(ex.metadata).to include(:parent_metadata => 'sample')
     end
   end
 
   describe "accessing options within a running example" do
-    it "can look up option values by key", :demo => :data do
-      expect(example.metadata[:demo]).to eq(:data)
+    it "can look up option values by key", :demo => :data do |ex|
+      expect(ex.metadata[:demo]).to eq(:data)
     end
   end
 
@@ -435,5 +435,12 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end.run
 
     expect(values.uniq).to have(2).values
+  end
+
+  describe "optional block argument" do
+    it "contains the example" do |ex|
+      expect(ex).to be_an(RSpec::Core::Example)
+      expect(ex.description).to match(/contains the example/)
+    end
   end
 end

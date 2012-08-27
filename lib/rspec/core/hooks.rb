@@ -18,7 +18,7 @@ module RSpec
 
       class BeforeHook < Hook
         def run(example)
-          example.instance_eval(&block)
+          example.instance_exec(example, &block)
         end
 
         def display_name

@@ -111,7 +111,7 @@ module RSpec
             with_around_each_hooks do
               begin
                 run_before_each
-                @example_group_instance.instance_eval(&@example_block)
+                @example_group_instance.instance_exec(self, &@example_block)
               rescue Pending::PendingDeclaredInExample => e
                 @pending_declared_in_example = e.message
               rescue Exception => e
@@ -239,7 +239,7 @@ An error occurred #{context}
 
       # @private
       def instance_eval_with_rescue(context = nil, &block)
-        @example_group_instance.instance_eval_with_rescue(context, &block)
+        @example_group_instance.instance_eval_with_rescue(self, context, &block)
       end
 
       # @private

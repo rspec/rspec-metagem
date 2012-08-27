@@ -439,16 +439,24 @@ An error occurred in an after(:all) hook.
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
-      # @attr_reader
-      # Returns the {Example} object that wraps this instance of
-      # `ExampleGroup`
-      attr_accessor :example
+      def initialize
+        @_current_rspec_example = nil
+      end
 
-      # @deprecated use {ExampleGroup#example}
+      def example=(current_example)
+        @_current_rspec_example = current_example
+      end
+
+      # @deprecated use a block argument
+      def example
+        RSpec.deprecate("example", :replacement => "a block argument")
+        @_current_rspec_example
+      end
+
+      # @deprecated use a block argument
       def running_example
-        RSpec.deprecate("running_example",
-                        :replacement => "example")
-        example
+        RSpec.deprecate("running_example", :replacement => "a block argument")
+        @_current_rspec_example
       end
 
       # Returns the class or module passed to the `describe` method (or alias).
@@ -468,12 +476,12 @@ An error occurred in an after(:all) hook.
       # @private
       # instance_evals the block, capturing and reporting an exception if
       # raised
-      def instance_eval_with_rescue(context = nil, &hook)
+      def instance_eval_with_rescue(example, context = nil, &hook)
         begin
-          instance_eval(&hook)
+          instance_exec(example, &hook)
         rescue Exception => e
-          raise unless example
-          example.set_exception(e, context)
+          raise unless @_current_rspec_example
+          @_current_rspec_example.set_exception(e, context)
         end
       end
     end
