@@ -32,6 +32,38 @@ module RSpec::Core
           filter_manager.send(type).should eq(:foo => 2)
           filter_manager.send(opposite(type)).should be_empty
         end
+
+        if name == "include"
+          [:locations, :line_numbers, :full_description].each do |filter|
+            it "does nothing if already set standalone filter #{filter}" do
+              filter_manager = FilterManager.new
+              filter_manager.include filter => "a_value"
+              filter_manager.include :foo => :bar
+              filter_manager.inclusions.should eq(filter => "a_value")
+            end
+          end
+
+          it "clears inclusions when given :locations" do
+            filter_manager = FilterManager.new
+            filter_manager.include :foo => :bar
+            filter_manager.include :locations => { "path/to/file.rb" => [37] }
+            filter_manager.inclusions.should eq(:locations => { "path/to/file.rb" => [37] })
+          end
+
+          it "clears inclusions when given :line_numbers" do
+            filter_manager = FilterManager.new
+            filter_manager.include :foo => :bar
+            filter_manager.include :line_numbers => [100]
+            filter_manager.inclusions.should eq(:line_numbers => [100])
+          end
+
+          it "clears inclusions when given :full_description" do
+            filter_manager = FilterManager.new
+            filter_manager.include :foo => :bar
+            filter_manager.include :full_description => "this and that"
+            filter_manager.inclusions.should eq(:full_description => "this and that")
+          end
+        end
       end
 
       describe "##{name}!" do
@@ -220,36 +252,6 @@ module RSpec::Core
         filter_manager = FilterManager.new
         filter_manager.exclude :unless => :custom_filter
         filter_manager.exclusions.description.should eq({ :unless => :custom_filter }.inspect)
-      end
-    end
-
-    it "clears the inclusion filter on include :line_numbers" do
-      filter_manager = FilterManager.new
-      filter_manager.include :foo => :bar
-      filter_manager.include :line_numbers => [100]
-      filter_manager.inclusions.should eq(:line_numbers => [100])
-    end
-
-    it "clears the inclusion filter on include :locations" do
-      filter_manager = FilterManager.new
-      filter_manager.include :foo => :bar
-      filter_manager.include :locations => { "path/to/file.rb" => [37] }
-      filter_manager.inclusions.should eq(:locations => { "path/to/file.rb" => [37] })
-    end
-
-    it "clears the inclusion filter on include :full_description" do
-      filter_manager = FilterManager.new
-      filter_manager.include :foo => :bar
-      filter_manager.include :full_description => "this and that"
-      filter_manager.inclusions.should eq(:full_description => "this and that")
-    end
-
-    [:locations, :line_numbers, :full_description].each do |filter|
-      it "does nothing on include if already set standalone filter #{filter}" do
-        filter_manager = FilterManager.new
-        filter_manager.include filter => "a_value"
-        filter_manager.include :foo => :bar
-        filter_manager.inclusions.should eq(filter => "a_value")
       end
     end
   end
