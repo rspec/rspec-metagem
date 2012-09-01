@@ -193,8 +193,12 @@ module RSpec
         # @see ExampleMethods#subject
         # @see ExampleMethods#should
         def subject(name=nil, &block)
-          define_method(name) { subject } if name
-          block ? @explicit_subject_block = block : explicit_subject || implicit_subject
+          if name
+            let(name, &block)
+            subject { instance_eval(name.to_s) }
+          else
+            block ? @explicit_subject_block = block : explicit_subject || implicit_subject
+          end
         end
 
         attr_reader :explicit_subject_block
