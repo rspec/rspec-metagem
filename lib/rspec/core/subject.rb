@@ -195,7 +195,7 @@ module RSpec
         def subject(name=nil, &block)
           if name
             let(name, &block)
-            subject { instance_eval(name.to_s) }
+            subject { send name }
           else
             block ? @explicit_subject_block = block : explicit_subject || implicit_subject
           end
