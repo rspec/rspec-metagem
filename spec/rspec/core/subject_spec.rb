@@ -91,6 +91,17 @@ module RSpec::Core
           end
           group.run.should be_true
         end
+
+        it "is referred from inside subject by the name" do
+          group = ExampleGroup.describe do
+            subject(:list) { [1,2,3] }
+            describe 'first' do
+              subject(:first_element) { list.first }
+              it { should eq(1) }
+            end
+          end
+          group.run.should be_true
+        end
       end
     end
 
