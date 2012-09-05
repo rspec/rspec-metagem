@@ -11,6 +11,12 @@ Bug fixes
   though it was never a documented or intended syntax. It worked as a
   consequence of the implementation of `expect` in RSpec 2.10 and
   earlier. (Myron Marston)
+* Ensure #== is defined on build in matchers so that they can be composed.
+  For example:
+
+    expect {
+      user.emailed!
+    }.to change { user.last_emailed_at }.to be_within(1.second).of(Time.zone.now)
 
 ### 2.11.2 / 2012-07-25
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.1...v2.11.2)
