@@ -121,6 +121,48 @@ module RSpec
           expect(3).to eq(3)
         end
       end
+
+      it 'does not add the deprecated #should to ExpectationTarget when only :should is enabled' do
+        et = Expectations::ExpectationTarget
+
+        sandboxed do
+          configure_syntax :should
+          et.new(Proc.new {}).should be_an(et)
+          et.new(Proc.new {}).should_not be_a(Proc)
+        end
+      end
+
+      it 'does not add the deprecated #should to ExpectationTarget when only :expect is enabled' do
+        sandboxed do
+          configure_syntax :expect
+          expect(expect(3)).not_to respond_to(:should)
+          expect(expect(3)).not_to respond_to(:should_not)
+        end
+      end
+
+      context 'when both :expect and :should are enabled' do
+        before { RSpec.stub(:warn) }
+
+        it 'allows `expect {}.should` to be used' do
+          sandboxed do
+            configure_syntax [:should, :expect]
+            expect { raise "boom" }.should raise_error("boom")
+            expect { }.should_not raise_error
+          end
+        end
+
+        it 'prints a deprecation notice when `expect {}.should` is used' do
+          sandboxed do
+            configure_syntax [:should, :expect]
+
+            RSpec.should_receive(:warn).with(/please use `expect \{ \}.to.*instead/)
+            expect { raise "boom" }.should raise_error("boom")
+
+            RSpec.should_receive(:warn).with(/please use `expect \{ \}.to_not.*instead/)
+            expect { }.should_not raise_error
+          end
+        end
+      end
     end
 
     describe "configuring rspec-expectations directly" do

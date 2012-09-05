@@ -5,6 +5,13 @@ Enhancements
 
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
 
+Bug fixes
+
+* Fix (and deprecate) `expect { }.should` syntax so that it works even
+  though it was never a documented or intended syntax. It worked as a
+  consequence of the implementation of `expect` in RSpec 2.10 and
+  earlier. (Myron Marston)
+
 ### 2.11.2 / 2012-07-25
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.1...v2.11.2)
 
