@@ -6,7 +6,7 @@ Enhancements
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
 
 ### 2.11.3 / 2012-09-04
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...v.2.11.3)
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...v2.11.3)
 
 Bug fixes
 
