@@ -25,12 +25,8 @@ module RSpec::Core
       end
 
       context "with rspec-1 loaded" do
-        before do
-          Object.const_set(:Spec, Module.new)
-          ::Spec::const_set(:VERSION, Module.new)
-          ::Spec::VERSION::const_set(:MAJOR, 1)
-        end
-        after  { Object.__send__(:remove_const, :Spec) }
+        before { stub_const("Spec::VERSION::MAJOR", 1) }
+
         it "raises with a helpful message" do
           expect {
             config.load_spec_files
@@ -631,23 +627,23 @@ module RSpec::Core
       end
 
       it "finds a formatter by class name" do
-        Object.const_set("ACustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.add_formatter "ACustomFormatter"
-        config.formatters.first.should be_an_instance_of(ACustomFormatter)
+        stub_const("CustomFormatter", Class.new(Formatters::BaseFormatter))
+        config.add_formatter "CustomFormatter"
+        config.formatters.first.should be_an_instance_of(CustomFormatter)
       end
 
       it "finds a formatter by class fully qualified name" do
-        RSpec.const_set("CustomFormatter", Class.new(Formatters::BaseFormatter))
+        stub_const("RSpec::CustomFormatter", Class.new(Formatters::BaseFormatter))
         config.add_formatter "RSpec::CustomFormatter"
         config.formatters.first.should be_an_instance_of(RSpec::CustomFormatter)
       end
 
       it "requires a formatter file based on its fully qualified name" do
-        config.should_receive(:require).with('rspec/custom_formatter2') do
-          RSpec.const_set("CustomFormatter2", Class.new(Formatters::BaseFormatter))
+        config.should_receive(:require).with('rspec/custom_formatter') do
+          stub_const("RSpec::CustomFormatter", Class.new(Formatters::BaseFormatter))
         end
-        config.add_formatter "RSpec::CustomFormatter2"
-        config.formatters.first.should be_an_instance_of(RSpec::CustomFormatter2)
+        config.add_formatter "RSpec::CustomFormatter"
+        config.formatters.first.should be_an_instance_of(RSpec::CustomFormatter)
       end
 
       it "raises NameError if class is unresolvable" do
