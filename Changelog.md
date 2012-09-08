@@ -19,7 +19,9 @@ Bug fixes
 * Named subject can now be referred to from within subject block in a nested
   group (tomykaira).
 * Fix `fail_fast` so that it properly exits when an error occurs in a
-  `before(:all) hook` (Bradley Schaefer)
+  `before(:all) hook` (Bradley Schaefer).
+* Make the order spec files are loaded consistent, regardless of the
+  order of the files returned by the OS (Jo Liss).
 
 ### 2.11.1 / 2012-07-18
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...v2.11.1)
