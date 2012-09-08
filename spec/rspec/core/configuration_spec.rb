@@ -316,6 +316,40 @@ module RSpec::Core
           config.files_to_run.should be_empty
         end
       end
+
+      def test_files_to_run_ordering
+        File.stub(:directory?).with('a') { true }
+
+        orderings = [
+          %w[ a/1.rb a/2.rb a/3.rb ],
+          %w[ a/2.rb a/1.rb a/3.rb ],
+          %w[ a/3.rb a/2.rb a/1.rb ]
+        ].map do |files|
+          Dir.should_receive(:[]).with(/^a/) { files }
+          yield
+          config.files_to_run
+        end.uniq
+
+        orderings.size.should eq(1)
+      end
+
+      context 'when the given directories match the pattern' do
+        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
+          test_files_to_run_ordering do
+            config.pattern = 'a/*.rb'
+            config.files_or_directories_to_run = 'a'
+          end
+        end
+      end
+
+      context 'when the pattern is given relative to the given directories' do
+        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
+          test_files_to_run_ordering do
+            config.pattern = '*.rb'
+            config.files_or_directories_to_run = 'a'
+          end
+        end
+      end
     end
 
     %w[pattern= filename_pattern=].each do |setter|
