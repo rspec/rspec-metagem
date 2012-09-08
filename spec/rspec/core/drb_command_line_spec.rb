@@ -26,13 +26,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
 
   describe "--drb-port" do
     def with_RSPEC_DRB_set_to(val)
-      original = ENV['RSPEC_DRB']
-      ENV['RSPEC_DRB'] = val
-      begin
-        yield
-      ensure
-        ENV['RSPEC_DRB'] = original
-      end
+      with_env_vars('RSPEC_DRB' => val) { yield }
     end
 
     context "without RSPEC_DRB environment variable set" do

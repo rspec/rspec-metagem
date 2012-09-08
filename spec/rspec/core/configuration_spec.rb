@@ -542,14 +542,7 @@ module RSpec::Core
             end
 
             context "with ANSICON available" do
-              before(:all) do
-                @original_ansicon = ENV['ANSICON']
-                ENV['ANSICON'] = 'ANSICON'
-              end
-
-              after(:all) do
-                ENV['ANSICON'] = @original_ansicon
-              end
+              around(:each) { |e| with_env_vars('ANSICON' => 'ANSICON', &e) }
 
               it "enables colors" do
                 config.output_stream = StringIO.new

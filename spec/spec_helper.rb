@@ -66,6 +66,30 @@ Spork.prefork do
     ENV.has_key?('TM_MODE') || ENV.has_key?('EMACS') || ENV.has_key?('VIM')
   end
 
+  module EnvHelpers
+    def with_env_vars(vars)
+      original = ENV.to_hash
+      vars.each { |k, v| ENV[k] = v }
+
+      begin
+        yield
+      ensure
+        ENV.replace(original)
+      end
+    end
+
+    def without_env_vars(*vars)
+      original = ENV.to_hash
+      vars.each { |k| ENV.delete(k) }
+
+      begin
+        yield
+      ensure
+        ENV.replace(original)
+      end
+    end
+  end
+
   RSpec.configure do |c|
     # structural
     c.alias_it_behaves_like_to 'it_has_behavior'
@@ -80,6 +104,7 @@ Spork.prefork do
     c.color = !in_editor?
     c.filter_run :focus
     c.include FakeFS::SpecHelpers, :fakefs
+    c.include EnvHelpers
     c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|
       case version.to_s

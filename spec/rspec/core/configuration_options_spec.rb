@@ -6,13 +6,10 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
   include ConfigOptionsHelper
 
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
-    begin
-      orig_home = ENV.delete("HOME")
+    without_env_vars 'HOME' do
       coo = RSpec::Core::ConfigurationOptions.new([])
       coo.should_receive(:warn)
       coo.parse_options
-    ensure
-      ENV["HOME"] = orig_home
     end
   end
 
@@ -98,19 +95,21 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
     end
 
     it "merges --require specified by multiple configuration sources" do
-      ENV['SPEC_OPTS'] = "--require file_from_env"
-      opts = config_options_object(*%w[--require file_from_opts])
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:requires=).with(["file_from_opts", "file_from_env"])
-      opts.configure(config)
+      with_env_vars 'SPEC_OPTS' => "--require file_from_env" do
+        opts = config_options_object(*%w[--require file_from_opts])
+        config = RSpec::Core::Configuration.new
+        config.should_receive(:requires=).with(["file_from_opts", "file_from_env"])
+        opts.configure(config)
+      end
     end
 
     it "merges --I specified by multiple configuration sources" do
-      ENV['SPEC_OPTS'] = "-I dir_from_env"
-      opts = config_options_object(*%w[-I dir_from_opts])
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:libs=).with(["dir_from_opts", "dir_from_env"])
-      opts.configure(config)
+      with_env_vars 'SPEC_OPTS' => "-I dir_from_env" do
+        opts = config_options_object(*%w[-I dir_from_opts])
+        config = RSpec::Core::Configuration.new
+        config.should_receive(:libs=).with(["dir_from_opts", "dir_from_env"])
+        opts.configure(config)
+      end
     end
   end
 
@@ -333,18 +332,20 @@ describe RSpec::Core::ConfigurationOptions, :fakefs do
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--line 37"}
       File.open("~/.rspec", "w") {|f| f << "--color"}
-      ENV["SPEC_OPTS"] = "--debug --example 'foo bar'"
-      options = parse_options("--drb")
-      options[:color].should be_true
-      options[:line_numbers].should eq(["37"])
-      options[:debug].should be_true
-      options[:full_description].should eq([/foo\ bar/])
-      options[:drb].should be_true
+      with_env_vars 'SPEC_OPTS' => "--debug --example 'foo bar'" do
+        options = parse_options("--drb")
+        options[:color].should be_true
+        options[:line_numbers].should eq(["37"])
+        options[:debug].should be_true
+        options[:full_description].should eq([/foo\ bar/])
+        options[:drb].should be_true
+      end
     end
 
     it "prefers SPEC_OPTS over CLI" do
-      ENV["SPEC_OPTS"] = "--format spec_opts"
-      parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
+      with_env_vars 'SPEC_OPTS' => "--format spec_opts" do
+        parse_options("--format", "cli")[:formatters].should eq([['spec_opts']])
+      end
     end
 
     it "prefers CLI over file options" do
