@@ -130,7 +130,7 @@ describe "should end_with" do
   end
 
   context "with an object that does not respond to :[]" do
-    it "should raise an error if expected value can't be indexed'" do
+    it "raises an error if expected value can't be indexed'" do
       expect { Object.new.should end_with 0 }.to raise_error(ArgumentError, /does not respond to :\[\]/)
     end
   end
