@@ -27,10 +27,10 @@ module RSpec::Core
 
     context "with rcov" do
       it "renders rcov" do
-          with_rcov do
-            spec_command.should =~ /^#{ruby} -S rcov/
-          end
+        with_rcov do
+          spec_command.should =~ /^#{ruby} -S rcov/
         end
+      end
     end
 
     context "with ruby options" do
