@@ -66,7 +66,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     context "with an exception that has an exception instance as its message" do
-      it "should not raise NoMethodError" do
+      it "does not raise NoMethodError" do
         gonzo_exception = RuntimeError.new
         gonzo_exception.stub(:message) { gonzo_exception }
         group.example("example name") { raise gonzo_exception }

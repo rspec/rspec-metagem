@@ -3,7 +3,7 @@ require "spec_helper"
 module RSpec::Core
   describe "config block hook filtering" do
     describe "unfiltered hooks" do
-      it "should be ran" do
+      it "is run" do
         filters = []
         RSpec.configure do |c|
           c.before(:all) { filters << "before all in config"}
@@ -28,7 +28,7 @@ module RSpec::Core
     describe "hooks with single filters" do
 
       context "with no scope specified" do
-        it "should be ran around|before|after :each if the filter matches the example group's filter" do
+        it "is run around|before|after :each if the filter matches the example group's filter" do
           filters = []
           RSpec.configure do |c|
             c.around(:match => true) {|example| filters << "around each in config"; example.run}
@@ -46,7 +46,7 @@ module RSpec::Core
         end
       end
 
-      it "should be ran if the filter matches the example group's filter" do
+      it "is run if the filter matches the example group's filter" do
         filters = []
         RSpec.configure do |c|
           c.before(:all,  :match => true) { filters << "before all in config"}
@@ -116,7 +116,7 @@ module RSpec::Core
         filters.should eq([:before_all, :after_all])
       end
 
-      it "should not be ran if the filter doesn't match the example group's filter" do
+      it "does not run if the filter doesn't match the example group's filter" do
         filters = []
         RSpec.configure do |c|
           c.before(:all,  :match => false) { filters << "before all in config"}
@@ -187,7 +187,7 @@ module RSpec::Core
     end
 
     describe "hooks with multiple filters" do
-      it "should be ran if all hook filters match the group's filters" do
+      it "is run if all hook filters match the group's filters" do
         filters = []
         RSpec.configure do |c|
           c.before(:all,  :one => 1)                         { filters << "before all in config"}
@@ -208,7 +208,7 @@ module RSpec::Core
         ])
       end
 
-      it "should not be ran if some hook filters don't match the group's filters" do
+      it "does not run if some hook filters don't match the group's filters" do
         filters = []
         RSpec.configure do |c|
           c.before(:all,  :one => 1, :four => 4)                         { filters << "before all in config"}
