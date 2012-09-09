@@ -181,11 +181,9 @@ module RSpec
         end
 
         def color_enabled?
-          configuration.color_enabled?
+          configuration.color_enabled?(output)
         end
-
       end
-
     end
   end
 end

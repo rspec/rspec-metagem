@@ -533,33 +533,57 @@ module RSpec::Core
     %w[color color_enabled].each do |color_option|
       describe "##{color_option}=" do
         context "given true" do
-          context "with non-tty output and no autotest" do
-            it "does not set color_enabled" do
-              config.output_stream = StringIO.new
-              config.output_stream.stub(:tty?) { false }
-              config.tty = false
-              config.send "#{color_option}=", true
-              config.send(color_option).should be_false
-            end
-          end
+          before { config.send "#{color_option}=", true }
 
-          context "with tty output" do
+          context "with config.tty? and output.tty?" do
             it "does not set color_enabled" do
-              config.output_stream = StringIO.new
-              config.output_stream.stub(:tty?) { true }
-              config.tty = false
-              config.send "#{color_option}=", true
-              config.send(color_option).should be_true
-            end
-          end
+              output = StringIO.new
+              config.output_stream = output
 
-          context "with tty set" do
-            it "does not set color_enabled" do
-              config.output_stream = StringIO.new
-              config.output_stream.stub(:tty?) { false }
               config.tty = true
-              config.send "#{color_option}=", true
+              config.output_stream.stub :tty? => true
+
               config.send(color_option).should be_true
+              config.send(color_option, output).should be_true
+            end
+          end
+
+          context "with config.tty? and !output.tty?" do
+            it "sets color_enabled" do
+              output = StringIO.new
+              config.output_stream = output
+
+              config.tty = true
+              config.output_stream.stub :tty? => false
+
+              config.send(color_option).should be_true
+              config.send(color_option, output).should be_true
+            end
+          end
+
+          context "with config.tty? and !output.tty?" do
+            it "does not set color_enabled" do
+              output = StringIO.new
+              config.output_stream = output
+
+              config.tty = false
+              config.output_stream.stub :tty? => true
+
+              config.send(color_option).should be_true
+              config.send(color_option, output).should be_true
+            end
+          end
+
+          context "with !config.tty? and !output.tty?" do
+            it "does not set color_enabled" do
+              output = StringIO.new
+              config.output_stream = output
+
+              config.tty = false
+              config.output_stream.stub :tty? => false
+
+              config.send(color_option).should be_false
+              config.send(color_option, output).should be_false
             end
           end
 
@@ -580,7 +604,7 @@ module RSpec::Core
 
               it "enables colors" do
                 config.output_stream = StringIO.new
-                config.output_stream.stub(:tty?) { true }
+                config.output_stream.stub :tty? => true
                 config.send "#{color_option}=", true
                 config.send(color_option).should be_true
               end

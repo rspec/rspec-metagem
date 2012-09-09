@@ -405,8 +405,11 @@ MESSAGE
         @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
       end
 
-      def color
-        return false unless output_to_tty?
+      def color(output=output_stream)
+        # rspec's built-in formatters all call this with the output argument,
+        # but defaulting to output_stream for backward compatibility with
+        # formatters in extension libs
+        return false unless output_to_tty?(output)
         value_for(:color, @color)
       end
 
@@ -929,12 +932,8 @@ MESSAGE
         end
       end
 
-      def output_to_tty?
-        begin
-          output_stream.tty? || tty?
-        rescue NoMethodError
-          false
-        end
+      def output_to_tty?(output=output_stream)
+        tty? || (output.respond_to?(:tty?) && output.tty?)
       end
 
       def built_in_formatter(key)
