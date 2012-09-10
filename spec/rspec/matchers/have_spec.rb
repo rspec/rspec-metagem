@@ -2,21 +2,15 @@ require 'spec_helper'
 require 'stringio'
 
 describe "have matcher" do
-
-  before(:each) do
-    if defined?(::ActiveSupport::Inflector) && ::ActiveSupport::Inflector.respond_to?(:pluralize)
-      @active_support_was_defined = true
-    else
-      @active_support_was_defined = false
-      module ::ActiveSupport
-        class Inflector
-          def self.pluralize(string)
-            string.to_s + 's'
-          end
-        end
+  let(:inflector) do
+    Class.new do
+      def self.pluralize(string)
+        string.to_s + 's'
       end
     end
   end
+
+  before(:each) { stub_const("ActiveSupport::Inflector", inflector) }
 
   def create_collection_owner_with(n)
     owner = RSpec::Expectations::Helper::CollectionOwner.new
@@ -91,44 +85,20 @@ describe "have matcher" do
     context "when ActiveSupport::Inflector is partially loaded without its inflectors" do
 
       it "does not pluralize the collection name" do
-        (class << ::ActiveSupport::Inflector; self; end).send :undef_method, :pluralize
+        stub_const("ActiveSupport::Inflector", Module.new)
         owner = create_collection_owner_with(1)
         expect { owner.should have(1).item }.to raise_error(NoMethodError)
       end
 
     end
-
-    after(:each) do
-      unless @active_support_was_defined
-        Object.__send__ :remove_const, :ActiveSupport
-      end
-    end
   end
 
   describe 'should have(1).item when Inflector is defined' do
-
-    before(:each) do
-      if defined?(Inflector)
-        @inflector_was_defined = true
-      else
-        @inflector_was_defined = false
-        class ::Inflector
-          def self.pluralize(string)
-            string.to_s + 's'
-          end
-        end
-      end
-    end
+    before { stub_const("Inflector", inflector) }
 
     it 'pluralizes the collection name' do
       owner = create_collection_owner_with(1)
       owner.should have(1).item
-    end
-
-    after(:each) do
-      unless @inflector_was_defined
-        Object.__send__ :remove_const, :Inflector
-      end
     end
   end
 
