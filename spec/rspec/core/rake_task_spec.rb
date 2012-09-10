@@ -80,7 +80,7 @@ module RSpec::Core
       end
     end
 
-    def test_files_to_run_ordering(pattern, task)
+    def specify_consistent_ordering_of_files_to_run(pattern, task)
       orderings = [
         %w[ a/1.rb a/2.rb a/3.rb ],
         %w[ a/2.rb a/1.rb a/3.rb ],
@@ -88,9 +88,9 @@ module RSpec::Core
       ].map do |files|
         FileList.should_receive(:[]).with(pattern) { files }
         task.__send__(:files_to_run)
-      end.uniq
+      end
 
-      orderings.size.should eq(1)
+      orderings.uniq.size.should eq(1)
     end
 
     context "with SPEC env var set" do
@@ -102,7 +102,7 @@ module RSpec::Core
 
       it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
         with_env_vars 'SPEC' => 'a/*.rb' do
-          test_files_to_run_ordering('a/*.rb', task)
+          specify_consistent_ordering_of_files_to_run('a/*.rb', task)
         end
       end
     end
@@ -112,7 +112,7 @@ module RSpec::Core
         t.pattern = 'a/*.rb'
       end
 
-      test_files_to_run_ordering('a/*.rb', task)
+      specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end
 
     context "with paths with quotes" do

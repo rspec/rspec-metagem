@@ -317,7 +317,7 @@ module RSpec::Core
         end
       end
 
-      def test_files_to_run_ordering
+      def specify_consistent_ordering_of_files_to_run
         File.stub(:directory?).with('a') { true }
 
         orderings = [
@@ -328,14 +328,14 @@ module RSpec::Core
           Dir.should_receive(:[]).with(/^a/) { files }
           yield
           config.files_to_run
-        end.uniq
+        end
 
-        orderings.size.should eq(1)
+        orderings.uniq.size.should eq(1)
       end
 
       context 'when the given directories match the pattern' do
         it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
-          test_files_to_run_ordering do
+          specify_consistent_ordering_of_files_to_run do
             config.pattern = 'a/*.rb'
             config.files_or_directories_to_run = 'a'
           end
@@ -344,7 +344,7 @@ module RSpec::Core
 
       context 'when the pattern is given relative to the given directories' do
         it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
-          test_files_to_run_ordering do
+          specify_consistent_ordering_of_files_to_run do
             config.pattern = '*.rb'
             config.files_or_directories_to_run = 'a'
           end
