@@ -1,9 +1,6 @@
 require 'spec_helper'
 require 'tmpdir'
 
-# so the stdlib module is available...
-module Test; module Unit; module Assertions; end; end; end
-
 module RSpec::Core
 
   describe Configuration do
@@ -149,7 +146,10 @@ module RSpec::Core
     end
 
     describe "#expect_with" do
-      before { config.stub(:require) }
+      before do
+        stub_const("Test::Unit::Assertions", Module.new)
+        config.stub(:require)
+      end
 
       it_behaves_like "a configurable framework adapter", :expect_with
 
@@ -209,7 +209,10 @@ module RSpec::Core
     end
 
     describe "#expecting_with_rspec?" do
-      before { config.stub(:require) }
+      before do
+        stub_const("Test::Unit::Assertions", Module.new)
+        config.stub(:require)
+      end
 
       it "returns false by default" do
         config.should_not be_expecting_with_rspec
