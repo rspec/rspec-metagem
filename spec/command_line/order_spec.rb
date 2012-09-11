@@ -53,6 +53,10 @@ describe 'command line', :ui do
       describe('group 9')  { specify('example') {} }
       describe('group 10') { specify('example') {} }
     """
+
+    write_file 'spec/order_error_spec.rb', """
+      raise 'example failure'
+    """
   end
 
   describe '--order rand' do
@@ -68,6 +72,12 @@ describe 'command line', :ui do
       examples('group 1')   {|first_run, second_run| first_run.should_not eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should_not eq(second_run)}
     end
+
+    it 'outputs seed before files are loaded' do
+      run_command_expecting_error 'tmp/aruba/spec/order_error_spec.rb --order rand -f doc'
+
+      stdout.string.should match(/Randomized with seed \d+/)
+    end
   end
 
   describe '--order rand:SEED' do
@@ -80,6 +90,12 @@ describe 'command line', :ui do
       nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
+    end
+
+    it 'outputs seed before files are loaded' do
+      run_command_expecting_error 'tmp/aruba/spec/order_error_spec.rb --order rand:123 -f doc'
+
+      stdout.string.should match(/Randomized with seed 123/)
     end
   end
 
@@ -94,6 +110,12 @@ describe 'command line', :ui do
       examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
     end
+
+    it 'outputs seed before files are loaded' do
+      run_command_expecting_error 'tmp/aruba/spec/order_error_spec.rb --order rand:123 -f doc'
+
+      stdout.string.should match(/Randomized with seed \d+/)
+    end
   end
 
   describe '--order default on CLI with --order rand in .rspec' do
@@ -107,6 +129,12 @@ describe 'command line', :ui do
       stdout.string.should match(
         /group 1.*group 1 example 1.*group 1 example 2.*group 1-1.*group 1-2.*group 2.*/m
       )
+    end
+
+    it 'does not output seed before files are loaded' do
+      run_command_expecting_error 'tmp/aruba/spec/order_error_spec.rb --order default -f doc'
+
+      stdout.string.should_not match(/Randomized/)
     end
   end
 
@@ -166,5 +194,13 @@ describe 'command line', :ui do
 
   def run_command(cmd)
     RSpec::Core::Runner.run(cmd.split, stderr, stdout)
+  end
+
+  def run_command_expecting_error(cmd)
+    begin
+      run_command(cmd)
+    rescue
+      # do nothing
+    end
   end
 end
