@@ -51,6 +51,27 @@ describe "should_not raise_error" do
       lambda { raise RuntimeError, "example message" }.should_not raise_error
     }.should fail_with(/expected no Exception, got #<RuntimeError: example message>/)
   end
+
+  it 'includes the backtrace of the error that was raised in the error message' do
+    expect {
+      expect { raise "boom" }.not_to raise_error
+    }.to raise_error { |e|
+      backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
+      e.message.should include("with backtrace", backtrace_line)
+    }
+  end
+
+  it 'formats the backtrace using the configured backtrace formatter' do
+    RSpec::Matchers.configuration.backtrace_formatter.
+                    stub(:format_backtrace).
+                    and_return("formatted-backtrace")
+
+    expect {
+      expect { raise "boom" }.not_to raise_error
+    }.to raise_error { |e|
+      e.message.should include("with backtrace", "formatted-backtrace")
+    }
+  end
 end
 
 describe "should raise_error(message)" do
@@ -76,6 +97,15 @@ describe "should raise_error(message)" do
     lambda do
       lambda {raise NameError.new('blarg')}.should raise_error('blah')
     end.should fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
+  end
+
+  it 'includes the backtrace of any other error in the failure message' do
+    expect {
+      expect { raise "boom" }.to raise_error(ArgumentError)
+    }.to raise_error { |e|
+      backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
+      e.message.should include("with backtrace", backtrace_line)
+    }
   end
 end
 

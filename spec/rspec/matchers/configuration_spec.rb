@@ -13,6 +13,34 @@ module RSpec
     describe Configuration do
       let(:config) { Configuration.new }
 
+      describe "#backtrace_formatter" do
+        let(:original_backtrace) { %w[ clean-me/a.rb other/file.rb clean-me/b.rb ] }
+        let(:cleaned_backtrace)  { %w[ other/file.rb ] }
+
+        let(:formatted_backtrace) do
+          config.backtrace_formatter.format_backtrace(original_backtrace)
+        end
+
+        before do
+          RSpec.configuration.stub(:backtrace_clean_patterns) { [/clean-me/] }
+        end
+
+        it "defaults to rspec-core's backtrace formatter when rspec-core is loaded" do
+          expect(config.backtrace_formatter).to be(RSpec::Core::BacktraceFormatter)
+          expect(formatted_backtrace).to eq(cleaned_backtrace)
+        end
+
+        it "defaults to a null formatter when rspec-core is not loaded" do
+          stub_const("RSpec::Core", nil) # so the formatter module is not loaded
+          expect(formatted_backtrace).to eq(original_backtrace)
+        end
+
+        it "can be set to another backtrace formatter" do
+          config.backtrace_formatter = stub(:format_backtrace => ['a'])
+          expect(formatted_backtrace).to eq(['a'])
+        end
+      end
+
       context 'on an interpreter that does not provide BasicObject', :unless => defined?(::BasicObject) do
         before { RSpec::Expectations::Syntax.disable_should(Delegator) }
 

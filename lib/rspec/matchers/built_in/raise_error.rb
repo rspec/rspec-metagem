@@ -87,8 +87,19 @@ module RSpec
           end
         end
 
+        def format_backtrace(backtrace)
+          formatter = Matchers.configuration.backtrace_formatter
+          formatter.format_backtrace(backtrace)
+        end
+
         def given_error
-          @actual_error.nil? ? " but nothing was raised" : ", got #{@actual_error.inspect}"
+          return " but nothing was raised" unless @actual_error
+
+          backtrace = format_backtrace(@actual_error.backtrace)
+          [
+            ", got #{@actual_error.inspect} with backtrace:",
+            *backtrace
+          ].join("\n  # ")
         end
       end
     end

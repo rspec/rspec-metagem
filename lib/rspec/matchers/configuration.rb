@@ -64,6 +64,35 @@ module RSpec
           Expectations::Syntax.enable_should(mod)
         end
       end
+
+      # Sets or gets the backtrace formatter. The backtrace formatter should
+      # implement `#format_backtrace(Array<String>)`. This is used
+      # to format backtraces of errors handled by the `raise_error`
+      # matcher.
+      #
+      # If you are using rspec-core, rspec-core's backtrace formatting
+      # will be used (including respecting the presence or absence of
+      # the `--backtrace` option).
+      #
+      # @overload backtrace_formatter
+      #   @return [#format_backtrace] the backtrace formatter
+      # @overload backtrace_formatter=
+      #   @param value [#format_backtrace] sets the backtrace formatter
+      attr_writer :backtrace_formatter
+      def backtrace_formatter
+        @backtrace_formatter ||= if defined?(::RSpec::Core::BacktraceFormatter)
+          ::RSpec::Core::BacktraceFormatter
+        else
+          NullBacktraceFormatter
+        end
+      end
+
+      # @api private
+      NullBacktraceFormatter = Module.new do
+        def self.format_backtrace(backtrace)
+          backtrace
+        end
+      end
     end
 
     # The configuration object
