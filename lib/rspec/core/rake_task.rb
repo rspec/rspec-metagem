@@ -111,9 +111,8 @@ module RSpec
 
       def initialize(*args)
         #configure the rake task
-        setup_config args
+        setup_ivars args
         yield self if block_given?
-        set_defaults
 
         desc "Run RSpec code examples" unless ::Rake.application.last_comment
 
@@ -124,17 +123,15 @@ module RSpec
         end
       end
 
-      def setup_config(*args)
+      def setup_ivars(*args)
         @name = args.shift || :spec
-        @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
+        @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil
         @warning, @rcov = false, false
         @verbose, @fail_on_error = true, true
-      end
 
-      def set_defaults
-        @rcov_path  ||= 'rcov'
-        @rspec_path ||= 'rspec'
-        @pattern    ||= './spec{,/*/**}/*_spec.rb'
+        @rcov_path  = 'rcov'
+        @rspec_path = 'rspec'
+        @pattern    = './spec{,/*/**}/*_spec.rb'
       end
 
       def has_files?
