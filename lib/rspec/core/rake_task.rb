@@ -110,33 +110,49 @@ module RSpec
       end
 
       def initialize(*args)
+        #configure the rake task
+        self.setup_config args
+        yield self if block_given?
+        self.set_defaults
+
+        desc "Run RSpec code examples" unless ::Rake.application.last_comment
+
+        task name do
+          RakeFileUtils.send(:verbose, verbose) do
+            self.run_task verbose
+          end
+        end
+      end
+
+      def setup_config(*args)
         @name = args.shift || :spec
         @pattern, @rcov_path, @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil, nil, nil
         @warning, @rcov = false, false
         @verbose, @fail_on_error = true, true
+      end
 
-        yield self if block_given?
-
+      def set_defaults
         @rcov_path  ||= 'rcov'
         @rspec_path ||= 'rspec'
         @pattern    ||= './spec{,/*/**}/*_spec.rb'
+      end
 
-        desc("Run RSpec code examples") unless ::Rake.application.last_comment
+      def has_files?
+        empty = files_to_run.empty?
+        puts "No examples matching #{pattern} could be found" if empty
+        not empty
+      end
 
-        task name do
-          RakeFileUtils.send(:verbose, verbose) do
-            if files_to_run.empty?
-              puts "No examples matching #{pattern} could be found"
-            else
-              begin
-                puts spec_command if verbose
-                success = system(spec_command)
-              rescue
-                puts failure_message if failure_message
-              end
-              raise("#{spec_command} failed") if fail_on_error unless success
-            end
+      def run_task(verbose)
+        files = self.has_files?
+        if files
+          begin
+            puts spec_command if verbose
+            success = system(spec_command)
+          rescue
+            puts failure_message if failure_message
           end
+          raise("#{spec_command} failed") if fail_on_error unless success
         end
       end
 
