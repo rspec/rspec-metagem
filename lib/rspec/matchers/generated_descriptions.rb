@@ -13,9 +13,9 @@ module RSpec
       return nil if last_should.nil?
       "#{last_should.to_s.gsub('_',' ')} #{last_description}"
     end
-    
+
   private
-    
+
     def self.last_description
       last_matcher.respond_to?(:description) ? last_matcher.description : <<-MESSAGE
 When you call a matcher in an example without a String, like this:
@@ -33,4 +33,3 @@ MESSAGE
     end
   end
 end
-      
