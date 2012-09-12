@@ -17,15 +17,13 @@ class HtmlPrinter
     @output.puts "</div>"
   end
 
-  def print_example_group_start( params )
-    group_id, description, number_of_parents = params.values_at(:group_id,:description,:number_of_parents)
+  def print_example_group_start( group_id, description, number_of_parents  )
     @output.puts "<div id=\"div_group_#{group_id}\" class=\"example_group passed\">"
     @output.puts "  <dl #{indentation_style(number_of_parents)}>"
     @output.puts "  <dt id=\"example_group_#{group_id}\" class=\"passed\">#{h(description)}</dt>"
   end
 
-  def print_example_passed( params )
-    description, run_time = params.values_at(:description,:run_time)
+  def print_example_passed( description, run_time )
     formatted_run_time = sprintf("%.5f", run_time)
     @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
   end
@@ -48,8 +46,7 @@ class HtmlPrinter
     @output.puts "    </dd>"
   end
 
-  def print_example_pending( params )
-    pending_message, description = params.values_at( :pending_message, :description )
+  def print_example_pending( description, pending_message )
     @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
   end
 

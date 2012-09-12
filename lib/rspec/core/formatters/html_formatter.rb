@@ -47,11 +47,7 @@ module RSpec
           unless example_group_number == 1
             @printer.print_example_group_end
           end
-          @printer.print_example_group_start({
-            :group_id => example_group_number, 
-            :description => example_group.description, 
-            :number_of_parents => example_group.parent_groups.size
-          })
+          @printer.print_example_group_start( example_group_number, example_group.description, example_group.parent_groups.size )
           @printer.flush
         end
 
@@ -67,15 +63,24 @@ module RSpec
 
         def example_passed(example)
           @printer.move_progress(percent_done)
-          @printer.print_example_passed({
-            :description => example.description,
-            :run_time => example.execution_result[:run_time]
-          })
+          @printer.print_example_passed( example.description, example.execution_result[:run_time] )
           @printer.flush
         end
 
         def example_failed(example)
           super(example)
+
+          unless @header_red
+            @header_red = true
+            @printer.make_header_red 
+          end
+
+          unless @example_group_red
+            @example_group_red = true
+            @printer.make_example_group_header_red(example_group_number)
+          end
+
+          @printer.move_progress(percent_done)
 
           exception = example.metadata[:execution_result][:exception]
           extra = extra_failure_content(exception)
@@ -94,18 +99,6 @@ module RSpec
             }
           end
 
-          unless @header_red
-            @header_red = true
-            @printer.make_header_red 
-          end
-
-          unless @example_group_red
-            @example_group_red = true
-            @printer.make_example_group_header_red(example_group_number)
-          end
-
-          @printer.move_progress(percent_done)
-
           @printer.print_example_failed( params )
           @printer.flush
         end
@@ -115,10 +108,7 @@ module RSpec
           @printer.make_header_yellow unless @header_red
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
-          @printer.print_example_pending({
-            :description => example.description,
-            :pending_message => example.metadata[:execution_result][:pending_message]
-          })
+          @printer.print_example_pending( example.description, example.metadata[:execution_result][:pending_message] )
           @printer.flush
         end
 
