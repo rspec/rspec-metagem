@@ -111,15 +111,15 @@ module RSpec
 
       def initialize(*args)
         #configure the rake task
-        self.setup_config args
+        setup_config args
         yield self if block_given?
-        self.set_defaults
+        set_defaults
 
         desc "Run RSpec code examples" unless ::Rake.application.last_comment
 
         task name do
           RakeFileUtils.send(:verbose, verbose) do
-            self.run_task verbose
+            run_task verbose
           end
         end
       end
@@ -144,7 +144,7 @@ module RSpec
       end
 
       def run_task(verbose)
-        files = self.has_files?
+        files = has_files?
         if files
           begin
             puts spec_command if verbose
