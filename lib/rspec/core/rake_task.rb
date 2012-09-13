@@ -164,18 +164,20 @@ module RSpec
       end
 
       def spec_command
-        @spec_command ||= begin
-                            cmd_parts = []
-                            cmd_parts << RUBY
-                            cmd_parts << ruby_opts
-                            cmd_parts << "-w" if @warning
-                            cmd_parts << "-S" << runner
-                            cmd_parts << "-Ispec:lib" << rcov_opts if rcov
-                            cmd_parts << files_to_run
-                            cmd_parts << "--" if rcov && rspec_opts
-                            cmd_parts << rspec_opts
-                            cmd_parts.flatten.reject(&blank).join(" ")
-                          end
+        @spec_command ||= default_spec_command
+      end
+
+      def default_spec_command
+        cmd_parts = []
+        cmd_parts << RUBY
+        cmd_parts << ruby_opts
+        cmd_parts << "-w" if @warning
+        cmd_parts << "-S" << runner
+        cmd_parts << "-Ispec:lib" << rcov_opts if rcov
+        cmd_parts << files_to_run
+        cmd_parts << "--" if rcov && rspec_opts
+        cmd_parts << rspec_opts
+        cmd_parts.flatten.reject(&blank).join(" ")
       end
 
     private
