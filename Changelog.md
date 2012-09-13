@@ -6,6 +6,7 @@ Enhancements
 * Add support for custom ordering strategies for groups and examples.
   (Myron Marston)
 * JSON Formatter (Alex Chaffee)
+* Refactor rake task internals (Sam Phippen)
 
 Bug fixes
 
