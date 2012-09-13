@@ -180,8 +180,6 @@ module RSpec
         cmd_parts.flatten.reject(&blank).join(" ")
       end
 
-    private
-
       def runner
         rcov ? rcov_path : rspec_path
       end
