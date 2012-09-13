@@ -178,8 +178,6 @@ module RSpec
                           end
       end
 
-    private
-
       def runner
         rcov ? rcov_path : rspec_path
       end
