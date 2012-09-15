@@ -28,9 +28,7 @@ class HtmlPrinter
     @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
   end
 
-  def print_example_failed( params )
-    pending_fixed, description, run_time, failure_id, exception, extra_content = 
-      params.values_at( :pending_fixed, :description, :run_time, :failure_id, :exception, :extra_content )
+  def print_example_failed( pending_fixed, description, run_time, failure_id, exception, extra_content )
     formatted_run_time = sprintf("%.5f", run_time)
 
     @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
@@ -50,9 +48,7 @@ class HtmlPrinter
     @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
   end
 
-  def print_summary( params )
-    was_dry_run, duration, example_count, failure_count, pending_count = params.values_at( :was_dry_run, :duration, :example_count, :failure_count, :pending_count)
-
+  def print_summary( was_dry_run, duration, example_count, failure_count, pending_count )
     # TODO - kill dry_run?
     if was_dry_run 
       totals = "This was a dry-run"

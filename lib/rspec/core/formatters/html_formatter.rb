@@ -83,23 +83,24 @@ module RSpec
           @printer.move_progress(percent_done)
 
           exception = example.metadata[:execution_result][:exception]
-          extra = extra_failure_content(exception)
-          params = {
-            :pending_fixed => exception.pending_fixed?,
-            :description => example.description,
-            :run_time => example.execution_result[:run_time],
-            :failure_id => @failed_examples.size,
-            :extra_content => (extra == "") ? false : extra
-          }
-
-          if exception
-            params[:exception] = { 
+          exception_details = if exception
+            { 
               :message => exception.message, 
               :backtrace => format_backtrace(exception.backtrace, example).join("\n")
             }
+          else
+            false 
           end
+          extra = extra_failure_content(exception)
 
-          @printer.print_example_failed( params )
+          @printer.print_example_failed( 
+            exception.pending_fixed?,
+            example.description,
+            example.execution_result[:run_time],
+            @failed_examples.size,
+            exception_details,
+            (extra == "") ? false : extra
+          )
           @printer.flush
         end
 
@@ -138,13 +139,13 @@ module RSpec
         end
 
         def dump_summary(duration, example_count, failure_count, pending_count)
-          @printer.print_summary({
-            :was_dry_run => dry_run?,
-            :duration => duration,
-            :example_count => example_count,
-            :failure_count => failure_count,
-            :pending_count => pending_count
-          })
+          @printer.print_summary(
+            dry_run?,
+            duration,
+            example_count,
+            failure_count,
+            pending_count
+          )
           @printer.flush
         end
       end
