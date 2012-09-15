@@ -3,7 +3,7 @@ require "spec_helper"
 describe Autotest::Rspec2 do
   let(:rspec_autotest) { Autotest::Rspec2.new }
   let(:spec_cmd) { File.expand_path("../../../exe/rspec", __FILE__) }
-  let(:ruby_cmd) { "ruby" }
+  let(:ruby_cmd) { "/path/to/ruby" }
 
   before do
     File.stub(:exist?) { false }
@@ -48,6 +48,11 @@ describe Autotest::Rspec2 do
       @files_to_test.keys.each do |file_to_test|
         cmd.should match(/'#{File.expand_path(file_to_test)}'/)
       end
+    end
+
+    it "quotes the path of the ruby executable" do
+      cmd = rspec_autotest.make_test_cmd(@files_to_test)
+      cmd.should match(%r('/path/to/ruby'))
     end
 
     it "gives '--tty' to #{Autotest::Rspec2::RSPEC_EXECUTABLE}, not '--autotest'" do

@@ -8,6 +8,7 @@ Enhancements
 * JSON Formatter (Alex Chaffee)
 * Refactor rake task internals (Sam Phippen)
 * Refactor HtmlFormatter (Pete Hodgson)
+* Autotest supports a path to Ruby that contains spaces (dsisnero)
 
 Bug fixes
 
