@@ -1,109 +1,111 @@
 require 'erb'
 
-module RSpec module Core module Formatters
-class HtmlPrinter
-  include ERB::Util # for the #h method
-  def initialize(output)
-    @output = output
-  end
+module RSpec
+  module Core
+    module Formatters
+      class HtmlPrinter
+        include ERB::Util # for the #h method
+        def initialize(output)
+          @output = output
+        end
 
-  def print_html_start
-    @output.puts HTML_HEADER
-    @output.puts REPORT_HEADER
-  end
+        def print_html_start
+          @output.puts HTML_HEADER
+          @output.puts REPORT_HEADER
+        end
 
-  def print_example_group_end
-    @output.puts "  </dl>"
-    @output.puts "</div>"
-  end
+        def print_example_group_end
+          @output.puts "  </dl>"
+          @output.puts "</div>"
+        end
 
-  def print_example_group_start( group_id, description, number_of_parents  )
-    @output.puts "<div id=\"div_group_#{group_id}\" class=\"example_group passed\">"
-    @output.puts "  <dl #{indentation_style(number_of_parents)}>"
-    @output.puts "  <dt id=\"example_group_#{group_id}\" class=\"passed\">#{h(description)}</dt>"
-  end
+        def print_example_group_start( group_id, description, number_of_parents  )
+          @output.puts "<div id=\"div_group_#{group_id}\" class=\"example_group passed\">"
+          @output.puts "  <dl #{indentation_style(number_of_parents)}>"
+          @output.puts "  <dt id=\"example_group_#{group_id}\" class=\"passed\">#{h(description)}</dt>"
+        end
 
-  def print_example_passed( description, run_time )
-    formatted_run_time = sprintf("%.5f", run_time)
-    @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
-  end
+        def print_example_passed( description, run_time )
+          formatted_run_time = sprintf("%.5f", run_time)
+          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
+        end
 
-  def print_example_failed( pending_fixed, description, run_time, failure_id, exception, extra_content )
-    formatted_run_time = sprintf("%.5f", run_time)
+        def print_example_failed( pending_fixed, description, run_time, failure_id, exception, extra_content )
+          formatted_run_time = sprintf("%.5f", run_time)
 
-    @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
-    @output.puts "      <span class=\"failed_spec_name\">#{h(description)}</span>"
-    @output.puts "      <span class=\"duration\">#{formatted_run_time}s</span>"
-    @output.puts "      <div class=\"failure\" id=\"failure_#{failure_id}\">"
-    if exception
-      @output.puts "        <div class=\"message\"><pre>#{h(exception[:message])}</pre></div>"
-      @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
-    end
-    @output.puts extra_content if extra_content
-    @output.puts "      </div>"
-    @output.puts "    </dd>"
-  end
+          @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
+          @output.puts "      <span class=\"failed_spec_name\">#{h(description)}</span>"
+          @output.puts "      <span class=\"duration\">#{formatted_run_time}s</span>"
+          @output.puts "      <div class=\"failure\" id=\"failure_#{failure_id}\">"
+          if exception
+            @output.puts "        <div class=\"message\"><pre>#{h(exception[:message])}</pre></div>"
+            @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
+          end
+          @output.puts extra_content if extra_content
+          @output.puts "      </div>"
+          @output.puts "    </dd>"
+        end
 
-  def print_example_pending( description, pending_message )
-    @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
-  end
+        def print_example_pending( description, pending_message )
+          @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
+        end
 
-  def print_summary( was_dry_run, duration, example_count, failure_count, pending_count )
-    # TODO - kill dry_run?
-    if was_dry_run 
-      totals = "This was a dry-run"
-    else
-      totals =  "#{example_count} example#{'s' unless example_count == 1}, "
-      totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
-      totals << ", #{pending_count} pending" if pending_count > 0
-    end
+        def print_summary( was_dry_run, duration, example_count, failure_count, pending_count )
+          # TODO - kill dry_run?
+          if was_dry_run
+            totals = "This was a dry-run"
+          else
+            totals =  "#{example_count} example#{'s' unless example_count == 1}, "
+            totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
+            totals << ", #{pending_count} pending" if pending_count > 0
+          end
 
-    formatted_duration = sprintf("%.5f", duration)
+          formatted_duration = sprintf("%.5f", duration)
 
-    @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{formatted_duration} seconds</strong>\";</script>"
-    @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
-    @output.puts "</div>"
-    @output.puts "</div>"
-    @output.puts "</body>"
-    @output.puts "</html>"
-  end
+          @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{formatted_duration} seconds</strong>\";</script>"
+          @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
+          @output.puts "</div>"
+          @output.puts "</div>"
+          @output.puts "</body>"
+          @output.puts "</html>"
+        end
 
-  def flush
-    @output.flush
-  end
+        def flush
+          @output.flush
+        end
 
-  def move_progress( percent_done )
-    @output.puts "    <script type=\"text/javascript\">moveProgressBar('#{percent_done}');</script>"
-    @output.flush
-  end
+        def move_progress( percent_done )
+          @output.puts "    <script type=\"text/javascript\">moveProgressBar('#{percent_done}');</script>"
+          @output.flush
+        end
 
-  def make_header_red
-    @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>"
-  end
-  
-  def make_header_yellow
-    @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>"
-  end
+        def make_header_red
+          @output.puts "    <script type=\"text/javascript\">makeRed('rspec-header');</script>"
+        end
 
-  def make_example_group_header_red(group_id)
-    @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{group_id}');</script>"
-    @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{group_id}');</script>"
-  end
+        def make_header_yellow
+          @output.puts "    <script type=\"text/javascript\">makeYellow('rspec-header');</script>"
+        end
 
-  def make_example_group_header_yellow(group_id)
-    @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{group_id}');</script>"
-    @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{group_id}');</script>"
-  end
+        def make_example_group_header_red(group_id)
+          @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{group_id}');</script>"
+        end
 
-
-  private
-
-  def indentation_style( number_of_parents )
-    "style=\"margin-left: #{(number_of_parents - 1) * 15}px;\""
-  end
+        def make_example_group_header_yellow(group_id)
+          @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{group_id}');</script>"
+        end
 
 
-  REPORT_HEADER = <<-EOF
+        private
+
+        def indentation_style( number_of_parents )
+          "style=\"margin-left: #{(number_of_parents - 1) * 15}px;\""
+        end
+
+
+        REPORT_HEADER = <<-EOF
 <div class="rspec-report">
 
 <div id="rspec-header">
@@ -127,7 +129,7 @@ class HtmlPrinter
 <div class="results">
 EOF
 
-  GLOBAL_SCRIPTS = <<-EOF
+        GLOBAL_SCRIPTS = <<-EOF
 
 function addClass(element_id, classname) {
   document.getElementById(element_id).className += (" " + classname);
@@ -204,7 +206,7 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
 }
 EOF
 
-  GLOBAL_STYLES = <<-EOF
+        GLOBAL_STYLES = <<-EOF
 #rspec-header {
   background: #65C400; color: #fff; height: 4em;
 }
@@ -368,7 +370,7 @@ a {
 }
 EOF
 
-  HTML_HEADER = <<-EOF
+        HTML_HEADER = <<-EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html
   PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -399,5 +401,7 @@ EOF
 <body>
 EOF
 
+      end
+    end
+  end
 end
-end end end
