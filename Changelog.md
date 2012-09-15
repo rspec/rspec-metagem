@@ -7,6 +7,7 @@ Enhancements
   (Myron Marston)
 * JSON Formatter (Alex Chaffee)
 * Refactor rake task internals (Sam Phippen)
+* Refactor HtmlFormatter (Pete Hodgson)
 
 Bug fixes
 
