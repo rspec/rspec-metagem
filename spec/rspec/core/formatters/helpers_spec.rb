@@ -22,6 +22,18 @@ describe RSpec::Core::Formatters::Helpers do
         helper.format_duration(45.5).should eq("45.5 seconds")
       end
     end
+
+    context '= 61' do
+      it "returns 'x minute x second' formatted string" do
+        helper.format_duration(61).should eq("1 minute 1 second")
+      end
+    end
+
+    context '= 1' do
+      it "returns 'x second' formatted string" do
+        helper.format_duration(1).should eq("1 second")
+      end
+    end
   end
 
   describe "format seconds" do
