@@ -9,6 +9,9 @@ Enhancements
 * Refactor rake task internals (Sam Phippen)
 * Refactor HtmlFormatter (Pete Hodgson)
 * Autotest supports a path to Ruby that contains spaces (dsisnero)
+* Print ordering seed at the start of the spec run to help
+  with troubleshooting ordering failures that occur at file load
+  time (M. Scott Ford)
 
 Bug fixes
 
