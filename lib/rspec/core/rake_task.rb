@@ -110,8 +110,7 @@ module RSpec
       end
 
       def initialize(*args)
-        #configure the rake task
-        setup_ivars args
+        setup_ivars(args)
         yield self if block_given?
 
         desc "Run RSpec code examples" unless ::Rake.application.last_comment
@@ -123,7 +122,7 @@ module RSpec
         end
       end
 
-      def setup_ivars(*args)
+      def setup_ivars(args)
         @name = args.shift || :spec
         @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil
         @warning, @rcov = false, false

@@ -19,6 +19,14 @@ module RSpec::Core
       task.__send__(:spec_command)
     end
 
+    context "with a name passed to the constructor" do
+      let(:task) { RakeTask.new(:task_name) }
+
+      it "correctly sets the name" do
+        task.name.should == :task_name
+      end
+    end
+
     context "default" do
       it "renders rspec" do
         spec_command.should =~ /^#{ruby} -S rspec/
