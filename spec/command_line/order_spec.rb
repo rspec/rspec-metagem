@@ -197,10 +197,6 @@ describe 'command line', :ui do
   end
 
   def run_command_expecting_error(cmd)
-    begin
-      run_command(cmd)
-    rescue
-      # do nothing
-    end
+    expect { run_command(cmd) }.to raise_error
   end
 end
