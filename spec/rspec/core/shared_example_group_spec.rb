@@ -12,12 +12,19 @@ module RSpec::Core
           Kernel.should respond_to(shared_method_name)
         end
 
-        it "raises an ArgumentError when adding a second shared example group with the same name" do
+        it "displays a warning when adding a second shared example group with the same name" do
           group = ExampleGroup.describe('example group')
           group.send(shared_method_name, 'shared group') {}
-          lambda do
-            group.send(shared_method_name, 'shared group') {}
-          end.should raise_error(ArgumentError, "Shared example group 'shared group' already exists")
+          group.stub(:formatted_location).and_return "path/to/first:1", "path/to/second:2"
+
+          Kernel.should_receive(:warn).with <<-WARNING.gsub(/^ */, '')
+             Shared example group 'shared group' defined at:
+             path/to/first:1
+             already exists in:
+             path/to/second:2
+             WARNING
+
+           group.send(shared_method_name, 'shared group') {}
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|
