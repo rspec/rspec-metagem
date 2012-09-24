@@ -18,6 +18,8 @@ Enhancements
 * --default_path can be specified as --default-line; --line_number can be
   specified as --line-number. Hyphens are more idiomatic command line argument
   separators (Sam Phippen).
+* A more useful error message is shown when an invalid command line option is
+  used (Jordi Polo).
 
 Bug fixes
 

@@ -15,6 +15,12 @@ module RSpec::Core
       parser.parse!([])
     end
 
+    it "proposes you to use --help and returns an error on incorrect argument" do
+      parser = Parser.new
+      parser.should_receive(:abort).with(/use --help/)
+      parser.parse!(%w[--my_very_wrong_argument_ein])
+    end
+
     describe "--formatter" do
       it "is deprecated" do
         RSpec.should_receive(:deprecate)
