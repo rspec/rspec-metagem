@@ -309,9 +309,12 @@ module RSpec
       # @private
       def self.run_before_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
-        assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
-        run_hook(:before, :all, example_group_instance)
-        store_before_all_ivars(example_group_instance)
+        begin
+          assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
+          run_hook(:before, :all, example_group_instance)
+        ensure
+          store_before_all_ivars(example_group_instance)
+        end
       end
 
       # @private

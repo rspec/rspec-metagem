@@ -28,6 +28,9 @@ Bug fixes
   `before(:all) hook` (Bradley Schaefer).
 * Make the order spec files are loaded consistent, regardless of the
   order of the files returned by the OS (Jo Liss).
+* Ensure instance variables from `before(:all)` are always exposed
+  from `after(:all)`, even if an error occurs in `before(:all)`
+  (Sam Phippen).
 
 ### 2.11.1 / 2012-07-18
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...v2.11.1)
