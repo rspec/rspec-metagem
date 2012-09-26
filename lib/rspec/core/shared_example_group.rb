@@ -31,7 +31,7 @@ module RSpec
       def shared_examples *args, &block
         if key? args.first
           key = args.shift
-          raise_if_key_taken key, block
+          warn_if_key_taken key, block
           RSpec.world.shared_example_groups[key] = block
         end
 
@@ -82,18 +82,16 @@ module RSpec
         raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
       end
 
-      def raise_if_key_taken key, new_block
+      def warn_if_key_taken key, new_block
         return unless existing_block = example_block_for(key)
 
-
-        s = <<-WARNING.gsub(/^ */, '')
-             Shared example group '#{key}' defined at:
-             #{formatted_location new_block}
-             already exists in:
-             #{formatted_location existing_block}
-             WARNING
-
-        Kernel.warn s
+        Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
+          |WARNING: Shared example group '#{key}' has been previously defined at:
+          |  #{formatted_location existing_block}
+          |...and you are now defining it at:
+          |  #{formatted_location new_block}
+          |The new definition will overwrite the original one.
+        WARNING
       end
 
       def formatted_location block

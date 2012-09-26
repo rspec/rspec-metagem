@@ -12,6 +12,9 @@ Enhancements
 * Print ordering seed at the start of the spec run to help
   with troubleshooting ordering failures that occur at file load
   time (M. Scott Ford)
+* Provide a helpful warning when a shared example group is redefined
+  rather than erroring out with an unhelpful error message
+  (Mark Burns).
 
 Bug fixes
 

@@ -14,17 +14,15 @@ module RSpec::Core
 
         it "displays a warning when adding a second shared example group with the same name" do
           group = ExampleGroup.describe('example group')
-          group.send(shared_method_name, 'shared group') {}
-          group.stub(:formatted_location).and_return "path/to/first:1", "path/to/second:2"
+          group.send(shared_method_name, 'some shared group') {}
+          original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
-          Kernel.should_receive(:warn).with <<-WARNING.gsub(/^ */, '')
-             Shared example group 'shared group' defined at:
-             path/to/first:1
-             already exists in:
-             path/to/second:2
-             WARNING
+          warning = nil
+          Kernel.stub(:warn) { |msg| warning = msg }
 
-           group.send(shared_method_name, 'shared group') {}
+          group.send(shared_method_name, 'some shared group') {}
+          second_declaration = [__FILE__, __LINE__ - 1].join(':')
+          warning.should include('some shared group', original_declaration, second_declaration)
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|
