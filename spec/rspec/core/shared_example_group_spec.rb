@@ -6,6 +6,11 @@ module RSpec::Core
     ExampleModule = Module.new
     ExampleClass = Class.new
 
+    it 'does not add a bunch of private methods to Module' do
+      seg_methods = RSpec::Core::SharedExampleGroup.private_instance_methods
+      expect(Module.private_methods & seg_methods).to eq([])
+    end
+
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
         it "is exposed to the global namespace" do

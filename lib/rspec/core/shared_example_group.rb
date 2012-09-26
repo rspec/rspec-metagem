@@ -29,21 +29,7 @@ module RSpec
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
       def shared_examples *args, &block
-        ensure_block_has_source_location(block, caller.first)
-
-        if key? args.first
-          key = args.shift
-          warn_if_key_taken key, block
-          RSpec.world.shared_example_groups[key] = block
-        end
-
-        unless args.empty?
-          mod = Module.new
-          (class << mod; self; end).send :define_method, :extended  do |host|
-            host.class_eval(&block)
-          end
-          RSpec.configuration.extend mod, *args
-        end
+        Registry.add_group(*args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -51,67 +37,100 @@ module RSpec
       alias_method :shared_examples_for, :shared_examples
 
       def share_as(name, &block)
-        if Object.const_defined?(name)
-          mod = Object.const_get(name)
-          raise_name_error unless mod.created_from_caller(caller)
+        Registry.add_const(name, &block)
+      end
+
+      # @private
+      #
+      # Used internally to manage the shared example groups and
+      # constants. We want to limit the number of methods we add
+      # to objects we don't own (main and Module) so this allows
+      # us to have helper methods that don't get added to those
+      # objects.
+      module Registry
+        extend self
+
+        def add_group(*args, &block)
+          ensure_block_has_source_location(block, caller[1])
+
+          if key? args.first
+            key = args.shift
+            warn_if_key_taken key, block
+            RSpec.world.shared_example_groups[key] = block
+          end
+
+          unless args.empty?
+            mod = Module.new
+            (class << mod; self; end).send :define_method, :extended  do |host|
+              host.class_eval(&block)
+            end
+            RSpec.configuration.extend mod, *args
+          end
         end
 
-        mod = Module.new do
-          @shared_block = block
-          @caller_line = caller.last
-
-          def self.created_from_caller(other_caller)
-            @caller_line == other_caller.last
+        def add_const(name, &block)
+          if Object.const_defined?(name)
+            mod = Object.const_get(name)
+            raise_name_error unless mod.created_from_caller(caller)
           end
 
-          def self.included(kls)
-            kls.describe(&@shared_block)
-            kls.children.first.metadata[:shared_group_name] = name
+          mod = Module.new do
+            @shared_block = block
+            @caller_line = caller.last
+
+            def self.created_from_caller(other_caller)
+              @caller_line == other_caller.last
+            end
+
+            def self.included(kls)
+              kls.describe(&@shared_block)
+              kls.children.first.metadata[:shared_group_name] = name
+            end
           end
+
+          shared_const = Object.const_set(name, mod)
+          RSpec.world.shared_example_groups[shared_const] = block
         end
 
-        shared_const = Object.const_set(name, mod)
-        RSpec.world.shared_example_groups[shared_const] = block
-      end
+      private
 
-    private
+        def key? candidate
+          [String, Symbol, Module].any? { |cls| cls === candidate }
+        end
 
-      def key? candidate
-        [String, Symbol, Module].any? { |cls| cls === candidate }
-      end
+        def raise_name_error
+          raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
+        end
 
-      def raise_name_error
-        raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
-      end
+        def warn_if_key_taken key, new_block
+          return unless existing_block = example_block_for(key)
 
-      def warn_if_key_taken key, new_block
-        return unless existing_block = example_block_for(key)
+          Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
+            |WARNING: Shared example group '#{key}' has been previously defined at:
+            |  #{formatted_location existing_block}
+            |...and you are now defining it at:
+            |  #{formatted_location new_block}
+            |The new definition will overwrite the original one.
+          WARNING
+        end
 
-        Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
-          |WARNING: Shared example group '#{key}' has been previously defined at:
-          |  #{formatted_location existing_block}
-          |...and you are now defining it at:
-          |  #{formatted_location new_block}
-          |The new definition will overwrite the original one.
-        WARNING
-      end
+        def formatted_location block
+          block.source_location.join ":"
+        end
 
-      def formatted_location block
-        block.source_location.join ":"
-      end
+        def example_block_for key
+          RSpec.world.shared_example_groups[key]
+        end
 
-      def example_block_for key
-        RSpec.world.shared_example_groups[key]
-      end
+        def ensure_block_has_source_location(block, caller_line)
+          return if block.respond_to?(:source_location)
 
-      def ensure_block_has_source_location(block, caller_line)
-        return if block.respond_to?(:source_location)
-
-        block.extend Module.new {
-          define_method :source_location do
-            caller_line.split(':')
-          end
-        }
+          block.extend Module.new {
+            define_method :source_location do
+              caller_line.split(':')
+            end
+          }
+        end
       end
     end
   end
