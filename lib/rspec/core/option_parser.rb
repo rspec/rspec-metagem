@@ -13,13 +13,28 @@ module RSpec::Core
 
     def parse!(args)
       return {} if args.empty?
-      if args.include?("--formatter")
-        RSpec.deprecate("the --formatter option", "-f or --format")
-        args[args.index("--formatter")] = "--format"
-      end
+
+      convert_deprecated_args(args)
+
       options = args.delete('--tty') ? {:tty => true} : {}
       parser(options).parse!(args)
       options
+    end
+
+    def convert_deprecated_args(args)
+      args.map! { |arg|
+        case arg
+        when "--formatter"
+          RSpec.deprecate("the --formatter option", "-f or --format")
+          "--format"
+        when "--default_path"
+          "--default-path"
+        when "--line_number"
+          "--line-number"
+        else
+          arg
+        end
+      }
     end
 
     alias_method :parse, :parse!
@@ -140,7 +155,7 @@ FILTERING
           (options[:full_description] ||= []) << Regexp.compile(Regexp.escape(o))
         end
 
-        parser.on('-l', '--line_number LINE', 'Specify line number of an example or group (may be',
+        parser.on('-l', '--line-number LINE', 'Specify line number of an example or group (may be',
                                               '  used more than once).') do |o|
           (options[:line_numbers] ||= []) << o
         end
@@ -159,7 +174,7 @@ FILTERING
           options[filter_type][name] = value.nil? ? true : eval(value) rescue value
         end
 
-        parser.on('--default_path PATH', 'Set the default path where RSpec looks for examples (can',
+        parser.on('--default-path PATH', 'Set the default path where RSpec looks for examples (can',
                                          '  be a path to a file or a directory).') do |path|
           options[:default_path] = path
         end

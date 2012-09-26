@@ -27,6 +27,37 @@ module RSpec::Core
       end
     end
 
+    describe "--default_path" do
+      it "gets converted to --default-path" do
+        options = Parser.parse!(%w[--default_path foo])
+        options[:default_path].should == "foo"
+      end
+    end
+
+    describe "--line_number" do
+      it "gets converted to --line-number" do
+        options = Parser.parse!(%w[--line_number 3])
+        options[:line_numbers].should == ["3"]
+      end
+    end
+
+
+    describe "--default-path" do
+      it "sets the default path where RSpec looks for examples" do
+        options = Parser.parse!(%w[--default-path foo])
+        options[:default_path].should == "foo"
+      end
+    end
+
+    %w[--line-number -l].each do |option|
+      describe option do
+        it "sets the line number of an example to run" do
+          options = Parser.parse!([option, "3"])
+          options[:line_numbers].should == ["3"]
+        end
+      end
+    end
+
     %w[--format -f].each do |option|
       describe option do
         it "defines the formatter" do
