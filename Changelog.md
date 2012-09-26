@@ -15,6 +15,9 @@ Enhancements
 * Provide a helpful warning when a shared example group is redefined
   rather than erroring out with an unhelpful error message
   (Mark Burns).
+* --default_path can be specified as --default-line; --line_number can be
+  specified as --line-number. Hyphens are more idiomatic command line argument
+  separators (Sam Phippen).
 
 Bug fixes
 
