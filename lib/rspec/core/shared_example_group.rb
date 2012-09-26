@@ -29,6 +29,8 @@ module RSpec
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
       def shared_examples *args, &block
+        ensure_block_has_source_location(block, caller.first)
+
         if key? args.first
           key = args.shift
           warn_if_key_taken key, block
@@ -100,6 +102,16 @@ module RSpec
 
       def example_block_for key
         RSpec.world.shared_example_groups[key]
+      end
+
+      def ensure_block_has_source_location(block, caller_line)
+        return if block.respond_to?(:source_location)
+
+        block.extend Module.new {
+          define_method :source_location do
+            caller_line.split(':')
+          end
+        }
       end
     end
   end
