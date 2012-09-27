@@ -19,7 +19,7 @@ Bug fixes
   though it was never a documented or intended syntax. It worked as a
   consequence of the implementation of `expect` in RSpec 2.10 and
   earlier. (Myron Marston)
-* Ensure #== is defined on build in matchers so that they can be composed.
+* Ensure #== is defined on built in matchers so that they can be composed.
   For example:
 
     expect {
