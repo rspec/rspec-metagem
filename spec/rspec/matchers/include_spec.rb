@@ -56,6 +56,12 @@ describe "#include matcher" do
           {:key => 'value'}.should include(:other)
         }.should fail_matching(%Q|expected {:key=>"value"} to include :other|)
       end
+
+      it "fails if target doesn't have a key and we expect nil" do
+        lambda {
+          {}.should include(:something => nil)
+        }.should fail_matching(%Q|expected {} to include {:something=>nil}|)
+      end
     end
   end
 
