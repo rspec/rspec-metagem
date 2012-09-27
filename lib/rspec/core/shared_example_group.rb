@@ -36,7 +36,10 @@ module RSpec
       alias_method :share_examples_for,  :shared_examples
       alias_method :shared_examples_for, :shared_examples
 
+      # @deprecated
       def share_as(name, &block)
+        RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
+                        "RSpec::SharedContext or shared_examples")
         Registry.add_const(name, &block)
       end
 
