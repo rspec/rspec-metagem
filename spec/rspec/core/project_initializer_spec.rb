@@ -121,7 +121,6 @@ module RSpec::Core
           config = ProjectInitializer.new("another_arg")
           config.stub(:puts)
           config.stub(:gets => 'no')
-          config.should_receive(:warn).with(/no longer.*another_arg was ignored/)
           config.run
         end
       end
