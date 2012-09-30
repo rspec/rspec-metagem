@@ -45,6 +45,17 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
+  describe "when there is an explicit description" do
+    context "when RSpec.configuration.format_docstrings is set to a block" do
+      it "formats the description using the block" do
+        RSpec.configuration.format_docstrings { |s| s.strip }
+        example = example_group.example(' an example with whitespace ') {}
+        example_group.run
+        example.description.should eql('an example with whitespace')
+      end
+    end
+  end
+
   describe "when there is no explicit description" do
     def expect_with(*frameworks)
       RSpec.configuration.stub(:expecting_with_rspec?).and_return(frameworks.include?(:rspec))
@@ -55,6 +66,16 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
             raise "Expected #{val} to be true" unless val
           end
         end
+      end
+    end
+
+    context "when RSpec.configuration.format_docstrings is set to a block" do
+      it "formats the description using the block" do
+        RSpec.configuration.format_docstrings { |s| s.upcase }
+        example_group.example { 5.should eq(5) }
+        example_group.run
+        pattern = /EXAMPLE AT #{relative_path(__FILE__).upcase}:#{__LINE__ - 2}/
+        example_group.examples.first.description.should match(pattern)
       end
     end
 

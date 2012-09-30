@@ -44,7 +44,12 @@ module RSpec
           end
         end
 
-        delegate_to_metadata :description, :described_class, :file_path
+        def description
+          description = metadata[:example_group][:description]
+          RSpec.configuration.format_docstrings_block.call(description)
+        end
+
+        delegate_to_metadata :described_class, :file_path
         alias_method :display_name, :description
         # @private
         alias_method :describes, :described_class
