@@ -37,6 +37,15 @@ describe "deprecations" do
     end
   end
 
+  describe RSpec::Core::SharedExampleGroup do
+    describe 'share_as' do
+      it 'is deprecated' do
+        RSpec.should_receive(:warn_deprecation)
+        RSpec::Core::SharedExampleGroup.share_as(:NestedFoo2) {}
+      end
+    end
+  end
+
   describe "Spec::Runner.configure" do
     it "is deprecated" do
       RSpec.stub(:warn_deprecation)
