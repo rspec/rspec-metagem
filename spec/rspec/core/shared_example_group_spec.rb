@@ -72,6 +72,8 @@ module RSpec::Core
     end
 
     describe "#share_as" do
+      before { RSpec.stub(:warn) }
+
       it "is exposed to the global namespace" do
         Kernel.should respond_to("share_as")
       end

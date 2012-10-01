@@ -138,6 +138,8 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     context 'for #share_as' do
+      before { RSpec.stub(:warn) }
+
       it 'outputs the name and location' do
 
         share_as :FooBar do
@@ -275,6 +277,8 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       context 'for #share_as' do
+        before { RSpec.stub(:warn) }
+
         it 'outputs the name and location' do
 
           share_as :FooBar2 do
