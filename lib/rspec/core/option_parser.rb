@@ -20,8 +20,7 @@ module RSpec::Core
       begin
         parser(options).parse!(args)
       rescue OptionParser::InvalidOption => e
-        puts e.message
-        abort "please use --help for documentation on the options available"
+        abort "#{e.message}\n\nPlease use --help for a listing of valid options"
       end
 
       options

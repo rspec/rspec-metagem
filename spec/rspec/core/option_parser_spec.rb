@@ -17,8 +17,13 @@ module RSpec::Core
 
     it "proposes you to use --help and returns an error on incorrect argument" do
       parser = Parser.new
-      parser.should_receive(:abort).with(/use --help/)
-      parser.parse!(%w[--my_very_wrong_argument_ein])
+      option = "--my_wrong_arg"
+
+      parser.should_receive(:abort) do |msg|
+        expect(msg).to include('use --help', option)
+      end
+
+      parser.parse!([option])
     end
 
     describe "--formatter" do
