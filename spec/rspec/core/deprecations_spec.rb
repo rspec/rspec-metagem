@@ -41,7 +41,7 @@ describe "deprecations" do
     describe 'share_as' do
       it 'is deprecated' do
         RSpec.should_receive(:warn_deprecation)
-        RSpec::Core::SharedExampleGroup.share_as(:NestedFoo2) {}
+        RSpec::Core::SharedExampleGroup.share_as(:DeprecatedSharedConst) {}
       end
     end
   end
