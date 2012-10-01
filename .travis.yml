@@ -7,3 +7,7 @@ rvm:
   - jruby
   - ree
   - rbx-19mode
+matrix:
+  allow_failures:
+    - rvm: rbx-19mode
+
