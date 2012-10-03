@@ -17,14 +17,15 @@ Feature: predicate matchers
   provide better failure output.
 
   For any predicate method, RSpec gives you a corresponding matcher.  Simply
-  prefix the method with "be_" and remove the question mark.  Examples:
+  prefix the method with `be_` and remove the question mark.  Examples:
 
       7.should_not be_zero       # calls 7.zero?
       [].should be_empty         # calls [].empty?
       x.should be_multiple_of(3) # calls x.multiple_of?(3)
 
-  Alternately, for a predicate method that begins with "has_" like Hash#has_key?,
-  RSpec allows you to use an alternate form since "be_has_key" makes no sense.
+  Alternately, for a predicate method that begins with `has_` like
+  `Hash#has_key?`, RSpec allows you to use an alternate form since `be_has_key`
+  makes no sense.
 
       hash.should have_key(:foo)       # calls hash.has_key?(:foo)
       array.should_not have_odd_values # calls array.has_odd_values?
