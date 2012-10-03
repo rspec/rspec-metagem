@@ -20,6 +20,9 @@ Enhancements
   separators (Sam Phippen).
 * A more useful error message is shown when an invalid command line option is
   used (Jordi Polo).
+* Add `format_docstrings { |str| }` config option. It can be used to
+  apply formatting rules to example group and example docstrings.
+  (Alex Tan)
 
 Bug fixes
 
