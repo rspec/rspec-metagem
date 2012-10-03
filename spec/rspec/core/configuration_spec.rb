@@ -94,6 +94,16 @@ module RSpec::Core
         end
       end
 
+      it "allows rspec-mocks to be configured with a provided block" do
+        mod = Module.new
+
+        RSpec::Mocks.configuration.should_receive(:add_stub_and_should_receive_to).with(mod)
+
+        config.mock_with :rspec do |c|
+          c.add_stub_and_should_receive_to mod
+        end
+      end
+
       context "with a module" do
         it "sets the mock_framework_adapter to that module" do
           mod = Module.new
