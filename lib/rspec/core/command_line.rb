@@ -19,11 +19,6 @@ module RSpec
         @configuration.error_stream = err
         @configuration.output_stream ||= out
         @options.configure(@configuration)
-
-        if @configuration.seed
-          @configuration.reporter.notify :seed, @configuration.seed
-        end
-
         @configuration.load_spec_files
         @world.announce_filters
 
