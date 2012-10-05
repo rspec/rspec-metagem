@@ -1,4 +1,3 @@
-require 'rspec/core'
 require 'rspec/core/deprecation'
 require 'rake'
 require 'rake/tasklib'
