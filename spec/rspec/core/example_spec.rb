@@ -242,12 +242,12 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       group.run
       results.should eq([
-        "around (before)",
-        "before",
-        "example",
-        "after",
-        "around (after)"
-      ])
+                          "around (before)",
+                          "before",
+                          "example",
+                          "after",
+                          "around (after)"
+                        ])
     end
 
     context "clearing ivars" do
@@ -349,7 +349,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         blah.should be(:success)
       end
     end
-      
+
     context "in before(:each)" do
       it "sets each example to pending" do
         group = RSpec::Core::ExampleGroup.describe do
@@ -386,6 +386,17 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.examples.first.should be_pending
       end
     end
+  end
 
+  describe "timing" do
+    it "uses RSpec::Core::Time as to not be affected by changes to time in examples" do
+      reporter = double(:reporter).as_null_object
+      group = RSpec::Core::ExampleGroup.describe
+      example = group.example
+      example.__send__ :start, reporter
+      Time.stub(:now => Time.new(2012, 10, 1))
+      example.__send__ :finish, reporter
+      expect(example.metadata[:execution_result][:run_time]).to be < 0.001
+    end
   end
 end
