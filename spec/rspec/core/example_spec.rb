@@ -396,7 +396,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       example.__send__ :start, reporter
       Time.stub(:now => Time.utc(2012, 10, 1))
       example.__send__ :finish, reporter
-      expect(example.metadata[:execution_result][:run_time]).to be < 0.001
+      expect(example.metadata[:execution_result][:run_time]).to be < 0.2
     end
   end
 end

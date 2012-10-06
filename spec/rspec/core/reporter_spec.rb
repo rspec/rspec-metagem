@@ -106,11 +106,14 @@ module RSpec::Core
         reporter = Reporter.new formatter
         reporter.start 1
         Time.stub(:now => Time.utc(2012, 10, 1))
+
         duration = nil
-        formatter.stub(:dump_summary) do |duration, _, _, _|
-          duration.should be < 0.001
+        formatter.stub(:dump_summary) do |dur, _, _, _|
+          duration = dur
         end
+
         reporter.finish 1234
+        duration.should be < 0.2
       end
     end
   end
