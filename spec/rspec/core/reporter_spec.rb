@@ -105,7 +105,7 @@ module RSpec::Core
         formatter = double(:formatter).as_null_object
         reporter = Reporter.new formatter
         reporter.start 1
-        Time.stub(:now => Time.new(2012, 10, 1))
+        Time.stub(:now => Time.utc(2012, 10, 1))
         duration = nil
         formatter.stub(:dump_summary) do |duration, _, _, _|
           duration.should be < 0.001
