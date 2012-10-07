@@ -78,6 +78,20 @@ module RSpec
   # @see RSpec.configure
   # @see Core::Configuration
   def self.configuration
+    if block_given?
+      RSpec.warn_deprecation <<-WARNING
+
+*****************************************************************
+DEPRECATION WARNING
+
+* RSpec.configuration with a block is deprecated and has no effect.
+* please use RSpec.configure with a block instead.
+
+Called from #{caller(0)[1]}
+*****************************************************************
+
+WARNING
+    end
     @configuration ||= RSpec::Core::Configuration.new
   end
 

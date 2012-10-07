@@ -7,6 +7,15 @@ module RSpec::Core
 
     let(:config) { Configuration.new }
 
+    describe "RSpec.configuration with a block" do
+      before { RSpec.stub(:warn_deprecation) }
+
+      it "is deprecated" do
+        RSpec.should_receive(:warn_deprecation)
+        RSpec.configuration {}
+      end
+    end
+
     describe "#load_spec_files" do
 
       it "loads files using load" do

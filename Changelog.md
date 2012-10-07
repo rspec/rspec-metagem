@@ -50,6 +50,8 @@ Deprecations
 
 * `share_as` is no longer needed. `shared_context` and/or
   `RSpec::SharedContext` provide better mechanisms (Sam Phippen).
+* Deprecate `RSpec.configuration` with a block (use `RSpec.configure`).
+
 
 ### 2.11.1 / 2012-07-18
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.0...v2.11.1)
