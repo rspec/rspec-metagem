@@ -44,6 +44,7 @@ Bug fixes
 * `rspec --init` no longer generates an incorrect warning about `--configure`
   being deprecated (Sam Phippen).
 * Fix pluralization of `1 seconds` (Odin Dutton)
+* Fix ANSICON url (Jarmo Pertman)
 
 Deprecations
 
