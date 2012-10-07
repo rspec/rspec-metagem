@@ -53,6 +53,11 @@ Breaking Changes for 3.0.0:
 * Rename `RSpec::Core::Configuration#warnings` to
   `RSpec::Core::Configuration#warnings?` since it's a boolean flag.
   (Myron Marston)
+* RSpec's global state is no longer reset after a spec run. This gives
+  more flexibility to alternate runners to decide when and if they
+  want the state reset. Alternate runners are now responsible for
+  calling this (or doing a similar reset) if they are going to run
+  the spec suite multiple times in the same process. (Sam Phippen)
 
 Enhancements:
 

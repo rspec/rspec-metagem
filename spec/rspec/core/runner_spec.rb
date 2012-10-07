@@ -95,13 +95,6 @@ module RSpec::Core
       let(:err) { StringIO.new }
       let(:out) { StringIO.new }
 
-      it "tells RSpec to reset" do
-        allow(CommandLine).to receive_messages(:new => double.as_null_object)
-        allow(RSpec.configuration).to receive_messages(:files_to_run => [], :warn => nil)
-        expect(RSpec).to receive(:reset)
-        RSpec::Core::Runner.run([], err, out)
-      end
-
       context "with --drb or -X" do
         before(:each) do
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
