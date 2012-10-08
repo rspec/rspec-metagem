@@ -21,6 +21,10 @@ Feature: before and after hooks
   `before` and `after` hooks can be defined directly in the example groups they
   should run in, or in a global RSpec.configure block.
 
+  Setting instance variables are not supported in `before(:suite)`.
+
+  Mocks are only supported in `before(:each)`.
+
   Scenario: define before(:each) block
     Given a file named "before_each_spec.rb" with:
       """
