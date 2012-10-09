@@ -17,7 +17,7 @@ Feature: --format option
   You can also specify an output target (STDOUT by default) by appending a
   filename to the argument:
 
-    $ rspec spec --format documentation:rspec.output.txt
+    $ rspec spec --format documentation --out rspec.txt
 
   `rspec --help` lists available formatters:
 
