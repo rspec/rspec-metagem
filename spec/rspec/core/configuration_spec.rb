@@ -332,6 +332,13 @@ module RSpec::Core
           config.files_to_run.should_not be_empty
         end
 
+        it "loads files in the default path when run with DRB (e.g., spork)" do
+          config.stub(:command) { 'spork' }
+          RSpec::Core::Runner.stub(:running_in_drb?) { true }
+          config.files_or_directories_to_run = []
+          config.files_to_run.should_not be_empty
+        end
+
         it "does not load files in the default path when run by ruby" do
           config.stub(:command) { 'ruby' }
           config.files_or_directories_to_run = []
