@@ -4,6 +4,8 @@
 Enhancements
 
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
+* Include backtraces in unexpected errors handled by `raise_error`
+  matcher (Myron Marston)
 
 Bug fixes
 
