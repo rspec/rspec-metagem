@@ -292,7 +292,7 @@ An error occurred #{context}
 
       def record_finished(status, results={})
         finished_at = RSpec::Core::Time.now
-        record results.merge(:status => status, :finished_at => finished_at, :run_time => (finished_at - execution_result[:started_at]))
+        record results.merge(:status => status, :finished_at => finished_at, :run_time => (finished_at - execution_result[:started_at]).to_f)
       end
 
       def run_before_each
