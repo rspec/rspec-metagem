@@ -364,4 +364,13 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       output.string.should =~ /, 100.0% of total time\):/
     end
   end
+  
+  describe "custom_colors" do
+    before { RSpec.configuration.stub(:color_enabled?) { true } }
+    it "uses the custom success color" do
+      RSpec.configuration.stub(:success_color).and_return(:cyan)
+      formatter.dump_summary(0,1,0,0)
+      output.string.should include("\e[36m")
+    end
+  end
 end

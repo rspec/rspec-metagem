@@ -1,4 +1,5 @@
 require 'rspec/core/formatters/base_formatter'
+require 'rspec/core/formatters/terminal_color'
 
 module RSpec
   module Core
@@ -33,11 +34,11 @@ module RSpec
         # @param [String] string
         def colorise_summary(summary)
           if failure_count > 0
-            red(summary)
+            custom_color(summary, RSpec.configuration.failure_color)
           elsif pending_count > 0
-            yellow(summary)
+            custom_color(summary, RSpec.configuration.pending_color)
           else
-            green(summary)
+            custom_color(summary, RSpec.configuration.success_color)
           end
         end
 
@@ -129,6 +130,10 @@ module RSpec
 
         def color(text, color_code)
           color_enabled? ? "#{color_code}#{text}\e[0m" : text
+        end
+        
+        def custom_color(text, color_code)
+          color_enabled? ? RSpec::Core::Formatters::TerminalColor.colorize(text, color_code) : text
         end
 
         def bold(text)

@@ -127,6 +127,11 @@ MESSAGE
 
       # Run all examples if none match the configured filters (default: `false`).
       add_setting :run_all_when_everything_filtered
+      
+      # Allow user to configure their own success/pending/failure colors
+      add_setting :success_color
+      add_setting :pending_color
+      add_setting :failure_color
 
       # Seed for random ordering (default: generated randomly each run).
       #
@@ -195,6 +200,9 @@ MESSAGE
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
+        @failure_color = 31
+        @success_color = 32
+        @pending_color = 33
       end
 
       # @private
