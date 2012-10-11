@@ -15,7 +15,7 @@ Feature: configure expectation framework
 
   Scenario: rspec-expectations can be used by default if nothing is configured
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec::Matchers.define :be_a_multiple_of do |factor|
         match do |actual|
           actual % factor == 0
@@ -31,7 +31,7 @@ Feature: configure expectation framework
 
   Scenario: configure rspec-expectations (explicitly)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.expect_with :rspec
       end
@@ -47,7 +47,7 @@ Feature: configure expectation framework
 
   Scenario: configure test/unit assertions (passing examples)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.expect_with :stdlib
       end
@@ -65,7 +65,7 @@ Feature: configure expectation framework
 
   Scenario: configure test/unit assertions (failing examples)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.expect_with :stdlib
       end
@@ -83,7 +83,7 @@ Feature: configure expectation framework
 
   Scenario: configure rspec/expecations AND test/unit assertions
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.expect_with :rspec, :stdlib
       end

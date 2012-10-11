@@ -19,7 +19,7 @@ Feature: mock with an alternative framework
 
   Scenario: Mock with alternate framework
     Given a file named "expector.rb" with:
-      """
+      """ruby
       class Expector
         class << self
           def expectors
@@ -80,7 +80,7 @@ Feature: mock with an alternative framework
       """
       
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       require File.expand_path("../expector", __FILE__)
 
       RSpec.configure do |config|

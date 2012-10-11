@@ -9,7 +9,7 @@ Feature: run with ruby command
 
   Scenario:
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       require 'rspec/autorun'
 
       describe 1 do

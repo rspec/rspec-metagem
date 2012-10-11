@@ -5,7 +5,7 @@ Feature: current example
 
   Scenario: access the example object from within an example
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "knows itself as example" do
           example.description.should eq("knows itself as example")

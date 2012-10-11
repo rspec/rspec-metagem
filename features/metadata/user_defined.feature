@@ -23,7 +23,7 @@ Feature: User-defined metadata
 
   Scenario: define group metadata using a hash
     Given a file named "define_group_metadata_with_hash_spec.rb" with:
-      """
+      """ruby
       describe "a group with user-defined metadata", :foo => 17 do
         it 'has access to the metadata in the example' do
           example.metadata[:foo].should eq(17)
@@ -49,7 +49,7 @@ Feature: User-defined metadata
 
   Scenario: define example metadata using a hash
     Given a file named "define_example_metadata_with_hash_spec.rb" with:
-      """
+      """ruby
       describe "a group with no user-defined metadata" do
         it 'has an example with metadata', :foo => 17 do
           example.metadata[:foo].should eq(17)
@@ -68,7 +68,7 @@ Feature: User-defined metadata
 
   Scenario: override user-defined metadata
     Given a file named "override_metadata_spec.rb" with:
-      """
+      """ruby
       describe "a group with user-defined metadata", :foo => 'bar' do
         it 'can be overridden by an example', :foo => 'bazz' do
           example.metadata[:foo].should == 'bazz'
@@ -86,7 +86,7 @@ Feature: User-defined metadata
 
   Scenario: less verbose metadata
     Given a file named "less_verbose_metadata_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.treat_symbols_as_metadata_keys_with_true_values = true
       end

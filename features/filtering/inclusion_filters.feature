@@ -9,7 +9,7 @@ Feature: inclusion filters
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_including :focus => true
       end
@@ -17,7 +17,7 @@ Feature: inclusion filters
 
   Scenario: focus on an example
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
 
       describe "something" do
@@ -34,7 +34,7 @@ Feature: inclusion filters
 
   Scenario: focus on a group
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
 
       describe "group 1", :focus => true do
@@ -57,7 +57,7 @@ Feature: inclusion filters
 
   Scenario: before/after(:all) hooks in unmatched example group are not run
     Given a file named "spec/before_after_all_inclusion_filter_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
 
       describe "group 1", :focus => true do
@@ -86,7 +86,7 @@ Feature: inclusion filters
 
   Scenario: Use symbols as metadata
     Given a file named "symbols_as_metadata_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.treat_symbols_as_metadata_keys_with_true_values = true
         c.filter_run :current_example

@@ -18,7 +18,7 @@ Feature: around hooks
 
   Scenario: use the example as a proc within the block passed to around()
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       class Database
         def self.transaction
           puts "open transaction"
@@ -47,7 +47,7 @@ Feature: around hooks
 
   Scenario: invoke the example using run()
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "around hook" do
         around(:each) do |example|
           puts "around each before"
@@ -70,7 +70,7 @@ Feature: around hooks
 
   Scenario: access the example metadata
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         around(:each) do |example|
           puts example.metadata[:foo]
@@ -86,7 +86,7 @@ Feature: around hooks
 
   Scenario: define a global around hook
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.around(:each) do |example|
           puts "around each before"
@@ -111,7 +111,7 @@ Feature: around hooks
 
   Scenario: before/after(:each) hooks are wrapped by the around hook
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "around filter" do
         around(:each) do |example|
           puts "around each before"
@@ -144,7 +144,7 @@ Feature: around hooks
 
   Scenario: before/after(:all) hooks are NOT wrapped by the around hook
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "around filter" do
         around(:each) do |example|
           puts "around each before"
@@ -177,7 +177,7 @@ Feature: around hooks
 
   Scenario: examples run by an around block are run in the configured context
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       module IncludedInConfigureBlock
         def included_in_configure_block; true; end
       end
@@ -201,7 +201,7 @@ Feature: around hooks
 
   Scenario: implicitly pending examples are detected as Not yet implemented
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "implicit pending example" do
         around(:each) do |example|
           example.run
@@ -222,7 +222,7 @@ Feature: around hooks
 
   Scenario: explicitly pending examples are detected as pending
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "explicit pending example" do
         around(:each) do |example|
           example.run
@@ -243,7 +243,7 @@ Feature: around hooks
 
   Scenario: multiple around hooks in the same scope
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "if there are multiple around hooks in the same scope" do
         around(:each) do |example|
           puts "first around hook before"
@@ -276,7 +276,7 @@ Feature: around hooks
 
   Scenario: around hooks in multiple scopes
     Given a file named "example_spec.rb" with:
-    """
+    """ruby
     describe "if there are around hooks in an outer scope" do
       around(:each) do |example|
         puts "first outermost around hook before"

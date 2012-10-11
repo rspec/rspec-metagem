@@ -5,7 +5,7 @@ Feature: :if and :unless
 
   Scenario: implicit :if filter
     Given a file named "implicit_if_filter_spec.rb" with:
-      """
+      """ruby
       describe ":if => true group", :if => true do
         it(":if => true group :if => true example", :if => true) { }
         it(":if => true group :if => false example", :if => false) { }
@@ -39,7 +39,7 @@ Feature: :if and :unless
 
   Scenario: implicit :unless filter
     Given a file named "implicit_unless_filter_spec.rb" with:
-      """
+      """ruby
       describe ":unless => true group", :unless => true do
         it(":unless => true group :unless => true example", :unless => true) { }
         it(":unless => true group :unless => false example", :unless => false) { }
@@ -73,7 +73,7 @@ Feature: :if and :unless
 
   Scenario: combining implicit filter with explicit inclusion filter
     Given a file named "explicit_inclusion_filter_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run :focus => true
       end
@@ -106,7 +106,7 @@ Feature: :if and :unless
 
   Scenario: combining implicit filter with explicit exclusion filter
     Given a file named "explicit_exclusion_filter_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
@@ -139,7 +139,7 @@ Feature: :if and :unless
 
   Scenario: override implicit :if and :unless exclusion filters
     Given a file named "override_implicit_filters_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :if => :exclude_me, :unless => :exclude_me_for_unless
       end

@@ -11,7 +11,7 @@ Feature: custom formatters
 
   Scenario: custom formatter
     Given a file named "custom_formatter.rb" with:
-      """
+      """ruby
       require "rspec/core/formatters/base_text_formatter"
 
       class CustomFormatter < RSpec::Core::Formatters::BaseTextFormatter
@@ -25,7 +25,7 @@ Feature: custom formatters
       end
       """
     And a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "my group" do
         specify "my example" do
         end

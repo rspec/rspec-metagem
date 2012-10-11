@@ -29,7 +29,7 @@ Feature: --format option
 
   Background:
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "does something that passes" do
           5.should eq(5)

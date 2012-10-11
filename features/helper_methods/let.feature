@@ -9,7 +9,7 @@ Feature: let and let!
 
   Scenario: use let to define memoized helper method
     Given a file named "let_spec.rb" with:
-      """
+      """ruby
       $count = 0
       describe "let" do
         let(:count) { $count += 1 }
@@ -29,7 +29,7 @@ Feature: let and let!
 
   Scenario: use let! to define a memoized helper method that is called in a before hook
     Given a file named "let_bang_spec.rb" with:
-      """
+      """ruby
       $count = 0
       describe "let!" do
         invocation_order = []

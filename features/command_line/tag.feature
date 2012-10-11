@@ -16,7 +16,7 @@ Feature: --tag option
 
   Background:
     Given a file named "tagged_spec.rb" with:
-      """
+      """ruby
       describe "group with tagged specs" do
         it "example I'm working now", :focus => true do; end
         it "special example with string", :type => 'special' do; end

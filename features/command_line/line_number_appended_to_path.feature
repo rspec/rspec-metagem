@@ -6,7 +6,7 @@ Feature: line number appended to file path
   
   Background:
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "outer group" do
 
         it "first example in outer group" do
@@ -28,7 +28,7 @@ Feature: line number appended to file path
       end
       """
     And a file named "example2_spec.rb" with:
-      """
+      """ruby
       describe "yet another group" do
         it "first example in second file" do
         end

@@ -17,7 +17,7 @@ Feature: basic structure (describe/it)
   
   Scenario: one group, one example
     Given a file named "sample_spec.rb" with:
-    """
+    """ruby
     describe "something" do
       it "does something" do
       end
@@ -32,7 +32,7 @@ Feature: basic structure (describe/it)
 
   Scenario: nested example groups (using context)
     Given a file named "nested_example_groups_spec.rb" with:
-    """
+    """ruby
     describe "something" do
       context "in one context" do
         it "does one thing" do

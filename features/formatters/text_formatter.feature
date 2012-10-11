@@ -6,7 +6,7 @@ Feature: text formatter
 
   Scenario: Backtrace formatting for failing specs in multiple files
     Given a file named "string_spec.rb" with:
-      """
+      """ruby
       describe String do
         it "has a failing example" do
           "foo".reverse.should eq("ofo")
@@ -14,7 +14,7 @@ Feature: text formatter
       end
       """
     And a file named "integer_spec.rb" with:
-      """
+      """ruby
       describe Integer do
         it "has a failing example" do
           (7 + 5).should eq(11)

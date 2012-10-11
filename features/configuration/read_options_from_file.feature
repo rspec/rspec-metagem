@@ -15,7 +15,7 @@ Feature: read command line configuration options from files
       --color
       """
     And a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "color_enabled" do
         context "when set with RSpec.configure" do
           before do
@@ -39,7 +39,7 @@ Feature: read command line configuration options from files
       --format documentation
       """
     And a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "formatter set in custom options file" do
         it "sets formatter" do
           RSpec.configuration.formatters.first.
@@ -60,7 +60,7 @@ Feature: read command line configuration options from files
       --color
       """
     And a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "custom options file" do
         it "causes .rspec to be ignored" do
           RSpec.configuration.color_enabled.should be_false
@@ -76,7 +76,7 @@ Feature: read command line configuration options from files
       --format <%= true ? 'documentation' : 'progress' %>
       """
     And a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "formatter" do
         it "is set to documentation" do
           RSpec.configuration.formatters.first.should be_an(RSpec::Core::Formatters::DocumentationFormatter)
