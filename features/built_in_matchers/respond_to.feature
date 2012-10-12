@@ -22,7 +22,7 @@ Feature: respond_to matcher
 
   Scenario: basic usage
     Given a file named "respond_to_matcher_spec.rb" with:
-      """
+      """ruby
       describe "a string" do
         it { should respond_to(:length) }
         it { should respond_to(:hash, :class, :to_s) }
@@ -53,7 +53,7 @@ Feature: respond_to matcher
 
   Scenario: specify arguments
     Given a file named "respond_to_matcher_argument_checking_spec.rb" with:
-      """
+      """ruby
       describe 7 do
         it { should respond_to(:zero?).with(0).arguments }
         it { should_not respond_to(:zero?).with(1).argument }

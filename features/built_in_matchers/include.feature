@@ -25,7 +25,7 @@ Feature: include matcher
 
   Scenario: array usage
     Given a file named "array_include_matcher_spec.rb" with:
-      """
+      """ruby
       describe [1, 3, 7] do
         it { should include(1) }
         it { should include(3) }
@@ -60,7 +60,7 @@ Feature: include matcher
 
   Scenario: string usage
     Given a file named "string_include_matcher_spec.rb" with:
-      """
+      """ruby
       describe "a string" do
         it { should include("str") }
         it { should include("a", "str", "ng") }
@@ -84,7 +84,7 @@ Feature: include matcher
 
   Scenario: hash usage
     Given a file named "hash_include_matcher_spec.rb" with:
-      """
+      """ruby
       describe Hash do
         subject { { :a => 7, :b => 5 } }
 

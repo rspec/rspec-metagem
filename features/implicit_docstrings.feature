@@ -6,7 +6,7 @@ Feature: implicit docstrings
 
   Scenario: run passing examples
     Given a file named "implicit_docstrings_spec.rb" with:
-    """
+    """ruby
     describe "Examples with no docstrings generate their own:" do
 
       specify { 3.should be < 5 }
@@ -26,7 +26,7 @@ Feature: implicit docstrings
 
   Scenario: run failing examples
     Given a file named "failing_implicit_docstrings_spec.rb" with:
-    """
+    """ruby
     describe "Failing examples with no descriptions" do
 
       # description is auto-generated as "should equal(5)" based on the last #should

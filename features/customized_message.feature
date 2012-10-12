@@ -6,7 +6,7 @@ Feature: customized message
   
   Scenario: customize failure message
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Array do
         context "when created with `new`" do
           it "is empty" do

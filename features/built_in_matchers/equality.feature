@@ -26,7 +26,7 @@ Feature: equality matchers
 
   Scenario: compare using eq (==)
     Given a file named "compare_using_eq.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "a string" do
@@ -50,7 +50,7 @@ Feature: equality matchers
 
   Scenario: compare using ==
     Given a file named "compare_using_==.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "a string" do
@@ -74,7 +74,7 @@ Feature: equality matchers
 
   Scenario: compare using eql (eql?)
     Given a file named "compare_using_eql.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "an integer" do
@@ -97,7 +97,7 @@ Feature: equality matchers
 
   Scenario: compare using equal (equal?)
     Given a file named "compare_using_equal.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "a string" do
@@ -121,7 +121,7 @@ Feature: equality matchers
 
   Scenario: compare using be (equal?)
     Given a file named "compare_using_be.rb" with:
-      """
+      """ruby
       require 'spec_helper'
 
       describe "a string" do

@@ -11,7 +11,7 @@ Feature: access running example
 
   Scenario: call method defined on example from matcher
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec::Matchers.define :bar do
         match do |_|
           foo == "foo"
@@ -33,7 +33,7 @@ Feature: access running example
 
   Scenario: call method _not_ defined on example from matcher
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec::Matchers.define :bar do
         match do |_|
           foo == "foo"

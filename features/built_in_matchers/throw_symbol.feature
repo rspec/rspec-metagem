@@ -16,7 +16,7 @@ Feature: throw_symbol matcher
 
   Scenario: basic usage
     Given a file named "throw_symbol_matcher_spec.rb" with:
-      """
+      """ruby
       describe "throw" do
         specify { expect { throw :foo    }.to     throw_symbol }
         specify { expect { throw :bar, 7 }.to     throw_symbol }
@@ -37,7 +37,7 @@ Feature: throw_symbol matcher
 
   Scenario: specify thrown symbol
     Given a file named "throw_symbol_matcher_spec.rb" with:
-      """
+      """ruby
       describe "throw symbol" do
         specify { expect { throw :foo    }.to     throw_symbol(:foo) }
         specify { expect { throw :foo, 7 }.to     throw_symbol(:foo) }
@@ -61,7 +61,7 @@ Feature: throw_symbol matcher
 
   Scenario: specify thrown symbol and argument
     Given a file named "throw_symbol_argument_matcher_spec.rb" with:
-      """
+      """ruby
       describe "throw symbol with argument" do
         specify { expect { throw :foo, 7 }.to     throw_symbol(:foo, 7) }
         specify { expect { throw :foo, 8 }.to_not throw_symbol(:foo, 7) }

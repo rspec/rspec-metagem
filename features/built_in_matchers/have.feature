@@ -25,7 +25,7 @@ Feature: have(n).items matcher
 
   Scenario: have(x).items on a collection
     Given a file named "have_items_spec.rb" with:
-      """
+      """ruby
       describe [1, 2, 3] do
         it { should have(3).items }
         it { should_not have(2).items }
@@ -61,7 +61,7 @@ Feature: have(n).items matcher
 
   Scenario: have(x).words on a String when String#words is defined
     Given a file named "have_words_spec.rb" with:
-      """
+      """ruby
       class String
         def words
           split(' ')

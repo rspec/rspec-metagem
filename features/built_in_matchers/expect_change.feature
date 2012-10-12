@@ -4,7 +4,7 @@ Feature: expect change
 
   Background:
     Given a file named "lib/counter.rb" with:
-      """
+      """ruby
       class Counter
         class << self
           def increment
@@ -21,7 +21,7 @@ Feature: expect change
   
   Scenario: expect change
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       require "counter"
 
       describe Counter, "#increment" do
@@ -41,7 +41,7 @@ Feature: expect change
 
   Scenario: expect no change
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       require "counter"
 
       describe Counter, "#increment" do

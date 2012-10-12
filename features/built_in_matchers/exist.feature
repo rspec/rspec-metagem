@@ -7,7 +7,7 @@ Feature: exist matcher
 
   Scenario: basic usage
     Given a file named "exist_matcher_spec.rb" with:
-      """
+      """ruby
       class Planet
         attr_reader :name
 

@@ -24,7 +24,7 @@ Feature: yield matchers
 
   Background:
     Given a file named "my_class.rb" with:
-      """
+      """ruby
       class MyClass
         def self.yield_once_with(*args)
           yield *args
@@ -41,7 +41,7 @@ Feature: yield matchers
 
   Scenario: yield_control matcher
     Given a file named "yield_control_spec.rb" with:
-      """
+      """ruby
       require './my_class'
 
       describe "yield_control matcher" do
@@ -61,7 +61,7 @@ Feature: yield matchers
 
   Scenario: yield_with_args matcher
     Given a file named "yield_with_args_spec.rb" with:
-      """
+      """ruby
       require './my_class'
 
       describe "yield_with_args matcher" do
@@ -94,7 +94,7 @@ Feature: yield matchers
 
   Scenario: yield_with_no_args matcher
     Given a file named "yield_with_no_args_spec.rb" with:
-      """
+      """ruby
       require './my_class'
 
       describe "yield_with_no_args matcher" do
@@ -117,7 +117,7 @@ Feature: yield matchers
 
   Scenario: yield_successive_args matcher
     Given a file named "yield_successive_args_spec.rb" with:
-      """
+      """ruby
       def array
         [1, 2, 3]
       end

@@ -9,7 +9,7 @@ Feature: end_with matcher
 
   Scenario: string usage
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "this string" do
         it { should end_with "string" }
         it { should_not end_with "stringy" }
@@ -27,7 +27,7 @@ Feature: end_with matcher
 
   Scenario: array usage
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe [0, 1, 2, 3, 4] do
         it { should end_with 4 }
         it { should end_with 3, 4 }

@@ -20,7 +20,7 @@ Feature: be_within matcher
 
   Scenario: basic usage
     Given a file named "be_within_matcher_spec.rb" with:
-      """
+      """ruby
       describe 27.5 do
         it { should be_within(0.5).of(27.9) }
         it { should be_within(0.5).of(28.0) }

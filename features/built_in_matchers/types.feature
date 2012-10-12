@@ -17,7 +17,7 @@ Feature: specify types of objects
 
   Scenario: be_(a_)kind_of matcher
     Given a file named "be_kind_of_matcher_spec.rb" with:
-      """
+      """ruby
       module MyModule; end
 
       class Fixnum
@@ -70,7 +70,7 @@ Feature: specify types of objects
 
   Scenario: be_(an_)instance_of matcher
     Given a file named "be_instance_of_matcher_spec.rb" with:
-      """
+      """ruby
       module MyModule; end
 
       class Fixnum
