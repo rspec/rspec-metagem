@@ -14,7 +14,7 @@ Feature: match matcher
 
   Scenario: string usage
     Given a file named "string_match_spec.rb" with:
-      """
+      """ruby
       describe "a string" do
         it { should match(/str/) }
         it { should_not match(/foo/) }
@@ -32,7 +32,7 @@ Feature: match matcher
 
   Scenario: regular expression usage
     Given a file named "regexp_match_spec.rb" with:
-      """
+      """ruby
       describe /foo/ do
         it { should match("food") }
         it { should_not match("drinks") }

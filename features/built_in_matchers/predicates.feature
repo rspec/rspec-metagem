@@ -38,7 +38,7 @@ Feature: predicate matchers
 
   Scenario: should be_zero (based on Fixnum#zero?)
     Given a file named "should_be_zero_spec.rb" with:
-      """
+      """ruby
       describe 0 do
         it { should be_zero }
       end
@@ -53,7 +53,7 @@ Feature: predicate matchers
 
   Scenario: should_not be_empty (based on Array#empty?)
     Given a file named "should_not_be_empty_spec.rb" with:
-      """
+      """ruby
       describe [1, 2, 3] do
         it { should_not be_empty }
       end
@@ -68,7 +68,7 @@ Feature: predicate matchers
 
    Scenario: should have_key (based on Hash#has_key?)
     Given a file named "should_have_key_spec.rb" with:
-      """
+      """ruby
       describe Hash do
         subject { { :foo => 7 } }
         it { should have_key(:foo) }
@@ -81,7 +81,7 @@ Feature: predicate matchers
 
    Scenario: should_not have_all_string_keys (based on custom #has_all_string_keys? method)
      Given a file named "should_not_have_all_string_keys_spec.rb" with:
-       """
+       """ruby
        class Hash
          def has_all_string_keys?
            keys.all? { |k| String === k }
@@ -106,7 +106,7 @@ Feature: predicate matchers
 
    Scenario: matcher arguments are passed on to the predicate method
      Given a file named "predicate_matcher_argument_spec.rb" with:
-       """
+       """ruby
        class Fixnum
          def multiple_of?(x)
            (self % x).zero?

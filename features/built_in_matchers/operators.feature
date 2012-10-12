@@ -26,7 +26,7 @@ Feature: operator matchers
 
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
-      """
+      """ruby
       describe 18 do
         it { should == 18 }
         it { should be < 20 }
@@ -87,7 +87,7 @@ Feature: operator matchers
 
   Scenario: string operator matchers
     Given a file named "string_operator_matchers_spec.rb" with:
-      """
+      """ruby
       describe "Strawberry" do
         it { should == "Strawberry" }
         it { should be < "Tomato" }
@@ -178,7 +178,7 @@ Feature: operator matchers
 
   Scenario: array operator matchers
     Given a file named "array_operator_matchers_spec.rb" with:
-      """
+      """ruby
       describe [1, 2, 3] do
         it { should == [1, 2, 3] }
         it { should_not == [1, 3, 2] }

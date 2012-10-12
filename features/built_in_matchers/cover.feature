@@ -11,7 +11,7 @@ Feature: cover matcher
 
   Scenario: range usage
     Given a file named "range_cover_matcher_spec.rb" with:
-      """
+      """ruby
       describe (1..10) do
         it { should cover(4) }
         it { should cover(6) }

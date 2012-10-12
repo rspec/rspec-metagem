@@ -48,7 +48,7 @@ Feature: raise_error matcher
 
   Scenario: match message with a string
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "matching error message with string" do
         it "matches the error message" do
           expect { raise StandardError, 'this message exactly'}.
@@ -61,7 +61,7 @@ Feature: raise_error matcher
 
   Scenario: match message with a regexp
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "matching error message with regex" do
         it "matches the error message" do
           expect { raise StandardError, "my message" }.
@@ -74,7 +74,7 @@ Feature: raise_error matcher
 
   Scenario: match type + message with string
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "matching error message with string" do
         it "matches the error message" do
           expect { raise StandardError, 'this message exactly'}.
@@ -87,7 +87,7 @@ Feature: raise_error matcher
 
   Scenario: match type + message with regexp
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "matching error message with regex" do
         it "matches the error message" do
           expect { raise StandardError, "my message" }.

@@ -6,7 +6,7 @@ Feature: define matcher
 
   Scenario: define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :be_a_multiple_of do |expected|
@@ -48,7 +48,7 @@ Feature: define matcher
 
   Scenario: overriding the failure_message_for_should
     Given a file named "matcher_with_failure_message_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :be_a_multiple_of do |expected|
@@ -72,7 +72,7 @@ Feature: define matcher
 
   Scenario: overriding the failure_message_for_should_not
     Given a file named "matcher_with_failure_for_message_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :be_a_multiple_of do |expected|
@@ -96,7 +96,7 @@ Feature: define matcher
 
   Scenario: overriding the description
     Given a file named "matcher_overriding_description_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :be_a_multiple_of do |expected|
@@ -124,7 +124,7 @@ Feature: define matcher
 
   Scenario: with no args
     Given a file named "matcher_with_no_args_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :have_7_fingers do
@@ -148,7 +148,7 @@ Feature: define matcher
 
   Scenario: with multiple args
     Given a file named "matcher_with_multiple_args_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :be_the_sum_of do |a,b,c,d|
@@ -168,7 +168,7 @@ Feature: define matcher
 
   Scenario: with helper methods
     Given a file named "matcher_with_internal_helper_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       RSpec::Matchers.define :have_same_elements_as do |sample|
@@ -193,7 +193,7 @@ Feature: define matcher
 
   Scenario: scoped in a module
     Given a file named "scoped_matcher_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       module MyHelpers
@@ -225,7 +225,7 @@ Feature: define matcher
 
   Scenario: scoped in an example group
     Given a file named "scoped_matcher_spec.rb" with:
-      """
+      """ruby
       require 'rspec/expectations'
 
       describe "group with matcher" do
@@ -259,7 +259,7 @@ Feature: define matcher
 
   Scenario: matcher with separate logic for should and should_not
     Given a file named "matcher_with_separate_should_not_logic_spec.rb" with:
-      """
+      """ruby
       RSpec::Matchers.define :contain do |*expected|
         match_for_should do |actual|
           expected.all? { |e| actual.include?(e) }
@@ -287,7 +287,7 @@ Feature: define matcher
 
   Scenario: use define_method to create a helper method with access to matcher params
     Given a file named "define_method_spec.rb" with:
-      """
+      """ruby
       RSpec::Matchers.define :be_a_multiple_of do |expected|
         define_method :is_multiple? do |actual|
           actual % expected == 0
@@ -312,7 +312,7 @@ Feature: define matcher
 
   Scenario: include a module with helper methods in the matcher
     Given a file named "include_module_spec.rb" with:
-      """
+      """ruby
       module MatcherHelpers
         def is_multiple?(actual, expected)
           actual % expected == 0

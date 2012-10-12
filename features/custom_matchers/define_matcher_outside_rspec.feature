@@ -6,7 +6,7 @@ Feature: define matcher outside rspec
 
   Scenario: define a matcher with default messages
     Given a file named "test_multiples.rb" with:
-      """
+      """ruby
       require "rspec/expectations"
       require "test/unit"
       

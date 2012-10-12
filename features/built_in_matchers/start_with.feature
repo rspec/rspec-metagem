@@ -9,7 +9,7 @@ Feature: start_with matcher
 
   Scenario: with a string
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "this string" do
         it { should start_with "this" }
         it { should_not start_with "that" }
@@ -27,7 +27,7 @@ Feature: start_with matcher
 
   Scenario: with an array
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe [0, 1, 2, 3, 4] do
         it { should start_with 0 }
         it { should start_with(0, 1)}

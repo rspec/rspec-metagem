@@ -13,7 +13,7 @@ Feature: satisfy matcher
 
   Scenario: basic usage
     Given a file named "satisfy_matcher_spec.rb" with:
-      """
+      """ruby
       describe 10 do
         it { should satisfy { |v| v > 5 } }
         it { should_not satisfy { |v| v > 15 } }

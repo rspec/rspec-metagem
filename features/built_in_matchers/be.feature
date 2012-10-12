@@ -9,7 +9,7 @@ Feature: "be" matchers
 
   Scenario: be_true matcher
     Given a file named "be_true_spec.rb" with:
-      """
+      """ruby
       describe "be_true matcher" do
         specify { true.should be_true }
         specify { 7.should be_true }
@@ -55,7 +55,7 @@ Feature: "be" matchers
 
   Scenario: be_false matcher
     Given a file named "be_false_spec.rb" with:
-      """
+      """ruby
       describe "be_false matcher" do
         specify { nil.should be_false }
         specify { false.should be_false }
@@ -101,7 +101,7 @@ Feature: "be" matchers
 
   Scenario: be_nil matcher
     Given a file named "be_nil_spec.rb" with:
-      """
+      """ruby
       describe "be_nil matcher" do
         specify { nil.should be_nil }
         specify { false.should_not be_nil }
@@ -147,7 +147,7 @@ Feature: "be" matchers
 
   Scenario: be matcher
     Given a file named "be_spec.rb" with:
-      """
+      """ruby
       describe "be_matcher" do
         specify { true.should be }
         specify { 7.should be }

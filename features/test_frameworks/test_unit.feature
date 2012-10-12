@@ -7,7 +7,7 @@ Feature: Test::Unit integration
 
   Scenario: Basic Test::Unit usage
     Given a file named "rspec_expectations_test.rb" with:
-      """
+      """ruby
       require 'test/unit'
       require 'rspec/expectations'
 
