@@ -6,7 +6,7 @@ Feature: run all when everything filtered
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run :focus => true
         c.run_all_when_everything_filtered = true
@@ -15,7 +15,7 @@ Feature: run all when everything filtered
 
   Scenario: no examples match filter (runs all examples)
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
 
       describe "group 1" do

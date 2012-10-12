@@ -9,7 +9,7 @@ Feature: explicit subject
 
   Scenario: subject in top level group
     Given a file named "top_level_subject_spec.rb" with:
-      """
+      """ruby
       describe Array, "with some elements" do
         subject { [1,2,3] }
         it "should have the prescribed elements" do
@@ -22,7 +22,7 @@ Feature: explicit subject
 
   Scenario: subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
-      """
+      """ruby
       describe Array do
         subject { [1,2,3] }
         describe "with some elements" do
@@ -37,7 +37,7 @@ Feature: explicit subject
 
   Scenario: access subject from before block
     Given a file named "top_level_subject_spec.rb" with:
-      """
+      """ruby
       describe Array, "with some elements" do
         subject { [] }
         before { subject.push(1,2,3) }
@@ -51,7 +51,7 @@ Feature: explicit subject
 
   Scenario: invoke helper method from subject block
     Given a file named "helper_subject_spec.rb" with:
-      """
+      """ruby
       describe Array do
         def prepared_array; [1,2,3] end
         subject { prepared_array }
@@ -67,7 +67,7 @@ Feature: explicit subject
 
   Scenario: subject block is invoked at most once per example
     Given a file named "nil_subject_spec.rb" with:
-      """
+      """ruby
       describe Array do
         describe "#[]" do
           context "with index out of bounds" do

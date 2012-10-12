@@ -6,13 +6,13 @@ Feature: fail fast
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
-      """
+      """ruby
       RSpec.configure {|c| c.fail_fast = true}
       """
 
   Scenario: fail_fast with no failures (runs all examples)
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "passes" do
         end
@@ -26,7 +26,7 @@ Feature: fail fast
 
   Scenario: fail_fast with first example failing (only runs the one example)
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
       describe "something" do
         it "fails" do
@@ -42,7 +42,7 @@ Feature: fail fast
 
   Scenario: fail_fast with multiple files, second example failing (only runs the first two examples)
     Given a file named "spec/example_1_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
       describe "something" do
         it "passes" do
@@ -60,7 +60,7 @@ Feature: fail fast
       end
       """
     And a file named "spec/example_2_spec.rb" with:
-      """
+      """ruby
       require "spec_helper"
       describe "something" do
         it "passes" do

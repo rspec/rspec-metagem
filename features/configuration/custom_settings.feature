@@ -4,7 +4,7 @@ Feature: custom settings
 
   Scenario: simple setting (with defaults)
     Given a file named "additional_setting_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.add_setting :custom_setting
       end
@@ -34,7 +34,7 @@ Feature: custom settings
 
   Scenario: default to true
     Given a file named "additional_setting_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.add_setting :custom_setting, :default => true
       end
@@ -60,7 +60,7 @@ Feature: custom settings
 
   Scenario: overridden in a subsequent RSpec.configure block
     Given a file named "additional_setting_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.add_setting :custom_setting
       end

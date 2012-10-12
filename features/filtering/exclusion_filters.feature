@@ -8,7 +8,7 @@ Feature: exclusion filters
   
   Scenario: exclude an example
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         # declare an exclusion filter
         c.filter_run_excluding :broken => true
@@ -29,7 +29,7 @@ Feature: exclusion filters
 
   Scenario: exclude a group
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
@@ -54,7 +54,7 @@ Feature: exclusion filters
   
   Scenario: exclude multiple groups
     Given a file named "spec/sample_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
@@ -88,7 +88,7 @@ Feature: exclusion filters
 
   Scenario: before/after(:all) hooks in excluded example group are not run
     Given a file named "spec/before_after_all_exclusion_filter_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
@@ -119,7 +119,7 @@ Feature: exclusion filters
 
   Scenario: Use symbols as metadata
     Given a file named "symbols_as_metadata_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.treat_symbols_as_metadata_keys_with_true_values = true
         c.filter_run_excluding :broken

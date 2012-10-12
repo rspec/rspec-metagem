@@ -5,7 +5,7 @@ Feature: mock with rspec
 
   Scenario: passing message expectation
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :rspec
       end
@@ -23,7 +23,7 @@ Feature: mock with rspec
 
   Scenario: failing message expecation
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :rspec
       end
@@ -40,7 +40,7 @@ Feature: mock with rspec
 
   Scenario: failing message expectation in pending block (remains pending)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :rspec
       end
@@ -60,7 +60,7 @@ Feature: mock with rspec
 
   Scenario: passing message expectation in pending block (fails)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :rspec
       end
@@ -82,7 +82,7 @@ Feature: mock with rspec
 
   Scenario: accessing RSpec.configuration.mock_framework.framework_name 
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :rspec
       end

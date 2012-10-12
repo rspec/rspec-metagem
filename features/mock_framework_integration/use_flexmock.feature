@@ -4,7 +4,7 @@ Feature: mock with flexmock
 
   Scenario: passing message expectation
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :flexmock
       end
@@ -22,7 +22,7 @@ Feature: mock with flexmock
 
   Scenario: failing message expecation
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :flexmock
       end
@@ -39,7 +39,7 @@ Feature: mock with flexmock
 
   Scenario: failing message expectation in pending block (remains pending)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :flexmock
       end
@@ -59,7 +59,7 @@ Feature: mock with flexmock
 
   Scenario: passing message expectation in pending block (fails)
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :flexmock
       end
@@ -81,7 +81,7 @@ Feature: mock with flexmock
 
   Scenario: accessing RSpec.configuration.mock_framework.framework_name 
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.mock_framework = :flexmock
       end

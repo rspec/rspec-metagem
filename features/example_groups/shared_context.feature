@@ -6,7 +6,7 @@ Feature: shared context
 
   Background:
     Given a file named "shared_stuff.rb" with:
-      """
+      """ruby
       shared_context "shared stuff", :a => :b do
         before { @some_var = :some_value }
         def shared_method
@@ -21,7 +21,7 @@ Feature: shared context
   
   Scenario: declare shared context and include it with include_context
     Given a file named "shared_context_example.rb" with:
-      """
+      """ruby
       require "./shared_stuff.rb"
 
       describe "group that includes a shared context using 'include_context'" do
@@ -49,7 +49,7 @@ Feature: shared context
 
   Scenario: declare shared context and include it with metadata
     Given a file named "shared_context_example.rb" with:
-      """
+      """ruby
       require "./shared_stuff.rb"
 
       describe "group that includes a shared context using metadata", :a => :b do

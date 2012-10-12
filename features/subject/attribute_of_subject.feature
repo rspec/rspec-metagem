@@ -23,7 +23,7 @@ Feature: attribute of subject
 
   Scenario: specify value of an attribute
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Array do
         context "when first created" do
           its(:size) { should eq(0) }
@@ -41,7 +41,7 @@ Feature: attribute of subject
 
   Scenario: specify value of a nested attribute
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       class Person
         attr_reader :phone_numbers
         def initialize
@@ -72,7 +72,7 @@ Feature: attribute of subject
 
   Scenario: specify value of an attribute of a hash
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Hash do
         context "with two items" do
           subject do
@@ -88,7 +88,7 @@ Feature: attribute of subject
 
   Scenario: specify value for key in a hash
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Hash do
         context "with keys :one and 'two'" do
           subject do
@@ -105,7 +105,7 @@ Feature: attribute of subject
 
   Scenario: specify value for key in a hash-like object
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       require 'matrix'
 
       describe Matrix do

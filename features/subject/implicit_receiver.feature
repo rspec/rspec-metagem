@@ -5,7 +5,7 @@ Feature: implicit receiver
 
   Scenario: implicit subject
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Array do
         describe "when first created" do
           it { should be_empty }
@@ -17,7 +17,7 @@ Feature: implicit receiver
 
   Scenario: explicit subject
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe Array do
         describe "with 3 items" do
           subject { [1,2,3] }

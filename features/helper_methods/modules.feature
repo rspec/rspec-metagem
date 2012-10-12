@@ -15,7 +15,7 @@ Feature: Define helper methods in a module
 
   Background:
     Given a file named "helpers.rb" with:
-      """
+      """ruby
       module Helpers
         def help
           :available
@@ -25,7 +25,7 @@ Feature: Define helper methods in a module
 
   Scenario: include a module in all example groups
     Given a file named "include_module_spec.rb" with:
-      """
+      """ruby
       require './helpers'
 
       RSpec.configure do |c|
@@ -43,7 +43,7 @@ Feature: Define helper methods in a module
 
   Scenario: extend a module in all example groups
     Given a file named "extend_module_spec.rb" with:
-      """
+      """ruby
       require './helpers'
 
       RSpec.configure do |c|
@@ -64,7 +64,7 @@ Feature: Define helper methods in a module
 
   Scenario: include a module in only some example groups
     Given a file named "include_module_in_some_groups_spec.rb" with:
-      """
+      """ruby
       require './helpers'
 
       RSpec.configure do |c|
@@ -88,7 +88,7 @@ Feature: Define helper methods in a module
 
   Scenario: extend a module in only some example groups
     Given a file named "extend_module_in_only_some_groups_spec.rb" with:
-      """
+      """ruby
       require './helpers'
 
       RSpec.configure do |c|
@@ -118,7 +118,7 @@ Feature: Define helper methods in a module
 
   Scenario: use symbols as metadata
     Given a file named "symbols_as_metadata_spec.rb" with:
-      """
+      """ruby
       require './helpers'
 
       RSpec.configure do |c|

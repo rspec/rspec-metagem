@@ -8,7 +8,7 @@ Feature: pattern option
 
   Scenario: default pattern
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "addition" do
         it "adds things" do
           (1 + 2).should eq(3)
@@ -20,7 +20,7 @@ Feature: pattern option
 
   Scenario: override the default pattern on the command line
     Given a file named "spec/example.spec" with:
-      """
+      """ruby
       describe "addition" do
         it "adds things" do
           (1 + 2).should eq(3)

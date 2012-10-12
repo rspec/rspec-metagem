@@ -13,21 +13,21 @@ Feature: --example option
 
   Background:
     Given a file named "first_spec.rb" with:
-      """
+      """ruby
       describe "first group" do
         it "first example in first group" do; end
         it "second example in first group" do; end
       end
       """
     And a file named "second_spec.rb" with:
-      """
+      """ruby
       describe "second group" do
         it "first example in second group" do; end
         it "second example in second group" do; end
       end
       """
     And a file named "third_spec.rb" with:
-      """
+      """ruby
       describe "third group" do
         it "first example in third group" do; end
         context "nested group" do
@@ -37,7 +37,7 @@ Feature: --example option
       end
       """
     And a file named "fourth_spec.rb" with:
-      """
+      """ruby
       describe Array do
         describe "#length" do
           it "is the number of items" do

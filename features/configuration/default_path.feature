@@ -13,7 +13,7 @@ Feature: default_path
 
   Scenario: run `rspec` with default default_path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "passes" do
         end
@@ -21,14 +21,14 @@ Feature: default_path
       """
     When I run `rspec`
     Then the output should contain "1 example, 0 failures"
-    
+
   Scenario: run `rspec` with customized default_path
     Given a file named ".rspec" with:
       """
       --default_path behavior
       """
     Given a file named "behavior/example_spec.rb" with:
-      """      
+      """ruby
       describe "an example" do
         it "passes" do
         end

@@ -17,7 +17,7 @@ Feature: filters
 
   Scenario: filter `before(:each)` hooks using arbitrary metadata
     Given a file named "filter_before_each_hooks_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.before(:each, :foo => :bar) do
           invoked_hooks << :before_each_foo_bar
@@ -49,7 +49,7 @@ Feature: filters
 
   Scenario: filter `after(:each)` hooks using arbitrary metadata
     Given a file named "filter_after_each_hooks_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.after(:each, :foo => :bar) do
           raise "boom!"
@@ -79,7 +79,7 @@ Feature: filters
 
   Scenario: filter around(:each) hooks using arbitrary metadata
     Given a file named "filter_around_each_hooks_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.around(:each, :foo => :bar) do |example|
           order << :before_around_each_foo_bar
@@ -115,7 +115,7 @@ Feature: filters
 
   Scenario: filter before(:all) hooks using arbitrary metadata
     Given a file named "filter_before_all_hooks_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |config|
         config.before(:all, :foo => :bar) { @hook = :before_all_foo_bar }
       end
@@ -151,7 +151,7 @@ Feature: filters
 
   Scenario: filter after(:all) hooks using arbitrary metadata
     Given a file named "filter_after_all_hooks_spec.rb" with:
-      """
+      """ruby
       example_msgs = []
 
       RSpec.configure do |config|
@@ -195,7 +195,7 @@ Feature: filters
 
   Scenario: Use symbols as metadata
     Given a file named "less_verbose_metadata_filter.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.treat_symbols_as_metadata_keys_with_true_values = true
         c.before(:each, :before_each) { puts "before each" }

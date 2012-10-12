@@ -4,7 +4,7 @@ Feature: rake task
 
   Scenario: default options with passing spec (prints command and exit status is 0)
     Given a file named "Rakefile" with:
-      """
+      """ruby
       require 'rspec/core/rake_task'
 
       RSpec::Core::RakeTask.new(:spec)
@@ -12,7 +12,7 @@ Feature: rake task
       task :default => :spec
       """
     And a file named "spec/thing_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "does something" do
           # pass
@@ -25,7 +25,7 @@ Feature: rake task
 
   Scenario: default options with failing spec (exit status is 1)
     Given a file named "Rakefile" with:
-      """
+      """ruby
       require 'rspec/core/rake_task'
 
       RSpec::Core::RakeTask.new(:spec)
@@ -33,7 +33,7 @@ Feature: rake task
       task :default => :spec
       """
     And a file named "spec/thing_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "does something" do
           fail
@@ -45,7 +45,7 @@ Feature: rake task
       
   Scenario: fail_on_error = false with failing spec (exit status is 0)
     Given a file named "Rakefile" with:
-      """
+      """ruby
       require 'rspec/core/rake_task'
 
       RSpec::Core::RakeTask.new(:spec) do |t|
@@ -55,7 +55,7 @@ Feature: rake task
       task :default => :spec
       """
     And a file named "spec/thing_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "does something" do
           fail
@@ -67,7 +67,7 @@ Feature: rake task
 
   Scenario: rspec_opts is specified in order to pass args to the rspec command
     Given a file named "Rakefile" with:
-      """
+      """ruby
       require 'rspec/core/rake_task'
 
       RSpec::Core::RakeTask.new(:spec) do |t|
@@ -75,7 +75,7 @@ Feature: rake task
       end
       """
     And a file named "spec/thing_spec.rb" with:
-      """
+      """ruby
       describe "something" do
         it "has a tag", :fast => true do
           # pass

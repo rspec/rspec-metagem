@@ -5,7 +5,7 @@ Feature: pending examples
 
   Scenario: pending implementation
     Given a file named "example_without_block_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "is a pending example"
       end
@@ -18,7 +18,7 @@ Feature: pending examples
 
   Scenario: pending any arbitrary reason, with no block
     Given a file named "pending_without_block_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
@@ -39,7 +39,7 @@ Feature: pending examples
 
   Scenario: pending any arbitrary reason, with a block that fails
     Given a file named "pending_with_failing_block_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished") do
@@ -61,7 +61,7 @@ Feature: pending examples
 
   Scenario: pending any arbitrary reason, with a block that passes
     Given a file named "pending_with_passing_block_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished") do
@@ -79,7 +79,7 @@ Feature: pending examples
 
   Scenario: temporarily pending by prefixing `it`, `specify`, or `example` with an x
     Given a file named "temporarily_pending_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         xit "is pending using xit" do
         end
@@ -110,7 +110,7 @@ Feature: pending examples
 
   Scenario: example with no docstring and pending method using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "checks something" do
           (3+4).should eq(7)
@@ -132,7 +132,7 @@ Feature: pending examples
 
   Scenario: pending with no docstring using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         it "checks something" do
           (3+4).should eq(7)
@@ -154,7 +154,7 @@ Feature: pending examples
 
   Scenario: conditionally pending examples
     Given a file named "conditionally_pending_spec.rb" with:
-      """
+      """ruby
       describe "a failing spec" do
         def run_test; raise "failure"; end
 

@@ -8,7 +8,7 @@ Feature: alias_example_to
 
   Scenario: Use alias_example_to to define focused example
     Given a file named "alias_example_to_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.alias_example_to :fit, :focused => true
         c.filter_run :focused => true
@@ -28,7 +28,7 @@ Feature: alias_example_to
 
   Scenario: use symbols as metadata
     Given a file named "use_symbols_as_metadata_spec.rb" with:
-      """
+      """ruby
       RSpec.configure do |c|
         c.treat_symbols_as_metadata_keys_with_true_values = true
         c.alias_example_to :fit, :focused

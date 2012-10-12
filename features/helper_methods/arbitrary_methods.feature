@@ -7,7 +7,7 @@ Feature: arbitrary helper methods
 
   Scenario: use a method defined in the same group
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         def help
           :available
@@ -23,7 +23,7 @@ Feature: arbitrary helper methods
 
   Scenario: use a method defined in a parent group
     Given a file named "example_spec.rb" with:
-      """
+      """ruby
       describe "an example" do
         def help
           :available
