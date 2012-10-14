@@ -19,6 +19,13 @@ Spork.prefork do
   require 'autotest/rspec2'
   require 'aruba/api'
 
+  if RUBY_PLATFORM == 'java'
+    # Works around https://jira.codehaus.org/browse/JRUBY-5678
+    require 'fileutils'
+    ENV['TMPDIR'] = File.expand_path('../../tmp', __FILE__)
+    FileUtils.mkdir_p(ENV['TMPDIR'])
+  end
+
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
   class NullObject
