@@ -56,6 +56,10 @@ actual.should == expected   # passes if actual == expected
 actual.should eql(expected) # passes if actual.eql?(expected)
 ```
 
+Note: we recommend the `eq` matcher over `==` to avoid Ruby's "== in a
+useless context" warning when the `==` matcher is used anywhere but the
+last statement of an example.
+
 ### Identity
 
 ```ruby
@@ -76,8 +80,8 @@ actual.should be_within(delta).of(expected)
 ### Regular expressions
 
 ```ruby
-actual.should =~ /expression/
 actual.should match(/expression/)
+actual.should =~ /expression/
 ```
 
 ### Types/classes
