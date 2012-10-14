@@ -16,13 +16,13 @@ command_prefix="ruby -r./bundle/bundler/setup.rb -S $path_to_rspec_exe"
 
 echo "Running all..."
 
-print_and_run "$command_prefix spec --format progress --profile"
+print_and_run "$command_prefix spec -b --format progress --profile"
 
 echo
 echo "--------------------------------------------------------------------"
 echo
 
 for file in `find spec -iname '*_spec.rb'`; do
-  print_and_run "$command_prefix $file --format progress"
+  print_and_run "$command_prefix $file -b --format progress"
 done
 

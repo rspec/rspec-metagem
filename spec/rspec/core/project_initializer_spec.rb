@@ -1,7 +1,8 @@
 require "spec_helper"
 
 module RSpec::Core
-  describe ProjectInitializer, :fakefs do
+  describe ProjectInitializer, :isolated_directory => true do
+
     describe "#run" do
       context "with no args" do
         let(:command_line_config) { ProjectInitializer.new }

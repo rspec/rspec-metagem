@@ -1,7 +1,7 @@
 require "spec_helper"
 require 'rspec/core/drb_options'
 
-describe RSpec::Core::DrbOptions, :fakefs do
+describe RSpec::Core::DrbOptions, :isolated_directory => true do
   include ConfigOptionsHelper
 
   describe "#drb_argv" do

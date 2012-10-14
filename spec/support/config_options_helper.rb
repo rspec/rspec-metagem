@@ -1,5 +1,3 @@
-require 'fakefs/safe'
-
 module ConfigOptionsHelper
   extend RSpec::SharedContext
 

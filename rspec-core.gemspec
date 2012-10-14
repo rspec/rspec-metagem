@@ -29,7 +29,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "ZenTest",  "4.6.2"
   s.add_development_dependency "nokogiri", "1.5.2"
-  s.add_development_dependency "fakefs",   "0.4.0"
   s.add_development_dependency "syntax",   "1.0.0"
 
   s.add_development_dependency "mocha",    "~> 0.10.5"
