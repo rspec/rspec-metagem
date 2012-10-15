@@ -6,10 +6,17 @@ module RSpec
   module Core
     module Formatters
       describe HtmlFormatter, :if => RUBY_VERSION =~ /^(1.8.7|1.9.2|1.9.3)$/ do
-        let(:jruby?) { ::RUBY_PLATFORM == 'java' }
-        let(:root)   { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
-        let(:suffix) { jruby? ? '-jruby' : '' }
+        let(:suffix) {
+          if ::RUBY_PLATFORM == 'java'
+            "-jruby"
+          elsif defined?(Rubinius)
+            "-rbx"
+          else
+            ""
+          end
+        }
 
+        let(:root) { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
         let(:expected_file) do
           "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
         end
@@ -72,7 +79,7 @@ module RSpec
               actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
               File.expand_path(actual_path).should eq(File.expand_path(expected_path))
               actual_line_number.should eq(expected_line_number)
-              actual_suffix.should eq(expected_suffix) if expected_suffix
+              actual_suffix.should eq(expected_suffix)
             end
           end
         end
