@@ -107,7 +107,7 @@ Feature: shared examples
         it "adds objects to the end of the collection" do
           collection << 1
           collection << 2
-          collection.to_a.should eq([1,2])
+          expect(collection.to_a).to match_array([1, 2])
         end
       end
     end
