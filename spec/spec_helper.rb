@@ -17,7 +17,9 @@ end
 Spork.prefork do
   require 'rspec/autorun'
   require 'autotest/rspec2'
+
   require 'aruba/api'
+  require 'aruba/jruby'
 
   if RUBY_PLATFORM == 'java'
     # Works around https://jira.codehaus.org/browse/JRUBY-5678
