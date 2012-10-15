@@ -72,7 +72,7 @@ module RSpec
               actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
               File.expand_path(actual_path).should eq(File.expand_path(expected_path))
               actual_line_number.should eq(expected_line_number)
-              actual_suffix.should eq(expected_suffix)
+              actual_suffix.should eq(expected_suffix) if expected_suffix
             end
           end
         end
