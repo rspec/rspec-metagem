@@ -8,7 +8,11 @@ module RSpecHelpers
       $SAFE = 3
       yield
     end.join
-    $SAFE.should == 0  # just to be safe ;-)
+
+    # $SAFE is not supported on Rubinius
+    unless defined?(Rubinius)
+      expect($SAFE).to eql 0 # $SAFE should not have changed in this thread.
+    end
   end
 
 end
