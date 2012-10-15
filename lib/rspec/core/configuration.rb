@@ -1020,6 +1020,7 @@ MESSAGE
       def order_and_seed_from_seed(value)
         order_groups_and_examples(&RANDOM_ORDERING)
         @order, @seed = 'rand', value.to_i
+        [@order, @seed]
       end
 
       def set_order_and_seed(hash)
