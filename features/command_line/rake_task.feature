@@ -20,7 +20,7 @@ Feature: rake task
       end
       """
     When I run `rake`
-    Then the output should contain "ruby -S rspec"
+    Then the output should match /(ruby|rbx) -S rspec/
     Then the exit status should be 0
 
   Scenario: default options with failing spec (exit status is 1)
@@ -88,4 +88,7 @@ Feature: rake task
       """
     When I run `rake spec`
     Then the exit status should be 0
-    Then the output should contain "ruby -S rspec ./spec/thing_spec.rb --tag fast"
+    Then the output should match:
+      """
+      (ruby|rbx) -S rspec ./spec/thing_spec.rb --tag fast
+      """
