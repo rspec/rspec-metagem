@@ -4,8 +4,12 @@ module RSpec
   module Core
     module Formatters
 
+      # Base for all of RSpec's built-in formatters. See RSpec::Core::Formatters::BaseFormatter
+      # to learn more about all of the methods called by the reporter.
+      #
+      # @see RSpec::Core::Formatters::BaseFormatter
+      # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
-
         def message(message)
           output.puts message
         end

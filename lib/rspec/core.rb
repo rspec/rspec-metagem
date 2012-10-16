@@ -27,6 +27,7 @@ require_rspec['core/subject']
 require_rspec['core/let']
 require_rspec['core/metadata']
 require_rspec['core/pending']
+require_rspec['core/formatters']
 
 require_rspec['core/world']
 require_rspec['core/configuration']
