@@ -54,10 +54,9 @@ describe RSpec::Core::Formatters::BaseFormatter do
       it "reports the filename and that it was unable to find the matching line" do
         exception = mock(:Exception, :backtrace => [ "#{__FILE__}:10000000" ])
         example = mock(:Example, :file_path => __FILE__)
-        safely do
-          msg = formatter.send(:read_failed_line, exception, example)
-          expect(msg).to include("Unable to find matching line")
-        end
+
+        msg = formatter.send(:read_failed_line, exception, example)
+        expect(msg).to include("Unable to find matching line")
       end
     end
 
