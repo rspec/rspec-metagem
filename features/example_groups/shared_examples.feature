@@ -10,6 +10,7 @@ Feature: shared examples
       include_examples "name"      # include the examples in the current context
       it_behaves_like "name"       # include the examples in a nested context
       it_should_behave_like "name" # include the examples in a nested context
+      matching metadata            # include the examples in the current context
 
   WARNING: Files containing shared groups must be loaded before the files that
   use them.  While there are conventions to handle this, RSpec does _not_ do
@@ -202,3 +203,20 @@ Feature: shared examples
         has behavior: sortability
           responds to <=>
       """
+
+  Scenario: Sharing metadata automatically includes shared example groups
+    Given a file named "shared_example_metadata_spec.rb" with:
+      """ruby
+      shared_examples "shared stuff", :a => :b do
+        it 'runs wherever the metadata is shared' do
+        end
+      end
+
+      describe String, :a => :b do
+      end
+      """
+      When I run `rspec shared_example_metadata_spec.rb`
+      Then the output should contain:
+        """
+        1 example, 0 failures
+        """
