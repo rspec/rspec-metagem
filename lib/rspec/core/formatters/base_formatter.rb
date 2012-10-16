@@ -131,7 +131,8 @@ module RSpec
           file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
 
           if File.exist?(file_path)
-            File.readlines(file_path)[line_number.to_i - 1]
+            File.readlines(file_path)[line_number.to_i - 1] ||
+              "Unable to find matching line in #{file_path}"
           else
             "Unable to find #{file_path} to read failed line"
           end

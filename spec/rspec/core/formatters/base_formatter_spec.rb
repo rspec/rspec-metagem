@@ -50,6 +50,17 @@ describe RSpec::Core::Formatters::BaseFormatter do
       end
     end
 
+    context "when ruby reports a bogus line number in the stack trace" do
+      it "reports the filename and that it was unable to find the matching line" do
+        exception = mock(:Exception, :backtrace => [ "#{__FILE__}:10000000" ])
+        example = mock(:Example, :file_path => __FILE__)
+        safely do
+          msg = formatter.send(:read_failed_line, exception, example)
+          expect(msg).to include("Unable to find matching line")
+        end
+      end
+    end
+
     context "when String alias to_int to_i" do
       before do
         String.class_eval do
