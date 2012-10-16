@@ -30,6 +30,10 @@ Feature: yield matchers
           yield *args
         end
 
+        def self.yield_twice_with(*args)
+          2.times { yield *args }
+        end
+
         def self.raw_yield
           yield
         end
@@ -47,17 +51,28 @@ Feature: yield matchers
       describe "yield_control matcher" do
         specify { expect { |b| MyClass.yield_once_with(1, &b) }.to yield_control }
         specify { expect { |b| MyClass.dont_yield(&b) }.not_to yield_control }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.to yield_control.twice }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.to yield_control.exactly(2).times }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.to yield_control.at_least(1) }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.to yield_control.at_most(3).times }
 
         # deliberate failures
         specify { expect { |b| MyClass.yield_once_with(1, &b) }.not_to yield_control }
         specify { expect { |b| MyClass.dont_yield(&b) }.to yield_control }
+        specify { expect { |b| MyClass.yield_once_with(1, &b) }.to yield_control.at_least(2).times }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.not_to yield_control.twice }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.not_to yield_control.at_least(2).times }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.not_to yield_control.at_least(1) }
+        specify { expect { |b| MyClass.yield_twice_with(1, &b) }.not_to yield_control.at_most(3).times }
       end
       """
     When I run `rspec yield_control_spec.rb`
     Then the output should contain all of these:
-      | 4 examples, 2 failures                      |
-      | expected given block to yield control       |
-      | expected given block not to yield control   |
+      | 13 examples, 7 failures                                   |
+      | expected given block to yield control                     |
+      | expected given block not to yield control                 |
+      | expected given block not to yield control 2 or more times |
+      | expected given block not to yield control 3 or less times |
 
   Scenario: yield_with_args matcher
     Given a file named "yield_with_args_spec.rb" with:
