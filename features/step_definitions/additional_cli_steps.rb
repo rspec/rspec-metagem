@@ -17,10 +17,6 @@ Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the exit status should be 0}
 end
 
-Then /^the file "([^"]*)" should contain:$/ do |file, partial_content|
-  check_file_content(file, partial_content, true)
-end
-
 Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
   # ruby 1.9 includes additional stuff in the backtrace,
   # so we need to normalize it to compare it with our expected output.
