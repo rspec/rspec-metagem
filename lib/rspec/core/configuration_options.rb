@@ -78,7 +78,7 @@ module RSpec
       end
 
       def file_options
-        custom_options_file ? [custom_options] : [global_options, local_options]
+        custom_options_file ? [custom_options] : [global_options, local_options, personal_options]
       end
 
       def env_options
@@ -91,6 +91,10 @@ module RSpec
 
       def custom_options
         options_from(custom_options_file)
+      end
+
+      def personal_options
+        @personal_options ||= options_from(personal_options_file)
       end
 
       def local_options
@@ -121,6 +125,10 @@ module RSpec
 
       def local_options_file
         ".rspec"
+      end
+
+      def personal_options_file
+        ".rspec-local"
       end
 
       def global_options_file
