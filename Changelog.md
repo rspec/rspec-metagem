@@ -6,6 +6,8 @@ Enhancements
 * Colorize diffs if the `--color` option is configured. (Alex Coplan)
 * Include backtraces in unexpected errors handled by `raise_error`
   matcher (Myron Marston)
+* Print a warning when users accidentally pass a non-string argument
+  as an expectation message (Sam Phippen)
 
 Bug fixes
 
