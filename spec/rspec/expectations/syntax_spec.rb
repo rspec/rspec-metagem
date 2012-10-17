@@ -8,7 +8,7 @@ module RSpec
 
         describe "#should" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with /The value passed as the message/
+            warner.should_receive(:warn).with /ignoring.*message/
             3.should eq(3), :not_a_string
           end
 
@@ -20,7 +20,7 @@ module RSpec
 
         describe "#should_not" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with /The value passed as the message/
+            warner.should_receive(:warn).with /ignoring.*message/
             3.should_not eq(4), :not_a_string
           end
 
