@@ -150,13 +150,14 @@ module RSpec
       def run_task(verbose)
         files = has_files?
         if files
+          command = spec_command
           begin
-            puts spec_command if verbose
-            success = system(spec_command)
+            puts command if verbose
+            success = system(command)
           rescue
             puts failure_message if failure_message
           end
-          raise("#{spec_command} failed") if fail_on_error unless success
+          raise("#{command} failed") if fail_on_error unless success
         end
       end
 
@@ -171,10 +172,6 @@ module RSpec
       end
 
       def spec_command
-        @spec_command ||= default_spec_command
-      end
-
-      def default_spec_command
         cmd_parts = []
         cmd_parts << RUBY
         cmd_parts << ruby_opts

@@ -28,15 +28,13 @@ module RSpec::Core
     end
 
     context "with args passed to the rake task" do
-      let(:task) do
-        RakeTask.new(:task_name, :files) do |t, args|
+      it "correctly passes along task arguments" do
+        task = RakeTask.new(:rake_task_args, :files) do |t, args|
           args[:files].should == "first_spec.rb"
         end
-      end
 
-      it "correctly passes along task arguments" do
         task.should_receive(:run_task) { true }
-        Rake.application.invoke_task("task_name[first_spec.rb]").should be_true
+        Rake.application.invoke_task("rake_task_args[first_spec.rb]").should be_true
       end
     end
 
@@ -102,6 +100,8 @@ module RSpec::Core
     end
 
     def specify_consistent_ordering_of_files_to_run(pattern, task)
+      task.stub(:run_task) { true }
+      Rake.application.invoke_task(task.name)
       orderings = [
         %w[ a/1.rb a/2.rb a/3.rb ],
         %w[ a/2.rb a/1.rb a/3.rb ],
@@ -138,9 +138,7 @@ module RSpec::Core
 
     context "with paths with quotes" do
       it "escapes the quotes" do
-        task = RakeTask.new do |t|
-          t.pattern = File.join(Dir.tmpdir, "*spec.rb")
-        end
+        task.pattern = File.join(Dir.tmpdir, "*spec.rb")
         ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb"].each do |file_name|
           FileUtils.touch(File.join(Dir.tmpdir, file_name))
         end
