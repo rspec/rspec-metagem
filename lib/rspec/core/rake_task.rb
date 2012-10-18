@@ -108,14 +108,23 @@ module RSpec
         @rspec_opts = opts
       end
 
-      def initialize(*args)
+      def initialize(*args, &task_block)
         setup_ivars(args)
-        yield self if block_given?
 
         desc "Run RSpec code examples" unless ::Rake.application.last_comment
 
-        task name do
+        task name, *args do |t, task_args|
           RakeFileUtils.send(:verbose, verbose) do
+            unless task_block.nil?
+              case task_block.arity
+                when 0
+                  task_block.call
+                when 1
+                  task_block.call(self)
+                when 2
+                  task_block.call(self, task_args)
+              end
+            end
             run_task verbose
           end
         end

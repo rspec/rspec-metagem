@@ -27,6 +27,19 @@ module RSpec::Core
       end
     end
 
+    context "with args passed to the rake task" do
+      let(:task) do
+        RakeTask.new(:task_name, :files) do |t, args|
+          args[:files].should == "first_spec.rb"
+        end
+      end
+
+      it "correctly passes along task arguments" do
+        task.should_receive(:run_task) { true }
+        Rake.application.invoke_task("task_name[first_spec.rb]").should be_true
+      end
+    end
+
     context "default" do
       it "renders rspec" do
         spec_command.should =~ /^#{ruby} -S rspec/
