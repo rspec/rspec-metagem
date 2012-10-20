@@ -100,8 +100,6 @@ module RSpec::Core
     end
 
     def specify_consistent_ordering_of_files_to_run(pattern, task)
-      task.stub(:run_task) { true }
-      Rake.application.invoke_task(task.name)
       orderings = [
         %w[ a/1.rb a/2.rb a/3.rb ],
         %w[ a/2.rb a/1.rb a/3.rb ],
@@ -129,9 +127,14 @@ module RSpec::Core
     end
 
     it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
-      task = RakeTask.new do |t|
+      task = RakeTask.new(:consistent_file_order) do |t|
         t.pattern = 'a/*.rb'
       end
+
+      # since the config block is deferred til task invocation, must fake
+      # calling the task so the expected pattern is picked up
+      task.should_receive(:run_task) { true }
+      Rake.application.invoke_task(task.name).should be_true
 
       specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end

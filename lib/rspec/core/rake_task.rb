@@ -113,18 +113,9 @@ module RSpec
 
         desc "Run RSpec code examples" unless ::Rake.application.last_comment
 
-        task name, *args do |t, task_args|
+        task name, *args do |_, task_args|
           RakeFileUtils.send(:verbose, verbose) do
-            unless task_block.nil?
-              case task_block.arity
-                when 0
-                  task_block.call
-                when 1
-                  task_block.call(self)
-                when 2
-                  task_block.call(self, task_args)
-              end
-            end
+            task_block.call(*[self, task_args].slice(0, task_block.arity)) if !!task_block
             run_task verbose
           end
         end
