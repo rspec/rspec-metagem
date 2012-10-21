@@ -37,7 +37,8 @@ Bug fixes
 * Fix `fail_fast` so that it properly exits when an error occurs in a
   `before(:all) hook` (Bradley Schaefer).
 * Make the order spec files are loaded consistent, regardless of the
-  order of the files returned by the OS (Jo Liss).
+  order of the files returned by the OS or the order passed at
+  the command line (Jo Liss and Sam Phippen).
 * Ensure instance variables from `before(:all)` are always exposed
   from `after(:all)`, even if an error occurs in `before(:all)`
   (Sam Phippen).

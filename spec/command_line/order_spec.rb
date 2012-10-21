@@ -5,6 +5,32 @@ describe 'command line', :ui do
   let(:stdout) { StringIO.new }
 
   before :all do
+    write_file 'spec/simple_spec.rb', """
+      describe 'group 1' do
+        specify('group 1 example 1') {}
+        specify('group 1 example 2') {}
+        specify('group 1 example 3') {}
+        describe 'group 1-1' do
+          specify('group 1-1 example 1') {}
+          specify('group 1-1 example 2') {}
+          specify('group 1-1 example 3') {}
+        end
+      end
+    """
+
+    write_file 'spec/simple_spec2.rb', """
+      describe 'group 2' do
+        specify('group 2 example 1') {}
+        specify('group 2 example 2') {}
+        specify('group 2 example 3') {}
+        describe 'group 2-1' do
+          specify('group 2-1 example 1') {}
+          specify('group 2-1 example 2') {}
+          specify('group 2-1 example 3') {}
+        end
+      end
+    """
+
     write_file 'spec/order_spec.rb', """
       describe 'group 1' do
         specify('group 1 example 1')  {}
@@ -93,6 +119,14 @@ describe 'command line', :ui do
       nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
       examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
+    end
+
+    it "runs examples in the same order, regardless of the order in which files are given" do
+      run_command 'tmp/aruba/spec/simple_spec.rb tmp/aruba/spec/simple_spec2.rb --seed 1337 -f doc'
+      run_command 'tmp/aruba/spec/simple_spec2.rb tmp/aruba/spec/simple_spec.rb --seed 1337 -f doc'
+
+      top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
+      nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
     end
   end
 
