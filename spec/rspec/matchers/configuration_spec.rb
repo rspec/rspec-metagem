@@ -31,7 +31,7 @@ module RSpec
         end
 
         it "defaults to a null formatter when rspec-core is not loaded" do
-          stub_const("RSpec::Core", nil) # so the formatter module is not loaded
+          hide_const("RSpec::Core::BacktraceFormatter")
           expect(formatted_backtrace).to eq(original_backtrace)
         end
 
