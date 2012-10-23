@@ -25,10 +25,26 @@ module RSpec
           matcher.matches?(Numeric)
           matcher.description.should == "be an instance of Fixnum"
         end
+
+        context "when expected provides an expanded inspect, e.g. AR::Base" do
+          class User
+            def self.inspect
+              "User(id: integer, name: string)"
+            end
+          end
+          let(:expected) { User }
+
+          it "provides a description including only the class name" do
+            matcher = be_an_instance_of(expected)
+            matcher.matches?(Numeric)
+            #it will be namespaced because I defined it inside this spec file
+            matcher.description.should == "be an instance of RSpec::Matchers::User"
+          end
+        end
       end
-      
+
       describe "actual.should_not #{method}(expected)" do
-        
+
         it "fails with failure message for should_not if actual is instance of expected class" do
           lambda { "foo".should_not send(method, String) }.should fail_with(%Q{expected "foo" not to be an instance of String})
         end
