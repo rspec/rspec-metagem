@@ -27,16 +27,10 @@ module RSpec
         end
 
         context "when expected provides an expanded inspect, e.g. AR::Base" do
-          class User
-            def self.inspect
-              "User(id: integer, name: string)"
-            end
-          end
-
+          before { Fixnum.stub(:inspect) { "foo" } }
           it "provides a description including only the class name" do
-            matcher = be_an_instance_of(User)
-            #it will be namespaced because I defined it inside this spec file
-            matcher.description.should == "be an instance of RSpec::Matchers::User"
+            matcher = be_an_instance_of(Fixnum)
+            matcher.description.should == "be an instance of Fixnum"
           end
         end
       end
