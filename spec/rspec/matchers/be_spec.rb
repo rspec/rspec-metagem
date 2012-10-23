@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "should be_predicate" do  
+describe "should be_predicate" do
   it "passes when actual returns true for :predicate?" do
     actual = stub("actual", :happy? => true)
     actual.should be_happy
@@ -17,20 +17,20 @@ describe "should be_predicate" do
       actual.should be_happy
     }.should fail_with("expected happy? to return true, got false")
   end
-  
+
   it "fails when actual returns false for :predicate?" do
     actual = stub("actual", :happy? => nil)
     lambda {
       actual.should be_happy
     }.should fail_with("expected happy? to return true, got nil")
   end
-  
+
   it "fails when actual does not respond to :predicate?" do
     lambda {
       Object.new.should be_happy
     }.should raise_error(NameError, /happy\?/)
   end
-  
+
   it "fails on error other than NameError" do
     actual = stub("actual")
     actual.should_receive(:foo?).and_raise("aaaah")
@@ -38,7 +38,7 @@ describe "should be_predicate" do
       actual.should be_foo
     }.should raise_error(/aaaah/)
   end
-  
+
   it "fails on error other than NameError (with the present tense predicate)" do
     actual = Object.new
     actual.should_receive(:foos?).and_raise("aaaah")
@@ -53,12 +53,12 @@ describe "should_not be_predicate" do
     actual = stub("actual", :happy? => false)
     actual.should_not be_happy
   end
-  
+
   it "passes when actual returns nil for :sym?" do
     actual = stub("actual", :happy? => nil)
     actual.should_not be_happy
   end
-  
+
   it "fails when actual returns true for :sym?" do
     actual = stub("actual", :happy? => true)
     lambda {
@@ -87,7 +87,7 @@ describe "should be_predicate(*args)" do
       actual.should be_older_than(3)
     }.should fail_with("expected older_than?(3) to return true, got false")
   end
-  
+
   it "fails when actual does not respond to :predicate?" do
     lambda {
       Object.new.should be_older_than(3)
@@ -101,7 +101,7 @@ describe "should_not be_predicate(*args)" do
     actual.should_receive(:older_than?).with(3).and_return(false)
     actual.should_not be_older_than(3)
   end
-  
+
   it "fails when actual returns true for :predicate?(*args)" do
     actual = mock("actual")
     actual.should_receive(:older_than?).with(3).and_return(true)
@@ -444,7 +444,7 @@ describe "be_an_instance_of" do
   it "passes when direct class matches" do
     5.should be_an_instance_of(Fixnum)
   end
-  
+
   it "fails when class is higher up hierarchy" do
     5.should_not be_an_instance_of(Numeric)
   end
