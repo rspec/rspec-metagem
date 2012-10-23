@@ -32,11 +32,9 @@ module RSpec
               "User(id: integer, name: string)"
             end
           end
-          let(:expected) { User }
 
           it "provides a description including only the class name" do
-            matcher = be_an_instance_of(expected)
-            matcher.matches?(Numeric)
+            matcher = be_an_instance_of(User)
             #it will be namespaced because I defined it inside this spec file
             matcher.description.should == "be an instance of RSpec::Matchers::User"
           end
