@@ -122,3 +122,17 @@ describe "should_not =~ [:with, :multiple, :args]" do
     }.should fail_with(/Matcher does not support should_not/)
   end
 end
+
+describe "matching against things that aren't arrays" do
+  it "fails with nil and the expected error message is given" do
+    expect { nil.should match_array([1,2,3]) }.to fail_with(/expected an array/)
+  end
+
+  it "fails with a float and the expected error message is given" do
+    expect { (3.7).should match_array([1,2,3]) }.to fail_with(/expected an array/)
+  end
+
+  it "fails with a string and the expected error message is given" do
+    expect { "I like turtles".should match_array([1,2,3]) }.to fail_with(/expected an array/)
+  end
+end

@@ -8,6 +8,9 @@ Enhancements
   matcher (Myron Marston)
 * Print a warning when users accidentally pass a non-string argument
   as an expectation message (Sam Phippen)
+* `=~` and `match_array` matchers output a more useful error message when
+  the actual value is not an array (or an object that responds to `#to_ary`)
+  (Sam Phippen)
 
 Bug fixes
 
