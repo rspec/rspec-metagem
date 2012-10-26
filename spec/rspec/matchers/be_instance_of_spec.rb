@@ -39,7 +39,6 @@ module RSpec
 
           it "provides a description including only the class name" do
             matcher = be_an_instance_of(User)
-            #it will be namespaced because I defined it inside this spec file
             matcher.description.should == "be an instance of User"
           end
         end
