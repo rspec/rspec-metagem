@@ -16,43 +16,6 @@ module RSpec::Core
       end
     end
 
-    describe "#get_files_to_run" do
-      context "with some files, and a random seed" do
-        let(:paths)  { ["1.rb", "2.rb", "3.rb", "4.rb", "5.rb"] }
-        let(:subset)  { ["2.rb", "3.rb", "5.rb"] }
-        let(:backwards) { paths.reverse }
-        subject do
-          RSpec.configuration.seed = 1337
-          RSpec.configuration
-        end
-
-        it "orders them consistently with the same seed" do
-          first  = subject.__send__(:get_files_to_run, paths)
-          second = subject.__send__(:get_files_to_run, paths)
-          first.should == second
-        end
-
-        it "doesn't lose any files" do
-          first  = subject.__send__(:get_files_to_run, paths)
-          first.sort.should == paths
-        end
-
-        it "orders the same files in the same way, regardless of order passed" do
-          first  = subject.__send__(:get_files_to_run, paths)
-          second = subject.__send__(:get_files_to_run, backwards)
-          first.should == second
-        end
-
-        it "orders subsets with the same relative order as the full set" do
-          first  = subject.__send__(:get_files_to_run, paths)
-          second = subject.__send__(:get_files_to_run, subset)
-          first.select {|x| subset.include? x }.should == second
-        end
-
-      end
-
-    end
-
     describe "#load_spec_files" do
 
       it "loads files using load" do
@@ -397,29 +360,38 @@ module RSpec::Core
         end
 
         orderings.uniq.size.should eq(1)
-
-        orderings.first
       end
 
       context 'when the given directories match the pattern' do
-        it 'orders the files in a consistent alphabetical ordering, regardless of the underlying OS ordering' do
-          files_to_run = specify_consistent_ordering_of_files_to_run do
+        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
+          specify_consistent_ordering_of_files_to_run do
             config.pattern = 'a/*.rb'
             config.files_or_directories_to_run = 'a'
           end
-
-          files_to_run.should == ["a/1.rb", "a/2.rb", "a/3.rb"]
         end
       end
 
       context 'when the pattern is given relative to the given directories' do
-        it 'orders the files in a consistent alphabetical ordering, regardless of the underlying OS ordering' do
-          files_to_run = specify_consistent_ordering_of_files_to_run do
+        it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
+          specify_consistent_ordering_of_files_to_run do
             config.pattern = '*.rb'
             config.files_or_directories_to_run = 'a'
           end
+        end
+      end
 
-          files_to_run.should == ["a/1.rb", "a/2.rb", "a/3.rb"]
+      context 'when given multiple file paths' do
+        it 'orders the files in a consistent ordering, regardless of the given order' do
+          File.stub(:directory?) { false } # fake it into thinking these a full file paths
+
+          files = ['a/b/c_spec.rb', 'c/b/a_spec.rb']
+          config.files_or_directories_to_run = *files
+          ordering_1 = config.files_to_run
+
+          config.files_or_directories_to_run = *(files.reverse)
+          ordering_2 = config.files_to_run
+
+          expect(ordering_1).to eq(ordering_2)
         end
       end
     end
