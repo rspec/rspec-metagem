@@ -62,6 +62,9 @@ module RSpec
 
       # Use rcov for code coverage?
       #
+      # Due to the many ways `rcov` can run, if this option is enabled, it is
+      # required that `require 'rspec/autorun'` appears in `spec_helper`.rb
+      #
       # default:
       #   false
       attr_accessor :rcov
