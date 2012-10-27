@@ -27,6 +27,17 @@ module RSpec::Core
       end
     end
 
+    context "with args passed to the rake task" do
+      it "correctly passes along task arguments" do
+        task = RakeTask.new(:rake_task_args, :files) do |t, args|
+          args[:files].should == "first_spec.rb"
+        end
+
+        task.should_receive(:run_task) { true }
+        Rake.application.invoke_task("rake_task_args[first_spec.rb]").should be_true
+      end
+    end
+
     context "default" do
       it "renders rspec" do
         spec_command.should =~ /^#{ruby} -S rspec/
@@ -116,18 +127,21 @@ module RSpec::Core
     end
 
     it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
-      task = RakeTask.new do |t|
+      task = RakeTask.new(:consistent_file_order) do |t|
         t.pattern = 'a/*.rb'
       end
+
+      # since the config block is deferred til task invocation, must fake
+      # calling the task so the expected pattern is picked up
+      task.should_receive(:run_task) { true }
+      Rake.application.invoke_task(task.name).should be_true
 
       specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end
 
     context "with paths with quotes" do
       it "escapes the quotes" do
-        task = RakeTask.new do |t|
-          t.pattern = File.join(Dir.tmpdir, "*spec.rb")
-        end
+        task.pattern = File.join(Dir.tmpdir, "*spec.rb")
         ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb"].each do |file_name|
           FileUtils.touch(File.join(Dir.tmpdir, file_name))
         end
