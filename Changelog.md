@@ -16,6 +16,10 @@ Bug fixes
 
 * Fix `include` matcher so that `expect({}).to include(:a => nil)`
   fails as it should (Sam Phippen).
+* Fix `be_an_instance_of` matcher so that `Class#to_s` is used in the
+  description rather than `Class#inspect`, since some classes (like
+  `ActiveRecord::Base`) define a long, verbose `#inspect`.
+  (Tom Stuart)
 
 ### 2.11.3 / 2012-09-04
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...v2.11.3)
