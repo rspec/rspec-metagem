@@ -347,32 +347,33 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
 
     it "prefers CLI over file options" do
-      File.open("./.rspec", "w") {|f| f << "--format local"}
+      File.open("./.rspec", "w") {|f| f << "--format project"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
       parse_options("--format", "cli")[:formatters].should eq([['cli']])
     end
 
-    it "prefers local file options over global" do
-      File.open("./.rspec", "w") {|f| f << "--format local"}
+    it "prefers project file options over global file options" do
+      File.open("./.rspec", "w") {|f| f << "--format project"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
-      parse_options[:formatters].should eq([['local']])
+      parse_options[:formatters].should eq([['project']])
     end
 
-    it "prefers personal file over local" do
+    it "prefers local file options over project file options" do
       File.open("./.rspec-local", "w") {|f| f << "--format local"}
       File.open("./.rspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
     end
 
     context "with custom options file" do
-      it "ignores local and global options files" do
-        File.open("./.rspec", "w") {|f| f << "--format local"}
+      it "ignores project and global options files" do
+        File.open("./.rspec", "w") {|f| f << "--format project"}
         File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
         File.open("./custom.opts", "w") {|f| f << "--color"}
         options = parse_options("-O", "./custom.opts")
         options[:format].should be_nil
         options[:color].should be_true
       end
+
       it "parses -e 'full spec description'" do
         File.open("./custom.opts", "w") {|f| f << "-e 'The quick brown fox jumps over the lazy dog'"}
         options = parse_options("-O", "./custom.opts")
