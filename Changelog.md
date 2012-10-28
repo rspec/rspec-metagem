@@ -22,6 +22,9 @@ Enhancements
   (Alex Tan)
 * Use dup of Time so reporting isn't clobbered by examples that modify Time
   without properly restoring it.
+* Add support for an `.rspec-local` options file. This is intended to
+  allow individual developers to set options in a git-ignored file that
+  override the common project options in `.rspec`. (Sam Phippen)
 
 Bug fixes
 
