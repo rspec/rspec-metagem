@@ -324,9 +324,10 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
   end
 
-  describe "sources: ~/.rspec, ./.rspec, custom, CLI, and SPEC_OPTS" do
+  describe "sources: ~/.rspec, ./.rspec, ./.rspec-local, custom, CLI, and SPEC_OPTS" do
     it "merges global, local, SPEC_OPTS, and CLI" do
       File.open("./.rspec", "w") {|f| f << "--line 37"}
+      File.open("./.rspec-local", "w") {|f| f << "--format global"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
       with_env_vars 'SPEC_OPTS' => "--debug --example 'foo bar'" do
         options = parse_options("--drb")
@@ -335,6 +336,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
         options[:debug].should be_true
         options[:full_description].should eq([/foo\ bar/])
         options[:drb].should be_true
+        options[:formatters].should eq([['global']])
       end
     end
 
@@ -353,6 +355,12 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "prefers local file options over global" do
       File.open("./.rspec", "w") {|f| f << "--format local"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
+      parse_options[:formatters].should eq([['local']])
+    end
+
+    it "prefers personal file over local" do
+      File.open("./.rspec-local", "w") {|f| f << "--format local"}
+      File.open("./.rspec", "w") {|f| f << "--format global"}
       parse_options[:formatters].should eq([['local']])
     end
 
