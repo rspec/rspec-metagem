@@ -65,19 +65,18 @@ Feature: exit status
     Then the exit status should be 2
     And the output should contain "1 example, 1 failure"
 
-  @wip
   Scenario: exit with rspec's exit code when an at_exit hook is added upstream
     Given a file named "exit_at_spec.rb" with:
       """ruby
       require 'rspec/autorun'
+      at_exit { exit(0) }
 
       describe "exit 0 at_exit" do
         it "does not interfere with rspec's exit code" do
-          at_exit { exit 0 }
           fail
         end
       end
       """
-    When I run `rspec exit_at_spec.rb`
+    When I run `ruby exit_at_spec.rb`
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
