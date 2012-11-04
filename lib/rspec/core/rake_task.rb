@@ -161,7 +161,7 @@ module RSpec
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
-          FileList[ pattern ].sort.map { |f| f.gsub(/"/, '\"').gsub(/'/, "\\\\'") }
+          FileList[ pattern ].sort.map { |f| f.shellescape }
         end
       end
 
