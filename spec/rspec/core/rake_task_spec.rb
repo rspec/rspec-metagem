@@ -139,14 +139,15 @@ module RSpec::Core
       specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end
 
-    context "with paths with quotes" do
-      it "escapes the quotes" do
+    context "with paths with quotes or spaces" do
+      it "escapes the quotes and spaces" do
         task.pattern = File.join(Dir.tmpdir, "*spec.rb")
-        ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb"].each do |file_name|
+        ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb", "fourth spec.rb"].each do |file_name|
           FileUtils.touch(File.join(Dir.tmpdir, file_name))
         end
         task.__send__(:files_to_run).sort.should eq([
           File.join(Dir.tmpdir, "first_spec.rb"),
+          File.join(Dir.tmpdir, "fourth\\ spec.rb"),
           File.join(Dir.tmpdir, "second_\\\"spec.rb"),
           File.join(Dir.tmpdir, "third_\\\'spec.rb")
         ])
