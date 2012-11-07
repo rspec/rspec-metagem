@@ -38,7 +38,7 @@ module RSpec
         end
 
         def failure_output(example, exception)
-          red("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
+          failure_color("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
         end
 
         def next_failure_index
@@ -47,11 +47,11 @@ module RSpec
         end
 
         def passed_output(example)
-          green("#{current_indentation}#{example.description.strip}")
+          success_color("#{current_indentation}#{example.description.strip}")
         end
 
         def pending_output(example, message)
-          yellow("#{current_indentation}#{example.description.strip} (PENDING: #{message})")
+          pending_color("#{current_indentation}#{example.description.strip} (PENDING: #{message})")
         end
 
         def current_indentation

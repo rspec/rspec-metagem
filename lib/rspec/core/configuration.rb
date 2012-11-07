@@ -132,6 +132,9 @@ MESSAGE
       add_setting :success_color
       add_setting :pending_color
       add_setting :failure_color
+      add_setting :default_color
+      add_setting :fixed_color
+      add_setting :detail_color
 
       # Seed for random ordering (default: generated randomly each run).
       #
@@ -203,6 +206,9 @@ MESSAGE
         @failure_color = :red
         @success_color = :green
         @pending_color = :yellow
+        @default_color = :white
+        @fixed_color = :blue
+        @detail_color = :cyan
       end
 
       # @private

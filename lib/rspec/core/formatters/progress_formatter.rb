@@ -7,17 +7,17 @@ module RSpec
 
         def example_passed(example)
           super(example)
-          output.print green('.')
+          output.print success_color('.')
         end
 
         def example_pending(example)
           super(example)
-          output.print yellow('*')
+          output.print pending_color('*')
         end
 
         def example_failed(example)
           super(example)
-          output.print red('F')
+          output.print failure_color('F')
         end
 
         def start_dump

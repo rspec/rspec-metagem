@@ -377,7 +377,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
-  describe "colorize" do
+  describe "#colorize" do
     it "accepts a VT100 integer code and formats the text with it" do
        formatter.colorize('abc', 32).should == "\e[32mabc\e[0m"
     end
