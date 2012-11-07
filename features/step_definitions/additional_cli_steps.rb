@@ -30,7 +30,3 @@ Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
 
   normalized_output.should =~ regexp(partial_output)
 end
-
-Then /^the exit code should be (\d+)$/ do |code|
-  $?.exitstatus.should == code.to_i
-end

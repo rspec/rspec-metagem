@@ -20,7 +20,7 @@ Feature: failure exit code
       end
       """
     When I run `rspec spec/example_spec.rb`
-    Then the exit code should be 1
+    Then the exit status should be 1
 
   Scenario: a failing spec with a custom exit code
     Given a file named "spec/example_spec.rb" with:
@@ -33,4 +33,4 @@ Feature: failure exit code
       end
       """
     When I run `rspec spec/example_spec.rb`
-    Then the exit code should be 42
+    Then the exit status should be 42
