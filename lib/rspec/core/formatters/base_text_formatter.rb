@@ -148,7 +148,7 @@ module RSpec
       protected
 
         def bold(text)
-          color_enabled? ? "\e[1m#{text}\e[0m"
+          color_enabled? ? "\e[1m#{text}\e[0m" : text
         end
 
         def color(text, color_code)
