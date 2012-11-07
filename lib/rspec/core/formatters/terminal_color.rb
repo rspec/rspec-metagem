@@ -15,8 +15,12 @@ module RSpec
         }
         
         def self.colorize(text, code_or_symbol)
-          code = VT100_COLORS.fetch(code_or_symbol) { code_or_symbol }
-          "\e[#{code}m#{text}\e[0m"
+          if VT100_COLORS.key?(code_or_symbol)
+            code = VT100_COLORS.fetch(code_or_symbol) { code_or_symbol }
+            "\e[#{code}m#{text}\e[0m"
+          else # defaults to white
+            "\e[37m#{text}\e[0m"
+          end
         end
       end
     end
