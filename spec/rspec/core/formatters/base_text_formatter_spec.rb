@@ -364,7 +364,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       output.string.should =~ /, 100.0% of total time\):/
     end
   end
-  
+
   describe "custom_colors" do
     it "uses the custom success color" do
       RSpec.configure do |config|
@@ -376,4 +376,19 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       output.string.should include("\e[36m")
     end
   end
+
+  describe "colorize" do
+    it "accepts a VT100 integer code and formats the text with it" do
+       formatter.colorize('abc', 32).should == "\e[32mabc\e[0m"
+    end
+
+    it "accepts a symbol as a color parameter and translates it to the correct integer code, then formats the text with it" do
+       formatter.colorize('abc', :green).should == "\e[32mabc\e[0m"
+    end
+
+    it "accepts a non-default color symbol as a parameter and translates it to the correct integer code, then formats the text with it" do
+       formatter.colorize('abc', :cyan).should == "\e[36mabc\e[0m"
+    end
+  end
+
 end
