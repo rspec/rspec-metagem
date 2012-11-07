@@ -200,9 +200,9 @@ MESSAGE
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
-        @failure_color = 31
-        @success_color = 32
-        @pending_color = 33
+        @failure_color = :red
+        @success_color = :green
+        @pending_color = :yellow
       end
 
       # @private
