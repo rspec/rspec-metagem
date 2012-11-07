@@ -1,5 +1,4 @@
 require 'rspec/core/formatters/base_formatter'
-require 'rspec/core/formatters/terminal_color'
 
 module RSpec
   module Core
