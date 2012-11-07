@@ -136,6 +136,15 @@ module RSpec
           :white => 37
         }
 
+        def colorize(text, code_or_symbol)
+          if VT100_COLORS.key?(code_or_symbol) || VT100_COLORS.value?(code_or_symbol)
+            code = VT100_COLORS.fetch(code_or_symbol) { code_or_symbol }
+            "\e[#{code}m#{text}\e[0m"
+          else # defaults to white
+             "\e[37m#{text}\e[0m"
+          end
+        end
+
       protected
 
         def color(text, color_code)
@@ -184,15 +193,6 @@ module RSpec
 
         def long_padding
           '     '
-        end
-
-        def colorize(text, code_or_symbol)
-          if VT100_COLORS.key?(code_or_symbol)
-            code = VT100_COLORS.fetch(code_or_symbol) { code_or_symbol }
-            "\e[#{code}m#{text}\e[0m"
-          else # defaults to white
-            "\e[37m#{text}\e[0m"
-          end
         end
 
       private
