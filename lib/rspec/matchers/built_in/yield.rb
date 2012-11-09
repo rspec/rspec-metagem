@@ -83,7 +83,7 @@ module RSpec
 
         def matches?(block)
           @probe = YieldProbe.probe(block)
-          @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.none?
+          @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.empty?
         end
 
         def failure_message_for_should
@@ -127,7 +127,7 @@ module RSpec
 
         def description
           desc = "yield with args"
-          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")" if @expected.any?
+          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")" unless @expected.empty?
           desc
         end
 
@@ -152,9 +152,9 @@ module RSpec
         end
 
         def args_match?
-          if @expected.none? # expect {...}.to yield_with_args
-            @positive_args_failure = "yielded with no arguments" if @actual.none?
-            return @actual.any?
+          if @expected.empty? # expect {...}.to yield_with_args
+            @positive_args_failure = "yielded with no arguments" if @actual.empty?
+            return !@actual.empty?
           end
 
           unless match = all_args_match?
