@@ -130,6 +130,12 @@ describe "yield_with_no_args matcher" do
       }.to fail_with(/expected given block to yield with no arguments, but yielded with arguments/)
     end
 
+    it 'fails if the block yields with arg false' do
+      expect {
+        expect { |b| _yield_with_args(false, &b) }.to yield_with_no_args
+      }.to fail_with(/expected given block to yield with no arguments, but yielded with arguments/)
+    end
+
     it 'raises an error if it yields multiple times' do
       expect {
         expect { |b| [1, 2].each(&b) }.to yield_with_no_args
@@ -179,6 +185,7 @@ describe "yield_with_args matcher" do
   it 'has a description' do
     yield_with_args.description.should eq("yield with args")
     yield_with_args(1, 3).description.should eq("yield with args(1, 3)")
+    yield_with_args(false).description.should eq("yield with args(false)")
   end
 
   describe "expect {...}.to yield_with_args" do
@@ -270,6 +277,34 @@ describe "yield_with_args matcher" do
       expect {
         expect { |b| _yield_with_args("a", "b", &b) }.not_to yield_with_args("a", "b")
       }.to fail_with(/expected given block not to yield with arguments, but yielded with expected arguments/)
+    end
+  end
+
+  describe "expect {...}.to yield_with_args( false )" do
+    it 'passes if the block yields with the given arguments' do
+      expect { |b| _yield_with_args(false, &b) }.to yield_with_args(false)
+    end
+
+    it 'passes if the block yields with the given arguments using instance_eval' do
+      expect { |b| InstanceEvaler.new.yield_with_args(false, &b) }.to yield_with_args(false)
+    end
+
+    it 'fails if the block does not yield' do
+      expect {
+        expect { |b| _dont_yield(&b) }.to yield_with_args(false)
+      }.to fail_with(/expected given block to yield with arguments, but did not yield/)
+    end
+
+    it 'fails if the block yields with no arguments' do
+      expect {
+        expect { |b| _yield_with_no_args(&b) }.to yield_with_args(false)
+      }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
+    end
+
+    it 'fails if the block yields with different arguments' do
+      expect {
+        expect { |b| _yield_with_args(false, &b) }.to yield_with_args(true)
+      }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
     end
   end
 
