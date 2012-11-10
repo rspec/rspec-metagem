@@ -20,8 +20,6 @@ Enhancements
 * Add `format_docstrings { |str| }` config option. It can be used to
   apply formatting rules to example group and example docstrings.
   (Alex Tan)
-* Use dup of Time so reporting isn't clobbered by examples that modify Time
-  without properly restoring it.
 * Add support for an `.rspec-local` options file. This is intended to
   allow individual developers to set options in a git-ignored file that
   override the common project options in `.rspec`. (Sam Phippen)
@@ -49,6 +47,8 @@ Bug fixes
   being deprecated (Sam Phippen).
 * Fix pluralization of `1 seconds` (Odin Dutton)
 * Fix ANSICON url (Jarmo Pertman)
+* Use dup of Time so reporting isn't clobbered by examples that modify Time
+  without properly restoring it. (David Chelimsky)
 
 Deprecations
 
