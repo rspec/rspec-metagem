@@ -23,6 +23,7 @@ Enhancements
 * Add support for an `.rspec-local` options file. This is intended to
   allow individual developers to set options in a git-ignored file that
   override the common project options in `.rspec`. (Sam Phippen)
+* Support for mocha 0.13.0. (Andy Lindeman)
 
 Bug fixes
 
