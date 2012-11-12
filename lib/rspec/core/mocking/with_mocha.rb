@@ -1,5 +1,24 @@
+# In order to support all versions of mocha, we have to jump through some
+# hoops here.
+#
+# mocha >= '0.13.0':
+#   require 'mocha/api' is required
+#   require 'mocha/object' raises a LoadError b/c the file no longer exists
+# mocha < '0.13.0', >= '0.9.7'
+#   require 'mocha/api' is required
+#   require 'mocha/object' is required
+# mocha < '0.9.7':
+#   require 'mocha/api' raises a LoadError b/c the file does not yet exist
+#   require 'mocha/standalone' is required
+#   require 'mocha/object' is required
 begin
   require 'mocha/api'
+
+  begin
+    require 'mocha/object'
+  rescue LoadError
+    # Mocha >= 0.13.0 no longer contains this file nor needs it to be loaded
+  end
 rescue LoadError
   require 'mocha/standalone'
   require 'mocha/object'
