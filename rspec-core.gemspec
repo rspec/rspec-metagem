@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "nokogiri", "1.5.2"
   s.add_development_dependency "syntax",   "1.0.0"
 
-  s.add_development_dependency "mocha",    "~> 0.10.5"
+  s.add_development_dependency "mocha",    "~> 0.13.0"
   s.add_development_dependency "rr",       "~> 1.0.4"
   s.add_development_dependency "flexmock", "~> 0.9.0"
 end

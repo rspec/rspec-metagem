@@ -1,5 +1,9 @@
-require 'mocha/standalone'
-require 'mocha/object'
+begin
+  require 'mocha/api'
+rescue LoadError
+  require 'mocha/standalone'
+  require 'mocha/object'
+end
 
 module RSpec
   module Core
