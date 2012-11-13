@@ -157,11 +157,21 @@ module RSpec
 
     private
 
+      if RUBY_VERSION == '1.8.6'
+        def shellescape(string)
+          string.gsub(/"/, '\"').gsub(/'/, "\\\\'")
+        end
+      else
+        def shellescape(string)
+          string.shellescape
+        end
+      end
+
       def files_to_run
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
-          FileList[ pattern ].sort.map { |f| f.shellescape }
+          FileList[ pattern ].sort.map { |f| shellescape(f) }
         end
       end
 
