@@ -9,11 +9,10 @@ Enhancements
 * Refactor rake task internals (Sam Phippen)
 * Refactor HtmlFormatter (Pete Hodgson)
 * Autotest supports a path to Ruby that contains spaces (dsisnero)
-* Provide a helpful warning when a shared example group is redefined
-  rather than erroring out with an unhelpful error message
+* Provide a helpful warning when a shared example group is redefined.
   (Mark Burns).
-* --default_path can be specified as --default-line; --line_number can be
-  specified as --line-number. Hyphens are more idiomatic command line argument
+* `--default_path` can be specified as `--default-line`. `--line_number` can be
+  specified as `--line-number`. Hyphens are more idiomatic command line argument
   separators (Sam Phippen).
 * A more useful error message is shown when an invalid command line option is
   used (Jordi Polo).
@@ -27,8 +26,8 @@ Enhancements
 
 Bug fixes
 
-* Remove override of ExampleGroup#ancestors. This is a core ruby method that
-  RSpec shouldn't override. Instead, define ExampleGroup#parent_groups. (Myron
+* Remove override of `ExampleGroup#ancestors`. This is a core ruby method that
+  RSpec shouldn't override. Instead, define `ExampleGroup#parent_groups`. (Myron
   Marston)
 * Limit monkey patching of shared example/context declaration methods
   (`shared_examples_for`, etc.) to just the objects that need it rather than
