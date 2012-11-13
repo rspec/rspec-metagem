@@ -1,6 +1,6 @@
 before_install:
   - if [[ `gem -v` != 1.8.* ]]; then gem update --system; fi
-script: "script/test_all 2>&1 && bin/rake cucumber --trace 2>&1"
+script: "script/test_all 2>&1 && bin/rake cucumber --backtrace 2>&1"
 bundler_args: "--binstubs"
 rvm:
   - 1.8.7
