@@ -7,6 +7,6 @@ Before do
     set_env('JAVA_OPTS', '-d32') # force jRuby to use client JVM for faster startup times
     @aruba_timeout_seconds = 60
   else
-    @aruba_timeout_seconds = 5
+    @aruba_timeout_seconds = 10
   end
 end
