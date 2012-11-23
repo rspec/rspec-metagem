@@ -89,11 +89,19 @@ module RSpec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
+        def method_description_after_module?(parent_part, child_part)
+          return false unless parent_part.is_a?(Module)
+          child_part =~ /^(#|::|\.)/
+        end
+
         def build_description_from(first_part = '', *parts)
-          parts.inject(first_part.to_s) do |desc, p|
-            p = p.to_s
-            p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
+          description, _ = parts.inject([first_part.to_s, first_part]) do |(desc, last_part), this_part|
+            this_part = this_part.to_s
+            this_part = (' ' + this_part) unless method_description_after_module?(last_part, this_part)
+            [(desc + this_part), this_part]
           end
+
+          description
         end
       end
 

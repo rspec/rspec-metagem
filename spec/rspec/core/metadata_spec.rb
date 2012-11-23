@@ -415,13 +415,25 @@ module RSpec
             end
           end
 
-          context "with a nested description starting with #{char}" do
+          context "with a description starting with #{char} nested under a module" do
             it "removes the space" do
               parent = Metadata.new
-              parent.process("Object")
+              parent.process(Object)
               child = Metadata.new(parent)
               child.process("#{char}method")
               child[:example_group][:full_description].should eq("Object#{char}method")
+            end
+          end
+
+          context "with a description starting with #{char} nested under a context string" do
+            it "does not remove the space" do
+              grandparent = Metadata.new
+              grandparent.process(Array)
+              parent = Metadata.new(grandparent)
+              parent.process("with 2 items")
+              child = Metadata.new(parent)
+              child.process("#{char}method")
+              child[:example_group][:full_description].should eq("Array with 2 items #{char}method")
             end
           end
         end
