@@ -89,10 +89,11 @@ module RSpec
           self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        def build_description_from(*parts)
-          parts.map {|p| p.to_s}.inject do |desc, p|
+        def build_description_from(first_part = '', *parts)
+          parts.inject(first_part.to_s) do |desc, p|
+            p = p.to_s
             p =~ /^(#|::|\.)/ ? "#{desc}#{p}" : "#{desc} #{p}"
-          end || ""
+          end
         end
       end
 
