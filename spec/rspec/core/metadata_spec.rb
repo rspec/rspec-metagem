@@ -414,9 +414,7 @@ module RSpec
               m[:example_group][:full_description].should eq("Array#{char}method")
             end
           end
-        end
 
-        %w[# . ::].each do |char|
           context "with a nested description starting with #{char}" do
             it "removes the space" do
               parent = Metadata.new
