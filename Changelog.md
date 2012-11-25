@@ -1,8 +1,14 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.0...master)
 
+Bug fixes
+
 * Specs are run even if another at\_exit hook calls `exit`. This allows
   Test::Unit and RSpec to run together. (Suraj N. Kurapati)
+* Fix full doc string concatenation so that it handles the case of a
+  method string (e.g. "#foo") being nested under a context string
+  (e.g. "when it is tuesday"), so that we get "when it is tuesday #foo"
+  rather than "when it is tuesday#foo". (Myron Marston)
 
 ### 2.12.0 / 2012-11-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.1...v2.12.0)
