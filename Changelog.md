@@ -9,6 +9,9 @@ Bug fixes
   method string (e.g. "#foo") being nested under a context string
   (e.g. "when it is tuesday"), so that we get "when it is tuesday #foo"
   rather than "when it is tuesday#foo". (Myron Marston)
+* Restore public API I unintentionally broke in 2.12.0:
+  `RSpec::Core::Formatters::BaseFormatter#format_backtrce(backtrace, example)`
+  (Myron Marston).
 
 ### 2.12.0 / 2012-11-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.11.1...v2.12.0)
