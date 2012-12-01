@@ -160,7 +160,7 @@ module RSpec
         end
 
         def dump_backtrace(example)
-          format_backtrace(example.execution_result[:exception].backtrace, example.metadata).each do |backtrace_info|
+          format_backtrace(example.execution_result[:exception].backtrace, example).each do |backtrace_info|
             output.puts cyan("#{long_padding}# #{backtrace_info}")
           end
         end

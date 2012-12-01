@@ -101,7 +101,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
     end
 
     it "removes lines from rspec and lines that come before the invocation of the at_exit autorun hook" do
-      formatter.format_backtrace(backtrace).should eq(["./my_spec.rb:5"])
+      formatter.format_backtrace(backtrace, stub.as_null_object).should eq(["./my_spec.rb:5"])
     end
   end
 

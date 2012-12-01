@@ -117,6 +117,14 @@ module RSpec
           restore_sync_output
         end
 
+        # @api public
+        #
+        # Formats the given backtrace based on configuration and
+        # the metadata of the given example.
+        def format_backtrace(backtrace, example)
+          super(backtrace, example.metadata)
+        end
+
       protected
 
         def configuration
