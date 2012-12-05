@@ -196,6 +196,29 @@ describe "should <=" do
 
 end
 
+describe "OperatorMatcher registry" do
+  let(:custom_klass) { Class.new }
+  let(:custom_subklass) { Class.new(custom_klass) }
+
+  after {
+    RSpec::Matchers::OperatorMatcher.unregister(custom_klass, "=~")
+  }
+
+  it "allows operator matchers to be registered for types" do
+    RSpec::Matchers::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
+    expect(RSpec::Matchers::OperatorMatcher.get(custom_klass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
+  end
+
+  it "considers ancestors when finding an operator matcher" do
+    RSpec::Matchers::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
+    expect(RSpec::Matchers::OperatorMatcher.get(custom_subklass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
+  end
+
+  it "returns nil if there is no matcher registered for a type" do
+    expect(RSpec::Matchers::OperatorMatcher.get(custom_klass, "=~")).to be_nil
+  end
+end
+
 describe RSpec::Matchers::BuiltIn::PositiveOperatorMatcher do
 
   it "works when the target has implemented #send" do

@@ -11,8 +11,17 @@ module RSpec
           registry[klass][operator] = matcher
         end
 
+        def unregister(klass, operator)
+          registry[klass] && registry[klass].delete(operator)
+        end
+
         def get(klass, operator)
-          registry[klass] && registry[klass][operator]
+          klass.ancestors.each { |ancestor|
+            matcher = registry[ancestor] && registry[ancestor][operator]
+            return matcher if matcher
+          }
+
+          nil
         end
       end
 
