@@ -154,8 +154,8 @@ module RSpec
 
         # @api public
         #
-        # This method is invoked after the dumping of examples and failures. Each parameter is
-        # set to an instance variable.
+        # This method is invoked after the dumping of examples and failures. Each parameter
+        # is assigned to a corresponding attribute.
         #
         # @param duration
         # @param example_count
