@@ -8,22 +8,6 @@ module RSpec
       # but the BaseTextFormatter documents all of the methods needed to be implemented by a formatter,
       # as they are called from the reporter.
       #
-      # * {#start start(example_count)}
-      # * zero or more of the following
-      #   * {#example_group_started example_group_started(group)}
-      #   * {#example_started example_started(example)}
-      #   * {#example_passed example_passed(example)}
-      #   * {#example_failed example_failed(example)}
-      #   * {#example_pending example_pending(example)}
-      #   * {#message message(string)}
-      # * {#stop stop}
-      # * {#start_dump start_dump}
-      # * {#dump_pending dump_pending}
-      # * {#dump_failures dump_failures}
-      # * {#dump_summary dump_summary(duration, example_count, failure_count, pending_count)}
-      # * {#seed seed(value)}
-      # * {#close close}
-      #
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class BaseFormatter
