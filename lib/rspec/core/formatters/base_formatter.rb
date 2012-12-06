@@ -170,7 +170,8 @@ module RSpec
 
         # @api public
         #
-        # This gets invoked after the summary if option is set to do so.
+        # Outputs a report of pending examples.  This gets invoked
+        # after the summary if option is set to do so.
         #
         # @return [nil]
         def dump_pending
