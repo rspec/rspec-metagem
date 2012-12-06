@@ -31,7 +31,7 @@ module RSpec
 
       def self.use_custom_matcher_or_delegate(operator)
         define_method(operator) do |expected|
-          if matcher = OperatorMatcher.get(@actual.class, operator)
+          if uses_generic_implementation_of?(operator) && matcher = OperatorMatcher.get(@actual.class, operator)
             @actual.send(::RSpec::Matchers.last_should, matcher.new(expected))
           else
             eval_match(@actual, operator, expected)
@@ -61,6 +61,22 @@ module RSpec
       end
 
       private
+
+      if Method.method_defined?(:owner) # 1.8.6 lacks Method#owner :-(
+        def uses_generic_implementation_of?(op)
+          @actual.method(op).owner == ::Kernel
+        end
+      else
+        def uses_generic_implementation_of?(op)
+          # This is a bit of a hack, but:
+          #
+          # {}.method(:=~).to_s # => "#<Method: Hash(Kernel)#=~>"
+          #
+          # In the absence of Method#owner, this is the best we
+          # can do to see if the method comes from Kernel.
+          @actual.method(op).to_s.include?('(Kernel)')
+        end
+      end
 
       def eval_match(actual, operator, expected)
         ::RSpec::Matchers.last_matcher = self
