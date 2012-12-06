@@ -493,6 +493,12 @@ module RSpec
     #   email.should match("@example.com")
     #   zipcode.should match_regex(/\A\d{5}(-\d{4})?\z/)
     #   zipcode.should match_regex("90210")
+    #
+    # @note Due to Ruby's method dispatch mechanism, using the `#match` matcher
+    # within a custom matcher defined via the matcher DSL
+    # (`RSpec::Matcher.define`) will result Ruby calling the wrong `#match`
+    # method and raising an `ArgumentError`. Instead, use the aliased
+    # `#match_regex` method.
     def match(expected)
       BuiltIn::Match.new(expected)
     end

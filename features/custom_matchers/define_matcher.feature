@@ -339,9 +339,13 @@ Feature: define matcher
       | expected 9 to be a multiple of 2     |
       | expected 9 not to be a multiple of 3 |
 
-  Scenario: that match against a regular expression
+  Scenario: matching against a regular expression
     Given a file named "regular_expression_matcher_spec.rb" with:
       """ruby
+      # Due to Ruby's method dispatch mechanism, use the `#match_regex` alias
+      # rather than the `#match` matcher when defining custom matchers via the
+      # DSL.
+
       RSpec::Matchers.define :be_valid_us_zipcode do
         match do |actual|
           expect(actual).to match_regex(/\A\d{5}(-\d{4})?\z/)
