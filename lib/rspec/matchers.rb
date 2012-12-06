@@ -491,9 +491,13 @@ module RSpec
     #
     #   email.should match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   email.should match("@example.com")
+    #   zipcode.should match_regex(/\A\d{5}(-\d{4})?\z/)
+    #   zipcode.should match_regex("90210")
     def match(expected)
       BuiltIn::Match.new(expected)
     end
+
+    alias_method :match_regex, :match
 
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
