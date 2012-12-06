@@ -113,6 +113,17 @@ the missing elements were:      [1]
 MESSAGE
   end
 
+  context "when the array defines a `=~` method" do
+    it 'delegates to that method rather than using the match_array matcher' do
+      array = []
+      def array.=~(other)
+        other == :foo
+      end
+
+      array.should =~ :foo
+      expect { array.should =~ :bar }.to fail_with(/expected: :bar/)
+    end
+  end
 end
 
 describe "should_not =~ [:with, :multiple, :args]" do
@@ -134,5 +145,9 @@ describe "matching against things that aren't arrays" do
 
   it "fails with a string and the expected error message is given" do
     expect { "I like turtles".should match_array([1,2,3]) }.to fail_with(/expected an array/)
+  end
+
+  it 'fails with a clear message when given a hash using the `should =~` syntax' do
+    expect { {}.should =~ {} }.to fail_with(/expected an array/)
   end
 end

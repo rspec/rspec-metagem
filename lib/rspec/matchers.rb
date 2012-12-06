@@ -684,6 +684,6 @@ module RSpec
       BuiltIn::MatchArray.new(array)
     end
 
-    OperatorMatcher.register(Array, '=~', BuiltIn::MatchArray)
+    OperatorMatcher.register(Enumerable, '=~', BuiltIn::MatchArray)
   end
 end
