@@ -338,3 +338,31 @@ Feature: define matcher
       | 4 examples, 2 failures               |
       | expected 9 to be a multiple of 2     |
       | expected 9 not to be a multiple of 3 |
+
+  Scenario: matching against a regular expression
+    Given a file named "regular_expression_matcher_spec.rb" with:
+      """ruby
+      # Due to Ruby's method dispatch mechanism, use the `#match_regex` alias
+      # rather than the `#match` matcher when defining custom matchers via the
+      # DSL.
+
+      RSpec::Matchers.define :be_valid_us_zipcode do
+        match do |actual|
+          expect(actual).to match_regex(/\A\d{5}(-\d{4})?\z/)
+        end
+      end
+
+      describe "30316" do
+        it { should be_valid_us_zipcode }
+      end
+
+      describe "30316-0001" do
+        it { should be_valid_us_zipcode }
+      end
+
+      describe "1000-61303" do
+        it { should_not be_valid_us_zipcode }
+      end
+      """
+    When I run `rspec regular_expression_matcher_spec.rb`
+    Then the stdout should contain "3 examples, 0 failures"

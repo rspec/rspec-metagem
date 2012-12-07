@@ -214,7 +214,7 @@ module RSpec
     #
     # Given true, false, or nil, will pass if actual value is true, false or
     # nil (respectively). Given no args means the caller should satisfy an if
-    # condition (to be or not to be). 
+    # condition (to be or not to be).
     #
     # Predicates are any Ruby method that ends in a "?" and returns true or
     # false.  Given be_ followed by arbitrary_predicate (without the "?"),
@@ -246,7 +246,7 @@ module RSpec
     def be_an_instance_of(expected)
       BuiltIn::BeAnInstanceOf.new(expected)
     end
-    
+
     alias_method :be_instance_of, :be_an_instance_of
 
     # Passes if actual.kind_of?(expected)
@@ -288,20 +288,20 @@ module RSpec
     # @example
     #
     #   lambda {
-    #     team.add_player(player) 
+    #     team.add_player(player)
     #   }.should change(roster, :count)
     #
     #   lambda {
-    #     team.add_player(player) 
+    #     team.add_player(player)
     #   }.should change(roster, :count).by(1)
     #
     #   lambda {
-    #     team.add_player(player) 
+    #     team.add_player(player)
     #   }.should change(roster, :count).by_at_least(1)
     #
     #   lambda {
     #     team.add_player(player)
-    #   }.should change(roster, :count).by_at_most(1)    
+    #   }.should change(roster, :count).by_at_most(1)
     #
     #   string = "string"
     #   lambda {
@@ -311,7 +311,7 @@ module RSpec
     #   lambda {
     #     person.happy_birthday
     #   }.should change(person, :birthday).from(32).to(33)
-    #       
+    #
     #   lambda {
     #     employee.develop_great_new_social_networking_app
     #   }.should change(employee, :title).from("Mail Clerk").to("CEO")
@@ -491,9 +491,19 @@ module RSpec
     #
     #   email.should match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   email.should match("@example.com")
+    #   zipcode.should match_regex(/\A\d{5}(-\d{4})?\z/)
+    #   zipcode.should match_regex("90210")
+    #
+    # @note Due to Ruby's method dispatch mechanism, using the `#match` matcher
+    # within a custom matcher defined via the matcher DSL
+    # (`RSpec::Matcher.define`) will result Ruby calling the wrong `#match`
+    # method and raising an `ArgumentError`. Instead, use the aliased
+    # `#match_regex` method.
     def match(expected)
       BuiltIn::Match.new(expected)
     end
+
+    alias_method :match_regex, :match
 
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
@@ -523,7 +533,7 @@ module RSpec
     # provided. Names can be Strings or Symbols.
     #
     # @example
-    # 
+    #
     def respond_to(*names)
       BuiltIn::RespondTo.new(*names)
     end
