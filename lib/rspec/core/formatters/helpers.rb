@@ -32,7 +32,7 @@ module RSpec
         SUB_SECOND_PRECISION = 5
         DEFAULT_PRECISION = 2
 
-        # @api public
+        # @api private
         #
         # Formats seconds into a human-readable string.
         #
@@ -53,7 +53,7 @@ module RSpec
           end
         end
 
-        # @api public
+        # @api private
         #
         # Formats seconds to have 5 digits of precision with trailing zeros removed if the number
         # if less than 1 or with 2 digits of precision if the number is greater than zero.
@@ -75,7 +75,7 @@ module RSpec
           strip_trailing_zeroes(formatted)
         end
 
-        # @api public
+        # @api private
         #
         # Remove trailing zeros from a string.
         #
@@ -86,7 +86,7 @@ module RSpec
           stripped.empty? ? "0" : stripped
         end
 
-        # @api publix
+        # @api private
         #
         # Pluralize a word based on a count.
         #
