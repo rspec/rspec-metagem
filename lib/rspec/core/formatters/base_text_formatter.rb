@@ -25,6 +25,12 @@ module RSpec
           end
         end
 
+        # @api public
+        #
+        # Colorizes the output red for failure, yellow for
+        # pending, and green otherwise.
+        #
+        # @param [String] string
         def colorise_summary(summary)
           if failure_count > 0
             red(summary)
@@ -44,6 +50,10 @@ module RSpec
           dump_commands_to_rerun_failed_examples
         end
 
+        # @api public
+        #
+        # Outputs commands which can be used to re-run failed examples.
+        #
         def dump_commands_to_rerun_failed_examples
           return if failed_examples.empty?
           output.puts
@@ -55,6 +65,10 @@ module RSpec
           end
         end
 
+        # @api public
+        #
+        # Outputs the 10 slowest examples in a report when using `--profile`.
+        #
         def dump_profile
           sorted_examples = examples.sort_by {|example|
             example.execution_result[:run_time] }.reverse.first(10)
@@ -73,6 +87,10 @@ module RSpec
           end
         end
 
+        # @api public
+        #
+        # Outputs summary with number of examples, failures and pending.
+        #
         def summary_line(example_count, failure_count, pending_count)
           summary = pluralize(example_count, "example")
           summary << ", " << pluralize(failure_count, "failure")

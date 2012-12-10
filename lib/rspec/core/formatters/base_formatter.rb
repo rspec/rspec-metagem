@@ -17,6 +17,9 @@ module RSpec
         attr_reader :example_count, :pending_count, :failure_count
         attr_reader :failed_examples, :pending_examples
 
+        # @api public
+        #
+        # @param output
         def initialize(output)
           @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
@@ -26,9 +29,14 @@ module RSpec
           @example_group = nil
         end
 
-        # Invoked before any examples are run, right after they have all
-        # been collected. This can be useful for formatters that provide
-        # feedback on progress through a suite.
+        # @api public
+        #
+        # This method is invoked before any examples are run, right after
+        # they have all been collected. This can be useful for special
+        # formatters that need to provide progress on feedback (graphical ones).
+        #
+        # This will only be invoked once, and the next one to be invoked
+        # is {#example_group_started}.
         #
         # @param example_count
         def start(example_count)
@@ -36,28 +44,40 @@ module RSpec
           @example_count = example_count
         end
 
-        # Invoked at the beginning of the execution of each example
-        # group.
+        # @api public
+        #
+        # This method is invoked at the beginning of the execution of each example group.
         #
         # @param example_group subclass of `RSpec::Core::ExampleGroup`
+        #
+        # The next method to be invoked after this is {#example_passed},
+        # {#example_pending}, or {#example_group_finished}.
+        #
+        # @param example_group
         def example_group_started(example_group)
           @example_group = example_group
         end
 
+        # @api public
+        #
         # Invoked at the end of the execution of each example group.
         #
         # @param example_group subclass of `RSpec::Core::ExampleGroup`
         def example_group_finished(example_group)
         end
 
-
+        # @api public
+        #
         # Invoked at the beginning of the execution of each example.
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @return [Array]
         def example_started(example)
           examples << example
         end
 
+        # @api public
+        #
         # Invoked when an example passes.
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
@@ -67,35 +87,64 @@ module RSpec
         # Invoked when an example is pending.
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @return [Array]
         def example_pending(example)
           @pending_examples << example
         end
 
+        # @api public
+        #
         # Invoked when an example fails.
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @return [Array]
         def example_failed(example)
           @failed_examples << example
         end
 
+        # @api public
+        #
         # Used by the reporter to send messages to the output stream.
+        # 
         # @param [String] message
         def message(message)
         end
 
+        # @api public
+        #
         # Invoked after all examples have executed, before dumping post-run reports.
+        #
+        # @return [nil]
         def stop
         end
 
-        # Invoked after all of the examples have executed (after `stop`).
+        # @api public
+        #
+        # This method is invoked after all of the examples have executed. The next method
+        # to be invoked after this one is {#dump_failures}
+        # (BaseTextFormatter then calls {#dump_failure} once for each failed example.)
+        #
+        # @return [nil]
         def start_dump
         end
 
+        # @api public
+        #
         # Dumps detailed information about each example failure.
+        #
+        # @return [nil]
         def dump_failures
         end
 
-        # Invoked after the dumping of examples and failures.
+        # @api public
+        #
+        # This method is invoked after the dumping of examples and failures. Each parameter
+        # is assigned to a corresponding attribute.
+        #
+        # @param duration
+        # @param example_count
+        # @param failure_count
+        # @param pending_count
         def dump_summary(duration, example_count, failure_count, pending_count)
           @duration = duration
           @example_count = example_count
@@ -103,7 +152,12 @@ module RSpec
           @pending_count = pending_count
         end
 
-        # Invoked after the summary if option is set to do so.
+        # @api public
+        #
+        # Outputs a report of pending examples.  This gets invoked
+        # after the summary if option is set to do so.
+        #
+        # @return [nil]
         def dump_pending
         end
 
@@ -111,6 +165,8 @@ module RSpec
         def seed(number)
         end
 
+        # @api public
+        #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
         def close
