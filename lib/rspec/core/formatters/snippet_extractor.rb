@@ -1,6 +1,8 @@
 module RSpec
   module Core
     module Formatters
+      # @api private
+      #
       # Extracts code snippets by looking at the backtrace of the passed error and applies synax highlighting and line numbers using html.
       class SnippetExtractor
         class NullConverter; def convert(code, pre); code; end; end
@@ -12,7 +14,7 @@ module RSpec
           @@converter = NullConverter.new
         end
 
-        # @api public
+        # @api private
         #
         # Extract lines of code corresponding to  a backtrace.
         #
@@ -27,7 +29,7 @@ module RSpec
           post_process(highlighted, line)
         end
 
-        # @api public
+        # @api private
         #
         # Create a snippet from a line of code.
         #
@@ -45,7 +47,7 @@ module RSpec
           end
         end
 
-        # @api public
+        # @api private
         #
         # Extract lines of code centered around a particular line within a source file.
         #
@@ -67,7 +69,7 @@ module RSpec
           "# Couldn't get snippet for #{file}"
         end
 
-        # @api public
+        # @api private
         #
         # Adds line numbers to all lines and highlights the line where the failure occurred using html `span` tags.
         #
