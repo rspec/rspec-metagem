@@ -2,6 +2,7 @@ require 'rspec/core/backward_compatibility'
 require 'rspec/core/deprecation'
 require 'rake'
 require 'rake/tasklib'
+require 'shellwords'
 
 module RSpec
   module Core
@@ -158,13 +159,13 @@ module RSpec
 
     private
 
-      if RUBY_VERSION == '1.8.6'
-        def shellescape(string)
-          string.gsub(/"/, '\"').gsub(/'/, "\\\\'")
-        end
-      else
+      if "".respond_to?(:shellescape)
         def shellescape(string)
           string.shellescape
+        end
+      else # 1.8.6's shellwords doesn't provide shellescape :(.
+        def shellescape(string)
+          string.gsub(/"/, '\"').gsub(/'/, "\\\\'")
         end
       end
 
