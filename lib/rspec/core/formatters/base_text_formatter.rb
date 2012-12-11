@@ -67,11 +67,13 @@ module RSpec
 
         # @api public
         #
-        # Outputs the 10 slowest examples in a report when using `--profile`.
+        # Outputs the slowest examples in a report when using `--profile`.
+        # The number of examples to be shown can be set though `profile_count` (default: 10).
         #
         def dump_profile
+          number_of_examples = RSpec.configuration.profile_example_count
           sorted_examples = examples.sort_by {|example|
-            example.execution_result[:run_time] }.reverse.first(10)
+            example.execution_result[:run_time] }.reverse.first(number_of_examples)
 
           total, slows = [examples, sorted_examples].map {|exs|
             exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }}
