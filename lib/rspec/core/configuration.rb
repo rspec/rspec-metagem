@@ -123,11 +123,8 @@ MESSAGE
       add_setting :pattern, :alias_with => :filename_pattern
 
       # Report the times for the slowest examples (default: `false`).
-      # Number of examples to be shown can be specified with `profile_example_count`.
+      # Use this to specify the number of examples to include in the profile.
       add_setting :profile_examples
-
-      # Number of examples to show in the profile (default: 10).
-      add_setting :profile_example_count
 
       # Run all examples if none match the configured filters (default: `false`).
       add_setting :run_all_when_everything_filtered
@@ -199,7 +196,7 @@ MESSAGE
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
-        @profile_example_count = 10
+        @profile_examples = false
       end
 
       # @private
@@ -509,6 +506,18 @@ EOM
                         add_formatter('progress') if formatters.empty?
                         Reporter.new(*formatters)
                       end
+      end
+
+      # @api private
+      #
+      # Defaults `profile_examples` to 10 examples when `@profile_exmaples` is `true`.
+      #
+      def profile_examples
+        if @profile_examples.is_a? TrueClass
+          10
+        else
+          @profile_examples
+        end
       end
 
       # @private

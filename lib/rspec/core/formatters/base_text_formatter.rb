@@ -71,7 +71,7 @@ module RSpec
         # The number of examples to be shown can be set though `profile_count` (default: 10).
         #
         def dump_profile
-          number_of_examples = RSpec.configuration.profile_example_count
+          number_of_examples = RSpec.configuration.profile_examples
           sorted_examples = examples.sort_by {|example|
             example.execution_result[:run_time] }.reverse.first(number_of_examples)
 
