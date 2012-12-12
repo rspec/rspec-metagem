@@ -513,10 +513,11 @@ EOM
       # Defaults `profile_examples` to 10 examples when `@profile_exmaples` is `true`.
       #
       def profile_examples
-        if @profile_examples.is_a? TrueClass
+        profile = value_for(:profile_examples, @profile_examples)
+        if profile.is_a? TrueClass
           10
         else
-          @profile_examples
+          profile
         end
       end
 

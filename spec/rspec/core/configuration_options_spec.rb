@@ -166,9 +166,11 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
   end
 
   describe "--profile, -p" do
-    it "sets :profile_examples => true" do
+    it "sets :profile_examples" do
       parse_options('-p').should include(:profile_examples => true)
       parse_options('--profile').should include(:profile_examples => true)
+      parse_options('-p', '4').should include(:profile_examples => 4)
+      parse_options('--profile', '3').should include(:profile_examples => 3)
     end
   end
 

@@ -107,3 +107,11 @@ Feature: profile examples
     And the output should contain "foos take longest"
     And the output should not contain "bars are quick"
     And the output should not contain "bims are also quick"
+
+  Scenario: setting profile examples through CLI
+    When I run `rspec spec --profile 2`
+    Then the examples should all pass
+    And the output should contain "bazzes take longer"
+    And the output should contain "foos take longest"
+    And the output should not contain "bars are quick"
+    And the output should not contain "bims are also quick"
