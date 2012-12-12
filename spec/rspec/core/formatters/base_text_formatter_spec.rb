@@ -340,6 +340,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       group.run(double('reporter').as_null_object)
 
       formatter.stub(:examples) { group.examples }
+      RSpec.configuration.stub(:profile_examples) { 10 }
     end
 
     it "names the example" do
@@ -356,7 +357,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       formatter.dump_profile
       filename = __FILE__.split(File::SEPARATOR).last
 
-      output.string.should =~ /#{filename}\:#{__LINE__ - 21}/
+      output.string.should =~ /#{filename}\:#{__LINE__ - 22}/
     end
 
     it "prints the percentage taken from the total runtime" do
