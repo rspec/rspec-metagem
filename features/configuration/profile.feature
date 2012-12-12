@@ -13,56 +13,56 @@ Feature: profile examples
       require "spec_helper"
 
       describe "something" do
-        it "foos take longest" do
+        it "sleeps for 0.1 secionds (example 1)" do
           sleep 0.1
           1.should == 1
         end
 
-        it "bars are quick" do
+        it "sleeps for 0 seconds (example 2)" do
           2.should == 2
         end
 
-        it "bazzes take longer" do
+        it "sleeps for 0.15 seconds (example 3)" do
           sleep 0.15
           3.should == 3
         end
 
-        it "bims are also quick" do
+        it "sleeps for 0.05 seconds (example 4)" do
           sleep 0.05
           4.should == 4
         end
 
-        it "fifth example" do
+        it "sleeps for 0.05 seconds (example 5)" do
           sleep 0.05
           5.should == 5
         end
 
-        it "sixth example" do
+        it "sleeps for 0.05 seconds (example 6)" do
           sleep 0.05
           6.should == 6
         end
 
-        it "seventh example" do
+        it "sleeps for 0.05 seconds (example 7)" do
           sleep 0.05
           7.should == 7
         end
 
-        it "eight example" do
+        it "sleeps for 0.05 seconds (example 8)" do
           sleep 0.05
           8.should == 8
         end
 
-        it "ninth example" do
+        it "sleeps for 0.05 seconds (example 9)" do
           sleep 0.05
           9.should == 9
         end
 
-        it "tenth example" do
+        it "sleeps for 0.05 seconds (example 10)" do
           sleep 0.05
           10.should == 10
         end
 
-        it "eleventh example" do
+        it "sleeps for 0.05 seconds (example 11)" do
           sleep 0.05
           11.should == 11
         end
@@ -72,10 +72,17 @@ Feature: profile examples
   Scenario: by default does not show profile
     When I run `rspec spec`
     Then the examples should all pass
-    And the output should not contain "bazzes take longer"
-    And the output should not contain "foos take longest"
-    And the output should not contain "bars are quick"
-    And the output should not contain "bims are also quick"
+    And the output should not contain "example 1"
+    And the output should not contain "example 2"
+    And the output should not contain "example 3"
+    And the output should not contain "example 4"
+    And the output should not contain "example 5"
+    And the output should not contain "example 6"
+    And the output should not contain "example 7"
+    And the output should not contain "example 8"
+    And the output should not contain "example 9"
+    And the output should not contain "example 10"
+    And the output should not contain "example 11"
 
   Scenario: setting `profile_examples` to true shows 10 examples
     Given a file named "spec/spec_helper.rb" with:
@@ -84,17 +91,18 @@ Feature: profile examples
       """
     When I run `rspec spec`
     Then the examples should all pass
-    And the output should contain "bazzes take longer"
-    And the output should contain "foos take longest"
-    And the output should contain "bims are also quick"
-    And the output should contain "fifth example"
-    And the output should contain "sixth example"
-    And the output should contain "seventh example"
-    And the output should contain "eight example"
-    And the output should contain "ninth example"
-    And the output should contain "tenth example"
-    And the output should contain "eleventh example"
-    And the output should not contain "bars are quick"
+    And the output should contain "Top 10 slowest examples"
+    And the output should contain "example 1"
+    And the output should not contain "example 2"
+    And the output should contain "example 3"
+    And the output should contain "example 4"
+    And the output should contain "example 5"
+    And the output should contain "example 6"
+    And the output should contain "example 7"
+    And the output should contain "example 8"
+    And the output should contain "example 9"
+    And the output should contain "example 10"
+    And the output should contain "example 11"
 
   Scenario: setting `profile_examples` to 2 shows 2 examples
     Given a file named "spec/spec_helper.rb" with:
@@ -103,15 +111,31 @@ Feature: profile examples
       """
     When I run `rspec spec`
     Then the examples should all pass
-    And the output should contain "bazzes take longer"
-    And the output should contain "foos take longest"
-    And the output should not contain "bars are quick"
-    And the output should not contain "bims are also quick"
+    And the output should contain "Top 2 slowest examples"
+    And the output should contain "example 1"
+    And the output should not contain "example 2"
+    And the output should contain "example 3"
+    And the output should not contain "example 4"
+    And the output should not contain "example 5"
+    And the output should not contain "example 6"
+    And the output should not contain "example 7"
+    And the output should not contain "example 8"
+    And the output should not contain "example 9"
+    And the output should not contain "example 10"
+    And the output should not contain "example 11"
 
   Scenario: setting profile examples through CLI
     When I run `rspec spec --profile 2`
     Then the examples should all pass
-    And the output should contain "bazzes take longer"
-    And the output should contain "foos take longest"
-    And the output should not contain "bars are quick"
-    And the output should not contain "bims are also quick"
+    And the output should contain "Top 2 slowest examples"
+    And the output should contain "example 1"
+    And the output should not contain "example 2"
+    And the output should contain "example 3"
+    And the output should not contain "example 4"
+    And the output should not contain "example 5"
+    And the output should not contain "example 6"
+    And the output should not contain "example 7"
+    And the output should not contain "example 8"
+    And the output should not contain "example 9"
+    And the output should not contain "example 10"
+    And the output should not contain "example 11"
