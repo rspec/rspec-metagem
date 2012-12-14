@@ -174,6 +174,12 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
   end
 
+  describe "--no-profile" do
+    it "sets :profile_examples to false" do
+      parse_options('--no-profile').should include(:profile_examples => false)
+    end
+  end
+
   describe '--line_number' do
     it "sets :line_number" do
       parse_options('-l','3').should include(:line_numbers => ['3'])
