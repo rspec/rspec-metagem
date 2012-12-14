@@ -1,3 +1,14 @@
+### 2.12.2 / 2012-12-13
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.12.1...v2.12.2)
+
+Bug fixes
+
+* Fix `RSpec::Core::RakeTask` so that it is compatible with rake 0.8.7
+  on ruby 1.8.7. We had accidentally broke it in the 2.12 release
+  (Myron Marston).
+* Fix `RSpec::Core::RakeTask` so it is tolerant of the `Rspec` constant
+  for backwards compatibility (Patrick Van Stee)
+
 ### 2.12.1 / 2012-12-01
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.0...v2.12.1)
 
