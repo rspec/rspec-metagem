@@ -139,3 +139,23 @@ Feature: profile examples
     And the output should not contain "example 9"
     And the output should not contain "example 10"
     And the output should not contain "example 11"
+
+  Scenario: Using `--no-profile` overrules config options
+    Given a file named "spec/spec_helper.rb" with:
+      """ruby
+      RSpec.configure { |c| c.profile_examples = true }
+      """
+    When I run `rspec spec --no-profile`
+    Then the examples should all pass
+    And the output should not contain "example 1"
+    And the output should not contain "example 2"
+    And the output should not contain "example 3"
+    And the output should not contain "example 4"
+    And the output should not contain "example 5"
+    And the output should not contain "example 6"
+    And the output should not contain "example 7"
+    And the output should not contain "example 8"
+    And the output should not contain "example 9"
+    And the output should not contain "example 10"
+    And the output should not contain "example 11"
+
