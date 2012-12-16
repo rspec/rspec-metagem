@@ -1,3 +1,15 @@
+### 2.12.1 / 2012-12-15
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.0...v2.12.1)
+
+Bug fixes
+
+* Improve the failure message for an expression like
+  `{}.should =~ {}`. (Myron Marston and Andy Lindeman)
+* Provide a `match_regex` alias so that custom matchers
+  built using the matcher DSL can use it (since `match`
+  is a different method in that context).
+  (Steven Harman)
+
 ### 2.12.0 / 2012-11-12
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.3...v2.12.0)
 
