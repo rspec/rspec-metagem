@@ -11,4 +11,7 @@ rvm:
   - jruby-19mode
   - rbx-18mode
   - rbx-19mode
+  - 2.0.0
+allow_failures:
+  - rvm: 2.0.0
 
