@@ -1,9 +1,0 @@
-#!/usr/bin/env ruby
-
-require File.expand_path('../../bundle/bundler/setup', __FILE__)
-# git-sourced gems installed by bundler will be at a path like
-# "{gem_name}-{git_sha}"...
-rspec_core_path = $LOAD_PATH.grep(/rspec-core[^\/]*\/lib$/).first
-
-puts File.expand_path('../exe/rspec', rspec_core_path)
-

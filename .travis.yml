@@ -1,5 +1,5 @@
-script: "script/test_all && bin/rake cucumber --backtrace 2>&1"
-bundler_args: "--binstubs --without documentation"
+script: "script/test_all"
+bundler_args: "--standalone --binstubs --without documentation"
 rvm:
   - 1.8.7
   - 1.9.2
