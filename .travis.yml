@@ -16,4 +16,5 @@ matrix:
   allow_failures:
     - rvm: 2.0.0
     - rbx-19mode
+    - rbx-18mode
 
