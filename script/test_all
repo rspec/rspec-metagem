@@ -1,11 +1,6 @@
 #!/bin/bash
 
-function print_and_run {
-  echo $1
-  ($1)
-}
-
-set -e
+set -e -x
 
 # ideas taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
@@ -13,20 +8,23 @@ export JAVA_OPTS='-d32'  # force jRuby to use client JVM for faster startup time
 
 echo "Bundling Standalone so we can run the specs w/o bundler loaded"
 
-bundle install --standalone
-path_to_rspec_exe=`script/find_path_to_rspec_exe`
-
-command_prefix="ruby -r./bundle/bundler/setup.rb -S $path_to_rspec_exe"
+bundle install --standalone --binstubs
 
 echo "Running all..."
 
-print_and_run "$command_prefix spec -b --format progress --profile"
+bin/rspec spec -b --format progress --profile
 
 echo
 echo "--------------------------------------------------------------------"
 echo
 
 for file in `find spec -iname '*_spec.rb'`; do
-  print_and_run "$command_prefix $file -b --format progress"
+  bin/rspec $file -b --format progress
 done
+
+# TODO: it would be nice to figure out how to run the cukes w/o the overhead of
+# bundler, but just running `bin/cucumber` can fail due to the fact that it
+# shells out (via aruba) and executes `rspec`--which can pick up the wrong
+# rspec version if we're not running with bundler.
+bundle exec bin/cucumber
 

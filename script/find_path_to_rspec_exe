@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-
-require File.expand_path('../../bundle/bundler/setup', __FILE__)
-rspec_core_path = $LOAD_PATH.grep(/rspec-core\/lib$/).first
-
-puts File.expand_path('../exe/rspec', rspec_core_path)
-
