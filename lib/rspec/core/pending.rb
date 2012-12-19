@@ -68,6 +68,13 @@ module RSpec
       #       it "does something", :pending => true do
       #         # ...
       #       end
+      #
+      #   or pass `:pending => "something else getting finished"` to add a
+      #   message to the summary report:
+      #
+      #       it "does something", :pending => "something else getting finished" do
+      #         # ...
+      #       end
       def pending(*args)
         return self.class.before(:each) { pending(*args) } unless example
 
