@@ -136,13 +136,20 @@ module RSpec
           :white => 37
         }
 
-        def colorize(text, code_or_symbol)
-          if VT100_COLORS.key?(code_or_symbol) || VT100_COLORS.value?(code_or_symbol)
-            code = VT100_COLORS.fetch(code_or_symbol) { code_or_symbol }
-            "\e[#{code}m#{text}\e[0m"
-          else # defaults to white
-             "\e[37m#{text}\e[0m"
+        VT100_COLOR_CODES = VT100_COLORS.values.to_set
+
+        def color_code_for(code_or_symbol)
+          if VT100_COLOR_CODES.include?(code_or_symbol)
+            code_or_symbol
+          else
+            VT100_COLORS.fetch(code_or_symbol) do
+              color_code_for(:white)
+            end
           end
+        end
+
+        def colorize(text, code_or_symbol)
+          "\e[#{color_code_for(code_or_symbol)}m#{text}\e[0m"
         end
 
       protected
