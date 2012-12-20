@@ -202,6 +202,10 @@ module RSpec
           color(text, :blue)
         end
 
+        def magenta(text)
+          color(text, :magenta)
+        end
+
         def cyan(text)
           color(text, :cyan)
         end
