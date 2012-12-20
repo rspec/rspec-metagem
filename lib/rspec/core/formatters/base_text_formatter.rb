@@ -186,6 +186,30 @@ module RSpec
           color(text, RSpec.configuration.default_color)
         end
 
+        def red(text)
+          color(text, :red)
+        end
+
+        def green(text)
+          color(text, :green)
+        end
+
+        def yellow(text)
+          color(text, :yellow)
+        end
+
+        def blue(text)
+          color(text, :blue)
+        end
+
+        def cyan(text)
+          color(text, :cyan)
+        end
+
+        def white(text)
+          color(text, :cyan)
+        end
+
         def short_padding
           '  '
         end
