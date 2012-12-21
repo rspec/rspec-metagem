@@ -211,7 +211,7 @@ module RSpec
         end
 
         def white(text)
-          color(text, :cyan)
+          color(text, :white)
         end
 
         def short_padding
