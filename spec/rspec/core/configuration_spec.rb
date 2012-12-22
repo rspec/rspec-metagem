@@ -946,6 +946,16 @@ module RSpec::Core
         config.cleaned_from_backtrace?("org/jruby/RubyArray.java:2336").
           should be_true
       end
+
+      it "returns true for files within installed gems" do
+        config.cleaned_from_backtrace?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb').
+          should be_true
+      end
+
+      it "returns false for files in projects containing 'gems' in the name" do
+        config.cleaned_from_backtrace?('code/my-gems-plugin/lib/plugin.rb').
+          should be_false
+      end
     end
 
     describe "#debug=true" do

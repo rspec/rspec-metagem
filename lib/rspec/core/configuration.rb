@@ -176,7 +176,7 @@ MESSAGE
         /\/lib\d*\/ruby\//,
         /org\/jruby\//,
         /bin\//,
-        /gems/,
+        %r|/gems/|,
         /spec\/spec_helper\.rb/,
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
