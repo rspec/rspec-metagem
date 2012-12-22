@@ -210,7 +210,9 @@ module RSpec
         end
 
         def exception_class_name_for(exception)
-          exception.class.name || "(anonymous error class)"
+          name = exception.class.name.to_s
+          name ="(anonymous error class)" if name == ''
+          name
         end
 
         def dump_shared_failure_info(group)
