@@ -207,7 +207,7 @@ module RSpec
         end
 
         def magenta(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#magenta", "nil", "3.0")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#magenta", nil, "3.0")
           color(text, :magenta)
         end
 
