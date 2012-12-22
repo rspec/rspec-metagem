@@ -199,12 +199,18 @@ module RSpec
 
         def dump_failure_info(example)
           exception = example.execution_result[:exception]
+          exception_class_name = exception_class_name_for(exception)
+
           output.puts "#{long_padding}#{red("Failure/Error:")} #{red(read_failed_line(exception, example).strip)}"
-          output.puts "#{long_padding}#{red(exception.class.name << ":")}" unless exception.class.name =~ /RSpec/
+          output.puts "#{long_padding}#{red(exception_class_name)}:" unless exception_class_name =~ /RSpec/
           exception.message.to_s.split("\n").each { |line| output.puts "#{long_padding}  #{red(line)}" } if exception.message
           if shared_group = find_shared_group(example)
             dump_shared_failure_info(shared_group)
           end
+        end
+
+        def exception_class_name_for(exception)
+          exception.class.name || "(anonymous error class)"
         end
 
         def dump_shared_failure_info(group)

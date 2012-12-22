@@ -74,6 +74,15 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
     end
 
+    context "with an instance of an anonymous exception class" do
+      it "substitutes '(anonymous error class)' for the missing class name" do
+        exception = Class.new(StandardError).new
+        group.example("example name") { raise exception }
+        run_all_and_dump_failures
+        output.string.should include('(anonymous error class)')
+      end
+    end
+
     context "with an exception class other than RSpec" do
       it "does not show the error class" do
         group.example("example name") { raise NameError.new('foo') }
