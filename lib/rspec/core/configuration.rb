@@ -514,7 +514,7 @@ EOM
       #
       def profile_examples
         profile = value_for(:profile_examples, @profile_examples)
-        if profile.is_a? TrueClass
+        if profile && !profile.is_a?(Integer)
           10
         else
           profile
