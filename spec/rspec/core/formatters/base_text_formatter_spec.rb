@@ -344,7 +344,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   describe "#dump_profile" do
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
-        example("example") { sleep 0.1 }
+        example("example") { }
       end
       group.run(double('reporter').as_null_object)
 
