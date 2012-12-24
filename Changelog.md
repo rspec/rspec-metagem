@@ -1,6 +1,12 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.2...master)
 
+Enhancements
+
+* Allow `--profile` option to take a count argument that
+  determines the number of slow examples to dump
+  (Greggory Rothmeier).
+
 Bug fixes
 
 * Don't blow up when dumping error output for instances
