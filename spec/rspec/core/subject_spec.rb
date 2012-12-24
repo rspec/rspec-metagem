@@ -38,6 +38,22 @@ module RSpec::Core
         end
       end
 
+      it "can be overriden and super'd to from a nested group" do
+        outer_subject_value = inner_subject_value = nil
+
+        ExampleGroup.describe(Array) do
+          subject { super() << :parent_group }
+          example { outer_subject_value = subject }
+
+          context "nested" do
+            subject { super() << :child_group }
+            example { inner_subject_value = subject }
+          end
+        end.run
+
+        expect(outer_subject_value).to eq([:parent_group])
+        expect(inner_subject_value).to eq([:parent_group, :child_group])
+      end
     end
 
     describe "explicit subject" do
@@ -95,6 +111,16 @@ module RSpec::Core
 
           expect(subject_value).to eq([4, 5, 6])
         end
+
+        it "can be overriden and super'd to from a nested group" do
+          subject_value = nil
+          group.describe("Nested") do
+            subject { super() + [:override] }
+            example { subject_value = subject }
+          end.run
+
+          expect(subject_value).to eq([4, 5, 6, :override])
+        end
       end
 
       describe "with a name" do
@@ -125,6 +151,20 @@ module RSpec::Core
             subject(:list) { [1, 2, 3] }
             describe 'first' do
               subject(:first_element) { list.first }
+              example { inner_subject_value = subject }
+            end
+          end.run
+
+          expect(inner_subject_value).to eq(1)
+        end
+
+        it 'can correctly use `super` in a nested context' do
+          inner_subject_value = nil
+
+          ExampleGroup.describe do
+            subject(:list) { [1, 2, 3] }
+            describe 'first' do
+              subject(:first_element) { super().first }
               example { inner_subject_value = subject }
             end
           end.run

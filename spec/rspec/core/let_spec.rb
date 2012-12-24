@@ -33,6 +33,33 @@ describe "#let" do
 
     @nil_value_count.should eq(1)
   end
+
+  let(:a_value) { "a string" }
+
+  context 'when overriding let in a nested context' do
+    let(:a_value) { super() + " (modified)" }
+
+    it 'can use `super` to reference the parent context value' do
+      expect(a_value).to eq("a string (modified)")
+    end
+  end
+
+  context 'when the declaration uses `return`' do
+    let(:value) do
+      return :early_exit if @early_exit
+      :late_exit
+    end
+
+    it 'can exit the let declaration early' do
+      @early_exit = true
+      expect(value).to eq(:early_exit)
+    end
+
+    it 'can get past a conditional `return` statement' do
+      @early_exit = false
+      expect(value).to eq(:late_exit)
+    end
+  end
 end
 
 describe "#let!" do

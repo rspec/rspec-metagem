@@ -9,6 +9,9 @@ Enhancements
 * Add `subject!` that is the analog to `let!`. It defines an
   explicit subject and sets a `before` hook that will invoke
   the subject (Zubin Henner).
+* Fix `let` and `subject` declaration so that `super`
+  and `return` can be used in them, just like in a normal
+  method. (Myron Marston)
 
 Bug fixes
 

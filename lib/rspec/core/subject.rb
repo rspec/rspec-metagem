@@ -192,12 +192,8 @@ module RSpec
         # @see ExampleMethods#subject
         # @see ExampleMethods#should
         def subject(name=nil, &block)
-          if name
-            let(name, &block)
-            subject { send name }
-          else
-            let(:subject, &block)
-          end
+          let(:subject, &block)
+          alias_method name, :subject if name
         end
 
         # Just like `subject`, except the block is invoked by an implicit `before`
