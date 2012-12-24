@@ -94,16 +94,12 @@ module RSpec
       end
 
       # @private
-      module ExampleMethods
-        # @private
-        def __memoized
-          @__memoized ||= {}
-        end
+      def __memoized
+        @__memoized ||= {}
       end
 
       def self.included(mod)
         mod.extend ExampleGroupMethods
-        mod.__send__ :include, ExampleMethods
       end
     end
   end
