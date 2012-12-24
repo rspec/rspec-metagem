@@ -342,11 +342,14 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   describe "#dump_profile" do
+    example_line_number = nil
+
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
         # Use a sleep so there is some measurable time, to ensure
         # the reported percent is 100%, not 0%.
         example("example") { sleep 0.001 }
+        example_line_number = __LINE__ - 1
       end
       group.run(double('reporter').as_null_object)
 
@@ -368,7 +371,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       formatter.dump_profile
       filename = __FILE__.split(File::SEPARATOR).last
 
-      output.string.should =~ /#{filename}\:#{__LINE__ - 22}/
+      output.string.should =~ /#{filename}\:#{example_line_number}/
     end
 
     it "prints the percentage taken from the total runtime" do
