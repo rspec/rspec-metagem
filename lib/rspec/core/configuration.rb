@@ -510,7 +510,7 @@ EOM
 
       # @api private
       #
-      # Defaults `profile_examples` to 10 examples when `@profile_exmaples` is `true`.
+      # Defaults `profile_examples` to 10 examples when `@profile_examples` is `true`.
       #
       def profile_examples
         profile = value_for(:profile_examples, @profile_examples)

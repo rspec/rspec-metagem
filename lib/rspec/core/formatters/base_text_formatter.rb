@@ -67,8 +67,7 @@ module RSpec
 
         # @api public
         #
-        # Outputs the slowest examples in a report when using `--profile`.
-        # The number of examples to be shown can be set though `profile_count` (default: 10).
+        # Outputs the slowest examples in a report when using `--profile COUNT` (default 10).
         #
         def dump_profile
           number_of_examples = RSpec.configuration.profile_examples
