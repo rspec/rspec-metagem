@@ -31,7 +31,7 @@ ADDITIONAL
       # is also defined in rspec-core, but we can't assume it's loaded since
       # rspec-expectations should be usable w/o rspec-core.
       def warn_deprecation(message)
-        send :warn, message
+        warn(message)
       end
     end
   end
