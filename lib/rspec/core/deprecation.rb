@@ -30,7 +30,7 @@ ADDITIONAL
     #
     # Used internally to print deprecation warnings
     def warn_deprecation(message)
-      send :warn, message
+      warn message
     end
   end
 end
