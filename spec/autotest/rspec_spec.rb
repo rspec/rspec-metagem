@@ -30,7 +30,7 @@ describe Autotest::Rspec2 do
 
     it "makes the appropriate test command" do
       actual_command = rspec_autotest.make_test_cmd(@files_to_test)
-      expected_command = /#{ruby_cmd}.*'#{spec_cmd}' (.*)/
+      expected_command = /#{ruby_cmd}.*"#{spec_cmd}" (.*)/
 
       actual_command.should match(expected_command)
 
@@ -46,13 +46,13 @@ describe Autotest::Rspec2 do
     it "quotes the paths of files to test" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
       @files_to_test.keys.each do |file_to_test|
-        cmd.should match(/'#{File.expand_path(file_to_test)}'/)
+        cmd.should match(/"#{File.expand_path(file_to_test)}"/)
       end
     end
 
     it "quotes the path of the ruby executable" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
-      cmd.should match(%r('/path/to/ruby'))
+      cmd.should match(%r("/path/to/ruby"))
     end
 
     it "gives '--tty' to #{Autotest::Rspec2::RSPEC_EXECUTABLE}, not '--autotest'" do
