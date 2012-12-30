@@ -85,11 +85,15 @@ Feature: explicit subject
     Given a file named "subject_bang_spec.rb" with:
       """ruby
       describe Array do
-        subject! { prepared_array.push(1,2,3) }
-        let(:prepared_array) { [] }
-        it "evaluates subject first" do
-          prepared_array.push(4,5,6)
-          prepared_array.should == [1,2,3,4,5,6]
+        describe '#pop' do
+          let(:prepared_array) { [1,2,3] }
+          subject! { prepared_array.pop }
+          it "removes the last value from the array" do
+            prepared_array.should eq([1,2])
+          end
+          it "returns the last value of the array" do
+            subject.should eq(3)
+          end
         end
       end
       """

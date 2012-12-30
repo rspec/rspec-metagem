@@ -204,6 +204,56 @@ module RSpec
         # Just like `subject`, except the block is invoked by an implicit `before`
         # hook. This serves a dual purpose of setting up state and providing a
         # memoized reference to that state.
+        #
+        # @example
+        #
+        #   class Thing
+        #     def self.count
+        #       @count ||= 0
+        #     end
+        #
+        #     def self.count=(val)
+        #       @count += val
+        #     end
+        #
+        #     def self.reset_count
+        #       @count = 0
+        #     end
+        #
+        #     def initialize
+        #       self.class.count += 1
+        #     end
+        #   end
+        #
+        #   describe Thing do
+        #     after(:each) { Thing.reset_count }
+        #
+        #     context "using subject" do
+        #       subject { Thing.new }
+        #
+        #       it "is not invoked implicitly" do
+        #         Thing.count.should eq(0)
+        #       end
+        #
+        #       it "can be invoked explicitly" do
+        #         subject
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
+        #
+        #     context "using subject!" do
+        #       subject!(:thing) { Thing.new }
+        #
+        #       it "is invoked implicitly" do
+        #         Thing.count.should eq(1)
+        #       end
+        #
+        #       it "returns memoized version on first invocation" do
+        #         subject
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
+        #   end
         def subject!(name=nil, &block)
           subject(name, &block)
           before { __send__(:subject) }
