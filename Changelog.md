@@ -17,6 +17,9 @@ Bug fixes
 * Fix default backtrace filters so lines from projects
   containing "gems" in the name are not filtered, but
   lines from installed gems still are (Myron Marston).
+* Fix autotest command so that is uses double quotes
+  rather than single quotes for windows compatibility
+  (Jonas Tingeborn).
 
 ### 2.12.2 / 2012-12-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.1...v2.12.2)
