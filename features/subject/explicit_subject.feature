@@ -80,3 +80,18 @@ Feature: explicit subject
       """
     When I run `rspec nil_subject_spec.rb`
     Then the examples should all pass
+
+  Scenario: subject bang method
+    Given a file named "subject_bang_spec.rb" with:
+      """ruby
+      describe Array do
+        subject! { prepared_array.push(1,2,3) }
+        let(:prepared_array) { [] }
+        it "evaluates subject first" do
+          prepared_array.push(4,5,6)
+          prepared_array.should == [1,2,3,4,5,6]
+        end
+      end
+      """
+    When I run `rspec subject_bang_spec.rb`
+    Then the examples should all pass

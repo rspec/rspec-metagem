@@ -201,6 +201,14 @@ module RSpec
           end
         end
 
+        # Just like `subject`, except the block is invoked by an implicit `before`
+        # hook. This serves a dual purpose of setting up state and providing a
+        # memoized reference to that state.
+        def subject!(name=nil, &block)
+          subject(name, &block)
+          before { __send__(:subject) }
+        end
+
         attr_reader :explicit_subject_block
 
         private
