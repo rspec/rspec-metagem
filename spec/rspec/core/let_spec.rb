@@ -36,20 +36,14 @@ describe "#let" do
 end
 
 describe "#let!" do
-  let!(:creator) do
-    Class.new do
-      @count = 0
-      def self.count
-        @count += 1
-      end
-    end
-  end
+  subject { [1,2,3] }
+  let!(:popped) { subject.pop }
 
   it "evaluates the value non-lazily" do
-    lambda { creator.count }.should_not raise_error
+    subject.should eq([1,2])
   end
 
-  it "does not interfere between tests" do
-    creator.count.should eq(1)
+  it "returns memoized value from first invocation" do
+    popped.should eq(3)
   end
 end
