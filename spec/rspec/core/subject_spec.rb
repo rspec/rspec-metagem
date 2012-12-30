@@ -251,5 +251,18 @@ module RSpec::Core
         its(:false_if_first_time) { should be(false) }
       end
     end
+
+    describe '#subject!' do
+      let(:prepared_array) { [1,2,3] }
+      subject! { prepared_array.pop }
+
+      it "evaluates subject before example" do
+        prepared_array.should eq([1,2])
+      end
+
+      it "returns memoized value from first invocation" do
+        subject.should eq(3)
+      end
+    end
   end
 end

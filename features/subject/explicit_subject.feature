@@ -80,3 +80,22 @@ Feature: explicit subject
       """
     When I run `rspec nil_subject_spec.rb`
     Then the examples should all pass
+
+  Scenario: subject bang method
+    Given a file named "subject_bang_spec.rb" with:
+      """ruby
+      describe Array do
+        describe '#pop' do
+          let(:prepared_array) { [1,2,3] }
+          subject! { prepared_array.pop }
+          it "removes the last value from the array" do
+            prepared_array.should eq([1,2])
+          end
+          it "returns the last value of the array" do
+            subject.should eq(3)
+          end
+        end
+      end
+      """
+    When I run `rspec subject_bang_spec.rb`
+    Then the examples should all pass
