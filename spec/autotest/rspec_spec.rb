@@ -28,6 +28,12 @@ describe Autotest::Rspec2 do
       @to_test = files.map { |f| File.expand_path(f) }.join ' '
     end
 
+    it "uses double quotes for windows compatibility" do
+      actual_command = rspec_autotest.make_test_cmd(@files_to_test)
+      expected_pattern = /^[^\']+$/
+      actual_command.should match(expected_pattern)
+    end
+
     it "makes the appropriate test command" do
       actual_command = rspec_autotest.make_test_cmd(@files_to_test)
       expected_command = /#{ruby_cmd}.*"#{spec_cmd}" (.*)/
