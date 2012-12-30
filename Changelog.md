@@ -6,6 +6,9 @@ Enhancements
 * Allow `--profile` option to take a count argument that
   determines the number of slow examples to dump
   (Greggory Rothmeier).
+* Add `subject!` that is the analog to `let!`. It defines an
+  explicit subject and sets a `before` hook that will invoke
+  the subject (Zubin Henner).
 
 Bug fixes
 
