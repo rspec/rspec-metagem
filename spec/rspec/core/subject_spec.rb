@@ -5,31 +5,55 @@ module RSpec::Core
   describe Subject do
     before(:each) { RSpec.configuration.configure_expectation_framework }
 
+    def subject_value_for(describe_arg, &block)
+      group = ExampleGroup.describe(describe_arg, &block)
+      subject_value = nil
+      group.example { subject_value = subject }
+      group.run
+      subject_value
+    end
+
     describe "implicit subject" do
       describe "with a class" do
         it "returns an instance of the class" do
-          ExampleGroup.describe(Array).subject.call.should eq([])
+          expect(subject_value_for(Array)).to eq([])
         end
       end
 
       describe "with a Module" do
         it "returns the Module" do
-          ExampleGroup.describe(Enumerable).subject.call.should eq(Enumerable)
+          expect(subject_value_for(Enumerable)).to eq(Enumerable)
         end
       end
 
       describe "with a string" do
-        it "return the string" do
-          ExampleGroup.describe("Foo").subject.call.should eq("Foo")
+        it "returns the string" do
+          expect(subject_value_for("Foo")).to eq("Foo")
         end
       end
 
       describe "with a number" do
         it "returns the number" do
-          ExampleGroup.describe(15).subject.call.should eq(15)
+          expect(subject_value_for(15)).to eq(15)
         end
       end
 
+      it "can be overriden and super'd to from a nested group" do
+        outer_subject_value = inner_subject_value = nil
+
+        ExampleGroup.describe(Array) do
+          subject { super() << :parent_group }
+          example { outer_subject_value = subject }
+
+          context "nested" do
+            subject { super() << :child_group }
+            example { inner_subject_value = subject }
+          end
+        end.run
+
+        expect(outer_subject_value).to eq([:parent_group])
+        expect(inner_subject_value).to eq([:parent_group, :child_group])
+      end
     end
 
     describe "explicit subject" do
@@ -54,53 +78,102 @@ module RSpec::Core
 
       describe "defined in a top level group" do
         it "replaces the implicit subject in that group" do
-          group = ExampleGroup.describe(Array)
-          group.subject { [1,2,3] }
-          group.subject.call.should eq([1,2,3])
+          subject_value = subject_value_for(Array) do
+            subject { [1, 2, 3] }
+          end
+          expect(subject_value).to eq([1, 2, 3])
         end
       end
 
       describe "defined in a top level group" do
         let(:group) do
           ExampleGroup.describe do
-            subject{ [4,5,6] }
+            subject{ [4, 5, 6] }
           end
         end
 
         it "is available in a nested group (subclass)" do
-          nested_group = group.describe("I'm nested!") { }
-          nested_group.subject.call.should eq([4,5,6])
+          subject_value = nil
+          group.describe("I'm nested!") do
+            example { subject_value = subject }
+          end.run
+
+          expect(subject_value).to eq([4, 5, 6])
         end
 
         it "is available in a doubly nested group (subclass)" do
-          nested_group = group.describe("Nesting level 1") { }
-          doubly_nested_group = nested_group.describe("Nesting level 2") { }
-          doubly_nested_group.subject.call.should eq([4,5,6])
+          subject_value = nil
+          group.describe("Nesting level 1") do
+            describe("Nesting level 2") do
+              example { subject_value = subject }
+            end
+          end.run
+
+          expect(subject_value).to eq([4, 5, 6])
+        end
+
+        it "can be overriden and super'd to from a nested group" do
+          subject_value = nil
+          group.describe("Nested") do
+            subject { super() + [:override] }
+            example { subject_value = subject }
+          end.run
+
+          expect(subject_value).to eq([4, 5, 6, :override])
         end
       end
 
       describe "with a name" do
         it "defines a method that returns the memoized subject" do
-          group = ExampleGroup.describe do
-            subject(:list) { [1,2,3] }
+          list_value_1 = list_value_2 = subject_value_1 = subject_value_2 = nil
+
+          ExampleGroup.describe do
+            subject(:list) { [1, 2, 3] }
             example do
-              list.should equal(list)
-              subject.should equal(subject)
-              subject.should equal(list)
+              list_value_1 = list
+              list_value_2 = list
+              subject_value_1 = subject
+              subject_value_2 = subject
             end
-          end
-          group.run.should be_true
+          end.run
+
+          expect(list_value_1).to eq([1, 2, 3])
+          expect(list_value_1).to equal(list_value_2)
+
+          expect(subject_value_1).to equal(subject_value_2)
+          expect(subject_value_1).to equal(list_value_1)
         end
 
         it "is referred from inside subject by the name" do
-          group = ExampleGroup.describe do
-            subject(:list) { [1,2,3] }
+          inner_subject_value = nil
+
+          ExampleGroup.describe do
+            subject(:list) { [1, 2, 3] }
             describe 'first' do
               subject(:first_element) { list.first }
-              it { should eq(1) }
+              example { inner_subject_value = subject }
             end
+          end.run
+
+          expect(inner_subject_value).to eq(1)
+        end
+
+        context 'when `super` is used' do
+          it "delegates to the parent context's `subject`, not the named mehtod" do
+            inner_subject_value = nil
+
+            ExampleGroup.describe do
+              let(:list) { ["a", "b", "c"] }
+              subject { [1, 2, 3] }
+
+              describe 'first' do
+                subject(:list) { super().first(2) }
+                example { inner_subject_value = subject }
+              end
+            end.run
+
+            expect(inner_subject_value).to eq([1, 2])
           end
-          group.run.should be_true
         end
       end
     end
