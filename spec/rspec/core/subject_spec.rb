@@ -158,18 +158,22 @@ module RSpec::Core
           expect(inner_subject_value).to eq(1)
         end
 
-        it 'can correctly use `super` in a nested context' do
-          inner_subject_value = nil
+        context 'when `super` is used' do
+          it "delegates to the parent context's `subject`, not the named mehtod" do
+            inner_subject_value = nil
 
-          ExampleGroup.describe do
-            subject(:list) { [1, 2, 3] }
-            describe 'first' do
-              subject(:first_element) { super().first }
-              example { inner_subject_value = subject }
-            end
-          end.run
+            ExampleGroup.describe do
+              let(:list) { ["a", "b", "c"] }
+              subject { [1, 2, 3] }
 
-          expect(inner_subject_value).to eq(1)
+              describe 'first' do
+                subject(:list) { super().first(2) }
+                example { inner_subject_value = subject }
+              end
+            end.run
+
+            expect(inner_subject_value).to eq([1, 2])
+          end
         end
       end
     end
