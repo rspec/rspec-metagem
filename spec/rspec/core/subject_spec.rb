@@ -27,7 +27,7 @@ module RSpec::Core
       end
 
       describe "with a string" do
-        it "return the string" do
+        it "returns the string" do
           expect(subject_value_for("Foo")).to eq("Foo")
         end
       end
