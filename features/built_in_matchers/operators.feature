@@ -4,25 +4,31 @@ Feature: operator matchers
   operators. These pretty much work like you expect. For example, each of these
   pass:
 
-      7.should == 7
-      [1, 2, 3].should == [1, 2, 3]
-      "this is a string".should =~ /^this/
-      "this is a string".should_not =~ /^that/
-      String.should === "this is a string"
+    """ruby
+    7.should == 7
+    [1, 2, 3].should == [1, 2, 3]
+    "this is a string".should =~ /^this/
+    "this is a string".should_not =~ /^that/
+    String.should === "this is a string"
+    """
 
   You can also use comparison operators combined with the "be" matcher like
   this:
 
-      37.should be < 100
-      37.should be <= 38
-      37.should be >= 2
-      37.should be > 7
+    """ruby
+    37.should be < 100
+    37.should be <= 38
+    37.should be >= 2
+    37.should be > 7
+    """
 
   RSpec also provides a `=~` matcher for arrays that disregards differences in
   the ording between the actual and expected array.  For example:
 
-      [1, 2, 3].should =~ [2, 3, 1] # pass
-      [:a, :c, :b].should =~ [:a, :c] # fail
+    """ruby
+    [1, 2, 3].should =~ [2, 3, 1] # pass
+    [:a, :c, :b].should =~ [:a, :c] # fail
+    """
 
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:

@@ -12,14 +12,18 @@ Feature: equality matchers
 
   rspec-expectations ships with matchers that align with each of these methods:
 
-      a.should equal(b) # passes if a.equal?(b)
-      a.should eql(b)   # passes if a.eql?(b)
-      a.should == b     # passes if a == b
+    """ruby
+    a.should equal(b) # passes if a.equal?(b)
+    a.should eql(b)   # passes if a.eql?(b)
+    a.should == b     # passes if a == b
+    """
 
   It also ships with two matchers that have more of a DSL feel to them:
 
-      a.should be(b) # passes if a.equal?(b)
-      a.should eq(b) # passes if a == b
+    """ruby
+    a.should be(b) # passes if a.equal?(b)
+    a.should eq(b) # passes if a == b
+    """
 
   These are a useful pair if you wish to avoid the warning that Ruby emits on
   `a.should == b`

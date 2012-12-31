@@ -4,6 +4,7 @@ Feature: include matcher
   expected objects.  This works on any object that responds to #include?  (such
   as a string or array):
 
+    """ruby
     "a string".should include("a")
     "a string".should include("str")
     "a string".should include("str", "g")
@@ -12,9 +13,11 @@ Feature: include matcher
     [1, 2].should include(1)
     [1, 2].should include(1, 2)
     [1, 2].should_not include(17)
+    """
 
   The matcher also provides flexible handling for hashes:
 
+    """ruby
     {:a => 1, :b => 2}.should include(:a)
     {:a => 1, :b => 2}.should include(:a, :b)
     {:a => 1, :b => 2}.should include(:a => 1)
@@ -22,6 +25,7 @@ Feature: include matcher
     {:a => 1, :b => 2}.should_not include(:c)
     {:a => 1, :b => 2}.should_not include(:a => 2)
     {:a => 1, :b => 2}.should_not include(:c => 3)
+    """
 
   Scenario: array usage
     Given a file named "array_include_matcher_spec.rb" with:

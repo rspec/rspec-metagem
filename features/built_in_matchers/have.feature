@@ -16,14 +16,18 @@ Feature: have(n).items matcher
   the #items call is pure syntactic sugar.  You can use anything you want here.  These
   are equivalent:
 
-    * collection.should have(x).items
-    * collection.should have(x).things
+    """ruby
+    collection.should have(x).items
+    collection.should have(x).things
+    """
 
   You can also use this matcher on a non-collection object that returns a collection
   from one of its methods.  For example, Dir#entries returns an array, so you could
   set an expectation using the following:
 
+    """ruby
     Dir.new("my/directory").should have(7).entries
+    """
 
   Scenario: have(x).items on a collection
     Given a file named "have_items_spec.rb" with:
