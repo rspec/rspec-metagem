@@ -3,9 +3,11 @@ Feature: end_with matcher
   Use the `end_with` matcher to specify that a string or array ends with the
   expected characters or elements.
 
+    """ruby
     "this string".should end_with "string"
     "this string".should_not end_with "stringy"
     [0, 1, 2].should end_with 1, 2
+    """
 
   Scenario: string usage
     Given a file named "example_spec.rb" with:
