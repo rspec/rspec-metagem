@@ -161,7 +161,7 @@ module RSpec
         def color(text, color_code)
           color_enabled? ? colorize(text, color_code) : text
         end
-        
+
         def failure_color(text)
           color(text, RSpec.configuration.failure_color)
         end
@@ -173,7 +173,7 @@ module RSpec
         def pending_color(text)
           color(text, RSpec.configuration.pending_color)
         end
-        
+
         def fixed_color(text)
           color(text, RSpec.configuration.fixed_color)
         end
