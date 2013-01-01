@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 module RSpec
   module Core
     describe RubyProject do
