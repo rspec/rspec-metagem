@@ -23,8 +23,8 @@ module RSpec::Core::Formatters
 
       examples.each {|e| formatter.example_failed(e) }
 
-      output.string.should =~ /first example \(FAILED - 1\)/m
-      output.string.should =~ /second example \(FAILED - 2\)/m
+      expect(output.string).to match /first example \(FAILED - 1\)/m
+      expect(output.string).to match /second example \(FAILED - 2\)/m
     end
 
     it "represents nested group using hierarchy tree" do
@@ -48,7 +48,7 @@ module RSpec::Core::Formatters
 
       group.run(RSpec::Core::Reporter.new(formatter))
 
-      output.string.should eql("
+      expect(output.string).to eql("
 root
   context 1
     nested example 1.1
@@ -76,7 +76,7 @@ root
 
       group.run(RSpec::Core::Reporter.new(formatter))
 
-      output.string.should eql("
+      expect(output.string).to eql("
 root
   nested
     example 1

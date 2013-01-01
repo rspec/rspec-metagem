@@ -71,7 +71,7 @@ module RSpec::Core
               subject
               subject
             end
-            group.run.should be_true, "expected subject block to be evaluated only once"
+            expect(group.run).to be_true, "expected subject block to be evaluated only once"
           end
         end
       end
@@ -190,7 +190,7 @@ module RSpec::Core
           it { should_not be_not_ok }
         end
 
-        group.run.should be_true
+        expect(group.run).to be_true
       end
     end
 
@@ -290,7 +290,7 @@ module RSpec::Core
             end
           end
 
-          group.run.should be_true
+          expect(group.run).to be_true
         end
       end
 
@@ -330,11 +330,11 @@ module RSpec::Core
       subject! { prepared_array.pop }
 
       it "evaluates subject before example" do
-        prepared_array.should eq([1,2])
+        expect(prepared_array).to eq([1,2])
       end
 
       it "returns memoized value from first invocation" do
-        subject.should eq(3)
+        expect(subject).to eq(3)
       end
     end
   end

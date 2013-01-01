@@ -6,11 +6,11 @@ module RSpec
     module Formatters
       describe SnippetExtractor do
         it "falls back on a default message when it doesn't understand a line" do
-          RSpec::Core::Formatters::SnippetExtractor.new.snippet_for("blech").should eq(["# Couldn't get snippet for blech", 1])
+          expect(RSpec::Core::Formatters::SnippetExtractor.new.snippet_for("blech")).to eq(["# Couldn't get snippet for blech", 1])
         end
 
         it "falls back on a default message when it doesn't find the file" do
-         RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8).should eq("# Couldn't get snippet for blech")
+         expect(RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8)).to eq("# Couldn't get snippet for blech")
         end
 
         it "falls back on a default message when it gets a security error" do
@@ -18,7 +18,7 @@ module RSpec
           safely do
             message = RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8)
           end
-          message.should eq("# Couldn't get snippet for blech")
+          expect(message).to eq("# Couldn't get snippet for blech")
         end
       end
     end

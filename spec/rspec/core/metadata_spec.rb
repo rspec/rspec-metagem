@@ -7,20 +7,20 @@ module RSpec
       describe '.relative_path' do
         let(:here) { File.expand_path(".") }
         it "transforms absolute paths to relative paths" do
-          Metadata.relative_path(here).should == "."
+          expect(Metadata.relative_path(here)).to eq "."
         end
         it "transforms absolute paths to relative paths anywhere in its argument" do
-          Metadata.relative_path("foo #{here} bar").should == "foo . bar"
+          expect(Metadata.relative_path("foo #{here} bar")).to eq "foo . bar"
         end
         it "returns nil if passed an unparseable file:line combo" do
-          Metadata.relative_path("-e:1").should be_nil
+          expect(Metadata.relative_path("-e:1")).to be_nil
         end
         # I have no idea what line = line.sub(/\A([^:]+:\d+)$/, '\\1') is supposed to do
         it "gracefully returns nil if run in a secure thread" do
           safely do
             value = Metadata.relative_path(".")
             # on some rubies, File.expand_path is not a security error, so accept "." as well
-            [nil, "."].should include(value)
+            expect([nil, "."]).to include(value)
           end
         end
 
@@ -39,7 +39,7 @@ module RSpec
         it "uses :caller if passed as part of the user metadata" do
           m = Metadata.new
           m.process('group', :caller => ['example_file:42'])
-          m[:example_group][:location].should eq("example_file:42")
+          expect(m[:example_group][:location]).to eq("example_file:42")
         end
       end
 
@@ -69,27 +69,27 @@ module RSpec
           it "matches the group when the line_number is the example group line number" do
             # this call doesn't really make sense since filter_applies? is only called
             # for example metadata not group metadata
-            group_metadata.filter_applies?(condition_key, group_condition).should be_true
+            expect(group_metadata.filter_applies?(condition_key, group_condition)).to be_true
           end
 
           it "matches the example when the line_number is the grandparent example group line number" do
-            example_metadata.filter_applies?(condition_key, parent_group_condition).should be_true
+            expect(example_metadata.filter_applies?(condition_key, parent_group_condition)).to be_true
           end
 
           it "matches the example when the line_number is the parent example group line number" do
-            example_metadata.filter_applies?(condition_key, group_condition).should be_true
+            expect(example_metadata.filter_applies?(condition_key, group_condition)).to be_true
           end
 
           it "matches the example when the line_number is the example line number" do
-            example_metadata.filter_applies?(condition_key, example_condition).should be_true
+            expect(example_metadata.filter_applies?(condition_key, example_condition)).to be_true
           end
 
           it "matches when the line number is between this example and the next" do
-            example_metadata.filter_applies?(condition_key, between_examples_condition).should be_true
+            expect(example_metadata.filter_applies?(condition_key, between_examples_condition)).to be_true
           end
 
           it "does not match when the line number matches the next example" do
-            example_metadata.filter_applies?(condition_key, next_example_condition).should be_false
+            expect(example_metadata.filter_applies?(condition_key, next_example_condition)).to be_false
           end
         end
 
@@ -136,25 +136,25 @@ module RSpec
           it_has_behavior "matching by line number"
 
           it "ignores location filters for other files" do
-            example_metadata.filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]}).should be_true
+            expect(example_metadata.filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]})).to be_true
           end
         end
 
         it "matches a proc with no arguments that evaluates to true" do
-          example_metadata.filter_applies?(:if, lambda { true }).should be_true
+          expect(example_metadata.filter_applies?(:if, lambda { true })).to be_true
         end
 
         it "matches a proc that evaluates to true" do
-          example_metadata.filter_applies?(:if, lambda { |v| v }).should be_true
+          expect(example_metadata.filter_applies?(:if, lambda { |v| v })).to be_true
         end
 
         it "does not match a proc that evaluates to false" do
-          example_metadata.filter_applies?(:if, lambda { |v| !v }).should be_false
+          expect(example_metadata.filter_applies?(:if, lambda { |v| !v })).to be_false
         end
 
         it "matches a proc with an arity of 2" do
           example_metadata[:foo] = nil
-          example_metadata.filter_applies?(:foo, lambda { |v, m| m == example_metadata }).should be_true
+          expect(example_metadata.filter_applies?(:foo, lambda { |v, m| m == example_metadata })).to be_true
         end
 
         it "raises an error when the proc has an incorrect arity" do
@@ -169,35 +169,35 @@ module RSpec
           }
 
           it "matches a symbol" do
-            metadata_with_array.filter_applies?(:tag, 'one').should be_true
-            metadata_with_array.filter_applies?(:tag, :one).should be_true
-            metadata_with_array.filter_applies?(:tag, 'two').should be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'one')).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, :one)).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 'two')).to be_false
           end
 
           it "matches a string" do
-            metadata_with_array.filter_applies?(:tag, 'three').should be_true
-            metadata_with_array.filter_applies?(:tag, :three).should be_true
-            metadata_with_array.filter_applies?(:tag, 'tree').should be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'three')).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, :three)).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 'tree')).to be_false
           end
 
           it "matches an integer" do
-            metadata_with_array.filter_applies?(:tag, '2').should be_true
-            metadata_with_array.filter_applies?(:tag, 2).should be_true
-            metadata_with_array.filter_applies?(:tag, 3).should be_false
+            expect(metadata_with_array.filter_applies?(:tag, '2')).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 2)).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 3)).to be_false
           end
 
           it "matches a regexp" do
-            metadata_with_array.filter_applies?(:tag, 'four').should be_true
-            metadata_with_array.filter_applies?(:tag, 'fourtune').should be_true
-            metadata_with_array.filter_applies?(:tag, 'fortune').should be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'four')).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 'fourtune')).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, 'fortune')).to be_false
           end
 
           it "matches a proc that evaluates to true" do
-            metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'three' }).should be_true
+            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'three' })).to be_true
           end
 
           it "does not match a proc that evaluates to false" do
-            metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'nothing' }).should be_false
+            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'nothing' })).to be_false
           end
         end
       end
@@ -208,50 +208,50 @@ module RSpec
         let(:line_number)        { __LINE__ - 1 }
 
         it "stores the description" do
-          mfe.fetch(:description).should eq("example description")
-          mfe[:description].should eq("example description")
+          expect(mfe.fetch(:description)).to eq("example description")
+          expect(mfe[:description]).to eq("example description")
         end
 
         it "stores the full_description (group description + example description)" do
-          mfe.fetch(:full_description).should eq("group description example description")
-          mfe[:full_description].should eq("group description example description")
+          expect(mfe.fetch(:full_description)).to eq("group description example description")
+          expect(mfe[:full_description]).to eq("group description example description")
         end
 
         it "creates an empty execution result" do
-          mfe.fetch(:execution_result).should eq({})
-          mfe[:execution_result].should eq({})
+          expect(mfe.fetch(:execution_result)).to eq({})
+          expect(mfe[:execution_result]).to eq({})
         end
 
         it "extracts file path from caller" do
-          mfe.fetch(:file_path).should eq(relative_path(__FILE__))
-          mfe[:file_path].should eq(relative_path(__FILE__))
+          expect(mfe.fetch(:file_path)).to eq(relative_path(__FILE__))
+          expect(mfe[:file_path]).to eq(relative_path(__FILE__))
         end
 
         it "extracts line number from caller" do
-          mfe.fetch(:line_number).should eq(line_number)
-          mfe[:line_number].should eq(line_number)
+          expect(mfe.fetch(:line_number)).to eq(line_number)
+          expect(mfe[:line_number]).to eq(line_number)
         end
 
         it "extracts location from caller" do
-          mfe.fetch(:location).should eq("#{relative_path(__FILE__)}:#{line_number}")
-          mfe[:location].should eq("#{relative_path(__FILE__)}:#{line_number}")
+          expect(mfe.fetch(:location)).to eq("#{relative_path(__FILE__)}:#{line_number}")
+          expect(mfe[:location]).to eq("#{relative_path(__FILE__)}:#{line_number}")
         end
 
         it "uses :caller if passed as an option" do
           example_metadata = metadata.for_example('example description', {:caller => ['example_file:42']})
-          example_metadata[:location].should eq("example_file:42")
+          expect(example_metadata[:location]).to eq("example_file:42")
         end
 
         it "merges arbitrary options" do
-          mfe.fetch(:arbitrary).should eq(:options)
-          mfe[:arbitrary].should eq(:options)
+          expect(mfe.fetch(:arbitrary)).to eq(:options)
+          expect(mfe[:arbitrary]).to eq(:options)
         end
 
         it "points :example_group to the same hash object" do
           a = metadata.for_example("foo", {})[:example_group]
           b = metadata.for_example("bar", {})[:example_group]
           a[:description] = "new description"
-          b[:description].should eq("new description")
+          expect(b[:description]).to eq("new description")
         end
       end
 
@@ -262,7 +262,7 @@ module RSpec
               m = Metadata.new
               m.process('group')
 
-              m[:example_group][key].should be_nil
+              expect(m[:example_group][key]).to be_nil
             end
           end
 
@@ -271,7 +271,7 @@ module RSpec
               m = Metadata.new
               m.process(:group)
 
-              m[:example_group][key].should be_nil
+              expect(m[:example_group][key]).to be_nil
             end
           end
 
@@ -280,7 +280,7 @@ module RSpec
               m = Metadata.new
               m.process(String)
 
-              m[:example_group][key].should be(String)
+              expect(m[:example_group][key]).to be(String)
             end
           end
 
@@ -292,7 +292,7 @@ module RSpec
               m = Metadata.new(sm)
               m.process(Array)
 
-              m[:example_group][key].should be(String)
+              expect(m[:example_group][key]).to be(String)
             end
 
             it "returns own described class if parent doesn't have one" do
@@ -302,7 +302,7 @@ module RSpec
               m = Metadata.new(sm)
               m.process(Array)
 
-              m[:example_group][key].should be(Array)
+              expect(m[:example_group][key]).to be(Array)
             end
 
             it "can override a parent group's described class" do
@@ -316,9 +316,9 @@ module RSpec
               grandchild = Metadata.new(child)
               grandchild.process(Array)
 
-              grandchild[:example_group][key].should be(Hash)
-              child[:example_group][key].should be(Hash)
-              parent[:example_group][key].should be(String)
+              expect(grandchild[:example_group][key]).to be(Hash)
+              expect(child[:example_group][key]).to be(Hash)
+              expect(parent[:example_group][key]).to be(String)
             end
           end
         end
@@ -330,7 +330,7 @@ module RSpec
           m.process("group")
 
           m = m.for_example("example", {})
-          m[:description].should eq("example")
+          expect(m[:description]).to eq("example")
         end
 
         context "with a string" do
@@ -338,7 +338,7 @@ module RSpec
             m = Metadata.new
             m.process("group")
 
-            m[:example_group][:description].should eq("group")
+            expect(m[:example_group][:description]).to eq("group")
           end
         end
 
@@ -347,7 +347,7 @@ module RSpec
             m = Metadata.new
             m.process("group")
 
-            m[:example_group][:description].should eq("group")
+            expect(m[:example_group][:description]).to eq("group")
           end
         end
 
@@ -356,7 +356,7 @@ module RSpec
             m = Metadata.new
             m.process(Object, 'group')
 
-            m[:example_group][:description].should eq("Object group")
+            expect(m[:example_group][:description]).to eq("Object group")
           end
         end
 
@@ -365,7 +365,7 @@ module RSpec
             m = Metadata.new
             m.process()
 
-            m[:example_group][:description].should eq("")
+            expect(m[:example_group][:description]).to eq("")
           end
         end
       end
@@ -376,7 +376,7 @@ module RSpec
           group_metadata.process('group')
 
           example_metadata = group_metadata.for_example("example", {})
-          example_metadata[:full_description].should eq("group example")
+          expect(example_metadata[:full_description]).to eq("group example")
         end
 
         it "concats nested example group descriptions" do
@@ -386,8 +386,8 @@ module RSpec
           child = Metadata.new(parent)
           child.process('child')
 
-          child[:example_group][:full_description].should eq("parent child")
-          child.for_example('example', child)[:full_description].should eq("parent child example")
+          expect(child[:example_group][:full_description]).to eq("parent child")
+          expect(child.for_example('example', child)[:full_description]).to eq("parent child example")
         end
 
         it "concats nested example group descriptions three deep" do
@@ -400,10 +400,10 @@ module RSpec
           child = Metadata.new(parent)
           child.process('child')
 
-          grandparent[:example_group][:full_description].should eq("grandparent")
-          parent[:example_group][:full_description].should eq("grandparent parent")
-          child[:example_group][:full_description].should eq("grandparent parent child")
-          child.for_example('example', child)[:full_description].should eq("grandparent parent child example")
+          expect(grandparent[:example_group][:full_description]).to eq("grandparent")
+          expect(parent[:example_group][:full_description]).to eq("grandparent parent")
+          expect(child[:example_group][:full_description]).to eq("grandparent parent child")
+          expect(child.for_example('example', child)[:full_description]).to eq("grandparent parent child example")
         end
 
         %w[# . ::].each do |char|
@@ -411,7 +411,7 @@ module RSpec
             it "removes the space" do
               m = Metadata.new
               m.process(Array, "#{char}method")
-              m[:example_group][:full_description].should eq("Array#{char}method")
+              expect(m[:example_group][:full_description]).to eq("Array#{char}method")
             end
           end
 
@@ -421,7 +421,7 @@ module RSpec
               parent.process(Object)
               child = Metadata.new(parent)
               child.process("#{char}method")
-              child[:example_group][:full_description].should eq("Object#{char}method")
+              expect(child[:example_group][:full_description]).to eq("Object#{char}method")
             end
           end
 
@@ -433,7 +433,7 @@ module RSpec
               parent.process("with 2 items")
               child = Metadata.new(parent)
               child.process("#{char}method")
-              child[:example_group][:full_description].should eq("Array with 2 items #{char}method")
+              expect(child[:example_group][:full_description]).to eq("Array with 2 items #{char}method")
             end
           end
         end
@@ -446,7 +446,7 @@ module RSpec
                     "./lib/rspec/core/foo.rb",
                     "#{__FILE__}:#{__LINE__}"
           ])
-          m[:example_group][:file_path].should eq(relative_path(__FILE__))
+          expect(m[:example_group][:file_path]).to eq(relative_path(__FILE__))
         end
       end
 
@@ -454,19 +454,19 @@ module RSpec
         it "finds the line number with the first non-rspec lib file in the backtrace" do
           m = Metadata.new
           m.process({})
-          m[:example_group][:line_number].should eq(__LINE__ - 1)
+          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
         end
 
         it "finds the line number with the first spec file with drive letter" do
           m = Metadata.new
           m.process(:caller => [ "C:/path/to/file_spec.rb:#{__LINE__}" ])
-          m[:example_group][:line_number].should eq(__LINE__ - 1)
+          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
         end
 
         it "uses the number after the first : for ruby 1.9" do
           m = Metadata.new
           m.process(:caller => [ "#{__FILE__}:#{__LINE__}:999" ])
-          m[:example_group][:line_number].should eq(__LINE__ - 1)
+          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
         end
       end
 
@@ -478,7 +478,7 @@ module RSpec
           child = Metadata.new(parent)
           child.process()
 
-          child[:example_group][:example_group].should eq(parent[:example_group])
+          expect(child[:example_group][:example_group]).to eq(parent[:example_group])
         end
       end
     end

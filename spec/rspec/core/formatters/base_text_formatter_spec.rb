@@ -7,15 +7,15 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
   describe "#summary_line" do
     it "with 0s outputs pluralized (excluding pending)" do
-      formatter.summary_line(0,0,0).should eq("0 examples, 0 failures")
+      expect(formatter.summary_line(0,0,0)).to eq("0 examples, 0 failures")
     end
 
     it "with 1s outputs singular (including pending)" do
-      formatter.summary_line(1,1,1).should eq("1 example, 1 failure, 1 pending")
+      expect(formatter.summary_line(1,1,1)).to eq("1 example, 1 failure, 1 pending")
     end
 
     it "with 2s outputs pluralized (including pending)" do
-      formatter.summary_line(2,2,2).should eq("2 examples, 2 failures, 2 pending")
+      expect(formatter.summary_line(2,2,2)).to eq("2 examples, 2 failures, 2 pending")
     end
   end
 
@@ -27,7 +27,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       line = __LINE__ - 2
       group.run(formatter)
       formatter.dump_commands_to_rerun_failed_examples
-      output.string.should include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
+      expect(output.string).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
     end
   end
 
@@ -42,12 +42,12 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     it "preserves formatting" do
-      group.example("example name") { "this".should eq("that") }
+      group.example("example name") { expect("this").to eq("that") }
 
       run_all_and_dump_failures
 
-      output.string.should =~ /group name example name/m
-      output.string.should =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
+      expect(output.string).to match /group name example name/m
+      expect(output.string).to match /(\s+)expected: \"that\"\n\1     got: \"this\"/m
     end
 
     context "with an exception without a message" do
@@ -61,7 +61,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it "preserves ancestry" do
         example = group.example("example name") { raise "something" }
         run_all_and_dump_failures
-        example.example_group.parent_groups.size.should == 1
+        expect(example.example_group.parent_groups.size).to eq 1
       end
     end
 
@@ -79,7 +79,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         exception = Class.new(StandardError).new
         group.example("example name") { raise exception }
         run_all_and_dump_failures
-        output.string.should include('(anonymous error class)')
+        expect(output.string).to include('(anonymous error class)')
       end
     end
 
@@ -87,15 +87,15 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it "does not show the error class" do
         group.example("example name") { raise NameError.new('foo') }
         run_all_and_dump_failures
-        output.string.should =~ /NameError/m
+        expect(output.string).to match /NameError/m
       end
     end
 
     context "with a failed expectation (rspec-expectations)" do
       it "does not show the error class" do
-        group.example("example name") { "this".should eq("that") }
+        group.example("example name") { expect("this").to eq("that") }
         run_all_and_dump_failures
-        output.string.should_not =~ /RSpec/m
+        expect(output.string).not_to match /RSpec/m
       end
     end
 
@@ -103,7 +103,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it "does not show the error class" do
         group.example("example name") { "this".should_receive("that") }
         run_all_and_dump_failures
-        output.string.should_not =~ /RSpec/m
+        expect(output.string).not_to match /RSpec/m
       end
     end
 
@@ -111,7 +111,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it 'outputs the name and location' do
 
         share_examples_for 'foo bar' do
-          it("example name") { "this".should eq("that") }
+          it("example name") { expect("this").to eq("that") }
         end
 
         line = __LINE__.next
@@ -119,7 +119,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
         run_all_and_dump_failures
 
-        output.string.should include(
+        expect(output.string).to include(
           'Shared Example Group: "foo bar" called from ' +
             "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
         )
@@ -129,7 +129,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         it 'outputs the name and location' do
           share_examples_for 'foo bar' do
             describe 'nested group' do
-              it("example name") { "this".should eq("that") }
+              it("example name") { expect("this").to eq("that") }
             end
           end
 
@@ -138,7 +138,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
           run_all_and_dump_failures
 
-          output.string.should include(
+          expect(output.string).to include(
             'Shared Example Group: "foo bar" called from ' +
               "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
           )
@@ -152,7 +152,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       it 'outputs the name and location' do
 
         share_as :FooBar do
-          it("example name") { "this".should eq("that") }
+          it("example name") { expect("this").to eq("that") }
         end
 
         line = __LINE__.next
@@ -160,7 +160,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
         run_all_and_dump_failures
 
-        output.string.should include(
+        expect(output.string).to include(
           'Shared Example Group: "FooBar" called from ' +
             "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
         )
@@ -172,7 +172,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
           share_as :NestedFoo do
             describe 'nested group' do
               describe 'hell' do
-                it("example name") { "this".should eq("that") }
+                it("example name") { expect("this").to eq("that") }
               end
             end
           end
@@ -182,7 +182,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
           run_all_and_dump_failures
 
-          output.string.should include(
+          expect(output.string).to include(
             'Shared Example Group: "NestedFoo" called from ' +
               "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
           )
@@ -205,12 +205,12 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { true } }
 
       it "preserves formatting" do
-        group.example("example name") { pending { "this".should eq("that") } }
+        group.example("example name") { pending { expect("this").to eq("that") } }
 
         run_all_and_dump_pending
 
-        output.string.should =~ /group name example name/m
-        output.string.should =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
+        expect(output.string).to match /group name example name/m
+        expect(output.string).to match /(\s+)expected: \"that\"\n\1     got: \"this\"/m
       end
 
       context "with an exception without a message" do
@@ -226,15 +226,15 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         it "does not show the error class" do
           group.example("example name") { pending { raise NameError.new('foo') } }
           run_all_and_dump_pending
-          output.string.should =~ /NameError/m
+          expect(output.string).to match /NameError/m
         end
       end
 
       context "with a failed expectation (rspec-expectations)" do
         it "does not show the error class" do
-          group.example("example name") { pending { "this".should eq("that") } }
+          group.example("example name") { pending { expect("this").to eq("that") } }
           run_all_and_dump_pending
-          output.string.should_not =~ /RSpec/m
+          expect(output.string).not_to match /RSpec/m
         end
       end
 
@@ -242,7 +242,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         it "does not show the error class" do
           group.example("example name") { pending { "this".should_receive("that") } }
           run_all_and_dump_pending
-          output.string.should_not =~ /RSpec/m
+          expect(output.string).not_to match /RSpec/m
         end
       end
 
@@ -250,7 +250,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         it 'outputs the name and location' do
 
           share_examples_for 'foo bar' do
-            it("example name") { pending { "this".should eq("that") } }
+            it("example name") { pending { expect("this").to eq("that") } }
           end
 
           line = __LINE__.next
@@ -258,7 +258,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
           run_all_and_dump_pending
 
-          output.string.should include(
+          expect(output.string).to include(
             'Shared Example Group: "foo bar" called from ' +
             "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
           )
@@ -268,7 +268,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
           it 'outputs the name and location' do
             share_examples_for 'foo bar' do
               describe 'nested group' do
-                it("example name") { pending { "this".should eq("that") } }
+                it("example name") { pending { expect("this").to eq("that") } }
               end
             end
 
@@ -277,7 +277,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
             run_all_and_dump_pending
 
-            output.string.should include(
+            expect(output.string).to include(
               'Shared Example Group: "foo bar" called from ' +
               "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
             )
@@ -291,7 +291,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         it 'outputs the name and location' do
 
           share_as :FooBar2 do
-            it("example name") { pending { "this".should eq("that") } }
+            it("example name") { pending { expect("this").to eq("that") } }
           end
 
           line = __LINE__.next
@@ -299,7 +299,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
           run_all_and_dump_pending
 
-          output.string.should include(
+          expect(output.string).to include(
             'Shared Example Group: "FooBar2" called from ' +
             "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
           )
@@ -311,7 +311,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
             share_as :NestedFoo2 do
               describe 'nested group' do
                 describe 'hell' do
-                  it("example name") { pending { "this".should eq("that") } }
+                  it("example name") { pending { expect("this").to eq("that") } }
                 end
               end
             end
@@ -321,7 +321,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
             run_all_and_dump_pending
 
-            output.string.should include(
+            expect(output.string).to include(
               'Shared Example Group: "NestedFoo2" called from ' +
               "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
             )
@@ -334,9 +334,9 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { false } }
 
       it "does not output the failure information" do
-        group.example("example name") { pending { "this".should eq("that") } }
+        group.example("example name") { pending { expect("this").to eq("that") } }
         run_all_and_dump_pending
-        output.string.should_not =~ /(\s+)expected: \"that\"\n\1     got: \"this\"/m
+        expect(output.string).not_to match /(\s+)expected: \"that\"\n\1     got: \"this\"/m
       end
     end
   end
@@ -359,24 +359,24 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
     it "names the example" do
       formatter.dump_profile
-      output.string.should =~ /group example/m
+      expect(output.string).to match /group example/m
     end
 
     it "prints the time" do
       formatter.dump_profile
-      output.string.should =~ /0(\.\d+)? seconds/
+      expect(output.string).to match /0(\.\d+)? seconds/
     end
 
     it "prints the path" do
       formatter.dump_profile
       filename = __FILE__.split(File::SEPARATOR).last
 
-      output.string.should =~ /#{filename}\:#{example_line_number}/
+      expect(output.string).to match /#{filename}\:#{example_line_number}/
     end
 
     it "prints the percentage taken from the total runtime" do
       formatter.dump_profile
-      output.string.should =~ /, 100.0% of total time\):/
+      expect(output.string).to match /, 100.0% of total time\):/
     end
   end
 
@@ -388,21 +388,21 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         config.success_color = :cyan
       end
       formatter.dump_summary(0,1,0,0)
-      output.string.should include("\e[36m")
+      expect(output.string).to include("\e[36m")
     end
   end
 
   describe "#colorize" do
     it "accepts a VT100 integer code and formats the text with it" do
-       formatter.colorize('abc', 32).should == "\e[32mabc\e[0m"
+       expect(formatter.colorize('abc', 32)).to eq "\e[32mabc\e[0m"
     end
 
     it "accepts a symbol as a color parameter and translates it to the correct integer code, then formats the text with it" do
-       formatter.colorize('abc', :green).should == "\e[32mabc\e[0m"
+       expect(formatter.colorize('abc', :green)).to eq "\e[32mabc\e[0m"
     end
 
     it "accepts a non-default color symbol as a parameter and translates it to the correct integer code, then formats the text with it" do
-       formatter.colorize('abc', :cyan).should == "\e[36mabc\e[0m"
+       expect(formatter.colorize('abc', :cyan)).to eq "\e[36mabc\e[0m"
     end
   end
 

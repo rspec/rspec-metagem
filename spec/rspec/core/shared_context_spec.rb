@@ -28,10 +28,10 @@ describe RSpec::SharedContext do
 
     group.run
 
-    before_all_hook.should be_true
-    before_each_hook.should be_true
-    after_each_hook.should be_true
-    after_all_hook.should be_true
+    expect(before_all_hook).to be_true
+    expect(before_each_hook).to be_true
+    expect(after_each_hook).to be_true
+    expect(after_all_hook).to be_true
   end
 
   it "supports let" do
@@ -43,7 +43,7 @@ describe RSpec::SharedContext do
       include shared
     end
 
-    group.new.foo.should eq('foo')
+    expect(group.new.foo).to eq('foo')
   end
 
   %w[describe context].each do |method_name|
@@ -60,8 +60,8 @@ describe RSpec::SharedContext do
 
       group.run
 
-      group.children.length.should eq(1)
-      group.children.first.examples.length.should eq(1)
+      expect(group.children.length).to eq(1)
+      expect(group.children.first.examples.length).to eq(1)
     end
   end
 end

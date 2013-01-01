@@ -18,7 +18,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
-      it("succeeds") { 1.should == 1 }
+      it("succeeds") { expect(1).to eq 1 }
       it("fails") { fail "eek" }
       it("pends") { pending "world peace" }
     end
@@ -69,29 +69,29 @@ describe RSpec::Core::Formatters::JsonFormatter do
       },
       :summary_line => "3 examples, 1 failure, 1 pending"
     }
-    formatter.output_hash.should == expected
-    output.string.should == expected.to_json
+    expect(formatter.output_hash).to eq expected
+    expect(output.string).to eq expected.to_json
   end
 
   describe "#stop" do
     it "adds all examples to the output hash" do
       formatter.stop
-      formatter.output_hash[:examples].should_not be_nil
+      expect(formatter.output_hash[:examples]).not_to be_nil
     end
   end
 
   describe "#close" do
     it "outputs the results as a JSON string" do
-      output.string.should == ""
+      expect(output.string).to eq ""
       formatter.close
-      output.string.should == {}.to_json
+      expect(output.string).to eq({}.to_json)
     end
   end
 
   describe "#message" do
     it "adds a message to the messages list" do
       formatter.message("good job")
-      formatter.output_hash[:messages].should == ["good job"]
+      expect(formatter.output_hash[:messages]).to eq ["good job"]
     end
   end
 
@@ -101,10 +101,10 @@ describe RSpec::Core::Formatters::JsonFormatter do
       formatter.dump_summary(duration, example_count, failure_count, pending_count)
       summary = formatter.output_hash[:summary]
       %w(duration example_count failure_count pending_count).each do |key|
-        summary[key.to_sym].should == eval(key)
+        expect(summary[key.to_sym]).to eq eval(key)
       end
       summary_line = formatter.output_hash[:summary_line]
-      summary_line.should == "2 examples, 1 failure, 1 pending"
+      expect(summary_line).to eq "2 examples, 1 failure, 1 pending"
     end
   end
 end

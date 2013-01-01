@@ -65,10 +65,10 @@ module RSpec
             expected_doc = Nokogiri::HTML(expected_html)
             expected_doc.search("div.backtrace").remove
 
-            actual_doc.inner_html.should eq(expected_doc.inner_html)
+            expect(actual_doc.inner_html).to eq(expected_doc.inner_html)
 
             backtrace_lines.each do |backtrace_line|
-              backtrace_line['href'].should include("txmt://open?url=")
+              expect(backtrace_line['href']).to include("txmt://open?url=")
             end
           end
         end
@@ -77,12 +77,12 @@ module RSpec
           Dir.chdir(root) do
             actual_doc = Nokogiri::HTML(generated_html)
 
-            actual_doc.inner_html.should include('(erb):1')
+            expect(actual_doc.inner_html).to include('(erb):1')
           end
         end
 
         it "has a backtrace line from a erb source file we forced to appear" do
-          generated_html.should include('open?url=file:///foo.html.erb')
+          expect(generated_html).to include('open?url=file:///foo.html.erb')
         end
 
       end

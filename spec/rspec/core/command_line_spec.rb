@@ -27,13 +27,13 @@ module RSpec::Core
     it "assigns ConfigurationOptions built from Array of options to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(%w[--color])
-      command_line.instance_eval { @options.options }.should eq(config_options.parse_options)
+      expect(command_line.instance_eval { @options.options }).to eq(config_options.parse_options)
     end
 
     it "assigns submitted ConfigurationOptions to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(config_options)
-      command_line.instance_eval { @options }.should be(config_options)
+      expect(command_line.instance_eval { @options }).to be(config_options)
     end
 
     describe "#run" do
@@ -42,17 +42,17 @@ module RSpec::Core
 
         it "returns 0 if spec passes" do
           command_line = build_command_line passing_spec_filename
-          command_line.run(err, out).should eq 0
+          expect(command_line.run(err, out)).to eq 0
         end
 
         it "returns 1 if spec fails" do
           command_line = build_command_line failing_spec_filename
-          command_line.run(err, out).should eq 1
+          expect(command_line.run(err, out)).to eq 1
         end
 
         it "returns 2 if spec fails and --failure-exit-code is 2" do
           command_line = build_command_line failing_spec_filename, "--failure-exit-code", "2"
-          command_line.run(err, out).should eq 2
+          expect(command_line.run(err, out)).to eq 2
         end
       end
 
@@ -91,7 +91,7 @@ module RSpec::Core
         config.output_stream = output_file
         command_line = build_command_line
         command_line.run err, out
-        command_line.instance_eval { @configuration.output_stream }.should eq output_file
+        expect(command_line.instance_eval { @configuration.output_stream }).to eq output_file
       end
     end
 

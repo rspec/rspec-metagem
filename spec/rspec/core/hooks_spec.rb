@@ -35,13 +35,13 @@ module RSpec::Core
             it "defaults to :each scope if no arguments are given" do
               hooks = instance.send(type) {}
               hook = hooks.first
-              instance.hooks[type][:each].should include(hook)
+              expect(instance.hooks[type][:each]).to include(hook)
             end
 
             it "defaults to :each scope if the only argument is a metadata hash" do
               hooks = instance.send(type, :foo => :bar) {}
               hook = hooks.first
-              instance.hooks[type][:each].should include(hook)
+              expect(instance.hooks[type][:each]).to include(hook)
             end
 
             it "raises an error if only metadata symbols are given as arguments" do
@@ -68,11 +68,11 @@ module RSpec::Core
               end
 
               it "does not make #{scope.inspect} a metadata key" do
-                hook.options.should be_empty
+                expect(hook.options).to be_empty
               end
 
               it "is scoped to #{scope.inspect}" do
-                instance.hooks[type][scope].should include(hook)
+                expect(instance.hooks[type][scope]).to include(hook)
               end
             end
           end
@@ -92,7 +92,7 @@ module RSpec::Core
             end
           end
           group.run
-          examples.should have(0).example
+          expect(examples).to have(0).example
         end
       end
 
@@ -108,7 +108,7 @@ module RSpec::Core
             end
           end
           group.run
-          examples.should have(1).example
+          expect(examples).to have(1).example
         end
       end
 
@@ -128,7 +128,7 @@ module RSpec::Core
             end
           end
           group.run
-          examples.should have(1).example
+          expect(examples).to have(1).example
         end
       end
     end
@@ -151,7 +151,7 @@ module RSpec::Core
 
           group.run
 
-          messages.should eq([
+          expect(messages).to eq([
             'group 1',
             'group 2',
             'config 1',
@@ -179,7 +179,7 @@ module RSpec::Core
 
           group.run
 
-          messages.should eq([
+          expect(messages).to eq([
             'config 1',
             'config 2',
             'config 3',
@@ -205,7 +205,7 @@ module RSpec::Core
 
           group.run
 
-          messages.should eq([
+          expect(messages).to eq([
             'group 1',
             'group 2',
             'group 3',
@@ -233,7 +233,7 @@ module RSpec::Core
 
           group.run
 
-          messages.should eq([
+          expect(messages).to eq([
             'group 1',
             'group 2',
             'config 1',

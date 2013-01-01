@@ -20,7 +20,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
 
   context "without server running" do
     it "raises an error" do
-      lambda { command_line.run(err, out) }.should raise_error(DRb::DRbConnError)
+      expect { command_line.run(err, out) }.to raise_error(DRb::DRbConnError)
     end
   end
 
@@ -32,14 +32,14 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
     context "without RSPEC_DRB environment variable set" do
       it "defaults to 8989" do
         with_RSPEC_DRB_set_to(nil) do
-          command_line.drb_port.should eq(8989)
+          expect(command_line.drb_port).to eq(8989)
         end
       end
 
       it "sets the DRb port" do
         with_RSPEC_DRB_set_to(nil) do
-          command_line("--drb-port", "1234").drb_port.should eq(1234)
-          command_line("--drb-port", "5678").drb_port.should eq(5678)
+          expect(command_line("--drb-port", "1234").drb_port).to eq(1234)
+          expect(command_line("--drb-port", "5678").drb_port).to eq(5678)
         end
       end
     end
@@ -48,7 +48,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
       context "without config variable set" do
         it "uses RSPEC_DRB value" do
           with_RSPEC_DRB_set_to('9000') do
-            command_line.drb_port.should eq("9000")
+            expect(command_line.drb_port).to eq("9000")
           end
         end
       end
@@ -56,7 +56,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
       context "and config variable set" do
         it "uses configured value" do
           with_RSPEC_DRB_set_to('9000') do
-            command_line(*%w[--drb-port 5678]).drb_port.should eq(5678)
+            expect(command_line(*%w[--drb-port 5678]).drb_port).to eq(5678)
           end
         end
       end
@@ -84,19 +84,19 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
 
     it "returns 0 if spec passes" do
       result = command_line("--drb-port", @drb_port, passing_spec_filename).run(err, out)
-      result.should be(0)
+      expect(result).to be(0)
     end
 
     it "returns 1 if spec fails" do
       result = command_line("--drb-port", @drb_port, failing_spec_filename).run(err, out)
-      result.should be(1)
+      expect(result).to be(1)
     end
 
     it "outputs colorized text when running with --colour option" do
       pending "figure out a way to tell the output to say it's tty"
       command_line(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
       out.rewind
-      out.read.should =~ /\e\[31m/m
+      expect(out.read).to match /\e\[31m/m
     end
   end
 end

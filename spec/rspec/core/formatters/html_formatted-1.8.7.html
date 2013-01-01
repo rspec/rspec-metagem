@@ -320,16 +320,16 @@ a {
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18
-./spec/rspec/core/formatters/html_formatter_spec.rb:24
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:32:in `generated_html'
+./spec/rspec/core/formatters/html_formatter_spec.rb:54
+./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:54
+./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:53</pre></div>
     <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
-<span class="linenum">19</span>        <span class="number">1</span><span class="punct">.</span><span class="ident">should</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
+<span class="linenum">19</span>        <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
 <span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
@@ -359,15 +359,15 @@ expected: 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33
-./spec/rspec/core/formatters/html_formatter_spec.rb:24
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:46:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:46
-./spec/rspec/core/formatters/html_formatter_spec.rb:45:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:45</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:32:in `generated_html'
+./spec/rspec/core/formatters/html_formatter_spec.rb:54
+./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:54
+./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:53</pre></div>
     <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">33</span>    <span class="number">1</span><span class="punct">.</span><span class="ident">should</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
+<span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
 <span class="linenum">34</span>  <span class="keyword">end</span>
 <span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>

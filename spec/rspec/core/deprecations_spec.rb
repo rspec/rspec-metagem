@@ -9,7 +9,7 @@ describe "deprecations" do
 
     it "returns RSpec" do
       RSpec.stub(:warn_deprecation)
-      Spec.should eq(RSpec)
+      expect(Spec).to eq(RSpec)
     end
 
     it "doesn't include backward compatibility in const_missing backtrace" do
@@ -19,7 +19,7 @@ describe "deprecations" do
         ConstantThatDoesNotExist
       rescue Exception => exception
       end
-      exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }.should be_nil
+      expect(exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }).to be_nil
     end
   end
 
@@ -32,7 +32,7 @@ describe "deprecations" do
 
       it "delegates to example" do
         RSpec.stub(:warn_deprecation)
-        running_example.should eq(example)
+        expect(running_example).to eq(example)
       end
     end
   end
@@ -68,7 +68,7 @@ describe "deprecations" do
         Spec::Rake::ConstantThatDoesNotExist
       rescue Exception => exception
       end
-      exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }.should be_nil
+      expect(exception.backtrace.find { |l| l =~ /lib\/rspec\/core\/backward_compatibility/ }).to be_nil
     end
   end
 

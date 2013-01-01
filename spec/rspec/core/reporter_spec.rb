@@ -44,7 +44,7 @@ module RSpec::Core
 
         group.run(Reporter.new(formatter))
 
-        order.should eq([
+        expect(order).to eq([
            "Started: root",
            "Started: context 1",
            "Finished: context 1",
@@ -96,7 +96,7 @@ module RSpec::Core
         reporter = Reporter.new
         yielded = nil
         reporter.report(3) {|r| yielded = r}
-        yielded.should eq(reporter)
+        expect(yielded).to eq(reporter)
       end
     end
 
@@ -113,7 +113,7 @@ module RSpec::Core
         end
 
         reporter.finish 1234
-        duration.should be < 0.2
+        expect(duration).to be < 0.2
       end
     end
   end

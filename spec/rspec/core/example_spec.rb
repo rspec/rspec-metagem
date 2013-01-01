@@ -21,19 +21,19 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       example = example_group.example { raise "first" }
       example_group.after { raise "second" }
       example_group.run
-      example.exception.message.should eq("first")
+      expect(example.exception.message).to eq("first")
     end
 
     it "returns nil if there is no exception" do
       example = example_group.example('example') { }
       example_group.run
-      example.exception.should be_nil
+      expect(example.exception).to be_nil
     end
 
     it "returns false for pending_fixed? if not pending fixed" do
       example = example_group.example { fail }
       example_group.run
-      example.exception.should_not be_pending_fixed
+      expect(example.exception).not_to be_pending_fixed
     end
 
     it "returns true for pending_fixed? if pending fixed" do
@@ -41,7 +41,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         pending("fixed") {}
       end
       example_group.run
-      example.exception.should be_pending_fixed
+      expect(example.exception).to be_pending_fixed
     end
   end
 
@@ -51,7 +51,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         RSpec.configuration.format_docstrings { |s| s.strip }
         example = example_group.example(' an example with whitespace ') {}
         example_group.run
-        example.description.should eql('an example with whitespace')
+        expect(example.description).to eql('an example with whitespace')
       end
     end
   end
@@ -72,10 +72,10 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     context "when RSpec.configuration.format_docstrings is set to a block" do
       it "formats the description using the block" do
         RSpec.configuration.format_docstrings { |s| s.upcase }
-        example_group.example { 5.should eq(5) }
+        example_group.example { expect(5).to eq(5) }
         example_group.run
         pattern = /EXAMPLE AT #{relative_path(__FILE__).upcase}:#{__LINE__ - 2}/
-        example_group.examples.first.description.should match(pattern)
+        expect(example_group.examples.first.description).to match(pattern)
       end
     end
 
@@ -83,22 +83,22 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       before(:each) { expect_with :rspec }
 
       it "uses the matcher-generated description" do
-        example_group.example { 5.should eq(5) }
+        example_group.example { expect(5).to eq(5) }
         example_group.run
-        example_group.examples.first.description.should eq("should eq 5")
+        expect(example_group.examples.first.description).to eq("should eq 5")
       end
 
       it "uses the file and line number if there is no matcher-generated description" do
         example = example_group.example {}
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
+        expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
 
       it "uses the file and line number if there is an error before the matcher" do
-        example = example_group.example { 5.should eq(5) }
+        example = example_group.example { expect(5).to eq(5) }
         example_group.before { raise }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
+        expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
       end
     end
 
@@ -106,22 +106,22 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       before(:each) { expect_with :rspec, :stdlib }
 
       it "uses the matcher-generated description" do
-        example_group.example { 5.should eq(5) }
+        example_group.example { expect(5).to eq(5) }
         example_group.run
-        example_group.examples.first.description.should eq("should eq 5")
+        expect(example_group.examples.first.description).to eq("should eq 5")
       end
 
       it "uses the file and line number if there is no matcher-generated description" do
         example = example_group.example {}
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
+        expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
 
       it "uses the file and line number if there is an error before the matcher" do
-        example = example_group.example { 5.should eq(5) }
+        example = example_group.example { expect(5).to eq(5) }
         example_group.before { raise }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
+        expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 3}/)
       end
     end
 
@@ -137,61 +137,61 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "uses the file and line number" do
         example = example_group.example { assert 5 == 5 }
         example_group.run
-        example.description.should match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
+        expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
     end
   end
 
   describe '#described_class' do
     it "returns the class (if any) of the outermost example group" do
-      described_class.should eq(RSpec::Core::Example)
+      expect(described_class).to eq(RSpec::Core::Example)
     end
   end
 
   describe "accessing metadata within a running example" do
     it "has a reference to itself when running" do
-      example.description.should eq("has a reference to itself when running")
+      expect(example.description).to eq("has a reference to itself when running")
     end
 
     it "can access the example group's top level metadata as if it were its own" do
-      example.example_group.metadata.should include(:parent_metadata => 'sample')
-      example.metadata.should include(:parent_metadata => 'sample')
+      expect(example.example_group.metadata).to include(:parent_metadata => 'sample')
+      expect(example.metadata).to include(:parent_metadata => 'sample')
     end
   end
 
   describe "accessing options within a running example" do
     it "can look up option values by key", :demo => :data do
-      example.metadata[:demo].should eq(:data)
+      expect(example.metadata[:demo]).to eq(:data)
     end
   end
 
   describe "#run" do
     it "sets its reference to the example group instance to nil" do
       group = RSpec::Core::ExampleGroup.describe do
-        example('example') { 1.should eq(1) }
+        example('example') { expect(1).to eq(1) }
       end
       group.run
-      group.examples.first.instance_variable_get("@example_group_instance").should be_nil
+      expect(group.examples.first.instance_variable_get("@example_group_instance")).to be_nil
     end
 
     it "runs after(:each) when the example passes" do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
-        example('example') { 1.should eq(1) }
+        example('example') { expect(1).to eq(1) }
       end
       group.run
-      after_run.should be_true, "expected after(:each) to be run"
+      expect(after_run).to be_true, "expected after(:each) to be run"
     end
 
     it "runs after(:each) when the example fails" do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
         after(:each) { after_run = true }
-        example('example') { 1.should eq(2) }
+        example('example') { expect(1).to eq(2) }
       end
       group.run
-      after_run.should be_true, "expected after(:each) to be run"
+      expect(after_run).to be_true, "expected after(:each) to be run"
     end
 
     it "runs after(:each) when the example raises an Exception" do
@@ -201,7 +201,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example('example') { raise "this error" }
       end
       group.run
-      after_run.should be_true, "expected after(:each) to be run"
+      expect(after_run).to be_true, "expected after(:each) to be run"
     end
 
     context "with an after(:each) that raises" do
@@ -210,20 +210,20 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group = RSpec::Core::ExampleGroup.describe do
           after(:each) { after_run = true }
           after(:each) { raise "FOO" }
-          example('example') { 1.should eq(1) }
+          example('example') { expect(1).to eq(1) }
         end
         group.run
-        after_run.should be_true, "expected after(:each) to be run"
+        expect(after_run).to be_true, "expected after(:each) to be run"
       end
 
       it "stores the exception" do
         group = RSpec::Core::ExampleGroup.describe
         group.after(:each) { raise "FOO" }
-        example = group.example('example') { 1.should eq(1) }
+        example = group.example('example') { expect(1).to eq(1) }
 
         group.run
 
-        example.metadata[:execution_result][:exception].message.should eq("FOO")
+        expect(example.metadata[:execution_result][:exception].message).to eq("FOO")
       end
     end
 
@@ -241,7 +241,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       group.run
-      results.should eq([
+      expect(results).to eq([
                           "around (before)",
                           "before",
                           "example",
@@ -259,13 +259,13 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           after(:all)   { @after_all  = :after_all }
         end
         group.example("does something") do
-          @before_all.should eq(:before_all)
-          @before_each.should eq(:before_each)
+          expect(@before_all).to eq(:before_all)
+          expect(@before_each).to eq(:before_each)
         end
-        group.run(double.as_null_object).should be_true
+        expect(group.run(double.as_null_object)).to be_true
         group.new do |example|
           %w[@before_all @before_each @after_each @after_all].each do |ivar|
-            example.instance_variable_get(ivar).should be_nil
+            expect(example.instance_variable_get(ivar)).to be_nil
           end
         end
       end
@@ -273,10 +273,10 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "does not impact the before_all_ivars which are copied to each example" do
         group = RSpec::Core::ExampleGroup.describe do
           before(:all) { @before_all = "abc" }
-          example("first") { @before_all.should_not be_nil }
-          example("second") { @before_all.should_not be_nil }
+          example("first") { expect(@before_all).not_to be_nil }
+          example("second") { expect(@before_all).not_to be_nil }
         end
-        group.run.should be_true
+        expect(group.run).to be_true
       end
     end
 
@@ -298,7 +298,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         end
 
         message = run_and_capture_reported_message(group)
-        message.should =~ /An error occurred in an around.* hook/i
+        expect(message).to match /An error occurred in an around.* hook/i
       end
 
       it "prints any after hook errors rather than silencing them" do
@@ -308,7 +308,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         end
 
         message = run_and_capture_reported_message(group)
-        message.should =~ /An error occurred in an after.* hook/i
+        expect(message).to match /An error occurred in an after.* hook/i
       end
 
       it 'does not print mock expectation errors' do
@@ -321,7 +321,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         end
 
         message = run_and_capture_reported_message(group)
-        message.should be_nil
+        expect(message).to be_nil
       end
     end
   end
@@ -333,7 +333,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example { pending }
         end
         group.run
-        group.examples.first.should be_pending
+        expect(group.examples.first).to be_pending
       end
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
@@ -346,7 +346,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example { pending }
         end
         group.run
-        blah.should be(:success)
+        expect(blah).to be(:success)
       end
     end
 
@@ -358,8 +358,8 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example {}
         end
         group.run
-        group.examples.first.should be_pending
-        group.examples.last.should be_pending
+        expect(group.examples.first).to be_pending
+        expect(group.examples.last).to be_pending
       end
     end
 
@@ -371,8 +371,8 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example {}
         end
         group.run
-        group.examples.first.should be_pending
-        group.examples.last.should be_pending
+        expect(group.examples.first).to be_pending
+        expect(group.examples.last).to be_pending
       end
     end
 
@@ -383,7 +383,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example {}
         end
         group.run
-        group.examples.first.should be_pending
+        expect(group.examples.first).to be_pending
       end
     end
   end

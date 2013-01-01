@@ -14,7 +14,7 @@ module RSpec::Core
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
         it "is exposed to the global namespace" do
-          Kernel.should respond_to(shared_method_name)
+          expect(Kernel).to respond_to(shared_method_name)
         end
 
         it "displays a warning when adding a second shared example group with the same name" do
@@ -27,7 +27,7 @@ module RSpec::Core
 
           group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
-          warning.should include('some shared group', original_declaration, second_declaration)
+          expect(warning).to include('some shared group', original_declaration, second_declaration)
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|
@@ -46,9 +46,9 @@ module RSpec::Core
             implementation = Proc.new { def bar; 'bar'; end }
             send(shared_method_name, :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
-            a[0].should eq(:extend)
-            Class.new.extend(a[1]).new.bar.should eq('bar')
-            a[2].should eq(:foo => :bar)
+            expect(a[0]).to eq(:extend)
+            expect(Class.new.extend(a[1]).new.bar).to eq('bar')
+            expect(a[2]).to eq(:foo => :bar)
           end
         end
 
@@ -63,9 +63,9 @@ module RSpec::Core
             implementation = Proc.new { def bar; 'bar'; end }
             send(shared_method_name, "name", :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
-            a[0].should eq(:extend)
-            Class.new.extend(a[1]).new.bar.should eq('bar')
-            a[2].should eq(:foo => :bar)
+            expect(a[0]).to eq(:extend)
+            expect(Class.new.extend(a[1]).new.bar).to eq('bar')
+            expect(a[2]).to eq(:foo => :bar)
           end
         end
       end
@@ -75,21 +75,21 @@ module RSpec::Core
       before { RSpec.stub(:warn) }
 
       it "is exposed to the global namespace" do
-        Kernel.should respond_to("share_as")
+        expect(Kernel).to respond_to("share_as")
       end
 
       it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
         share_as('Cornucopia') do
           it "is plentiful" do
-            5.should eq(4)
+            expect(5).to eq(4)
           end
         end
         group = ExampleGroup.describe('group') { include Cornucopia }
         phantom_group = group.children.first
-        phantom_group.description.should eql("")
-        phantom_group.metadata[:shared_group_name].should eql('Cornucopia')
-        phantom_group.examples.length.should eq(1)
-        phantom_group.examples.first.metadata[:description].should eq("is plentiful")
+        expect(phantom_group.description).to eql("")
+        expect(phantom_group.metadata[:shared_group_name]).to eql('Cornucopia')
+        expect(phantom_group.examples.length).to eq(1)
+        expect(phantom_group.examples.first.metadata[:description]).to eq("is plentiful")
       end
     end
   end
