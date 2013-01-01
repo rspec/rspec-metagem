@@ -406,4 +406,24 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
+  described_class::VT100_COLORS.each do |name, number|
+    next if name == :black
+
+    describe "##{name}" do
+      before do
+        RSpec.configuration.stub(:color_enabled?) { true }
+        RSpec.stub(:warn)
+      end
+
+      it "prints the text using the color code for #{name}" do
+        expect(formatter.send(name, "text")).to eq("\e[#{number}mtext\e[0m")
+      end
+
+      it "prints a deprecation warning" do
+        RSpec.should_receive(:warn).with(/#{name}/)
+        formatter.send(name, "text")
+      end
+    end
+  end
+
 end
