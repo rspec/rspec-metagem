@@ -4,12 +4,12 @@ Feature: match matcher
   truthy (not false or nil) value.  Regexp and String both provide a #match
   method.
 
-    """ruby
+    ```ruby
     "a string".should match(/str/) # passes
     "a string".should match(/foo/) # fails
     /foo/.should match("food")     # passes
     /foo/.should match("drinks")   # fails
-    """
+    ```
 
   This is equivalent to using the =~ matcher (see the operator matchers
   feature for more details).

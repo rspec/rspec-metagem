@@ -3,11 +3,11 @@ Feature: start_with matcher
   Use the `start_with` matcher to specify that a string or array starts with 
   the expected characters or elements.
 
-    """ruby
+    ```ruby
     "this string".should start_with("this")
     "this string".should_not start_with("that")
     [0,1,2].should start_with(0, 1)
-    """
+    ```
 
   Scenario: with a string
     Given a file named "example_spec.rb" with:

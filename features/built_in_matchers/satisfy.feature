@@ -3,10 +3,10 @@ Feature: satisfy matcher
   The satisfy matcher is extremely flexible and can handle almost anything
   you want to specify.  It passes if the block you provide returns true:
 
-    """ruby
+    ```ruby
     10.should satisfy { |v| v % 5 == 0 }
     7.should_not satisfy { |v| v % 5 == 0 }
-    """
+    ```
 
   This flexibility comes at a cost, however: the failure message
   ("expected [actual] to satisfy block") is not very descriptive

@@ -13,9 +13,9 @@ Feature: be_within matcher
   Instead, you should use the be_within matcher to check that the value
   is within a delta of your expected value:
 
-    """ruby
+    ```ruby
     area_of_circle.should be_within(0.1).of(28.3)
-    """
+    ```
 
   Note that the difference between the actual and expected values must be
   smaller than your delta; if it is equal, the matcher will fail.

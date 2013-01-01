@@ -10,12 +10,12 @@ Feature: specify types of objects
 
   Both of these matchers have aliases:
 
-    """ruby
+    ```ruby
     obj.should be_a_kind_of(type)      # same as obj.should be_kind_of(type)
     obj.should be_a(type)              # same as obj.should be_kind_of(type)
     obj.should be_an(type)             # same as obj.should be_kind_of(type)
     obj.should be_an_instance_of(type) # same as obj.should be_instance_of(type)
-    """
+    ```
 
   Scenario: be_(a_)kind_of matcher
     Given a file named "be_kind_of_matcher_spec.rb" with:

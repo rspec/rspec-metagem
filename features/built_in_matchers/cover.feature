@@ -5,11 +5,11 @@ Feature: cover matcher
   expected objects.  This works on any object that responds to #cover?  (such
   as a Range):
 
-    """ruby
+    ```ruby
     (1..10).should cover(5)
     (1..10).should cover(4, 6)
     (1..10).should_not cover(11)
-    """
+    ```
 
   Scenario: range usage
     Given a file named "range_cover_matcher_spec.rb" with:
