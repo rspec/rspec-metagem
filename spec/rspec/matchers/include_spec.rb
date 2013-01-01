@@ -2,371 +2,371 @@ require 'spec_helper'
 
 describe "#include matcher" do
   it "is diffable" do
-    include("a").should be_diffable
+    expect(include("a")).to be_diffable
   end
 
-  describe "should include(with_one_arg)" do
+  describe "expect(...).to include(with_one_arg)" do
     it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
       let(:matcher) { include(2) }
     end
 
     context "for a string target" do
       it "passes if target includes expected" do
-        "abc".should include("a")
+        expect("abc").to include("a")
       end
 
       it "fails if target does not include expected" do
-        lambda {
-          "abc".should include("d")
-        }.should fail_matching("expected \"abc\" to include \"d\"")
+        expect {
+          expect("abc").to include("d")
+        }.to fail_matching("expected \"abc\" to include \"d\"")
       end
 
       it "includes a diff when actual is multiline" do
-        lambda {
-          "abc\ndef".should include("g")
-        }.should fail_matching("expected \"abc\\ndef\" to include \"g\"\nDiff")
+        expect {
+          expect("abc\ndef").to include("g")
+        }.to fail_matching("expected \"abc\\ndef\" to include \"g\"\nDiff")
       end
 
       it "includes a diff when actual is multiline and there are multiple expecteds" do
-        lambda {
-          "abc\ndef".should include("g", "h")
-        }.should fail_matching("expected \"abc\\ndef\" to include \"g\" and \"h\"\nDiff")
+        expect {
+          expect("abc\ndef").to include("g", "h")
+        }.to fail_matching("expected \"abc\\ndef\" to include \"g\" and \"h\"\nDiff")
       end
     end
 
     context "for an array target" do
       it "passes if target includes expected" do
-        [1,2,3].should include(3)
+        expect([1,2,3]).to include(3)
       end
 
       it "fails if target does not include expected" do
-        lambda {
-          [1,2,3].should include(4)
-        }.should fail_matching("expected [1, 2, 3] to include 4")
+        expect {
+          expect([1,2,3]).to include(4)
+        }.to fail_matching("expected [1, 2, 3] to include 4")
       end
     end
 
     context "for a hash target" do
       it 'passes if target has the expected as a key' do
-        {:key => 'value'}.should include(:key)
+        expect({:key => 'value'}).to include(:key)
       end
 
       it "fails if target does not include expected" do
-        lambda {
-          {:key => 'value'}.should include(:other)
-        }.should fail_matching(%Q|expected {:key=>"value"} to include :other|)
+        expect {
+          expect({:key => 'value'}).to include(:other)
+        }.to fail_matching(%Q|expected {:key=>"value"} to include :other|)
       end
 
       it "fails if target doesn't have a key and we expect nil" do
-        lambda {
-          {}.should include(:something => nil)
-        }.should fail_matching(%Q|expected {} to include {:something=>nil}|)
+        expect {
+          expect({}).to include(:something => nil)
+        }.to fail_matching(%Q|expected {} to include {:something=>nil}|)
       end
     end
   end
 
-  describe "should include(with, multiple, args)" do
+  describe "expect(...).to include(with, multiple, args)" do
     it "has a description" do
       matcher = include("a")
-      matcher.description.should eq("include \"a\"")
+      expect(matcher.description).to eq("include \"a\"")
     end
     context "for a string target" do
       it "passes if target includes all items" do
-        "a string".should include("str", "a")
+        expect("a string").to include("str", "a")
       end
 
       it "fails if target does not include any one of the items" do
-        lambda {
-          "a string".should include("str", "a", "foo")
-        }.should fail_matching(%Q{expected "a string" to include "str", "a", and "foo"})
+        expect {
+          expect("a string").to include("str", "a", "foo")
+        }.to fail_matching(%Q{expected "a string" to include "str", "a", and "foo"})
       end
     end
 
     context "for an array target" do
       it "passes if target includes all items" do
-        [1,2,3].should include(1,2,3)
+        expect([1,2,3]).to include(1,2,3)
       end
 
       it "fails if target does not include any one of the items" do
-        lambda {
-          [1,2,3].should include(1,2,4)
-        }.should fail_matching("expected [1, 2, 3] to include 1, 2, and 4")
+        expect {
+          expect([1,2,3]).to include(1,2,4)
+        }.to fail_matching("expected [1, 2, 3] to include 1, 2, and 4")
       end
     end
 
     context "for a hash target" do
       it 'passes if target includes all items as keys' do
-        {:key => 'value', :other => 'value'}.should include(:key, :other)
+        expect({:key => 'value', :other => 'value'}).to include(:key, :other)
       end
 
       it 'fails if target is missing any item as a key' do
-        lambda {
-          {:key => 'value'}.should include(:key, :other)
-        }.should fail_matching(%Q|expected {:key=>"value"} to include :key and :other|)
+        expect {
+          expect({:key => 'value'}).to include(:key, :other)
+        }.to fail_matching(%Q|expected {:key=>"value"} to include :key and :other|)
       end
     end
   end
 
-  describe "should_not include(expected)" do
+  describe "expect(...).to_not include(expected)" do
     context "for a string target" do
       it "passes if target does not include expected" do
-        "abc".should_not include("d")
+        expect("abc").not_to include("d")
       end
 
       it "fails if target includes expected" do
-        lambda {
-          "abc".should_not include("c")
-        }.should fail_with("expected \"abc\" not to include \"c\"")
+        expect {
+          expect("abc").not_to include("c")
+        }.to fail_with("expected \"abc\" not to include \"c\"")
       end
     end
 
     context "for an array target" do
       it "passes if target does not include expected" do
-        [1,2,3].should_not include(4)
+        expect([1,2,3]).not_to include(4)
       end
 
       it "fails if target includes expected" do
-        lambda {
-          [1,2,3].should_not include(3)
-        }.should fail_with("expected [1, 2, 3] not to include 3")
+        expect {
+          expect([1,2,3]).not_to include(3)
+        }.to fail_with("expected [1, 2, 3] not to include 3")
       end
     end
 
     context "for a hash target" do
       it 'passes if target does not have the expected as a key' do
-        {:other => 'value'}.should_not include(:key)
+        expect({:other => 'value'}).not_to include(:key)
       end
 
       it "fails if target includes expected key" do
-        lambda {
-          {:key => 'value'}.should_not include(:key)
-        }.should fail_matching(%Q|expected {:key=>"value"} not to include :key|)
+        expect {
+          expect({:key => 'value'}).not_to include(:key)
+        }.to fail_matching(%Q|expected {:key=>"value"} not to include :key|)
       end
     end
 
   end
 
-  describe "should_not include(with, multiple, args)" do
+  describe "expect(...).to_not include(with, multiple, args)" do
     context "for a string target" do
       it "passes if the target does not include any of the expected" do
-        "abc".should_not include("d", "e", "f")
+        expect("abc").not_to include("d", "e", "f")
       end
 
       it "fails if the target includes all of the expected" do
         expect {
-          "abc".should_not include("c", "a")
+          expect("abc").not_to include("c", "a")
         }.to fail_with('expected "abc" not to include "c" and "a"')
       end
 
       it "fails if the target includes some (but not all) of the expected" do
         expect {
-          "abc".should_not include("d", "a")
+          expect("abc").not_to include("d", "a")
         }.to fail_with(%q{expected "abc" not to include "d" and "a"})
       end
     end
 
     context "for a hash target" do
       it "passes if it does not include any of the expected keys" do
-        { :a => 1, :b => 2 }.should_not include(:c, :d)
+        expect({ :a => 1, :b => 2 }).not_to include(:c, :d)
       end
 
       it "fails if the target includes all of the expected keys" do
         expect {
-          { :a => 1, :b => 2 }.should_not include(:a, :b)
+          expect({ :a => 1, :b => 2 }).not_to include(:a, :b)
         }.to fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include :a and :b|)
       end
 
       it "fails if the target includes some (but not all) of the expected keys" do
         expect {
-          { :a => 1, :b => 2 }.should_not include(:d, :b)
+          expect({ :a => 1, :b => 2 }).not_to include(:d, :b)
         }.to fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include :d and :b|)
       end
     end
 
     context "for an array target" do
       it "passes if the target does not include any of the expected" do
-        [1, 2, 3].should_not include(4, 5, 6)
+        expect([1, 2, 3]).not_to include(4, 5, 6)
       end
 
       it "fails if the target includes all of the expected" do
         expect {
-          [1, 2, 3].should_not include(3, 1)
+          expect([1, 2, 3]).not_to include(3, 1)
         }.to fail_with(%q{expected [1, 2, 3] not to include 3 and 1})
       end
 
       it "fails if the target includes some (but not all) of the expected" do
         expect {
-          [1, 2, 3].should_not include(4, 1)
+          expect([1, 2, 3]).not_to include(4, 1)
         }.to fail_with(%q{expected [1, 2, 3] not to include 4 and 1})
       end
     end
   end
 
-  describe "should include(:key => value)" do
+  describe "expect(...).to include(:key => value)" do
     context 'for a hash target' do
       it "passes if target includes the key/value pair" do
-        {:key => 'value'}.should include(:key => 'value')
+        expect({:key => 'value'}).to include(:key => 'value')
       end
 
       it "passes if target includes the key/value pair among others" do
-        {:key => 'value', :other => 'different'}.should include(:key => 'value')
+        expect({:key => 'value', :other => 'different'}).to include(:key => 'value')
       end
 
       it "fails if target has a different value for key" do
-        lambda {
-          {:key => 'different'}.should include(:key => 'value')
-        }.should fail_matching(%Q|expected {:key=>"different"} to include {:key=>"value"}|)
+        expect {
+          expect({:key => 'different'}).to include(:key => 'value')
+        }.to fail_matching(%Q|expected {:key=>"different"} to include {:key=>"value"}|)
       end
 
       it "fails if target has a different key" do
-        lambda {
-          {:other => 'value'}.should include(:key => 'value')
-        }.should fail_matching(%Q|expected {:other=>"value"} to include {:key=>"value"}|)
+        expect {
+          expect({:other => 'value'}).to include(:key => 'value')
+        }.to fail_matching(%Q|expected {:other=>"value"} to include {:key=>"value"}|)
       end
     end
 
     context 'for a non-hash target' do
       it "fails if the target does not contain the given hash" do
-        lambda {
-          ['a', 'b'].should include(:key => 'value')
-        }.should fail_matching(%q|expected ["a", "b"] to include {:key=>"value"}|)
+        expect {
+          expect(['a', 'b']).to include(:key => 'value')
+        }.to fail_matching(%q|expected ["a", "b"] to include {:key=>"value"}|)
       end
 
       it "passes if the target contains the given hash" do
-        ['a', { :key => 'value' } ].should include(:key => 'value')
+        expect(['a', { :key => 'value' } ]).to include(:key => 'value')
       end
     end
   end
 
-  describe "should_not include(:key => value)" do
+  describe "expect(...).to_not include(:key => value)" do
     context 'for a hash target' do
       it "fails if target includes the key/value pair" do
-        lambda {
-          {:key => 'value'}.should_not include(:key => 'value')
-        }.should fail_matching(%Q|expected {:key=>"value"} not to include {:key=>"value"}|)
+        expect {
+          expect({:key => 'value'}).not_to include(:key => 'value')
+        }.to fail_matching(%Q|expected {:key=>"value"} not to include {:key=>"value"}|)
       end
 
       it "fails if target includes the key/value pair among others" do
-        lambda {
-          {:key => 'value', :other => 'different'}.should_not include(:key => 'value')
-        }.should fail_matching(%Q|expected #{{:key=>"value", :other=>"different"}.inspect} not to include {:key=>"value"}|)
+        expect {
+          expect({:key => 'value', :other => 'different'}).not_to include(:key => 'value')
+        }.to fail_matching(%Q|expected #{{:key=>"value", :other=>"different"}.inspect} not to include {:key=>"value"}|)
       end
 
       it "passes if target has a different value for key" do
-        {:key => 'different'}.should_not include(:key => 'value')
+        expect({:key => 'different'}).not_to include(:key => 'value')
       end
 
       it "passes if target has a different key" do
-        {:other => 'value'}.should_not include(:key => 'value')
+        expect({:other => 'value'}).not_to include(:key => 'value')
       end
     end
 
     context "for a non-hash target" do
       it "passes if the target does not contain the given hash" do
-        ['a', 'b'].should_not include(:key => 'value')
+        expect(['a', 'b']).not_to include(:key => 'value')
       end
 
       it "fails if the target contains the given hash" do
-        lambda {
-          ['a', { :key => 'value' } ].should_not include(:key => 'value')
-        }.should fail_matching(%Q|expected ["a", {:key=>"value"}] not to include {:key=>"value"}|)
+        expect {
+          expect(['a', { :key => 'value' } ]).not_to include(:key => 'value')
+        }.to fail_matching(%Q|expected ["a", {:key=>"value"}] not to include {:key=>"value"}|)
       end
     end
   end
 
-  describe "should include(:key1 => value1, :key2 => value2)" do
+  describe "expect(...).to include(:key1 => value1, :key2 => value2)" do
     context 'for a hash target' do
       it "passes if target includes the key/value pairs" do
-        {:a => 1, :b => 2}.should include(:b => 2, :a => 1)
+        expect({:a => 1, :b => 2}).to include(:b => 2, :a => 1)
       end
 
       it "passes if target includes the key/value pairs among others" do
-        {:a => 1, :c => 3, :b => 2}.should include(:b => 2, :a => 1)
+        expect({:a => 1, :c => 3, :b => 2}).to include(:b => 2, :a => 1)
       end
 
       it "fails if target has a different value for one of the keys" do
-        lambda {
-          {:a => 1, :b => 2}.should include(:a => 2, :b => 2)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} to include #{{:a=>2, :b=>2}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 2}).to include(:a => 2, :b => 2)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} to include #{{:a=>2, :b=>2}.inspect}|)
       end
 
       it "fails if target has a different value for both of the keys" do
-        lambda {
-          {:a => 1, :b => 1}.should include(:a => 2, :b => 2)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:a=>2, :b=>2}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 1}).to include(:a => 2, :b => 2)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:a=>2, :b=>2}.inspect}|)
       end
 
       it "fails if target lacks one of the keys" do
-        lambda {
-          {:a => 1, :b => 1}.should include(:a => 1, :c => 1)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:a=>1, :c=>1}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 1}).to include(:a => 1, :c => 1)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:a=>1, :c=>1}.inspect}|)
       end
 
       it "fails if target lacks both of the keys" do
-        lambda {
-          {:a => 1, :b => 1}.should include(:c => 1, :d => 1)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:c=>1, :d=>1}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 1}).to include(:c => 1, :d => 1)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} to include #{{:c=>1, :d=>1}.inspect}|)
       end
     end
 
     context 'for a non-hash target' do
       it "fails if the target does not contain the given hash" do
-        lambda {
-          ['a', 'b'].should include(:a => 1, :b => 1)
-        }.should fail_matching(%Q|expected ["a", "b"] to include #{{:a=>1, :b=>1}.inspect}|)
+        expect {
+          expect(['a', 'b']).to include(:a => 1, :b => 1)
+        }.to fail_matching(%Q|expected ["a", "b"] to include #{{:a=>1, :b=>1}.inspect}|)
       end
 
       it "passes if the target contains the given hash" do
-        ['a', { :a => 1, :b => 2 } ].should include(:a => 1, :b => 2)
+        expect(['a', { :a => 1, :b => 2 } ]).to include(:a => 1, :b => 2)
       end
     end
   end
 
-  describe "should_not include(:key1 => value1, :key2 => value2)" do
+  describe "expect(...).to_not include(:key1 => value1, :key2 => value2)" do
     context 'for a hash target' do
       it "fails if target includes the key/value pairs" do
-        lambda {
-          {:a => 1, :b => 2}.should_not include(:a => 1, :b => 2)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 2}).not_to include(:a => 1, :b => 2)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
       end
 
       it "fails if target includes the key/value pairs among others" do
         hash = {:a => 1, :b => 2, :c => 3}
-        lambda {
-          hash.should_not include(:a => 1, :b => 2)
-        }.should fail_matching(%Q|expected #{hash.inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
+        expect {
+          expect(hash).not_to include(:a => 1, :b => 2)
+        }.to fail_matching(%Q|expected #{hash.inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
       end
 
       it "fails if target has a different value for one of the keys" do
-        lambda {
-          {:a => 1, :b => 2}.should_not include(:a => 2, :b => 2)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include #{{:a=>2, :b=>2}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 2}).not_to include(:a => 2, :b => 2)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>2}.inspect} not to include #{{:a=>2, :b=>2}.inspect}|)
       end
 
       it "passes if target has a different value for both of the keys" do
-        {:a => 1, :b => 1}.should_not include(:a => 2, :b => 2)
+        expect({:a => 1, :b => 1}).not_to include(:a => 2, :b => 2)
       end
 
       it "fails if target lacks one of the keys" do
-        lambda {
-          {:a => 1, :b => 1}.should_not include(:a => 1, :c => 1)
-        }.should fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} not to include #{{:a=>1, :c=>1}.inspect}|)
+        expect {
+          expect({:a => 1, :b => 1}).not_to include(:a => 1, :c => 1)
+        }.to fail_matching(%Q|expected #{{:a=>1, :b=>1}.inspect} not to include #{{:a=>1, :c=>1}.inspect}|)
       end
 
       it "passes if target lacks both of the keys" do
-        {:a => 1, :b => 1}.should_not include(:c => 1, :d => 1)
+        expect({:a => 1, :b => 1}).not_to include(:c => 1, :d => 1)
       end
     end
 
     context 'for a non-hash target' do
       it "passes if the target does not contain the given hash" do
-        ['a', 'b'].should_not include(:a => 1, :b => 1)
+        expect(['a', 'b']).not_to include(:a => 1, :b => 1)
       end
 
       it "fails if the target contains the given hash" do
-        lambda {
-          ['a', { :a => 1, :b => 2 } ].should_not include(:a => 1, :b => 2)
-        }.should fail_matching(%Q|expected #{["a", {:a=>1, :b=>2}].inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
+        expect {
+          expect(['a', { :a => 1, :b => 2 } ]).not_to include(:a => 1, :b => 2)
+        }.to fail_matching(%Q|expected #{["a", {:a=>1, :b=>2}].inspect} not to include #{{:a=>1, :b=>2}.inspect}|)
       end
     end
   end

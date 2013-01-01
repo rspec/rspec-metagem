@@ -44,7 +44,7 @@ describe "yield_control matcher" do
   end
 
   it 'has a description' do
-    yield_control.description.should eq("yield control")
+    expect(yield_control.description).to eq("yield control")
   end
 
   describe "expect {...}.to yield_control" do
@@ -106,7 +106,7 @@ describe "yield_with_no_args matcher" do
   end
 
   it 'has a description' do
-    yield_with_no_args.description.should eq("yield with no args")
+    expect(yield_with_no_args.description).to eq("yield with no args")
   end
 
   describe "expect {...}.to yield_with_no_args" do
@@ -183,9 +183,9 @@ describe "yield_with_args matcher" do
   end
 
   it 'has a description' do
-    yield_with_args.description.should eq("yield with args")
-    yield_with_args(1, 3).description.should eq("yield with args(1, 3)")
-    yield_with_args(false).description.should eq("yield with args(false)")
+    expect(yield_with_args.description).to eq("yield with args")
+    expect(yield_with_args(1, 3).description).to eq("yield with args(1, 3)")
+    expect(yield_with_args(false).description).to eq("yield with args(false)")
   end
 
   describe "expect {...}.to yield_with_args" do
@@ -348,8 +348,8 @@ describe "yield_successive_args matcher" do
   end
 
   it 'has a description' do
-    yield_successive_args(1, 3).description.should eq("yield successive args(1, 3)")
-    yield_successive_args([:a, 1], [:b, 2]).description.should eq("yield successive args([:a, 1], [:b, 2])")
+    expect(yield_successive_args(1, 3).description).to eq("yield successive args(1, 3)")
+    expect(yield_successive_args([:a, 1], [:b, 2]).description).to eq("yield successive args([:a, 1], [:b, 2])")
   end
 
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do

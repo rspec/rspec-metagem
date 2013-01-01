@@ -8,24 +8,28 @@ module RSpec
     describe ExpectationTarget do
       context 'when constructed via #expect' do
         it 'constructs a new instance targetting the given argument' do
-          expect(7).target.should eq(7)
+          expect(expect(7).target).to eq(7)
         end
 
         it 'constructs a new instance targetting the given block' do
           block = lambda {}
-          expect(&block).target.should be(block)
+          expect(expect(&block).target).to be(block)
         end
 
         it 'raises an ArgumentError when given an argument and a block' do
-          lambda { expect(7) { } }.should raise_error(ArgumentError)
+          expect {
+            expect(7) { }
+          }.to raise_error(ArgumentError)
         end
 
         it 'raises an ArgumentError when given neither an argument nor a block' do
-          lambda { expect }.should raise_error(ArgumentError)
+          expect {
+            expect
+          }.to raise_error(ArgumentError)
         end
 
         it 'can be passed nil' do
-          expect(nil).target.should be_nil
+          expect(expect(nil).target).to be_nil
         end
 
         it 'passes a valid positive expectation' do
@@ -38,13 +42,19 @@ module RSpec
         end
 
         it 'fails an invalid positive expectation' do
-          lambda { expect(5).to eq(4) }.should fail_with(/expected: 4.*got: 5/m)
+          expect {
+            expect(5).to eq(4)
+          }.to fail_with(/expected: 4.*got: 5/m)
         end
 
         it 'fails an invalid negative expectation' do
           message = /expected 5 not to be a kind of Fixnum/
-          lambda { expect(5).to_not be_a(Fixnum) }.should fail_with(message)
-          lambda { expect(5).not_to be_a(Fixnum) }.should fail_with(message)
+          expect {
+            expect(5).to_not be_a(Fixnum)
+          }.to fail_with(message)
+          expect {
+            expect(5).not_to be_a(Fixnum)
+          }.to fail_with(message)
         end
 
         it 'does not support operator matchers from #to' do

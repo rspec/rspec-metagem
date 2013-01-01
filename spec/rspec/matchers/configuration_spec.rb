@@ -5,8 +5,8 @@ module RSpec
   module Matchers
     describe "RSpec::Matchers.configuration" do
       it 'returns a memoized configuration instance' do
-        RSpec::Matchers.configuration.should be_a(RSpec::Matchers::Configuration)
-        RSpec::Matchers.configuration.should be(RSpec::Matchers.configuration)
+        expect(RSpec::Matchers.configuration).to be_a(RSpec::Matchers::Configuration)
+        expect(RSpec::Matchers.configuration).to be(RSpec::Matchers.configuration)
       end
     end
 
@@ -41,7 +41,7 @@ module RSpec
         end
       end
 
-      context 'on an interpreter that does not provide BasicObject', :unless => defined?(::BasicObject) do
+      context 'on an interpreter that does not provide BasicObject', :uses_should, :unless => defined?(::BasicObject) do
         before { RSpec::Expectations::Syntax.disable_should(Delegator) }
 
         let(:klass) do
@@ -81,14 +81,6 @@ module RSpec
           alias sandboxed in_sub_process
         end
 
-        it 'is configured to :should and :expect by default' do
-          configured_syntax.should eq([:should, :expect])
-
-          3.should eq(3)
-          3.should_not eq(4)
-          expect(3).to eq(3)
-        end
-
         it 'can limit the syntax to :should' do
           sandboxed do
             configure_syntax :should
@@ -102,9 +94,12 @@ module RSpec
 
         it 'is a no-op when configured to :should twice' do
           sandboxed do
-            ::Kernel.stub(:method_added).and_raise("no methods should be added here")
-
             configure_syntax :should
+
+            Expectations::Syntax.default_should_host.
+                                 stub(:method_added).
+                                 and_raise("no methods should be added here")
+
             configure_syntax :should
           end
         end
@@ -227,8 +222,16 @@ module RSpec
           end
         end
       end
-    end
 
+      it 'enables both syntaxes by default' do
+        # This is kinda a hack, but since we want to enforce use of
+        # the expect syntax within our specs here, we have modified the
+        # config setting, which makes it hard to get at the original
+        # default value. in spec_helper.rb we store the default value
+        # in $default_expectation_syntax so we can use it here.
+        expect($default_expectation_syntax).to match_array([:expect, :should])
+      end
+    end
   end
 end
 

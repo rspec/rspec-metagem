@@ -59,7 +59,7 @@ module RSpec
           matcher = mock("matcher")
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(:this_value)
-          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher).should == :this_value
+          expect(RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher)).to eq :this_value
         end
 
         it "calls failure_message_for_should if the matcher implements it" do
@@ -129,7 +129,7 @@ module RSpec
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(false)
           matcher.stub!(:negative_failure_message).and_return("ignore")
-          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher).should be_false
+          expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_false
         end
 
 
@@ -185,20 +185,20 @@ module RSpec
       include ExampleExpectations
 
       it "handles submitted args" do
-        5.should arbitrary_matcher(:expected => 5)
-        5.should arbitrary_matcher(:expected => "wrong").with(5)
-        lambda { 5.should arbitrary_matcher(:expected => 4) }.should fail_with("expected 4, got 5")
-        lambda { 5.should arbitrary_matcher(:expected => 5).with(4) }.should fail_with("expected 4, got 5")
-        5.should_not arbitrary_matcher(:expected => 4)
-        5.should_not arbitrary_matcher(:expected => 5).with(4)
-        lambda { 5.should_not arbitrary_matcher(:expected => 5) }.should fail_with("expected not 5, got 5")
-        lambda { 5.should_not arbitrary_matcher(:expected => 4).with(5) }.should fail_with("expected not 5, got 5")
+        expect(5).to arbitrary_matcher(:expected => 5)
+        expect(5).to arbitrary_matcher(:expected => "wrong").with(5)
+        expect { expect(5).to arbitrary_matcher(:expected => 4) }.to fail_with("expected 4, got 5")
+        expect { expect(5).to arbitrary_matcher(:expected => 5).with(4) }.to fail_with("expected 4, got 5")
+        expect(5).to_not arbitrary_matcher(:expected => 4)
+        expect(5).to_not arbitrary_matcher(:expected => 5).with(4)
+        expect { expect(5).to_not arbitrary_matcher(:expected => 5) }.to fail_with("expected not 5, got 5")
+        expect { expect(5).to_not arbitrary_matcher(:expected => 4).with(5) }.to fail_with("expected not 5, got 5")
       end
 
       it "handles the submitted block" do
-        5.should arbitrary_matcher { 5 }
-        5.should arbitrary_matcher(:expected => 4) { 5 }
-        5.should arbitrary_matcher(:expected => 4).with(5) { 3 }
+        expect(5).to arbitrary_matcher { 5 }
+        expect(5).to arbitrary_matcher(:expected => 4) { 5 }
+        expect(5).to arbitrary_matcher(:expected => 4).with(5) { 3 }
       end
 
     end

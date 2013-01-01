@@ -1,55 +1,55 @@
 require 'spec_helper'
 
-describe "should raise_error" do
+describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
                                       :invalid_value => lambda { }) do
     let(:matcher) { raise_error(/boom/) }
   end
 
   it "passes if anything is raised" do
-    lambda {raise}.should raise_error
+    expect {raise}.to raise_error
   end
 
   it "fails if nothing is raised" do
-    lambda {
-      lambda {}.should raise_error
-    }.should fail_with("expected Exception but nothing was raised")
+    expect {
+      expect {}.to raise_error
+    }.to fail_with("expected Exception but nothing was raised")
   end
 end
 
 describe "raise_exception aliased to raise_error" do
   it "passes if anything is raised" do
-    lambda {raise}.should raise_exception
+    expect {raise}.to raise_exception
   end
 end
 
-describe "should raise_error {|err| ... }" do
+describe "expect { ... }.to raise_error {|err| ... }" do
   it "passes if there is an error" do
     ran = false
-    lambda { non_existent_method }.should raise_error {|e|
+    expect { non_existent_method }.to raise_error {|e|
       ran = true
     }
-    ran.should be_true
+    expect(ran).to be_true
   end
 
   it "passes the error to the block" do
     error = nil
-    lambda { non_existent_method }.should raise_error {|e|
+    expect { non_existent_method }.to raise_error {|e|
       error = e
     }
-    error.should be_kind_of(NameError)
+    expect(error).to be_kind_of(NameError)
   end
 end
 
-describe "should_not raise_error" do
+describe "expect { ... }.to_not raise_error" do
   it "passes if nothing is raised" do
-    lambda {}.should_not raise_error
+    expect {}.to_not raise_error
   end
 
   it "fails if anything is raised" do
-    lambda {
-      lambda { raise RuntimeError, "example message" }.should_not raise_error
-    }.should fail_with(/expected no Exception, got #<RuntimeError: example message>/)
+    expect {
+      expect { raise RuntimeError, "example message" }.to_not raise_error
+    }.to fail_with(/expected no Exception, got #<RuntimeError: example message>/)
   end
 
   it 'includes the backtrace of the error that was raised in the error message' do
@@ -57,7 +57,7 @@ describe "should_not raise_error" do
       expect { raise "boom" }.not_to raise_error
     }.to raise_error { |e|
       backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
-      e.message.should include("with backtrace", backtrace_line)
+      expect(e.message).to include("with backtrace", backtrace_line)
     }
   end
 
@@ -69,34 +69,34 @@ describe "should_not raise_error" do
     expect {
       expect { raise "boom" }.not_to raise_error
     }.to raise_error { |e|
-      e.message.should include("with backtrace", "formatted-backtrace")
+      expect(e.message).to include("with backtrace", "formatted-backtrace")
     }
   end
 end
 
-describe "should raise_error(message)" do
+describe "expect { ... }.to raise_error(message)" do
   it "passes if RuntimeError is raised with the right message" do
-    lambda {raise 'blah'}.should raise_error('blah')
+    expect {raise 'blah'}.to raise_error('blah')
   end
 
   it "passes if RuntimeError is raised with a matching message" do
-    lambda {raise 'blah'}.should raise_error(/blah/)
+    expect {raise 'blah'}.to raise_error(/blah/)
   end
 
   it "passes if any other error is raised with the right message" do
-    lambda {raise NameError.new('blah')}.should raise_error('blah')
+    expect {raise NameError.new('blah')}.to raise_error('blah')
   end
 
   it "fails if RuntimeError error is raised with the wrong message" do
-    lambda do
-      lambda {raise 'blarg'}.should raise_error('blah')
-    end.should fail_with(/expected Exception with \"blah\", got #<RuntimeError: blarg>/)
+    expect do
+      expect {raise 'blarg'}.to raise_error('blah')
+    end.to fail_with(/expected Exception with \"blah\", got #<RuntimeError: blarg>/)
   end
 
   it "fails if any other error is raised with the wrong message" do
-    lambda do
-      lambda {raise NameError.new('blarg')}.should raise_error('blah')
-    end.should fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
+    expect do
+      expect {raise NameError.new('blarg')}.to raise_error('blah')
+    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
   end
 
   it 'includes the backtrace of any other error in the failure message' do
@@ -104,215 +104,215 @@ describe "should raise_error(message)" do
       expect { raise "boom" }.to raise_error(ArgumentError)
     }.to raise_error { |e|
       backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
-      e.message.should include("with backtrace", backtrace_line)
+      expect(e.message).to include("with backtrace", backtrace_line)
     }
   end
 end
 
-describe "should_not raise_error(message)" do
+describe "expect { ... }.to_not raise_error(message)" do
   it "passes if RuntimeError error is raised with the different message" do
-    lambda {raise 'blarg'}.should_not raise_error('blah')
+    expect {raise 'blarg'}.to_not raise_error('blah')
   end
 
   it "passes if any other error is raised with the wrong message" do
-    lambda {raise NameError.new('blarg')}.should_not raise_error('blah')
+    expect {raise NameError.new('blarg')}.to_not raise_error('blah')
   end
 
   it "fails if RuntimeError is raised with message" do
-    lambda do
-      lambda {raise 'blah'}.should_not raise_error('blah')
-    end.should fail_with(/expected no Exception with "blah", got #<RuntimeError: blah>/)
+    expect do
+      expect {raise 'blah'}.to_not raise_error('blah')
+    end.to fail_with(/expected no Exception with "blah", got #<RuntimeError: blah>/)
   end
 
   it "fails if any other error is raised with message" do
-    lambda do
-      lambda {raise NameError.new('blah')}.should_not raise_error('blah')
-    end.should fail_with(/expected no Exception with "blah", got #<NameError: blah>/)
+    expect do
+      expect {raise NameError.new('blah')}.to_not raise_error('blah')
+    end.to fail_with(/expected no Exception with "blah", got #<NameError: blah>/)
   end
 end
 
-describe "should raise_error(NamedError)" do
+describe "expect { ... }.to raise_error(NamedError)" do
   it "passes if named error is raised" do
-    lambda { non_existent_method }.should raise_error(NameError)
+    expect { non_existent_method }.to raise_error(NameError)
   end
 
   it "fails if nothing is raised" do
-    lambda {
-      lambda { }.should raise_error(NameError)
-    }.should fail_with(/expected NameError but nothing was raised/)
+    expect {
+      expect { }.to raise_error(NameError)
+    }.to fail_with(/expected NameError but nothing was raised/)
   end
 
   it "fails if another error is raised (NameError)" do
-    lambda {
-      lambda { raise RuntimeError, "example message" }.should raise_error(NameError)
-    }.should fail_with(/expected NameError, got #<RuntimeError: example message>/)
+    expect {
+      expect { raise RuntimeError, "example message" }.to raise_error(NameError)
+    }.to fail_with(/expected NameError, got #<RuntimeError: example message>/)
   end
 
   it "fails if another error is raised (NameError)" do
-    lambda {
-      lambda { load "non/existent/file" }.should raise_error(NameError)
-    }.should fail_with(/expected NameError, got #<LoadError/)
+    expect {
+      expect { load "non/existent/file" }.to raise_error(NameError)
+    }.to fail_with(/expected NameError, got #<LoadError/)
   end
 end
 
-describe "should_not raise_error(NamedError)" do
+describe "expect { ... }.to_not raise_error(NamedError)" do
   it "passes if nothing is raised" do
-    lambda { }.should_not raise_error(NameError)
+    expect { }.to_not raise_error(NameError)
   end
 
   it "passes if another error is raised" do
-    lambda { raise }.should_not raise_error(NameError)
+    expect { raise }.to_not raise_error(NameError)
   end
 
   it "fails if named error is raised" do
-    lambda {
-      lambda { 1 + 'b' }.should_not raise_error(TypeError)
-    }.should fail_with(/expected no TypeError, got #<TypeError: String can't be/)
+    expect {
+      expect { 1 + 'b' }.to_not raise_error(TypeError)
+    }.to fail_with(/expected no TypeError, got #<TypeError: String can't be/)
   end
 end
 
-describe "should raise_error(NamedError, error_message) with String" do
+describe "expect { ... }.to raise_error(NamedError, error_message) with String" do
   it "passes if named error is raised with same message" do
-    lambda { raise "example message" }.should raise_error(RuntimeError, "example message")
+    expect { raise "example message" }.to raise_error(RuntimeError, "example message")
   end
 
   it "fails if nothing is raised" do
-    lambda {
-      lambda {}.should raise_error(RuntimeError, "example message")
-    }.should fail_with(/expected RuntimeError with \"example message\" but nothing was raised/)
+    expect {
+      expect {}.to raise_error(RuntimeError, "example message")
+    }.to fail_with(/expected RuntimeError with \"example message\" but nothing was raised/)
   end
 
   it "fails if incorrect error is raised" do
-    lambda {
-      lambda { raise RuntimeError, "example message" }.should raise_error(NameError, "example message")
-    }.should fail_with(/expected NameError with \"example message\", got #<RuntimeError: example message>/)
+    expect {
+      expect { raise RuntimeError, "example message" }.to raise_error(NameError, "example message")
+    }.to fail_with(/expected NameError with \"example message\", got #<RuntimeError: example message>/)
   end
 
   it "fails if correct error is raised with incorrect message" do
-    lambda {
-      lambda { raise RuntimeError.new("not the example message") }.should raise_error(RuntimeError, "example message")
-    }.should fail_with(/expected RuntimeError with \"example message\", got #<RuntimeError: not the example message/)
+    expect {
+      expect { raise RuntimeError.new("not the example message") }.to raise_error(RuntimeError, "example message")
+    }.to fail_with(/expected RuntimeError with \"example message\", got #<RuntimeError: not the example message/)
   end
 end
 
-describe "should raise_error(NamedError, error_message) { |err| ... }" do
+describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }" do
   it "yields exception if named error is raised with same message" do
     ran = false
 
-    lambda {
+    expect {
       raise "example message"
-    }.should raise_error(RuntimeError, "example message") { |err|
+    }.to raise_error(RuntimeError, "example message") { |err|
       ran = true
-      err.class.should eq RuntimeError
-      err.message.should eq "example message"
+      expect(err.class).to eq RuntimeError
+      expect(err.message).to eq "example message"
     }
 
-    ran.should be(true)
+    expect(ran).to be(true)
   end
 
   it "yielded block fails on it's own right" do
     ran, passed = false, false
 
-    lambda {
-      lambda {
+    expect {
+      expect {
         raise "example message"
-      }.should raise_error(RuntimeError, "example message") { |err|
+      }.to raise_error(RuntimeError, "example message") { |err|
         ran = true
-        5.should eq 4
+        expect(5).to eq 4
         passed = true
       }
-    }.should fail_with(/expected: 4/m)
+    }.to fail_with(/expected: 4/m)
 
-    ran.should    be_true
-    passed.should be_false
+    expect(ran).to    be_true
+    expect(passed).to be_false
   end
 
   it "does NOT yield exception if no error was thrown" do
     ran = false
 
-    lambda {
-      lambda {}.should raise_error(RuntimeError, "example message") { |err|
+    expect {
+      expect {}.to raise_error(RuntimeError, "example message") { |err|
         ran = true
       }
-    }.should fail_with(/expected RuntimeError with \"example message\" but nothing was raised/)
+    }.to fail_with(/expected RuntimeError with \"example message\" but nothing was raised/)
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it "does not yield exception if error class is not matched" do
     ran = false
 
-    lambda {
-      lambda {
+    expect {
+      expect {
         raise "example message"
-      }.should raise_error(SyntaxError, "example message") { |err|
+      }.to raise_error(SyntaxError, "example message") { |err|
         ran = true
       }
-    }.should fail_with(/expected SyntaxError with \"example message\", got #<RuntimeError: example message>/)
+    }.to fail_with(/expected SyntaxError with \"example message\", got #<RuntimeError: example message>/)
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it "does NOT yield exception if error message is not matched" do
     ran = false
 
-    lambda {
-      lambda {
+    expect {
+      expect {
         raise "example message"
-      }.should raise_error(RuntimeError, "different message") { |err|
+      }.to raise_error(RuntimeError, "different message") { |err|
         ran = true
       }
-    }.should fail_with(/expected RuntimeError with \"different message\", got #<RuntimeError: example message>/)
+    }.to fail_with(/expected RuntimeError with \"different message\", got #<RuntimeError: example message>/)
 
-    ran.should == false
+    expect(ran).to eq false
   end
 end
 
-describe "should_not raise_error(NamedError, error_message) { |err| ... }" do
+describe "expect { ... }.to_not raise_error(NamedError, error_message) { |err| ... }" do
   it "passes if nothing is raised" do
     ran = false
 
-    lambda {}.should_not raise_error(RuntimeError, "example message") { |err|
+    expect {}.to_not raise_error(RuntimeError, "example message") { |err|
       ran = true
     }
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it "passes if a different error is raised" do
     ran = false
 
-    lambda { raise }.should_not raise_error(NameError, "example message") { |err|
+    expect { raise }.to_not raise_error(NameError, "example message") { |err|
       ran = true
     }
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it "passes if same error is raised with different message" do
     ran = false
 
-    lambda {
+    expect {
       raise RuntimeError.new("not the example message")
-    }.should_not raise_error(RuntimeError, "example message") { |err|
+    }.to_not raise_error(RuntimeError, "example message") { |err|
       ran = true
     }
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it "fails if named error is raised with same message" do
     ran = false
 
-    lambda {
-      lambda {
+    expect {
+      expect {
         raise "example message"
-      }.should_not raise_error(RuntimeError, "example message") { |err|
+      }.to_not raise_error(RuntimeError, "example message") { |err|
         ran = true
       }
-    }.should fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
+    }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
 
-    ran.should == false
+    expect(ran).to eq false
   end
 
   it 'skips the error verification block when using the expect {...}.to syntax' do
@@ -326,70 +326,70 @@ describe "should_not raise_error(NamedError, error_message) { |err| ... }" do
       }
     }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
 
-    ran.should == false
+    expect(ran).to eq false
   end
 end
 
-describe "should_not raise_error(NamedError, error_message) with String" do
+describe "expect { ... }.to_not raise_error(NamedError, error_message) with String" do
   it "passes if nothing is raised" do
-    lambda {}.should_not raise_error(RuntimeError, "example message")
+    expect {}.to_not raise_error(RuntimeError, "example message")
   end
 
   it "passes if a different error is raised" do
-    lambda { raise }.should_not raise_error(NameError, "example message")
+    expect { raise }.to_not raise_error(NameError, "example message")
   end
 
   it "passes if same error is raised with different message" do
-    lambda { raise RuntimeError.new("not the example message") }.should_not raise_error(RuntimeError, "example message")
+    expect { raise RuntimeError.new("not the example message") }.to_not raise_error(RuntimeError, "example message")
   end
 
   it "fails if named error is raised with same message" do
-    lambda {
-      lambda { raise "example message" }.should_not raise_error(RuntimeError, "example message")
-    }.should fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
+    expect {
+      expect { raise "example message" }.to_not raise_error(RuntimeError, "example message")
+    }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
   end
 end
 
-describe "should raise_error(NamedError, error_message) with Regexp" do
+describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" do
   it "passes if named error is raised with matching message" do
-    lambda { raise "example message" }.should raise_error(RuntimeError, /ample mess/)
+    expect { raise "example message" }.to raise_error(RuntimeError, /ample mess/)
   end
 
   it "fails if nothing is raised" do
-    lambda {
-      lambda {}.should raise_error(RuntimeError, /ample mess/)
-    }.should fail_with(/expected RuntimeError with message matching \/ample mess\/ but nothing was raised/)
+    expect {
+      expect {}.to raise_error(RuntimeError, /ample mess/)
+    }.to fail_with(/expected RuntimeError with message matching \/ample mess\/ but nothing was raised/)
   end
 
   it "fails if incorrect error is raised" do
-    lambda {
-      lambda { raise RuntimeError, "example message" }.should raise_error(NameError, /ample mess/)
-    }.should fail_with(/expected NameError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
+    expect {
+      expect { raise RuntimeError, "example message" }.to raise_error(NameError, /ample mess/)
+    }.to fail_with(/expected NameError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
   end
 
   it "fails if correct error is raised with incorrect message" do
-    lambda {
-      lambda { raise RuntimeError.new("not the example message") }.should raise_error(RuntimeError, /less than ample mess/)
-    }.should fail_with(/expected RuntimeError with message matching \/less than ample mess\/, got #<RuntimeError: not the example message>/)
+    expect {
+      expect { raise RuntimeError.new("not the example message") }.to raise_error(RuntimeError, /less than ample mess/)
+    }.to fail_with(/expected RuntimeError with message matching \/less than ample mess\/, got #<RuntimeError: not the example message>/)
   end
 end
 
-describe "should_not raise_error(NamedError, error_message) with Regexp" do
+describe "expect { ... }.to_not raise_error(NamedError, error_message) with Regexp" do
   it "passes if nothing is raised" do
-    lambda {}.should_not raise_error(RuntimeError, /ample mess/)
+    expect {}.to_not raise_error(RuntimeError, /ample mess/)
   end
 
   it "passes if a different error is raised" do
-    lambda { raise }.should_not raise_error(NameError, /ample mess/)
+    expect { raise }.to_not raise_error(NameError, /ample mess/)
   end
 
   it "passes if same error is raised with non-matching message" do
-    lambda { raise RuntimeError.new("non matching message") }.should_not raise_error(RuntimeError, /ample mess/)
+    expect { raise RuntimeError.new("non matching message") }.to_not raise_error(RuntimeError, /ample mess/)
   end
 
   it "fails if named error is raised with matching message" do
-    lambda {
-      lambda { raise "example message" }.should_not raise_error(RuntimeError, /ample mess/)
-    }.should fail_with(/expected no RuntimeError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
+    expect {
+      expect { raise "example message" }.to_not raise_error(RuntimeError, /ample mess/)
+    }.to fail_with(/expected no RuntimeError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
   end
 end

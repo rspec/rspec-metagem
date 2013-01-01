@@ -11,17 +11,17 @@ module RSpec
       end
 
       it "matches when actual.equal?(expected)" do
-        1.should equal(1)
+        expect(1).to equal(1)
       end
 
       it "does not match when !actual.equal?(expected)" do
-        "1".should_not equal("1")
+        expect("1").not_to equal("1")
       end
 
       it "describes itself" do
         matcher = equal(1)
         matcher.matches?(1)
-        matcher.description.should == "equal 1"
+        expect(matcher.description).to eq "equal 1"
       end
 
       it "provides message on #failure_message" do
@@ -29,7 +29,7 @@ module RSpec
         matcher = equal(expected)
         matcher.matches?(actual)
 
-        matcher.failure_message_for_should.should == <<-MESSAGE
+        expect(matcher.failure_message_for_should).to eq <<-MESSAGE
 
 expected #{inspect_object(expected)}
      got #{inspect_object(actual)}
@@ -46,7 +46,7 @@ MESSAGE
         expected = actual = "1"
         matcher = equal(expected)
         matcher.matches?(actual)
-        matcher.failure_message_for_should_not.should == <<-MESSAGE
+        expect(matcher.failure_message_for_should_not).to eq <<-MESSAGE
 
 expected not #{inspect_object(expected)}
          got #{inspect_object(actual)}
