@@ -14,8 +14,8 @@ module RSpec::Core
         world.example_groups << :example_group
         world.shared_example_groups[:shared] = :example_group
         world.reset
-        world.example_groups.should be_empty
-        world.shared_example_groups.should be_empty
+        expect(world.example_groups).to be_empty
+        expect(world.shared_example_groups).to be_empty
       end
     end
 
@@ -23,7 +23,7 @@ module RSpec::Core
       it "contains all registered example groups" do
         group = RSpec::Core::ExampleGroup.describe("group"){}
         world.register(group)
-        world.example_groups.should include(group)
+        expect(world.example_groups).to include(group)
       end
     end
 
@@ -51,23 +51,23 @@ module RSpec::Core
         before { world.register(group) }
 
         it "returns nil if no example or group precedes the line" do
-          world.preceding_declaration_line(group_declaration_line - 1).should be_nil
+          expect(world.preceding_declaration_line(group_declaration_line - 1)).to be_nil
         end
 
         it "returns the argument line number if a group starts on that line" do
-          world.preceding_declaration_line(group_declaration_line).should eq(group_declaration_line)
+          expect(world.preceding_declaration_line(group_declaration_line)).to eq(group_declaration_line)
         end
 
         it "returns the argument line number if an example starts on that line" do
-          world.preceding_declaration_line(example_declaration_line).should eq(example_declaration_line)
+          expect(world.preceding_declaration_line(example_declaration_line)).to eq(example_declaration_line)
         end
 
         it "returns line number of a group that immediately precedes the argument line" do
-          world.preceding_declaration_line(group_declaration_line + 1).should eq(group_declaration_line)
+          expect(world.preceding_declaration_line(group_declaration_line + 1)).to eq(group_declaration_line)
         end
 
         it "returns line number of an example that immediately precedes the argument line" do
-          world.preceding_declaration_line(example_declaration_line + 1).should eq(example_declaration_line)
+          expect(world.preceding_declaration_line(example_declaration_line + 1)).to eq(example_declaration_line)
         end
       end
 
@@ -80,7 +80,7 @@ module RSpec::Core
         end
 
         it 'return line number of group if a group start on that line' do
-          world.preceding_declaration_line(second_group_declaration_line).should eq(second_group_declaration_line)
+          expect(world.preceding_declaration_line(second_group_declaration_line)).to eq(second_group_declaration_line)
         end
       end
     end

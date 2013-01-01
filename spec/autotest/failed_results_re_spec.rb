@@ -16,14 +16,14 @@ describe "failed_results_re for autotest" do
   shared_examples "autotest failed_results_re" do
     it "matches a failure" do
       output = run_example { fail }
-      output.should match(Autotest::Rspec2.new.failed_results_re)
-      output.should include(__FILE__.sub(File.expand_path('.'),'.'))
+      expect(output).to match(Autotest::Rspec2.new.failed_results_re)
+      expect(output).to include(__FILE__.sub(File.expand_path('.'),'.'))
     end
 
     it "does not match when there are no failures" do
       output = run_example { } # pass
-      output.should_not match(Autotest::Rspec2.new.failed_results_re)
-      output.should_not include(__FILE__.sub(File.expand_path('.'),'.'))
+      expect(output).not_to match(Autotest::Rspec2.new.failed_results_re)
+      expect(output).not_to include(__FILE__.sub(File.expand_path('.'),'.'))
     end
   end
 

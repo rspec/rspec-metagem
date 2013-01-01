@@ -87,12 +87,12 @@ describe 'command line', :ui do
       RSpec.configuration.seed = srand && srand # reset seed in same process
       run_command 'tmp/aruba/spec/order_spec.rb --order rand -f doc'
 
-      stdout.string.should match(/Randomized with seed \d+/)
+      expect(stdout.string).to match(/Randomized with seed \d+/)
 
-      top_level_groups      {|first_run, second_run| first_run.should_not eq(second_run)}
-      nested_groups         {|first_run, second_run| first_run.should_not eq(second_run)}
-      examples('group 1')   {|first_run, second_run| first_run.should_not eq(second_run)}
-      examples('group 1-1') {|first_run, second_run| first_run.should_not eq(second_run)}
+      top_level_groups      {|first_run, second_run| expect(first_run).to_not eq(second_run)}
+      nested_groups         {|first_run, second_run| expect(first_run).to_not eq(second_run)}
+      examples('group 1')   {|first_run, second_run| expect(first_run).to_not eq(second_run)}
+      examples('group 1-1') {|first_run, second_run| expect(first_run).to_not eq(second_run)}
     end
   end
 
@@ -100,12 +100,12 @@ describe 'command line', :ui do
     it 'runs the examples and groups in the same order each time' do
       2.times { run_command 'tmp/aruba/spec/order_spec.rb --order rand:123 -f doc' }
 
-      stdout.string.should match(/Randomized with seed 123/)
+      expect(stdout.string).to match(/Randomized with seed 123/)
 
-      top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
-      nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
-      examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
-      examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
+      top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
+      nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
+      examples('group 1')   {|first_run, second_run| expect(first_run).to eq(second_run)}
+      examples('group 1-1') {|first_run, second_run| expect(first_run).to eq(second_run)}
     end
   end
 
@@ -113,20 +113,20 @@ describe 'command line', :ui do
     it "forces '--order rand' and runs the examples and groups in the same order each time" do
       2.times { run_command 'tmp/aruba/spec/order_spec.rb --seed 123 -f doc' }
 
-      stdout.string.should match(/Randomized with seed \d+/)
+      expect(stdout.string).to match(/Randomized with seed \d+/)
 
-      top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
-      nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
-      examples('group 1')   {|first_run, second_run| first_run.should eq(second_run)}
-      examples('group 1-1') {|first_run, second_run| first_run.should eq(second_run)}
+      top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
+      nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
+      examples('group 1')   {|first_run, second_run| expect(first_run).to eq(second_run)}
+      examples('group 1-1') {|first_run, second_run| expect(first_run).to eq(second_run)}
     end
 
     it "runs examples in the same order, regardless of the order in which files are given" do
       run_command 'tmp/aruba/spec/simple_spec.rb tmp/aruba/spec/simple_spec2.rb --seed 1337 -f doc'
       run_command 'tmp/aruba/spec/simple_spec2.rb tmp/aruba/spec/simple_spec.rb --seed 1337 -f doc'
 
-      top_level_groups      {|first_run, second_run| first_run.should eq(second_run)}
-      nested_groups         {|first_run, second_run| first_run.should eq(second_run)}
+      top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
+      nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
     end
   end
 
@@ -136,9 +136,9 @@ describe 'command line', :ui do
 
       run_command 'tmp/aruba/spec/order_spec.rb --order default -f doc'
 
-      stdout.string.should_not match(/Randomized/)
+      expect(stdout.string).not_to match(/Randomized/)
 
-      stdout.string.should match(
+      expect(stdout.string).to match(
         /group 1.*group 1 example 1.*group 1 example 2.*group 1-1.*group 1-2.*group 2.*/m
       )
     end
@@ -169,10 +169,10 @@ describe 'command line', :ui do
     it 'orders the groups and examples by the provided strategy' do
       run_command 'tmp/aruba/spec/custom_order_spec.rb -f doc'
 
-      top_level_groups    { |groups| groups.flatten.should eq(['group A', 'group B']) }
+      top_level_groups    { |groups| expect(groups.flatten).to eq(['group A', 'group B']) }
       examples('group B') do |examples|
         letters = examples.flatten.map { |e| e[/(.)\z/, 1] }
-        letters.should eq(['A', 'B', 'C', 'D'])
+        expect(letters).to eq(['A', 'B', 'C', 'D'])
       end
     end
   end

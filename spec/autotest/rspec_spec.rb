@@ -11,8 +11,7 @@ describe Autotest::Rspec2 do
 
   it "uses autotest's prefix" do
     rspec_autotest.prefix = "this is the prefix "
-    rspec_autotest.
-      make_test_cmd({'a' => 'b'}).should match(/this is the prefix/)
+    expect(rspec_autotest.make_test_cmd({'a' => 'b'})).to match(/this is the prefix/)
   end
 
   describe "commands" do
@@ -30,41 +29,41 @@ describe Autotest::Rspec2 do
 
     it "uses double quotes for windows compatibility" do
       command = rspec_autotest.make_test_cmd(@files_to_test)
-      command.should include('"')
-      command.should_not include("'")
+      expect(command).to include('"')
+      expect(command).not_to include("'")
     end
 
     it "makes the appropriate test command" do
       actual_command = rspec_autotest.make_test_cmd(@files_to_test)
       expected_command = /#{ruby_cmd}.*"#{spec_cmd}" (.*)/
 
-      actual_command.should match(expected_command)
+      expect(actual_command).to match(expected_command)
 
       actual_command =~ expected_command
-      $1.should =~ /#{File.expand_path('file_one')}/
-      $1.should =~ /#{File.expand_path('file_two')}/
+      expect($1).to match /#{File.expand_path('file_one')}/
+      expect($1).to match /#{File.expand_path('file_two')}/
     end
 
     it "returns a blank command for no files" do
-      rspec_autotest.make_test_cmd({}).should eq('')
+      expect(rspec_autotest.make_test_cmd({})).to eq('')
     end
 
     it "quotes the paths of files to test" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
       @files_to_test.keys.each do |file_to_test|
-        cmd.should match(/"#{File.expand_path(file_to_test)}"/)
+        expect(cmd).to match(/"#{File.expand_path(file_to_test)}"/)
       end
     end
 
     it "quotes the path of the ruby executable" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
-      cmd.should match(%r("/path/to/ruby"))
+      expect(cmd).to match(%r("/path/to/ruby"))
     end
 
     it "gives '--tty' to #{Autotest::Rspec2::RSPEC_EXECUTABLE}, not '--autotest'" do
       cmd = rspec_autotest.make_test_cmd(@files_to_test)
-      cmd.should match(' --tty ')
-      cmd.should_not match(' --autotest ')
+      expect(cmd).to match(' --tty ')
+      expect(cmd).not_to match(' --autotest ')
     end
   end
 
@@ -76,19 +75,19 @@ describe Autotest::Rspec2 do
     end
 
     it "finds the spec file for a given lib file" do
-      rspec_autotest.should map_specs([@spec_file]).to(@lib_file)
+      expect(rspec_autotest).to map_specs([@spec_file]).to(@lib_file)
     end
 
     it "finds the spec file if given a spec file" do
-      rspec_autotest.should map_specs([@spec_file]).to(@spec_file)
+      expect(rspec_autotest).to map_specs([@spec_file]).to(@spec_file)
     end
 
     it "ignores files in spec dir that aren't specs" do
-      rspec_autotest.should map_specs([]).to("spec/spec_helper.rb")
+      expect(rspec_autotest).to map_specs([]).to("spec/spec_helper.rb")
     end
 
     it "ignores untracked files (in @file)"  do
-      rspec_autotest.should map_specs([]).to("lib/untracked_file")
+      expect(rspec_autotest).to map_specs([]).to("lib/untracked_file")
     end
   end
 
@@ -97,12 +96,12 @@ describe Autotest::Rspec2 do
     let(:spec_file)    { "spec/autotest/some_spec.rb" }
 
     it "returns no failures if no failures were given in the output" do
-      rspec_autotest.consolidate_failures([[]]).should eq({})
+      expect(rspec_autotest.consolidate_failures([[]])).to eq({})
     end
 
     it "returns a hash with the spec filename => spec name for each failure or error" do
       failures = [ [ "false should be false", spec_file ] ]
-      rspec_autotest.consolidate_failures(failures).should eq({
+      expect(rspec_autotest.consolidate_failures(failures)).to eq({
         spec_file => ["false should be false"]
       })
     end
@@ -113,11 +112,11 @@ describe Autotest::Rspec2 do
       end
 
       it "excludes the subject file" do
-        rspec_autotest.consolidate_failures(failures).keys.should_not include(subject_file)
+        expect(rspec_autotest.consolidate_failures(failures).keys).not_to include(subject_file)
       end
 
       it "includes the spec file" do
-        rspec_autotest.consolidate_failures(failures).keys.should include(spec_file)
+        expect(rspec_autotest.consolidate_failures(failures).keys).to include(spec_file)
       end
     end
   end
@@ -128,7 +127,7 @@ describe Autotest::Rspec2 do
       ['filename.rb', './filename.rb', File.expand_path('filename.rb')].each do |file|
         @files_to_test[file] = []
       end
-      rspec_autotest.normalize(@files_to_test).should have(1).file
+      expect(rspec_autotest.normalize(@files_to_test)).to have(1).file
     end
   end
 end

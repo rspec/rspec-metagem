@@ -18,12 +18,12 @@ describe "#let" do
   end
 
   it "generates an instance method" do
-    counter.count.should eq(1)
+    expect(counter.count).to eq(1)
   end
 
   it "caches the value" do
-    counter.count.should eq(1)
-    counter.count.should eq(2)
+    expect(counter.count).to eq(1)
+    expect(counter.count).to eq(2)
   end
 
   it "caches a nil value" do
@@ -31,7 +31,7 @@ describe "#let" do
     nil_value
     nil_value
 
-    @nil_value_count.should eq(1)
+    expect(@nil_value_count).to eq(1)
   end
 
   let(:a_value) { "a string" }
@@ -67,10 +67,10 @@ describe "#let!" do
   let!(:popped) { subject.pop }
 
   it "evaluates the value non-lazily" do
-    subject.should eq([1,2])
+    expect(subject).to eq([1,2])
   end
 
   it "returns memoized value from first invocation" do
-    popped.should eq(3)
+    expect(popped).to eq(3)
   end
 end

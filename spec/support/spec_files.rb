@@ -12,7 +12,7 @@ shared_context "spec files" do
       f.write %q{
         describe "passing spec" do
           it "passes" do
-            1.should eq(1)
+            expect(1).to eq(1)
           end
         end
       }
@@ -24,7 +24,7 @@ shared_context "spec files" do
       f.write %q{
         describe "failing spec" do
           it "fails" do
-            1.should eq(2)
+            expect(1).to eq(2)
           end
         end
       }

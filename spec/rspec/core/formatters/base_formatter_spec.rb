@@ -8,13 +8,13 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
   describe "backtrace_line" do
     it "trims current working directory" do
-      formatter.__send__(:backtrace_line, File.expand_path(__FILE__)).should eq("./spec/rspec/core/formatters/base_formatter_spec.rb")
+      expect(formatter.__send__(:backtrace_line, File.expand_path(__FILE__))).to eq("./spec/rspec/core/formatters/base_formatter_spec.rb")
     end
 
     it "leaves the original line intact" do
       original_line = File.expand_path(__FILE__)
       formatter.__send__(:backtrace_line, original_line)
-      original_line.should eq(File.expand_path(__FILE__))
+      expect(original_line).to eq(File.expand_path(__FILE__))
     end
 
     it "deals gracefully with a security error" do
@@ -35,18 +35,18 @@ describe RSpec::Core::Formatters::BaseFormatter do
         "/some/line/of/ruby.rb:14"
       ])
       example = mock(:Example, :file_path => __FILE__)
-      lambda {
+      expect {
         formatter.send(:read_failed_line, exception, example)
-      }.should_not raise_error
+      }.not_to raise_error
     end
 
     it "deals gracefully with a security error" do
       exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
       example = mock(:Example, :file_path => __FILE__)
       safely do
-        lambda {
+        expect {
           formatter.send(:read_failed_line, exception, example)
-        }.should_not raise_error
+        }.not_to raise_error
       end
     end
 
@@ -78,8 +78,8 @@ describe RSpec::Core::Formatters::BaseFormatter do
         exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
 
         example = mock(:Example, :file_path => __FILE__)
-        formatter.send(:read_failed_line, exception, example).should
-          eql(%Q{        exception = mock(:Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"])\n})
+        expect(formatter.send(:read_failed_line, exception, example)).to eql(
+          %Q{        exception = mock(:Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"])\n})
       end
 
     end
@@ -101,7 +101,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
     end
 
     it "removes lines from rspec and lines that come before the invocation of the at_exit autorun hook" do
-      formatter.format_backtrace(backtrace, stub.as_null_object).should eq(["./my_spec.rb:5"])
+      expect(formatter.format_backtrace(backtrace, stub.as_null_object)).to eq(["./my_spec.rb:5"])
     end
   end
 

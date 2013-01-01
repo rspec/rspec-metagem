@@ -105,6 +105,10 @@ Spork.prefork do
       :file_path => /spec\/command_line/
     }
 
+    c.expect_with :rspec do |expectations|
+      expectations.syntax = :expect
+    end
+
     # runtime options
     c.treat_symbols_as_metadata_keys_with_true_values = true
     c.color = !in_editor?

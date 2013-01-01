@@ -27,7 +27,11 @@ module RSpec
             %w[spec/rspec/core/resources/formatter_specs.rb --format html --order default]
           )
           options.parse_options
+
           err, out = StringIO.new, StringIO.new
+          err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
+          out.set_encoding("utf-8") if out.respond_to?(:set_encoding)
+
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.run(err, out)
           out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
@@ -73,14 +77,14 @@ module RSpec
             expected_backtraces = extract_backtrace_from(expected_doc)
             expected_doc.search("div.backtrace").remove
 
-            actual_doc.inner_html.should eq(expected_doc.inner_html)
+            expect(actual_doc.inner_html).to eq(expected_doc.inner_html)
 
             expected_backtraces.each_with_index do |expected_line, i|
               expected_path, expected_line_number, expected_suffix = expected_line.split(':')
               actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
-              File.expand_path(actual_path).should eq(File.expand_path(expected_path))
-              actual_line_number.should eq(expected_line_number)
-              actual_suffix.should eq(expected_suffix)
+              expect(File.expand_path(actual_path)).to eq(File.expand_path(expected_path))
+              expect(actual_line_number).to eq(expected_line_number)
+              expect(actual_suffix).to eq(expected_suffix)
             end
           end
         end

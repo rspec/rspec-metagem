@@ -34,21 +34,21 @@ module RSpec::Core
 
       it "gets converted to --format" do
         options = Parser.parse!(%w[--formatter doc])
-        options[:formatters].first.should eq(["doc"])
+        expect(options[:formatters].first).to eq(["doc"])
       end
     end
 
     describe "--default_path" do
       it "gets converted to --default-path" do
         options = Parser.parse!(%w[--default_path foo])
-        options[:default_path].should == "foo"
+        expect(options[:default_path]).to eq "foo"
       end
     end
 
     describe "--line_number" do
       it "gets converted to --line-number" do
         options = Parser.parse!(%w[--line_number 3])
-        options[:line_numbers].should == ["3"]
+        expect(options[:line_numbers]).to eq ["3"]
       end
     end
 
@@ -56,7 +56,7 @@ module RSpec::Core
     describe "--default-path" do
       it "sets the default path where RSpec looks for examples" do
         options = Parser.parse!(%w[--default-path foo])
-        options[:default_path].should == "foo"
+        expect(options[:default_path]).to eq "foo"
       end
     end
 
@@ -64,7 +64,7 @@ module RSpec::Core
       describe option do
         it "sets the line number of an example to run" do
           options = Parser.parse!([option, "3"])
-          options[:line_numbers].should == ["3"]
+          expect(options[:line_numbers]).to eq ["3"]
         end
       end
     end
@@ -73,7 +73,7 @@ module RSpec::Core
       describe option do
         it "defines the formatter" do
           options = Parser.parse!([option, 'doc'])
-          options[:formatters].first.should eq(["doc"])
+          expect(options[:formatters].first).to eq(["doc"])
         end
       end
     end
@@ -83,23 +83,23 @@ module RSpec::Core
         let(:options) { Parser.parse!([option, 'out.txt']) }
 
         it "sets the output stream for the formatter" do
-          options[:formatters].last.should eq(['progress', 'out.txt'])
+          expect(options[:formatters].last).to eq(['progress', 'out.txt'])
         end
 
         context "with multiple formatters" do
           context "after last formatter" do
             it "sets the output stream for the last formatter" do
               options = Parser.parse!(['-f', 'progress', '-f', 'doc', option, 'out.txt'])
-              options[:formatters][0].should eq(['progress'])
-              options[:formatters][1].should eq(['doc', 'out.txt'])
+              expect(options[:formatters][0]).to eq(['progress'])
+              expect(options[:formatters][1]).to eq(['doc', 'out.txt'])
             end
           end
 
           context "after first formatter" do
             it "sets the output stream for the first formatter" do
               options = Parser.parse!(['-f', 'progress', option, 'out.txt', '-f', 'doc'])
-              options[:formatters][0].should eq(['progress', 'out.txt'])
-              options[:formatters][1].should eq(['doc'])
+              expect(options[:formatters][0]).to eq(['progress', 'out.txt'])
+              expect(options[:formatters][1]).to eq(['doc'])
             end
           end
         end
@@ -110,8 +110,8 @@ module RSpec::Core
       describe option do
         it "escapes the arg" do
           options = Parser.parse!([option, "this (and that)"])
-          options[:full_description].length.should eq(1)
-          "this (and that)".should match(options[:full_description].first)
+          expect(options[:full_description].length).to eq(1)
+          expect("this (and that)").to match(options[:full_description].first)
         end
       end
     end
@@ -120,7 +120,7 @@ module RSpec::Core
       describe option do
         it "sets the filename pattern" do
           options = Parser.parse!([option, 'spec/**/*.spec'])
-          options[:pattern].should eq('spec/**/*.spec')
+          expect(options[:pattern]).to eq('spec/**/*.spec')
         end
       end
     end
@@ -130,54 +130,54 @@ module RSpec::Core
         context "without ~" do
           it "treats no value as true" do
             options = Parser.parse!([option, 'foo'])
-            options[:inclusion_filter].should eq(:foo => true)
+            expect(options[:inclusion_filter]).to eq(:foo => true)
           end
 
           it "treats 'true' as true" do
             options = Parser.parse!([option, 'foo:true'])
-            options[:inclusion_filter].should eq(:foo => true)
+            expect(options[:inclusion_filter]).to eq(:foo => true)
           end
 
           it "treats 'nil' as nil" do
             options = Parser.parse!([option, 'foo:nil'])
-            options[:inclusion_filter].should eq(:foo => nil)
+            expect(options[:inclusion_filter]).to eq(:foo => nil)
           end
 
           it "treats 'false' as false" do
             options = Parser.parse!([option, 'foo:false'])
-            options[:inclusion_filter].should eq(:foo => false)
+            expect(options[:inclusion_filter]).to eq(:foo => false)
           end
 
           it "merges muliple invocations" do
             options = Parser.parse!([option, 'foo:false', option, 'bar:true', option, 'foo:true'])
-            options[:inclusion_filter].should eq(:foo => true, :bar => true)
+            expect(options[:inclusion_filter]).to eq(:foo => true, :bar => true)
           end
 
           it "treats 'any_string' as 'any_string'" do
             options = Parser.parse!([option, 'foo:any_string'])
-            options[:inclusion_filter].should eq(:foo => 'any_string')
+            expect(options[:inclusion_filter]).to eq(:foo => 'any_string')
           end
         end
 
         context "with ~" do
           it "treats no value as true" do
             options = Parser.parse!([option, '~foo'])
-            options[:exclusion_filter].should eq(:foo => true)
+            expect(options[:exclusion_filter]).to eq(:foo => true)
           end
 
           it "treats 'true' as true" do
             options = Parser.parse!([option, '~foo:true'])
-            options[:exclusion_filter].should eq(:foo => true)
+            expect(options[:exclusion_filter]).to eq(:foo => true)
           end
 
           it "treats 'nil' as nil" do
             options = Parser.parse!([option, '~foo:nil'])
-            options[:exclusion_filter].should eq(:foo => nil)
+            expect(options[:exclusion_filter]).to eq(:foo => nil)
           end
 
           it "treats 'false' as false" do
             options = Parser.parse!([option, '~foo:false'])
-            options[:exclusion_filter].should eq(:foo => false)
+            expect(options[:exclusion_filter]).to eq(:foo => false)
           end
         end
       end
@@ -185,14 +185,14 @@ module RSpec::Core
 
     describe "--order" do
       it "is nil by default" do
-        Parser.parse!([])[:order].should be_nil
+        expect(Parser.parse!([])[:order]).to be_nil
       end
 
       %w[rand random].each do |option|
         context "with #{option}" do
           it "defines the order as random" do
             options = Parser.parse!(['--order', option])
-            options[:order].should eq(option)
+            expect(options[:order]).to eq(option)
           end
         end
       end
@@ -201,7 +201,7 @@ module RSpec::Core
     describe "--seed" do
       it "sets the order to rand:SEED" do
         options = Parser.parse!(%w[--seed 123])
-        options[:order].should eq("rand:123")
+        expect(options[:order]).to eq("rand:123")
       end
     end
   end

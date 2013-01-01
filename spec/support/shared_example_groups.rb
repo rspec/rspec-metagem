@@ -7,12 +7,12 @@ shared_examples_for "metadata hash builder" do
     end
 
     it 'treats symbols as metadata keys with a true value' do
-      hash[:foo].should be(true)
-      hash[:bar].should be(true)
+      expect(hash[:foo]).to be(true)
+      expect(hash[:bar]).to be(true)
     end
 
     it 'still processes hash values normally' do
-      hash[:bazz].should be(23)
+      expect(hash[:bazz]).to be(23)
     end
   end
 
@@ -30,7 +30,7 @@ shared_examples_for "metadata hash builder" do
     end
 
     it 'does not treat symbols as metadata keys' do
-      metadata_hash(:foo, :bar, :key => 'value').should_not include(:foo, :bar)
+      expect(metadata_hash(:foo, :bar, :key => 'value')).not_to include(:foo, :bar)
     end
 
     it 'does not print a warning if there are no symbol arguments' do
