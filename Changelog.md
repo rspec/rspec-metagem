@@ -12,6 +12,8 @@ Enhancements
 * Fix `let` and `subject` declaration so that `super`
   and `return` can be used in them, just like in a normal
   method. (Myron Marston)
+* Allow output colors to be configured individually.
+  (Charlie Maffitt)
 
 Bug fixes
 
