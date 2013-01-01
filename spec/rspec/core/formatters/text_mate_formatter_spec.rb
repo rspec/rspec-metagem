@@ -27,7 +27,11 @@ module RSpec
             %w[spec/rspec/core/resources/formatter_specs.rb --format textmate --order default]
           )
           options.parse_options
+
           err, out = StringIO.new, StringIO.new
+          err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
+          out.set_encoding("utf-8") if out.respond_to?(:set_encoding)
+
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.run(err, out)
           out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
