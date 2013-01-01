@@ -4,17 +4,16 @@ describe "should respond_to(:sym)" do
   it_behaves_like "an RSpec matcher", :valid_value => "s", :invalid_value => 5 do
     let(:matcher) { respond_to(:upcase) }
   end
-  
+
   it "passes if target responds to :sym" do
     Object.new.should respond_to(:methods)
   end
-  
+
   it "fails if target does not respond to :sym" do
     lambda {
       "this string".should respond_to(:some_method)
     }.should fail_with(%q|expected "this string" to respond to :some_method|)
   end
-  
 end
 
 describe "should respond_to(:sym).with(1).argument" do
@@ -35,14 +34,14 @@ describe "should respond_to(:sym).with(1).argument" do
     def obj.foo(a, *args); end
     obj.should respond_to(:foo).with(1).argument
   end
-  
+
   it "fails if target does not respond to :sym" do
     obj = Object.new
     lambda {
       obj.should respond_to(:some_method).with(1).argument
     }.should fail_with(/expected .* to respond to :some_method/)
   end
-  
+
   it "fails if :sym expects 0 args" do
     obj = Object.new
     def obj.foo; end
@@ -50,7 +49,7 @@ describe "should respond_to(:sym).with(1).argument" do
       obj.should respond_to(:foo).with(1).argument
     }.should fail_with(/expected #<Object.*> to respond to :foo with 1 argument/)
   end
-  
+
   it "fails if :sym expects 2 args" do
     obj = Object.new
     def obj.foo(arg, arg2); end
@@ -69,23 +68,22 @@ describe "should respond_to(:sym).with(1).argument" do
 end
 
 describe "should respond_to(message1, message2)" do
-  
   it "passes if target responds to both messages" do
     Object.new.should respond_to('methods', 'inspect')
   end
-  
+
   it "fails if target does not respond to first message" do
     lambda {
       Object.new.should respond_to('method_one', 'inspect')
     }.should fail_with(/expected #<Object:.*> to respond to "method_one"/)
   end
-  
+
   it "fails if target does not respond to second message" do
     lambda {
       Object.new.should respond_to('inspect', 'method_one')
     }.should fail_with(/expected #<Object:.*> to respond to "method_one"/)
   end
-  
+
   it "fails if target does not respond to either message" do
     lambda {
       Object.new.should respond_to('method_one', 'method_two')
@@ -117,14 +115,14 @@ describe "should respond_to(:sym).with(2).arguments" do
     def obj.foo(a, b, *args); end
     obj.should respond_to(:foo).with(2).arguments
   end
-  
+
   it "fails if target does not respond to :sym" do
     obj = Object.new
     lambda {
       obj.should respond_to(:some_method).with(2).arguments
     }.should fail_with(/expected .* to respond to :some_method/)
   end
-  
+
   it "fails if :sym expects 0 args" do
     obj = Object.new
     def obj.foo; end
@@ -132,7 +130,7 @@ describe "should respond_to(:sym).with(2).arguments" do
       obj.should respond_to(:foo).with(2).arguments
     }.should fail_with(/expected #<Object.*> to respond to :foo with 2 arguments/)
   end
-  
+
   it "fails if :sym expects 1 args" do
     obj = Object.new
     def obj.foo(arg); end
@@ -151,17 +149,15 @@ describe "should respond_to(:sym).with(2).arguments" do
 end
 
 describe "should_not respond_to(:sym)" do
-  
   it "passes if target does not respond to :sym" do
     Object.new.should_not respond_to(:some_method)
   end
-  
+
   it "fails if target responds to :sym" do
     lambda {
       Object.new.should_not respond_to(:methods)
     }.should fail_with(/expected #<Object:.*> not to respond to :methods/)
   end
-  
 end
 
 describe "should_not respond_to(:sym).with(1).argument" do
@@ -293,3 +289,4 @@ describe "should_not respond_to(:sym).with(2).arguments" do
     obj.should_not respond_to(:foo).with(2).arguments
   end
 end
+

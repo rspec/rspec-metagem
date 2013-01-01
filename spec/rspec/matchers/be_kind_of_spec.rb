@@ -26,7 +26,7 @@ module RSpec
           matcher.description.should == "be a kind of String"
         end
       end
-      
+
       describe "actual.should_not #{method}(expected)" do
         it "fails with failure message for should_not if actual is kind of expected class" do
           lambda { "foo".should_not send(method, String) }.should fail_with(%Q{expected "foo" not to be a kind of String})

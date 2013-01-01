@@ -14,7 +14,7 @@ module RSpec
       it "matches when actual == expected" do
         1.should eq(1)
       end
-      
+
       it "does not match when actual != expected" do
         1.should_not eq(2)
       end
@@ -36,13 +36,13 @@ module RSpec
         matcher.matches?(1)
         matcher.description.should eq "eq 1"
       end
-      
+
       it "provides message, expected and actual on #failure_message" do
         matcher = eq("1")
         matcher.matches?(1)
         matcher.failure_message_for_should.should eq "\nexpected: \"1\"\n     got: 1\n\n(compared using ==)\n"
       end
-      
+
       it "provides message, expected and actual on #negative_failure_message" do
         matcher = eq(1)
         matcher.matches?(1)
