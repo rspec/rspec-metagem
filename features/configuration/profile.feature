@@ -1,8 +1,10 @@
-Feature: profile examples
+Feature: Profile examples
 
-  Use the profile_count option to tell RSpec have many specs to include in the profile:
-
-      RSpec.configure { |c| c.profile_examples = 15 }
+  The `--profile` command line option (available from `RSpec.configure` as
+  `#profile_examples`), when set, will cause RSpec to dump out a list of
+  your slowest examples. By default, it prints the 10 slowest examples,
+  but you can set it to a different value to have it print more or fewer
+  slow examples.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
