@@ -99,7 +99,7 @@ MESSAGE
       # server, but you can use tools like spork.
       add_setting :drb
 
-      # The drb_port (default: `8989`).
+      # The drb_port (default: nil).
       add_setting :drb_port
 
       # Default: `$stderr`.
