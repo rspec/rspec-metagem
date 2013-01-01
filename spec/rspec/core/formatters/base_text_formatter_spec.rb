@@ -74,6 +74,15 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
     end
 
+    context "with an instance of an anonymous exception class" do
+      it "substitutes '(anonymous error class)' for the missing class name" do
+        exception = Class.new(StandardError).new
+        group.example("example name") { raise exception }
+        run_all_and_dump_failures
+        output.string.should include('(anonymous error class)')
+      end
+    end
+
     context "with an exception class other than RSpec" do
       it "does not show the error class" do
         group.example("example name") { raise NameError.new('foo') }
@@ -333,13 +342,19 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   describe "#dump_profile" do
+    example_line_number = nil
+
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
-        example("example") { sleep 0.1 }
+        # Use a sleep so there is some measurable time, to ensure
+        # the reported percent is 100%, not 0%.
+        example("example") { sleep 0.001 }
+        example_line_number = __LINE__ - 1
       end
       group.run(double('reporter').as_null_object)
 
       formatter.stub(:examples) { group.examples }
+      RSpec.configuration.stub(:profile_examples) { 10 }
     end
 
     it "names the example" do
@@ -356,7 +371,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       formatter.dump_profile
       filename = __FILE__.split(File::SEPARATOR).last
 
-      output.string.should =~ /#{filename}\:#{__LINE__ - 21}/
+      output.string.should =~ /#{filename}\:#{example_line_number}/
     end
 
     it "prints the percentage taken from the total runtime" do

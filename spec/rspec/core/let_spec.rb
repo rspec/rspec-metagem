@@ -33,23 +33,44 @@ describe "#let" do
 
     @nil_value_count.should eq(1)
   end
-end
 
-describe "#let!" do
-  let!(:creator) do
-    Class.new do
-      @count = 0
-      def self.count
-        @count += 1
-      end
+  let(:a_value) { "a string" }
+
+  context 'when overriding let in a nested context' do
+    let(:a_value) { super() + " (modified)" }
+
+    it 'can use `super` to reference the parent context value' do
+      expect(a_value).to eq("a string (modified)")
     end
   end
 
+  context 'when the declaration uses `return`' do
+    let(:value) do
+      return :early_exit if @early_exit
+      :late_exit
+    end
+
+    it 'can exit the let declaration early' do
+      @early_exit = true
+      expect(value).to eq(:early_exit)
+    end
+
+    it 'can get past a conditional `return` statement' do
+      @early_exit = false
+      expect(value).to eq(:late_exit)
+    end
+  end
+end
+
+describe "#let!" do
+  subject { [1,2,3] }
+  let!(:popped) { subject.pop }
+
   it "evaluates the value non-lazily" do
-    lambda { creator.count }.should_not raise_error
+    subject.should eq([1,2])
   end
 
-  it "does not interfere between tests" do
-    creator.count.should eq(1)
+  it "returns memoized value from first invocation" do
+    popped.should eq(3)
   end
 end

@@ -1,3 +1,29 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.12.2...master)
+
+Enhancements
+
+* Allow `--profile` option to take a count argument that
+  determines the number of slow examples to dump
+  (Greggory Rothmeier).
+* Add `subject!` that is the analog to `let!`. It defines an
+  explicit subject and sets a `before` hook that will invoke
+  the subject (Zubin Henner).
+* Fix `let` and `subject` declaration so that `super`
+  and `return` can be used in them, just like in a normal
+  method. (Myron Marston)
+
+Bug fixes
+
+* Don't blow up when dumping error output for instances
+  of anonymous error classes (Myron Marston).
+* Fix default backtrace filters so lines from projects
+  containing "gems" in the name are not filtered, but
+  lines from installed gems still are (Myron Marston).
+* Fix autotest command so that is uses double quotes
+  rather than single quotes for windows compatibility
+  (Jonas Tingeborn).
+
 ### 2.12.2 / 2012-12-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.1...v2.12.2)
 

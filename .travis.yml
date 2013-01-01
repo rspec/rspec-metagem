@@ -1,3 +1,4 @@
+language: ruby
 before_install:
   - if [[ `gem -v` != 1.8.* ]]; then gem update --system; fi
 script: "script/test_all 2>&1"
@@ -15,6 +16,6 @@ rvm:
 matrix:
   allow_failures:
     - rvm: 2.0.0
-    - rbx-19mode
-    - rbx-18mode
+    - rvm: rbx-19mode
+    - rvm: rbx-18mode
 

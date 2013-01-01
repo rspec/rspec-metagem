@@ -122,7 +122,8 @@ MESSAGE
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
       add_setting :pattern, :alias_with => :filename_pattern
 
-      # Report the times for the 10 slowest examples (default: `false`).
+      # Report the times for the slowest examples (default: `false`).
+      # Use this to specify the number of examples to include in the profile.
       add_setting :profile_examples
 
       # Run all examples if none match the configured filters (default: `false`).
@@ -185,7 +186,7 @@ MESSAGE
         /\/lib\d*\/ruby\//,
         /org\/jruby\//,
         /bin\//,
-        /gems/,
+        %r|/gems/|,
         /spec\/spec_helper\.rb/,
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
@@ -210,6 +211,7 @@ MESSAGE
         @default_color = :white
         @fixed_color = :blue
         @detail_color = :cyan
+        @profile_examples = false
       end
 
       # @private
@@ -519,6 +521,19 @@ EOM
                         add_formatter('progress') if formatters.empty?
                         Reporter.new(*formatters)
                       end
+      end
+
+      # @api private
+      #
+      # Defaults `profile_examples` to 10 examples when `@profile_examples` is `true`.
+      #
+      def profile_examples
+        profile = value_for(:profile_examples, @profile_examples)
+        if profile && !profile.is_a?(Integer)
+          10
+        else
+          profile
+        end
       end
 
       # @private

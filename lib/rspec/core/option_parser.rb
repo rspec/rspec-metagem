@@ -135,8 +135,14 @@ module RSpec::Core
           options[:color] = o
         end
 
-        parser.on('-p', '--profile', 'Enable profiling of examples and list 10 slowest examples.') do |o|
-          options[:profile_examples] = o
+        parser.on('-p', '--[no-]profile [COUNT]', 'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
+          options[:profile_examples] = if argument.nil?
+                                         true
+                                       elsif argument == false
+                                         false
+                                       else
+                                         argument.to_i
+                                       end
         end
 
         parser.separator <<-FILTERING

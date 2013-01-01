@@ -43,8 +43,7 @@ module RSpec
 
         def dump_summary(duration, example_count, failure_count, pending_count)
           super(duration, example_count, failure_count, pending_count)
-          # Don't print out profiled info if there are failures, it just clutters the output
-          dump_profile if profile_examples? && failure_count == 0
+          dump_profile if profile_examples?
           output.puts "\nFinished in #{format_duration(duration)}\n"
           output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
           dump_commands_to_rerun_failed_examples
@@ -67,11 +66,12 @@ module RSpec
 
         # @api public
         #
-        # Outputs the 10 slowest examples in a report when using `--profile`.
+        # Outputs the slowest examples in a report when using `--profile COUNT` (default 10).
         #
         def dump_profile
+          number_of_examples = RSpec.configuration.profile_examples
           sorted_examples = examples.sort_by {|example|
-            example.execution_result[:run_time] }.reverse.first(10)
+            example.execution_result[:run_time] }.reverse.first(number_of_examples)
 
           total, slows = [examples, sorted_examples].map {|exs|
             exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }}
@@ -257,12 +257,20 @@ module RSpec
 
         def dump_failure_info(example)
           exception = example.execution_result[:exception]
+          exception_class_name = exception_class_name_for(exception)
           output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
-          output.puts "#{long_padding}#{failure_color(exception.class.name << ":")}" unless exception.class.name =~ /RSpec/
+          output.puts "#{long_padding}#{failure_color(exception_class_name)}:" unless exception_class_name =~ /RSpec/
           exception.message.to_s.split("\n").each { |line| output.puts "#{long_padding}  #{failure_color(line)}" } if exception.message
+
           if shared_group = find_shared_group(example)
             dump_shared_failure_info(shared_group)
           end
+        end
+
+        def exception_class_name_for(exception)
+          name = exception.class.name.to_s
+          name ="(anonymous error class)" if name == ''
+          name
         end
 
         def dump_shared_failure_info(group)

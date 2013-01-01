@@ -42,11 +42,10 @@ module RSpec
         # @see ExampleGroupMethods#subject
         # @see #should
         def subject
-          if defined?(@original_subject)
-            @original_subject
-          else
-            @original_subject = instance_eval(&self.class.subject)
-          end
+          # This logic defines an implicit subject.
+          # Explicit `subject` declarations re-define this method.
+          described = described_class || self.class.description
+          Class === described ? described.new : described
         end
 
         # When `should` is called with no explicit receiver, the call is
@@ -193,31 +192,69 @@ module RSpec
         # @see ExampleMethods#subject
         # @see ExampleMethods#should
         def subject(name=nil, &block)
-          if name
-            let(name, &block)
-            subject { send name }
-          else
-            block ? @explicit_subject_block = block : explicit_subject || implicit_subject
-          end
+          let(:subject, &block)
+          alias_method name, :subject if name
         end
 
-        attr_reader :explicit_subject_block
-
-        private
-
-        def explicit_subject
-          group = self
-          while group.respond_to?(:explicit_subject_block)
-            return group.explicit_subject_block if group.explicit_subject_block
-            group = group.superclass
-          end
-        end
-
-        def implicit_subject
-          described = described_class || description
-          Class === described ? proc { described.new } : proc { described }
+        # Just like `subject`, except the block is invoked by an implicit `before`
+        # hook. This serves a dual purpose of setting up state and providing a
+        # memoized reference to that state.
+        #
+        # @example
+        #
+        #   class Thing
+        #     def self.count
+        #       @count ||= 0
+        #     end
+        #
+        #     def self.count=(val)
+        #       @count += val
+        #     end
+        #
+        #     def self.reset_count
+        #       @count = 0
+        #     end
+        #
+        #     def initialize
+        #       self.class.count += 1
+        #     end
+        #   end
+        #
+        #   describe Thing do
+        #     after(:each) { Thing.reset_count }
+        #
+        #     context "using subject" do
+        #       subject { Thing.new }
+        #
+        #       it "is not invoked implicitly" do
+        #         Thing.count.should eq(0)
+        #       end
+        #
+        #       it "can be invoked explicitly" do
+        #         subject
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
+        #
+        #     context "using subject!" do
+        #       subject!(:thing) { Thing.new }
+        #
+        #       it "is invoked implicitly" do
+        #         Thing.count.should eq(1)
+        #       end
+        #
+        #       it "returns memoized version on first invocation" do
+        #         subject
+        #         Thing.count.should eq(1)
+        #       end
+        #     end
+        #   end
+        def subject!(name=nil, &block)
+          subject(name, &block)
+          before { __send__(:subject) }
         end
       end
     end
   end
 end
+
