@@ -25,10 +25,10 @@ Feature: operator matchers
   RSpec also provides a `=~` matcher for arrays that disregards differences in
   the ording between the actual and expected array.  For example:
 
-    """ruby
+    ```ruby
     [1, 2, 3].should =~ [2, 3, 1] # pass
     [:a, :c, :b].should =~ [:a, :c] # fail
-    """
+    ```
 
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
