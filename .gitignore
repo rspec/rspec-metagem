@@ -14,3 +14,4 @@ bin
 .rbx
 Gemfile-custom
 bundle
+.rspec-local
