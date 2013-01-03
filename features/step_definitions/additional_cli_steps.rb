@@ -30,3 +30,10 @@ Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
 
   normalized_output.should =~ regexp(partial_output)
 end
+
+# This step can be generalized if it's ever used to test other colors
+Then /^the failing example is printed in magenta$/ do
+  # \e[35m = enable magenta
+  # \e[0m  = reset colors
+  expect(all_output).to include("\e[35m" + "F" + "\e[0m")
+end
