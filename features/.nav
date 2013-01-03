@@ -53,6 +53,9 @@
   - use_rr.feature
   - use_any_framework.feature
 - formatters:
+  - text_formatter.feature
+  - configurable_colors.feature
+  - json_formatter.feature
   - custom_formatter.feature
 - spec_files:
   - arbitrary_file_suffix.feature
