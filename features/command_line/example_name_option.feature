@@ -2,13 +2,13 @@ Feature: --example option
 
   Use the --example (or -e) option to filter examples by name.
 
-  The argument is compiled to a Ruby Regexp, and matched against the full
-  description of the example, which is the concatenation of descriptions of the
-  group (including any nested groups) and the example.
+  The argument is matched against the full description of the example,
+  which is the concatenation of descriptions of the group (including
+  any nested groups) and the example.
 
   This allows you to run a single uniquely named example, all examples with
   similar names, all the examples in a uniquely named group, etc, etc.
-  
+
   You can also use the option more than once to specify multiple example matches.
 
   Background:
@@ -65,10 +65,6 @@ Feature: --example option
 
   Scenario: one match in one file using the example name and the group name
     When I run `rspec . --example 'first group first example in first group'`
-    Then the examples should all pass
-
-  Scenario: one match in one file using regexp
-    When I run `rspec . --example 'first .* first example'`
     Then the examples should all pass
 
   Scenario: all examples in one group
