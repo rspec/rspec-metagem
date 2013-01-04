@@ -1,53 +1,41 @@
 module RSpec
   module Core
+    # @note `subject` was contributed by Joe Ferris to support the one-liner
+    #   syntax embraced by shoulda matchers:
+    #
+    #       describe Widget do
+    #         it { should validate_presence_of(:name) }
+    #       end
+    #
+    #   While the examples below demonstrate how to use `subject`
+    #   explicitly in examples, we recommend that you define a method with
+    #   an intention revealing name instead.
+    #
+    # @example
+    #
+    #   # explicit declaration of subject
+    #   describe Person do
+    #     subject { Person.new(:birthdate => 19.years.ago) }
+    #     it "should be eligible to vote" do
+    #       subject.should be_eligible_to_vote
+    #       # ^ ^ explicit reference to subject not recommended
+    #     end
+    #   end
+    #
+    #   # implicit subject => { Person.new }
+    #   describe Person do
+    #     it "should be eligible to vote" do
+    #       subject.should be_eligible_to_vote
+    #       # ^ ^ explicit reference to subject not recommended
+    #     end
+    #   end
+    #
+    #   # one-liner syntax - should is invoked on subject
+    #   describe Person do
+    #     it { should be_eligible_to_vote }
+    #   end
     module Subject
       module ExampleMethods
-        # Returns the example group's `subject`.
-        #
-        # @note `subject` was contributed by Joe Ferris to support the one-liner
-        #   syntax embraced by shoulda matchers:
-        #
-        #       describe Widget do
-        #         it { should validate_presence_of(:name) }
-        #       end
-        #
-        #   While the examples below demonstrate how to use `subject`
-        #   explicitly in examples, we recommend that you define a method with
-        #   an intention revealing name instead.
-        #
-        # @example
-        #
-        #   # explicit declaration of subject
-        #   describe Person do
-        #     subject { Person.new(:birthdate => 19.years.ago) }
-        #     it "should be eligible to vote" do
-        #       subject.should be_eligible_to_vote
-        #       # ^ ^ explicit reference to subject not recommended
-        #     end
-        #   end
-        #
-        #   # implicit subject => { Person.new }
-        #   describe Person do
-        #     it "should be eligible to vote" do
-        #       subject.should be_eligible_to_vote
-        #       # ^ ^ explicit reference to subject not recommended
-        #     end
-        #   end
-        #
-        #   # one-liner syntax - should is invoked on subject
-        #   describe Person do
-        #     it { should be_eligible_to_vote }
-        #   end
-        #
-        # @see ExampleGroupMethods#subject
-        # @see #should
-        def subject
-          # This logic defines an implicit subject.
-          # Explicit `subject` declarations re-define this method.
-          described = described_class || self.class.description
-          Class === described ? described.new : described
-        end
-
         # When `should` is called with no explicit receiver, the call is
         # delegated to the object returned by `subject`. Combined with an
         # implicit subject this supports very concise expressions.
@@ -189,11 +177,18 @@ module RSpec
         #     end
         #   end
         #
-        # @see ExampleMethods#subject
         # @see ExampleMethods#should
         def subject(name=nil, &block)
           let(:subject, &block)
           alias_method name, :subject if name
+        end
+
+        def self.extended(base)
+          # This logic defines an implicit subject.
+          base.subject do
+            described = described_class || self.class.description
+            Class === described ? described.new : described
+          end
         end
 
         # Just like `subject`, except the block is invoked by an implicit `before`

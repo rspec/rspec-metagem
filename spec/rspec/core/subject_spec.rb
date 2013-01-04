@@ -338,4 +338,33 @@ module RSpec::Core
       end
     end
   end
+
+  describe 'using subject in before and let blocks' do
+    shared_examples_for 'a subject' do
+      let(:subject_id_in_let) { subject.object_id }
+      before { @subject_id_in_before = subject.object_id }
+
+      it 'should be memoized' do
+        expect(subject_id_in_let).to eq(@subject_id_in_before)
+      end
+
+      it { should eq(subject) }
+    end
+
+    describe Object do
+      context 'with implicit subject' do
+        it_should_behave_like 'a subject'
+      end
+
+      context 'with explicit subject' do
+        subject { Object.new }
+        it_should_behave_like 'a subject'
+      end
+
+      context 'with a constant subject'do
+        subject { 123 }
+        it_should_behave_like 'a subject'
+      end
+    end
+  end
 end
