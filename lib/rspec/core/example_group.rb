@@ -13,15 +13,12 @@ module RSpec
     # which serves as a wrapper for an instance of the ExampleGroup in which it
     # is declared.
     class ExampleGroup
-      include Let # Subject::ExampleGroupMethods depends on this module, so include it first
-
       extend  MetadataHashBuilder::WithDeprecationWarning
       extend  Extensions::ModuleEvalWithArgs
-      extend  Subject::ExampleGroupMethods
       extend  Hooks
 
+      include MemoizedHelpers
       include Extensions::InstanceEvalWithArgs
-      include Subject::ExampleMethods
       include Pending
       include SharedExampleGroup
 
