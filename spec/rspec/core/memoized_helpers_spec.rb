@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 module RSpec::Core
-
-  describe Subject do
+  describe MemoizedHelpers do
     before(:each) { RSpec.configuration.configure_expectation_framework }
 
     def subject_value_for(describe_arg, &block)
@@ -335,6 +334,110 @@ module RSpec::Core
 
       it "returns memoized value from first invocation" do
         expect(subject).to eq(3)
+      end
+    end
+  end
+
+  describe "#let" do
+    let(:counter) do
+      Class.new do
+        def initialize
+          @count = 0
+        end
+        def count
+          @count += 1
+        end
+      end.new
+    end
+
+    let(:nil_value) do
+      @nil_value_count += 1
+      nil
+    end
+
+    it "generates an instance method" do
+      expect(counter.count).to eq(1)
+    end
+
+    it "caches the value" do
+      expect(counter.count).to eq(1)
+      expect(counter.count).to eq(2)
+    end
+
+    it "caches a nil value" do
+      @nil_value_count = 0
+      nil_value
+      nil_value
+
+      expect(@nil_value_count).to eq(1)
+    end
+
+    let(:a_value) { "a string" }
+
+    context 'when overriding let in a nested context' do
+      let(:a_value) { super() + " (modified)" }
+
+      it 'can use `super` to reference the parent context value' do
+        expect(a_value).to eq("a string (modified)")
+      end
+    end
+
+    context 'when the declaration uses `return`' do
+      let(:value) do
+        return :early_exit if @early_exit
+        :late_exit
+      end
+
+      it 'can exit the let declaration early' do
+        @early_exit = true
+        expect(value).to eq(:early_exit)
+      end
+
+      it 'can get past a conditional `return` statement' do
+        @early_exit = false
+        expect(value).to eq(:late_exit)
+      end
+    end
+  end
+
+  describe "#let!" do
+    subject { [1,2,3] }
+    let!(:popped) { subject.pop }
+
+    it "evaluates the value non-lazily" do
+      expect(subject).to eq([1,2])
+    end
+
+    it "returns memoized value from first invocation" do
+      expect(popped).to eq(3)
+    end
+  end
+
+  describe 'using subject in before and let blocks' do
+    shared_examples_for 'a subject' do
+      let(:subject_id_in_let) { subject.object_id }
+      before { @subject_id_in_before = subject.object_id }
+
+      it 'should be memoized' do
+        expect(subject_id_in_let).to eq(@subject_id_in_before)
+      end
+
+      it { should eq(subject) }
+    end
+
+    describe Object do
+      context 'with implicit subject' do
+        it_should_behave_like 'a subject'
+      end
+
+      context 'with explicit subject' do
+        subject { Object.new }
+        it_should_behave_like 'a subject'
+      end
+
+      context 'with a constant subject'do
+        subject { 123 }
+        it_should_behave_like 'a subject'
       end
     end
   end

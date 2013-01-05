@@ -15,13 +15,11 @@ module RSpec
     class ExampleGroup
       extend  MetadataHashBuilder::WithDeprecationWarning
       extend  Extensions::ModuleEvalWithArgs
-      extend  Subject::ExampleGroupMethods
       extend  Hooks
 
+      include MemoizedHelpers
       include Extensions::InstanceEvalWithArgs
-      include Subject::ExampleMethods
       include Pending
-      include Let
       include SharedExampleGroup
 
       # @private

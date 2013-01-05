@@ -18,7 +18,7 @@ module RSpec
     #     end
     module SharedContext
       include Hooks
-      include Let::ExampleGroupMethods
+      include MemoizedHelpers::ClassMethods
 
       def included(group)
         [:before, :after].each do |type|
