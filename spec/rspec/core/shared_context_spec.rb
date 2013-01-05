@@ -46,6 +46,33 @@ describe RSpec::SharedContext do
     expect(group.new.foo).to eq('foo')
   end
 
+  it 'supports explicit subjects' do
+    shared = Module.new do
+      extend RSpec::SharedContext
+      subject { 17 }
+    end
+
+    group = RSpec::Core::ExampleGroup.describe do
+      include shared
+    end
+
+    expect(group.new.subject).to eq(17)
+  end
+
+  it 'supports `its` with an implicit subject' do
+    shared = Module.new do
+      extend RSpec::SharedContext
+      its(:size) { should eq 0 }
+    end
+
+    group = RSpec::Core::ExampleGroup.describe(Array) do
+      include shared
+    end
+
+    group.run
+    expect(group.children.first.examples.first.execution_result).to include(:status => "passed")
+  end
+
   %w[describe context].each do |method_name|
     it "supports nested example groups using #{method_name}" do
       shared = Module.new do
