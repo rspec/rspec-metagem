@@ -323,7 +323,7 @@ module RSpec::Core
         it "inherits the described class/module from the outer group" do
           group = ExampleGroup.describe(String) do
             describe Array do
-              example "desribes is String" do
+              example "describes is String" do
                 expect(described_class).to eq(String)
               end
             end
