@@ -126,8 +126,12 @@ module RSpec
 
         def described_class
           container_stack.each do |g|
-            return g[:described_class] if g.has_key?(:described_class)
-            return g[:describes]       if g.has_key?(:describes)
+            [:described_class, :describes].each do |key|
+              if g.has_key?(key)
+                value = g[key]
+                return value unless value.nil?
+              end
+            end
           end
 
           container_stack.reverse.each do |g|

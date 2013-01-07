@@ -332,6 +332,38 @@ module RSpec::Core
           expect(group.run).to be_true, "expected examples in group to pass"
         end
       end
+
+      context "for `describe(SomeClass)` within a `describe 'some string' group" do
+        def define_and_run_group(define_outer_example = false)
+          outer_described_class = inner_described_class = nil
+
+          ExampleGroup.describe("some string") do
+            example { outer_described_class = described_class } if define_outer_example
+
+            describe Array do
+              example { inner_described_class = described_class }
+            end
+          end.run
+
+          return outer_described_class, inner_described_class
+        end
+
+        it "has a `nil` described_class in the outer group" do
+          outer_described_class, _ = define_and_run_group(:define_outer_example)
+          expect(outer_described_class).to be(nil)
+        end
+
+        it "has the inner described class as the described_class of the inner group" do
+          _, inner_described_class = define_and_run_group
+          expect(inner_described_class).to be(Array)
+
+          # This is weird, but in RSpec 2.12 (and before, presumably),
+          # the `described_class` value would be incorrect if there was an
+          # example in the outer group, and correct if there was not one.
+          _, inner_described_class = define_and_run_group(:define_outer_example)
+          expect(inner_described_class).to be(Array)
+        end
+      end
     end
 
     describe '#described_class' do
