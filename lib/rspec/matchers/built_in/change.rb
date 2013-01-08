@@ -28,7 +28,7 @@ MESSAGE
 
         def evaluate_value_proc
           case val = @value_proc.call
-          when Enumerable
+          when Enumerable, String
             val.dup
           else
             val

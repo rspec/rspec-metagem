@@ -1,3 +1,11 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...master)
+
+Bug fixes
+
+* Fix `change` matcher so that it dups strings in order to handle
+  mutated strings (Myron Marston).
+
 ### 2.12.1 / 2012-12-15
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.0...v2.12.1)
 

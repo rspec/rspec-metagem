@@ -96,6 +96,20 @@ describe "expect { ... }.to change(actual, message)" do
     end
   end
 
+  context "with a string" do
+    it "passes when actual is modified by the block" do
+      string = "ab"
+      expect { string << "c" }.to change { string }
+    end
+
+    it 'fails when actual is not modified by the block' do
+      string = "ab"
+      expect {
+        expect { }.to change { string }
+      }.to fail_with(/should have changed/)
+    end
+  end
+
   context "with an arbitrary enumerable" do
     before(:each) do
       @instance = SomethingExpected.new
