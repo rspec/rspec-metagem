@@ -72,7 +72,7 @@ MESSAGE
         def by_at_most(maximum)
           @maximum = maximum
           self
-        end      
+        end
 
         def to(to)
           @eval_after = true
