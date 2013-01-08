@@ -15,15 +15,15 @@ describe "a matcher defined using the matcher DSL" do
     end
 
     RSpec::Matchers.define :be_well do
-      match { |actual| actual.should be_ok }
+      match { |actual| expect(actual).to be_ok }
     end
 
-    ok.should be_well
+    expect(ok).to be_well
   end
 
   it "has access to methods available in the scope of the example" do
     RSpec::Matchers::define(:matcher_a) {}
-    matcher_a.question?.should eq(:answer)
+    expect(matcher_a.question?).to eq(:answer)
   end
 
   it "raises when method is missing from local scope as well as matcher" do
@@ -39,19 +39,19 @@ describe "a matcher defined using the matcher DSL" do
       end
     end
 
-    3.should be_just_like(3)
-    4.should be_just_like(4)
+    expect(3).to be_just_like(3)
+    expect(4).to be_just_like(4)
   end
 
   describe "#respond_to?" do
     it "returns true for methods in example scope" do
       RSpec::Matchers::define(:matcher_c) {}
-      matcher_c.should respond_to(:question?)
+      expect(matcher_c).to respond_to(:question?)
     end
 
     it "returns false for methods not defined in matcher or example scope" do
       RSpec::Matchers::define(:matcher_d) {}
-      matcher_d.should_not respond_to(:i_dont_exist)
+      expect(matcher_d).not_to respond_to(:i_dont_exist)
     end
   end
 end

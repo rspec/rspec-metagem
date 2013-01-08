@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module RSpec
   module Matchers
-    describe "[actual.should] be_close(expected, delta)" do
+    describe "expect(actual).to be_close(expected, delta)" do
       before(:each) do
         RSpec.stub(:warn)
       end

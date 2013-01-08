@@ -36,7 +36,7 @@ module RSpec
 EOD
 
           diff = differ.diff_as_string(expected, actual)
-          diff.should eql(expected_diff)
+          expect(diff).to eql(expected_diff)
         end
       end
 
@@ -71,12 +71,12 @@ EOD
 EOD
 
           diff = differ.diff_as_object(expected,actual)
-          diff.should == expected_diff
+          expect(diff).to eq expected_diff
         end
 
         it "outputs a message if the diff is empty" do
           diff = differ.diff_as_object('foo', 'foo')
-          diff.should eq(
+          expect(diff).to eq(
             "foo.==(foo) returned false even though the diff between " \
             "foo and foo is empty. Check the implementation of foo.==."
           )
@@ -101,7 +101,7 @@ EOD
 EOD
 
           diff = differ.diff_as_object(expected,actual)
-          diff.should == expected_diff
+          expect(diff).to eq expected_diff
         end
 
         it "outputs unified diff message of two hashes" do
@@ -120,7 +120,7 @@ EOD
 EOD
 
           diff = differ.diff_as_object(expected,actual)
-          diff.should == expected_diff
+          expect(diff).to eq expected_diff
         end
 
         it "outputs unified diff of single line strings" do
@@ -135,7 +135,7 @@ EOD
 EOD
 
           diff = differ.diff_as_object(expected,actual)
-          diff.should == expected_diff
+          expect(diff).to eq expected_diff
         end
 
         it "outputs unified diff of multi line strings" do
@@ -151,7 +151,7 @@ EOD
 EOD
 
           diff = differ.diff_as_object(expected,actual)
-          diff.should == expected_diff
+          expect(diff).to eq expected_diff
         end
       end
     end
@@ -168,7 +168,7 @@ EOD
 
 
         diff = differ.diff_as_string(expected,actual)
-        diff.should == expected_diff
+        expect(diff).to eq expected_diff
       end
     end
 

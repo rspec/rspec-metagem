@@ -8,21 +8,21 @@ module RSpec::Matchers::BuiltIn
       end
 
       it "returns true if there are no errors" do
-        matcher.match_unless_raises {}.should be_true
+        expect(matcher.match_unless_raises {}).to be_true
       end
 
       it "returns false if there is an error" do
-        matcher.match_unless_raises { raise }.should be_false
+        expect(matcher.match_unless_raises { raise }).to be_false
       end
 
       it "returns false if the only submitted error is raised" do
-        matcher.match_unless_raises(RuntimeError){ raise "foo" }.should be_false
+        expect(matcher.match_unless_raises(RuntimeError){ raise "foo" }).to be_false
       end
 
       it "returns false if any of several errors submitted is raised" do
-        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise "foo" }.should be_false
-        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise ArgumentError.new('') }.should be_false
-        matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise NameError.new('') }.should be_false
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise "foo" }).to be_false
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise ArgumentError.new('') }).to be_false
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise NameError.new('') }).to be_false
       end
 
       it "re-raises any error other than one of those specified" do
@@ -33,8 +33,8 @@ module RSpec::Matchers::BuiltIn
 
       it "stores the rescued exception for use in messages" do
         matcher.match_unless_raises(RuntimeError){ raise "foo" }
-        matcher.rescued_exception.should be_a(RuntimeError)
-        matcher.rescued_exception.message.should eq("foo")
+        expect(matcher.rescued_exception).to be_a(RuntimeError)
+        expect(matcher.rescued_exception.message).to eq("foo")
       end
 
     end
@@ -51,11 +51,11 @@ module RSpec::Matchers::BuiltIn
           end
         end
 
-        matcher.new(3).matches?(3).should be_true
-        matcher.new(3).should eq(3)
+        expect(matcher.new(3).matches?(3)).to be_true
+        expect(matcher.new(3)).to eq(3)
 
-        matcher.new(3).matches?(4).should be_false
-        matcher.new(3).should_not eq(4)
+        expect(matcher.new(3).matches?(4)).to be_false
+        expect(matcher.new(3)).not_to eq(4)
       end
     end
   end

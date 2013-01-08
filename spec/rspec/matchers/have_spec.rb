@@ -22,64 +22,64 @@ describe "have matcher" do
     owner
   end
 
-  describe "should have(n).items" do
+  describe "expect(...).to have(n).items" do
     it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
       let(:matcher) { have(2).items }
     end
 
     it "passes if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)
-      owner.should have(3).items_in_collection_with_length_method
-      owner.should have(3).items_in_collection_with_size_method
-      owner.should have(3).items_in_collection_with_count_method
+      expect(owner).to have(3).items_in_collection_with_length_method
+      expect(owner).to have(3).items_in_collection_with_size_method
+      expect(owner).to have(3).items_in_collection_with_count_method
     end
 
     it "converts :no to 0" do
       owner = create_collection_owner_with(0)
-      owner.should have(:no).items_in_collection_with_length_method
-      owner.should have(:no).items_in_collection_with_size_method
-      owner.should have(:no).items_in_collection_with_count_method
+      expect(owner).to have(:no).items_in_collection_with_length_method
+      expect(owner).to have(:no).items_in_collection_with_size_method
+      expect(owner).to have(:no).items_in_collection_with_count_method
     end
 
     it "converts a String argument to Integer" do
       owner = create_collection_owner_with(3)
-      owner.should have('3').items_in_collection_with_length_method
-      owner.should have('3').items_in_collection_with_size_method
-      owner.should have('3').items_in_collection_with_count_method
+      expect(owner).to have('3').items_in_collection_with_length_method
+      expect(owner).to have('3').items_in_collection_with_size_method
+      expect(owner).to have('3').items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have(4).items_in_collection_with_length_method
-      }.should fail_with("expected 4 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have(4).items_in_collection_with_size_method
-      }.should fail_with("expected 4 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have(4).items_in_collection_with_count_method
-      }.should fail_with("expected 4 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have(4).items_in_collection_with_length_method
+      }.to fail_with("expected 4 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have(4).items_in_collection_with_size_method
+      }.to fail_with("expected 4 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have(4).items_in_collection_with_count_method
+      }.to fail_with("expected 4 items_in_collection_with_count_method, got 3")
     end
 
     it "fails if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have(2).items_in_collection_with_length_method
-      }.should fail_with("expected 2 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have(2).items_in_collection_with_size_method
-      }.should fail_with("expected 2 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have(2).items_in_collection_with_count_method
-      }.should fail_with("expected 2 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have(2).items_in_collection_with_length_method
+      }.to fail_with("expected 2 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have(2).items_in_collection_with_size_method
+      }.to fail_with("expected 2 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have(2).items_in_collection_with_count_method
+      }.to fail_with("expected 2 items_in_collection_with_count_method, got 3")
     end
   end
 
-  describe 'should have(1).item when ActiveSupport::Inflector is defined' do
+  describe 'expect(...).to have(1).item when ActiveSupport::Inflector is defined' do
 
     it 'pluralizes the collection name' do
       owner = create_collection_owner_with(1)
-      owner.should have(1).item
+      expect(owner).to have(1).item
     end
 
     context "when ActiveSupport::Inflector is partially loaded without its inflectors" do
@@ -87,134 +87,136 @@ describe "have matcher" do
       it "does not pluralize the collection name" do
         stub_const("ActiveSupport::Inflector", Module.new)
         owner = create_collection_owner_with(1)
-        expect { owner.should have(1).item }.to raise_error(NoMethodError)
+        expect {
+          expect(owner).to have(1).item
+        }.to raise_error(NoMethodError)
       end
 
     end
   end
 
-  describe 'should have(1).item when Inflector is defined' do
+  describe 'expect(...).to have(1).item when Inflector is defined' do
     before { stub_const("Inflector", inflector) }
 
     it 'pluralizes the collection name' do
       owner = create_collection_owner_with(1)
-      owner.should have(1).item
+      expect(owner).to have(1).item
     end
   end
 
-  describe "should have(n).items where result responds to items but returns something other than a collection" do
+  describe "expect(...).to have(n).items where result responds to items but returns something other than a collection" do
     it "provides a meaningful error" do
       owner = Class.new do
         def items
           Object.new
         end
       end.new
-      lambda do
-        owner.should have(3).items
-      end.should raise_error("expected items to be a collection but it does not respond to #length, #size or #count")
+      expect do
+        expect(owner).to have(3).items
+      end.to raise_error("expected items to be a collection but it does not respond to #length, #size or #count")
     end
   end
 
-  describe "should_not have(n).items" do
+  describe "expect(...).not_to have(n).items" do
 
     it "passes if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
-      owner.should_not have(4).items_in_collection_with_length_method
-      owner.should_not have(4).items_in_collection_with_size_method
-      owner.should_not have(4).items_in_collection_with_count_method
+      expect(owner).not_to have(4).items_in_collection_with_length_method
+      expect(owner).not_to have(4).items_in_collection_with_size_method
+      expect(owner).not_to have(4).items_in_collection_with_count_method
     end
 
     it "passes if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
-      owner.should_not have(2).items_in_collection_with_length_method
-      owner.should_not have(2).items_in_collection_with_size_method
-      owner.should_not have(2).items_in_collection_with_count_method
+      expect(owner).not_to have(2).items_in_collection_with_length_method
+      expect(owner).not_to have(2).items_in_collection_with_size_method
+      expect(owner).not_to have(2).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should_not have(3).items_in_collection_with_length_method
-      }.should fail_with("expected target not to have 3 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should_not have(3).items_in_collection_with_size_method
-        }.should fail_with("expected target not to have 3 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should_not have(3).items_in_collection_with_count_method
-        }.should fail_with("expected target not to have 3 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).not_to have(3).items_in_collection_with_length_method
+      }.to fail_with("expected target not to have 3 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).not_to have(3).items_in_collection_with_size_method
+      }.to fail_with("expected target not to have 3 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).not_to have(3).items_in_collection_with_count_method
+      }.to fail_with("expected target not to have 3 items_in_collection_with_count_method, got 3")
     end
   end
 
-  describe "should have_exactly(n).items" do
+  describe "expect(...).to have_exactly(n).items" do
 
     it "passes if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)
-      owner.should have_exactly(3).items_in_collection_with_length_method
-      owner.should have_exactly(3).items_in_collection_with_size_method
-      owner.should have_exactly(3).items_in_collection_with_count_method
+      expect(owner).to have_exactly(3).items_in_collection_with_length_method
+      expect(owner).to have_exactly(3).items_in_collection_with_size_method
+      expect(owner).to have_exactly(3).items_in_collection_with_count_method
     end
 
     it "converts :no to 0" do
       owner = create_collection_owner_with(0)
-      owner.should have_exactly(:no).items_in_collection_with_length_method
-      owner.should have_exactly(:no).items_in_collection_with_size_method
-      owner.should have_exactly(:no).items_in_collection_with_count_method
+      expect(owner).to have_exactly(:no).items_in_collection_with_length_method
+      expect(owner).to have_exactly(:no).items_in_collection_with_size_method
+      expect(owner).to have_exactly(:no).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have_exactly(4).items_in_collection_with_length_method
-      }.should fail_with("expected 4 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have_exactly(4).items_in_collection_with_size_method
-      }.should fail_with("expected 4 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have_exactly(4).items_in_collection_with_count_method
-      }.should fail_with("expected 4 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have_exactly(4).items_in_collection_with_length_method
+      }.to fail_with("expected 4 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have_exactly(4).items_in_collection_with_size_method
+      }.to fail_with("expected 4 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have_exactly(4).items_in_collection_with_count_method
+      }.to fail_with("expected 4 items_in_collection_with_count_method, got 3")
     end
 
     it "fails if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have_exactly(2).items_in_collection_with_length_method
-      }.should fail_with("expected 2 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have_exactly(2).items_in_collection_with_size_method
-      }.should fail_with("expected 2 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have_exactly(2).items_in_collection_with_count_method
-      }.should fail_with("expected 2 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have_exactly(2).items_in_collection_with_length_method
+      }.to fail_with("expected 2 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have_exactly(2).items_in_collection_with_size_method
+      }.to fail_with("expected 2 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have_exactly(2).items_in_collection_with_count_method
+      }.to fail_with("expected 2 items_in_collection_with_count_method, got 3")
     end
   end
 
-  describe "should have_at_least(n).items" do
+  describe "expect(...).to have_at_least(n).items" do
 
     it "passes if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)
-      owner.should have_at_least(3).items_in_collection_with_length_method
-      owner.should have_at_least(3).items_in_collection_with_size_method
-      owner.should have_at_least(3).items_in_collection_with_count_method
+      expect(owner).to have_at_least(3).items_in_collection_with_length_method
+      expect(owner).to have_at_least(3).items_in_collection_with_size_method
+      expect(owner).to have_at_least(3).items_in_collection_with_count_method
     end
 
     it "passes if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
-      owner.should have_at_least(2).items_in_collection_with_length_method
-      owner.should have_at_least(2).items_in_collection_with_size_method
-      owner.should have_at_least(2).items_in_collection_with_count_method
+      expect(owner).to have_at_least(2).items_in_collection_with_length_method
+      expect(owner).to have_at_least(2).items_in_collection_with_size_method
+      expect(owner).to have_at_least(2).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have_at_least(4).items_in_collection_with_length_method
-      }.should fail_with("expected at least 4 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have_at_least(4).items_in_collection_with_size_method
-      }.should fail_with("expected at least 4 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have_at_least(4).items_in_collection_with_count_method
-      }.should fail_with("expected at least 4 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have_at_least(4).items_in_collection_with_length_method
+      }.to fail_with("expected at least 4 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have_at_least(4).items_in_collection_with_size_method
+      }.to fail_with("expected at least 4 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have_at_least(4).items_in_collection_with_count_method
+      }.to fail_with("expected at least 4 items_in_collection_with_count_method, got 3")
     end
 
     it "provides educational negative failure messages" do
@@ -230,7 +232,7 @@ describe "have matcher" do
       count_matcher.matches?(owner)
 
       #then
-      length_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(length_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_least(3).items_in_collection_with_length_method
@@ -238,14 +240,14 @@ We recommend that you use this instead:
   should have_at_most(2).items_in_collection_with_length_method
 EOF
 
-      size_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(size_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_least(3).items_in_collection_with_size_method
 We recommend that you use this instead:
   should have_at_most(2).items_in_collection_with_size_method
 EOF
-      count_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(count_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_least(3).items_in_collection_with_count_method
@@ -255,32 +257,32 @@ EOF
     end
   end
 
-  describe "should have_at_most(n).items" do
+  describe "expect(...).to have_at_most(n).items" do
     it "passes if target has a collection of items with n members" do
       owner = create_collection_owner_with(3)
-      owner.should have_at_most(3).items_in_collection_with_length_method
-      owner.should have_at_most(3).items_in_collection_with_size_method
-      owner.should have_at_most(3).items_in_collection_with_count_method
+      expect(owner).to have_at_most(3).items_in_collection_with_length_method
+      expect(owner).to have_at_most(3).items_in_collection_with_size_method
+      expect(owner).to have_at_most(3).items_in_collection_with_count_method
     end
 
     it "fails if target has a collection of items with > n members" do
       owner = create_collection_owner_with(3)
-      lambda {
-        owner.should have_at_most(2).items_in_collection_with_length_method
-      }.should fail_with("expected at most 2 items_in_collection_with_length_method, got 3")
-      lambda {
-        owner.should have_at_most(2).items_in_collection_with_size_method
-      }.should fail_with("expected at most 2 items_in_collection_with_size_method, got 3")
-      lambda {
-        owner.should have_at_most(2).items_in_collection_with_count_method
-      }.should fail_with("expected at most 2 items_in_collection_with_count_method, got 3")
+      expect {
+        expect(owner).to have_at_most(2).items_in_collection_with_length_method
+      }.to fail_with("expected at most 2 items_in_collection_with_length_method, got 3")
+      expect {
+        expect(owner).to have_at_most(2).items_in_collection_with_size_method
+      }.to fail_with("expected at most 2 items_in_collection_with_size_method, got 3")
+      expect {
+        expect(owner).to have_at_most(2).items_in_collection_with_count_method
+      }.to fail_with("expected at most 2 items_in_collection_with_count_method, got 3")
     end
 
     it "passes if target has a collection of items with < n members" do
       owner = create_collection_owner_with(3)
-      owner.should have_at_most(4).items_in_collection_with_length_method
-      owner.should have_at_most(4).items_in_collection_with_size_method
-      owner.should have_at_most(4).items_in_collection_with_count_method
+      expect(owner).to have_at_most(4).items_in_collection_with_length_method
+      expect(owner).to have_at_most(4).items_in_collection_with_size_method
+      expect(owner).to have_at_most(4).items_in_collection_with_count_method
     end
 
     it "provides educational negative failure messages" do
@@ -296,7 +298,7 @@ EOF
       count_matcher.matches?(owner)
 
       #then
-      length_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(length_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_most(3).items_in_collection_with_length_method
@@ -304,7 +306,7 @@ We recommend that you use this instead:
   should have_at_least(4).items_in_collection_with_length_method
 EOF
 
-      size_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(size_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_most(3).items_in_collection_with_size_method
@@ -312,7 +314,7 @@ We recommend that you use this instead:
   should have_at_least(4).items_in_collection_with_size_method
 EOF
 
-      count_matcher.failure_message_for_should_not.should eq <<-EOF
+      expect(count_matcher.failure_message_for_should_not).to eq <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
   should_not have_at_most(3).items_in_collection_with_count_method
@@ -326,40 +328,48 @@ EOF
     it "passes args to target" do
       target = mock("target")
       target.should_receive(:items).with("arg1","arg2").and_return([1,2,3])
-      target.should have(3).items("arg1","arg2")
+      expect(target).to have(3).items("arg1","arg2")
     end
 
     it "passes block to target" do
       target = mock("target")
       block = lambda { 5 }
       target.should_receive(:items).with("arg1","arg2", block).and_return([1,2,3])
-      target.should have(3).items("arg1","arg2", block)
+      expect(target).to have(3).items("arg1","arg2", block)
     end
   end
 
   describe "have(n).items where target IS a collection" do
     it "references the number of items IN the collection" do
-      [1,2,3].should have(3).items
+      expect([1,2,3]).to have(3).items
     end
 
     it "fails when the number of items IN the collection is not as expected" do
-      lambda { [1,2,3].should have(7).items }.should fail_with("expected 7 items, got 3")
+      expect {
+        expect([1,2,3]).to have(7).items
+      }.to fail_with("expected 7 items, got 3")
     end
   end
 
   describe "have(n).characters where target IS a String" do
     it "passes if the length is correct" do
-      "this string".should have(11).characters
+      expect("this string").to have(11).characters
     end
 
     it "fails if the length is incorrect" do
-      lambda { "this string".should have(12).characters }.should fail_with("expected 12 characters, got 11")
+      expect {
+        expect("this string").to have(12).characters
+      }.to fail_with("expected 12 characters, got 11")
     end
   end
 
   describe "have(n).things on an object which is not a collection nor contains one" do
     it "fails" do
-      lambda { Object.new.should have(2).things }.should raise_error(NoMethodError) {|e| e.name.should eq :things }
+      expect {
+        expect(Object.new).to have(2).things
+      }.to raise_error(NoMethodError) { |e|
+        expect(e.name).to eq :things
+      }
     end
   end
 
@@ -370,32 +380,32 @@ EOF
     end
 
     it "works in the straightforward case" do
-      lambda {
-        @collection.should have(2).floozles
-      }.should_not raise_error
+      expect {
+        expect(@collection).to have(2).floozles
+      }.to_not raise_error
     end
 
     it "works when doing automatic pluralization" do
-      lambda {
-        @collection.should have_at_least(1).floozle
-      }.should_not raise_error
+      expect {
+        expect(@collection).to have_at_least(1).floozle
+      }.to_not raise_error
     end
 
     it "blows up when the owner doesn't respond to that method" do
-      lambda {
-        @collection.should have(99).problems
-      }.should raise_error(NoMethodError, /problems/)
+      expect {
+        expect(@collection).to have(99).problems
+      }.to raise_error(NoMethodError, /problems/)
     end
   end
 
   describe RSpec::Matchers::BuiltIn::Have do
     it "has method_missing as private" do
-      described_class.private_instance_methods.should include_method(:method_missing)
+      expect(described_class.private_instance_methods).to include_method(:method_missing)
     end
 
     it "does not respond_to? method_missing (because it's private)" do
       formatter = described_class.new(0, StringIO.new)
-      formatter.should_not respond_to(:method_missing)
+      expect(formatter).not_to respond_to(:method_missing)
     end
 
     describe "respond_to?" do
@@ -406,25 +416,25 @@ EOF
       end
 
       it "is true for a method which Have defines" do
-        @have.should respond_to(@a_method_which_have_defines)
+        expect(@have).to respond_to(@a_method_which_have_defines)
       end
 
       it "is true for a method that it's superclass (Object) defines" do
-        @have.should respond_to(@a_method_which_object_defines)
+        expect(@have).to respond_to(@a_method_which_object_defines)
       end
 
       it "is false for a method which neither Object nor nor Have defines" do
-        @have.should_not respond_to(:foo_bar_baz)
+        expect(@have).not_to respond_to(:foo_bar_baz)
       end
 
       it "is false if the owner doesn't respond to the method" do
         have = described_class.new(99)
-        have.should_not respond_to(:problems)
+        expect(have).not_to respond_to(:problems)
       end
 
       it "is true if the owner responds to the method" do
         have = described_class.new(:a_symbol)
-        have.should respond_to(:to_sym)
+        expect(have).to respond_to(:to_sym)
       end
     end
   end

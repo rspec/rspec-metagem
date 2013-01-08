@@ -11,21 +11,21 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol }
 
       it "matches if any Symbol is thrown" do
-        @matcher.matches?(lambda{ throw :sym }).should be_true
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_true
       end
       it "matches if any Symbol is thrown with an arg" do
-        @matcher.matches?(lambda{ throw :sym, "argument" }).should be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_true
       end
       it "does not match if no Symbol is thrown" do
-        @matcher.matches?(lambda{ }).should be_false
+        expect(@matcher.matches?(lambda{ })).to be_false
       end
       it "provides a failure message" do
         @matcher.matches?(lambda{})
-        @matcher.failure_message_for_should.should == "expected a Symbol to be thrown, got nothing"
+        expect(@matcher.failure_message_for_should).to eq "expected a Symbol to be thrown, got nothing"
       end
       it "provides a negative failure message" do
         @matcher.matches?(lambda{ throw :sym})
-        @matcher.failure_message_for_should_not.should == "expected no Symbol to be thrown, got :sym"
+        expect(@matcher.failure_message_for_should_not).to eq "expected no Symbol to be thrown, got :sym"
       end
     end
 
@@ -33,32 +33,32 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol(:sym) }
 
       it "matches if correct Symbol is thrown" do
-        @matcher.matches?(lambda{ throw :sym }).should be_true
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_true
       end
       it "matches if correct Symbol is thrown with an arg" do
-        @matcher.matches?(lambda{ throw :sym, "argument" }).should be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_true
       end
       it "does not match if no Symbol is thrown" do
-        @matcher.matches?(lambda{ }).should be_false
+        expect(@matcher.matches?(lambda{ })).to be_false
       end
       it "does not match if correct Symbol is thrown" do
-        @matcher.matches?(lambda{ throw :other_sym }).should be_false
+        expect(@matcher.matches?(lambda{ throw :other_sym })).to be_false
       end
       it "provides a failure message when no Symbol is thrown" do
         @matcher.matches?(lambda{})
-        @matcher.failure_message_for_should.should == "expected :sym to be thrown, got nothing"
+        expect(@matcher.failure_message_for_should).to eq "expected :sym to be thrown, got nothing"
       end
       it "provides a failure message when wrong Symbol is thrown" do
         @matcher.matches?(lambda{ throw :other_sym })
-        @matcher.failure_message_for_should.should == "expected :sym to be thrown, got :other_sym"
+        expect(@matcher.failure_message_for_should).to eq "expected :sym to be thrown, got :other_sym"
       end
       it "provides a negative failure message" do
         @matcher.matches?(lambda{ throw :sym })
-        @matcher.failure_message_for_should_not.should == "expected :sym not to be thrown, got :sym"
+        expect(@matcher.failure_message_for_should_not).to eq "expected :sym not to be thrown, got :sym"
       end
       it "only matches NameErrors raised by uncaught throws" do
         expect {
-          @matcher.matches?(lambda{ sym }).should be_false
+          expect(@matcher.matches?(lambda{ sym })).to be_false
         }.to raise_error(NameError)
       end
     end
@@ -67,43 +67,43 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol(:sym, "a") }
 
       it "matches if correct Symbol and args are thrown" do
-        @matcher.matches?(lambda{ throw :sym, "a" }).should be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "a" })).to be_true
       end
       it "does not match if nothing is thrown" do
-        @matcher.matches?(lambda{ }).should be_false
+        expect(@matcher.matches?(lambda{ })).to be_false
       end
       it "does not match if other Symbol is thrown" do
-        @matcher.matches?(lambda{ throw :other_sym, "a" }).should be_false
+        expect(@matcher.matches?(lambda{ throw :other_sym, "a" })).to be_false
       end
       it "does not match if no arg is thrown" do
-        @matcher.matches?(lambda{ throw :sym }).should be_false
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_false
       end
       it "does not match if wrong arg is thrown" do
-        @matcher.matches?(lambda{ throw :sym, "b" }).should be_false
+        expect(@matcher.matches?(lambda{ throw :sym, "b" })).to be_false
       end
       it "provides a failure message when no Symbol is thrown" do
         @matcher.matches?(lambda{})
-        @matcher.failure_message_for_should.should == %q[expected :sym with "a" to be thrown, got nothing]
+        expect(@matcher.failure_message_for_should).to eq %q[expected :sym with "a" to be thrown, got nothing]
       end
       it "provides a failure message when wrong Symbol is thrown" do
         @matcher.matches?(lambda{ throw :other_sym })
-        @matcher.failure_message_for_should.should == %q[expected :sym with "a" to be thrown, got :other_sym]
+        expect(@matcher.failure_message_for_should).to eq %q[expected :sym with "a" to be thrown, got :other_sym]
       end
       it "provides a failure message when wrong arg is thrown" do
         @matcher.matches?(lambda{ throw :sym, "b" })
-        @matcher.failure_message_for_should.should == %q[expected :sym with "a" to be thrown, got :sym with "b"]
+        expect(@matcher.failure_message_for_should).to eq %q[expected :sym with "a" to be thrown, got :sym with "b"]
       end
       it "provides a failure message when no arg is thrown" do
         @matcher.matches?(lambda{ throw :sym })
-        @matcher.failure_message_for_should.should == %q[expected :sym with "a" to be thrown, got :sym with no argument]
+        expect(@matcher.failure_message_for_should).to eq %q[expected :sym with "a" to be thrown, got :sym with no argument]
       end
       it "provides a negative failure message" do
         @matcher.matches?(lambda{ throw :sym })
-        @matcher.failure_message_for_should_not.should == %q[expected :sym with "a" not to be thrown, got :sym with no argument]
+        expect(@matcher.failure_message_for_should_not).to eq %q[expected :sym with "a" not to be thrown, got :sym with no argument]
       end
       it "only matches NameErrors raised by uncaught throws" do
         expect {
-          @matcher.matches?(lambda{ sym }).should be_false
+          expect(@matcher.matches?(lambda{ sym })).to be_false
         }.to raise_error(NameError)
       end
       it "raises other errors" do
