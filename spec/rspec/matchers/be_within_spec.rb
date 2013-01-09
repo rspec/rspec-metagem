@@ -50,16 +50,15 @@ module RSpec
       end
 
       it "raises an error if no expected value is given" do
-        matcher = be_within(0.5)
-        expect { matcher.matches?(5.1) }.to raise_error(
-          ArgumentError, /must set an expected value using #of/
-        )
+        expect {
+          expect(5.1).to be_within(0.5)
+        }.to raise_error(ArgumentError, /must set an expected value using #of/)
       end
 
       it "raises an error if the actual does not respond to :-" do
-        expect { be_within(0.1).of(0).matches?(nil) }.to raise_error(
-          ArgumentError, /The actual value \(nil\) must respond to `-`/
-        )
+        expect {
+          expect(nil).to be_within(0.1).of(0)
+        }.to raise_error(ArgumentError, /The actual value \(nil\) must respond to `-`/)
       end
     end
 
