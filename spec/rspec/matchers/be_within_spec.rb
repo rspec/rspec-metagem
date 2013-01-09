@@ -7,50 +7,36 @@ module RSpec
         let(:matcher) { be_within(2).of(4.0) }
       end
 
-      it "matches when actual == expected" do
-        expect(be_within(0.5).of(5.0).matches?(5.0)).to be_true
+      it "passes when actual == expected" do
+        expect(5.0).to be_within(0.5).of(5.0)
       end
 
-      it "matches when actual < (expected + delta)" do
-        expect(be_within(0.5).of(5.0).matches?(5.49)).to be_true
+      it "passes when actual < (expected + delta)" do
+        expect(5.49).to be_within(0.5).of(5.0)
       end
 
-      it "matches when actual > (expected - delta)" do
-        expect(be_within(0.5).of(5.0).matches?(4.51)).to be_true
+      it "passes when actual > (expected - delta)" do
+        expect(4.51).to be_within(0.5).of(5.0)
       end
 
-      it "matches when actual == (expected - delta)" do
-        expect(be_within(0.5).of(5.0).matches?(4.5)).to be_true
+      it "passes when actual == (expected - delta)" do
+        expect(4.5).to be_within(0.5).of(5.0)
       end
 
-      it "does not match when actual < (expected - delta)" do
-        expect(be_within(0.5).of(5.0).matches?(4.49)).to be_false
+      it "passes when actual == (expected + delta)" do
+        expect(5.5).to be_within(0.5).of(5.0)
       end
 
-      it "matches when actual == (expected + delta)" do
-        expect(be_within(0.5).of(5.0).matches?(5.5)).to be_true
+      it "fails when actual < (expected - delta)" do
+        expect {
+          expect(4.49).to be_within(0.5).of(5.0)
+        }.to fail_with("expected 4.49 to be within 0.5 of 5.0")
       end
 
-      it "does not match when actual > (expected + delta)" do
-        expect(be_within(0.5).of(5.0).matches?(5.51)).to be_false
-      end
-
-      it "provides a failure message for a positive expectation" do
-        #given
-          matcher = be_within(0.5).of(5.0)
-        #when
-          matcher.matches?(5.51)
-        #then
-          expect(matcher.failure_message_for_should).to eq "expected 5.51 to be within 0.5 of 5.0"
-      end
-
-      it "provides a failure message for a negative expectation" do
-        #given
-          matcher = be_within(0.5).of(5.0)
-        #when
-          matcher.matches?(5.49)
-        #then
-          expect(matcher.failure_message_for_should_not).to eq "expected 5.49 not to be within 0.5 of 5.0"
+      it "fails when actual > (expected + delta)" do
+        expect {
+          expect(5.51).to be_within(0.5).of(5.0)
+        }.to fail_with("expected 5.51 to be within 0.5 of 5.0")
       end
 
       it "works with Time" do
@@ -74,6 +60,46 @@ module RSpec
         expect { be_within(0.1).of(0).matches?(nil) }.to raise_error(
           ArgumentError, /The actual value \(nil\) must respond to `-`/
         )
+      end
+    end
+
+    describe "expect(actual).not_to be_within(delta).of(expected)" do
+      it "passes when actual < (expected - delta)" do
+        expect(4.49).not_to be_within(0.5).of(5.0)
+      end
+
+      it "passes when actual > (expected + delta)" do
+        expect(5.51).not_to be_within(0.5).of(5.0)
+      end
+
+      it "fails when actual == expected" do
+        expect {
+          expect(5.0).not_to be_within(0.5).of(5.0)
+        }.to fail_with("expected 5.0 not to be within 0.5 of 5.0")
+      end
+
+      it "fails when actual < (expected + delta)" do
+        expect {
+          expect(5.49).not_to be_within(0.5).of(5.0)
+        }.to fail_with("expected 5.49 not to be within 0.5 of 5.0")
+      end
+
+      it "fails when actual > (expected - delta)" do
+        expect {
+          expect(4.51).not_to be_within(0.5).of(5.0)
+        }.to fail_with("expected 4.51 not to be within 0.5 of 5.0")
+      end
+
+      it "fails when actual == (expected - delta)" do
+        expect {
+          expect(4.5).not_to be_within(0.5).of(5.0)
+        }.to fail_with("expected 4.5 not to be within 0.5 of 5.0")
+      end
+
+      it "fails when actual == (expected + delta)" do
+        expect {
+          expect(5.5).not_to be_within(0.5).of(5.0)
+        }.to fail_with("expected 5.5 not to be within 0.5 of 5.0")
       end
     end
   end
