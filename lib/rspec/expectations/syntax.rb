@@ -113,6 +113,52 @@ module RSpec
       def expect_enabled?(syntax_host = ::RSpec::Matchers)
         syntax_host.method_defined?(:expect)
       end
+
+      # @api private
+      # Generates a positive expectation expression.
+      def positive_expression(target_expression, matcher_expression)
+        expression_generator.positive_expression(target_expression, matcher_expression)
+      end
+
+      # @api private
+      # Generates a negative expectation expression.
+      def negative_expression(target_expression, matcher_expression)
+        expression_generator.negative_expression(target_expression, matcher_expression)
+      end
+
+      # @api private
+      # Selects which expression generator to use based on the configured syntax.
+      def expression_generator
+        if expect_enabled?
+          ExpectExpressionGenerator
+        else
+          ShouldExpressionGenerator
+        end
+      end
+
+      # @api private
+      # Generates expectation expressions for the `should` syntax.
+      module ShouldExpressionGenerator
+        def self.positive_expression(target_expression, matcher_expression)
+          "#{target_expression}.should #{matcher_expression}"
+        end
+
+        def self.negative_expression(target_expression, matcher_expression)
+          "#{target_expression}.should_not #{matcher_expression}"
+        end
+      end
+
+      # @api private
+      # Generates expectation expressions for the `expect` syntax.
+      module ExpectExpressionGenerator
+        def self.positive_expression(target_expression, matcher_expression)
+          "expect(#{target_expression}).to #{matcher_expression}"
+        end
+
+        def self.negative_expression(target_expression, matcher_expression)
+          "expect(#{target_expression}).not_to #{matcher_expression}"
+        end
+      end
     end
   end
 end

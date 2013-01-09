@@ -14,7 +14,7 @@ expected #{inspect_object(expected)}
 
 Compared using equal?, which compares object identity,
 but expected and actual are not the same object. Use
-'actual.should eq(expected)' if you don't care about
+`#{eq_expression}` if you don't care about
 object identity in this example.
 
 MESSAGE
@@ -37,6 +37,10 @@ MESSAGE
 
         def inspect_object(o)
           "#<#{o.class}:#{o.object_id}> => #{o.inspect}"
+        end
+
+        def eq_expression
+          Expectations::Syntax.positive_expression("actual", "eq(expected)")
         end
       end
     end

@@ -64,17 +64,17 @@ module RSpec
             return <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
-  should_not have_at_most(#{@expected}).#{@collection_name}
+  #{Expectations::Syntax.negative_expression("actual", "have_at_most(#{@expected}).#{@collection_name}")}
 We recommend that you use this instead:
-  should have_at_least(#{@expected + 1}).#{@collection_name}
+  #{Expectations::Syntax.positive_expression("actual", "have_at_least(#{@expected + 1}).#{@collection_name}")}
 EOF
           elsif @relativity == :at_least
             return <<-EOF
 Isn't life confusing enough?
 Instead of having to figure out the meaning of this:
-  should_not have_at_least(#{@expected}).#{@collection_name}
+  #{Expectations::Syntax.negative_expression("actual", "have_at_least(#{@expected}).#{@collection_name}")}
 We recommend that you use this instead:
-  should have_at_most(#{@expected - 1}).#{@collection_name}
+  #{Expectations::Syntax.positive_expression("actual", "have_at_most(#{@expected - 1}).#{@collection_name}")}
 EOF
           end
         end

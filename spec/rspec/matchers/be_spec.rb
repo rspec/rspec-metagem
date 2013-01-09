@@ -396,10 +396,18 @@ describe "expect(...).to be ===" do
 end
 
 describe "expect(...).not_to with operators" do
-  it "coaches user to stop using operators with should_not" do
+  it "coaches user to stop using operators with expect().not_to" do
     expect {
       expect(5).not_to be < 6
-    }.to raise_error(/not only FAILED,\nit is a bit confusing./m)
+    }.to raise_error(/`expect\(actual\).not_to be < 6` not only FAILED,\nit is a bit confusing./m)
+  end
+end
+
+describe "should_not with operators", :uses_only_should do
+  it "coaches user to stop using operators with should_not" do
+    lambda {
+      5.should_not be < 6
+    }.should raise_error(/`actual.should_not be < 6` not only FAILED,\nit is a bit confusing./m)
   end
 end
 
