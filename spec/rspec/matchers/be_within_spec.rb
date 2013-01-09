@@ -63,6 +63,30 @@ module RSpec
       end
     end
 
+    describe "expect(actual).to be_within(delta).percent_of(expected)" do
+      it "passes when actual is within the given percent variance" do
+        expect(9.0).to be_within(10).percent_of(10.0)
+        expect(10.0).to be_within(10).percent_of(10.0)
+        expect(11.0).to be_within(10).percent_of(10.0)
+      end
+
+      it "fails when actual is outside the given percent variance" do
+        expect {
+          expect(8.9).to be_within(10).percent_of(10.0)
+        }.to fail_with("expected 8.9 to be within 10% of 10.0")
+
+        expect {
+          expect(11.1).to be_within(10).percent_of(10.0)
+        }.to fail_with("expected 11.1 to be within 10% of 10.0")
+      end
+
+      it "provides a description" do
+        matcher = be_within(0.5).percent_of(5.0)
+        matcher.matches?(5.1)
+        expect(matcher.description).to eq "be within 0.5% of 5.0"
+      end
+    end
+
     describe "expect(actual).not_to be_within(delta).of(expected)" do
       it "passes when actual < (expected - delta)" do
         expect(4.49).not_to be_within(0.5).of(5.0)

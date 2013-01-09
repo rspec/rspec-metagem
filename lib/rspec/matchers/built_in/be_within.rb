@@ -8,14 +8,23 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          raise needs_expected     unless defined? @expected 
+          raise needs_expected     unless defined? @expected
           raise needs_subtractable unless @actual.respond_to? :-
-          (@actual - @expected).abs <= @delta
+          (@actual - @expected).abs <= @tolerance
         end
         alias == matches?
 
         def of(expected)
-          @expected = expected
+          @expected  = expected
+          @tolerance = @delta
+          @unit      = ''
+          self
+        end
+
+        def percent_of(expected)
+          @expected  = expected
+          @tolerance = @delta * @expected / 100
+          @unit      = '%'
           self
         end
 
@@ -28,7 +37,7 @@ module RSpec
         end
 
         def description
-          "be within #{@delta} of #{@expected}"
+          "be within #{@delta}#{@unit} of #{@expected}"
         end
 
         private
