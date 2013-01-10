@@ -25,6 +25,9 @@ Bug fixes
 * Fix autotest command so that is uses double quotes
   rather than single quotes for windows compatibility
   (Jonas Tingeborn).
+* Fix `its` so that uses of `subject` in a `before` or `let`
+  declaration in the parent group continue to reference the
+  parent group's subject. (Olek Janiszewski)
 
 ### 2.12.2 / 2012-12-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.1...v2.12.2)
