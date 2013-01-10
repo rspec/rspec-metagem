@@ -329,18 +329,39 @@ module RSpec
         #     its(:keys) { should include(:max_users) }
         #     its(:count) { should eq(2) }
         #   end
+        #
+        # Note that this method does not modify `subject` in any way, so if you
+        # refer to `subject` in `let` or `before` blocks, you're still
+        # referring to the outer subject.
+        #
+        # @example
+        #
+        #   describe Person do
+        #     subject { Person.new }
+        #     before { subject.age = 25 }
+        #     its(:age) { should eq(25) }
+        #   end
         def its(attribute, &block)
           describe(attribute) do
             if Array === attribute
-              subject { super()[*attribute] }
+              let(:__its_subject) { subject[*attribute] }
             else
-              subject do
+              let(:__its_subject) do
                 attribute_chain = attribute.to_s.split('.')
-                attribute_chain.inject(super()) do |inner_subject, attr|
+                attribute_chain.inject(subject) do |inner_subject, attr|
                   inner_subject.send(attr)
                 end
               end
             end
+
+            def should(matcher=nil, message=nil)
+              RSpec::Expectations::PositiveExpectationHandler.handle_matcher(__its_subject, matcher, message)
+            end
+
+            def should_not(matcher=nil, message=nil)
+              RSpec::Expectations::NegativeExpectationHandler.handle_matcher(__its_subject, matcher, message)
+            end
+
             example(&block)
           end
         end
@@ -399,8 +420,6 @@ module RSpec
           end
         end
       end
-
     end
   end
 end
-

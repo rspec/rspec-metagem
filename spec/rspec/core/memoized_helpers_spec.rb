@@ -322,6 +322,20 @@ module RSpec::Core
         end
         its(:false_if_first_time) { should be(false) }
       end
+
+      describe 'accessing `subject` in `before` and `let`' do
+        subject { 'my subject' }
+        before { @subject_in_before = subject }
+        let(:subject_in_let) { subject }
+        let!(:eager_loaded_subject_in_let) { subject }
+
+        # These examples read weird, because we're actually
+        # specifying the behaviour of `its` itself
+        its(nil) { expect(subject).to eq('my subject') }
+        its(nil) { expect(@subject_in_before).to eq('my subject') }
+        its(nil) { expect(subject_in_let).to eq('my subject') }
+        its(nil) { expect(eager_loaded_subject_in_let).to eq('my subject') }
+      end
     end
 
     describe '#subject!' do
