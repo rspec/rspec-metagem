@@ -38,6 +38,15 @@ describe "should =~ array", :uses_should do
       }.to fail_with(/expected: :bar/)
     end
   end
+
+  context 'when the array defines a `send` method' do
+    it 'still works' do
+      array = [1, 2]
+      def array.send; :sent; end
+
+      array.should =~ array
+    end
+  end
 end
 
 describe "should_not =~ [:with, :multiple, :args]", :uses_should do

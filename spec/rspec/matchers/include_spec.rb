@@ -62,6 +62,21 @@ describe "#include matcher" do
           expect({}).to include(:something => nil)
         }.to fail_matching(%Q|expected {} to include {:something=>nil}|)
       end
+
+      it 'works even when an entry in the hash overrides #send' do
+        hash = { :key => 'value' }
+        def hash.send; :sent; end
+        expect(hash).to include(hash)
+      end
+
+      context 'that overrides #send' do
+        it 'still works' do
+          array = [1, 2]
+          def array.send; :sent; end
+
+          expect(array).to include(*array)
+        end
+      end
     end
   end
 

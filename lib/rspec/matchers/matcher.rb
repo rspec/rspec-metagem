@@ -230,7 +230,7 @@ module RSpec
 
         def method_missing(method, *args, &block)
           if matcher_execution_context.respond_to?(method)
-            matcher_execution_context.send method, *args, &block
+            matcher_execution_context.__send__ method, *args, &block
           else
             super(method, *args, &block)
           end
@@ -272,7 +272,7 @@ module RSpec
           if @messages.has_key?(key)
             @messages[key].arity == 1 ? @messages[key].call(@actual) : @messages[key].call
           else
-            send("default_#{key}")
+            __send__("default_#{key}")
           end
         end
 

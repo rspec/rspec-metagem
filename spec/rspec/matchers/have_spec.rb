@@ -377,24 +377,28 @@ EOF
     before(:each) do
       @collection = Object.new
       def @collection.floozles; [1,2] end
+      def @collection.send; :sent; end
     end
 
     it "works in the straightforward case" do
-      expect {
-        expect(@collection).to have(2).floozles
-      }.to_not raise_error
+      expect(@collection).to have(2).floozles
     end
 
     it "works when doing automatic pluralization" do
-      expect {
-        expect(@collection).to have_at_least(1).floozle
-      }.to_not raise_error
+      expect(@collection).to have_at_least(1).floozle
     end
 
     it "blows up when the owner doesn't respond to that method" do
       expect {
         expect(@collection).to have(99).problems
       }.to raise_error(NoMethodError, /problems/)
+    end
+
+    it 'works when #send is defined directly on an array' do
+      array = [1, 2]
+      def array.send; :sent; end
+
+      expect(array).to have(2).items
     end
   end
 

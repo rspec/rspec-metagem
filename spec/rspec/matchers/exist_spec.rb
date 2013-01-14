@@ -33,6 +33,20 @@ describe "exist matcher" do
             expect(mock(predicate => false)).to exist
           }.to fail_with(/expected .* to exist/)
         end
+
+        it 'works when the object overrides `send`' do
+          klass = Struct.new(:message) do
+            def send
+              :message_sent
+            end
+
+            define_method predicate do
+              true
+            end
+          end
+
+          expect(klass.new("msg")).to exist
+        end
       end
 
       describe "expect(...).not_to exist" do

@@ -99,7 +99,7 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          @actual.send @operator, @expected
+          @actual.__send__ @operator, @expected
         end
 
         def failure_message_for_should

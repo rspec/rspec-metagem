@@ -345,6 +345,18 @@ describe "expect(...).to be ==" do
       expect(3).to be == 4
     }.to fail_with("expected: == 4\n     got:    3")
   end
+
+  it 'works when the target overrides `#send`' do
+    klass = Struct.new(:message) do
+      def send
+        :message_sent
+      end
+    end
+
+    msg_1 = klass.new("hello")
+    msg_2 = klass.new("hello")
+    expect(msg_1).to be == msg_2
+  end
 end
 
 describe "expect(...).to be =~" do

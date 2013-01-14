@@ -24,7 +24,7 @@ module RSpec
           collection = determine_collection(collection_or_owner)
           query_method = determine_query_method(collection)
           raise not_a_collection unless query_method
-          @actual = collection.send(query_method)
+          @actual = collection.__send__(query_method)
           case @relativity
           when :at_least then @actual >= @expected
           when :at_most  then @actual <= @expected
@@ -35,13 +35,13 @@ module RSpec
 
         def determine_collection(collection_or_owner)
           if collection_or_owner.respond_to?(@collection_name)
-            collection_or_owner.send(@collection_name, *@args, &@block)
+            collection_or_owner.__send__(@collection_name, *@args, &@block)
           elsif (@plural_collection_name && collection_or_owner.respond_to?(@plural_collection_name))
-            collection_or_owner.send(@plural_collection_name, *@args, &@block)
+            collection_or_owner.__send__(@plural_collection_name, *@args, &@block)
           elsif determine_query_method(collection_or_owner)
             collection_or_owner
           else
-            collection_or_owner.send(@collection_name, *@args, &@block)
+            collection_or_owner.__send__(@collection_name, *@args, &@block)
           end
         end
 

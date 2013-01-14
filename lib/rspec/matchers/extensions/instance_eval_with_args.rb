@@ -28,7 +28,7 @@ module RSpec
             Thread.critical = orig_critical
           end
           begin
-            return send(method_name, *args)
+            return __send__(method_name, *args)
           ensure
             singleton_class.module_eval{ remove_method(method_name) } rescue nil
           end

@@ -42,7 +42,7 @@ module RSpec
 
         def find_failing_method_names(actual, filter_method)
           @actual = actual
-          @failing_method_names = @names.send(filter_method) do |name|
+          @failing_method_names = @names.__send__(filter_method) do |name|
             @actual.respond_to?(name) && matches_arity?(actual, name)
           end
         end

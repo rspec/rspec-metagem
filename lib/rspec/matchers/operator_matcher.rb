@@ -32,7 +32,7 @@ module RSpec
       def self.use_custom_matcher_or_delegate(operator)
         define_method(operator) do |expected|
           if uses_generic_implementation_of?(operator) && matcher = OperatorMatcher.get(@actual.class, operator)
-            @actual.send(::RSpec::Matchers.last_should, matcher.new(expected))
+            @actual.__send__(::RSpec::Matchers.last_should, matcher.new(expected))
           else
             eval_match(@actual, operator, expected)
           end

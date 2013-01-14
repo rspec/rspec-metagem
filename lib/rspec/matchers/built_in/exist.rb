@@ -9,7 +9,7 @@ module RSpec
         def matches?(actual)
           @actual = actual
           predicates = [:exist?, :exists?].select { |p| @actual.respond_to?(p) }
-          existence_values = predicates.map { |p| @actual.send(p, *@expected) }
+          existence_values = predicates.map { |p| @actual.__send__(p, *@expected) }
           uniq_truthy_values = existence_values.map { |v| !!v }.uniq
 
           case uniq_truthy_values.size
