@@ -347,6 +347,30 @@ describe "expect(...).to be ==" do
   end
 end
 
+describe "expect(...).to be =~" do
+  it "passes when =~ operator returns true" do
+    expect("a string").to be =~ /str/
+  end
+
+  it "fails when =~ operator returns false" do
+    expect {
+      expect("a string").to be =~ /blah/
+    }.to fail_with(%Q|expected: =~ /blah/\n     got:    "a string"|)
+  end
+end
+
+describe "should be =~", :uses_should do
+  it "passes when =~ operator returns true" do
+    "a string".should be =~ /str/
+  end
+
+  it "fails when =~ operator returns false" do
+    expect {
+      "a string".should be =~ /blah/
+    }.to fail_with(%Q|expected: =~ /blah/\n     got:    "a string"|)
+  end
+end
+
 describe "expect(...).to be ===" do
   it "passes when === operator returns true" do
     expect(Hash).to be === Hash.new

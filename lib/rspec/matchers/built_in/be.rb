@@ -62,7 +62,7 @@ module RSpec
           "expected #{@actual.inspect} to evaluate to false"
         end
 
-        [:==, :<, :<=, :>=, :>, :===].each do |operator|
+        [:==, :<, :<=, :>=, :>, :===, :=~].each do |operator|
           define_method operator do |operand|
             BeComparedTo.new(operand, operator)
           end

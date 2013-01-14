@@ -5,6 +5,10 @@ Bug fixes
 
 * Fix `change` matcher so that it dups strings in order to handle
   mutated strings (Myron Marston).
+* Fix `should be =~ /some regex/` / `expect(...).to be =~ /some regex/`.
+  Previously, these either failed with a confusing `undefined method
+  matches?' for false:FalseClass` error or were no-ops that didn't
+  actually verify anything (Myron Marston).
 
 Enhancements
 
