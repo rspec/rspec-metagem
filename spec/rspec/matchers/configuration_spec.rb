@@ -72,9 +72,10 @@ module RSpec
         # it could leave things in a "broken" state where tons of other examples fail.
         if RUBY_PLATFORM == "java"
           def sandboxed
+            orig_syntax = RSpec::Matchers.configuration.syntax
             yield
           ensure
-            configure_syntax([:should, :expect])
+            configure_syntax(orig_syntax)
           end
         else
           include InSubProcess
