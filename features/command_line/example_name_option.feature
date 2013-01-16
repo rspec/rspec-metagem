@@ -82,7 +82,7 @@ Feature: --example option
   Scenario: Object#method
     When I run `rspec . --example 'Array#length'`
     Then the examples should all pass
-    
+
   Scenario: Multiple applications of example name option
     When I run `rspec . --example 'first group' --example 'second group' --format d`
     Then the examples should all pass
