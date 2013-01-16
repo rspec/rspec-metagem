@@ -29,7 +29,7 @@ Feature: --tag option
 
   Scenario: filter examples with non-existent tag
     When I run `rspec . --tag mytag`
-    And the examples should all pass
+    Then the process should succeed even though no examples were run
 
   Scenario: filter examples with a simple tag
     When I run `rspec . --tag focus`

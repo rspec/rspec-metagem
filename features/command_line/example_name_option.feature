@@ -49,7 +49,7 @@ Feature: --example option
 
   Scenario: no matches
     When I run `rspec . --example nothing_like_this`
-    Then the examples should all pass
+    Then the process should succeed even though no examples were run
 
   Scenario: match on one word
     When I run `rspec . --example example`

@@ -81,8 +81,7 @@ Feature: exclusion filters
       end
       """
     When I run `rspec ./spec/sample_spec.rb --format doc`
-    Then the output should match /All examples were filtered out/
-    And  the examples should all pass
+    Then the process should succeed even though no examples were run
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 

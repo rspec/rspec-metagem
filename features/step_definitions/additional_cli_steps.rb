@@ -14,6 +14,12 @@ end
 
 Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the output should contain "0 failures"}
+  step %q{the output should not contain "0 examples"}
+  step %q{the exit status should be 0}
+end
+
+Then /^the process should succeed even though no examples were run$/ do
+  step %q{the output should contain "0 examples, 0 failures"}
   step %q{the exit status should be 0}
 end
 
