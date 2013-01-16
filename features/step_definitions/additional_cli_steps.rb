@@ -12,6 +12,14 @@ Then /^the output should not contain any of these:$/ do |table|
   end
 end
 
+Then /^the output should contain one of the following:$/ do |table|
+  matching_output = table.raw.flatten.select do |string|
+    all_output =~ regexp(string)
+  end
+
+  matching_output.should have(1).item
+end
+
 Then /^the example(?:s)? should(?: all)? pass$/ do
   step %q{the output should contain "0 failures"}
   step %q{the output should not contain "0 examples"}
