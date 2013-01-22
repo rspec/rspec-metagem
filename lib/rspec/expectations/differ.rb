@@ -25,7 +25,13 @@ module RSpec
             # diff includes lines of context. Otherwise, we might print
             # redundant lines.
             if (context_lines > 0) and hunk.overlaps?(oldhunk)
-              hunk.unshift(oldhunk)
+              if hunk.respond_to?(:merge)
+                # diff-lcs 1.2.x
+                hunk.merge(oldhunk)
+              else
+                # diff-lcs 1.1.3
+                hunk.unshift(oldhunk)
+              end
             else
               output << oldhunk.diff(format)
             end
