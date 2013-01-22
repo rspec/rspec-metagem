@@ -9,6 +9,8 @@ Bug fixes
   Previously, these either failed with a confusing `undefined method
   matches?' for false:FalseClass` error or were no-ops that didn't
   actually verify anything (Myron Marston).
+* Add compatibility for diff-lcs 1.2 and relax the version
+  constraint (Peter Goldstein).
 
 Enhancements
 
