@@ -1,4 +1,6 @@
 require 'spec_helper'
+require 'pp'
+require 'stringio'
 
 describe RSpec::Core::Example, :parent_metadata => 'sample' do
   let(:example_group) do
@@ -14,6 +16,20 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       example = example_group.example('example description', *args)
       example.metadata
     end
+  end
+
+  def capture_stdout
+    orig_stdout = $stdout
+    $stdout = StringIO.new
+    yield
+    $stdout.string
+  ensure
+    $stdout = orig_stdout
+  end
+
+  it 'can be pretty printed' do
+    output = capture_stdout { pp example_instance }
+    expect(output).to include("RSpec::Core::Example")
   end
 
   describe "#exception" do

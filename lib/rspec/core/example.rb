@@ -233,8 +233,8 @@ An error occurred #{context}
       end
 
       # @private
-      def instance_eval(&block)
-        @example_group_instance.instance_eval(&block)
+      def instance_eval(*args, &block)
+        @example_group_instance.instance_eval(*args, &block)
       end
 
       # @private
