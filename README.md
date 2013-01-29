@@ -137,7 +137,7 @@ clean it up a bit using `described_class`:
 ```ruby
 shared_examples "collections" do
   it "is empty when first created" do
-    described.new.should be_empty
+    described_class.new.should be_empty
   end
 end
 
