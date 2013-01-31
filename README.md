@@ -28,7 +28,7 @@ describe Order do
       :price => Money.new(2.22, :USD),
       :quantity => 2
     )))
-    order.total.should eq(Money.new(5.55, :USD))
+    expect(order.total).to eq(Money.new(5.55, :USD))
   end
 end
 ```
@@ -77,7 +77,7 @@ in any group using `include_examples`.
 ```ruby
 shared_examples "collections" do |collection_class|
   it "is empty when first created" do
-    collection_class.new.should be_empty
+    expect(collection_class.new).to be_empty
   end
 end
 
@@ -112,7 +112,7 @@ extension, you can access it from an example like this:
 
 ```ruby
 it "does something" do
-  example.metadata[:description].should eq("does something")
+  expect(example.metadata[:description]).to eq("does something")
 end
 ```
 
@@ -125,7 +125,7 @@ using the `described_class` method, which is a wrapper for
 ```ruby
 describe Widget do
   example do
-    described_class.should equal(Widget)
+    expect(described_class).to equal(Widget)
   end
 end
 ```
@@ -137,7 +137,7 @@ clean it up a bit using `described_class`:
 ```ruby
 shared_examples "collections" do
   it "is empty when first created" do
-    described_class.new.should be_empty
+    expect(described_class.new).to be_empty
   end
 end
 
@@ -198,7 +198,7 @@ this before you write any implementation code:
 # in spec/calculator_spec.rb
 describe Calculator do
   it "add(x,y) returns the sum of its arguments" do
-    Calculator.new.add(1, 2).should eq(3)
+    expect(Calculator.new.add(1, 2)).to eq(3)
   end
 end
 ```
