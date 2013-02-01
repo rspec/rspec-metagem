@@ -44,11 +44,21 @@ module RSpec
       end
 
       def any_multiline_strings?(*args)
-        all_strings?(*args) && args.any? {|a| a =~ /\n/}
+        all_strings?(*args) && args.flatten.any? { |a| multiline?(a) }
       end
 
       def no_numbers?(*args)
         args.flatten.none? {|a| Numeric === a}
+      end
+
+      if String.method_defined?(:encoding)
+        def multiline?(string)
+          string.include?("\n".encode(string.encoding))
+        end
+      else
+        def multiline?(string)
+          string.include?("\n")
+        end
       end
     end
   end

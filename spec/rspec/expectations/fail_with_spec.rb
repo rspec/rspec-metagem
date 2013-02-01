@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'spec_helper'
 
 describe RSpec::Expectations, "#fail_with with diff" do
@@ -39,6 +40,30 @@ describe RSpec::Expectations, "#fail_with with diff" do
         expect {
           RSpec::Expectations.fail_with("the message", "expected", "actual")
         }.to fail_with("the message")
+      end
+    end
+
+    context "and they are UTF-16LE encoded", :if => String.method_defined?(:encode) do
+      it 'does not diff when they are not multiline' do
+        differ.should_not_receive(:diff_as_string)
+
+        str_1 = "This is a pile of poo: 💩".encode("UTF-16LE")
+        str_2 = "This is a pile of poo: 💩".encode("UTF-16LE")
+
+        expect {
+          RSpec::Expectations.fail_with("the message", str_1, str_2)
+        }.to fail_with("the message")
+      end
+
+      it 'diffs when they are multiline' do
+        differ.should_receive(:diff_as_string).and_return("diff")
+
+        str_1 = "This is a pile of poo:\n💩".encode("UTF-16LE")
+        str_2 = "This is a pile of poo:\n💩".encode("UTF-16LE")
+
+        expect {
+          RSpec::Expectations.fail_with("the message", str_1, str_2)
+        }.to fail_with("the message\nDiff:diff")
       end
     end
   end
