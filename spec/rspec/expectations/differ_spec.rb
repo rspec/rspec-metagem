@@ -74,14 +74,6 @@ EOD
           expect(diff).to eq expected_diff
         end
 
-        it "outputs a message if the diff is empty" do
-          diff = differ.diff_as_object('foo', 'foo')
-          expect(diff).to eq(
-            "foo.==(foo) returned false even though the diff between " \
-            "foo and foo is empty. Check the implementation of foo.==."
-          )
-        end
-
         it "outputs unified diff message of two arrays" do
           expected = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'charlie', :width, 'quite wide' ]
           actual   = [ :foo, 'bar', :baz, 'quux', :metasyntactic, 'variable', :delta, 'tango'  , :width, 'very wide'  ]
@@ -175,3 +167,4 @@ EOD
     end
   end
 end
+
