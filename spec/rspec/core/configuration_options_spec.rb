@@ -13,6 +13,13 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
   end
 
+  it "duplicates the arguments array" do
+    args = ['-e', 'some spec']
+    coo = RSpec::Core::ConfigurationOptions.new(args)
+    coo.parse_options
+    expect(args).to eq(['-e', 'some spec'])
+  end
+
   describe "#configure" do
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
