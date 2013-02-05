@@ -123,18 +123,18 @@ Feature: include matcher
       """
     When I run `rspec hash_include_matcher_spec.rb`
     Then the output should contain "13 failure"
-    
+
   Scenario: fuzzy usage with matchers
     Given a file named "fuzzy_include_matcher_spec.rb" with:
       """
       require 'ostruct'
-      
+
       class User < OpenStruct
         def inspect
           name
         end
       end
-      
+
       RSpec::Matchers.define :a_user_named do |expected|
         match do |actual|
           actual.is_a?(User) && (actual.name == expected)
@@ -143,7 +143,7 @@ Feature: include matcher
           "a user named '#{expected}'"
         end
       end
-      
+
       describe "Collection of users" do
         subject do
           [User.new(:name => "Joe"),
@@ -152,12 +152,12 @@ Feature: include matcher
            User.new(:name => "Luke"),
            User.new(:name => "David")]
         end
-        
+
         it { should include( a_user_named "Joe" ) }
         it { should include( a_user_named "Luke" ) }
         it { should_not include( a_user_named "Richard" ) }
         it { should_not include( a_user_named "Hayley" ) }
-        
+
         # deliberate failures
         it { should include( a_user_named "Richard" ) }
         it { should_not include( a_user_named "Fred" ) }
