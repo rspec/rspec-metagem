@@ -48,13 +48,7 @@ module RSpec
       def diff_as_object(actual, expected)
         actual_as_string = object_to_string(actual)
         expected_as_string = object_to_string(expected)
-        diff = diff_as_string(actual_as_string, expected_as_string)
-
-        if diff.empty?
-          "#{actual}.==(#{expected}) returned false even though the diff " \
-          "between #{actual} and #{expected} is empty. Check the " \
-          "implementation of #{actual}.==."
-        else
+        if diff = diff_as_string(actual_as_string, expected_as_string)
           color_diff diff
         end
       end
