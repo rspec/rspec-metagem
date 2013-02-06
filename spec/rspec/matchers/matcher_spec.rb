@@ -327,6 +327,44 @@ module RSpec::Matchers::DSL
       expect(matcher.matches?(8)).to be_true
     end
 
+    context 'when multiple instances of the same matcher are used in the same example' do
+      RSpec::Matchers.define(:be_like_a) do |expected|
+        match { |actual| actual == expected }
+        description { "be like a #{expected}" }
+        failure_message_for_should { "expected to be like a #{expected}" }
+        failure_message_for_should_not { "expected not to be like a #{expected}" }
+      end
+
+      # Note: these bugs were only exposed when creating both instances
+      # first, then checking their descriptions/failure messages.
+      #
+      # That's why we eager-instantiate them here.
+      let!(:moose) { be_like_a("moose") }
+      let!(:horse) { be_like_a("horse") }
+
+      it 'allows them to use the expected value in the description' do
+        expect(horse.description).to eq("be like a horse")
+        expect(moose.description).to eq("be like a moose")
+      end
+
+      it 'allows them to use the expected value in the positive failure message' do
+        expect(moose.failure_message_for_should).to eq("expected to be like a moose")
+        expect(horse.failure_message_for_should).to eq("expected to be like a horse")
+      end
+
+      it 'allows them to use the expected value in the negative failure message' do
+        expect(moose.failure_message_for_should_not).to eq("expected not to be like a moose")
+        expect(horse.failure_message_for_should_not).to eq("expected not to be like a horse")
+      end
+
+      it 'allows them to match separately' do
+        expect("moose").to moose
+        expect("horse").to horse
+        expect("horse").not_to moose
+        expect("moose").not_to horse
+      end
+    end
+
     describe "#match_unless_raises" do
       context "with an assertion" do
         let(:mod) do

@@ -25,7 +25,7 @@ module RSpec
         end
 
         PERSISTENT_INSTANCE_VARIABLES = [
-          :@name, :@declarations, :@diffable, :@messages,
+          :@name, :@declarations, :@diffable,
           :@match_block, :@match_for_should_not_block,
           :@expected_exception
         ].to_set
@@ -37,6 +37,7 @@ module RSpec
             instance_variables.map {|ivar| ivar.intern}.each do |ivar|
               instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
             end
+            @messages = {}
             making_declared_methods_public do
               instance_eval_with_args(*@expected, &@declarations)
             end

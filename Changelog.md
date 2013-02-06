@@ -11,6 +11,9 @@ Bug fixes
   actually verify anything (Myron Marston).
 * Add compatibility for diff-lcs 1.2 and relax the version
   constraint (Peter Goldstein).
+* Fix DSL-generated matchers to allow multiple instances of the
+  same matcher in the same example to have different description
+  and failure messages based on the expected value (Myron Marston).
 
 Enhancements
 
