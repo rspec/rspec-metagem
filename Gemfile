@@ -14,7 +14,7 @@ end
 ### deps for rdoc.info
 group :documentation do
   gem 'yard',          '0.8.0', :require => false
-  gem 'redcarpet',     '2.1.1'
+  gem 'redcarpet',     '2.1.1', :platform => :mri
   gem 'github-markup', '0.7.2'
 end
 
