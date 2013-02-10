@@ -387,7 +387,7 @@ describe "#include matcher" do
   end
 end
 
-RSpec::Matchers.define :string_containing_string do |expected|
+RSpec::Matchers.define :a_string_containing do |expected|
   match do |actual|
     actual.include?(expected)
   end
@@ -400,18 +400,18 @@ end
 describe "expect(...).to include(matcher)" do
   context 'for an array target' do
     it "passes if target includes an object that satisfies the matcher" do
-      expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"))
+      expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"))
     end
 
     it "fails if target doesn't include object that satisfies the matcher" do
       expect {
-        expect(['foo', 'bar', 'baz']).to include(string_containing_string("abc"))
+        expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
       }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'abc'|)
     end
 
     it 'does not include a diff when the match fails' do
       expect {
-        expect(['foo', 'bar', 'baz']).to include(string_containing_string("abc"))
+        expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
       }.to raise_error { |e|
         expect(e.message).not_to match(/diff/i)
       }
@@ -422,18 +422,18 @@ end
 describe "expect(...).to include(multiple, matcher, arguments)" do
   context 'for an array target' do
     it "passes if target includes items satisfying all matchers" do
-      expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"), string_containing_string('oo'))
+      expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing('oo'))
     end
 
     it "fails if target does not include an item satisfying any one of the items" do
       expect {
-        expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"), string_containing_string("abc"))
+        expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
       }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'ar' and a string containing 'abc'|)
     end
 
     it 'does not include a diff when the match fails' do
       expect {
-        expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"), string_containing_string("abc"))
+        expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
       }.to raise_error { |e|
         expect(e.message).not_to match(/diff/i)
       }
