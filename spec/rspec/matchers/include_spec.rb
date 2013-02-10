@@ -440,3 +440,22 @@ describe "expect(...).to include(multiple, matcher, arguments)" do
     end
   end
 end
+
+describe "expect(...).not_to include(multiple, matcher, arguments)" do
+  it "passes if none of the target values satisfies any of the matchers" do
+    expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("gh"), a_string_containing('de'))
+  end
+
+  it 'fails if all of the matchers are satisfied by one of the target values' do
+    expect {
+      expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('az'))
+    }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include a string containing 'ar' and a string containing 'az'|)
+  end
+
+  it 'fails if the some (but not all) of the matchers are satisifed' do
+    expect {
+      expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('bz'))
+    }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include a string containing 'ar' and a string containing 'bz'|)
+  end
+end
+
