@@ -21,7 +21,9 @@ module RSpec
         end
 
         def diffable?
-          true
+          # Matchers do not diff well, since diff uses their inspect
+          # output, which includes their instance variables and such.
+          @expected.none? { |e| is_a_matcher?(e) }
         end
 
         private
@@ -51,7 +53,11 @@ module RSpec
         end
 
         def comparing_with_matcher?(actual, expected)
-          actual.is_a?(Array) && expected.respond_to?(:matches?)
+          actual.is_a?(Array) && is_a_matcher?(expected)
+        end
+
+        def is_a_matcher?(object)
+          object.respond_to?(:matches?)
         end
       end
     end

@@ -408,6 +408,14 @@ describe "expect(...).to include(matcher)" do
         expect(['foo', 'bar', 'baz']).to include(string_containing_string("abc"))
       }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'abc'|)
     end
+
+    it 'does not include a diff when the match fails' do
+      expect {
+        expect(['foo', 'bar', 'baz']).to include(string_containing_string("abc"))
+      }.to raise_error { |e|
+        expect(e.message).not_to match(/diff/i)
+      }
+    end
   end
 end
 
@@ -421,6 +429,14 @@ describe "expect(...).to include(multiple, matcher, arguments)" do
       expect {
         expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"), string_containing_string("abc"))
       }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'ar' and a string containing 'abc'|)
+    end
+
+    it 'does not include a diff when the match fails' do
+      expect {
+        expect(['foo', 'bar', 'baz']).to include(string_containing_string("ar"), string_containing_string("abc"))
+      }.to raise_error { |e|
+        expect(e.message).not_to match(/diff/i)
+      }
     end
   end
 end
