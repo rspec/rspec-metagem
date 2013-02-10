@@ -319,18 +319,18 @@ a {
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:20:in `block (3 levels) in <top (required)>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:32:in `block (2 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (5 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (4 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `block (3 levels) in <module:Formatters>'</pre></div>
-    <pre class="ruby"><code><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `block (3 levels) in <top (required)>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:36:in `block (2 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (5 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (4 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `block (3 levels) in <module:Formatters>'</pre></div>
+    <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
 <span class="linenum">19</span>        <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
-<span class="offending"><span class="linenum">20</span>      <span class="keyword">end</span></span>
-<span class="linenum">21</span>    <span class="keyword">end</span>
-<span class="linenum">22</span>  <span class="keyword">end</span></code></pre>
+<span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -359,12 +359,12 @@ expected: 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `block (2 levels) in <top (required)>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:32:in `block (2 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (5 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (4 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `block (3 levels) in <module:Formatters>'</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:36:in `block (2 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (5 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (4 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `block (3 levels) in <module:Formatters>'</pre></div>
     <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
@@ -387,12 +387,12 @@ expected: 2
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `<main>'
 ./spec/rspec/core/resources/formatter_specs.rb:41:in `block (2 levels) in <top (required)>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:32:in `block (2 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (5 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `open'
-./spec/rspec/core/formatters/html_formatter_spec.rb:54:in `block (4 levels) in <module:Formatters>'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `chdir'
-./spec/rspec/core/formatters/html_formatter_spec.rb:53:in `block (3 levels) in <module:Formatters>'</pre></div>
+./spec/rspec/core/formatters/html_formatter_spec.rb:36:in `block (2 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (5 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `open'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `block (4 levels) in <module:Formatters>'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `chdir'
+./spec/rspec/core/formatters/html_formatter_spec.rb:57:in `block (3 levels) in <module:Formatters>'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
