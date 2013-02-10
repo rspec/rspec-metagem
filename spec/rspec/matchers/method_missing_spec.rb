@@ -1,8 +1,12 @@
 require 'spec_helper'
 
 shared_examples_for "a well-behaved method_missing hook" do
+  include TestUnitIntegrationSupport
+
   it "raises a NoMethodError (and not SystemStackError) for an undefined method" do
-    expect { subject.some_undefined_method }.to raise_error(NoMethodError)
+    with_test_unit_loaded do
+      expect { subject.some_undefined_method }.to raise_error(NoMethodError)
+    end
   end
 end
 

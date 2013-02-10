@@ -1,5 +1,3 @@
-require 'test/unit'
-
 Dir['./spec/support/**/*'].each {|f| require f}
 
 RSpec::configure do |config|
@@ -39,6 +37,18 @@ shared_context "with #should exclusively enabled", :uses_only_should do
 
   after(:all) do
     RSpec::Matchers.configuration.syntax = orig_syntax
+  end
+end
+
+module TestUnitIntegrationSupport
+  include InSubProcess
+
+  def with_test_unit_loaded
+    in_sub_process do
+      require 'test/unit'
+      load 'rspec/matchers.rb'
+      yield
+    end
   end
 end
 
