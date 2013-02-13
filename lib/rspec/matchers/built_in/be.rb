@@ -136,7 +136,7 @@ it is a bit confusing.
         def matches?(actual)
           @actual = actual
 
-          if actual.private_methods.include? predicate
+          if actual.private_methods.include?(predicate.to_sym) || actual.private_methods.include?(predicate.to_s)
             @error_message = "but it's a private method"
             return
           end
