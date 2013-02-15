@@ -136,10 +136,7 @@ it is a bit confusing.
         def matches?(actual)
           @actual = actual
 
-          if actual.private_methods.include?(predicate.to_sym) || actual.private_methods.include?(predicate.to_s)
-            @error_message = "but it's a private method"
-            return
-          end
+          raise "UnsupportedOperationError: expectation set on private method `#{predicate}`" if actual.private_methods.include?(predicate.to_sym) || actual.private_methods.include?(predicate.to_s)
 
           begin
             return @result = actual.__send__(predicate, *@args, &@block)
@@ -155,11 +152,11 @@ it is a bit confusing.
         end
 
         def failure_message_for_should
-          "expected #{predicate}#{args_to_s} to return true, #{@error_message || "got #{@result.inspect}"}"
+          "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
         end
 
         def failure_message_for_should_not
-          "expected #{predicate}#{args_to_s} to return false, #{@error_message || "got #{@result.inspect}"}"
+          "expected #{predicate}#{args_to_s} to return false, got #{@result.inspect}"
         end
 
         def description

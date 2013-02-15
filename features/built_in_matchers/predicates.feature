@@ -158,4 +158,4 @@ Feature: predicate matchers
        """
      When I run `rspec attempting_to_match_private_method_spec.rb`
      Then the output should contain "1 example, 1 failure"
-     And the output should contain "expected secret? to return true, but it's a private method"
+     And the output should contain "UnsupportedOperationError: expectation set on private method `secret?`"
