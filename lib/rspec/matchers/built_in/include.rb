@@ -57,7 +57,11 @@ module RSpec
         end
 
         def is_a_matcher?(object)
-          object.respond_to?(:matches?)
+          return false if object.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+
+          [:failure_message_for_should, :failure_message].any? do |msg|
+            object.respond_to?(msg)
+          end && object.respond_to?(:matches?)
         end
       end
     end

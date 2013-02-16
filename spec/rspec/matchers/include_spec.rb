@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'uri'
 
 describe "#include matcher" do
   it "is diffable" do
@@ -43,6 +44,20 @@ describe "#include matcher" do
         expect {
           expect([1,2,3]).to include(4)
         }.to fail_matching("expected [1, 2, 3] to include 4")
+      end
+
+      it 'fails when given differing null doubles' do
+        dbl_1 = double.as_null_object
+        dbl_2 = double.as_null_object
+
+        expect {
+          expect([dbl_1]).to include(dbl_2)
+        }.to fail_matching("expected [#{dbl_1.inspect}] to include")
+      end
+
+      it 'passes when given the same null double' do
+        dbl = double.as_null_object
+        expect([dbl]).to include(dbl)
       end
     end
 
@@ -144,6 +159,18 @@ describe "#include matcher" do
         expect {
           expect([1,2,3]).not_to include(3)
         }.to fail_with("expected [1, 2, 3] not to include 3")
+      end
+
+      it 'passes when given differing null doubles' do
+        expect([double.as_null_object]).not_to include(double.as_null_object)
+      end
+
+      it 'fails when given the same null double' do
+        dbl = double.as_null_object
+
+        expect {
+          expect([dbl]).not_to include(dbl)
+        }.to fail_matching("expected [#{dbl.inspect}] not to include")
       end
     end
 
@@ -415,6 +442,49 @@ describe "expect(...).to include(matcher)" do
       }.to raise_error { |e|
         expect(e.message).not_to match(/diff/i)
       }
+    end
+
+    it 'does not treat an object that only implements #matches? as a matcher' do
+      domain = Struct.new(:domain) do
+        def matches?(url)
+          URI(url).host == self.domain
+        end
+      end
+
+      expect([domain.new("rspec.info")]).to include(domain.new("rspec.info"))
+
+      expect {
+        expect([domain.new("rspec.info")]).to include(domain.new("foo.com"))
+      }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
+    end
+
+    it 'works with an old-style matcher that implements failure_message rather than failure_message_for_should' do
+      a_multiple_of = Class.new do
+        def initialize(expected)
+          @expected = expected
+        end
+
+        def matches?(actual)
+          (actual % @expected).zero?
+        end
+
+        def failure_message
+          "expected a multiple of #{@expected}"
+        end
+      end
+
+      # Verify the matcher works normally
+      expect(10).to a_multiple_of.new(5)
+
+      expect {
+        expect(10).to a_multiple_of.new(7)
+      }.to fail_with("expected a multiple of 7")
+
+      expect([12, 13, 14]).to include(a_multiple_of.new(6))
+
+      expect {
+        expect([12, 13, 14]).to include(a_multiple_of.new(10))
+      }.to fail_matching("expected [12, 13, 14] to include")
     end
   end
 end
