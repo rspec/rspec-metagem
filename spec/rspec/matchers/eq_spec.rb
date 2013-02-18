@@ -48,6 +48,12 @@ module RSpec
         matcher.matches?(1)
         expect(matcher.failure_message_for_should_not).to eq "\nexpected: value != 1\n     got: 1\n\n(compared using ==)\n"
       end
+
+      it 'fails properly when the actual is an array of multiline strings' do
+        expect {
+          expect(["a\nb", "c\nd"]).to eq([])
+        }.to fail_matching("expected: []")
+      end
     end
   end
 end

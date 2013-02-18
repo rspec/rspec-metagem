@@ -14,6 +14,8 @@ Bug fixes
 * Fix DSL-generated matchers to allow multiple instances of the
   same matcher in the same example to have different description
   and failure messages based on the expected value (Myron Marston).
+* Prevent `undefined method #split for Array` error when dumping
+  the diff of an array of multiline strings (Myron Marston).
 
 Enhancements
 

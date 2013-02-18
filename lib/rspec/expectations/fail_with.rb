@@ -22,8 +22,7 @@ module RSpec
         if actual && expected
           if all_strings?(actual, expected)
             if any_multiline_strings?(actual, expected)
-              expected = expected.join(',') if Array === expected
-              message << "\nDiff:" << differ.diff_as_string(actual, expected)
+              message << "\nDiff:" << differ.diff_as_string(coerce_to_string(actual), coerce_to_string(expected))
             end
           elsif no_procs?(actual, expected) && no_numbers?(actual, expected)
             message << "\nDiff:" << differ.diff_as_object(actual, expected)
@@ -49,6 +48,11 @@ module RSpec
 
       def no_numbers?(*args)
         args.flatten.none? {|a| Numeric === a}
+      end
+
+      def coerce_to_string(string_or_array)
+        return string_or_array unless Array === string_or_array
+        string_or_array.join(',')
       end
 
       if String.method_defined?(:encoding)
