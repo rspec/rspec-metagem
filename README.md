@@ -102,7 +102,7 @@ etc, but no examples.
 ## metadata
 
 rspec-core stores a metadata hash with every example and group, which
-contains like their descriptions, the locations at which they were
+contains their descriptions, the locations at which they were
 declared, etc, etc. This hash powers many of rspec-core's features,
 including output formatters (which access descriptions and locations),
 and filtering before and after hooks.
@@ -131,7 +131,7 @@ end
 ```
 
 This is useful in extensions or shared example groups in which the specific
-class is unknown. Taking the shared examples example from above, we can
+class is unknown. Taking the collections shared example group from above, we can
 clean it up a bit using `described_class`:
 
 ```ruby
@@ -153,7 +153,8 @@ end
 ## the `rspec` command
 
 When you install the rspec-core gem, it installs the `rspec` executable,
-which you'll use to run rspec. The `rspec` comes with many useful options.
+which you'll use to run rspec. The `rspec` command comes with many useful
+options.
 Run `rspec --help` to see the complete list.
 
 ## store command line options `.rspec`
