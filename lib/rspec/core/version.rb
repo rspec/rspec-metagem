@@ -1,7 +1,7 @@
 module RSpec
   module Core
     module Version
-      STRING = '2.12.2'
+      STRING = '2.13.0'
     end
   end
 end
