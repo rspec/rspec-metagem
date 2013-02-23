@@ -16,6 +16,10 @@ Bug fixes
   and failure messages based on the expected value (Myron Marston).
 * Prevent `undefined method #split for Array` error when dumping
   the diff of an array of multiline strings (Myron Marston).
+* Don't blow up when comparing strings that are in an encoding
+  that is not ASCII compatible (Myron Marston).
+* Remove confusing "Check the implementation of #==" message
+  printed for empty diffs (Myron Marston).
 
 Enhancements
 
