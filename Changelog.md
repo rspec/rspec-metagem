@@ -1,6 +1,14 @@
 ### dev
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...master)
 
+Enhancements
+
+* Add support for percent deltas to `be_within` matcher:
+  `expect(value).to be_within(10).percent_of(expected)`
+  (Myron Marston).
+* Add support to `include` matcher to allow it to be given a list
+  of matchers as the expecteds to match against (Luke Redpath).
+
 Bug fixes
 
 * Fix `change` matcher so that it dups strings in order to handle
@@ -20,14 +28,6 @@ Bug fixes
   that is not ASCII compatible (Myron Marston).
 * Remove confusing "Check the implementation of #==" message
   printed for empty diffs (Myron Marston).
-
-Enhancements
-
-* Add support for percent deltas to `be_within` matcher:
-  `expect(value).to be_within(10).percent_of(expected)`
-  (Myron Marston).
-* Add support to `include` matcher to allow it to be given a list
-  of matchers as the expecteds to match against (Luke Redpath).
 
 ### 2.12.1 / 2012-12-15
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.0...v2.12.1)
