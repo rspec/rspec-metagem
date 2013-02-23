@@ -1,5 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...master)
+### 2.13.0 / 2013-02-23
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
 
 Enhancements
 
