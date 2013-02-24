@@ -6,13 +6,9 @@ module RSpec
       class Hook
         attr_reader :block, :options
 
-        def initialize(&block)
+        def initialize(block, options)
           @block = block
-        end
-
-        def with(options)
           @options = options
-          self
         end
 
         def options_apply?(example_or_group)
@@ -455,7 +451,7 @@ module RSpec
 
       def register_hook prepend_or_append, hook, *args, &block
         scope, options = scope_and_options_from(*args)
-        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook].new(&block).with(options))
+        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook].new(block, options))
       end
 
       def find_hook(hook, scope, example_or_group, initial_procsy)
