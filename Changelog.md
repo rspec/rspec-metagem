@@ -1,3 +1,10 @@
+### dev
+
+Bug fixes
+
+* Use hook classes as proxies rather than extending hook blocks to support
+  lambdas for before/after/around hooks. (David Chelimsky)
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.2...v2.13.0)
 
