@@ -3,8 +3,12 @@ module RSpec
     module Hooks
       include MetadataHashBuilder::WithConfigWarning
 
-      module HookExtension
-        attr_reader :options
+      class Hook
+        attr_reader :block, :options
+
+        def initialize(&block)
+          @block = block
+        end
 
         def with(options)
           @options = options
@@ -16,11 +20,9 @@ module RSpec
         end
       end
 
-      module BeforeHookExtension
-        include HookExtension
-
+      class BeforeHook < Hook
         def run(example)
-          example.instance_eval(&self)
+          example.instance_eval(&block)
         end
 
         def display_name
@@ -28,11 +30,9 @@ module RSpec
         end
       end
 
-      module AfterHookExtension
-        include HookExtension
-
+      class AfterHook < Hook
         def run(example)
-          example.instance_eval_with_rescue("in an after hook", &self)
+          example.instance_eval_with_rescue("in an after hook", &block)
         end
 
         def display_name
@@ -40,9 +40,7 @@ module RSpec
         end
       end
 
-      module AroundHookExtension
-        include HookExtension
-
+      class AroundHook < Hook
         def display_name
           "around hook"
         end
@@ -90,7 +88,7 @@ module RSpec
         def run
           inject(@initial_procsy) do |procsy, around_hook|
             Example.procsy(procsy.metadata) do
-              @example.instance_eval_with_args(procsy, &around_hook)
+              @example.instance_eval_with_args(procsy, &around_hook.block)
             end
           end.call
         end
@@ -433,10 +431,10 @@ module RSpec
 
       SCOPES = [:each, :all, :suite]
 
-      EXTENSIONS = {
-        :before => BeforeHookExtension,
-        :after  => AfterHookExtension,
-        :around => AroundHookExtension
+      HOOK_TYPES = {
+        :before => BeforeHook,
+        :after  => AfterHook,
+        :around => AroundHook
       }
 
       def before_all_hooks_for(group)
@@ -457,7 +455,7 @@ module RSpec
 
       def register_hook prepend_or_append, hook, *args, &block
         scope, options = scope_and_options_from(*args)
-        hooks[hook][scope].send(prepend_or_append, block.extend(EXTENSIONS[hook]).with(options))
+        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook].new(&block).with(options))
       end
 
       def find_hook(hook, scope, example_or_group, initial_procsy)

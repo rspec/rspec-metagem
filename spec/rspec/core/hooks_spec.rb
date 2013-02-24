@@ -246,5 +246,22 @@ module RSpec::Core
         end
       end
     end
+
+    describe "lambda" do
+      it "can be used as a hook" do
+        messages = []
+        count = 0
+        hook = lambda {|e| messages << "hook #{count = count + 1}"; e.run }
+
+        RSpec.configure do |c|
+          c.around(:each, &hook)
+          c.around(:each, &hook)
+        end
+
+        group = ExampleGroup.describe { example { messages << "example" } }
+        group.run
+        expect(messages).to eq ["hook 1", "hook 2", "example"]
+      end
+    end
   end
 end
