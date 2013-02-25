@@ -157,6 +157,42 @@ module RSpec::Core
           expect(inner_subject_value).to eq(1)
         end
 
+        it 'can continue to be referenced by the name even when an inner group redefines the subject' do
+          named_value = nil
+
+          ExampleGroup.describe do
+            subject(:named) { :outer }
+
+            describe "inner" do
+              subject { :inner }
+              example do
+                subject # so the inner subject method is run and memoized
+                named_value = self.named
+              end
+            end
+          end.run
+
+          expect(named_value).to eq(:outer)
+        end
+
+        it 'can continue to reference an inner subject after the outer subject name is referenced' do
+          subject_value = nil
+
+          ExampleGroup.describe do
+            subject(:named) { :outer }
+
+            describe "inner" do
+              subject { :inner }
+              example do
+                named # so the outer subject method is run and memoized
+                subject_value = self.subject
+              end
+            end
+          end.run
+
+          expect(subject_value).to eq(:inner)
+        end
+
         context 'when `super` is used' do
           it "delegates to the parent context's `subject`, not the named mehtod" do
             inner_subject_value = nil

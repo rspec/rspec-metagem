@@ -214,8 +214,18 @@ module RSpec
         #
         # @see MemoizedHelpers#should
         def subject(name=nil, &block)
-          let(:subject, &block)
-          alias_method name, :subject if name
+          if name
+            # Ensure `super()` within a named subject acts correctly...
+            mod = ::RSpec::Core::MemoizedHelpers.module_for(self, :NamedSubjectSuper)
+            mod.define_method(name) do
+              self.class.superclass.instance_method(:subject).bind(self).call
+            end
+
+            let(name, &block)
+            subject { __send__ name }
+          else
+            let(:subject, &block)
+          end
         end
 
         # Just like `subject`, except the block is invoked by an implicit `before`
@@ -379,13 +389,13 @@ module RSpec
       # The memoization is provided by a method definition on the
       # example group that supers to the LetDefinitions definition
       # in order to get the value to memoize.
-      def self.module_for(example_group)
-        get_constant_or_yield(example_group, :LetDefinitions) do
+      def self.module_for(example_group, const_name = :LetDefinitions)
+        get_constant_or_yield(example_group, const_name) do
           # Expose `define_method` as a public method, so we can
           # easily use it below.
           mod = Module.new { public_class_method :define_method }
           example_group.__send__(:include, mod)
-          example_group.const_set(:LetDefinitions, mod)
+          example_group.const_set(const_name, mod)
           mod
         end
       end
