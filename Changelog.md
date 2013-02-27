@@ -21,6 +21,8 @@ Enhancements
   method. (Myron Marston)
 * Allow output colors to be configured individually.
   (Charlie Maffitt)
+* Always dump slow examples when `--profile` option is given,
+  even when an example failed (Myron Marston).
 
 Bug fixes
 
