@@ -194,20 +194,38 @@ module RSpec::Core
         end
 
         context 'when `super` is used' do
-          it "delegates to the parent context's `subject`, not the named mehtod" do
-            inner_subject_value = nil
+          def should_raise_not_supported_error(&block)
+            ex = nil
 
             ExampleGroup.describe do
               let(:list) { ["a", "b", "c"] }
               subject { [1, 2, 3] }
 
               describe 'first' do
+                module_eval(&block) if block
+
                 subject(:list) { super().first(2) }
-                example { inner_subject_value = subject }
+                ex = example { subject }
               end
             end.run
 
-            expect(inner_subject_value).to eq([1, 2])
+            expect(ex.execution_result[:status]).to eq("failed")
+            expect(ex.execution_result[:exception].message).to match(/super.*not supported/)
+          end
+
+          it 'raises a "not supported" error' do
+            should_raise_not_supported_error
+          end
+
+          context 'with a `let` definition before the named subject' do
+            it 'raises a "not supported" error' do
+              should_raise_not_supported_error do
+                # My first pass implementation worked unless there was a `let`
+                # declared before the named subject -- this let is in place to
+                # ensure that bug doesn't return.
+                let(:foo) { 3 }
+              end
+            end
           end
         end
       end
