@@ -117,7 +117,7 @@ module RSpec
         def let(name, &block)
           # We have to pass the block directly to `define_method` to
           # allow it to use method constructs like `super` and `return`.
-          ::RSpec::Core::MemoizedHelpers.module_for(self).define_method(name, &block)
+          MemoizedHelpers.module_for(self).define_method(name, &block)
 
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
@@ -214,8 +214,16 @@ module RSpec
         #
         # @see MemoizedHelpers#should
         def subject(name=nil, &block)
-          let(:subject, &block)
-          alias_method name, :subject if name
+          if name
+            let(name, &block)
+            subject { __send__ name }
+
+            self::NamedSubjectPreventSuper.define_method(name) do
+              raise NotImplementedError, "`super` in named subjects is not supported"
+            end
+          else
+            let(:subject, &block)
+          end
         end
 
         # Just like `subject`, except the block is invoked by an implicit `before`
@@ -381,9 +389,17 @@ module RSpec
       # in order to get the value to memoize.
       def self.module_for(example_group)
         get_constant_or_yield(example_group, :LetDefinitions) do
-          # Expose `define_method` as a public method, so we can
-          # easily use it below.
-          mod = Module.new { public_class_method :define_method }
+          mod = Module.new do
+            include Module.new {
+              public_class_method :define_method
+              example_group.const_set(:NamedSubjectPreventSuper, self)
+            }
+
+            # Expose `define_method` as a public method, so we can
+            # easily use it below.
+            public_class_method :define_method
+          end
+
           example_group.__send__(:include, mod)
           example_group.const_set(:LetDefinitions, mod)
           mod
