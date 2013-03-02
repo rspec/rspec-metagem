@@ -120,6 +120,47 @@ module RSpec::Core
 
           expect(subject_value).to eq([4, 5, 6, :override])
         end
+
+        context 'when referenced in a `before(:all)` hook' do
+          before do
+            expect(::RSpec).to respond_to(:warn_deprecation)
+            ::RSpec.stub(:warn_deprecation)
+          end
+
+          def define_and_run_group
+            final_subject_value_in_before_all = subject_value_in_example = nil
+
+            ExampleGroup.describe do
+              subject { [1, 2] }
+
+              before(:all) do
+                subject << 3
+                final_subject_value_in_before_all = subject
+              end
+
+              example { subject_value_in_example = subject }
+            end.run
+
+            return final_subject_value_in_before_all, subject_value_in_example
+          end
+
+          it 'memoizes the value within the before(:all) hook' do
+            value, _ = define_and_run_group
+            expect(value).to eq([1, 2, 3])
+          end
+
+          it 'clears the memoization before the first example' do
+            _, value = define_and_run_group
+            expect(value).to eq([1, 2])
+          end
+
+          it 'prints a warning since `subject` declarations are not intended to be used in :all hooks' do
+            ::RSpec.should_receive(:warn_deprecation).
+               with(/let declaration\(s\) `subject` referenced in a `before\(:all\)`/)
+
+            define_and_run_group
+          end
+        end
       end
 
       describe "with a name" do
@@ -466,6 +507,47 @@ module RSpec::Core
         expect(value).to eq(:late_exit)
       end
     end
+
+    context 'when referenced in a `before(:all)` hook' do
+      before do
+        expect(::RSpec).to respond_to(:warn_deprecation)
+        ::RSpec.stub(:warn_deprecation)
+      end
+
+      def define_and_run_group
+        final_list_value_in_before_all = list_value_in_example = nil
+
+        ExampleGroup.describe do
+          let(:list) { [1, 2] }
+
+          before(:all) do
+            list << 3
+            final_list_value_in_before_all = list
+          end
+
+          example { list_value_in_example = list }
+        end.run
+
+        return final_list_value_in_before_all, list_value_in_example
+      end
+
+      it 'memoizes the value within the before(:all) hook' do
+        value, _ = define_and_run_group
+        expect(value).to eq([1, 2, 3])
+      end
+
+      it 'clears the memoization before the first example' do
+        _, value = define_and_run_group
+        expect(value).to eq([1, 2])
+      end
+
+      it 'prints a warning since `let` declarations are not intended to be used in :all hooks' do
+        ::RSpec.should_receive(:warn_deprecation).
+           with(/let declaration\(s\) `list` referenced in a `before\(:all\)`/)
+
+        define_and_run_group
+      end
+    end
   end
 
   describe "#let!" do
@@ -510,3 +592,4 @@ module RSpec::Core
     end
   end
 end
+
