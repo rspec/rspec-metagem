@@ -78,6 +78,38 @@ module RSpec
         @__memoized ||= {}
       end
 
+      # Used internally to customize the behavior of the
+      # memoized hash when used in a `before(:all)` hook.
+      #
+      # @private
+      class BeforeAllMemoizedHash
+        def initialize
+          @hash = {}
+        end
+
+        def fetch(key, &block)
+          description = if key == :subject
+            "subject"
+          else
+            "let declaration `#{key}`"
+          end
+
+          ::RSpec.warn_deprecation <<-EOS
+WARNING: #{description} accessed in `before(:all)` hook at:
+  #{caller[1]}
+
+`let` and `subject` declarations are not intended to be called
+in a `before(:all)` hook. The memoized value will be discarded.
+EOS
+
+          @hash.fetch(key, &block)
+        end
+
+        def []=(key, value)
+          @hash[key] = value
+        end
+      end
+
       def self.included(mod)
         mod.extend(ClassMethods)
 

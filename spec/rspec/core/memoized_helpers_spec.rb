@@ -129,36 +129,41 @@ module RSpec::Core
 
           def define_and_run_group
             final_subject_value_in_before_all = subject_value_in_example = nil
+            reference_lines = []
 
             ExampleGroup.describe do
               subject { [1, 2] }
 
               before(:all) do
-                subject << 3
-                final_subject_value_in_before_all = subject
+                subject << 3; reference_lines << __LINE__
+                final_subject_value_in_before_all = subject; reference_lines << __LINE__
               end
 
               example { subject_value_in_example = subject }
             end.run
 
-            return final_subject_value_in_before_all, subject_value_in_example
+            return final_subject_value_in_before_all, subject_value_in_example, reference_lines
           end
 
           it 'memoizes the value within the before(:all) hook' do
-            value, _ = define_and_run_group
+            value, _, _ = define_and_run_group
             expect(value).to eq([1, 2, 3])
           end
 
           it 'clears the memoization before the first example' do
-            _, value = define_and_run_group
+            _, value, _ = define_and_run_group
             expect(value).to eq([1, 2])
           end
 
           it 'prints a warning since `subject` declarations are not intended to be used in :all hooks' do
-            ::RSpec.should_receive(:warn_deprecation).
-               with(/let declaration\(s\) `subject` referenced in a `before\(:all\)`/)
+            msgs = []
+            ::RSpec.stub(:warn_deprecation) { |msg| msgs << msg }
 
-            define_and_run_group
+            _, _, lines = define_and_run_group
+
+            expect(msgs).to include(*lines.map { |line|
+              match(/subject accessed.*#{__FILE__}:#{line}/m)
+            })
           end
         end
       end
@@ -515,37 +520,42 @@ module RSpec::Core
       end
 
       def define_and_run_group
-        final_list_value_in_before_all = list_value_in_example = nil
+        line = final_list_value_in_before_all = list_value_in_example = nil
+        reference_lines = []
 
         ExampleGroup.describe do
           let(:list) { [1, 2] }
 
           before(:all) do
-            list << 3
-            final_list_value_in_before_all = list
+            list << 3; reference_lines << __LINE__
+            final_list_value_in_before_all = list; reference_lines << __LINE__
           end
 
           example { list_value_in_example = list }
         end.run
 
-        return final_list_value_in_before_all, list_value_in_example
+        return final_list_value_in_before_all, list_value_in_example, reference_lines
       end
 
       it 'memoizes the value within the before(:all) hook' do
-        value, _ = define_and_run_group
+        value, _, _ = define_and_run_group
         expect(value).to eq([1, 2, 3])
       end
 
       it 'clears the memoization before the first example' do
-        _, value = define_and_run_group
+        _, value, _ = define_and_run_group
         expect(value).to eq([1, 2])
       end
 
       it 'prints a warning since `let` declarations are not intended to be used in :all hooks' do
-        ::RSpec.should_receive(:warn_deprecation).
-           with(/let declaration\(s\) `list` referenced in a `before\(:all\)`/)
+        msgs = []
+        ::RSpec.stub(:warn_deprecation) { |msg| msgs << msg }
 
-        define_and_run_group
+        _, _, lines = define_and_run_group
+
+        expect(msgs).to include(*lines.map { |line|
+          match(/let declaration `list` accessed.*#{__FILE__}:#{line}/m)
+        })
       end
     end
   end
