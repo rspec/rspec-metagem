@@ -28,21 +28,21 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
   describe "read_failed_line" do
     it "deals gracefully with a heterogeneous language stack trace" do
-      exception = mock(:Exception, :backtrace => [
+      exception = double(:Exception, :backtrace => [
         "at Object.prototypeMethod (foo:331:18)",
         "at Array.forEach (native)",
         "at a_named_javascript_function (/some/javascript/file.js:39:5)",
         "/some/line/of/ruby.rb:14"
       ])
-      example = mock(:Example, :file_path => __FILE__)
+      example = double(:Example, :file_path => __FILE__)
       expect {
         formatter.send(:read_failed_line, exception, example)
       }.not_to raise_error
     end
 
     it "deals gracefully with a security error" do
-      exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
-      example = mock(:Example, :file_path => __FILE__)
+      exception = double(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
+      example = double(:Example, :file_path => __FILE__)
       safely do
         expect {
           formatter.send(:read_failed_line, exception, example)
@@ -52,8 +52,8 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
     context "when ruby reports a bogus line number in the stack trace" do
       it "reports the filename and that it was unable to find the matching line" do
-        exception = mock(:Exception, :backtrace => [ "#{__FILE__}:10000000" ])
-        example = mock(:Example, :file_path => __FILE__)
+        exception = double(:Exception, :backtrace => [ "#{__FILE__}:10000000" ])
+        example = double(:Example, :file_path => __FILE__)
 
         msg = formatter.send(:read_failed_line, exception, example)
         expect(msg).to include("Unable to find matching line")
@@ -75,11 +75,11 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
       it "doesn't hang when file exists" do
         pending("This issue still exists on JRuby, but should be resolved shortly: https://github.com/rspec/rspec-core/issues/295", :if => RUBY_PLATFORM == 'java')
-        exception = mock(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
+        exception = double(:Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"])
 
-        example = mock(:Example, :file_path => __FILE__)
+        example = double(:Example, :file_path => __FILE__)
         expect(formatter.send(:read_failed_line, exception, example)).to eql(
-          %Q{        exception = mock(:Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"])\n})
+          %Q{        exception = double(:Exception, :backtrace => [ "\#{__FILE__}:\#{__LINE__}"])\n})
       end
 
     end
@@ -101,7 +101,7 @@ describe RSpec::Core::Formatters::BaseFormatter do
     end
 
     it "removes lines from rspec and lines that come before the invocation of the at_exit autorun hook" do
-      expect(formatter.format_backtrace(backtrace, stub.as_null_object)).to eq(["./my_spec.rb:5"])
+      expect(formatter.format_backtrace(backtrace, double.as_null_object)).to eq(["./my_spec.rb:5"])
     end
   end
 

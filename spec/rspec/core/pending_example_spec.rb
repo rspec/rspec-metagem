@@ -18,7 +18,7 @@ describe "an example" do
         end
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('just because')
     end
 
@@ -28,7 +28,7 @@ describe "an example" do
         end
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('No reason given')
     end
   end
@@ -39,7 +39,7 @@ describe "an example" do
         it "has no block"
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('Not yet implemented')
     end
   end
@@ -52,7 +52,7 @@ describe "an example" do
         end
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with(RSpec::Core::Pending::NO_REASON_GIVEN)
     end
   end
@@ -69,7 +69,7 @@ describe "an example" do
           end
         end
         example = group.examples.last
-        example.run(group.new, stub.as_null_object)
+        example.run(group.new, double.as_null_object)
         expect(example.description).to match(/example at/)
       end
     end
@@ -85,7 +85,7 @@ describe "an example" do
           end
         end
         example = group.examples.last
-        example.run(group.new, stub.as_null_object)
+        example.run(group.new, double.as_null_object)
         expect(example.description).to match(/example at/)
       end
     end
@@ -99,7 +99,7 @@ describe "an example" do
         end
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('just because')
     end
   end
@@ -112,7 +112,7 @@ describe "an example" do
         end
       end
       example = group.examples.first
-      example.run(group.new, stub.as_null_object)
+      example.run(group.new, double.as_null_object)
       example
     end
 

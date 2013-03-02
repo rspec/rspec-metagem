@@ -330,7 +330,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it 'does not print mock expectation errors' do
         group = RSpec::Core::ExampleGroup.describe do
           example do
-            foo = mock
+            foo = double
             foo.should_receive(:bar)
             raise "boom"
           end

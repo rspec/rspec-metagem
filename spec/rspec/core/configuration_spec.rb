@@ -992,7 +992,7 @@ module RSpec::Core
 
     describe "#output=" do
       it "sets the output" do
-        output = mock("output")
+        output = double("output")
         config.output = output
         expect(config.output).to equal(output)
       end

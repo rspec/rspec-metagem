@@ -30,7 +30,7 @@ module RSpec::Core
       it "passes example_group_started and example_group_finished messages to that formatter in that order" do
         order = []
 
-        formatter = stub("formatter").as_null_object
+        formatter = double("formatter").as_null_object
         formatter.stub(:example_group_started) { |group| order << "Started: #{group.description}" }
         formatter.stub(:example_group_finished) { |group| order << "Finished: #{group.description}" }
 
@@ -57,7 +57,7 @@ module RSpec::Core
 
     context "given an example group with no examples" do
       it "does not pass example_group_started or example_group_finished to formatter" do
-        formatter = stub("formatter").as_null_object
+        formatter = double("formatter").as_null_object
         formatter.should_not_receive(:example_group_started)
         formatter.should_not_receive(:example_group_finished)
 
