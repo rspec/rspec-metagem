@@ -301,22 +301,8 @@ module RSpec
         return if example_group_instance.instance_variables.empty?
 
         example_group_instance.instance_variables.each { |ivar|
-          value = example_group_instance.instance_variable_get(ivar)
-
-          if ivar.to_sym == :@__memoized
-            warn_about_unsound_let_usage(value)
-          else
-            before_all_ivars[ivar] = value
-          end
+          before_all_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
         }
-      end
-
-      def self.warn_about_unsound_let_usage(let_hash)
-        called_lets = let_hash.keys.map { |l| "`#{l}`" }.join(' and ')
-
-        ::RSpec.warn_deprecation "WARNING: let declaration(s) #{called_lets} referenced " +
-          "in a `before(:all)` hook. The memoized value(s) will be discarded since this " +
-          "is outside the scope of an example."
       end
 
       # @private
@@ -329,9 +315,24 @@ module RSpec
         return if descendant_filtered_examples.empty?
         begin
           assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
-          run_hook(:before, :all, example_group_instance)
+
+          handle_memoized_methods(example_group_instance) do
+            run_hook(:before, :all, example_group_instance)
+          end
         ensure
           store_before_all_ivars(example_group_instance)
+        end
+      end
+
+      def self.handle_memoized_methods(example_group_instance)
+        example_group_instance.instance_eval do
+          @__memoized = BeforeAllMemoizedHash.new
+
+          begin
+            yield
+          ensure
+            @__memoized = nil
+          end
         end
       end
 
