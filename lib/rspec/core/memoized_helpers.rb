@@ -95,7 +95,7 @@ module RSpec
           end
 
           ::RSpec.warn_deprecation <<-EOS
-WARNING: #{description} accessed in `before(:all)` hook at:
+WARNING: #{description} accessed in a `before(:all)` hook at:
   #{caller[1]}
 
 `let` and `subject` declarations are not intended to be called
