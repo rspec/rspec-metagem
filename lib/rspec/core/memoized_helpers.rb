@@ -276,7 +276,7 @@ EOS
         def subject(name=nil, &block)
           if name
             let(name, &block)
-            subject { __send__ name }
+            alias_method :subject, name
 
             self::NamedSubjectPreventSuper.define_method(name) do
               raise NotImplementedError, "`super` in named subjects is not supported"
