@@ -8,7 +8,7 @@ describe "exist matcher" do
   end
 
   context "when the object does not respond to #exist? or #exists?" do
-    subject { mock }
+    subject { double }
 
     [:to, :not_to].each do |expect_method|
       describe "expect(...).#{expect_method} exist" do
@@ -25,12 +25,12 @@ describe "exist matcher" do
     context "when the object responds to ##{predicate}" do
       describe "expect(...).to exist" do
         it "passes if #{predicate}" do
-          expect(mock(predicate => true)).to exist
+          expect(double(predicate => true)).to exist
         end
 
         it "fails if not #{predicate}" do
           expect {
-            expect(mock(predicate => false)).to exist
+            expect(double(predicate => false)).to exist
           }.to fail_with(/expected .* to exist/)
         end
 
@@ -51,12 +51,12 @@ describe "exist matcher" do
 
       describe "expect(...).not_to exist" do
         it "passes if not #{predicate}" do
-          expect(mock(predicate => false)).not_to exist
+          expect(double(predicate => false)).not_to exist
         end
 
         it "fails if #{predicate}" do
           expect {
-            expect(mock(predicate => true)).not_to exist
+            expect(double(predicate => true)).not_to exist
           }.to fail_with(/expected .* not to exist/)
         end
       end
@@ -65,7 +65,7 @@ describe "exist matcher" do
 
   context "when the object responds to #exist? and #exists?" do
     context "when they both return falsey values" do
-      subject { mock(:exist? => false, :exists? => nil) }
+      subject { double(:exist? => false, :exists? => nil) }
 
       describe "expect(...).not_to exist" do
         it "passes" do
@@ -83,7 +83,7 @@ describe "exist matcher" do
     end
 
     context "when they both return truthy values" do
-      subject { mock(:exist? => true, :exists? => "something true") }
+      subject { double(:exist? => true, :exists? => "something true") }
 
       describe "expect(...).not_to exist" do
         it "fails" do
@@ -101,7 +101,7 @@ describe "exist matcher" do
     end
 
     context "when they return values with different truthiness" do
-      subject { mock(:exist? => true, :exists? => false) }
+      subject { double(:exist? => true, :exists? => false) }
 
       [:to, :not_to].each do |expect_method|
         describe "expect(...).#{expect_method} exist" do
@@ -116,7 +116,7 @@ describe "exist matcher" do
   end
 
   it 'passes any provided arguments to the call to #exist?' do
-    object = mock
+    object = double
     object.should_receive(:exist?).with(:foo, :bar) { true }
 
     expect(object).to exist(:foo, :bar)

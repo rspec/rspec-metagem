@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Object, "#should" do
   before(:each) do
     @target = "target"
-    @matcher = mock("matcher")
+    @matcher = double("matcher")
     @matcher.stub!(:matches?).and_return(true)
     @matcher.stub!(:failure_message_for_should)
   end
@@ -47,7 +47,7 @@ end
 describe Object, "#should_not" do
   before(:each) do
     @target = "target"
-    @matcher = mock("matcher")
+    @matcher = double("matcher")
   end
 
   it "accepts and interacts with a matcher" do

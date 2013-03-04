@@ -2,24 +2,24 @@ require 'spec_helper'
 
 describe "expect(...).to be_predicate" do
   it "passes when actual returns true for :predicate?" do
-    actual = stub("actual", :happy? => true)
+    actual = double("actual", :happy? => true)
     expect(actual).to be_happy
   end
 
   it "passes when actual returns true for :predicates? (present tense)" do
-    actual = stub("actual", :exists? => true, :exist? => true)
+    actual = double("actual", :exists? => true, :exist? => true)
     expect(actual).to be_exist
   end
 
   it "fails when actual returns false for :predicate?" do
-    actual = stub("actual", :happy? => false)
+    actual = double("actual", :happy? => false)
     expect {
       expect(actual).to be_happy
     }.to fail_with("expected happy? to return true, got false")
   end
 
   it "fails when actual returns false for :predicate?" do
-    actual = stub("actual", :happy? => nil)
+    actual = double("actual", :happy? => nil)
     expect {
       expect(actual).to be_happy
     }.to fail_with("expected happy? to return true, got nil")
@@ -32,7 +32,7 @@ describe "expect(...).to be_predicate" do
   end
 
   it "fails on error other than NameError" do
-    actual = stub("actual")
+    actual = double("actual")
     actual.should_receive(:foo?).and_raise("aaaah")
     expect {
       expect(actual).to be_foo
@@ -50,17 +50,17 @@ end
 
 describe "expect(...).not_to be_predicate" do
   it "passes when actual returns false for :sym?" do
-    actual = stub("actual", :happy? => false)
+    actual = double("actual", :happy? => false)
     expect(actual).not_to be_happy
   end
 
   it "passes when actual returns nil for :sym?" do
-    actual = stub("actual", :happy? => nil)
+    actual = double("actual", :happy? => nil)
     expect(actual).not_to be_happy
   end
 
   it "fails when actual returns true for :sym?" do
-    actual = stub("actual", :happy? => true)
+    actual = double("actual", :happy? => true)
     expect {
       expect(actual).not_to be_happy
     }.to fail_with("expected happy? to return false, got true")
@@ -75,13 +75,13 @@ end
 
 describe "expect(...).to be_predicate(*args)" do
   it "passes when actual returns true for :predicate?(*args)" do
-    actual = mock("actual")
+    actual = double("actual")
     actual.should_receive(:older_than?).with(3).and_return(true)
     expect(actual).to be_older_than(3)
   end
 
   it "fails when actual returns false for :predicate?(*args)" do
-    actual = mock("actual")
+    actual = double("actual")
     actual.should_receive(:older_than?).with(3).and_return(false)
     expect {
       expect(actual).to be_older_than(3)
@@ -97,13 +97,13 @@ end
 
 describe "expect(...).not_to be_predicate(*args)" do
   it "passes when actual returns false for :predicate?(*args)" do
-    actual = mock("actual")
+    actual = double("actual")
     actual.should_receive(:older_than?).with(3).and_return(false)
     expect(actual).not_to be_older_than(3)
   end
 
   it "fails when actual returns true for :predicate?(*args)" do
-    actual = mock("actual")
+    actual = double("actual")
     actual.should_receive(:older_than?).with(3).and_return(true)
     expect {
       expect(actual).not_to be_older_than(3)
@@ -119,16 +119,16 @@ end
 
 describe "expect(...).to be_predicate(&block)" do
   it "passes when actual returns true for :predicate?(&block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:happy?).and_yield
     delegate.should_receive(:check_happy).and_return(true)
     expect(actual).to be_happy { delegate.check_happy }
   end
 
   it "fails when actual returns false for :predicate?(&block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:happy?).and_yield
     delegate.should_receive(:check_happy).and_return(false)
     expect {
@@ -137,7 +137,7 @@ describe "expect(...).to be_predicate(&block)" do
   end
 
   it "fails when actual does not respond to :predicate?" do
-    delegate = mock("delegate", :check_happy => true)
+    delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).to be_happy { delegate.check_happy }
     }.to raise_error(NameError)
@@ -146,16 +146,16 @@ end
 
 describe "expect(...).not_to be_predicate(&block)" do
   it "passes when actual returns false for :predicate?(&block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:happy?).and_yield
     delegate.should_receive(:check_happy).and_return(false)
     expect(actual).not_to be_happy { delegate.check_happy }
   end
 
   it "fails when actual returns true for :predicate?(&block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:happy?).and_yield
     delegate.should_receive(:check_happy).and_return(true)
     expect {
@@ -164,7 +164,7 @@ describe "expect(...).not_to be_predicate(&block)" do
   end
 
   it "fails when actual does not respond to :predicate?" do
-    delegate = mock("delegate", :check_happy => true)
+    delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).not_to be_happy { delegate.check_happy }
     }.to raise_error(NameError)
@@ -173,16 +173,16 @@ end
 
 describe "expect(...).to be_predicate(*args, &block)" do
   it "passes when actual returns true for :predicate?(*args, &block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:older_than?).with(3).and_yield(3)
     delegate.should_receive(:check_older_than).with(3).and_return(true)
     expect(actual).to be_older_than(3) { |age| delegate.check_older_than(age) }
   end
 
   it "fails when actual returns false for :predicate?(*args, &block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:older_than?).with(3).and_yield(3)
     delegate.should_receive(:check_older_than).with(3).and_return(false)
     expect {
@@ -191,7 +191,7 @@ describe "expect(...).to be_predicate(*args, &block)" do
   end
 
   it "fails when actual does not respond to :predicate?" do
-    delegate = mock("delegate", :check_older_than => true)
+    delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).to be_older_than(3) { |age| delegate.check_older_than(age) }
     }.to raise_error(NameError)
@@ -200,16 +200,16 @@ end
 
 describe "expect(...).not_to be_predicate(*args, &block)" do
   it "passes when actual returns false for :predicate?(*args, &block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:older_than?).with(3).and_yield(3)
     delegate.should_receive(:check_older_than).with(3).and_return(false)
     expect(actual).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
   end
 
   it "fails when actual returns true for :predicate?(*args, &block)" do
-    actual = mock("actual")
-    delegate = mock("delegate")
+    actual = double("actual")
+    delegate = double("delegate")
     actual.should_receive(:older_than?).with(3).and_yield(3)
     delegate.should_receive(:check_older_than).with(3).and_return(true)
     expect {
@@ -218,7 +218,7 @@ describe "expect(...).not_to be_predicate(*args, &block)" do
   end
 
   it "fails when actual does not respond to :predicate?" do
-    delegate = mock("delegate", :check_older_than => true)
+    delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
     }.to raise_error(NameError)

@@ -22,8 +22,8 @@ module RSpec
       end
 
       it "works with be_[some predicate]" do
-        expect([stub("actual", :happy? => true)]).to include( be_happy )
-        expect([stub("actual", :happy? => false)]).not_to include( be_happy )
+        expect([double("actual", :happy? => true)]).to include( be_happy )
+        expect([double("actual", :happy? => false)]).not_to include( be_happy )
       end
     end
   end

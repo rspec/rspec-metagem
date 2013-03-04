@@ -36,7 +36,7 @@ module RSpec
         end
 
         it "can be set to another backtrace formatter" do
-          config.backtrace_formatter = stub(:format_backtrace => ['a'])
+          config.backtrace_formatter = double(:format_backtrace => ['a'])
           expect(formatted_backtrace).to eq(['a'])
         end
       end
