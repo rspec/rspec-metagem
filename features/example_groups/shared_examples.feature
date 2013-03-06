@@ -220,3 +220,39 @@ Feature: shared examples
         """
         1 example, 0 failures
         """
+  Scenario: Shared examples are specific to their context
+    Given a file named "context_specific_examples_spec.rb" with:
+      """
+      describe do
+        context "my context" do
+          shared_examples "is independant" do
+            specify { expect(subject).to eq "context" }
+          end
+
+          subject { "context" }
+
+          it_should_behave_like "is independant"
+        end
+        context "another context" do
+          shared_examples "is independant" do
+            specify { expect(subject).to eq "another context" }
+          end
+
+          subject { "another context" }
+
+          it_should_behave_like "is independant"
+        end
+        context do
+          begin
+            it_should_behave_like "is independant"
+            fail "Shared examples should be dependant on context"
+          rescue ArgumentError
+          end
+        end
+      end
+      """
+    When I run `rspec context_specific_examples_spec.rb`
+    Then the output should contain:
+      """
+      2 examples, 0 failures
+      """
