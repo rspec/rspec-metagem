@@ -43,6 +43,10 @@ module RSpec
         Registry.add_const(name, &block)
       end
 
+      def shared_example_groups
+        @shared_example_groups ||= {}
+      end
+
       # @private
       #
       # Used internally to manage the shared example groups and
@@ -59,7 +63,7 @@ module RSpec
           if key? args.first
             key = args.shift
             warn_if_key_taken key, block
-            RSpec.world.shared_example_groups[key] = block
+            add_shared_example_group source, key, block
           end
 
           unless args.empty?
@@ -92,10 +96,14 @@ module RSpec
           end
 
           shared_const = Object.const_set(name, mod)
-          RSpec.world.shared_example_groups[shared_const] = block
+          add_shared_example_group source, shared_const, block
         end
 
       private
+
+        def add_shared_example_group source, key, block
+          source.shared_example_groups[key] = block
+        end
 
         def key? candidate
           [String, Symbol, Module].any? { |cls| cls === candidate }
@@ -105,8 +113,8 @@ module RSpec
           raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
         end
 
-        def warn_if_key_taken key, new_block
-          return unless existing_block = example_block_for(key)
+        def warn_if_key_taken source, key, new_block
+          return unless existing_block = example_block_for(source,key)
 
           Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
             |WARNING: Shared example group '#{key}' has been previously defined at:
@@ -121,8 +129,8 @@ module RSpec
           block.source_location.join ":"
         end
 
-        def example_block_for key
-          RSpec.world.shared_example_groups[key]
+        def example_block_for source, key
+          source.shared_example_groups[key]
         end
 
         def ensure_block_has_source_location(block, caller_line)
