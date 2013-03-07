@@ -10,12 +10,11 @@ module RSpec::Core
     let(:world) { RSpec::Core::World.new(configuration) }
 
     describe '#reset' do
-      it 'clears #example_groups and #shared_example_groups' do
+      it 'clears #example_groups' do
         world.example_groups << :example_group
-        world.shared_example_groups[:shared] = :example_group
+        klass = Class.new
         world.reset
         expect(world.example_groups).to be_empty
-        expect(world.shared_example_groups).to be_empty
       end
     end
 
