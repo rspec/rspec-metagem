@@ -995,20 +995,19 @@ module RSpec::Core
 
     %w[include_examples include_context].each do |name|
       describe "##{name}" do
+        let(:group) { ExampleGroup.describe }
         before do
-          shared_examples "named this" do
+          group.shared_examples "named this" do
             example("does something") {}
           end
         end
 
         it "includes the named examples" do
-          group = ExampleGroup.describe
           group.send(name, "named this")
           expect(group.examples.first.description).to eq("does something")
         end
 
         it "raises a helpful error message when shared content is not found" do
-          group = ExampleGroup.describe
           expect do
             group.send(name, "shared stuff")
           end.to raise_error(ArgumentError, /Could not find .* "shared stuff"/)
@@ -1016,15 +1015,15 @@ module RSpec::Core
 
         it "passes parameters to the shared content" do
           passed_params = {}
+          group = ExampleGroup.describe
 
-          shared_examples "named this with params" do |param1, param2|
+          group.shared_examples "named this with params" do |param1, param2|
             it("has access to the given parameters") do
               passed_params[:param1] = param1
               passed_params[:param2] = param2
             end
           end
 
-          group = ExampleGroup.describe
           group.send(name, "named this with params", :value1, :value2)
           group.run
 
@@ -1032,30 +1031,31 @@ module RSpec::Core
         end
 
         it "adds shared instance methods to the group" do
-          shared_examples "named this with params" do |param1|
+          group = ExampleGroup.describe('fake group')
+          group.shared_examples "named this with params" do |param1|
             def foo; end
           end
-          group = ExampleGroup.describe('fake group')
           group.send(name, "named this with params", :a)
           expect(group.public_instance_methods.map{|m| m.to_s}).to include("foo")
         end
 
         it "evals the shared example group only once" do
           eval_count = 0
-          shared_examples("named this with params") { |p| eval_count += 1 }
           group = ExampleGroup.describe('fake group')
+          group.shared_examples("named this with params") { |p| eval_count += 1 }
           group.send(name, "named this with params", :a)
           expect(eval_count).to eq(1)
         end
 
         it "evals the block when given" do
           key = "#{__FILE__}:#{__LINE__}"
-          shared_examples(key) do
-            it("does something") do
-              expect(foo).to eq("bar")
-            end
-          end
           group = ExampleGroup.describe do
+            shared_examples(key) do
+              it("does something") do
+                expect(foo).to eq("bar")
+              end
+            end
+
             send name, key do
               def foo; "bar"; end
             end
@@ -1067,43 +1067,43 @@ module RSpec::Core
 
     describe "#it_should_behave_like" do
       it "creates a nested group" do
-        shared_examples_for("thing") {}
         group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") {}
         group.it_should_behave_like("thing")
         expect(group).to have(1).children
       end
 
       it "creates a nested group for a class" do
         klass = Class.new
-        shared_examples_for(klass) {}
         group = ExampleGroup.describe('fake group')
+        group.shared_examples_for(klass) {}
         group.it_should_behave_like(klass)
         expect(group).to have(1).children
       end
 
       it "adds shared examples to nested group" do
-        shared_examples_for("thing") do
+        group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") do
           it("does something")
         end
-        group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing")
         expect(shared_group).to have(1).examples
       end
 
       it "adds shared instance methods to nested group" do
-        shared_examples_for("thing") do
+        group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") do
           def foo; end
         end
-        group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing")
         expect(shared_group.public_instance_methods.map{|m| m.to_s}).to include("foo")
       end
 
       it "adds shared class methods to nested group" do
-        shared_examples_for("thing") do
+        group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") do
           def self.foo; end
         end
-        group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing")
         expect(shared_group.methods.map{|m| m.to_s}).to include("foo")
       end
@@ -1111,34 +1111,35 @@ module RSpec::Core
       it "passes parameters to the shared example group" do
         passed_params = {}
 
-        shared_examples_for("thing") do |param1, param2|
-          it("has access to the given parameters") do
-            passed_params[:param1] = param1
-            passed_params[:param2] = param2
-          end
-        end
-
         group = ExampleGroup.describe("group") do
+          shared_examples_for("thing") do |param1, param2|
+            it("has access to the given parameters") do
+              passed_params[:param1] = param1
+              passed_params[:param2] = param2
+            end
+          end
+
           it_should_behave_like "thing", :value1, :value2
         end
+
         group.run
 
         expect(passed_params).to eq({ :param1 => :value1, :param2 => :value2 })
       end
 
       it "adds shared instance methods to nested group" do
-        shared_examples_for("thing") do |param1|
+        group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") do |param1|
           def foo; end
         end
-        group = ExampleGroup.describe('fake group')
         shared_group = group.it_should_behave_like("thing", :a)
         expect(shared_group.public_instance_methods.map{|m| m.to_s}).to include("foo")
       end
 
       it "evals the shared example group only once" do
         eval_count = 0
-        shared_examples_for("thing") { |p| eval_count += 1 }
         group = ExampleGroup.describe('fake group')
+        group.shared_examples_for("thing") { |p| eval_count += 1 }
         group.it_should_behave_like("thing", :a)
         expect(eval_count).to eq(1)
       end
@@ -1146,12 +1147,12 @@ module RSpec::Core
       context "given a block" do
         it "evaluates the block in nested group" do
           scopes = []
-          shared_examples_for("thing") do
-            it("gets run in the nested group") do
-              scopes << self.class
-            end
-          end
           group = ExampleGroup.describe("group") do
+            shared_examples_for("thing") do
+              it("gets run in the nested group") do
+                scopes << self.class
+              end
+            end
             it_should_behave_like "thing" do
               it("gets run in the same nested group") do
                 scopes << self.class
