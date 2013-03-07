@@ -35,7 +35,7 @@ module RSpec::Core
           context "given a #{type}" do
             it "captures the given #{type} and block in the World's collection of shared example groups" do
               implementation = lambda {}
-              RSpec.world.shared_example_groups.should_receive(:[]=).with(object, implementation)
+              self.class.my_shared_example_groups.should_receive(:[]=).with(object, implementation)
               send(shared_method_name, object, &implementation)
             end
           end
@@ -55,7 +55,7 @@ module RSpec::Core
         context "given a string and a hash" do
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
-            RSpec.world.shared_example_groups.should_receive(:[]=).with("name", implementation)
+            self.class.my_shared_example_groups.should_receive(:[]=).with("name", implementation)
             send(shared_method_name, "name", :foo => :bar, &implementation)
           end
 

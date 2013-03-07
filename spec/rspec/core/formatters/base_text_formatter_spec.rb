@@ -110,7 +110,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     context 'for #share_examples_for' do
       it 'outputs the name and location' do
 
-        share_examples_for 'foo bar' do
+        group.share_examples_for 'foo bar' do
           it("example name") { expect("this").to eq("that") }
         end
 
@@ -127,7 +127,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
       context 'that contains nested example groups' do
         it 'outputs the name and location' do
-          share_examples_for 'foo bar' do
+          group.share_examples_for 'foo bar' do
             describe 'nested group' do
               it("example name") { expect("this").to eq("that") }
             end
@@ -151,7 +151,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
       it 'outputs the name and location' do
 
-        share_as :FooBar do
+        group.share_as :FooBar do
           it("example name") { expect("this").to eq("that") }
         end
 
@@ -169,7 +169,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       context 'that contains nested example groups' do
         it 'outputs the name and location' do
 
-          share_as :NestedFoo do
+          group.share_as :NestedFoo do
             describe 'nested group' do
               describe 'hell' do
                 it("example name") { expect("this").to eq("that") }
@@ -249,7 +249,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       context 'for #share_examples_for' do
         it 'outputs the name and location' do
 
-          share_examples_for 'foo bar' do
+          group.share_examples_for 'foo bar' do
             it("example name") { pending { expect("this").to eq("that") } }
           end
 
@@ -266,7 +266,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
         context 'that contains nested example groups' do
           it 'outputs the name and location' do
-            share_examples_for 'foo bar' do
+            group.share_examples_for 'foo bar' do
               describe 'nested group' do
                 it("example name") { pending { expect("this").to eq("that") } }
               end
@@ -290,7 +290,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
         it 'outputs the name and location' do
 
-          share_as :FooBar2 do
+          group.share_as :FooBar2 do
             it("example name") { pending { expect("this").to eq("that") } }
           end
 
@@ -308,7 +308,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         context 'that contains nested example groups' do
           it 'outputs the name and location' do
 
-            share_as :NestedFoo2 do
+            group.share_as :NestedFoo2 do
               describe 'nested group' do
                 describe 'hell' do
                   it("example name") { pending { expect("this").to eq("that") } }

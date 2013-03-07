@@ -29,7 +29,8 @@ module RSpec
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
       def shared_examples *args, &block
-        Registry.add_group(*args, &block)
+        context = self.is_a?(Class) ? self : self.class
+        Registry.add_group(context,*args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -40,10 +41,14 @@ module RSpec
       def share_as(name, &block)
         RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
                         "RSpec::SharedContext or shared_examples")
-        Registry.add_const(name, &block)
+        context = self.is_a?(Class) ? self : self.class
+        Registry.add_const(context,name, &block)
       end
 
       def shared_example_groups
+        ancestors[1..-1].inject(my_shared_example_groups) { |mine,other| mine.merge other.shared_example_groups }
+      end
+      def my_shared_example_groups
         @shared_example_groups ||= {}
       end
 
@@ -57,12 +62,12 @@ module RSpec
       module Registry
         extend self
 
-        def add_group(*args, &block)
+        def add_group(source, *args, &block)
           ensure_block_has_source_location(block, caller[1])
 
           if key? args.first
             key = args.shift
-            warn_if_key_taken key, block
+            warn_if_key_taken source, key, block
             add_shared_example_group source, key, block
           end
 
@@ -75,7 +80,7 @@ module RSpec
           end
         end
 
-        def add_const(name, &block)
+        def add_const(source,name, &block)
           if Object.const_defined?(name)
             mod = Object.const_get(name)
             raise_name_error unless mod.created_from_caller(caller)
@@ -102,7 +107,7 @@ module RSpec
       private
 
         def add_shared_example_group source, key, block
-          source.shared_example_groups[key] = block
+          source.my_shared_example_groups[key] = block
         end
 
         def key? candidate
