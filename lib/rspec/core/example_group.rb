@@ -316,23 +316,11 @@ module RSpec
         begin
           assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
 
-          handle_memoized_methods(example_group_instance) do
+          BeforeAllMemoizedHash.isolate_for_before_all(example_group_instance) do
             run_hook(:before, :all, example_group_instance)
           end
         ensure
           store_before_all_ivars(example_group_instance)
-        end
-      end
-
-      def self.handle_memoized_methods(example_group_instance)
-        example_group_instance.instance_eval do
-          @__memoized = BeforeAllMemoizedHash.new
-
-          begin
-            yield
-          ensure
-            @__memoized = nil
-          end
         end
       end
 
