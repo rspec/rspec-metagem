@@ -8,6 +8,16 @@ Bug fixes
 * Fix regression in 2.13.0 that caused confusing behavior when overridng
   a named subject with an unnamed subject in an inner group and then
   referencing the outer group subject's name (Myron Marston).
+* Do not allow a referenced `let` or `subject` in `before(:all)` to cause
+  other `let` declarations to leak across examples (Myron Marston).
+
+Deprecations
+
+* Deprecate accessing `let` or `subject` declarations in `before(:all)`.
+  These were not intended to be called in a `before(:all)` hook, as
+  they exist to define state that is reset between each example, while
+  `before(:all)` exists to define state that is shared across examples
+  in an example group (Myron Marston).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.12.2...v2.13.0)
