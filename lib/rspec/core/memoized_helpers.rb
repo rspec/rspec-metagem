@@ -83,8 +83,22 @@ module RSpec
       #
       # @private
       class BeforeAllMemoizedHash
-        def initialize
+        def initialize(example_group_instance)
+          @example_group_instance = example_group_instance
           @hash = {}
+        end
+
+        def self.isolate_for_before_all(example_group_instance)
+          example_group_instance.instance_eval do
+            @__memoized = BeforeAllMemoizedHash.new(self)
+
+            begin
+              yield
+            ensure
+              @__memoized.preserve_accessed_lets
+              @__memoized = nil
+            end
+          end
         end
 
         def fetch(key, &block)
@@ -98,8 +112,12 @@ module RSpec
 WARNING: #{description} accessed in a `before(:all)` hook at:
   #{caller[1]}
 
+This is deprecated behavior that will not be supported in RSpec 3.
+
 `let` and `subject` declarations are not intended to be called
-in a `before(:all)` hook. The memoized value will be discarded.
+in a `before(:all)` hook, as they exist to define state that
+is reset between each example, while `before(:all)` exists to
+define state that is shared across examples in an example group.
 EOS
 
           @hash.fetch(key, &block)
@@ -107,6 +125,16 @@ EOS
 
         def []=(key, value)
           @hash[key] = value
+        end
+
+        def preserve_accessed_lets
+          hash = @hash
+
+          @example_group_instance.class.class_eval do
+            hash.each do |key, value|
+              define_method(key) { value }
+            end
+          end
         end
       end
 
