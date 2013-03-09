@@ -4,7 +4,8 @@ Feature: Profile examples
   `#profile_examples`), when set, will cause RSpec to dump out a list of
   your slowest examples. By default, it prints the 10 slowest examples,
   but you can set it to a different value to have it print more or fewer
-  slow examples.
+  slow examples. If `--fail-fast` option is used together with `--profile`
+  and there is a failure, slow examples are not shown.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
@@ -15,7 +16,7 @@ Feature: Profile examples
       require "spec_helper"
 
       describe "something" do
-        it "sleeps for 0.1 secionds (example 1)" do
+        it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           1.should == 1
         end
@@ -161,3 +162,59 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
+  Scenario: Using `--profile` with `--fail-fast` shows slow examples if everything passes
+    When I run `rspec spec --fail-fast --profile`
+    Then the examples should all pass
+    And the output should contain "Top 10 slowest examples"
+    And the output should contain "example 1"
+    And the output should not contain "example 2"
+    And the output should contain "example 3"
+    And the output should contain "example 4"
+    And the output should contain "example 5"
+    And the output should contain "example 6"
+    And the output should contain "example 7"
+    And the output should contain "example 8"
+    And the output should contain "example 9"
+    And the output should contain "example 10"
+    And the output should contain "example 11"
+
+  Scenario: Using `--profile` shows slow examples even in case of failures
+    Given a file named "spec/example_spec.rb" with:
+      """ruby
+      require "spec_helper"
+
+      describe "something" do
+        it "sleeps for 0.1 seconds (example 1)" do
+          sleep 0.1
+          1.should == 1
+        end
+
+        it "fails" do
+          fail
+        end
+      end
+      """
+    When I run `rspec spec --profile`
+    Then the output should contain "2 examples, 1 failure"
+    And the output should contain "Top 2 slowest examples"
+    And the output should contain "example 1"
+
+  Scenario: Using `--profile` with `--fail-fast` doesn't show slow examples in case of failures
+    Given a file named "spec/example_spec.rb" with:
+      """ruby
+      require "spec_helper"
+
+      describe "something" do
+        it "sleeps for 0.1 seconds (example 1)" do
+          sleep 0.1
+          1.should == 1
+        end
+
+        it "fails" do
+          fail
+        end
+      end
+      """
+    When I run `rspec spec --fail-fast --profile`
+    Then the output should not contain "Top 2 slowest examples"
+    And the output should not contain "example 1"

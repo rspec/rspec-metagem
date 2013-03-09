@@ -44,7 +44,10 @@ module RSpec
 
         def dump_summary(duration, example_count, failure_count, pending_count)
           super(duration, example_count, failure_count, pending_count)
-          dump_profile if profile_examples?
+          # Don't print out profiled info if there are failures and `--fail-fast` is used, it just clutters the output
+          if profile_examples? && (!fail_fast? || fail_fast? && failure_count == 0)
+            dump_profile
+          end
           output.puts "\nFinished in #{format_duration(duration)}\n"
           output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
           dump_commands_to_rerun_failed_examples

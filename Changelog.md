@@ -3,6 +3,8 @@
 
 Enhancements
 
+* Don't show slow examples if there's a failure and both `--fail-fast`
+  and `--profile` options are used (Paweł Gościcki).
 * Rather than always adding `spec` to the load path, add the configured
   `--default-path` to the load path (which defaults to `spec`). This
   better supports folks who choose to put their specs in a different

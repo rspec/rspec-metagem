@@ -228,6 +228,10 @@ module RSpec
           configuration.profile_examples
         end
 
+        def fail_fast?
+          configuration.fail_fast
+        end
+
         def color_enabled?
           configuration.color_enabled?(output)
         end
