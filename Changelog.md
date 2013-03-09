@@ -14,6 +14,8 @@ Enhancements
 
 Bug fixes
 
+* Make JSON formatter behave the same when it comes to `--profile` as
+  the text formatter (Paweł Gościcki).
 * Fix named subjects so that if an inner group defines a method that
   overrides the named method, `subject` still retains the originally
   declared value (Myron Marston).
