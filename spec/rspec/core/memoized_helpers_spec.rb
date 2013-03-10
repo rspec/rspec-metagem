@@ -501,6 +501,13 @@ module RSpec::Core
       expect(@nil_value_count).to eq(1)
     end
 
+    let(:regex_with_capture) { %r[RegexWithCapture(\d)] }
+
+    it 'uses the value from the ancestor chain' do
+      # Test for Ruby bug http://bugs.ruby-lang.org/issues/8059
+      expect("RegexWithCapture1".match(regex_with_capture)[1]).to eq('1')
+    end
+
     let(:a_value) { "a string" }
 
     context 'when overriding let in a nested context' do
