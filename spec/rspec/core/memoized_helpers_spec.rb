@@ -503,7 +503,7 @@ module RSpec::Core
 
     let(:regex_with_capture) { %r[RegexWithCapture(\d)] }
 
-    it 'uses the value from the ancestor chain' do
+    it 'does not pass the block up the ancestor chain' do
       # Test for Ruby bug http://bugs.ruby-lang.org/issues/8059
       expect("RegexWithCapture1".match(regex_with_capture)[1]).to eq('1')
     end
