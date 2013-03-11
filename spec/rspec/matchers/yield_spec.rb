@@ -67,51 +67,82 @@ describe "yield_control matcher" do
       it 'fails if the block yields wrong number of times' do
         expect {
           expect { |b| [1, 2, 3].each(&b) }.to yield_control.twice
-        }.to fail_with(/expected given block to yield control 2 times/)
+        }.to fail_with(/expected given block to yield control twice/)
+
+        expect {
+          expect { |b| [1, 2].each(&b) }.to yield_control.exactly(3).times
+        }.to fail_with(/expected given block to yield control 3 times/)
       end
 
-      it 'passes if the block yields twice' do
+      it 'passes if the block yields the specified number of times' do
+        expect { |b| [1].each(&b) }.to yield_control.once
         expect { |b| [1, 2].each(&b) }.to yield_control.twice
-      end
-
-      it 'passes if the block yields exactly 3 times' do
         expect { |b| [1, 2, 3].each(&b) }.to yield_control.exactly(3).times
       end
     end
 
     context "with at_least count" do
-      it 'passes if the block yields twice' do
+      it 'passes if the block yields the given number of times' do
         expect { |b| [1, 2].each(&b) }.to yield_control.at_least(2).times
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_least(3).times
       end
 
-      it 'passes if the block yields :twice' do
-        expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:twice)
-      end
-
-      it 'passes if the block yields thrice' do
+      it 'passes if the block yields more times' do
         expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_least(2).times
+        expect { |b| [1, 2, 3, 4].each(&b) }.to yield_control.at_least(3).times
       end
 
-      it 'fails if the block yields once' do
+      it 'allows :once and :twice to be passed as counts' do
+        expect { |b| [1].each(&b) }.to yield_control.at_least(:once)
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:once)
+
+        expect {
+          expect { |b| [].each(&b) }.to yield_control.at_least(:once)
+        }.to fail_with(/at least once/)
+
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:twice)
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_least(:twice)
+
+        expect {
+          expect { |b| [1].each(&b) }.to yield_control.at_least(:twice)
+        }.to fail_with(/at least twice/)
+      end
+
+      it 'fails if the block yields too few times' do
         expect {
           expect { |b| _yield_with_no_args(&b) }.to yield_control.at_least(2).times
-        }.to fail_with(/expected given block to yield control 2 or more times/)
+        }.to fail_with(/expected given block to yield control at least twice/)
       end
     end
 
     context "with at_most count" do
-      it 'passes if the block yields twice' do
+      it 'passes if the block yields the given number of times' do
         expect { |b| [1, 2].each(&b) }.to yield_control.at_most(2).times
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(3).times
       end
 
-      it 'passes if the block yields thrice' do
-        expect { |b| _yield_with_no_args(&b) }.to yield_control.at_most(2).times
+      it 'passes if the block yields fewer times' do
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_most(3).times
       end
 
-      it 'fails if the block yields once' do
+      it 'allows :once and :twice to be passed as counts' do
+        expect { |b| [1].each(&b) }.to yield_control.at_most(:once)
+
+        expect {
+          expect { |b| [1, 2].each(&b) }.to yield_control.at_most(:once)
+        }.to fail_with(/expected given block to yield control at most once/)
+
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_most(:twice)
+
+        expect {
+          expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(:twice)
+        }.to fail_with(/expected given block to yield control at most twice/)
+      end
+
+      it 'fails if the block yields too many times' do
         expect {
           expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(2).times
-        }.to fail_with(/expected given block to yield control 2 or less times/)
+        }.to fail_with(/expected given block to yield control at most twice/)
       end
     end
   end

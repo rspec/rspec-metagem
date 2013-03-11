@@ -66,17 +66,27 @@ module RSpec
 
       class YieldControl < BaseMatcher
         def initialize
-          @expectation_type = :==
-          @expected_yields_count = 1
+          @expectation_type = nil
+          @expected_yields_count = nil
         end
 
         def matches?(block)
           probe = YieldProbe.probe(block)
-          probe.num_yields.send(@expectation_type, @expected_yields_count)
+
+          if @expectation_type
+            probe.num_yields.send(@expectation_type, @expected_yields_count)
+          else
+            probe.yielded_once?(:yield_control)
+          end
+        end
+
+        def once
+          exactly(1)
+          self
         end
 
         def twice
-          exactly(2).times
+          exactly(2)
           self
         end
 
@@ -123,18 +133,23 @@ module RSpec
         end
 
         def relativity_failure_message
-          if @expected_yields_count != 1
-            " #@expected_yields_count #{human_readable_expecation_type}times"
-          else
-            ''
-          end
+          return '' unless @expected_yields_count
+          " #{human_readable_expecation_type}#{human_readable_count}"
         end
 
         def human_readable_expecation_type
           case @expectation_type
-          when :<= then 'or less '
-          when :>= then 'or more '
+          when :<= then 'at most '
+          when :>= then 'at least '
           else ''
+          end
+        end
+
+        def human_readable_count
+          case @expected_yields_count
+          when 1 then "once"
+          when 2 then "twice"
+          else "#{@expected_yields_count} times"
           end
         end
       end
