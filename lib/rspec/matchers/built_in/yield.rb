@@ -65,17 +65,77 @@ module RSpec
       end
 
       class YieldControl < BaseMatcher
+        def initialize
+          @expectation_type = :==
+          @expected_yields_count = 1
+        end
+
         def matches?(block)
           probe = YieldProbe.probe(block)
-          probe.yielded_once?(:yield_control)
+          probe.num_yields.send(@expectation_type, @expected_yields_count)
+        end
+
+        def twice
+          exactly(2).times
+          self
+        end
+
+        def exactly(number)
+          set_expected_yields_count(:==, number)
+          self
+        end
+
+        def at_most(number)
+          set_expected_yields_count(:<=, number)
+          self
+        end
+
+        def at_least(number)
+          set_expected_yields_count(:>=, number)
+          self
+        end
+
+        def times
+          self
         end
 
         def failure_message_for_should
-          "expected given block to yield control"
+          'expected given block to yield control'.tap do |failure_message|
+            failure_message << relativity_failure_message
+          end
         end
 
         def failure_message_for_should_not
-          "expected given block not to yield control"
+          'expected given block not to yield control'.tap do |failure_message|
+            failure_message << relativity_failure_message
+          end
+        end
+
+        private
+
+        def set_expected_yields_count(relativity, n)
+          @expectation_type = relativity
+          @expected_yields_count = case n
+                                   when Numeric then n
+                                   when :once then 1
+                                   when :twice then 2
+                                   end
+        end
+
+        def relativity_failure_message
+          if @expected_yields_count != 1
+            " #@expected_yields_count #{human_readable_expecation_type}times"
+          else
+            ''
+          end
+        end
+
+        def human_readable_expecation_type
+          case @expectation_type
+          when :<= then 'or less '
+          when :>= then 'or more '
+          else ''
+          end
         end
       end
 

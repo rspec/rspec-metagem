@@ -63,10 +63,56 @@ describe "yield_control matcher" do
       }.to fail_with(/expected given block to yield control/)
     end
 
-    it 'raises an error if it yields multiple times' do
-      expect {
-        expect { |b| [1, 2].each(&b) }.to yield_control
-      }.to raise_error(/not designed.*yields multiple times/)
+    context "with exact count" do
+      it 'fails if the block yields wrong number of times' do
+        expect {
+          expect { |b| [1, 2, 3].each(&b) }.to yield_control.twice
+        }.to fail_with(/expected given block to yield control 2 times/)
+      end
+
+      it 'passes if the block yields twice' do
+        expect { |b| [1, 2].each(&b) }.to yield_control.twice
+      end
+
+      it 'passes if the block yields exactly 3 times' do
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.exactly(3).times
+      end
+    end
+
+    context "with at_least count" do
+      it 'passes if the block yields twice' do
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_least(2).times
+      end
+
+      it 'passes if the block yields :twice' do
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:twice)
+      end
+
+      it 'passes if the block yields thrice' do
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_least(2).times
+      end
+
+      it 'fails if the block yields once' do
+        expect {
+          expect { |b| _yield_with_no_args(&b) }.to yield_control.at_least(2).times
+        }.to fail_with(/expected given block to yield control 2 or more times/)
+      end
+    end
+
+    context "with at_most count" do
+      it 'passes if the block yields twice' do
+        expect { |b| [1, 2].each(&b) }.to yield_control.at_most(2).times
+      end
+
+      it 'passes if the block yields thrice' do
+        expect { |b| _yield_with_no_args(&b) }.to yield_control.at_most(2).times
+      end
+
+      it 'fails if the block yields once' do
+        expect {
+          expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(2).times
+        }.to fail_with(/expected given block to yield control 2 or less times/)
+      end
     end
   end
 
