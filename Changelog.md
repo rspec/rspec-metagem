@@ -1,3 +1,13 @@
+### dev
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...master)
+
+Enhancements
+
+* Expand `yield_control` so that you can specify an exact or relative
+  number of times: `expect { }.to yield_control.exactly(3).times`,
+  `expect { }.to yield_control.at_least(2).times`, etc (Bartek
+  Borkowski).
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
 
