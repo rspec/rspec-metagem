@@ -71,8 +71,8 @@ Feature: yield matchers
       | 13 examples, 7 failures                                   |
       | expected given block to yield control                     |
       | expected given block not to yield control                 |
-      | expected given block not to yield control 2 or more times |
-      | expected given block not to yield control 3 or less times |
+      | expected given block not to yield control at least twice  |
+      | expected given block not to yield control at most 3 times |
 
   Scenario: yield_with_args matcher
     Given a file named "yield_with_args_spec.rb" with:
