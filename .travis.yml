@@ -1,6 +1,4 @@
 language: ruby
-before_install:
-  - if [[ `gem -v` != 1.8.* ]]; then gem update --system; fi
 script: "script/test_all 2>&1"
 bundler_args: "--standalone --binstubs"
 rvm:
