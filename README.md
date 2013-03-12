@@ -198,8 +198,10 @@ this before you write any implementation code:
 ```ruby
 # in spec/calculator_spec.rb
 describe Calculator do
-  it "add(x,y) returns the sum of its arguments" do
-    expect(Calculator.new.add(1, 2)).to eq(3)
+  describe '#add' do
+    it 'returns the sum of its arguments' do
+      expect(Calculator.new.add(1, 2)).to eq(3)
+    end
   end
 end
 ```
@@ -244,8 +246,9 @@ Use the `documentation` formatter to see the resulting spec:
 
 ```
 $ rspec spec/calculator_spec.rb --format doc
-Calculator add
-  returns the sum of its arguments
+Calculator
+  #add
+    returns the sum of its arguments
 
 Finished in 0.000379 seconds
 1 example, 0 failures
