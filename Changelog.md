@@ -10,8 +10,9 @@ Bug fixes
   referencing the outer group subject's name (Myron Marston).
 * Do not allow a referenced `let` or `subject` in `before(:all)` to cause
   other `let` declarations to leak across examples (Myron Marston).
-* Prevent the `let` declaration block from being passed up the ancestor chain
-  in the `super` call. Ref http://bugs.ruby-lang.org/issues/8059 (Aaron Kromer).
+* Work around odd ruby 1.9 bug with `String#match` that was triggered
+  by passing it a regex from a `let` declaration. For more info, see
+  http://bugs.ruby-lang.org/issues/8059 (Aaron Kromer).
 
 Deprecations
 
