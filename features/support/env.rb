@@ -1,7 +1,9 @@
 require 'aruba/cucumber'
 
+timeouts = { 'java' => 60 }
+
 Before do
-  @aruba_timeout_seconds = 15
+  @aruba_timeout_seconds = timeouts.fetch(RUBY_PLATFORM) { 10 }
 end
 
 Aruba.configure do |config|
