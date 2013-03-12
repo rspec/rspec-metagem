@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class Have
+        QUERY_METHODS = [:size, :length, :count].freeze
+
         def initialize(expected, relativity=:exactly)
           @expected = case expected
                       when :no then 0
@@ -22,9 +24,19 @@ module RSpec
 
         def matches?(collection_or_owner)
           collection = determine_collection(collection_or_owner)
-          query_method = determine_query_method(collection)
-          raise not_a_collection unless query_method
-          @actual = collection.__send__(query_method)
+          case collection
+          when enumerator_class
+            for query_method in QUERY_METHODS
+              next unless collection.respond_to?(query_method)
+              @actual = collection.__send__(query_method)
+              break unless @actual.nil?
+            end
+            raise not_a_collection if @actual.nil?
+          else
+            query_method = determine_query_method(collection)
+            raise not_a_collection unless query_method
+            @actual = collection.__send__(query_method)
+          end
           case @relativity
           when :at_least then @actual >= @expected
           when :at_most  then @actual <= @expected
@@ -46,7 +58,7 @@ module RSpec
         end
 
         def determine_query_method(collection)
-          [:size, :length, :count].detect {|m| collection.respond_to?(m)}
+          QUERY_METHODS.detect {|m| collection.respond_to?(m)}
         end
 
         def not_a_collection
@@ -101,6 +113,10 @@ EOF
 
         def relative_expectation
           "#{relativities[@relativity]}#{@expected}"
+        end
+
+        def enumerator_class
+          RUBY_VERSION < '1.9' ? Enumerable::Enumerator : Enumerator
         end
       end
     end

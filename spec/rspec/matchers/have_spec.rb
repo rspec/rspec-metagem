@@ -402,6 +402,16 @@ EOF
     end
   end
 
+  if RUBY_VERSION >= '2.0'
+    describe RSpec::Matchers::BuiltIn::Have, "for an Enumerator whose size is nil but count is supplied" do
+      let(:enumerator) { %w[a b c d].to_enum(:each) }
+
+      it 'works fine' do
+        expect(enumerator).to have(4).items
+      end
+    end
+  end
+
   describe RSpec::Matchers::BuiltIn::Have do
     it "has method_missing as private" do
       expect(described_class.private_instance_methods).to include_method(:method_missing)
