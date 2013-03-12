@@ -2,9 +2,11 @@
 
 set -e -x
 
-# ideas taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
+# Needed by Bundler 1.3: https://github.com/carlhuda/bundler/issues/2382
+export RUBYOPT='-rrbconfig'
+
+# idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
-export JAVA_OPTS='-d32'  # force jRuby to use client JVM for faster startup times
 
 echo "Bundling Standalone so we can run the specs w/o bundler loaded"
 
