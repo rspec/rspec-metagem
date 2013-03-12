@@ -6,6 +6,9 @@ echo "Bundling Standalone so we can run the specs w/o bundler loaded"
 
 bundle install --standalone --binstubs
 
+# Needed by Bundler 1.3: https://github.com/carlhuda/bundler/issues/2382
+export RUBYOPT='-rrbconfig'
+
 echo "Running all..."
 
 bin/rspec spec --format progress --profile
