@@ -7,7 +7,11 @@ Bug fixes
   lambdas for before/after/around hooks. (David Chelimsky)
 * Fix regression in 2.13.0 that caused confusing behavior when overriding
   a named subject with an unnamed subject in an inner group and then
-  referencing the outer group subject's name (Myron Marston).
+  referencing the outer group subject's name. The fix for this required
+  us to disallow using `super` in a named subject (which is confusing,
+  anyway -- named subjects create 2 methods, so which method on the
+  parent example group are you `super`ing to?) but `super` in an unnamed
+  subject continues to work (Myron Marston).
 * Do not allow a referenced `let` or `subject` in `before(:all)` to cause
   other `let` declarations to leak across examples (Myron Marston).
 * Work around odd ruby 1.9 bug with `String#match` that was triggered
