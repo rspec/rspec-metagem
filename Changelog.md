@@ -5,11 +5,13 @@ Bug fixes
 
 * Use hook classes as proxies rather than extending hook blocks to support
   lambdas for before/after/around hooks. (David Chelimsky)
-* Fix regression in 2.13.0 that caused confusing behavior when overridng
+* Fix regression in 2.13.0 that caused confusing behavior when overriding
   a named subject with an unnamed subject in an inner group and then
   referencing the outer group subject's name (Myron Marston).
 * Do not allow a referenced `let` or `subject` in `before(:all)` to cause
   other `let` declarations to leak across examples (Myron Marston).
+* Prevent the `let` declaration block from being passed up the ancestor chain
+  in the `super` call. Ref http://bugs.ruby-lang.org/issues/8059 (Aaron Kromer).
 
 Deprecations
 

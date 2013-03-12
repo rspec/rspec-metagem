@@ -182,7 +182,7 @@ EOS
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
           define_method(name) do
-            __memoized.fetch(name) { |k| __memoized[k] = super() }
+            __memoized.fetch(name) { |k| __memoized[k] = super(&nil) }
           end
         end
 
