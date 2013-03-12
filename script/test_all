@@ -26,6 +26,6 @@ done
 
 # Prepare RUBYOPT for scenarios that are shelling out to ruby,
 # and PATH for those that are using `rspec` or `rake`.
-RUBYOPT="-I${PWD}/bundle -rbundler/setup -rrbconfig" \
+RUBYOPT="-I${PWD}/bundle -rrbconfig -rbundler/setup" \
   PATH="${PWD}/bin:$PATH" \
   bin/cucumber
