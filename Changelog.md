@@ -17,6 +17,8 @@ Bug fixes
 * Work around odd ruby 1.9 bug with `String#match` that was triggered
   by passing it a regex from a `let` declaration. For more info, see
   http://bugs.ruby-lang.org/issues/8059 (Aaron Kromer).
+* Add missing `require 'set'` to `base_text_formatter.rb` (Tom
+  Anderson).
 
 Deprecations
 
