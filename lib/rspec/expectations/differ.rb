@@ -7,10 +7,10 @@ module RSpec
     class Differ
       # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
       def diff_as_string(data_new, data_old)
+        output = matching_encoding("", data_old)
         data_old = data_old.split(matching_encoding("\n", data_old)).map! { |e| e.chomp }
         data_new = data_new.split(matching_encoding("\n", data_new)).map! { |e| e.chomp }
         diffs = Diff::LCS.diff(data_old, data_new)
-        output = matching_encoding("", data_old)
         return output if diffs.empty?
         oldhunk = hunk = nil
         file_length_difference = 0
@@ -37,11 +37,11 @@ module RSpec
             end
           ensure
             oldhunk = hunk
-            output << matching_encoding("\n", aldhunk)
+            output << matching_encoding("\n", output)
           end
         end
         #Handle the last remaining hunk
-        output << oldhunk.diff(format) << matching_encoding("\n", oldhunk)
+        output << oldhunk.diff(format) << matching_encoding("\n", output)
         color_diff output
       end
 
