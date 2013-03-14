@@ -7,8 +7,8 @@ module RSpec
     class Differ
       # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
       def diff_as_string(data_new, data_old)
-        data_old = data_old.split(Regexp.new matching_encoding('\n',data_old)).map! { |e| e.chomp }
-        data_new = data_new.split(Regexp.new matching_encoding('\n',data_new)).map! { |e| e.chomp }
+        data_old = data_old.split(matching_encoding("\n",data_old)).map! { |e| e.chomp }
+        data_new = data_new.split(matching_encoding("\n",data_new)).map! { |e| e.chomp }
         diffs = Diff::LCS.diff(data_old, data_new)
         output = matching_encoding "", data_old
         return output if diffs.empty?
