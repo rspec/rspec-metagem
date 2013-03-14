@@ -3,7 +3,7 @@
 RSpec::Expectations lets you express expected outcomes on an object in an
 example.
 
-    account.balance.should eq(Money.new(37.42, :USD))
+    expect(account.balance).to eq(Money.new(37.42, :USD))
 
 ## Install
 
@@ -51,52 +51,50 @@ the example passes. If not, it fails with a message like:
 ### Equivalence
 
 ```ruby
-actual.should eq(expected)  # passes if actual == expected
-actual.should == expected   # passes if actual == expected
-actual.should eql(expected) # passes if actual.eql?(expected)
+expect(actual).to eq(expected)  # passes if actual == expected
+expect(actual).to eql(expected) # passes if actual.eql?(expected)
 ```
 
-Note: we recommend the `eq` matcher over `==` to avoid Ruby's "== in a
-useless context" warning when the `==` matcher is used anywhere but the
-last statement of an example.
+Note: The new `expect` syntax no longer supports `==` matcher.
 
 ### Identity
 
 ```ruby
-actual.should be(expected)    # passes if actual.equal?(expected)
-actual.should equal(expected) # passes if actual.equal?(expected)
+expect(actual).to be(expected)    # passes if actual.equal?(expected)
+expect(actual).to equal(expected) # passes if actual.equal?(expected)
 ```
 
 ### Comparisons
 
 ```ruby
-actual.should be >  expected
-actual.should be >= expected
-actual.should be <= expected
-actual.should be <  expected
-actual.should be_within(delta).of(expected)
+expect(actual).to be >  expected
+expect(actual).to be >= expected
+expect(actual).to be <= expected
+expect(actual).to be <  expected
+expect(actual).to be_within(delta).of(expected)
 ```
 
 ### Regular expressions
 
 ```ruby
-actual.should match(/expression/)
-actual.should =~ /expression/
+expect(actual).to match(/expression/)
 ```
+
+Note: The new `expect` syntax no longer supports `=~` matcher.
 
 ### Types/classes
 
 ```ruby
-actual.should be_an_instance_of(expected)
-actual.should be_a_kind_of(expected)
+expect(actual).to be_an_instance_of(expected)
+expect(actual).to be_a_kind_of(expected)
 ```
 
 ### Truthiness
 
 ```ruby
-actual.should be_true  # passes if actual is truthy (not nil or false)
-actual.should be_false # passes if actual is falsy (nil or false)
-actual.should be_nil   # passes if actual is nil
+expect(actual).to be_true  # passes if actual is truthy (not nil or false)
+expect(actual).to be_false # passes if actual is falsy (nil or false)
+expect(actual).to be_nil   # passes if actual is nil
 ```
 
 ### Expecting errors
@@ -134,68 +132,49 @@ expect { |b| { :a => 1, :b => 2 }.each(&b) }.to yield_successive_args([:a, 1], [
 ### Predicate matchers
 
 ```ruby
-actual.should be_xxx         # passes if actual.xxx?
-actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
+expect(actual).to be_xxx         # passes if actual.xxx?
+expect(actual).to have_xxx(:arg) # passes if actual.has_xxx?(:arg)
 ```
 
 ### Ranges (Ruby >= 1.9 only)
 
 ```ruby
-(1..10).should cover(3)
+expect(1..10).to cover(3)
 ```
 
 ### Collection membership
 
 ```ruby
-actual.should include(expected)
-actual.should start_with(expected)
-actual.should end_with(expected)
+expect(actual).to include(expected)
+expect(actual).to start_with(expected)
+expect(actual).to end_with(expected)
 ```
 
 #### Examples
 
 ```ruby
-[1,2,3].should include(1)
-[1,2,3].should include(1, 2)
-[1,2,3].should start_with(1)
-[1,2,3].should start_with(1,2)
-[1,2,3].should end_with(3)
-[1,2,3].should end_with(2,3)
-{:a => 'b'}.should include(:a => 'b')
-"this string".should include("is str")
-"this string".should start_with("this")
-"this string".should end_with("ring")
+expect([1,2,3]).to include(1)
+expect([1,2,3]).to include(1, 2)
+expect([1,2,3]).to start_with(1)
+expect([1,2,3]).to start_with(1,2)
+expect([1,2,3]).to end_with(3)
+expect([1,2,3]).to end_with(2,3)
+expect({:a => 'b'}).to include(:a => 'b')
+expect("this string").to include("is str")
+expect("this string").to start_with("this")
+expect("this string").to end_with("ring")
 ```
 
-## `expect` syntax
+## `should` syntax
 
-In addition to the `should` syntax, rspec-expectations supports
-a new `expect` syntax as of version 2.11.0:
+In addition to the `expect` syntax, rspec-expectations continues to support
+the `should` syntax:
 
 ```ruby
-expect(actual).to eq expected
-expect(actual).to be > 3
-expect([1, 2, 3]).to_not include 4
+actual.should eq expected
+actual).should be > 3
+[1, 2, 3].should_not include 4
 ```
-
-If you want your project to only use one of these syntaxes, you can
-configure it:
-
-```ruby
-RSpec.configure do |config|
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-    # or
-    c.syntax = :should
-    # or
-    c.syntax = [:should, :expect]
-  end
-end
-```
-
-See
-[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
-for more information.
 
 ### Motivation for `expect`
 
@@ -207,6 +186,29 @@ those methods onto `Kernel` (or any global object).
 See
 [http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
 for a detailed explanation.
+
+
+### Using either `expect` or `should` or both
+
+If you want your project to only use one of these syntaxes, you can
+configure it:
+
+```ruby
+RSpec.configure do |config|
+  config.expect_with :rspec do |c|
+    c.syntax = :expect             # disables `should`
+    # or
+    c.syntax = :should             # disables `expect`
+    # or
+    c.syntax = [:should, :expect]  # enables both `should` and `expect`
+  end
+end
+```
+
+See
+[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
+for more information.
+
 
 ### One-liners
 
