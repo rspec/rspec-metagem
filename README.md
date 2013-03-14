@@ -38,8 +38,7 @@ describe Order do
 end
 ```
 
-The `describe` and `it` methods come from rspec-core.  The `Order`, `LineItem`,
-and `Item` classes would be from _your_ code. The last line of the example
+The `describe` and `it` methods come from rspec-core.  The `Order`, `LineItem`, `Item` and `Money` classes would be from _your_ code. The last line of the example
 expresses an expected outcome. If `order.total == Money.new(5.55, :USD)`, then
 the example passes. If not, it fails with a message like:
 
