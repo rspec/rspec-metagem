@@ -6,10 +6,10 @@ module RSpec
   module Expectations
     class Differ
       # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
-      def diff_as_string(data_new, data_old)
-        output = matching_encoding("", data_old)
-        data_old = data_old.split(matching_encoding("\n", data_old)).map! { |e| e.chomp }
-        data_new = data_new.split(matching_encoding("\n", data_new)).map! { |e| e.chomp }
+      def diff_as_string(input_data_new, input_data_old)
+        output = matching_encoding("", input_data_old)
+        data_old = input_data_old.split(matching_encoding("\n", input_data_old)).map! { |e| e.chomp }
+        data_new = input_data_new.split(matching_encoding("\n", input_data_new)).map! { |e| e.chomp }
         diffs = Diff::LCS.diff(data_old, data_new)
         return output if diffs.empty?
         oldhunk = hunk = nil
@@ -33,7 +33,7 @@ module RSpec
                 hunk.unshift(oldhunk)
               end
             else
-              output << oldhunk.diff(format)
+              output << matching_encoding(oldhunk.diff(format).to_s, output)
             end
           ensure
             oldhunk = hunk
@@ -41,8 +41,16 @@ module RSpec
           end
         end
         #Handle the last remaining hunk
-        output << oldhunk.diff(format) << matching_encoding("\n", output)
+        output << matching_encoding(oldhunk.diff(format).to_s,output)
+        output << matching_encoding("\n",output)
         color_diff output
+      rescue Encoding::CompatibilityError
+        if input_data_new.encoding != input_data_old.encoding
+          "Could not produce a diff because the encoding of the actual string (#{input_data_old.encoding}) "+
+          "differs from the encoding of the expected string (#{input_data_new.encoding})"
+        else
+          "Could not produce a diff because of the encoding of the string (#{input_data_old.encoding})"
+        end
       end
 
       def diff_as_object(actual, expected)
