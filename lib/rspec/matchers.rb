@@ -41,8 +41,8 @@ module RSpec
   # use this feature, just state that the object should have_key(:key) and RSpec will
   # call has_key?(:key) on the target. For example:
   #
-  #     expect({:a => "A"}).to have_key(:a) # => {:a => "A"}.has_key?(:a) | passes
-  #     expect({:a => "A"}).to have_key(:b) # => {:a => "A"}.has_key?(:b) | fails
+  #     expect(:a => "A").to have_key(:a)
+  #     expect(:a => "A").to have_key(:b) # fails
   #
   # You can use this feature to invoke any predicate that begins with "has_", whether it is
   # part of the Ruby libraries (like `Hash#has_key?`) or a method you wrote on your own class.
@@ -687,7 +687,9 @@ module RSpec
     #
     # @note This is also available using the `=~` operator with `should`,
     #       but `=~` is not supported with `expect`.
-    # @note There is no expect(..).not_to version of expect(array).not_to match_array(other_array)
+    #
+    # @note This matcher only supports positive expectations.
+    #       expect(..).not_to match_array(other_array) is not supported.
     #
     # @example
     #
