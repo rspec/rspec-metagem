@@ -8,6 +8,11 @@ Enhancements
   `expect { }.to yield_control.at_least(2).times`, etc (Bartek
   Borkowski).
 
+Bug fixes
+
+* Fix differ to not raise errors when dealing with differently-encoded
+  strings (Jon Rowe).
+
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
 
