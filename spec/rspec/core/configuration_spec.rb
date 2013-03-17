@@ -17,6 +17,11 @@ module RSpec::Core
     end
 
     describe "#load_spec_files" do
+      it "adds 'lib' and default_path to project paths" do
+        config.default_path = 'foo'
+        config.should_receive(:add_project_paths).with('lib', 'foo')
+        config.load_spec_files
+      end
 
       it "loads files using load" do
         config.files_to_run = ["foo.bar", "blah_spec.rb"]
