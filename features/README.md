@@ -2,7 +2,7 @@ rspec-expectations is used to define expected outcomes.
 
     describe Account do
       it "has a balance of zero when first created" do
-        Account.new.balance.should eq(Money.new(0))
+        expect(Account.new.balance).to eq(Money.new(0))
       end
     end
 
@@ -10,17 +10,16 @@ rspec-expectations is used to define expected outcomes.
 
 The basic structure of an rspec expectation is:
 
-    actual.should matcher(expected)
-    actual.should_not matcher(expected)
+    expect(actual).to matcher(expected)
+    expect(actual).not_to matcher(expected)
 
-## `should` and `should_not`
+Note: You can also use `expect(..).to_not` instead of `expect(..).not_to`.
+      One is an alias to the other, so you can use whichever reads better to you.
 
-`rspec-expectations` adds `should` and `should_not` to every object in
-the system. These methods each accept a matcher as an argument. This allows
-each matcher to work in a positive or negative mode:
+#### Examples
 
-    5.should eq(5)
-    5.should_not eq(4)
+    expect(5).to eq(5)
+    expect(5).not_to eq(4)
 
 ## What is a matcher?
 
