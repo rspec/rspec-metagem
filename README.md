@@ -166,61 +166,7 @@ expect("this string").to end_with("ring")
 
 ## `should` syntax
 
-In addition to the `expect` syntax, rspec-expectations continues to support
-the `should` syntax:
-
-```ruby
-actual.should eq expected
-actual).should be > 3
-[1, 2, 3].should_not include 4
-```
-
-### Motivation for `expect`
-
-We added the `expect` syntax to resolve some edge case issues, most notably
-that objects whose definitions wipe out all but a few methods were throwing
-`should` and `should_not` away. `expect` solves that by not monkey patching
-those methods onto `Kernel` (or any global object).
-
-See
-[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
-for a detailed explanation.
-
-
-### Using either `expect` or `should` or both
-
-If you want your project to only use one of these syntaxes, you can
-configure it:
-
-```ruby
-RSpec.configure do |config|
-  config.expect_with :rspec do |c|
-    c.syntax = :expect             # disables `should`
-    # or
-    c.syntax = :should             # disables `expect`
-    # or
-    c.syntax = [:should, :expect]  # enables both `should` and `expect`
-  end
-end
-```
-
-See
-[RSpec::Expectations::Syntax#expect](http://rubydoc.info/gems/rspec-expectations/RSpec/Expectations/Syntax:expect)
-for more information.
-
-
-### One-liners
-
-The one-liner syntax supported by
-[rspec-core](http://rubydoc.info/gems/rspec-core)  uses `should` even when
-`config.syntax = :expect`. It reads better than the alternative, and does not
-require a global monkey patch:
-
-```ruby
-describe User do
-  it { should validate_presence_of :email }
-end
-```
+See [Using should syntax](https://github.com/rspec/rspec-rails/blob/master/Should.md)
 
 ## Also see
 

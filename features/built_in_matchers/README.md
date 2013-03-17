@@ -1,55 +1,49 @@
 # Built-in Matchers
 
-Here is a list of matchers that ship with rspec-expectations. Each matcher
-can be used with `should` or `should_not` e.g.
+rspec-expectations ships with a number of built-in matchers. Each matcher can be used with `expect(..).to` or `expect(..).not_to` to define positive and negative expectations respectively on an object
 
-    result.should eq(3)
-    list.should_not be_empty
+e.g.
+
+    expect(result).to   eq(3)
+    expect(list).not_to be_empty
 
 ## Object identity
 
-    actual.should be(expected) # passes if actual.equal?(expected)
-
+    expect(actual).to be(expected) # passes if actual.equal?(expected)
+    
 ## Object equivalence
 
-    actual.should eq(expected) # passes if actual == expected
+    expect(actual).to eq(expected) # passes if actual == expected
 
 ## Optional APIs for identity/equivalence
 
-    actual.should == expected     # passes if actual == expected
-    actual.should eql(expected)   # passes if actual.eql?(expected)
-    actual.should equal(expected) # passes if actual.equal?(expected)
+    expect(actual).to eql(expected)   # passes if actual.eql?(expected)
+    expect(actual).to equal(expected) # passes if actual.equal?(expected)
 
-    # NOTE: this can't work in Ruby 1.8, so we don't support it at all:
-    #   actual.should != expected
-    # The reason is that Ruby 1.8 parses it as:
-    #   !(actual.should.==(expected)),
-    # so by the time RSpec sees it it has no way to know that it's
-    # been negated. Use either of these instead:
-    #   actual.should_not eq(expected)
-    #   actual.should_not == expected
+    # NOTE: `expect` does not support `==` matcher.
 
 ## Comparisons
 
-    actual.should be >  expected
-    actual.should be >= expected
-    actual.should be <= expected
-    actual.should be <  expected
-    actual.should =~ /expression/
-    actual.should match(/expression/)
-    actual.should be_within(delta).of(expected)
+    expect(actual).to be >  expected
+    expect(actual).to be >= expected
+    expect(actual).to be <= expected
+    expect(actual).to be <  expected
+    expect(actual).to match(/expression/)
+    expect(actual).to be_within(delta).of(expected)
+
+    # NOTE: `expect` does not support `=~` matcher.
 
 ## Types/classes
 
-    actual.should be_instance_of(expected)
-    actual.should be_kind_of(expected)
+    expect(actual).to be_instance_of(expected)
+    expect(actual).to be_kind_of(expected)
 
 ## Truthiness and existentialism
 
-    actual.should be_true  # passes if actual is truthy (not nil or false)
-    actual.should be_false # passes if actual is falsy (nil or false)
-    actual.should be_nil   # passes if actual is nil
-    actual.should be       # passes if actual is truthy (not nil or false)
+    expect(actual).to be_true  # passes if actual is truthy (not nil or false)
+    expect(actual).to be_false # passes if actual is falsy (nil or false)
+    expect(actual).to be_nil   # passes if actual is nil
+    expect(actual).to be       # passes if actual is truthy (not nil or false)
 
 ## Expecting errors
 
@@ -66,25 +60,29 @@ can be used with `should` or `should_not` e.g.
 
 ## Predicate matchers
 
-    actual.should be_xxx         # passes if actual.xxx?
-    actual.should have_xxx(:arg) # passes if actual.has_xxx?(:arg)
+    expect(actual).to be_xxx         # passes if actual.xxx?
+    expect(actual).to have_xxx(:arg) # passes if actual.has_xxx?(:arg)
 
 ### Examples
 
-    [].should be_empty # passes because [].empty? returns true
-    { :a => 1 }.should have_key(:a) # passes because the hash has the key :a
+    expect([]).to      be_empty
+    expect(:a => 1).to have_key(:a)
 
 ## Collection membership
 
-    actual.should include(expected)
+    expect(actual).to include(expected)
 
 ### Examples
 
-    [1,2,3].should include(1)
-    [1,2,3].should include(1, 2)
-    {:a => 'b'}.should include(:a => 'b')
-    "this string".should include("is str")
+    expect([1,2,3]).to       include(1)
+    expect([1,2,3]).to       include(1, 2)
+    expect(:a => 'b').to     include(:a => 'b')
+    expect("this string").to include("is str")
 
 ## Ranges (1.9 only)
 
-    (1..10).should cover(3)
+    expect(1..10).to cover(3)
+
+## `should` syntax
+
+See [Using should syntax](https://github.com/rspec/rspec-rails/blob/master/Should.md)
