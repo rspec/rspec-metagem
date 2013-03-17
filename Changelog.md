@@ -1,6 +1,13 @@
 ### 2.13.1 / 2013-03-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.13.0...v2.13.1)
 
+Enhancements
+
+* Rather than always adding `spec` to the load path, add the configured
+  `--default-path` to the load path (which defaults to `spec`). This
+  better supports folks who choose to put their specs in a different
+  directory (John Feminella).
+
 Bug fixes
 
 * Use hook classes as proxies rather than extending hook blocks to support
