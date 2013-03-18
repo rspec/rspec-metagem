@@ -7,7 +7,7 @@ describe RSpec::Core::Formatters::ProgressFormatter do
      @output = StringIO.new
      @formatter = RSpec::Core::Formatters::ProgressFormatter.new(@output)
      @formatter.start(2)
-     @formatter.stub!(:color_enabled?).and_return(false)
+     @formatter.stub(:color_enabled?).and_return(false)
    end
 
    it "produces line break on start dump" do
