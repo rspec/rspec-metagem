@@ -5,21 +5,33 @@ describe RSpec::Core::Formatters::Helpers do
   let(:helper) { Object.new.extend(RSpec::Core::Formatters::Helpers) }
 
   describe "format duration" do
+    context '< 1' do
+      it "returns '0.xxxxx seconds' formatted string" do
+        expect(helper.format_duration(0.123456)).to eq("0.12346 seconds")
+      end
+    end
+
+    context '> 1 and < 60' do
+      it "returns 'xx.xx seconds' formatted string" do
+        expect(helper.format_duration(45.51)).to eq("45.51 seconds")
+      end
+    end
+
     context '> 60 and < 120' do
-      it "returns 'x minute xx seconds' formatted string" do
+      it "returns 'x minute xx.xx seconds' formatted string" do
         expect(helper.format_duration(70.14)).to eq("1 minute 10.14 seconds")
       end
     end
 
-    context '> 120' do
-      it "returns 'x minutes xx seconds' formatted string" do
-        expect(helper.format_duration(135.14)).to eq("2 minutes 15.14 seconds")
+    context '> 120 and < 300' do
+      it "returns 'x minutes xx.x seconds' formatted string" do
+        expect(helper.format_duration(135.14)).to eq("2 minutes 15.1 seconds")
       end
     end
 
-    context '< 60' do
-      it "returns 'xx seconds' formatted string" do
-        expect(helper.format_duration(45.5)).to eq("45.5 seconds")
+    context '> 300' do
+      it "returns 'x minutes xx seconds' formatted string" do
+        expect(helper.format_duration(335.14)).to eq("5 minutes 35 seconds")
       end
     end
 
@@ -37,6 +49,10 @@ describe RSpec::Core::Formatters::Helpers do
   end
 
   describe "format seconds" do
+    it "uses passed in precision if specified unless result is 0" do
+      expect(helper.format_seconds(0.01234, 2)).to eq("0.01")
+    end
+
     context "sub second times" do
       it "returns 5 digits of precision" do
         expect(helper.format_seconds(0.000006)).to eq("0.00001")

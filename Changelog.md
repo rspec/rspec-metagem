@@ -7,6 +7,8 @@ Enhancements
   `--default-path` to the load path (which defaults to `spec`). This
   better supports folks who choose to put their specs in a different
   directory (John Feminella).
+* Add some logic to test time duration precision. Make it a
+  function of time, dropping precision as the time increases. (Aaron Kromer)
 
 Bug fixes
 
