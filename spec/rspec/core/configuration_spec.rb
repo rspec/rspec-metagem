@@ -499,11 +499,11 @@ module RSpec::Core
         config.full_description = "foo"
         expect(config.filter).not_to have_key(:focused)
       end
-      specify do
+      it 'sets #full_description to true' do
         config.full_description = "foo"
         expect(config.full_description).to eq true
       end
-      specify do
+      it 'sets #full_description to false' do
         expect(config.full_description).to eq false
       end
     end
