@@ -610,6 +610,29 @@ module RSpec::Core
         })
       end
     end
+
+    context "when referenced in differet examples" do
+      # hook needed because tests are runned in sandbox and Configuration.new resets the seed
+      around(:each) do |ex|
+        RSpec.configuration.order = "#{@orig_config.order}:#{@orig_config.seed}"
+        @orig_world.example_groups.ordered
+        ex.run
+      end
+
+      before(:all) { @rand_values = [] }
+
+      let(:rand_value) do
+        value = Kernel.rand
+        @rand_values << value
+        value
+      end
+
+      2.times do
+        it "generates random value" do
+          expect { rand_value }.to change { @rand_values.uniq.size }
+        end
+      end
+    end
   end
 
   describe "#let!" do
