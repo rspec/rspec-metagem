@@ -415,4 +415,19 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(example.metadata[:execution_result][:run_time]).to be < 0.2
     end
   end
+
+  it 'does not interfere with per-example randomness when running examples in a random order' do
+    values = []
+
+    RSpec.configuration.order = :random
+
+    RSpec::Core::ExampleGroup.describe do
+      # The bug was only triggered when the examples
+      # were in nested contexts; see https://github.com/rspec/rspec-core/pull/837
+      context { example { values << rand } }
+      context { example { values << rand } }
+      end.run
+
+      expect(values.uniq).to have(2).values
+  end
 end
