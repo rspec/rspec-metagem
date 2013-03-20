@@ -14,7 +14,7 @@ Feature: basic structure (describe/it)
   Under the hood, an example group is a class in which the block passed to
   `describe` or `context` is evaluated. The blocks passed to `it` are evaluated
   in the context of an _instance_ of that class.
-  
+
   Scenario: one group, one example
     Given a file named "sample_spec.rb" with:
     """ruby

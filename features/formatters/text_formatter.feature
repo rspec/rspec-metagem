@@ -26,10 +26,10 @@ Feature: text formatter
       """
         1) Integer has a failing example
            Failure/Error: (7 + 5).should eq(11)
-             
+
              expected: 11
                   got: 12
-             
+
              (compared using ==)
            # ./integer_spec.rb:3
       """
@@ -37,10 +37,10 @@ Feature: text formatter
       """
         2) String has a failing example
            Failure/Error: "foo".reverse.should eq("ofo")
-             
+
              expected: "ofo"
                   got: "oof"
-             
+
              (compared using ==)
            # ./string_spec.rb:3
       """

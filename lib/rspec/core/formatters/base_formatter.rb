@@ -105,7 +105,7 @@ module RSpec
         # @api public
         #
         # Used by the reporter to send messages to the output stream.
-        # 
+        #
         # @param [String] message
         def message(message)
         end

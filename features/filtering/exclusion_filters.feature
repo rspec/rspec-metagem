@@ -5,7 +5,7 @@ Feature: exclusion filters
 
   If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
   to `true`, you can specify metadata using only symbols.
-  
+
   Scenario: exclude an example
     Given a file named "spec/sample_spec.rb" with:
       """ruby
@@ -33,15 +33,15 @@ Feature: exclusion filters
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
-  
+
       describe "group 1", :broken => true do
         it "group 1 example 1" do
         end
-  
+
         it "group 1 example 2" do
         end
       end
-  
+
       describe "group 2" do
         it "group 2 example 1" do
         end
@@ -51,31 +51,31 @@ Feature: exclusion filters
     Then the output should contain "group 2 example 1"
     And  the output should not contain "group 1 example 1"
     And  the output should not contain "group 1 example 2"
-  
+
   Scenario: exclude multiple groups
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
-  
+
       describe "group 1", :broken => true do
         before(:all) do
           raise "you should not see me"
         end
-        
+
         it "group 1 example 1" do
         end
-  
+
         it "group 1 example 2" do
         end
       end
-  
+
       describe "group 2", :broken => true do
         before(:each) do
           raise "you should not see me"
         end
-        
+
         it "group 2 example 1" do
         end
       end
