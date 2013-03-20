@@ -205,7 +205,7 @@ MESSAGE
         @default_path = 'spec'
         @filter_manager = FilterManager.new
         @preferred_options = {}
-        @seed = Random.new_seed % 0xFFFF
+        @seed = srand % 0xFFFF
         @failure_color = :red
         @success_color = :green
         @pending_color = :yellow
@@ -870,8 +870,8 @@ EOM
 
       # @private
       RANDOM_ORDERING = lambda do |list|
-        random = Random.new(RSpec.configuration.seed)
-        list.sort_by { random.rand(list.size) }
+        Kernel.srand RSpec.configuration.seed
+        list.sort_by { Kernel.rand(list.size) }
       end
 
       # Sets a strategy by which to order examples.

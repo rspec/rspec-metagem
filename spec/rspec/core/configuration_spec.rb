@@ -1259,7 +1259,7 @@ module RSpec::Core
         config.force :seed => "rand:37"
         RSpec.stub(:configuration => config)
         list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-        Random.any_instance.should_receive(:rand).and_return(3, 1, 4, 2)
+        Kernel.should_receive(:rand).and_return(3, 1, 4, 2)
         expect(list.ordered).to eq([2, 4, 1, 3])
       end
 
@@ -1314,7 +1314,7 @@ module RSpec::Core
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
           list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Random.any_instance.should_receive(:rand).and_return(3, 1, 4, 2)
+          Kernel.should_receive(:rand).and_return(3, 1, 4, 2)
           expect(list.ordered).to eq([2, 4, 1, 3])
         end
       end
