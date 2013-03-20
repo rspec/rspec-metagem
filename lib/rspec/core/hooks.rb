@@ -242,6 +242,15 @@ module RSpec
       # state of a shared object, resulting in an ordering dependency that can
       # make it difficult to reason about failures.
       #
+      # #### unsupported rspec constructs
+      #
+      # RSpec has several constructs that reset state between each example
+      # automatically. These are not intended for use from within `before(:all)`:
+      #
+      #   * `let` declarations
+      #   * `subject` declarations
+      #   * Any mocking, stubbing or test double declaration
+      #
       # ### other frameworks
       #
       # Mock object frameworks and database transaction managers (like
