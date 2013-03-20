@@ -426,8 +426,8 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       # were in nested contexts; see https://github.com/rspec/rspec-core/pull/837
       context { example { values << rand } }
       context { example { values << rand } }
-      end.run
+    end.run
 
-      expect(values.uniq).to have(2).values
+    expect(values.uniq).to have(2).values
   end
 end
