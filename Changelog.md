@@ -15,6 +15,8 @@ Bug fixes
 * Fix named subjects so that if an inner group defines a method that
   overrides the named method, `subject` still retains the originally
   declared value (Myron Marston).
+* Fix random ordering so that it does not cause `rand` in examples in
+  nested sibling contexts to return the same value (Max Shytikov).
 
 ### 2.13.1 / 2013-03-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.13.0...v2.13.1)
