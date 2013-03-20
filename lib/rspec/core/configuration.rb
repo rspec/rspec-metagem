@@ -871,7 +871,9 @@ EOM
       # @private
       RANDOM_ORDERING = lambda do |list|
         Kernel.srand RSpec.configuration.seed
-        list.sort_by { Kernel.rand(list.size) }
+        ordering = list.sort_by { Kernel.rand(list.size) }
+        Kernel.srand # reset random generation
+        ordering
       end
 
       # Sets a strategy by which to order examples.
