@@ -1,6 +1,6 @@
 Feature: start_with matcher
 
-  Use the `start_with` matcher to specify that a string or array starts with 
+  Use the `start_with` matcher to specify that a string or array starts with
   the expected characters or elements.
 
     ```ruby

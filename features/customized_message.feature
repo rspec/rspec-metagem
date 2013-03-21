@@ -3,7 +3,7 @@ Feature: customized message
   RSpec tries to provide useful failure messages, but for cases in which you
   want more specific information, you can define your own message right in the
   example. This works for any matcher _other than the operator matchers_.
-  
+
   Scenario: customize failure message
     Given a file named "example_spec.rb" with:
       """ruby

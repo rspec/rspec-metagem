@@ -37,7 +37,7 @@ module RSpec
   # `eq.failure_message_for_should_not`.
   #
   # rspec-expectations ships with a standard set of useful matchers, and writing
-  # your own matchers is quite simple. 
+  # your own matchers is quite simple.
   #
   # See [RSpec::Matchers](../RSpec/Matchers) for more information about the
   # built-in matchers that ship with rspec-expectations, and how to write your

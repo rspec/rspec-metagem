@@ -28,7 +28,7 @@ Benchmark.benchmark do |bm|
   end
 end
 
-# $ ruby benchmarks/include_v_superclass.rb 
+# $ ruby benchmarks/include_v_superclass.rb
 # Class.new(Foo)
 #   0.030000   0.000000   0.030000 (  0.033536)
 #   0.020000   0.000000   0.020000 (  0.022077)

@@ -4,11 +4,11 @@ Feature: be_within matcher
   Consider this irb session:
 
       > radius = 3
-        => 3 
+        => 3
       > area_of_circle = radius * radius * Math::PI
-        => 28.2743338823081 
+        => 28.2743338823081
       > area_of_circle == 28.2743338823081
-        => false 
+        => false
 
   Instead, you should use the be_within matcher to check that the value
   is within a delta of your expected value:

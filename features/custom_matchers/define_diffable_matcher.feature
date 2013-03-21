@@ -12,7 +12,7 @@ Feature: define diffable matcher
         match do |actual|
           actual == expected
         end
-        
+
         diffable
       end
 

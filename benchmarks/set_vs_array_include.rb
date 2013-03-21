@@ -36,7 +36,7 @@ Benchmark.bm(5) do |x|
   end
 end
 
-# Positive examples: 
+# Positive examples:
 #                                user     system      total        real
 # set.include?(item 0)       2.000000   0.010000   2.010000 (  1.999305)
 # array.include?(item 0)     1.170000   0.000000   1.170000 (  1.173168)
@@ -61,7 +61,7 @@ end
 # ================================================================================
 
 
-# Negative examples: 
+# Negative examples:
 #            user     system      total        real
 # set    1.940000   0.000000   1.940000 (  1.941780)
 # array  4.240000   0.010000   4.250000 (  4.238137)
