@@ -9,7 +9,7 @@ can be used with `should` or `should_not` e.g.
 ## Object identity
 
     actual.should be(expected) # passes if actual.equal?(expected)
-    
+
 ## Object equivalence
 
     actual.should eq(expected) # passes if actual == expected

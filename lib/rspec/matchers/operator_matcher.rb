@@ -91,7 +91,7 @@ module RSpec
           if actual.__send__(operator, expected)
             true
           elsif ['==','===', '=~'].include?(operator)
-            fail_with_message("expected: #{expected.inspect}\n     got: #{actual.inspect} (using #{operator})") 
+            fail_with_message("expected: #{expected.inspect}\n     got: #{actual.inspect} (using #{operator})")
           else
             fail_with_message("expected: #{operator} #{expected.inspect}\n     got: #{operator.gsub(/./, ' ')} #{actual.inspect}")
           end

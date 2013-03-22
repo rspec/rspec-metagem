@@ -11,14 +11,14 @@ Feature: expect change
             @count ||= 0
             @count += 1
           end
-          
+
           def count
             @count ||= 0
           end
         end
       end
       """
-  
+
   Scenario: expect change
     Given a file named "spec/example_spec.rb" with:
       """ruby
