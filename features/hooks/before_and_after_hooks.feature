@@ -69,21 +69,21 @@ Feature: before and after hooks
           @widgets ||= []
         end
       end
-  
+
       describe Thing do
         before(:all) do
           @thing = Thing.new
         end
-  
+
         describe "initialized in before(:all)" do
           it "has 0 widgets" do
             @thing.should have(0).widgets
           end
-  
+
           it "can get accept new widgets" do
             @thing.widgets << Object.new
           end
-  
+
           it "shares state across examples" do
             @thing.should have(1).widgets
           end
@@ -187,7 +187,7 @@ Feature: before and after hooks
           @before_all = "before all"
         end
       end
-  
+
       describe "stuff in before blocks" do
         describe "with :all" do
           it "should be available in the example" do
@@ -213,21 +213,21 @@ Feature: before and after hooks
         before(:all) do
           puts "before all"
         end
-  
+
         before(:each) do
           puts "before each"
         end
-  
+
         after(:each) do
           puts "after each"
         end
-  
+
         after(:all) do
           puts "after all"
         end
-  
+
         it "gets run in order" do
-  
+
         end
       end
       """
@@ -239,7 +239,7 @@ Feature: before and after hooks
       after each
       .after all
       """
-  
+
   Scenario: before/after blocks defined in config are run in order
     Given a file named "configuration_spec.rb" with:
       """ruby
@@ -249,28 +249,28 @@ Feature: before and after hooks
         config.before(:suite) do
           puts "before suite"
         end
-  
+
         config.before(:all) do
           puts "before all"
         end
-  
+
         config.before(:each) do
           puts "before each"
         end
-  
+
         config.after(:each) do
           puts "after each"
         end
-  
+
         config.after(:all) do
           puts "after all"
         end
-  
+
         config.after(:suite) do
           puts "after suite"
         end
       end
-  
+
       describe "ignore" do
         example "ignore" do
         end
@@ -294,7 +294,7 @@ Feature: before and after hooks
         before(:all) do
           puts "outer before all"
         end
-  
+
         example "in outer group" do
         end
 
@@ -306,7 +306,7 @@ Feature: before and after hooks
           before(:all) do
             puts "inner before all"
           end
-          
+
           example "in nested group" do
           end
 

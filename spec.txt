@@ -369,7 +369,7 @@ RSpec::Core::ExampleGroup
   top level group
     runs its children
     with a failure in the top level group
-      runs its children 
+      runs its children
     descendants
       returns self + all descendants
   child
@@ -1073,7 +1073,7 @@ RSpec::Core::Subject
       [:b, "c", 4]
         should == "Symbol: b; String: c; Fixnum: 4"
       name
-        
+
       when referring to an attribute without the proper array syntax
         it raises an error
           age

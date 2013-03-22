@@ -50,7 +50,7 @@ Benchmark.benchmark do |bm|
   end
 end
 
-# $ ruby benchmarks/respond_to_v_defined.rb 
+# $ ruby benchmarks/respond_to_v_defined.rb
 # Kernel.respond_to?(:warn)
 #    0.190000   0.000000   0.190000 (  0.206502)
 #    0.190000   0.000000   0.190000 (  0.197547)

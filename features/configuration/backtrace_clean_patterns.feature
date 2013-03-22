@@ -56,7 +56,7 @@ Feature: Backtrace cleaning
     RSpec::Matchers.define :be_baz do |_|
       match do |actual|
         actual == "baz"
-      end 
+      end
     end
     """
     And a file named "spec/example_spec.rb" with:
@@ -82,7 +82,7 @@ Feature: Backtrace cleaning
     RSpec::Matchers.define :be_baz do |_|
       match do |actual|
         actual == "baz"
-      end 
+      end
     end
     """
     And a file named "spec/example_spec.rb" with:

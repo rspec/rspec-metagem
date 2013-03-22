@@ -2,7 +2,7 @@ Feature: read command line configuration options from files
 
   RSpec reads command line configuration options from files in two different
   locations:
-  
+
     Local:  "./.rspec" (i.e. in the project's root directory)
     Global: "~/.rspec" (i.e. in the user's home directory)
 

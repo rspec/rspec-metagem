@@ -72,7 +72,7 @@ module RSpec
 
           unless @header_red
             @header_red = true
-            @printer.make_header_red 
+            @printer.make_header_red
           end
 
           unless @example_group_red
@@ -84,16 +84,16 @@ module RSpec
 
           exception = example.metadata[:execution_result][:exception]
           exception_details = if exception
-            { 
-              :message => exception.message, 
+            {
+              :message => exception.message,
               :backtrace => format_backtrace(exception.backtrace, example).join("\n")
             }
           else
-            false 
+            false
           end
           extra = extra_failure_content(exception)
 
-          @printer.print_example_failed( 
+          @printer.print_example_failed(
             exception.pending_fixed?,
             example.description,
             example.execution_result[:run_time],

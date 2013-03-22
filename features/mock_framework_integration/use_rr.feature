@@ -18,7 +18,7 @@ Feature: mock with rr
       end
       """
     When I run `rspec example_spec.rb`
-    Then the examples should all pass 
+    Then the examples should all pass
 
   Scenario: failing message expecation
     Given a file named "example_spec.rb" with:
@@ -79,7 +79,7 @@ Feature: mock with rr
     Then the output should contain "1 example, 1 failure"
     And the exit status should be 1
 
-  Scenario: accessing RSpec.configuration.mock_framework.framework_name 
+  Scenario: accessing RSpec.configuration.mock_framework.framework_name
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -93,6 +93,6 @@ Feature: mock with rr
       end
       """
     When I run `rspec example_spec.rb`
-    Then the examples should all pass 
+    Then the examples should all pass
 
 

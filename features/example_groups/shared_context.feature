@@ -18,7 +18,7 @@ Feature: shared context
         end
       end
       """
-  
+
   Scenario: declare shared context and include it with include_context
     Given a file named "shared_context_example.rb" with:
       """ruby

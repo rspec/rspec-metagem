@@ -1,5 +1,5 @@
 Feature: rake task
-  
+
   RSpec ships with a rake task with a number of useful options
 
   Scenario: default options with passing spec (prints command and exit status is 0)
@@ -42,7 +42,7 @@ Feature: rake task
       """
     When I run `rake`
     Then the exit status should be 1
-      
+
   Scenario: fail_on_error = false with failing spec (exit status is 0)
     Given a file named "Rakefile" with:
       """ruby
