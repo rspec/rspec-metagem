@@ -235,6 +235,11 @@ module RSpec
         def color_enabled?
           configuration.color_enabled?(output)
         end
+
+        def mute_profile_output?(failure_count)
+          # Don't print out profiled info if there are failures and `--fail-fast` is used, it just clutters the output
+          !profile_examples? || (fail_fast? && failure_count != 0)
+        end
       end
     end
   end
