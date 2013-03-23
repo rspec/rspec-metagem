@@ -254,6 +254,9 @@ module RSpec
                                     "is deprecated, it is now set to true as default and setting it to false has no effect.")
       end
 
+      # Record the start time of the spec suite to measure load time
+      add_setting :start_time
+
       # @private
       add_setting :tty
       # @private
@@ -268,6 +271,7 @@ module RSpec
       attr_reader :backtrace_formatter, :ordering_manager
 
       def initialize
+        @start_time = Time.now
         @expectation_frameworks = []
         @include_or_extend_modules = []
         @mock_framework = nil

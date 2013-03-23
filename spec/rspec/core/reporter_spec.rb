@@ -32,6 +32,18 @@ module RSpec::Core
       end
     end
 
+    describe 'start' do
+      it 'notifies the formatter of start with example count and load time' do
+        formatter = double("formatter")
+        example = double("example")
+        reporter = Reporter.new(formatter)
+
+        formatter.should_receive(:start).with(0,5)
+        RSpec.configuration.start_time = 5
+        reporter.start 0, 10
+      end
+    end
+
     context "given one formatter" do
       it "passes messages to that formatter" do
         formatter = double("formatter", :example_started => nil)

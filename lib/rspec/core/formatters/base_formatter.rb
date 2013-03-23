@@ -42,10 +42,11 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is {#example_group_started}.
         #
-        # @param notification [NullNotification]
+        # @param notification [StartNotification]
         def start(notification)
           start_sync_output
           @example_count = notification.count
+          @load_time = notification.load_time
         end
 
         # @api public

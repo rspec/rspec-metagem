@@ -1518,6 +1518,18 @@ module RSpec::Core
       end
     end
 
+    describe 'recording spec start time (for measuring load)' do
+      it 'returns a time' do
+        expect(config.start_time).to be_a Time
+      end
+
+      it 'is configurable' do
+        time = Time.new - 5
+        config.start_time = time
+        expect(config.start_time).to eq time
+      end
+    end
+
     # assigns files_or_directories_to_run and triggers post-processing
     # via `files_to_run`.
     def assign_files_or_directories_to_run(*value)
