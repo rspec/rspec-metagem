@@ -3,15 +3,15 @@ module RSpec
     class BacktraceCleaner
 
       attr_accessor :include_patterns
-      attr_accessor :discard_patterns
+      attr_accessor :exclude_patterns
 
-      def initialize(include_patterns, discard_patterns)
+      def initialize(include_patterns, exclude_patterns)
         @include_patterns = include_patterns
-        @discard_patterns = discard_patterns
+        @exclude_patterns = exclude_patterns
       end
 
       def include?(line)
-        matches_an_include_pattern? line or not matches_a_discard_pattern? line
+        matches_an_include_pattern? line or not matches_a_exclude_pattern? line
       end
 
       private
@@ -20,8 +20,8 @@ module RSpec
         @include_patterns.any? {|p| line =~ p}
       end
 
-      def matches_a_discard_pattern?(line)
-        @discard_patterns.any? {|p| line =~ p}
+      def matches_a_exclude_pattern?(line)
+        @exclude_patterns.any? {|p| line =~ p}
       end
     end
   end
