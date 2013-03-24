@@ -90,7 +90,7 @@ MESSAGE
       # To override this behavior and display a full backtrace, use
       # `--backtrace` on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
-      add_setting :backtrace_clean_patterns
+      add_setting :backtrace_exclude_patterns
       add_setting :backtrace_include_patterns
 
       # Path to use if no path is provided to the `rspec` command (default:
@@ -194,6 +194,8 @@ MESSAGE
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
 
+      attr_reader :backtrace_cleaner
+
       def initialize
         @expectation_frameworks = []
         @include_or_extend_modules = []
@@ -203,8 +205,11 @@ MESSAGE
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
-        @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
+
+        @backtrace_exclude_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
         @backtrace_include_patterns = [Regexp.new(Dir.getwd)]
+        recreate_backtrace_cleaner
+
         @default_path = 'spec'
         @filter_manager = FilterManager.new
         @preferred_options = {}
@@ -297,6 +302,37 @@ MESSAGE
       # Delegates to mock_framework=(framework)
       def mock_framework=(framework)
         mock_with framework
+      end
+
+      def backtrace_clean_patterns
+        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
+                        "RSpec::Core::Configuration#backtrace_exclude_patterns")
+        backtrace_exclude_patterns
+      end
+
+      def backtrace_clean_patterns=(patterns)
+        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
+                        "RSpec::Core::Configuration#backtrace_exclude_patterns")
+        backtrace_exclude_patterns = patterns
+        recreate_backtrace_cleaner
+      end
+
+      def backtrace_include_patterns
+        @backtrace_include_patterns
+      end
+
+      def backtrace_include_patterns=(patterns)
+        @backtrace_include_patterns = patterns
+        recreate_backtrace_cleaner
+      end
+
+      def backtrace_exclude_patterns
+        @backtrace_exclude_patterns
+      end
+
+      def backtrace_exclude_patterns=(patterns)
+        @backtrace_exclude_patterns = patterns
+        recreate_backtrace_cleaner
       end
 
       # Sets the mock framework adapter module.
@@ -428,7 +464,7 @@ MESSAGE
       end
 
       def full_backtrace=(true_or_false)
-        @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
+        @backtrace_exclude_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
       end
 
       def color(output=output_stream)
@@ -944,6 +980,10 @@ EOM
       end
 
     private
+
+      def recreate_backtrace_cleaner
+        @backtrace_cleaner = BacktraceCleaner.new(@backtrace_include_patterns, @backtrace_exclude_patterns)
+      end
 
       def get_files_to_run(paths)
         patterns = pattern.split(",")

@@ -962,6 +962,14 @@ module RSpec::Core
       end
     end
 
+    describe "#backtrace_clean_patterns" do
+      it "is deprecated" do
+        RSpec.should_receive(:warn_deprecation)
+        config = Configuration.new
+        config.backtrace_clean_patterns
+      end
+    end
+
     describe "#cleaned_from_backtrace? defaults" do
       it "returns true for rspec files" do
         expect(config.cleaned_from_backtrace?("lib/rspec/core.rb")).to be_true
