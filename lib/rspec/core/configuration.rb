@@ -90,8 +90,8 @@ MESSAGE
       # To override this behavior and display a full backtrace, use
       # `--backtrace` on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
-      add_setting :backtrace_exclude_patterns
-      add_setting :backtrace_include_patterns
+      add_setting :backtrace_exclusion_patterns
+      add_setting :backtrace_inclusion_patterns
 
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
