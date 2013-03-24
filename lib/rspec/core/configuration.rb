@@ -284,15 +284,6 @@ MESSAGE
         send("#{name}=", default) if default
       end
 
-      # Used by formatters to ask whether a backtrace line should be displayed
-      # or not, based on the line matching any `backtrace_clean_patterns`.
-      def cleaned_from_backtrace?(line)
-        # TODO (David 2011-12-25) why are we asking the configuration to do
-        # stuff? Either use the patterns directly or enapsulate the filtering
-        # in a BacktraceCleaner object.
-        RSpec::Core::BacktraceCleaner.new(backtrace_include_patterns, backtrace_clean_patterns).exclude?(line)
-      end
-
       # Returns the configured mock framework adapter module
       def mock_framework
         mock_with :rspec unless @mock_framework

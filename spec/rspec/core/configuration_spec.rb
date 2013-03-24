@@ -970,29 +970,29 @@ module RSpec::Core
       end
     end
 
-    describe "#cleaned_from_backtrace? defaults" do
+    describe ".backtrace_cleaner#exclude? defaults" do
       it "returns true for rspec files" do
-        expect(config.cleaned_from_backtrace?("lib/rspec/core.rb")).to be_true
+        expect(config.backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_true
       end
 
       it "returns true for spec_helper" do
-        expect(config.cleaned_from_backtrace?("spec/spec_helper.rb")).to be_true
+        expect(config.backtrace_cleaner.exclude?("spec/spec_helper.rb")).to be_true
       end
 
       it "returns true for java files (for JRuby)" do
-        expect(config.cleaned_from_backtrace?("org/jruby/RubyArray.java:2336")).to be_true
+        expect(config.backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_true
       end
 
       it "returns true for files within installed gems" do
-        expect(config.cleaned_from_backtrace?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_true
+        expect(config.backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_true
       end
 
       it "returns false for files in projects containing 'gems' in the name" do
-        expect(config.cleaned_from_backtrace?('code/my-gems-plugin/lib/plugin.rb')).to be_false
+        expect(config.backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_false
       end
 
       it "returns false for something in the current working directory" do
-        expect(config.cleaned_from_backtrace?("#{Dir.getwd}/arbitrary")).to be_false
+        expect(config.backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_false
       end
     end
 
