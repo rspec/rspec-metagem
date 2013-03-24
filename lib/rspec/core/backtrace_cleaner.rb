@@ -11,11 +11,17 @@ module RSpec
       end
 
       def include?(line)
-        if @include_patterns.any? {|p| line =~ p}
-          return true
-        else
-          return not(@discard_patterns.any? {|p| line =~ p})
-        end
+        matches_an_include_pattern? line or not matches_a_discard_pattern? line
+      end
+
+      private
+
+      def matches_an_include_pattern?(line)
+        @include_patterns.any? {|p| line =~ p}
+      end
+
+      def matches_a_discard_pattern?(line)
+        @discard_patterns.any? {|p| line =~ p}
       end
     end
   end
