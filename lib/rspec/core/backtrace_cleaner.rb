@@ -11,7 +11,7 @@ module RSpec
       end
 
       def include?(line)
-        matches_an_include_pattern? line or not matches_a_exclude_pattern? line
+        matches_an_include_pattern? line or not matches_an_exclude_pattern? line
       end
 
       private
@@ -20,7 +20,7 @@ module RSpec
         @include_patterns.any? {|p| line =~ p}
       end
 
-      def matches_a_exclude_pattern?(line)
+      def matches_an_exclude_pattern?(line)
         @exclude_patterns.any? {|p| line =~ p}
       end
     end
