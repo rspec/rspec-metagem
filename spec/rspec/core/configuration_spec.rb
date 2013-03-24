@@ -982,6 +982,10 @@ module RSpec::Core
       it "returns false for files in projects containing 'gems' in the name" do
         expect(config.cleaned_from_backtrace?('code/my-gems-plugin/lib/plugin.rb')).to be_false
       end
+
+      it "returns false for something in the current working directory" do
+        expect(config.cleaned_from_backtrace?("#{Dir.getwd}/arbitrary")).to be_false
+      end
     end
 
     describe "#debug=true" do

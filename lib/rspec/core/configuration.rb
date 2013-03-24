@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'rspec/core/backtrace_cleaner'
 require 'rspec/core/ruby_project'
 
 module RSpec
@@ -90,6 +91,7 @@ MESSAGE
       # `--backtrace` on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
       add_setting :backtrace_clean_patterns
+      add_setting :backtrace_include_patterns
 
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
@@ -202,6 +204,7 @@ MESSAGE
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
         @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
+        @backtrace_include_patterns = [Regexp.new(Dir.getwd)]
         @default_path = 'spec'
         @filter_manager = FilterManager.new
         @preferred_options = {}
@@ -282,7 +285,7 @@ MESSAGE
         # TODO (David 2011-12-25) why are we asking the configuration to do
         # stuff? Either use the patterns directly or enapsulate the filtering
         # in a BacktraceCleaner object.
-        backtrace_clean_patterns.any? { |regex| line =~ regex }
+        not RSpec::Core::BacktraceCleaner.new(backtrace_include_patterns, backtrace_clean_patterns).include?(line)
       end
 
       # Returns the configured mock framework adapter module
