@@ -285,7 +285,7 @@ MESSAGE
         # TODO (David 2011-12-25) why are we asking the configuration to do
         # stuff? Either use the patterns directly or enapsulate the filtering
         # in a BacktraceCleaner object.
-        not RSpec::Core::BacktraceCleaner.new(backtrace_include_patterns, backtrace_clean_patterns).include?(line)
+        RSpec::Core::BacktraceCleaner.new(backtrace_include_patterns, backtrace_clean_patterns).exclude?(line)
       end
 
       # Returns the configured mock framework adapter module

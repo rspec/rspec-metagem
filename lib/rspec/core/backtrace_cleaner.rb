@@ -10,18 +10,8 @@ module RSpec
         @exclude_patterns = exclude_patterns
       end
 
-      def include?(line)
-        matches_an_include_pattern? line or not matches_an_exclude_pattern? line
-      end
-
-      private
-
-      def matches_an_include_pattern?(line)
-        @include_patterns.any? {|p| line =~ p}
-      end
-
-      def matches_an_exclude_pattern?(line)
-        @exclude_patterns.any? {|p| line =~ p}
+      def exclude?(line)
+        @include_patterns.none? {|p| line =~ p} and @exclude_patterns.any? {|p| line =~ p}
       end
     end
   end
