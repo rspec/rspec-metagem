@@ -33,7 +33,7 @@ module RSpec::Core
         expect(cleaner.exclude? "hi").to be_false
       end
 
-      it "keeps lines that do not match the keep pattern, but do not match a discard pattern" do
+      it "keeps lines that match neither pattern" do
         cleaner = BacktraceCleaner.new([/hi/], [/delete/])
         expect(cleaner.exclude? "fish").to be_false
       end
