@@ -2,8 +2,8 @@ module RSpec
   module Core
     class BacktraceCleaner
 
-      DEFAULT_INCLUDE_PATTERNS = [Regexp.new(Dir.getwd)]
-      DEFAULT_EXCLUDE_PATTERNS = [
+      DEFAULT_INCLUSION_PATTERNS = [Regexp.new(Dir.getwd)]
+      DEFAULT_EXCLUSION_PATTERNS = [
         /\/lib\d*\/ruby\//,
         /org\/jruby\//,
         /bin\//,
@@ -12,20 +12,20 @@ module RSpec
         /lib\/rspec\/(core|expectations|matchers|mocks)/
       ]
 
-      attr_accessor :include_patterns
-      attr_accessor :exclude_patterns
+      attr_accessor :inclusion_patterns
+      attr_accessor :exclusion_patterns
 
-      def initialize(include_patterns=DEFAULT_INCLUDE_PATTERNS, exclude_patterns=DEFAULT_EXCLUDE_PATTERNS.dup)
-        @include_patterns = include_patterns
-        @exclude_patterns = exclude_patterns
+      def initialize(inclusion_patterns=DEFAULT_INCLUSION_PATTERNS.dup, exclusion_patterns=DEFAULT_EXCLUSION_PATTERNS.dup)
+        @inclusion_patterns = inclusion_patterns
+        @exclusion_patterns = exclusion_patterns
       end
 
       def exclude?(line)
-        @include_patterns.none? {|p| line =~ p} and @exclude_patterns.any? {|p| line =~ p}
+        @inclusion_patterns.none? {|p| line =~ p} and @exclusion_patterns.any? {|p| line =~ p}
       end
 
       def full_backtrace=(true_or_false)
-        @exclude_patterns = true_or_false ? [] : DEFAULT_EXCLUDE_PATTERNS
+        @exclusion_patterns = true_or_false ? [] : DEFAULT_EXCLUSION_PATTERNS.dup
       end
     end
   end

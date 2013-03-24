@@ -286,30 +286,30 @@ MESSAGE
 
       def backtrace_clean_patterns
         RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        "RSpec::Core::Configuration#backtrace_exclude_patterns")
-        @backtrace_cleaner.exclude_patterns
+                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+        @backtrace_cleaner.exclusion_patterns
       end
 
       def backtrace_clean_patterns=(patterns)
         RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        "RSpec::Core::Configuration#backtrace_exclude_patterns")
-        @backtrace_cleaner.exclude_patterns = patterns
+                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+        @backtrace_cleaner.exclusion_patterns = patterns
       end
 
-      def backtrace_include_patterns
-        @backtrace_cleaner.include_patterns
+      def backtrace_inclusion_patterns
+        @backtrace_cleaner.inclusion_patterns
       end
 
-      def backtrace_include_patterns=(patterns)
-        @backtrace_cleaner.include_patterns = patterns
+      def backtrace_inclusion_patterns=(patterns)
+        @backtrace_cleaner.inclusion_patterns = patterns
       end
 
-      def backtrace_exclude_patterns
-        @backtrace_cleaner.exclude_patterns
+      def backtrace_exclusion_patterns
+        @backtrace_cleaner.exclusion_patterns
       end
 
-      def backtrace_exclude_patterns=(patterns)
-        @backtrace_cleaner.exclude_patterns = patterns
+      def backtrace_exclusion_patterns=(patterns)
+        @backtrace_cleaner.exclusion_patterns = patterns
       end
 
       # Sets the mock framework adapter module.

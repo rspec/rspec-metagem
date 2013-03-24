@@ -949,7 +949,7 @@ module RSpec::Core
       context "given false" do
         it "restores backtrace clean patterns" do
           config.full_backtrace = false
-          expect(config.backtrace_clean_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUDE_PATTERNS)
+          expect(config.backtrace_clean_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS)
         end
       end
 
