@@ -44,7 +44,7 @@ module RSpec
 
         def dump_summary(duration, example_count, failure_count, pending_count)
           super(duration, example_count, failure_count, pending_count)
-          dump_profile if profile_examples?
+          dump_profile unless mute_profile_output?(failure_count)
           output.puts "\nFinished in #{format_duration(duration)}\n"
           output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
           dump_commands_to_rerun_failed_examples

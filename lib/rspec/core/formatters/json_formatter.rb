@@ -28,8 +28,7 @@ module RSpec
           }
           @output_hash[:summary_line] = summary_line(example_count, failure_count, pending_count)
 
-          # Don't print out profiled info if there are failures, it just clutters the output
-          dump_profile if profile_examples? && failure_count == 0
+          dump_profile unless mute_profile_output?(failure_count)
         end
 
         def summary_line(example_count, failure_count, pending_count)
