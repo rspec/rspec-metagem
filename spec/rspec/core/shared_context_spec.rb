@@ -40,7 +40,7 @@ describe RSpec::SharedContext do
       c.before(:each) { ordered_hooks << "config" }
     end
 
-    RSpec.world.shared_context "before each stuff", :example => :before_each_hook_order do
+    shared_context("before each stuff", :example => :before_each_hook_order) do
       before(:each) { ordered_hooks << "shared_context"}
     end
 
@@ -51,9 +51,7 @@ describe RSpec::SharedContext do
 
     group.run
 
-    pending "Issue #632" do
-      ordered_hooks.should == ["config", "shared_context", "example_group"]
-    end
+    expect(ordered_hooks).to be == ["config", "shared_context", "example_group"]
   end
 
   it "supports let" do
