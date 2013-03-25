@@ -940,16 +940,16 @@ module RSpec::Core
 
     describe "#full_backtrace=" do
       context "given true" do
-        it "clears the backtrace clean patterns" do
+        it "clears the backtrace exclusion patterns" do
           config.full_backtrace = true
-          expect(config.backtrace_clean_patterns).to eq([])
+          expect(config.backtrace_exclusion_patterns).to eq([])
         end
       end
 
       context "given false" do
         it "restores backtrace clean patterns" do
           config.full_backtrace = false
-          expect(config.backtrace_clean_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS)
+          expect(config.backtrace_exclusion_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS)
         end
       end
 
@@ -958,12 +958,13 @@ module RSpec::Core
         config_2 = Configuration.new
 
         config_1.full_backtrace = true
-        expect(config_2.backtrace_clean_patterns).not_to be_empty
+        expect(config_2.backtrace_exclusion_patterns).not_to be_empty
       end
     end
 
     describe "#backtrace_clean_patterns=" do
       it "actually receives the new filter values" do
+        RSpec.stub(:warn_deprecation)
         config = Configuration.new
         config.backtrace_clean_patterns = [/.*/]
         expect(config.backtrace_cleaner.exclude? "this").to be_true
@@ -972,12 +973,14 @@ module RSpec::Core
 
     describe "#backtrace_clean_patterns" do
       it "is deprecated" do
+        RSpec.stub(:warn_deprecation)
         RSpec.should_receive(:warn_deprecation)
         config = Configuration.new
         config.backtrace_clean_patterns
       end
 
       it "can be appended to" do
+        RSpec.stub(:warn_deprecation)
         config = Configuration.new
         config.backtrace_clean_patterns << /.*/
         expect(config.backtrace_cleaner.exclude? "this").to be_true
