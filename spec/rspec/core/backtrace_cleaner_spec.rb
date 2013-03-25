@@ -38,5 +38,19 @@ module RSpec::Core
         expect(cleaner.exclude? "fish").to be_false
       end
     end
+
+    context "with an exclusion pattern that matches the current working directory" do
+      it "defaults to having one inclusion pattern, the current working directory" do
+        cleaner = BacktraceCleaner.new(nil, [/.*/])
+        expect(Dir.getwd =~ cleaner.inclusion_patterns.first).to be_true
+      end
+    end
+
+    context "with an exclusion pattern that does not match the current working directory" do
+      it "defaults to having no exclusion patterns" do
+        cleaner = BacktraceCleaner.new(nil, [/i_wont_match_a_directory/])
+        expect(cleaner.inclusion_patterns.length).to be_zero
+      end
+    end
   end
 end
