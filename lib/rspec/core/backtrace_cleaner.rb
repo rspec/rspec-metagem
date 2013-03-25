@@ -18,8 +18,7 @@ module RSpec
         @exclusion_patterns = exclusion_patterns
 
         if inclusion_patterns.nil?
-          @inclusion_patterns = (matches_an_exclusion_pattern? Dir.getwd) ? [Regexp.new(Dir.getwd)]
-                                                                          : []
+          @inclusion_patterns = (matches_an_exclusion_pattern? Dir.getwd) ? [Regexp.new(Dir.getwd)] : []
         else
           @inclusion_patterns = inclusion_patterns
         end
