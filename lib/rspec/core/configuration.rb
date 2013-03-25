@@ -82,16 +82,6 @@ MESSAGE
 
       # @macro [attach] add_setting
       #   @attribute $1
-      # Patterns to match against lines in backtraces presented in failure
-      # messages in order to filter them out (default:
-      # DEFAULT_BACKTRACE_PATTERNS).  You can either replace this list using
-      # the setter or modify it using the getter.
-      #
-      # To override this behavior and display a full backtrace, use
-      # `--backtrace` on the command line, in a `.rspec` file, or in the
-      # `rspec_options` attribute of RSpec's rake task.
-      add_setting :backtrace_exclusion_patterns
-      add_setting :backtrace_inclusion_patterns
 
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
@@ -284,6 +274,17 @@ MESSAGE
         mock_with framework
       end
 
+      # The patterns to discard from backtraces. Deprecated, use
+      # Configuration#backtrace_exclusion_patterns instead
+      #
+      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
+      #
+      # To override this behaviour and display a full backtrace, use
+      # `--backtrace`on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
       def backtrace_clean_patterns
         RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
                         "RSpec::Core::Configuration#backtrace_exclusion_patterns")
@@ -296,6 +297,13 @@ MESSAGE
         @backtrace_cleaner.exclusion_patterns = patterns
       end
 
+      # The patterns to always include to backtraces.
+      #
+      # Defaults to [Regexp.new Dir.getwd] if the current working directory
+      # matches any of the exclusion patterns. Otherwise it defaults to empty.
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
       def backtrace_inclusion_patterns
         @backtrace_cleaner.inclusion_patterns
       end
@@ -304,6 +312,16 @@ MESSAGE
         @backtrace_cleaner.inclusion_patterns = patterns
       end
 
+      # The patterns to discard from backtraces.
+      #
+      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
+      #
+      # To override this behaviour and display a full backtrace, use
+      # `--backtrace`on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
       def backtrace_exclusion_patterns
         @backtrace_cleaner.exclusion_patterns
       end
