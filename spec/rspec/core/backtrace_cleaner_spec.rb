@@ -10,25 +10,25 @@ module RSpec::Core
       end
     end
 
-    context "with a discard pattern but no keep patterns" do
-      it "discards lines that match the discard pattern" do
+    context "with an exclusion pattern but no inclusion patterns" do
+      it "excludes lines that match the exclusion pattern" do
         cleaner = BacktraceCleaner.new([], [/remove/])
         expect(cleaner.exclude? "remove me").to be_true
       end
 
-      it "keeps lines that do not match the discard pattern" do
+      it "keeps lines that do not match the exclusion pattern" do
         cleaner = BacktraceCleaner.new([], [/remove/])
         expect(cleaner.exclude? "apple").to be_false
       end
     end
 
-    context "with a discard pattern and a keep pattern" do
-      it "discards lines that match the discard pattern but not the keep pattern" do
+    context "with an exclusion pattern and an inclusion pattern" do
+      it "excludes lines that match the exclusion pattern but not the inclusion pattern" do
         cleaner = BacktraceCleaner.new([/keep/], [/discard/])
         expect(cleaner.exclude? "discard").to be_true
       end
 
-      it "keeps lines that match the keep pattern and the discard pattern" do
+      it "keeps lines that match the inclusion pattern and the exclusion pattern" do
         cleaner = BacktraceCleaner.new([/hi/], [/.*/])
         expect(cleaner.exclude? "hi").to be_false
       end
