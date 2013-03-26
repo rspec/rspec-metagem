@@ -28,6 +28,9 @@ Bug fixes
   that folks who develop code in a directory matching one of the default
   exclusion patterns (e.g. `gems`) still get the normal backtrace
   filtering (Sam Phippen).
+* Fix ordering of `before` hooks so that `before` hooks declared in
+  `RSpec.configure` run before `before` hooks declared in a shared
+  context (Michi Huber and Tejas Dinkar).
 
 Deprecations
 
