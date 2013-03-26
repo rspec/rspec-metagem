@@ -116,7 +116,7 @@ module RSpec
       end
 
       def options_file_as_erb_string(path)
-        ERB.new(File.read(path)).result(binding)
+        ERB.new(File.read(path), nil, '-').result(binding)
       end
 
       def custom_options_file
