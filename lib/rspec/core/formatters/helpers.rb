@@ -18,7 +18,7 @@ module RSpec
     protected
 
       def backtrace_line(line)
-        return nil if RSpec.configuration.cleaned_from_backtrace?(line)
+        return nil if RSpec.configuration.backtrace_cleaner.exclude?(line)
         RSpec::Core::Metadata::relative_path(line)
       rescue SecurityError
         nil

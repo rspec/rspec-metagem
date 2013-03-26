@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'rspec/core/backtrace_cleaner'
 require 'rspec/core/ruby_project'
 
 module RSpec
@@ -81,15 +82,6 @@ MESSAGE
 
       # @macro [attach] add_setting
       #   @attribute $1
-      # Patterns to match against lines in backtraces presented in failure
-      # messages in order to filter them out (default:
-      # DEFAULT_BACKTRACE_PATTERNS).  You can either replace this list using
-      # the setter or modify it using the getter.
-      #
-      # To override this behavior and display a full backtrace, use
-      # `--backtrace` on the command line, in a `.rspec` file, or in the
-      # `rspec_options` attribute of RSpec's rake task.
-      add_setting :backtrace_clean_patterns
 
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
@@ -183,14 +175,7 @@ MESSAGE
       # @private
       attr_accessor :filter_manager
 
-      DEFAULT_BACKTRACE_PATTERNS = [
-        /\/lib\d*\/ruby\//,
-        /org\/jruby\//,
-        /bin\//,
-        %r|/gems/|,
-        /spec\/spec_helper\.rb/,
-        /lib\/rspec\/(core|expectations|matchers|mocks)/
-      ]
+      attr_reader :backtrace_cleaner
 
       def initialize
         @expectation_frameworks = []
@@ -201,7 +186,9 @@ MESSAGE
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
-        @backtrace_clean_patterns = DEFAULT_BACKTRACE_PATTERNS.dup
+
+        @backtrace_cleaner = BacktraceCleaner.new
+
         @default_path = 'spec'
         @filter_manager = FilterManager.new
         @preferred_options = {}
@@ -276,15 +263,6 @@ MESSAGE
         send("#{name}=", default) if default
       end
 
-      # Used by formatters to ask whether a backtrace line should be displayed
-      # or not, based on the line matching any `backtrace_clean_patterns`.
-      def cleaned_from_backtrace?(line)
-        # TODO (David 2011-12-25) why are we asking the configuration to do
-        # stuff? Either use the patterns directly or enapsulate the filtering
-        # in a BacktraceCleaner object.
-        backtrace_clean_patterns.any? { |regex| line =~ regex }
-      end
-
       # Returns the configured mock framework adapter module
       def mock_framework
         mock_with :rspec unless @mock_framework
@@ -294,6 +272,62 @@ MESSAGE
       # Delegates to mock_framework=(framework)
       def mock_framework=(framework)
         mock_with framework
+      end
+
+      # The patterns to discard from backtraces. Deprecated, use
+      # Configuration#backtrace_exclusion_patterns instead
+      #
+      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
+      #
+      # To override this behaviour and display a full backtrace, use
+      # `--backtrace`on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
+      def backtrace_clean_patterns
+        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
+                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+        @backtrace_cleaner.exclusion_patterns
+      end
+
+      def backtrace_clean_patterns=(patterns)
+        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
+                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+        @backtrace_cleaner.exclusion_patterns = patterns
+      end
+
+      # The patterns to always include to backtraces.
+      #
+      # Defaults to [Regexp.new Dir.getwd] if the current working directory
+      # matches any of the exclusion patterns. Otherwise it defaults to empty.
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
+      def backtrace_inclusion_patterns
+        @backtrace_cleaner.inclusion_patterns
+      end
+
+      def backtrace_inclusion_patterns=(patterns)
+        @backtrace_cleaner.inclusion_patterns = patterns
+      end
+
+      # The patterns to discard from backtraces.
+      #
+      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
+      #
+      # One can replace the list by using the setter or modify it through the
+      # getter
+      #
+      # To override this behaviour and display a full backtrace, use
+      # `--backtrace`on the command line, in a `.rspec` file, or in the
+      # `rspec_options` attribute of RSpec's rake task.
+      def backtrace_exclusion_patterns
+        @backtrace_cleaner.exclusion_patterns
+      end
+
+      def backtrace_exclusion_patterns=(patterns)
+        @backtrace_cleaner.exclusion_patterns = patterns
       end
 
       # Sets the mock framework adapter module.
@@ -425,7 +459,7 @@ MESSAGE
       end
 
       def full_backtrace=(true_or_false)
-        @backtrace_clean_patterns = true_or_false ? [] : DEFAULT_BACKTRACE_PATTERNS
+        @backtrace_cleaner.full_backtrace = true_or_false
       end
 
       def color(output=output_stream)

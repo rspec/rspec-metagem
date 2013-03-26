@@ -33,6 +33,7 @@ module RSpec
           out.set_encoding("utf-8") if out.respond_to?(:set_encoding)
 
           command_line = RSpec::Core::CommandLine.new(options)
+          command_line.instance_variable_get("@configuration").backtrace_cleaner.inclusion_patterns = []
           command_line.run(err, out)
           out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
         end
