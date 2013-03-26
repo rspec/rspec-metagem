@@ -36,7 +36,7 @@ Deprecations
 
 * Deprecate `Configuration#backtrace_clean_patterns` in favor of
   `Configuration#backtrace_exclusion_patterns` for greater consistency
-  and symmetry with new `backtrace_inclusion_patterns` config optio
+  and symmetry with new `backtrace_inclusion_patterns` config option
   (Sam Phippen).
 
 ### 2.13.1 / 2013-03-12
