@@ -11,6 +11,9 @@ Enhancements
   directory (John Feminella).
 * Add some logic to test time duration precision. Make it a
   function of time, dropping precision as the time increases. (Aaron Kromer)
+* Add new `backtrace_inclusion_patterns` config option. Backtrace lines
+  that match one of these patterns will _always_ be included in the
+  backtrace, even if they match an exclusion pattern, too (Sam Phippen).
 
 Bug fixes
 
@@ -21,6 +24,17 @@ Bug fixes
   declared value (Myron Marston).
 * Fix random ordering so that it does not cause `rand` in examples in
   nested sibling contexts to return the same value (Max Shytikov).
+* Use the new `backtrace_inclusion_patterns` config option to ensure
+  that folks who develop code in a directory matching one of the default
+  exclusion patterns (e.g. `gems`) still get the normal backtrace
+  filtering (Sam Phippen).
+
+Deprecations
+
+* Deprecate `Configuration#backtrace_clean_patterns` in favor of
+  `Configuration#backtrace_exclusion_patterns` for greater consistency
+  and symmetry with new `backtrace_inclusion_patterns` config optio
+  (Sam Phippen).
 
 ### 2.13.1 / 2013-03-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.13.0...v2.13.1)
