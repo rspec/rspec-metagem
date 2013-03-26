@@ -287,8 +287,8 @@ module RSpec
         args << build_metadata_hash_from(args)
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
-        world.configure_group(self)
         hooks.register_globals(self, RSpec.configuration.hooks)
+        world.configure_group(self)
       end
 
       # @private
