@@ -27,6 +27,10 @@ module RSpec
         expect(5.5).to be_within(0.5).of(5.0)
       end
 
+      it "passes with integer arguments that are near each other" do
+        expect(1.0001).to be_within(5).percent_of(1)
+      end
+
       it "fails when actual < (expected - delta)" do
         expect {
           expect(4.49).to be_within(0.5).of(5.0)
