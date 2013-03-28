@@ -22,7 +22,12 @@ module RSpec
         end
 
         before do
-          RSpec.configuration.stub(:backtrace_clean_patterns) { [/clean-me/] }
+          @old_patterns = RSpec.configuration.backtrace_exclusion_patterns
+          RSpec.configuration.backtrace_exclusion_patterns = [/clean-me/]
+        end
+
+        after do
+          RSpec.configuration.backtrace_exclusion_patterns = @old_patterns
         end
 
         it "defaults to rspec-core's backtrace formatter when rspec-core is loaded" do
