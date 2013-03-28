@@ -4,8 +4,8 @@ describe Object, "#should" do
   before(:each) do
     @target = "target"
     @matcher = double("matcher")
-    @matcher.stub!(:matches?).and_return(true)
-    @matcher.stub!(:failure_message_for_should)
+    @matcher.stub(:matches?).and_return(true)
+    @matcher.stub(:failure_message_for_should)
   end
 
   it "accepts and interacts with a matcher" do
@@ -52,7 +52,7 @@ describe Object, "#should_not" do
 
   it "accepts and interacts with a matcher" do
     @matcher.should_receive(:matches?).with(@target).and_return(false)
-    @matcher.stub!(:failure_message_for_should_not)
+    @matcher.stub(:failure_message_for_should_not)
 
     expect(@target).not_to @matcher
   end

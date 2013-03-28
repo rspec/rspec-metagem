@@ -119,7 +119,7 @@ module RSpec
         it "asks the matcher if it matches when the matcher doesn't respond to #does_not_match?" do
           matcher = double("matcher")
           actual = Object.new
-          matcher.stub!(:negative_failure_message)
+          matcher.stub(:negative_failure_message)
           matcher.should_receive(:matches?).with(actual).and_return(false)
           RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
         end
@@ -128,7 +128,7 @@ module RSpec
           matcher = double("matcher")
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(false)
-          matcher.stub!(:negative_failure_message).and_return("ignore")
+          matcher.stub(:negative_failure_message).and_return("ignore")
           expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_false
         end
 
