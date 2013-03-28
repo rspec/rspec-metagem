@@ -7,6 +7,8 @@ Enhancements
   number of times: `expect { }.to yield_control.exactly(3).times`,
   `expect { }.to yield_control.at_least(2).times`, etc (Bartek
   Borkowski).
+* Make the differ that is used when an expectation fails better handle arrays
+  by splitting each element of the array onto its own line. (Sam Phippen)
 
 Bug fixes
 
