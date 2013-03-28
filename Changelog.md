@@ -12,6 +12,8 @@ Bug fixes
 
 * Fix differ to not raise errors when dealing with differently-encoded
   strings (Jon Rowe).
+* Fix `expect(something).to be_within(x).percent_of(y)` where x and y are both
+  integers (Sam Phippen).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
