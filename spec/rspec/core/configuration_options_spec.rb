@@ -380,7 +380,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
 
     it "parses options file correctly if erb code has trimming options" do
       File.open("./.rspec", "w") do |f|
-        f << "<% if 1 == 1 -%>\n"
+        f << "<% if true -%>\n"
         f << "--format local\n"
         f << "<%- end %>\n"
       end
