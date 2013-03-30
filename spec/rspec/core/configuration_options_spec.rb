@@ -385,9 +385,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
         f << "<%- end %>\n"
       end
 
-      expect do
-        expect(parse_options[:formatters]).to eq([['local']])
-      end.to_not raise_error(SyntaxError)
+      expect(parse_options[:formatters]).to eq([['local']])
     end
 
     context "with custom options file" do
