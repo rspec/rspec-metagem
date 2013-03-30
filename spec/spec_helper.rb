@@ -35,37 +35,37 @@ Spork.prefork do
     end
   end
 
-  def sandboxed(&block)
-    @orig_config = RSpec.configuration
-    @orig_world  = RSpec.world
-    new_config = RSpec::Core::Configuration.new
-    new_world  = RSpec::Core::World.new(new_config)
-    RSpec.instance_variable_set(:@configuration, new_config)
-    RSpec.instance_variable_set(:@world, new_world)
-    object = Object.new
-    object.extend(RSpec::Core::SharedExampleGroup)
+  module Sandboxing
+    def self.sandboxed(&block)
+      @orig_config = RSpec.configuration
+      @orig_world  = RSpec.world
+      new_config = RSpec::Core::Configuration.new
+      new_world  = RSpec::Core::World.new(new_config)
+      RSpec.instance_variable_set(:@configuration, new_config)
+      RSpec.instance_variable_set(:@world, new_world)
+      object = Object.new
+      object.extend(RSpec::Core::SharedExampleGroup)
 
-    (class << RSpec::Core::ExampleGroup; self; end).class_eval do
-      alias_method :orig_run, :run
-      def run(reporter=nil)
-        @orig_mock_space = RSpec::Mocks::space
-        RSpec::Mocks::space = RSpec::Mocks::Space.new
-        orig_run(reporter || NullObject.new)
-      ensure
-        RSpec::Mocks::space = @orig_mock_space
+      (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+        alias_method :orig_run, :run
+        def run(reporter=nil)
+          orig_run(reporter || NullObject.new)
+        end
       end
-    end
 
-    object.instance_eval(&block)
-  ensure
-    (class << RSpec::Core::ExampleGroup; self; end).class_eval do
-      remove_method :run
-      alias_method :run, :orig_run
-      remove_method :orig_run
-    end
+      RSpec::Core::SandboxedMockSpace.sandboxed do
+        object.instance_eval(&block)
+      end
+    ensure
+      (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+        remove_method :run
+        alias_method :run, :orig_run
+        remove_method :orig_run
+      end
 
-    RSpec.instance_variable_set(:@configuration, @orig_config)
-    RSpec.instance_variable_set(:@world, @orig_world)
+      RSpec.instance_variable_set(:@configuration, @orig_config)
+      RSpec.instance_variable_set(:@world, @orig_world)
+    end
   end
 
   def in_editor?
@@ -99,7 +99,7 @@ Spork.prefork do
   RSpec.configure do |c|
     # structural
     c.alias_it_behaves_like_to 'it_has_behavior'
-    c.around {|example| sandboxed { example.run }}
+    c.around {|example| Sandboxing.sandboxed { example.run }}
     c.include(RSpecHelpers)
     c.include Aruba::Api, :example_group => {
       :file_path => /spec\/command_line/
