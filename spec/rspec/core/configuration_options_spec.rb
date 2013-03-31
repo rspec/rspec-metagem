@@ -378,6 +378,16 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       expect(parse_options[:formatters]).to eq([['local']])
     end
 
+    it "parses options file correctly if erb code has trimming options" do
+      File.open("./.rspec", "w") do |f|
+        f << "<% if true -%>\n"
+        f << "--format local\n"
+        f << "<%- end %>\n"
+      end
+
+      expect(parse_options[:formatters]).to eq([['local']])
+    end
+
     context "with custom options file" do
       it "ignores project and global options files" do
         File.open("./.rspec", "w") {|f| f << "--format project"}
