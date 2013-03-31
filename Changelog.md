@@ -14,6 +14,8 @@ Enhancements
 * Add new `backtrace_inclusion_patterns` config option. Backtrace lines
   that match one of these patterns will _always_ be included in the
   backtrace, even if they match an exclusion pattern, too (Sam Phippen).
+* Support ERB trim mode using the `-` when parsing `.rspec` as ERB
+  (Gabor Garami).
 
 Bug fixes
 
