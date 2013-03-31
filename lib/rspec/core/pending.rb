@@ -92,6 +92,7 @@ module RSpec
             result = begin
                        yield
                        example.example_group_instance.instance_eval { verify_mocks_for_rspec }
+                       true
                      end
             example.metadata[:pending] = false
           rescue Exception => e
