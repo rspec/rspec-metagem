@@ -23,5 +23,12 @@ module RSpec
     def warn_deprecation(message)
       warn message
     end
+
+    # @private
+    #
+    # Used internally to send deprecation warnings to io
+    def warn(message)
+      RSpec.configuration.deprecation_io.puts(message)
+    end
   end
 end

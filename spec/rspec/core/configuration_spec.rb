@@ -16,6 +16,24 @@ module RSpec::Core
       end
     end
 
+    describe '#deprecation_io' do
+      it 'defaults to standard error' do
+        expect(config.deprecation_io).to eq $stderr
+      end
+
+      it 'is configurable' do
+        io = double 'deprecation io'
+        config.deprecation_io = io
+        expect(config.deprecation_io).to eq io
+      end
+
+      it 'is used by warn_deprecation' do
+        message = double
+        RSpec.configuration.deprecation_io.should_receive(:puts).with(message)
+        RSpec.warn_deprecation message
+      end
+    end
+
     describe "#setup_load_path_and_require" do
       include_context "isolate load path mutation"
 
