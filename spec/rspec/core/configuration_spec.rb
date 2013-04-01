@@ -17,6 +17,7 @@ module RSpec::Core
     end
 
     describe '#deprecation_io' do
+
       it 'defaults to standard error' do
         expect(config.deprecation_io).to eq $stderr
       end
