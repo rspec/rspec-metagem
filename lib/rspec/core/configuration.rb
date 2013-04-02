@@ -87,10 +87,6 @@ MESSAGE
       # run all the examples in the `spec` directory.
       add_setting :default_path
 
-      # Set the io used for deprection warnings
-      # Defaults to $stderr
-      add_setting :deprecation_io
-
       # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
       # server, but you can use tools like spork.
       add_setting :drb
@@ -199,7 +195,7 @@ MESSAGE
         @backtrace_cleaner = BacktraceCleaner.new
 
         @default_path = 'spec'
-        @deprecation_io = $stderr
+        @deprecation_io = DeprecationIO.new
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
@@ -275,6 +271,13 @@ MESSAGE
         end
         send("#{name}=", default) if default
       end
+
+      # Set the io used for deprection warnings
+      # Defaults to $stderr
+      def deprecation_io=(value)
+        @deprecation_io.set_output value
+      end
+      attr_reader :deprecation_io
 
       # Returns the configured mock framework adapter module
       def mock_framework

@@ -136,5 +136,22 @@ module RSpec::Core
         expect(duration).to be < 0.2
       end
     end
+
+    describe 'deprecation warning' do
+      let(:reporter) { Reporter.new double.as_null_object }
+
+      it 'doesnt warn when no deprecations' do
+        RSpec.stub(:deprecations?).and_return(false)
+        reporter.should_not_receive(:warn)
+        reporter.finish 1234
+      end
+
+      it 'warns when it has deprecations' do
+        RSpec.stub(:deprecations?).and_return(true)
+        RSpec.stub(:deprecation_message).and_return("message")
+        reporter.should_receive(:warn).with("message")
+        reporter.finish 1234
+      end
+    end
   end
 end

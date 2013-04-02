@@ -7,6 +7,7 @@ module RSpec
         @count = 0
         @filename = 'STD_ERR'
       end
+      attr_reader :io, :filename
 
       def set_output(filename)
         @filename = filename

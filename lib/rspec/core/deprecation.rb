@@ -24,5 +24,20 @@ module RSpec
       RSpec.configuration.deprecation_io.puts(message)
     end
 
+    # @private
+    #
+    # Used internally to print the count of deprecation warnings
+    def deprecations?
+      RSpec.configuration.deprecation_io.deprecations > 0
+    end
+
+    # @private
+    #
+    # Used internally to print deprecation summary
+    def deprecation_message
+      io = RSpec.configuration.deprecation_io
+      "There were #{io.deprecations} deprecations logged to #{io.filename}"
+    end
+
   end
 end

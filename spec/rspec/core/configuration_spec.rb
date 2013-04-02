@@ -19,13 +19,13 @@ module RSpec::Core
     describe '#deprecation_io' do
 
       it 'defaults to standard error' do
-        expect(config.deprecation_io).to eq $stderr
+        expect(config.deprecation_io.io).to eq $stderr
       end
 
       it 'is configurable' do
         io = double 'deprecation io'
         config.deprecation_io = io
-        expect(config.deprecation_io).to eq io
+        expect(config.deprecation_io.filename).to eq io
       end
 
       it 'is used by warn_deprecation' do
