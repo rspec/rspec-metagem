@@ -5,9 +5,11 @@ module RSpec
       def initialize
         @io = $stderr
         @count = 0
+        @filename = 'STD_ERR'
       end
 
       def set_output(filename)
+        @filename = filename
         @io = File.open(filename,'w')
       end
 
