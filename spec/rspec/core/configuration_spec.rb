@@ -23,6 +23,7 @@ module RSpec::Core
       end
 
       it 'is configurable' do
+        File.stub(:open)
         io = double 'deprecation io'
         config.deprecation_io = io
         expect(config.deprecation_io.filename).to eq io
