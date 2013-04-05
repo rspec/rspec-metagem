@@ -524,7 +524,9 @@ module RSpec::Core
     end
 
     it 'raises a useful error when called without a block' do
-      ExampleGroup.describe { let(:list) }
+      expect do
+        ExampleGroup.describe { let(:list) }
+      end.to raise_error(/#let or #subject called without a block/)
     end
 
     let(:a_value) { "a string" }
