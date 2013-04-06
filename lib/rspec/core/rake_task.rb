@@ -137,24 +137,16 @@ module RSpec
         @pattern    = './spec{,/*/**}/*_spec.rb'
       end
 
-      def has_files?
-        empty = files_to_run.empty?
-        puts "No examples matching #{pattern} could be found" if empty
-        not empty
-      end
-
       def run_task(verbose)
-        files = has_files?
-        if files
-          command = spec_command
-          begin
-            puts command if verbose
-            success = system(command)
-          rescue
-            puts failure_message if failure_message
-          end
-          raise("#{command} failed") if fail_on_error unless success
+        command = spec_command
+
+        begin
+          puts command if verbose
+          success = system(command)
+        rescue
+          puts failure_message if failure_message
         end
+        raise("#{command} failed") if fail_on_error unless success
       end
 
     private
