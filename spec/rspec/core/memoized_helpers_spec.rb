@@ -523,6 +523,12 @@ module RSpec::Core
       expect("RegexWithCapture1".match(regex_with_capture)[1]).to eq('1')
     end
 
+    it 'raises a useful error when called without a block' do
+      expect do
+        ExampleGroup.describe { let(:list) }
+      end.to raise_error(/#let or #subject called without a block/)
+    end
+
     let(:a_value) { "a string" }
 
     context 'when overriding let in a nested context' do
