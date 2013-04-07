@@ -220,39 +220,44 @@ Feature: shared examples
         """
         1 example, 0 failures
         """
-  Scenario: Shared examples are specific to their context
+
+  Scenario: Shared examples are nested able by context
     Given a file named "context_specific_examples_spec.rb" with:
-      """
-      describe do
-        context "my context" do
-          shared_examples "is independant" do
-            specify { expect(subject).to eq "context" }
+      """Ruby
+      describe "shared examples" do
+        context "per context" do
+
+          shared_examples "shared examples are nestable" do
+            specify { expect(true).to eq true }
           end
 
-          subject { "context" }
-
-          it_should_behave_like "is independant"
-        end
-        context "another context" do
-          shared_examples "is independant" do
-            specify { expect(subject).to eq "another context" }
-          end
-
-          subject { "another context" }
-
-          it_should_behave_like "is independant"
-        end
-        context do
-          begin
-            it_should_behave_like "is independant"
-            fail "Shared examples should be dependant on context"
-          rescue ArgumentError
-          end
+          it_behaves_like "shared examples are nestable"
         end
       end
       """
     When I run `rspec context_specific_examples_spec.rb`
     Then the output should contain:
       """
-      2 examples, 0 failures
+      1 example, 0 failures
+      """
+
+  Scenario: Shared examples are isolated per context
+    Given a file named "isolated_shared_examples_spec.rb" with:
+      """Ruby
+      describe "shared examples" do
+        context do
+          shared_examples "shared examples are isolated" do
+            specify { expect(true).to eq true }
+          end
+        end
+
+        context do
+          it_behaves_like "shared examples are isolated"
+        end
+      end
+      """
+    When I run `rspec isolated_shared_examples_spec.rb`
+    Then the output should contain:
+      """
+      Could not find shared examples "shared examples are isolated"
       """
