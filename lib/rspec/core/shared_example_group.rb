@@ -46,11 +46,7 @@ module RSpec
       end
 
       def shared_example_groups
-        ancestors[1..-1].inject(my_shared_example_groups) { |mine,other| mine.merge other.shared_example_groups }
-      end
-
-      def my_shared_example_groups
-        @shared_example_groups ||= {}
+        ancestors[1..-1].inject(Registry.shared_example_groups(self)) { |mine,other| mine.merge Registry.shared_example_groups(other) }
       end
 
       # @private
@@ -105,10 +101,15 @@ module RSpec
           add_shared_example_group source, shared_const, block
         end
 
+        def shared_example_groups source
+          @shared_example_groups ||= {}
+          @shared_example_groups[source] ||= {}
+        end
+
       private
 
         def add_shared_example_group source, key, block
-          source.my_shared_example_groups[key] = block
+          shared_example_groups(source)[key] = block
         end
 
         def key? candidate
