@@ -30,7 +30,7 @@ module RSpec
       # @see ExampleGroup.include_context
       def shared_examples *args, &block
         context = self.is_a?(Class) ? self : self.class
-        Registry.add_group(context,*args, &block)
+        Registry.add_group(context, *args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -42,12 +42,13 @@ module RSpec
         RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
                         "RSpec::SharedContext or shared_examples")
         context = self.is_a?(Class) ? self : self.class
-        Registry.add_const(context,name, &block)
+        Registry.add_const(context, name, &block)
       end
 
       def shared_example_groups
         ancestors[1..-1].inject(my_shared_example_groups) { |mine,other| mine.merge other.shared_example_groups }
       end
+
       def my_shared_example_groups
         @shared_example_groups ||= {}
       end
