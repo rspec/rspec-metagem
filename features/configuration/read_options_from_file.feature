@@ -3,11 +3,14 @@ Feature: read command line configuration options from files
   RSpec reads command line configuration options from files in two different
   locations:
 
-    Local:  "./.rspec" (i.e. in the project's root directory)
-    Global: "~/.rspec" (i.e. in the user's home directory)
+    Local: `./.rspec-local` (i.e. in the project's root directory, can be gitignored)
+    Project:  `./.rspec` (i.e. in the project's root directory, usually checked into the project)
+    Global: `~/.rspec` (i.e. in the user's home directory)
 
-  Options declared in the local file override those in the global file, while
-  those declared in RSpec.configure will override any ".rspec" file.
+  Configuration options are loaded from `~/.rspec`, `.rspec`,
+  `.rspec-local`, command line switches, and the `SPEC_OPTS` environment
+  variable (listed in lowest to highest precedence; for example, an option
+  in `~/.rspec` can be overridden by an option in `.rspec-local`).
 
   Scenario: color set in .rspec
     Given a file named ".rspec" with:
