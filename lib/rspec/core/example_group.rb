@@ -124,6 +124,14 @@ module RSpec
           (class << self; self; end).define_example_method name, extra
         end
 
+        def alias_example_group_to(name, metadata={})
+          define_singleton_method(name) do |*args, &block|
+            combined_metadata = metadata.dup
+            combined_metadata.merge!(args.delete_at(-1)) if args.last.is_a? Hash
+            describe(*args, combined_metadata, &block)
+          end
+        end
+
         # @private
         # @macro [attach] define_nested_shared_group_method
         #
