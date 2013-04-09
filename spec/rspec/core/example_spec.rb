@@ -104,6 +104,12 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(example_group.examples.first.description).to eq("should eq 5")
       end
 
+      it "uses the matcher-generated description in the full description" do
+        example_group.example { expect(5).to eq(5) }
+        example_group.run
+        expect(example_group.examples.first.full_description).to eq("group description should eq 5")
+      end
+
       it "uses the file and line number if there is no matcher-generated description" do
         example = example_group.example {}
         example_group.run

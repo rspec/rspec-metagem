@@ -207,9 +207,14 @@ module RSpec
         let(:mfe)                { metadata.for_example("example description", {:arbitrary => :options}) }
         let(:line_number)        { __LINE__ - 1 }
 
-        it "stores the description" do
-          expect(mfe.fetch(:description)).to eq("example description")
-          expect(mfe[:description]).to eq("example description")
+        it "stores the description args" do
+          expect(mfe.fetch(:description_args)).to eq ["example description"]
+          expect(mfe[:description_args]).to eq ["example description"]
+        end
+
+        it "ignores nil description args" do
+          expect(metadata.for_example(nil, {}).fetch(:description_args)).to eq []
+          expect(metadata.for_example(nil, {})[:description_args]).to eq []
         end
 
         it "stores the full_description (group description + example description)" do

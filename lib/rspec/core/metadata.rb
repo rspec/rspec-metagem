@@ -73,6 +73,8 @@ module RSpec
             store(:full_description, full_description)
           when :description
             store(:description, build_description_from(*self[:description_args]))
+          when :description_args
+            store(:description_args, [])
           end
         end
 
@@ -244,7 +246,7 @@ module RSpec
       protected
 
       def configure_for_example(description, user_metadata)
-        store(:description_args, [description])
+        store(:description_args, [description]) if description
         store(:caller, user_metadata.delete(:caller) || caller)
         update(user_metadata)
       end
