@@ -33,10 +33,10 @@ module RSpec::Core
         ["name", :name, ExampleModule, ExampleClass].each do |object|
           type = object.class.name.downcase
           context "given a #{type}" do
-            it "captures the given #{type} and block in the World's collection of shared example groups" do
+            it "captures the given #{type} and block in the collection of shared example groups" do
               implementation = lambda {}
               send(shared_method_name, object, &implementation)
-              expect(SharedExampleGroup::Registry.shared_example_groups(self.class)[object]).to eq implementation
+              expect(SharedExampleGroup::Registry.shared_example_groups(self)[object]).to eq implementation
             end
           end
         end
@@ -56,7 +56,7 @@ module RSpec::Core
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
             send(shared_method_name, "name", :foo => :bar, &implementation)
-            expect(SharedExampleGroup::Registry.shared_example_groups(self.class)["name"]).to eq implementation
+            expect(SharedExampleGroup::Registry.shared_example_groups(self)["name"]).to eq implementation
           end
 
           it "delegates extend on configuration" do

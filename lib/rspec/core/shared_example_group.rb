@@ -28,9 +28,8 @@ module RSpec
       # @see ExampleGroup.it_behaves_like
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
-      def shared_examples *args, &block
-        context = self.is_a?(Class) ? self : self.class
-        Registry.add_group(context, *args, &block)
+      def shared_examples(*args, &block)
+        Registry.add_group(self, *args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -41,12 +40,31 @@ module RSpec
       def share_as(name, &block)
         RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
                         "RSpec::SharedContext or shared_examples")
-        context = self.is_a?(Class) ? self : self.class
-        Registry.add_const(context, name, &block)
+        Registry.add_const(self, name, &block)
       end
 
       def shared_example_groups
-        ancestors[1..-1].inject(Registry.shared_example_groups(self)) { |mine,other| mine.merge Registry.shared_example_groups(other) }
+        ancestors[0..-1].inject(Registry.shared_example_groups('main')) { |mine,other| mine.merge Registry.shared_example_groups(other) }
+      end
+
+      module TopLevelDSL
+        def shared_examples(*args, &block)
+          Registry.add_group('main', *args, &block)
+        end
+
+        alias_method :shared_context,      :shared_examples
+        alias_method :share_examples_for,  :shared_examples
+        alias_method :shared_examples_for, :shared_examples
+
+        def share_as(name, &block)
+          RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
+                          "RSpec::SharedContext or shared_examples")
+          Registry.add_const('main', name, &block)
+        end
+
+        def shared_example_groups
+          Registry.shared_example_groups('main')
+        end
       end
 
       # @private
@@ -137,7 +155,7 @@ module RSpec
         end
 
         def example_block_for source, key
-          source.shared_example_groups[key]
+          shared_example_groups(source)[key]
         end
 
         def ensure_block_has_source_location(block, caller_line)
@@ -154,6 +172,6 @@ module RSpec
   end
 end
 
-extend RSpec::Core::SharedExampleGroup
+extend RSpec::Core::SharedExampleGroup::TopLevelDSL
 Module.send(:include, RSpec::Core::SharedExampleGroup)
 
