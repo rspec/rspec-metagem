@@ -37,6 +37,9 @@ Bug fixes
 * Fix ordering of `before` hooks so that `before` hooks declared in
   `RSpec.configure` run before `before` hooks declared in a shared
   context (Michi Huber and Tejas Dinkar).
+* Fix `Example#full_description` so that it gets filled in by the last
+  matcher description (as `Example#description` already did) when no
+  doc string has been provided (David Chelimsky).
 
 Deprecations
 
