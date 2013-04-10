@@ -44,7 +44,7 @@ module RSpec
       end
 
       def shared_example_groups
-        ancestors[0..-1].inject(Registry.shared_example_groups('main')) { |mine,other| mine.merge Registry.shared_example_groups(other) }
+        Registry.shared_example_groups_for('main', *ancestors[0..-1])
       end
 
       module TopLevelDSL
@@ -63,7 +63,7 @@ module RSpec
         end
 
         def shared_example_groups
-          Registry.shared_example_groups('main')
+          Registry.shared_example_groups_for('main')
         end
       end
 
@@ -119,15 +119,18 @@ module RSpec
           add_shared_example_group source, shared_const, block
         end
 
-        def shared_example_groups source
-          @shared_example_groups ||= {}
-          @shared_example_groups[source] ||= {}
+        def shared_example_groups_for *sources
+          Collection.new(sources, shared_example_groups)
+        end
+
+        def shared_example_groups
+          @shared_example_groups ||= Hash.new { |hash,key| hash[key] = Hash.new }
         end
 
       private
 
         def add_shared_example_group source, key, block
-          shared_example_groups(source)[key] = block
+          shared_example_groups[source][key] = block
         end
 
         def key? candidate
@@ -155,7 +158,7 @@ module RSpec
         end
 
         def example_block_for source, key
-          shared_example_groups(source)[key]
+          shared_example_groups[source][key]
         end
 
         def ensure_block_has_source_location(block, caller_line)
