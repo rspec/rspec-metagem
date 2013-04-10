@@ -15,6 +15,19 @@ describe "expect { ... }.to raise_error" do
     expect {raise s}.to raise_error(s)
   end
 
+  it "fails if a different error instance is thrown from the one that is expected" do
+    s = StandardError.new :bees
+    expect do
+      expect {raise StandardError.new(:faces)}.to raise_error(s)
+    end.to fail_with(/expected #<StandardError: bees>, got #<StandardError: faces> with backtrace/)
+  end
+
+  it "passes if an error class is expected and an instance of that class is thrown" do
+    s = StandardError.new :bees
+
+    expect { raise s }.to raise_error(StandardError)
+  end
+
   it "fails if nothing is raised" do
     expect {
       expect {}.to raise_error
