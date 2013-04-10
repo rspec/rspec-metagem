@@ -88,6 +88,9 @@ MESSAGE
       # run all the examples in the `spec` directory.
       add_setting :default_path
 
+      # @private
+      add_setting :requires
+
       # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
       # server, but you can use tools like spork.
       add_setting :drb
@@ -200,6 +203,7 @@ MESSAGE
         @fixed_color = :blue
         @detail_color = :cyan
         @profile_examples = false
+        @requires = []
       end
 
       # @private
@@ -489,10 +493,6 @@ MESSAGE
 
       def libs=(libs)
         libs.map {|lib| $LOAD_PATH.unshift lib}
-      end
-
-      def requires=(paths)
-        paths.map {|path| require path}
       end
 
       def debug=(bool)
@@ -827,9 +827,14 @@ EOM
       end
 
       # @private
-      def add_project_paths(*paths)
-        directories = paths.select { |p| File.directory? p }
+      def setup_load_path
+        directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
+      end
+
+      # @private
+      def load_require_options
+        requires.each { |path| require path }
       end
 
       # @private
@@ -857,7 +862,6 @@ EOM
 
       # @private
       def load_spec_files
-        add_project_paths 'lib', default_path
         files_to_run.uniq.each {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
       end

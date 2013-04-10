@@ -29,11 +29,11 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       opts.configure(config)
     end
 
-    it "sends requires before formatter" do
+    it "sets up load path and requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
-      config.should_receive(:requires=).ordered
-      config.should_receive(:add_formatter).ordered
+      config.should_receive(:setup_load_path).ordered
+      config.should_receive(:load_require_options).ordered
       opts.configure(config)
     end
 

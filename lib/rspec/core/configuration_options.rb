@@ -27,6 +27,9 @@ module RSpec
           force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key])
         end
 
+        config.setup_load_path
+        config.load_require_options
+
         formatters.each {|pair| config.add_formatter(*pair) } if formatters
       end
 
