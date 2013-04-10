@@ -16,11 +16,11 @@ module RSpec::Core::SharedExampleGroup
     # end
     #
     let(:examples) do
-      {
-        "main"     => { "top level group"  => example_1 },
-        "nested 1" => { "nested level one" => example_2 },
-        "nested 2" => { "nested level two" => example_3 },
-      }
+      Hash.new { |hash,k| hash[k] = Hash.new }.tap do |hash|
+        hash["main"]     = { "top level group"  => example_1 }
+        hash["nested 1"] = { "nested level one" => example_2 }
+        hash["nested 2"] = { "nested level two" => example_3 }
+      end
     end
     (1..3).each { |num| let("example_#{num}") { double "example #{num}" } }
 

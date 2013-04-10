@@ -14,24 +14,25 @@ module RSpec
         private
 
           def fetch_examples key
-            for source in @sources.reverse
-              if @examples[source].has_key? key
-                return @examples[source][key]
-              end
-            end
-            nil
+            @examples[source_for key][key]
+          end
+
+          def source_for key
+            @sources.reverse.find { |source| @examples[source].has_key? key }
+          end
+
+          def fetch_anyway key
+            @examples.values.inject({},&:merge)[key]
           end
 
           def warn_deprecation_and_fetch_anyway key
-            all_examples = @examples.values.inject({},&:merge)
-            example = all_examples[key]
-            if example
+            if (example = fetch_anyway key)
               RSpec.warn_deprecation <<-WARNING.gsub(/^ +\|/, '')
                     Accessing shared_examples defined across contexts is deprecated.
                     Please declare shared_examples within a shared context, or at the top level
               WARNING
+              example
             end
-            example
           end
 
       end
