@@ -20,7 +20,7 @@ module RSpec
           @eval_block_passed = false
           begin
             given_proc.call
-          rescue @expected_error => @actual_error
+          rescue expected_error_class => @actual_error
             @raised_expected_error = true
             @with_expected_message = verify_message
           rescue Exception => @actual_error
@@ -75,6 +75,10 @@ module RSpec
         end
 
         private
+
+        def expected_error_class
+          (@expected_error.is_a? Class) ? @expected_error : @expected_error.class
+        end
 
         def expected_error
           case @expected_message

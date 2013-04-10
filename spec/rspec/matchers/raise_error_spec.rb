@@ -10,6 +10,11 @@ describe "expect { ... }.to raise_error" do
     expect {raise}.to raise_error
   end
 
+  it "passes if an error instance is expected" do
+    s = StandardError.new
+    expect {raise s}.to raise_error(s)
+  end
+
   it "fails if nothing is raised" do
     expect {
       expect {}.to raise_error
