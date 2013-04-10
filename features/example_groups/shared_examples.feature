@@ -259,5 +259,9 @@ Feature: shared examples
     When I run `rspec isolated_shared_examples_spec.rb`
     Then the output should contain:
       """
-      Could not find shared examples "shared examples are isolated"
+      1 example, 0 failures
+      """
+    But the output should contain:
+      """
+      Accessing shared_examples defined across contexts is deprecated
       """
