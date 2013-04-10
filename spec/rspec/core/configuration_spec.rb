@@ -385,7 +385,7 @@ module RSpec::Core
           %w[ a/2.rb a/1.rb a/3.rb ],
           %w[ a/3.rb a/2.rb a/1.rb ]
         ].map do |files|
-          Dir.should_receive(:[]).with(/^a/) { files }
+          Dir.should_receive(:[]).with(/^\{?a/) { files }
           yield
           config.files_to_run
         end
@@ -461,6 +461,14 @@ module RSpec::Core
 
           it "supports comma separated values with spaces" do
             config.send(setter, "**/*_foo.rb, **/*_bar.rb")
+            dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+            config.files_or_directories_to_run = dir
+            expect(config.files_to_run).to include("#{dir}/a_foo.rb")
+            expect(config.files_to_run).to include("#{dir}/a_bar.rb")
+          end
+
+          it "supports curly braces glob syntax" do
+            config.send(setter, "**/*_{foo,bar}.rb")
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
             config.files_or_directories_to_run = dir
             expect(config.files_to_run).to include("#{dir}/a_foo.rb")
