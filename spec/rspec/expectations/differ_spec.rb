@@ -39,7 +39,7 @@ EOD
 
         end
         if RUBY_VERSION.to_f > 1.9
-          it 'copes with encoded strings' do
+          it 'copes with encoded strings', :pending => (Diff::LCS::VERSION < '1.2.2') do
             @expected="Tu avec carté {count} itém has".encode('UTF-16LE')
             @actual="Tu avec carte {count} item has".encode('UTF-16LE')
             expect(subject).to eql(<<-EOD.encode('UTF-16LE'))
@@ -48,6 +48,11 @@ EOD
 -Tu avec carte {count} item has
 +Tu avec carté {count} itém has
 EOD
+          end
+          it 'copes with encoded strings', :pending => (Diff::LCS::VERSION >= '1.2.2') do
+            @expected="Tu avec carté {count} itém has".encode('UTF-16LE')
+            @actual="Tu avec carte {count} item has".encode('UTF-16LE')
+            expect(subject).to eql 'Could not produce a diff because of the encoding of the string (UTF-16LE)'
           end
           it 'ouputs a message when encountering differently encoded strings' do
             @expected="Tu avec carté {count} itém has".encode('UTF-16LE')

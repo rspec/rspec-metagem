@@ -5,14 +5,15 @@ require 'spec_helper'
 describe RSpec::Expectations, "#fail_with with diff of arrays" do
   before { RSpec::Matchers.configuration.stub(:color? => false) }
 
-  it "splits items with newlines" do
+  # Diff::LCS 1.2.2 required for this pattern
+  it "splits items with newlines", :pending => (Diff::LCS::VERSION < '1.2.2') do
     expected_diff = "\nDiff:\n@@ -1,2 +1,4 @@\n+a\\nb\n+c\\nd\n \n"
     expect {
       RSpec::Expectations.fail_with("", [], ["a\nb", "c\nd"])
     }.to fail_with(expected_diff)
   end
 
-  it "shows inner arrays on a single line" do
+  it "shows inner arrays on a single line", :pending => (Diff::LCS::VERSION < '1.2.2') do
     expected_diff = "\nDiff:\n@@ -1,2 +1,4 @@\n+a\\nb\n+[\"c\\nd\"]\n \n"
     expect {
       RSpec::Expectations.fail_with("", [], ["a\nb", ["c\nd"]])
