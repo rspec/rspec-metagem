@@ -28,3 +28,11 @@ Feature: pattern
   Scenario: the --pattern flag makes RSpec run files matching the specified pattern and ignore the default pattern
    When I run `rspec -P "**/*_test.rb"`
    Then the output should contain "1 example, 0 failures"
+
+  Scenario: the --pattern flag can be used to pass in multiple patterns, separated by comma
+   When I run `rspec -P "**/*_test.rb,**/*_spec.rb"`
+   Then the output should contain "3 examples, 0 failures"
+
+  Scenario: the --pattern flag accepts shell style glob unions
+   When I run `rspec -P "**/*_{test,spec}.rb"`
+   Then the output should contain "3 examples, 0 failures"

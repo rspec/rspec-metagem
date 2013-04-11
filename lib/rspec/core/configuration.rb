@@ -977,17 +977,16 @@ EOM
     private
 
       def get_files_to_run(paths)
-        patterns = pattern.split(",")
         paths.map do |path|
           path = path.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
-          File.directory?(path) ? gather_directories(path, patterns) : extract_location(path)
+          File.directory?(path) ? gather_directories(path) : extract_location(path)
         end.flatten.sort
       end
 
-      def gather_directories(path, patterns)
-        patterns.map do |pattern|
-          pattern =~ /^#{path}/ ? Dir[pattern.strip].sort : Dir["#{path}/{#{pattern.strip}}"].sort
-        end
+      def gather_directories(path)
+        stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
+        files    = pattern.start_with?(path) ? Dir[stripped] : Dir["#{path}/#{stripped}"]
+        files.sort
       end
 
       def extract_location(path)
