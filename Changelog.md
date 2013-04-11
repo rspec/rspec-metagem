@@ -20,6 +20,8 @@ Enhancements
   (Sam Phippen).
 * List the precedence of `.rspec-local` in the configuration documentation
   (Sam Phippen)
+* Support `{a,b}` shell expansion syntax in `--pattern` option
+  (Konstantin Haase).
 
 Bug fixes
 
