@@ -2,18 +2,18 @@
 
 From the  beginning RSpec::Expectations provided `should` and `should_not` methods
 to define expectations on any object. In version 2.11 `expect` method was
-introduced which is now the preffered way to define expectations on an object.
+introduced which is now the recommended way to define expectations on an object.
 
 ###Why switch over from `should` to `expect`
 
 ####Fix edge case issues
 
-`should` and `should_not` work because RSpec::Expectations monkey patches these
-methods onto the `Kernel`. Thus they are available on all objects. Some object
-definitions wipe out all but a few methods, taking `should` and `should_not` with them.
+`should` and `should_not` work by being added to every object. However, RSpec
+does not own every object and cannot ensure they work consistently on every object.
+In particular, they can lead to surprising failures when used with BasicObject-subclassed
+proxy objects.
 
-`expect` on the other hand does not require any monkey patching for it to work.
-No monkey patching means no magic. No magic means no surprises.
+`expect` avoids these problems altogether by not needing to be available on all objects.
 
 ####Unification of block and value syntaxes
 
