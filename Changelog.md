@@ -16,6 +16,8 @@ Bug fixes
   strings (Jon Rowe).
 * Fix `expect(something).to be_within(x).percent_of(y)` where x and y are both
   integers (Sam Phippen).
+* Fix `have` matcher to handle the fact that on ruby 2.0,
+  `Enumerator#size` may return nil (Kenta Murata).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
