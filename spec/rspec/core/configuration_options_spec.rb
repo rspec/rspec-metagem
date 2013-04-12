@@ -25,15 +25,15 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       opts = config_options_object(*%w[--require a/path -I a/lib])
       config = double("config").as_null_object
       config.should_receive(:libs=).ordered
-      config.should_receive(:requires=).ordered
+      config.should_receive(:setup_load_path_and_require).ordered
       opts.configure(config)
     end
 
     it "sets up load path and requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
-      config.should_receive(:setup_load_path).ordered
-      config.should_receive(:load_require_options).ordered
+      config.should_receive(:setup_load_path_and_require).ordered
+      config.should_receive(:add_formatter).ordered
       opts.configure(config)
     end
 
@@ -105,7 +105,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       with_env_vars 'SPEC_OPTS' => "--require file_from_env" do
         opts = config_options_object(*%w[--require file_from_opts])
         config = RSpec::Core::Configuration.new
-        config.should_receive(:requires=).with(["file_from_opts", "file_from_env"])
+        config.should_receive(:require).with("file_from_opts")
+        config.should_receive(:require).with("file_from_env")
         opts.configure(config)
       end
     end

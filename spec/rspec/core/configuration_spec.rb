@@ -16,7 +16,7 @@ module RSpec::Core
       end
     end
 
-    describe "#setup_load_path" do
+    describe "#setup_load_path_and_require" do
       include_context "isolate load path mutation"
 
       def absolute_path_to(dir)
@@ -28,7 +28,7 @@ module RSpec::Core
         $LOAD_PATH.delete(lib_dir)
 
         expect($LOAD_PATH).not_to include(lib_dir)
-        config.setup_load_path
+        config.setup_load_path_and_require []
         expect($LOAD_PATH).to include(lib_dir)
       end
 
@@ -37,25 +37,22 @@ module RSpec::Core
         foo_dir = absolute_path_to("features")
 
         expect($LOAD_PATH).not_to include(foo_dir)
-        config.setup_load_path
+        config.setup_load_path_and_require []
         expect($LOAD_PATH).to include(foo_dir)
+      end
+
+      it 'stores the required files' do
+        config.should_receive(:require).with('a/path')
+        config.setup_load_path_and_require ['a/path']
+        expect(config.requires).to eq ['a/path']
       end
 
       context "when `default_path` refers to a file rather than a directory" do
         it 'does not add it to the load path' do
           config.default_path = 'Rakefile'
-          config.setup_load_path
+          config.setup_load_path_and_require []
           expect($LOAD_PATH).not_to include(match /Rakefile/)
         end
-      end
-    end
-
-    describe "#load_require_options" do
-      it "requires the configured files" do
-        config.requires = ['foo', 'bar']
-        config.should_receive(:require).with('foo').ordered
-        config.should_receive(:require).with('bar').ordered
-        config.load_require_options
       end
     end
 
@@ -1078,6 +1075,8 @@ module RSpec::Core
     end
 
     describe "#libs=" do
+      include_context "isolate load path mutation"
+
       it "adds directories to the LOAD_PATH" do
         $LOAD_PATH.should_receive(:unshift).with("a/dir")
         config.libs = ["a/dir"]
@@ -1085,17 +1084,18 @@ module RSpec::Core
     end
 
     describe "#requires=" do
-      before do
-        config.requires = ["a/path"]
+      before { RSpec.should_receive :deprecate }
+
+      it "requires the configured files" do
+        config.should_receive(:require).with('foo').ordered
+        config.should_receive(:require).with('bar').ordered
+        config.requires = ['foo', 'bar']
       end
 
       it "stores require paths" do
-        expect(config.requires).to eq(['a/path'])
-      end
-
-      it "uses stored requires in #load_require_options" do
         config.should_receive(:require).with("a/path")
-        config.load_require_options
+        config.requires = ["a/path"]
+        expect(config.requires).to eq(['a/path'])
       end
     end
 

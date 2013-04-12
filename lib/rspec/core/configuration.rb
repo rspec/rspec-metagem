@@ -88,9 +88,6 @@ MESSAGE
       # run all the examples in the `spec` directory.
       add_setting :default_path
 
-      # @private
-      add_setting :requires
-
       # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
       # server, but you can use tools like spork.
       add_setting :drb
@@ -110,6 +107,9 @@ MESSAGE
       # Determines the order in which examples are run (default: OS standard
       # load order for files, declaration order for groups and examples).
       define_reader :order
+
+      # Indicates files configured to be required
+      define_reader :requires
 
       # Default: `$stdout`.
       # Also known as `output` and `out`
@@ -495,6 +495,13 @@ MESSAGE
         libs.map {|lib| $LOAD_PATH.unshift lib}
       end
 
+      def requires=(paths)
+        RSpec.deprecate("RSpec::Core::Configuration#requires=(paths)",
+                        "paths.each {|path| require path}")
+        paths.map {|path| require path}
+        @requires += paths
+      end
+
       def debug=(bool)
         return unless bool
         begin
@@ -827,14 +834,11 @@ EOM
       end
 
       # @private
-      def setup_load_path
+      def setup_load_path_and_require(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
-      end
-
-      # @private
-      def load_require_options
-        requires.each { |path| require path }
+        paths.each {|path| require path}
+        @requires += paths
       end
 
       # @private
