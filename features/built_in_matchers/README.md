@@ -1,11 +1,17 @@
 # Built-in Matchers
 
-rspec-expectations ships with a number of built-in matchers. Each matcher can be used with `expect(..).to` or `expect(..).not_to` to define positive and negative expectations respectively on an object
+rspec-expectations ships with a number of built-in matchers.
+Each matcher can be used with `expect(..).to` or `expect(..).not_to` to define
+positive and negative expectations respectively on an object. Most matchers can
+also be accessed using the `(...).should` and `(...).should_not` syntax, see
+[using should syntax](https://github.com/rspec/rspec-rails/blob/master/Should.md)
+for why we recommend using `expect`.
 
 e.g.
 
     expect(result).to   eq(3)
     expect(list).not_to be_empty
+    pi.should be > 3
 
 ## Object identity
 
@@ -82,7 +88,3 @@ e.g.
 ## Ranges (1.9 only)
 
     expect(1..10).to cover(3)
-
-## `should` syntax
-
-See [Using should syntax](https://github.com/rspec/rspec-rails/blob/master/Should.md)
