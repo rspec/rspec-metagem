@@ -1,8 +1,7 @@
-Feature: require option
+Feature: --require option
 
-  Use the --require (or -r) option to specify a file in the
-  RSpec load path to require before running specs.
-
+  Use the `--require` (or `-r`) option to specify a file to require
+  before running specs.
 
   Scenario: using the --require option
     Given a file named "spec/foobarator.rb" with:
