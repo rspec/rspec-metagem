@@ -10,7 +10,7 @@ e.g.
 ## Object identity
 
     expect(actual).to be(expected) # passes if actual.equal?(expected)
-    
+
 ## Object equivalence
 
     expect(actual).to eq(expected) # passes if actual == expected
