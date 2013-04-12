@@ -175,7 +175,7 @@ actual).should be > 3
 [1, 2, 3].should_not include 4
 ```
 
-See [detailed information on the `should` syntax and its usage.](https://github.com/rspec/rspec-rails/blob/master/Should.md) 
+See [detailed information on the `should` syntax and its usage.](https://github.com/rspec/rspec-rails/blob/master/Should.md)
 
 ## Also see
 

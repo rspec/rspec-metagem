@@ -27,7 +27,7 @@ expect { ... }.to raise_error(ErrorClass)
 ```
 
 See
-[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax) 
+[http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax](http://myronmars.to/n/dev-blog/2012/06/rspecs-new-expectation-syntax)
 For a detailed explanation
 
 ### One-liners
