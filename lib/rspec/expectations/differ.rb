@@ -16,9 +16,6 @@ module RSpec
         file_length_difference = 0
         diffs.each do |piece|
           begin
-            if data_old == []
-              data_old = [""]
-            end
             hunk = Diff::LCS::Hunk.new(
               data_old, data_new, piece, context_lines, file_length_difference
             )
