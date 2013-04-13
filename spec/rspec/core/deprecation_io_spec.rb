@@ -6,9 +6,10 @@ module RSpec::Core
     let(:std_err) { Tempfile.new('stderr') }
     let(:io)      { DeprecationIO.new }
 
-    around do
+    around do |example|
       @original = $stderr
       $stderr = std_err
+      example.run
       $stderr = @original
     end
 
