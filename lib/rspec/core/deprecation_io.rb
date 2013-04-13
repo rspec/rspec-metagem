@@ -5,12 +5,12 @@ module RSpec
       def initialize
         @io = $stderr
         @count = 0
-        @filename = 'STD_ERR'
+        @description = 'STD_ERR'
       end
-      attr_reader :io, :filename
+      attr_reader :io, :description
 
       def set_output(filename)
-        @filename = filename
+        @description = filename
         @io = File.open(filename,'w')
       end
 

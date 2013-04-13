@@ -27,8 +27,8 @@ module RSpec::Core
         io.puts 'WARN'
       end
 
-      it 'leaves filename as stderr' do
-        expect(io.filename).to eq 'STD_ERR'
+      it 'leaves description as stderr' do
+        expect(io.description).to eq 'STD_ERR'
       end
     end
 
@@ -54,8 +54,8 @@ module RSpec::Core
         io.puts 'WARN'
       end
 
-      it 'sets filename' do
-        expect(io.filename).to eq 'filename.txt'
+      it 'sets description' do
+        expect(io.description).to eq 'filename.txt'
       end
 
       it 'logs to file' do

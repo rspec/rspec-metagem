@@ -26,7 +26,7 @@ module RSpec::Core
         File.stub(:open)
         io = double 'deprecation io'
         config.deprecation_io = io
-        expect(config.deprecation_io.filename).to eq io
+        expect(config.deprecation_io.description).to eq io
       end
 
       it 'is used by warn_deprecation' do

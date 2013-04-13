@@ -36,7 +36,7 @@ module RSpec
     # Used internally to print deprecation summary
     def deprecations_summary
       io = RSpec.configuration.deprecation_io
-      "There were #{io.deprecations} deprecations logged to #{io.filename}"
+      "There were #{io.deprecations} deprecations logged to #{io.description}"
     end
 
   end
