@@ -17,22 +17,40 @@ module RSpec::Core
     end
 
     describe '#deprecation_io' do
-
       it 'defaults to standard error' do
         expect(config.deprecation_io.io).to eq $stderr
       end
 
       it 'is configurable' do
-        File.stub(:open)
         io = double 'deprecation io'
         config.deprecation_io = io
-        expect(config.deprecation_io.description).to eq io
+        expect(config.deprecation_io.io).to eq io
       end
 
       it 'is used by warn_deprecation' do
         message = double
         RSpec.configuration.deprecation_io.should_receive(:puts).with(message)
         RSpec.warn_deprecation message
+      end
+    end
+
+    describe '#log_deprecations_to_file' do
+      let(:name) { 'filename.txt' }
+
+      around do |example|
+        config.log_deprecations_to_file name
+        example.run
+        File.delete name if File.exist? name
+        config.deprecation_io = $std_err
+      end
+
+      it 'sets the deprecation io to be a file with the supplied name' do
+        file = config.deprecation_io.io
+        expect(file.to_path).to eq name
+      end
+
+      it 'sets the deprecation io description to be the supplied file name' do
+        expect(config.deprecation_io.description).to eq name
       end
     end
 

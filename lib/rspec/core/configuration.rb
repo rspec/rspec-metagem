@@ -279,6 +279,11 @@ MESSAGE
       end
       attr_reader :deprecation_io
 
+      # Set a file to be the io for deprection warnings
+      def log_deprecations_to_file name
+        @deprecation_io.set_output File.open(name,'w+'), name
+      end
+
       # Returns the configured mock framework adapter module
       def mock_framework
         mock_with :rspec unless @mock_framework
