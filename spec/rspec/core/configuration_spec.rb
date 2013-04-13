@@ -41,7 +41,6 @@ module RSpec::Core
         config.log_deprecations_to_file name
         example.run
         File.delete name if File.exist? name
-        config.deprecation_io = $std_err
       end
 
       it 'sets the deprecation io to be a file with the supplied name' do
