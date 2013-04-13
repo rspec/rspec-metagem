@@ -104,7 +104,7 @@ module RSpec::Core
         notify :dump_pending
         notify :dump_failures
         notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
-        warn RSpec.deprecation_message if RSpec.deprecations?
+        warn RSpec.deprecations_summary if RSpec.deprecations?
         notify :seed, seed if seed
       ensure
         notify :close
