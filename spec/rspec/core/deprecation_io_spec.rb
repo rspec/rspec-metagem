@@ -3,7 +3,7 @@ require 'tempfile'
 
 module RSpec::Core
   describe DeprecationIO do
-    let(:std_err) { Tempfile.new('stderr') }
+    let(:std_err) { StringIO.new }
     let(:io)      { DeprecationIO.new }
 
     around do |example|
