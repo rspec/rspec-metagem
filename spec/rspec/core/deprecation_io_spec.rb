@@ -33,12 +33,11 @@ module RSpec::Core
       end
     end
 
-    describe 'setting a filename' do
-      let(:file) { double "file", puts: nil }
+    describe 'setting an io' do
+      let(:stream) { double "stream", puts: nil }
 
       before do
-        File.stub(:open).and_return(file)
-        io.set_output 'filename.txt'
+        io.set_output stream
       end
 
       it 'starts with 0 deprecations' do
@@ -50,18 +49,20 @@ module RSpec::Core
         expect(io.deprecations).to eq 1
       end
 
-      it 'configures a file' do
-        File.should_receive(:open).with('filename.txt','w')
+      it 'logs to the stream' do
+        stream.should_receive(:puts).with('WARN').once
         io.puts 'WARN'
       end
 
+      it 'defaults description to the inspect of stream' do
+        expect(io.description).to eq stream.inspect
+      end
+    end
+
+    describe 'setting an io and description' do
       it 'sets description' do
+        io.set_output double, 'filename.txt'
         expect(io.description).to eq 'filename.txt'
-      end
-
-      it 'logs to file' do
-        file.should_receive(:puts).with('WARN').once
-        io.puts 'WARN'
       end
     end
 

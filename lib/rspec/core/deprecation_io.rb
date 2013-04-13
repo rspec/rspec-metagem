@@ -9,9 +9,9 @@ module RSpec
       end
       attr_reader :io, :description
 
-      def set_output(filename)
-        @description = filename
-        @io = File.open(filename,'w')
+      def set_output(io, description = io.inspect)
+        @description = description
+        @io = io
       end
 
       def puts(message)
