@@ -108,6 +108,9 @@ MESSAGE
       # load order for files, declaration order for groups and examples).
       define_reader :order
 
+      # Indicates files configured to be required
+      define_reader :requires
+
       # Default: `$stdout`.
       # Also known as `output` and `out`
       add_setting :output_stream, :alias_with => [:output, :out]
@@ -200,6 +203,7 @@ MESSAGE
         @fixed_color = :blue
         @detail_color = :cyan
         @profile_examples = false
+        @requires = []
       end
 
       # @private
@@ -492,7 +496,10 @@ MESSAGE
       end
 
       def requires=(paths)
+        RSpec.deprecate("RSpec::Core::Configuration#requires=(paths)",
+                        "paths.each {|path| require path}")
         paths.map {|path| require path}
+        @requires += paths
       end
 
       def debug=(bool)
@@ -827,9 +834,11 @@ EOM
       end
 
       # @private
-      def add_project_paths(*paths)
-        directories = paths.select { |p| File.directory? p }
+      def setup_load_path_and_require(paths)
+        directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
+        paths.each {|path| require path}
+        @requires += paths
       end
 
       # @private
@@ -857,7 +866,6 @@ EOM
 
       # @private
       def load_spec_files
-        add_project_paths 'lib', default_path
         files_to_run.uniq.each {|f| load File.expand_path(f) }
         raise_if_rspec_1_is_loaded
       end

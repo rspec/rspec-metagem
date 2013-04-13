@@ -19,15 +19,12 @@ module RSpec
       end
 
       def configure(config)
-        formatters = options.delete(:formatters)
-
         config.filter_manager = filter_manager
+        process_options_into config
 
-        order(options.keys, :libs, :requires, :default_path, :pattern).each do |key|
-          force?(key) ? config.force(key => options[key]) : config.send("#{key}=", options[key])
-        end
+        config.setup_load_path_and_require(options[:requires] || [])
 
-        formatters.each {|pair| config.add_formatter(*pair) } if formatters
+        load_formatters_into config
       end
 
       def parse_options
@@ -55,6 +52,8 @@ module RSpec
 
       MERGED_OPTIONS = [:requires, :libs].to_set
 
+      UNPROCESSABLE_OPTIONS = [:formatters, :requires].to_set
+
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)
       end
@@ -64,6 +63,18 @@ module RSpec
           keys.unshift(key) if keys.delete(key)
         end
         keys
+      end
+
+      def process_options_into(config)
+        opts = options.reject { |k, _| UNPROCESSABLE_OPTIONS.include? k }
+
+        order(opts.keys, :libs, :default_path, :pattern).each do |key|
+          force?(key) ? config.force(key => opts[key]) : config.send("#{key}=", opts[key])
+        end
+      end
+
+      def load_formatters_into(config)
+        options[:formatters].each { |pair| config.add_formatter(*pair) } if options[:formatters]
       end
 
       def extract_filters_from(*configs)
