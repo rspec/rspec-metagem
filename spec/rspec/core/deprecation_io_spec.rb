@@ -34,7 +34,7 @@ module RSpec::Core
     end
 
     describe 'setting an io' do
-      let(:stream) { double "stream", puts: nil }
+      let(:stream) { double "stream", :puts => nil }
 
       before do
         io.set_output stream
