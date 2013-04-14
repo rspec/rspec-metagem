@@ -45,7 +45,7 @@ module RSpec::Core
 
       it 'sets the deprecation io to be a file with the supplied name' do
         file = config.deprecation_io.io
-        expect(file.to_path).to eq name
+        expect(file.path).to eq name
       end
 
       it 'sets the deprecation io description to be the supplied file name' do
