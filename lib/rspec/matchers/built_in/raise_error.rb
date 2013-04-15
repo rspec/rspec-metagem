@@ -20,13 +20,11 @@ module RSpec
           @eval_block_passed = false
           begin
             given_proc.call
-          rescue @expected_error => @actual_error
-            @raised_expected_error = true
-            @with_expected_message = verify_message
           rescue Exception => @actual_error
-            # This clause should be empty, but rcov will not report it as covered
-            # unless something (anything) is executed within the clause
-            "http://eigenclass.org/hiki.rb?rcov-0.8.0"
+            if @actual_error == @expected_error || @expected_error === @actual_error
+              @raised_expected_error = true
+              @with_expected_message = verify_message
+            end
           end
 
           unless negative_expectation
@@ -79,7 +77,7 @@ module RSpec
         def expected_error
           case @expected_message
           when nil
-            @expected_error
+            @expected_error.inspect
           when Regexp
             "#{@expected_error} with message matching #{@expected_message.inspect}"
           else

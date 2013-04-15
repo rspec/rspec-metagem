@@ -18,6 +18,8 @@ Bug fixes
   integers (Sam Phippen).
 * Fix `have` matcher to handle the fact that on ruby 2.0,
   `Enumerator#size` may return nil (Kenta Murata).
+* Fix `expect { raise s }.to raise_error(s)` where s is an error instance
+  (Sam Phippen).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
