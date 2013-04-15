@@ -17,9 +17,10 @@ describe "expect { ... }.to raise_error" do
 
   it "fails if a different error instance is thrown from the one that is expected" do
     s = StandardError.new :bees
+    to_raise = StandardError.new(:faces)
     expect do
-      expect {raise StandardError.new(:faces)}.to raise_error(s)
-    end.to fail_with(/expected #<StandardError: bees>, got #<StandardError: faces> with backtrace/)
+      expect {raise to_raise}.to raise_error(s)
+    end.to fail_with(Regexp.new("expected #{s.inspect}, got #{to_raise.inspect} with backtrace"))
   end
 
   it "passes if an error class is expected and an instance of that class is thrown" do
