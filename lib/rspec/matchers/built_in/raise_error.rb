@@ -74,10 +74,6 @@ module RSpec
 
         private
 
-        def expected_error_class
-          (@expected_error.is_a? Class) ? @expected_error : @expected_error.class
-        end
-
         def expected_error
           case @expected_message
           when nil
