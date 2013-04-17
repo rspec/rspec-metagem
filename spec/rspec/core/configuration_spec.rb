@@ -1130,9 +1130,13 @@ module RSpec::Core
         config.libs = ["a/dir"]
       end
     end
+
     describe "libs" do
-      it 'exposes load path' do
-        expect(config.libs).to eq $LOAD_PATH
+      include_context "isolate load path mutation"
+
+      it 'records paths added to the load path' do
+        config.libs = ["a/dir"]
+        expect(config.libs).to eq ["a/dir"]
       end
     end
 

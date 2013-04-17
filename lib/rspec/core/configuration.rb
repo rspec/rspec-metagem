@@ -111,6 +111,9 @@ MESSAGE
       # Indicates files configured to be required
       define_reader :requires
 
+      # Returns dirs that have been prepended to the load path by #lib=
+      define_reader :libs
+
       # Default: `$stdout`.
       # Also known as `output` and `out`
       add_setting :output_stream, :alias_with => [:output, :out]
@@ -204,6 +207,7 @@ MESSAGE
         @detail_color = :cyan
         @profile_examples = false
         @requires = []
+        @libs = []
       end
 
       # @private
@@ -496,11 +500,10 @@ MESSAGE
       define_predicate_for :color_enabled, :color
 
       def libs=(libs)
-        libs.map {|lib| $LOAD_PATH.unshift lib}
-      end
-
-      def libs
-        $LOAD_PATH
+        libs.map do |lib|
+          @libs.unshift lib
+          $LOAD_PATH.unshift lib
+        end
       end
 
       def requires=(paths)
