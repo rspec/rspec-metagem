@@ -1136,14 +1136,7 @@ module RSpec::Core
       it "stores require paths" do
         config.should_receive(:require).with("a/path")
         config.requires = ["a/path"]
-        expect(config.requires).to eq(['a/path'])
-      end
-    end
-    describe '#requires' do
-      it "requires paths" do
-        config.should_receive(:require).with("a/path")
-        config.requires = ["a/path"]
-        expect(config.requires).to eq ["a/path"]
+        expect(config.requires).to eq ['a/path']
       end
     end
 
