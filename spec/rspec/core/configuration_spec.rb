@@ -1015,12 +1015,12 @@ module RSpec::Core
 
     describe 'full_backtrace' do
       it 'returns true when backtrace patterns is empty' do
-        config.backtrace_clean_patterns = []
+        config.backtrace_exclusion_patterns = []
         expect(config.full_backtrace).to eq true
       end
 
       it 'returns false when backtrace patterns isnt empty' do
-        config.backtrace_clean_patterns = [:lib]
+        config.backtrace_exclusion_patterns = [:lib]
         expect(config.full_backtrace).to eq false
       end
     end
