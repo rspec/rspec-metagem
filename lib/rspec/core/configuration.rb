@@ -549,7 +549,7 @@ EOM
       end
 
       def full_description
-        filter.has_key? :full_description
+        filter.fetch :full_description, false
       end
 
       # @overload add_formatter(formatter)

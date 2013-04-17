@@ -500,9 +500,9 @@ module RSpec::Core
         expect(config.filter).not_to have_key(:focused)
       end
 
-      it 'returns true from #full_description' do
+      it 'is possible to access the full description regular expression' do
         config.full_description = "foo"
-        expect(config.full_description).to eq true
+        expect(config.full_description).to eq /foo/
       end
     end
 
@@ -545,6 +545,11 @@ module RSpec::Core
     it "assigns the example names as the filter on description if description is an array" do
       config.full_description = [ "foo", "bar" ]
       expect(config.filter).to eq({:full_description => Regexp.union(/foo/, /bar/)})
+    end
+
+    it 'is possible to access the full description regular expression' do
+      config.full_description = "foo","bar"
+      expect(config.full_description).to eq Regexp.union(/foo/,/bar/)
     end
 
     describe "#default_path" do
