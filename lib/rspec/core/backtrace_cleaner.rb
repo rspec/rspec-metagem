@@ -32,6 +32,10 @@ module RSpec
         @exclusion_patterns = true_or_false ? [] : DEFAULT_EXCLUSION_PATTERNS.dup
       end
 
+      def full_backtrace
+        @exclusion_patterns.empty?
+      end
+
       private
 
       def matches_an_exclusion_pattern?(line)

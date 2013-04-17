@@ -463,7 +463,7 @@ MESSAGE
       end
 
       def full_backtrace
-        @backtrace_clean_patterns.empty?
+        @backtrace_cleaner.full_backtrace
       end
       def full_backtrace=(true_or_false)
         @backtrace_cleaner.full_backtrace = true_or_false
