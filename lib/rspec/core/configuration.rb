@@ -541,7 +541,7 @@ EOM
       end
 
       def line_numbers
-        filter.has_key? :line_numbers
+        filter.fetch(:line_numbers,[])
       end
 
       def full_description=(description)
