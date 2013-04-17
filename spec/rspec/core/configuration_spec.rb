@@ -962,11 +962,12 @@ module RSpec::Core
     end
 
     describe "line_numbers" do
-      specify "returns true when filter" do
+      it "returns true when filter" do
         config.line_numbers = ['42']
         expect(config.line_numbers).to eq true
       end
-      specify "returns false when no filter" do
+
+      it "returns false when no filter" do
         expect(config.line_numbers).to eq false
       end
     end
