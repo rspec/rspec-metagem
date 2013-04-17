@@ -493,17 +493,21 @@ module RSpec::Core
       end
     end
 
-    context "with full_description" do
+    context "with full_description set" do
       it "overrides filters" do
         config.filter_run :focused => true
         config.full_description = "foo"
         expect(config.filter).not_to have_key(:focused)
       end
-      it 'sets #full_description to true' do
+
+      it 'returns true from #full_description' do
         config.full_description = "foo"
         expect(config.full_description).to eq true
       end
-      it 'sets #full_description to false' do
+    end
+
+    context "without full_description having been set" do
+      it 'returns false from #full_description' do
         expect(config.full_description).to eq false
       end
     end
