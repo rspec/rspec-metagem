@@ -513,7 +513,6 @@ module RSpec::Core
     end
 
     context "with line number" do
-
       it "assigns the file and line number as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
@@ -1014,6 +1013,7 @@ module RSpec::Core
         config.backtrace_clean_patterns = []
         expect(config.full_backtrace).to eq true
       end
+
       it 'returns false when backtrace patterns isnt empty' do
         config.backtrace_clean_patterns = [:lib]
         expect(config.full_backtrace).to eq false
@@ -1090,6 +1090,7 @@ module RSpec::Core
         debugger.should_receive(:start)
         config.debug = true
       end
+
       it 'sets the reader to true' do
         config.debug = true
         expect(config.debug).to eq true
@@ -1101,6 +1102,7 @@ module RSpec::Core
         config.should_not_receive(:require).with('ruby-debug')
         config.debug = false
       end
+
       it 'sets the reader to false' do
         config.debug = false
         expect(config.debug).to eq false
