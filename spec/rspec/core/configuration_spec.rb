@@ -493,16 +493,26 @@ module RSpec::Core
       end
     end
 
-    context "with full_description" do
+    context "with full_description set" do
       it "overrides filters" do
         config.filter_run :focused => true
         config.full_description = "foo"
         expect(config.filter).not_to have_key(:focused)
       end
+
+      it 'is possible to access the full description regular expression' do
+        config.full_description = "foo"
+        expect(config.full_description).to eq /foo/
+      end
+    end
+
+    context "without full_description having been set" do
+      it 'returns false from #full_description' do
+        expect(config.full_description).to eq false
+      end
     end
 
     context "with line number" do
-
       it "assigns the file and line number as a location filter" do
         config.files_or_directories_to_run = "path/to/a_spec.rb:37"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
@@ -535,6 +545,11 @@ module RSpec::Core
     it "assigns the example names as the filter on description if description is an array" do
       config.full_description = [ "foo", "bar" ]
       expect(config.filter).to eq({:full_description => Regexp.union(/foo/, /bar/)})
+    end
+
+    it 'is possible to access the full description regular expression' do
+      config.full_description = "foo","bar"
+      expect(config.full_description).to eq Regexp.union(/foo/,/bar/)
     end
 
     describe "#default_path" do
@@ -954,6 +969,17 @@ module RSpec::Core
       end
     end
 
+    describe "line_numbers" do
+      it "returns the line numbers from the filter" do
+        config.line_numbers = ['42']
+        expect(config.line_numbers).to eq [42]
+      end
+
+      it "defaults to empty" do
+        expect(config.line_numbers).to eq []
+      end
+    end
+
     describe "#full_backtrace=" do
       context "given true" do
         it "clears the backtrace exclusion patterns" do
@@ -984,6 +1010,18 @@ module RSpec::Core
         config = Configuration.new
         config.backtrace_clean_patterns = [/.*/]
         expect(config.backtrace_cleaner.exclude? "this").to be_true
+      end
+    end
+
+    describe 'full_backtrace' do
+      it 'returns true when backtrace patterns is empty' do
+        config.backtrace_exclusion_patterns = []
+        expect(config.full_backtrace).to eq true
+      end
+
+      it 'returns false when backtrace patterns isnt empty' do
+        config.backtrace_exclusion_patterns = [:lib]
+        expect(config.full_backtrace).to eq false
       end
     end
 
@@ -1037,6 +1075,7 @@ module RSpec::Core
         else
           @orig_debugger = nil
         end
+        config.stub(:require)
         Object.const_set("Debugger", debugger)
       end
 
@@ -1053,9 +1092,13 @@ module RSpec::Core
       end
 
       it "starts the debugger" do
-        config.stub(:require)
         debugger.should_receive(:start)
         config.debug = true
+      end
+
+      it 'sets the reader to true' do
+        config.debug = true
+        expect(config.debug).to eq true
       end
     end
 
@@ -1063,6 +1106,11 @@ module RSpec::Core
       it "does not require 'ruby-debug'" do
         config.should_not_receive(:require).with('ruby-debug')
         config.debug = false
+      end
+
+      it 'sets the reader to false' do
+        config.debug = false
+        expect(config.debug).to eq false
       end
     end
 
@@ -1083,6 +1131,15 @@ module RSpec::Core
       end
     end
 
+    describe "libs" do
+      include_context "isolate load path mutation"
+
+      it 'records paths added to the load path' do
+        config.libs = ["a/dir"]
+        expect(config.libs).to eq ["a/dir"]
+      end
+    end
+
     describe "#requires=" do
       before { RSpec.should_receive :deprecate }
 
@@ -1095,7 +1152,7 @@ module RSpec::Core
       it "stores require paths" do
         config.should_receive(:require).with("a/path")
         config.requires = ["a/path"]
-        expect(config.requires).to eq(['a/path'])
+        expect(config.requires).to eq ['a/path']
       end
     end
 

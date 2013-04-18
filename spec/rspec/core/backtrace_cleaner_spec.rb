@@ -8,6 +8,10 @@ module RSpec::Core
         cleaner = BacktraceCleaner.new([], [])
         expect(lines.all? {|line| cleaner.exclude? line}).to be_false
       end
+
+      it 'is considered a full backtrace' do
+        expect(BacktraceCleaner.new([], []).full_backtrace).to be_true
+      end
     end
 
     context "with an exclusion pattern but no inclusion patterns" do
@@ -19,6 +23,10 @@ module RSpec::Core
       it "keeps lines that do not match the exclusion pattern" do
         cleaner = BacktraceCleaner.new([], [/remove/])
         expect(cleaner.exclude? "apple").to be_false
+      end
+
+      it 'is considered a partial backtrace' do
+        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace).to be_false
       end
     end
 
@@ -36,6 +44,10 @@ module RSpec::Core
       it "keeps lines that match neither pattern" do
         cleaner = BacktraceCleaner.new([/hi/], [/delete/])
         expect(cleaner.exclude? "fish").to be_false
+      end
+
+      it 'is considered a partial backtrace' do
+        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace).to be_false
       end
     end
 
