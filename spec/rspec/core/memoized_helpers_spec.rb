@@ -659,5 +659,12 @@ module RSpec::Core
       end
     end
   end
+
+  describe 'Module#define_method' do
+    it 'is still a private method' do
+      a_module = Module.new
+      expect { a_module.define_method(:name) { "implementation" } }.to raise_error NoMethodError
+    end
+  end
 end
 

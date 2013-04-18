@@ -466,13 +466,14 @@ EOS
         get_constant_or_yield(example_group, :LetDefinitions) do
           mod = Module.new do
             include Module.new {
-              public_class_method :define_method
               example_group.const_set(:NamedSubjectPreventSuper, self)
+              def self.define_method *args
+                super
+              end
             }
-
-            # Expose `define_method` as a public method, so we can
-            # easily use it below.
-            public_class_method :define_method
+            def self.define_method *args
+              super
+            end
           end
 
           example_group.__send__(:include, mod)
