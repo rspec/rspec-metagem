@@ -466,8 +466,8 @@ MESSAGE
         @expectation_frameworks.push(*modules)
       end
 
-      def full_backtrace
-        @backtrace_cleaner.full_backtrace
+      def full_backtrace?
+        @backtrace_cleaner.full_backtrace?
       end
 
       def full_backtrace=(true_or_false)
@@ -534,7 +534,7 @@ EOM
         end
       end
 
-      def debug
+      def debug?
         !!defined?(Debugger)
       end
 
@@ -552,7 +552,7 @@ EOM
       end
 
       def full_description
-        filter.fetch :full_description, false
+        filter.fetch :full_description, nil
       end
 
       # @overload add_formatter(formatter)

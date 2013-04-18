@@ -507,8 +507,8 @@ module RSpec::Core
     end
 
     context "without full_description having been set" do
-      it 'returns false from #full_description' do
-        expect(config.full_description).to eq false
+      it 'returns nil from #full_description' do
+        expect(config.full_description).to eq nil
       end
     end
 
@@ -1016,12 +1016,12 @@ module RSpec::Core
     describe 'full_backtrace' do
       it 'returns true when backtrace patterns is empty' do
         config.backtrace_exclusion_patterns = []
-        expect(config.full_backtrace).to eq true
+        expect(config.full_backtrace?).to eq true
       end
 
       it 'returns false when backtrace patterns isnt empty' do
         config.backtrace_exclusion_patterns = [:lib]
-        expect(config.full_backtrace).to eq false
+        expect(config.full_backtrace?).to eq false
       end
     end
 
@@ -1098,7 +1098,7 @@ module RSpec::Core
 
       it 'sets the reader to true' do
         config.debug = true
-        expect(config.debug).to eq true
+        expect(config.debug?).to eq true
       end
     end
 
@@ -1110,7 +1110,7 @@ module RSpec::Core
 
       it 'sets the reader to false' do
         config.debug = false
-        expect(config.debug).to eq false
+        expect(config.debug?).to eq false
       end
     end
 
