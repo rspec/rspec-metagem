@@ -192,7 +192,7 @@ EOS
           # We have to pass the block directly to `define_method` to
           # allow it to use method constructs like `super` and `return`.
           raise "#let or #subject called without a block" if block.nil?
-          MemoizedHelpers.module_for(self).define_method(name, &block)
+          MemoizedHelpers.module_for(self).send(:define_method, name, &block)
 
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
@@ -293,7 +293,7 @@ EOS
             let(name, &block)
             alias_method :subject, name
 
-            self::NamedSubjectPreventSuper.define_method(name) do
+            self::NamedSubjectPreventSuper.send(:define_method, name) do
               raise NotImplementedError, "`super` in named subjects is not supported"
             end
           else
@@ -466,13 +466,8 @@ EOS
         get_constant_or_yield(example_group, :LetDefinitions) do
           mod = Module.new do
             include Module.new {
-              public_class_method :define_method
               example_group.const_set(:NamedSubjectPreventSuper, self)
             }
-
-            # Expose `define_method` as a public method, so we can
-            # easily use it below.
-            public_class_method :define_method
           end
 
           example_group.__send__(:include, mod)

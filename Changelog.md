@@ -44,6 +44,8 @@ Bug fixes
 * Fix `Example#full_description` so that it gets filled in by the last
   matcher description (as `Example#description` already did) when no
   doc string has been provided (David Chelimsky).
+* Fix the memoized methods (`let` and `subject`) leaking `define_method`
+  as a `public` method. (Thomas Holmes and Jon Rowe) (#873)
 
 Deprecations
 
