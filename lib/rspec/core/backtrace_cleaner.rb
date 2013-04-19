@@ -32,7 +32,7 @@ module RSpec
         @exclusion_patterns = true_or_false ? [] : DEFAULT_EXCLUSION_PATTERNS.dup
       end
 
-      def full_backtrace
+      def full_backtrace?
         @exclusion_patterns.empty?
       end
 

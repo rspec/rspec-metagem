@@ -10,7 +10,7 @@ module RSpec::Core
       end
 
       it 'is considered a full backtrace' do
-        expect(BacktraceCleaner.new([], []).full_backtrace).to be_true
+        expect(BacktraceCleaner.new([], []).full_backtrace?).to be_true
       end
     end
 
@@ -26,7 +26,7 @@ module RSpec::Core
       end
 
       it 'is considered a partial backtrace' do
-        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace).to be_false
+        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace?).to be_false
       end
     end
 
@@ -47,7 +47,7 @@ module RSpec::Core
       end
 
       it 'is considered a partial backtrace' do
-        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace).to be_false
+        expect(BacktraceCleaner.new([], [/remove/]).full_backtrace?).to be_false
       end
     end
 
