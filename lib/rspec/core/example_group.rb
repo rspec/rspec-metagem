@@ -58,15 +58,13 @@ module RSpec
         #   @param [Hash] extra_options
         #   @param [Block] implementation
         def self.define_example_method(name, extra_options={})
-          module_eval(<<-END_RUBY, __FILE__, __LINE__)
-            def #{name}(desc=nil, *args, &block)
-              options = build_metadata_hash_from(args)
-              options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
-              options.update(#{extra_options.inspect})
-              examples << RSpec::Core::Example.new(self, desc, options, block)
-              examples.last
-            end
-          END_RUBY
+          define_method(name) do |desc=nil,*args,&block|
+            options = build_metadata_hash_from(args)
+            options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
+            options.update(extra_options)
+            examples << RSpec::Core::Example.new(self, desc, options, block)
+            examples.last
+          end
         end
 
         # Defines an example within a group.
@@ -110,16 +108,14 @@ module RSpec
         # @macro [attach] define_nested_shared_group_method
         #
         #   @see SharedExampleGroup
-        def self.define_nested_shared_group_method(new_name, report_label=nil)
-          module_eval(<<-END_RUBY, __FILE__, __LINE__)
-            def #{new_name}(name, *args, &customization_block)
-              group = describe("#{report_label || "it should behave like"} \#{name}") do
-                find_and_eval_shared("examples", name, *args, &customization_block)
-              end
-              group.metadata[:shared_group_name] = name
-              group
+        def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
+          define_method(new_name) do |name, *args, &customization_block|
+            group = describe("#{report_label} #{name}") do
+              find_and_eval_shared("examples", name, *args, &customization_block)
             end
-          END_RUBY
+            group.metadata[:shared_group_name] = name
+            group
+          end
         end
 
         # Generates a nested example group and includes the shared content
