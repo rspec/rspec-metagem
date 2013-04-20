@@ -58,7 +58,8 @@ module RSpec
         #   @param [Hash] extra_options
         #   @param [Block] implementation
         def self.define_example_method(name, extra_options={})
-          define_method(name) do |desc=nil,*args,&block|
+          define_method(name) do |*all_args,&block|
+            desc, *args = *all_args
             options = build_metadata_hash_from(args)
             options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
             options.update(extra_options)
