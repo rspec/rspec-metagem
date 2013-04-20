@@ -34,11 +34,10 @@ module RSpec
 
       # @private
       def self.define_reader(name)
-        eval <<-CODE
-          def #{name}
-            value_for(#{name.inspect}, defined?(@#{name}) ? @#{name} : nil)
-          end
-        CODE
+        define_method(name) do
+          variable = instance_variable_defined?("@#{name}") ? instance_variable_get("@#{name}") : nil
+          value_for(name, variable)
+        end
       end
 
       # @private
