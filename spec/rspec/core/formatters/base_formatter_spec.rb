@@ -4,6 +4,20 @@ require 'rspec/core/formatters/base_formatter'
 RSpec.describe RSpec::Core::Formatters::BaseFormatter do
   include FormatterSupport
 
+  describe "start" do
+    before do
+      formatter.start 42, 3.234
+    end
+
+    it 'has captured example_count' do
+      expect(formatter.example_count).to eq 42
+    end
+
+    it 'has captured load_time' do
+      expect(formatter.load_time).to eq 3.234
+    end
+  end
+
   describe "read_failed_line" do
     it "deals gracefully with a heterogeneous language stack trace" do
       exception = double(:Exception, :backtrace => [
