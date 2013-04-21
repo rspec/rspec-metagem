@@ -9,6 +9,7 @@ Enhancements
   Borkowski).
 * Make the differ that is used when an expectation fails better handle arrays
   by splitting each element of the array onto its own line. (Sam Phippen)
+* Deprecate `expect { }.not_to raise_error(SpecificErrorClass)`. (Sam Phippen)
 
 Bug fixes
 
