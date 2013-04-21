@@ -41,8 +41,8 @@ Spork.prefork do
       @orig_world  = RSpec.world
       new_config = RSpec::Core::Configuration.new
       new_world  = RSpec::Core::World.new(new_config)
-      RSpec.instance_variable_set(:@configuration, new_config)
-      RSpec.instance_variable_set(:@world, new_world)
+      RSpec.configuration = new_config
+      RSpec.world = new_world
       object = Object.new
       object.extend(RSpec::Core::SharedExampleGroup)
 
@@ -63,8 +63,8 @@ Spork.prefork do
         remove_method :orig_run
       end
 
-      RSpec.instance_variable_set(:@configuration, @orig_config)
-      RSpec.instance_variable_set(:@world, @orig_world)
+      RSpec.configuration = @orig_config
+      RSpec.world = @orig_world
     end
   end
 
