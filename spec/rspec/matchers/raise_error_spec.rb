@@ -61,35 +61,48 @@ describe "expect { ... }.to raise_error {|err| ... }" do
 end
 
 describe "expect { ... }.to_not raise_error" do
-  it "passes if nothing is raised" do
-    expect {}.to_not raise_error
+
+  context "with a specific error class" do
+    it "is deprecated" do
+      RSpec.should_receive :warn_deprecation
+      expect {"bees"}.to_not raise_error(RuntimeError)
+    end
   end
 
-  it "fails if anything is raised" do
-    expect {
-      expect { raise RuntimeError, "example message" }.to_not raise_error
-    }.to fail_with(/expected no Exception, got #<RuntimeError: example message>/)
-  end
+  context "with no speciifc error class" do
+    it "is not deprecated" do
+      RSpec.should_not_receive :warn_deprecation
+    end
+    it "passes if nothing is raised" do
+      expect {}.to_not raise_error
+    end
 
-  it 'includes the backtrace of the error that was raised in the error message' do
-    expect {
-      expect { raise "boom" }.not_to raise_error
-    }.to raise_error { |e|
-      backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
-      expect(e.message).to include("with backtrace", backtrace_line)
-    }
-  end
+    it "fails if anything is raised" do
+      expect {
+        expect { raise RuntimeError, "example message" }.to_not raise_error
+      }.to fail_with(/expected no Exception, got #<RuntimeError: example message>/)
+    end
 
-  it 'formats the backtrace using the configured backtrace formatter' do
-    RSpec::Matchers.configuration.backtrace_formatter.
-                    stub(:format_backtrace).
-                    and_return("formatted-backtrace")
+    it 'includes the backtrace of the error that was raised in the error message' do
+      expect {
+        expect { raise "boom" }.not_to raise_error
+      }.to raise_error { |e|
+        backtrace_line = "#{File.basename(__FILE__)}:#{__LINE__ - 2}"
+        expect(e.message).to include("with backtrace", backtrace_line)
+      }
+    end
 
-    expect {
-      expect { raise "boom" }.not_to raise_error
-    }.to raise_error { |e|
-      expect(e.message).to include("with backtrace", "formatted-backtrace")
-    }
+    it 'formats the backtrace using the configured backtrace formatter' do
+      RSpec::Matchers.configuration.backtrace_formatter.
+        stub(:format_backtrace).
+        and_return("formatted-backtrace")
+
+      expect {
+        expect { raise "boom" }.not_to raise_error
+      }.to raise_error { |e|
+        expect(e.message).to include("with backtrace", "formatted-backtrace")
+      }
+    end
   end
 end
 
