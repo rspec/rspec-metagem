@@ -31,6 +31,7 @@ Enhancements
   * `line_numbers` returns the line numbers we are filtering by (if any)
   * `full_description` returns the RegExp used to filter descriptions
   (Jon Rowe)
+* Add setters for RSpec.world and RSpec.configuration (Alex Soulim)
 
 Bug fixes
 
