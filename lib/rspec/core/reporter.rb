@@ -1,7 +1,16 @@
 module RSpec::Core
   class Reporter
+    Notifications = %W[start message example_group_started example_group_finished example_started
+                       example_passed example_failed example_pending start_dump dump_pending
+                       dump_failures dump_summary seed close stop].map &:to_sym
+
     def initialize(*formatters)
-      @formatters = formatters
+      @listeners = Hash.new { |h,k| h[k] = [] }
+      Notifications.each do |event|
+        formatters.each do |formatter|
+          @listeners[event] << formatter if formatter.respond_to?(event)
+        end
+      end
       @example_count = @failure_count = @pending_count = 0
       @duration = @start = nil
     end
@@ -93,9 +102,9 @@ module RSpec::Core
       notify :stop
     end
 
-    def notify(method, *args, &block)
-      @formatters.each do |formatter|
-        formatter.send method, *args, &block
+    def notify(event, *args, &block)
+      @listeners[event].each do |formatter|
+        formatter.send(event, *args, &block)
       end
     end
   end

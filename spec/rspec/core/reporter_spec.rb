@@ -21,7 +21,7 @@ module RSpec::Core
 
     context "given one formatter" do
       it "passes messages to that formatter" do
-        formatter = double("formatter")
+        formatter = double("formatter", :example_started => nil)
         example = double("example")
         reporter = Reporter.new(formatter)
 
@@ -73,7 +73,7 @@ module RSpec::Core
 
     context "given multiple formatters" do
       it "passes messages to all formatters" do
-        formatters = [double("formatter"), double("formatter")]
+        formatters = (1..2).map { double("formatter", :example_started => nil) }
         example = double("example")
         reporter = Reporter.new(*formatters)
 
