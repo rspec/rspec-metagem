@@ -3,14 +3,18 @@ require "spec_helper"
 module RSpec::Core
   describe Reporter do
     describe "abort" do
-      let(:formatter) { double("formatter").as_null_object }
+      let(:formatter) { double("formatter") }
       let(:example)   { double("example") }
       let(:reporter)  { Reporter.new(formatter) }
 
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
-        it "sends #{message} to the formatter(s)" do
-          formatter.should_receive(message)
+        it "sends #{message} to the formatter(s) that respond to message" do
+          formatter.as_null_object.should_receive(message)
           reporter.abort(nil)
+        end
+
+        it "doesnt notify formatters about messages they dont implement" do
+          expect { reporter.abort(nil) }.to_not raise_error
         end
       end
     end
