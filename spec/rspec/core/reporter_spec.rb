@@ -104,6 +104,22 @@ module RSpec::Core
       end
     end
 
+    describe "#register_listener" do
+      let(:reporter) { Reporter.new }
+      let(:listener) { double("listener", :start => nil) }
+
+      before { reporter.register_listener listener, :start }
+
+      it 'will register the listener to specified notifications' do
+        expect(reporter.registered_listeners :start).to eq [listener]
+      end
+
+      it 'will send notifications when a subscribed event is triggered' do
+        listener.should_receive(:start).with(42)
+        reporter.start 42
+      end
+    end
+
     describe "timing" do
       it "uses RSpec::Core::Time as to not be affected by changes to time in examples" do
         formatter = double(:formatter).as_null_object
