@@ -14,7 +14,7 @@ module RSpec
         end
 
         def matches?(given_proc, negative_expectation = false)
-          if negative_expectation == :negative_expectation && @expected_error != Exception
+          if negative_expectation && expecting_specific_exception?
             p "warning deprecation"
             RSpec.warn_deprecation("Deprecation: expect { }.not_to " +
                                    "raise_error(SpecificErrorClass) with any " +
@@ -105,6 +105,10 @@ module RSpec
             ", got #{@actual_error.inspect} with backtrace:",
             *backtrace
           ].join("\n  # ")
+        end
+
+        def expecting_specific_exception?
+          @expected_error != Exception
         end
       end
     end
