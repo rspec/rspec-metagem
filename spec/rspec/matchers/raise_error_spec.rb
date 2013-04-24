@@ -69,10 +69,13 @@ describe "expect { ... }.to_not raise_error" do
     end
   end
 
-  context "with no speciifc error class" do
+  context "with no specific error class" do
     it "is not deprecated" do
-      RSpec.should_not_receive :warn_deprecation
+      RSpec.stub(:warn_deprecation) { @run = true }
+      expect {"bees"}.to_not raise_error
+      expect(@run).to be_nil
     end
+
     it "passes if nothing is raised" do
       expect {}.to_not raise_error
     end
