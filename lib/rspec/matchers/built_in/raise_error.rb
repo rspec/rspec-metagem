@@ -19,7 +19,7 @@ module RSpec
             RSpec.warn_deprecation("Deprecation: expect { }.not_to " +
                                    "raise_error(SpecificErrorClass) with any " +
                                    "specific error class is deprecated, use " +
-                                   "expect{ }.not_to raise_error instead")
+                                   "expect { }.not_to raise_error instead")
           end
           @raised_expected_error = false
           @with_expected_message = false
