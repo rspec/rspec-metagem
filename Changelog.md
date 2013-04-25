@@ -3,6 +3,8 @@
 
 Enhancements
 
+* Add profiling of the slowest example groups to `--profile` option.
+  The output is sorted by the slowest average example groups.
 * Don't show slow examples if there's a failure and both `--fail-fast`
   and `--profile` options are used (Paweł Gościcki).
 * Rather than always adding `spec` to the load path, add the configured
