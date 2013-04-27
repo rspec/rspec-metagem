@@ -6,6 +6,13 @@ module RSpec
       context "when passing a message to an expectation" do
         let(:warner) { ::Kernel }
 
+        let(:string_like_object) do
+          Struct.new(:to_str, :to_s).new(*(["Ceci n'est pas une Chaine."]*2))
+        end
+        let(:insufficiently_string_like_object) do
+          Struct.new(:to_s).new("Ceci n'est pas une Chaine.")
+        end
+
         describe "expect(...).to" do
           it "prints a warning when the message object isn't a String" do
             warner.should_receive(:warn).with /ignoring.*message/
@@ -15,6 +22,16 @@ module RSpec
           it "doesn't print a warning when message is a String" do
             warner.should_not_receive(:warn)
             expect(3).to eq(3), "a string"
+          end
+
+          it "doesn't print a warning when message responds to to_str" do
+            warner.should_not_receive(:warn)
+            expect(3).to eq(3), string_like_object
+          end
+
+          it "prints a warning when the message object handles to_s but not to_str" do
+            warner.should_receive(:warn).with /ignoring.*message/
+            expect(3).to eq(3), insufficiently_string_like_object
           end
         end
 
@@ -27,6 +44,16 @@ module RSpec
           it "doesn't print a warning when message is a String" do
             warner.should_not_receive(:warn)
             expect(3).not_to eq(4), "a string"
+          end
+
+          it "doesn't print a warning when message responds to to_str" do
+            warner.should_not_receive(:warn)
+            expect(3).not_to eq(4), string_like_object
+          end
+
+          it "prints a warning when the message object handles to_s but not to_str" do
+            warner.should_receive(:warn).with /ignoring.*message/
+            expect(3).not_to eq(4), insufficiently_string_like_object
           end
         end
       end
