@@ -8,7 +8,7 @@ module RSpec
       end
 
       def self.check_message(msg)
-        ::Kernel.warn message_must_be_string(msg) unless msg.nil? || msg.is_a?(String)
+        ::Kernel.warn message_must_be_string(msg) unless msg.nil? || msg.respond_to?(:to_str)
       end
     end
 
