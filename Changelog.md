@@ -10,6 +10,8 @@ Enhancements
 * Make the differ that is used when an expectation fails better handle arrays
   by splitting each element of the array onto its own line. (Sam Phippen)
 * Deprecate `expect { }.not_to raise_error(SpecificErrorClass)`. (Sam Phippen)
+* Accept duck-typed strings that respond to `:to_str` as expectation messages.
+  (Toby Ovod-Everett)
 
 Bug fixes
 
