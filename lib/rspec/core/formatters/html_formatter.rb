@@ -99,7 +99,8 @@ module RSpec
             example.execution_result[:run_time],
             @failed_examples.size,
             exception_details,
-            (extra == "") ? false : extra
+            (extra == "") ? false : extra,
+            true
           )
           @printer.flush
         end
