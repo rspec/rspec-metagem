@@ -269,14 +269,14 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checled" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checled" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checled" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
-    <p id="totals">&nbsp;</p>
-    <p id="duration">&nbsp;</p>
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
   </div>
 </div>
 
@@ -396,7 +396,7 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre>/foo.html.erb:1:in `<main>': foo (RuntimeError)</pre></div>
+        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;': foo (RuntimeError)</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>
