@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang='en'>
 <head>
   <title>RSpec results</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -269,9 +266,9 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked="checled" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked="checled" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checled" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
@@ -319,73 +316,39 @@ a {
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/pending.rb&amp;line=102">./lib/rspec/core/pending.rb:102</a> :in `pending'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;line=18">./spec/rspec/core/resources/formatter_specs.rb:18</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=254">./lib/rspec/core/example.rb:254</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `orig_run (run)'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=53">./spec/spec_helper.rb:53</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `orig_run (run)'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=53">./spec/spec_helper.rb:53</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=36">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:36</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/hash19.rb&amp;line=257">kernel/common/hash19.rb:257</a> :in `fetch'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/io.rb&amp;line=217">kernel/common/io.rb:217</a> :in `open'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/dir.rb&amp;line=92">kernel/common/dir.rb:92</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=57">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:57</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=179">./lib/rspec/core/example.rb:179</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=59">./spec/spec_helper.rb:59</a> :in `sandboxed'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=105">kernel/common/eval19.rb:105</a> :in `instance_exec'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/extensions/instance_eval_with_args.rb&amp;line=16">./lib/rspec/core/extensions/instance_eval_with_args.rb:16</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=247">./lib/rspec/core/example.rb:247</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=93">./lib/rspec/core/hooks.rb:93</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=91">./lib/rspec/core/hooks.rb:91</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=424">./lib/rspec/core/hooks.rb:424</a> :in `run_hook'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=327">./lib/rspec/core/example_group.rb:327</a> :in `run_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=256">./lib/rspec/core/example.rb:256</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=77">./lib/rspec/core/runner.rb:77</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=17">./lib/rspec/core/runner.rb:17</a> :in `autorun'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=697">kernel/loader.rb:697</a> :in `run_at_exits'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=717">kernel/loader.rb:717</a> :in `epilogue'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=850">kernel/loader.rb:850</a> :in `main'</pre></div>
-    <pre class="ruby"><code><span class="linenum">100</span>            <span class="ident">teardown_mocks_for_rspec</span>
-<span class="linenum">101</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">102</span>          <span class="keyword">raise</span> <span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">103</span>        <span class="keyword">end</span>
-<span class="linenum">104</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+        <div class="backtrace"><pre>&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;amp;line=18&quot;&gt;./spec/rspec/core/resources/formatter_specs.rb:18&lt;/a&gt; :in `__script__'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=33&quot;&gt;./spec/support/sandboxed_mock_space.rb:33&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=72&quot;&gt;./spec/support/sandboxed_mock_space.rb:72&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=32&quot;&gt;./spec/support/sandboxed_mock_space.rb:32&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=37&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:37&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/hash19.rb&amp;amp;line=256&quot;&gt;kernel/common/hash19.rb:256&lt;/a&gt; :in `fetch'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/io.rb&amp;amp;line=217&quot;&gt;kernel/common/io.rb:217&lt;/a&gt; :in `open'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/dir.rb&amp;amp;line=92&quot;&gt;kernel/common/dir.rb:92&lt;/a&gt; :in `chdir'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=58&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=38&quot;&gt;./spec/support/sandboxed_mock_space.rb:38&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=103&quot;&gt;kernel/common/eval19.rb:103&lt;/a&gt; :in `instance_exec'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=698&quot;&gt;kernel/loader.rb:698&lt;/a&gt; :in `run_at_exits'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=718&quot;&gt;kernel/loader.rb:718&lt;/a&gt; :in `epilogue'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=851&quot;&gt;kernel/loader.rb:851&lt;/a&gt; :in `main'</pre></div>
+    <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
+<span class="linenum">19</span>        <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
+<span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -413,70 +376,38 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/fail_with.rb&amp;line=33">/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/fail_with.rb:33</a> :in `fail_with'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/handler.rb&amp;line=31">/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/handler.rb:31</a> :in `handle_matcher'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/expectation_target.rb&amp;line=34">/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/expectation_target.rb:34</a> :in `to'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;line=33">./spec/rspec/core/resources/formatter_specs.rb:33</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=254">./lib/rspec/core/example.rb:254</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `orig_run (run)'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=53">./spec/spec_helper.rb:53</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=36">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:36</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/hash19.rb&amp;line=257">kernel/common/hash19.rb:257</a> :in `fetch'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/io.rb&amp;line=217">kernel/common/io.rb:217</a> :in `open'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/dir.rb&amp;line=92">kernel/common/dir.rb:92</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=57">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:57</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=179">./lib/rspec/core/example.rb:179</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=59">./spec/spec_helper.rb:59</a> :in `sandboxed'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=105">kernel/common/eval19.rb:105</a> :in `instance_exec'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/extensions/instance_eval_with_args.rb&amp;line=16">./lib/rspec/core/extensions/instance_eval_with_args.rb:16</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=247">./lib/rspec/core/example.rb:247</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=93">./lib/rspec/core/hooks.rb:93</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=91">./lib/rspec/core/hooks.rb:91</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=424">./lib/rspec/core/hooks.rb:424</a> :in `run_hook'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=327">./lib/rspec/core/example_group.rb:327</a> :in `run_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=256">./lib/rspec/core/example.rb:256</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=77">./lib/rspec/core/runner.rb:77</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=17">./lib/rspec/core/runner.rb:17</a> :in `autorun'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=697">kernel/loader.rb:697</a> :in `run_at_exits'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=717">kernel/loader.rb:717</a> :in `epilogue'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=850">kernel/loader.rb:850</a> :in `main'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span>        <span class="keyword">end</span>
-<span class="linenum">32</span>
-<span class="offending"><span class="linenum">33</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
-<span class="linenum">34</span>      <span class="keyword">end</span></code></pre>
+        <div class="backtrace"><pre>&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;amp;line=33&quot;&gt;./spec/rspec/core/resources/formatter_specs.rb:33&lt;/a&gt; :in `__script__'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=33&quot;&gt;./spec/support/sandboxed_mock_space.rb:33&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=72&quot;&gt;./spec/support/sandboxed_mock_space.rb:72&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=32&quot;&gt;./spec/support/sandboxed_mock_space.rb:32&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=37&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:37&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/hash19.rb&amp;amp;line=256&quot;&gt;kernel/common/hash19.rb:256&lt;/a&gt; :in `fetch'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/io.rb&amp;amp;line=217&quot;&gt;kernel/common/io.rb:217&lt;/a&gt; :in `open'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/dir.rb&amp;amp;line=92&quot;&gt;kernel/common/dir.rb:92&lt;/a&gt; :in `chdir'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=58&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=38&quot;&gt;./spec/support/sandboxed_mock_space.rb:38&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=103&quot;&gt;kernel/common/eval19.rb:103&lt;/a&gt; :in `instance_exec'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=698&quot;&gt;kernel/loader.rb:698&lt;/a&gt; :in `run_at_exits'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=718&quot;&gt;kernel/loader.rb:718&lt;/a&gt; :in `epilogue'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=851&quot;&gt;kernel/loader.rb:851&lt;/a&gt; :in `main'</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
+<span class="linenum">34</span>  <span class="keyword">end</span>
+<span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -493,66 +424,36 @@ expected: 2
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/block_environment.rb&amp;line=75">kernel/common/block_environment.rb:75</a> :in `call_on_instance'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval.rb&amp;line=75">kernel/common/eval.rb:75</a> :in `eval'
-<a href="txmt://open?url=file:///Users/alindeman/.rvm/rubies/rbx-2.0.0-rc1/lib/19/erb.rb&amp;line=838">/Users/alindeman/.rvm/rubies/rbx-2.0.0-rc1/lib/19/erb.rb:838</a> :in `result'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;line=41">./spec/rspec/core/resources/formatter_specs.rb:41</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=254">./lib/rspec/core/example.rb:254</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `orig_run (run)'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=53">./spec/spec_helper.rb:53</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=36">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:36</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/hash19.rb&amp;line=257">kernel/common/hash19.rb:257</a> :in `fetch'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/let.rb&amp;line=93">./lib/rspec/core/let.rb:93</a> :in `let'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/io.rb&amp;line=217">kernel/common/io.rb:217</a> :in `open'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=58">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/dir.rb&amp;line=92">kernel/common/dir.rb:92</a> :in `chdir'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;line=57">./spec/rspec/core/formatters/text_mate_formatter_spec.rb:57</a> :in `Formatters'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=114">./lib/rspec/core/example.rb:114</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=179">./lib/rspec/core/example.rb:179</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=45">kernel/common/eval19.rb:45</a> :in `instance_eval'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=59">./spec/spec_helper.rb:59</a> :in `sandboxed'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/spec/spec_helper.rb&amp;line=102">./spec/spec_helper.rb:102</a> :in `__script__'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/common/eval19.rb&amp;line=105">kernel/common/eval19.rb:105</a> :in `instance_exec'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/extensions/instance_eval_with_args.rb&amp;line=16">./lib/rspec/core/extensions/instance_eval_with_args.rb:16</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=247">./lib/rspec/core/example.rb:247</a> :in `instance_eval_with_args'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=93">./lib/rspec/core/hooks.rb:93</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=91">./lib/rspec/core/hooks.rb:91</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/hooks.rb&amp;line=424">./lib/rspec/core/hooks.rb:424</a> :in `run_hook'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=327">./lib/rspec/core/example_group.rb:327</a> :in `run_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=256">./lib/rspec/core/example.rb:256</a> :in `with_around_each_hooks'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example.rb&amp;line=111">./lib/rspec/core/example.rb:111</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=388">./lib/rspec/core/example_group.rb:388</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=384">./lib/rspec/core/example_group.rb:384</a> :in `run_examples'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=369">./lib/rspec/core/example_group.rb:369</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/example_group.rb&amp;line=370">./lib/rspec/core/example_group.rb:370</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/bootstrap/array19.rb&amp;line=18">kernel/bootstrap/array19.rb:18</a> :in `map'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=28">./lib/rspec/core/command_line.rb:28</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/reporter.rb&amp;line=34">./lib/rspec/core/reporter.rb:34</a> :in `report'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/command_line.rb&amp;line=25">./lib/rspec/core/command_line.rb:25</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=77">./lib/rspec/core/runner.rb:77</a> :in `run'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/lib/rspec/core/runner.rb&amp;line=17">./lib/rspec/core/runner.rb:17</a> :in `autorun'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=697">kernel/loader.rb:697</a> :in `run_at_exits'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=717">kernel/loader.rb:717</a> :in `epilogue'
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/kernel/loader.rb&amp;line=850">kernel/loader.rb:850</a> :in `main'</pre></div>
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/block_environment.rb&amp;amp;line=75&quot;&gt;kernel/common/block_environment.rb:75&lt;/a&gt; :in `call_on_instance'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval.rb&amp;amp;line=75&quot;&gt;kernel/common/eval.rb:75&lt;/a&gt; :in `eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/.rvm/rubies/rbx-head/lib/19/erb.rb&amp;amp;line=838&quot;&gt;/Users/jon/.rvm/rubies/rbx-head/lib/19/erb.rb:838&lt;/a&gt; :in `result'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/resources/formatter_specs.rb&amp;amp;line=41&quot;&gt;./spec/rspec/core/resources/formatter_specs.rb:41&lt;/a&gt; :in `__script__'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=33&quot;&gt;./spec/support/sandboxed_mock_space.rb:33&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=72&quot;&gt;./spec/support/sandboxed_mock_space.rb:72&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=32&quot;&gt;./spec/support/sandboxed_mock_space.rb:32&lt;/a&gt; :in `run'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=37&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:37&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/hash19.rb&amp;amp;line=256&quot;&gt;kernel/common/hash19.rb:256&lt;/a&gt; :in `fetch'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/io.rb&amp;amp;line=217&quot;&gt;kernel/common/io.rb:217&lt;/a&gt; :in `open'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=59&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:59&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/dir.rb&amp;amp;line=92&quot;&gt;kernel/common/dir.rb:92&lt;/a&gt; :in `chdir'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/rspec/core/formatters/text_mate_formatter_spec.rb&amp;amp;line=58&quot;&gt;./spec/rspec/core/formatters/text_mate_formatter_spec.rb:58&lt;/a&gt; :in `Formatters'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=45&quot;&gt;kernel/common/eval19.rb:45&lt;/a&gt; :in `instance_eval'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/spec/support/sandboxed_mock_space.rb&amp;amp;line=38&quot;&gt;./spec/support/sandboxed_mock_space.rb:38&lt;/a&gt; :in `sandboxed'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/common/eval19.rb&amp;amp;line=103&quot;&gt;kernel/common/eval19.rb:103&lt;/a&gt; :in `instance_exec'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/array19.rb&amp;amp;line=18&quot;&gt;kernel/bootstrap/array19.rb:18&lt;/a&gt; :in `map'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/bootstrap/proc.rb&amp;amp;line=22&quot;&gt;kernel/bootstrap/proc.rb:22&lt;/a&gt; :in `call'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=698&quot;&gt;kernel/loader.rb:698&lt;/a&gt; :in `run_at_exits'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=718&quot;&gt;kernel/loader.rb:718&lt;/a&gt; :in `epilogue'
+&lt;a href=&quot;txmt://open?url=file:///Users/jon/Code/Scratch/rspec-core/kernel/loader.rb&amp;amp;line=851&quot;&gt;kernel/loader.rb:851&lt;/a&gt; :in `main'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
@@ -562,8 +463,7 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre><a href="txmt://open?url=file:///foo.html.erb&amp;line=1">/foo.html.erb:1</a> :in `&lt;main&gt;': foo (RuntimeError)
-<a href="txmt://open?url=file:///Users/alindeman/workspace/rspec-dev/repos/rspec-core/   from /lib/ruby/1.9.1/erb.rb&amp;line=753">   from /lib/ruby/1.9.1/erb.rb:753</a> :in `eval'</pre></div>
+        <div class="backtrace"><pre>&lt;a href=&quot;txmt://open?url=file:///foo.html.erb&amp;amp;line=1&quot;&gt;/foo.html.erb:1&lt;/a&gt; :in `&amp;lt;main&amp;gt;': foo (RuntimeError)</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>

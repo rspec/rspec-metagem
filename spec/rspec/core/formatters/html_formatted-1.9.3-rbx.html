@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang='en'>
 <head>
   <title>RSpec results</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -269,9 +266,9 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checled" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checled" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checled" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
@@ -319,73 +316,39 @@ a {
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>./lib/rspec/core/pending.rb:102:in `pending'
-./spec/rspec/core/resources/formatter_specs.rb:18:in `__script__'
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `__script__'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:254:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `orig_run (run)'
-./spec/spec_helper.rb:53:in `run'
-./lib/rspec/core/example_group.rb:370:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:370:in `orig_run (run)'
-./spec/spec_helper.rb:53:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `Formatters'
-./lib/rspec/core/let.rb:93:in `let'
-kernel/common/hash19.rb:257:in `fetch'
-./lib/rspec/core/let.rb:93:in `let'
+kernel/common/hash19.rb:256:in `fetch'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/io.rb:217:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/dir.rb:92:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:179:in `run'
-./spec/spec_helper.rb:102:in `__script__'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/common/eval19.rb:45:in `instance_eval'
-./spec/spec_helper.rb:59:in `sandboxed'
-./spec/spec_helper.rb:102:in `__script__'
-kernel/common/eval19.rb:105:in `instance_exec'
-./lib/rspec/core/extensions/instance_eval_with_args.rb:16:in `instance_eval_with_args'
-./lib/rspec/core/example.rb:247:in `instance_eval_with_args'
-./lib/rspec/core/hooks.rb:93:in `run'
-./lib/rspec/core/hooks.rb:91:in `run'
-./lib/rspec/core/hooks.rb:424:in `run_hook'
-./lib/rspec/core/example_group.rb:327:in `run_around_each_hooks'
-./lib/rspec/core/example.rb:256:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'
+kernel/common/eval19.rb:103:in `instance_exec'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `run'
-./lib/rspec/core/example_group.rb:370:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:370:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
-./lib/rspec/core/runner.rb:77:in `run'
-./lib/rspec/core/runner.rb:17:in `autorun'
-kernel/loader.rb:697:in `run_at_exits'
-kernel/loader.rb:717:in `epilogue'
-kernel/loader.rb:850:in `main'</pre></div>
-    <pre class="ruby"><code><span class="linenum">100</span>            <span class="ident">teardown_mocks_for_rspec</span>
-<span class="linenum">101</span>          <span class="keyword">end</span>
-<span class="offending"><span class="linenum">102</span>          <span class="keyword">raise</span> <span class="constant">PendingExampleFixedError</span><span class="punct">.</span><span class="ident">new</span> <span class="keyword">if</span> <span class="ident">result</span></span>
-<span class="linenum">103</span>        <span class="keyword">end</span>
-<span class="linenum">104</span>        <span class="keyword">raise</span> <span class="constant">PendingDeclaredInExample</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">)</span></code></pre>
+kernel/bootstrap/proc.rb:22:in `call'
+kernel/loader.rb:698:in `run_at_exits'
+kernel/loader.rb:718:in `epilogue'
+kernel/loader.rb:851:in `main'</pre></div>
+    <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
+<span class="linenum">19</span>        <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
+<span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -413,70 +376,38 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/fail_with.rb:33:in `fail_with'
-/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/handler.rb:31:in `handle_matcher'
-/Users/alindeman/workspace/rspec-dev/repos/rspec-expectations/lib/rspec/expectations/expectation_target.rb:34:in `to'
-./spec/rspec/core/resources/formatter_specs.rb:33:in `__script__'
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `__script__'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:254:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `orig_run (run)'
-./spec/spec_helper.rb:53:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `Formatters'
-./lib/rspec/core/let.rb:93:in `let'
-kernel/common/hash19.rb:257:in `fetch'
-./lib/rspec/core/let.rb:93:in `let'
+kernel/common/hash19.rb:256:in `fetch'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/io.rb:217:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/dir.rb:92:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:179:in `run'
-./spec/spec_helper.rb:102:in `__script__'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/common/eval19.rb:45:in `instance_eval'
-./spec/spec_helper.rb:59:in `sandboxed'
-./spec/spec_helper.rb:102:in `__script__'
-kernel/common/eval19.rb:105:in `instance_exec'
-./lib/rspec/core/extensions/instance_eval_with_args.rb:16:in `instance_eval_with_args'
-./lib/rspec/core/example.rb:247:in `instance_eval_with_args'
-./lib/rspec/core/hooks.rb:93:in `run'
-./lib/rspec/core/hooks.rb:91:in `run'
-./lib/rspec/core/hooks.rb:424:in `run_hook'
-./lib/rspec/core/example_group.rb:327:in `run_around_each_hooks'
-./lib/rspec/core/example.rb:256:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'
+kernel/common/eval19.rb:103:in `instance_exec'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `run'
-./lib/rspec/core/example_group.rb:370:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:370:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
-./lib/rspec/core/runner.rb:77:in `run'
-./lib/rspec/core/runner.rb:17:in `autorun'
-kernel/loader.rb:697:in `run_at_exits'
-kernel/loader.rb:717:in `epilogue'
-kernel/loader.rb:850:in `main'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span>        <span class="keyword">end</span>
-<span class="linenum">32</span>
-<span class="offending"><span class="linenum">33</span>        <span class="keyword">raise</span><span class="punct">(</span><span class="constant">RSpec</span><span class="punct">::</span><span class="constant">Expectations</span><span class="punct">::</span><span class="constant">ExpectationNotMetError</span><span class="punct">.</span><span class="ident">new</span><span class="punct">(</span><span class="ident">message</span><span class="punct">))</span></span>
-<span class="linenum">34</span>      <span class="keyword">end</span></code></pre>
+kernel/bootstrap/proc.rb:22:in `call'
+kernel/loader.rb:698:in `run_at_exits'
+kernel/loader.rb:718:in `epilogue'
+kernel/loader.rb:851:in `main'</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
+<span class="linenum">34</span>  <span class="keyword">end</span>
+<span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>
     </dd>
   </dl>
@@ -495,64 +426,34 @@ kernel/loader.rb:850:in `main'</pre></div>
         <div class="backtrace"><pre>(erb):1:in `__script__'
 kernel/common/block_environment.rb:75:in `call_on_instance'
 kernel/common/eval.rb:75:in `eval'
-/Users/alindeman/.rvm/rubies/rbx-2.0.0-rc1/lib/19/erb.rb:838:in `result'
+/Users/jon/.rvm/rubies/rbx-head/lib/19/erb.rb:838:in `result'
 ./spec/rspec/core/resources/formatter_specs.rb:41:in `__script__'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:254:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `orig_run (run)'
-./spec/spec_helper.rb:53:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `Formatters'
-./lib/rspec/core/let.rb:93:in `let'
-kernel/common/hash19.rb:257:in `fetch'
-./lib/rspec/core/let.rb:93:in `let'
+kernel/common/hash19.rb:256:in `fetch'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/io.rb:217:in `open'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
 kernel/common/dir.rb:92:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 kernel/common/eval19.rb:45:in `instance_eval'
-./lib/rspec/core/example.rb:114:in `run'
-./lib/rspec/core/example.rb:179:in `run'
-./spec/spec_helper.rb:102:in `__script__'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/common/eval19.rb:45:in `instance_eval'
-./spec/spec_helper.rb:59:in `sandboxed'
-./spec/spec_helper.rb:102:in `__script__'
-kernel/common/eval19.rb:105:in `instance_exec'
-./lib/rspec/core/extensions/instance_eval_with_args.rb:16:in `instance_eval_with_args'
-./lib/rspec/core/example.rb:247:in `instance_eval_with_args'
-./lib/rspec/core/hooks.rb:93:in `run'
-./lib/rspec/core/hooks.rb:91:in `run'
-./lib/rspec/core/hooks.rb:424:in `run_hook'
-./lib/rspec/core/example_group.rb:327:in `run_around_each_hooks'
-./lib/rspec/core/example.rb:256:in `with_around_each_hooks'
-./lib/rspec/core/example.rb:111:in `run'
-./lib/rspec/core/example_group.rb:388:in `run_examples'
+./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'
+kernel/common/eval19.rb:103:in `instance_exec'
+kernel/bootstrap/proc.rb:22:in `call'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:384:in `run_examples'
-./lib/rspec/core/example_group.rb:369:in `run'
-./lib/rspec/core/example_group.rb:370:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/example_group.rb:370:in `run'
-./lib/rspec/core/command_line.rb:28:in `run'
 kernel/bootstrap/array19.rb:18:in `map'
-./lib/rspec/core/command_line.rb:28:in `run'
-./lib/rspec/core/reporter.rb:34:in `report'
-./lib/rspec/core/command_line.rb:25:in `run'
-./lib/rspec/core/runner.rb:77:in `run'
-./lib/rspec/core/runner.rb:17:in `autorun'
-kernel/loader.rb:697:in `run_at_exits'
-kernel/loader.rb:717:in `epilogue'
-kernel/loader.rb:850:in `main'</pre></div>
+kernel/bootstrap/proc.rb:22:in `call'
+kernel/loader.rb:698:in `run_at_exits'
+kernel/loader.rb:718:in `epilogue'
+kernel/loader.rb:851:in `main'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
@@ -562,8 +463,7 @@ kernel/loader.rb:850:in `main'</pre></div>
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;': foo (RuntimeError)
-   from /lib/ruby/1.9.1/erb.rb:753:in `eval'</pre></div>
+        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;': foo (RuntimeError)</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>
