@@ -341,7 +341,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
-  describe "#dump_profile" do
+  describe "#dump_profile_slowest_examples" do
     example_line_number = nil
 
     before do
@@ -358,25 +358,88 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     it "names the example" do
-      formatter.dump_profile
+      formatter.dump_profile_slowest_examples
       expect(output.string).to match /group example/m
     end
 
     it "prints the time" do
-      formatter.dump_profile
+      formatter.dump_profile_slowest_examples
       expect(output.string).to match /0(\.\d+)? seconds/
     end
 
     it "prints the path" do
-      formatter.dump_profile
+      formatter.dump_profile_slowest_examples
       filename = __FILE__.split(File::SEPARATOR).last
 
       expect(output.string).to match /#{filename}\:#{example_line_number}/
     end
 
     it "prints the percentage taken from the total runtime" do
-      formatter.dump_profile
+      formatter.dump_profile_slowest_examples
       expect(output.string).to match /, 100.0% of total time\):/
+    end
+  end
+
+  describe "#dump_profile_slowest_example_groups" do
+    let(:group) do 
+      RSpec::Core::ExampleGroup.describe("slow group") do
+        # Use a sleep so there is some measurable time, to ensure
+        # the reported percent is 100%, not 0%.
+        example("example") { sleep 0.01 }
+      end 
+    end
+    let(:rpt) { double('reporter').as_null_object }
+
+    before do
+      group.run(rpt)
+      RSpec.configuration.stub(:profile_examples) { 10 }
+    end
+
+    context "with one example group" do
+      before { formatter.stub(:examples) { group.examples } }
+
+      it "doesn't profile a single example group" do
+        formatter.dump_profile_slowest_example_groups
+        expect(output.string).not_to match /slowest example groups/
+      end
+    end
+
+    context "with multiple example groups" do
+      before do
+        group2 = RSpec::Core::ExampleGroup.describe("fast group") do
+          example("example 1") { sleep 0.004 }
+          example("example 2") { sleep 0.007 }
+        end
+        group2.run(rpt)
+
+        formatter.stub(:examples) { group.examples + group2.examples }
+      end
+
+      it "prints the slowest example groups" do
+        formatter.dump_profile_slowest_example_groups
+        expect(output.string).to match /slowest example groups/
+      end
+
+      it "prints the time" do
+        formatter.dump_profile_slowest_example_groups
+        expect(output.string).to match /0(\.\d+)? seconds/
+      end
+
+      it "ranks the example groups by average time" do
+        formatter.dump_profile_slowest_example_groups
+        expect(output.string).to match /slow group(.*)fast group/m
+      end
+    end
+
+    it "depends on parent_groups to get the top level example group" do
+      ex = ""
+      group.describe("group 2") do 
+        describe "group 3" do
+          ex = example("nested example 1") 
+        end
+      end
+
+      expect(ex.example_group.parent_groups.last).to eq(group)
     end
   end
 

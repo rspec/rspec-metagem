@@ -67,9 +67,14 @@ module RSpec
 
         # @api public
         #
-        # Outputs the slowest examples in a report when using `--profile COUNT` (default 10).
-        #
+        # Outputs the slowest examples and example groups in a report when using `--profile COUNT` (default 10).
+        # 
         def dump_profile
+          dump_profile_slowest_examples
+          dump_profile_slowest_example_groups
+        end
+        
+        def dump_profile_slowest_examples
           number_of_examples = RSpec.configuration.profile_examples
           sorted_examples = examples.sort_by {|example|
             example.execution_result[:run_time] }.reverse.first(number_of_examples)
@@ -85,6 +90,38 @@ module RSpec
           sorted_examples.each do |example|
             output.puts "  #{example.full_description}"
             output.puts detail_color("    #{failure_color(format_seconds(example.execution_result[:run_time]))} #{failure_color("seconds")} #{format_caller(example.location)}")
+          end
+        end
+
+        def dump_profile_slowest_example_groups
+          number_of_examples = RSpec.configuration.profile_examples
+          example_groups = {} 
+
+          examples.each do |example|
+            location = example.example_group.parent_groups.last.metadata[:example_group][:location]
+
+            example_groups[location] ||= Hash.new(0)
+            example_groups[location][:total_time]  += example.execution_result[:run_time]
+            example_groups[location][:count]       += 1
+            example_groups[location][:description] = example.example_group.top_level_description unless example_groups[location].has_key?(:description)
+          end
+
+          # stop if we've only one example group
+          return if example_groups.keys.length <= 1
+          
+          example_groups.each do |loc, hash|
+            hash[:average] = hash[:total_time].to_f / hash[:count]
+          end
+          
+          sorted_groups = example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
+
+          output.puts "\nTop #{sorted_groups.size} slowest example groups:"
+          sorted_groups.each do |loc, hash| 
+            average = "#{failure_color(format_seconds(hash[:average]))} #{failure_color("seconds")} average"
+            total   = "#{format_seconds(hash[:total_time])} seconds"
+            count   = pluralize(hash[:count], "example")
+            output.puts "  #{hash[:description]}"
+            output.puts detail_color("    #{average} (#{total} / #{count}) #{loc}")
           end
         end
 
