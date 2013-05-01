@@ -98,35 +98,30 @@ module RSpec
           example_groups = {} 
 
           examples.each do |example|
-            desc = example.example_group.top_level_description
             location = example.example_group.parent_groups.last.metadata[:example_group][:location]
 
-            example_groups[desc]              ||= Hash.new
-            example_groups[desc][:total_time] ||= 0
-            example_groups[desc][:count]      ||= 0
-            example_groups[desc][:location]   ||= []
-
-            example_groups[desc][:total_time] += example.execution_result[:run_time]
-            example_groups[desc][:count]      += 1
-            example_groups[desc][:location]   << location unless example_groups[desc][:location].include?(location) 
+            example_groups[location] ||= Hash.new(0)
+            example_groups[location][:total_time]  += example.execution_result[:run_time]
+            example_groups[location][:count]       += 1
+            example_groups[location][:description] = example.example_group.top_level_description unless example_groups[location].has_key?(:description)
           end
 
           # stop if we've only one example group
           return if example_groups.keys.length <= 1
           
-          example_groups.each do |dc, hash|
+          example_groups.each do |loc, hash|
             hash[:average] = hash[:total_time].to_f / hash[:count]
           end
           
           sorted_groups = example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"
-          sorted_groups.each do |group, hash| 
+          sorted_groups.each do |loc, hash| 
             average = "#{failure_color(format_seconds(hash[:average]))} #{failure_color("seconds")} average"
             total   = "#{format_seconds(hash[:total_time])} seconds"
             count   = pluralize(hash[:count], "example")
-            output.puts "  #{group}"
-            output.puts detail_color("    #{average} (#{total} / #{count}) #{format_caller(hash[:location].join(", "))}")
+            output.puts "  #{hash[:description]}"
+            output.puts detail_color("    #{average} (#{total} / #{count}) #{loc}")
           end
         end
 
