@@ -104,6 +104,9 @@ MESSAGE
       # The exit code to return if there are any failures (default: 1).
       add_setting :failure_exit_code
 
+      # Configures $VERBOSITY during example runs (equivalent to running ruby -w)
+      add_setting :warnings
+
       # Determines the order in which examples are run (default: OS standard
       # load order for files, declaration order for groups and examples).
       define_reader :order

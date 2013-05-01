@@ -204,5 +204,12 @@ module RSpec::Core
         expect(options[:order]).to eq("rand:123")
       end
     end
+
+    describe '--warning' do
+      it 'enables warnings' do
+        options = Parser.parse!(%w[--warnings])
+        expect(options[:warnings]).to eq true
+      end
+    end
   end
 end
