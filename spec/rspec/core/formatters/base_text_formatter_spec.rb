@@ -381,12 +381,13 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   describe "#dump_profile_slowest_example_groups" do
-    let(:group) { RSpec::Core::ExampleGroup.describe("slow group") do
+    let(:group) do 
+      RSpec::Core::ExampleGroup.describe("slow group") do
         # Use a sleep so there is some measurable time, to ensure
         # the reported percent is 100%, not 0%.
         example("example") { sleep 0.01 }
       end 
-    }
+    end
     let(:rpt) { double('reporter').as_null_object }
 
     before do

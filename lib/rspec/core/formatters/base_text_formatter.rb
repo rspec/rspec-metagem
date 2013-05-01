@@ -112,7 +112,7 @@ module RSpec
             hash[:average] = hash[:total_time].to_f / hash[:count]
           end
           
-          sorted_groups = example_groups.sort_by {|_, v| -v[:average]}.first(number_of_examples)
+          sorted_groups = example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"
           sorted_groups.each do |group, hash| 
