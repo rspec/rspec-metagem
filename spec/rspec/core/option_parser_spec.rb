@@ -211,5 +211,6 @@ module RSpec::Core
         expect(options[:warnings]).to eq true
       end
     end
+
   end
 end

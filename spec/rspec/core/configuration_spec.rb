@@ -1542,7 +1542,7 @@ module RSpec::Core
         config.force :warnings => true
         expect($VERBOSE).to eq true
       end
-
     end
+
   end
 end
