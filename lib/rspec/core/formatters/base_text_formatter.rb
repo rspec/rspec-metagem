@@ -125,7 +125,7 @@ module RSpec
             average = "#{failure_color(format_seconds(hash[:average]))} #{failure_color("seconds")} average"
             total   = "#{format_seconds(hash[:total_time])} seconds"
             count   = pluralize(hash[:count], "example")
-            output.puts detail_color("  #{group}")
+            output.puts "  #{group}"
             output.puts detail_color("    #{average} (#{total} / #{count}) #{format_caller(hash[:location].join(", "))}")
           end
         end
