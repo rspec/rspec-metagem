@@ -1516,5 +1516,33 @@ module RSpec::Core
         expect(groups.ordered).to eq([4, 3, 2, 1])
       end
     end
+
+    describe '#warnings' do
+      around do |example|
+        @_original_setting = $VERBOSE
+        example.run
+        $VERBOSE = @_original_setting
+      end
+
+      it "sets verbose to true when true" do
+        config.warnings = true
+        expect($VERBOSE).to eq true
+      end
+
+      it "sets verbose to false when true" do
+        config.warnings = false
+        expect($VERBOSE).to eq false
+      end
+
+      it 'returns the verbosity setting' do
+        expect(config.warnings).to eq $VERBOSE
+      end
+
+      it 'is loaded from config by #force' do
+        config.force :warnings => true
+        expect($VERBOSE).to eq true
+      end
+
+    end
   end
 end

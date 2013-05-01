@@ -104,9 +104,6 @@ MESSAGE
       # The exit code to return if there are any failures (default: 1).
       add_setting :failure_exit_code
 
-      # Configures $VERBOSITY during example runs (equivalent to running ruby -w)
-      add_setting :warnings
-
       # Determines the order in which examples are run (default: OS standard
       # load order for files, declaration order for groups and examples).
       define_reader :order
@@ -223,6 +220,7 @@ MESSAGE
           set_order_and_seed(hash)
         end
         @preferred_options.merge!(hash)
+        self.warnings = value_for :warnings, nil
       end
 
       # @private
@@ -1006,6 +1004,15 @@ EOM
       def order_groups_and_examples(&block)
         order_groups(&block)
         order_examples(&block)
+      end
+
+      # Set Ruby warnings on or off
+      def warnings= value
+        $VERBOSE = !!value
+      end
+
+      def warnings
+        $VERBOSE
       end
 
     private
