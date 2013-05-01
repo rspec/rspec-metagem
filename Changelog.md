@@ -32,6 +32,7 @@ Enhancements
   * `full_description` returns the RegExp used to filter descriptions
   (Jon Rowe)
 * Add setters for RSpec.world and RSpec.configuration (Alex Soulim)
+* Configure ruby's warning behaviour with `--warnings` (Jon Rowe)
 
 Bug fixes
 
