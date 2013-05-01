@@ -99,10 +99,16 @@ module RSpec
 
           examples.each do |example|
             desc = example.example_group.top_level_description
+            location = example.example_group.parent_groups.last.metadata[:example_group][:location]
 
-            example_groups[desc] ||= Hash.new(0)
+            example_groups[desc]              ||= Hash.new
+            example_groups[desc][:total_time] ||= 0
+            example_groups[desc][:count]      ||= 0
+            example_groups[desc][:location]   ||= []
+
             example_groups[desc][:total_time] += example.execution_result[:run_time]
-            example_groups[desc][:count] += 1
+            example_groups[desc][:count]      += 1
+            example_groups[desc][:location]   << location unless example_groups[desc][:location].include?(location) 
           end
 
           # stop if we've only one example group
@@ -119,7 +125,8 @@ module RSpec
             average = "#{failure_color(format_seconds(hash[:average]))} #{failure_color("seconds")} average"
             total   = "#{format_seconds(hash[:total_time])} seconds"
             count   = pluralize(hash[:count], "example")
-            output.puts detail_color("  #{average} (#{total} / #{count}) #{group}")
+            output.puts detail_color("  #{group}")
+            output.puts detail_color("    #{average} (#{total} / #{count}) #{format_caller(hash[:location].join(", "))}")
           end
         end
 
