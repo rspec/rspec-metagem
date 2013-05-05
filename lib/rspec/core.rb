@@ -134,7 +134,7 @@ WARNING
     # This avoids issues with reporting time caused by examples that
     # change the value/meaning of Time.now without properly restoring
     # it.
-    Time = ::Time.dup
+    Time = ::Time.clone
   end
 
   def self.const_missing(name)
