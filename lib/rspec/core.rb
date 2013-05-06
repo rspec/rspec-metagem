@@ -9,6 +9,7 @@ else
 end
 
 require 'set'
+require 'time'
 require 'rbconfig'
 require_rspec['core/filter_manager']
 require_rspec['core/dsl']
@@ -134,7 +135,11 @@ WARNING
     # This avoids issues with reporting time caused by examples that
     # change the value/meaning of Time.now without properly restoring
     # it.
-    Time = ::Time.clone
+    Time = ::Time.dup
+    unless Time.respond_to?(:now)
+      remove_const "Time"
+      Time = ::Time.clone
+    end
   end
 
   def self.const_missing(name)
