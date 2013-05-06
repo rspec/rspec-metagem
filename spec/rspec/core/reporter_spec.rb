@@ -3,21 +3,25 @@ require "spec_helper"
 module RSpec::Core
   describe Reporter do
     describe "abort" do
-      let(:formatter) { double("formatter").as_null_object }
+      let(:formatter) { double("formatter") }
       let(:example)   { double("example") }
       let(:reporter)  { Reporter.new(formatter) }
 
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
-        it "sends #{message} to the formatter(s)" do
-          formatter.should_receive(message)
+        it "sends #{message} to the formatter(s) that respond to message" do
+          formatter.as_null_object.should_receive(message)
           reporter.abort(nil)
+        end
+
+        it "doesnt notify formatters about messages they dont implement" do
+          expect { reporter.abort(nil) }.to_not raise_error
         end
       end
     end
 
     context "given one formatter" do
       it "passes messages to that formatter" do
-        formatter = double("formatter")
+        formatter = double("formatter", :example_started => nil)
         example = double("example")
         reporter = Reporter.new(formatter)
 
@@ -69,7 +73,7 @@ module RSpec::Core
 
     context "given multiple formatters" do
       it "passes messages to all formatters" do
-        formatters = [double("formatter"), double("formatter")]
+        formatters = (1..2).map { double("formatter", :example_started => nil) }
         example = double("example")
         reporter = Reporter.new(*formatters)
 
@@ -97,6 +101,22 @@ module RSpec::Core
         yielded = nil
         reporter.report(3) {|r| yielded = r}
         expect(yielded).to eq(reporter)
+      end
+    end
+
+    describe "#register_listener" do
+      let(:reporter) { Reporter.new }
+      let(:listener) { double("listener", :start => nil) }
+
+      before { reporter.register_listener listener, :start }
+
+      it 'will register the listener to specified notifications' do
+        expect(reporter.registered_listeners :start).to eq [listener]
+      end
+
+      it 'will send notifications when a subscribed event is triggered' do
+        listener.should_receive(:start).with(42)
+        reporter.start 42
       end
     end
 
