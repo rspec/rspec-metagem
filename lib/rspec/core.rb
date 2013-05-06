@@ -135,10 +135,10 @@ WARNING
     # This avoids issues with reporting time caused by examples that
     # change the value/meaning of Time.now without properly restoring
     # it.
-    Time = ::Time.dup
-    unless Time.respond_to?(:now)
-      remove_const "Time"
-      Time = ::Time.clone
+    class Time
+      class << self
+        define_method(:now,&::Time.method(:now))
+      end
     end
   end
 
