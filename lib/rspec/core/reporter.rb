@@ -118,7 +118,7 @@ module RSpec::Core
     end
 
     def notify(event, *args, &block)
-      @listeners[event].each do |formatter|
+      registered_listeners(event).each do |formatter|
         formatter.send(event, *args, &block)
       end
     end
