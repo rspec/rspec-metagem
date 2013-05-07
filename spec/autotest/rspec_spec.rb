@@ -40,8 +40,8 @@ describe Autotest::Rspec2 do
       expect(actual_command).to match(expected_command)
 
       actual_command =~ expected_command
-      expect($1).to match /#{File.expand_path('file_one')}/
-      expect($1).to match /#{File.expand_path('file_two')}/
+      expect($1).to match(/#{File.expand_path('file_one')}/)
+      expect($1).to match(/#{File.expand_path('file_two')}/)
     end
 
     it "returns a blank command for no files" do

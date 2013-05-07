@@ -21,7 +21,7 @@ module RSpec::Core
 
           it "generates a .rspec" do
             command_line_config.run
-            expect(File.read('.rspec')).to match /--color\n--format progress/m
+            expect(File.read('.rspec')).to match(/--color\n--format progress/m)
           end
         end
 
@@ -47,7 +47,7 @@ module RSpec::Core
 
           it "generates a spec/spec_helper.rb" do
             command_line_config.run
-            expect(File.read('spec/spec_helper.rb')).to match /RSpec\.configure do \|config\|/m
+            expect(File.read('spec/spec_helper.rb')).to match(/RSpec\.configure do \|config\|/m)
           end
         end
 

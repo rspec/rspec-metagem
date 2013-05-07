@@ -51,7 +51,7 @@ module RSpec::Core
         it 'does not add it to the load path' do
           config.default_path = 'Rakefile'
           config.setup_load_path_and_require []
-          expect($LOAD_PATH).not_to include(match /Rakefile/)
+          expect($LOAD_PATH).not_to include(match(/Rakefile/))
         end
       end
     end
@@ -502,7 +502,7 @@ module RSpec::Core
 
       it 'is possible to access the full description regular expression' do
         config.full_description = "foo"
-        expect(config.full_description).to eq /foo/
+        expect(config.full_description).to eq(/foo/)
       end
     end
 

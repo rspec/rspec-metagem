@@ -40,14 +40,14 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        expect(spec_command).to match /^#{ruby} -S rspec/
+        expect(spec_command).to match(/^#{ruby} -S rspec/)
       end
     end
 
     context "with rcov" do
       it "renders rcov" do
         with_rcov do
-          expect(spec_command).to match /^#{ruby} -S rcov/
+          expect(spec_command).to match(/^#{ruby} -S rcov/)
         end
       end
     end
@@ -55,7 +55,7 @@ module RSpec::Core
     context "with ruby options" do
       it "renders them before -S" do
           task.ruby_opts = "-w"
-          expect(spec_command).to match /^#{ruby} -w -S rspec/
+          expect(spec_command).to match(/^#{ruby} -w -S rspec/)
       end
     end
 
@@ -63,7 +63,7 @@ module RSpec::Core
       context "with rcov=false (default)" do
         it "does not add the rcov options to the command" do
           task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).not_to match /--exclude "mocks"/
+          expect(spec_command).not_to match(/--exclude "mocks"/)
         end
       end
 
@@ -71,13 +71,13 @@ module RSpec::Core
         it "renders them after rcov" do
           task.rcov = true
           task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).to match /rcov.*--exclude "mocks"/
+          expect(spec_command).to match(/rcov.*--exclude "mocks"/)
         end
 
         it "ensures that -Ispec:lib is in the resulting command" do
           task.rcov = true
           task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).to match /rcov.*-Ispec:lib/
+          expect(spec_command).to match(/rcov.*-Ispec:lib/)
         end
       end
     end
@@ -88,13 +88,13 @@ module RSpec::Core
           task.stub(:files_to_run) { "this.rb that.rb" }
           task.rcov = true
           task.rspec_opts = "-Ifoo"
-          expect(spec_command).to match /this.rb that.rb -- -Ifoo/
+          expect(spec_command).to match(/this.rb that.rb -- -Ifoo/)
         end
       end
       context "with rcov=false (default)" do
         it "adds the rspec_opts" do
           task.rspec_opts = "-Ifoo"
-          expect(spec_command).to match /rspec.*-Ifoo/
+          expect(spec_command).to match(/rspec.*-Ifoo/)
         end
       end
     end
