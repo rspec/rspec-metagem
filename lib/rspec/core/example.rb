@@ -79,7 +79,7 @@ module RSpec
       def initialize(example_group_class, description, metadata, example_block=nil)
         @example_group_class, @options, @example_block = example_group_class, metadata, example_block
         @metadata  = @example_group_class.metadata.for_example(description, metadata)
-        @exception = nil
+        @example_group_instance = @exception = nil
         @pending_declared_in_example = false
       end
 

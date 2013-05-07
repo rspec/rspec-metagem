@@ -96,7 +96,7 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
       pending "figure out a way to tell the output to say it's tty"
       command_line(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
       out.rewind
-      expect(out.read).to match /\e\[31m/m
+      expect(out.read).to match(/\e\[31m/m)
     end
   end
 end

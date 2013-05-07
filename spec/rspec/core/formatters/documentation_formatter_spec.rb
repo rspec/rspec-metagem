@@ -23,8 +23,8 @@ module RSpec::Core::Formatters
 
       examples.each {|e| formatter.example_failed(e) }
 
-      expect(output.string).to match /first example \(FAILED - 1\)/m
-      expect(output.string).to match /second example \(FAILED - 2\)/m
+      expect(output.string).to match(/first example \(FAILED - 1\)/m)
+      expect(output.string).to match(/second example \(FAILED - 2\)/m)
     end
 
     it "represents nested group using hierarchy tree" do

@@ -2,7 +2,7 @@ module RSpec::Core
   class Reporter
     NOTIFICATIONS = %W[start message example_group_started example_group_finished example_started
                        example_passed example_failed example_pending start_dump dump_pending
-                       dump_failures dump_summary seed close stop].map &:to_sym
+                       dump_failures dump_summary seed close stop].map(&:to_sym)
 
     def initialize(*formatters)
       @listeners = Hash.new { |h,k| h[k] = [] }

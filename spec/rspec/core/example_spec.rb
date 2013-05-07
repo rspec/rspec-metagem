@@ -320,7 +320,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         end
 
         message = run_and_capture_reported_message(group)
-        expect(message).to match /An error occurred in an around.* hook/i
+        expect(message).to match(/An error occurred in an around.* hook/i)
       end
 
       it "prints any after hook errors rather than silencing them" do
@@ -330,7 +330,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         end
 
         message = run_and_capture_reported_message(group)
-        expect(message).to match /An error occurred in an after.* hook/i
+        expect(message).to match(/An error occurred in an after.* hook/i)
       end
 
       it 'does not print mock expectation errors' do

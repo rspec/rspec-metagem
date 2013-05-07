@@ -51,7 +51,7 @@ module RSpec::Core
         it 'does not add it to the load path' do
           config.default_path = 'Rakefile'
           config.setup_load_path_and_require []
-          expect($LOAD_PATH).not_to include(match /Rakefile/)
+          expect($LOAD_PATH).not_to include(match(/Rakefile/))
         end
       end
     end
@@ -502,7 +502,7 @@ module RSpec::Core
 
       it 'is possible to access the full description regular expression' do
         config.full_description = "foo"
-        expect(config.full_description).to eq /foo/
+        expect(config.full_description).to eq(/foo/)
       end
     end
 
@@ -1461,7 +1461,7 @@ module RSpec::Core
       it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
         examples = [1, 2, 3, 4]
         examples.extend Extensions::Ordered::Examples
-        config.order_examples { |examples| examples.reverse }
+        config.order_examples { |examples_to_order| examples_to_order.reverse }
         expect(examples.ordered).to eq([4, 3, 2, 1])
       end
 
@@ -1483,7 +1483,7 @@ module RSpec::Core
       it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
         groups = [1, 2, 3, 4]
         groups.extend Extensions::Ordered::ExampleGroups
-        config.order_groups { |groups| groups.reverse }
+        config.order_groups { |groups_to_order| groups_to_order.reverse }
         expect(groups.ordered).to eq([4, 3, 2, 1])
       end
 
