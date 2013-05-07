@@ -1461,7 +1461,7 @@ module RSpec::Core
       it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
         examples = [1, 2, 3, 4]
         examples.extend Extensions::Ordered::Examples
-        config.order_examples { |examples| examples.reverse }
+        config.order_examples { |examples_to_order| examples_to_order.reverse }
         expect(examples.ordered).to eq([4, 3, 2, 1])
       end
 
@@ -1483,7 +1483,7 @@ module RSpec::Core
       it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
         groups = [1, 2, 3, 4]
         groups.extend Extensions::Ordered::ExampleGroups
-        config.order_groups { |groups| groups.reverse }
+        config.order_groups { |groups_to_order| groups_to_order.reverse }
         expect(groups.ordered).to eq([4, 3, 2, 1])
       end
 
