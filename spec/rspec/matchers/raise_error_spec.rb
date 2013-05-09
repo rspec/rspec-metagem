@@ -431,7 +431,7 @@ end
 
 describe "misuse of raise_error, with (), not {}" do
   it "fails with warning" do
-    ::Kernel.should_receive(:warn).with "`raise_error` is called with non-proc object"
+    ::Kernel.should_receive(:warn).with /`raise_error` was called with non-proc object 1\.7/
     expect {
       expect(Math.sqrt(3)).to raise_error
     }.to fail_with(/nothing was raised/)

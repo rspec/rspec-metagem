@@ -25,7 +25,7 @@ module RSpec
           @eval_block = false
           @eval_block_passed = false
           unless given_proc.respond_to?(:call)
-            ::Kernel.warn "`raise_error` is called with non-proc object"
+            ::Kernel.warn "`raise_error` was called with non-proc object #{given_proc.inspect}"
             return false
           end
           begin
