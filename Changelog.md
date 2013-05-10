@@ -23,6 +23,8 @@ Bug fixes
   `Enumerator#size` may return nil (Kenta Murata).
 * Fix `expect { raise s }.to raise_error(s)` where s is an error instance
   (Sam Phippen).
+* Fix `expect(object).to raise_error` passing. This now warns the user and
+  fails the spec (tomykaira).
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
