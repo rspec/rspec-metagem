@@ -24,6 +24,10 @@ module RSpec
           @with_expected_message = false
           @eval_block = false
           @eval_block_passed = false
+          unless given_proc.respond_to?(:call)
+            ::Kernel.warn "`raise_error` was called with non-proc object #{given_proc.inspect}"
+            return false
+          end
           begin
             given_proc.call
           rescue Exception => @actual_error
