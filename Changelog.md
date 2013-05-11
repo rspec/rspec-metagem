@@ -36,6 +36,8 @@ Enhancements
   (Jon Rowe)
 * Add setters for RSpec.world and RSpec.configuration (Alex Soulim)
 * Configure ruby's warning behaviour with `--warnings` (Jon Rowe)
+* Fix an obscure issue on old versions of `1.8.7` where `Time.dup` wouldn't
+  allow access to `Time.now` (Jon Rowe)
 
 Bug fixes
 
