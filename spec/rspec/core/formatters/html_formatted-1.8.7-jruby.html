@@ -1,8 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang='en'>
 <head>
   <title>RSpec results</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -269,14 +266,14 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
-    <p id="totals">&nbsp;</p>
-    <p id="duration">&nbsp;</p>
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
   </div>
 </div>
 
@@ -319,7 +316,10 @@ a {
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'</pre></div>
     <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
@@ -352,7 +352,10 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'</pre></div>
     <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
@@ -374,7 +377,10 @@ expected: 2
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `result'
-./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'</pre></div>
+./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
@@ -384,7 +390,7 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre>/foo.html.erb:1:in `<main>': foo (RuntimeError)</pre></div>
+        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;': foo (RuntimeError)</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>

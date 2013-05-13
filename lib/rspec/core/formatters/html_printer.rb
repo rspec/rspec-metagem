@@ -30,7 +30,7 @@ module RSpec
           @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
         end
 
-        def print_example_failed( pending_fixed, description, run_time, failure_id, exception, extra_content )
+        def print_example_failed( pending_fixed, description, run_time, failure_id, exception, extra_content, escape_backtrace = false )
           formatted_run_time = sprintf("%.5f", run_time)
 
           @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
@@ -39,7 +39,11 @@ module RSpec
           @output.puts "      <div class=\"failure\" id=\"failure_#{failure_id}\">"
           if exception
             @output.puts "        <div class=\"message\"><pre>#{h(exception[:message])}</pre></div>"
-            @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
+            if escape_backtrace
+              @output.puts "        <div class=\"backtrace\"><pre>#{h exception[:backtrace]}</pre></div>"
+            else
+              @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
+            end
           end
           @output.puts extra_content if extra_content
           @output.puts "      </div>"
@@ -114,14 +118,14 @@ module RSpec
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox" name="passed_checkbox" type="checkbox" checked onchange="apply_filters()" value="1"> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox" name="failed_checkbox" type="checkbox" checked onchange="apply_filters()" value="2"> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked onchange="apply_filters()" value="3"> <label for="pending_checkbox">Pending</label>
+    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
+    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
+    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
-    <p id="totals">&nbsp;</p>
-    <p id="duration">&nbsp;</p>
+    <p id="totals">&#160;</p>
+    <p id="duration">&#160;</p>
   </div>
 </div>
 
@@ -371,11 +375,8 @@ a {
 EOF
 
         HTML_HEADER = <<-EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-  PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!DOCTYPE html>
+<html lang='en'>
 <head>
   <title>RSpec results</title>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />

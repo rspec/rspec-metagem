@@ -17,7 +17,7 @@ module RSpec
         def format_backtrace_line_for_textmate(line)
           return nil unless line
           CGI.escapeHTML(line).sub(/([^:]*\.e?rb):(\d*)/) do
-            "<a href=\"txmt://open?url=file://#{File.expand_path($1)}&line=#{$2}\">#{$1}:#{$2}</a> "
+            "<a href=\"txmt://open?url=file://#{File.expand_path($1)}&amp;line=#{$2}\">#{$1}:#{$2}</a> "
           end
         end
 
