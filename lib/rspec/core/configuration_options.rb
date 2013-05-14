@@ -123,7 +123,7 @@ module RSpec
       def args_from_options_file(path)
         return [] unless path && File.exist?(path)
         config_string = options_file_as_erb_string(path)
-        config_string.split(/\n+/).map {|l| l.shellsplit}.flatten
+        config_string.split(/\n+/).map {|l| Shellwords.shellwords(l) }.flatten
       end
 
       def options_file_as_erb_string(path)

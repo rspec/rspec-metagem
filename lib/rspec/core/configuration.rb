@@ -1025,7 +1025,7 @@ EOM
 
       def gather_directories(path)
         stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
-        files    = pattern.start_with?(path) ? Dir[stripped] : Dir["#{path}/#{stripped}"]
+        files    = pattern =~ /^#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
         files.sort
       end
 
