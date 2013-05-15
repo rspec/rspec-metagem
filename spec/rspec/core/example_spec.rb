@@ -8,7 +8,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   let(:example_instance) do
-    example_group.example('example description')
+    example_group.example('example description') { }
   end
 
   it_behaves_like "metadata hash builder" do
@@ -28,10 +28,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   it 'can be pretty printed' do
-    # Prevent warnings of uninitialized instance variables.
-    def example_instance.instance_variables ; [] ; end
-
-    output = capture_stdout { pp example_instance }
+    output = ignoring_warnings { capture_stdout { pp example_instance } }
     expect(output).to include("RSpec::Core::Example")
   end
 
