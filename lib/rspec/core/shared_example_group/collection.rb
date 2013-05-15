@@ -3,33 +3,34 @@ module RSpec
     module SharedExampleGroup
       class Collection
 
-        def initialize sources, examples
+        def initialize(sources, examples)
           @sources, @examples = sources, examples
         end
 
-        def [] key
+        def [](key)
           fetch_examples(key) || warn_deprecation_and_fetch_anyway(key)
         end
 
         private
 
-          def fetch_examples key
+          def fetch_examples(key)
             @examples[source_for key][key]
           end
 
-          def source_for key
+          def source_for(key)
             @sources.reverse.find { |source| @examples[source].has_key? key }
           end
 
-          def fetch_anyway key
-            @examples.values.inject({},&:merge)[key]
+          def fetch_anyway(key)
+            @examples.values.inject({}, &:merge)[key]
           end
 
-          def warn_deprecation_and_fetch_anyway key
+          def warn_deprecation_and_fetch_anyway(key)
             if (example = fetch_anyway key)
-              RSpec.warn_deprecation <<-WARNING.gsub(/^ +\|/, '')
-                    Accessing shared_examples defined across contexts is deprecated.
-                    Please declare shared_examples within a shared context, or at the top level
+              RSpec.warn_deprecation <<-WARNING.gsub(/^ /, '')
+                Accessing shared_examples defined across contexts is deprecated.
+                Please declare shared_examples within a shared context, or at the top level.
+                This message was generated at: #{caller(0)[5 ]}
               WARNING
               example
             end
