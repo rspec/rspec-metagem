@@ -5,7 +5,9 @@ module RSpecHelpers
 
   def safely
     Thread.new do
+      $-w = false
       $SAFE = 3
+      $-w = true
       yield
     end.join
 
