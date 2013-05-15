@@ -38,6 +38,8 @@ Enhancements
 * Configure ruby's warning behaviour with `--warnings` (Jon Rowe)
 * Fix an obscure issue on old versions of `1.8.7` where `Time.dup` wouldn't
   allow access to `Time.now` (Jon Rowe)
+* Make `shared_examples_for` context aware, so that keys may be safely reused
+  in multiple contexts without colliding. (Jon Rowe)
 
 Bug fixes
 
@@ -70,6 +72,8 @@ Deprecations
 * Deprecate `Configuration#requires=` in favor of using ruby's
   `require`. Requires specified by the command line can still be
   accessed by the `Configuration#require` reader. (Bradley Schaefer)
+* Deprecate calling `SharedExampleGroups` defined across sibling contexts
+  (Jon Rowe)
 
 ### 2.13.1 / 2013-03-12
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.13.0...v2.13.1)
