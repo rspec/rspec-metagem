@@ -28,8 +28,8 @@ module RSpec
       # @see ExampleGroup.it_behaves_like
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
-      def shared_examples *args, &block
-        Registry.add_group(*args, &block)
+      def shared_examples(*args, &block)
+        Registry.add_group(self, *args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -40,7 +40,31 @@ module RSpec
       def share_as(name, &block)
         RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
                         "RSpec::SharedContext or shared_examples")
-        Registry.add_const(name, &block)
+        Registry.add_const(self, name, &block)
+      end
+
+      def shared_example_groups
+        Registry.shared_example_groups_for('main', *ancestors[0..-1])
+      end
+
+      module TopLevelDSL
+        def shared_examples(*args, &block)
+          Registry.add_group('main', *args, &block)
+        end
+
+        alias_method :shared_context,      :shared_examples
+        alias_method :share_examples_for,  :shared_examples
+        alias_method :shared_examples_for, :shared_examples
+
+        def share_as(name, &block)
+          RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
+                          "RSpec::SharedContext or shared_examples")
+          Registry.add_const('main', name, &block)
+        end
+
+        def shared_example_groups
+          Registry.shared_example_groups_for('main')
+        end
       end
 
       # @private
@@ -53,13 +77,13 @@ module RSpec
       module Registry
         extend self
 
-        def add_group(*args, &block)
+        def add_group(source, *args, &block)
           ensure_block_has_source_location(block, caller[1])
 
           if key? args.first
             key = args.shift
-            warn_if_key_taken key, block
-            RSpec.world.shared_example_groups[key] = block
+            warn_if_key_taken source, key, block
+            add_shared_example_group source, key, block
           end
 
           unless args.empty?
@@ -71,7 +95,7 @@ module RSpec
           end
         end
 
-        def add_const(name, &block)
+        def add_const(source, name, &block)
           if Object.const_defined?(name)
             mod = Object.const_get(name)
             raise_name_error unless mod.created_from_caller(caller)
@@ -92,12 +116,28 @@ module RSpec
           end
 
           shared_const = Object.const_set(name, mod)
-          RSpec.world.shared_example_groups[shared_const] = block
+          add_shared_example_group source, shared_const, block
+        end
+
+        def shared_example_groups_for(*sources)
+          Collection.new(sources, shared_example_groups)
+        end
+
+        def shared_example_groups
+          @shared_example_groups ||= Hash.new { |hash,key| hash[key] = Hash.new }
+        end
+
+        def clear
+          @shared_example_groups.clear
         end
 
       private
 
-        def key? candidate
+        def add_shared_example_group(source, key, block)
+          shared_example_groups[source][key] = block
+        end
+
+        def key?(candidate)
           [String, Symbol, Module].any? { |cls| cls === candidate }
         end
 
@@ -105,8 +145,8 @@ module RSpec
           raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
         end
 
-        def warn_if_key_taken key, new_block
-          return unless existing_block = example_block_for(key)
+        def warn_if_key_taken(source, key, new_block)
+          return unless existing_block = example_block_for(source, key)
 
           Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
             |WARNING: Shared example group '#{key}' has been previously defined at:
@@ -117,12 +157,12 @@ module RSpec
           WARNING
         end
 
-        def formatted_location block
+        def formatted_location(block)
           block.source_location.join ":"
         end
 
-        def example_block_for key
-          RSpec.world.shared_example_groups[key]
+        def example_block_for(source, key)
+          shared_example_groups[source][key]
         end
 
         def ensure_block_has_source_location(block, caller_line)
@@ -139,6 +179,6 @@ module RSpec
   end
 end
 
-extend RSpec::Core::SharedExampleGroup
+extend RSpec::Core::SharedExampleGroup::TopLevelDSL
 Module.send(:include, RSpec::Core::SharedExampleGroup)
 

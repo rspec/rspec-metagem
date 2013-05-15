@@ -220,3 +220,75 @@ Feature: shared examples
         """
         1 example, 0 failures
         """
+
+  Scenario: Shared examples are nestable by context
+    Given a file named "context_specific_examples_spec.rb" with:
+      """Ruby
+      describe "shared examples" do
+        context "per context" do
+
+          shared_examples "shared examples are nestable" do
+            specify { expect(true).to eq true }
+          end
+
+          it_behaves_like "shared examples are nestable"
+        end
+      end
+      """
+    When I run `rspec context_specific_examples_spec.rb`
+    Then the output should contain:
+      """
+      1 example, 0 failures
+      """
+
+  Scenario: Shared examples are accessible from offspring contexts
+    Given a file named "context_specific_examples_spec.rb" with:
+      """Ruby
+      describe "shared examples" do
+        shared_examples "shared examples are nestable" do
+          specify { expect(true).to eq true }
+        end
+
+        context "per context" do
+          it_behaves_like "shared examples are nestable"
+        end
+      end
+      """
+    When I run `rspec context_specific_examples_spec.rb`
+    Then the output should contain:
+      """
+      1 example, 0 failures
+      """
+    And the output should not contain:
+      """
+      Accessing shared_examples defined across contexts is deprecated
+      """
+
+  Scenario: Shared examples are isolated per context
+    Given a file named "isolated_shared_examples_spec.rb" with:
+      """Ruby
+      describe "shared examples" do
+        context do
+          shared_examples "shared examples are isolated" do
+            specify { expect(true).to eq true }
+          end
+        end
+
+        context do
+          it_behaves_like "shared examples are isolated"
+        end
+      end
+      """
+    When I run `rspec isolated_shared_examples_spec.rb`
+    Then the output should contain:
+      """
+      1 example, 0 failures
+      """
+    But the output should contain:
+      """
+      Accessing shared_examples defined across contexts is deprecated
+      """
+    And the output should contain:
+      """
+      isolated_shared_examples_spec.rb:9
+      """

@@ -162,7 +162,7 @@ module RSpec
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
-        shared_block = world.shared_example_groups[name]
+        shared_block = shared_example_groups[name]
 
         module_eval_with_args(*args, &shared_block)
         module_eval(&customization_block) if customization_block
