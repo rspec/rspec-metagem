@@ -221,7 +221,7 @@ Feature: shared examples
         1 example, 0 failures
         """
 
-  Scenario: Shared examples are nested able by context
+  Scenario: Shared examples are nestable by context
     Given a file named "context_specific_examples_spec.rb" with:
       """Ruby
       describe "shared examples" do
@@ -239,6 +239,29 @@ Feature: shared examples
     Then the output should contain:
       """
       1 example, 0 failures
+      """
+
+  Scenario: Shared examples are accessible from offspring contexts
+    Given a file named "context_specific_examples_spec.rb" with:
+      """Ruby
+      describe "shared examples" do
+        shared_examples "shared examples are nestable" do
+          specify { expect(true).to eq true }
+        end
+
+        context "per context" do
+          it_behaves_like "shared examples are nestable"
+        end
+      end
+      """
+    When I run `rspec context_specific_examples_spec.rb`
+    Then the output should contain:
+      """
+      1 example, 0 failures
+      """
+    And the output should not contain:
+      """
+      Accessing shared_examples defined across contexts is deprecated
       """
 
   Scenario: Shared examples are isolated per context
