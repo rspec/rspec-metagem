@@ -30,7 +30,7 @@ module RSpec
               RSpec.warn_deprecation <<-WARNING.gsub(/^ /, '')
                 Accessing shared_examples defined across contexts is deprecated.
                 Please declare shared_examples within a shared context, or at the top level.
-                This message was generated at: #{caller(0)[5 ]}
+                This message was generated at: #{caller(0)[8]}
               WARNING
               example
             end

@@ -288,3 +288,7 @@ Feature: shared examples
       """
       Accessing shared_examples defined across contexts is deprecated
       """
+    And the output should contain:
+      """
+      isolated_shared_examples_spec.rb:9
+      """
