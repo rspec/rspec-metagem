@@ -127,6 +127,10 @@ module RSpec
           @shared_example_groups ||= Hash.new { |hash,key| hash[key] = Hash.new }
         end
 
+        def clear
+          @shared_example_groups.clear
+        end
+
       private
 
         def add_shared_example_group(source, key, block)
