@@ -60,6 +60,7 @@ Bug fixes
   doc string has been provided (David Chelimsky).
 * Fix the memoized methods (`let` and `subject`) leaking `define_method`
   as a `public` method. (Thomas Holmes and Jon Rowe) (#873)
+* Silence warnings coming from the test suite. (Pete Higgins)
 
 Deprecations
 
