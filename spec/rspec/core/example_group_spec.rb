@@ -906,7 +906,7 @@ module RSpec::Core
 
         it "sets RSpec.wants_to_quit flag if encountering an exception in before(:all)" do
           group.before(:all) { raise "error in before all" }
-          example = group.example("equality") { expect(1).to eq(2) }
+          group.example("equality") { expect(1).to eq(2) }
           expect(group.run).to be_false
           expect(RSpec.wants_to_quit).to be_true
         end
