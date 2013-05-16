@@ -14,7 +14,7 @@ module RSpec
       end
 
       it "prints a deprecation warning" do
-        RSpec.should_receive(:warn).with(/please use be_within.*instead/)
+        RSpec.should_receive(:warn).with(/use be_within.*instead/)
         be_close(3.0, 0.5)
       end
     end
