@@ -187,10 +187,10 @@ module RSpec
             sandboxed do
               configure_syntax [:should, :expect]
 
-              RSpec.should_receive(:warn).with(/please use `expect \{ \}.to.*instead/)
+              RSpec.should_receive(:warn).with(/use `expect \{ \}.to.*instead/)
               expect { raise "boom" }.should raise_error("boom")
 
-              RSpec.should_receive(:warn).with(/please use `expect \{ \}.to_not.*instead/)
+              RSpec.should_receive(:warn).with(/use `expect \{ \}.to_not.*instead/)
               expect { }.should_not raise_error
             end
           end
