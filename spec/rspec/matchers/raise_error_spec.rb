@@ -150,7 +150,7 @@ describe "expect { ... }.not_to raise_error(message)" do
   end
 
   it "is deprecated" do
-    expect(RSpec).to receive(:deprecate)
+    expect(RSpec).to receive(:deprecate).with(/not_to raise_error\(message\)/, /not_to raise_error\(\)/, "3.0.0")
     expect {raise 'blarg'}.not_to raise_error('blah')
   end
 
@@ -205,7 +205,7 @@ describe "expect { ... }.not_to raise_error(NamedError)" do
   end
 
   it "is deprecated" do
-    expect(RSpec).to receive(:deprecate)
+    expect(RSpec).to receive(:deprecate).with(/not_to raise_error\(SpecificErrorClass\)/, /not_to raise_error\(\)/, "3.0.0")
     expect { }.not_to raise_error(NameError)
   end
 
@@ -254,7 +254,7 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) with Stri
   end
 
   it "is deprecated" do
-    expect(RSpec).to receive(:deprecate)
+    expect(RSpec).to receive(:deprecate).with(/not_to raise_error\(SpecificErrorClass, message\)/, /not_to raise_error\(\)/, "3.0.0")
     expect {}.not_to raise_error(RuntimeError, "example message")
   end
 
