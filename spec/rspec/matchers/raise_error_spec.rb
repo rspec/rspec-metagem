@@ -191,6 +191,15 @@ describe "expect { ... }.to raise_error(NamedError)" do
 end
 
 describe "expect { ... }.not_to raise_error(NamedError)" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect { }.not_to raise_error(NameError)
+  end
+
   it "passes if nothing is raised" do
     expect { }.not_to raise_error(NameError)
   end
@@ -304,6 +313,15 @@ describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| ... }" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {}.not_to raise_error(RuntimeError, "example message") { |err| }
+  end
+
   it "passes if nothing is raised" do
     ran = false
 
@@ -366,6 +384,15 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| .
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {}.not_to raise_error(RuntimeError, "example message")
+  end
+
   it "passes if nothing is raised" do
     expect {}.not_to raise_error(RuntimeError, "example message")
   end
@@ -410,6 +437,15 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" 
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {}.not_to raise_error(RuntimeError, /ample mess/)
+  end
+
   it "passes if nothing is raised" do
     expect {}.not_to raise_error(RuntimeError, /ample mess/)
   end
