@@ -47,6 +47,9 @@ Feature: Syntax Configuration
         config.expect_with :rspec do |c|
           c.syntax = :should
         end
+        config.mock_with :rspec do |c|
+          c.syntax = :should
+        end
       end
       """
     When I run `rspec disable_expect_syntax.rb syntaxes_spec.rb`
