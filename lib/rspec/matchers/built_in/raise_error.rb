@@ -14,7 +14,7 @@ module RSpec
         end
 
         def matches?(given_proc, negative_expectation = false)
-          if negative_expectation && expecting_specific_exception?
+          if negative_expectation && (expecting_specific_exception? || @expected_message)
             RSpec.deprecate("`expect { }.not_to raise_error(SpecificErrorClass)`",
                             "`expect { }.not_to raise_error()`",
                             "3.0.0")

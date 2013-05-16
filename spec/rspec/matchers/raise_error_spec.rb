@@ -145,6 +145,15 @@ describe "expect { ... }.to raise_error(message)" do
 end
 
 describe "expect { ... }.not_to raise_error(message)" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {raise 'blarg'}.not_to raise_error('blah')
+  end
+
   it "passes if RuntimeError error is raised with the different message" do
     expect {raise 'blarg'}.not_to raise_error('blah')
   end
@@ -236,6 +245,88 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with String" 
     expect {
       expect { raise RuntimeError.new("not the example message") }.to raise_error(RuntimeError, "example message")
     }.to fail_with(/expected RuntimeError with \"example message\", got #<RuntimeError: not the example message/)
+  end
+end
+
+describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {}.not_to raise_error(RuntimeError, "example message")
+  end
+
+  it "passes if nothing is raised" do
+    expect {}.not_to raise_error(RuntimeError, "example message")
+  end
+
+  it "passes if a different error is raised" do
+    expect { raise }.not_to raise_error(NameError, "example message")
+  end
+
+  it "passes if same error is raised with different message" do
+    expect { raise RuntimeError.new("not the example message") }.not_to raise_error(RuntimeError, "example message")
+  end
+
+  it "fails if named error is raised with same message" do
+    expect {
+      expect { raise "example message" }.not_to raise_error(RuntimeError, "example message")
+    }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
+  end
+end
+
+describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" do
+  it "passes if named error is raised with matching message" do
+    expect { raise "example message" }.to raise_error(RuntimeError, /ample mess/)
+  end
+
+  it "fails if nothing is raised" do
+    expect {
+      expect {}.to raise_error(RuntimeError, /ample mess/)
+    }.to fail_with(/expected RuntimeError with message matching \/ample mess\/ but nothing was raised/)
+  end
+
+  it "fails if incorrect error is raised" do
+    expect {
+      expect { raise RuntimeError, "example message" }.to raise_error(NameError, /ample mess/)
+    }.to fail_with(/expected NameError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
+  end
+
+  it "fails if correct error is raised with incorrect message" do
+    expect {
+      expect { raise RuntimeError.new("not the example message") }.to raise_error(RuntimeError, /less than ample mess/)
+    }.to fail_with(/expected RuntimeError with message matching \/less than ample mess\/, got #<RuntimeError: not the example message>/)
+  end
+end
+
+describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
+  before do
+    allow(RSpec).to receive(:deprecate)
+  end
+
+  it "is deprecated" do
+    expect(RSpec).to receive(:deprecate)
+    expect {}.not_to raise_error(RuntimeError, /ample mess/)
+  end
+
+  it "passes if nothing is raised" do
+    expect {}.not_to raise_error(RuntimeError, /ample mess/)
+  end
+
+  it "passes if a different error is raised" do
+    expect { raise }.not_to raise_error(NameError, /ample mess/)
+  end
+
+  it "passes if same error is raised with non-matching message" do
+    expect { raise RuntimeError.new("non matching message") }.not_to raise_error(RuntimeError, /ample mess/)
+  end
+
+  it "fails if named error is raised with matching message" do
+    expect {
+      expect { raise "example message" }.not_to raise_error(RuntimeError, /ample mess/)
+    }.to fail_with(/expected no RuntimeError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
   end
 end
 
@@ -380,88 +471,6 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| .
     }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
 
     expect(ran).to eq false
-  end
-end
-
-describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
-  it "is deprecated" do
-    expect(RSpec).to receive(:deprecate)
-    expect {}.not_to raise_error(RuntimeError, "example message")
-  end
-
-  it "passes if nothing is raised" do
-    expect {}.not_to raise_error(RuntimeError, "example message")
-  end
-
-  it "passes if a different error is raised" do
-    expect { raise }.not_to raise_error(NameError, "example message")
-  end
-
-  it "passes if same error is raised with different message" do
-    expect { raise RuntimeError.new("not the example message") }.not_to raise_error(RuntimeError, "example message")
-  end
-
-  it "fails if named error is raised with same message" do
-    expect {
-      expect { raise "example message" }.not_to raise_error(RuntimeError, "example message")
-    }.to fail_with(/expected no RuntimeError with \"example message\", got #<RuntimeError: example message>/)
-  end
-end
-
-describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" do
-  it "passes if named error is raised with matching message" do
-    expect { raise "example message" }.to raise_error(RuntimeError, /ample mess/)
-  end
-
-  it "fails if nothing is raised" do
-    expect {
-      expect {}.to raise_error(RuntimeError, /ample mess/)
-    }.to fail_with(/expected RuntimeError with message matching \/ample mess\/ but nothing was raised/)
-  end
-
-  it "fails if incorrect error is raised" do
-    expect {
-      expect { raise RuntimeError, "example message" }.to raise_error(NameError, /ample mess/)
-    }.to fail_with(/expected NameError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
-  end
-
-  it "fails if correct error is raised with incorrect message" do
-    expect {
-      expect { raise RuntimeError.new("not the example message") }.to raise_error(RuntimeError, /less than ample mess/)
-    }.to fail_with(/expected RuntimeError with message matching \/less than ample mess\/, got #<RuntimeError: not the example message>/)
-  end
-end
-
-describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
-  it "is deprecated" do
-    expect(RSpec).to receive(:deprecate)
-    expect {}.not_to raise_error(RuntimeError, /ample mess/)
-  end
-
-  it "passes if nothing is raised" do
-    expect {}.not_to raise_error(RuntimeError, /ample mess/)
-  end
-
-  it "passes if a different error is raised" do
-    expect { raise }.not_to raise_error(NameError, /ample mess/)
-  end
-
-  it "passes if same error is raised with non-matching message" do
-    expect { raise RuntimeError.new("non matching message") }.not_to raise_error(RuntimeError, /ample mess/)
-  end
-
-  it "fails if named error is raised with matching message" do
-    expect {
-      expect { raise "example message" }.not_to raise_error(RuntimeError, /ample mess/)
-    }.to fail_with(/expected no RuntimeError with message matching \/ample mess\/, got #<RuntimeError: example message>/)
   end
 end
 
