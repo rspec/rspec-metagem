@@ -15,10 +15,9 @@ module RSpec
 
         def matches?(given_proc, negative_expectation = false)
           if negative_expectation && expecting_specific_exception?
-            RSpec.warn_deprecation("Deprecation: `expect { }.not_to " +
-                                   "raise_error(SpecificErrorClass)` with any " +
-                                   "specific error class is deprecated, use " +
-                                   "`expect { }.not_to raise_error` instead")
+            RSpec.deprecate("`expect { }.not_to raise_error(SpecificErrorClass)`",
+                            "`expect { }.not_to raise_error()`",
+                            "3.0.0")
           end
           @raised_expected_error = false
           @with_expected_message = false
