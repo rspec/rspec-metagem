@@ -55,7 +55,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         exception_without_message = Exception.new()
         exception_without_message.stub(:message) { nil }
         group.example("example name") { raise exception_without_message }
-        expect { run_all_and_dump_failures }.not_to raise_error(NoMethodError)
+        expect { run_all_and_dump_failures }.not_to raise_error
       end
 
       it "preserves ancestry" do
@@ -70,7 +70,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         gonzo_exception = RuntimeError.new
         gonzo_exception.stub(:message) { gonzo_exception }
         group.example("example name") { raise gonzo_exception }
-        expect { run_all_and_dump_failures }.not_to raise_error(NoMethodError)
+        expect { run_all_and_dump_failures }.not_to raise_error
       end
     end
 
@@ -218,7 +218,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
           exception_without_message = Exception.new()
           exception_without_message.stub(:message) { nil }
           group.example("example name") { pending { raise exception_without_message } }
-          expect { run_all_and_dump_pending }.not_to raise_error(NoMethodError)
+          expect { run_all_and_dump_pending }.not_to raise_error
         end
       end
 
