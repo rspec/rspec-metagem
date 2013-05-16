@@ -71,9 +71,10 @@ describe "expect { ... }.not_to raise_error" do
 
   context "with no specific error class" do
     it "is not deprecated" do
-      RSpec.stub(:warn_deprecation) { @run = true }
+      run = nil
+      RSpec.stub(:warn_deprecation) { run = true }
       expect {"bees"}.not_to raise_error
-      expect(@run).to be_nil
+      expect(run).to be_nil
     end
 
     it "passes if nothing is raised" do
@@ -476,7 +477,7 @@ end
 
 describe "misuse of raise_error, with (), not {}" do
   it "fails with warning" do
-    ::Kernel.should_receive(:warn).with /`raise_error` was called with non-proc object 1\.7/
+    ::Kernel.should_receive(:warn).with(/`raise_error` was called with non-proc object 1\.7/)
     expect {
       expect(Math.sqrt(3)).to raise_error
     }.to fail_with(/nothing was raised/)

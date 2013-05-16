@@ -15,7 +15,7 @@ module RSpec
 
         describe "expect(...).to" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with /ignoring.*message/
+            warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).to eq(3), :not_a_string
           end
 
@@ -30,14 +30,14 @@ module RSpec
           end
 
           it "prints a warning when the message object handles to_s but not to_str" do
-            warner.should_receive(:warn).with /ignoring.*message/
+            warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).to eq(3), insufficiently_string_like_object
           end
         end
 
         describe "expect(...).to_not" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with /ignoring.*message/
+            warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), :not_a_string
           end
 
@@ -52,7 +52,7 @@ module RSpec
           end
 
           it "prints a warning when the message object handles to_s but not to_str" do
-            warner.should_receive(:warn).with /ignoring.*message/
+            warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), insufficiently_string_like_object
           end
         end

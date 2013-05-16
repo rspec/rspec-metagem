@@ -465,10 +465,10 @@ end
 
 describe "'expect(...).to be' with operator" do
   it "includes 'be' in the description" do
-    expect((be > 6).description).to match /be > 6/
-    expect((be >= 6).description).to match /be >= 6/
-    expect((be <= 6).description).to match /be <= 6/
-    expect((be < 6).description).to match /be < 6/
+    expect((be > 6).description).to match(/be > 6/)
+    expect((be >= 6).description).to match(/be >= 6/)
+    expect((be <= 6).description).to match(/be <= 6/)
+    expect((be < 6).description).to match(/be < 6/)
   end
 end
 

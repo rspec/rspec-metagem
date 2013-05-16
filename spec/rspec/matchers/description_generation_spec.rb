@@ -171,6 +171,6 @@ describe "a Matcher with no description" do
 
   it "provides a helpful message when used in a string-less example block" do
     expect(5).to matcher
-    expect(RSpec::Matchers.generated_description).to match /When you call.*description method/m
+    expect(RSpec::Matchers.generated_description).to match(/When you call.*description method/m)
   end
 end
