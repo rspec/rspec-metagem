@@ -4,26 +4,17 @@ module RSpec
     #
     # Used internally to print deprecation warnings
     def deprecate(method, alternate_method=nil, version=nil)
-      version_string = version ? "rspec-#{version}" : "a future version of RSpec"
-
-      message = <<-NOTICE
-
-*****************************************************************
-DEPRECATION WARNING: you are using deprecated behaviour that will
-be removed from #{version_string}.
-
-#{caller(0)[2]}
-
-* #{method} is deprecated.
-NOTICE
+      lines = ["#{method} is deprecated"]
+      if version
+        lines.last << ", and will be removed from rspec-#{version}"
+      end
       if alternate_method
-        message << <<-ADDITIONAL
-* please use #{alternate_method} instead.
-ADDITIONAL
+        lines << "use #{alternate_method} instead"
       end
 
-      message << "*****************************************************************"
-      warn_deprecation(message)
+      lines << "called from #{caller(0)[2]}"
+
+      warn_deprecation "\n" + lines.map {|l| "DEPRECATION: #{l}"}.join("\n") + "\n"
     end
 
     # @private
