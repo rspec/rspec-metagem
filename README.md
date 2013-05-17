@@ -171,7 +171,7 @@ In addition to the `expect` syntax, rspec-expectations continues to support the
 
 ```ruby
 actual.should eq expected
-actual).should be > 3
+actual.should be > 3
 [1, 2, 3].should_not include 4
 ```
 
