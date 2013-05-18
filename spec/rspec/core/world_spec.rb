@@ -12,7 +12,6 @@ module RSpec::Core
     describe '#reset' do
       it 'clears #example_groups' do
         world.example_groups << :example_group
-        klass = Class.new
         world.reset
         expect(world.example_groups).to be_empty
       end
