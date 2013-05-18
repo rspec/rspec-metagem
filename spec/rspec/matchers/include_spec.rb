@@ -137,7 +137,7 @@ describe "#include matcher" do
     end
   end
 
-  describe "expect(...).to_not include(expected)" do
+  describe "expect(...).not_to include(expected)" do
     context "for a string target" do
       it "passes if target does not include expected" do
         expect("abc").not_to include("d")
@@ -188,7 +188,7 @@ describe "#include matcher" do
 
   end
 
-  describe "expect(...).to_not include(with, multiple, args)" do
+  describe "expect(...).not_to include(with, multiple, args)" do
     context "for a string target" do
       it "passes if the target does not include any of the expected" do
         expect("abc").not_to include("d", "e", "f")
@@ -280,7 +280,7 @@ describe "#include matcher" do
     end
   end
 
-  describe "expect(...).to_not include(:key => value)" do
+  describe "expect(...).not_to include(:key => value)" do
     context 'for a hash target' do
       it "fails if target includes the key/value pair" do
         expect {
@@ -364,7 +364,7 @@ describe "#include matcher" do
     end
   end
 
-  describe "expect(...).to_not include(:key1 => value1, :key2 => value2)" do
+  describe "expect(...).not_to include(:key1 => value1, :key2 => value2)" do
     context 'for a hash target' do
       it "fails if target includes the key/value pairs" do
         expect {

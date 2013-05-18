@@ -26,11 +26,11 @@ Feature: throw_symbol matcher
       describe "throw" do
         specify { expect { throw :foo    }.to     throw_symbol }
         specify { expect { throw :bar, 7 }.to     throw_symbol }
-        specify { expect { 5 + 5         }.to_not throw_symbol }
+        specify { expect { 5 + 5         }.not_to throw_symbol }
 
         # deliberate failures
-        specify { expect { throw :foo    }.to_not throw_symbol }
-        specify { expect { throw :bar, 7 }.to_not throw_symbol }
+        specify { expect { throw :foo    }.not_to throw_symbol }
+        specify { expect { throw :bar, 7 }.not_to throw_symbol }
         specify { expect { 5 + 5         }.to     throw_symbol }
       end
       """
@@ -47,12 +47,12 @@ Feature: throw_symbol matcher
       describe "throw symbol" do
         specify { expect { throw :foo    }.to     throw_symbol(:foo) }
         specify { expect { throw :foo, 7 }.to     throw_symbol(:foo) }
-        specify { expect { 5 + 5         }.to_not throw_symbol(:foo) }
-        specify { expect { throw :bar    }.to_not throw_symbol(:foo) }
+        specify { expect { 5 + 5         }.not_to throw_symbol(:foo) }
+        specify { expect { throw :bar    }.not_to throw_symbol(:foo) }
 
         # deliberate failures
-        specify { expect { throw :foo    }.to_not throw_symbol(:foo) }
-        specify { expect { throw :foo, 7 }.to_not throw_symbol(:foo) }
+        specify { expect { throw :foo    }.not_to throw_symbol(:foo) }
+        specify { expect { throw :foo, 7 }.not_to throw_symbol(:foo) }
         specify { expect { 5 + 5         }.to     throw_symbol(:foo) }
         specify { expect { throw :bar    }.to     throw_symbol(:foo) }
       end
@@ -70,12 +70,12 @@ Feature: throw_symbol matcher
       """ruby
       describe "throw symbol with argument" do
         specify { expect { throw :foo, 7 }.to     throw_symbol(:foo, 7) }
-        specify { expect { throw :foo, 8 }.to_not throw_symbol(:foo, 7) }
-        specify { expect { throw :bar, 7 }.to_not throw_symbol(:foo, 7) }
-        specify { expect { throw :foo    }.to_not throw_symbol(:foo, 7) }
+        specify { expect { throw :foo, 8 }.not_to throw_symbol(:foo, 7) }
+        specify { expect { throw :bar, 7 }.not_to throw_symbol(:foo, 7) }
+        specify { expect { throw :foo    }.not_to throw_symbol(:foo, 7) }
 
         # deliberate failures
-        specify { expect { throw :foo, 7 }.to_not throw_symbol(:foo, 7) }
+        specify { expect { throw :foo, 7 }.not_to throw_symbol(:foo, 7) }
         specify { expect { throw :foo, 8 }.to     throw_symbol(:foo, 7) }
         specify { expect { throw :bar, 7 }.to     throw_symbol(:foo, 7) }
         specify { expect { throw :foo    }.to     throw_symbol(:foo, 7) }

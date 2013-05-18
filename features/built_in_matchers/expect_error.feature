@@ -124,7 +124,7 @@ Feature: raise_error matcher
       describe Object, "#public_instance_methods" do
         it "does not raise" do
           expect { Object.public_instance_methods }.
-            to_not raise_error(NameError)
+            not_to raise_error(NameError)
         end
       end
       """
@@ -136,7 +136,7 @@ Feature: raise_error matcher
       """
       describe "#to_s" do
         it "does not raise" do
-          expect { Object.new.to_s }.to_not raise_error
+          expect { Object.new.to_s }.not_to raise_error
         end
       end
       """

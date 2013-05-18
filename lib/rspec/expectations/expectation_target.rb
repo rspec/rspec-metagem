@@ -7,8 +7,8 @@ module RSpec
     #   # used with `to`
     #   expect(actual).to eq(3)
     #
-    #   # with `to_not`
-    #   expect(actual).to_not eq(3)
+    #   # with `not_to`
+    #   expect(actual).not_to eq(3)
     class ExpectationTarget
       class << self
         attr_accessor :deprecated_should_enabled
@@ -36,18 +36,17 @@ module RSpec
 
       # Runs the given expectation, passing if `matcher` returns false.
       # @example
-      #   expect(value).to_not eq(5)
       #   expect(value).not_to eq(5)
       # @param [Matcher]
       #   matcher
       # @param [String] message optional message to display when the expectation fails
       # @return [Boolean] false if the negative expectation succeeds (else raises)
       # @see RSpec::Matchers
-      def to_not(matcher=nil, message=nil, &block)
-        prevent_operator_matchers(:to_not, matcher)
+      def not_to(matcher=nil, message=nil, &block)
+        prevent_operator_matchers(:not_to, matcher)
         RSpec::Expectations::NegativeExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
-      alias not_to to_not
+      alias to_not not_to
 
       def self.enable_deprecated_should
         return if deprecated_should_enabled?

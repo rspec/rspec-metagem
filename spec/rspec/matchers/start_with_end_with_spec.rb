@@ -56,7 +56,7 @@ describe "expect(...).to start_with" do
   end
 end
 
-describe "expect(...).to_not start_with" do
+describe "expect(...).not_to start_with" do
   context "with a string" do
     it "passes if it does not match the start of the actual string" do
       expect("this string").not_to start_with "that str"
@@ -149,7 +149,7 @@ describe "expect(...).to end_with" do
 
 end
 
-describe "expect(...).to_not end_with" do
+describe "expect(...).not_to end_with" do
   context "with a sting" do
     it "passes if it does not match the end of the actual string" do
       expect("this string").not_to end_with "stringy"

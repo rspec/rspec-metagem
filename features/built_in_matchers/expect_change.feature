@@ -45,12 +45,12 @@ Feature: expect change
       require "counter"
 
       describe Counter, "#increment" do
-        it "should not increment the count by 1 (using to_not)" do
-          expect { Counter.increment }.to_not change{Counter.count}
-        end
-
         it "should not increment the count by 1 (using not_to)" do
           expect { Counter.increment }.not_to change{Counter.count}
+        end
+
+        it "should not increment the count by 1 (using to_not)" do
+          expect { Counter.increment }.to_not change{Counter.count}
         end
       end
       """

@@ -156,7 +156,7 @@ MESSAGE
   end
 end
 
-describe "expect(...).to_not match_array [:with, :multiple, :args]" do
+describe "expect(...).not_to match_array [:with, :multiple, :args]" do
   it "is not supported" do
     expect {
       expect([1,2,3]).not_to match_array [1,2,3]

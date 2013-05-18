@@ -156,12 +156,12 @@ describe "expect { ... }.not_to change(actual, message)" do
   end
 
   it "passes when actual is not modified by the block" do
-    expect { }.to_not change(@instance, :some_value)
+    expect { }.not_to change(@instance, :some_value)
   end
 
   it "fails when actual is not modified by the block" do
     expect do
-      expect {@instance.some_value = 6}.to_not change(@instance, :some_value)
+      expect {@instance.some_value = 6}.not_to change(@instance, :some_value)
     end.to fail_with("some_value should not have changed, but did change from 5 to 6")
   end
 end
@@ -206,18 +206,18 @@ describe "expect { ... }.not_to change { block }" do
   end
 
   it "passes when actual is modified by the block" do
-    expect {}.to_not change{ @instance.some_value }
+    expect {}.not_to change{ @instance.some_value }
   end
 
   it "fails when actual is not modified by the block" do
     expect do
-      expect {@instance.some_value = 6}.to_not change { @instance.some_value }
+      expect {@instance.some_value = 6}.not_to change { @instance.some_value }
     end.to fail_with("result should not have changed, but did change from 5 to 6")
   end
 
   it "warns if passed a block using do/end instead of {}" do
     expect do
-      expect {}.to_not change do; end
+      expect {}.not_to change do; end
     end.to raise_error(SyntaxError, /block passed to should or should_not/)
   end
 end
@@ -537,6 +537,6 @@ describe RSpec::Matchers::BuiltIn::Change do
 
     expect {
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value)
-    }.to_not raise_error
+    }.not_to raise_error
   end
 end

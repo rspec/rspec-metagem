@@ -189,10 +189,10 @@ module RSpec
         expect(5).to arbitrary_matcher(:expected => "wrong").with(5)
         expect { expect(5).to arbitrary_matcher(:expected => 4) }.to fail_with("expected 4, got 5")
         expect { expect(5).to arbitrary_matcher(:expected => 5).with(4) }.to fail_with("expected 4, got 5")
-        expect(5).to_not arbitrary_matcher(:expected => 4)
-        expect(5).to_not arbitrary_matcher(:expected => 5).with(4)
-        expect { expect(5).to_not arbitrary_matcher(:expected => 5) }.to fail_with("expected not 5, got 5")
-        expect { expect(5).to_not arbitrary_matcher(:expected => 4).with(5) }.to fail_with("expected not 5, got 5")
+        expect(5).not_to arbitrary_matcher(:expected => 4)
+        expect(5).not_to arbitrary_matcher(:expected => 5).with(4)
+        expect { expect(5).not_to arbitrary_matcher(:expected => 5) }.to fail_with("expected not 5, got 5")
+        expect { expect(5).not_to arbitrary_matcher(:expected => 4).with(5) }.to fail_with("expected not 5, got 5")
       end
 
       it "handles the submitted block" do

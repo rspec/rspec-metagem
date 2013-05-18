@@ -32,7 +32,7 @@ describe "expect(...).to match(expected)" do
   end
 end
 
-describe "expect(...).to_not match(expected)" do
+describe "expect(...).not_to match(expected)" do
   it "passes when target (String) matches does not match (Regexp)" do
     expect("string").not_to match(/rings/)
   end

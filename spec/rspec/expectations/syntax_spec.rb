@@ -35,7 +35,7 @@ module RSpec
           end
         end
 
-        describe "expect(...).to_not" do
+        describe "expect(...).not_to" do
           it "prints a warning when the message object isn't a String" do
             warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), :not_a_string

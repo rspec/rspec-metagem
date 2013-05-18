@@ -117,6 +117,6 @@ describe "has" do
     def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end
     expect {
       expect(o).to have_key(:a)
-    }.to_not raise_error
+    }.not_to raise_error
   end
 end

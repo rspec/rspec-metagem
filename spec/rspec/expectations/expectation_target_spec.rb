@@ -37,8 +37,11 @@ module RSpec
         end
 
         it 'passes a valid negative expectation' do
-          expect(5).to_not eq(4)
           expect(5).not_to eq(4)
+        end
+
+        it 'passes a valid negative expectation with a split infinitive' do
+          expect(5).to_not eq(4)
         end
 
         it 'fails an invalid positive expectation' do
@@ -50,10 +53,14 @@ module RSpec
         it 'fails an invalid negative expectation' do
           message = /expected 5 not to be a kind of Fixnum/
           expect {
-            expect(5).to_not be_a(Fixnum)
-          }.to fail_with(message)
-          expect {
             expect(5).not_to be_a(Fixnum)
+          }.to fail_with(message)
+        end
+
+        it 'fails an invalid negative expectation with a split infinitive' do
+          message = /expected 5 not to be a kind of Fixnum/
+          expect {
+            expect(5).to_not be_a(Fixnum)
           }.to fail_with(message)
         end
 

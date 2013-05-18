@@ -28,7 +28,7 @@ describe "expect(...).to satisfy { block }" do
   end
 end
 
-describe "expect(...).to_not satisfy { block }" do
+describe "expect(...).not_to satisfy { block }" do
   it "passes if block returns false" do
     expect(false).not_to satisfy { |val| val }
     expect(false).not_to satisfy do |val|

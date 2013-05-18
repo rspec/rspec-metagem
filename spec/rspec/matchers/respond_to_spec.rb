@@ -148,7 +148,7 @@ describe "expect(...).to respond_to(:sym).with(2).arguments" do
   end
 end
 
-describe "expect(...).to_not respond_to(:sym)" do
+describe "expect(...).not_to respond_to(:sym)" do
   it "passes if target does not respond to :sym" do
     expect(Object.new).not_to respond_to(:some_method)
   end
@@ -160,7 +160,7 @@ describe "expect(...).to_not respond_to(:sym)" do
   end
 end
 
-describe "expect(...).to_not respond_to(:sym).with(1).argument" do
+describe "expect(...).not_to respond_to(:sym).with(1).argument" do
   it "fails if target responds to :sym with 1 arg" do
     obj = Object.new
     def obj.foo(arg); end
@@ -209,7 +209,7 @@ describe "expect(...).to_not respond_to(:sym).with(1).argument" do
   end
 end
 
-describe "expect(...).to_not respond_to(message1, message2)" do
+describe "expect(...).not_to respond_to(message1, message2)" do
   it "passes if target does not respond to either message1 or message2" do
     expect(Object.new).not_to respond_to(:some_method, :some_other_method)
   end
@@ -233,7 +233,7 @@ describe "expect(...).to_not respond_to(message1, message2)" do
   end
 end
 
-describe "expect(...).to_not respond_to(:sym).with(2).arguments" do
+describe "expect(...).not_to respond_to(:sym).with(2).arguments" do
   it "fails if target responds to :sym with 2 args" do
     obj = Object.new
     def obj.foo(a1, a2); end

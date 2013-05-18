@@ -32,10 +32,10 @@ module RSpec
       # `ExpectationTarget`.
       # @example
       #   expect(actual).to eq(expected)
-      #   expect(actual).to_not eq(expected)
+      #   expect(actual).not_to eq(expected)
       # @return [ExpectationTarget]
       # @see ExpectationTarget#to
-      # @see ExpectationTarget#to_not
+      # @see ExpectationTarget#not_to
 
       # @api private
       # Determines where we add `should` and `should_not`.
