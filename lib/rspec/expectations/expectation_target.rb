@@ -58,7 +58,7 @@ module RSpec
         end
 
         def should_not(*args)
-          RSpec.deprecate "`expect { }.should_not`", "`expect { }.to_not`", 3
+          RSpec.deprecate "`expect { }.should_not`", "`expect { }.not_to`", 3
           @target.should_not(*args)
         end
 

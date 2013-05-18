@@ -140,7 +140,7 @@ module RSpec
         end
 
         context 'when both :expect and :should are enabled' do
-          before { RSpec.stub(:warn) }
+          before { RSpec.stub(:deprecate) }
 
           it 'allows `expect {}.should` to be used' do
             configure_syntax [:should, :expect]
@@ -151,11 +151,11 @@ module RSpec
           it 'prints a deprecation notice when `expect {}.should` is used' do
             configure_syntax [:should, :expect]
 
-            RSpec.should_receive(:warn).with(/use `expect \{ \}.to.*instead/)
-            expect { raise "boom" }.to raise_error("boom")
+            expect(RSpec).to receive(:deprecate).with(/expect \{ \}.should\b/, /expect \{ \}.to/, 3)
+            expect { raise "boom" }.should raise_error("boom")
 
-            RSpec.should_receive(:warn).with(/use `expect \{ \}.to_not.*instead/)
-            expect { }.not_to raise_error
+            expect(RSpec).to receive(:deprecate).with(/expect \{ \}.should_not/, /expect \{ \}.not_to/, 3)
+            expect { }.should_not raise_error
           end
         end
       end
