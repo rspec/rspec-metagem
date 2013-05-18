@@ -65,134 +65,97 @@ module RSpec
       end
 
       shared_examples_for "configuring the expectation syntax" do
-        # We want a sandboxed method that ensures that we wind up with
-        # both syntaxes properly enabled when the example ends.
-        #
-        # On platforms that fork, using a sub process is the easiest,
-        # most robust way to achieve that.
-        #
-        # On jRuby we just re-enable both syntaxes at the end of the example;
-        # however, this is a generally inferior approach because it depends on
-        # the code-under-test working properly; if it doesn't work properly,
-        # it could leave things in a "broken" state where tons of other examples fail.
-        if RUBY_PLATFORM == "java"
-          def sandboxed
-            orig_syntax = RSpec::Matchers.configuration.syntax
-            yield
-          ensure
-            configure_syntax(orig_syntax)
-          end
-        else
-          include InSubProcess
-          alias sandboxed in_sub_process
+        before do
+          @orig_syntax = RSpec::Matchers.configuration.syntax
+        end
+
+        after do
+          configure_syntax(@orig_syntax)
         end
 
         it 'can limit the syntax to :should' do
-          sandboxed do
-            configure_syntax :should
-            configured_syntax.should eq([:should])
+          configure_syntax :should
+          configured_syntax.should eq([:should])
 
-            3.should eq(3)
-            3.should_not eq(4)
-            lambda { expect(6).to eq(6) }.should raise_error(NameError)
-          end
+          3.should eq(3)
+          3.should_not eq(4)
+          lambda { expect(6).to eq(6) }.should raise_error(NameError)
         end
 
         it 'is a no-op when configured to :should twice' do
-          sandboxed do
-            configure_syntax :should
-
-            Expectations::Syntax.default_should_host.
-                                 stub(:method_added).
-                                 and_raise("no methods should be added here")
-
-            configure_syntax :should
-          end
+          configure_syntax :should
+          Expectations::Syntax.default_should_host.should_not_receive(:method_added)
+          configure_syntax :should
+          RSpec::Mocks.verify # because configure_syntax is called again in an after hook
         end
 
         it 'can limit the syntax to :expect' do
-          sandboxed do
-            configure_syntax :expect
-            expect(configured_syntax).to eq([:expect])
+          configure_syntax :expect
+          expect(configured_syntax).to eq([:expect])
 
-            expect(3).to eq(3)
-            expect { 3.should eq(3) }.to raise_error(NameError)
-            expect { 3.should_not eq(3) }.to raise_error(NameError)
-          end
+          expect(3).to eq(3)
+          expect { 3.should eq(3) }.to raise_error(NameError)
+          expect { 3.should_not eq(3) }.to raise_error(NameError)
         end
 
         it 'is a no-op when configured to :expect twice' do
-          sandboxed do
-            RSpec::Matchers.stub(:method_added).and_raise("no methods should be added here")
+          RSpec::Matchers.stub(:method_added).and_raise("no methods should be added here")
 
-            configure_syntax :expect
-            configure_syntax :expect
-          end
+          configure_syntax :expect
+          configure_syntax :expect
         end
 
         it 'can re-enable the :should syntax' do
-          sandboxed do
-            configure_syntax :expect
-            configure_syntax [:should, :expect]
-            configured_syntax.should eq([:should, :expect])
+          configure_syntax :expect
+          configure_syntax [:should, :expect]
+          configured_syntax.should eq([:should, :expect])
 
-            3.should eq(3)
-            3.should_not eq(4)
-            expect(3).to eq(3)
-          end
+          3.should eq(3)
+          3.should_not eq(4)
+          expect(3).to eq(3)
         end
 
         it 'can re-enable the :expect syntax' do
-          sandboxed do
-            configure_syntax :should
-            configure_syntax [:should, :expect]
-            configured_syntax.should eq([:should, :expect])
+          configure_syntax :should
+          configure_syntax [:should, :expect]
+          configured_syntax.should eq([:should, :expect])
 
-            3.should eq(3)
-            3.should_not eq(4)
-            expect(3).to eq(3)
-          end
+          3.should eq(3)
+          3.should_not eq(4)
+          expect(3).to eq(3)
         end
 
         it 'does not add the deprecated #should to ExpectationTarget when only :should is enabled' do
           et = Expectations::ExpectationTarget
 
-          sandboxed do
-            configure_syntax :should
-            et.new(Proc.new {}).should be_an(et)
-            et.new(Proc.new {}).should_not be_a(Proc)
-          end
+          configure_syntax :should
+          et.new(Proc.new {}).should be_an(et)
+          et.new(Proc.new {}).should_not be_a(Proc)
         end
 
         it 'does not add the deprecated #should to ExpectationTarget when only :expect is enabled' do
-          sandboxed do
-            configure_syntax :expect
-            expect(expect(3)).not_to respond_to(:should)
-            expect(expect(3)).not_to respond_to(:should_not)
-          end
+          configure_syntax :expect
+          expect(expect(3)).not_to respond_to(:should)
+          expect(expect(3)).not_to respond_to(:should_not)
         end
 
         context 'when both :expect and :should are enabled' do
           before { RSpec.stub(:warn) }
 
           it 'allows `expect {}.should` to be used' do
-            sandboxed do
-              configure_syntax [:should, :expect]
-              expect { raise "boom" }.to raise_error("boom")
-              expect { }.not_to raise_error
-            end
+            configure_syntax [:should, :expect]
+            expect { raise "boom" }.to raise_error("boom")
+            expect { }.not_to raise_error
           end
 
           it 'prints a deprecation notice when `expect {}.should` is used' do
-            sandboxed do
-              configure_syntax [:should, :expect]
+            configure_syntax [:should, :expect]
 
-              RSpec.should_receive(:warn).with(/use `expect \{ \}.to.*instead/)
-              expect { raise "boom" }.to raise_error("boom")
+            RSpec.should_receive(:warn).with(/use `expect \{ \}.to.*instead/)
+            expect { raise "boom" }.to raise_error("boom")
 
-              RSpec.should_receive(:warn).with(/use `expect \{ \}.to_not.*instead/)
-              expect { }.not_to raise_error
-            end
+            RSpec.should_receive(:warn).with(/use `expect \{ \}.to_not.*instead/)
+            expect { }.not_to raise_error
           end
         end
       end
