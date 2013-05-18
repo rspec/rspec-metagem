@@ -195,6 +195,7 @@ MESSAGE
         @backtrace_cleaner = BacktraceCleaner.new
 
         @default_path = 'spec'
+        @deprecation_io = DeprecationIO.new
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
@@ -269,6 +270,18 @@ MESSAGE
           add_setting(name, opts)
         end
         send("#{name}=", default) if default
+      end
+
+      # Set the io used for deprection warnings
+      # Defaults to $stderr
+      def deprecation_io=(value)
+        @deprecation_io.set_output value
+      end
+      attr_reader :deprecation_io
+
+      # Set a file to be the io for deprection warnings
+      def log_deprecations_to_file name
+        @deprecation_io.set_output File.open(name,'w+'), name
       end
 
       # Returns the configured mock framework adapter module

@@ -136,5 +136,27 @@ module RSpec::Core
         expect(duration).to be < 0.2
       end
     end
+
+    describe 'deprecation warning' do
+      let(:reporter) { Reporter.new double.as_null_object }
+
+      around do |example|
+        RSpec.configure { |config| @io = config.deprecation_io }
+        example.run
+        RSpec.configure { |config| config.deprecation_io = @io }
+      end
+
+      it 'doesnt warn when no deprecations' do
+        reporter.should_not_receive(:warn)
+        reporter.finish 1234
+      end
+
+      it 'warns when it has deprecations' do
+        RSpec.configure { |config| config.deprecation_io = StringIO.new }
+        RSpec.warn_deprecation 'message'
+        reporter.should_receive(:warn).with(/There were \d+ deprecations logged to .+/)
+        reporter.finish 1234
+      end
+    end
   end
 end

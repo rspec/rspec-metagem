@@ -2,17 +2,17 @@ require "spec_helper"
 
 describe "support for deprecation warnings" do
   it "includes the method to deprecate" do
-    expect(RSpec).to receive(:warn).with(/^DEPRECATION: deprecated_method/)
+    expect(RSpec).to receive(:warn_deprecation).with(/^DEPRECATION: deprecated_method/)
     RSpec.deprecate("deprecated_method")
   end
 
   it "includes the replacement when provided" do
-    expect(RSpec).to receive(:warn).with(/deprecated_method.*\nDEPRECATION:.*replacement/m)
+    expect(RSpec).to receive(:warn_deprecation).with(/deprecated_method.*\nDEPRECATION:.*replacement/m)
     RSpec.deprecate("deprecated_method", "replacement")
   end
 
   it "includes the version number when provided" do
-    expect(RSpec).to receive(:warn).with(/deprecated_method.*rspec-37\.0\.0\nDEPRECATION:.*replacement/m)
+    expect(RSpec).to receive(:warn_deprecation).with(/deprecated_method.*rspec-37\.0\.0\nDEPRECATION:.*replacement/m)
     RSpec.deprecate("deprecated_method", "replacement", "37.0.0")
   end
 

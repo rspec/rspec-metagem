@@ -147,7 +147,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     context 'for #share_as' do
-      before { RSpec.stub(:warn) }
+      before { RSpec.stub(:warn_deprecation) }
 
       it 'outputs the name and location' do
 
@@ -286,7 +286,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       context 'for #share_as' do
-        before { RSpec.stub(:warn) }
+        before { RSpec.stub(:warn_deprecation) }
 
         it 'outputs the name and location' do
 
@@ -475,7 +475,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     describe "##{name}" do
       before do
         RSpec.configuration.stub(:color_enabled?) { true }
-        RSpec.stub(:warn)
+        RSpec.stub(:warn_deprecation)
       end
 
       it "prints the text using the color code for #{name}" do
@@ -483,7 +483,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       it "prints a deprecation warning" do
-        RSpec.should_receive(:warn).with(/#{name}/)
+        RSpec.should_receive(:warn_deprecation).with(/#{name}/)
         formatter.send(name, "text")
       end
     end
