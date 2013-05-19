@@ -46,7 +46,7 @@ module TestUnitIntegrationSupport
   def with_test_unit_loaded
     in_sub_process do
       require 'test/unit'
-      load 'rspec/matchers.rb'
+      load 'rspec/matchers/test_unit_integration.rb'
       yield
     end
   end

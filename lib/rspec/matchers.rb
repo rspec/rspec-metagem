@@ -1,3 +1,17 @@
+require 'rspec/matchers/extensions/instance_eval_with_args'
+require 'rspec/matchers/pretty'
+
+require 'rspec/matchers/built_in'
+require 'rspec/matchers/matcher'
+require 'rspec/matchers/operator_matcher'
+require 'rspec/matchers/be_close'
+
+require 'rspec/matchers/generated_descriptions'
+require 'rspec/matchers/method_missing'
+require 'rspec/matchers/compatibility'
+require 'rspec/matchers/dsl'
+require 'rspec/matchers/test_unit_integration'
+
 module RSpec
   # RSpec::Matchers provides a number of useful matchers we use to define
   # expectations. A matcher is any object that responds to the following:
@@ -159,35 +173,6 @@ module RSpec
   #     RSpec::configure do |config|
   #       config.include(CustomGameMatchers)
   #     end
-  module Matchers
-    # Include Matchers for other test frameworks.  Note that MiniTest _must_
-    # come before TU because on ruby 1.9, T::U::TC is a subclass of MT::U::TC
-    # and a 1.9 bug can lead to infinite recursion from the `super` call in our
-    # method_missing hook.  See this gist for more info:
-    # https://gist.github.com/845896
-    if defined?(MiniTest::Unit::TestCase)
-      MiniTest::Unit::TestCase.send(:include, self)
-    end
-    if defined?(Test::Unit::TestCase)
-      Test::Unit::TestCase.send(:include, self)
-    end
-  end
-end
-
-require 'rspec/matchers/extensions/instance_eval_with_args'
-require 'rspec/matchers/pretty'
-
-require 'rspec/matchers/built_in'
-require 'rspec/matchers/matcher'
-require 'rspec/matchers/operator_matcher'
-require 'rspec/matchers/be_close'
-
-require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/method_missing'
-require 'rspec/matchers/compatibility'
-require 'rspec/matchers/dsl'
-
-module RSpec
   module Matchers
 
     # Passes if actual is truthy (anything but false or nil)
