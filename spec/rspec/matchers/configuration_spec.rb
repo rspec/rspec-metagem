@@ -140,12 +140,12 @@ module RSpec
         end
 
         context 'when both :expect and :should are enabled' do
-          before { RSpec.stub(:deprecate) }
+          before { allow(RSpec).to receive(:deprecate) }
 
           it 'allows `expect {}.should` to be used' do
             configure_syntax [:should, :expect]
-            expect { raise "boom" }.to raise_error("boom")
-            expect { }.not_to raise_error
+            expect { raise "boom" }.should raise_error("boom")
+            expect { }.should_not raise_error
           end
 
           it 'prints a deprecation notice when `expect {}.should` is used' do
