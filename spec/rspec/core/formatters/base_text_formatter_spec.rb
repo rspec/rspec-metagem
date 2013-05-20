@@ -483,7 +483,9 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       it "prints a deprecation warning" do
-        RSpec.should_receive(:deprecate) { |m| expect(m).to match(/#{name}/) }
+        expect(RSpec).to receive(:deprecate) do |*args|
+          expect(args.first).to match(/#{name}/)
+        end
         formatter.send(name, "text")
       end
     end
