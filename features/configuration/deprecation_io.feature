@@ -2,7 +2,11 @@ Feature: deprecation_io
 
   Define a custom output stream for warning about deprecations (default `$stderr`).
 
-    RSpec.configure { |c| c.output_stream = File.open('saved_output', 'w') }
+    RSpec.configure {|c| c.deprecation_io = File.open('saved_output', 'w') }
+
+  or
+
+    RSpec.configure {|c| c.log_deprecations_to_file 'saved_output' }
 
   Scenario: Redirecting an io stream
     Given a file named "spec/spec_helper.rb" with:
