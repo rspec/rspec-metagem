@@ -16,40 +16,15 @@ module RSpec::Core
       end
     end
 
-    describe '#deprecation_io' do
+    describe '#deprecation_stream' do
       it 'defaults to standard error' do
-        expect(config.deprecation_io.io).to eq $stderr
+        expect(config.deprecation_stream).to eq $stderr
       end
 
       it 'is configurable' do
         io = double 'deprecation io'
-        config.deprecation_io = io
-        expect(config.deprecation_io.io).to eq io
-      end
-
-      it 'is used by warn_deprecation' do
-        message = double
-        RSpec.configuration.deprecation_io.should_receive(:puts).with(message)
-        RSpec.warn_deprecation message
-      end
-    end
-
-    describe '#log_deprecations_to_file' do
-      let(:name) { 'filename.txt' }
-
-      around do |example|
-        config.log_deprecations_to_file name
-        example.run
-        File.delete name if File.exist? name
-      end
-
-      it 'sets the deprecation io to be a file with the supplied name' do
-        file = config.deprecation_io.io
-        expect(file.path).to eq name
-      end
-
-      it 'sets the deprecation io description to be the supplied file name' do
-        expect(config.deprecation_io.description).to eq name
+        config.deprecation_stream = io
+        expect(config.deprecation_stream).to eq io
       end
     end
 
@@ -1043,7 +1018,7 @@ module RSpec::Core
 
     describe "#backtrace_clean_patterns=" do
       it "actually receives the new filter values" do
-        RSpec.stub(:warn_deprecation)
+        RSpec.stub(:deprecate)
         config = Configuration.new
         config.backtrace_clean_patterns = [/.*/]
         expect(config.backtrace_cleaner.exclude? "this").to be_true
@@ -1063,15 +1038,14 @@ module RSpec::Core
     end
 
     describe "#backtrace_clean_patterns" do
+      before { allow(RSpec).to receive(:deprecate) }
       it "is deprecated" do
-        RSpec.stub(:warn_deprecation)
-        RSpec.should_receive(:warn_deprecation)
+        RSpec.should_receive(:deprecate)
         config = Configuration.new
         config.backtrace_clean_patterns
       end
 
       it "can be appended to" do
-        RSpec.stub(:warn_deprecation)
         config = Configuration.new
         config.backtrace_clean_patterns << /.*/
         expect(config.backtrace_cleaner.exclude? "this").to be_true
@@ -1246,7 +1220,7 @@ module RSpec::Core
 
       context "with :alias => " do
         it "is deprecated" do
-          RSpec::should_receive(:warn_deprecation).with(/deprecated/)
+          RSpec::should_receive(:deprecate).with(/:alias option/, /:alias_with/)
           config.add_setting :custom_option
           config.add_setting :another_custom_option, :alias => :custom_option
         end

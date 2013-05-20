@@ -205,38 +205,38 @@ module RSpec::Core
       end
 
       it 'deprecates an overridden :if filter' do
-        RSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        expect(RSpec).to receive(:deprecate).with(/exclude\(:if/)
         filter_manager = FilterManager.new
         filter_manager.exclude :if => :custom_filter
       end
 
       it 'deprecates an :if filter overridden with low priority' do
-        RSpec.should_receive(:warn_deprecation).with(/exclude\(:if.*is deprecated/)
+        expect(RSpec).to receive(:deprecate).with(/exclude\(:if/)
         filter_manager = FilterManager.new
         filter_manager.exclude_with_low_priority :if => :custom_filter
       end
 
       it 'deprecates an overridden :unless filter' do
-        RSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        expect(RSpec).to receive(:deprecate).with(/exclude\(:unless/)
         filter_manager = FilterManager.new
         filter_manager.exclude :unless => :custom_filter
       end
 
       it 'deprecates an :unless filter overridden with low priority' do
-        RSpec.should_receive(:warn_deprecation).with(/exclude\(:unless.*is deprecated/)
+        expect(RSpec).to receive(:deprecate).with(/exclude\(:unless/)
         filter_manager = FilterManager.new
         filter_manager.exclude_with_low_priority :unless => :custom_filter
       end
 
       it 'includes an overriden :if filter' do
-        RSpec.stub(:warn_deprecation)
+        allow(RSpec).to receive(:deprecate)
         filter_manager = FilterManager.new
         filter_manager.exclude :if => :custom_filter
         expect(filter_manager.exclusions.description).to eq({ :if => :custom_filter }.inspect)
       end
 
       it 'includes an overriden :unless filter' do
-        RSpec.stub(:warn_deprecation)
+        allow(RSpec).to receive(:deprecate)
         filter_manager = FilterManager.new
         filter_manager.exclude :unless => :custom_filter
         expect(filter_manager.exclusions.description).to eq({ :unless => :custom_filter }.inspect)

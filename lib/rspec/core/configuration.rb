@@ -42,10 +42,7 @@ module RSpec
 
       # @private
       def self.deprecate_alias_key
-        RSpec.warn_deprecation <<-MESSAGE
-The :alias option to add_setting is deprecated. Use :alias_with on the original setting instead.
-Called from #{caller(0)[5]}
-MESSAGE
+        RSpec.deprecate("add_setting with :alias option", ":alias_with")
       end
 
       # @private
@@ -96,6 +93,9 @@ MESSAGE
 
       # Default: `$stderr`.
       add_setting :error_stream
+
+      # Default: `$stderr`.
+      add_setting :deprecation_stream
 
       # Clean up and exit after the first failure (default: `false`).
       add_setting :fail_fast
@@ -195,7 +195,7 @@ MESSAGE
         @backtrace_cleaner = BacktraceCleaner.new
 
         @default_path = 'spec'
-        @deprecation_io = DeprecationIO.new
+        @deprecation_stream = $stderr
         @filter_manager = FilterManager.new
         @preferred_options = {}
         @seed = srand % 0xFFFF
@@ -270,18 +270,6 @@ MESSAGE
           add_setting(name, opts)
         end
         send("#{name}=", default) if default
-      end
-
-      # Set the io used for deprection warnings
-      # Defaults to $stderr
-      def deprecation_io=(value)
-        @deprecation_io.set_output value
-      end
-      attr_reader :deprecation_io
-
-      # Set a file to be the io for deprection warnings
-      def log_deprecations_to_file name
-        @deprecation_io.set_output File.open(name,'w+'), name
       end
 
       # Returns the configured mock framework adapter module
@@ -596,7 +584,9 @@ EOM
 
       def reporter
         @reporter ||= begin
+                        require 'rspec/core/formatters/deprecation_formatter.rb'
                         add_formatter('progress') if formatters.empty?
+                        formatters << RSpec::Core::Formatters::DeprecationFormatter.new(deprecation_stream, output_stream)
                         Reporter.new(*formatters)
                       end
       end

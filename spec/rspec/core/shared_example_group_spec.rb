@@ -72,7 +72,7 @@ module RSpec::Core
     end
 
     describe "#share_as" do
-      before { RSpec.stub(:warn_deprecation) }
+      before { allow(RSpec).to receive(:deprecate) }
 
       it "is exposed to the global namespace" do
         expect(Kernel).to respond_to("share_as")

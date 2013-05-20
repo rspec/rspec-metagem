@@ -107,7 +107,7 @@ module RSpec
         # Emits a deprecation warning for keys that will not be supported in
         # the future.
         def _warn_deprecated_key(key, updates)
-          RSpec.warn_deprecation("\nDEPRECATION NOTICE: FilterManager#exclude(#{key.inspect} => #{updates[key].inspect}) is deprecated with no replacement, and will be removed from rspec-3.0.")
+          RSpec.deprecate("FilterManager#exclude(#{key.inspect} => #{updates[key].inspect})")
           @exclusions[key] = updates.delete(key)
         end
       end

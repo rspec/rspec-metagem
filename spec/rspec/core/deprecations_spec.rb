@@ -2,36 +2,30 @@ require "spec_helper"
 
 describe "support for deprecation warnings" do
   it "includes the method to deprecate" do
-    expect(RSpec).to receive(:warn_deprecation).with(/^DEPRECATION: deprecated_method/)
+    expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :method => "deprecated_method")
     RSpec.deprecate("deprecated_method")
   end
 
   it "includes the replacement when provided" do
-    expect(RSpec).to receive(:warn_deprecation).with(/deprecated_method.*\nDEPRECATION:.*replacement/m)
+    expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :method => "deprecated_method", :alternate_method => "replacement")
     RSpec.deprecate("deprecated_method", "replacement")
   end
-
-  it "includes the version number when provided" do
-    expect(RSpec).to receive(:warn_deprecation).with(/deprecated_method.*rspec-37\.0\.0\nDEPRECATION:.*replacement/m)
-    RSpec.deprecate("deprecated_method", "replacement", "37.0.0")
-  end
-
 end
 
 describe "deprecated methods" do
   describe "Spec" do
     it "is deprecated" do
-      RSpec.should_receive(:warn_deprecation).with(/Spec .* RSpec/i)
+      RSpec.should_receive(:deprecate)
       Spec
     end
 
     it "returns RSpec" do
-      RSpec.stub(:warn_deprecation)
+      RSpec.stub(:deprecate)
       expect(Spec).to eq(RSpec)
     end
 
     it "doesn't include backward compatibility in const_missing backtrace" do
-      RSpec.stub(:warn_deprecation)
+      RSpec.stub(:deprecate)
       exception = nil
       begin
         ConstantThatDoesNotExist
@@ -44,12 +38,12 @@ describe "deprecated methods" do
   describe RSpec::Core::ExampleGroup do
     describe 'running_example' do
       it 'is deprecated' do
-        RSpec.should_receive(:warn_deprecation)
+        RSpec.should_receive(:deprecate).at_least(:once)
         self.running_example
       end
 
       it "delegates to example" do
-        RSpec.stub(:warn_deprecation)
+        RSpec.stub(:deprecate)
         expect(running_example).to eq(example)
       end
     end
@@ -58,7 +52,7 @@ describe "deprecated methods" do
   describe RSpec::Core::SharedExampleGroup do
     describe 'share_as' do
       it 'is deprecated' do
-        RSpec.should_receive(:warn_deprecation)
+        RSpec.should_receive(:deprecate).at_least(:once)
         RSpec::Core::SharedExampleGroup.share_as(:DeprecatedSharedConst) {}
       end
     end
@@ -66,21 +60,19 @@ describe "deprecated methods" do
 
   describe "Spec::Runner.configure" do
     it "is deprecated" do
-      RSpec.stub(:warn_deprecation)
-      RSpec.should_receive(:deprecate)
+      RSpec.should_receive(:deprecate).at_least(:once)
       Spec::Runner.configure
     end
   end
 
   describe "Spec::Rake::SpecTask" do
     it "is deprecated" do
-      RSpec.stub(:warn_deprecation)
-      RSpec.should_receive(:deprecate)
+      RSpec.should_receive(:deprecate).at_least(:once)
       Spec::Rake::SpecTask
     end
 
     it "doesn't include backward compatibility in const_missing backtrace" do
-      RSpec.stub(:warn_deprecation)
+      RSpec.stub(:deprecate)
       exception = nil
       begin
         Spec::Rake::ConstantThatDoesNotExist
