@@ -154,6 +154,9 @@ module RSpec::Core
       it 'warns when it has deprecations' do
         RSpec.configure { |config| config.deprecation_io = StringIO.new }
         RSpec.warn_deprecation 'message'
+        reporter.should_receive(:warn).with(/There was 1 deprecation logged to .+/)
+        reporter.finish 1234
+        RSpec.warn_deprecation 'message'
         reporter.should_receive(:warn).with(/There were \d+ deprecations logged to .+/)
         reporter.finish 1234
       end
