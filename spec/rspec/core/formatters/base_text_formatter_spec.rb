@@ -483,9 +483,9 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       it "prints a deprecation warning" do
-        expect(RSpec).to receive(:deprecate) do |*args|
+        expect(RSpec).to receive(:deprecate) {|*args|
           expect(args.first).to match(/#{name}/)
-        end
+        }
         formatter.send(name, "text")
       end
     end
