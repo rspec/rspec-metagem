@@ -1,6 +1,7 @@
 require 'fileutils'
 require 'rspec/core/backtrace_cleaner'
 require 'rspec/core/ruby_project'
+require 'rspec/core/formatters/deprecation_formatter.rb'
 
 module RSpec
   module Core
@@ -565,15 +566,16 @@ EOM
       # ### Note
       #
       # For internal purposes, `add_formatter` also accepts the name of a class
-      # and path to a file that contains that class definition, but you should
-      # consider that a private api that may change at any time without notice.
-      def add_formatter(formatter_to_use, path=nil)
+      # and paths to use for output streams, but you should consider that a
+      # private api that may change at any time without notice.
+      def add_formatter(formatter_to_use, *paths)
         formatter_class =
           built_in_formatter(formatter_to_use) ||
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
-        formatters << formatter_class.new(path ? file_at(path) : output)
+        paths << output if paths.empty?
+        formatters << formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
       end
 
       alias_method :formatter=, :add_formatter
@@ -584,9 +586,8 @@ EOM
 
       def reporter
         @reporter ||= begin
-                        require 'rspec/core/formatters/deprecation_formatter.rb'
                         add_formatter('progress') if formatters.empty?
-                        formatters << RSpec::Core::Formatters::DeprecationFormatter.new(deprecation_stream, output_stream)
+                        add_formatter(RSpec::Core::Formatters::DeprecationFormatter, deprecation_stream, output_stream)
                         Reporter.new(*formatters)
                       end
       end
