@@ -10,11 +10,15 @@ module RSpec
 
         def deprecation(data)
           @count += 1
-          @deprecation_stream.print "DEPRECATION: " unless File === @deprecation_stream
-          @deprecation_stream.print "#{data[:method]} is deprecated."
-          @deprecation_stream.print " Use #{data[:alternate_method]} instead." if data[:alternate_method]
-          @deprecation_stream.print " Called from #{data[:called_from]}." if data[:called_from]
-          @deprecation_stream.puts
+          if data[:message]
+            @deprecation_stream.print data[:message]
+          else
+            @deprecation_stream.print "DEPRECATION: " unless File === @deprecation_stream
+            @deprecation_stream.print "#{data[:method]} is deprecated."
+            @deprecation_stream.print " Use #{data[:alternate_method]} instead." if data[:alternate_method]
+            @deprecation_stream.print " Called from #{data[:called_from]}." if data[:called_from]
+            @deprecation_stream.puts
+          end
         end
 
         def deprecation_summary
