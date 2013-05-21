@@ -29,10 +29,6 @@ module RSpec
             @summary_stream.puts File === @deprecation_stream ? @deprecation_stream.path : @deprecation_stream.inspect
           end
         end
-
-        def deprecation_message(data, stream)
-          message
-        end
       end
     end
   end
