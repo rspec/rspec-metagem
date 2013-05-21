@@ -36,19 +36,19 @@ module RSpec::Core::Formatters
 
     describe "#deprecation_summary" do
       it "is printed when deprecations go to a file" do
-        file = Tempfile.new('foo')
+        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
         summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file.path, summary_stream
+        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation(:method => 'whatevs')
         formatter.deprecation_summary
         summary_stream.rewind
-        expect(summary_stream.read).to match(/1 deprecation logged to .*foo/)
+        expect(summary_stream.read).to match(/1 deprecation logged to .*deprecation_summary_example_output/)
       end
 
       it "pluralizes for more than one deprecation" do
-        file = Tempfile.new('foo')
+        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
         summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file.path, summary_stream
+        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation(:method => 'whatevs')
         formatter.deprecation(:method => 'whatevs_else')
         formatter.deprecation_summary
@@ -57,9 +57,9 @@ module RSpec::Core::Formatters
       end
 
       it "is not printed when there are no deprecations" do
-        file = Tempfile.new('foo')
+        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
         summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file.path, summary_stream
+        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation_summary
         summary_stream.rewind
         expect(summary_stream.read).to eq ""

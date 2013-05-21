@@ -3,7 +3,7 @@ module RSpec
     module Formatters
       class DeprecationFormatter
         def initialize(deprecation_stream=$stderr, summary_stream=$stdout)
-          @deprecation_stream = String === deprecation_stream ? File.open(deprecation_stream, 'w+') : deprecation_stream 
+          @deprecation_stream = deprecation_stream
           @summary_stream = summary_stream
           @count = 0
         end
