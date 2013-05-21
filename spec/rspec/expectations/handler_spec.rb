@@ -96,13 +96,24 @@ module RSpec
 
         end
 
-        it "appends the :or message in the options hash passed to should" do
+        it "uses the custom failure message when one is provided" do
           matcher = double("matcher", :failure_message_for_should => "message", :matches? => false)
           actual = Object.new
 
           ::RSpec::Expectations.should_receive(:fail_with).with("custom")
 
           RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher, "custom")
+        end
+
+        it "uses the custom failure message when one is provided as a callable object" do
+          matcher = double("matcher", :failure_message_for_should => "message", :matches? => false)
+          actual = Object.new
+
+          failure_message = double("failure message", :call => "custom")
+
+          ::RSpec::Expectations.should_receive(:fail_with).with("custom")
+
+          RSpec::Expectations::PositiveExpectationHandler.handle_matcher(actual, matcher, failure_message)
         end
       end
     end
@@ -169,7 +180,7 @@ module RSpec
           RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)
         end
 
-        it "appends the :or message in the options hash passed to should" do
+        it "uses the custom failure message when one is provided" do
           matcher = double("matcher", :failure_message_for_should_not => "message", :matches? => true)
           actual = Object.new
 
@@ -178,6 +189,16 @@ module RSpec
           RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher, "custom")
         end
 
+        it "uses the custom failure message when one is provided as a callable object" do
+          matcher = double("matcher", :failure_message_for_should_not => "message", :matches? => true)
+          actual = Object.new
+
+          failure_message = double("failure message", :call => "custom")
+
+          ::RSpec::Expectations.should_receive(:fail_with).with("custom")
+
+          RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher, failure_message)
+        end
       end
     end
 

@@ -9,8 +9,13 @@ module RSpec
         let(:string_like_object) do
           Struct.new(:to_str, :to_s).new(*(["Ceci n'est pas une Chaine."]*2))
         end
+
         let(:insufficiently_string_like_object) do
           Struct.new(:to_s).new("Ceci n'est pas une Chaine.")
+        end
+
+        let(:callable_object) do
+          Struct.new(:call).new("Ceci n'est pas une Chaine.")
         end
 
         describe "expect(...).to" do
@@ -33,6 +38,11 @@ module RSpec
             warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).to eq(3), insufficiently_string_like_object
           end
+
+          it "doesn't print a warning when message responds to call" do
+            warner.should_not_receive(:warn)
+            expect(3).to eq(3), callable_object
+          end
         end
 
         describe "expect(...).not_to" do
@@ -54,6 +64,11 @@ module RSpec
           it "prints a warning when the message object handles to_s but not to_str" do
             warner.should_receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), insufficiently_string_like_object
+          end
+
+          it "doesn't print a warning when message responds to call" do
+            warner.should_not_receive(:warn)
+            expect(3).not_to eq(4), callable_object
           end
         end
       end
