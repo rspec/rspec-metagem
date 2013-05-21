@@ -31,4 +31,11 @@ describe RSpec::Core::Deprecation do
       end
     end
   end
+
+  describe "#warn_deprecation" do
+    it "puts message in a hash" do
+      expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :message => "this is the message")
+      RSpec.warn_deprecation("this is the message")
+    end
+  end
 end

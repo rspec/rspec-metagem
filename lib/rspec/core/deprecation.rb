@@ -17,7 +17,7 @@ module RSpec
       #
       # Used internally to print deprecation warnings
       def warn_deprecation(message)
-        RSpec.configuration.reporter.deprecation :message => message
+        deprecate(:message => message)
       end
     end
   end
