@@ -1,17 +1,5 @@
 require "spec_helper"
 
-describe "support for deprecation warnings" do
-  it "includes the method to deprecate" do
-    expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :method => "deprecated_method")
-    RSpec.deprecate("deprecated_method")
-  end
-
-  it "includes the replacement when provided" do
-    expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :method => "deprecated_method", :alternate_method => "replacement")
-    RSpec.deprecate("deprecated_method", "replacement")
-  end
-end
-
 describe "deprecated methods" do
   describe "Spec" do
     it "is deprecated" do
