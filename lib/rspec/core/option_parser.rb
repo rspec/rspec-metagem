@@ -119,7 +119,7 @@ module RSpec::Core
         end
 
         parser.on('-o', '--out FILE',
-                  'Write output to a file instead of STDOUT. This option applies',
+                  'Write output to a file instead of $stdout. This option applies',
                   '  to the previously specified --format, or the default format',
                   '  if no format is specified.'
                  ) do |o|
