@@ -16,7 +16,7 @@ module RSpec::Core::Formatters
       end
 
       it "includes the replacement" do
-        formatter.deprecation(:alternate_method => "use_me")
+        formatter.deprecation(:replacement => "use_me")
         deprecation_stream.rewind
         expect(deprecation_stream.read).to match(/Use use_me instead/)
       end
@@ -28,7 +28,7 @@ module RSpec::Core::Formatters
       end
 
       it "prints a message if provided, ignoring other data" do
-        formatter.deprecation(:message => "this message", :method => "x", :alternate_method => "y", :called_from => "z")
+        formatter.deprecation(:message => "this message", :method => "x", :replacement => "y", :called_from => "z")
         deprecation_stream.rewind
         expect(deprecation_stream.read).to eq "this message"
       end

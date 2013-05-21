@@ -4,12 +4,12 @@ module RSpec
       # @private
       #
       # Used internally to print deprecation warnings
-      def deprecate(methodname_or_hash, alternate_method=nil, version=nil)
+      def deprecate(methodname_or_hash, replacement=nil, version=nil)
         # Temporarily supporting old and new APIs while we transition the other rspec libs to use a hash
         if Hash === methodname_or_hash
           RSpec.configuration.reporter.deprecation methodname_or_hash.merge(:called_from => caller(0)[2])
         else
-          RSpec.configuration.reporter.deprecation :method => methodname_or_hash, :alternate_method => alternate_method, :version => nil, :called_from => caller(0)[2]
+          RSpec.configuration.reporter.deprecation :method => methodname_or_hash, :replacement => replacement, :version => nil, :called_from => caller(0)[2]
         end
       end
 
