@@ -444,7 +444,7 @@ An error occurred in an after(:all) hook.
 
       # @deprecated use {ExampleGroup#example}
       def running_example
-        RSpec.deprecate("running_example", 
+        RSpec.deprecate("running_example",
                         :replacement => "example")
         example
       end
