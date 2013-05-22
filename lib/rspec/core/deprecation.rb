@@ -4,20 +4,18 @@ module RSpec
       # @private
       #
       # Used internally to print deprecation warnings
-      def deprecate(deprecated_or_hash, replacement=nil, version=nil)
-        # Temporarily supporting old and new APIs while we transition the other rspec libs to use a hash
-        if Hash === deprecated_or_hash
-          RSpec.configuration.reporter.deprecation deprecated_or_hash.merge(:called_from => caller(0)[2])
-        else
-          RSpec.configuration.reporter.deprecation :deprecated => deprecated_or_hash, :replacement => replacement, :called_from => caller(0)[2]
-        end
+      def deprecate(deprecated, replacement_or_hash={}, ignore_version=nil)
+        # Temporarily support old and new APIs while we transition the other
+        # rspec libs to use a hash for the 2nd arg and no version arg
+        data = Hash === replacement_or_hash ? replacement_or_hash : { :replacement => replacement_or_hash }
+        RSpec.configuration.reporter.deprecation data.merge(:deprecated => deprecated, :called_from => caller(0)[2])
       end
 
       # @private
       #
       # Used internally to print deprecation warnings
       def warn_deprecation(message)
-        deprecate(:message => message)
+        RSpec.configuration.reporter.deprecation :message => message
       end
     end
   end

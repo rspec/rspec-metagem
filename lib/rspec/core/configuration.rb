@@ -43,7 +43,7 @@ module RSpec
 
       # @private
       def self.deprecate_alias_key
-        RSpec.deprecate("add_setting with :alias option", ":alias_with")
+        RSpec.deprecate("add_setting with :alias option", :replacement => ":alias_with")
       end
 
       # @private
@@ -297,13 +297,13 @@ module RSpec
       # `rspec_options` attribute of RSpec's rake task.
       def backtrace_clean_patterns
         RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+                        :replacement => "RSpec::Core::Configuration#backtrace_exclusion_patterns")
         @backtrace_cleaner.exclusion_patterns
       end
 
       def backtrace_clean_patterns=(patterns)
         RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        "RSpec::Core::Configuration#backtrace_exclusion_patterns")
+                        :replacement => "RSpec::Core::Configuration#backtrace_exclusion_patterns")
         @backtrace_cleaner.exclusion_patterns = patterns
       end
 
@@ -510,7 +510,7 @@ module RSpec
 
       def requires=(paths)
         RSpec.deprecate("RSpec::Core::Configuration#requires=(paths)",
-                        "paths.each {|path| require path}")
+                        :replacement => "paths.each {|path| require path}")
         paths.map {|path| require path}
         @requires += paths
       end

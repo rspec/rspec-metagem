@@ -225,22 +225,22 @@ module RSpec
         end
 
         def red(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#red", "#failure_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#red", :replacement => "#failure_color")
           color(text, :red)
         end
 
         def green(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#green", "#success_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#green", :replacement => "#success_color")
           color(text, :green)
         end
 
         def yellow(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#yellow", "#pending_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#yellow", :replacement => "#pending_color")
           color(text, :yellow)
         end
 
         def blue(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#blue", "#fixed_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#blue", :replacement => "#fixed_color")
           color(text, :blue)
         end
 
@@ -250,12 +250,12 @@ module RSpec
         end
 
         def cyan(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#cyan", "#detail_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#cyan", :replacement => "#detail_color")
           color(text, :cyan)
         end
 
         def white(text)
-          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#white", "#default_color")
+          RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#white", :replacement => "#default_color")
           color(text, :white)
         end
 

@@ -7,7 +7,7 @@ module RSpec
       def const_missing(name)
         case name
         when :Rspec, :Spec
-          RSpec.deprecate(name.to_s, "RSpec")
+          RSpec.deprecate(name.to_s, :replacement => "RSpec")
           RSpec
         else
           begin
@@ -24,7 +24,7 @@ module RSpec
   module Runner
     # @deprecated use RSpec.configure instead.
     def self.configure(&block)
-      RSpec.deprecate("Spec::Runner.configure", "RSpec.configure")
+      RSpec.deprecate("Spec::Runner.configure", :replacement => "RSpec.configure")
       RSpec.configure(&block)
     end
   end
@@ -36,7 +36,7 @@ module RSpec
     def self.const_missing(name)
       case name
       when :SpecTask
-        RSpec.deprecate("Spec::Rake::SpecTask", "RSpec::Core::RakeTask")
+        RSpec.deprecate("Spec::Rake::SpecTask", :replacement => "RSpec::Core::RakeTask")
         require 'rspec/core/rake_task'
         RSpec::Core::RakeTask
       else

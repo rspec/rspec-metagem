@@ -1220,7 +1220,7 @@ module RSpec::Core
 
       context "with :alias => " do
         it "is deprecated" do
-          RSpec::should_receive(:deprecate).with(/:alias option/, /:alias_with/)
+          RSpec::should_receive(:deprecate).with(/:alias option/, :replacement => ":alias_with")
           config.add_setting :custom_option
           config.add_setting :another_custom_option, :alias => :custom_option
         end
