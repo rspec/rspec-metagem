@@ -2,14 +2,13 @@ module RSpec
   module Expectations
 
     class ExpectationHandler
-      def self.message_must_be_string(msg)
-        "WARNING: ignoring the provided expectation message argument " +
-        "(#{msg.inspect}) since it is not a string or a proc."
-      end
-
       def self.check_message(msg)
         unless msg.nil? || msg.respond_to?(:to_str) || msg.respond_to?(:call)
-          ::Kernel.warn message_must_be_string(msg)
+          ::Kernel.warn [
+            "WARNING: ignoring the provided expectation message argument (",
+            msg.inspect,
+            ") since it is not a string or a proc."
+          ].join
         end
       end
     end
