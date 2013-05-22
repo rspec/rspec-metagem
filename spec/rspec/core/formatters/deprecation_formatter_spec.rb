@@ -22,13 +22,13 @@ module RSpec::Core::Formatters
       end
 
       it "includes the call site if provided" do
-        formatter.deprecation(:called_from => "somewhere")
+        formatter.deprecation(:call_site => "somewhere")
         deprecation_stream.rewind
         expect(deprecation_stream.read).to match(/Called from somewhere/)
       end
 
       it "prints a message if provided, ignoring other data" do
-        formatter.deprecation(:message => "this message", :deprecated => "x", :replacement => "y", :called_from => "z")
+        formatter.deprecation(:message => "this message", :deprecated => "x", :replacement => "y", :call_site => "z")
         deprecation_stream.rewind
         expect(deprecation_stream.read).to eq "this message"
       end

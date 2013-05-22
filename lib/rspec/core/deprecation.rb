@@ -8,7 +8,7 @@ module RSpec
         # Temporarily support old and new APIs while we transition the other
         # rspec libs to use a hash for the 2nd arg and no version arg
         data = Hash === replacement_or_hash ? replacement_or_hash : { :replacement => replacement_or_hash }
-        RSpec.configuration.reporter.deprecation data.merge(:deprecated => deprecated, :called_from => caller(0)[2])
+        RSpec.configuration.reporter.deprecation data.merge(:deprecated => deprecated, :call_site => caller(0)[2])
       end
 
       # @private
@@ -20,5 +20,5 @@ module RSpec
     end
   end
 
-  RSpec.extend(RSpec::Core::Deprecation)
+#  RSpec.extend(RSpec::Core::Deprecation)
 end

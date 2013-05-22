@@ -16,7 +16,7 @@ module RSpec
             @deprecation_stream.print "DEPRECATION: " unless File === @deprecation_stream
             @deprecation_stream.print "#{data[:deprecated]} is deprecated."
             @deprecation_stream.print " Use #{data[:replacement]} instead." if data[:replacement]
-            @deprecation_stream.print " Called from #{data[:called_from]}." if data[:called_from]
+            @deprecation_stream.print " Called from #{data[:call_site]}." if data[:call_site]
             @deprecation_stream.puts
           end
         end
