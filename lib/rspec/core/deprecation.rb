@@ -20,5 +20,5 @@ module RSpec
     end
   end
 
-#  RSpec.extend(RSpec::Core::Deprecation)
+  RSpec.extend(RSpec::Core::Deprecation)
 end
