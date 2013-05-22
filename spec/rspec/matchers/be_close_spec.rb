@@ -8,7 +8,7 @@ module RSpec
       end
 
       it "is deprecated" do
-        expect(RSpec).to receive(:deprecate).with(/be_close.*/,/be_within.*/)
+        expect(RSpec).to receive(:deprecate).with(/be_close.*/, :replacement => "be_within(0.5).of(3.0)")
         be_close(3.0, 0.5)
       end
 

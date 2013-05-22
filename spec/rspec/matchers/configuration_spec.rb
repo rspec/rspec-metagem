@@ -151,10 +151,10 @@ module RSpec
           it 'prints a deprecation notice when `expect {}.should` is used' do
             configure_syntax [:should, :expect]
 
-            expect(RSpec).to receive(:deprecate).with(/expect \{ \}.should\b/, /expect \{ \}.to/, 3)
+            expect(RSpec).to receive(:deprecate)
             expect { raise "boom" }.should raise_error("boom")
 
-            expect(RSpec).to receive(:deprecate).with(/expect \{ \}.should_not/, /expect \{ \}.not_to/, 3)
+            expect(RSpec).to receive(:deprecate)
             expect { }.should_not raise_error
           end
         end

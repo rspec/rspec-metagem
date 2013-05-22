@@ -17,7 +17,7 @@ Feature: Test::Unit integration
         end
 
         def be_an_int
-          RSpec.deprecate(:be_an_int, :be_an_integer)
+          RSpec.deprecate(:be_an_int, :replacement => :be_an_integer)
           be_an_integer
         end
 
