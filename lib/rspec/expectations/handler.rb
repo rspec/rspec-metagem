@@ -2,13 +2,14 @@ module RSpec
   module Expectations
 
     class ExpectationHandler
-      def self.message_must_be_string(msg)
-        "WARNING: ignoring the provided expectation message argument " +
-        "(#{msg.inspect}) since it is not a string."
-      end
-
       def self.check_message(msg)
-        ::Kernel.warn message_must_be_string(msg) unless msg.nil? || msg.respond_to?(:to_str)
+        unless msg.nil? || msg.respond_to?(:to_str) || msg.respond_to?(:call)
+          ::Kernel.warn [
+            "WARNING: ignoring the provided expectation message argument (",
+            msg.inspect,
+            ") since it is not a string or a proc."
+          ].join
+        end
       end
     end
 
@@ -22,6 +23,8 @@ module RSpec
 
         match = matcher.matches?(actual, &block)
         return match if match
+
+        message = message.call if message.respond_to?(:call)
 
         message ||= matcher.respond_to?(:failure_message_for_should) ?
                     matcher.failure_message_for_should :
@@ -46,6 +49,8 @@ module RSpec
                 !matcher.does_not_match?(actual, &block) :
                 matcher.matches?(actual, &block)
         return match unless match
+
+        message = message.call if message.respond_to?(:call)
 
         message ||= matcher.respond_to?(:failure_message_for_should_not) ?
                     matcher.failure_message_for_should_not :
