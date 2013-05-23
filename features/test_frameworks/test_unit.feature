@@ -6,7 +6,7 @@ Feature: Test::Unit integration
 
   The one downside is that failures are reported as errors with MiniTest.
 
-  Scenario: Basic Test::Unit usage
+  Scenario: use rspec/expectations with Test::Unit
     Given a file named "rspec_expectations_test.rb" with:
       """ruby
       require 'test/unit'
@@ -18,30 +18,27 @@ Feature: Test::Unit integration
         end
 
         def be_an_int
+          # This is actually an internal rspec-expectations API, but is used
+          # here to demonstrate that deprecation warnings from within
+          # rspec-expectations work correcty without depending on rspec-core
           RSpec.deprecate(:be_an_int, :replacement => :be_an_integer)
           be_an_integer
         end
 
         def test_passing_expectation
-          x = 1 + 3
-          expect(x).to eq 4
-        end
-
-        def test_passing_expectation_with_a_block
-          expect { @a = 5 }.to change { @a }.from(nil).to(5)
+          expect(1 + 3).to eq 4
         end
 
         def test_failing_expectation
-          array = [1, 2]
-          expect(array).to be_empty
+          expect([1,2]).to be_empty
         end
 
-        def test_custom_matcher_and_deprecation_warning
+        def test_custom_matcher_with_deprecation_warning
           expect(1).to be_an_int
         end
       end
       """
      When I run `ruby rspec_expectations_test.rb`
-     Then the output should contain "4 tests, 0 assertions, 0 failures, 1 errors" or "4 tests, 0 assertions, 1 failures, 0 errors"
+     Then the output should contain "3 tests, 0 assertions, 0 failures, 1 errors" or "3 tests, 0 assertions, 1 failures, 0 errors"
       And the output should contain "expected empty? to return true, got false"
       And the output should contain "be_an_int is deprecated"
