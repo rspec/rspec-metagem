@@ -11,7 +11,11 @@ Feature: deprecation_stream
   Background:
     Given a file named "lib/foo.rb" with:
       """ruby
-      class Foo; def bar; RSpec.deprecate "Foo#bar"; end; end
+      class Foo
+        def bar
+          RSpec.deprecate "Foo#bar"
+        end
+      end
       """
 
   Scenario: default - print deprecations to $stderr
