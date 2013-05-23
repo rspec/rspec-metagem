@@ -40,8 +40,8 @@ Enhancements
   allow access to `Time.now` (Jon Rowe)
 * Make `shared_examples_for` context aware, so that keys may be safely reused
   in multiple contexts without colliding. (Jon Rowe)
-* Make `warn_deprecations` use a configurable `deprecation_io` stream.
-  (Jon Rowe)
+* Add a configurable `deprecation_stream` (Jon Rowe)
+* Publish deprecations through a formatter (David Chelimsky)
 
 Bug fixes
 

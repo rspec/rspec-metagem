@@ -30,7 +30,7 @@ module RSpec
       # @deprecated
       # Has no effect. The rake task now checks ENV['BUNDLE_GEMFILE'] instead.
       def gemfile=(*)
-        RSpec.deprecate("RSpec::Core::RakeTask#gemfile=", 'ENV["BUNDLE_GEMFILE"]')
+        RSpec.deprecate("RSpec::Core::RakeTask#gemfile=", :replacement => 'ENV["BUNDLE_GEMFILE"]')
       end
 
       # @deprecated
@@ -42,7 +42,7 @@ module RSpec
       # default:
       #   false
       def warning=(true_or_false)
-        RSpec.deprecate("RSpec::Core::RakeTask#warning=", 'ruby_opts="-w"')
+        RSpec.deprecate("RSpec::Core::RakeTask#warning=", :replacement => 'ruby_opts="-w"')
         @warning = true_or_false
       end
 
@@ -109,7 +109,7 @@ module RSpec
       # default:
       #   nil
       def spec_opts=(opts)
-        RSpec.deprecate('RSpec::Core::RakeTask#spec_opts=', 'rspec_opts=')
+        RSpec.deprecate('RSpec::Core::RakeTask#spec_opts=', :replacement => 'rspec_opts=')
         @rspec_opts = opts
       end
 

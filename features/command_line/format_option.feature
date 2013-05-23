@@ -2,30 +2,24 @@ Feature: --format option
 
   Use the --format option to tell RSpec how to format the output.
 
-  RSpec ships with a few formatters built in. By default, it uses the progress
+  RSpec ships with several formatters built in. By default, it uses the progress
   formatter, which generates output like this:
 
       ....F.....*.....
 
   A '.' represents a passing example, 'F' is failing, and '*' is pending.
 
-  To see the documentation strings passed to each describe(), context(), and it()
-  method, use the documentation formatter:
+  Use the documentation formatter to see the documentation strings passed to
+  `describe`, `it`, and their aliases:
 
       $ rspec spec --format documentation
 
-  You can also specify an output target (STDOUT by default) by appending a
-  filename to the argument:
+  You can also specify an output target ($stdout by default) with an --out
+  option immediately following the --format option:
 
-    $ rspec spec --format documentation --out rspec.txt
+      $ rspec spec --format documentation --out rspec.txt
 
-  `rspec --help` lists available formatters:
-
-      [p]rogress (default - dots)
-      [d]ocumentation (group and example names)
-      [h]tml
-      [t]extmate
-      custom formatter class name
+  Run `rspec --help` to see a listing of available formatters.
 
   Background:
     Given a file named "example_spec.rb" with:
@@ -69,7 +63,7 @@ Feature: --format option
         does something that is pending (PENDING: No reason given)
       """
 
-  Scenario: multiple formats
+  Scenario: multiple formats and output targets
     When I run `rspec example_spec.rb --format progress --format documentation --out rspec.txt`
     Then the output should contain ".F*"
     And the file "rspec.txt" should contain:

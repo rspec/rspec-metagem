@@ -16,7 +16,7 @@
 #
 #     rspec --format documentation --format html --out results.html
 #
-# This example sends the output of the documentation formatter to `STDOUT`, and
+# This example sends the output of the documentation formatter to `$stdout`, and
 # the output of the html formatter to results.html.
 #
 # ## Custom Formatters

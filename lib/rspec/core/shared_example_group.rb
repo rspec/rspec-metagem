@@ -39,7 +39,7 @@ module RSpec
       # @deprecated
       def share_as(name, &block)
         RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
-                        "RSpec::SharedContext or shared_examples")
+                        :replacement => "RSpec::SharedContext or shared_examples")
         Registry.add_const(self, name, &block)
       end
 
@@ -58,7 +58,7 @@ module RSpec
 
         def share_as(name, &block)
           RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
-                          "RSpec::SharedContext or shared_examples")
+                          :replacement => "RSpec::SharedContext or shared_examples")
           Registry.add_const('main', name, &block)
         end
 

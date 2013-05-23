@@ -2,7 +2,7 @@ module RSpec::Core
   class Reporter
     NOTIFICATIONS = %W[start message example_group_started example_group_finished example_started
                        example_passed example_failed example_pending start_dump dump_pending
-                       dump_failures dump_summary seed close stop].map(&:to_sym)
+                       dump_failures dump_summary seed close stop deprecation deprecation_summary].map(&:to_sym)
 
     def initialize(*formatters)
       @listeners = Hash.new { |h,k| h[k] = [] }
@@ -97,6 +97,10 @@ module RSpec::Core
       notify :example_pending, example
     end
 
+    def deprecation(message)
+      notify :deprecation, message
+    end
+
     def finish(seed)
       begin
         stop
@@ -104,7 +108,7 @@ module RSpec::Core
         notify :dump_pending
         notify :dump_failures
         notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
-        warn RSpec.deprecations_summary if RSpec.deprecations?
+        notify :deprecation_summary
         notify :seed, seed if seed
       ensure
         notify :close

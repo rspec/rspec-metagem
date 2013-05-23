@@ -30,7 +30,7 @@ module RSpec::Core
       args.map! { |arg|
         case arg
         when "--formatter"
-          RSpec.deprecate("the --formatter option", "-f or --format")
+          RSpec.deprecate("the --formatter option", :replacement => "-f or --format")
           "--format"
         when "--default_path"
           "--default-path"
@@ -119,7 +119,7 @@ module RSpec::Core
         end
 
         parser.on('-o', '--out FILE',
-                  'Write output to a file instead of STDOUT. This option applies',
+                  'Write output to a file instead of $stdout. This option applies',
                   '  to the previously specified --format, or the default format',
                   '  if no format is specified.'
                  ) do |o|
