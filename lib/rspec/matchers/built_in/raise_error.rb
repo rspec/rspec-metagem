@@ -22,7 +22,7 @@ module RSpec
                                 elsif @expected_message
                                   "`expect { }.not_to raise_error(message)`"
                                 end
-            RSpec.deprecate(what_to_deprecate, "`expect { }.not_to raise_error()`", "3.0.0")
+            RSpec.deprecate(what_to_deprecate, :replacement => "`expect { }.not_to raise_error()`")
           end
           @raised_expected_error = false
           @with_expected_message = false
