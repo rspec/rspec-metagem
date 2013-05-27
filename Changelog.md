@@ -1,5 +1,5 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.13.1...master)
+### 2.14.0.rc1 / 2013-05-27
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.13.1...v2.14.0.rc1)
 
 Enhancements
 
@@ -64,7 +64,7 @@ Bug fixes
   doc string has been provided (David Chelimsky).
 * Fix the memoized methods (`let` and `subject`) leaking `define_method`
   as a `public` method. (Thomas Holmes and Jon Rowe) (#873)
-* Silence warnings coming from the test suite. (Pete Higgins)
+* Fix warnings coming from the test suite. (Pete Higgins)
 
 Deprecations
 
