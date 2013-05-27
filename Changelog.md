@@ -1,15 +1,14 @@
-### dev
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...master)
+### 2.14.0.rc1 / 2013-05-27
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc1)
 
 Enhancements
 
-* Expand `yield_control` so that you can specify an exact or relative
+* Enhance `yield_control` so that you can specify an exact or relative
   number of times: `expect { }.to yield_control.exactly(3).times`,
   `expect { }.to yield_control.at_least(2).times`, etc (Bartek
   Borkowski).
 * Make the differ that is used when an expectation fails better handle arrays
   by splitting each element of the array onto its own line. (Sam Phippen)
-* Deprecate `expect { }.not_to raise_error(SpecificErrorClass)`. (Sam Phippen)
 * Accept duck-typed strings that respond to `:to_str` as expectation messages.
   (Toby Ovod-Everett)
 
@@ -22,9 +21,16 @@ Bug fixes
 * Fix `have` matcher to handle the fact that on ruby 2.0,
   `Enumerator#size` may return nil (Kenta Murata).
 * Fix `expect { raise s }.to raise_error(s)` where s is an error instance
-  (Sam Phippen).
+  on ruby 2.0 (Sam Phippen).
 * Fix `expect(object).to raise_error` passing. This now warns the user and
   fails the spec (tomykaira).
+
+Deprecations
+
+* Deprecate `expect { }.not_to raise_error(SpecificErrorClass)` or
+  `expect { }.not_to raise_error("some specific message")`. Using
+  these was prone to hiding failures as they would allow _any other
+  error_ to pass. (Sam Phippen and David Chelimsky)
 
 ### 2.13.0 / 2013-02-23
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
