@@ -26,7 +26,7 @@ module RSpec
       #   expect { perform }.to raise_error
       # @param [Matcher]
       #   matcher
-      # @param [String] message optional message to display when the expectation fails
+      # @param [String or Proc] message optional message to display when the expectation fails
       # @return [Boolean] true if the expectation succeeds (else raises)
       # @see RSpec::Matchers
       def to(matcher=nil, message=nil, &block)
@@ -39,7 +39,7 @@ module RSpec
       #   expect(value).not_to eq(5)
       # @param [Matcher]
       #   matcher
-      # @param [String] message optional message to display when the expectation fails
+      # @param [String or Proc] message optional message to display when the expectation fails
       # @return [Boolean] false if the negative expectation succeeds (else raises)
       # @see RSpec::Matchers
       def not_to(matcher=nil, message=nil, &block)
