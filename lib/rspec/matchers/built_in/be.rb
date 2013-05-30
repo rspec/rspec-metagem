@@ -168,7 +168,7 @@ it is a bit confusing.
         # support 187
         if methods.first.is_a? String
           def is_private_on? actual
-            actual.private_methods.include? "#{predicate}"
+            actual.private_methods.include? predicate.to_s
           end
         else
           def is_private_on? actual
