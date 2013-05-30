@@ -152,10 +152,10 @@ Feature: predicate matchers
        describe 'private methods' do
          subject { WithPrivateMethods.new }
 
-         # deliberate failures
+         # deliberate failure
          it { should be_secret }
        end
        """
      When I run `rspec attempting_to_match_private_method_spec.rb`
      Then the output should contain "1 example, 1 failure"
-     And the output should contain "UnsupportedOperationError: expectation set on private method `secret?`"
+     And the output should contain "expectation set on private method `secret?`"
