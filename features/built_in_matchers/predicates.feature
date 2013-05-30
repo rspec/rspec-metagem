@@ -42,6 +42,10 @@ Feature: predicate matchers
 
     `expected zero? to return true, got false`
 
+  Calling private methods will also fail:
+
+    `expected private_method? to return true but it's a private method`
+
   Any arguments passed to the matcher will be passed on to the predicate method.
 
   Scenario: should be_zero (based on Fixnum#zero?)
@@ -135,3 +139,23 @@ Feature: predicate matchers
       And the output should contain "expected multiple_of?(4) to return false, got true"
       And the output should contain "expected multiple_of?(5) to return true, got false"
 
+    Scenario: calling private method causes error
+      Given a file named "attempting_to_match_private_method_spec.rb" with:
+       """ruby
+       class WithPrivateMethods
+         def secret?
+           true
+         end
+         private :secret?
+       end
+
+       describe 'private methods' do
+         subject { WithPrivateMethods.new }
+
+         # deliberate failure
+         it { should be_secret }
+       end
+       """
+     When I run `rspec attempting_to_match_private_method_spec.rb`
+     Then the output should contain "1 example, 1 failure"
+     And the output should contain "expectation set on private method `secret?`"

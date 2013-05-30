@@ -31,6 +31,16 @@ describe "expect(...).to be_predicate" do
     }.to raise_error(NameError, /happy\?/)
   end
 
+  it 'fails when :predicate? is private' do
+    privately_happy = Class.new do
+      private
+        def happy?
+          true
+        end
+    end
+    expect { expect(privately_happy.new).to be_happy }.to raise_error
+  end
+
   it "fails on error other than NameError" do
     actual = double("actual")
     actual.should_receive(:foo?).and_raise("aaaah")

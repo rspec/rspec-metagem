@@ -135,6 +135,11 @@ it is a bit confusing.
 
         def matches?(actual)
           @actual = actual
+
+          if is_private_on?( @actual )
+            raise Expectations::ExpectationNotMetError.new("expectation set on private method `#{predicate}`")
+          end
+
           begin
             return @result = actual.__send__(predicate, *@args, &@block)
           rescue NameError => predicate_missing_error
@@ -161,6 +166,17 @@ it is a bit confusing.
         end
 
         private
+
+        # support 187
+        if methods.first.is_a? String
+          def is_private_on? actual
+            actual.private_methods.include? predicate.to_s
+          end
+        else
+          def is_private_on? actual
+            actual.private_methods.include? predicate
+          end
+        end
 
         def predicate
           "#{@expected}?".to_sym
