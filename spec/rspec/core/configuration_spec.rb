@@ -1016,11 +1016,10 @@ module RSpec::Core
       end
     end
 
-    describe "#backtrace_clean_patterns=" do
+    describe "#backtrace_exclusion_patterns=" do
       it "actually receives the new filter values" do
-        RSpec.stub(:deprecate)
         config = Configuration.new
-        config.backtrace_clean_patterns = [/.*/]
+        config.backtrace_exclusion_patterns = [/.*/]
         expect(config.backtrace_cleaner.exclude? "this").to be_true
       end
     end
@@ -1037,17 +1036,10 @@ module RSpec::Core
       end
     end
 
-    describe "#backtrace_clean_patterns" do
-      before { allow(RSpec).to receive(:deprecate) }
-      it "is deprecated" do
-        RSpec.should_receive(:deprecate)
-        config = Configuration.new
-        config.backtrace_clean_patterns
-      end
-
+    describe "#backtrace_exclusion_patterns" do
       it "can be appended to" do
         config = Configuration.new
-        config.backtrace_clean_patterns << /.*/
+        config.backtrace_exclusion_patterns << /.*/
         expect(config.backtrace_cleaner.exclude? "this").to be_true
       end
     end

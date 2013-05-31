@@ -284,29 +284,6 @@ module RSpec
         mock_with framework
       end
 
-      # The patterns to discard from backtraces. Deprecated, use
-      # Configuration#backtrace_exclusion_patterns instead
-      #
-      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
-      #
-      # One can replace the list by using the setter or modify it through the
-      # getter
-      #
-      # To override this behaviour and display a full backtrace, use
-      # `--backtrace`on the command line, in a `.rspec` file, or in the
-      # `rspec_options` attribute of RSpec's rake task.
-      def backtrace_clean_patterns
-        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        :replacement => "RSpec::Core::Configuration#backtrace_exclusion_patterns")
-        @backtrace_cleaner.exclusion_patterns
-      end
-
-      def backtrace_clean_patterns=(patterns)
-        RSpec.deprecate("RSpec::Core::Configuration#backtrace_clean_patterns",
-                        :replacement => "RSpec::Core::Configuration#backtrace_exclusion_patterns")
-        @backtrace_cleaner.exclusion_patterns = patterns
-      end
-
       # The patterns to always include to backtraces.
       #
       # Defaults to [Regexp.new Dir.getwd] if the current working directory

@@ -1,6 +1,6 @@
-Feature: Backtrace cleaning
+Feature: Excluding lines from the backtrace
 
-  To aid in diagnozing spec failures, RSpec cleans matching lines from backtraces. The default patterns cleaned are:
+  To aid in diagnozing spec failures, RSpec excludes matching lines from backtraces. The default exclusion patterns are:
 
     /\/lib\d*\/ruby\//,
     /org\/jruby\//,
@@ -9,7 +9,7 @@ Feature: Backtrace cleaning
     /spec\/spec_helper\.rb/,
     /lib\/rspec\/(core|expectations|matchers|mocks)/
 
-  This list can be modified or replaced with the `backtrace_clean_patterns` option. Additionally, rspec can be run with the `--backtrace` option to skip backtrace cleaning entirely.
+  This list can be modified or replaced with the `backtrace_exclusion_patterns` option. Additionally, rspec can be run with the `--backtrace` option to skip backtrace cleaning entirely.
 
   Scenario: default configuration
     Given a file named "spec/failing_spec.rb" with:
@@ -24,11 +24,11 @@ Feature: Backtrace cleaning
     Then the output should contain "1 example, 1 failure"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: With a custom setting for backtrace_clean_patterns
+  Scenario: With a custom setting for backtrace_exclusion_patterns
     Given a file named "spec/spec_helper.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns = [
+      config.backtrace_exclusion_patterns = [
         /spec_helper/
       ]
     end
@@ -62,7 +62,7 @@ Feature: Backtrace cleaning
     And a file named "spec/example_spec.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
     describe "bar" do
@@ -88,7 +88,7 @@ Feature: Backtrace cleaning
     And a file named "spec/example_spec.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
     describe "bar" do
