@@ -167,7 +167,7 @@ it is a bit confusing.
 
         private
 
-        # support 187
+        # support 1.8.7
         if methods.first.is_a? String
           def is_private_on? actual
             actual.private_methods.include? predicate.to_s
