@@ -17,6 +17,11 @@ describe RSpec::Core::Deprecation do
         expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :call_site => caller(0)[1])
         RSpec.deprecate("deprecated_method")
       end
+
+      it "doesn't override the existing callsite" do
+        expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :call_site => "/path")
+        RSpec.deprecate("deprecated_method", :call_site => "/path")
+      end
     end
 
     context "new API with a hash after the first arg" do
