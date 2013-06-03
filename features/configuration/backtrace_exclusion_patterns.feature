@@ -1,6 +1,7 @@
-Feature: Backtrace cleaning
+Feature: Excluding lines from the backtrace
 
-  To aid in diagnozing spec failures, RSpec cleans matching lines from backtraces. The default patterns cleaned are:
+  To reduce the noise when diagnosing , RSpec excludes matching lines from
+  backtraces. The default exclusion patterns are:
 
     /\/lib\d*\/ruby\//,
     /org\/jruby\//,
@@ -9,9 +10,11 @@ Feature: Backtrace cleaning
     /spec\/spec_helper\.rb/,
     /lib\/rspec\/(core|expectations|matchers|mocks)/
 
-  This list can be modified or replaced with the `backtrace_clean_patterns` option. Additionally, rspec can be run with the `--backtrace` option to skip backtrace cleaning entirely.
+  This list can be modified or replaced with the `backtrace_exclusion_patterns`
+  option. Additionally, rspec can be run with the `--backtrace` option to skip
+  backtrace cleaning entirely.
 
-  Scenario: default configuration
+  Scenario: using default backtrace_exclusion_patterns
     Given a file named "spec/failing_spec.rb" with:
     """ruby
     describe "2 + 2" do
@@ -24,11 +27,11 @@ Feature: Backtrace cleaning
     Then the output should contain "1 example, 1 failure"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: With a custom setting for backtrace_clean_patterns
+  Scenario: replacing backtrace_exclusion_patterns
     Given a file named "spec/spec_helper.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns = [
+      config.backtrace_exclusion_patterns = [
         /spec_helper/
       ]
     end
@@ -50,7 +53,7 @@ Feature: Backtrace cleaning
     Then the output should contain "1 example, 1 failure"
     And the output should contain "lib/rspec/expectations"
 
-  Scenario: Adding a pattern
+  Scenario: appending to backtrace_exclusion_patterns
     Given a file named "spec/matchers/be_baz_matcher.rb" with:
     """ruby
     RSpec::Matchers.define :be_baz do |_|
@@ -62,7 +65,7 @@ Feature: Backtrace cleaning
     And a file named "spec/example_spec.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
     describe "bar" do
@@ -76,7 +79,7 @@ Feature: Backtrace cleaning
     But the output should not contain "be_baz_matcher"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: Running with the --backtrace option
+  Scenario: running rspec with the --backtrace option
     Given a file named "spec/matchers/be_baz_matcher.rb" with:
     """ruby
     RSpec::Matchers.define :be_baz do |_|
@@ -88,7 +91,7 @@ Feature: Backtrace cleaning
     And a file named "spec/example_spec.rb" with:
     """ruby
     RSpec.configure do |config|
-      config.backtrace_clean_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
     describe "bar" do
