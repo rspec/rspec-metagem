@@ -108,11 +108,11 @@ module RSpec
 
           # stop if we've only one example group
           return if example_groups.keys.length <= 1
-          
-          example_groups.each do |loc, hash|
+
+          example_groups.each_value do |hash|
             hash[:average] = hash[:total_time].to_f / hash[:count]
           end
-          
+
           sorted_groups = example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"

@@ -48,7 +48,7 @@ module RSpec
 
       def example_count
         example_groups.collect {|g| g.descendants}.flatten.inject(0) do |sum, g|
-          sum += g.filtered_examples.size
+          sum + g.filtered_examples.size
         end
       end
 
