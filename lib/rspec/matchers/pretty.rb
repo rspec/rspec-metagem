@@ -35,7 +35,7 @@ module RSpec
       end
 
       def to_word(item)
-        item.respond_to?(:description) ? item.description : item.inspect
+        is_matcher_with_description?(item) ? item.description : item.inspect
       end
 
       def name_to_sentence
@@ -58,6 +58,12 @@ module RSpec
         word.tr!("-", "_")
         word.downcase!
         word
+      end
+
+      private
+
+      def is_matcher_with_description?(object)
+        RSpec::Matchers.is_a_matcher?(object) && object.respond_to?(:description)
       end
     end
   end

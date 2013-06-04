@@ -174,6 +174,14 @@ module RSpec
   #       config.include(CustomGameMatchers)
   #     end
   module Matchers
+    # @api private
+    def self.is_a_matcher?(obj)
+      return true  if ::RSpec::Matchers::BuiltIn::BaseMatcher === obj
+      return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+      return false unless obj.respond_to?(:matches?)
+
+      return obj.respond_to?(:failure_message_for_should) || obj.respond_to?(:failure_message)
+    end
 
     # Passes if actual is truthy (anything but false or nil)
     def be_true
