@@ -5,6 +5,8 @@ Bug fixes
 
 * Values that are not matchers use `#inspect`, rather than `#description` for
   documentation output (Andy Lindeman, Sam Phippen).
+* Make `expect(a).to be_within(x).percent_of(y)` work with negative y
+  (Katsuhiko Nishimra).
 
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc1)
