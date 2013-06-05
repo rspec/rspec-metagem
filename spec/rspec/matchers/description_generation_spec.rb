@@ -107,9 +107,23 @@ describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq "should have at most 4 players"
   end
 
-  it "expect(...).to include" do
+  it "expect(...).to include(x)" do
     expect([1,2,3]).to include(3)
     expect(RSpec::Matchers.generated_description).to eq "should include 3"
+  end
+
+  it "expect(...).to include(x) when x responds to description but is not a matcher" do
+    obj = double(:description => "description", :inspect => "inspect")
+    expect([obj]).to include(obj)
+    expect(RSpec::Matchers.generated_description).to eq "should include inspect"
+  end
+
+  it "expect(...).to include(x) when x responds to description and is a matcher" do
+    matcher = double(:description                => "description",
+                     :matches?                   => true,
+                     :failure_message_for_should => "")
+    expect([matcher]).to include(matcher)
+    expect(RSpec::Matchers.generated_description).to eq "should include description"
   end
 
   it "expect(array).not_to match_array [1,2,3]" do
