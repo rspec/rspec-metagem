@@ -1,5 +1,8 @@
 require 'rubygems'
 
+require 'coveralls'
+Coveralls.wear!
+
 begin
   require 'spork'
 rescue LoadError
