@@ -18,6 +18,9 @@ group :documentation do
   gem 'github-markup', '0.7.2'
 end
 
+### dep for ci/coverage
+gem 'coveralls', :require => false
+
 platforms :jruby do
   gem "jruby-openssl"
 end
