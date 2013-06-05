@@ -23,7 +23,7 @@ module RSpec
 
         def percent_of(expected)
           @expected  = expected
-          @tolerance = @delta * @expected / 100.0
+          @tolerance = @delta * @expected.abs / 100.0
           @unit      = '%'
           self
         end

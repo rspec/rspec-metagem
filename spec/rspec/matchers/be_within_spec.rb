@@ -31,6 +31,10 @@ module RSpec
         expect(1.0001).to be_within(5).percent_of(1)
       end
 
+      it "passes with negative arguments" do
+        expect(-1.0001).to be_within(5).percent_of(-1)
+      end
+
       it "fails when actual < (expected - delta)" do
         expect {
           expect(4.49).to be_within(0.5).of(5.0)
