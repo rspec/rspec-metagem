@@ -180,7 +180,7 @@ module RSpec
       return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
       return false unless obj.respond_to?(:matches?)
 
-      return obj.respond_to?(:failure_message_for_should) || obj.respond_to?(:failure_message)
+      obj.respond_to?(:failure_message_for_should) || obj.respond_to?(:failure_message)
     end
 
     # Passes if actual is truthy (anything but false or nil)
