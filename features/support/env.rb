@@ -12,3 +12,7 @@ Aruba.configure do |config|
   end
 end if RUBY_PLATFORM == 'java'
 
+require 'coveralls'
+Coveralls.wear! do
+  add_filter './bundle'
+end

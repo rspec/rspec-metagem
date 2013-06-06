@@ -1,8 +1,5 @@
 Dir['./spec/support/**/*'].each {|f| require f}
 
-require 'coveralls'
-Coveralls.wear!
-
 RSpec::configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
   config.color_enabled = true
@@ -55,3 +52,7 @@ module TestUnitIntegrationSupport
   end
 end
 
+require 'coveralls'
+Coveralls.wear! do
+  add_filter './bundle'
+end
