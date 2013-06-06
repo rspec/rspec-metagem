@@ -14,5 +14,5 @@ end if RUBY_PLATFORM == 'java'
 
 require 'coveralls'
 Coveralls.wear! do
-  add_filter './bundle'
+  add_filter '/bundle/'
 end
