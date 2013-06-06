@@ -1,3 +1,9 @@
+require 'simplecov' if RUBY_VERSION.to_f > 1.8
+require 'coveralls'
+Coveralls.wear! do
+  add_filter '/bundle/'
+end
+
 Dir['./spec/support/**/*'].each {|f| require f}
 
 RSpec::configure do |config|
@@ -51,4 +57,3 @@ module TestUnitIntegrationSupport
     end
   end
 end
-
