@@ -1,7 +1,10 @@
 require 'rubygems'
 
+require 'simplecov' if RUBY_VERSION.to_f > 1.8
 require 'coveralls'
-Coveralls.wear!
+Coveralls.wear! do
+  add_filter '/bundle/'
+end
 
 begin
   require 'spork'
