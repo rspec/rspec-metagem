@@ -20,7 +20,7 @@ class Autotest::Rspec2 < Autotest
     self.completed_re = /\n(?:\e\[\d*m)?\d* examples?/m
   end
 
-  # Adds conventional spec-to-file mappings to Autotest configuation.
+  # Adds conventional spec-to-file mappings to Autotest configuration.
   def setup_rspec_project_mappings
     add_mapping(%r%^spec/.*_spec\.rb$%) { |filename, _|
       filename
