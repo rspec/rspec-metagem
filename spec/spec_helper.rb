@@ -5,6 +5,8 @@ unless ENV['NO_COVERALLS']
   require 'coveralls'
   Coveralls.wear! do
     add_filter '/bundle/'
+    add_filter '/spec/'
+    add_filter '/tmp/'
   end
 end
 
