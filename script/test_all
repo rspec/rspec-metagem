@@ -21,7 +21,7 @@ echo "--------------------------------------------------------------------"
 echo
 
 for file in `find spec -iname '*_spec.rb'`; do
-  bin/rspec $file -b --format progress
+  NO_COVERALLS=1 bin/rspec $file -b --format progress
 done
 
 # Prepare RUBYOPT for scenarios that are shelling out to ruby,
