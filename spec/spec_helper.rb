@@ -1,7 +1,11 @@
-require 'simplecov' if RUBY_VERSION.to_f > 1.8
-require 'coveralls'
-Coveralls.wear! do
-  add_filter '/bundle/'
+begin
+  require 'simplecov'
+  require 'coveralls'
+  Coveralls.wear_merged! do
+    add_filter '/bundle/'
+  end
+rescue Exception => e
+  warn "Coveralls disabled"
 end
 
 Dir['./spec/support/**/*'].each {|f| require f}
