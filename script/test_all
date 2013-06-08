@@ -18,7 +18,7 @@ echo "--------------------------------------------------------------------"
 echo
 
 for file in `find spec -iname '*_spec.rb'`; do
-  bin/rspec $file --format progress
+   NO_COVERALLS=1 bin/rspec $file --format progress
 done
 
 # TODO: it would be nice to figure out how to run the cukes w/o the overhead of
