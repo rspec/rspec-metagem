@@ -12,7 +12,11 @@ Aruba.configure do |config|
   end
 end if RUBY_PLATFORM == 'java'
 
-require 'coveralls'
-Coveralls.wear! do
-  add_filter '/bundle/'
+begin
+  require 'coveralls'
+  Coveralls.wear_merged! do
+    add_filter '/bundle/'
+  end
+rescue Exception => e
+  warn "Coveralls disabled"
 end
