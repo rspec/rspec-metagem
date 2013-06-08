@@ -1098,11 +1098,6 @@ module RSpec::Core
         debugger.should_receive(:start)
         config.debug = true
       end
-
-      it 'sets the reader to true' do
-        config.debug = true
-        expect(config.debug?).to eq true
-      end
     end
 
     describe "#debug=false" do
@@ -1110,10 +1105,17 @@ module RSpec::Core
         config.should_not_receive(:require).with('ruby-debug')
         config.debug = false
       end
+    end
 
-      it 'sets the reader to false' do
-        config.debug = false
-        expect(config.debug?).to eq false
+    describe "#debug?" do
+      it 'returns true if the debugger has been loaded' do
+        stub_const("Debugger", Object.new)
+        expect(config.debug?).to be_true
+      end
+
+      it 'returns false if the debugger has not been loaded' do
+        hide_const("Debugger")
+        expect(config.debug?).to be_false
       end
     end
 
