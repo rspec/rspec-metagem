@@ -1,15 +1,11 @@
 unless ENV['NO_COVERALLS']
-  begin
-    require 'simplecov'
-    require 'coveralls'
-    Coveralls.wear_merged! do
-      add_filter '/bundle/'
-      add_filter '/spec/'
-      add_filter '/tmp/'
-    end
-  rescue Exception => e
-    warn "Coveralls disabled"
- end
+  require 'simplecov'
+  require 'coveralls'
+  Coveralls.wear! do
+    add_filter '/bundle/'
+    add_filter '/spec/'
+    add_filter '/tmp/'
+  end
 end
 
 Dir['./spec/support/**/*'].each {|f| require f}
