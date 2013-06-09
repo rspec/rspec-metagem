@@ -5,9 +5,14 @@ module RSpec
       #
       # Extracts code snippets by looking at the backtrace of the passed error and applies synax highlighting and line numbers using html.
       class SnippetExtractor
-        class NullConverter; def convert(code, pre); code; end; end
+        class NullConverter
+          def convert(code)
+            code + "\n<span class=\"comment\"># gem install syntax to get syntax highlighting</span>"
+          end
+        end
+
         class CoderayConverter
-          def convert(code, pre)
+          def convert(code)
             CodeRay.scan(code, :ruby).html(:line_numbers => false)
           end
         end
@@ -29,8 +34,7 @@ module RSpec
         # @see #post_process
         def snippet(backtrace)
           raw_code, line = snippet_for(backtrace[0])
-          highlighted = @@converter.convert(raw_code, false)
-          highlighted << "\n<span class=\"comment\"># gem install syntax to get syntax highlighting</span>" if @@converter.is_a?(NullConverter)
+          highlighted = @@converter.convert(raw_code)
           post_process(highlighted, line)
         end
 
