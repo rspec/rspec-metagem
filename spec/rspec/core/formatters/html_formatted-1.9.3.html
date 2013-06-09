@@ -325,10 +325,10 @@ a {
 ./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `block (2 levels) in &lt;module:Formatters&gt;'
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">16</span>  <span class="ident">context</span> <span class="punct">&quot;</span><span class="string">with content that would pass</span><span class="punct">&quot;</span> <span class="keyword">do</span>
-<span class="linenum">17</span>    <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">18</span>      <span class="ident">pending</span> <span class="keyword">do</span></span>
-<span class="linenum">19</span>        <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">1</span><span class="punct">)</span>
+    <pre class="ruby"><code><span class="linenum">16</span>  context <span class="string"><span class="delimiter">&quot;</span><span class="content">with content that would pass</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="linenum">17</span>    it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">18</span>      pending <span class="keyword">do</span></span>
+<span class="linenum">19</span>        expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)
 <span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
       </div>
     </dd>
@@ -366,9 +366,9 @@ expected: 2
 ./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `block (2 levels) in &lt;module:Formatters&gt;'
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span><span class="ident">describe</span> <span class="punct">&quot;</span><span class="string">failing spec</span><span class="punct">&quot;</span> <span class="keyword">do</span>
-<span class="linenum">32</span>  <span class="ident">it</span> <span class="punct">&quot;</span><span class="string">fails</span><span class="punct">&quot;</span> <span class="keyword">do</span>
-<span class="offending"><span class="linenum">33</span>    <span class="ident">expect</span><span class="punct">(</span><span class="number">1</span><span class="punct">).</span><span class="ident">to</span> <span class="ident">eq</span><span class="punct">(</span><span class="number">2</span><span class="punct">)</span></span>
+    <pre class="ruby"><code><span class="linenum">31</span>describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+<span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">34</span>  <span class="keyword">end</span>
 <span class="linenum">35</span><span class="keyword">end</span></code></pre>
       </div>
