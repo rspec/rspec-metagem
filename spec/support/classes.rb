@@ -33,13 +33,13 @@ module RSpec
           @items_in_collection_with_size_method.push(item)
         end
 
-      def add_to_collection_with_length_method(item)
-        @items_in_collection_with_length_method.push(item)
-      end
-
-      def add_to_collection_with_count_method(item)
-        @items_in_collection_with_count_method.push(item)
-      end
+        def add_to_collection_with_length_method(item)
+          @items_in_collection_with_length_method.push(item)
+        end
+  
+        def add_to_collection_with_count_method(item)
+          @items_in_collection_with_count_method.push(item)
+        end
 
         def items_for(arg)
           return [1, 2, 3] if arg == 'a'
