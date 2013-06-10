@@ -12,7 +12,24 @@ Feature: customized message
           it "is empty" do
             array = Array.new
             array << 1 # trigger a failure to demonstrate the message
-            array.should be_empty, "expected empty array, got #{array.inspect}"
+            expect(array).to be_empty, "expected empty array, got #{array.inspect}"
+          end
+        end
+      end
+
+      """
+    When I run `rspec example_spec.rb --format documentation`
+    Then the output should contain "expected empty array, got [1]"
+
+  Scenario: customize failure message with a proc
+    Given a file named "example_spec.rb" with:
+      """ruby
+      describe Array do
+        context "when created with `new`" do
+          it "is empty" do
+            array = Array.new
+            array << 1 # trigger a failure to demonstrate the message
+            expect(array).to be_empty, lambda { "expected empty array, got #{array.inspect}" }
           end
         end
       end
