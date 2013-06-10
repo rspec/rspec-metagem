@@ -7,7 +7,7 @@ module RSpec
       class SnippetExtractor
         class NullConverter
           def convert(code)
-            code + "\n<span class=\"comment\"># gem install syntax to get syntax highlighting</span>"
+            code + "\n<span class=\"comment\"># Install the coderay gem to get syntax highlighting</span>"
           end
         end
 
