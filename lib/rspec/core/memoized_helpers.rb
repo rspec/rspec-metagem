@@ -45,8 +45,12 @@ module RSpec
       #
       # @see #should
       def subject
-        raise NotImplementedError, 'This definition is here for documentation purposes only'
-          ' - it is overriden anyway below when this module gets included.'
+        __memoized.fetch(:subject) do
+          __memoized[:subject] = begin
+            described = described_class || self.class.description
+            Class === described ? described.new : described
+          end
+        end
       end
 
       # When `should` is called with no explicit receiver, the call is
@@ -148,12 +152,6 @@ EOS
 
       def self.included(mod)
         mod.extend(ClassMethods)
-
-        # This logic defines an implicit subject
-        mod.subject do
-          described = described_class || self.class.description
-          Class === described ? described.new : described
-        end
       end
 
       module ClassMethods
