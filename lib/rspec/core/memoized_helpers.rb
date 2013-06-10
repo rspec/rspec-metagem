@@ -469,7 +469,6 @@ EOS
             }
           end
 
-          example_group.__send__(:include, mod)
           example_group.const_set(:LetDefinitions, mod)
           mod
         end
