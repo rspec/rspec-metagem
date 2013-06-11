@@ -1,8 +1,11 @@
-### DEv
+### Dev
 
 Enhancements
 
 * Clean up some internal use of Enumerable methods. (Vipul A M)
+* Ensure methods defined by `let` take precedence over others
+  when there is a name collision (e.g. from an included module).
+  (Jon Rowe, Andy Lindeman and Myron Marston)
 
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.13.1...v2.14.0.rc1)
