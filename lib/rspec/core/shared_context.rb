@@ -43,7 +43,8 @@ module RSpec
         end
       end
 
-      record :before, :after, :around, :subject, :let, :its, :describe, :context
+      record :describe, :context, *Hooks.instance_methods(false),
+             *MemoizedHelpers::ClassMethods.instance_methods(false)
     end
   end
 
