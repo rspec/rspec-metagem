@@ -242,7 +242,7 @@ module RSpec
         # to ensure that it takes precendence when there are name collisions.
         # Thus, we delay including it until after the example group block
         # has been eval'd.
-        subclass.send(:include, MemoizedHelpers.module_for(subclass))
+        MemoizedHelpers.define_helpers_on(subclass)
 
         subclass
       end

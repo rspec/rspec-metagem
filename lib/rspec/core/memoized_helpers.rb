@@ -474,6 +474,11 @@ EOS
         end
       end
 
+      # @api private
+      def self.define_helpers_on(example_group)
+        example_group.send(:include, module_for(example_group))
+      end
+
       if Module.method(:const_defined?).arity == 1 # for 1.8
         # @api private
         #
