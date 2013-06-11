@@ -3,6 +3,9 @@
 Enhancements
 
 * Clean up some internal use of Enumerable methods. (Vipul A M)
+
+Bug fix
+
 * Ensure methods defined by `let` take precedence over others
   when there is a name collision (e.g. from an included module).
   (Jon Rowe, Andy Lindeman and Myron Marston)
