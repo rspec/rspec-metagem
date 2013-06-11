@@ -17,12 +17,14 @@ module RSpec
     #       # ...
     #     end
     module SharedContext
+      # @api private
       def included(group)
         __shared_context_recordings.each do |recording|
           recording.playback_onto(group)
         end
       end
 
+      # @api private
       def __shared_context_recordings
         @__shared_context_recordings ||= []
       end
@@ -33,7 +35,8 @@ module RSpec
         end
       end
 
-      def self.record(*methods)
+      # @api private
+      def self.record(methods)
         methods.each do |meth|
           class_eval <<-EOS, __FILE__, __LINE__ + 1
             def #{meth}(*args, &block)
@@ -43,8 +46,8 @@ module RSpec
         end
       end
 
-      record :describe, :context, *Hooks.instance_methods(false),
-             *MemoizedHelpers::ClassMethods.instance_methods(false)
+      record [:describe, :context] + Hooks.instance_methods(false) +
+        MemoizedHelpers::ClassMethods.instance_methods(false)
     end
   end
 
