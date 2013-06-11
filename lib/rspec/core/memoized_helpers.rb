@@ -45,8 +45,12 @@ module RSpec
       #
       # @see #should
       def subject
-        raise NotImplementedError, 'This definition is here for documentation purposes only'
-          ' - it is overriden anyway below when this module gets included.'
+        __memoized.fetch(:subject) do
+          __memoized[:subject] = begin
+            described = described_class || self.class.description
+            Class === described ? described.new : described
+          end
+        end
       end
 
       # When `should` is called with no explicit receiver, the call is
@@ -148,12 +152,6 @@ EOS
 
       def self.included(mod)
         mod.extend(ClassMethods)
-
-        # This logic defines an implicit subject
-        mod.subject do
-          described = described_class || self.class.description
-          Class === described ? described.new : described
-        end
       end
 
       module ClassMethods
@@ -190,12 +188,16 @@ EOS
         #     end
         #   end
         def let(name, &block)
-          MemoizedHelpers.define_memoized_method(
-            self,
-            name,
-            MemoizedHelpers.memoized_method_name_for(name, 'let'),
-            &block
-          )
+          # We have to pass the block directly to `define_method` to
+          # allow it to use method constructs like `super` and `return`.
+          raise "#let or #subject called without a block" if block.nil?
+          MemoizedHelpers.module_for(self).send(:define_method, name, &block)
+
+          # Apply the memoization. The method has been defined in an ancestor
+          # module so we can use `super` here to get the value.
+          define_method(name) do
+            __memoized.fetch(name) { |k| __memoized[k] = super(&nil) }
+          end
         end
 
         # Just like `let`, except the block is invoked by an implicit `before`
@@ -287,11 +289,10 @@ EOS
         # @see MemoizedHelpers#should
         def subject(name=nil, &block)
           if name
-            subject_method_name = MemoizedHelpers.memoized_method_name_for(name, "subject")
-            MemoizedHelpers.define_memoized_method(self, name, subject_method_name, &block)
+            let(name, &block)
             alias_method :subject, name
 
-            self::NamedSubjectPreventSuper.__send__(:define_method, subject_method_name) do
+            self::NamedSubjectPreventSuper.send(:define_method, name) do
               raise NotImplementedError, "`super` in named subjects is not supported"
             end
           else
@@ -468,30 +469,14 @@ EOS
             }
           end
 
-          example_group.__send__(:include, mod)
           example_group.const_set(:LetDefinitions, mod)
           mod
         end
       end
 
       # @api private
-      def self.memoized_method_name_for(name, let_or_subject)
-        "__rspec_#{let_or_subject}_definition_#{name}"
-      end
-
-      # @api private
-      def self.define_memoized_method(example_group, name, memoized_method_name, &block)
-        # We have to pass the block directly to `define_method` to
-        # allow it to use method constructs like `super` and `return`.
-        raise "#let or #subject called without a block" if block.nil?
-
-        MemoizedHelpers.module_for(example_group).__send__(:define_method, memoized_method_name, &block)
-
-        # Apply the memoization. The method has been defined in an ancestor
-        # module so we can use `super` here to get the value.
-        example_group.__send__(:define_method, name) do
-          __memoized.fetch(name) { |k| __memoized[k] = send(memoized_method_name, &nil) }
-        end
+      def self.define_helpers_on(example_group)
+        example_group.send(:include, module_for(example_group))
       end
 
       if Module.method(:const_defined?).arity == 1 # for 1.8
