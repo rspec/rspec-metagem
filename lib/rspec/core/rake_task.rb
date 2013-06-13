@@ -151,14 +151,8 @@ module RSpec
 
     private
 
-      if "".respond_to?(:shellescape)
-        def shellescape(string)
-          string.shellescape
-        end
-      else # 1.8.6's shellwords doesn't provide shellescape :(.
-        def shellescape(string)
-          string.gsub(/"/, '\"').gsub(/'/, "\\\\'")
-        end
+      def shellescape(string)
+        string.shellescape
       end
 
       def files_to_run
