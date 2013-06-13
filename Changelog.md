@@ -1,3 +1,9 @@
+### Development
+
+Breaking Changes for 3.0.0:
+
+* Remove explicit support for 1.8.6 (Jon Rowe)
+
 ### 2.14.0.rc2
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc2)
 
