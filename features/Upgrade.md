@@ -123,10 +123,10 @@ Use :if and :unless keys to conditionally run examples with simple boolean
 expressions:
 
     describe "something" do
-      it "does something", :if => RUBY_VERSION == 1.8.6 do
+      it "does something", :if => RUBY_VERSION == 1.8.7 do
         # ...
       end
-      it "does something", :unless => RUBY_VERSION == 1.8.6 do
+      it "does something", :unless => RUBY_VERSION == 1.8.7 do
         # ...
       end
     end
