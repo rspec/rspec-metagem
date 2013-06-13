@@ -14,7 +14,6 @@ module RSpec
     # is declared.
     class ExampleGroup
       extend  MetadataHashBuilder::WithDeprecationWarning
-      extend  Extensions::ModuleEvalWithArgs
       extend  Hooks
 
       include MemoizedHelpers
@@ -160,7 +159,7 @@ module RSpec
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
         shared_block = shared_example_groups[name]
 
-        module_eval_with_args(*args, &shared_block)
+        module_exec(*args, &shared_block)
         module_eval(&customization_block) if customization_block
       end
 
