@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "ZenTest",  "~> 4.6"
   s.add_development_dependency "nokogiri", "1.5.2"
-  s.add_development_dependency "coderay",  "1.0.9"
+  s.add_development_dependency "coderay",  "~> 1.0.9"
 
 
   s.add_development_dependency "mocha",    "~> 0.13.0"
