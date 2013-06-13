@@ -3,7 +3,6 @@ module RSpec
     module Extensions
       # @private
       module ModuleEvalWithArgs
-        include InstanceEvalWithArgs
 
         # @private
         #
@@ -21,7 +20,7 @@ module RSpec
           return module_eval(&block) if block.arity < 1 && args.size.zero?
 
           orig_singleton_methods = singleton_methods
-          instance_eval_with_args(*args, &block)
+          instance_exec(*args, &block)
 
           # The only difference between instance_eval and module_eval is static method defs.
           #   * `def foo` in instance_eval defines a singleton method on the instance
