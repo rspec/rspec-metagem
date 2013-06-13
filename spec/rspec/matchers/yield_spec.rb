@@ -16,19 +16,18 @@ module YieldHelpers
 end
 
 class InstanceEvaler
-  include RSpec::Matchers::Extensions::InstanceEvalWithArgs
 
   def yield_with_no_args(&block)
-    instance_eval_with_args(&block)
+    instance_exec(&block)
   end
 
   def yield_with_args(*args, &block)
-    instance_eval_with_args(*args, &block)
+    instance_exec(*args, &block)
   end
 
   def each_arg(*args, &block)
     args.each do |arg|
-      instance_eval_with_args(arg, &block)
+      instance_exec(arg, &block)
     end
   end
 end

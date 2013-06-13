@@ -6,7 +6,6 @@ module RSpec
       # Provides the context in which the block passed to RSpec::Matchers.define
       # will be evaluated.
       class Matcher
-        include RSpec::Matchers::Extensions::InstanceEvalWithArgs
         include RSpec::Matchers::Pretty
         include RSpec::Matchers
 
@@ -38,7 +37,7 @@ module RSpec
               instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
             end
             @messages = {}
-            instance_eval_with_args(*@expected, &@declarations)
+            instance_exec(*@expected, &@declarations)
             self
           end
         end
@@ -49,14 +48,14 @@ module RSpec
           @actual = actual
           if @expected_exception
             begin
-              instance_eval_with_args(actual, &@match_block)
+              instance_exec(actual, &@match_block)
               true
             rescue @expected_exception => @rescued_exception
               false
             end
           else
             begin
-              instance_eval_with_args(actual, &@match_block)
+              instance_exec(actual, &@match_block)
             rescue RSpec::Expectations::ExpectationNotMetError
               false
             end
@@ -217,7 +216,7 @@ module RSpec
         def does_not_match?(actual)
           @actual = actual
           @match_for_should_not_block ?
-            instance_eval_with_args(actual, &@match_for_should_not_block) :
+            instance_exec(actual, &@match_for_should_not_block) :
             !matches?(actual)
         end
 

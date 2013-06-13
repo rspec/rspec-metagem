@@ -1,4 +1,3 @@
-require 'rspec/matchers/extensions/instance_eval_with_args'
 require 'rspec/matchers/pretty'
 
 require 'rspec/matchers/built_in'
