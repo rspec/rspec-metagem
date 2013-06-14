@@ -6,7 +6,6 @@ module RSpec
       # Provides the context in which the block passed to RSpec::Matchers.define
       # will be evaluated.
       class Matcher
-        include RSpec::Matchers::Extensions::InstanceEvalWithArgs
         include RSpec::Matchers::Pretty
         include RSpec::Matchers
 
@@ -38,9 +37,7 @@ module RSpec
               instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
             end
             @messages = {}
-            making_declared_methods_public do
-              instance_eval_with_args(*@expected, &@declarations)
-            end
+            instance_exec(*@expected, &@declarations)
             self
           end
         end
@@ -51,14 +48,14 @@ module RSpec
           @actual = actual
           if @expected_exception
             begin
-              instance_eval_with_args(actual, &@match_block)
+              instance_exec(actual, &@match_block)
               true
             rescue @expected_exception => @rescued_exception
               false
             end
           else
             begin
-              instance_eval_with_args(actual, &@match_block)
+              instance_exec(actual, &@match_block)
             rescue RSpec::Expectations::ExpectationNotMetError
               false
             end
@@ -219,7 +216,7 @@ module RSpec
         def does_not_match?(actual)
           @actual = actual
           @match_for_should_not_block ?
-            instance_eval_with_args(actual, &@match_for_should_not_block) :
+            instance_exec(actual, &@match_for_should_not_block) :
             !matches?(actual)
         end
 
@@ -243,22 +240,6 @@ module RSpec
 
         def define_method(name, &block)
           singleton_class.__send__(:define_method, name, &block)
-        end
-
-        def making_declared_methods_public
-          # Our home-grown instance_exec in ruby 1.8.6 results in any methods
-          # declared in the block eval'd by instance_exec in the block to which we
-          # are yielding here are scoped private. This is NOT the case for Ruby
-          # 1.8.7 or 1.9.
-          #
-          # Also, due some crazy scoping that I don't understand, these methods
-          # are actually available in the specs (something about the matcher being
-          # defined in the scope of RSpec::Matchers or within an example), so not
-          # doing the following will not cause specs to fail, but they *will*
-          # cause features to fail and that will make users unhappy. So don't.
-          orig_private_methods = private_methods
-          yield
-          (private_methods - orig_private_methods).each {|m| singleton_class.__send__ :public, m}
         end
 
         def cache_or_call_cached(key, &block)
