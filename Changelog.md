@@ -1,4 +1,8 @@
-### Dev
+### Development
+
+Breaking Changes for 3.0.0:
+
+* Remove explicit support for 1.8.6 (Jon Rowe)
 
 Enhancements
 

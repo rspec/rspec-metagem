@@ -84,7 +84,7 @@ module RSpec
         def run
           inject(@initial_procsy) do |procsy, around_hook|
             Example.procsy(procsy.metadata) do
-              @example.instance_eval_with_args(procsy, &around_hook.block)
+              @example.instance_exec(procsy, &around_hook.block)
             end
           end.call
         end

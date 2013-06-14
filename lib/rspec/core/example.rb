@@ -243,8 +243,8 @@ An error occurred #{context}
       end
 
       # @private
-      def instance_eval_with_args(*args, &block)
-        @example_group_instance.instance_eval_with_args(*args, &block)
+      def instance_exec(*args, &block)
+        @example_group_instance.instance_exec(*args, &block)
       end
 
     private
