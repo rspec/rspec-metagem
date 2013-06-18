@@ -1282,16 +1282,6 @@ module RSpec::Core
         expect(config.order).to eq("rand")
       end
 
-      it 'can set random ordering' do
-        config.force :order => "rand:37"
-        RSpec.stub(:configuration => config)
-        list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-        Kernel.should_receive(:srand).ordered.once.with(37)
-        list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
-        Kernel.should_receive(:srand).ordered.once.with(no_args)
-        expect(list.ordered).to eq([2, 4, 1, 3])
-      end
-
       it "forces 'false' value" do
         config.add_setting :custom_option
         config.custom_option = true
@@ -1406,12 +1396,6 @@ module RSpec::Core
       end
     end
 
-    describe "#example_ordering_block" do
-      it 'defaults to a block that returns the passed argument' do
-        expect(config.example_ordering_block.call([1, 2, 3])).to eq([1, 2, 3])
-      end
-    end
-
     describe "#order_groups" do
       before { RSpec.stub(:configuration => config) }
 
@@ -1425,12 +1409,6 @@ module RSpec::Core
       it 'sets #order to "custom"' do
         config.order_groups { |groups| groups.reverse }
         expect(config.order).to eq("custom")
-      end
-    end
-
-    describe "#group_ordering_block" do
-      it 'defaults to a block that returns the passed argument' do
-        expect(config.group_ordering_block.call([1, 2, 3])).to eq([1, 2, 3])
       end
     end
 

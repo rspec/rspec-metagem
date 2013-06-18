@@ -10,7 +10,7 @@ module RSpec
         module ExampleGroups
           # @private
           def ordered
-            RSpec.configuration.group_ordering_block.call(self)
+            RSpec.configuration.group_ordering_block.order(self)
           end
         end
 
@@ -18,7 +18,7 @@ module RSpec
         module Examples
           # @private
           def ordered
-            RSpec.configuration.example_ordering_block.call(self)
+            RSpec.configuration.example_ordering_block.order(self)
           end
         end
       end
