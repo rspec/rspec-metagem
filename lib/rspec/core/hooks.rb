@@ -28,7 +28,7 @@ module RSpec
 
       class AfterHook < Hook
         def run(example)
-          example.instance_eval_with_rescue("in an after hook", &block)
+          example.instance_exec_with_rescue("in an after hook", &block)
         end
 
         def display_name

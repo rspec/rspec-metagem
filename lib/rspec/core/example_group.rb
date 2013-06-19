@@ -495,7 +495,7 @@ An error occurred in an after(:all) hook.
       # @private
       # instance_evals the block, capturing and reporting an exception if
       # raised
-      def instance_eval_with_rescue(example, context = nil, &hook)
+      def instance_exec_with_rescue(example, context = nil, &hook)
         begin
           instance_exec(example, &hook)
         rescue Exception => e

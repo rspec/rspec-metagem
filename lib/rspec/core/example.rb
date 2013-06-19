@@ -233,13 +233,8 @@ An error occurred #{context}
       end
 
       # @private
-      def instance_eval(*args, &block)
-        @example_group_instance.instance_eval(*args, &block)
-      end
-
-      # @private
-      def instance_eval_with_rescue(context = nil, &block)
-        @example_group_instance.instance_eval_with_rescue(self, context, &block)
+      def instance_exec_with_rescue(context = nil, &block)
+        @example_group_instance.instance_exec_with_rescue(self, context, &block)
       end
 
       # @private
