@@ -56,6 +56,18 @@ module RSpec::Core
     end
 
     describe "explicit subject" do
+      it "yields the example in which it is eval'd" do
+        example_yielded_to_subject = nil
+        example_yielded_to_example = nil
+
+        group = ExampleGroup.describe
+        group.subject { |e| example_yielded_to_subject = e }
+        group.example { |e| subject; example_yielded_to_example = e }
+        group.run
+
+        expect(example_yielded_to_subject).to eq example_yielded_to_example
+      end
+
       [false, nil].each do |falsy_value|
         context "with a value of #{falsy_value.inspect}" do
           it "is evaluated once per example" do
@@ -184,6 +196,18 @@ module RSpec::Core
       end
 
       describe "with a name" do
+        it "yields the example in which it is eval'd" do
+          example_yielded_to_subject = nil
+          example_yielded_to_example = nil
+
+          group = ExampleGroup.describe
+          group.subject(:foo) { |e| example_yielded_to_subject = e }
+          group.example       { |e| foo; example_yielded_to_example = e }
+          group.run
+
+          expect(example_yielded_to_subject).to eq example_yielded_to_example
+        end
+
         it "defines a method that returns the memoized subject" do
           list_value_1 = list_value_2 = subject_value_1 = subject_value_2 = nil
 
@@ -514,6 +538,15 @@ module RSpec::Core
       nil_value
 
       expect(@nil_value_count).to eq(1)
+    end
+
+    let(:yield_the_example) do |example_yielded_to_let|
+      @example_yielded_to_let = example_yielded_to_let
+    end
+
+    it "yields the example" do |example_yielded_to_example|
+      yield_the_example
+      expect(@example_yielded_to_let).to equal example_yielded_to_example
     end
 
     let(:regex_with_capture) { %r[RegexWithCapture(\d)] }
