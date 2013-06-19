@@ -27,7 +27,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     $stdout = orig_stdout
   end
 
-  it 'can be pretty printed' do
+  it "can be pretty printed" do
     output = ignoring_warnings { capture_stdout { pp example_instance } }
     expect(output).to include("RSpec::Core::Example")
   end
@@ -164,7 +164,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe '#described_class' do
+  describe "#described_class" do
     it "returns the class (if any) of the outermost example group" do
       expect(described_class).to eq(RSpec::Core::Example)
     end
@@ -333,7 +333,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(message).to match(/An error occurred in an after.* hook/i)
       end
 
-      it 'does not print mock expectation errors' do
+      it "does not print mock expectation errors" do
         group = RSpec::Core::ExampleGroup.describe do
           example do
             foo = double
@@ -422,7 +422,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  it 'does not interfere with per-example randomness when running examples in a random order' do
+  it "does not interfere with per-example randomness when running examples in a random order" do
     values = []
 
     RSpec.configuration.order = :random
