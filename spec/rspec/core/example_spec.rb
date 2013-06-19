@@ -443,4 +443,18 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(ex.description).to match(/contains the example/)
     end
   end
+
+  %w[example running_example].each do |accessor|
+    describe accessor do
+      it "is deprecated" do
+        expect(RSpec).to receive(:deprecate)
+        send(accessor)
+      end
+
+      it "returns the current running example" do |ex|
+        allow(RSpec).to receive(:deprecate)
+        expect(send(accessor)).to eq ex
+      end
+    end
+  end
 end
