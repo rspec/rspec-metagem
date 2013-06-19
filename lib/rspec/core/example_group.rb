@@ -75,11 +75,11 @@ module RSpec
         #   example "does something" do
         #   end
         #
-        #   example "does something", :with => 'addtional metadata' do
+        #   example "does something", :with => 'additional metadata' do
         #   end
         #
         #   example "does something" do |ex|
-        #     # ex is a wrapper for the current running example
+        #     # ex is the Example object that evals this block
         #   end
         define_example_method :example
         # Defines an example within a group.
