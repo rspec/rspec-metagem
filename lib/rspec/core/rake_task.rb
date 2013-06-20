@@ -151,15 +151,11 @@ module RSpec
 
     private
 
-      def shellescape(string)
-        string.shellescape
-      end
-
       def files_to_run
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
-          FileList[ pattern ].sort.map { |f| shellescape(f) }
+          FileList[ pattern ].sort.map &:shellescape
         end
       end
 
