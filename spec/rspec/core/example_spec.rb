@@ -27,7 +27,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     $stdout = orig_stdout
   end
 
-  it 'can be pretty printed' do
+  it "can be pretty printed" do
     output = ignoring_warnings { capture_stdout { pp example_instance } }
     expect(output).to include("RSpec::Core::Example")
   end
@@ -164,26 +164,26 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  describe '#described_class' do
+  describe "#described_class" do
     it "returns the class (if any) of the outermost example group" do
       expect(described_class).to eq(RSpec::Core::Example)
     end
   end
 
   describe "accessing metadata within a running example" do
-    it "has a reference to itself when running" do
-      expect(example.description).to eq("has a reference to itself when running")
+    it "has a reference to itself when running" do |ex|
+      expect(ex.description).to eq("has a reference to itself when running")
     end
 
-    it "can access the example group's top level metadata as if it were its own" do
-      expect(example.example_group.metadata).to include(:parent_metadata => 'sample')
-      expect(example.metadata).to include(:parent_metadata => 'sample')
+    it "can access the example group's top level metadata as if it were its own" do |ex|
+      expect(ex.example_group.metadata).to include(:parent_metadata => 'sample')
+      expect(ex.metadata).to include(:parent_metadata => 'sample')
     end
   end
 
   describe "accessing options within a running example" do
-    it "can look up option values by key", :demo => :data do
-      expect(example.metadata[:demo]).to eq(:data)
+    it "can look up option values by key", :demo => :data do |ex|
+      expect(ex.metadata[:demo]).to eq(:data)
     end
   end
 
@@ -333,7 +333,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(message).to match(/An error occurred in an after.* hook/i)
       end
 
-      it 'does not print mock expectation errors' do
+      it "does not print mock expectation errors" do
         group = RSpec::Core::ExampleGroup.describe do
           example do
             foo = double
@@ -422,7 +422,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  it 'does not interfere with per-example randomness when running examples in a random order' do
+  it "does not interfere with per-example randomness when running examples in a random order" do
     values = []
 
     RSpec.configuration.order = :random
@@ -435,5 +435,26 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end.run
 
     expect(values.uniq).to have(2).values
+  end
+
+  describe "optional block argument" do
+    it "contains the example" do |ex|
+      expect(ex).to be_an(RSpec::Core::Example)
+      expect(ex.description).to match(/contains the example/)
+    end
+  end
+
+  %w[example running_example].each do |accessor|
+    describe accessor do
+      it "is deprecated" do
+        expect(RSpec).to receive(:deprecate)
+        send(accessor)
+      end
+
+      it "returns the current running example" do |ex|
+        allow(RSpec).to receive(:deprecate)
+        expect(send(accessor)).to eq ex
+      end
+    end
   end
 end

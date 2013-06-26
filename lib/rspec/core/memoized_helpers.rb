@@ -195,8 +195,10 @@ EOS
 
           # Apply the memoization. The method has been defined in an ancestor
           # module so we can use `super` here to get the value.
-          define_method(name) do
-            __memoized.fetch(name) { |k| __memoized[k] = super(&nil) }
+          if block.arity == 1
+            define_method(name) { __memoized.fetch(name) { |k| __memoized[k] = super(@_current_rspec_example, &nil) } }
+          else
+            define_method(name) { __memoized.fetch(name) { |k| __memoized[k] = super(&nil) } }
           end
         end
 

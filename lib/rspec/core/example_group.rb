@@ -55,6 +55,7 @@ module RSpec
         #   @param [String] name
         #   @param [Hash] extra_options
         #   @param [Block] implementation
+        #   @yield [Example] the example object
         def self.define_example_method(name, extra_options={})
           define_method(name) do |*all_args, &block|
             desc, *args = *all_args
@@ -67,10 +68,22 @@ module RSpec
         end
 
         # Defines an example within a group.
+        # @example
+        #   example do
+        #   end
+        #
+        #   example "does something" do
+        #   end
+        #
+        #   example "does something", :with => 'additional metadata' do
+        #   end
+        #
+        #   example "does something" do |ex|
+        #     # ex is the Example object that evals this block
+        #   end
         define_example_method :example
         # Defines an example within a group.
-        #
-        # @see example
+        # @example
         define_example_method :it
         # Defines an example within a group.
         # This is here primarily for backward compatibility with early versions
@@ -79,17 +92,23 @@ module RSpec
         define_example_method :specify
 
         # Shortcut to define an example with `:focus` => true
+        # @see example
         define_example_method :focus,   :focused => true, :focus => true
         # Shortcut to define an example with `:focus` => true
+        # @see example
         define_example_method :focused, :focused => true, :focus => true
 
         # Shortcut to define an example with :pending => true
+        # @see example
         define_example_method :pending,  :pending => true
         # Shortcut to define an example with :pending => 'Temporarily disabled with xexample'
+        # @see example
         define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
         # Shortcut to define an example with :pending => 'Temporarily disabled with xit'
+        # @see example
         define_example_method :xit,      :pending => 'Temporarily disabled with xit'
         # Shortcut to define an example with :pending => 'Temporarily disabled with xspecify'
+        # @see example
         define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
 
         # Works like `alias_method :name, :example` with the added benefit of
@@ -439,16 +458,24 @@ An error occurred in an after(:all) hook.
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
-      # @attr_reader
-      # Returns the {Example} object that wraps this instance of
-      # `ExampleGroup`
-      attr_accessor :example
+      def initialize
+        @_current_rspec_example = nil
+      end
 
-      # @deprecated use {ExampleGroup#example}
+      def example=(current_example)
+        @_current_rspec_example = current_example
+      end
+
+      # @deprecated use a block argument
+      def example
+        RSpec.deprecate("example", :replacement => "a block argument")
+        @_current_rspec_example
+      end
+
+      # @deprecated use a block argument
       def running_example
-        RSpec.deprecate("running_example",
-                        :replacement => "example")
-        example
+        RSpec.deprecate("running_example", :replacement => "a block argument")
+        @_current_rspec_example
       end
 
       # Returns the class or module passed to the `describe` method (or alias).
@@ -468,12 +495,12 @@ An error occurred in an after(:all) hook.
       # @private
       # instance_evals the block, capturing and reporting an exception if
       # raised
-      def instance_eval_with_rescue(context = nil, &hook)
+      def instance_exec_with_rescue(example, context = nil, &hook)
         begin
-          instance_eval(&hook)
+          instance_exec(example, &hook)
         rescue Exception => e
-          raise unless example
-          example.set_exception(e, context)
+          raise unless @_current_rspec_example
+          @_current_rspec_example.set_exception(e, context)
         end
       end
     end
