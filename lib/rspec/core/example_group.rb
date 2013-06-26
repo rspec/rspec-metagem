@@ -466,18 +466,6 @@ An error occurred in an after(:all) hook.
         @_current_rspec_example = current_example
       end
 
-      # @deprecated use a block argument
-      def example
-        RSpec.deprecate("example", :replacement => "a block argument")
-        @_current_rspec_example
-      end
-
-      # @deprecated use a block argument
-      def running_example
-        RSpec.deprecate("running_example", :replacement => "a block argument")
-        @_current_rspec_example
-      end
-
       # Returns the class or module passed to the `describe` method (or alias).
       # Returns nil if the subject is not a class or module.
       # @example

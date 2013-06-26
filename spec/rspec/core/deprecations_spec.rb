@@ -23,20 +23,6 @@ describe "deprecated methods" do
     end
   end
 
-  describe RSpec::Core::ExampleGroup do
-    describe 'running_example' do
-      it 'is deprecated' do
-        RSpec.should_receive(:deprecate).at_least(:once)
-        self.running_example
-      end
-
-      it "delegates to example" do
-        RSpec.stub(:deprecate)
-        expect(running_example).to eq(example)
-      end
-    end
-  end
-
   describe RSpec::Core::SharedExampleGroup do
     describe 'share_as' do
       it 'is deprecated' do
