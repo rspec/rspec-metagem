@@ -445,7 +445,7 @@ module RSpec::Matchers::DSL
         "method defined in the example"
       end
 
-      it "can access methods in the running example" do
+      it "can access methods in the running example" do |example|
         RSpec::Matchers.define(:__access_running_example) do
           match do |actual|
             a_method_in_the_example == "method defined in the example"
@@ -454,7 +454,7 @@ module RSpec::Matchers::DSL
         expect(example).to __access_running_example
       end
 
-      it "raises NoMethodError for methods not in the running_example" do
+      it "raises NoMethodError for methods not in the running_example" do |example|
         RSpec::Matchers.define(:__raise_no_method_error) do
           match do |actual|
             a_method_not_in_the_example == "method defined in the example"
