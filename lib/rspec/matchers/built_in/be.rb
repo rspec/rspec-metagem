@@ -133,6 +133,7 @@ it is a bit confusing.
           @block = block
         end
 
+
         def matches?(actual)
           @actual = actual
 
@@ -152,6 +153,8 @@ it is a bit confusing.
             raise predicate_missing_error
           end
         end
+
+        alias === matches?
 
         def failure_message_for_should
           "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"

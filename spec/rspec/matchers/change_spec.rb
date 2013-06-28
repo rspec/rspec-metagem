@@ -72,6 +72,12 @@ describe "expect { ... }.to change(actual, message)" do
       expect {@instance.some_value << 1}.to change(@instance, :some_value)
     end
 
+    it "fails when a predicate on the actual fails" do
+      expect do
+        expect {@instance.some_value << 1}.to change { @instance.some_value }.to be_empty
+      end.to fail_with(/result should have been changed to/)
+    end
+
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
@@ -169,9 +175,9 @@ end
 describe "expect { ... }.to change { block }" do
   o = SomethingExpected.new
   it_behaves_like "an RSpec matcher", :valid_value => lambda { o.some_value = 5 },
-                                      :invalid_value => lambda { } do
+    :invalid_value => lambda { } do
     let(:matcher) { change { o.some_value } }
-  end
+    end
 
   before(:each) do
     @instance = SomethingExpected.new
