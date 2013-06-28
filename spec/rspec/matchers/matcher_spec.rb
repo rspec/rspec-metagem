@@ -451,7 +451,7 @@ module RSpec::Matchers::DSL
             a_method_in_the_example == "method defined in the example"
           end
         end
-        expect(example).to __access_running_example
+        expect(self).to __access_running_example
       end
 
       it "raises NoMethodError for methods not in the running_example" do
@@ -462,7 +462,7 @@ module RSpec::Matchers::DSL
         end
 
         expect do
-          expect(example).to __raise_no_method_error
+          expect(self).to __raise_no_method_error
         end.to raise_error(/RSpec::Matchers::DSL::Matcher/)
       end
     end
