@@ -16,6 +16,10 @@ export RUBYOPT='-rrbconfig'
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 
+# force jRuby to use client mode JVM or a compilation mode thats as close as possible,
+# idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
+export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
+
 echo "Bundling Standalone so we can run the specs w/o bundler loaded"
 
 bundle install --standalone --binstubs
