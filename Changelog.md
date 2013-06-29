@@ -8,6 +8,8 @@ Enhancements
 
 * Clean up some internal use of Enumerable methods. (Vipul A M)
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
+* Apply focus to examples defined with `fit` (equivalent of
+  `it "description", focus: true`) (Michael de Silva)
 
 Bug fix
 
