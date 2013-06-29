@@ -97,6 +97,9 @@ module RSpec
         # Shortcut to define an example with `:focus` => true
         # @see example
         define_example_method :focused, :focused => true, :focus => true
+        # Shortcut to define an example with `:focus` => true
+        # @see example
+        define_example_method :fit,     :focused => true, :focus => true
 
         # Shortcut to define an example with :pending => true
         # @see example

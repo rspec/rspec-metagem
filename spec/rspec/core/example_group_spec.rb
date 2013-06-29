@@ -397,7 +397,7 @@ module RSpec::Core
       end
     end
 
-    [:focus, :focused].each do |example_alias|
+    [:focus, :focused, :fit].each do |example_alias|
       describe "##{example_alias}" do
         let(:focused_example) { ExampleGroup.describe.send example_alias, "a focused example" }
 
