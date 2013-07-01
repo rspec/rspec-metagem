@@ -133,7 +133,6 @@ it is a bit confusing.
           @block = block
         end
 
-
         def matches?(actual)
           @actual = actual
 
