@@ -4,6 +4,11 @@ Breaking Changes for 3.0.0:
 
 * Remove explicit support for 1.8.6 (Jon Rowe)
 
+Bug fixes
+
+* Make the `be_predicate` matcher work as expected used with `expect{...}.to
+  change...`  (Sam Phippen).
+
 ### 2.14.0.rc2
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc2)
 
