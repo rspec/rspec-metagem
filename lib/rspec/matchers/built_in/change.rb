@@ -94,7 +94,7 @@ MESSAGE
 
         def failure_message_for_expected_after
           if RSpec::Matchers.is_a_matcher?(@expected_after)
-            @expected_after
+            @expected_after.description
           else
             @expected_after.inspect
           end
