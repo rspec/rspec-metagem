@@ -153,6 +153,8 @@ it is a bit confusing.
           end
         end
 
+        alias === matches?
+
         def failure_message_for_should
           "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
         end

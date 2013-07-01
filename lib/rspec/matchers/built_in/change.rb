@@ -39,7 +39,7 @@ MESSAGE
           if @eval_before && !expected_matches_actual?(@expected_before, @actual_before)
             "#{message} should have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
           elsif @eval_after && !expected_matches_actual?(@expected_after, @actual_after)
-            "#{message} should have been changed to #{@expected_after.inspect}, but is now #{@actual_after.inspect}"
+            "#{message} should have been changed to #{failure_message_for_expected_after}, but is now #{@actual_after.inspect}"
           elsif @expected_delta
             "#{message} should have been changed by #{@expected_delta.inspect}, but was changed by #{actual_delta.inspect}"
           elsif @minimum
@@ -91,6 +91,14 @@ MESSAGE
         end
 
         private
+
+        def failure_message_for_expected_after
+          if RSpec::Matchers.is_a_matcher?(@expected_after)
+            @expected_after.description
+          else
+            @expected_after.inspect
+          end
+        end
 
         def message
           @message || "result"

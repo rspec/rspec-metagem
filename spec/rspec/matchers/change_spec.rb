@@ -72,6 +72,17 @@ describe "expect { ... }.to change(actual, message)" do
       expect {@instance.some_value << 1}.to change(@instance, :some_value)
     end
 
+    it "fails when a predicate on the actual fails" do
+      expect do
+        expect {@instance.some_value << 1}.to change { @instance.some_value }.to be_empty
+      end.to fail_with(/result should have been changed to/)
+    end
+
+    it "passes when a predicate on the actual passes" do
+      @instance.some_value = [1]
+      expect {@instance.some_value.pop}.to change { @instance.some_value }.to be_empty
+    end
+
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
