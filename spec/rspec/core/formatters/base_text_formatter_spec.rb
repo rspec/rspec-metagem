@@ -468,27 +468,4 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
        expect(formatter.colorize('abc', :cyan)).to eq "\e[36mabc\e[0m"
     end
   end
-
-  described_class::VT100_COLORS.each do |name, number|
-    next if name == :black
-
-    describe "##{name}" do
-      before do
-        allow(RSpec.configuration).to receive(:color_enabled?) { true }
-        allow(RSpec).to receive(:deprecate)
-      end
-
-      it "prints the text using the color code for #{name}" do
-        expect(formatter.send(name, "text")).to eq("\e[#{number}mtext\e[0m")
-      end
-
-      it "prints a deprecation warning" do
-        expect(RSpec).to receive(:deprecate) {|*args|
-          expect(args.first).to match(/#{name}/)
-        }
-        formatter.send(name, "text")
-      end
-    end
-  end
-
 end

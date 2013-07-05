@@ -3,6 +3,7 @@
 Breaking Changes for 3.0.0:
 
 * Remove explicit support for 1.8.6 (Jon Rowe)
+* Remove color aliases on BaseTextFormatter. (Sam Phippen)
 
 Enhancements
 
