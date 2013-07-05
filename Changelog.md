@@ -3,6 +3,8 @@
 Breaking Changes for 3.0.0:
 
 * Remove explicit support for 1.8.6 (Jon Rowe)
+* Remove the deprecated `be_close` matcher, preferring `be_within` instead.
+  (Sam Phippen)
 
 Bug fixes
 

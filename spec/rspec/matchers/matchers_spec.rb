@@ -5,7 +5,6 @@ module RSpec
 
     let(:sample_matchers) do
       [:be,
-       :be_close,
        :be_instance_of,
        :be_kind_of]
     end
