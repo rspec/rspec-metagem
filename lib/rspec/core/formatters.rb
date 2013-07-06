@@ -3,7 +3,6 @@
 # * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
 # * documentation - prints the docstrings passed to `describe` and `it` methods (and their aliases)
 # * html
-# * textmate - html plus links to editor
 # * json - useful for archiving data for subsequent analysis
 #
 # The progress formatter is the default, but you can choose any one or more of
