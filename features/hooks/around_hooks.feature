@@ -182,7 +182,7 @@ Feature: around hooks
         def included_in_configure_block; true; end
       end
 
-      Rspec.configure do |c|
+      RSpec.configure do |c|
         c.include IncludedInConfigureBlock
       end
 
