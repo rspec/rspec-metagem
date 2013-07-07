@@ -27,7 +27,7 @@ module RSpec
 
           def warn_deprecation_and_fetch_anyway(key)
             if (example = fetch_anyway key)
-              backtrace_line = defined?(Rubinius) ? caller(0)[7] : caller(0)[8]
+              backtrace_line = caller.find { |line| !line.include?('lib/rspec/core') }
               RSpec.warn_deprecation <<-WARNING.gsub(/^ /, '')
                 Accessing shared_examples defined across contexts is deprecated.
                 Please declare shared_examples within a shared context, or at the top level.
