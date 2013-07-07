@@ -1,4 +1,5 @@
 ### Development
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0...master)
 
 Breaking Changes for 3.0.0:
 
@@ -8,6 +9,12 @@ Breaking Changes for 3.0.0:
 Enhancements
 
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
+
+### 2.14.0 / 2013-07-06
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0.rc1...v2.14.0)
+
+Enhancements
+
 * Apply focus to examples defined with `fit` (equivalent of
   `it "description", focus: true`) (Michael de Silva)
 
