@@ -5,10 +5,17 @@ Breaking Changes for 3.0.0:
 
 * Remove explicit support for 1.8.6 (Jon Rowe)
 * Remove color aliases on BaseTextFormatter. (Sam Phippen)
+* Remove `RSpec::Core::ExampleGroup#example` and
+  `RSpec::Core::ExampleGroup#running_example` methods. If you need
+  access to the example (e.g. to get its metadata), use a block arg
+  instead (David Chelimsky).
 
 Enhancements
 
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
+* Block-based DSL methods that run in the context of an example
+  (it`, `before(:each)`, `after(:each)`, `let` and `subject`)
+  now yield the example as a block argument (David Chelimsky).
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0.rc1...v2.14.0)
