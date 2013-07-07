@@ -1,4 +1,5 @@
 ### Development
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...master)
 
 Breaking Changes for 3.0.0:
 
@@ -6,13 +7,8 @@ Breaking Changes for 3.0.0:
 * Remove the deprecated `be_close` matcher, preferring `be_within` instead.
   (Sam Phippen)
 
-Bug fixes
-
-* Make the `be_predicate` matcher work as expected used with `expect{...}.to
-  change...`  (Sam Phippen).
-
-### 2.14.0.rc2
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc2)
+### 2.14.0 / 2013-07-06
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)
 
 Bug fixes
 
@@ -20,6 +16,8 @@ Bug fixes
   documentation output (Andy Lindeman, Sam Phippen).
 * Make `expect(a).to be_within(x).percent_of(y)` work with negative y
   (Katsuhiko Nishimra).
+* Make the `be_predicate` matcher work as expected used with `expect{...}.to
+  change...`  (Sam Phippen).
 
 ### 2.14.0.rc1 / 2013-05-27
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc1)
