@@ -14,7 +14,7 @@ Enhancements
 
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
 * Block-based DSL methods that run in the context of an example
-  (it`, `before(:each)`, `after(:each)`, `let` and `subject`)
+  (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
   now yield the example as a block argument (David Chelimsky).
 
 ### 2.14.0 / 2013-07-06
