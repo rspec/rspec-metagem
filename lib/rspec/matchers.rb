@@ -182,13 +182,13 @@ module RSpec
     end
 
     # Passes if actual is truthy (anything but false or nil)
-    def be_true
-      BuiltIn::BeTrue.new
+    def be_truthy
+      BuiltIn::BeTruthy.new
     end
 
     # Passes if actual is falsy (false or nil)
-    def be_false
-      BuiltIn::BeFalse.new
+    def be_falsey
+      BuiltIn::BeFalsey.new
     end
 
     # Passes if actual is nil
@@ -197,8 +197,8 @@ module RSpec
     end
 
     # @example
-    #   expect(actual).to     be_true
-    #   expect(actual).to     be_false
+    #   expect(actual).to     be_truthy
+    #   expect(actual).to     be_falsey
     #   expect(actual).to     be_nil
     #   expect(actual).to     be_[arbitrary_predicate](*args)
     #   expect(actual).not_to be_nil

@@ -11,13 +11,13 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol }
 
       it "matches if any Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ throw :sym })).to be_true
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_truthy
       end
       it "matches if any Symbol is thrown with an arg" do
-        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_truthy
       end
       it "does not match if no Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ })).to be_false
+        expect(@matcher.matches?(lambda{ })).to be_falsey
       end
       it "provides a failure message" do
         @matcher.matches?(lambda{})
@@ -33,16 +33,16 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol(:sym) }
 
       it "matches if correct Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ throw :sym })).to be_true
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_truthy
       end
       it "matches if correct Symbol is thrown with an arg" do
-        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "argument" })).to be_truthy
       end
       it "does not match if no Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ })).to be_false
+        expect(@matcher.matches?(lambda{ })).to be_falsey
       end
       it "does not match if correct Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ throw :other_sym })).to be_false
+        expect(@matcher.matches?(lambda{ throw :other_sym })).to be_falsey
       end
       it "provides a failure message when no Symbol is thrown" do
         @matcher.matches?(lambda{})
@@ -58,7 +58,7 @@ module RSpec::Matchers::BuiltIn
       end
       it "only matches NameErrors raised by uncaught throws" do
         expect {
-          expect(@matcher.matches?(lambda{ sym })).to be_false
+          expect(@matcher.matches?(lambda{ sym })).to be_falsey
         }.to raise_error(NameError)
       end
     end
@@ -67,19 +67,19 @@ module RSpec::Matchers::BuiltIn
       before(:each) { @matcher = throw_symbol(:sym, "a") }
 
       it "matches if correct Symbol and args are thrown" do
-        expect(@matcher.matches?(lambda{ throw :sym, "a" })).to be_true
+        expect(@matcher.matches?(lambda{ throw :sym, "a" })).to be_truthy
       end
       it "does not match if nothing is thrown" do
-        expect(@matcher.matches?(lambda{ })).to be_false
+        expect(@matcher.matches?(lambda{ })).to be_falsey
       end
       it "does not match if other Symbol is thrown" do
-        expect(@matcher.matches?(lambda{ throw :other_sym, "a" })).to be_false
+        expect(@matcher.matches?(lambda{ throw :other_sym, "a" })).to be_falsey
       end
       it "does not match if no arg is thrown" do
-        expect(@matcher.matches?(lambda{ throw :sym })).to be_false
+        expect(@matcher.matches?(lambda{ throw :sym })).to be_falsey
       end
       it "does not match if wrong arg is thrown" do
-        expect(@matcher.matches?(lambda{ throw :sym, "b" })).to be_false
+        expect(@matcher.matches?(lambda{ throw :sym, "b" })).to be_falsey
       end
       it "provides a failure message when no Symbol is thrown" do
         @matcher.matches?(lambda{})
@@ -103,7 +103,7 @@ module RSpec::Matchers::BuiltIn
       end
       it "only matches NameErrors raised by uncaught throws" do
         expect {
-          expect(@matcher.matches?(lambda{ sym })).to be_false
+          expect(@matcher.matches?(lambda{ sym })).to be_falsey
         }.to raise_error(NameError)
       end
       it "raises other errors" do

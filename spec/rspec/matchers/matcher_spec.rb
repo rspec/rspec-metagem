@@ -33,8 +33,8 @@ module RSpec::Matchers::DSL
       m1 = example_matcher(1)
       m2 = example_matcher(2)
 
-      expect(m1.matches?(1)).to be_true
-      expect(m2.matches?(2)).to be_true
+      expect(m1.matches?(1)).to be_truthy
+      expect(m2.matches?(2)).to be_truthy
     end
 
     context "with an included module" do
@@ -104,13 +104,13 @@ module RSpec::Matchers::DSL
       end
 
       it "invokes the match_for_should block for #matches?" do
-        expect(matcher.matches?(77)).to be_true
-        expect(matcher.matches?(18)).to be_false
+        expect(matcher.matches?(77)).to be_truthy
+        expect(matcher.matches?(18)).to be_falsey
       end
 
       it "invokes the match_for_should_not block for #does_not_match?" do
-        expect(matcher.does_not_match?(77)).to be_false
-        expect(matcher.does_not_match?(18)).to be_true
+        expect(matcher.does_not_match?(77)).to be_falsey
+        expect(matcher.does_not_match?(18)).to be_truthy
       end
 
       it "provides a default failure message for #should_not" do
@@ -159,7 +159,7 @@ module RSpec::Matchers::DSL
             expect(actual).to eq expected
           end
         end.for_expected('value')
-        expect(matcher.matches?('value')).to be_true
+        expect(matcher.matches?('value')).to be_truthy
       end
 
       it "returns false if the wrapped expectation fails" do
@@ -168,7 +168,7 @@ module RSpec::Matchers::DSL
             expect(actual).to eq expected
           end
         end.for_expected('value')
-        expect(matcher.matches?('other value')).to be_false
+        expect(matcher.matches?('other value')).to be_falsey
       end
     end
 
@@ -191,11 +191,11 @@ module RSpec::Matchers::DSL
       end
 
       it "does not hide result of match block when true" do
-        expect(@matcher.matches?(true)).to be_true
+        expect(@matcher.matches?(true)).to be_truthy
       end
 
       it "does not hide result of match block when false" do
-        expect(@matcher.matches?(false)).to be_false
+        expect(@matcher.matches?(false)).to be_falsey
       end
 
       it "overrides the description" do
@@ -220,7 +220,7 @@ module RSpec::Matchers::DSL
             actual == 5
           end
         end.for_expected
-        expect(matcher.matches?(5)).to be_true
+        expect(matcher.matches?(5)).to be_truthy
       end
 
       it "exposes arg submitted through #new to matcher block" do
@@ -229,7 +229,7 @@ module RSpec::Matchers::DSL
             actual > expected
           end
         end.for_expected(4)
-        expect(matcher.matches?(5)).to be_true
+        expect(matcher.matches?(5)).to be_truthy
       end
     end
 
@@ -243,7 +243,7 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(@matcher.matches?(5)).to be_true
+        expect(@matcher.matches?(5)).to be_truthy
       end
 
       it "describes" do
@@ -261,7 +261,7 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(@matcher.matches?(5)).to be_true
+        expect(@matcher.matches?(5)).to be_truthy
       end
 
       it "describes" do
@@ -279,7 +279,7 @@ module RSpec::Matchers::DSL
       end
 
       it "matches" do
-        expect(@matcher.matches?(10)).to be_true
+        expect(@matcher.matches?(10)).to be_truthy
       end
 
       it "describes" do
@@ -298,7 +298,7 @@ module RSpec::Matchers::DSL
         end
       end.for_expected([1,2,3])
 
-      expect(matcher.matches?([2,3,1])).to be_true
+      expect(matcher.matches?([2,3,1])).to be_truthy
     end
 
     it "supports fluent interface" do
@@ -324,7 +324,7 @@ module RSpec::Matchers::DSL
         end
       end.for_expected(3)
 
-      expect(matcher.matches?(8)).to be_true
+      expect(matcher.matches?(8)).to be_truthy
     end
 
     context 'when multiple instances of the same matcher are used in the same example' do
@@ -386,13 +386,13 @@ module RSpec::Matchers::DSL
 
         context "with passing assertion" do
           it "passes" do
-            expect(matcher.matches?(4)).to be_true
+            expect(matcher.matches?(4)).to be_truthy
           end
         end
 
         context "with failing assertion" do
           it "fails" do
-            expect(matcher.matches?(5)).to be_false
+            expect(matcher.matches?(5)).to be_falsey
           end
 
           it "provides the raised exception" do
@@ -428,8 +428,8 @@ module RSpec::Matchers::DSL
         match { |actual| actual == @expected_value }
       end.for_expected
 
-      expect(matcher.expecting('value').matches?('value')).to be_true
-      expect(matcher.expecting('value').matches?('other value')).to be_false
+      expect(matcher.expecting('value').matches?('value')).to be_truthy
+      expect(matcher.expecting('value').matches?('other value')).to be_falsey
     end
 
     it "prevents name collisions on chainable methods from different matchers" do
