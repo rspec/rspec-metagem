@@ -165,8 +165,9 @@ the command line.
 
 ## autotest integration
 
-rspec-core ships with an Autotest extension, which is loaded automatically if
-there is a `.rspec` file in the project's root directory.
+rspec-core no longer ships with an Autotest extension, if you require Autotest
+integration, please use the `rspec-autotest` gem and see (rspec/autotest)[/rspec/autotest]
+for details
 
 ## get started
 
