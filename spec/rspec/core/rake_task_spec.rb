@@ -10,11 +10,6 @@ module RSpec::Core
       FileUtils::RUBY
     end
 
-    def with_rcov
-      task.rcov = true
-      yield
-    end
-
     def spec_command
       task.__send__(:spec_command)
     end
@@ -44,14 +39,6 @@ module RSpec::Core
       end
     end
 
-    context "with rcov" do
-      it "renders rcov" do
-        with_rcov do
-          expect(spec_command).to match(/^#{ruby} -S rcov/)
-        end
-      end
-    end
-
     context "with ruby options" do
       it "renders them before -S" do
           task.ruby_opts = "-w"
@@ -59,43 +46,10 @@ module RSpec::Core
       end
     end
 
-    context "with rcov_opts" do
-      context "with rcov=false (default)" do
-        it "does not add the rcov options to the command" do
-          task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).not_to match(/--exclude "mocks"/)
-        end
-      end
-
-      context "with rcov=true" do
-        it "renders them after rcov" do
-          task.rcov = true
-          task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).to match(/rcov.*--exclude "mocks"/)
-        end
-
-        it "ensures that -Ispec:lib is in the resulting command" do
-          task.rcov = true
-          task.rcov_opts = '--exclude "mocks"'
-          expect(spec_command).to match(/rcov.*-Ispec:lib/)
-        end
-      end
-    end
-
     context "with rspec_opts" do
-      context "with rcov=true" do
-        it "adds the rspec_opts after the rcov_opts and files" do
-          task.stub(:files_to_run) { "this.rb that.rb" }
-          task.rcov = true
-          task.rspec_opts = "-Ifoo"
-          expect(spec_command).to match(/this.rb that.rb -- -Ifoo/)
-        end
-      end
-      context "with rcov=false (default)" do
-        it "adds the rspec_opts" do
-          task.rspec_opts = "-Ifoo"
-          expect(spec_command).to match(/rspec.*-Ifoo/)
-        end
+      it "adds the rspec_opts" do
+        task.rspec_opts = "-Ifoo"
+        expect(spec_command).to match(/rspec.*-Ifoo/)
       end
     end
 

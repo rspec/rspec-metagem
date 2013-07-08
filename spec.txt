@@ -912,23 +912,10 @@ RSpec::Core::RakeTask
       renders bundle exec rspec
     without Gemfile
       renders bundle exec rspec
-  with rcov
-    renders rcov
-  with bundler and rcov
-    renders bundle exec rcov
   with ruby options
     renders them before -S
-  with rcov_opts
-    with rcov=false (default)
-      does not add the rcov options to the command
-    with rcov=true
-      renders them after rcov
-      ensures that -Ispec:lib is in the resulting command
   with rspec_opts
-    with rcov=true
-      adds the rspec_opts after the rcov_opts and files
-    with rcov=false (default)
-      adds the rspec_opts
+    adds the rspec_opts
   with SPEC=path/to/file
     sets files to run
   with paths with quotes
