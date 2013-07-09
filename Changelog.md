@@ -9,6 +9,7 @@ Breaking Changes for 3.0.0:
   `RSpec::Core::ExampleGroup#running_example` methods. If you need
   access to the example (e.g. to get its metadata), use a block arg
   instead (David Chelimsky).
+* Remove TextMateFormatter, it has been replaced by rspec-tmbundle. (Aaron Kromer)
 
 Enhancements
 

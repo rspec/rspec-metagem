@@ -1063,9 +1063,6 @@ MESSAGE
         when 'h', 'html'
           require 'rspec/core/formatters/html_formatter'
           RSpec::Core::Formatters::HtmlFormatter
-        when 't', 'textmate'
-          require 'rspec/core/formatters/text_mate_formatter'
-          RSpec::Core::Formatters::TextMateFormatter
         when 'p', 'progress'
           require 'rspec/core/formatters/progress_formatter'
           RSpec::Core::Formatters::ProgressFormatter
