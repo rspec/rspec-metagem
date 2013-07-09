@@ -18,6 +18,14 @@ Enhancements
   (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
   now yield the example as a block argument (David Chelimsky).
 
+### 2.14.1 / 2013-07-08
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0...v2.14.1)
+
+Bug fixes
+
+* Implement `#start` on the Deprecation Formatter to prevent collision with
+  `ruby-debug` on JRuby (Alex Portnov, Jon Rowe)
+
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0.rc1...v2.14.0)
 
