@@ -26,6 +26,8 @@ Enhancements
 * Block-based DSL methods that run in the context of an example
   (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
   now yield the example as a block argument (David Chelimsky).
+* Times in profile output are now bold instead of failure_color.
+  (Matthew Boedicker)
 
 ### 2.14.3 / 2013-07-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.2...v2.14.3)

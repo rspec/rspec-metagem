@@ -89,7 +89,7 @@ module RSpec
 
           sorted_examples.each do |example|
             output.puts "  #{example.full_description}"
-            output.puts detail_color("    #{failure_color(format_seconds(example.execution_result[:run_time]))} #{failure_color("seconds")} #{format_caller(example.location)}")
+            output.puts "    #{bold(format_seconds(example.execution_result[:run_time]))} #{bold("seconds")} #{format_caller(example.location)}"
           end
         end
 
@@ -117,11 +117,11 @@ module RSpec
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"
           sorted_groups.each do |loc, hash| 
-            average = "#{failure_color(format_seconds(hash[:average]))} #{failure_color("seconds")} average"
+            average = "#{bold(format_seconds(hash[:average]))} #{bold("seconds")} average"
             total   = "#{format_seconds(hash[:total_time])} seconds"
             count   = pluralize(hash[:count], "example")
             output.puts "  #{hash[:description]}"
-            output.puts detail_color("    #{average} (#{total} / #{count}) #{loc}")
+            output.puts "    #{average} (#{total} / #{count}) #{loc}"
           end
         end
 
