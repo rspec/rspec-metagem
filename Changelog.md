@@ -1,5 +1,5 @@
 ### Development
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0...master)
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.2...master)
 
 Breaking Changes for 3.0.0:
 
@@ -18,13 +18,27 @@ Enhancements
   (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
   now yield the example as a block argument (David Chelimsky).
 
+### 2.14.2 / 2013-07-09
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.1...v2.14.2)
+
+Bug fixes
+
+* Fix regression caused by 2.14.1 release: formatters that
+  report that they `respond_to?` a notification, but had
+  no corresponding method would raise an error when registered.
+  The new fix is to just implement `start` on the deprecation
+  formatter to fix the original JRuby/ruby-debug issue.
+  (Jon Rowe)
+
 ### 2.14.1 / 2013-07-08
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0...v2.14.1)
 
 Bug fixes
 
-* Implement `#start` on the Deprecation Formatter to prevent collision with
-  `ruby-debug` on JRuby (Alex Portnov, Jon Rowe)
+* Address deprecation formatter failure when using `ruby-debug` on
+  JRuby: fix `RSpec::Core::Reporter` to not send a notification
+  when the formatter's implementation of the notification method
+  comes from `Kernel` (Alex Portnov, Jon Rowe).
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.0.rc1...v2.14.0)
