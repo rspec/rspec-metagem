@@ -10,6 +10,7 @@ Breaking Changes for 3.0.0:
   access to the example (e.g. to get its metadata), use a block arg
   instead (David Chelimsky).
 * Remove TextMateFormatter, it has been replaced by rspec-tmbundle. (Aaron Kromer)
+* Remove RCov integration (Jon Rowe)
 
 Enhancements
 

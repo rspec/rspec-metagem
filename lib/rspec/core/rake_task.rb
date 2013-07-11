@@ -62,27 +62,6 @@ module RSpec
       #   true
       attr_accessor :verbose
 
-      # Use rcov for code coverage?
-      #
-      # Due to the many ways `rcov` can run, if this option is enabled, it is
-      # required that `require 'rspec/autorun'` appears in `spec_helper`.rb
-      #
-      # default:
-      #   false
-      attr_accessor :rcov
-
-      # Path to rcov.
-      #
-      # default:
-      #   'rcov'
-      attr_accessor :rcov_path
-
-      # Command line options to pass to rcov.
-      #
-      # default:
-      #   nil
-      attr_accessor :rcov_opts
-
       # Command line options to pass to ruby.
       #
       # default:
@@ -128,11 +107,10 @@ module RSpec
 
       def setup_ivars(args)
         @name = args.shift || :spec
-        @rcov_opts, @ruby_opts, @rspec_opts = nil, nil, nil
-        @warning, @rcov = false, false
+        @ruby_opts, @rspec_opts = nil, nil, nil
+        @warning = false
         @verbose, @fail_on_error = true, true
 
-        @rcov_path  = 'rcov'
         @rspec_path = 'rspec'
         @pattern    = './spec{,/*/**}/*_spec.rb'
       end
@@ -164,16 +142,10 @@ module RSpec
         cmd_parts << RUBY
         cmd_parts << ruby_opts
         cmd_parts << "-w" if @warning
-        cmd_parts << "-S" << runner
-        cmd_parts << "-Ispec:lib" << rcov_opts if rcov
+        cmd_parts << "-S" << rspec_path
         cmd_parts << files_to_run
-        cmd_parts << "--" if rcov && rspec_opts
         cmd_parts << rspec_opts
         cmd_parts.flatten.reject(&blank).join(" ")
-      end
-
-      def runner
-        rcov ? rcov_path : rspec_path
       end
 
       def blank

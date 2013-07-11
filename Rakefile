@@ -24,27 +24,6 @@ namespace :spec do
   end
 end
 
-if RUBY_VERSION.to_f == 1.8
-  namespace :rcov do
-    task :cleanup do
-      rm_rf 'coverage.data'
-    end
-
-    RSpec::Core::RakeTask.new :spec do |t|
-      t.rcov = true
-      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features" --sort coverage --aggregate coverage.data]
-    end
-
-    Cucumber::Rake::Task.new :cucumber do |t|
-      t.cucumber_opts = %w{--format progress}
-      t.rcov = true
-      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features" --sort coverage --aggregate coverage.data]
-    end
-  end
-
-  task :rcov => ["rcov:cleanup", "rcov:cucumber", "rcov:spec"]
-end
-
 desc "delete generated files"
 task :clobber do
   sh %q{find . -name "*.rbc" | xargs rm}
