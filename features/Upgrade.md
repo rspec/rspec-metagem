@@ -285,14 +285,6 @@ A few things changed in the Rake task used to run specs:
     so the options must be embedded directly in the Rakefile, or stored in the
     `.rspec` files mentioned above.
 
-3.  In RSpec-1, the rake task would read in rcov options from an `rcov.opts`
-    file. This is ignored by RSpec-2. RCov options are now set directly on the Rake
-    task:
-
-        RSpec::Core::RakeTask.new(:rcov) do |t|
-          t.rcov_opts =  %q[--exclude "spec"]
-        end
-
 3.  The `spec_files` accessor has been replaced by `pattern`.
 
         # rspec-1
