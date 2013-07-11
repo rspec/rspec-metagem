@@ -21,31 +21,6 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
 
-      # @deprecated
-      # Has no effect. The rake task now checks ENV['BUNDLE_GEMFILE'] instead.
-      def skip_bundler=(*)
-        RSpec.deprecate("RSpec::Core::RakeTask#skip_bundler=")
-      end
-
-      # @deprecated
-      # Has no effect. The rake task now checks ENV['BUNDLE_GEMFILE'] instead.
-      def gemfile=(*)
-        RSpec.deprecate("RSpec::Core::RakeTask#gemfile=", :replacement => 'ENV["BUNDLE_GEMFILE"]')
-      end
-
-      # @deprecated
-      # Use ruby_opts="-w" instead.
-      #
-      # When true, requests that the specs be run with the warning flag set.
-      # e.g. "ruby -w"
-      #
-      # default:
-      #   false
-      def warning=(true_or_false)
-        RSpec.deprecate("RSpec::Core::RakeTask#warning=", :replacement => 'ruby_opts="-w"')
-        @warning = true_or_false
-      end
-
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
       #
       # default:
