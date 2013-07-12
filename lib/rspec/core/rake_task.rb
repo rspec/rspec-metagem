@@ -83,7 +83,6 @@ module RSpec
       def setup_ivars(args)
         @name = args.shift || :spec
         @ruby_opts, @rspec_opts = nil, nil, nil
-        @warning = false
         @verbose, @fail_on_error = true, true
 
         @rspec_path = 'rspec'
@@ -116,7 +115,6 @@ module RSpec
         cmd_parts = []
         cmd_parts << RUBY
         cmd_parts << ruby_opts
-        cmd_parts << "-w" if @warning
         cmd_parts << "-S" << rspec_path
         cmd_parts << files_to_run
         cmd_parts << rspec_opts
