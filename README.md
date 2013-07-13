@@ -166,7 +166,7 @@ the command line.
 ## autotest integration
 
 rspec-core no longer ships with an Autotest extension, if you require Autotest
-integration, please use the `rspec-autotest` gem and see (rspec/autotest)[/rspec/autotest]
+integration, please use the `rspec-autotest` gem and see [rspec/auto-test](https://github.com/rspec/auto-test)
 for details
 
 ## get started
