@@ -111,7 +111,6 @@ module RSpec::Core
                 '  [p]rogress (default - dots)',
                 '  [d]ocumentation (group and example names)',
                 '  [h]tml',
-                '  [t]extmate',
                 '  [j]son',
                 '  custom formatter class name') do |o|
           options[:formatters] ||= []
