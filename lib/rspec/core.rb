@@ -28,7 +28,6 @@ require_rspec['core/formatters']
 
 require_rspec['core/world']
 require_rspec['core/configuration']
-require_rspec['core/project_initializer']
 require_rspec['core/option_parser']
 require_rspec['core/configuration_options']
 require_rspec['core/command_line']

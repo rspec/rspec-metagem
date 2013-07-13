@@ -1,4 +1,5 @@
 require "spec_helper"
+require 'rspec/core/project_initializer'
 
 module RSpec::Core
   describe ProjectInitializer, :isolated_directory => true do
