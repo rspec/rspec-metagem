@@ -11,6 +11,10 @@ Breaking Changes for 3.0.0:
   instead (David Chelimsky).
 * Remove TextMateFormatter, it has been replaced by rspec-tmbundle. (Aaron Kromer)
 * Remove RCov integration (Jon Rowe)
+* Remove deprecated support for RSpec 1 constructs (Myron Marston):
+  * The `Spec` and `Rspec` constants (rather than `RSpec`).
+  * `Spec::Runner.configure` rather than `RSpec.configure`.
+  * `Rake::SpecTask` rather than `RSpec::Core::RakeTask`.
 
 Enhancements
 
