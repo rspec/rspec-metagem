@@ -15,6 +15,7 @@ Breaking Changes for 3.0.0:
   * The `Spec` and `Rspec` constants (rather than `RSpec`).
   * `Spec::Runner.configure` rather than `RSpec.configure`.
   * `Rake::SpecTask` rather than `RSpec::Core::RakeTask`.
+* Remove deprecated support for `share_as` (Myron Marston).
 
 Enhancements
 
