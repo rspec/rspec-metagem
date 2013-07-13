@@ -46,7 +46,7 @@ module RSpec
     private
 
       NON_FORCED_OPTIONS = [
-        :debug, :requires, :libs, :profile, :drb, :files_or_directories_to_run,
+        :requires, :libs, :profile, :drb, :files_or_directories_to_run,
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
 

@@ -1070,55 +1070,6 @@ module RSpec::Core
       end
     end
 
-    describe "#debug=true" do
-      before do
-        if defined?(Debugger)
-          @orig_debugger = Debugger
-          Object.send(:remove_const, :Debugger)
-        else
-          @orig_debugger = nil
-        end
-        config.stub(:require)
-        Object.const_set("Debugger", debugger)
-      end
-
-      after do
-        Object.send(:remove_const, :Debugger)
-        Object.const_set("Debugger", @orig_debugger) if @orig_debugger
-      end
-
-      let(:debugger) { double('Debugger').as_null_object }
-
-      it "requires 'ruby-debug'" do
-        config.should_receive(:require).with('ruby-debug')
-        config.debug = true
-      end
-
-      it "starts the debugger" do
-        debugger.should_receive(:start)
-        config.debug = true
-      end
-    end
-
-    describe "#debug=false" do
-      it "does not require 'ruby-debug'" do
-        config.should_not_receive(:require).with('ruby-debug')
-        config.debug = false
-      end
-    end
-
-    describe "#debug?" do
-      it 'returns true if the debugger has been loaded' do
-        stub_const("Debugger", Object.new)
-        expect(config.debug?).to be_true
-      end
-
-      it 'returns false if the debugger has not been loaded' do
-        hide_const("Debugger")
-        expect(config.debug?).to be_false
-      end
-    end
-
     describe "#output=" do
       it "sets the output" do
         output = double("output")

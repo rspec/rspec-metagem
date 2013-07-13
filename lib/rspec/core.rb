@@ -13,7 +13,6 @@ require 'time'
 require 'rbconfig'
 require_rspec['core/filter_manager']
 require_rspec['core/dsl']
-require_rspec['core/extensions/kernel']
 require_rspec['core/extensions/ordered']
 require_rspec['core/deprecation']
 require_rspec['core/reporter']

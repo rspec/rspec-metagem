@@ -16,6 +16,10 @@ Breaking Changes for 3.0.0:
   * `Spec::Runner.configure` rather than `RSpec.configure`.
   * `Rake::SpecTask` rather than `RSpec::Core::RakeTask`.
 * Remove deprecated support for `share_as` (Myron Marston).
+* Remove `--debug` option (and corresponding option on
+  `RSpec::Core::Configuration`). Instead, use `-r<debugger gem name>` to
+  load whichever debugger gem you wish to use (e.g. `ruby-debug`,
+  `debugger`, or `pry`) (Myron Marston).
 
 Enhancements
 

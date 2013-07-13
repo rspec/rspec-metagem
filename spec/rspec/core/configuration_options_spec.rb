@@ -94,13 +94,6 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       end
     end
 
-    it "sets debug directly" do
-      opts = config_options_object("--debug")
-      config = RSpec::Core::Configuration.new
-      config.should_receive(:debug=).with(true)
-      opts.configure(config)
-    end
-
     it "merges --require specified by multiple configuration sources" do
       with_env_vars 'SPEC_OPTS' => "--require file_from_env" do
         opts = config_options_object(*%w[--require file_from_opts])
@@ -214,13 +207,6 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
   end
 
-  describe "--debug, -d" do
-    it "sets :debug => true" do
-      expect(parse_options("--debug")).to include(:debug => true)
-      expect(parse_options("-d")).to include(:debug => true)
-    end
-  end
-
   describe "--fail-fast" do
     it "defaults to false" do
       expect(parse_options[:fail_fast]).to be_false
@@ -251,38 +237,9 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
   end
 
   describe "--drb, -X" do
-    context "combined with --debug" do
-      it "turns off the debugger if --drb is specified first" do
-        expect(config_options_object("--drb", "--debug").drb_argv).not_to include("--debug")
-        expect(config_options_object("--drb", "-d"     ).drb_argv).not_to include("--debug")
-        expect(config_options_object("-X",    "--debug").drb_argv).not_to include("--debug")
-        expect(config_options_object("-X",    "-d"     ).drb_argv).not_to include("--debug")
-      end
-
-      it "turns off the debugger option if --drb is specified later" do
-        expect(config_options_object("--debug", "--drb").drb_argv).not_to include("--debug")
-        expect(config_options_object("-d",      "--drb").drb_argv).not_to include("--debug")
-        expect(config_options_object("--debug", "-X"   ).drb_argv).not_to include("--debug")
-        expect(config_options_object("-d",      "-X"   ).drb_argv).not_to include("--debug")
-      end
-
-      it "turns off the debugger option if --drb is specified in the options file" do
-        File.open("./.rspec", "w") {|f| f << "--drb"}
-        expect(config_options_object("--debug").drb_argv).not_to include("--debug")
-        expect(config_options_object("-d"     ).drb_argv).not_to include("--debug")
-      end
-
-      it "turns off the debugger option if --debug is specified in the options file" do
-        File.open("./.rspec", "w") {|f| f << "--debug"}
-        expect(config_options_object("--drb").drb_argv).not_to include("--debug")
-        expect(config_options_object("-X"   ).drb_argv).not_to include("--debug")
-      end
-    end
-
     it "does not send --drb back to the parser after parsing options" do
       expect(config_options_object("--drb", "--color").drb_argv).not_to include("--drb")
     end
-
   end
 
   describe "--no-drb" do
@@ -344,11 +301,10 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       File.open("./.rspec", "w") {|f| f << "--line 37"}
       File.open("./.rspec-local", "w") {|f| f << "--format global"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
-      with_env_vars 'SPEC_OPTS' => "--debug --example 'foo bar'" do
+      with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
         expect(options[:color]).to be_true
         expect(options[:line_numbers]).to eq(["37"])
-        expect(options[:debug]).to be_true
         expect(options[:full_description]).to eq([/foo\ bar/])
         expect(options[:drb]).to be_true
         expect(options[:formatters]).to eq([['global']])

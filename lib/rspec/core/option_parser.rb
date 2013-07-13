@@ -75,10 +75,6 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('-d', '--debugger', 'Enable debugging.') do |o|
-          options[:debug] = true
-        end
-
         parser.on('--fail-fast', 'Abort the run on first failure.') do |o|
           options[:fail_fast] = true
         end
