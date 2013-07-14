@@ -492,31 +492,6 @@ module RSpec
         @requires += paths
       end
 
-      def debug=(bool)
-        return unless bool
-        begin
-          require 'ruby-debug'
-          Debugger.start
-        rescue LoadError => e
-          raise <<-EOM
-
-#{'*'*50}
-#{e.message}
-
-If you have it installed as a ruby gem, then you need to either require
-'rubygems' or configure the RUBYOPT environment variable with the value
-'rubygems'.
-
-#{e.backtrace.join("\n")}
-#{'*'*50}
-EOM
-        end
-      end
-
-      def debug?
-        !!defined?(Debugger)
-      end
-
       # Run examples defined on `line_numbers` in all files to run.
       def line_numbers=(line_numbers)
         filter_run :line_numbers => line_numbers.map{|l| l.to_i}
