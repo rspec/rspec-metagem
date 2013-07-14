@@ -24,6 +24,15 @@ Enhancements
   (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
   now yield the example as a block argument (David Chelimsky).
 
+### 2.14.3 / 2013-07-13
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.2...v2.14.3)
+
+Bug fixes
+
+* Fix deprecation notices issued from `RSpec::Core::RakeTask` so
+  that they work properly when all of rspec-core is not loaded.
+  (This was a regression in 2.14) (Jon Rowe)
+
 ### 2.14.2 / 2013-07-09
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.1...v2.14.2)
 
