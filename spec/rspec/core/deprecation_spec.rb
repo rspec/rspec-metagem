@@ -14,7 +14,7 @@ describe RSpec::Core::Deprecation do
       end
 
       it "adds the call site" do
-        expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :call_site => caller(0)[1])
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
         RSpec.deprecate("deprecated_method")
       end
 
@@ -31,7 +31,7 @@ describe RSpec::Core::Deprecation do
       end
 
       it "adds the call site" do
-        expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :call_site => caller(0)[1])
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
         RSpec.deprecate("deprecated_method")
       end
     end
