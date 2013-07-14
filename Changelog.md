@@ -4,7 +4,6 @@
 Breaking Changes for 3.0.0:
 
 * Remove explicit support for 1.8.6 (Jon Rowe)
-* Remove color aliases on BaseTextFormatter. (Sam Phippen)
 * Remove `RSpec::Core::ExampleGroup#example` and
   `RSpec::Core::ExampleGroup#running_example` methods. If you need
   access to the example (e.g. to get its metadata), use a block arg
