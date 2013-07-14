@@ -16,7 +16,6 @@ require_rspec['core/dsl']
 require_rspec['core/extensions/kernel']
 require_rspec['core/extensions/ordered']
 require_rspec['core/deprecation']
-require_rspec['core/backward_compatibility']
 require_rspec['core/reporter']
 
 require_rspec['core/metadata_hash_builder']
@@ -157,4 +156,3 @@ WARNING
   end
 end
 
-require_rspec['core/backward_compatibility']

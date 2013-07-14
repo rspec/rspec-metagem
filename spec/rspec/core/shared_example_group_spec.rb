@@ -70,27 +70,6 @@ module RSpec::Core
         end
       end
     end
-
-    describe "#share_as" do
-      before { allow(RSpec).to receive(:deprecate) }
-
-      it "is exposed to the global namespace" do
-        expect(Kernel).to respond_to("share_as")
-      end
-
-      it "adds examples to current example_group using include", :compat => 'rspec-1.2' do
-        share_as('Cornucopia') do
-          it "is plentiful" do
-            expect(5).to eq(4)
-          end
-        end
-        group = ExampleGroup.describe('group') { include Cornucopia }
-        phantom_group = group.children.first
-        expect(phantom_group.description).to eql("")
-        expect(phantom_group.metadata[:shared_group_name]).to eql('Cornucopia')
-        expect(phantom_group.examples.length).to eq(1)
-        expect(phantom_group.examples.first.metadata[:description]).to eq("is plentiful")
-      end
-    end
   end
 end
+

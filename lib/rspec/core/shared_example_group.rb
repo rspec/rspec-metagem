@@ -36,13 +36,6 @@ module RSpec
       alias_method :share_examples_for,  :shared_examples
       alias_method :shared_examples_for, :shared_examples
 
-      # @deprecated
-      def share_as(name, &block)
-        RSpec.deprecate("Rspec::Core::SharedExampleGroup#share_as",
-                        :replacement => "RSpec::SharedContext or shared_examples")
-        Registry.add_const(self, name, &block)
-      end
-
       def shared_example_groups
         Registry.shared_example_groups_for('main', *ancestors[0..-1])
       end
@@ -55,12 +48,6 @@ module RSpec
         alias_method :shared_context,      :shared_examples
         alias_method :share_examples_for,  :shared_examples
         alias_method :shared_examples_for, :shared_examples
-
-        def share_as(name, &block)
-          RSpec.deprecate("RSpec::Core::SharedExampleGroup#share_as",
-                          :replacement => "RSpec::SharedContext or shared_examples")
-          Registry.add_const('main', name, &block)
-        end
 
         def shared_example_groups
           Registry.shared_example_groups_for('main')
@@ -95,30 +82,6 @@ module RSpec
           end
         end
 
-        def add_const(source, name, &block)
-          if Object.const_defined?(name)
-            mod = Object.const_get(name)
-            raise_name_error unless mod.created_from_caller(caller)
-          end
-
-          mod = Module.new do
-            @shared_block = block
-            @caller_line = caller.last
-
-            def self.created_from_caller(other_caller)
-              @caller_line == other_caller.last
-            end
-
-            def self.included(kls)
-              kls.describe(&@shared_block)
-              kls.children.first.metadata[:shared_group_name] = name
-            end
-          end
-
-          shared_const = Object.const_set(name, mod)
-          add_shared_example_group source, shared_const, block
-        end
-
         def shared_example_groups_for(*sources)
           Collection.new(sources, shared_example_groups)
         end
@@ -139,10 +102,6 @@ module RSpec
 
         def key?(candidate)
           [String, Symbol, Module].any? { |cls| cls === candidate }
-        end
-
-        def raise_name_error
-          raise NameError, "The first argument (#{name}) to share_as must be a legal name for a constant not already in use."
         end
 
         def warn_if_key_taken(source, key, new_block)
