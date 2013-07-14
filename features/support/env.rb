@@ -1,9 +1,11 @@
 require 'aruba/cucumber'
 
-timeouts = { 'java' => 60 }
-
 Before do
-  @aruba_timeout_seconds = timeouts.fetch(RUBY_PLATFORM) { 10 }
+  if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
+    @aruba_timeout_seconds = 60
+  else
+    @aruba_timeout_seconds = 10
+  end
 end
 
 Aruba.configure do |config|
