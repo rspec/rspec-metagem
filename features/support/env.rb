@@ -1,9 +1,11 @@
 require 'aruba/cucumber'
 
-timeouts = { 'java' => 60 }
-
 Before do
-  @aruba_timeout_seconds = timeouts.fetch(RUBY_PLATFORM) { 10 }
+  if RUBY_PLATFORM =~ /java/ || defined?(Rubinius)
+    @aruba_timeout_seconds = 60
+  else
+    @aruba_timeout_seconds = 10
+  end
 end
 
 Aruba.configure do |config|
@@ -12,3 +14,8 @@ Aruba.configure do |config|
   end
 end if RUBY_PLATFORM == 'java'
 
+Aruba.configure do |config|
+  config.before_cmd do |cmd|
+    set_env('RBXOPT', "-Xint=true #{ENV['RBXOPT']}") # disable JIT since these processes are so short lived
+  end
+end if defined?(Rubinius)
