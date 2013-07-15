@@ -133,7 +133,7 @@ WARNING
     # it.
     class Time
       class << self
-        define_method(:now,&::Time.method(:now))
+        define_method(:now, &::Time.method(:now))
       end
     end
 
