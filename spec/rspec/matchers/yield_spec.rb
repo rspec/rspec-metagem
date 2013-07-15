@@ -52,7 +52,7 @@ describe "yield_control matcher" do
       expect { |b| _yield_with_args(1, 2, &b) }.to yield_control
     end
 
-    it 'passes if the block yields using instance_eval' do
+    it 'passes if the block yields using instance_exec' do
       expect { |b| InstanceEvaler.new.yield_with_no_args(&b) }.to yield_control
     end
 
@@ -190,7 +190,7 @@ describe "yield_with_no_args matcher" do
       expect { |b| _yield_with_no_args(&b) }.to yield_with_no_args
     end
 
-    it 'passes if the block yields with no args using instance_eval' do
+    it 'passes if the block yields with no args using instance_exec' do
       expect { |b| InstanceEvaler.new.yield_with_no_args(&b) }.to yield_with_no_args
     end
 
@@ -321,7 +321,7 @@ describe "yield_with_args matcher" do
       expect { |b| _yield_with_args(3, 17, &b) }.to yield_with_args(3, 17)
     end
 
-    it 'passes if the block yields with the given arguments using instance_eval' do
+    it 'passes if the block yields with the given arguments using instance_exec' do
       expect { |b| InstanceEvaler.new.yield_with_args(3, 17, &b) }.to yield_with_args(3, 17)
     end
 
@@ -361,7 +361,7 @@ describe "yield_with_args matcher" do
       expect { |b| _yield_with_args(false, &b) }.to yield_with_args(false)
     end
 
-    it 'passes if the block yields with the given arguments using instance_eval' do
+    it 'passes if the block yields with the given arguments using instance_exec' do
       expect { |b| InstanceEvaler.new.yield_with_args(false, &b) }.to yield_with_args(false)
     end
 
@@ -451,7 +451,7 @@ describe "yield_successive_args matcher" do
       expect { |b| [1, 2, 3].each(&b) }.to yield_successive_args(1, 2, 3)
     end
 
-    it 'passes when the block successively yields the given args using instance_eval' do
+    it 'passes when the block successively yields the given args using instance_exec' do
       expect { |b| InstanceEvaler.new.each_arg(1, 2, 3, &b) }.to yield_successive_args(1, 2, 3)
     end
 
