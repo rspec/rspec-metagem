@@ -52,4 +52,10 @@ describe RSpec do
       expect(RSpec.world).not_to equal(world_before_reset)
     end
   end
+
+  describe "::Core.path_to_executable" do
+    it 'returns the absolute location of the exe/rspec file' do
+      expect(RSpec::Core.path_to_executable).to eq File.expand_path('../../../exe/rspec',__FILE__)
+    end
+  end
 end
