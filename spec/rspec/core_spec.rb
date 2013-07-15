@@ -55,7 +55,9 @@ describe RSpec do
 
   describe "::Core.path_to_executable" do
     it 'returns the absolute location of the exe/rspec file' do
-      expect(RSpec::Core.path_to_executable).to eq File.expand_path('../../../exe/rspec',__FILE__)
+      expect(File.exist? RSpec::Core.path_to_executable).to be_true
+      expect(File.executable? RSpec::Core.path_to_executable).to be_true
     end
   end
 end
+

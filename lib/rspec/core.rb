@@ -139,7 +139,7 @@ WARNING
 
     # @private path to executable file
     def self.path_to_executable
-      File.expand_path('../../../exe/rspec', __FILE__)
+      @path_to_executable ||= File.expand_path('../../../exe/rspec', __FILE__)
     end
 
   end
