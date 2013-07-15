@@ -48,7 +48,7 @@ module RSpec
       def enable_should(syntax_host = default_should_host)
         return if should_enabled?(syntax_host)
 
-        syntax_host.module_eval do
+        syntax_host.module_exec do
           def should(matcher=nil, message=nil, &block)
             ::RSpec::Expectations::PositiveExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
@@ -66,7 +66,7 @@ module RSpec
       def disable_should(syntax_host = default_should_host)
         return unless should_enabled?(syntax_host)
 
-        syntax_host.module_eval do
+        syntax_host.module_exec do
           undef should
           undef should_not
         end
@@ -79,7 +79,7 @@ module RSpec
       def enable_expect(syntax_host = ::RSpec::Matchers)
         return if expect_enabled?(syntax_host)
 
-        syntax_host.module_eval do
+        syntax_host.module_exec do
           def expect(*target, &target_block)
             target << target_block if block_given?
             raise ArgumentError.new("You must pass an argument or a block to #expect but not both.") unless target.size == 1
@@ -95,7 +95,7 @@ module RSpec
       def disable_expect(syntax_host = ::RSpec::Matchers)
         return unless expect_enabled?(syntax_host)
 
-        syntax_host.module_eval do
+        syntax_host.module_exec do
           undef expect
         end
 

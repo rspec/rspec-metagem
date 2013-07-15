@@ -32,7 +32,7 @@ module RSpec
         # @api private
         def for_expected(*expected)
           @expected = expected
-          dup.instance_eval do
+          dup.instance_exec do
             instance_variables.map {|ivar| ivar.intern}.each do |ivar|
               instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
             end
