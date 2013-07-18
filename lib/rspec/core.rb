@@ -144,19 +144,25 @@ WARNING
 
   end
 
+  MODULES_TO_AUTOLOAD = {
+    :Matchers     => "rspec/expectations",
+    :Expectations => "rspec/expectations",
+    :Mocks        => "rspec/mocks"
+  }
+
   def self.const_missing(name)
-    case name
-      when :Matchers
-        # Load rspec-expectations when RSpec::Matchers is referenced. This allows
-        # people to define custom matchers (using `RSpec::Matchers.define`) before
-        # rspec-core has loaded rspec-expectations (since it delays the loading of
-        # it to allow users to configure a different assertion/expectation
-        # framework). `autoload` can't be used since it works with ruby's built-in
-        # require (e.g. for files that are available relative to a load path dir),
-        # but not with rubygems' extended require.
-        require 'rspec/expectations'
-        ::RSpec::Matchers
-      else super
-    end
+    # Load rspec-expectations when RSpec::Matchers is referenced. This allows
+    # people to define custom matchers (using `RSpec::Matchers.define`) before
+    # rspec-core has loaded rspec-expectations (since it delays the loading of
+    # it to allow users to configure a different assertion/expectation
+    # framework). `autoload` can't be used since it works with ruby's built-in
+    # require (e.g. for files that are available relative to a load path dir),
+    # but not with rubygems' extended require.
+    #
+    # As of rspec 2.14.1, we no longer require `rspec/mocks` and
+    # `rspec/expectations` when `rspec` is required, so we want
+    # to make them available as an autoload. For more info, see:
+    require MODULES_TO_AUTOLOAD.fetch(name) { return super }
+    ::RSpec.const_get(name)
   end
 end
