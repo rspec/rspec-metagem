@@ -29,6 +29,14 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       opts.configure(config)
     end
 
+    it "sends loads requires before loading specs" do
+      opts = config_options_object(*%w[-rspec_helper])
+      config = double("config").as_null_object
+      expect(config).to receive(:setup_load_path_and_require).ordered
+      expect(config).to receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
     it "sets up load path and requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
