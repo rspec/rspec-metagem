@@ -20,10 +20,11 @@ module RSpec
 
       def configure(config)
         config.filter_manager = filter_manager
-        process_options_into config
 
+        config.libs = options[:libs] || []
         config.setup_load_path_and_require(options[:requires] || [])
 
+        process_options_into config
         load_formatters_into config
       end
 
@@ -46,13 +47,13 @@ module RSpec
     private
 
       NON_FORCED_OPTIONS = [
-        :requires, :libs, :profile, :drb, :files_or_directories_to_run,
+        :requires, :profile, :drb, :libs, :files_or_directories_to_run,
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
 
       MERGED_OPTIONS = [:requires, :libs].to_set
 
-      UNPROCESSABLE_OPTIONS = [:formatters, :requires].to_set
+      UNPROCESSABLE_OPTIONS = [:libs, :formatters, :requires].to_set
 
       def force?(key)
         !NON_FORCED_OPTIONS.include?(key)
@@ -68,7 +69,7 @@ module RSpec
       def process_options_into(config)
         opts = options.reject { |k, _| UNPROCESSABLE_OPTIONS.include? k }
 
-        order(opts.keys, :libs, :default_path, :pattern).each do |key|
+        order(opts.keys, :default_path, :pattern).each do |key|
           force?(key) ? config.force(key => opts[key]) : config.send("#{key}=", opts[key])
         end
       end
