@@ -134,6 +134,11 @@ module RSpec::Core
         parser.on('-p', '--[no-]profile [COUNT]', 'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
           options[:profile_examples] = if argument.nil?
                                          true
+                                       elsif argument && !(argument =~ /^\d+$/)
+                                         Kernel.warn "Non integer specified as profile count, seperate " +
+                                                     "your path from options with -- e.g. " +
+                                                     "`rspec --profile -- #{argument}`"
+                                         true
                                        elsif argument == false
                                          false
                                        else

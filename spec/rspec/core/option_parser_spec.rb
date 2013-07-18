@@ -205,6 +205,32 @@ module RSpec::Core
       end
     end
 
+    describe '--profile' do
+      it 'sets profile_examples to true by default' do
+        options = Parser.parse!(%w[--profile])
+        expect(options[:profile_examples]).to eq true
+      end
+
+      it 'sets profile_examples to supplied int' do
+        options = Parser.parse!(%w[--profile 10])
+        expect(options[:profile_examples]).to eq 10
+      end
+
+      it 'sets profile_examples to true when accidentally combined with path' do
+        allow(Kernel).to receive(:warn)
+        options = Parser.parse!(%w[--profile some/path])
+        expect(options[:profile_examples]).to eq true
+      end
+
+      it 'warns when accidentally combined with path' do
+        expect(Kernel).to receive(:warn) do |msg|
+          expect(msg).to match "Non integer specified as profile count"
+        end
+        options = Parser.parse!(%w[--profile some/path])
+        expect(options[:profile_examples]).to eq true
+      end
+    end
+
     describe '--warning' do
       it 'enables warnings' do
         options = Parser.parse!(%w[--warnings])
