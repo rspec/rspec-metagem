@@ -79,6 +79,10 @@ module RSpec::Core
           options[:fail_fast] = true
         end
 
+        parser.on('--no-fail-fast', 'Do not abort the run on first failure.') do |o|
+          options[:fail_fast] = false
+        end
+
         parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs.') do |code|
           options[:failure_exit_code] = code
         end
