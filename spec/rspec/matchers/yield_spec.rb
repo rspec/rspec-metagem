@@ -62,6 +62,12 @@ describe "yield_control matcher" do
       }.to fail_with(/expected given block to yield control/)
     end
 
+    it 'does not return a meaningful value from the block' do
+      val = nil
+      expect { |b| val = _yield_with_args(&b) }.to yield_control
+      expect(val).to be_nil
+    end
+
     context "with exact count" do
       it 'fails if the block yields wrong number of times' do
         expect {
@@ -185,6 +191,12 @@ describe "yield_with_no_args matcher" do
     expect(yield_with_no_args.description).to eq("yield with no args")
   end
 
+  it 'does not return a meaningful value from the block' do
+    val = nil
+    expect { |b| val = _yield_with_no_args(&b) }.to yield_with_no_args
+    expect(val).to be_nil
+  end
+
   describe "expect {...}.to yield_with_no_args" do
     it 'passes if the block yields with no args' do
       expect { |b| _yield_with_no_args(&b) }.to yield_with_no_args
@@ -262,6 +274,12 @@ describe "yield_with_args matcher" do
     expect(yield_with_args.description).to eq("yield with args")
     expect(yield_with_args(1, 3).description).to eq("yield with args(1, 3)")
     expect(yield_with_args(false).description).to eq("yield with args(false)")
+  end
+
+  it 'does not return a meaningful value from the block' do
+    val = nil
+    expect { |b| val = _yield_with_args(1, &b) }.to yield_with_args(1)
+    expect(val).to be_nil
   end
 
   describe "expect {...}.to yield_with_args" do
@@ -426,6 +444,12 @@ describe "yield_successive_args matcher" do
   it 'has a description' do
     expect(yield_successive_args(1, 3).description).to eq("yield successive args(1, 3)")
     expect(yield_successive_args([:a, 1], [:b, 2]).description).to eq("yield successive args([:a, 1], [:b, 2])")
+  end
+
+  it 'does not return a meaningful value from the block' do
+    val = nil
+    expect { |b| val = _yield_with_args(1, &b) }.to yield_successive_args(1)
+    expect(val).to be_nil
   end
 
   describe "expect {...}.to yield_successive_args([:a, 1], [:b, 2])" do
