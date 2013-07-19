@@ -121,6 +121,35 @@ WARNING
     world.example_groups.clear
   end
 
+  # The example being executed.
+  #
+  # The primary audience for this method is library authors who need access
+  # to the example currently being executed and also want to support all
+  # versions of RSpec 2 and 3.
+  #
+  # @example
+  #
+  #     RSpec.configure do |c|
+  #       c.before(:each) do
+  #         # self.example is deprecated, but RSpec.current_example is not
+  #         # available until RSpec 3.0.
+  #         current_example = RSpec.respond_to?(:current_example) ?
+  #           RSpec.current_example : self.example
+  #
+  #         # ...
+  #       end
+  #     end
+  #
+  def self.current_example
+    @current_example
+  end
+
+  # Set the current example being executed.
+  # @api private
+  def self.current_example=(example)
+    @current_example = example
+  end
+
   # @private
   def self.windows_os?
     RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
