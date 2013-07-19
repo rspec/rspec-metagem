@@ -24,6 +24,7 @@ module RSpec
           Proc.new do |*args|
             probe.num_yields += 1
             probe.yielded_args << args
+            nil # to indicate the block does not return a meaningful value
           end
         end
 
