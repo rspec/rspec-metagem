@@ -28,6 +28,7 @@ Enhancements
   now yield the example as a block argument (David Chelimsky).
 * Times in profile output are now bold instead of failure_color.
   (Matthew Boedicker)
+* Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
 
 ### 2.14.3 / 2013-07-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.2...v2.14.3)
