@@ -143,13 +143,13 @@ WARNING
   #     end
   #
   def self.current_example
-    @current_example
+    Thread.current[:_rspec_current_example]
   end
 
   # Set the current example being executed.
   # @api private
   def self.current_example=(example)
-    @current_example = example
+    Thread.current[:_rspec_current_example] = example
   end
 
   # @private
