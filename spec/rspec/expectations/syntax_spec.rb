@@ -91,8 +91,8 @@ module RSpec
 
         context "when only :expect is enabled" do
           before do
-            expect(Syntax.should_enabled?).to be_false
-            expect(Syntax.expect_enabled?).to be_true
+            expect(Syntax.should_enabled?).to be_falsey
+            expect(Syntax.expect_enabled?).to be_truthy
           end
 
           it 'generates a positive expression using the expect syntax' do
@@ -106,8 +106,8 @@ module RSpec
 
         context "when both :should and :expect are enabled", :uses_should do
           before do
-            expect(Syntax.should_enabled?).to be_true
-            expect(Syntax.expect_enabled?).to be_true
+            expect(Syntax.should_enabled?).to be_truthy
+            expect(Syntax.expect_enabled?).to be_truthy
           end
 
           it 'generates a positive expression using the expect syntax' do
@@ -121,8 +121,8 @@ module RSpec
 
         context "when only :should is enabled", :uses_only_should do
           before do
-            Syntax.should_enabled?.should be_true
-            Syntax.expect_enabled?.should be_false
+            Syntax.should_enabled?.should be_truthy
+            Syntax.expect_enabled?.should be_falsey
           end
 
           it 'generates a positive expression using the expect syntax' do

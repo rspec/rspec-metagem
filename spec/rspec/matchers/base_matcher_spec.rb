@@ -8,21 +8,21 @@ module RSpec::Matchers::BuiltIn
       end
 
       it "returns true if there are no errors" do
-        expect(matcher.match_unless_raises {}).to be_true
+        expect(matcher.match_unless_raises {}).to be_truthy
       end
 
       it "returns false if there is an error" do
-        expect(matcher.match_unless_raises { raise }).to be_false
+        expect(matcher.match_unless_raises { raise }).to be_falsey
       end
 
       it "returns false if the only submitted error is raised" do
-        expect(matcher.match_unless_raises(RuntimeError){ raise "foo" }).to be_false
+        expect(matcher.match_unless_raises(RuntimeError){ raise "foo" }).to be_falsey
       end
 
       it "returns false if any of several errors submitted is raised" do
-        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise "foo" }).to be_false
-        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise ArgumentError.new('') }).to be_false
-        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise NameError.new('') }).to be_false
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise "foo" }).to be_falsey
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise ArgumentError.new('') }).to be_falsey
+        expect(matcher.match_unless_raises(RuntimeError, ArgumentError, NameError) { raise NameError.new('') }).to be_falsey
       end
 
       it "re-raises any error other than one of those specified" do
@@ -51,10 +51,10 @@ module RSpec::Matchers::BuiltIn
           end
         end
 
-        expect(matcher.new(3).matches?(3)).to be_true
+        expect(matcher.new(3).matches?(3)).to be_truthy
         expect(matcher.new(3)).to eq(3)
 
-        expect(matcher.new(3).matches?(4)).to be_false
+        expect(matcher.new(3).matches?(4)).to be_falsey
         expect(matcher.new(3)).not_to eq(4)
       end
     end

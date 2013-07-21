@@ -25,14 +25,14 @@ describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq "should not be empty"
   end
 
-  it "expect(...).to be true" do
-    expect(true).to be_true
-    expect(RSpec::Matchers.generated_description).to eq "should be true"
+  it "expect(...).to be truthy" do
+    expect(true).to be_truthy
+    expect(RSpec::Matchers.generated_description).to eq "should be truthy"
   end
 
-  it "expect(...).to be false" do
-    expect(false).to be_false
-    expect(RSpec::Matchers.generated_description).to eq "should be false"
+  it "expect(...).to be falsey" do
+    expect(false).to be_falsey
+    expect(RSpec::Matchers.generated_description).to eq "should be falsey"
   end
 
   it "expect(...).to be nil" do

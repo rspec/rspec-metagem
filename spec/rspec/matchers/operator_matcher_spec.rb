@@ -10,7 +10,7 @@ describe "operator matchers", :uses_should do
 
     it "returns true on success" do
       subject = "apple"
-      (subject.should == "apple").should be_true
+      (subject.should == "apple").should be_truthy
     end
 
     it "fails when target.==(actual) returns false" do
@@ -55,7 +55,7 @@ describe "operator matchers", :uses_should do
 
     it "returns true on success" do
       subject = "apple"
-      (subject.should_not == "orange").should be_false
+      (subject.should_not == "orange").should be_falsey
     end
 
     it "fails when target.==(actual) returns false" do
