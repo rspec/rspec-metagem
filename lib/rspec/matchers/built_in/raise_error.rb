@@ -14,15 +14,16 @@ module RSpec
         end
 
         def matches?(given_proc, negative_expectation = false, &block)
+          specific_class_error = nil
           if negative_expectation && (expecting_specific_exception? || @expected_message)
-            what_to_deprecate = if expecting_specific_exception? && @expected_message
+            what_to_raise = if expecting_specific_exception? && @expected_message
                                   "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
                                 elsif expecting_specific_exception?
                                   "`expect { }.not_to raise_error(SpecificErrorClass)`"
                                 elsif @expected_message
                                   "`expect { }.not_to raise_error(message)`"
                                 end
-            RSpec.deprecate(what_to_deprecate, :replacement => "`expect { }.not_to raise_error()`")
+            specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error()` instead")
           end
           @block ||= block
           @raised_expected_error = false
@@ -46,6 +47,7 @@ module RSpec
             eval_block if @raised_expected_error && @with_expected_message && @block
           end
         ensure
+          raise specific_class_error if specific_class_error
           return (@raised_expected_error & @with_expected_message) ? (@eval_block ? @eval_block_passed : true) : false
         end
         alias == matches?
