@@ -92,21 +92,6 @@ describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq 'should have taste for "wine", "cheese"'
   end
 
-  it "expect(...).to have n items" do
-    expect(team).to have(3).players
-    expect(RSpec::Matchers.generated_description).to eq "should have 3 players"
-  end
-
-  it "expect(...).to have at least n items" do
-    expect(team).to have_at_least(2).players
-    expect(RSpec::Matchers.generated_description).to eq "should have at least 2 players"
-  end
-
-  it "expect(...).to have at most n items" do
-    expect(team).to have_at_most(4).players
-    expect(RSpec::Matchers.generated_description).to eq "should have at most 4 players"
-  end
-
   it "expect(...).to include(x)" do
     expect([1,2,3]).to include(3)
     expect(RSpec::Matchers.generated_description).to eq "should include 3"
