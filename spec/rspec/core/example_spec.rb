@@ -443,4 +443,17 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(ex.description).to match(/contains the example/)
     end
   end
+
+  describe "setting the current example" do
+    it "sets RSpec.current_example to the example that is currently running" do
+      group = RSpec::Core::ExampleGroup.describe("an example group")
+
+      current_examples = []
+      example1 = group.example("example 1") { current_examples << RSpec.current_example }
+      example2 = group.example("example 2") { current_examples << RSpec.current_example }
+
+      group.run
+      expect(current_examples).to eq([example1, example2])
+    end
+  end
 end

@@ -41,6 +41,16 @@ describe RSpec do
     end
   end
 
+  describe ".current_example" do
+    it "sets the example being executed" do
+      group = RSpec::Core::ExampleGroup.describe("an example group")
+      example = group.example("an example")
+
+      RSpec.current_example = example
+      expect(RSpec.current_example).to be(example)
+    end
+  end
+
   describe "::reset" do
     it "resets the configuration and world objects" do
       config_before_reset = RSpec.configuration
