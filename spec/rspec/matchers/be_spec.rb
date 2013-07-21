@@ -267,6 +267,22 @@ describe "expect(...).to be_falsey" do
   end
 end
 
+describe "expect(...).to be_falsy" do
+  it "passes when actual equal?(false)" do
+    expect(false).to be_falsy
+  end
+
+  it "passes when actual equal?(nil)" do
+    expect(nil).to be_falsy
+  end
+
+  it "fails when actual equal?(true)" do
+    expect {
+      expect(true).to be_falsy
+    }.to fail_with("expected: false value\n     got: true")
+  end
+end
+
 describe "expect(...).to be_nil" do
   it "passes when actual is nil" do
     expect(nil).to be_nil

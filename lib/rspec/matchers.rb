@@ -191,6 +191,8 @@ module RSpec
       BuiltIn::BeFalsey.new
     end
 
+    alias_method :be_falsy, :be_falsey
+
     # Passes if actual is nil
     def be_nil
       BuiltIn::BeNil.new
