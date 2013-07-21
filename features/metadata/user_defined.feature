@@ -8,16 +8,7 @@ Feature: User-defined metadata
   Metadata defined on an example group is available (and can be overridden)
   by any sub-group or from any example in that group or a sub-group.
 
-  In addition, there is a configuration option (which will be the default
-  behavior in RSpec 3) that allows you to specify metadata using just
-  symbols:
-
-  ```ruby
-  RSpec.configure do |c|
-    c.treat_symbols_as_metadata_keys_with_true_values = true
-  end
-  ```
-
+  In addition, you can specify metdata using just symbols.
   Each symbol passed as an argument to `describe`, `context` or `it` will
   be a key in the metadata hash, with a corresponding value of `true`.
 
@@ -87,10 +78,6 @@ Feature: User-defined metadata
   Scenario: less verbose metadata
     Given a file named "less_verbose_metadata_spec.rb" with:
       """ruby
-      RSpec.configure do |c|
-        c.treat_symbols_as_metadata_keys_with_true_values = true
-      end
-
       describe "a group with simple metadata", :fast, :simple, :bug => 73 do
         it 'has `:fast => true` metadata' do |example|
           example.metadata[:fast].should == true

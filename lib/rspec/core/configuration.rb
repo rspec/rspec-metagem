@@ -162,21 +162,12 @@ module RSpec
       # without reporting it as a failure (default: false).
       add_setting :show_failures_in_pending_blocks
 
-      # Convert symbols to hashes with the symbol as a key with a value of
-      # `true` (default: false).
-      #
-      # This allows you to tag a group or example like this:
-      #
-      #     describe "something slow", :slow do
-      #       # ...
-      #     end
-      #
-      # ... instead of having to type:
-      #
-      #     describe "something slow", :slow => true do
-      #       # ...
-      #     end
-      add_setting :treat_symbols_as_metadata_keys_with_true_values
+      # Deprecated. This config option was added in RSpec 2 to pave the way
+      # for this being the default behavior in RSpec 3. Now this option is
+      # a no-op.
+      def treat_symbols_as_metadata_keys_with_true_values=(value)
+        RSpec.deprecate("RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=")
+      end
 
       # @private
       add_setting :tty
@@ -596,7 +587,7 @@ module RSpec
       #       end
       #     end
       def alias_example_to(new_name, *args)
-        extra_options = build_metadata_hash_from(args)
+        extra_options = Metadata.build_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
@@ -627,10 +618,9 @@ module RSpec
 
       alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
 
-      # Adds key/value pairs to the `inclusion_filter`. If the
-      # `treat_symbols_as_metadata_keys_with_true_values` config option is set
-      # to true and `args` includes any symbols that are not part of a hash,
-      # each symbol is treated as a key in the hash with the value `true`.
+      # Adds key/value pairs to the `inclusion_filter`. If `args`
+      # includes any symbols that are not part of the hash, each symbol
+      # is treated as a key in the hash with the value `true`.
       #
       # ### Note
       #
@@ -656,10 +646,9 @@ module RSpec
       #     # and the metadata itself e.g.
       #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_including :foo # same as filter_run_including :foo => true
       def filter_run_including(*args)
-        filter_manager.include_with_low_priority build_metadata_hash_from(args)
+        filter_manager.include_with_low_priority Metadata.build_hash_from(args)
       end
 
       alias_method :filter_run, :filter_run_including
@@ -672,7 +661,7 @@ module RSpec
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        filter_manager.include! build_metadata_hash_from([filter])
+        filter_manager.include! Metadata.build_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -685,10 +674,9 @@ module RSpec
 
       alias_method :filter, :inclusion_filter
 
-      # Adds key/value pairs to the `exclusion_filter`. If the
-      # `treat_symbols_as_metadata_keys_with_true_values` config option is set
-      # to true and `args` excludes any symbols that are not part of a hash,
-      # each symbol is treated as a key in the hash with the value `true`.
+      # Adds key/value pairs to the `exclusion_filter`. If `args`
+      # includes any symbols that are not part of the hash, each symbol
+      # is treated as a key in the hash with the value `true`.
       #
       # ### Note
       #
@@ -714,10 +702,9 @@ module RSpec
       #     # and the metadata itself e.g.
       #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # with treat_symbols_as_metadata_keys_with_true_values = true
       #     filter_run_excluding :foo # same as filter_run_excluding :foo => true
       def filter_run_excluding(*args)
-        filter_manager.exclude_with_low_priority build_metadata_hash_from(args)
+        filter_manager.exclude_with_low_priority Metadata.build_hash_from(args)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
@@ -728,7 +715,7 @@ module RSpec
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        filter_manager.exclude! build_metadata_hash_from([filter])
+        filter_manager.exclude! Metadata.build_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
@@ -770,7 +757,7 @@ module RSpec
       #
       # @see #extend
       def include(mod, *filters)
-        include_or_extend_modules << [:include, mod, build_metadata_hash_from(filters)]
+        include_or_extend_modules << [:include, mod, Metadata.build_hash_from(filters)]
       end
 
       # Tells RSpec to extend example groups with `mod`.  Methods defined in
@@ -803,7 +790,7 @@ module RSpec
       #
       # @see #include
       def extend(mod, *filters)
-        include_or_extend_modules << [:extend, mod, build_metadata_hash_from(filters)]
+        include_or_extend_modules << [:extend, mod, Metadata.build_hash_from(filters)]
       end
 
       # @private

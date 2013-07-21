@@ -27,37 +27,14 @@ module RSpec::Core
       end
     end
 
-    context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to false' do
-      before(:each) do
-        RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = false }
-      end
-
-      it 'processes string args as part of the description' do
-        group = ExampleGroup.describe("some", "separate", "strings")
-        expect(group.description).to eq("some separate strings")
-      end
-
-      it 'processes symbol args as part of the description' do
-        Kernel.stub(:warn) # to silence Symbols as args warning
-        group = ExampleGroup.describe(:some, :separate, :symbols)
-        expect(group.description).to eq("some separate symbols")
-      end
+    it 'does not treat the first argument as a metadata key even if it is a symbol' do
+      group = ExampleGroup.describe(:symbol)
+      expect(group.metadata).not_to include(:symbol)
     end
 
-    context 'when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to true' do
-      let(:group) { ExampleGroup.describe(:symbol) }
-
-      before(:each) do
-        RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = true }
-      end
-
-      it 'does not treat the first argument as a metadata key even if it is a symbol' do
-        expect(group.metadata).not_to include(:symbol)
-      end
-
-      it 'treats the first argument as part of the description when it is a symbol' do
-        expect(group.description).to eq("symbol")
-      end
+    it 'treats the first argument as part of the description when it is a symbol' do
+      group = ExampleGroup.describe(:symbol)
+      expect(group.description).to eq("symbol")
     end
 
     describe "top level group" do
