@@ -13,7 +13,7 @@ module RSpec
           end
         end
 
-        def matches?(given_proc, negative_expectation = false)
+        def matches?(given_proc, negative_expectation = false, &block)
           if negative_expectation && (expecting_specific_exception? || @expected_message)
             what_to_deprecate = if expecting_specific_exception? && @expected_message
                                   "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
@@ -24,6 +24,7 @@ module RSpec
                                 end
             RSpec.deprecate(what_to_deprecate, :replacement => "`expect { }.not_to raise_error()`")
           end
+          @block ||= block
           @raised_expected_error = false
           @with_expected_message = false
           @eval_block = false
