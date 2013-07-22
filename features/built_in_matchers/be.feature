@@ -3,31 +3,31 @@ Feature: "be" matchers
   There are several related "be" matchers:
 
     ```ruby
-    obj.should be_true  # passes if obj is truthy (not nil or false)
-    obj.should be_false # passes if obj is falsy (nil or false)
+    obj.should be_truthy  # passes if obj is truthy (not nil or false)
+    obj.should be_falsey # passes if obj is falsy (nil or false)
     obj.should be_nil   # passes if obj is nil
     obj.should be       # passes if obj is truthy (not nil or false)
     ```
 
-  Scenario: be_true matcher
-    Given a file named "be_true_spec.rb" with:
+  Scenario: be_truthy matcher
+    Given a file named "be_truthy_spec.rb" with:
       """ruby
-      describe "be_true matcher" do
-        specify { true.should be_true }
-        specify { 7.should be_true }
-        specify { "foo".should be_true }
-        specify { nil.should_not be_true }
-        specify { false.should_not be_true }
+      describe "be_truthy matcher" do
+        specify { true.should be_truthy }
+        specify { 7.should be_truthy }
+        specify { "foo".should be_truthy }
+        specify { nil.should_not be_truthy }
+        specify { false.should_not be_truthy }
 
         # deliberate failures
-        specify { true.should_not be_true }
-        specify { 7.should_not be_true }
-        specify { "foo".should_not be_true }
-        specify { nil.should be_true }
-        specify { false.should be_true }
+        specify { true.should_not be_truthy }
+        specify { 7.should_not be_truthy }
+        specify { "foo".should_not be_truthy }
+        specify { nil.should be_truthy }
+        specify { false.should be_truthy }
       end
       """
-    When I run `rspec be_true_spec.rb`
+    When I run `rspec be_truthy_spec.rb`
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """
@@ -55,25 +55,25 @@ Feature: "be" matchers
                   got: false
       """
 
-  Scenario: be_false matcher
-    Given a file named "be_false_spec.rb" with:
+  Scenario: be_falsey matcher
+    Given a file named "be_falsey_spec.rb" with:
       """ruby
-      describe "be_false matcher" do
-        specify { nil.should be_false }
-        specify { false.should be_false }
-        specify { true.should_not be_false }
-        specify { 7.should_not be_false }
-        specify { "foo".should_not be_false }
+      describe "be_falsey matcher" do
+        specify { nil.should be_falsey }
+        specify { false.should be_falsey }
+        specify { true.should_not be_falsey }
+        specify { 7.should_not be_falsey }
+        specify { "foo".should_not be_falsey }
 
         # deliberate failures
-        specify { nil.should_not be_false }
-        specify { false.should_not be_false }
-        specify { true.should be_false }
-        specify { 7.should be_false }
-        specify { "foo".should be_false }
+        specify { nil.should_not be_falsey }
+        specify { false.should_not be_falsey }
+        specify { true.should be_falsey }
+        specify { 7.should be_falsey }
+        specify { "foo".should be_falsey }
       end
       """
-    When I run `rspec be_false_spec.rb`
+    When I run `rspec be_falsey_spec.rb`
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """

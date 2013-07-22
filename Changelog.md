@@ -6,6 +6,7 @@ Breaking Changes for 3.0.0:
 * Remove explicit support for 1.8.6 (Jon Rowe)
 * Remove the deprecated `be_close` matcher, preferring `be_within` instead.
   (Sam Phippen)
+* Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)

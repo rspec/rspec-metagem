@@ -28,7 +28,7 @@ module RSpec
         end.new
 
         expect(actual).to eq :anything # to trigger the matches? method
-        expect(called).to be_true
+        expect(called).to be_truthy
       end
 
       it "describes itself" do

@@ -3,7 +3,7 @@ require 'rspec/matchers/dsl'
 module RSpec
   module Matchers
     module BuiltIn
-      class BeTrue < BaseMatcher
+      class BeTruthy < BaseMatcher
         def match(_, actual)
           !!actual
         end
@@ -17,7 +17,7 @@ module RSpec
         end
       end
 
-      class BeFalse < BaseMatcher
+      class BeFalsey < BaseMatcher
         def match(_, actual)
           !actual
         end

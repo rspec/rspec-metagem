@@ -140,7 +140,7 @@ module RSpec
           actual = Object.new
           matcher.should_receive(:matches?).with(actual).and_return(false)
           matcher.stub(:negative_failure_message).and_return("ignore")
-          expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_false
+          expect(RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher)).to be_falsey
         end
 
 
