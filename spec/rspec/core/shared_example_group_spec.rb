@@ -11,6 +11,14 @@ module RSpec::Core
       expect(Module.private_methods & seg_methods).to eq([])
     end
 
+    module SharedExampleGroup
+      describe Registry do
+        it 'can safely be reset' do
+          expect { Registry.clear }.to_not raise_error
+        end
+      end
+    end
+
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
         it "is exposed to the global namespace" do
