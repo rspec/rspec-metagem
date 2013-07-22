@@ -83,13 +83,13 @@ module RSpec::Core
           it "removes it if confirmed" do
             command_line_config.stub(:gets => 'yes')
             command_line_config.run
-            expect(File.exist?('autotest/discover.rb')).to be_false
+            expect(File.exist?('autotest/discover.rb')).to be_falsey
           end
 
           it "leaves it if not confirmed" do
             command_line_config.stub(:gets => 'no')
             command_line_config.run
-            expect(File.exist?('autotest/discover.rb')).to be_true
+            expect(File.exist?('autotest/discover.rb')).to be_truthy
           end
         end
 
@@ -107,13 +107,13 @@ module RSpec::Core
           it "removes it if confirmed" do
             command_line_config.stub(:gets => 'yes')
             command_line_config.run
-            expect(File.exist?('lib/tasks/rspec.rake')).to be_false
+            expect(File.exist?('lib/tasks/rspec.rake')).to be_falsey
           end
 
           it "leaves it if not confirmed" do
             command_line_config.stub(:gets => 'no')
             command_line_config.run
-            expect(File.exist?('lib/tasks/rspec.rake')).to be_true
+            expect(File.exist?('lib/tasks/rspec.rake')).to be_truthy
           end
         end
       end

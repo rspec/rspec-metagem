@@ -82,7 +82,7 @@ module RSpec::Core
               subject
               subject
             end
-            expect(group.run).to be_true, "expected subject block to be evaluated only once"
+            expect(group.run).to be_truthy, "expected subject block to be evaluated only once"
           end
         end
       end
@@ -343,7 +343,7 @@ module RSpec::Core
           it { should_not be_not_ok }
         end
 
-        expect(group.run).to be_true
+        expect(group.run).to be_truthy
       end
     end
 
@@ -443,7 +443,7 @@ module RSpec::Core
             end
           end
 
-          expect(group.run).to be_true
+          expect(group.run).to be_truthy
         end
       end
 

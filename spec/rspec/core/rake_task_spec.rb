@@ -29,7 +29,7 @@ module RSpec::Core
         end
 
         task.should_receive(:run_task) { true }
-        expect(Rake.application.invoke_task("rake_task_args[first_spec.rb]")).to be_true
+        expect(Rake.application.invoke_task("rake_task_args[first_spec.rb]")).to be_truthy
       end
     end
 
@@ -88,7 +88,7 @@ module RSpec::Core
       # since the config block is deferred til task invocation, must fake
       # calling the task so the expected pattern is picked up
       task.should_receive(:run_task) { true }
-      expect(Rake.application.invoke_task(task.name)).to be_true
+      expect(Rake.application.invoke_task(task.name)).to be_truthy
 
       specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end
