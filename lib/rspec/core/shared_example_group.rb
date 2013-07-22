@@ -91,7 +91,7 @@ module RSpec
         end
 
         def clear
-          @shared_example_groups.clear
+          shared_example_groups.clear
         end
 
       private
