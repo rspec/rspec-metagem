@@ -133,7 +133,7 @@ WARNING
   #       # context.example is deprecated, but RSpec.current_example is not
   #       # available until RSpec 3.0.
   #       fetch_current_example = RSpec.respond_to?(:current_example) ?
-  #         -> { |context| RSpec.current_example } : -> { |context| context.example }
+  #         proc { RSpec.current_example } : proc { |context| context.example }
   #
   #       c.before(:each) do
   #         example = fetch_current_example.call(self)
