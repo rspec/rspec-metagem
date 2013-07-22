@@ -141,7 +141,14 @@ module RSpec::Core
                                        elsif argument == false
                                          false
                                        else
-                                         argument.to_i
+                                         begin
+                                           Integer(argument)
+                                         rescue ArgumentError
+                                           Kernel.warn "Non integer specified as profile count, seperate " +
+                                                       "your path from options with -- e.g. " +
+                                                       "`rspec --profile -- #{argument}`"
+                                           true
+                                         end
                                        end
         end
 
