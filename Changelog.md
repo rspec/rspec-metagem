@@ -30,6 +30,29 @@ Enhancements
   (Matthew Boedicker)
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
 
+### 2.14.4 / 2013-07-21
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.3...v2.14.4)
+
+Bug fixes
+
+* Fix regression in 2.14: ensure configured requires (via `-r` option)
+  are loaded before spec files are loaded. This allows the spec files
+  to programatically change the file pattern (Jon Rowe).
+* Autoload `RSpec::Mocks` and `RSpec::Expectations` when referenced if
+  they are not already loaded (`RSpec::Matches` has been autoloaded
+  for a while). In the `rspec` gem, we changed it recently to stop
+  loading `rspec/mocks` and `rspec/expectations` by default, as some
+  users reported problems where they were intending to use mocha,
+  not rspec-mocks, but rspec-mocks was loaded and causing a conflict.
+  rspec-core loads mocks and expectations at the appropriate time, so
+  it seemed like a safe change -- but caused a problem for some authors
+  of libraries that integrate with RSpec. This fixes that problem.
+  (Myron Marston)
+* Gracefully handle a command like `rspec --profile path/to/spec.rb`:
+  the `path/to/spec.rb` arg was being wrongly treated as the `profile`
+  integer arg, which got cast `0` using `to_i`, causing no profiled
+  examples to be printed. (Jon Rowe)
+
 ### 2.14.3 / 2013-07-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.2...v2.14.3)
 
