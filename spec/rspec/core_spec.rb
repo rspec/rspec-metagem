@@ -69,5 +69,23 @@ describe RSpec do
       expect(File.executable? RSpec::Core.path_to_executable).to be_true
     end
   end
+
+  # This is hard to test :(. Best way I could come up with was starting
+  # fresh ruby process w/o this stuff already loaded.
+  it "loads mocks and expectations when the constants are referenced" do
+    code = "$LOAD_PATH.replace(#{$LOAD_PATH.inspect}); " +
+           'require "rspec"; ' +
+           "puts RSpec::Mocks.name; " +
+           "puts RSpec::Expectations.name"
+
+    result = `ruby -e '#{code}'`.chomp
+    expect(result.split("\n")).to eq(%w[ RSpec::Mocks RSpec::Expectations ])
+  end
+
+  it 'correctly raises an error when an invalid const is referenced' do
+    expect {
+      RSpec::NotAConst
+    }.to raise_error(NameError, /uninitialized constant RSpec::NotAConst/)
+  end
 end
 
