@@ -203,7 +203,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example('example') { expect(1).to eq(1) }
       end
       group.run
-      expect(after_run).to be_true, "expected after(:each) to be run"
+      expect(after_run).to be_truthy, "expected after(:each) to be run"
     end
 
     it "runs after(:each) when the example fails" do
@@ -213,7 +213,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example('example') { expect(1).to eq(2) }
       end
       group.run
-      expect(after_run).to be_true, "expected after(:each) to be run"
+      expect(after_run).to be_truthy, "expected after(:each) to be run"
     end
 
     it "runs after(:each) when the example raises an Exception" do
@@ -223,7 +223,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example('example') { raise "this error" }
       end
       group.run
-      expect(after_run).to be_true, "expected after(:each) to be run"
+      expect(after_run).to be_truthy, "expected after(:each) to be run"
     end
 
     context "with an after(:each) that raises" do
@@ -235,7 +235,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example('example') { expect(1).to eq(1) }
         end
         group.run
-        expect(after_run).to be_true, "expected after(:each) to be run"
+        expect(after_run).to be_truthy, "expected after(:each) to be run"
       end
 
       it "stores the exception" do
@@ -284,7 +284,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           expect(@before_all).to eq(:before_all)
           expect(@before_each).to eq(:before_each)
         end
-        expect(group.run(double.as_null_object)).to be_true
+        expect(group.run(double.as_null_object)).to be_truthy
         group.new do |example|
           %w[@before_all @before_each @after_each @after_all].each do |ivar|
             expect(example.instance_variable_get(ivar)).to be_nil
@@ -298,7 +298,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example("first") { expect(@before_all).not_to be_nil }
           example("second") { expect(@before_all).not_to be_nil }
         end
-        expect(group.run).to be_true
+        expect(group.run).to be_truthy
       end
     end
 

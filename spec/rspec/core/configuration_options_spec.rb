@@ -217,15 +217,15 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
 
   describe "--fail-fast" do
     it "defaults to false" do
-      expect(parse_options[:fail_fast]).to be_false
+      expect(parse_options[:fail_fast]).to be_falsey
     end
 
     it "sets fail_fast on config" do
-      expect(parse_options("--fail-fast")[:fail_fast]).to be_true
+      expect(parse_options("--fail-fast")[:fail_fast]).to be_truthy
     end
 
     it "sets fail_fast on config" do
-      expect(parse_options("--no-fail-fast")[:fail_fast]).to be_false
+      expect(parse_options("--no-fail-fast")[:fail_fast]).to be_falsey
     end
   end
 
@@ -315,10 +315,10 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
       with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
-        expect(options[:color]).to be_true
+        expect(options[:color]).to be_truthy
         expect(options[:line_numbers]).to eq(["37"])
         expect(options[:full_description]).to eq([/foo\ bar/])
-        expect(options[:drb]).to be_true
+        expect(options[:drb]).to be_truthy
         expect(options[:formatters]).to eq([['global']])
       end
     end
@@ -364,7 +364,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
         File.open("./custom.opts", "w") {|f| f << "--color"}
         options = parse_options("-O", "./custom.opts")
         expect(options[:format]).to be_nil
-        expect(options[:color]).to be_true
+        expect(options[:color]).to be_truthy
       end
 
       it "parses -e 'full spec description'" do

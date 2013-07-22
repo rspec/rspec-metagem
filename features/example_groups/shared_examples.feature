@@ -53,13 +53,13 @@ Feature: shared examples
         describe "#include?" do
           context "with an an item that is in the collection" do
             it "returns true" do
-              collection.include?(7).should be_true
+              collection.include?(7).should be_truthy
             end
           end
 
           context "with an an item that is not in the collection" do
             it "returns false" do
-              collection.include?(9).should be_false
+              collection.include?(9).should be_falsey
             end
           end
         end

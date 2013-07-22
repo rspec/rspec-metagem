@@ -298,7 +298,7 @@ module RSpec::Core
               end
             end
 
-            expect(group.run).to be_true
+            expect(group.run).to be_truthy
           end
         end
 
@@ -314,7 +314,7 @@ module RSpec::Core
               end
             end
 
-            expect(group.run).to be_true
+            expect(group.run).to be_truthy
           end
         end
       end
@@ -329,7 +329,7 @@ module RSpec::Core
             end
           end
 
-          expect(group.run).to be_true, "expected examples in group to pass"
+          expect(group.run).to be_truthy, "expected examples in group to pass"
         end
       end
 
@@ -402,11 +402,11 @@ module RSpec::Core
         let(:focused_example) { ExampleGroup.describe.send example_alias, "a focused example" }
 
         it 'defines an example that can be filtered with :focused => true' do
-          expect(focused_example.metadata[:focused]).to be_true
+          expect(focused_example.metadata[:focused]).to be_truthy
         end
 
         it 'defines an example that can be filtered with :focus => true' do
-          expect(focused_example.metadata[:focus]).to be_true
+          expect(focused_example.metadata[:focus]).to be_truthy
         end
       end
     end
@@ -431,7 +431,7 @@ module RSpec::Core
         group.example("example") {}
 
         group.run
-        expect(RSpec.wants_to_quit).to be_false
+        expect(RSpec.wants_to_quit).to be_falsey
       end
 
       it "runs the before eachs in order" do
@@ -594,7 +594,7 @@ module RSpec::Core
         group = ExampleGroup.describe
         group.before(:all) { raise "error in before all" }
         example = group.example("equality") { expect(1).to eq(2) }
-        expect(group.run).to be_false
+        expect(group.run).to be_falsey
 
         expect(example.metadata).not_to be_nil
         expect(example.metadata[:execution_result]).not_to be_nil
@@ -766,7 +766,7 @@ module RSpec::Core
           example('ex 2') { expect(1).to eq(1) }
         end
         group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
-        expect(group.run(reporter)).to be_true
+        expect(group.run(reporter)).to be_truthy
       end
 
       it "returns false if any of the examples fail" do
@@ -775,7 +775,7 @@ module RSpec::Core
           example('ex 2') { expect(1).to eq(2) }
         end
         group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
-        expect(group.run(reporter)).to be_false
+        expect(group.run(reporter)).to be_falsey
       end
 
       it "runs all examples, regardless of any of them failing" do
@@ -787,7 +787,7 @@ module RSpec::Core
         group.filtered_examples.each do |example|
           example.should_receive(:run)
         end
-        expect(group.run(reporter)).to be_false
+        expect(group.run(reporter)).to be_falsey
       end
     end
 
@@ -841,12 +841,12 @@ module RSpec::Core
     describe "ivars are not shared across examples" do
       it "(first example)" do
         @a = 1
-        expect(defined?(@b)).to be_false
+        expect(defined?(@b)).to be_falsey
       end
 
       it "(second example)" do
         @b = 2
-        expect(defined?(@a)).to be_false
+        expect(defined?(@a)).to be_falsey
       end
     end
 
@@ -889,8 +889,8 @@ module RSpec::Core
         it "sets RSpec.wants_to_quit flag if encountering an exception in before(:all)" do
           group.before(:all) { raise "error in before all" }
           group.example("equality") { expect(1).to eq(2) }
-          expect(group.run).to be_false
-          expect(RSpec.wants_to_quit).to be_true
+          expect(group.run).to be_falsey
+          expect(RSpec.wants_to_quit).to be_truthy
         end
       end
 
@@ -936,7 +936,7 @@ module RSpec::Core
             end
           end
 
-          expect(group.run(reporter)).to be_true
+          expect(group.run(reporter)).to be_truthy
         end
       end
 
@@ -953,7 +953,7 @@ module RSpec::Core
             end
           end
 
-          expect(group.run(reporter)).to be_false
+          expect(group.run(reporter)).to be_falsey
         end
       end
 
@@ -970,7 +970,7 @@ module RSpec::Core
             end
           end
 
-          expect(group.run(reporter)).to be_false
+          expect(group.run(reporter)).to be_falsey
         end
       end
     end
@@ -1042,7 +1042,7 @@ module RSpec::Core
               def foo; "bar"; end
             end
           end
-          expect(group.run).to be_true
+          expect(group.run).to be_truthy
         end
       end
     end

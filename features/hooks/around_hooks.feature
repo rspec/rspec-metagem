@@ -192,7 +192,7 @@ Feature: around hooks
         end
 
         it "runs the example in the correct context" do
-          included_in_configure_block.should be_true
+          included_in_configure_block.should be_truthy
         end
       end
       """

@@ -66,7 +66,7 @@ Feature: read command line configuration options from files
       """ruby
       describe "custom options file" do
         it "causes .rspec to be ignored" do
-          RSpec.configuration.color_enabled.should be_false
+          RSpec.configuration.color_enabled.should be_falsey
         end
       end
       """

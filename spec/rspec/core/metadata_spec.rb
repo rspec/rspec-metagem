@@ -69,27 +69,27 @@ module RSpec
           it "matches the group when the line_number is the example group line number" do
             # this call doesn't really make sense since filter_applies? is only called
             # for example metadata not group metadata
-            expect(group_metadata.filter_applies?(condition_key, group_condition)).to be_true
+            expect(group_metadata.filter_applies?(condition_key, group_condition)).to be_truthy
           end
 
           it "matches the example when the line_number is the grandparent example group line number" do
-            expect(example_metadata.filter_applies?(condition_key, parent_group_condition)).to be_true
+            expect(example_metadata.filter_applies?(condition_key, parent_group_condition)).to be_truthy
           end
 
           it "matches the example when the line_number is the parent example group line number" do
-            expect(example_metadata.filter_applies?(condition_key, group_condition)).to be_true
+            expect(example_metadata.filter_applies?(condition_key, group_condition)).to be_truthy
           end
 
           it "matches the example when the line_number is the example line number" do
-            expect(example_metadata.filter_applies?(condition_key, example_condition)).to be_true
+            expect(example_metadata.filter_applies?(condition_key, example_condition)).to be_truthy
           end
 
           it "matches when the line number is between this example and the next" do
-            expect(example_metadata.filter_applies?(condition_key, between_examples_condition)).to be_true
+            expect(example_metadata.filter_applies?(condition_key, between_examples_condition)).to be_truthy
           end
 
           it "does not match when the line number matches the next example" do
-            expect(example_metadata.filter_applies?(condition_key, next_example_condition)).to be_false
+            expect(example_metadata.filter_applies?(condition_key, next_example_condition)).to be_falsey
           end
         end
 
@@ -136,25 +136,25 @@ module RSpec
           it_has_behavior "matching by line number"
 
           it "ignores location filters for other files" do
-            expect(example_metadata.filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]})).to be_true
+            expect(example_metadata.filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]})).to be_truthy
           end
         end
 
         it "matches a proc with no arguments that evaluates to true" do
-          expect(example_metadata.filter_applies?(:if, lambda { true })).to be_true
+          expect(example_metadata.filter_applies?(:if, lambda { true })).to be_truthy
         end
 
         it "matches a proc that evaluates to true" do
-          expect(example_metadata.filter_applies?(:if, lambda { |v| v })).to be_true
+          expect(example_metadata.filter_applies?(:if, lambda { |v| v })).to be_truthy
         end
 
         it "does not match a proc that evaluates to false" do
-          expect(example_metadata.filter_applies?(:if, lambda { |v| !v })).to be_false
+          expect(example_metadata.filter_applies?(:if, lambda { |v| !v })).to be_falsey
         end
 
         it "matches a proc with an arity of 2" do
           example_metadata[:foo] = nil
-          expect(example_metadata.filter_applies?(:foo, lambda { |v, m| m == example_metadata })).to be_true
+          expect(example_metadata.filter_applies?(:foo, lambda { |v, m| m == example_metadata })).to be_truthy
         end
 
         it "raises an error when the proc has an incorrect arity" do
@@ -169,35 +169,35 @@ module RSpec
           }
 
           it "matches a symbol" do
-            expect(metadata_with_array.filter_applies?(:tag, 'one')).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, :one)).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 'two')).to be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'one')).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, :one)).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 'two')).to be_falsey
           end
 
           it "matches a string" do
-            expect(metadata_with_array.filter_applies?(:tag, 'three')).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, :three)).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 'tree')).to be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'three')).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, :three)).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 'tree')).to be_falsey
           end
 
           it "matches an integer" do
-            expect(metadata_with_array.filter_applies?(:tag, '2')).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 2)).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 3)).to be_false
+            expect(metadata_with_array.filter_applies?(:tag, '2')).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 2)).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 3)).to be_falsey
           end
 
           it "matches a regexp" do
-            expect(metadata_with_array.filter_applies?(:tag, 'four')).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 'fourtune')).to be_true
-            expect(metadata_with_array.filter_applies?(:tag, 'fortune')).to be_false
+            expect(metadata_with_array.filter_applies?(:tag, 'four')).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 'fourtune')).to be_truthy
+            expect(metadata_with_array.filter_applies?(:tag, 'fortune')).to be_falsey
           end
 
           it "matches a proc that evaluates to true" do
-            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'three' })).to be_true
+            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'three' })).to be_truthy
           end
 
           it "does not match a proc that evaluates to false" do
-            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'nothing' })).to be_false
+            expect(metadata_with_array.filter_applies?(:tag, lambda { |values| values.include? 'nothing' })).to be_falsey
           end
         end
       end

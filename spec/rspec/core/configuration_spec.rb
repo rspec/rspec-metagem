@@ -94,12 +94,12 @@ module RSpec::Core
 
     describe "#treat_symbols_as_metadata_keys_with_true_values?" do
       it 'defaults to false' do
-        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_false
+        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_falsey
       end
 
       it 'can be set to true' do
         config.treat_symbols_as_metadata_keys_with_true_values = true
-        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_true
+        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_truthy
       end
     end
 
@@ -127,7 +127,7 @@ module RSpec::Core
           mod_config.custom_setting = true
         end
 
-        expect(custom_config.custom_setting).to be_true
+        expect(custom_config.custom_setting).to be_truthy
       end
 
       it "raises if framework module doesn't support configuration" do
@@ -639,12 +639,12 @@ module RSpec::Core
     describe "#run_all_when_everything_filtered?" do
 
       it "defaults to false" do
-        expect(config.run_all_when_everything_filtered?).to be_false
+        expect(config.run_all_when_everything_filtered?).to be_falsey
       end
 
       it "can be queried with question method" do
         config.run_all_when_everything_filtered = true
-        expect(config.run_all_when_everything_filtered?).to be_true
+        expect(config.run_all_when_everything_filtered?).to be_truthy
       end
     end
 
@@ -661,8 +661,8 @@ module RSpec::Core
               config.tty = true
               config.output_stream.stub :tty? => true
 
-              expect(config.send(color_option)).to be_true
-              expect(config.send(color_option, output)).to be_true
+              expect(config.send(color_option)).to be_truthy
+              expect(config.send(color_option, output)).to be_truthy
             end
           end
 
@@ -674,8 +674,8 @@ module RSpec::Core
               config.tty = true
               config.output_stream.stub :tty? => false
 
-              expect(config.send(color_option)).to be_true
-              expect(config.send(color_option, output)).to be_true
+              expect(config.send(color_option)).to be_truthy
+              expect(config.send(color_option, output)).to be_truthy
             end
           end
 
@@ -687,8 +687,8 @@ module RSpec::Core
               config.tty = false
               config.output_stream.stub :tty? => true
 
-              expect(config.send(color_option)).to be_true
-              expect(config.send(color_option, output)).to be_true
+              expect(config.send(color_option)).to be_truthy
+              expect(config.send(color_option, output)).to be_truthy
             end
           end
 
@@ -700,8 +700,8 @@ module RSpec::Core
               config.tty = false
               config.output_stream.stub :tty? => false
 
-              expect(config.send(color_option)).to be_false
-              expect(config.send(color_option, output)).to be_false
+              expect(config.send(color_option)).to be_falsey
+              expect(config.send(color_option, output)).to be_falsey
             end
           end
 
@@ -724,7 +724,7 @@ module RSpec::Core
                 config.output_stream = StringIO.new
                 config.output_stream.stub :tty? => true
                 config.send "#{color_option}=", true
-                expect(config.send(color_option)).to be_true
+                expect(config.send(color_option)).to be_truthy
               end
 
               it "leaves output stream intact" do
@@ -749,7 +749,7 @@ module RSpec::Core
                 config.stub(:require) { raise LoadError }
                 config.send "#{color_option}=", true
                 config.color_enabled = true
-                expect(config.send(color_option)).to be_false
+                expect(config.send(color_option)).to be_falsey
               end
             end
           end
@@ -761,7 +761,7 @@ module RSpec::Core
         config.output_stream.stub :tty? => true
         config.force :color => true
         config.color = false
-        expect(config.color).to be_true
+        expect(config.color).to be_truthy
       end
     end
 
@@ -919,29 +919,29 @@ module RSpec::Core
 
       describe "the default :if filter" do
         it "does not exclude a spec with  { :if => true } metadata" do
-          expect(config.exclusion_filter[:if].call(true)).to be_false
+          expect(config.exclusion_filter[:if].call(true)).to be_falsey
         end
 
         it "excludes a spec with  { :if => false } metadata" do
-          expect(config.exclusion_filter[:if].call(false)).to be_true
+          expect(config.exclusion_filter[:if].call(false)).to be_truthy
         end
 
         it "excludes a spec with  { :if => nil } metadata" do
-          expect(config.exclusion_filter[:if].call(nil)).to be_true
+          expect(config.exclusion_filter[:if].call(nil)).to be_truthy
         end
       end
 
       describe "the default :unless filter" do
         it "excludes a spec with  { :unless => true } metadata" do
-          expect(config.exclusion_filter[:unless].call(true)).to be_true
+          expect(config.exclusion_filter[:unless].call(true)).to be_truthy
         end
 
         it "does not exclude a spec with { :unless => false } metadata" do
-          expect(config.exclusion_filter[:unless].call(false)).to be_false
+          expect(config.exclusion_filter[:unless].call(false)).to be_falsey
         end
 
         it "does not exclude a spec with { :unless => nil } metadata" do
-          expect(config.exclusion_filter[:unless].call(nil)).to be_false
+          expect(config.exclusion_filter[:unless].call(nil)).to be_falsey
         end
       end
     end
@@ -1020,7 +1020,7 @@ module RSpec::Core
       it "actually receives the new filter values" do
         config = Configuration.new
         config.backtrace_exclusion_patterns = [/.*/]
-        expect(config.backtrace_cleaner.exclude? "this").to be_true
+        expect(config.backtrace_cleaner.exclude? "this").to be_truthy
       end
     end
 
@@ -1040,33 +1040,33 @@ module RSpec::Core
       it "can be appended to" do
         config = Configuration.new
         config.backtrace_exclusion_patterns << /.*/
-        expect(config.backtrace_cleaner.exclude? "this").to be_true
+        expect(config.backtrace_cleaner.exclude? "this").to be_truthy
       end
     end
 
     describe ".backtrace_cleaner#exclude? defaults" do
       it "returns true for rspec files" do
-        expect(config.backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_true
+        expect(config.backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_truthy
       end
 
       it "returns true for spec_helper" do
-        expect(config.backtrace_cleaner.exclude?("spec/spec_helper.rb")).to be_true
+        expect(config.backtrace_cleaner.exclude?("spec/spec_helper.rb")).to be_truthy
       end
 
       it "returns true for java files (for JRuby)" do
-        expect(config.backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_true
+        expect(config.backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_truthy
       end
 
       it "returns true for files within installed gems" do
-        expect(config.backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_true
+        expect(config.backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_truthy
       end
 
       it "returns false for files in projects containing 'gems' in the name" do
-        expect(config.backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_false
+        expect(config.backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_falsey
       end
 
       it "returns false for something in the current working directory" do
-        expect(config.backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_false
+        expect(config.backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_falsey
       end
     end
 
@@ -1124,7 +1124,7 @@ module RSpec::Core
           end
 
           it "adds a predicate" do
-            expect(config.custom_option?).to be_false
+            expect(config.custom_option?).to be_falsey
           end
 
           it "can be overridden" do
@@ -1143,7 +1143,7 @@ module RSpec::Core
           end
 
           it "returns true for the predicate" do
-            expect(config.custom_option?).to be_true
+            expect(config.custom_option?).to be_truthy
           end
 
           it "can be overridden with a truthy value" do
@@ -1188,7 +1188,7 @@ module RSpec::Core
 
         it "delegates the predicate to the other option" do
           config.custom_option = true
-          expect(config.another_custom_option?).to be_true
+          expect(config.another_custom_option?).to be_truthy
         end
       end
     end
@@ -1335,11 +1335,11 @@ module RSpec::Core
       it "forces 'false' value" do
         config.add_setting :custom_option
         config.custom_option = true
-        expect(config.custom_option?).to be_true
+        expect(config.custom_option?).to be_truthy
         config.force :custom_option => false
-        expect(config.custom_option?).to be_false
+        expect(config.custom_option?).to be_falsey
         config.custom_option = true
-        expect(config.custom_option?).to be_false
+        expect(config.custom_option?).to be_falsey
       end
     end
 
@@ -1355,7 +1355,7 @@ module RSpec::Core
         before { config.order = :random }
 
         it 'returns true' do
-          expect(config.randomize?).to be_true
+          expect(config.randomize?).to be_truthy
         end
       end
 
@@ -1363,7 +1363,7 @@ module RSpec::Core
         before { config.order = nil }
 
         it 'returns false' do
-          expect(config.randomize?).to be_false
+          expect(config.randomize?).to be_falsey
         end
       end
     end

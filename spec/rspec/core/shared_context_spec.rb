@@ -28,10 +28,10 @@ describe RSpec::SharedContext do
 
     group.run
 
-    expect(before_all_hook).to be_true
-    expect(before_each_hook).to be_true
-    expect(after_each_hook).to be_true
-    expect(after_all_hook).to be_true
+    expect(before_all_hook).to be_truthy
+    expect(before_each_hook).to be_truthy
+    expect(after_each_hook).to be_truthy
+    expect(after_all_hook).to be_truthy
   end
 
   it "runs the before each hooks in configuration before those of the shared context" do

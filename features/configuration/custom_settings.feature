@@ -15,17 +15,17 @@ Feature: custom settings
         end
 
         it "acts false by default" do
-          RSpec.configuration.custom_setting.should be_false
+          RSpec.configuration.custom_setting.should be_falsey
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_setting?.should be_false
+          RSpec.configuration.custom_setting?.should be_falsey
         end
 
         it "can be overridden" do
           RSpec.configuration.custom_setting = true
-          RSpec.configuration.custom_setting.should be_true
-          RSpec.configuration.custom_setting?.should be_true
+          RSpec.configuration.custom_setting.should be_truthy
+          RSpec.configuration.custom_setting?.should be_truthy
         end
       end
       """
@@ -41,17 +41,17 @@ Feature: custom settings
 
       describe "custom setting" do
         it "is true by default" do
-          RSpec.configuration.custom_setting.should be_true
+          RSpec.configuration.custom_setting.should be_truthy
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_setting?.should be_true
+          RSpec.configuration.custom_setting?.should be_truthy
         end
 
         it "can be overridden" do
           RSpec.configuration.custom_setting = false
-          RSpec.configuration.custom_setting.should be_false
-          RSpec.configuration.custom_setting?.should be_false
+          RSpec.configuration.custom_setting.should be_falsey
+          RSpec.configuration.custom_setting?.should be_falsey
         end
       end
       """
@@ -71,11 +71,11 @@ Feature: custom settings
 
       describe "custom setting" do
         it "returns the value set in the last cofigure block to get eval'd" do
-          RSpec.configuration.custom_setting.should be_true
+          RSpec.configuration.custom_setting.should be_truthy
         end
 
         it "is exposed as a predicate" do
-          RSpec.configuration.custom_setting?.should be_true
+          RSpec.configuration.custom_setting?.should be_truthy
         end
       end
       """
