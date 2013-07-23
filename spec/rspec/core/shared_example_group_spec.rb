@@ -3,9 +3,6 @@ require 'spec_helper'
 module RSpec::Core
   describe SharedExampleGroup do
 
-        before do
-          SharedExampleGroup::Registry.clear
-        end
     ExampleModule = Module.new
     ExampleClass = Class.new
 
@@ -16,15 +13,7 @@ module RSpec::Core
 
     module SharedExampleGroup
       describe Registry do
-        #simulate the circumstances where reset would break...
-        around do |example|
-          @cache = Registry.instance_variable_get('@shared_example_groups')
-          Registry.instance_variable_set('@shared_example_groups',nil)
-          example.run
-          Registry.instance_variable_set('@shared_example_groups',@cache)
-        end
-
-        it "can be reset safely when there aren't any shared example groups" do
+        it 'can safely be reset' do
           expect { Registry.clear }.to_not raise_error
         end
       end
