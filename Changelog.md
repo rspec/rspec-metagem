@@ -29,7 +29,9 @@ Enhancements
 * Times in profile output are now bold instead of failure_color.
   (Matthew Boedicker)
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
-* Clear shared example registry using accessor. (thepoho, Jon Rowe)
+* Fix a `NoMethodError` that was being raised when there were no shared
+  examples or contexts declared and `RSpec.world.reset` is invoked.
+  (thepoho, Jon Rowe, Myron Marston)
 
 ### 2.14.4 / 2013-07-21
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.3...v2.14.4)
