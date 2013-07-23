@@ -31,27 +31,27 @@ Feature: "be" matchers
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """
-             expected: non-true value
+             expected: falsey value
                   got: true
       """
     And the output should contain:
       """
-             expected: non-true value
+             expected: falsey value
                   got: 7
       """
     And the output should contain:
       """
-             expected: non-true value
+             expected: falsey value
                   got: "foo"
       """
     And the output should contain:
       """
-             expected: true value
+             expected: truthy value
                   got: nil
       """
     And the output should contain:
       """
-             expected: true value
+             expected: truthy value
                   got: false
       """
 
@@ -77,27 +77,27 @@ Feature: "be" matchers
     Then the output should contain "10 examples, 5 failures"
     And the output should contain:
       """
-             expected: non-false value
+             expected: truthy value
                   got: nil
       """
     And the output should contain:
       """
-             expected: non-false value
+             expected: truthy value
                   got: false
       """
     And the output should contain:
       """
-             expected: false value
+             expected: falsey value
                   got: true
       """
     And the output should contain:
       """
-             expected: false value
+             expected: falsey value
                   got: 7
       """
     And the output should contain:
       """
-             expected: false value
+             expected: falsey value
                   got: "foo"
       """
 
