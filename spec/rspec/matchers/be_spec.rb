@@ -247,7 +247,7 @@ describe "expect(...).to be_truthy" do
   it "fails when actual equal?(false)" do
     expect {
       expect(false).to be_truthy
-    }.to fail_with("expected: true value\n     got: false")
+    }.to fail_with("expected: truthy value\n     got: false")
   end
 end
 
@@ -263,7 +263,7 @@ describe "expect(...).to be_falsey" do
   it "fails when actual equal?(true)" do
     expect {
       expect(true).to be_falsey
-    }.to fail_with("expected: false value\n     got: true")
+    }.to fail_with("expected: falsey value\n     got: true")
   end
 end
 
@@ -279,7 +279,7 @@ describe "expect(...).to be_falsy" do
   it "fails when actual equal?(true)" do
     expect {
       expect(true).to be_falsy
-    }.to fail_with("expected: false value\n     got: true")
+    }.to fail_with("expected: falsey value\n     got: true")
   end
 end
 
