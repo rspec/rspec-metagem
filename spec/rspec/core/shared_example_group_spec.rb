@@ -13,8 +13,8 @@ module RSpec::Core
 
     module SharedExampleGroup
       describe Registry do
-        it 'can safely be reset' do
-          expect { Registry.clear }.to_not raise_error
+        it "can safely be reset when there aren't any shared groups" do
+          expect { Registry.new.clear }.to_not raise_error
         end
       end
     end
@@ -44,7 +44,7 @@ module RSpec::Core
             it "captures the given #{type} and block in the collection of shared example groups" do
               implementation = lambda {}
               send(shared_method_name, object, &implementation)
-              expect(SharedExampleGroup::Registry.shared_example_groups[self][object]).to eq implementation
+              expect(SharedExampleGroup.registry.shared_example_groups[self][object]).to eq implementation
             end
           end
         end
@@ -64,7 +64,7 @@ module RSpec::Core
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
             send(shared_method_name, "name", :foo => :bar, &implementation)
-            expect(SharedExampleGroup::Registry.shared_example_groups[self]["name"]).to eq implementation
+            expect(SharedExampleGroup.registry.shared_example_groups[self]["name"]).to eq implementation
           end
 
           it "delegates extend on configuration" do

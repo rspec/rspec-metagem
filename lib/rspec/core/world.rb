@@ -22,7 +22,7 @@ module RSpec
 
       def reset
         example_groups.clear
-        SharedExampleGroup::Registry.clear
+        SharedExampleGroup.registry.clear
       end
 
       def filter_manager
