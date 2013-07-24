@@ -2,22 +2,26 @@ source "https://rubygems.org"
 
 gemspec
 
-def exists_and_version_matches lib, path, const
+exists_and_version_matches = lambda do |lib, path, const|
   version_path  = "lib/#{lib.gsub('-','/')}/version"
 
   return false unless File.exist?(path)
 
   require File.join(path, version_path)
 
+  lib_const = Object.const_get(const)
+
   core_major, core_minor, _ = *RSpec::Core::Version::STRING.split('.')
   lib_major,  lib_minor,  _ = *Object.const_get(const)::Version::STRING.split('.')
+
+  lib_const::Version.send(:remove_const,"STRING")
 
   core_major == lib_minor && core_minor == lib_minor
 end
 
 { 'rspec' => 'RSpec', 'rspec-expectations' => 'RSpec::Expectations', 'rspec-mocks' => 'RSpec::Mocks' }.each do |lib,const|
   library_path  = File.expand_path("../../#{lib}", __FILE__)
-  if exists_and_version_matches(lib, library_path, const)
+  if exists_and_version_matches.call(lib, library_path, const)
     gem lib, :path => library_path
   else
     gem lib, :git => "git://github.com/rspec/#{lib}.git"
