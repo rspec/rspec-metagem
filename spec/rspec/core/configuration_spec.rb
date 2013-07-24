@@ -503,6 +503,13 @@ module RSpec::Core
             config.send(setter, "rspec/**/*.spec"); line = __LINE__
             expect(Kernel).to have_received(:warn).with /has no effect.*#{__FILE__}:#{line}/
           end
+
+          it 'will not warn if reset is called after load_spec_files' do
+            config.load_spec_files
+            config.reset
+            expect(Kernel).to_not receive(:warn)
+            config.send(setter, "rspec/**/*.spec")
+          end
         end
       end
     end
