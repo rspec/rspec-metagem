@@ -9,7 +9,10 @@ def exists_and_version_matches lib, path, const
 
   require File.join(path, version_path)
 
-  RSpec::Core::Version::STRING == Object.const_get(const)::Version::STRING
+  core_major, core_minor, _ = *RSpec::Core::Version::STRING.split('.')
+  lib_major,  lib_minor,  _ = *Object.const_get(const)::Version::STRING.split('.')
+
+  core_major == lib_minor && core_minor == lib_minor
 end
 
 { 'rspec' => 'RSpec', 'rspec-expectations' => 'RSpec::Expectations', 'rspec-mocks' => 'RSpec::Mocks' }.each do |lib,const|
