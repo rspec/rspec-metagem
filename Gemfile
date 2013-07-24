@@ -2,9 +2,19 @@ source "https://rubygems.org"
 
 gemspec
 
-%w[rspec rspec-expectations rspec-mocks].each do |lib|
-  library_path = File.expand_path("../../#{lib}", __FILE__)
-  if File.exist?(library_path)
+def exists_and_version_matches lib, path, const
+  version_path  = "lib/#{lib.gsub('-','/')}/version"
+
+  return false unless File.exist?(path)
+
+  require File.join(path, version_path)
+
+  RSpec::Core::Version::STRING == Object.const_get(const)::Version::STRING
+end
+
+{ 'rspec' => 'RSpec', 'rspec-expectations' => 'RSpec::Expectations', 'rspec-mocks' => 'RSpec::Mocks' }.each do |lib,const|
+  library_path  = File.expand_path("../../#{lib}", __FILE__)
+  if exists_and_version_matches(lib, library_path, const)
     gem lib, :path => library_path
   else
     gem lib, :git => "git://github.com/rspec/#{lib}.git"
