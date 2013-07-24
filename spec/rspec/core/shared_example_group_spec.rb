@@ -11,6 +11,14 @@ module RSpec::Core
       expect(Module.private_methods & seg_methods).to eq([])
     end
 
+    module SharedExampleGroup
+      describe Registry do
+        it "can safely be reset when there aren't any shared groups" do
+          expect { Registry.new.clear }.to_not raise_error
+        end
+      end
+    end
+
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
         it "is exposed to the global namespace" do
@@ -36,7 +44,7 @@ module RSpec::Core
             it "captures the given #{type} and block in the collection of shared example groups" do
               implementation = lambda {}
               send(shared_method_name, object, &implementation)
-              expect(SharedExampleGroup::Registry.shared_example_groups[self][object]).to eq implementation
+              expect(SharedExampleGroup.registry.shared_example_groups[self][object]).to eq implementation
             end
           end
         end
@@ -56,7 +64,7 @@ module RSpec::Core
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
             send(shared_method_name, "name", :foo => :bar, &implementation)
-            expect(SharedExampleGroup::Registry.shared_example_groups[self]["name"]).to eq implementation
+            expect(SharedExampleGroup.registry.shared_example_groups[self]["name"]).to eq implementation
           end
 
           it "delegates extend on configuration" do
