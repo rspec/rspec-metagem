@@ -29,6 +29,8 @@ Enhancements
 * Times in profile output are now bold instead of failure_color.
   (Matthew Boedicker)
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
+
+Bugfix
 * Fix a `NoMethodError` that was being raised when there were no shared
   examples or contexts declared and `RSpec.world.reset` is invoked.
   (thepoho, Jon Rowe, Myron Marston)
