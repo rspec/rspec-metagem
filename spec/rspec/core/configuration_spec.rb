@@ -500,7 +500,7 @@ module RSpec::Core
           it 'will warn that it will have no effect' do
             allow(Kernel).to receive(:warn)
             config.load_spec_files
-            config.pattern = "rspec/**/*.spec"
+            config.send(setter, "rspec/**/*.spec"); line = __LINE__
             expect(Kernel).to have_received(:warn).with /has no effect.*#{__FILE__}:#{line}/
           end
         end

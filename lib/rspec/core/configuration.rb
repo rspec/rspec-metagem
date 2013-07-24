@@ -127,6 +127,7 @@ module RSpec
         end
         @pattern = value
       end
+      alias :filename_pattern= :pattern=
 
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
