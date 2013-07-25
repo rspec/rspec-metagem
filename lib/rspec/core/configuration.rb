@@ -121,6 +121,14 @@ module RSpec
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
       add_setting :pattern, :alias_with => :filename_pattern
 
+      def pattern= value
+        if @spec_files_loaded
+          Kernel.warn "WARNING: Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files. Called from #{caller.first}"
+        end
+        @pattern = value
+      end
+      alias :filename_pattern= :pattern=
+
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
       add_setting :profile_examples
@@ -192,6 +200,7 @@ module RSpec
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
+        @spec_files_loaded = false
 
         @backtrace_cleaner = BacktraceCleaner.new
 
@@ -226,6 +235,7 @@ module RSpec
 
       # @private
       def reset
+        @spec_files_loaded = false
         @reporter = nil
         @formatters.clear
       end
@@ -846,6 +856,7 @@ module RSpec
       # @private
       def load_spec_files
         files_to_run.uniq.each {|f| load File.expand_path(f) }
+        @spec_files_loaded = true
         raise_if_rspec_1_is_loaded
       end
 

@@ -495,6 +495,22 @@ module RSpec::Core
             expect(config.files_to_run).to include("#{dir}/a_bar.rb")
           end
         end
+
+        context "after files have already been loaded" do
+          it 'will warn that it will have no effect' do
+            allow(Kernel).to receive(:warn)
+            config.load_spec_files
+            config.send(setter, "rspec/**/*.spec"); line = __LINE__
+            expect(Kernel).to have_received(:warn).with /has no effect.*#{__FILE__}:#{line}/
+          end
+
+          it 'will not warn if reset is called after load_spec_files' do
+            config.load_spec_files
+            config.reset
+            expect(Kernel).to_not receive(:warn)
+            config.send(setter, "rspec/**/*.spec")
+          end
+        end
       end
     end
 
