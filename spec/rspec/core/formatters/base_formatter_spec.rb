@@ -6,6 +6,15 @@ RSpec.describe RSpec::Core::Formatters::BaseFormatter do
   let(:output)    { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }
 
+  describe '#notifications' do
+    it 'knows which notifications it responds to' do
+      expect(formatter.notifications).to eq([
+        :start, :example_group_started, :example_started, :example_pending,
+        :example_failed, :dump_summary, :close
+      ])
+    end
+  end
+
   describe "read_failed_line" do
     it "deals gracefully with a heterogeneous language stack trace" do
       exception = double(:Exception, :backtrace => [

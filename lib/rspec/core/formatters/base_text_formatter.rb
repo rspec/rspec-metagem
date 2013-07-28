@@ -11,6 +11,12 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseFormatter
       # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
+
+        def notifications
+          (super + %w[message dump_failures dump_summary dump_profile dump_pending
+                      seed close].map(&:to_sym) ).uniq
+        end
+
         def message(message)
           output.puts message
         end
@@ -74,6 +80,7 @@ module RSpec
           dump_profile_slowest_example_groups
         end
 
+        # @api private
         def dump_profile_slowest_examples
           sorted_examples = slowest_examples
 
@@ -88,6 +95,7 @@ module RSpec
           end
         end
 
+        # @api private
         def dump_profile_slowest_example_groups
 
           sorted_groups = slowest_groups
@@ -103,8 +111,9 @@ module RSpec
           end
         end
 
-        # @api public
+        # @api private
         #
+        # To be refactored to notification
         # Outputs summary with number of examples, failures and pending.
         #
         def summary_line(example_count, failure_count, pending_count)

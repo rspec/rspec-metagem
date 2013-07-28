@@ -4,6 +4,13 @@ require 'tempfile'
 
 module RSpec::Core::Formatters
   RSpec.describe DeprecationFormatter do
+
+    describe '#notifications' do
+      it 'returns the notifications the deprecation formatter implements' do
+        expect(DeprecationFormatter.new(nil, nil).notifications).to eq [:deprecation, :deprecation_summary]
+      end
+    end
+
     describe "#deprecation" do
       let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
       let(:summary_stream)     { StringIO.new }

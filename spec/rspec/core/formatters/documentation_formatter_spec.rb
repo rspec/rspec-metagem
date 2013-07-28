@@ -3,10 +3,24 @@ require 'rspec/core/formatters/documentation_formatter'
 
 module RSpec::Core::Formatters
   RSpec.describe DocumentationFormatter do
-    let(:reporter) { RSpec::Core::Reporter.new(RSpec.configuration) }
+    let(:output)    { StringIO.new }
+    let(:config)    { RSpec::Core::Configuration.new }
+    let(:reporter)  { RSpec::Core::Reporter.new(config) }
+    let(:formatter) { RSpec::Core::Formatters::DocumentationFormatter.new(output) }
+
+    before do
+      reporter.register_listener formatter, *formatter.notifications
+      allow(config).to receive(:color_enabled?) { false }
+    end
+
+    it "lists its additional notifications" do
+      expect(formatter.notifications).to include(
+        :example_group_started, :example_group_finished, :example_passed,
+        :example_failed
+       )
+    end
 
     it "numbers the failures" do
-
       examples = [
         double("example 1",
                :description => "first example",
@@ -17,12 +31,6 @@ module RSpec::Core::Formatters
                :execution_result => {:status => 'failed', :exception => Exception.new }
               )
       ]
-
-      output = StringIO.new
-      allow(RSpec.configuration).to receive(:color_enabled?) { false }
-
-      formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
-
       examples.each {|e| formatter.example_failed(e) }
 
       expect(output.string).to match(/first example \(FAILED - 1\)/m)
@@ -30,11 +38,6 @@ module RSpec::Core::Formatters
     end
 
     it "represents nested group using hierarchy tree" do
-      output = StringIO.new
-      allow(RSpec.configuration).to receive(:color_enabled?) { false }
-
-      formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
-
       group = RSpec::Core::ExampleGroup.describe("root")
       context1 = group.describe("context 1")
       context1.example("nested example 1.1"){}
@@ -65,11 +68,6 @@ root
     end
 
     it "strips whitespace for each row" do
-      output = StringIO.new
-      allow(RSpec.configuration).to receive(:color_enabled?) { false }
-
-      formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
-
       group = RSpec::Core::ExampleGroup.describe(" root ")
       context1 = group.describe(" nested ")
       context1.example(" example 1 ") {}

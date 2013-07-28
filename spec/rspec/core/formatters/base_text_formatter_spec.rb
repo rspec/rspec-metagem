@@ -2,8 +2,21 @@ require 'spec_helper'
 require 'rspec/core/formatters/base_text_formatter'
 
 RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
-  let(:output) { StringIO.new }
+  let(:output)    { StringIO.new }
+  let(:config)    { RSpec::Core::Configuration.new }
+  let(:reporter)  { RSpec::Core::Reporter.new config }
   let(:formatter) { RSpec::Core::Formatters::BaseTextFormatter.new(output) }
+
+  before do
+    reporter.register_listener formatter, *formatter.notifications
+  end
+
+  it 'lists its additional notifications' do
+    expect(formatter.notifications).to include(
+      :message, :dump_failures, :dump_summary, :dump_profile,
+      :dump_pending, :seed, :close
+    )
+  end
 
   describe "#summary_line" do
     it "with 0s outputs pluralized (excluding pending)" do
@@ -25,7 +38,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         it("fails") { fail }
       end
       line = __LINE__ - 2
-      group.run(formatter)
+      group.run(reporter)
       formatter.dump_commands_to_rerun_failed_examples
       expect(output.string).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
     end
@@ -37,7 +50,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_failures
-      group.run(formatter)
+      group.run(reporter)
       formatter.dump_failures
     end
 
@@ -153,7 +166,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_pending
-      group.run(formatter)
+      group.run(reporter)
       formatter.dump_pending
     end
 

@@ -12,10 +12,20 @@ require 'rspec/core/reporter'
 # it "shows the seed if run was randomized"
 # it "lists pending specs that were fixed"
 RSpec.describe RSpec::Core::Formatters::JsonFormatter do
-  let(:output) { StringIO.new }
+  let(:output)    { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::JsonFormatter.new(output) }
-  let(:config) { RSpec::Core::Configuration.new }
-  let(:reporter) { RSpec::Core::Reporter.new(config).tap { |reporter| formatter.setup reporter } }
+  let(:config)    { RSpec::Core::Configuration.new }
+  let(:reporter)  { RSpec::Core::Reporter.new(config) }
+
+  before do
+    reporter.register_listener formatter, *formatter.notifications
+  end
+
+  it "lists its additional notifications" do
+    expect(formatter.notifications).to include(
+      :message, :dump_summary, :dump_profile, :close, :stop
+    )
+  end
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do

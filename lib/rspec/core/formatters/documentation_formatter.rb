@@ -9,6 +9,11 @@ module RSpec
           @group_level = 0
         end
 
+        def notifications
+          (super + [:example_group_started, :example_group_finished,
+                    :example_passed, :example_pending, :example_failed]).uniq
+        end
+
         def example_group_started(example_group)
           super(example_group)
 
@@ -23,7 +28,6 @@ module RSpec
         end
 
         def example_passed(example)
-          super(example)
           output.puts passed_output(example)
         end
 
@@ -37,14 +41,7 @@ module RSpec
           output.puts failure_output(example, example.execution_result[:exception])
         end
 
-        def failure_output(example, exception)
-          failure_color("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
-        end
-
-        def next_failure_index
-          @next_failure_index ||= 0
-          @next_failure_index += 1
-        end
+      private
 
         def passed_output(example)
           success_color("#{current_indentation}#{example.description.strip}")
@@ -54,6 +51,15 @@ module RSpec
           pending_color("#{current_indentation}#{example.description.strip} (PENDING: #{message})")
         end
 
+        def failure_output(example, exception)
+          failure_color("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
+        end
+
+        def next_failure_index
+          @next_failure_index ||= 0
+          @next_failure_index += 1
+        end
+
         def current_indentation
           '  ' * @group_level
         end
@@ -61,6 +67,7 @@ module RSpec
         def example_group_chain
           example_group.parent_groups.reverse
         end
+
       end
     end
   end

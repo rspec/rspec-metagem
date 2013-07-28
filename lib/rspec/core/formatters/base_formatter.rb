@@ -31,6 +31,16 @@ module RSpec
 
         # @api public
         #
+        # This method is invoked during the setup phase to register
+        # a formatters with the reporter
+        #
+        def notifications
+          %w[start example_group_started example_started example_pending
+             example_failed dump_summary close].map(&:to_sym)
+        end
+
+        # @api public
+        #
         # This method is invoked before any examples are run, right after
         # they have all been collected. This can be useful for special
         # formatters that need to provide progress on feedback (graphical ones).
@@ -58,13 +68,12 @@ module RSpec
           @example_group = example_group
         end
 
+        # @method example_group_finished
         # @api public
         #
         # Invoked at the end of the execution of each example group.
         #
         # @param example_group subclass of `RSpec::Core::ExampleGroup`
-        def example_group_finished(example_group)
-        end
 
         # @api public
         #
@@ -76,13 +85,12 @@ module RSpec
           examples << example
         end
 
+        # @method example_passed
         # @api public
         #
         # Invoked when an example passes.
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
-        def example_passed(example)
-        end
 
         # Invoked when an example is pending.
         #
@@ -102,22 +110,21 @@ module RSpec
           @failed_examples << example
         end
 
+        # @method message
         # @api public
         #
         # Used by the reporter to send messages to the output stream.
         #
         # @param [String] message
-        def message(message)
-        end
 
+        # @method stop
         # @api public
         #
         # Invoked after all examples have executed, before dumping post-run reports.
         #
         # @return [nil]
-        def stop
-        end
 
+        # @method start_dump
         # @api public
         #
         # This method is invoked after all of the examples have executed. The next method
@@ -125,16 +132,13 @@ module RSpec
         # (BaseTextFormatter then calls {#dump_failure} once for each failed example.)
         #
         # @return [nil]
-        def start_dump
-        end
 
+        # @method dump_failures
         # @api public
         #
         # Dumps detailed information about each example failure.
         #
         # @return [nil]
-        def dump_failures
-        end
 
         # @api public
         #
@@ -152,27 +156,21 @@ module RSpec
           @pending_count = pending_count
         end
 
+        # @method dump_pending
         # @api public
         #
         # Outputs a report of pending examples.  This gets invoked
         # after the summary if option is set to do so.
         #
         # @return [nil]
-        def dump_pending
-        end
 
+        # @method dump_profile
         # @api public
         #
         # This methods is invoked form formatters to show slowest examples and example groups
         # when using `--profile COUNT` (default 10).
         #
         # @return [nil]
-        def dump_profile
-        end
-
-        # @private not intended for use outside RSpec.
-        def seed(number)
-        end
 
         # @api public
         #

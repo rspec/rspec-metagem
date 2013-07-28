@@ -2,11 +2,13 @@ require 'rspec/core/formatters/base_text_formatter'
 module RSpec
   module Core
     module Formatters
-
       class ProgressFormatter < BaseTextFormatter
 
+        def notifications
+          (super + [:example_passed, :example_pending, :example_failed, :start_dump]).uniq
+        end
+
         def example_passed(example)
-          super(example)
           output.print success_color('.')
         end
 
@@ -21,12 +23,10 @@ module RSpec
         end
 
         def start_dump
-          super()
           output.puts
         end
 
       end
-
     end
   end
 end

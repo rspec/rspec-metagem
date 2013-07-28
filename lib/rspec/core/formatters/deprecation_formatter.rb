@@ -14,6 +14,10 @@ module RSpec
           @count = 0
         end
 
+        def notifications
+          [:deprecation, :deprecation_summary]
+        end
+
         def printer
           @printer ||= case deprecation_stream
                        when File

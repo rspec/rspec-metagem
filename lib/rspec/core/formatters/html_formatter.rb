@@ -14,24 +14,12 @@ module RSpec
           @printer = HtmlPrinter.new(output)
         end
 
-        private
-        def method_missing(m, *a, &b)
-          # no-op
+        def notifications
+          (super + [:start, :example_group_started, :start_dump,
+                    :example_started, :example_passed, :example_failed,
+                    :example_pending, :dump_summary] - [:dump_failures]).uniq
         end
-
-        public
-        def message(message)
-        end
-
-        # The number of the currently running example_group
-        def example_group_number
-          @example_group_number
-        end
-
-        # The number of the currently running example (a global counter)
-        def example_number
-          @example_number
-        end
+        undef dump_failures
 
         def start(example_count)
           super(example_count)
@@ -57,7 +45,6 @@ module RSpec
         end
 
         def example_started(example)
-          super(example)
           @example_number += 1
         end
 
@@ -106,12 +93,46 @@ module RSpec
         end
 
         def example_pending(example)
-
           @printer.make_header_yellow unless @header_red
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
           @printer.print_example_pending( example.description, example.metadata[:execution_result][:pending_message] )
           @printer.flush
+        end
+
+        def dump_summary(duration, example_count, failure_count, pending_count)
+          @printer.print_summary(
+            dry_run?,
+            duration,
+            example_count,
+            failure_count,
+            pending_count
+          )
+          @printer.flush
+        end
+
+      private
+
+        # The number of the currently running example_group
+        def example_group_number
+          @example_group_number
+        end
+
+        # The number of the currently running example (a global counter)
+        def example_number
+          @example_number
+        end
+
+        def method_missing(m, *a, &b)
+          # no-op
+        end
+
+        def percent_done
+          result = 100.0
+          if @example_count > 0
+            result = (((example_number).to_f / @example_count.to_f * 1000).to_i / 10.0).to_f
+          end
+          result
         end
 
         # Override this method if you wish to output extra HTML for a failed spec. For example, you
@@ -125,30 +146,6 @@ module RSpec
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"
         end
 
-        def percent_done
-          result = 100.0
-          if @example_count > 0
-            result = (((example_number).to_f / @example_count.to_f * 1000).to_i / 10.0).to_f
-          end
-          result
-        end
-
-        def dump_failures
-        end
-
-        def dump_pending
-        end
-
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          @printer.print_summary(
-            dry_run?,
-            duration,
-            example_count,
-            failure_count,
-            pending_count
-          )
-          @printer.flush
-        end
       end
     end
   end
