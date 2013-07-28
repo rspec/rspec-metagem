@@ -1,9 +1,6 @@
 module RSpec::Core::Ordering
   class IdentityOrdering
-    def initialize(configuration=RSpec.configuration)
-    end
-
-    def order(items)
+    def order(items, configuration = RSpec.configuration)
       items
     end
 

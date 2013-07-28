@@ -752,7 +752,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(1) }
           example('ex 2') { expect(1).to eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         expect(group.run(reporter)).to be_truthy
       end
 
@@ -761,7 +761,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(1) }
           example('ex 2') { expect(1).to eq(2) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         expect(group.run(reporter)).to be_falsey
       end
 
@@ -770,7 +770,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(2) }
           example('ex 2') { expect(1).to eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         group.filtered_examples.each do |example|
           example.should_receive(:run)
         end

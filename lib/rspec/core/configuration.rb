@@ -232,16 +232,21 @@ module RSpec
       # TODO: consider deprecating and removing this rather than aliasing in rspec-3?
       alias backtrace_cleaner backtrace_formatter
 
+      attr_reader :ordering_registry
+
       def initialize
         @expectation_frameworks = []
         @include_or_extend_modules = []
         @mock_framework = nil
         @files_to_run = []
         @formatters = []
+        @order = "default"
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
         @spec_files_loaded = false
+
+        @ordering_registry = OrderingRegistry.new(self)
 
         @backtrace_formatter = BacktraceFormatter.new
 
@@ -950,15 +955,8 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_examples(ordering=nil, &block)
-        ordering = Ordering::ProcOrdering.new(self, &block) if block_given?
-
-        @example_ordering = ordering
-        @order = "custom" unless ordering.built_in?
-      end
-
-      # @private
-      def example_ordering_block
-        @example_ordering ||= Ordering::IdentityOrdering.new(self)
+        strategy = @ordering_registry.set_global_example_order(ordering, &block)
+        @order = "custom" unless strategy.built_in?
       end
 
       # Sets a strategy by which to order groups.
@@ -975,15 +973,8 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_groups(ordering=nil, &block)
-        ordering = Ordering::ProcOrdering.new(self, &block) if block_given?
-
-        @group_ordering = ordering
-        @order = "custom" unless ordering.built_in?
-      end
-
-      # @private
-      def group_ordering_block
-        @group_ordering ||= Ordering::IdentityOrdering.new(self)
+        strategy = @ordering_registry.set_global_group_order(ordering, &block)
+        @order = "custom" unless strategy.built_in?
       end
 
       # Sets a strategy by which to order groups and examples.
@@ -1000,10 +991,8 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_groups_and_examples(ordering=nil, &block)
-        ordering = Ordering::ProcOrdering.new(self, &block) if block_given?
-
-        order_groups(ordering)
-        order_examples(ordering)
+        order_groups(ordering, &block)
+        order_examples(ordering, &block)
       end
 
       # Set Ruby warnings on or off
@@ -1118,7 +1107,9 @@ module RSpec
       end
 
       def order_and_seed_from_seed(value)
-        order_groups_and_examples(Ordering::RandomOrdering.new(self))
+        @ordering_registry.set_global_example_order(:random)
+        @ordering_registry.set_global_group_order(:random)
+
         @order, @seed = 'rand', value.to_i
         [@order, @seed]
       end
@@ -1134,10 +1125,13 @@ module RSpec
         @seed  = seed = seed.to_i if seed
 
         if randomize?
-          order_groups_and_examples(Ordering::RandomOrdering.new(self))
+          @ordering_registry.set_global_example_order(:random)
+          @ordering_registry.set_global_group_order(:random)
         elsif order == 'default'
           @order, @seed = nil, nil
-          order_groups_and_examples(Ordering::IdentityOrdering.new(self))
+
+          @ordering_registry.set_global_example_order(:default)
+          @ordering_registry.set_global_group_order(:default)
         end
 
         return order, seed

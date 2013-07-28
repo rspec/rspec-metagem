@@ -19,6 +19,10 @@ module RSpec
       include Pending
       extend SharedExampleGroup
 
+      def self.order
+        nil
+      end
+
       # @private
       def self.world
         RSpec.world
@@ -288,6 +292,11 @@ WARNING
       # @private
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
+        if args.last[:order]
+          subclass.define_singleton_method(:order) { args.last[:order] }
+        elsif parent && parent.order
+          subclass.define_singleton_method(:order) { parent.order }
+        end
         subclass.set_it_up(*args)
         subclass.module_eval(&example_group_block) if example_group_block
 
@@ -302,7 +311,7 @@ WARNING
 
       # @private
       def self.children
-        @children ||= [].extend(Extensions::Ordered::ExampleGroups)
+        @children ||= []
       end
 
       # @private
@@ -344,6 +353,7 @@ WARNING
         args << Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
+        @order = nil
         hooks.register_globals(self, RSpec.configuration.hooks)
         world.configure_group(self)
       end
@@ -417,7 +427,7 @@ WARNING
         begin
           run_before_all_hooks(new)
           result_for_this_group = run_examples(reporter)
-          results_for_descendants = children.ordered.map { |child| child.run(reporter) }.all?
+          results_for_descendants = ordered_children.map { |child| child.run(reporter) }.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           RSpec.wants_to_quit = true if fail_fast?
@@ -429,9 +439,25 @@ WARNING
         end
       end
 
+      # :order => MyStrategy.new
+      #
+      # :order => :my_stragegy
+      # RSpec.configuration.register_ordering_strategy :order, MyStrategy.new
+      #
+      # @private
+      def self.ordered_children
+        ordering_strategy.order(children)
+      end
+
+      # @private
+      def self.ordering_strategy
+        strategy_name = metadata[:order]
+        RSpec.configuration.ordering_registry.resolve_example_ordering(strategy_name)
+      end
+
       # @private
       def self.run_examples(reporter)
-        filtered_examples.ordered.map do |example|
+        ordering_strategy.order(filtered_examples).map do |example|
           next if RSpec.wants_to_quit
           instance = new
           set_ivars(instance, before_all_ivars)

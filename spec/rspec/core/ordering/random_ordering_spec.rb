@@ -6,9 +6,9 @@ module RSpec::Core::Ordering
       configuration = RSpec::Core::Configuration.new
       configuration.seed = 1234
 
-      strategy = RandomOrdering.new(configuration)
+      strategy = RandomOrdering.new
       # 3, 4, 2, 1 is the shuffled order caused by seed 1234.
-      expect(strategy.order([1, 2, 3, 4])).to eq([3, 4, 2, 1])
+      expect(strategy.order([1, 2, 3, 4], configuration)).to eq([3, 4, 2, 1])
     end
 
     it 'seeds the random number generator' do
@@ -18,8 +18,8 @@ module RSpec::Core::Ordering
       configuration = RSpec::Core::Configuration.new
       configuration.seed = 1234
 
-      strategy = RandomOrdering.new(configuration)
-      strategy.order([1, 2, 3, 4])
+      strategy = RandomOrdering.new
+      strategy.order([1, 2, 3, 4], configuration)
     end
 
     it 'resets random number generation' do
