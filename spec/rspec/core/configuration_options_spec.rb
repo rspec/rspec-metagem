@@ -7,9 +7,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
 
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
     without_env_vars 'HOME' do
-      coo = RSpec::Core::ConfigurationOptions.new([])
-      coo.should_receive(:warn)
-      coo.parse_options
+      expect(RSpec).to receive(:warning)
+      RSpec::Core::ConfigurationOptions.new([]).parse_options
     end
   end
 

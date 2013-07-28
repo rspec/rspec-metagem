@@ -9,7 +9,6 @@ module RSpec::Core
         let(:command_line_config) { ProjectInitializer.new }
 
         before do
-          command_line_config.stub(:warn)
           command_line_config.stub(:puts)
           command_line_config.stub(:gets => 'no')
         end

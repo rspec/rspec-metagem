@@ -109,7 +109,7 @@ module RSpec
         def warn_if_key_taken(source, key, new_block)
           return unless existing_block = example_block_for(source, key)
 
-          Kernel.warn <<-WARNING.gsub(/^ +\|/, '')
+          RSpec.warn_with <<-WARNING.gsub(/^ +\|/, '')
             |WARNING: Shared example group '#{key}' has been previously defined at:
             |  #{formatted_location existing_block}
             |...and you are now defining it at:

@@ -477,16 +477,15 @@ module RSpec::Core
 
         context "after files have already been loaded" do
           it 'will warn that it will have no effect' do
-            allow(Kernel).to receive(:warn)
+            expect(RSpec).to receive(:warning).with /has no effect/
             config.load_spec_files
             config.send(setter, "rspec/**/*.spec"); line = __LINE__
-            expect(Kernel).to have_received(:warn).with(/has no effect.*#{__FILE__}:#{line}/)
           end
 
           it 'will not warn if reset is called after load_spec_files' do
             config.load_spec_files
             config.reset
-            expect(Kernel).to_not receive(:warn)
+            expect(RSpec).to_not receive(:warning)
             config.send(setter, "rspec/**/*.spec")
           end
         end
@@ -705,7 +704,6 @@ module RSpec::Core
               @original_host  = RbConfig::CONFIG['host_os']
               RbConfig::CONFIG['host_os'] = 'mingw'
               config.stub(:require)
-              config.stub(:warn)
             end
 
             after do
@@ -733,10 +731,13 @@ module RSpec::Core
             end
 
             context "with ANSICON NOT available" do
+              before do
+                allow(RSpec).to receive(:warning)
+              end
+
               it "warns to install ANSICON" do
                 config.stub(:require) { raise LoadError }
-                config.should_receive(:warn).
-                  with(/You must use ANSICON/)
+                expect(RSpec).to receive(:warning).with(/You must use ANSICON/)
                 config.send "#{color_option}=", true
               end
 
@@ -959,8 +960,6 @@ module RSpec::Core
     end
 
     describe "line_numbers=" do
-      before { config.filter_manager.stub(:warn) }
-
       it "sets the line numbers" do
         config.line_numbers = ['37']
         expect(config.filter).to eq({:line_numbers => [37]})

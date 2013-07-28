@@ -138,7 +138,7 @@ module RSpec
 
       def pattern= value
         if @spec_files_loaded
-          Kernel.warn "WARNING: Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files. Called from #{CallerFilter.first_non_rspec_line}"
+          RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
         end
         @pattern = value
       end
@@ -494,7 +494,7 @@ module RSpec
       def color=(bool)
         if bool
           if RSpec.windows_os? and not ENV['ANSICON']
-            warn "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
+            RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
             @color = false
           else
             @color = true

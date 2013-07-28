@@ -47,7 +47,7 @@ module RSpec::Core
           original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
           warning = nil
-          Kernel.stub(:warn) { |msg| warning = msg }
+          allow(RSpec).to receive(:warn_with) { |msg| warning = msg }
 
           group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
