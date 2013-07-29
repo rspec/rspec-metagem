@@ -1,5 +1,9 @@
 require 'spec_helper'
 
+module RandomTopLevelModule
+  shared_examples_for("top level in module") {}
+end
+
 module RSpec::Core
   describe SharedExampleGroup do
 
@@ -36,6 +40,11 @@ module RSpec::Core
           group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
           expect(warning).to include('some shared group', original_declaration, second_declaration)
+        end
+
+        it 'works with top level defined examples in modules' do
+          expect(RSpec::configuration.reporter).to_not receive(:deprecation)
+          group = ExampleGroup.describe('example group') { include_context 'top level in module' }
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|

@@ -19,6 +19,7 @@ module RSpec
       include MemoizedHelpers
       include Pending
       include SharedExampleGroup
+      extend SharedExampleGroup
 
       # @private
       def self.world
