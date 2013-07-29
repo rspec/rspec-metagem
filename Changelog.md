@@ -34,6 +34,9 @@ Bugfix
 * Fix a `NoMethodError` that was being raised when there were no shared
   examples or contexts declared and `RSpec.world.reset` is invoked.
   (thepoho, Jon Rowe, Myron Marston)
+* Fix a deprecation warning that was being incorrectly displayed when
+  `shared_examples` are declared at top level in a `module` scope.
+  (Jon Rowe)
 
 ### 2.14.4 / 2013-07-21
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.3...v2.14.4)
