@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+module RandomTopLevelModule
+  def self.setup!
+    shared_examples_for("top level in module") {}
+  end
+end
+
 module RSpec::Core
   describe SharedExampleGroup do
 
@@ -19,6 +25,11 @@ module RSpec::Core
       end
     end
 
+    before(:all) do
+      # this is a work around as SharedExampleGroup is not world safe
+      RandomTopLevelModule.setup!
+    end
+
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
         it "is exposed to the global namespace" do
@@ -36,6 +47,11 @@ module RSpec::Core
           group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
           expect(warning).to include('some shared group', original_declaration, second_declaration)
+        end
+
+        it 'works with top level defined examples in modules' do
+          expect(RSpec::configuration.reporter).to_not receive(:deprecation)
+          group = ExampleGroup.describe('example group') { include_context 'top level in module' }
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|
