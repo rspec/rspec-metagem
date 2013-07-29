@@ -142,4 +142,3 @@ end
 
 extend RSpec::Core::SharedExampleGroup::TopLevelDSL
 Module.send(:include, RSpec::Core::SharedExampleGroup::TopLevelDSL)
-

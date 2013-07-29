@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 module RandomTopLevelModule
-  shared_examples_for("top level in module") {}
+  def self.setup!
+    shared_examples_for("top level in module") {}
+  end
 end
 
 module RSpec::Core
@@ -21,6 +23,11 @@ module RSpec::Core
           expect { Registry.new.clear }.to_not raise_error
         end
       end
+    end
+
+    before(:all) do
+      # this is a work around as SharedExampleGroup is not world safe
+      RandomTopLevelModule.setup!
     end
 
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
