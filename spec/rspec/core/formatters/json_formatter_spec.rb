@@ -15,7 +15,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   let(:output) { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::JsonFormatter.new(output) }
   let(:config) { RSpec::Core::Configuration.new }
-  let(:reporter) { RSpec::Core::Reporter.new(config, formatter) }
+  let(:reporter) { RSpec::Core::Reporter.new(config).tap { |reporter| formatter.setup reporter } }
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
