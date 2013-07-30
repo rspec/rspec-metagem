@@ -42,6 +42,8 @@ Enhancements
 
 Bug fixes:
 
+* Limit spamminess of deprecation messages (Bradley Schaefer, Loren Segal)
+
 Deprecations
 
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
