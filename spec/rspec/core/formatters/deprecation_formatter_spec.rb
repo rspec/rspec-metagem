@@ -44,6 +44,17 @@ module RSpec::Core::Formatters
         EOS
         expect(deprecation_stream.read).to eq expected
       end
+
+      context "with a File deprecation stream" do
+        let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w+") }
+
+        it "continues printing all deprecation warnings after the first 3" do
+          5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+          deprecation_stream.rewind
+          expected = Array.new(5) { "i_am_deprecated is deprecated.\n" }.join
+          expect(deprecation_stream.read).to eq expected
+        end
+      end
     end
 
     describe "#deprecation_summary" do
