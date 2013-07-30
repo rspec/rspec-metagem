@@ -346,6 +346,97 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(message).to be_nil
       end
     end
+
+    context "with --dry-run" do
+      def with_dry_run
+        old_value = RSpec.configuration.dry_run
+        RSpec.configuration.dry_run = true
+        yield
+      ensure
+        RSpec.configuration.dry_run = old_value
+      end
+
+      it "does not execute a before(:all) block" do
+        seen = nil
+
+        with_dry_run do
+          group = RSpec::Core::ExampleGroup.describe do
+            before(:all) do
+              seen = true
+            end
+
+            example('example') { }
+          end
+          group.run
+        end
+
+        expect(seen).to be_nil
+      end
+
+      it "does not execute an after(:all) block" do
+        seen = nil
+
+        with_dry_run do
+          group = RSpec::Core::ExampleGroup.describe do
+            after(:all) do
+              seen = true
+            end
+
+            example('example') { }
+          end
+          group.run
+        end
+
+        expect(seen).to be_nil
+      end
+
+      it "does not execute a before(:each) block" do
+        seen = nil
+
+        with_dry_run do
+          group = RSpec::Core::ExampleGroup.describe do
+            before(:all) do
+              seen = true
+            end
+
+            example('example') { }
+          end
+          group.run
+        end
+
+        expect(seen).to be_nil
+      end
+
+      it "does not execute a after(:each) block" do
+        seen = nil
+
+        with_dry_run do
+          group = RSpec::Core::ExampleGroup.describe do
+            after(:all) do
+              seen = true
+            end
+
+            example('example') { }
+          end
+          group.run
+        end
+
+        expect(seen).to be_nil
+      end
+
+      it "does not execute an example" do
+        seen = nil
+
+        with_dry_run do
+          group = RSpec::Core::ExampleGroup.describe do
+            example('example') { seen = true }
+          end
+          group.run
+        end
+
+        expect(seen).to be_nil
+      end
+    end
   end
 
   describe "#pending" do
