@@ -391,7 +391,7 @@ An error occurred in an after(:all) hook.
         reporter.example_group_started(self)
 
         begin
-          run_before_all_hooks(new)
+          run_before_all_hooks(new) unless RSpec.configuration.dry_run
           result_for_this_group = run_examples(reporter)
           results_for_descendants = children.ordered.map {|child| child.run(reporter)}.all?
           result_for_this_group && results_for_descendants
@@ -399,7 +399,7 @@ An error occurred in an after(:all) hook.
           RSpec.wants_to_quit = true if fail_fast?
           fail_filtered_examples(ex, reporter)
         ensure
-          run_after_all_hooks(new)
+          run_after_all_hooks(new) unless RSpec.configuration.dry_run
           before_all_ivars.clear
           reporter.example_group_finished(self)
         end
