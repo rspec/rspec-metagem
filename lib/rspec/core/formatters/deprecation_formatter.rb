@@ -6,7 +6,7 @@ module RSpec
           @deprecation_stream = deprecation_stream
           @summary_stream = summary_stream
           @count = 0
-          @seen_deprecations = Hash.new { |h, k| h[k] = 0 }
+          @seen_deprecations = Hash.new { 0 }
         end
 
         def deprecation(data)
