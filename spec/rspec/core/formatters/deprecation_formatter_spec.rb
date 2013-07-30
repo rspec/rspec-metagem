@@ -32,6 +32,18 @@ module RSpec::Core::Formatters
         deprecation_stream.rewind
         expect(deprecation_stream.read).to eq "this message"
       end
+
+      it "limits the deprecation warnings after 3 calls" do
+        5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+        deprecation_stream.rewind
+        expected = <<-EOS.gsub(/^ {10}/, '')
+          DEPRECATION: i_am_deprecated is deprecated.
+          DEPRECATION: i_am_deprecated is deprecated.
+          DEPRECATION: i_am_deprecated is deprecated.
+          DEPRECATION: Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output
+        EOS
+        expect(deprecation_stream.read).to eq expected
+      end
     end
 
     describe "#deprecation_summary" do
