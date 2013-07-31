@@ -39,4 +39,4 @@ Feature: --dry-run
 
   Scenario: Using --dry-run
     When I run `rspec . --dry-run`
-    Then the examples should all pass
+    Then the output should contain "5 examples, 0 failures"
