@@ -292,10 +292,11 @@ WARNING
       # @private
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
+        singleton_class = (class << subclass; self; end)
         if args.last[:order]
-          subclass.define_singleton_method(:order) { args.last[:order] }
+          singleton_class.send(:define_method, :order) { args.last[:order] }
         elsif parent && parent.order
-          subclass.define_singleton_method(:order) { parent.order }
+          singleton_class.send(:define_method, :order) { parent.order }
         end
         subclass.set_it_up(*args)
         subclass.module_eval(&example_group_block) if example_group_block
