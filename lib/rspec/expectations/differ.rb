@@ -107,11 +107,12 @@ module RSpec
       def object_to_string(object)
         case object
         when Hash
-          object.keys.sort_by { |k| k.to_s }.map do |k|
-            pp_line = %(#{PP.singleline_pp(k, "")} => #{PP.singleline_pp(object[k], "")})
+          object.keys.sort_by { |k| k.to_s }.map do |key|
+            pp_key   = PP.singleline_pp(key, "")
+            pp_value = PP.singleline_pp(object[key], "")
 
             #on 1.9.3 PP seems to minimise to US-ASCII, ensure we're matching source encoding
-            matching_encoding(pp_line, k)
+            matching_encoding("#{pp_key} => #{pp_value}", key)
           end.join(",\n")
         when String
           object =~ /\n/ ? object : object.inspect
