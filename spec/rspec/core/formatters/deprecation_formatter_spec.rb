@@ -7,7 +7,7 @@ module RSpec::Core::Formatters
     describe "#deprecation" do
       let(:deprecation_stream) { StringIO.new }
       let(:summary_stream)     { StringIO.new }
-      let(:formatter) { DeprecationFormatter.new deprecation_stream, summary_stream }
+      let(:formatter) { DeprecationFormatter[deprecation_stream, summary_stream] }
 
       it "includes the method" do
         formatter.deprecation(:deprecated => "i_am_deprecated")
@@ -58,10 +58,11 @@ module RSpec::Core::Formatters
     end
 
     describe "#deprecation_summary" do
+      let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w") }
+      let(:summary_stream)     { StringIO.new }
+      let(:formatter) { DeprecationFormatter[deprecation_stream, summary_stream] }
+
       it "is printed when deprecations go to a file" do
-        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
-        summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation(:deprecated => 'i_am_deprecated')
         formatter.deprecation_summary
         summary_stream.rewind
@@ -69,9 +70,6 @@ module RSpec::Core::Formatters
       end
 
       it "pluralizes for more than one deprecation" do
-        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
-        summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation(:deprecated => 'i_am_deprecated')
         formatter.deprecation(:deprecated => 'i_am_deprecated_also')
         formatter.deprecation_summary
@@ -80,21 +78,14 @@ module RSpec::Core::Formatters
       end
 
       it "is not printed when there are no deprecations" do
-        file = File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w")
-        summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new file, summary_stream
         formatter.deprecation_summary
         summary_stream.rewind
         expect(summary_stream.read).to eq ""
       end
 
       it "is not printed when deprecations go to an IO instance" do
-        summary_stream = StringIO.new
-        formatter = DeprecationFormatter.new StringIO.new, summary_stream
-        formatter.deprecation(:deprecated => 'i_am_deprecated')
-        formatter.deprecation_summary
-        summary_stream.rewind
-        expect(summary_stream.read).to eq ""
+        formatter = DeprecationFormatter[StringIO.new, summary_stream]
+        expect(formatter).not_to respond_to :deprecation_summary
       end
     end
   end
