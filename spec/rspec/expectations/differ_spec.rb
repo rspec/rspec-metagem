@@ -137,6 +137,17 @@ EOD
           expect(diff).to eq expected_diff
         end
 
+        it 'outputs unified diff messaoge of two hashes with differing encoding' do
+          expected_diff = <<'EOD'
+
+@@ -1,2 +1,2 @@
+-"a" => "a"
++"ö" => "ö"
+EOD
+          diff = differ.diff_as_object({'ö' => 'ö'}, {'a' => 'a'})
+          expect(diff).to eq expected_diff
+        end
+
         it "outputs unified diff of single line strings" do
           expected = "this is one string"
           actual   = "this is another string"
