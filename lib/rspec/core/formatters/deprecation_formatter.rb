@@ -3,7 +3,14 @@ module RSpec
     module Formatters
       module DeprecationFormatter
         class Base < Struct.new(:deprecation_stream, :summary_stream)
+          def initialize(*_)
+            super
+            @count = 0
+          end
+
           def deprecation(data)
+            @count += 1
+
             if data[:message]
               deprecation_stream.print data[:message]
             else
@@ -12,7 +19,7 @@ module RSpec
           end
 
           def print_deprecation_message(data)
-            deprecation_stream.puts deprecation_message(data)
+            raise NotImplementedError
           end
 
           def deprecation_message(data)
@@ -24,14 +31,8 @@ module RSpec
         end
 
         class FileDeprecationFormatter < Base
-          def initialize(*_)
-            super
-            @count = 0
-          end
-
-          def deprecation(data)
-            super
-            @count += 1
+          def print_deprecation_message(data)
+            deprecation_stream.puts deprecation_message(data)
           end
 
           def deprecation_summary
@@ -48,17 +49,31 @@ module RSpec
           def initialize(*_)
             super
             @seen_deprecations = Hash.new { 0 }
+            @deprecation_messages = Hash.new { |h, k| h[k] = [] }
           end
 
           def print_deprecation_message(data)
             @seen_deprecations[data[:deprecated]] += 1
 
             if @seen_deprecations[data[:deprecated]] <= 3
-              deprecation_stream.puts "DEPRECATION: #{deprecation_message(data)}"
+              @deprecation_messages[data[:deprecated]] << deprecation_message(data)
             elsif @seen_deprecations[data[:deprecated]] == 4
-              deprecation_stream.print "DEPRECATION: Too many uses of deprecated '#{data[:deprecated]}'."
-              deprecation_stream.puts  " Set config.deprecation_stream to a File for full output"
+              msg  = "Too many uses of deprecated '#{data[:deprecated]}'."
+              msg << " Set config.deprecation_stream to a File for full output"
+              @deprecation_messages[data[:deprecated]] << msg
             end
+          end
+
+          def deprecation_summary
+            messages = @deprecation_messages.values.flatten
+            return unless messages.size > 0
+
+            deprecation_stream.puts "\nDeprecation Warnings:\n\n"
+            messages.each do |msg|
+              deprecation_stream.puts msg
+            end
+
+            summary_stream.puts "\n#{@count} deprecation warning#{@count > 1 ? 's' : ''} total"
           end
         end
 
