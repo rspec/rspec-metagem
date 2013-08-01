@@ -7,36 +7,16 @@ Feature: --dry-run
     Given a file named "dry_run_spec.rb" with:
       """ruby
       describe "dry run" do
+        before(:all) do; fail; end
+        before(:each) do; fail; end
         it "fails in example" do
           fail
         end
-        context "fails in before(:all)" do
-          before(:all) do
-            fail
-          end
-          it "passing test" do; end
-        end
-        context "fails in after(:all)" do
-          after(:all) do
-            fail
-          end
-          it "passing test" do; end
-        end
-        context "fails in before(:each)" do
-          before(:each) do
-            fail
-          end
-          it "passing test" do; end
-        end
-        context "fails in after(:each)" do
-          after(:each) do
-            fail
-          end
-          it "passing test" do; end
-        end
+        after(:each) do; fail; end
+        after(:all) do fail; end
       end
       """
 
   Scenario: Using --dry-run
     When I run `rspec . --dry-run`
-    Then the output should contain "5 examples, 0 failures"
+    Then the output should contain "1 example, 0 failures"
