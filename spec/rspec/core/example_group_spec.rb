@@ -645,6 +645,7 @@ module RSpec::Core
         let(:group) do
           ExampleGroup.describe do
             after(:all) { raise "error in after all" }
+            after(:all) { raise "second error in after all" }
             it("equality") { expect(1).to eq(1) }
           end
         end
@@ -659,6 +660,11 @@ module RSpec::Core
 
         it "rescues the error and prints it out" do
           RSpec.configuration.reporter.should_receive(:message).with(/error in after all/)
+          group.run
+        end
+
+        it "still runs both after blocks" do
+          RSpec.configuration.reporter.should_receive(:message).with(/second error in after all/)
           group.run
         end
       end

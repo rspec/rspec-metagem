@@ -36,6 +36,25 @@ module RSpec
         end
       end
 
+      class AfterAllHook < Hook
+        def run(example)
+          example.instance_exec(example, &block)
+        rescue Exception => e
+          # TODO: come up with a better solution for this.
+          RSpec.configuration.reporter.message <<-EOS
+
+An error occurred in an after(:all) hook.
+  #{e.class}: #{e.message}
+  occurred at #{e.backtrace.first}
+
+      EOS
+        end
+
+        def display_name
+          "after(:all) hook"
+        end
+      end
+
       class AroundHook < Hook
         def display_name
           "around hook"
@@ -437,10 +456,12 @@ module RSpec
       SCOPES = [:each, :all, :suite]
 
       HOOK_TYPES = {
-        :before => BeforeHook,
-        :after  => AfterHook,
-        :around => AroundHook
+        :before => Hash.new { BeforeHook },
+        :after  => Hash.new { AfterHook  },
+        :around => Hash.new { AroundHook }
       }
+
+      HOOK_TYPES[:after][:all] = AfterAllHook
 
       def before_all_hooks_for(group)
         GroupHookCollection.new(hooks[:before][:all]).for(group)
@@ -460,7 +481,7 @@ module RSpec
 
       def register_hook prepend_or_append, hook, *args, &block
         scope, options = scope_and_options_from(*args)
-        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook].new(block, options))
+        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
       end
 
       def find_hook(hook, scope, example_or_group, initial_procsy)
