@@ -138,22 +138,12 @@ EOD
         end
 
         it 'outputs unified diff messaoge of two hashes with differing encoding' do
-          expected_diff =
-          if RUBY_VERSION.to_f > 1.8
-            expected_diff = <<'EOD'
-
+          expected_diff = %Q{
 @@ -1,2 +1,2 @@
 -"a" => "a"
-+"ö" => "ö"
-EOD
-          else
-            expected_diff = <<'EOD'
+#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+"ö" => "ö"} : '+"\303\266" => "\303\266"' }
+}
 
-@@ -1,2 +1,2 @@
--"a" => "a"
-+"\303\266" => "\303\266"
-EOD
-          end
           diff = differ.diff_as_object({'ö' => 'ö'}, {'a' => 'a'})
           expect(diff).to eq expected_diff
         end
