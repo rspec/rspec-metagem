@@ -38,6 +38,8 @@ Bugfix
 * Fix a deprecation warning that was being incorrectly displayed when
   `shared_examples` are declared at top level in a `module` scope.
   (Jon Rowe)
+* Fix after(:all) hooks so consecutive (same context) scopes will run even if
+  one raises an error. (Jon Rowe, Trejkaz)
 
 ### 2.14.4 / 2013-07-21
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.3...v2.14.4)
