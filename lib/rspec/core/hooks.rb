@@ -47,7 +47,7 @@ An error occurred in an after(:all) hook.
   #{e.class}: #{e.message}
   occurred at #{e.backtrace.first}
 
-      EOS
+EOS
         end
 
         def display_name
