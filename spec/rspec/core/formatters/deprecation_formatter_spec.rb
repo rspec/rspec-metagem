@@ -5,7 +5,7 @@ require 'tempfile'
 module RSpec::Core::Formatters
   describe DeprecationFormatter do
     describe "#deprecation" do
-      let(:formatter) { DeprecationFormatter[deprecation_stream, summary_stream] }
+      let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
       let(:summary_stream)     { StringIO.new }
 
       context "with a File deprecation_stream" do
@@ -48,7 +48,7 @@ module RSpec::Core::Formatters
     end
 
     describe "#deprecation_summary" do
-      let(:formatter) { DeprecationFormatter[deprecation_stream, summary_stream] }
+      let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
       let(:summary_stream) { StringIO.new }
 
       context "with a File deprecation_stream" do

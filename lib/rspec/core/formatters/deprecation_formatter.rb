@@ -1,27 +1,35 @@
 module RSpec
   module Core
     module Formatters
-      module DeprecationFormatter
-        class Base < Struct.new(:deprecation_stream, :summary_stream)
-          def initialize(*_)
-            super
-            @count = 0
+      class DeprecationFormatter < Struct.new(:deprecation_stream, :summary_stream)
+        attr_reader :count
+
+        def initialize(*_)
+          super
+          @count = 0
+        end
+
+        def printer
+          @printer ||= File === deprecation_stream ?
+            FilePrinter.new(deprecation_stream, summary_stream, self) :
+            IOPrinter.new(deprecation_stream, summary_stream, self)
+        end
+
+        def deprecation(data)
+          @count += 1
+
+          if data[:message]
+            deprecation_stream.print data[:message]
+          else
+            printer.print_deprecation_message data
           end
+        end
 
-          def deprecation(data)
-            @count += 1
+        def deprecation_summary
+          printer.deprecation_summary
+        end
 
-            if data[:message]
-              deprecation_stream.print data[:message]
-            else
-              print_deprecation_message(data)
-            end
-          end
-
-          def print_deprecation_message(data)
-            raise NotImplementedError
-          end
-
+        module DeprecationMessage
           def deprecation_message(data)
             msg =  "#{data[:deprecated]} is deprecated."
             msg << " Use #{data[:replacement]} instead." if data[:replacement]
@@ -30,22 +38,26 @@ module RSpec
           end
         end
 
-        class FileDeprecationFormatter < Base
+        class FilePrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
+          include DeprecationMessage
+
           def print_deprecation_message(data)
             deprecation_stream.puts deprecation_message(data)
           end
 
           def deprecation_summary
-            if @count > 0
-              summary_stream.print "\n#{@count} deprecation"
-              summary_stream.print "s" if @count > 1
+            if counter.count > 0
+              summary_stream.print "\n#{counter.count} deprecation"
+              summary_stream.print "s" if counter.count > 1
               summary_stream.print " logged to "
               summary_stream.puts deprecation_stream.path
             end
           end
         end
 
-        class IODeprecationFormatter < Base
+        class IOPrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
+          include DeprecationMessage
+
           def initialize(*_)
             super
             @seen_deprecations = Hash.new { 0 }
@@ -73,19 +85,10 @@ module RSpec
               deprecation_stream.puts msg
             end
 
-            summary_stream.puts "\n#{@count} deprecation warning#{@count > 1 ? 's' : ''} total"
+            summary_stream.puts "\n#{counter.count} deprecation warning#{counter.count > 1 ? 's' : ''} total"
           end
         end
 
-        class << self
-          def [](deprecation_stream=$stderr, summary_stream=$stdout)
-            if File === deprecation_stream
-              FileDeprecationFormatter.new(deprecation_stream, summary_stream)
-            else
-              IODeprecationFormatter.new(deprecation_stream, summary_stream)
-            end
-          end
-        end
       end
     end
   end
