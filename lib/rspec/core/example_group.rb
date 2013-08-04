@@ -394,7 +394,7 @@ An error occurred in an after(:all) hook.
         begin
           run_before_all_hooks(new)
           result_for_this_group = run_examples(reporter)
-          results_for_descendants = children.ordered.map {|child| child.run(reporter)}.all?
+          results_for_descendants = children.ordered.map { |child| child.run(reporter) }.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           RSpec.wants_to_quit = true if fail_fast?
