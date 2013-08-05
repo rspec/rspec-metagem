@@ -26,7 +26,6 @@ end
 
 Spork.prefork do
   require 'rspec/autorun'
-  require 'autotest/rspec2'
   require 'aruba/api'
 
   if RUBY_PLATFORM == 'java'

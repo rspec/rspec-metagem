@@ -303,10 +303,6 @@ A few things changed in the Rake task used to run specs:
           t.pattern = 'spec/**/*_spec.rb'
         end
 
-### autotest
-
-`autospec` is dead. Long live `autotest`.
-
 ### RSpec is the new Spec
 
 The root namespace (top level module) is now `RSpec` instead of `Spec`, and

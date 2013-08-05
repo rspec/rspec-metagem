@@ -69,30 +69,6 @@ module RSpec::Core
           end
         end
 
-        context "with autotest/discover.rb" do
-          before do
-            FileUtils.mkdir('autotest')
-            FileUtils.touch 'autotest/discover.rb'
-          end
-
-          it "asks whether to delete the file" do
-            command_line_config.should_receive(:puts).with(/delete/)
-            command_line_config.run
-          end
-
-          it "removes it if confirmed" do
-            command_line_config.stub(:gets => 'yes')
-            command_line_config.run
-            expect(File.exist?('autotest/discover.rb')).to be_falsey
-          end
-
-          it "leaves it if not confirmed" do
-            command_line_config.stub(:gets => 'no')
-            command_line_config.run
-            expect(File.exist?('autotest/discover.rb')).to be_truthy
-          end
-        end
-
         context "with lib/tasks/rspec.rake" do
           before do
             FileUtils.mkdir_p('lib/tasks')
