@@ -22,6 +22,29 @@ module RSpec::Core
       end
     end
 
+    describe "#running_in_drb?" do
+      context "returns true if drb server is started with ip/host" do
+        it "127.0.0.1" do
+          ::DRb.stub(:current_server).and_return(double("current_server", :uri => "druby://127.0.0.1:0000/") )
+
+          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+        end
+
+        it "localhost" do
+          ::DRb.stub(:current_server).and_return(double("current_server", :uri => "druby://localhost:0000/") )
+
+          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+        end
+
+        it "local ip address" do
+          ::DRb.stub(:current_server).and_return(double("current_server", :uri => "druby://192.168.0.1:0000/") )
+          ::IPSocket.stub(:getaddress).and_return("192.168.0.1")
+
+          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+        end
+      end
+    end
+
     describe "#run" do
       let(:err) { StringIO.new }
       let(:out) { StringIO.new }

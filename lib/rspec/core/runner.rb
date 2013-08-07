@@ -1,3 +1,5 @@
+require 'socket'
+
 module RSpec
   module Core
     class Runner
@@ -34,9 +36,11 @@ module RSpec
       end
 
       def self.running_in_drb?
+        local_ipv4 = IPSocket.getaddress(Socket.gethostname)
+
         defined?(DRb) &&
-        (DRb.current_server rescue false) &&
-         DRb.current_server.uri =~ /druby\:\/\/127.0.0.1\:/
+          (DRb.current_server rescue false) &&
+            ["127.0.0.1", "localhost", local_ipv4].any? { |addr| DRb.current_server.uri =~ /druby\:\/\/#{Regexp.quote(addr)}\:/ }
       end
 
       def self.trap_interrupt
