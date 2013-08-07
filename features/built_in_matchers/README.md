@@ -77,6 +77,7 @@ e.g.
 ## Collection membership
 
     expect(actual).to include(expected)
+    expect(array).to match_array(expected)
 
 ### Examples
 
@@ -84,6 +85,8 @@ e.g.
     expect([1,2,3]).to       include(1, 2)
     expect(:a => 'b').to     include(:a => 'b')
     expect("this string").to include("is str")
+    expect([1,2,3]).to       match_array([1,2,3])
+    expect([1,2,3]).to       match_array([3,2,1])
 
 ## Ranges (1.9 only)
 
