@@ -43,6 +43,13 @@ module RSpec::Core
           expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
         end
       end
+
+      it "returns false if no drb server is running" do
+        ::DRb.stub(:current_server).and_raise(::DRb::DRbServerNotFound)
+
+        expect(RSpec::Core::Runner.running_in_drb?).to be_falsey
+      end
+
     end
 
     describe "#run" do
