@@ -23,13 +23,13 @@ Feature: operator matchers
     ```
 
   RSpec also provides a `=~` matcher for arrays that disregards differences in
-  the ording between the actual and expected array.  For example:
+  the ordering between the actual and expected array.  For example:
 
     ```ruby
     [1, 2, 3].should =~ [2, 3, 1] # pass
     [:a, :c, :b].should =~ [:a, :c] # fail
     ```
-  However, it is preferable to use `match_array` instead:
+  However, we recommend the use of `match_array` instead:
 
     ```ruby
     [1, 2, 3].should match_array [2, 3, 1] # pass
