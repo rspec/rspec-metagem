@@ -29,7 +29,12 @@ Feature: operator matchers
     [1, 2, 3].should =~ [2, 3, 1] # pass
     [:a, :c, :b].should =~ [:a, :c] # fail
     ```
+  However, it is preferable to use `match_array` instead:
 
+    ```ruby
+    [1, 2, 3].should match_array [2, 3, 1] # pass
+    [:a, :c, :b].should match_array [:a, :c] # fail
+    ```
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
       """ruby
@@ -189,17 +194,17 @@ Feature: operator matchers
         it { should == [1, 2, 3] }
         it { should_not == [1, 3, 2] }
 
-        it { should =~ [1, 2, 3] }
-        it { should =~ [1, 3, 2] }
-        it { should =~ [2, 1, 3] }
-        it { should =~ [2, 3, 1] }
-        it { should =~ [3, 1, 2] }
-        it { should =~ [3, 2, 1] }
+        it { should match_array [1, 2, 3] }
+        it { should match_array [1, 3, 2] }
+        it { should match_array [2, 1, 3] }
+        it { should match_array [2, 3, 1] }
+        it { should match_array [3, 1, 2] }
+        it { should match_array [3, 2, 1] }
 
         # deliberate failures
         it { should_not == [1, 2, 3] }
         it { should == [1, 3, 2] }
-        it { should =~ [1, 2, 1] }
+        it { should match_array [1, 2, 1] }
       end
       """
      When I run `rspec array_operator_matchers_spec.rb`
@@ -218,7 +223,7 @@ Feature: operator matchers
       """
       And the output should contain:
       """
-           Failure/Error: it { should =~ [1, 2, 1] }
+           Failure/Error: it { should match_array [1, 2, 1] }
              expected collection contained:  [1, 1, 2]
              actual collection contained:    [1, 2, 3]
              the missing elements were:      [1]

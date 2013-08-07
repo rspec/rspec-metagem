@@ -71,6 +71,7 @@ expect(actual).to be >= expected
 expect(actual).to be <= expected
 expect(actual).to be <  expected
 expect(actual).to be_within(delta).of(expected)
+expect(array).to match_array(expected)
 ```
 
 ### Regular expressions
