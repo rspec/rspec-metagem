@@ -638,14 +638,17 @@ module RSpec::Core
       end
 
       context "when an error occurs in an after(:all) hook" do
+        hooks_run = []
+
         before(:each) do
+          hooks_run = []
           RSpec.configuration.reporter.stub(:message)
         end
 
         let(:group) do
           ExampleGroup.describe do
-            after(:all) { raise "error in after all" }
-            after(:all) { raise "second error in after all" }
+            after(:all) { hooks_run << :one; raise "error in after all" }
+            after(:all) { hooks_run << :two; raise "second error in after all" }
             it("equality") { expect(1).to eq(1) }
           end
         end
@@ -664,8 +667,8 @@ module RSpec::Core
         end
 
         it "still runs both after blocks" do
-          RSpec.configuration.reporter.should_receive(:message).with(/second error in after all/)
           group.run
+          expect(hooks_run).to eq [:two,:one]
         end
       end
 
