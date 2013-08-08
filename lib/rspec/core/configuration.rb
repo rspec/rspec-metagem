@@ -103,6 +103,10 @@ module RSpec
       add_setting :error_stream
 
       # @macro add_setting
+      # Default: true
+      add_setting :expose_globally
+
+      # @macro add_setting
       # Default: `$stderr`.
       add_setting :deprecation_stream
 
@@ -225,6 +229,7 @@ module RSpec
 
       def initialize
         @expectation_frameworks = []
+        @expose_globally = true
         @include_or_extend_modules = []
         @mock_framework = nil
         @files_to_run = []
@@ -886,6 +891,9 @@ module RSpec
 
       # @private
       def load_spec_files
+        if expose_globally?
+          require 'rspec/core/monkey_patch'
+        end
         files_to_run.uniq.each {|f| load File.expand_path(f) }
         @spec_files_loaded = true
       end

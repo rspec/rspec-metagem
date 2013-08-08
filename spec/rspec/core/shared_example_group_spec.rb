@@ -38,8 +38,13 @@ module RSpec::Core
           group.send(shared_method_name, *args, &block)
         end
 
-        it "is exposed to the global namespace" do
+        it "is exposed to the global namespace when monkey patching is enabled" do
+          pending "how do we sandbox this"
           expect(Kernel).to respond_to(shared_method_name)
+        end
+
+        it "is not exposed to the global namespace when monkey patching is disabled" do
+          expect(Kernel).to_not respond_to(shared_method_name)
         end
 
         it "displays a warning when adding a second shared example group with the same name" do

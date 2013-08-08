@@ -206,6 +206,7 @@ RSpec.describe 'command line', :ui do
   def run_command(cmd)
     in_current_dir do
       RSpec::Core::Runner.run(cmd.split, stderr, stdout)
+      RSpec::configuration.expose_globally = false
     end
   end
 end
