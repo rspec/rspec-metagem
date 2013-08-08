@@ -369,18 +369,7 @@ module RSpec
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
 
-        begin
-          run_hook(:after, :all, example_group_instance)
-        rescue => e
-          # TODO: come up with a better solution for this.
-          RSpec.configuration.reporter.message <<-EOS
-
-An error occurred in an after(:all) hook.
-  #{e.class}: #{e.message}
-  occurred at #{e.backtrace.first}
-
-      EOS
-        end
+        run_hook(:after, :all, example_group_instance)
       end
 
       # Runs all the examples in this group
