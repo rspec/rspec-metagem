@@ -34,9 +34,19 @@ module RSpec
       end
 
       def self.running_in_drb?
-        defined?(DRb) &&
-        (DRb.current_server rescue false) &&
-         DRb.current_server.uri =~ /druby\:\/\/127.0.0.1\:/
+        begin
+          if defined?(DRb) && DRb.current_server
+            require 'socket'
+            require 'uri'
+
+            local_ipv4 = IPSocket.getaddress(Socket.gethostname)
+
+            local_drb = ["127.0.0.1", "localhost", local_ipv4].any? { |addr| addr == URI(DRb.current_server.uri).host }
+          end
+        rescue DRb::DRbServerNotFound
+        ensure
+          return local_drb || false
+        end
       end
 
       def self.trap_interrupt
