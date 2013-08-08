@@ -41,17 +41,20 @@ module RSpec
       end
 
       module TopLevelDSL
-        def shared_examples(*args, &block)
-          SharedExampleGroup.registry.add_group('main', *args, &block)
+        def self.definitions
+          proc do
+            def shared_examples(*args, &block)
+              SharedExampleGroup.registry.add_group('main', *args, &block)
+            end
+            alias :shared_context      :shared_examples
+            alias :share_examples_for  :shared_examples
+            alias :shared_examples_for :shared_examples
+            def shared_example_groups
+              SharedExampleGroup.registry.shared_example_groups_for('main')
+            end
+          end
         end
 
-        alias_method :shared_context,      :shared_examples
-        alias_method :share_examples_for,  :shared_examples
-        alias_method :shared_examples_for, :shared_examples
-
-        def shared_example_groups
-          SharedExampleGroup.registry.shared_example_groups_for('main')
-        end
       end
 
       def self.registry
@@ -140,5 +143,6 @@ module RSpec
       end
     end
   end
-end
 
+  instance_eval &Core::SharedExampleGroup::TopLevelDSL.definitions
+end
