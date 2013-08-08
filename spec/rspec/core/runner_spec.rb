@@ -23,25 +23,23 @@ module RSpec::Core
     end
 
     describe "#running_in_drb?" do
-      context "returns true if drb server is started with ip/host" do
-        it "127.0.0.1" do
-          allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://127.0.0.1:0000/"))
+      it "returns true if drb server is started with 127.0.0.1" do
+        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://127.0.0.1:0000/"))
 
-          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
-        end
+        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+      end
 
-        it "localhost" do
-          allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://localhost:0000/"))
+      it "returns true if drb server is started with localhost" do
+        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://localhost:0000/"))
 
-          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
-        end
+        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
+      end
 
-        it "local ip address" do
-          allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://192.168.0.1:0000/"))
-          allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
+      it "returns true if drb server is started with another local ip address" do
+        allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://192.168.0.1:0000/"))
+        allow(::IPSocket).to receive(:getaddress).and_return("192.168.0.1")
 
-          expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
-        end
+        expect(RSpec::Core::Runner.running_in_drb?).to be_truthy
       end
 
       it "returns false if no drb server is running" do
