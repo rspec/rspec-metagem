@@ -60,6 +60,30 @@ describe "expect { ... }.to raise_error {|err| ... }" do
   end
 end
 
+describe "expect { ... }.to raise_error do |err| ... end" do
+  it "passes the error to the block" do
+    error = nil
+    expect { non_existent_method }.to raise_error do |e|
+      error = e
+    end
+    expect(error).to be_kind_of(NameError)
+  end
+end
+
+describe "expect { ... }.to(raise_error { |err| ... }) do |err| ... end" do
+  it "passes the error only to the block taken directly by #raise_error" do
+    error_passed_to_curly = nil
+    error_passed_to_do_end = nil
+
+    expect { non_existent_method }.to(raise_error { |e| error_passed_to_curly = e }) do |e|
+      error_passed_to_do_end = e
+    end
+
+    expect(error_passed_to_curly).to be_kind_of(NameError)
+    expect(error_passed_to_do_end).to be_nil
+  end
+end
+
 describe "expect { ... }.not_to raise_error" do
 
   context "with a specific error class" do
