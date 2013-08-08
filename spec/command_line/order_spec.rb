@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-describe 'command line', :ui do
+RSpec.describe 'command line', :ui do
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }
 
   before :all do
     write_file 'spec/simple_spec.rb', """
-      describe 'group 1' do
+      RSpec.describe 'group 1' do
         specify('group 1 example 1') {}
         specify('group 1 example 2') {}
         specify('group 1 example 3') {}
@@ -19,7 +19,7 @@ describe 'command line', :ui do
     """
 
     write_file 'spec/simple_spec2.rb', """
-      describe 'group 2' do
+      RSpec.describe 'group 2' do
         specify('group 2 example 1') {}
         specify('group 2 example 2') {}
         specify('group 2 example 3') {}
@@ -32,7 +32,7 @@ describe 'command line', :ui do
     """
 
     write_file 'spec/order_spec.rb', """
-      describe 'group 1' do
+      RSpec.describe 'group 1' do
         specify('group 1 example 1')  {}
         specify('group 1 example 2')  {}
         specify('group 1 example 3')  {}
@@ -68,15 +68,15 @@ describe 'command line', :ui do
         describe('group 1-10') { specify('example') {} }
       end
 
-      describe('group 2')  { specify('example') {} }
-      describe('group 3')  { specify('example') {} }
-      describe('group 4')  { specify('example') {} }
-      describe('group 5')  { specify('example') {} }
-      describe('group 6')  { specify('example') {} }
-      describe('group 7')  { specify('example') {} }
-      describe('group 8')  { specify('example') {} }
-      describe('group 9')  { specify('example') {} }
-      describe('group 10') { specify('example') {} }
+      RSpec.describe('group 2')  { specify('example') {} }
+      RSpec.describe('group 3')  { specify('example') {} }
+      RSpec.describe('group 4')  { specify('example') {} }
+      RSpec.describe('group 5')  { specify('example') {} }
+      RSpec.describe('group 6')  { specify('example') {} }
+      RSpec.describe('group 7')  { specify('example') {} }
+      RSpec.describe('group 8')  { specify('example') {} }
+      RSpec.describe('group 9')  { specify('example') {} }
+      RSpec.describe('group 10') { specify('example') {} }
     """
   end
 
@@ -158,14 +158,14 @@ describe 'command line', :ui do
           end
         end
 
-        describe 'group B' do
+        RSpec.describe 'group B' do
           specify('group B example D')  {}
           specify('group B example B')  {}
           specify('group B example A')  {}
           specify('group B example C')  {}
         end
 
-        describe 'group A' do
+        RSpec.describe 'group A' do
           specify('group A example 1')  {}
         end
       """

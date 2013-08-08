@@ -1,7 +1,7 @@
 require "spec_helper"
 require 'rspec/core/drb_options'
 
-describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_home => true do
+RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
   describe "#drb_argv" do

@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rspec/core/formatters/base_formatter'
 
-describe RSpec::Core::Formatters::BaseFormatter do
+RSpec.describe RSpec::Core::Formatters::BaseFormatter do
 
   let(:output)    { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }

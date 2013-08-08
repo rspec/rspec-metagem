@@ -12,7 +12,7 @@ class SelfObserver
 end
 
 module RSpec::Core
-  describe ExampleGroup do
+  RSpec.describe ExampleGroup do
     it_behaves_like "metadata hash builder" do
       def metadata_hash(*args)
         group = ExampleGroup.describe('example description', *args)

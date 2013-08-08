@@ -6,7 +6,7 @@ require 'nokogiri'
 module RSpec
   module Core
     module Formatters
-      describe HtmlFormatter, :if => RUBY_VERSION =~ /^(1.8.7|1.9.2|1.9.3|2.0.0)$/ do
+      RSpec.describe HtmlFormatter, :if => RUBY_VERSION =~ /^(1.8.7|1.9.2|1.9.3|2.0.0)$/ do
         let(:suffix) {
           if ::RUBY_PLATFORM == 'java'
             "-jruby"

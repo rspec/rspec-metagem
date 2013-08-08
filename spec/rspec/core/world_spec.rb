@@ -5,7 +5,7 @@ class Foo; end
 
 module RSpec::Core
 
-  describe RSpec::Core::World do
+  RSpec.describe RSpec::Core::World do
     let(:configuration) { RSpec::Core::Configuration.new }
     let(:world) { RSpec::Core::World.new(configuration) }
 

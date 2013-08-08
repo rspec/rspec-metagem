@@ -370,7 +370,7 @@ expected: 2
 ./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `chdir'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:58
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span>describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">34</span>  <span class="keyword">end</span>

@@ -3,7 +3,7 @@ require 'tmpdir'
 
 module RSpec::Core
 
-  describe Configuration do
+  RSpec.describe Configuration do
 
     let(:config) { Configuration.new }
 

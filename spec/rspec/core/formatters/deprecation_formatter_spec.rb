@@ -3,7 +3,7 @@ require 'rspec/core/formatters/deprecation_formatter'
 require 'tempfile'
 
 module RSpec::Core::Formatters
-  describe DeprecationFormatter do
+  RSpec.describe DeprecationFormatter do
     describe "#deprecation" do
       let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
       let(:summary_stream)     { StringIO.new }

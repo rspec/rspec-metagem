@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'ostruct'
 require 'rspec/core/drb_options'
 
-describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
+RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do

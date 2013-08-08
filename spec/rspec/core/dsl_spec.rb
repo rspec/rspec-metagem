@@ -2,7 +2,7 @@ require 'spec_helper'
 
 main = self
 
-describe "The RSpec DSL" do
+RSpec.describe "The RSpec DSL" do
   methods = [
     :describe,
     :share_examples_for,

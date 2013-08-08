@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'rspec/core/formatters/progress_formatter'
 
-describe RSpec::Core::Formatters::ProgressFormatter do
+RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
 
    before do
      @output = StringIO.new

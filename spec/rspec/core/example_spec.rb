@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'pp'
 require 'stringio'
 
-describe RSpec::Core::Example, :parent_metadata => 'sample' do
+RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   let(:example_group) do
     RSpec::Core::ExampleGroup.describe('group description')
   end

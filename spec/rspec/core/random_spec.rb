@@ -2,7 +2,7 @@ require 'spec_helper'
 
 module RSpec
   module Core
-    describe RandomNumberGenerator do
+    RSpec.describe RandomNumberGenerator do
       it 'is a random number generator' do
         random = described_class.new
 

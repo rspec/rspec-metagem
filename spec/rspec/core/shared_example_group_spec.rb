@@ -2,12 +2,12 @@ require 'spec_helper'
 
 module RandomTopLevelModule
   def self.setup!
-    shared_examples_for("top level in module") {}
+    RSpec.shared_examples_for("top level in module") {}
   end
 end
 
 module RSpec::Core
-  describe SharedExampleGroup do
+  RSpec.describe SharedExampleGroup do
 
     ExampleModule = Module.new
     ExampleClass = Class.new
@@ -18,7 +18,7 @@ module RSpec::Core
     end
 
     module SharedExampleGroup
-      describe Registry do
+      RSpec.describe Registry do
         it "can safely be reset when there aren't any shared groups" do
           expect { Registry.new.clear }.to_not raise_error
         end
