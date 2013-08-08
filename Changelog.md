@@ -8,6 +8,10 @@ Breaking Changes for 3.0.0:
   (Sam Phippen)
 * Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
 
+Enhancements:
+
+* Support do..end style block with `raise_error` matcher. (Yuji Nakayama)
+
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)
 
