@@ -7,7 +7,7 @@ Gem::Specification.new do |s|
   s.version     = RSpec::Expectations::Version::STRING
   s.platform    = Gem::Platform::RUBY
   s.license     = "MIT"
-  s.authors     = ["Steven Baker", "David Chelimsky"]
+  s.authors     = ["Steven Baker", "David Chelimsky", "Myron Marston"]
   s.email       = "rspec-users@rubyforge.org"
   s.homepage    = "http://github.com/rspec/rspec-expectations"
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
