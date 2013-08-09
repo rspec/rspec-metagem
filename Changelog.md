@@ -1,5 +1,5 @@
-### Development
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...master)
+### 3.0 Development
+[full changelog](http://github.com/rspec/rspec-expectations/compare/2-99-maintenance...master)
 
 Breaking Changes for 3.0.0:
 
@@ -11,6 +11,15 @@ Breaking Changes for 3.0.0:
 Enhancements:
 
 * Support do..end style block with `raise_error` matcher. (Yuji Nakayama)
+
+### 2.14.1 / 2013-08-08
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...2.14.1)
+
+Bug fixes
+
+* Ensure diff output uses the same encoding as the encoding of
+  the string being diff'd to prevent `Encoding::UndefinedConversionError`
+  errors (Jon Rowe).
 
 ### 2.14.0 / 2013-07-06
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)
