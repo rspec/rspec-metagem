@@ -1,5 +1,6 @@
 (The MIT License)
 
+Copyright (c) 2012 Chad Humphries, David Chelimsky, Myron Marston
 Copyright (c) 2009 Chad Humphries, David Chelimsky
 Copyright (c) 2006 David Chelimsky, The RSpec Development Team
 Copyright (c) 2005 Steven Baker
