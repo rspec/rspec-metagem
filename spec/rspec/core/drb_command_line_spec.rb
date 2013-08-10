@@ -22,6 +22,8 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
     it "raises an error" do
       expect { command_line.run(err, out) }.to raise_error(DRb::DRbConnError)
     end
+
+    after { DRb.stop_service }
   end
 
   describe "--drb-port" do
