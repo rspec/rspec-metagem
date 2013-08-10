@@ -92,7 +92,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       ["--drb-port", "37", :drb_port, 37]
     ].each do |cli_option, cli_value, config_key, config_value|
       it "forces #{config_key}" do
-        opts = config_options_object(*[cli_option, cli_value].compact)
+        opts = config_options_object(cli_option, cli_value)
         config = RSpec::Core::Configuration.new
         config.should_receive(:force) do |pair|
           expect(pair.keys.first).to eq(config_key)
