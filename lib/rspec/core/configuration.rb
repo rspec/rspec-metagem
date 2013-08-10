@@ -72,7 +72,7 @@ module RSpec
           define_reader name
           define_predicate_for name
         end
-        [opts[:alias_with]].flatten.compact.each do |alias_name|
+        Array(opts[:alias_with]).each do |alias_name|
           define_aliases(name, alias_name)
         end
       end
