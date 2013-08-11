@@ -1,11 +1,12 @@
 module RSpec
   module Core
     module Formatters
-      class DeprecationFormatter < Struct.new(:deprecation_stream, :summary_stream)
-        attr_reader :count
+      class DeprecationFormatter
+        attr_reader :count, :deprecation_stream, :summary_stream
 
-        def initialize(*_)
-          super
+        def initialize(deprecation_stream, summary_stream)
+          @deprecation_stream = deprecation_stream
+          @summary_stream = summary_stream
           @count = 0
         end
 
@@ -41,6 +42,14 @@ module RSpec
         class FilePrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
           include DeprecationMessage
 
+          attr_reader :deprecation_stream, :summary_stream, :counter
+
+          def initialize(deprecation_stream, summary_stream, counter)
+            @deprecation_stream = deprecation_stream
+            @summary_stream = summary_stream
+            @counter = counter
+          end
+
           def print_deprecation_message(data)
             deprecation_stream.puts deprecation_message(data)
           end
@@ -55,11 +64,15 @@ module RSpec
           end
         end
 
-        class IOPrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
+        class IOPrinter
           include DeprecationMessage
 
-          def initialize(*_)
-            super
+          attr_reader :deprecation_stream, :summary_stream, :counter
+
+          def initialize(deprecation_stream, summary_stream, counter)
+            @deprecation_stream = deprecation_stream
+            @summary_stream = summary_stream
+            @counter = counter
             @seen_deprecations = Hash.new { 0 }
             @deprecation_messages = Hash.new { |h, k| h[k] = [] }
           end
