@@ -1,3 +1,5 @@
+require 'rspec/core/formatters/helpers'
+
 module RSpec
   module Core
     module Formatters
@@ -40,6 +42,7 @@ module RSpec
         end
 
         class FilePrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
+          include ::RSpec::Core::Formatters::Helpers
           include DeprecationMessage
 
           attr_reader :deprecation_stream, :summary_stream, :counter
@@ -56,15 +59,13 @@ module RSpec
 
           def deprecation_summary
             if counter.count > 0
-              summary_stream.print "\n#{counter.count} deprecation"
-              summary_stream.print "s" if counter.count > 1
-              summary_stream.print " logged to "
-              summary_stream.puts deprecation_stream.path
+              summary_stream.puts "\n#{pluralize(counter.count, 'deprecation')} logged to #{deprecation_stream.path}"
             end
           end
         end
 
         class IOPrinter
+          include ::RSpec::Core::Formatters::Helpers
           include DeprecationMessage
 
           attr_reader :deprecation_stream, :summary_stream, :counter
@@ -98,7 +99,7 @@ module RSpec
               deprecation_stream.puts msg
             end
 
-            summary_stream.puts "\n#{counter.count} deprecation warning#{counter.count > 1 ? 's' : ''} total"
+            summary_stream.puts "\n#{pluralize(counter.count, 'deprecation warning')} total"
           end
         end
 
