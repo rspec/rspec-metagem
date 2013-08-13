@@ -136,7 +136,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
 
     it "have summary" do
       formatter.dump_profile_slowest_examples
-      expect(formatter.output_hash[:profile].keys).to eq([:examples, :slowest, :total])
+      expect(formatter.output_hash[:profile].keys).to match_array([:examples, :slowest, :total])
     end
   end
 
@@ -182,7 +182,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
 
       it "provides information" do
         formatter.dump_profile_slowest_example_groups
-        expect(formatter.output_hash[:profile][:groups].first.keys).to eq([:total_time, :count, :description, :average, :location])
+        expect(formatter.output_hash[:profile][:groups].first.keys).to match_array([:total_time, :count, :description, :average, :location])
       end
 
       it "ranks the example groups by average time" do
