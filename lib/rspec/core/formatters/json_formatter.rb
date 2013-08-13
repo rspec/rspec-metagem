@@ -83,7 +83,7 @@ module RSpec
           end
         end
 
-        private
+      private
         def format_example(example)
           {:description => example.description,
            :full_description => example.full_description,

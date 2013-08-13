@@ -134,7 +134,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
       expect(formatter.output_hash[:profile][:examples].first[:run_time]).not_to be_nil
     end
 
-    it "have summary" do
+    it "has the summary of profile information" do
       formatter.dump_profile_slowest_examples
       expect(formatter.output_hash[:profile].keys).to match_array([:examples, :slowest, :total])
     end

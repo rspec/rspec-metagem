@@ -65,6 +65,10 @@ module RSpec
           end
         end
 
+        # @api public
+        #
+        # Outputs the slowest examples and example groups in a report when using `--profile COUNT` (default 10).
+        #
         def dump_profile
           dump_profile_slowest_examples
           dump_profile_slowest_example_groups

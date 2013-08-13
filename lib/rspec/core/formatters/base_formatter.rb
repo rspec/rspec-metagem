@@ -163,8 +163,10 @@ module RSpec
 
         # @api public
         #
-        # Outputs the slowest examples and example groups in a report when using `--profile COUNT` (default 10).
+        # This methods is invoked form formatters to show slowest examples and example groups
+        # when using `--profile COUNT` (default 10).
         #
+        # @return [nil]
         def dump_profile
         end
 
@@ -248,20 +250,19 @@ module RSpec
           !profile_examples? || (fail_fast? && failure_count != 0)
         end
 
+        # @api private
         def slowest_examples
           number_of_examples = RSpec.configuration.profile_examples
           sorted_examples = examples.sort_by {|example|
             example.execution_result[:run_time] }.reverse.first(number_of_examples)
 
-          total, slows = [examples, sorted_examples].map {|exs|
-            exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }}
-          {
-            :examples => sorted_examples,
-            :total => total,
-            :slows => slows
-          }
+          total, slows = [examples, sorted_examples].map do |exs|
+            exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }
+          end
+          {:examples => sorted_examples, :total => total, :slows => slows}
         end
 
+        # @api private
         def slowest_groups
           number_of_examples = RSpec.configuration.profile_examples
           example_groups = {}
