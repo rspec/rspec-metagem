@@ -85,13 +85,13 @@ module RSpec
 
       private
         def format_example(example)
-          {:description => example.description,
-           :full_description => example.full_description,
-           :status => example.execution_result[:status],
-           # :example_group,
-           # :execution_result,
-           :file_path => example.metadata[:file_path],
-           :line_number  => example.metadata[:line_number]}
+          {
+            :description => example.description,
+            :full_description => example.full_description,
+            :status => example.execution_result[:status],
+            :file_path => example.metadata[:file_path],
+            :line_number  => example.metadata[:line_number]
+          }
         end
       end
     end
