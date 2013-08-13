@@ -107,4 +107,99 @@ describe RSpec::Core::Formatters::JsonFormatter do
       expect(summary_line).to eq "2 examples, 1 failure, 1 pending"
     end
   end
+
+  describe "#dump_profile_slowest_examples" do
+    example_line_number = nil
+
+    before do
+      group = RSpec::Core::ExampleGroup.describe("group") do
+        # Use a sleep so there is some measurable time, to ensure
+        # the reported percent is 100%, not 0%.
+        example("example") { sleep 0.001 }
+        example_line_number = __LINE__ - 1
+      end
+      group.run(double('reporter').as_null_object)
+
+      formatter.stub(:examples) { group.examples }
+      RSpec.configuration.stub(:profile_examples) { 10 }
+    end
+
+    it "names the example" do
+      formatter.dump_profile_slowest_examples
+      expect(formatter.output_hash[:profile][:examples].first[:full_description]).to eq("group example")
+    end
+
+    it "provides example execution time" do
+      formatter.dump_profile_slowest_examples
+      expect(formatter.output_hash[:profile][:examples].first[:run_time]).not_to be_nil
+    end
+
+    it "have summary" do
+      formatter.dump_profile_slowest_examples
+      expect(formatter.output_hash[:profile].keys).to eq([:examples, :slowest, :total])
+    end
+  end
+
+  describe "#dump_profile_slowest_example_groups" do
+    let(:group) do
+      RSpec::Core::ExampleGroup.describe("slow group") do
+        # Use a sleep so there is some measurable time, to ensure
+        # the reported percent is 100%, not 0%.
+        example("example") { sleep 0.01 }
+      end
+    end
+    let(:rpt) { double('reporter').as_null_object }
+
+    before do
+      RSpec.configuration.stub(:profile_examples) { 10 }
+      group.run(rpt)
+    end
+
+    context "with one example group" do
+      before { formatter.stub(:examples) { group.examples } }
+
+      it "doesn't profile a single example group" do
+        formatter.dump_profile_slowest_example_groups
+        expect(formatter.output_hash[:profile][:groups]).to be_empty
+      end
+    end
+
+    context "with multiple example groups" do
+      before do
+        group2 = RSpec::Core::ExampleGroup.describe("fast group") do
+          example("example 1") { sleep 0.004 }
+          example("example 2") { sleep 0.007 }
+        end
+        group2.run(rpt)
+
+        formatter.stub(:examples) { group.examples + group2.examples }
+      end
+
+      it "provides the slowest example groups" do
+        formatter.dump_profile_slowest_example_groups
+        expect(formatter.output_hash).not_to be_empty
+      end
+
+      it "provides information" do
+        formatter.dump_profile_slowest_example_groups
+        expect(formatter.output_hash[:profile][:groups].first.keys).to eq([:total_time, :count, :description, :average, :location])
+      end
+
+      it "ranks the example groups by average time" do
+        formatter.dump_profile_slowest_example_groups
+        expect(formatter.output_hash[:profile][:groups].first[:description]).to eq("slow group")
+      end
+    end
+
+    it "depends on parent_groups to get the top level example group" do
+      ex = ""
+      group.describe("group 2") do
+        describe "group 3" do
+          ex = example("nested example 1")
+        end
+      end
+
+      expect(ex.example_group.parent_groups.last).to eq(group)
+    end
+  end
 end
