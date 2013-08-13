@@ -68,55 +68,33 @@ module RSpec
         # @api public
         #
         # Outputs the slowest examples and example groups in a report when using `--profile COUNT` (default 10).
-        # 
+        #
         def dump_profile
           dump_profile_slowest_examples
           dump_profile_slowest_example_groups
         end
-        
+
         def dump_profile_slowest_examples
-          number_of_examples = RSpec.configuration.profile_examples
-          sorted_examples = examples.sort_by {|example|
-            example.execution_result[:run_time] }.reverse.first(number_of_examples)
+          sorted_examples = slowest_examples
 
-          total, slows = [examples, sorted_examples].map {|exs|
-            exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }}
-
-          time_taken = slows / total
+          time_taken = sorted_examples[:slows] / sorted_examples[:total]
           percentage = '%.1f' % ((time_taken.nan? ? 0.0 : time_taken) * 100)
 
-          output.puts "\nTop #{sorted_examples.size} slowest examples (#{format_seconds(slows)} seconds, #{percentage}% of total time):\n"
+          output.puts "\nTop #{sorted_examples[:examples].size} slowest examples (#{format_seconds(sorted_examples[:slows])} seconds, #{percentage}% of total time):\n"
 
-          sorted_examples.each do |example|
+          sorted_examples[:examples].each do |example|
             output.puts "  #{example.full_description}"
             output.puts "    #{bold(format_seconds(example.execution_result[:run_time]))} #{bold("seconds")} #{format_caller(example.location)}"
           end
         end
 
         def dump_profile_slowest_example_groups
-          number_of_examples = RSpec.configuration.profile_examples
-          example_groups = {} 
 
-          examples.each do |example|
-            location = example.example_group.parent_groups.last.metadata[:example_group][:location]
-
-            example_groups[location] ||= Hash.new(0)
-            example_groups[location][:total_time]  += example.execution_result[:run_time]
-            example_groups[location][:count]       += 1
-            example_groups[location][:description] = example.example_group.top_level_description unless example_groups[location].has_key?(:description)
-          end
-
-          # stop if we've only one example group
-          return if example_groups.keys.length <= 1
-
-          example_groups.each_value do |hash|
-            hash[:average] = hash[:total_time].to_f / hash[:count]
-          end
-
-          sorted_groups = example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
+          sorted_groups = slowest_groups
+          return if sorted_groups.empty?
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"
-          sorted_groups.each do |loc, hash| 
+          slowest_groups.each do |loc, hash|
             average = "#{bold(format_seconds(hash[:average]))} #{bold("seconds")} average"
             total   = "#{format_seconds(hash[:total_time])} seconds"
             count   = pluralize(hash[:count], "example")

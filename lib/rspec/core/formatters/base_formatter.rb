@@ -161,6 +161,15 @@ module RSpec
         def dump_pending
         end
 
+        # @api public
+        #
+        # This methods is invoked form formatters to show slowest examples and example groups
+        # when using `--profile COUNT` (default 10).
+        #
+        # @return [nil]
+        def dump_profile
+        end
+
         # @private not intended for use outside RSpec.
         def seed(number)
         end
@@ -239,6 +248,42 @@ module RSpec
         def mute_profile_output?(failure_count)
           # Don't print out profiled info if there are failures and `--fail-fast` is used, it just clutters the output
           !profile_examples? || (fail_fast? && failure_count != 0)
+        end
+
+        # @api private
+        def slowest_examples
+          number_of_examples = RSpec.configuration.profile_examples
+          sorted_examples = examples.sort_by {|example|
+            example.execution_result[:run_time] }.reverse.first(number_of_examples)
+
+          total, slows = [examples, sorted_examples].map do |exs|
+            exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }
+          end
+          {:examples => sorted_examples, :total => total, :slows => slows}
+        end
+
+        # @api private
+        def slowest_groups
+          number_of_examples = RSpec.configuration.profile_examples
+          example_groups = {}
+
+          examples.each do |example|
+            location = example.example_group.parent_groups.last.metadata[:example_group][:location]
+
+            example_groups[location] ||= Hash.new(0)
+            example_groups[location][:total_time]  += example.execution_result[:run_time]
+            example_groups[location][:count]       += 1
+            example_groups[location][:description] = example.example_group.top_level_description unless example_groups[location].has_key?(:description)
+          end
+
+          # stop if we've only one example group
+          return {} if example_groups.keys.length <= 1
+
+          example_groups.each_value do |hash|
+            hash[:average] = hash[:total_time].to_f / hash[:count]
+          end
+
+          example_groups.sort_by {|_, hash| -hash[:average]}.first(number_of_examples)
         end
       end
     end
