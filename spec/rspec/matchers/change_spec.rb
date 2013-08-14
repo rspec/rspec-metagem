@@ -28,6 +28,20 @@ describe "expect { ... }.to change(actual, message)" do
     end
   end
 
+  it "can specify the change of a variable's class" do
+    val = nil
+
+    expect {
+      val = 42
+    }.to change { val.class }.from(NilClass).to(Fixnum)
+
+    expect {
+      expect {
+        val = "string"
+      }.to change { val.class }.from(Fixnum).to(NilClass)
+    }.to fail_with(/but is now String/)
+  end
+
   context "with boolean values" do
     before(:each) do
       @instance = SomethingExpected.new

@@ -133,7 +133,7 @@ MESSAGE
         end
 
         def expected_matches_actual?(expected, actual)
-          expected === actual
+          expected === actual || actual == expected
         end
       end
     end
