@@ -501,7 +501,7 @@ module RSpec::Core
             allow(Kernel).to receive(:warn)
             config.load_spec_files
             config.send(setter, "rspec/**/*.spec"); line = __LINE__
-            expect(Kernel).to have_received(:warn).with /has no effect.*#{__FILE__}:#{line}/
+            expect(Kernel).to have_received(:warn).with(/has no effect.*#{__FILE__}:#{line}/)
           end
 
           it 'will not warn if reset is called after load_spec_files' do

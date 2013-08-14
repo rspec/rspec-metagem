@@ -51,7 +51,7 @@ module RSpec::Core
 
         it 'works with top level defined examples in modules' do
           expect(RSpec::configuration.reporter).to_not receive(:deprecation)
-          group = ExampleGroup.describe('example group') { include_context 'top level in module' }
+          ExampleGroup.describe('example group') { include_context 'top level in module' }
         end
 
         ["name", :name, ExampleModule, ExampleClass].each do |object|
