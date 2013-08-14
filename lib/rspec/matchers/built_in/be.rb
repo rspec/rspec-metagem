@@ -45,29 +45,7 @@ module RSpec
         end
       end
 
-      class Be < BaseMatcher
-        def initialize(*args, &block)
-          @args = args
-        end
-
-        def match(_, actual)
-          !!actual
-        end
-
-        def failure_message_for_should
-          "expected #{@actual.inspect} to evaluate to true"
-        end
-
-        def failure_message_for_should_not
-          "expected #{@actual.inspect} to evaluate to false"
-        end
-
-        [:==, :<, :<=, :>=, :>, :===, :=~].each do |operator|
-          define_method operator do |operand|
-            BeComparedTo.new(operand, operator)
-          end
-        end
-
+      module BeHelpers
         private
 
         def args_to_s
@@ -88,6 +66,32 @@ module RSpec
 
         def args_to_sentence
           to_sentence(@args)
+        end
+      end
+
+      class Be < BaseMatcher
+        include BeHelpers
+
+        def initialize(*args, &block)
+          @args = args
+        end
+
+        def match(_, actual)
+          !!actual
+        end
+
+        def failure_message_for_should
+          "expected #{@actual.inspect} to evaluate to true"
+        end
+
+        def failure_message_for_should_not
+          "expected #{@actual.inspect} to evaluate to false"
+        end
+
+        [:==, :<, :<=, :>=, :>, :===, :=~].each do |operator|
+          define_method operator do |operand|
+            BeComparedTo.new(operand, operator)
+          end
         end
       end
 
@@ -126,7 +130,9 @@ it is a bit confusing.
         end
       end
 
-      class BePredicate < Be
+      class BePredicate < BaseMatcher
+        include BeHelpers
+
         def initialize(*args, &block)
           @expected = parse_expected(args.shift)
           @args = args
