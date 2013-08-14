@@ -17,7 +17,6 @@ require_rspec['core/extensions/ordered']
 require_rspec['core/deprecation']
 require_rspec['core/reporter']
 
-require_rspec['core/metadata_hash_builder']
 require_rspec['core/hooks']
 require_rspec['core/memoized_helpers']
 require_rspec['core/metadata']

@@ -8,10 +8,8 @@ Feature: Define helper methods in a module
 
   You can also include or extend the module onto only certain example
   groups by passing a metadata hash as the last argument.  Only groups
-  that match the given metadata will include or extend the module.
-
-  If you set the `treat_symbols_as_metadata_keys_with_true_values` config option
-  to `true`, you can specify metadata using only symbols.
+  that match the given metadata will include or extend the module. You
+  can also specify metadata using only symbols.
 
   Background:
     Given a file named "helpers.rb" with:
@@ -122,7 +120,6 @@ Feature: Define helper methods in a module
       require './helpers'
 
       RSpec.configure do |c|
-        c.treat_symbols_as_metadata_keys_with_true_values = true
         c.include Helpers, :include_helpers
         c.extend  Helpers, :extend_helpers
       end

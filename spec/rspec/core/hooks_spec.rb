@@ -22,59 +22,43 @@ module RSpec::Core
         end
       end
 
-      [true, false].each do |config_value|
-        context "when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to #{config_value}" do
-          before(:each) do
-            Kernel.stub(:warn)
-            RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = config_value }
-          end
 
-          describe "##{type}(no scope)" do
-            let(:instance) { HooksHost.new }
+      describe "##{type}(no scope)" do
+        let(:instance) { HooksHost.new }
 
-            it "defaults to :each scope if no arguments are given" do
-              hooks = instance.send(type) {}
-              hook = hooks.first
-              expect(instance.hooks[type][:each]).to include(hook)
-            end
+        it "defaults to :each scope if no arguments are given" do
+          hooks = instance.send(type) {}
+          hook = hooks.first
+          expect(instance.hooks[type][:each]).to include(hook)
+        end
 
-            it "defaults to :each scope if the only argument is a metadata hash" do
-              hooks = instance.send(type, :foo => :bar) {}
-              hook = hooks.first
-              expect(instance.hooks[type][:each]).to include(hook)
-            end
+        it "defaults to :each scope if the only argument is a metadata hash" do
+          hooks = instance.send(type, :foo => :bar) {}
+          hook = hooks.first
+          expect(instance.hooks[type][:each]).to include(hook)
+        end
 
-            it "raises an error if only metadata symbols are given as arguments" do
-              expect { instance.send(type, :foo, :bar) {} }.to raise_error(ArgumentError)
-            end
-          end
+        it "raises an error if only metadata symbols are given as arguments" do
+          expect { instance.send(type, :foo, :bar) {} }.to raise_error(ArgumentError)
         end
       end
     end
 
     [:before, :after].each do |type|
       [:each, :all, :suite].each do |scope|
-        [true, false].each do |config_value|
-          context "when RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values is set to #{config_value}" do
-            before(:each) do
-              RSpec.configure { |c| c.treat_symbols_as_metadata_keys_with_true_values = config_value }
-            end
+        describe "##{type}(#{scope.inspect})" do
+          let(:instance) { HooksHost.new }
+          let!(:hook) do
+            hooks = instance.send(type, scope) {}
+            hooks.first
+          end
 
-            describe "##{type}(#{scope.inspect})" do
-              let(:instance) { HooksHost.new }
-              let!(:hook) do
-                hooks = instance.send(type, scope) {}
-                hooks.first
-              end
+          it "does not make #{scope.inspect} a metadata key" do
+            expect(hook.options).to be_empty
+          end
 
-              it "does not make #{scope.inspect} a metadata key" do
-                expect(hook.options).to be_empty
-              end
-
-              it "is scoped to #{scope.inspect}" do
-                expect(instance.hooks[type][scope]).to include(hook)
-              end
-            end
+          it "is scoped to #{scope.inspect}" do
+            expect(instance.hooks[type][scope]).to include(hook)
           end
         end
       end

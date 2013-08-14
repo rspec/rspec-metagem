@@ -12,8 +12,7 @@ Feature: filters
       describe "something", :type => :model do
       end
 
-  You can specify metadata using only symbols if you set the
-  `treat_symbols_as_metadata_keys_with_true_values` config option to `true`.
+  You can also specify metadata using only symbols.
 
   Scenario: filter `before(:each)` hooks using arbitrary metadata
     Given a file named "filter_before_each_hooks_spec.rb" with:
@@ -197,7 +196,6 @@ Feature: filters
     Given a file named "less_verbose_metadata_filter.rb" with:
       """ruby
       RSpec.configure do |c|
-        c.treat_symbols_as_metadata_keys_with_true_values = true
         c.before(:each, :before_each) { puts "before each" }
         c.after(:each,  :after_each) { puts "after each" }
         c.around(:each, :around_each) do |example|

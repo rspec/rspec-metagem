@@ -32,6 +32,18 @@ Enhancements
 * Add --no-fail-fast command line option. (Gonzalo Rodríguez-Baltanás Díaz)
 * Runner now considers the local system ip address when running under Drb (Adrian CB)
 * JsonFormatter now includes `--profile` information (Alex / @MasterLambaster)
+* Always treat symbols passed as metadata args as hash
+  keys with true values. RSpec 2 supported this with the
+  `treat_symbols_as_metadata_keys_with_true_values` but
+  now this behavior is always enabled (Myron Marston).
+Bug fixes:
+
+
+Deprecations
+
+* `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
+  longer has an affect now that the behavior it enabled is always
+  enabled (Myron Marston).
 
 ### 2.14.5 / 2013-08-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.4...v2.14.5)

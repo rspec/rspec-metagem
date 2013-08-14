@@ -92,17 +92,6 @@ module RSpec::Core
       end
     end
 
-    describe "#treat_symbols_as_metadata_keys_with_true_values?" do
-      it 'defaults to false' do
-        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_falsey
-      end
-
-      it 'can be set to true' do
-        config.treat_symbols_as_metadata_keys_with_true_values = true
-        expect(config.treat_symbols_as_metadata_keys_with_true_values?).to be_truthy
-      end
-    end
-
     describe "#mock_framework" do
       it "defaults to :rspec" do
         config.should_receive(:require).with('rspec/core/mocking/with_rspec')
@@ -864,7 +853,6 @@ module RSpec::Core
       end
 
       it "sets the filter with a symbol" do
-        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.filter_run_including :foo
         expect(config.inclusion_filter[:foo]).to be(true)
       end
@@ -892,7 +880,6 @@ module RSpec::Core
       end
 
       it "sets the filter using a symbol" do
-        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.filter_run_excluding :foo
         expect(config.exclusion_filter[:foo]).to be(true)
       end
@@ -915,7 +902,6 @@ module RSpec::Core
 
     describe "#inclusion_filter=" do
       it "treats symbols as hash keys with true values when told to" do
-        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.inclusion_filter = :foo
         expect(config.inclusion_filter).to eq({:foo => true})
       end
@@ -962,9 +948,15 @@ module RSpec::Core
       end
     end
 
+    describe "#treat_symbols_as_metadata_keys_with_true_values=" do
+      it 'is deprecated' do
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+        config.treat_symbols_as_metadata_keys_with_true_values = true
+      end
+    end
+
     describe "#exclusion_filter=" do
       it "treats symbols as hash keys with true values when told to" do
-        RSpec.configuration.stub(:treat_symbols_as_metadata_keys_with_true_values? => true)
         config.exclusion_filter = :foo
         expect(config.exclusion_filter).to eq({:foo => true})
       end

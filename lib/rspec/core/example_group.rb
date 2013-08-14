@@ -13,7 +13,6 @@ module RSpec
     # which serves as a wrapper for an instance of the ExampleGroup in which it
     # is declared.
     class ExampleGroup
-      extend  MetadataHashBuilder::WithDeprecationWarning
       extend  Hooks
 
       include MemoizedHelpers
@@ -60,7 +59,7 @@ module RSpec
         def self.define_example_method(name, extra_options={})
           define_method(name) do |*all_args, &block|
             desc, *args = *all_args
-            options = build_metadata_hash_from(args)
+            options = Metadata.build_hash_from(args)
             options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
             options.update(extra_options)
             examples << RSpec::Core::Example.new(self, desc, options, block)
@@ -309,7 +308,7 @@ module RSpec
         ensure_example_groups_are_configured
 
         symbol_description = args.shift if args.first.is_a?(Symbol)
-        args << build_metadata_hash_from(args)
+        args << Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
         hooks.register_globals(self, RSpec.configuration.hooks)
