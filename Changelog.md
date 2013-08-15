@@ -12,6 +12,22 @@ Enhancements:
 
 * Support do..end style block with `raise_error` matcher. (Yuji Nakayama)
 
+### 2.14.2 / 2013-08-14
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.1...v2.14.2)
+
+Bug fixes
+
+* Fix `be_<predicate>` matcher to not support operator chaining like the
+  `be` matcher does (e.g. `be == 5`). This led to some odd behaviors
+  since `be_<predicate> == anything` returned a `BeComparedTo` matcher
+  and was thus always truthy. This was a consequence of the implementation
+  (e.g. subclassing the basic `Be` matcher) and was not intended behavior.
+  (Myron Marston).
+* Fix `change` matcher to compare using `==` in addition to `===`. This
+  is important for an expression like:
+  `expect {}.to change { a.class }.from(ClassA).to(ClassB)` because
+  `SomeClass === SomeClass` returns false. (Myron Marston)
+
 ### 2.14.1 / 2013-08-08
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...2.14.1)
 
