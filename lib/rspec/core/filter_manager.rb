@@ -66,32 +66,44 @@ module RSpec
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
     class FilterManager
-      CONDITIONAL_EXCLUSION_FILTERS = {
-        :if     => lambda { |value| !value },
-        :unless => lambda { |value| value }
-      }
-
       STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
 
-      module Describable
-        PROC_HEX_NUMBER = /0x[0-9a-f]+@/
-        PROJECT_DIR = File.expand_path('.')
+      PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+      PROJECT_DIR = File.expand_path('.')
+
+      def self.inspect_filter_hash(hash)
+        hash.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+      end
+
+      class InclusionFilterHash < Hash
+        def description
+          FilterManager.inspect_filter_hash self
+        end
+      end
+
+      class ExclusionFilterHash < Hash
+        CONDITIONAL_FILTERS = {
+          :if     => lambda { |value| !value },
+          :unless => lambda { |value| value }
+        }
+
+        def initialize(*)
+          super
+          CONDITIONAL_FILTERS.each {|k,v| store(k, v)}
+        end
 
         def description
-          filters_string = without_conditional_exclusion_filters.inspect
-          filters_string.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)', '')
+          FilterManager.inspect_filter_hash without_conditional_filters
         end
 
         def empty_without_conditional_filters?
-          without_conditional_exclusion_filters.empty?
+          without_conditional_filters.empty?
         end
 
         private
 
-        def without_conditional_exclusion_filters
-          reject do |k, v|
-            RSpec::Core::FilterManager::CONDITIONAL_EXCLUSION_FILTERS[k] == v
-          end
+        def without_conditional_filters
+          reject {|k,v| CONDITIONAL_FILTERS[k] == v}
         end
       end
 
@@ -124,8 +136,8 @@ module RSpec
       attr_reader :exclusions, :inclusions
 
       def initialize
-        @exclusions = CONDITIONAL_EXCLUSION_FILTERS.dup.extend(Describable)
-        @inclusions = {}.extend(Describable)
+        @exclusions = ExclusionFilterHash.new
+        @inclusions = InclusionFilterHash.new
         extend(BackwardCompatibility)
       end
 
