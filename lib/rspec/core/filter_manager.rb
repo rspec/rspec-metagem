@@ -66,7 +66,7 @@ module RSpec
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
     class FilterManager
-      DEFAULT_EXCLUSIONS = {
+      CONDITIONAL_EXCLUSION_FILTERS = {
         :if     => lambda { |value| !value },
         :unless => lambda { |value| value }
       }
@@ -78,11 +78,20 @@ module RSpec
         PROJECT_DIR = File.expand_path('.')
 
         def description
-          reject { |k, v| RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+          filters_string = without_conditional_exclusion_filters.inspect
+          filters_string.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)', '')
         end
 
         def empty_without_conditional_filters?
-          reject { |k, v| RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS[k] == v }.empty?
+          without_conditional_exclusion_filters.empty?
+        end
+
+        private
+
+        def without_conditional_exclusion_filters
+          reject do |k, v|
+            RSpec::Core::FilterManager::CONDITIONAL_EXCLUSION_FILTERS[k] == v
+          end
         end
       end
 
@@ -115,7 +124,7 @@ module RSpec
       attr_reader :exclusions, :inclusions
 
       def initialize
-        @exclusions = DEFAULT_EXCLUSIONS.dup.extend(Describable)
+        @exclusions = CONDITIONAL_EXCLUSION_FILTERS.dup.extend(Describable)
         @inclusions = {}.extend(Describable)
         extend(BackwardCompatibility)
       end
