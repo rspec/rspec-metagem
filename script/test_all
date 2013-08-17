@@ -46,5 +46,4 @@ fi
 
 # For now, use this instead, due to a bug in bundler:
 # https://github.com/carlhuda/bundler/issues/2382
-bundle exec bin/cucumber
-
+bundle exec bin/cucumber --strict
