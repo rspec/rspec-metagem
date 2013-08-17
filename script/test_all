@@ -30,5 +30,5 @@ done
 # bundler, but just running `bin/cucumber` can fail due to the fact that it
 # shells out (via aruba) and executes `rspec`--which can pick up the wrong
 # rspec version if we're not running with bundler.
-bundle exec cucumber
+bundle exec cucumber --strict
 
