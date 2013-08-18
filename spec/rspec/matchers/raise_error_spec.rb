@@ -96,13 +96,6 @@ describe "expect { ... }.not_to raise_error" do
   end
 
   context "with no specific error class" do
-    it "is not deprecated" do
-      run = nil
-      allow(RSpec).to receive(:deprecate) { run = true }
-      expect {"bees"}.not_to raise_error
-      expect(run).to be_nil
-    end
-
     it "passes if nothing is raised" do
       expect {}.not_to raise_error
     end
@@ -172,10 +165,6 @@ describe "expect { ... }.to raise_error(message)" do
 end
 
 describe "expect { ... }.not_to raise_error(message)" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
   it "raises" do
     expect {
       expect {raise 'blarg'}.not_to raise_error(/blah/)
@@ -208,10 +197,6 @@ describe "expect { ... }.to raise_error(NamedError)" do
 end
 
 describe "expect { ... }.not_to raise_error(NamedError)" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
   it "raises" do
     expect {
       expect { }.not_to raise_error(NameError)
@@ -244,10 +229,6 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with String" 
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
   it "raises" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message")
@@ -280,10 +261,6 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" 
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
   it "raises" do
     expect {
       expect {}.not_to raise_error(RuntimeError, /ample mess/)
@@ -365,10 +342,6 @@ describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| ... }" do
-  before do
-    allow(RSpec).to receive(:deprecate)
-  end
-
   it "raises" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message") { |err| }

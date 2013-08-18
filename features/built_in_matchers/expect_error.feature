@@ -118,19 +118,6 @@ Feature: raise_error matcher
       When I run `rspec example_spec`
       Then the example should pass
 
-  Scenario: expect no occurence of a specific error
-    Given a file named "example_spec" with:
-      """
-      describe Object, "#public_instance_methods" do
-        it "does not raise" do
-          expect { Object.public_instance_methods }.
-            not_to raise_error(NameError)
-        end
-      end
-      """
-    When I run `rspec example_spec`
-    Then the example should pass
-
   Scenario: expect no error at all
     Given a file named "example_spec" with:
       """
