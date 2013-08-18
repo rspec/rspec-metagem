@@ -434,7 +434,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       context { example { values << rand } }
     end.run
 
-    expect(values.uniq).to have(2).values
+    expect(values.uniq.count).to eq(2)
   end
 
   describe "optional block argument" do

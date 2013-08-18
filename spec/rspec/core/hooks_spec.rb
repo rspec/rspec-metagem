@@ -76,7 +76,7 @@ module RSpec::Core
             end
           end
           group.run
-          expect(examples).to have(0).example
+          expect(examples).to eq([])
         end
       end
 
@@ -92,7 +92,7 @@ module RSpec::Core
             end
           end
           group.run
-          expect(examples).to have(1).example
+          expect(examples.count).to eq(1)
         end
       end
 
@@ -112,7 +112,7 @@ module RSpec::Core
             end
           end
           group.run
-          expect(examples).to have(1).example
+          expect(examples.count).to eq(1)
         end
       end
     end

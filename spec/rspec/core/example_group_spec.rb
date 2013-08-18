@@ -49,7 +49,7 @@ module RSpec::Core
         end
 
         group.run
-        expect(examples_run).to have(1).example
+        expect(examples_run.count).to eq(1)
       end
 
       context "with a failure in the top level group" do
@@ -68,7 +68,7 @@ module RSpec::Core
           end
 
           group.run
-          expect(examples_run).to have(2).examples
+          expect(examples_run.count).to eq(2)
         end
       end
 
@@ -706,7 +706,7 @@ module RSpec::Core
         group.it("should do something 1") { }
         group.it("should do something 2") { }
         group.it("should do something 3") { }
-        expect(group).to have(3).examples
+        expect(group.examples.count).to eq(3)
       end
 
       it "maintains the example order" do
@@ -1039,7 +1039,7 @@ module RSpec::Core
         group = ExampleGroup.describe('fake group')
         group.shared_examples_for("thing") {}
         group.it_should_behave_like("thing")
-        expect(group).to have(1).children
+        expect(group.children.count).to eq(1)
       end
 
       it "creates a nested group for a class" do
@@ -1047,7 +1047,7 @@ module RSpec::Core
         group = ExampleGroup.describe('fake group')
         group.shared_examples_for(klass) {}
         group.it_should_behave_like(klass)
-        expect(group).to have(1).children
+        expect(group.children.count).to eq(1)
       end
 
       it "adds shared examples to nested group" do
@@ -1056,7 +1056,7 @@ module RSpec::Core
           it("does something")
         end
         shared_group = group.it_should_behave_like("thing")
-        expect(shared_group).to have(1).examples
+        expect(shared_group.examples.count).to eq(1)
       end
 
       it "adds shared instance methods to nested group" do
