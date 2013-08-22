@@ -17,7 +17,7 @@ Then /^the output should contain one of the following:$/ do |table|
     all_output =~ regexp(string)
   end
 
-  matching_output.should have(1).item
+  matching_output.count.should eq(1)
 end
 
 Then /^the example(?:s)? should(?: all)? pass$/ do

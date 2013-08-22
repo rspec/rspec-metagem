@@ -43,7 +43,7 @@ Feature: before and after hooks
 
         describe "initialized in before(:each)" do
           it "has 0 widgets" do
-            @thing.should have(0).widgets
+            @thing.widgets.count.should eq(0)
           end
 
           it "can get accept new widgets" do
@@ -51,7 +51,7 @@ Feature: before and after hooks
           end
 
           it "does not share state across examples" do
-            @thing.should have(0).widgets
+            @thing.widgets.count.should eq(0)
           end
         end
       end
@@ -77,7 +77,7 @@ Feature: before and after hooks
 
         describe "initialized in before(:all)" do
           it "has 0 widgets" do
-            @thing.should have(0).widgets
+            @thing.widgets.count.should eq(0)
           end
 
           it "can get accept new widgets" do
@@ -85,7 +85,7 @@ Feature: before and after hooks
           end
 
           it "shares state across examples" do
-            @thing.should have(1).widgets
+            @thing.widgets.count.should eq(1)
           end
         end
       end
