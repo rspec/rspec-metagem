@@ -36,8 +36,11 @@ Enhancements
   keys with true values. RSpec 2 supported this with the
   `treat_symbols_as_metadata_keys_with_true_values` but
   now this behavior is always enabled (Myron Marston).
-Bug fixes:
+* Add `--dry-run` option, which prints the formatter output
+  of your suite without running any examples or hooks
+  (Thomas Stratmann, Myron Marston).
 
+Bug fixes:
 
 Deprecations
 
