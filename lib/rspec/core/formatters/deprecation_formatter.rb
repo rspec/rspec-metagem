@@ -33,7 +33,7 @@ module RSpec
         end
 
         module DeprecationMessage
-          def deprecation_message(data)
+          def deprecation_message_for(data)
             msg =  "#{data[:deprecated]} is deprecated."
             msg << " Use #{data[:replacement]} instead." if data[:replacement]
             msg << " Called from #{data[:call_site]}." if data[:call_site]
@@ -41,7 +41,7 @@ module RSpec
           end
         end
 
-        class FilePrinter < Struct.new(:deprecation_stream, :summary_stream, :counter)
+        class FilePrinter
           include ::RSpec::Core::Formatters::Helpers
           include DeprecationMessage
 
@@ -54,7 +54,7 @@ module RSpec
           end
 
           def print_deprecation_message(data)
-            deprecation_stream.puts deprecation_message(data)
+            deprecation_stream.puts deprecation_message_for(data)
           end
 
           def deprecation_summary
@@ -65,6 +65,8 @@ module RSpec
         end
 
         class IOPrinter
+          TOO_MANY_USES_LIMIT = 4
+
           include ::RSpec::Core::Formatters::Helpers
           include DeprecationMessage
 
@@ -79,27 +81,36 @@ module RSpec
           end
 
           def print_deprecation_message(data)
-            @seen_deprecations[data[:deprecated]] += 1
+            deprecation_type = data[:deprecated]
+            @seen_deprecations[deprecation_type] += 1
 
-            if @seen_deprecations[data[:deprecated]] <= 3
-              @deprecation_messages[data[:deprecated]] << deprecation_message(data)
-            elsif @seen_deprecations[data[:deprecated]] == 4
-              msg  = "Too many uses of deprecated '#{data[:deprecated]}'."
-              msg << " Set config.deprecation_stream to a File for full output"
-              @deprecation_messages[data[:deprecated]] << msg
+            stash_deprecation_message(deprecation_type, data)
+          end
+
+          def stash_deprecation_message(deprecation_type, data)
+            if @seen_deprecations[deprecation_type] < TOO_MANY_USES_LIMIT
+              @deprecation_messages[deprecation_type] << deprecation_message_for(data)
+            elsif @seen_deprecations[deprecation_type] == TOO_MANY_USES_LIMIT
+              msg = "Too many uses of deprecated '#{deprecation_type}'."
+              msg << " Set config.deprecation_stream to a File for full output."
+              @deprecation_messages[deprecation_type] << msg
             end
           end
 
           def deprecation_summary
             messages = @deprecation_messages.values.flatten
-            return unless messages.size > 0
+            return unless messages.any?
 
+            print_deferred_deprecation_warnings(messages)
+
+            summary_stream.puts "\n#{pluralize(counter.count, 'deprecation warning')} total"
+          end
+
+          def print_deferred_deprecation_warnings(messages)
             deprecation_stream.puts "\nDeprecation Warnings:\n\n"
             messages.each do |msg|
               deprecation_stream.puts msg
             end
-
-            summary_stream.puts "\n#{pluralize(counter.count, 'deprecation warning')} total"
           end
         end
 

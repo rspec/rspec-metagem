@@ -41,8 +41,7 @@ module RSpec::Core::Formatters
 
         it "prints nothing" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
-          deprecation_stream.rewind
-          expect(deprecation_stream.read).to eq ""
+          expect(deprecation_stream.string).to eq ""
         end
       end
     end
@@ -57,22 +56,19 @@ module RSpec::Core::Formatters
         it "prints a count of the deprecations" do
           formatter.deprecation(:deprecated => 'i_am_deprecated')
           formatter.deprecation_summary
-          summary_stream.rewind
-          expect(summary_stream.read).to match(/1 deprecation logged to .*deprecation_summary_example_output/)
+          expect(summary_stream.string).to match(/1 deprecation logged to .*deprecation_summary_example_output/)
         end
 
         it "pluralizes the reported deprecation count for more than one deprecation" do
           formatter.deprecation(:deprecated => 'i_am_deprecated')
           formatter.deprecation(:deprecated => 'i_am_deprecated_also')
           formatter.deprecation_summary
-          summary_stream.rewind
-          expect(summary_stream.read).to match(/2 deprecations/)
+          expect(summary_stream.string).to match(/2 deprecations/)
         end
 
         it "is not printed when there are no deprecations" do
           formatter.deprecation_summary
-          summary_stream.rewind
-          expect(summary_stream.read).to eq ""
+          expect(summary_stream.string).to eq ""
         end
       end
 
@@ -82,23 +78,21 @@ module RSpec::Core::Formatters
         it "limits the deprecation warnings after 3 calls" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
           formatter.deprecation_summary
-          deprecation_stream.rewind
           expected = <<-EOS.gsub(/^ {12}/, '')
             \nDeprecation Warnings:
 
             i_am_deprecated is deprecated.
             i_am_deprecated is deprecated.
             i_am_deprecated is deprecated.
-            Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output
+            Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output.
           EOS
-          expect(deprecation_stream.read).to eq expected
+          expect(deprecation_stream.string).to eq expected
         end
 
         it "prints the true deprecation count to the summary_stream" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
           formatter.deprecation_summary
-          summary_stream.rewind
-          expect(summary_stream.read).to match /5 deprecation warnings total/
+          expect(summary_stream.string).to match /5 deprecation warnings total/
         end
       end
     end
