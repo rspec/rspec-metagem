@@ -11,6 +11,7 @@ end
 require 'set'
 require 'time'
 require 'rbconfig'
+require_rspec['core/flat_map']
 require_rspec['core/filter_manager']
 require_rspec['core/dsl']
 require_rspec['core/extensions/ordered']
@@ -171,7 +172,6 @@ WARNING
     def self.path_to_executable
       @path_to_executable ||= File.expand_path('../../../exe/rspec', __FILE__)
     end
-
   end
 
   MODULES_TO_AUTOLOAD = {

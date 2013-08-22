@@ -159,7 +159,7 @@ module RSpec
         end
 
         def full_description
-          build_description_from(*container_stack.reverse.map {|a| a[:description_args]}.flatten)
+          build_description_from(*FlatMap.flat_map(container_stack.reverse) {|a| a[:description_args]})
         end
 
         def container_stack

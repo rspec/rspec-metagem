@@ -448,7 +448,7 @@ EOS
 
       # @private
       def around_each_hooks_for(example, initial_procsy=nil)
-        AroundHookCollection.new(parent_groups.map {|a| a.hooks[:around][:each]}.flatten).for(example, initial_procsy)
+        AroundHookCollection.new(FlatMap.flat_map(parent_groups) {|a| a.hooks[:around][:each]}).for(example, initial_procsy)
       end
 
     private
@@ -472,11 +472,11 @@ EOS
       end
 
       def before_each_hooks_for(example)
-        HookCollection.new(parent_groups.reverse.map {|a| a.hooks[:before][:each]}.flatten).for(example)
+        HookCollection.new(FlatMap.flat_map(parent_groups.reverse) {|a| a.hooks[:before][:each]}).for(example)
       end
 
       def after_each_hooks_for(example)
-        HookCollection.new(parent_groups.map {|a| a.hooks[:after][:each]}.flatten).for(example)
+        HookCollection.new(FlatMap.flat_map(parent_groups) {|a| a.hooks[:after][:each]}).for(example)
       end
 
       def register_hook prepend_or_append, hook, *args, &block
