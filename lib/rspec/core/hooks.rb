@@ -441,6 +441,8 @@ EOS
       # Runs all of the blocks stored with the hook in the context of the
       # example. If no example is provided, just calls the hook directly.
       def run_hook(hook, scope, example_or_group=ExampleGroup.new, initial_procsy=nil)
+        return if RSpec.configuration.dry_run?
+
         find_hook(hook, scope, example_or_group, initial_procsy).run
       end
 

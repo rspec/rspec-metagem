@@ -6,6 +6,11 @@ Feature: --dry-run
   Scenario: Using --dry-run
     Given a file named "spec/dry_run_spec.rb" with:
       """ruby
+      RSpec.configure do |c|
+        c.before(:suite) { puts "before suite" }
+        c.after(:suite)  { puts "after suite"  }
+      end
+
       describe "dry run" do
         before(:all)  { fail }
         before(:each) { fail }
@@ -20,3 +25,5 @@ Feature: --dry-run
       """
     When I run `rspec --dry-run`
     Then the output should contain "1 example, 0 failures"
+     And the output should not contain "before suite"
+     And the output should not contain "after suite"
