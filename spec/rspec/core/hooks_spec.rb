@@ -4,6 +4,10 @@ module RSpec::Core
   describe Hooks do
     class HooksHost
       include Hooks
+
+      def parent_groups
+        []
+      end
     end
 
     [:before, :after, :around].each do |type|
@@ -59,6 +63,15 @@ module RSpec::Core
 
           it "is scoped to #{scope.inspect}" do
             expect(instance.hooks[type][scope]).to include(hook)
+          end
+
+          it 'does not run when in dry run mode' do
+            RSpec.configuration.dry_run = true
+
+            expect { |b|
+              instance.send(type, scope, &b)
+              instance.run_hook(type, scope)
+            }.not_to yield_control
           end
         end
       end

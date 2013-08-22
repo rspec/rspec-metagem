@@ -107,7 +107,7 @@ module RSpec
         start(reporter)
 
         begin
-          unless pending or RSpec.configuration.dry_run
+          unless pending || RSpec.configuration.dry_run?
             with_around_each_hooks do
               begin
                 run_before_each

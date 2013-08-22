@@ -348,93 +348,41 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     context "with --dry-run" do
-      def with_dry_run
-        old_value = RSpec.configuration.dry_run
-        RSpec.configuration.dry_run = true
-        yield
-      ensure
-        RSpec.configuration.dry_run = old_value
-      end
+      before { RSpec.configuration.dry_run = true }
 
-      it "does not execute a before(:all) block" do
-        seen = nil
+      it "does not execute any examples or hooks" do
+        executed = []
 
-        with_dry_run do
-          group = RSpec::Core::ExampleGroup.describe do
-            before(:all) do
-              seen = true
-            end
-
-            example('example') { }
-          end
-          group.run
+        RSpec.configure do |c|
+          c.before(:each) { executed << :before_each_config }
+          c.before(:all)  { executed << :before_all_config }
+          c.after(:each)  { executed << :after_each_config }
+          c.after(:all)   { executed << :after_all_config }
+          c.around(:each) { |ex| executed << :around_each_config; ex.run }
         end
 
-        expect(seen).to be_nil
-      end
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:all)  { executed << :before_all }
+          before(:each) { executed << :before_each }
+          after(:all)   { executed << :after_all }
+          after(:each)  { executed << :after_each }
+          around(:each) { |ex| executed << :around_each; ex.run }
 
-      it "does not execute an after(:all) block" do
-        seen = nil
+          example { executed << :example }
 
-        with_dry_run do
-          group = RSpec::Core::ExampleGroup.describe do
-            after(:all) do
-              seen = true
-            end
+          context "nested" do
+            before(:all)  { executed << :nested_before_all }
+            before(:each) { executed << :nested_before_each }
+            after(:all)   { executed << :nested_after_all }
+            after(:each)  { executed << :nested_after_each }
+            around(:each) { |ex| executed << :nested_around_each; ex.run }
 
-            example('example') { }
+            example { executed << :nested_example }
           end
-          group.run
         end
 
-        expect(seen).to be_nil
-      end
-
-      it "does not execute a before(:each) block" do
-        seen = nil
-
-        with_dry_run do
-          group = RSpec::Core::ExampleGroup.describe do
-            before(:all) do
-              seen = true
-            end
-
-            example('example') { }
-          end
-          group.run
-        end
-
-        expect(seen).to be_nil
-      end
-
-      it "does not execute a after(:each) block" do
-        seen = nil
-
-        with_dry_run do
-          group = RSpec::Core::ExampleGroup.describe do
-            after(:all) do
-              seen = true
-            end
-
-            example('example') { }
-          end
-          group.run
-        end
-
-        expect(seen).to be_nil
-      end
-
-      it "does not execute an example" do
-        seen = nil
-
-        with_dry_run do
-          group = RSpec::Core::ExampleGroup.describe do
-            example('example') { seen = true }
-          end
-          group.run
-        end
-
-        expect(seen).to be_nil
+        group.run
+        expect(executed).to eq([])
       end
     end
   end
