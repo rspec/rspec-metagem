@@ -1,7 +1,7 @@
 Feature: --dry-run
 
-  Use the `--dry-run` option to tell RSpec to not to execute example code or any
-  code in before/after(:each/:all) blocks.
+  Use the `--dry-run` option to have RSpec print your suite's formatter
+  output without running any examples or hooks.
 
   Scenario: Using --dry-run
     Given a file named "spec/dry_run_spec.rb" with:

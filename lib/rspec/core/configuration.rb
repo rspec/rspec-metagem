@@ -101,7 +101,8 @@ module RSpec
       # Clean up and exit after the first failure (default: `false`).
       add_setting :fail_fast
 
-      # Do not execute any example code, including before/after blocks
+      # Prints the formatter output of your suite without running any
+      # examples or hooks.
       add_setting :dry_run
 
       # The exit code to return if there are any failures (default: 1).

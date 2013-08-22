@@ -87,7 +87,8 @@ module RSpec::Core
           options[:failure_exit_code] = code
         end
 
-        parser.on('--dry-run', 'Do not execute example code and setup.') do |o|
+        parser.on('--dry-run', 'Print the formatter output of your suite without',
+                  '  running any examples or hooks') do |o|
           options[:dry_run] = true
         end
 
