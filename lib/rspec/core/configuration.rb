@@ -975,10 +975,10 @@ module RSpec
     private
 
       def get_files_to_run(paths)
-        paths.map do |path|
+        FlatMap.flat_map(paths) do |path|
           path = path.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
           File.directory?(path) ? gather_directories(path) : extract_location(path)
-        end.flatten.sort
+        end.sort
       end
 
       def gather_directories(path)

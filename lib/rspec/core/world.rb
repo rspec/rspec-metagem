@@ -47,9 +47,8 @@ module RSpec
       end
 
       def example_count
-        example_groups.collect {|g| g.descendants}.flatten.inject(0) do |sum, g|
-          sum + g.filtered_examples.size
-        end
+        FlatMap.flat_map(example_groups) {|g| g.descendants}.
+          inject(0) {|sum, g| sum + g.filtered_examples.size}
       end
 
       def preceding_declaration_line(filter_line)

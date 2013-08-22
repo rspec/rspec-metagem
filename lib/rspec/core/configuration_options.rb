@@ -124,7 +124,7 @@ module RSpec
       def args_from_options_file(path)
         return [] unless path && File.exist?(path)
         config_string = options_file_as_erb_string(path)
-        config_string.split(/\n+/).map(&:shellsplit).flatten
+        FlatMap.flat_map(config_string.split(/\n+/), &:shellsplit)
       end
 
       def options_file_as_erb_string(path)
