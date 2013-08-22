@@ -241,6 +241,16 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
   end
 
+  describe "--dry-run" do
+    it "defaults to false" do
+      expect(parse_options[:dry_run]).to be_falsey
+    end
+
+    it "sets dry_run on config" do
+      expect(parse_options("--dry-run")[:dry_run]).to be_truthy
+    end
+  end
+
   describe "--options" do
     it "sets :custom_options_file" do
       expect(parse_options(*%w[-O my.opts])).to include(:custom_options_file => "my.opts")

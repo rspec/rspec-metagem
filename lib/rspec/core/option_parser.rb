@@ -87,6 +87,10 @@ module RSpec::Core
           options[:failure_exit_code] = code
         end
 
+        parser.on('--dry-run', 'Do not execute example code and setup.') do |o|
+          options[:dry_run] = true
+        end
+
         parser.on('-X', '--[no-]drb', 'Run examples via DRb.') do |o|
           options[:drb] = o
         end
