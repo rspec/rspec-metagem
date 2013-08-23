@@ -9,7 +9,9 @@ Breaking Changes for 3.0.0:
 * Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
 * Make `expect { }.to_not raise_error(SomeSpecificClass, message)`,
        `expect { }.to_not raise_error(SomeSpecificClass)` and
-       `expect { }.to_not raise_error(message)` invalid. (Sam Phippen)
+       `expect { }.to_not raise_error(message)` invalid, since they are prone
+  to hiding failures. Instead, use `expect { }.to_not raise_error` (with no
+  args). (Sam Phippen)
 
 Enhancements:
 
