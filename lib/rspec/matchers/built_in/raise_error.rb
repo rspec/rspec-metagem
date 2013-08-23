@@ -14,8 +14,6 @@ module RSpec
         end
 
         def matches?(given_proc, negative_expectation = false, &block)
-          prevent_invalid_expectations(negative_expectation)
-
           @block ||= block
           @raised_expected_error = false
           @with_expected_message = false
@@ -50,7 +48,7 @@ module RSpec
         end
 
         def error_and_message_match?
-          @raised_expected_error & @with_expected_message
+          @raised_expected_error && @with_expected_message
         end
 
         def block_matches?
@@ -58,6 +56,7 @@ module RSpec
         end
 
         def does_not_match?(given_proc)
+          prevent_invalid_expectations
           !matches?(given_proc, :negative_expectation)
         end
 
@@ -96,8 +95,8 @@ module RSpec
 
         private
 
-        def prevent_invalid_expectations(negative_expectation)
-          if negative_expectation && (expecting_specific_exception? || @expected_message)
+        def prevent_invalid_expectations
+          if (expecting_specific_exception? || @expected_message)
             what_to_raise = if expecting_specific_exception? && @expected_message
                                   "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
                                 elsif expecting_specific_exception?
