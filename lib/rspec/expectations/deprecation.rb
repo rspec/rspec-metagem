@@ -1,3 +1,5 @@
+require 'rspec/caller_filter'
+
 module RSpec
   module Expectations
     module Deprecation
@@ -7,7 +9,7 @@ module RSpec
       def deprecate(deprecated, options={})
         message = "DEPRECATION: #{deprecated} is deprecated."
         message << " Use #{options[:replacement]} instead." if options[:replacement]
-        message << " Called from #{caller(0)[2]}."
+        message << " Called from #{CallerFilter.first_non_rspec_line}."
         warn message
       end
     end
