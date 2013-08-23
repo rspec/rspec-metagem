@@ -87,10 +87,10 @@ end
 describe "expect { ... }.not_to raise_error" do
 
   context "with a specific error class" do
-    it "is removed" do
+    it "is invalid" do
       expect {
         expect {"bees"}.not_to raise_error(RuntimeError)
-      }.to raise_error(/is not valid/)
+      }.to raise_error(/`expect { }\.not_to raise_error\(SpecificErrorClass\)` is not valid/)
 
     end
   end
@@ -165,10 +165,10 @@ describe "expect { ... }.to raise_error(message)" do
 end
 
 describe "expect { ... }.not_to raise_error(message)" do
-  it "raises" do
+  it "is invalid" do
     expect {
       expect {raise 'blarg'}.not_to raise_error(/blah/)
-    }.to raise_error(/is not valid/)
+    }.to raise_error(/`expect { }\.not_to raise_error\(message\)` is not valid/)
   end
 end
 
@@ -197,10 +197,10 @@ describe "expect { ... }.to raise_error(NamedError)" do
 end
 
 describe "expect { ... }.not_to raise_error(NamedError)" do
-  it "raises" do
+  it "is invalid" do
     expect {
       expect { }.not_to raise_error(NameError)
-    }.to raise_error(/is not valid/)
+    }.to raise_error(/`expect { }\.not_to raise_error\(SpecificErrorClass\)` is not valid/)
   end
 end
 
@@ -229,10 +229,10 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with String" 
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
-  it "raises" do
+  it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message")
-    }.to raise_error(/is not valid/)
+    }.to raise_error(/`expect { }\.not_to raise_error\(SpecificErrorClass, message\)` is not valid/)
   end
 end
 
@@ -261,10 +261,10 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" 
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
-  it "raises" do
+  it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, /ample mess/)
-    }.to raise_error(/is not valid/)
+    }.to raise_error(/`expect { }\.not_to raise_error\(SpecificErrorClass, message\)` is not valid/)
   end
 end
 
@@ -342,10 +342,10 @@ describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }
 end
 
 describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| ... }" do
-  it "raises" do
+  it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message") { |err| }
-    }.to raise_error(/is not valid/)
+    }.to raise_error(/`expect { }\.not_to raise_error\(SpecificErrorClass, message\)` is not valid/)
   end
 end
 
