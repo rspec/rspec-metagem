@@ -121,7 +121,7 @@ module RSpec
 
           ::RSpec.warn_deprecation <<-EOS
 WARNING: #{description} accessed in a `before(:all)` hook at:
-  #{caller[1]}
+  #{CallerFilter.first_non_rspec_line}
 
 This is deprecated behavior that will not be supported in RSpec 3.
 
