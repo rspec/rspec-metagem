@@ -14,25 +14,17 @@ module RSpec
         end
 
         def matches?(given_proc, negative_expectation = false, &block)
-          if negative_expectation && (expecting_specific_exception? || @expected_message)
-            what_to_deprecate = if expecting_specific_exception? && @expected_message
-                                  "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
-                                elsif expecting_specific_exception?
-                                  "`expect { }.not_to raise_error(SpecificErrorClass)`"
-                                elsif @expected_message
-                                  "`expect { }.not_to raise_error(message)`"
-                                end
-            RSpec.deprecate(what_to_deprecate, :replacement => "`expect { }.not_to raise_error()`")
-          end
           @block ||= block
           @raised_expected_error = false
           @with_expected_message = false
           @eval_block = false
           @eval_block_passed = false
+
           unless given_proc.respond_to?(:call)
             ::Kernel.warn "`raise_error` was called with non-proc object #{given_proc.inspect}"
             return false
           end
+
           begin
             given_proc.call
           rescue Exception => @actual_error
@@ -45,12 +37,26 @@ module RSpec
           unless negative_expectation
             eval_block if @raised_expected_error && @with_expected_message && @block
           end
-        ensure
-          return (@raised_expected_error & @with_expected_message) ? (@eval_block ? @eval_block_passed : true) : false
+
+          expectation_matched?
         end
+
         alias == matches?
 
+        def expectation_matched?
+          error_and_message_match? && block_matches?
+        end
+
+        def error_and_message_match?
+          @raised_expected_error && @with_expected_message
+        end
+
+        def block_matches?
+          @eval_block ? @eval_block_passed : true
+        end
+
         def does_not_match?(given_proc)
+          prevent_invalid_expectations
           !matches?(given_proc, :negative_expectation)
         end
 
@@ -88,6 +94,20 @@ module RSpec
         end
 
         private
+
+        def prevent_invalid_expectations
+          if (expecting_specific_exception? || @expected_message)
+            what_to_raise = if expecting_specific_exception? && @expected_message
+                                  "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
+                                elsif expecting_specific_exception?
+                                  "`expect { }.not_to raise_error(SpecificErrorClass)`"
+                                elsif @expected_message
+                                  "`expect { }.not_to raise_error(message)`"
+                                end
+            specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error()` (with no args) instead")
+            raise specific_class_error
+          end
+        end
 
         def expected_error
           case @expected_message
