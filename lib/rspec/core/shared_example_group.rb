@@ -67,7 +67,7 @@ module RSpec
       # objects.
       class Registry
         def add_group(source, *args, &block)
-          ensure_block_has_source_location(block, caller[1])
+          ensure_block_has_source_location(block, CallerFilter.first_non_rspec_line)
 
           if key? args.first
             key = args.shift

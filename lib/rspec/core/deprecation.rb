@@ -5,12 +5,10 @@ module RSpec
       #
       # Used internally to print deprecation warnings
       def deprecate(deprecated, data = {})
-        call_site = caller.find { |line| line !~ %r{/lib/rspec/(core|mocks|expectations|matchers|rails)/} }
-
         RSpec.configuration.reporter.deprecation(
           {
             :deprecated => deprecated,
-            :call_site => call_site
+            :call_site => CallerFilter.first_non_rspec_line
           }.merge(data)
         )
       end
