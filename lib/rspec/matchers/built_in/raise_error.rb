@@ -23,7 +23,7 @@ module RSpec
                                 elsif @expected_message
                                   "`expect { }.not_to raise_error(message)`"
                                 end
-            specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error()` instead")
+            specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error()` (with no args) instead")
           end
           @block ||= block
           @raised_expected_error = false
