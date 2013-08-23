@@ -27,7 +27,7 @@ Feature: deprecation_stream
       end
       """
     When I run `rspec spec/example_spec.rb`
-    Then the output should contain "DEPRECATION: Foo#bar is deprecated"
+    Then the output should contain "Deprecation Warnings:\n\nFoo#bar is deprecated"
 
   Scenario: configure using the path to a file
     Given a file named "spec/example_spec.rb" with:
@@ -39,7 +39,7 @@ Feature: deprecation_stream
       end
       """
     When I run `rspec spec/example_spec.rb`
-    Then the output should not contain "DEPRECATION"
+    Then the output should not contain "Deprecation Warnings:"
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
@@ -53,6 +53,6 @@ Feature: deprecation_stream
       end
       """
     When I run `rspec spec/example_spec.rb`
-    Then the output should not contain "DEPRECATION"
+    Then the output should not contain "Deprecation Warnings:"
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
