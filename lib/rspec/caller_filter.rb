@@ -5,8 +5,6 @@ module RSpec
   # internal method that raised an error.
   class CallerFilter
 
-    # This list is an unfortunate dependency on other RSpec core libraries.
-    # It would be nice if this was not needed.
     RSPEC_LIBS = %w[
       core
       mocks
@@ -15,7 +13,9 @@ module RSpec
       rails
     ]
 
-    LIB_REGEX = %r{/lib/rspec/(#{RSPEC_LIBS.join('|')})(\.rb|/)}
+    TOP_LEVEL_FILES = %w[ autorun caller_filter ]
+
+    LIB_REGEX = %r{/lib/rspec/(#{(RSPEC_LIBS + TOP_LEVEL_FILES).join('|')})(\.rb|/)}
 
     if RUBY_VERSION >= '2.0.0'
       def self.first_non_rspec_line
