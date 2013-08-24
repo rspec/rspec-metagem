@@ -13,9 +13,9 @@ module RSpec
       rails
     ]
 
-    TOP_LEVEL_FILES = %w[ autorun caller_filter ]
+    ADDITIONAL_TOP_LEVEL_FILES = %w[ autorun caller_filter ]
 
-    LIB_REGEX = %r{/lib/rspec/(#{(RSPEC_LIBS + TOP_LEVEL_FILES).join('|')})(\.rb|/)}
+    LIB_REGEX = %r{/lib/rspec/(#{(RSPEC_LIBS + ADDITIONAL_TOP_LEVEL_FILES).join('|')})(\.rb|/)}
 
     if RUBY_VERSION >= '2.0.0'
       def self.first_non_rspec_line
