@@ -126,14 +126,16 @@ module RSpec
           shared_example_groups[source][key]
         end
 
-        def ensure_block_has_source_location(block, caller_line)
-          return if block.respond_to?(:source_location)
-
-          block.extend Module.new {
-            define_method :source_location do
-              caller_line.split(':')
-            end
-          }
+        if Proc.method_defined?(:source_location)
+          def ensure_block_has_source_location(block, caller_line); end
+        else
+          def ensure_block_has_source_location(block, caller_line)
+            block.extend Module.new {
+              define_method :source_location do
+                caller_line.split(':')
+              end
+            }
+          end
         end
       end
     end
