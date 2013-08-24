@@ -162,7 +162,7 @@ Enhancements
   (Konstantin Haase).
 * Add cucumber documentation for --require command line option
   (Bradley Schaefer)
-* Expose configruation options via config:
+* Expose configuration options via config:
   * `config.libs` returns the libs configured to be added onto the load path
   * `full_backtrace?` returns the state of the backtrace cleaner
   * `debug?` returns true when the debugger is loaded
