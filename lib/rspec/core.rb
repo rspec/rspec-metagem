@@ -2,7 +2,7 @@ require_rspec = if defined?(require_relative)
   lambda do |path|
     require_relative path
   end
-else
+else # for 1.8.7
   lambda do |path|
     require "rspec/#{path}"
   end

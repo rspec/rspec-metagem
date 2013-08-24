@@ -128,7 +128,7 @@ module RSpec
 
         if Proc.method_defined?(:source_location)
           def ensure_block_has_source_location(block, caller_line); end
-        else
+        else # for 1.8.7
           def ensure_block_has_source_location(block, caller_line)
             block.extend Module.new {
               define_method :source_location do
