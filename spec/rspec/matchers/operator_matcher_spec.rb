@@ -1,5 +1,11 @@
 require 'spec_helper'
 
+class MethodOverrideObject
+  def method
+    :foo
+  end
+end
+
 describe "operator matchers", :uses_should do
   describe "should ==" do
     it "delegates message to target" do
@@ -17,6 +23,13 @@ describe "operator matchers", :uses_should do
       subject = "apple"
       RSpec::Expectations.should_receive(:fail_with).with(%[expected: "orange"\n     got: "apple" (using ==)], "orange", "apple")
       subject.should == "orange"
+    end
+
+    it "works when #method is overriden" do
+      myobj = MethodOverrideObject.new
+      expect {
+        myobj.should == myobj
+      }.to_not raise_error
     end
   end
 
