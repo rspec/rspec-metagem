@@ -2,7 +2,6 @@ require 'spec_helper'
 
 module RSpec
   describe CallerFilter do
-    # IGNORE =
     def ruby_files_in_lib(lib)
       # http://rubular.com/r/HYpUMftlG2
       path = $LOAD_PATH.find { |p| p.match(/\/rspec-#{lib}(-[a-f0-9]+)?\/lib/) }
