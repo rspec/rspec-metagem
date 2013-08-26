@@ -1,4 +1,4 @@
-require 'rspec/caller_filter'
+require 'rspec/caller_filter' unless defined?(::RSpec::CallerFilter)
 
 module RSpec
   module Expectations
