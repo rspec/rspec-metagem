@@ -2,8 +2,13 @@
 
 set -e -x
 
-# Needed by Bundler 1.3: https://github.com/carlhuda/bundler/issues/2382
-export RUBYOPT='-rrbconfig'
+function is_jruby() {
+  if ruby -e 'exit RUBY_PLATFORM == "java"'; then
+    return 0
+  else
+    return 1
+  fi
+}
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
@@ -12,9 +17,6 @@ export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 # idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
 export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
-echo "Bundling Standalone so we can run the specs w/o bundler loaded"
-bundle install --standalone --binstubs
-
 echo "Running all..."
 bin/rspec spec --format progress --profile
 
@@ -22,9 +24,13 @@ echo
 echo "--------------------------------------------------------------------"
 echo
 
-for file in `find spec -iname '*_spec.rb'`; do
-   NO_COVERALLS=1 bin/rspec $file --format progress
-done
+if is_jruby; then
+  echo "Skipping one-by-one spec runs due to expensive JVM load time"
+else
+  for file in `find spec -iname '*_spec.rb'`; do
+    NO_COVERALLS=1 bin/rspec $file -b --format progress
+  done
+fi
 
 # TODO: it would be nice to figure out how to run the cukes w/o the overhead of
 # bundler, but just running `bin/cucumber` can fail due to the fact that it
