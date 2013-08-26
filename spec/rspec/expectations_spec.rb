@@ -8,10 +8,8 @@ module RSpec
     end
 
     it 'has an up-to-date rspec/caller_filter file' do
-      pending "Ignoring while this stuff settles"
-
       expectations = file_contents_for("expectations", "rspec/expectations/caller_filter.rb")
-      core         = file_contents_for("core",         "rspec/caller_filter.rb")
+      core         = file_contents_for("core",         "rspec/core/caller_filter.rb")
 
       expect(expectations).to eq(core)
     end

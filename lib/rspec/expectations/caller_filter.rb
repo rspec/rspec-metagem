@@ -13,7 +13,7 @@ module RSpec
       rails
     ]
 
-    ADDITIONAL_TOP_LEVEL_FILES = %w[ autorun caller_filter ]
+    ADDITIONAL_TOP_LEVEL_FILES = %w[ autorun ]
 
     LIB_REGEX = %r{/lib/rspec/(#{(RSPEC_LIBS + ADDITIONAL_TOP_LEVEL_FILES).join('|')})(\.rb|/)}
 
