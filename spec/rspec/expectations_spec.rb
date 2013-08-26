@@ -7,7 +7,7 @@ module RSpec
       File.read(file)
     end
 
-    it 'has an up-to-date rspec/caller_filter file' do
+    it 'has an up-to-date caller_filter file' do
       expectations = file_contents_for("expectations", "rspec/expectations/caller_filter.rb")
       core         = file_contents_for("core",         "rspec/core/caller_filter.rb")
 
