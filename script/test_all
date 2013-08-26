@@ -34,7 +34,10 @@ fi
 
 # Prepare RUBYOPT for scenarios that are shelling out to ruby,
 # and PATH for those that are using `rspec` or `rake`.
-RUBYOPT="-I${PWD}/bundle -rbundler/setup" \
-  PATH="${PWD}/bin:$PATH" \
-  bin/cucumber --strict
+# RUBYOPT="-I${PWD}/bundle -rbundler/setup" \
+#   PATH="${PWD}/bin:$PATH" \
+#   bin/cucumber
 
+# For now, use this instead, due to a bug in bundler:
+# https://github.com/carlhuda/bundler/issues/2382
+bundle exec bin/cucumber --strict
