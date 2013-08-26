@@ -60,7 +60,7 @@ describe "expect(...).to be_predicate" do
   it "does not support operator chaining like a basic `be` matcher does" do
     matcher = be_happy
     value = double(:happy? => false)
-    expect(be_happy == value).to be false
+    expect(matcher == value).to be false
   end
 end
 
