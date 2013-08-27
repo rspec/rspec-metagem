@@ -13,6 +13,50 @@ module RSpec
 
       expect(expectations).to eq(core)
     end
+
+    describe '.method_handle_for(object, method_name)' do
+
+      class UntamperedClass
+        def foo
+          :bar
+        end
+      end
+
+      class ClassWithMethodOverridden < UntamperedClass
+        def method
+          :baz
+        end
+      end
+
+      class BasicClass < BasicObject
+        def foo
+          :bar
+        end
+      end
+
+      class BasicClassWithKernel < BasicClass
+        include ::Kernel
+      end
+
+      it 'fetches method definitions for vanilla objects' do
+        object = UntamperedClass.new
+        expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+      end
+
+      it 'fetches method definitions for objects with method redefined' do
+        object = ClassWithMethodOverridden.new
+        expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+      end
+
+      it 'fetches method definitions for basic objects' do
+        object = BasicClass.new
+        expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+      end
+
+      it 'fetches method definitions for basic objects with kernel mixed in' do
+        object = BasicClassWithKernel.new
+        expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+      end
+    end
   end
 end
-
