@@ -28,14 +28,16 @@ module RSpec
         end
       end
 
-      class BasicClass < BasicObject
-        def foo
-          :bar
+      if RUBY_VERSION.to_f > 1.8
+        class BasicClass < BasicObject
+          def foo
+            :bar
+          end
         end
-      end
 
-      class BasicClassWithKernel < BasicClass
-        include ::Kernel
+        class BasicClassWithKernel < BasicClass
+          include ::Kernel
+        end
       end
 
       it 'fetches method definitions for vanilla objects' do
@@ -53,7 +55,7 @@ module RSpec
         expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
       end
 
-      it 'fetches method definitions for basic objects with kernel mixed in' do
+      it 'fetches method definitions for basic objects with kernel mixed in', :if => RUBY_VERSION.to_f > 1.8 do
         object = BasicClassWithKernel.new
         expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
       end
