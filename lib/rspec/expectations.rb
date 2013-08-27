@@ -56,11 +56,17 @@ module RSpec
     #
     #   - Objects that redefine #method (e.g. an HTTPRequest struct)
     #   - BasicObject subclasses that mixin a Kernel dup (e.g. SimpleDelegator)
-    def self.method_handle_for(object, method_name)
-      if ::Kernel === object
+    if RUBY_VERSION.to_i >= 2
+      def self.method_handle_for(object, method_name)
         KERNEL_METHOD_METHOD.bind(object).call(method_name)
-      else
-        object.method(method_name)
+      end
+    else
+      def self.method_handle_for(object, method_name)
+        if ::Kernel === object
+          KERNEL_METHOD_METHOD.bind(object).call(method_name)
+        else
+          object.method(method_name)
+        end
       end
     end
   end
