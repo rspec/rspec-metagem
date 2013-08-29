@@ -8,14 +8,9 @@ module RSpec
       attr_reader :options
 
       def initialize(args)
-        @args = args.dup
-        if @args.include?("--default_path")
-          @args[@args.index("--default_path")] = "--default-path"
-        end
-
-        if @args.include?("--line_number")
-          @args[@args.index("--line_number")] = "--line-number"
-        end
+        @args = args.map {|a|
+          a.sub("default_path", "default-path").sub("line_number",  "line-number")
+        }
       end
 
       def configure(config)
@@ -29,11 +24,16 @@ module RSpec
       end
 
       def parse_options
-        @options ||= extract_filters_from(*all_configs).inject do |merged, pending|
-          merged.merge(pending) { |key, oldval, newval|
-            MERGED_OPTIONS.include?(key) ? oldval + newval : newval
+        @options = (file_options << command_line_options << env_options).
+          each {|opts|
+            filter_manager.include opts.delete(:inclusion_filter) if opts.has_key?(:inclusion_filter)
+            filter_manager.exclude opts.delete(:exclusion_filter) if opts.has_key?(:exclusion_filter)
+          }.
+          inject {|h, opts|
+            h.merge(opts) {|k, oldval, newval|
+              [:libs, :requires].include?(k) ? oldval + newval : newval
+            }
           }
-        end
       end
 
       def drb_argv
@@ -46,17 +46,15 @@ module RSpec
 
     private
 
-      NON_FORCED_OPTIONS = [
+      UNFORCED_OPTIONS = [
         :requires, :profile, :drb, :libs, :files_or_directories_to_run,
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
 
-      MERGED_OPTIONS = [:requires, :libs].to_set
-
       UNPROCESSABLE_OPTIONS = [:libs, :formatters, :requires].to_set
 
       def force?(key)
-        !NON_FORCED_OPTIONS.include?(key)
+        !UNFORCED_OPTIONS.include?(key)
       end
 
       def order(keys, *ordered)
@@ -76,17 +74,6 @@ module RSpec
 
       def load_formatters_into(config)
         options[:formatters].each { |pair| config.add_formatter(*pair) } if options[:formatters]
-      end
-
-      def extract_filters_from(*configs)
-        configs.compact.each do |config|
-          filter_manager.include config.delete(:inclusion_filter) if config.has_key?(:inclusion_filter)
-          filter_manager.exclude config.delete(:exclusion_filter) if config.has_key?(:exclusion_filter)
-        end
-      end
-
-      def all_configs
-        @all_configs ||= file_options << command_line_options << env_options
       end
 
       def file_options
