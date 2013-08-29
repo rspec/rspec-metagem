@@ -179,7 +179,21 @@ module RSpec
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
-        shared_block = shared_example_groups[name]
+          shared_block = shared_example_groups[name]
+
+        if args.length != shared_block.arity
+          if shared_example_groups[args.first]
+            warn <<-WARNING
+shared examples support the name of one example group, received #{[name].concat(args).inspect}
+called from #{caller(0)[2]}"
+WARNING
+          else
+              warn <<-WARNING
+shared examples #{name.inspect} expected #{shared_block.arity} args, got #{args.inspect}
+called from #{caller(0)[2]}"
+WARNING
+          end
+        end
 
         module_exec(*args, &shared_block)
         module_eval(&customization_block) if customization_block
