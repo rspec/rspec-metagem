@@ -176,10 +176,44 @@ module RSpec
         find_and_eval_shared("examples", name, *args, &block)
       end
 
+      if RUBY_VERSION.to_f >= 1.9
+        # Warn when submitting the name of more than one example group to
+        # include_examples, it_behaves_like, etc.
+        #
+        # Helpful when upgrading from rspec-1 (which supported multiple shared
+        # groups in one call) to rspec-2 (which does not).
+        #
+        # See https://github.com/rspec/rspec-core/issues/1066 for background.
+        def self.warn_unexpected_args(label, name, args, shared_block)
+          if !args.empty? && shared_block.arity == 0
+            if shared_example_groups[args.first]
+              warn <<-WARNING
+shared #{label} support#{'s' if /context/ =~ label.to_s} the name of only one example group, received #{[name, *args].inspect}
+called from #{CallerFilter.first_non_rspec_line}"
+WARNING
+            else
+                warn <<-WARNING
+shared #{label} #{name.inspect} expected #{shared_block.arity} args, got #{args.inspect}
+called from #{CallerFilter.first_non_rspec_line}"
+WARNING
+            end
+          end
+        end
+      else
+        # no-op for Ruby < 1.9
+        #
+        # Ruby 1.8 reports lambda {}.arity == -1, so can't support this warning
+        # reliably
+        def self.warn_unexpected_args(*)
+        end
+      end
+
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
-        shared_block = shared_example_groups[name]
+          shared_block = shared_example_groups[name]
+
+        warn_unexpected_args(label, name, args, shared_block)
 
         module_exec(*args, &shared_block)
         module_eval(&customization_block) if customization_block

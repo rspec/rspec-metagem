@@ -1031,6 +1031,29 @@ module RSpec::Core
           end
           expect(group.run).to be_truthy
         end
+
+        it "warns when num args submitted doesn't match arity of shared block", :if => RUBY_VERSION.to_f >= 1.9 do
+          group = ExampleGroup.describe
+          group.shared_examples("named this") {}
+
+          expect(group).to receive(:warn) {|message|
+            expect(message).to match(/expected 0 args/)
+            expect(message).to match(/called from #{__FILE__}:#{__LINE__ + 2}/)
+          }
+          group.send(name, "named this", "extra arg")
+        end
+
+        it "warns with usage message when 2nd arg is the name of another shared group", :if => RUBY_VERSION.to_f >= 1.9 do
+          group = ExampleGroup.describe
+          group.shared_examples("named this") {}
+          group.shared_examples("named that") {}
+
+          expect(group).to receive(:warn) {|message|
+            expect(message).to match(/shared (context|examples) supports? the name of only one example group, received \["named this", "named that"\]/)
+            expect(message).to match(/called from #{__FILE__}:#{__LINE__ + 2}/)
+          }
+          group.send(name, "named this", "named that")
+        end
       end
     end
 
