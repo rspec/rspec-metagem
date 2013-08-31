@@ -1049,7 +1049,7 @@ module RSpec::Core
           group.shared_examples("named that") {}
 
           expect(group).to receive(:warn) {|message|
-            expect(message).to match(/shared examples support the name of only one example group, received \["named this", "named that"\]/)
+            expect(message).to match(/shared (context|examples) supports? the name of only one example group, received \["named this", "named that"\]/)
             expect(message).to match(/called from #{__FILE__}:#{__LINE__ + 2}/)
           }
           group.send(name, "named this", "named that")

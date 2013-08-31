@@ -184,16 +184,16 @@ module RSpec
         # groups in one call) to rspec-2 (which does not).
         #
         # See https://github.com/rspec/rspec-core/issues/1066 for background.
-        def self.warn_unexpected_args(name, args, shared_block)
+        def self.warn_unexpected_args(label, name, args, shared_block)
           if !args.empty? && shared_block.arity == 0
             if shared_example_groups[args.first]
               warn <<-WARNING
-shared examples support the name of only one example group, received #{[name, *args].inspect}
+shared #{label} support#{'s' if /context/ =~ label.to_s} the name of only one example group, received #{[name, *args].inspect}
 called from #{CallerFilter.first_non_rspec_line}"
 WARNING
             else
                 warn <<-WARNING
-shared examples #{name.inspect} expected #{shared_block.arity} args, got #{args.inspect}
+shared #{label} #{name.inspect} expected #{shared_block.arity} args, got #{args.inspect}
 called from #{CallerFilter.first_non_rspec_line}"
 WARNING
             end
@@ -213,7 +213,7 @@ WARNING
         raise ArgumentError, "Could not find shared #{label} #{name.inspect}" unless
           shared_block = shared_example_groups[name]
 
-        warn_unexpected_args(name, args, shared_block)
+        warn_unexpected_args(label, name, args, shared_block)
 
         module_exec(*args, &shared_block)
         module_eval(&customization_block) if customization_block
