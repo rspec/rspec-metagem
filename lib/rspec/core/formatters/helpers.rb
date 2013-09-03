@@ -4,22 +4,17 @@ module RSpec
       extend self
 
       def format_backtrace(backtrace, options = {})
-        return "" unless backtrace
-        return backtrace if options[:full_backtrace] == true
-
-        if at_exit_index = backtrace.index(RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE)
-          backtrace = backtrace[0, at_exit_index]
-        end
-
-        cleansed = backtrace.map { |line| backtrace_line(line) }.compact
-        cleansed.empty? ? backtrace : cleansed
+        return backtrace if options[:full_backtrace]
+        backtrace.
+          take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
+          map        {|l| backtrace_line(l)}.
+          compact
       end
 
-    protected
+      protected
 
       def backtrace_line(line)
-        return nil if RSpec.configuration.backtrace_cleaner.exclude?(line)
-        RSpec::Core::Metadata::relative_path(line)
+        RSpec::Core::Metadata::relative_path(line) unless RSpec.configuration.backtrace_cleaner.exclude?(line)
       rescue SecurityError
         nil
       end
@@ -104,7 +99,6 @@ module RSpec
           "#{count} #{string}#{'s' unless count.to_f == 1}"
         end
       end
-
     end
   end
 end

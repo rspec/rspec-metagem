@@ -991,26 +991,12 @@ module RSpec::Core
     end
 
     describe "#full_backtrace=" do
-      context "given true" do
-        it "clears the backtrace exclusion patterns" do
-          config.full_backtrace = true
-          expect(config.backtrace_exclusion_patterns).to eq([])
-        end
-      end
-
-      context "given false" do
-        it "restores backtrace clean patterns" do
-          config.full_backtrace = false
-          expect(config.backtrace_exclusion_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS)
-        end
-      end
-
       it "doesn't impact other instances of config" do
         config_1 = Configuration.new
         config_2 = Configuration.new
 
         config_1.full_backtrace = true
-        expect(config_2.backtrace_exclusion_patterns).not_to be_empty
+        expect(config_2.full_backtrace?).to be_falsey
       end
     end
 
