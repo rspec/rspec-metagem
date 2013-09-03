@@ -148,6 +148,17 @@ EOD
           expect(diff).to eq expected_diff
         end
 
+        it "outputs unified diff message of two hashes with object keys" do
+          expected_diff = %Q{
+@@ -1,2 +1,2 @@
+-["a", "c"] => "b"
++["d", "c"] => "b"
+}
+
+          diff = differ.diff_as_object({ ['d','c'] => 'b'}, { ['a','c'] => 'b' })
+          expect(diff).to eq expected_diff
+        end
+
         it "outputs unified diff of single line strings" do
           expected = "this is one string"
           actual   = "this is another string"

@@ -115,7 +115,7 @@ module RSpec
             #
             # note, PP is used to ensure the ordering of the internal values of key/value e.g.
             # <# a: b: c:> not <# c: a: b:>
-            matching_encoding("#{pp_key} => #{pp_value}", key)
+            matching_encoding("#{pp_key} => #{pp_value}", key.to_s)
           end.join(",\n")
         when String
           object =~ /\n/ ? object : object.inspect
