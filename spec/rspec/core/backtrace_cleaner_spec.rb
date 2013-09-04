@@ -94,21 +94,21 @@ module RSpec::Core
         expect(cleaner.full_backtrace?).to be_truthy
       end
 
-      it "keeps all lines, even those that match exclusions" do
-        cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        cleaner.full_backtrace = true
-        expect(cleaner.exclude? "discard").to be_falsey
-      end
-
       it "preserves exclusion and inclusion patterns" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
         expect(cleaner.exclusion_patterns).to eq [/discard/]
         expect(cleaner.inclusion_patterns).to eq [/keep/]
       end
+
+      it "keeps all lines, even those that match exclusions" do
+        cleaner = make_backtrace_cleaner([/discard/],[/keep/])
+        cleaner.full_backtrace = true
+        expect(cleaner.exclude? "discard").to be_falsey
+      end
     end
 
-    describe "#full_backtrace=true (after it was false)" do
+    describe "#full_backtrace=false (after it was true)" do
       it "sets full_backtrace false" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
@@ -116,19 +116,19 @@ module RSpec::Core
         expect(cleaner.full_backtrace?).to be_falsey
       end
 
-      it "excludes lines that match exclusions even those that match exclusions" do
-        cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        cleaner.full_backtrace = true
-        cleaner.full_backtrace = false
-        expect(cleaner.exclude? "discard").to be_truthy
-      end
-
       it "preserves exclusion and inclusion patterns" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
         cleaner.full_backtrace = false
         expect(cleaner.exclusion_patterns).to eq [/discard/]
         expect(cleaner.inclusion_patterns).to eq [/keep/]
+      end
+
+      it "excludes lines that match exclusions" do
+        cleaner = make_backtrace_cleaner([/discard/],[/keep/])
+        cleaner.full_backtrace = true
+        cleaner.full_backtrace = false
+        expect(cleaner.exclude? "discard").to be_truthy
       end
     end
   end
