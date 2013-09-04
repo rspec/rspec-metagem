@@ -9,14 +9,31 @@ module RSpec::Core
       end
     end
 
-    it "keeps anything in the current working directory by default" do
-      cleaner = make_backtrace_cleaner
-      expect(cleaner.exclude? "#{Dir.getwd}/foo").to be_falsey
-    end
+    describe "defaults" do
+      it "excludes rspec files" do
+        expect(make_backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_truthy
+      end
 
-    it "keeps anything in the current working directory even with a matching exclusion pattern" do
-      cleaner = make_backtrace_cleaner([/foo/])
-      expect(cleaner.exclude? "#{Dir.getwd}/foo").to be_falsey
+      it "excludes java files (for JRuby)" do
+        expect(make_backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_truthy
+      end
+
+      it "excludes files within installed gems" do
+        expect(make_backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_truthy
+      end
+
+      it "includes files in projects containing 'gems' in the name" do
+        expect(make_backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_falsey
+      end
+
+      it "includes something in the current working directory" do
+        expect(make_backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_falsey
+      end
+
+      it "includes something in the current working directory even with a matching exclusion pattern" do
+        cleaner = make_backtrace_cleaner([/foo/])
+        expect(cleaner.exclude? "#{Dir.getwd}/foo").to be_falsey
+      end
     end
 
     context "with no patterns" do

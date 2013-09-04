@@ -10,7 +10,6 @@ module RSpec
           /org\/jruby\//,
           /bin\//,
           %r|/gems/|,
-          /spec\/spec_helper\.rb/,
           /lib\/rspec\/(core|expectations|matchers|mocks)/
         ]
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
