@@ -330,27 +330,13 @@ module RSpec
         mock_with framework
       end
 
-      # The patterns to always include to backtraces.
+      # Regexps used to exclude lines from backtraces.
       #
-      # Defaults to [Regexp.new Dir.getwd] if the current working directory
-      # matches any of the exclusion patterns. Otherwise it defaults to empty.
+      # Excludes lines from ruby (and jruby) source, installed gems, anything
+      # in any "bin" directory, and any of the rspec libs (outside gem
+      # installs) by default.
       #
-      # One can replace the list by using the setter or modify it through the
-      # getter
-      def backtrace_inclusion_patterns
-        @backtrace_cleaner.inclusion_patterns
-      end
-
-      def backtrace_inclusion_patterns=(patterns)
-        @backtrace_cleaner.inclusion_patterns = patterns
-      end
-
-      # The patterns to discard from backtraces.
-      #
-      # Defaults to RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS
-      #
-      # One can replace the list by using the setter or modify it through the
-      # getter
+      # You can modify the list via the getter, or replace it with the setter.
       #
       # To override this behaviour and display a full backtrace, use
       # `--backtrace`on the command line, in a `.rspec` file, or in the
@@ -361,6 +347,22 @@ module RSpec
 
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_cleaner.exclusion_patterns = patterns
+      end
+
+      # Regexps used to include lines in backtraces.
+      #
+      # Defaults to [Regexp.new Dir.getwd].
+      #
+      # Lines that match an exclusion _and_ an inclusion pattern
+      # will be included.
+      #
+      # You can modify the list via the getter, or replace it with the setter.
+      def backtrace_inclusion_patterns
+        @backtrace_cleaner.inclusion_patterns
+      end
+
+      def backtrace_inclusion_patterns=(patterns)
+        @backtrace_cleaner.inclusion_patterns = patterns
       end
 
       # Sets the mock framework adapter module.
