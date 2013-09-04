@@ -6,11 +6,13 @@ module RSpec
       def initialize
         @full_backtrace = false
         @exclusion_patterns = [
-          /\/lib\d*\/ruby\//,
-          /org\/jruby\//,
-          /bin\//,
-          %r|/gems/|,
-          /lib\/rspec\/(core|expectations|matchers|mocks)/
+          Regexp.union(
+            /\/lib\d*\/ruby\//,
+            /org\/jruby\//,
+            /bin\//,
+            /\/gems\//,
+            /lib\/rspec\/(core|expectations|matchers|mocks)/
+          )
         ]
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
