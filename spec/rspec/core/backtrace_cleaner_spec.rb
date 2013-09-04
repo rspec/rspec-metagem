@@ -11,28 +11,28 @@ module RSpec::Core
 
     describe "defaults" do
       it "excludes rspec files" do
-        expect(make_backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_truthy
+        expect(make_backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be true
       end
 
       it "excludes java files (for JRuby)" do
-        expect(make_backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_truthy
+        expect(make_backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be true
       end
 
       it "excludes files within installed gems" do
-        expect(make_backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_truthy
+        expect(make_backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be true
       end
 
       it "includes files in projects containing 'gems' in the name" do
-        expect(make_backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_falsey
+        expect(make_backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be false
       end
 
       it "includes something in the current working directory" do
-        expect(make_backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_falsey
+        expect(make_backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be false
       end
 
       it "includes something in the current working directory even with a matching exclusion pattern" do
         cleaner = make_backtrace_cleaner([/foo/])
-        expect(cleaner.exclude? "#{Dir.getwd}/foo").to be_falsey
+        expect(cleaner.exclude? "#{Dir.getwd}/foo").to be false
       end
     end
 
@@ -40,50 +40,50 @@ module RSpec::Core
       it "keeps all lines" do
         lines = ["/tmp/a_file", "some_random_text", "hello\330\271!"]
         cleaner = make_backtrace_cleaner([], [])
-        expect(lines.all? {|line| cleaner.exclude? line}).to be_falsey
+        expect(lines.all? {|line| cleaner.exclude? line}).to be false
       end
 
       it "is considered a full backtrace" do
-        expect(make_backtrace_cleaner([], []).full_backtrace?).to be_truthy
+        expect(make_backtrace_cleaner([], []).full_backtrace?).to be true
       end
     end
 
     context "with an exclusion pattern but no inclusion patterns" do
       it "excludes lines that match the exclusion pattern" do
         cleaner = make_backtrace_cleaner([/discard/],[])
-        expect(cleaner.exclude? "discard me").to be_truthy
+        expect(cleaner.exclude? "discard me").to be true
       end
 
       it "keeps lines that do not match the exclusion pattern" do
         cleaner = make_backtrace_cleaner([/discard/],[])
-        expect(cleaner.exclude? "apple").to be_falsey
+        expect(cleaner.exclude? "apple").to be false
       end
 
       it "is considered a partial backtrace" do
         cleaner = make_backtrace_cleaner([/discard/],[])
-        expect(cleaner.full_backtrace?).to be_falsey
+        expect(cleaner.full_backtrace?).to be false
       end
     end
 
     context "with an exclusion pattern and an inclusion pattern" do
       it "excludes lines that match the exclusion pattern but not the inclusion pattern" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        expect(cleaner.exclude? "discard").to be_truthy
+        expect(cleaner.exclude? "discard").to be true
       end
 
       it "keeps lines that match both patterns" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        expect(cleaner.exclude? "discard/keep").to be_falsey
+        expect(cleaner.exclude? "discard/keep").to be false
       end
 
       it "keeps lines that match neither pattern" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        expect(cleaner.exclude? "fish").to be_falsey
+        expect(cleaner.exclude? "fish").to be false
       end
 
       it "is considered a partial backtrace" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
-        expect(cleaner.full_backtrace?).to be_falsey
+        expect(cleaner.full_backtrace?).to be false
       end
     end
 
@@ -91,7 +91,7 @@ module RSpec::Core
       it "sets full_backtrace true" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
-        expect(cleaner.full_backtrace?).to be_truthy
+        expect(cleaner.full_backtrace?).to be true
       end
 
       it "preserves exclusion and inclusion patterns" do
@@ -104,7 +104,7 @@ module RSpec::Core
       it "keeps all lines, even those that match exclusions" do
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
-        expect(cleaner.exclude? "discard").to be_falsey
+        expect(cleaner.exclude? "discard").to be false
       end
     end
 
@@ -113,7 +113,7 @@ module RSpec::Core
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
         cleaner.full_backtrace = false
-        expect(cleaner.full_backtrace?).to be_falsey
+        expect(cleaner.full_backtrace?).to be false
       end
 
       it "preserves exclusion and inclusion patterns" do
@@ -128,7 +128,7 @@ module RSpec::Core
         cleaner = make_backtrace_cleaner([/discard/],[/keep/])
         cleaner.full_backtrace = true
         cleaner.full_backtrace = false
-        expect(cleaner.exclude? "discard").to be_truthy
+        expect(cleaner.exclude? "discard").to be true
       end
     end
   end
