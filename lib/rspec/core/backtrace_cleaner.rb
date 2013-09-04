@@ -16,9 +16,8 @@ module RSpec
       end
 
       def exclude?(line)
-        !@full_backtrace &&
-          @exclusion_patterns.any?  {|p| p =~ line} &&
-          @inclusion_patterns.none? {|p| p =~ line}
+        return false if @full_backtrace
+        @exclusion_patterns.any? {|p| p =~ line} && @inclusion_patterns.none? {|p| p =~ line}
       end
 
       def full_backtrace=(full_backtrace)
