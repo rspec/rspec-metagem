@@ -1333,10 +1333,12 @@ module RSpec::Core
       end
 
       it 'can set random ordering' do
-        config.force :seed => "rand:37"
+        config.force :order => "rand:37"
         RSpec.stub(:configuration => config)
         list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-        Kernel.should_receive(:rand).and_return(3, 1, 4, 2)
+        Kernel.should_receive(:srand).ordered.once.with(37)
+        list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
+        Kernel.should_receive(:srand).ordered.once.with(no_args)
         expect(list.ordered).to eq([2, 4, 1, 3])
       end
 
@@ -1377,6 +1379,23 @@ module RSpec::Core
     end
 
     describe '#order=' do
+      context 'given "random"' do
+        before { config.order = 'random:123' }
+
+        it 'sets order to "random"' do
+          expect(config.order).to eq('random')
+        end
+
+        it 'sets up random ordering' do
+          RSpec.stub(:configuration => config)
+          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
+          Kernel.should_receive(:srand).ordered.with(123)
+          list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
+          Kernel.should_receive(:srand).ordered.with(no_args)
+          expect(list.ordered).to eq([2, 4, 1, 3])
+        end
+      end
+
       context 'given "random:123"' do
         before { config.order = 'random:123' }
 
@@ -1391,7 +1410,9 @@ module RSpec::Core
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
           list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_receive(:rand).and_return(3, 1, 4, 2)
+          Kernel.should_receive(:srand).ordered.with(123)
+          list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
+          Kernel.should_receive(:srand).ordered.with(no_args)
           expect(list.ordered).to eq([2, 4, 1, 3])
         end
       end

@@ -894,7 +894,7 @@ module RSpec
       # @private
       RANDOM_ORDERING = lambda do |list|
         Kernel.srand RSpec.configuration.seed
-        ordering = list.sort_by { Kernel.rand(list.size) }
+        ordering = list.shuffle
         Kernel.srand # reset random generation
         ordering
       end
