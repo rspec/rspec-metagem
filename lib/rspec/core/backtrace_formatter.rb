@@ -37,7 +37,16 @@ module RSpec
         backtrace.
           take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
           map        {|l| backtrace_line(l)}.
-          compact
+          compact.
+          tap do |filtered|
+            if filtered.empty?
+              filtered.concat backtrace
+              filtered << ""
+              filtered << "  Showing full backtrace because every line was filtered out."
+              filtered << "  See docs for RSpec::Configuration#backtrace_exclusion_patterns and"
+              filtered << "  RSpec::Configuration#backtrace_inclusion_patterns for more information."
+            end
+          end
       end
 
       # @api private
