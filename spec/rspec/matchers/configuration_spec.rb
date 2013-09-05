@@ -23,11 +23,14 @@ module RSpec
 
         before do
           @old_patterns = RSpec.configuration.backtrace_exclusion_patterns
+          @orig_full_backtrace = RSpec.configuration.full_backtrace?
+          RSpec.configuration.full_backtrace = false
           RSpec.configuration.backtrace_exclusion_patterns = [/clean-me/]
         end
 
         after do
           RSpec.configuration.backtrace_exclusion_patterns = @old_patterns
+          RSpec.configuration.full_backtrace = @orig_full_backtrace
         end
 
         it "defaults to rspec-core's backtrace formatter when rspec-core is loaded" do
