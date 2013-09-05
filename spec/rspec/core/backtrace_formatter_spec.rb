@@ -63,23 +63,20 @@ module RSpec::Core
       end
 
       context "when every line is filtered out" do
-        it "includes full backtrace" do
-          backtrace = [
+        let(:backtrace) do
+          [
             "/path/to/rspec-expectations/lib/rspec/expectations/foo.rb:37",
             "/path/to/rspec-expectations/lib/rspec/matchers/foo.rb:37",
             "/path/to/rspec-mocks/lib/rspec/mocks/foo.rb:37",
             "/path/to/rspec-core/lib/rspec/core/foo.rb:37"
           ]
+        end
+
+        it "includes full backtrace" do
           expect(BacktraceFormatter.new.format_backtrace(backtrace).take(4)).to eq backtrace
         end
 
         it "adds a message explaining everything was filtered" do
-          backtrace = [
-            "/path/to/rspec-expectations/lib/rspec/expectations/foo.rb:37",
-            "/path/to/rspec-expectations/lib/rspec/matchers/foo.rb:37",
-            "/path/to/rspec-mocks/lib/rspec/mocks/foo.rb:37",
-            "/path/to/rspec-core/lib/rspec/core/foo.rb:37"
-          ]
           expect(BacktraceFormatter.new.format_backtrace(backtrace).drop(4).join).to match(/Showing full backtrace/)
         end
       end
