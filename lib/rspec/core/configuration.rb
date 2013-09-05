@@ -1,5 +1,5 @@
 require 'fileutils'
-require 'rspec/core/backtrace_cleaner'
+require 'rspec/core/backtrace_formatter'
 require 'rspec/core/ruby_project'
 require 'rspec/core/formatters/deprecation_formatter.rb'
 
@@ -225,7 +225,12 @@ module RSpec
       # @private
       attr_accessor :filter_manager
 
-      attr_reader :backtrace_cleaner
+      attr_reader :backtrace_formatter
+
+      # Alias for rspec-2.x's backtrace_cleaner (now backtrace_formatter)
+      #
+      # TODO: consider deprecating and removing this rather than aliasing in rspec-3?
+      alias backtrace_cleaner backtrace_formatter
 
       def initialize
         @expectation_frameworks = []
@@ -238,7 +243,7 @@ module RSpec
         @failure_exit_code = 1
         @spec_files_loaded = false
 
-        @backtrace_cleaner = BacktraceCleaner.new
+        @backtrace_formatter = BacktraceFormatter.new
 
         @default_path = 'spec'
         @deprecation_stream = $stderr
@@ -342,11 +347,11 @@ module RSpec
       # `--backtrace`on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
       def backtrace_exclusion_patterns
-        @backtrace_cleaner.exclusion_patterns
+        @backtrace_formatter.exclusion_patterns
       end
 
       def backtrace_exclusion_patterns=(patterns)
-        @backtrace_cleaner.exclusion_patterns = patterns
+        @backtrace_formatter.exclusion_patterns = patterns
       end
 
       # Regexps used to include lines in backtraces.
@@ -358,11 +363,11 @@ module RSpec
       #
       # You can modify the list via the getter, or replace it with the setter.
       def backtrace_inclusion_patterns
-        @backtrace_cleaner.inclusion_patterns
+        @backtrace_formatter.inclusion_patterns
       end
 
       def backtrace_inclusion_patterns=(patterns)
-        @backtrace_cleaner.inclusion_patterns = patterns
+        @backtrace_formatter.inclusion_patterns = patterns
       end
 
       # Sets the mock framework adapter module.
@@ -494,11 +499,11 @@ module RSpec
       end
 
       def full_backtrace?
-        @backtrace_cleaner.full_backtrace?
+        @backtrace_formatter.full_backtrace?
       end
 
       def full_backtrace=(true_or_false)
-        @backtrace_cleaner.full_backtrace = true_or_false
+        @backtrace_formatter.full_backtrace = true_or_false
       end
 
       def color(output=output_stream)

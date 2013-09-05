@@ -119,7 +119,7 @@ module RSpec
         #
         def extra_failure_content(exception)
           require 'rspec/core/formatters/snippet_extractor'
-          backtrace = exception.backtrace.map {|line| backtrace_line(line)}
+          backtrace = exception.backtrace.map {|line| configuration.backtrace_formatter.backtrace_line(line)}
           backtrace.compact!
           @snippet_extractor ||= SnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"

@@ -1,29 +1,7 @@
 module RSpec
   module Core
-    module BacktraceFormatter
-      extend self
-
-      def format_backtrace(backtrace, options = {})
-        return backtrace if options[:full_backtrace]
-        backtrace.
-          take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
-          map        {|l| backtrace_line(l)}.
-          compact
-      end
-
-      protected
-
-      def backtrace_line(line)
-        RSpec::Core::Metadata::relative_path(line) unless RSpec.configuration.backtrace_cleaner.exclude?(line)
-      rescue SecurityError
-        nil
-      end
-    end
-
     module Formatters
       module Helpers
-        include BacktraceFormatter
-
         SUB_SECOND_PRECISION = 5
         DEFAULT_PRECISION = 2
 

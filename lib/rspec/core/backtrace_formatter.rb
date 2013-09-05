@@ -1,0 +1,57 @@
+module RSpec
+  module Core
+    class BacktraceFormatter
+      # This is only used externally by rspec-expectations. Can be removed once
+      # rspec-expectations uses
+      # RSpec.configuration.backtrace_formatter.format_backtrace instead.
+      def self.format_backtrace(backtrace, options = {})
+        RSpec.configuration.backtrace_formatter.format_backtrace(backtrace, options)
+      end
+
+      attr_accessor :exclusion_patterns, :inclusion_patterns
+
+      def initialize
+        @full_backtrace = false
+        @exclusion_patterns = [
+          Regexp.union(
+            /\/lib\d*\/ruby\//,
+            /org\/jruby\//,
+            /bin\//,
+            /\/gems\//,
+            /lib\/rspec\/(core|expectations|matchers|mocks)/
+          )
+        ]
+        @inclusion_patterns = [Regexp.new(Dir.getwd)]
+      end
+
+      def full_backtrace=(full_backtrace)
+        @full_backtrace = full_backtrace
+      end
+
+      def full_backtrace?
+        @full_backtrace || @exclusion_patterns.empty?
+      end
+
+      def format_backtrace(backtrace, options = {})
+        return backtrace if options[:full_backtrace]
+        backtrace.
+          take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
+          map        {|l| backtrace_line(l)}.
+          compact
+      end
+
+      # @api private
+      def backtrace_line(line)
+        RSpec::Core::Metadata::relative_path(line) unless exclude?(line)
+      rescue SecurityError
+        nil
+      end
+
+      # @api private
+      def exclude?(line)
+        return false if @full_backtrace
+        @exclusion_patterns.any? {|p| p =~ line} && @inclusion_patterns.none? {|p| p =~ line}
+      end
+    end
+  end
+end
