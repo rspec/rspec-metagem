@@ -43,13 +43,13 @@ module RSpec::Core
         end
 
         it "displays a warning when adding a second shared example group with the same name" do
-          define_shared_group('some shared group') {}
+          group.send(shared_method_name, 'some shared group') {}
           original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
           warning = nil
           Kernel.stub(:warn) { |msg| warning = msg }
 
-          define_shared_group('some shared group') {}
+          group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
           expect(warning).to include('some shared group', original_declaration, second_declaration)
         end
