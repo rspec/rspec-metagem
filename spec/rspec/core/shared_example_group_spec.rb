@@ -32,12 +32,17 @@ module RSpec::Core
 
     %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
       describe shared_method_name do
+        let(:group) { ExampleGroup.describe('example group') }
+
+        define_method :define_shared_group do |*args, &block|
+          group.send(shared_method_name, *args, &block)
+        end
+
         it "is exposed to the global namespace" do
           expect(Kernel).to respond_to(shared_method_name)
         end
 
         it "displays a warning when adding a second shared example group with the same name" do
-          group = ExampleGroup.describe('example group')
           group.send(shared_method_name, 'some shared group') {}
           original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
@@ -59,8 +64,8 @@ module RSpec::Core
           context "given a #{type}" do
             it "captures the given #{type} and block in the collection of shared example groups" do
               implementation = lambda {}
-              send(shared_method_name, object, &implementation)
-              expect(SharedExampleGroup.registry.shared_example_groups[self][object]).to eq implementation
+              define_shared_group(object, &implementation)
+              expect(SharedExampleGroup.registry.shared_example_groups[group][object]).to eq implementation
             end
           end
         end
@@ -68,7 +73,7 @@ module RSpec::Core
         context "given a hash" do
           it "delegates extend on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
-            send(shared_method_name, :foo => :bar, &implementation)
+            define_shared_group(:foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
             expect(a[0]).to eq(:extend)
             expect(Class.new.extend(a[1]).new.bar).to eq('bar')
@@ -79,13 +84,13 @@ module RSpec::Core
         context "given a string and a hash" do
           it "captures the given string and block in the World's collection of shared example groups" do
             implementation = lambda {}
-            send(shared_method_name, "name", :foo => :bar, &implementation)
-            expect(SharedExampleGroup.registry.shared_example_groups[self]["name"]).to eq implementation
+            define_shared_group("name", :foo => :bar, &implementation)
+            expect(SharedExampleGroup.registry.shared_example_groups[group]["name"]).to eq implementation
           end
 
           it "delegates extend on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
-            send(shared_method_name, "name", :foo => :bar, &implementation)
+            define_shared_group("name", :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
             expect(a[0]).to eq(:extend)
             expect(Class.new.extend(a[1]).new.bar).to eq('bar')

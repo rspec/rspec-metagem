@@ -34,6 +34,8 @@ describe RSpec::SharedContext do
     expect(after_all_hook).to be_truthy
   end
 
+  include RSpec::Core::SharedExampleGroup::TopLevelDSL
+
   it "runs the before each hooks in configuration before those of the shared context" do
     ordered_hooks = []
     RSpec.configure do |c|
