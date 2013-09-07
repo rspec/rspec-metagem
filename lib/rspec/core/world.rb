@@ -21,7 +21,7 @@ module RSpec
       end
 
       def ordered_example_groups
-        ordering_strategy = @configuration.ordering_registry.resolve_group_ordering
+        ordering_strategy = @configuration.group_ordering_registry.global_ordering
         ordering_strategy.order(@example_groups, @configuration)
       end
 

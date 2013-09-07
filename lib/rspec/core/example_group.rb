@@ -442,7 +442,7 @@ WARNING
       # @private
       def self.ordering_strategy
         strategy_name = metadata[:order]
-        RSpec.configuration.ordering_registry.resolve_example_ordering(strategy_name)
+        RSpec.configuration.example_ordering_registry[strategy_name]
       end
 
       # @private

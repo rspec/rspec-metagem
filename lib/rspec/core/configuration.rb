@@ -232,7 +232,7 @@ module RSpec
       # TODO: consider deprecating and removing this rather than aliasing in rspec-3?
       alias backtrace_cleaner backtrace_formatter
 
-      attr_reader :ordering_registry
+      attr_reader :group_ordering_registry, :example_ordering_registry
 
       def initialize
         @expectation_frameworks = []
@@ -246,7 +246,8 @@ module RSpec
         @failure_exit_code = 1
         @spec_files_loaded = false
 
-        @ordering_registry = Ordering::Registry.new(self)
+        @group_ordering_registry = Ordering::Registry.new(self)
+        @example_ordering_registry = Ordering::Registry.new(self)
 
         @backtrace_formatter = BacktraceFormatter.new
 
@@ -955,7 +956,7 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_examples(ordering=nil, &block)
-        strategy = @ordering_registry.set_global_example_order(ordering, &block)
+        strategy = @example_ordering_registry.set_global_order(ordering, &block)
         @order = "custom" unless strategy.built_in?
       end
 
@@ -973,7 +974,7 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_groups(ordering=nil, &block)
-        strategy = @ordering_registry.set_global_group_order(ordering, &block)
+        strategy = @group_ordering_registry.set_global_order(ordering, &block)
         @order = "custom" unless strategy.built_in?
       end
 
@@ -1107,8 +1108,8 @@ module RSpec
       end
 
       def order_and_seed_from_seed(value)
-        @ordering_registry.set_global_example_order(:random)
-        @ordering_registry.set_global_group_order(:random)
+        @example_ordering_registry.set_global_order(:random)
+        @group_ordering_registry.set_global_order(:random)
 
         @order, @seed = 'rand', value.to_i
         [@order, @seed]
@@ -1125,13 +1126,13 @@ module RSpec
         @seed  = seed = seed.to_i if seed
 
         if randomize?
-          @ordering_registry.set_global_example_order(:random)
-          @ordering_registry.set_global_group_order(:random)
+          @example_ordering_registry.set_global_order(:random)
+          @group_ordering_registry.set_global_order(:random)
         elsif order == 'default'
           @order, @seed = nil, nil
 
-          @ordering_registry.set_global_example_order(:default)
-          @ordering_registry.set_global_group_order(:default)
+          @example_ordering_registry.set_global_order(:default)
+          @group_ordering_registry.set_global_order(:default)
         end
 
         return order, seed

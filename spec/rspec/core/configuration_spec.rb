@@ -1335,7 +1335,7 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          global_ordering = config.ordering_registry.resolve_example_ordering
+          global_ordering = config.example_ordering_registry.global_ordering
           expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
@@ -1353,7 +1353,7 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          global_ordering = config.ordering_registry.resolve_example_ordering
+          global_ordering = config.example_ordering_registry.global_ordering
           expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
@@ -1375,7 +1375,7 @@ module RSpec::Core
         it 'clears the random ordering' do
           RSpec.stub(:configuration => config)
           list = [1, 2, 3, 4]
-          ordering_strategy = config.ordering_registry.resolve_example_ordering
+          ordering_strategy = config.example_ordering_registry.global_ordering
           expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
       end
@@ -1388,7 +1388,7 @@ module RSpec::Core
         examples = [1, 2, 3, 4]
         config.order_examples { |examples_to_order| examples_to_order.reverse }
 
-        ordering_strategy = config.ordering_registry.resolve_example_ordering
+        ordering_strategy = config.example_ordering_registry.global_ordering
         expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
       end
 
@@ -1404,7 +1404,7 @@ module RSpec::Core
       it 'sets a block that determines the ordering of a collection' do
         groups = [1, 2, 3, 4]
         config.order_groups { |groups_to_order| groups_to_order.reverse }
-        ordering_strategy = config.ordering_registry.resolve_group_ordering
+        ordering_strategy = config.group_ordering_registry.global_ordering
         expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
       end
 
@@ -1423,13 +1423,13 @@ module RSpec::Core
         config.order_groups_and_examples { |list| list.reverse }
       end
 
-      it 'sets a block that determines the ordering of a collection' do
-        ordering_strategy = config.ordering_registry.resolve_example_ordering
+      it 'sets a block that determines the ordering of an example collection' do
+        ordering_strategy = config.example_ordering_registry.global_ordering
         expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
       end
 
-      it 'sets a block that determines the ordering of a collection extended' do
-        ordering_strategy = config.ordering_registry.resolve_group_ordering
+      it 'sets a block that determines the ordering of a group collection' do
+        ordering_strategy = config.group_ordering_registry.global_ordering
         expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
       end
     end
