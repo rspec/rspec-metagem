@@ -12,6 +12,8 @@ module RSpec::Core::Ordering
   end
 
   describe Random do
+    before { allow(Kernel).to receive(:srand).and_call_original }
+
     it 'shuffles the items randomly' do
       configuration = RSpec::Core::Configuration.new
       configuration.seed = 1234
@@ -22,7 +24,6 @@ module RSpec::Core::Ordering
     end
 
     it 'seeds the random number generator' do
-      allow(Kernel).to receive(:srand)
       expect(Kernel).to receive(:srand).with(1234).once
 
       configuration = RSpec::Core::Configuration.new
@@ -33,7 +34,6 @@ module RSpec::Core::Ordering
     end
 
     it 'resets random number generation' do
-      allow(Kernel).to receive(:srand)
       expect(Kernel).to receive(:srand).with(no_args)
 
       strategy = Random.new
