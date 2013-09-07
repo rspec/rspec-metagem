@@ -14,13 +14,19 @@ module RSpec::Core::Ordering
   describe Random do
     before { allow(Kernel).to receive(:srand).and_call_original }
 
+    def order_of(input, seed)
+      Kernel.srand(seed)
+      input.shuffle
+    end
+
     it 'shuffles the items randomly' do
       configuration = RSpec::Core::Configuration.new
-      configuration.seed = 1234
+      configuration.seed = 900
+
+      expected = order_of([1, 2, 3, 4], 900)
 
       strategy = Random.new
-      # 3, 4, 2, 1 is the shuffled order caused by seed 1234.
-      expect(strategy.order([1, 2, 3, 4], configuration)).to eq([3, 4, 2, 1])
+      expect(strategy.order([1, 2, 3, 4], configuration)).to eq(expected)
     end
 
     it 'seeds the random number generator' do
