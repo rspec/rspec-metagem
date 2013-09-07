@@ -1336,7 +1336,7 @@ module RSpec::Core
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
           global_ordering = config.ordering_registry.resolve_example_ordering
-          expect(global_ordering).to be_an_instance_of(Ordering::RandomOrdering)
+          expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
 
@@ -1354,7 +1354,7 @@ module RSpec::Core
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
           global_ordering = config.ordering_registry.resolve_example_ordering
-          expect(global_ordering).to be_an_instance_of(Ordering::RandomOrdering)
+          expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
 
