@@ -1262,24 +1262,46 @@ module RSpec::Core
     end
 
     describe "#force" do
-      it "forces order" do
-        config.force :order => "default"
-        config.order = "rand"
-        expect(config.order).to eq("default")
-      end
+      context "for ordering options" do
+        let(:list) { [1, 2, 3, 4] }
+        let(:example_ordering_strategy) { config.example_ordering_registry.global_ordering }
+        let(:group_ordering_strategy) { config.group_ordering_registry.global_ordering }
 
-      it "forces order and seed with :order => 'rand:37'" do
-        config.force :order => "rand:37"
-        config.order = "default"
-        expect(config.order).to eq("rand")
-        expect(config.seed).to eq(37)
-      end
+        let(:shuffled) do
+          Kernel.srand(37)
+          list.shuffle
+        end
 
-      it "forces order and seed with :seed => '37'" do
-        config.force :seed => "37"
-        config.order = "default"
-        expect(config.seed).to eq(37)
-        expect(config.order).to eq("rand")
+        specify "CLI `--order default` takes precedence over `config.order = rand`" do
+          config.force :order => "default"
+          config.order = "rand"
+
+          expect(example_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+        end
+
+        specify "CLI `--order rand:37` takes precedence over `config.order = default`" do
+          config.force :order => "rand:37"
+          config.order = "default"
+
+          expect(example_ordering_strategy.order(list)).to eq(shuffled)
+        end
+
+        specify "CLI `--seed 37` forces order and seed" do
+          config.force :seed => 37
+          config.order = "default"
+          config.seed  = 145
+
+          expect(example_ordering_strategy.order(list)).to eq(shuffled)
+          expect(config.seed).to eq(37)
+        end
+
+        specify "CLI `--order default` takes precedence over `config.order_groups_and_examples`" do
+          config.force :order => "default"
+          config.order_groups_and_examples(&:reverse)
+
+          expect(example_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+          expect(group_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+        end
       end
 
       it "forces 'false' value" do
@@ -1300,21 +1322,29 @@ module RSpec::Core
       end
     end
 
-    describe '#randomize?' do
-      context 'with order set to :random' do
-        before { config.order = :random }
-
-        it 'returns true' do
-          expect(config.randomize?).to be_truthy
-        end
+    describe "#seed_used?" do
+      def use_seed_on(registry)
+        registry[:random].order([1, 2])
       end
 
-      context 'with order set to nil' do
-        before { config.order = nil }
+      it 'returns false if neither ordering registry used the seed' do
+        expect(config.seed_used?).to be false
+      end
 
-        it 'returns false' do
-          expect(config.randomize?).to be_falsey
-        end
+      it 'returns true if the example ordering registry used the seed' do
+        use_seed_on(config.example_ordering_registry)
+        expect(config.seed_used?).to be true
+      end
+
+      it 'returns true if the group ordering registry used the seed' do
+        use_seed_on(config.group_ordering_registry)
+        expect(config.seed_used?).to be true
+      end
+
+      it 'returns true if both ordering registries used the seed' do
+        use_seed_on(config.example_ordering_registry)
+        use_seed_on(config.group_ordering_registry)
+        expect(config.seed_used?).to be true
       end
     end
 
@@ -1323,10 +1353,6 @@ module RSpec::Core
         before do
           config.seed = 7654
           config.order = 'random'
-        end
-
-        it 'sets order to "random"' do
-          expect(config.order).to eq('random')
         end
 
         it 'does not change the seed' do
@@ -1342,10 +1368,6 @@ module RSpec::Core
 
       context 'given "random:123"' do
         before { config.order = 'random:123' }
-
-        it 'sets order to "random"' do
-          expect(config.order).to eq('random')
-        end
 
         it 'sets seed to 123' do
           expect(config.seed).to eq(123)
@@ -1364,12 +1386,8 @@ module RSpec::Core
           config.order = 'default'
         end
 
-        it "sets the order to nil" do
-          expect(config.order).to be_nil
-        end
-
-        it "sets the seed to nil" do
-          expect(config.seed).to be_nil
+        it "does not change the seed" do
+          expect(config.seed).to eq(123)
         end
 
         it 'clears the random ordering' do
@@ -1391,11 +1409,6 @@ module RSpec::Core
         ordering_strategy = config.example_ordering_registry.global_ordering
         expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
       end
-
-      it 'sets #order to "custom"' do
-        config.order_examples { |examples| examples.reverse }
-        expect(config.order).to eq("custom")
-      end
     end
 
     describe "#order_groups" do
@@ -1406,11 +1419,6 @@ module RSpec::Core
         config.order_groups { |groups_to_order| groups_to_order.reverse }
         ordering_strategy = config.group_ordering_registry.global_ordering
         expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
-      end
-
-      it 'sets #order to "custom"' do
-        config.order_groups { |groups| groups.reverse }
-        expect(config.order).to eq("custom")
       end
     end
 

@@ -5,26 +5,24 @@ module RSpec
         def order(items)
           items
         end
-
-        def built_in?
-          true
-        end
       end
 
       class Random
         def initialize(configuration)
           @configuration = configuration
+          @used = false
+        end
+
+        def used?
+          @used
         end
 
         def order(items)
+          @used = true
           Kernel.srand @configuration.seed
           ordering = items.shuffle
           Kernel.srand # reset random generation
           ordering
-        end
-
-        def built_in?
-          true
         end
       end
 
@@ -35,10 +33,6 @@ module RSpec
 
         def order(list)
           @callable.call(list)
-        end
-
-        def built_in?
-          false
         end
       end
 
@@ -75,6 +69,10 @@ module RSpec
           else
             @global_ordering = @strategies.fetch(name)
           end
+        end
+
+        def used_random_seed?
+          @strategies[:random].used?
         end
       end
     end

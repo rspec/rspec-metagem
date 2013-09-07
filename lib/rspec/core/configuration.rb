@@ -120,11 +120,6 @@ module RSpec
       add_setting :failure_exit_code
 
       # @macro define_reader
-      # Determines the order in which examples are run (default: OS standard
-      # load order for files, declaration order for groups and examples).
-      define_reader :order
-
-      # @macro define_reader
       # Indicates files configured to be required
       define_reader :requires
 
@@ -240,7 +235,6 @@ module RSpec
         @mock_framework = nil
         @files_to_run = []
         @formatters = []
-        @order = "default"
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
@@ -339,6 +333,11 @@ module RSpec
       # Delegates to mock_framework=(framework)
       def mock_framework=(framework)
         mock_with framework
+      end
+
+      def seed_used?
+        example_ordering_registry.used_random_seed? ||
+        group_ordering_registry.used_random_seed?
       end
 
       # Regexps used to exclude lines from backtraces.
@@ -925,22 +924,17 @@ module RSpec
 
       # @api
       #
-      # Sets the seed value and sets `order='rand'`
+      # Sets the seed value and sets the default global ordering to random.
       def seed=(seed)
         order_and_seed_from_seed(seed)
       end
 
       # @api
       #
-      # Sets the order and, if order is `'rand:<seed>'`, also sets the seed.
+      # Sets the default global order and, if order is `'rand:<seed>'`, also sets the seed.
       def order=(type)
         order_and_seed_from_order(type)
       end
-
-      def randomize?
-        order.to_s.match(/rand/)
-      end
-
 
       # Sets a strategy by which to order examples.
       #
@@ -956,8 +950,9 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_examples(ordering=nil, &block)
-        strategy = @example_ordering_registry.set_global_order(ordering, &block)
-        @order = "custom" unless strategy.built_in?
+        unless @preferred_options.has_key?(:order)
+          @example_ordering_registry.set_global_order(ordering, &block)
+        end
       end
 
       # Sets a strategy by which to order groups.
@@ -974,8 +969,9 @@ module RSpec
       # @see #order=
       # @see #seed=
       def order_groups(ordering=nil, &block)
-        strategy = @group_ordering_registry.set_global_order(ordering, &block)
-        @order = "custom" unless strategy.built_in?
+        unless @preferred_options.has_key?(:order)
+          @group_ordering_registry.set_global_order(ordering, &block)
+        end
       end
 
       # Sets a strategy by which to order groups and examples.
@@ -1108,11 +1104,10 @@ module RSpec
       end
 
       def order_and_seed_from_seed(value)
-        @example_ordering_registry.set_global_order(:random)
-        @group_ordering_registry.set_global_order(:random)
+        order_groups_and_examples(:random)
 
-        @order, @seed = 'rand', value.to_i
-        [@order, @seed]
+        order, @seed = 'rand', value.to_i
+        [order, @seed]
       end
 
       def set_order_and_seed(hash)
@@ -1122,18 +1117,15 @@ module RSpec
 
       def order_and_seed_from_order(type)
         order, seed = type.to_s.split(':')
-        @order = order
-        @seed  = seed = seed.to_i if seed
+        @seed = seed = seed.to_i if seed
 
-        if randomize?
-          @example_ordering_registry.set_global_order(:random)
-          @group_ordering_registry.set_global_order(:random)
+        ordering_name = if order.include?('rand')
+          :random
         elsif order == 'default'
-          @order, @seed = nil, nil
-
-          @example_ordering_registry.set_global_order(:default)
-          @group_ordering_registry.set_global_order(:default)
+          :default
         end
+
+        order_groups_and_examples(ordering_name) if ordering_name
 
         return order, seed
       end
