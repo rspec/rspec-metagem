@@ -2,7 +2,7 @@ module RSpec
   module Core
     module Ordering
       class Identity
-        def order(items, configuration = RSpec.configuration)
+        def order(items)
           items
         end
 
@@ -12,8 +12,12 @@ module RSpec
       end
 
       class Random
-        def order(items, configuration = RSpec.configuration)
-          Kernel.srand configuration.seed
+        def initialize(configuration)
+          @configuration = configuration
+        end
+
+        def order(items)
+          Kernel.srand @configuration.seed
           ordering = items.shuffle
           Kernel.srand # reset random generation
           ordering
@@ -29,7 +33,7 @@ module RSpec
           @callable = callable
         end
 
-        def order(list, configuration = RSpec.configuration)
+        def order(list)
           @callable.call(list)
         end
 
@@ -45,7 +49,7 @@ module RSpec
           @configuration = configuration
           @strategies = {}
 
-          register(:random,   Random.new)
+          register(:random,   Random.new(configuration))
           register(:default,  Identity.new)
 
           set_global_order(:default)
