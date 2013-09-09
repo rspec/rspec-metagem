@@ -64,6 +64,8 @@ module RSpec
 
       def uses_generic_implementation_of?(op)
         Expectations.method_handle_for(@actual, op).owner == ::Kernel
+      rescue NameError
+        false
       end
 
       def eval_match(actual, operator, expected)
