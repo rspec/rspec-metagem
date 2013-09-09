@@ -113,7 +113,7 @@ describe 'command line', :ui do
     it "forces '--order rand' and runs the examples and groups in the same order each time" do
       2.times { run_command 'tmp/aruba/spec/order_spec.rb --seed 123 -f doc' }
 
-      expect(stdout.string).to match(/Randomized with seed \d+/)
+      expect(stdout.string).to match(/Randomized with seed 123/)
 
       top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
       nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
