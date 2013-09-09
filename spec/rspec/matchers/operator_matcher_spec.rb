@@ -6,6 +6,14 @@ class MethodOverrideObject
   end
 end
 
+class MethodMissingObject < Struct.new(:original)
+  undef ==
+
+  def method_missing(name, *args, &block)
+    original.__send__ name, *args, &block
+  end
+end
+
 describe "operator matchers", :uses_should do
   describe "should ==" do
     it "delegates message to target" do
@@ -30,6 +38,14 @@ describe "operator matchers", :uses_should do
       expect {
         myobj.should == myobj
       }.to_not raise_error
+    end
+
+    it "works when implemented via method_missing" do
+      obj = Object.new
+
+      myobj = MethodMissingObject.new(obj)
+      myobj.should == obj
+      myobj.should_not == Object.new
     end
   end
 
