@@ -5,7 +5,7 @@ require 'tmpdir'
 module RSpec::Core
   describe CommandLine do
 
-    let(:out)    { StringIO.new         }
+    let(:out)    { current_sandboxed_output_stream }
     let(:err)    { StringIO.new         }
     let(:config) { RSpec::configuration }
     let(:world)  { RSpec::world         }

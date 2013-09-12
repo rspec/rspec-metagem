@@ -3,7 +3,7 @@ require 'rspec/core/drb_command_line'
 
 describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }
-  let(:out)    { StringIO.new }
+  let(:out)    { current_sandboxed_output_stream }
   let(:err)    { StringIO.new }
 
   include_context "spec files"
