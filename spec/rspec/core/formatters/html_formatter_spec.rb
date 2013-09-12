@@ -23,14 +23,10 @@ module RSpec
         end
 
         let(:generated_html) do
-          options = RSpec::Core::ConfigurationOptions.new(
-            %w[spec/rspec/core/resources/formatter_specs.rb --format html --order default]
-          )
-          options.parse_options
+          options = %w[spec/rspec/core/resources/formatter_specs.rb --format html --order default]
 
-          err, out = StringIO.new, StringIO.new
+          err, out = StringIO.new, RSpec.configuration.output
           err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
-          out.set_encoding("utf-8") if out.respond_to?(:set_encoding)
 
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.instance_variable_get("@configuration").backtrace_cleaner.inclusion_patterns = []
@@ -46,7 +42,7 @@ module RSpec
         end
 
         before do
-          RSpec.configuration.stub(:load_spec_files) do
+          allow(RSpec.configuration).to receive(:load_spec_files) do
             RSpec.configuration.files_to_run.map {|f| load File.expand_path(f) }
           end
         end
