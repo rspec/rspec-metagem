@@ -87,6 +87,11 @@ module RSpec
         end
       end
 
+      def reset_syntaxes_to_default
+        self.syntax = [:should, :expect]
+        RSpec::Expectations::Syntax::warn_about_should!
+      end
+
       # @api private
       NullBacktraceFormatter = Module.new do
         def self.format_backtrace(backtrace)
@@ -102,7 +107,7 @@ module RSpec
     end
 
     # set default syntax
-    configuration.syntax = [:expect, :should]
+    configuration.reset_syntaxes_to_default
   end
 end
 
