@@ -52,7 +52,7 @@ module RSpec::Core
 
     describe "#run" do
       let(:err) { StringIO.new }
-      let(:out) { StringIO.new }
+      let(:out) { current_sandboxed_output_stream }
 
       it "tells RSpec to reset" do
         RSpec.configuration.stub(:files_to_run => [])
