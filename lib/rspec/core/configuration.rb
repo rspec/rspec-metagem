@@ -848,7 +848,6 @@ module RSpec
       def load_spec_files
         files_to_run.uniq.each {|f| load File.expand_path(f) }
         @spec_files_loaded = true
-        raise_if_rspec_1_is_loaded
       end
 
       # @private
@@ -1009,22 +1008,6 @@ module RSpec
             "RSpec's #{config_option} configuration option must be configured before " +
             "any example groups are defined, but you have already defined a group."
           )
-        end
-      end
-
-      def raise_if_rspec_1_is_loaded
-        if defined?(Spec) && defined?(Spec::VERSION::MAJOR) && Spec::VERSION::MAJOR == 1
-          raise <<-MESSAGE
-
-#{'*'*80}
-  You are running rspec-2, but it seems as though rspec-1 has been loaded as
-  well.  This is likely due to a statement like this somewhere in the specs:
-
-      require 'spec'
-
-  Please locate that statement, remove it, and try again.
-#{'*'*80}
-MESSAGE
         end
       end
 

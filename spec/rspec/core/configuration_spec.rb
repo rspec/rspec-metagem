@@ -80,16 +80,6 @@ module RSpec::Core
         config.should_receive(:load).once
         config.load_spec_files
       end
-
-      context "with rspec-1 loaded" do
-        before { stub_const("Spec::VERSION::MAJOR", 1) }
-
-        it "raises with a helpful message" do
-          expect {
-            config.load_spec_files
-          }.to raise_error(/rspec-1 has been loaded/)
-        end
-      end
     end
 
     describe "#mock_framework" do
