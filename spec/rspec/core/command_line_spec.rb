@@ -13,7 +13,9 @@ module RSpec::Core
     before { config.stub :run_hook }
 
     it "configures streams before command line options" do
+      stdout = StringIO.new
       config.stub :load_spec_files
+      config.output_stream = nil
 
       # this is necessary to ensure that color works correctly on windows
       config.should_receive(:error_stream=).ordered
@@ -21,7 +23,7 @@ module RSpec::Core
       config.should_receive(:force).at_least(:once).ordered
 
       command_line = build_command_line
-      command_line.run err, out
+      command_line.run err, stdout
     end
 
     it "assigns ConfigurationOptions built from Array of options to @options" do
@@ -90,7 +92,7 @@ module RSpec::Core
       it "doesn't override output_stream" do
         config.output_stream = output_file
         command_line = build_command_line
-        command_line.run err, out
+        command_line.run err, nil
         expect(command_line.instance_eval { @configuration.output_stream }).to eq output_file
       end
     end
