@@ -79,49 +79,65 @@ module RSpec
 
       # @macro [attach] add_setting
       #   @attribute $1
+      #
+      # @macro [attach] define_reader
+      #   @attribute $1
 
+      # @macro add_setting
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
       # run all the examples in the `spec` directory.
       add_setting :default_path
 
+      # @macro add_setting
       # Run examples over DRb (default: `false`). RSpec doesn't supply the DRb
       # server, but you can use tools like spork.
       add_setting :drb
 
+      # @macro add_setting
       # The drb_port (default: nil).
       add_setting :drb_port
 
+      # @macro add_setting
       # Default: `$stderr`.
       add_setting :error_stream
 
+      # @macro add_setting
       # Default: `$stderr`.
       add_setting :deprecation_stream
 
+      # @macro add_setting
       # Clean up and exit after the first failure (default: `false`).
       add_setting :fail_fast
 
+      # @macro add_setting
       # Prints the formatter output of your suite without running any
       # examples or hooks.
       add_setting :dry_run
 
+      # @macro add_setting
       # The exit code to return if there are any failures (default: 1).
       add_setting :failure_exit_code
 
+      # @macro define_reader
       # Determines the order in which examples are run (default: OS standard
       # load order for files, declaration order for groups and examples).
       define_reader :order
 
+      # @macro define_reader
       # Indicates files configured to be required
       define_reader :requires
 
+      # @macro define_reader
       # Returns dirs that have been prepended to the load path by #lib=
       define_reader :libs
 
+      # @macro add_setting
       # Default: `$stdout`.
       # Also known as `output` and `out`
       add_setting :output_stream, :alias_with => [:output, :out]
 
+      # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
       add_setting :pattern, :alias_with => :filename_pattern
 
@@ -133,22 +149,46 @@ module RSpec
       end
       alias :filename_pattern= :pattern=
 
+      # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
       add_setting :profile_examples
 
+      # @macro add_setting
       # Run all examples if none match the configured filters (default: `false`).
       add_setting :run_all_when_everything_filtered
 
-      # Allow user to configure their own success/pending/failure colors
-      # @param [Symbol] should be one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @macro add_setting
+      # Color to use to indicate success.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :success_color
+
+      # @macro add_setting
+      # Color to use to print pending examples.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :pending_color
+
+      # @macro add_setting
+      # Color to use to indicate failure.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :failure_color
+
+      # @macro add_setting
+      # The default output color.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :default_color
+
+      # @macro add_setting
+      # Color used when a pending example is fixed.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :fixed_color
+
+      # @macro add_setting
+      # Color used to print details.
+      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :detail_color
 
+      # @macro define_reader
       # Seed for random ordering (default: generated randomly each run).
       #
       # When you run specs with `--order random`, RSpec generates a random seed
@@ -162,6 +202,7 @@ module RSpec
       # don't accidentally leave the seed encoded.
       define_reader :seed
 
+      # @macro add_setting
       # When a block passed to pending fails (as expected), display the failure
       # without reporting it as a failure (default: false).
       add_setting :show_failures_in_pending_blocks
