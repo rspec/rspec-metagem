@@ -75,6 +75,68 @@ module RSpec
           @strategies[:random].used?
         end
       end
+
+      class ConfigurationManager
+        attr_reader :seed, :group_ordering_registry, :example_ordering_registry
+
+        def initialize
+          @group_ordering_registry   = Registry.new(self)
+          @example_ordering_registry = Registry.new(self)
+          @seed = srand % 0xFFFF
+          @seed_forced = false
+          @order_forced = false
+        end
+
+        def seed_used?
+          @example_ordering_registry.used_random_seed? ||
+          @group_ordering_registry.used_random_seed?
+        end
+
+        def seed=(seed)
+          return if @seed_forced
+          order_groups_and_examples(:random)
+          @seed = seed.to_i
+        end
+
+        def order=(type)
+          order, seed = type.to_s.split(':')
+          @seed = seed = seed.to_i if seed
+
+          ordering_name = if order.include?('rand')
+            :random
+          elsif order == 'default'
+            :default
+          end
+
+          order_groups_and_examples(ordering_name) if ordering_name
+        end
+
+        def force(hash)
+          if hash.has_key?(:seed)
+            self.seed = hash[:seed]
+            @seed_forced  = true
+            @order_forced = true
+          elsif hash.has_key?(:order)
+            self.order = hash[:order]
+            @order_forced = true
+          end
+        end
+
+        def order_examples(ordering=nil, &block)
+          return if @order_forced
+          @example_ordering_registry.set_global_order(ordering, &block)
+        end
+
+        def order_groups(ordering=nil, &block)
+          return if @order_forced
+          @group_ordering_registry.set_global_order(ordering, &block)
+        end
+
+        def order_groups_and_examples(ordering=nil, &block)
+          order_groups(ordering, &block)
+          order_examples(ordering, &block)
+        end
+      end
     end
   end
 end
