@@ -2,19 +2,25 @@ require "spec_helper"
 
 module RSpec::Core
   describe Reporter do
+    let(:config) { Configuration.new }
+
+    def reporter_for(*formatters)
+      Reporter.new(config, *formatters)
+    end
+
     describe "abort" do
       let(:formatter) { double("formatter") }
       let(:example)   { double("example") }
-      let(:reporter)  { Reporter.new(formatter) }
+      let(:reporter)  { reporter_for(formatter) }
 
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
         it "sends #{message} to the formatter(s) that respond to message" do
           formatter.as_null_object.should_receive(message)
-          reporter.abort(nil)
+          reporter.abort
         end
 
         it "doesnt notify formatters about messages they dont implement" do
-          expect { reporter.abort(nil) }.to_not raise_error
+          expect { reporter.abort }.to_not raise_error
         end
       end
     end
@@ -23,7 +29,7 @@ module RSpec::Core
       it "passes messages to that formatter" do
         formatter = double("formatter", :example_started => nil)
         example = double("example")
-        reporter = Reporter.new(formatter)
+        reporter = reporter_for(formatter)
 
         formatter.should_receive(:example_started).
           with(example)
@@ -46,7 +52,7 @@ module RSpec::Core
           example("ignore") {}
         end
 
-        group.run(Reporter.new(formatter))
+        group.run(reporter_for(formatter))
 
         expect(order).to eq([
            "Started: root",
@@ -67,7 +73,7 @@ module RSpec::Core
 
         group = ExampleGroup.describe("root")
 
-        group.run(Reporter.new(formatter))
+        group.run(reporter_for(formatter))
       end
     end
 
@@ -75,7 +81,7 @@ module RSpec::Core
       it "passes messages to all formatters" do
         formatters = (1..2).map { double("formatter", :example_started => nil) }
         example = double("example")
-        reporter = Reporter.new(*formatters)
+        reporter = reporter_for(*formatters)
 
         formatters.each do |formatter|
           formatter.
@@ -89,15 +95,11 @@ module RSpec::Core
 
     describe "#report" do
       it "supports one arg (count)" do
-        Reporter.new.report(1) {}
-      end
-
-      it "supports two args (count, seed)" do
-        Reporter.new.report(1, 2) {}
+        reporter_for.report(1) {}
       end
 
       it "yields itself" do
-        reporter = Reporter.new
+        reporter = reporter_for
         yielded = nil
         reporter.report(3) {|r| yielded = r}
         expect(yielded).to eq(reporter)
@@ -105,7 +107,7 @@ module RSpec::Core
     end
 
     describe "#register_listener" do
-      let(:reporter) { Reporter.new }
+      let(:reporter) { reporter_for }
       let(:listener) { double("listener", :start => nil) }
 
       before { reporter.register_listener listener, :start }
@@ -123,7 +125,7 @@ module RSpec::Core
     describe "timing" do
       it "uses RSpec::Core::Time as to not be affected by changes to time in examples" do
         formatter = double(:formatter).as_null_object
-        reporter = Reporter.new formatter
+        reporter = reporter_for formatter
         reporter.start 1
         Time.stub(:now => ::Time.utc(2012, 10, 1))
 
@@ -132,7 +134,7 @@ module RSpec::Core
           duration = dur
         end
 
-        reporter.finish 1234
+        reporter.finish
         expect(duration).to be < 0.2
       end
     end
