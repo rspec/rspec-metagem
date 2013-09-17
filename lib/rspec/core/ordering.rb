@@ -41,10 +41,10 @@ module RSpec
 
         def initialize(configuration)
           @configuration = configuration
-          @strategies = {}
+          @strategies    = {}
 
-          register(:random,   Random.new(configuration))
-          register(:default,  Identity.new)
+          register(:random,  Random.new(configuration))
+          register(:default, Identity.new)
 
           set_global_order(:default)
         end
