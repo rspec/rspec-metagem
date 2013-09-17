@@ -49,13 +49,13 @@ module RSpec
           set_global_order(:default)
         end
 
-        def fetch(callable_or_sym)
+        def fetch(callable_or_sym, &fallback)
           if callable_or_sym.respond_to?(:call)
             Custom.new(callable_or_sym)
           elsif callable_or_sym.nil?
             @global_ordering
           else
-            @strategies[callable_or_sym.to_sym] || @global_ordering
+            @strategies.fetch(callable_or_sym.to_sym, &fallback)
           end
         end
 

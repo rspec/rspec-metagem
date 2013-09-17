@@ -89,8 +89,16 @@ module RSpec
             expect(subject.fetch(:falcon)).to be ordering
           end
 
-          it "gives me the global one when I call it with an unknown symbol" do
-            expect(subject.fetch(:falcon)).to be_an_instance_of(Identity)
+          context "when given an unrecognized symbol" do
+            it 'invokes the given block and returns its value' do
+              expect(subject.fetch(:falcon) { :fallback }).to eq(:fallback)
+            end
+
+            it 'raises an error if no block is given' do
+              expect {
+                subject.fetch(:falcon)
+              }.to raise_error(/falcon/)
+            end
           end
         end
       end

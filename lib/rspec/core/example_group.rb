@@ -436,14 +436,29 @@ WARNING
 
       # @private
       def self.ordered_children
-        strategy = RSpec.configuration.group_ordering_registry.fetch(metadata[:order])
+        strategy = ordering_strategy_from(RSpec.configuration.group_ordering_registry)
         strategy.order(children)
       end
 
       # @private
       def self.ordered_filtered_examples
-        strategy = RSpec.configuration.example_ordering_registry.fetch(metadata[:order])
+        strategy = ordering_strategy_from(RSpec.configuration.example_ordering_registry)
         strategy.order(filtered_examples)
+      end
+
+      # @private
+      def self.ordering_strategy_from(registry)
+        order = metadata[:order]
+
+        registry.fetch(order) do
+          warn <<-WARNING.gsub(/^ +\|/, '')
+            |WARNING: Ignoring unknown ordering specified using `:order => #{order.inspect}` metadata.
+            |         Falling back to configured global ordering.
+            |         Unrecognized ordering specified at: #{metadata[:example_group][:location]}
+          WARNING
+
+          registry.global_ordering
+        end
       end
 
       # @private

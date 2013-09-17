@@ -60,6 +60,39 @@ module RSpec::Core
         end
       end
 
+      context "when tagged with an unrecognized ordering" do
+        let(:run_order) { [] }
+        let(:definition_line) { __LINE__ + 4 }
+        let(:group) do
+          order = self.run_order
+
+          ExampleGroup.describe "group", :order => :unrecognized do
+            example { order << :ex_1 }
+            example { order << :ex_2 }
+          end
+        end
+
+        before do
+          RSpec.configuration.order_groups_and_examples(&:reverse)
+          allow(group).to receive(:warn)
+        end
+
+        it 'falls back to the global ordering' do
+          group.run
+          expect(run_order).to eq([:ex_2, :ex_1])
+        end
+
+        it 'prints a warning so users are notified of their mistake' do
+          warning = nil
+          allow(group).to receive(:warn) { |msg| warning = msg }
+
+          group.run
+
+          expect(warning).to match(/unrecognized/)
+          expect(warning).to match(/#{File.basename __FILE__}:#{definition_line}/)
+        end
+      end
+
       context "when tagged with a custom ordering" do
         def descending_numbers
           lambda { |g| -Integer(g.description[/\d+/]) }

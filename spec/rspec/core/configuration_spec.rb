@@ -1409,10 +1409,10 @@ module RSpec::Core
         expect(strategy.order(list)).to eq([3, 2, 1])
       end
 
-      it 'does not affect the example ordering' do
-        list = [1, 2, 3]
-        strategy = config.example_ordering_registry.fetch(:reverse)
-        expect(strategy.order(list)).to eq([1, 2, 3])
+      it 'does not store it as an exampple ordering' do
+        expect {
+          config.example_ordering_registry.fetch(:reverse)
+        }.to raise_error(KeyError)
       end
     end
 
@@ -1426,10 +1426,10 @@ module RSpec::Core
         expect(strategy.order(list)).to eq([3, 2, 1])
       end
 
-      it 'does not affect the group ordering' do
-        list = [1, 2, 3]
-        strategy = config.group_ordering_registry.fetch(:reverse)
-        expect(strategy.order(list)).to eq([1, 2, 3])
+      it 'does not store it as a group ordering' do
+        expect {
+          config.group_ordering_registry.fetch(:reverse)
+        }.to raise_error(KeyError)
       end
     end
 
