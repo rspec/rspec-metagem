@@ -436,13 +436,13 @@ WARNING
 
       # @private
       def self.ordered_children
-        strategy = RSpec.configuration.group_ordering_registry[metadata[:order]]
+        strategy = RSpec.configuration.group_ordering_registry.fetch(metadata[:order])
         strategy.order(children)
       end
 
       # @private
       def self.ordered_filtered_examples
-        strategy = RSpec.configuration.example_ordering_registry[metadata[:order]]
+        strategy = RSpec.configuration.example_ordering_registry.fetch(metadata[:order])
         strategy.order(filtered_examples)
       end
 

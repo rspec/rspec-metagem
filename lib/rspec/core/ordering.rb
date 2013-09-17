@@ -49,7 +49,7 @@ module RSpec
           set_global_order(:default)
         end
 
-        def [](callable_or_sym)
+        def fetch(callable_or_sym)
           if callable_or_sym.respond_to?(:call)
             Custom.new(callable_or_sym)
           elsif callable_or_sym.nil?

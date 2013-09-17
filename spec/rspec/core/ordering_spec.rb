@@ -63,34 +63,34 @@ module RSpec
           end
 
           it 'returns false if the random orderer has been fetched but not used' do
-            expect(registry[:random]).to be_a(Random)
+            expect(registry.fetch(:random)).to be_a(Random)
             expect(registry.used_random_seed?).to be false
           end
 
           it 'returns true if the random orderer has been used' do
-            registry[:random].order([1, 2])
+            registry.fetch(:random).order([1, 2])
             expect(registry.used_random_seed?).to be true
           end
         end
 
-        describe "#[]" do
+        describe "#fetch" do
           it "gives the default ordering when given nil" do
-            expect(subject[nil]).to be_an_instance_of(Identity)
+            expect(subject.fetch(nil)).to be_an_instance_of(Identity)
           end
 
           it "gives a callable ordering when called with a callable" do
-            expect(subject[proc { :hi }]).to be_a_kind_of(Custom)
+            expect(subject.fetch(proc { :hi })).to be_a_kind_of(Custom)
           end
 
           it "gives the registered ordering when called with a symbol" do
             ordering = Object.new
             subject.register(:falcon, ordering)
 
-            expect(subject[:falcon]).to be ordering
+            expect(subject.fetch(:falcon)).to be ordering
           end
 
           it "gives me the global one when I call it with an unknown symbol" do
-            expect(subject[:falcon]).to be_an_instance_of(Identity)
+            expect(subject.fetch(:falcon)).to be_an_instance_of(Identity)
           end
         end
       end
