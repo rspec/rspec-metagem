@@ -37,6 +37,85 @@ module RSpec::Core
       expect(group.description).to eq("symbol")
     end
 
+    describe "ordering" do
+      context "when tagged with `:order => :default`" do
+        it 'orders the subgroups and examples in defined order regardless of global order' do
+          RSpec.configuration.order = :random
+
+          run_order = []
+          group = ExampleGroup.describe "outer", :order => :default do
+            context "subgroup 1" do
+              example { run_order << :g1_e1 }
+              example { run_order << :g1_e2 }
+            end
+
+            context "subgroup 2" do
+              example { run_order << :g2_e1 }
+              example { run_order << :g2_e2 }
+            end
+          end
+
+          group.run
+          expect(run_order).to eq([:g1_e1, :g1_e2, :g2_e1, :g2_e2])
+        end
+      end
+
+      context "when tagged with a custom ordering" do
+        def descending_numbers
+          lambda { |g| -Integer(g.description[/\d+/]) }
+        end
+
+        def ascending_numbers
+          lambda { |g| Integer(g.description[/\d+/]) }
+        end
+
+        it 'uses the group and example orderings' do
+          RSpec.configure do |c|
+            c.register_group_ordering :custom do |groups|
+              groups.sort_by(&descending_numbers)
+            end
+
+            c.register_example_ordering :custom do |examples|
+              examples.sort_by(&ascending_numbers)
+            end
+          end
+
+          run_order = []
+          group = ExampleGroup.describe "outer", :order => :custom do
+            example("e2") { run_order << :e2 }
+            example("e1") { run_order << :e1 }
+
+            context "subgroup 2" do
+              example("ex 3") { run_order << :g2_e3 }
+              example("ex 1") { run_order << :g2_e1 }
+              example("ex 2") { run_order << :g2_e2 }
+            end
+
+            context "subgroup 1" do
+              example("ex 2") { run_order << :g1_e2 }
+              example("ex 1") { run_order << :g1_e1 }
+              example("ex 3") { run_order << :g1_e3 }
+            end
+
+            context "subgroup 3" do
+              example("ex 2") { run_order << :g3_e2 }
+              example("ex 3") { run_order << :g3_e3 }
+              example("ex 1") { run_order << :g3_e1 }
+            end
+          end
+
+          group.run
+
+          expect(run_order).to eq([
+            :e1,    :e2,
+            :g3_e1, :g3_e2, :g3_e3,
+            :g2_e1, :g2_e2, :g2_e3,
+            :g1_e1, :g1_e2, :g1_e3
+          ])
+        end
+      end
+    end
+
     describe "top level group" do
       it "runs its children" do
         examples_run = []

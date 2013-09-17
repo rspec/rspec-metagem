@@ -436,18 +436,19 @@ WARNING
 
       # @private
       def self.ordered_children
-        ordering_strategy.order(children)
+        strategy = RSpec.configuration.group_ordering_registry[metadata[:order]]
+        strategy.order(children)
       end
 
       # @private
-      def self.ordering_strategy
-        strategy_name = metadata[:order]
-        RSpec.configuration.example_ordering_registry[strategy_name]
+      def self.ordered_filtered_examples
+        strategy = RSpec.configuration.example_ordering_registry[metadata[:order]]
+        strategy.order(filtered_examples)
       end
 
       # @private
       def self.run_examples(reporter)
-        ordering_strategy.order(filtered_examples).map do |example|
+        ordered_filtered_examples.map do |example|
           next if RSpec.wants_to_quit
           instance = new
           set_ivars(instance, before_all_ivars)
