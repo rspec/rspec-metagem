@@ -978,6 +978,39 @@ module RSpec
       # @see #seed=
       delegate_to_ordering_manager :order_groups_and_examples
 
+      # @macro delegate_to_ordering_manager
+      # Registers a named ordering strategy that can later be
+      # used to order an example group's subgroups by adding
+      # `:order => <name>` metadata to the example group.
+      #
+      # @param name [Symbol] The name of the ordering.
+      # @yield Block that will order the given example groups
+      # @yieldparam groups [Array<RSpec::Core::ExampleGroup>] The groups to order
+      # @yieldreturn [Array<RSpec::Core::ExampleGroup>] The re-ordered example groups
+      delegate_to_ordering_manager :register_group_ordering
+
+      # @macro delegate_to_ordering_manager
+      # Registers a named ordering strategy that can later be
+      # used to order an example group's examples by adding
+      # `:order => <name>` metadata to the example group.
+      #
+      # @param name [Symbol] The name of the ordering.
+      # @yield Block that will order the given examples
+      # @yieldparam examples [Array<RSpec::Core::Example>] The examples to order
+      # @yieldreturn [Array<RSpec::Core::Example>] The re-ordered examples
+      delegate_to_ordering_manager :register_example_ordering
+
+      # @macro delegate_to_ordering_manager
+      # Registers a named ordering strategy that can later be
+      # used to order an example group's examples or subgroups
+      # by adding `:order => <name>` metadata to the example group.
+      #
+      # @param name [Symbol] The name of the ordering.
+      # @yield Block that will order the given examples
+      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup] The examples or groups to order
+      # @yieldreturn [Array] The re-ordered groups or examples
+      delegate_to_ordering_manager :register_group_and_example_ordering
+
       # Set Ruby warnings on or off
       def warnings= value
         $VERBOSE = !!value

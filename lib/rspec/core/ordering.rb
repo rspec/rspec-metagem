@@ -136,6 +136,19 @@ module RSpec
           order_groups(ordering, &block)
           order_examples(ordering, &block)
         end
+
+        def register_group_ordering(name, &block)
+          @group_ordering_registry.register(name, Custom.new(block))
+        end
+
+        def register_example_ordering(name, &block)
+          @example_ordering_registry.register(name, Custom.new(block))
+        end
+
+        def register_group_and_example_ordering(name, &block)
+          register_group_ordering(name, &block)
+          register_example_ordering(name, &block)
+        end
       end
     end
   end

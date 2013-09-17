@@ -1399,6 +1399,58 @@ module RSpec::Core
       end
     end
 
+    describe "#register_group_ordering" do
+      before { config.register_group_ordering(:reverse, &:reverse) }
+
+      it 'stores the given custom ordering for later use' do
+        list = [1, 2, 3]
+        strategy = config.group_ordering_registry[:reverse]
+        expect(strategy).to be_a(Ordering::Custom)
+        expect(strategy.order(list)).to eq([3, 2, 1])
+      end
+
+      it 'does not affect the example ordering' do
+        list = [1, 2, 3]
+        strategy = config.example_ordering_registry[:reverse]
+        expect(strategy.order(list)).to eq([1, 2, 3])
+      end
+    end
+
+    describe "#register_example_ordering" do
+      before { config.register_example_ordering(:reverse, &:reverse) }
+
+      it 'stores the given custom ordering for later use' do
+        list = [1, 2, 3]
+        strategy = config.example_ordering_registry[:reverse]
+        expect(strategy).to be_a(Ordering::Custom)
+        expect(strategy.order(list)).to eq([3, 2, 1])
+      end
+
+      it 'does not affect the group ordering' do
+        list = [1, 2, 3]
+        strategy = config.group_ordering_registry[:reverse]
+        expect(strategy.order(list)).to eq([1, 2, 3])
+      end
+    end
+
+    describe "#register_group_and_example_ordering" do
+      before { config.register_group_and_example_ordering(:reverse, &:reverse) }
+
+      it 'stores the ordering for group use' do
+        list = [1, 2, 3]
+        strategy = config.group_ordering_registry[:reverse]
+        expect(strategy).to be_a(Ordering::Custom)
+        expect(strategy.order(list)).to eq([3, 2, 1])
+      end
+
+      it 'stores the ordering for example use' do
+        list = [1, 2, 3]
+        strategy = config.example_ordering_registry[:reverse]
+        expect(strategy).to be_a(Ordering::Custom)
+        expect(strategy.order(list)).to eq([3, 2, 1])
+      end
+    end
+
     describe "#order_examples" do
       before { RSpec.stub(:configuration => config) }
 
