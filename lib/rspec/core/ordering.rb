@@ -1,12 +1,17 @@
 module RSpec
   module Core
+    # @private
     module Ordering
+      # @private
+      # The default ordering (defined order).
       class Identity
         def order(items)
           items
         end
       end
 
+      # @private
+      # Orders items randomly.
       class Random
         def initialize(configuration)
           @configuration = configuration
@@ -26,6 +31,8 @@ module RSpec
         end
       end
 
+      # @private
+      # Orders items based on a custom block.
       class Custom
         def initialize(callable)
           @callable = callable
@@ -36,6 +43,8 @@ module RSpec
         end
       end
 
+      # @private
+      # Stores the different ordering strategies.
       class Registry
         attr_reader :global_ordering
 
@@ -76,6 +85,11 @@ module RSpec
         end
       end
 
+      # @private
+      # Manages ordering configuration.
+      #
+      # @note This is not intended to be used externally. Use
+      #       the APIs provided by `RSpec::Core::Configuration` instead.
       class ConfigurationManager
         attr_reader :seed, :group_ordering_registry, :example_ordering_registry
 
