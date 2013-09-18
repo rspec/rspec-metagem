@@ -373,7 +373,7 @@ WARNING
         begin
           assign_before_all_ivars(superclass.before_all_ivars, example_group_instance)
 
-          BeforeAllMemoizedHash.isolate_for_before_all(example_group_instance) do
+          AllHookMemoizedHash::Before.isolate_for_all_hook(example_group_instance) do
             run_hook(:before, :all, example_group_instance)
           end
         ensure
@@ -401,7 +401,9 @@ WARNING
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
 
-        run_hook(:after, :all, example_group_instance)
+        AllHookMemoizedHash::After.isolate_for_all_hook(example_group_instance) do
+          run_hook(:after, :all, example_group_instance)
+        end
       end
 
       # Runs all the examples in this group

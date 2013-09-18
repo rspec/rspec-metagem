@@ -133,64 +133,19 @@ module RSpec::Core
           expect(subject_value).to eq([4, 5, 6, :override])
         end
 
-        context 'when referenced in a `before(:all)` hook' do
-          before do
-            expect(::RSpec).to respond_to(:warn_deprecation)
-            ::RSpec.stub(:warn_deprecation)
-          end
-
-          def define_and_run_group
-            values = { :reference_lines => [] }
+        [:before, :after].each do |hook|
+          it "raises an error when referenced from `#{hook}(:all)`" do
+            result = nil
+            line   = nil
 
             ExampleGroup.describe do
-              subject { [1, 2] }
-              let(:list) { %w[ a b ] }
-
-              before(:all) do
-                subject << 3; values[:reference_lines] << __LINE__
-                values[:final_subject_value_in_before_all] = subject; values[:reference_lines] << __LINE__
-              end
-
-              example do
-                list << '1'
-                values[:list_in_ex_1] = list
-                values[:subject_value_in_example] = subject
-              end
-
-              example do
-                list << '2'
-                values[:list_in_ex_2] = list
-              end
+              subject { nil }
+              send(hook, :all) { result = (subject rescue $!) }; line = __LINE__
+              example { }
             end.run
 
-            values
-          end
-
-          it 'memoizes the value within the before(:all) hook' do
-            values = define_and_run_group
-            expect(values.fetch(:final_subject_value_in_before_all)).to eq([1, 2, 3])
-          end
-
-          it 'preserves the memoization into the individual examples' do
-            values = define_and_run_group
-            expect(values.fetch(:subject_value_in_example)).to eq([1, 2, 3])
-          end
-
-          it 'does not cause other lets to be shared across examples' do
-            values = define_and_run_group
-            expect(values.fetch(:list_in_ex_1)).to eq(%w[ a b 1 ])
-            expect(values.fetch(:list_in_ex_2)).to eq(%w[ a b 2 ])
-          end
-
-          it 'prints a warning since `subject` declarations are not intended to be used in :all hooks' do
-            msgs = []
-            ::RSpec.stub(:warn_deprecation) { |msg| msgs << msg }
-
-            values = define_and_run_group
-
-            expect(msgs).to include(*values[:reference_lines].map { |line|
-              match(/subject accessed.*#{__FILE__}:#{line}/m)
-            })
+            expect(result).to be_an(Exception)
+            expect(result.message).to match(/subject accessed.*#{hook}\(:all\).*#{__FILE__}:#{line}/m)
           end
         end
       end
@@ -589,64 +544,19 @@ module RSpec::Core
       end
     end
 
-    context 'when referenced in a `before(:all)` hook' do
-      before do
-        expect(::RSpec).to respond_to(:warn_deprecation)
-        ::RSpec.stub(:warn_deprecation)
-      end
-
-      def define_and_run_group
-        values = { :reference_lines => [] }
+    [:before, :after].each do |hook|
+      it "raises an error when referenced from `#{hook}(:all)`" do
+        result = nil
+        line   = nil
 
         ExampleGroup.describe do
-          let(:list) { [1, 2] }
-          subject { %w[ a b ] }
-
-          before(:all) do
-            list << 3; values[:reference_lines] << __LINE__
-            values[:final_list_value_in_before_all] = list; values[:reference_lines] << __LINE__
-          end
-
-          example do
-            subject << "1"
-            values[:subject_in_ex_1] = subject
-            values[:list_value_in_example] = list
-          end
-
-          example do
-            subject << "2"
-            values[:subject_in_ex_2] = subject
-          end
+          let(:foo) { nil }
+          send(hook, :all) { result = (foo rescue $!) }; line = __LINE__
+          example { }
         end.run
 
-        values
-      end
-
-      it 'memoizes the value within the before(:all) hook' do
-        values = define_and_run_group
-        expect(values.fetch(:final_list_value_in_before_all)).to eq([1, 2, 3])
-      end
-
-      it 'preserves the memoized value into the examples' do
-        values = define_and_run_group
-        expect(values.fetch(:list_value_in_example)).to eq([1, 2, 3])
-      end
-
-      it 'does not cause the subject to be shared across examples' do
-        values = define_and_run_group
-        expect(values.fetch(:subject_in_ex_1)).to eq(%w[ a b 1 ])
-        expect(values.fetch(:subject_in_ex_2)).to eq(%w[ a b 2 ])
-      end
-
-      it 'prints a warning since `let` declarations are not intended to be used in :all hooks' do
-        msgs = []
-        ::RSpec.stub(:warn_deprecation) { |msg| msgs << msg }
-
-        values = define_and_run_group
-
-        expect(msgs).to include(*values[:reference_lines].map { |line|
-          match(/let declaration `list` accessed.*#{__FILE__}:#{line}/m)
-        })
+        expect(result).to be_an(Exception)
+        expect(result.message).to match(/let declaration `foo` accessed.*#{hook}\(:all\).*#{__FILE__}:#{line}/m)
       end
     end
 
