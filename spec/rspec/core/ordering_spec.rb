@@ -97,7 +97,7 @@ module RSpec
             it 'raises an error if no block is given' do
               expect {
                 subject.fetch(:falcon)
-              }.to raise_error(/falcon/)
+              }.to raise_error(IndexError)
             end
           end
         end
