@@ -93,59 +93,64 @@ module RSpec
       # memoized hash when used in a `before(:all)` hook.
       #
       # @private
-      class BeforeAllMemoizedHash
-        def initialize(example_group_instance)
-          @example_group_instance = example_group_instance
-          @hash = {}
-        end
+      class AllHookMemoizedHash
+        def self.isolate_for_all_hook(example_group_instance)
+          hash = self
 
-        def self.isolate_for_before_all(example_group_instance)
           example_group_instance.instance_eval do
-            @__memoized = BeforeAllMemoizedHash.new(self)
+            @__memoized = hash
 
             begin
               yield
             ensure
-              @__memoized.preserve_accessed_lets
               @__memoized = nil
             end
           end
         end
 
-        def fetch(key, &block)
+        def self.fetch(key, &block)
           description = if key == :subject
             "subject"
           else
             "let declaration `#{key}`"
           end
 
-          ::RSpec.warn_deprecation <<-EOS
-WARNING: #{description} accessed in a `before(:all)` hook at:
+          raise <<-EOS
+#{description} accessed in #{article} #{hook_expression} hook at:
   #{CallerFilter.first_non_rspec_line}
 
-This is deprecated behavior that will not be supported in RSpec 3.
-
 `let` and `subject` declarations are not intended to be called
-in a `before(:all)` hook, as they exist to define state that
-is reset between each example, while `before(:all)` exists to
-define state that is shared across examples in an example group.
+in #{article} #{hook_expression} hook, as they exist to define state that
+is reset between each example, while #{hook_expression} exists to
+#{hook_intention}.
 EOS
-
-          @hash.fetch(key, &block)
         end
 
-        def []=(key, value)
-          @hash[key] = value
+        class Before < self
+          def self.hook_expression
+            "`before(:all)`"
+          end
+
+          def self.article
+            "a"
+          end
+
+          def self.hook_intention
+            "define state that is shared across examples in an example group"
+          end
         end
 
-        def preserve_accessed_lets
-          hash = @hash
+        class After < self
+          def self.hook_expression
+            "`after(:all)`"
+          end
 
-          @example_group_instance.class.class_eval do
-            hash.each do |key, value|
-              undef_method(key) if method_defined?(key)
-              define_method(key) { value }
-            end
+          def self.article
+            "an"
+          end
+
+          def self.hook_intention
+            "cleanup state that is shared across examples in an example group"
           end
         end
       end
