@@ -23,6 +23,12 @@ Bug fixes
   (Brandon Turner)
 * Fix diffing of hashes with object based keys. (Jon Rowe)
 
+Deprecations:
+
+ * Using the old :should syntax without explicitly configuring it is disabled.
+   It will continue to work but will emit a deprecation warning in RSpec 3 if
+   you do not explicitly enable it. (Sam Phippen)
+
 ### 2.14.2 / 2013-08-14
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.1...v2.14.2)
 
