@@ -73,6 +73,7 @@ module RSpec
         end
 
         after do
+          configure_default_syntax
           configure_syntax(@orig_syntax)
         end
 
@@ -123,6 +124,12 @@ module RSpec
         it "does not warn when only the should syntax is explicitly configured" do
           configure_syntax(:should)
           RSpec.should_not_receive(:deprecate)
+          3.should eq(3)
+        end
+
+        it "includes the call site in the deprecation warning by default" do
+          configure_default_syntax
+          expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
           3.should eq(3)
         end
 

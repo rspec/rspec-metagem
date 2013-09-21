@@ -43,8 +43,6 @@ module RSpec
         @default_should_host ||= ::Object.ancestors.last
       end
 
-      @warn_about_should = false
-
       def self.warn_about_should!
         @warn_about_should = true
       end
@@ -52,7 +50,7 @@ module RSpec
       def self.warn_about_should_unless_configured(method_name)
          if @warn_about_should
           RSpec.deprecate(
-            "Using #{method_name} from the old `:should` syntax without explicitly enabling the syntax.",
+            "Using `#{method_name}` from the old `:should` syntax without explicitly enabling the syntax",
             :replacement => "the new `:expect` syntax or explicitly enable `:should`"
           )
 
@@ -63,6 +61,7 @@ module RSpec
       # @api private
       # Enables the `should` syntax.
       def enable_should(syntax_host = default_should_host)
+        @warn_about_should = false
         return if should_enabled?(syntax_host)
 
         syntax_host.module_exec do
