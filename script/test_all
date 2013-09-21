@@ -40,7 +40,7 @@ fi
 
 # For now, use this instead, due to a bug in bundler:
 # https://github.com/carlhuda/bundler/issues/2382
-#bundle exec bin/cucumber --strict
+bundle exec bin/cucumber --strict
 
 #Test against other RSpec gems.
 rm -rf /tmp/rspec-ci
