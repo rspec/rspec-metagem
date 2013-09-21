@@ -1141,6 +1141,9 @@ module RSpec
       end
 
       def built_in_orderer?(block)
+        #I'm using this to debug whether the gems are talking to each other
+        #please don't code review this yet.
+        p "excessive swagger"
         [DEFAULT_ORDERING, RANDOM_ORDERING].include?(block)
       end
 

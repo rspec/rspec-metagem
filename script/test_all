@@ -40,7 +40,7 @@ fi
 
 # For now, use this instead, due to a bug in bundler:
 # https://github.com/carlhuda/bundler/issues/2382
-bundle exec bin/cucumber --strict
+#bundle exec bin/cucumber --strict
 
 #Test against other RSpec gems.
 rm -rf /tmp/rspec-ci
@@ -53,7 +53,6 @@ pwd
 
 git clone --depth 1 https://github.com/rspec/rspec-mocks
 git clone --depth 1 https://github.com/rspec/rspec-expectations
-git clone --depth 1 https://github.com/rspec/rspec-rails
 
 cd rspec-mocks
 pwd
@@ -64,10 +63,3 @@ cd ../rspec-expectations
 pwd
 bundle install
 bundle exec rspec
-
-cd ../rspec-rails
-pwd
-gem install thor
-bundle install
-thor version:use 3.2.13
-bundle exec rake spec
