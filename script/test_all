@@ -57,9 +57,9 @@ git clone --depth 1 https://github.com/rspec/rspec-expectations
 cd rspec-mocks
 pwd
 bundle install
-bundle exec rspec
+bundle exec rspec -fp -b
 
 cd ../rspec-expectations
 pwd
 bundle install
-bundle exec rspec
+bundle exec rspec -fp -b
