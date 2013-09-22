@@ -89,7 +89,7 @@ module RSpec
 
       def reset_syntaxes_to_default
         self.syntax = [:should, :expect]
-        RSpec::Expectations::Syntax::warn_about_should!
+        RSpec::Expectations::Syntax.warn_about_should!
       end
 
       # @api private

@@ -25,7 +25,7 @@ Bug fixes
 
 Deprecations:
 
- * Using the old :should syntax without explicitly configuring it is disabled.
+ * Using the old `:should` syntax without explicitly configuring it is deprecated.
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
 

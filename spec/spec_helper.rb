@@ -10,7 +10,16 @@ end
 
 Dir['./spec/support/**/*'].each {|f| require f}
 
+module DeprecationHelpers
+  def expect_deprecation_with_call_site(file, line)
+    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
+      expect(options[:call_site]).to include([file, line].join(':'))
+    end
+  end
+end
+
 RSpec::configure do |config|
+  config.include DeprecationHelpers
   config.color_enabled = true
   config.filter_run :focused
   config.run_all_when_everything_filtered = true
@@ -58,11 +67,5 @@ module TestUnitIntegrationSupport
       load 'rspec/matchers/test_unit_integration.rb'
       yield
     end
-  end
-end
-
-def expect_deprecation_with_call_site(file, line)
-  expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
-    expect(options[:call_site]).to include([file, line].join(':'))
   end
 end
