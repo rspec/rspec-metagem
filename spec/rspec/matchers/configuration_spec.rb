@@ -108,6 +108,37 @@ module RSpec
           configure_syntax :expect
         end
 
+        describe "`:should` being enabled by default deprecation" do
+          before { configure_default_syntax }
+
+          it "warns when the should syntax is called by default" do
+            expected_arguments = [
+              /Using.*without explicitly enabling/,
+              {:replacement=>"the new `:expect` syntax or explicitly enable `:should`"}
+            ]
+
+            expect(RSpec).to receive(:deprecate).with(*expected_arguments)
+            3.should eq(3)
+          end
+
+          it "includes the call site in the deprecation warning by default" do
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+            3.should eq(3)
+          end
+
+          it "does not warn when only the should syntax is explicitly configured" do
+            configure_syntax(:should)
+            RSpec.should_not_receive(:deprecate)
+            3.should eq(3)
+          end
+
+          it "does not warn when both the should and expect syntaxes are explicitly configured" do
+            configure_syntax([:should, :expect])
+            expect(RSpec).not_to receive(:deprecate)
+            3.should eq(3)
+          end
+        end
+
         it 'can re-enable the :should syntax' do
           configure_syntax :expect
           configure_syntax [:should, :expect]
@@ -163,6 +194,10 @@ module RSpec
         end
       end
 
+      def configure_default_syntax
+        RSpec::Matchers.configuration.reset_syntaxes_to_default
+      end
+
       describe "configuring rspec-expectations directly" do
         it_behaves_like "configuring the expectation syntax" do
           def configure_syntax(syntax)
@@ -184,6 +219,7 @@ module RSpec
               end
             end
           end
+
 
           def configured_syntax
             RSpec.configure do |rspec|
