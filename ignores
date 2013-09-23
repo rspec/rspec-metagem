@@ -1,0 +1,2 @@
+lib/rspec/core/example_group.rb:        subclass = Class.new(parent)  ### This only occurs when an example group is subclasses, at spec define time.
+lib/rspec/core/example_group.rb:        # TODO 2010-05-05: Because we don't know if const_set is thread-safe ### It's a comment
