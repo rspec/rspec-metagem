@@ -17,8 +17,8 @@ module RSpec
             "org/jruby/",
             "bin/",
             "/gems/",
-            "lib/rspec/(core|expectations|matchers|mocks)"]
-          .map {|s| Regexp.new(s.gsub("/", File::SEPARATOR))}
+            "lib/rspec/(core|expectations|matchers|mocks)"].
+          map {|s| Regexp.new(s.gsub("/", File::SEPARATOR))}
         )
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
