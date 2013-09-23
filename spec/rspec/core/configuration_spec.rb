@@ -991,26 +991,12 @@ module RSpec::Core
     end
 
     describe "#full_backtrace=" do
-      context "given true" do
-        it "clears the backtrace exclusion patterns" do
-          config.full_backtrace = true
-          expect(config.backtrace_exclusion_patterns).to eq([])
-        end
-      end
-
-      context "given false" do
-        it "restores backtrace clean patterns" do
-          config.full_backtrace = false
-          expect(config.backtrace_exclusion_patterns).to eq(RSpec::Core::BacktraceCleaner::DEFAULT_EXCLUSION_PATTERNS)
-        end
-      end
-
       it "doesn't impact other instances of config" do
         config_1 = Configuration.new
         config_2 = Configuration.new
 
         config_1.full_backtrace = true
-        expect(config_2.backtrace_exclusion_patterns).not_to be_empty
+        expect(config_2.full_backtrace?).to be_falsey
       end
     end
 
@@ -1018,7 +1004,7 @@ module RSpec::Core
       it "actually receives the new filter values" do
         config = Configuration.new
         config.backtrace_exclusion_patterns = [/.*/]
-        expect(config.backtrace_cleaner.exclude? "this").to be_truthy
+        expect(config.backtrace_formatter.exclude? "this").to be_truthy
       end
     end
 
@@ -1038,33 +1024,7 @@ module RSpec::Core
       it "can be appended to" do
         config = Configuration.new
         config.backtrace_exclusion_patterns << /.*/
-        expect(config.backtrace_cleaner.exclude? "this").to be_truthy
-      end
-    end
-
-    describe ".backtrace_cleaner#exclude? defaults" do
-      it "returns true for rspec files" do
-        expect(config.backtrace_cleaner.exclude?("lib/rspec/core.rb")).to be_truthy
-      end
-
-      it "returns true for spec_helper" do
-        expect(config.backtrace_cleaner.exclude?("spec/spec_helper.rb")).to be_truthy
-      end
-
-      it "returns true for java files (for JRuby)" do
-        expect(config.backtrace_cleaner.exclude?("org/jruby/RubyArray.java:2336")).to be_truthy
-      end
-
-      it "returns true for files within installed gems" do
-        expect(config.backtrace_cleaner.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be_truthy
-      end
-
-      it "returns false for files in projects containing 'gems' in the name" do
-        expect(config.backtrace_cleaner.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be_falsey
-      end
-
-      it "returns false for something in the current working directory" do
-        expect(config.backtrace_cleaner.exclude?("#{Dir.getwd}/arbitrary")).to be_falsey
+        expect(config.backtrace_formatter.exclude? "this").to be_truthy
       end
     end
 

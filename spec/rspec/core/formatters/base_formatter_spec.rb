@@ -6,26 +6,6 @@ describe RSpec::Core::Formatters::BaseFormatter do
   let(:output)    { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }
 
-  describe "backtrace_line" do
-    it "trims current working directory" do
-      expect(formatter.__send__(:backtrace_line, File.expand_path(__FILE__))).to eq("./spec/rspec/core/formatters/base_formatter_spec.rb")
-    end
-
-    it "leaves the original line intact" do
-      original_line = File.expand_path(__FILE__)
-      formatter.__send__(:backtrace_line, original_line)
-      expect(original_line).to eq(File.expand_path(__FILE__))
-    end
-
-    it "deals gracefully with a security error" do
-      safely do
-        formatter.__send__(:backtrace_line, __FILE__)
-        # on some rubies, this doesn't raise a SecurityError; this test just
-        # assures that if it *does* raise an error, the error is caught inside
-      end
-    end
-  end
-
   describe "read_failed_line" do
     it "deals gracefully with a heterogeneous language stack trace" do
       exception = double(:Exception, :backtrace => [
@@ -84,25 +64,4 @@ describe RSpec::Core::Formatters::BaseFormatter do
 
     end
   end
-
-  describe "#format_backtrace" do
-    let(:rspec_expectations_dir) { "/path/to/rspec-expectations/lib" }
-    let(:rspec_core_dir) { "/path/to/rspec-core/lib" }
-    let(:backtrace) do
-      [
-        "#{rspec_expectations_dir}/rspec/matchers/operator_matcher.rb:51:in `eval_match'",
-        "#{rspec_expectations_dir}/rspec/matchers/operator_matcher.rb:29:in `=='",
-        "./my_spec.rb:5",
-        "#{rspec_core_dir}/rspec/core/example.rb:52:in `run'",
-        "#{rspec_core_dir}/rspec/core/runner.rb:37:in `run'",
-        RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE,
-        "./my_spec.rb:3"
-      ]
-    end
-
-    it "removes lines from rspec and lines that come before the invocation of the at_exit autorun hook" do
-      expect(formatter.format_backtrace(backtrace, double.as_null_object)).to eq(["./my_spec.rb:5"])
-    end
-  end
-
 end
