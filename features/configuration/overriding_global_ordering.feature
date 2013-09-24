@@ -25,10 +25,4 @@ Feature: Overriding global ordering
 
     When I run `rspec order_dependent_spec.rb --order random:1 --format documentation`
     Then the examples should all pass
-    And the output should contain:
-      """
-      examples only pass when they are run in order
-        passes when run first
-        passes when run second
-        passes when run third
-      """
+
