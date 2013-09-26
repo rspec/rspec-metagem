@@ -22,6 +22,7 @@ Breaking Changes for 3.0.0:
 * Extract Autotest support to a seperate gem (Jon Rowe)
 * Raise an error when a `let` or `subject` declaration is
   accessed in a `before(:all)` or `after(:all)` hook. (Myron Marston)
+* Extract `its` support to a separate gem (Peter Alfvin)
 
 Enhancements
 
