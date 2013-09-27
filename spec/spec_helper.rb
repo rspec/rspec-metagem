@@ -149,3 +149,14 @@ end
 
 Spork.each_run do
 end
+
+module MathnIntegrationSupport
+  include InSubProcess
+
+  def with_mathn_loaded
+    in_sub_process do
+      require 'mathn'
+      yield
+    end
+  end
+end
