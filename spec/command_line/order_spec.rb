@@ -152,7 +152,7 @@ describe 'command line', :ui do
     before do
       write_file 'spec/custom_order_spec.rb', """
         RSpec.configure do |config|
-          config.order_groups_and_examples do |list|
+          config.register_ordering :global do |list|
             list.sort_by { |item| item.description }
           end
         end

@@ -422,7 +422,7 @@ WARNING
         begin
           run_before_all_hooks(new)
           result_for_this_group = run_examples(reporter)
-          results_for_descendants = ordered_children.map { |child| child.run(reporter) }.all?
+          results_for_descendants = ordering_strategy.order(children).map { |child| child.run(reporter) }.all?
           result_for_this_group && results_for_descendants
         rescue Exception => ex
           RSpec.wants_to_quit = true if fail_fast?
@@ -435,20 +435,9 @@ WARNING
       end
 
       # @private
-      def self.ordered_children
-        strategy = ordering_strategy_from(RSpec.configuration.group_ordering_registry)
-        strategy.order(children)
-      end
-
-      # @private
-      def self.ordered_filtered_examples
-        strategy = ordering_strategy_from(RSpec.configuration.example_ordering_registry)
-        strategy.order(filtered_examples)
-      end
-
-      # @private
-      def self.ordering_strategy_from(registry)
+      def self.ordering_strategy
         order = metadata.fetch(:order, :global)
+        registry = RSpec.configuration.ordering_registry
 
         registry.fetch(order) do
           warn <<-WARNING.gsub(/^ +\|/, '')
@@ -463,7 +452,7 @@ WARNING
 
       # @private
       def self.run_examples(reporter)
-        ordered_filtered_examples.map do |example|
+        ordering_strategy.order(filtered_examples).map do |example|
           next if RSpec.wants_to_quit
           instance = new
           set_ivars(instance, before_all_ivars)

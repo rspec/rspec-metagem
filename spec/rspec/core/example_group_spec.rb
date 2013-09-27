@@ -73,7 +73,7 @@ module RSpec::Core
         end
 
         before do
-          RSpec.configuration.order_groups_and_examples(&:reverse)
+          RSpec.configuration.register_ordering(:global, &:reverse)
           allow(group).to receive(:warn)
         end
 
@@ -94,22 +94,14 @@ module RSpec::Core
       end
 
       context "when tagged with a custom ordering" do
-        def descending_numbers
-          lambda { |g| -Integer(g.description[/\d+/]) }
-        end
-
         def ascending_numbers
           lambda { |g| Integer(g.description[/\d+/]) }
         end
 
-        it 'uses the group and example orderings' do
+        it 'uses the custom orderings' do
           RSpec.configure do |c|
-            c.register_group_ordering :custom do |groups|
-              groups.sort_by(&descending_numbers)
-            end
-
-            c.register_example_ordering :custom do |examples|
-              examples.sort_by(&ascending_numbers)
+            c.register_ordering :custom do |items|
+              items.sort_by(&ascending_numbers)
             end
           end
 
@@ -141,9 +133,9 @@ module RSpec::Core
 
           expect(run_order).to eq([
             :e1,    :e2,
-            :g3_e1, :g3_e2, :g3_e3,
+            :g1_e1, :g1_e2, :g1_e3,
             :g2_e1, :g2_e2, :g2_e3,
-            :g1_e1, :g1_e2, :g1_e3
+            :g3_e1, :g3_e2, :g3_e3
           ])
         end
       end

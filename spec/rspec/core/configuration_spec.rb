@@ -1264,8 +1264,7 @@ module RSpec::Core
     describe "#force" do
       context "for ordering options" do
         let(:list) { [1, 2, 3, 4] }
-        let(:example_ordering_strategy) { config.example_ordering_registry.fetch(:global) }
-        let(:group_ordering_strategy) { config.group_ordering_registry.fetch(:global) }
+        let(:ordering_strategy) { config.ordering_registry.fetch(:global) }
 
         let(:shuffled) do
           Kernel.srand(37)
@@ -1276,14 +1275,14 @@ module RSpec::Core
           config.force :order => "default"
           config.order = "rand"
 
-          expect(example_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
 
         specify "CLI `--order rand:37` takes precedence over `config.order = default`" do
           config.force :order => "rand:37"
           config.order = "default"
 
-          expect(example_ordering_strategy.order(list)).to eq(shuffled)
+          expect(ordering_strategy.order(list)).to eq(shuffled)
         end
 
         specify "CLI `--seed 37` forces order and seed" do
@@ -1291,16 +1290,14 @@ module RSpec::Core
           config.order = "default"
           config.seed  = 145
 
-          expect(example_ordering_strategy.order(list)).to eq(shuffled)
+          expect(ordering_strategy.order(list)).to eq(shuffled)
           expect(config.seed).to eq(37)
         end
 
-        specify "CLI `--order default` takes precedence over `config.order_groups_and_examples`" do
+        specify "CLI `--order default` takes precedence over `config.register_ordering(:global)`" do
           config.force :order => "default"
-          config.order_groups_and_examples(&:reverse)
-
-          expect(example_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
-          expect(group_ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+          config.register_ordering(:global, &:reverse)
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
       end
 
@@ -1331,19 +1328,8 @@ module RSpec::Core
         expect(config.seed_used?).to be false
       end
 
-      it 'returns true if the example ordering registry used the seed' do
-        use_seed_on(config.example_ordering_registry)
-        expect(config.seed_used?).to be true
-      end
-
-      it 'returns true if the group ordering registry used the seed' do
-        use_seed_on(config.group_ordering_registry)
-        expect(config.seed_used?).to be true
-      end
-
-      it 'returns true if both ordering registries used the seed' do
-        use_seed_on(config.example_ordering_registry)
-        use_seed_on(config.group_ordering_registry)
+      it 'returns true if the ordering registry used the seed' do
+        use_seed_on(config.ordering_registry)
         expect(config.seed_used?).to be true
       end
     end
@@ -1361,7 +1347,7 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          global_ordering = config.example_ordering_registry.fetch(:global)
+          global_ordering = config.ordering_registry.fetch(:global)
           expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
@@ -1375,7 +1361,7 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          global_ordering = config.example_ordering_registry.fetch(:global)
+          global_ordering = config.ordering_registry.fetch(:global)
           expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
@@ -1393,65 +1379,22 @@ module RSpec::Core
         it 'clears the random ordering' do
           RSpec.stub(:configuration => config)
           list = [1, 2, 3, 4]
-          ordering_strategy = config.example_ordering_registry.fetch(:global)
+          ordering_strategy = config.ordering_registry.fetch(:global)
           expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
       end
     end
 
-    describe "#register_group_ordering" do
-      before { config.register_group_ordering(:reverse, &:reverse) }
-
-      it 'stores the given custom ordering for later use' do
-        list = [1, 2, 3]
-        strategy = config.group_ordering_registry.fetch(:reverse)
-        expect(strategy).to be_a(Ordering::Custom)
-        expect(strategy.order(list)).to eq([3, 2, 1])
-      end
-
-      it 'does not store it as an example ordering' do
-        expect {
-          config.example_ordering_registry.fetch(:reverse)
-        }.to raise_error(IndexError)
-      end
-    end
-
-    describe "#register_example_ordering" do
-      before { config.register_example_ordering(:reverse, &:reverse) }
-
-      it 'stores the given custom ordering for later use' do
-        list = [1, 2, 3]
-        strategy = config.example_ordering_registry.fetch(:reverse)
-        expect(strategy).to be_a(Ordering::Custom)
-        expect(strategy.order(list)).to eq([3, 2, 1])
-      end
-
-      it 'does not store it as a group ordering' do
-        expect {
-          config.group_ordering_registry.fetch(:reverse)
-        }.to raise_error(IndexError)
-      end
-    end
-
-    describe "#register_group_and_example_ordering" do
+    describe "#register_ordering" do
       def register_reverse_ordering
-        config.register_group_and_example_ordering(:reverse, &:reverse)
+        config.register_ordering(:reverse, &:reverse)
       end
 
-      it 'stores the ordering for group use' do
+      it 'stores the ordering for later use' do
         register_reverse_ordering
 
         list = [1, 2, 3]
-        strategy = config.group_ordering_registry.fetch(:reverse)
-        expect(strategy).to be_a(Ordering::Custom)
-        expect(strategy.order(list)).to eq([3, 2, 1])
-      end
-
-      it 'stores the ordering for example use' do
-        register_reverse_ordering
-
-        list = [1, 2, 3]
-        strategy = config.example_ordering_registry.fetch(:reverse)
+        strategy = config.ordering_registry.fetch(:reverse)
         expect(strategy).to be_a(Ordering::Custom)
         expect(strategy.order(list)).to eq([3, 2, 1])
       end
@@ -1462,54 +1405,11 @@ module RSpec::Core
           list.reverse
         end
 
-        config.register_group_and_example_ordering(:reverse, strategy)
+        config.register_ordering(:reverse, strategy)
         list = [1, 2, 3]
-        fetched = config.example_ordering_registry.fetch(:reverse)
+        fetched = config.ordering_registry.fetch(:reverse)
         expect(fetched).to be(strategy)
         expect(fetched.order(list)).to eq([3, 2, 1])
-      end
-    end
-
-    describe "#order_examples" do
-      before { RSpec.stub(:configuration => config) }
-
-      it 'sets a block that determines the ordering of a collection' do
-        examples = [1, 2, 3, 4]
-        config.order_examples { |examples_to_order| examples_to_order.reverse }
-
-        ordering_strategy = config.example_ordering_registry.fetch(:global)
-        expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
-      end
-    end
-
-    describe "#order_groups" do
-      before { RSpec.stub(:configuration => config) }
-
-      it 'sets a block that determines the ordering of a collection' do
-        groups = [1, 2, 3, 4]
-        config.order_groups { |groups_to_order| groups_to_order.reverse }
-        ordering_strategy = config.group_ordering_registry.fetch(:global)
-        expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
-      end
-    end
-
-    describe "#order_groups_and_examples" do
-      let(:examples) { [1, 2, 3, 4] }
-      let(:groups)   { [1, 2, 3, 4] }
-
-      before do
-        RSpec.stub(:configuration => config)
-        config.order_groups_and_examples { |list| list.reverse }
-      end
-
-      it 'sets a block that determines the ordering of an example collection' do
-        ordering_strategy = config.example_ordering_registry.fetch(:global)
-        expect(ordering_strategy.order(examples)).to eq([4, 3, 2, 1])
-      end
-
-      it 'sets a block that determines the ordering of a group collection' do
-        ordering_strategy = config.group_ordering_registry.fetch(:global)
-        expect(ordering_strategy.order(groups)).to eq([4, 3, 2, 1])
       end
     end
 

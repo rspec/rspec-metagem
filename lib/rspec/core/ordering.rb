@@ -76,24 +76,22 @@ module RSpec
       # @note This is not intended to be used externally. Use
       #       the APIs provided by `RSpec::Core::Configuration` instead.
       class ConfigurationManager
-        attr_reader :seed, :group_ordering_registry, :example_ordering_registry
+        attr_reader :seed, :ordering_registry
 
         def initialize
-          @group_ordering_registry   = Registry.new(self)
-          @example_ordering_registry = Registry.new(self)
+          @ordering_registry = Registry.new(self)
           @seed = srand % 0xFFFF
           @seed_forced = false
           @order_forced = false
         end
 
         def seed_used?
-          @example_ordering_registry.used_random_seed? ||
-          @group_ordering_registry.used_random_seed?
+          ordering_registry.used_random_seed?
         end
 
         def seed=(seed)
           return if @seed_forced
-          order_groups_and_examples(:random)
+          register_ordering(:global, ordering_registry.fetch(:random))
           @seed = seed.to_i
         end
 
@@ -107,7 +105,7 @@ module RSpec
             :default
           end
 
-          order_groups_and_examples(ordering_name) if ordering_name
+          register_ordering(:global, ordering_registry.fetch(ordering_name)) if ordering_name
         end
 
         def force(hash)
@@ -121,44 +119,9 @@ module RSpec
           end
         end
 
-        def order_examples(ordering=nil, &block)
-          return if @order_forced
-          ordering = if block
-                       Custom.new(block)
-                     else
-                       @example_ordering_registry.fetch(ordering)
-                     end
-
-          @example_ordering_registry.register(:global, ordering)
-        end
-
-        def order_groups(ordering=nil, &block)
-          return if @order_forced
-          ordering = if block
-                       Custom.new(block)
-                     else
-                       @group_ordering_registry.fetch(ordering)
-                     end
-
-          @group_ordering_registry.register(:global, ordering)
-        end
-
-        def order_groups_and_examples(ordering=nil, &block)
-          order_groups(ordering, &block)
-          order_examples(ordering, &block)
-        end
-
-        def register_group_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
-          @group_ordering_registry.register(name, strategy)
-        end
-
-        def register_example_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
-          @example_ordering_registry.register(name, strategy)
-        end
-
-        def register_group_and_example_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
-          register_group_ordering(name, strategy)
-          register_example_ordering(name, strategy)
+        def register_ordering(name, strategy = Custom.new(Proc.new { |l| yield l }))
+          return if @order_forced && name == :global
+          ordering_registry.register(name, strategy)
         end
       end
     end

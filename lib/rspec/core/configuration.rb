@@ -922,61 +922,10 @@ module RSpec
       # don't accidentally leave the seed encoded.
       delegate_to_ordering_manager :seed
 
-      # @private
-      delegate_to_ordering_manager :seed_used?, :group_ordering_registry, :example_ordering_registry
-
       # @macro delegate_to_ordering_manager
       #
       # Sets the default global order and, if order is `'rand:<seed>'`, also sets the seed.
       delegate_to_ordering_manager :order=
-
-      # @macro delegate_to_ordering_manager
-      # Sets a strategy by which to order examples.
-      #
-      # @example
-      #   RSpec.configure do |config|
-      #     config.order_examples do |examples|
-      #       examples.reverse
-      #     end
-      #   end
-      #
-      # @see #order_groups
-      # @see #order_groups_and_examples
-      # @see #order=
-      # @see #seed=
-      delegate_to_ordering_manager :order_examples
-
-      # @macro delegate_to_ordering_manager
-      # Sets a strategy by which to order groups.
-      #
-      # @example
-      #   RSpec.configure do |config|
-      #     config.order_groups do |groups|
-      #       groups.reverse
-      #     end
-      #   end
-      #
-      # @see #order_examples
-      # @see #order_groups_and_examples
-      # @see #order=
-      # @see #seed=
-      delegate_to_ordering_manager :order_groups
-
-      # @macro delegate_to_ordering_manager
-      # Sets a strategy by which to order groups and examples.
-      #
-      # @example
-      #   RSpec.configure do |config|
-      #     config.order_groups_and_examples do |groups_or_examples|
-      #       groups_or_examples.reverse
-      #     end
-      #   end
-      #
-      # @see #order_groups
-      # @see #order_examples
-      # @see #order=
-      # @see #seed=
-      delegate_to_ordering_manager :order_groups_and_examples
 
       # @macro delegate_to_ordering_manager
       # Registers a named ordering strategy that can later be
@@ -984,32 +933,28 @@ module RSpec
       # `:order => <name>` metadata to the example group.
       #
       # @param name [Symbol] The name of the ordering.
-      # @yield Block that will order the given example groups
-      # @yieldparam groups [Array<RSpec::Core::ExampleGroup>] The groups to order
-      # @yieldreturn [Array<RSpec::Core::ExampleGroup>] The re-ordered example groups
-      delegate_to_ordering_manager :register_group_ordering
-
-      # @macro delegate_to_ordering_manager
-      # Registers a named ordering strategy that can later be
-      # used to order an example group's examples by adding
-      # `:order => <name>` metadata to the example group.
+      # @yield Block that will order the given examples or example groups
+      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGropu>] The examples or groups to order
+      # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
-      # @param name [Symbol] The name of the ordering.
-      # @yield Block that will order the given examples
-      # @yieldparam examples [Array<RSpec::Core::Example>] The examples to order
-      # @yieldreturn [Array<RSpec::Core::Example>] The re-ordered examples
-      delegate_to_ordering_manager :register_example_ordering
-
-      # @macro delegate_to_ordering_manager
-      # Registers a named ordering strategy that can later be
-      # used to order an example group's examples or subgroups
-      # by adding `:order => <name>` metadata to the example group.
+      # @example
+      #   RSpec.configure do |rspec|
+      #     rspec.register_ordering :reverse do |list|
+      #       list.reverse
+      #     end
+      #   end
       #
-      # @param name [Symbol] The name of the ordering.
-      # @yield Block that will order the given examples
-      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup] The examples or groups to order
-      # @yieldreturn [Array] The re-ordered groups or examples
-      delegate_to_ordering_manager :register_group_and_example_ordering
+      #   describe MyClass, :order => :reverse do
+      #     # ...
+      #   end
+      #
+      # @note Pass the symbol `:global` to set the ordering strategy that
+      #   will be used to order the top-level example groups and any example
+      #   groups that do not have declared `:order` metadata.
+      delegate_to_ordering_manager :register_ordering
+
+      # @private
+      delegate_to_ordering_manager :seed_used?, :ordering_registry
 
       # Set Ruby warnings on or off
       def warnings= value
