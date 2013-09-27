@@ -10,14 +10,14 @@ module InSubProcess
       readme, writeme = IO.pipe
 
       pid = Process.fork do
-        value = nil
+        exception = nil
         begin
           yield
-        rescue => e
-          value = e
+        rescue Exception => e
+          exception = e
         end
 
-        writeme.write Marshal.dump(value)
+        writeme.write Marshal.dump(exception)
 
         readme.close
         writeme.close
@@ -27,11 +27,10 @@ module InSubProcess
       writeme.close
       Process.waitpid(pid)
 
-      if exception = Marshal.load(readme.read)
-        raise exception
-      end
-
+      exception = Marshal.load(readme.read)
       readme.close
+
+      raise exception if exception
     end
   end
 end
