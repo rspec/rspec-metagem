@@ -80,6 +80,7 @@ module RSpec
               expected_backtraces.each_with_index do |expected_line, i|
                 expected_path, expected_line_number, expected_suffix = expected_line.split(':')
                 actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
+
                 expect(File.expand_path(actual_path)).to eq(File.expand_path(expected_path))
                 expect(actual_line_number).to eq(expected_line_number)
                 expect(actual_suffix).to eq(expected_suffix)
@@ -106,6 +107,7 @@ module RSpec
                   expected_backtraces.each_with_index do |expected_line, i|
                     expected_path, expected_line_number, expected_suffix = expected_line.split(':')
                     actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
+
                     expect(File.expand_path(actual_path)).to eq(File.expand_path(expected_path))
                     expect(actual_line_number).to eq(expected_line_number)
                     expect(actual_suffix).to eq(expected_suffix)
