@@ -1434,9 +1434,13 @@ module RSpec::Core
     end
 
     describe "#register_group_and_example_ordering" do
-      before { config.register_group_and_example_ordering(:reverse, &:reverse) }
+      def register_reverse_ordering
+        config.register_group_and_example_ordering(:reverse, &:reverse)
+      end
 
       it 'stores the ordering for group use' do
+        register_reverse_ordering
+
         list = [1, 2, 3]
         strategy = config.group_ordering_registry.fetch(:reverse)
         expect(strategy).to be_a(Ordering::Custom)
@@ -1444,10 +1448,25 @@ module RSpec::Core
       end
 
       it 'stores the ordering for example use' do
+        register_reverse_ordering
+
         list = [1, 2, 3]
         strategy = config.example_ordering_registry.fetch(:reverse)
         expect(strategy).to be_a(Ordering::Custom)
         expect(strategy.order(list)).to eq([3, 2, 1])
+      end
+
+      it 'can register an ordering object' do
+        strategy = Object.new
+        def strategy.order(list)
+          list.reverse
+        end
+
+        config.register_group_and_example_ordering(:reverse, strategy)
+        list = [1, 2, 3]
+        fetched = config.example_ordering_registry.fetch(:reverse)
+        expect(fetched).to be(strategy)
+        expect(fetched.order(list)).to eq([3, 2, 1])
       end
     end
 

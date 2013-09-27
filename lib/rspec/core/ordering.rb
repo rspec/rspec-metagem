@@ -151,17 +151,17 @@ module RSpec
           order_examples(ordering, &block)
         end
 
-        def register_group_ordering(name, &block)
-          @group_ordering_registry.register(name, Custom.new(block))
+        def register_group_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
+          @group_ordering_registry.register(name, strategy)
         end
 
-        def register_example_ordering(name, &block)
-          @example_ordering_registry.register(name, Custom.new(block))
+        def register_example_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
+          @example_ordering_registry.register(name, strategy)
         end
 
-        def register_group_and_example_ordering(name, &block)
-          register_group_ordering(name, &block)
-          register_example_ordering(name, &block)
+        def register_group_and_example_ordering(name, strategy = Custom.new(Proc.new { |list| yield list }))
+          register_group_ordering(name, strategy)
+          register_example_ordering(name, strategy)
         end
       end
     end
