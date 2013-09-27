@@ -3,7 +3,7 @@ module RSpec
     # @private
     module Ordering
       # @private
-      # The default ordering (defined order).
+      # The default global ordering (defined order).
       class Identity
         def order(items)
           items
@@ -52,9 +52,11 @@ module RSpec
 
           register(:random,  Random.new(configuration))
 
-          # TODO: resolve this duplication.
-          register(:default, Identity.new)
-          register(:global,  Identity.new)
+          identity = Identity.new
+          register(:defined, identity)
+
+          # The default global ordering is --defined.
+          register(:global, identity)
         end
 
         def fetch(name, &fallback)
@@ -101,8 +103,8 @@ module RSpec
 
           ordering_name = if order.include?('rand')
             :random
-          elsif order == 'default'
-            :default
+          elsif order == 'defined'
+            :defined
           end
 
           register_ordering(:global, ordering_registry.fetch(ordering_name)) if ordering_name

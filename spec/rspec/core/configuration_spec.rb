@@ -1271,31 +1271,31 @@ module RSpec::Core
           list.shuffle
         end
 
-        specify "CLI `--order default` takes precedence over `config.order = rand`" do
-          config.force :order => "default"
+        specify "CLI `--order defined` takes precedence over `config.order = rand`" do
+          config.force :order => "defined"
           config.order = "rand"
 
           expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
 
-        specify "CLI `--order rand:37` takes precedence over `config.order = default`" do
+        specify "CLI `--order rand:37` takes precedence over `config.order = defined`" do
           config.force :order => "rand:37"
-          config.order = "default"
+          config.order = "defined"
 
           expect(ordering_strategy.order(list)).to eq(shuffled)
         end
 
         specify "CLI `--seed 37` forces order and seed" do
           config.force :seed => 37
-          config.order = "default"
+          config.order = "defined"
           config.seed  = 145
 
           expect(ordering_strategy.order(list)).to eq(shuffled)
           expect(config.seed).to eq(37)
         end
 
-        specify "CLI `--order default` takes precedence over `config.register_ordering(:global)`" do
-          config.force :order => "default"
+        specify "CLI `--order defined` takes precedence over `config.register_ordering(:global)`" do
+          config.force :order => "defined"
           config.register_ordering(:global, &:reverse)
           expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
@@ -1366,10 +1366,10 @@ module RSpec::Core
         end
       end
 
-      context 'given "default"' do
+      context 'given "defined"' do
         before do
           config.order = 'rand:123'
-          config.order = 'default'
+          config.order = 'defined'
         end
 
         it "does not change the seed" do

@@ -130,13 +130,13 @@ describe 'command line', :ui do
     end
   end
 
-  describe '--order default on CLI with --order rand in .rspec' do
+  describe '--order defined on CLI with --order rand in .rspec' do
     after { remove_file '.rspec' }
 
-    it "overrides --order rand with --order default" do
+    it "overrides --order rand with --order defined" do
       write_file '.rspec', '--order rand'
 
-      run_command 'spec/order_spec.rb --order default -f doc'
+      run_command 'spec/order_spec.rb --order defined -f doc'
 
       expect(stdout.string).not_to match(/Randomized/)
 

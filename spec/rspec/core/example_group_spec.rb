@@ -38,12 +38,12 @@ module RSpec::Core
     end
 
     describe "ordering" do
-      context "when tagged with `:order => :default`" do
+      context "when tagged with `:order => :defined`" do
         it 'orders the subgroups and examples in defined order regardless of global order' do
           RSpec.configuration.order = :random
 
           run_order = []
-          group = ExampleGroup.describe "outer", :order => :default do
+          group = ExampleGroup.describe "outer", :order => :defined do
             context "subgroup 1" do
               example { run_order << :g1_e1 }
               example { run_order << :g1_e2 }

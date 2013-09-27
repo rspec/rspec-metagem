@@ -3,7 +3,7 @@ Feature: Overriding global ordering
   Scenario: running a specific examples group in order
     Given a file named "order_dependent_spec.rb" with:
       """ruby
-      describe "examples only pass when they are run in order", :order => :default do
+      describe "examples only pass when they are run in order", :order => :defined do
         before(:all) { @list = [] }
 
         it "passes when run first" do
