@@ -128,7 +128,7 @@ module RSpec
         def percent_done
           result = 100.0
           if @example_count > 0
-            result = ((example_number).to_f / @example_count.to_f * 1000).to_i / 10.0
+            result = (((example_number).to_f / @example_count.to_f * 1000).to_i / 10.0).to_f
           end
           result
         end

@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'rspec/core/formatters/helpers'
+require 'mathn'
 
 describe RSpec::Core::Formatters::Helpers do
   let(:helper) { Object.new.extend(RSpec::Core::Formatters::Helpers) }
