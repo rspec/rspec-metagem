@@ -47,6 +47,7 @@ Enhancements
 Bug fixes:
 
 * Limit spamminess of deprecation messages (Bradley Schaefer, Loren Segal)
+* Format stringified numbers correctly when mathn library is loaded (Jay Hayes)
 
 Deprecations
 
