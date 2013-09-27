@@ -85,6 +85,34 @@ module RSpec
             end
           end
         end
+
+        context 'with mathn loaded' do
+          include MathnIntegrationSupport
+
+          it "produces HTML identical to the one we designed manually" do
+            with_mathn_loaded do
+              Dir.chdir(root) do
+                actual_doc = Nokogiri::HTML(generated_html)
+                actual_backtraces = extract_backtrace_from(actual_doc)
+                actual_doc.css("div.backtrace").remove
+
+                expected_doc = Nokogiri::HTML(expected_html)
+                expected_backtraces = extract_backtrace_from(expected_doc)
+                expected_doc.search("div.backtrace").remove
+
+                expect(actual_doc.inner_html).to eq(expected_doc.inner_html)
+
+                expected_backtraces.each_with_index do |expected_line, i|
+                  expected_path, expected_line_number, expected_suffix = expected_line.split(':')
+                  actual_path, actual_line_number, actual_suffix = actual_backtraces[i].split(':')
+                  expect(File.expand_path(actual_path)).to eq(File.expand_path(expected_path))
+                  expect(actual_line_number).to eq(expected_line_number)
+                  expect(actual_suffix).to eq(expected_suffix)
+                end
+              end
+            end
+          end
+        end
       end
     end
   end
