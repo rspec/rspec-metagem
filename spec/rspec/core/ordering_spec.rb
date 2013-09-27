@@ -74,14 +74,6 @@ module RSpec
         end
 
         describe "#fetch" do
-          it "gives the default ordering when given nil" do
-            expect(subject.fetch(nil)).to be_an_instance_of(Identity)
-          end
-
-          it "gives a callable ordering when called with a callable" do
-            expect(subject.fetch(proc { :hi })).to be_a_kind_of(Custom)
-          end
-
           it "gives the registered ordering when called with a symbol" do
             ordering = Object.new
             subject.register(:falcon, ordering)

@@ -46,38 +46,23 @@ module RSpec
       # @private
       # Stores the different ordering strategies.
       class Registry
-        attr_reader :global_ordering
-
         def initialize(configuration)
           @configuration = configuration
           @strategies    = {}
 
           register(:random,  Random.new(configuration))
+
+          # TODO: resolve this duplication.
           register(:default, Identity.new)
-
-          set_global_order(:default)
+          register(:global,  Identity.new)
         end
 
-        def fetch(callable_or_sym, &fallback)
-          if callable_or_sym.respond_to?(:call)
-            Custom.new(callable_or_sym)
-          elsif callable_or_sym.nil?
-            @global_ordering
-          else
-            @strategies.fetch(callable_or_sym.to_sym, &fallback)
-          end
+        def fetch(name, &fallback)
+          @strategies.fetch(name, &fallback)
         end
 
-        def register(sym, klass)
-          @strategies[sym] = klass
-        end
-
-        def set_global_order(name = nil, &block)
-          if block_given?
-            @global_ordering = Custom.new(block)
-          else
-            @global_ordering = @strategies.fetch(name)
-          end
+        def register(sym, strategy)
+          @strategies[sym] = strategy
         end
 
         def used_random_seed?
@@ -138,12 +123,24 @@ module RSpec
 
         def order_examples(ordering=nil, &block)
           return if @order_forced
-          @example_ordering_registry.set_global_order(ordering, &block)
+          ordering = if block
+                       Custom.new(block)
+                     else
+                       @example_ordering_registry.fetch(ordering)
+                     end
+
+          @example_ordering_registry.register(:global, ordering)
         end
 
         def order_groups(ordering=nil, &block)
           return if @order_forced
-          @group_ordering_registry.set_global_order(ordering, &block)
+          ordering = if block
+                       Custom.new(block)
+                     else
+                       @group_ordering_registry.fetch(ordering)
+                     end
+
+          @group_ordering_registry.register(:global, ordering)
         end
 
         def order_groups_and_examples(ordering=nil, &block)

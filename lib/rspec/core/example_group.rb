@@ -448,7 +448,7 @@ WARNING
 
       # @private
       def self.ordering_strategy_from(registry)
-        order = metadata[:order]
+        order = metadata.fetch(:order, :global)
 
         registry.fetch(order) do
           warn <<-WARNING.gsub(/^ +\|/, '')
@@ -457,7 +457,7 @@ WARNING
             |         Unrecognized ordering specified at: #{metadata[:example_group][:location]}
           WARNING
 
-          registry.global_ordering
+          registry.fetch(:global)
         end
       end
 
