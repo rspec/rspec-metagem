@@ -1,3 +1,5 @@
+require 'support/in_sub_process'
+
 module MathnIntegrationSupport
   include InSubProcess
 
