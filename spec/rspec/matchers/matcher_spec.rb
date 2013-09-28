@@ -412,9 +412,9 @@ module RSpec::Matchers::DSL
         end
 
         it "raises the error" do
-          expect do
+          expect {
             matcher.matches?(:bar)
-          end.to raise_error("unexpected exception")
+          }.to raise_error("unexpected exception")
         end
       end
 
