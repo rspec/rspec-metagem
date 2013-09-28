@@ -3,72 +3,16 @@ require 'set'
 module RSpec
   module Matchers
     module DSL
-      # Provides the context in which the block passed to RSpec::Matchers.define
-      # will be evaluated.
-      class Matcher
-        include RSpec::Matchers::Pretty
-        include RSpec::Matchers
-
-        attr_reader :expected, :actual, :rescued_exception
-        attr_accessor :matcher_execution_context
-
-        # @api private
-        def initialize(name, &declarations)
-          @name         = name
-          @declarations = declarations
-          @actual       = nil
-          @diffable     = false
-          @expected_exception, @rescued_exception = nil, nil
-          @match_for_should_not_block = nil
-          @messages = {}
-        end
-
-        PERSISTENT_INSTANCE_VARIABLES = [
-          :@name, :@declarations, :@diffable,
-          :@match_block, :@match_for_should_not_block,
-          :@expected_exception
-        ].to_set
-
-        # @api private
-        def for_expected(*expected)
-          @expected = expected
-          dup.instance_exec do
-            instance_variables.map {|ivar| ivar.intern}.each do |ivar|
-              instance_variable_set(ivar, nil) unless (PERSISTENT_INSTANCE_VARIABLES + [:@expected]).include?(ivar)
-            end
-            @messages = {}
-            instance_exec(*@expected, &@declarations)
-            self
-          end
-        end
-
-        # @api private
-        # Used internally by +should+ and +should_not+.
-        def matches?(actual)
-          @actual = actual
-          if @expected_exception
-            begin
-              instance_exec(actual, &@match_block)
-              true
-            rescue @expected_exception => @rescued_exception
-              false
-            end
-          else
-            begin
-              instance_exec(actual, &@match_block)
-            rescue RSpec::Expectations::ExpectationNotMetError
-              false
-            end
-          end
-        end
-
+      # Contains the methods that are available from within the
+      # `RSpec::Matchers.define` DSL for creating custom matchers.
+      module Macros
         # Stores the block that is used to determine whether this matcher passes
         # or fails. The block should return a boolean value. When the matcher is
-        # passed to `should` and the block returns `true`, then the expectation
-        # passes. Similarly, when the matcher is passed to `should_not` and the
+        # passed to `expect(...).to` and the block returns `true`, then the expectation
+        # passes. Similarly, when the matcher is passed to `expect(...).not_to` and the
         # block returns `false`, then the expectation passes.
         #
-        # Use `match_for_should` when used in conjuntion with
+        # Use `match_for_should` when used in conjunction with
         # `match_for_should_not`.
         #
         # @example
@@ -79,26 +23,36 @@ module RSpec
         #       end
         #     end
         #
-        #     4.should be_even     # passes
-        #     3.should_not be_even # passes
-        #     3.should be_even     # fails
-        #     4.should_not be_even # fails
+        #     expect(4).to be_even     # passes
+        #     expect(3).not_to be_even # passes
+        #     expect(3).to be_even     # fails
+        #     expect(4).not_to be_even # fails
         #
-        # @yield [Object] actual the actual value (or receiver of should)
-        def match(&block)
-          @match_block = block
+        # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
+        def match(&match_block)
+          define_method :matches? do |actual|
+            begin
+              @actual = actual
+              instance_exec(actual, &match_block)
+            rescue RSpec::Expectations::ExpectationNotMetError
+              false
+            end
+          end
         end
+        alias match_for_should match
 
-        alias_method :match_for_should, :match
-
-        # Use this to define the block for a negative expectation (`should_not`)
+        # Use this to define the block for a negative expectation (`expect(...).not_to`)
         # when the positive and negative forms require different handling. This
         # is rarely necessary, but can be helpful, for example, when specifying
         # asynchronous processes that require different timeouts.
         #
-        # @yield [Object] actual the actual value (or receiver of should)
-        def match_for_should_not(&block)
-          @match_for_should_not_block = block
+        # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
+        def match_for_should_not(&match_block)
+          define_method :does_not_match? do |actual|
+            @actual = actual
+            # TODO: instance_eval it...
+            match_block.call(actual)
+          end
         end
 
         # Use this instead of `match` when the block will raise an exception
@@ -112,15 +66,22 @@ module RSpec
         #       end
         #     end
         #
-        #     email_validator.should accept_as_valid("person@company.com")
-        def match_unless_raises(exception=Exception, &block)
-          @expected_exception = exception
-          match(&block)
+        #     expect(email_validator).to accept_as_valid("person@company.com")
+        def match_unless_raises(expected_exception=Exception, &match_block)
+          define_method :matches? do |actual|
+            begin
+              @actual = actual
+              instance_exec(actual, &match_block)
+              return true
+            rescue expected_exception => @rescued_exception
+              return false
+            end
+          end
         end
 
-        # Customize the failure messsage to use when this matcher is invoked with
-        # `should`. Only use this when the message generated by default doesn't
-        # suit your needs.
+        # Customizes the failure messsage to use when this matcher is
+        # asked to positively match. Only use this when the message
+        # generated by default doesn't suit your needs.
         #
         # @example
         #
@@ -133,13 +94,16 @@ module RSpec
         #     end
         #
         # @yield [Object] actual the actual object
-        def failure_message_for_should(&block)
-          cache_or_call_cached(:failure_message_for_should, &block)
+        def failure_message_for_should(&definition)
+          define_method(:failure_message_for_should) do
+            # TODO: should this be instance eval'd?
+            definition.call(@actual)
+          end
         end
 
-        # Customize the failure messsage to use when this matcher is invoked with
-        # `should_not`. Only use this when the message generated by default
-        # doesn't suit your needs.
+        # Customize the failure messsage to use when this matcher is asked
+        # to negatively match. Only use this when the message generated by
+        # default doesn't suit your needs.
         #
         # @example
         #
@@ -152,11 +116,12 @@ module RSpec
         #     end
         #
         # @yield [Object] actual the actual object
-        # @yield [Object] actual the actual object
-        def failure_message_for_should_not(&block)
-          cache_or_call_cached(:failure_message_for_should_not, &block)
+        def failure_message_for_should_not(&definition)
+          define_method(:failure_message_for_should_not) do
+            # TODO: should this be instance eval'd?
+            definition.call(@actual)
+          end
         end
-
 
         # Customize the description to use for one-liners.  Only use this when
         # the description generated by default doesn't suit your needs.
@@ -170,14 +135,17 @@ module RSpec
         #         "qualify for #{expected}"
         #       end
         #     end
-        def description(&block)
-          cache_or_call_cached(:description, &block)
+        def description(&definition)
+          define_method(:description) do
+            # TODO: instance_eval
+            definition.call(@actual)
+          end
         end
 
         # Tells the matcher to diff the actual and expected values in the failure
         # message.
         def diffable
-          @diffable = true
+          define_method(:diffable?) { true }
         end
 
         # Convenience for defining methods on this matcher to create a fluent
@@ -197,35 +165,88 @@ module RSpec
         #       end
         #     end
         #
-        #     minor.should have_errors_on(:age).with("Not old enough to participate")
-        def chain(method, &block)
-          define_method method do |*args|
-            block.call(*args)
+        #     expect(minor).to have_errors_on(:age).with("Not old enough to participate")
+        def chain(name, &block)
+          define_method(name) do |*args|
+            instance_exec(*args, &block)
             self
           end
         end
+      end
 
+      # Defines default implementations of the matcher
+      # protocol methods for custom matchers. You can
+      # override any of these using the +Macros+ methods
+      # from within an `RSpec::Matchers.define` block.
+      module DefaultImplementations
         # @api private
         # Used internally by objects returns by +should+ and +should_not+.
         def diffable?
-          @diffable
+          false
         end
+
+        # The default description.
+        def description
+          "#{name_to_sentence}#{expected_to_sentence}"
+        end
+
+        # The default failure message for positive expectations.
+        def failure_message_for_should
+          "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
+        end
+
+        # The default failure message for negative expectations.
+        def failure_message_for_should_not
+          "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
+        end
+      end
+
+      # Provides the base class for custom matchers. The block passed to
+      # `RSpec::Matchers.define` will be evaluated in the context
+      # of a subclass, and will have the +Macros+ methods available.
+      class Matcher
+        # Provides the DSL macros meant for use in a `define` block.
+        extend Macros
+
+        # Provides default implementations for the matcher protocol methods.
+        include DefaultImplementations
+
+        # So that expectation expressions can be used in the match block...
+        include RSpec::Matchers
+
+        # Converts matcher name and expected args to an English expresion
+        include RSpec::Matchers::Pretty
+
+        attr_reader   :expected, :actual, :rescued_exception
+        attr_accessor :matcher_execution_context
 
         # @api private
-        # Used internally by +should_not+
-        def does_not_match?(actual)
-          @actual = actual
-          @match_for_should_not_block ?
-            instance_exec(actual, &@match_for_should_not_block) :
-            !matches?(actual)
+        def initialize(*expected)
+          @actual   = nil
+          @expected = expected
         end
 
+        # Needed so the matcher is easily identifier in error messages.
+        # Without this, ruby's default instance-of-an-anonymous-class
+        # #inspect would be used (which looks like
+        # `#<#<Class:0x007fca1505c4e0>:0x007fca1505c468>`)
+        def inspect
+          "#<RSpec::Matchers::DSL::Matcher (#{name})>"
+        end
+
+        # Indicates that this matcher responds to messages
+        # from the `matcher_execution_context` as well.
+        # TODO: implement respond_to_missing?
         def respond_to?(method, include_private=false)
           super || matcher_execution_context.respond_to?(method, include_private)
         end
 
-        private
-
+        # Takes care of forwarding unhandled messages to the
+        # `matcher_execution_context` (typically the current
+        # running `RSpec::Core::Example`). This is needed by
+        # rspec-rails so that it can define matchers that wrap
+        # Rails' test helper methods, but it's also a useful
+        # feature in its own right.
         def method_missing(method, *args, &block)
           if matcher_execution_context.respond_to?(method)
             matcher_execution_context.__send__ method, *args, &block
@@ -234,45 +255,18 @@ module RSpec
           end
         end
 
-        def include(*args)
-          singleton_class.__send__(:include, *args)
+        # @api private
+        def self.for_expected(*expected)
+          duplicate = dup
+          duplicate.class_exec(*expected, &@declarations)
+          duplicate.new(*expected)
         end
 
-        def define_method(name, &block)
-          singleton_class.__send__(:define_method, name, &block)
-        end
-
-        def cache_or_call_cached(key, &block)
-          block ? cache(key, &block) : call_cached(key)
-        end
-
-        def cache(key, &block)
-          @messages[key] = block
-        end
-
-        def call_cached(key)
-          if @messages.has_key?(key)
-            @messages[key].arity == 1 ? @messages[key].call(@actual) : @messages[key].call
-          else
-            __send__("default_#{key}")
-          end
-        end
-
-        def default_description
-          "#{name_to_sentence}#{expected_to_sentence}"
-        end
-
-        def default_failure_message_for_should
-          "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
-        end
-
-        def default_failure_message_for_should_not
-          "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
-        end
-
-        unless method_defined?(:singleton_class)
-          def singleton_class
-            class << self; self; end
+        # @api private
+        def self.subclass(name, &declarations)
+          Class.new(self) do
+            define_method(:name) { name }
+            @declarations = declarations
           end
         end
       end

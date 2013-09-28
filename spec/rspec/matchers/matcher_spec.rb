@@ -22,7 +22,7 @@ end
 module RSpec::Matchers::DSL
   describe Matcher do
     def new_matcher(name, *expected, &block)
-      RSpec::Matchers::DSL::Matcher.new(name, &block).for_expected(*expected)
+      RSpec::Matchers::DSL::Matcher.subclass(name, &block).for_expected(*expected)
     end
 
     it "can be stored aside and used later" do
@@ -208,45 +208,41 @@ module RSpec::Matchers::DSL
       end
 
       it "can use the `include` matcher from a `match` block" do
-        pending "Needs matcher refactoring to work" do
-          RSpec::Matchers.define(:descend_from) do |mod|
-            match do |klass|
-              expect(klass.ancestors).to include(mod)
-            end
+        RSpec::Matchers.define(:descend_from) do |mod|
+          match do |klass|
+            expect(klass.ancestors).to include(mod)
           end
-
-          expect(Fixnum).to descend_from(Object)
-          expect(Fixnum).not_to descend_from(Array)
-
-          expect {
-            expect(Fixnum).to descend_from(Array)
-          }.to fail_with(/expected Fixnum to descend from Array/)
-
-          expect {
-            expect(Fixnum).not_to descend_from(Object)
-          }.to fail_with(/expected Fixnum not to descend from Object/)
         end
+
+        expect(Fixnum).to descend_from(Object)
+        expect(Fixnum).not_to descend_from(Array)
+
+        expect {
+          expect(Fixnum).to descend_from(Array)
+        }.to fail_with(/expected Fixnum to descend from Array/)
+
+        expect {
+          expect(Fixnum).not_to descend_from(Object)
+        }.to fail_with(/expected Fixnum not to descend from Object/)
       end
 
       it "can use the `match` matcher from a `match` block" do
-        pending "Needs matcher refactoring to work" do
-          RSpec::Matchers.define(:be_a_phone_number_string) do
-            match do |string|
-              expect(string).to match(/\A\d{3}\-\d{3}\-\d{4}\z/)
-            end
+        RSpec::Matchers.define(:be_a_phone_number_string) do
+          match do |string|
+            expect(string).to match(/\A\d{3}\-\d{3}\-\d{4}\z/)
           end
-
-          expect("206-123-1234").to be_a_phone_number_string
-          expect("foo").not_to be_a_phone_number_string
-
-          expect {
-            expect("foo").to be_a_phone_number_string
-          }.to fail_with(/expected "foo" to be a phone number string/)
-
-          expect {
-            expect("206-123-1234").not_to be_a_phone_number_string
-          }.to fail_with(/expected "206-123-1234" not to be a phone number string/)
         end
+
+        expect("206-123-1234").to be_a_phone_number_string
+        expect("foo").not_to be_a_phone_number_string
+
+        expect {
+          expect("foo").to be_a_phone_number_string
+        }.to fail_with(/expected "foo" to be a phone number string/)
+
+        expect {
+          expect("206-123-1234").not_to be_a_phone_number_string
+        }.to fail_with(/expected "206-123-1234" not to be a phone number string/)
       end
     end
 
@@ -552,13 +548,13 @@ module RSpec::Matchers::DSL
       it "raises NoMethodError for methods not in the running_example" do |example|
         RSpec::Matchers.define(:__raise_no_method_error) do
           match do |actual|
-            a_method_not_in_the_example == "method defined in the example"
+            self.a_method_not_in_the_example == "method defined in the example"
           end
         end
 
-        expect do
+        expect {
           expect(example).to __raise_no_method_error
-        end.to raise_error(/RSpec::Matchers::DSL::Matcher/)
+        }.to raise_error(NoMethodError, /RSpec::Matchers::DSL::Matcher/)
       end
     end
 
