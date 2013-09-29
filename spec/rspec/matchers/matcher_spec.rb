@@ -141,17 +141,51 @@ module RSpec::Matchers::DSL
       expect(matcher).to be_diffable
     end
 
+    it 'does not confuse the diffability of different matchers' do
+      # Necessary to guard against a regression that involved
+      # using a class variable to store the diffable state,
+      # which had the side effect of causing all custom matchers
+      # to share that state
+      m1 = new_matcher(:m1) { diffable }
+      m2 = new_matcher(:m2) { }
+      m3 = new_matcher(:m3) { diffable }
+
+      expect(m1).to be_diffable
+      expect(m2).not_to be_diffable
+      expect(m3).to be_diffable
+    end
+
     it "provides expected" do
       matcher = new_matcher(:name, "expected string") { }
       expect(matcher.expected).to eq ['expected string']
     end
 
-    it "provides actual" do
+    it "provides actual when `match` is used" do
       matcher = new_matcher(:name, 'expected string') do
         match {|actual|}
       end
 
       matcher.matches?('actual string')
+
+      expect(matcher.actual).to eq 'actual string'
+    end
+
+    it 'provides actual when `match_unless_raises` is used' do
+      matcher = new_matcher(:name, 'expected string') do
+        match_unless_raises(SyntaxError) {|actual|}
+      end
+
+      matcher.matches?('actual string')
+
+      expect(matcher.actual).to eq 'actual string'
+    end
+
+    it 'provides actual when `match_for_should_not` is used' do
+      matcher = new_matcher(:name, 'expected string') do
+        match_for_should_not {|actual|}
+      end
+
+      matcher.does_not_match?('actual string')
 
       expect(matcher.actual).to eq 'actual string'
     end
@@ -180,8 +214,8 @@ module RSpec::Matchers::DSL
           match do |actual|
             actual
           end
-          description do
-            "be the boolean #{boolean}"
+          description do |actual|
+            "be the boolean #{boolean} (actual was #{actual})"
           end
           failure_message_for_should do |actual|
             "expected #{actual} to be the boolean #{boolean}"
@@ -200,8 +234,9 @@ module RSpec::Matchers::DSL
         expect(matcher.matches?(false)).to be_falsey
       end
 
-      it "overrides the description" do
-        expect(matcher.description).to eq "be the boolean true"
+      it "overrides the description (which yields `actual`)" do
+        matcher.matches?(true)
+        expect(matcher.description).to eq "be the boolean true (actual was true)"
       end
 
       it "overrides the failure message for #should" do
@@ -415,6 +450,24 @@ module RSpec::Matchers::DSL
           expect {
             matcher.matches?(:bar)
           }.to raise_error("unexpected exception")
+        end
+      end
+
+      context "without a specified error class" do
+        let(:matcher) do
+          new_matcher(:foo) do
+            match_unless_raises do |actual|
+              raise Exception unless actual == 5
+            end
+          end
+        end
+
+        it 'passes if no error is raised' do
+          expect(matcher.matches?(5)).to be true
+        end
+
+        it 'fails if an exception is raised' do
+          expect(matcher.matches?(4)).to be false
         end
       end
 
