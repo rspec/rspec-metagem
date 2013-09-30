@@ -1,4 +1,5 @@
 require 'rspec/matchers/pretty'
+require 'rspec/matchers/composable'
 require 'rspec/matchers/built_in'
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/dsl'
