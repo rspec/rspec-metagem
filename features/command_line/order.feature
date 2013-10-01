@@ -12,7 +12,7 @@ Feature: --order (new in rspec-core-2.8)
     executing `before(:all)` and `after(:all)` hooks more than once, but the order
     of groups at each level is randomized.
 
-    You can also specify a seed:
+  You can also specify a seed:
 
   <h3>Examples</h3>
 
