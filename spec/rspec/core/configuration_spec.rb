@@ -1262,34 +1262,43 @@ module RSpec::Core
     end
 
     describe "#force" do
-      it "forces order" do
-        config.force :order => "default"
-        config.order = "rand"
-        expect(config.order).to eq("default")
-      end
+      context "for ordering options" do
+        let(:list) { [1, 2, 3, 4] }
+        let(:ordering_strategy) { config.ordering_registry.fetch(:global) }
 
-      it "forces order and seed with :order => 'rand:37'" do
-        config.force :order => "rand:37"
-        config.order = "default"
-        expect(config.order).to eq("rand")
-        expect(config.seed).to eq(37)
-      end
+        let(:shuffled) do
+          Kernel.srand(37)
+          list.shuffle
+        end
 
-      it "forces order and seed with :seed => '37'" do
-        config.force :seed => "37"
-        config.order = "default"
-        expect(config.seed).to eq(37)
-        expect(config.order).to eq("rand")
-      end
+        specify "CLI `--order defined` takes precedence over `config.order = rand`" do
+          config.force :order => "defined"
+          config.order = "rand"
 
-      it 'can set random ordering' do
-        config.force :order => "rand:37"
-        RSpec.stub(:configuration => config)
-        list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-        Kernel.should_receive(:srand).ordered.once.with(37)
-        list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
-        Kernel.should_receive(:srand).ordered.once.with(no_args)
-        expect(list.ordered).to eq([2, 4, 1, 3])
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+        end
+
+        specify "CLI `--order rand:37` takes precedence over `config.order = defined`" do
+          config.force :order => "rand:37"
+          config.order = "defined"
+
+          expect(ordering_strategy.order(list)).to eq(shuffled)
+        end
+
+        specify "CLI `--seed 37` forces order and seed" do
+          config.force :seed => 37
+          config.order = "defined"
+          config.seed  = 145
+
+          expect(ordering_strategy.order(list)).to eq(shuffled)
+          expect(config.seed).to eq(37)
+        end
+
+        specify "CLI `--order defined` takes precedence over `config.register_ordering(:global)`" do
+          config.force :order => "defined"
+          config.register_ordering(:global, &:reverse)
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
+        end
       end
 
       it "forces 'false' value" do
@@ -1310,48 +1319,41 @@ module RSpec::Core
       end
     end
 
-    describe '#randomize?' do
-      context 'with order set to :random' do
-        before { config.order = :random }
-
-        it 'returns true' do
-          expect(config.randomize?).to be_truthy
-        end
+    describe "#seed_used?" do
+      def use_seed_on(registry)
+        registry.fetch(:random).order([1, 2])
       end
 
-      context 'with order set to nil' do
-        before { config.order = nil }
+      it 'returns false if neither ordering registry used the seed' do
+        expect(config.seed_used?).to be false
+      end
 
-        it 'returns false' do
-          expect(config.randomize?).to be_falsey
-        end
+      it 'returns true if the ordering registry used the seed' do
+        use_seed_on(config.ordering_registry)
+        expect(config.seed_used?).to be true
       end
     end
 
     describe '#order=' do
       context 'given "random"' do
-        before { config.order = 'random:123' }
+        before do
+          config.seed = 7654
+          config.order = 'random'
+        end
 
-        it 'sets order to "random"' do
-          expect(config.order).to eq('random')
+        it 'does not change the seed' do
+          expect(config.seed).to eq(7654)
         end
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_receive(:srand).ordered.with(123)
-          list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
-          Kernel.should_receive(:srand).ordered.with(no_args)
-          expect(list.ordered).to eq([2, 4, 1, 3])
+          global_ordering = config.ordering_registry.fetch(:global)
+          expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
 
       context 'given "random:123"' do
         before { config.order = 'random:123' }
-
-        it 'sets order to "random"' do
-          expect(config.order).to eq('random')
-        end
 
         it 'sets seed to 123' do
           expect(config.seed).to eq(123)
@@ -1359,96 +1361,55 @@ module RSpec::Core
 
         it 'sets up random ordering' do
           RSpec.stub(:configuration => config)
-          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_receive(:srand).ordered.with(123)
-          list.should_receive(:shuffle).ordered.and_return([2, 4, 1, 3])
-          Kernel.should_receive(:srand).ordered.with(no_args)
-          expect(list.ordered).to eq([2, 4, 1, 3])
+          global_ordering = config.ordering_registry.fetch(:global)
+          expect(global_ordering).to be_an_instance_of(Ordering::Random)
         end
       end
 
-      context 'given "default"' do
+      context 'given "defined"' do
         before do
           config.order = 'rand:123'
-          config.order = 'default'
+          config.order = 'defined'
         end
 
-        it "sets the order to nil" do
-          expect(config.order).to be_nil
-        end
-
-        it "sets the seed to nil" do
-          expect(config.seed).to be_nil
+        it "does not change the seed" do
+          expect(config.seed).to eq(123)
         end
 
         it 'clears the random ordering' do
           RSpec.stub(:configuration => config)
-          list = [1, 2, 3, 4].extend(Extensions::Ordered::Examples)
-          Kernel.should_not_receive(:rand)
-          expect(list.ordered).to eq([1, 2, 3, 4])
+          list = [1, 2, 3, 4]
+          ordering_strategy = config.ordering_registry.fetch(:global)
+          expect(ordering_strategy.order(list)).to eq([1, 2, 3, 4])
         end
       end
     end
 
-    describe "#order_examples" do
-      before { RSpec.stub(:configuration => config) }
-
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
-        examples = [1, 2, 3, 4]
-        examples.extend Extensions::Ordered::Examples
-        config.order_examples { |examples_to_order| examples_to_order.reverse }
-        expect(examples.ordered).to eq([4, 3, 2, 1])
+    describe "#register_ordering" do
+      def register_reverse_ordering
+        config.register_ordering(:reverse, &:reverse)
       end
 
-      it 'sets #order to "custom"' do
-        config.order_examples { |examples| examples.reverse }
-        expect(config.order).to eq("custom")
-      end
-    end
+      it 'stores the ordering for later use' do
+        register_reverse_ordering
 
-    describe "#example_ordering_block" do
-      it 'defaults to a block that returns the passed argument' do
-        expect(config.example_ordering_block.call([1, 2, 3])).to eq([1, 2, 3])
-      end
-    end
-
-    describe "#order_groups" do
-      before { RSpec.stub(:configuration => config) }
-
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
-        groups = [1, 2, 3, 4]
-        groups.extend Extensions::Ordered::ExampleGroups
-        config.order_groups { |groups_to_order| groups_to_order.reverse }
-        expect(groups.ordered).to eq([4, 3, 2, 1])
+        list = [1, 2, 3]
+        strategy = config.ordering_registry.fetch(:reverse)
+        expect(strategy).to be_a(Ordering::Custom)
+        expect(strategy.order(list)).to eq([3, 2, 1])
       end
 
-      it 'sets #order to "custom"' do
-        config.order_groups { |groups| groups.reverse }
-        expect(config.order).to eq("custom")
-      end
-    end
+      it 'can register an ordering object' do
+        strategy = Object.new
+        def strategy.order(list)
+          list.reverse
+        end
 
-    describe "#group_ordering_block" do
-      it 'defaults to a block that returns the passed argument' do
-        expect(config.group_ordering_block.call([1, 2, 3])).to eq([1, 2, 3])
-      end
-    end
-
-    describe "#order_groups_and_examples" do
-      let(:examples) { [1, 2, 3, 4].extend Extensions::Ordered::Examples }
-      let(:groups)   { [1, 2, 3, 4].extend Extensions::Ordered::ExampleGroups }
-
-      before do
-        RSpec.stub(:configuration => config)
-        config.order_groups_and_examples { |list| list.reverse }
-      end
-
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::Examples' do
-        expect(examples.ordered).to eq([4, 3, 2, 1])
-      end
-
-      it 'sets a block that determines the ordering of a collection extended with Extensions::Ordered::ExampleGroups' do
-        expect(groups.ordered).to eq([4, 3, 2, 1])
+        config.register_ordering(:reverse, strategy)
+        list = [1, 2, 3]
+        fetched = config.ordering_registry.fetch(:reverse)
+        expect(fetched).to be(strategy)
+        expect(fetched.order(list)).to eq([3, 2, 1])
       end
     end
 

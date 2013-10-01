@@ -4,7 +4,8 @@ module RSpec::Core
                        example_passed example_failed example_pending start_dump dump_pending
                        dump_failures dump_summary seed close stop deprecation deprecation_summary].map(&:to_sym)
 
-    def initialize(*formatters)
+    def initialize(configuration, *formatters)
+      @configuration = configuration
       @listeners = Hash.new { |h,k| h[k] = [] }
       formatters.each do |formatter|
         register_listener(formatter, *NOTIFICATIONS)
@@ -32,19 +33,13 @@ module RSpec::Core
 
     # @api
     # @overload report(count, &block)
-    # @overload report(count, seed, &block)
+    # @overload report(count, &block)
     # @param [Integer] count the number of examples being run
-    # @param [Integer] seed the seed used to randomize the spec run
     # @param [Block] block yields itself for further reporting.
     #
     # Initializes the report run and yields itself for further reporting. The
     # block is required, so that the reporter can manage cleaning up after the
     # run.
-    #
-    # ### Warning:
-    #
-    # The `seed` argument is an internal API and is not guaranteed to be
-    # supported in the future.
     #
     # @example
     #
@@ -52,12 +47,12 @@ module RSpec::Core
     #       example_groups.map {|g| g.run(r) }
     #     end
     #
-    def report(expected_example_count, seed=nil)
+    def report(expected_example_count)
       start(expected_example_count)
       begin
         yield self
       ensure
-        finish(seed)
+        finish
       end
     end
 
@@ -101,7 +96,7 @@ module RSpec::Core
       notify :deprecation, message
     end
 
-    def finish(seed)
+    def finish
       begin
         stop
         notify :start_dump
@@ -109,7 +104,7 @@ module RSpec::Core
         notify :dump_failures
         notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
         notify :deprecation_summary
-        notify :seed, seed if seed
+        notify :seed, @configuration.seed if seed_used?
       ensure
         notify :close
       end
@@ -126,6 +121,12 @@ module RSpec::Core
       registered_listeners(event).each do |formatter|
         formatter.send(event, *args, &block)
       end
+    end
+
+  private
+
+    def seed_used?
+      @configuration.seed && @configuration.seed_used?
     end
   end
 end

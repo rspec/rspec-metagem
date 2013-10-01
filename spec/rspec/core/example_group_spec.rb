@@ -37,6 +37,110 @@ module RSpec::Core
       expect(group.description).to eq("symbol")
     end
 
+    describe "ordering" do
+      context "when tagged with `:order => :defined`" do
+        it 'orders the subgroups and examples in defined order regardless of global order' do
+          RSpec.configuration.order = :random
+
+          run_order = []
+          group = ExampleGroup.describe "outer", :order => :defined do
+            context "subgroup 1" do
+              example { run_order << :g1_e1 }
+              example { run_order << :g1_e2 }
+            end
+
+            context "subgroup 2" do
+              example { run_order << :g2_e1 }
+              example { run_order << :g2_e2 }
+            end
+          end
+
+          group.run
+          expect(run_order).to eq([:g1_e1, :g1_e2, :g2_e1, :g2_e2])
+        end
+      end
+
+      context "when tagged with an unrecognized ordering" do
+        let(:run_order) { [] }
+        let(:definition_line) { __LINE__ + 4 }
+        let(:group) do
+          order = self.run_order
+
+          ExampleGroup.describe "group", :order => :unrecognized do
+            example { order << :ex_1 }
+            example { order << :ex_2 }
+          end
+        end
+
+        before do
+          RSpec.configuration.register_ordering(:global, &:reverse)
+          allow(group).to receive(:warn)
+        end
+
+        it 'falls back to the global ordering' do
+          group.run
+          expect(run_order).to eq([:ex_2, :ex_1])
+        end
+
+        it 'prints a warning so users are notified of their mistake' do
+          warning = nil
+          allow(group).to receive(:warn) { |msg| warning = msg }
+
+          group.run
+
+          expect(warning).to match(/unrecognized/)
+          expect(warning).to match(/#{File.basename __FILE__}:#{definition_line}/)
+        end
+      end
+
+      context "when tagged with a custom ordering" do
+        def ascending_numbers
+          lambda { |g| Integer(g.description[/\d+/]) }
+        end
+
+        it 'uses the custom orderings' do
+          RSpec.configure do |c|
+            c.register_ordering :custom do |items|
+              items.sort_by(&ascending_numbers)
+            end
+          end
+
+          run_order = []
+          group = ExampleGroup.describe "outer", :order => :custom do
+            example("e2") { run_order << :e2 }
+            example("e1") { run_order << :e1 }
+
+            context "subgroup 2" do
+              example("ex 3") { run_order << :g2_e3 }
+              example("ex 1") { run_order << :g2_e1 }
+              example("ex 2") { run_order << :g2_e2 }
+            end
+
+            context "subgroup 1" do
+              example("ex 2") { run_order << :g1_e2 }
+              example("ex 1") { run_order << :g1_e1 }
+              example("ex 3") { run_order << :g1_e3 }
+            end
+
+            context "subgroup 3" do
+              example("ex 2") { run_order << :g3_e2 }
+              example("ex 3") { run_order << :g3_e3 }
+              example("ex 1") { run_order << :g3_e1 }
+            end
+          end
+
+          group.run
+
+          expect(run_order).to eq([
+            :e1,    :e2,
+            :g1_e1, :g1_e2, :g1_e3,
+            :g2_e1, :g2_e2, :g2_e3,
+            :g3_e1, :g3_e2, :g3_e3
+          ])
+        end
+      end
+    end
+
     describe "top level group" do
       it "runs its children" do
         examples_run = []
@@ -752,7 +856,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(1) }
           example('ex 2') { expect(1).to eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         expect(group.run(reporter)).to be_truthy
       end
 
@@ -761,7 +865,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(1) }
           example('ex 2') { expect(1).to eq(2) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         expect(group.run(reporter)).to be_falsey
       end
 
@@ -770,7 +874,7 @@ module RSpec::Core
           example('ex 1') { expect(1).to eq(2) }
           example('ex 2') { expect(1).to eq(1) }
         end
-        group.stub(:filtered_examples) { group.examples.extend(Extensions::Ordered::Examples) }
+        group.stub(:filtered_examples) { group.examples }
         group.filtered_examples.each do |example|
           example.should_receive(:run)
         end

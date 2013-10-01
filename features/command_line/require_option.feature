@@ -20,8 +20,8 @@ Feature: --require option
             super
           end
 
-          def puts(message)
-            [@file, __getobj__].each { |out| out.puts message }
+          def puts(*args)
+            [@file, __getobj__].each { |out| out.puts(*args) }
           end
 
           def close

@@ -120,11 +120,6 @@ module RSpec
       add_setting :failure_exit_code
 
       # @macro define_reader
-      # Determines the order in which examples are run (default: OS standard
-      # load order for files, declaration order for groups and examples).
-      define_reader :order
-
-      # @macro define_reader
       # Indicates files configured to be required
       define_reader :requires
 
@@ -188,20 +183,6 @@ module RSpec
       # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :detail_color
 
-      # @macro define_reader
-      # Seed for random ordering (default: generated randomly each run).
-      #
-      # When you run specs with `--order random`, RSpec generates a random seed
-      # for the randomization and prints it to the `output_stream` (assuming
-      # you're using RSpec's built-in formatters). If you discover an ordering
-      # dependency (i.e. examples fail intermittently depending on order), set
-      # this (on Configuration or on the command line with `--seed`) to run
-      # using the same seed while you debug the issue.
-      #
-      # We recommend, actually, that you use the command line approach so you
-      # don't accidentally leave the seed encoded.
-      define_reader :seed
-
       # @macro add_setting
       # When a block passed to pending fails (as expected), display the failure
       # without reporting it as a failure (default: false).
@@ -224,8 +205,8 @@ module RSpec
       add_setting :expecting_with_rspec
       # @private
       attr_accessor :filter_manager
-
-      attr_reader :backtrace_formatter
+      # @private
+      attr_reader :backtrace_formatter, :ordering_manager
 
       # Alias for rspec-2.x's backtrace_cleaner (now backtrace_formatter)
       #
@@ -248,8 +229,8 @@ module RSpec
         @default_path = 'spec'
         @deprecation_stream = $stderr
         @filter_manager = FilterManager.new
+        @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
-        @seed = srand % 0xFFFF
         @failure_color = :red
         @success_color = :green
         @pending_color = :yellow
@@ -265,11 +246,7 @@ module RSpec
       #
       # Used to set higher priority option values from the command line.
       def force(hash)
-        if hash.has_key?(:seed)
-          hash[:order], hash[:seed] = order_and_seed_from_seed(hash[:seed])
-        elsif hash.has_key?(:order)
-          set_order_and_seed(hash)
-        end
+        ordering_manager.force(hash)
         @preferred_options.merge!(hash)
         self.warnings = value_for :warnings, nil
       end
@@ -593,7 +570,7 @@ module RSpec
         @reporter ||= begin
                         add_formatter('progress') if formatters.empty?
                         add_formatter(RSpec::Core::Formatters::DeprecationFormatter, deprecation_stream, output_stream)
-                        Reporter.new(*formatters)
+                        Reporter.new(self, *formatters)
                       end
       end
 
@@ -917,98 +894,67 @@ module RSpec
         @format_docstrings_block ||= DEFAULT_FORMATTER
       end
 
-      # @api
-      #
-      # Sets the seed value and sets `order='rand'`
-      def seed=(seed)
-        order_and_seed_from_seed(seed)
-      end
-
-      # @api
-      #
-      # Sets the order and, if order is `'rand:<seed>'`, also sets the seed.
-      def order=(type)
-        order_and_seed_from_order(type)
-      end
-
-      def randomize?
-        order.to_s.match(/rand/)
-      end
-
       # @private
-      DEFAULT_ORDERING = lambda { |list| list }
-
-      # @private
-      RANDOM_ORDERING = lambda do |list|
-        Kernel.srand RSpec.configuration.seed
-        ordering = list.shuffle
-        Kernel.srand # reset random generation
-        ordering
+      def self.delegate_to_ordering_manager(*methods)
+        methods.each do |method|
+          define_method method do |*args, &block|
+            ordering_manager.__send__(method, *args, &block)
+          end
+        end
       end
 
-      # Sets a strategy by which to order examples.
+      # @macro delegate_to_ordering_manager
+      #
+      # Sets the seed value and sets the default global ordering to random.
+      delegate_to_ordering_manager :seed=
+
+      # @macro delegate_to_ordering_manager
+      # Seed for random ordering (default: generated randomly each run).
+      #
+      # When you run specs with `--order random`, RSpec generates a random seed
+      # for the randomization and prints it to the `output_stream` (assuming
+      # you're using RSpec's built-in formatters). If you discover an ordering
+      # dependency (i.e. examples fail intermittently depending on order), set
+      # this (on Configuration or on the command line with `--seed`) to run
+      # using the same seed while you debug the issue.
+      #
+      # We recommend, actually, that you use the command line approach so you
+      # don't accidentally leave the seed encoded.
+      delegate_to_ordering_manager :seed
+
+      # @macro delegate_to_ordering_manager
+      #
+      # Sets the default global order and, if order is `'rand:<seed>'`, also sets the seed.
+      delegate_to_ordering_manager :order=
+
+      # @macro delegate_to_ordering_manager
+      # Registers a named ordering strategy that can later be
+      # used to order an example group's subgroups by adding
+      # `:order => <name>` metadata to the example group.
+      #
+      # @param name [Symbol] The name of the ordering.
+      # @yield Block that will order the given examples or example groups
+      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGropu>] The examples or groups to order
+      # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
-      #   RSpec.configure do |config|
-      #     config.order_examples do |examples|
-      #       examples.reverse
+      #   RSpec.configure do |rspec|
+      #     rspec.register_ordering :reverse do |list|
+      #       list.reverse
       #     end
       #   end
       #
-      # @see #order_groups
-      # @see #order_groups_and_examples
-      # @see #order=
-      # @see #seed=
-      def order_examples(&block)
-        @example_ordering_block = block
-        @order = "custom" unless built_in_orderer?(block)
-      end
-
-      # @private
-      def example_ordering_block
-        @example_ordering_block ||= DEFAULT_ORDERING
-      end
-
-      # Sets a strategy by which to order groups.
-      #
-      # @example
-      #   RSpec.configure do |config|
-      #     config.order_groups do |groups|
-      #       groups.reverse
-      #     end
+      #   describe MyClass, :order => :reverse do
+      #     # ...
       #   end
       #
-      # @see #order_examples
-      # @see #order_groups_and_examples
-      # @see #order=
-      # @see #seed=
-      def order_groups(&block)
-        @group_ordering_block = block
-        @order = "custom" unless built_in_orderer?(block)
-      end
+      # @note Pass the symbol `:global` to set the ordering strategy that
+      #   will be used to order the top-level example groups and any example
+      #   groups that do not have declared `:order` metadata.
+      delegate_to_ordering_manager :register_ordering
 
       # @private
-      def group_ordering_block
-        @group_ordering_block ||= DEFAULT_ORDERING
-      end
-
-      # Sets a strategy by which to order groups and examples.
-      #
-      # @example
-      #   RSpec.configure do |config|
-      #     config.order_groups_and_examples do |groups_or_examples|
-      #       groups_or_examples.reverse
-      #     end
-      #   end
-      #
-      # @see #order_groups
-      # @see #order_examples
-      # @see #order=
-      # @see #seed=
-      def order_groups_and_examples(&block)
-        order_groups(&block)
-        order_examples(&block)
-      end
+      delegate_to_ordering_manager :seed_used?, :ordering_registry
 
       # Set Ruby warnings on or off
       def warnings= value
@@ -1120,37 +1066,6 @@ module RSpec
         FileUtils.mkdir_p(File.dirname(path))
         File.new(path, 'w')
       end
-
-      def order_and_seed_from_seed(value)
-        order_groups_and_examples(&RANDOM_ORDERING)
-        @order, @seed = 'rand', value.to_i
-        [@order, @seed]
-      end
-
-      def set_order_and_seed(hash)
-        hash[:order], seed = order_and_seed_from_order(hash[:order])
-        hash[:seed] = seed if seed
-      end
-
-      def order_and_seed_from_order(type)
-        order, seed = type.to_s.split(':')
-        @order = order
-        @seed  = seed = seed.to_i if seed
-
-        if randomize?
-          order_groups_and_examples(&RANDOM_ORDERING)
-        elsif order == 'default'
-          @order, @seed = nil, nil
-          order_groups_and_examples(&DEFAULT_ORDERING)
-        end
-
-        return order, seed
-      end
-
-      def built_in_orderer?(block)
-        [DEFAULT_ORDERING, RANDOM_ORDERING].include?(block)
-      end
-
     end
   end
 end

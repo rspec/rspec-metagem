@@ -9,15 +9,20 @@ module RSpec
 
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
-        @example_groups = [].extend(Extensions::Ordered::ExampleGroups)
+        @example_groups = []
         @filtered_examples = Hash.new { |hash,group|
           hash[group] = begin
             examples = group.examples.dup
             examples = filter_manager.prune(examples)
             examples.uniq!
-            examples.extend(Extensions::Ordered::Examples)
+            examples
           end
         }
+      end
+
+      def ordered_example_groups
+        ordering_strategy = @configuration.ordering_registry.fetch(:global)
+        ordering_strategy.order(@example_groups)
       end
 
       def reset

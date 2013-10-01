@@ -14,7 +14,8 @@ require 'rspec/core/reporter'
 describe RSpec::Core::Formatters::JsonFormatter do
   let(:output) { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::JsonFormatter.new(output) }
-  let(:reporter) { RSpec::Core::Reporter.new(formatter) }
+  let(:config) { RSpec::Core::Configuration.new }
+  let(:reporter) { RSpec::Core::Reporter.new(config, formatter) }
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do

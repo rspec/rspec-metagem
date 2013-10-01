@@ -46,7 +46,7 @@ module RSpec::Core::Formatters
       context2.example("nested example 2.1"){}
       context2.example("nested example 2.2"){}
 
-      group.run(RSpec::Core::Reporter.new(formatter))
+      group.run(RSpec::Core::Reporter.new(RSpec.configuration, formatter))
 
       expect(output.string).to eql("
 root
@@ -74,7 +74,7 @@ root
       context1.example(" example 2 ", :pending => true){}
       context1.example(" example 3 ") { fail }
 
-      group.run(RSpec::Core::Reporter.new(formatter))
+      group.run(RSpec::Core::Reporter.new(RSpec.configuration, formatter))
 
       expect(output.string).to eql("
 root

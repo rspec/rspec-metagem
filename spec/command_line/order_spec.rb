@@ -83,9 +83,9 @@ describe 'command line', :ui do
 
   describe '--order rand' do
     it 'runs the examples and groups in a different order each time' do
-      run_command 'tmp/aruba/spec/order_spec.rb --order rand -f doc'
+      run_command 'spec/order_spec.rb --order rand -f doc'
       RSpec.configuration.seed = srand && srand # reset seed in same process
-      run_command 'tmp/aruba/spec/order_spec.rb --order rand -f doc'
+      run_command 'spec/order_spec.rb --order rand -f doc'
 
       expect(stdout.string).to match(/Randomized with seed \d+/)
 
@@ -98,7 +98,7 @@ describe 'command line', :ui do
 
   describe '--order rand:SEED' do
     it 'runs the examples and groups in the same order each time' do
-      2.times { run_command 'tmp/aruba/spec/order_spec.rb --order rand:123 -f doc' }
+      2.times { run_command 'spec/order_spec.rb --order rand:123 -f doc' }
 
       expect(stdout.string).to match(/Randomized with seed 123/)
 
@@ -111,9 +111,9 @@ describe 'command line', :ui do
 
   describe '--seed SEED' do
     it "forces '--order rand' and runs the examples and groups in the same order each time" do
-      2.times { run_command 'tmp/aruba/spec/order_spec.rb --seed 123 -f doc' }
+      2.times { run_command 'spec/order_spec.rb --seed 123 -f doc' }
 
-      expect(stdout.string).to match(/Randomized with seed \d+/)
+      expect(stdout.string).to match(/Randomized with seed 123/)
 
       top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
       nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
@@ -122,19 +122,21 @@ describe 'command line', :ui do
     end
 
     it "runs examples in the same order, regardless of the order in which files are given" do
-      run_command 'tmp/aruba/spec/simple_spec.rb tmp/aruba/spec/simple_spec2.rb --seed 1337 -f doc'
-      run_command 'tmp/aruba/spec/simple_spec2.rb tmp/aruba/spec/simple_spec.rb --seed 1337 -f doc'
+      run_command 'spec/simple_spec.rb spec/simple_spec2.rb --seed 1337 -f doc'
+      run_command 'spec/simple_spec2.rb spec/simple_spec.rb --seed 1337 -f doc'
 
       top_level_groups      {|first_run, second_run| expect(first_run).to eq(second_run)}
       nested_groups         {|first_run, second_run| expect(first_run).to eq(second_run)}
     end
   end
 
-  describe '--order default on CLI with --order rand in .rspec' do
-    it "overrides --order rand with --order default" do
+  describe '--order defined on CLI with --order rand in .rspec' do
+    after { remove_file '.rspec' }
+
+    it "overrides --order rand with --order defined" do
       write_file '.rspec', '--order rand'
 
-      run_command 'tmp/aruba/spec/order_spec.rb --order default -f doc'
+      run_command 'spec/order_spec.rb --order defined -f doc'
 
       expect(stdout.string).not_to match(/Randomized/)
 
@@ -145,10 +147,12 @@ describe 'command line', :ui do
   end
 
   context 'when a custom order is configured' do
+    after { remove_file 'spec/custom_order_spec.rb' }
+
     before do
       write_file 'spec/custom_order_spec.rb', """
         RSpec.configure do |config|
-          config.order_groups_and_examples do |list|
+          config.register_ordering :global do |list|
             list.sort_by { |item| item.description }
           end
         end
@@ -167,7 +171,7 @@ describe 'command line', :ui do
     end
 
     it 'orders the groups and examples by the provided strategy' do
-      run_command 'tmp/aruba/spec/custom_order_spec.rb -f doc'
+      run_command 'spec/custom_order_spec.rb -f doc'
 
       top_level_groups    { |groups| expect(groups.flatten).to eq(['group A', 'group B']) }
       examples('group B') do |examples|
@@ -199,6 +203,8 @@ describe 'command line', :ui do
   end
 
   def run_command(cmd)
-    RSpec::Core::Runner.run(cmd.split, stderr, stdout)
+    in_current_dir do
+      RSpec::Core::Runner.run(cmd.split, stderr, stdout)
+    end
   end
 end
