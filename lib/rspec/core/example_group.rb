@@ -19,10 +19,6 @@ module RSpec
       include Pending
       extend SharedExampleGroup
 
-      def self.order
-        nil
-      end
-
       # @private
       def self.world
         RSpec.world
