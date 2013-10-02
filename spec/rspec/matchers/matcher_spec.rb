@@ -412,7 +412,7 @@ module RSpec::Matchers::DSL
 
         let(:matcher) do
           new_matcher(:equal, 4) do |expected|
-            extend mod
+            include mod
             match_unless_raises UnexpectedError do
               assert_equal expected, actual
             end
