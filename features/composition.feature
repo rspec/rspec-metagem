@@ -23,3 +23,19 @@ Feature: matcher composition
       """
     When I run `rspec chained_assertions.rb`
     Then the output should contain "3 examples, 2 failures"
+
+  Scenario: Use `or` to chain expectations
+    Given a file named "not_predictable.rb" with:
+      """ruby
+      describe "a random number" do
+        subject do
+          rand(2)
+        end
+       
+        it "has one of the two available values" do
+          expect(subject).to eq(0).or(eq(1))
+        end
+      end
+      """
+    When I run `rspec not_predictable.rb`
+    Then the example should pass

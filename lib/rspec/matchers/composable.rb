@@ -7,6 +7,10 @@ module RSpec
         BuiltIn::Composite.new self, matcher
       end
 
+      def or(matcher)
+        BuiltIn::Composite.new self, matcher, :type => :or
+      end
+
     end
 
   end

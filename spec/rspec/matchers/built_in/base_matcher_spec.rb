@@ -104,6 +104,17 @@ module RSpec::Matchers::BuiltIn
 
       end
 
+      describe "#or" do
+
+        it "make ored chained multiple assertions" do
+          expect(matcher.new(3).or(matcher.new(3)).matches?(3)).to be_truthy
+          expect(matcher.new(4).or(matcher.new(3)).matches?(3)).to be_truthy
+          expect(matcher.new(3).or(matcher.new(4)).matches?(3)).to be_truthy
+          expect(matcher.new(3).or(matcher.new(3)).matches?(4)).to be_falsey
+        end
+
+      end
+
     end
   end
 end
