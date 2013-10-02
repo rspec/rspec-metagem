@@ -54,7 +54,7 @@ expect(actual).to eq(expected)  # passes if actual == expected
 expect(actual).to eql(expected) # passes if actual.eql?(expected)
 ```
 
-Note: The new `expect` syntax no longer supports `==` matcher.
+Note: The new `expect` syntax no longer supports the `==` matcher.
 
 ### Identity
 
@@ -80,21 +80,25 @@ expect(array).to match_array(expected)
 expect(actual).to match(/expression/)
 ```
 
-Note: The new `expect` syntax no longer supports `=~` matcher.
+Note: The new `expect` syntax no longer supports the `=~` matcher.
 
 ### Types/classes
 
 ```ruby
-expect(actual).to be_an_instance_of(expected)
-expect(actual).to be_a_kind_of(expected)
+expect(actual).to be_an_instance_of(expected) # passes if actual.class == expected
+expect(actual).to be_a(expected)              # passes if actual.is_a?(expected)
+expect(actual).to be_an(expected)             # an alias for be_a
+expect(actual).to be_a_kind_of(expected)      # another alias
 ```
 
 ### Truthiness
 
 ```ruby
-expect(actual).to be_true  # passes if actual is truthy (not nil or false)
-expect(actual).to be_false # passes if actual is falsy (nil or false)
-expect(actual).to be_nil   # passes if actual is nil
+expect(actual).to be_truthy # passes if actual is truthy (not nil or false)
+expect(actual).to be true   # passes if actual == true
+expect(actual).to be_falsy  # passes if actual is falsy (nil or false)
+expect(actual).to be false  # passes if actual == false
+expect(actual).to be_nil    # passes if actual is nil
 ```
 
 ### Expecting errors
