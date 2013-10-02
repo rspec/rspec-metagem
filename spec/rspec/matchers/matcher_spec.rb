@@ -206,6 +206,48 @@ module RSpec::Matchers::DSL
       it "returns false if the wrapped expectation fails" do
         expect(matcher.matches?('other value')).to be_falsey
       end
+
+      it "can use the `include` matcher from a `match` block" do
+        pending "Needs matcher refactoring to work" do
+          RSpec::Matchers.define(:descend_from) do |mod|
+            match do |klass|
+              expect(klass.ancestors).to include(mod)
+            end
+          end
+
+          expect(Fixnum).to descend_from(Object)
+          expect(Fixnum).not_to descend_from(Array)
+
+          expect {
+            expect(Fixnum).to descend_from(Array)
+          }.to fail_with(/expected Fixnum to descend from Array/)
+
+          expect {
+            expect(Fixnum).not_to descend_from(Object)
+          }.to fail_with(/expected Fixnum not to descend from Object/)
+        end
+      end
+
+      it "can use the `match` matcher from a `match` block" do
+        pending "Needs matcher refactoring to work" do
+          RSpec::Matchers.define(:be_a_phone_number_string) do
+            match do |string|
+              expect(string).to match(/\A\d{3}\-\d{3}\-\d{4}\z/)
+            end
+          end
+
+          expect("206-123-1234").to be_a_phone_number_string
+          expect("foo").not_to be_a_phone_number_string
+
+          expect {
+            expect("foo").to be_a_phone_number_string
+          }.to fail_with(/expected "foo" to be a phone number string/)
+
+          expect {
+            expect("206-123-1234").not_to be_a_phone_number_string
+          }.to fail_with(/expected "206-123-1234" not to be a phone number string/)
+        end
+      end
     end
 
     context "with overrides" do
