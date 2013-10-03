@@ -47,11 +47,12 @@ module RSpec::Core
           original_declaration = [__FILE__, __LINE__ - 1].join(':')
 
           warning = nil
-          allow(RSpec).to receive(:warn_with) { |msg| warning = msg }
+          allow(::Kernel).to receive(:warn) { |msg| warning = msg }
 
           group.send(shared_method_name, 'some shared group') {}
           second_declaration = [__FILE__, __LINE__ - 1].join(':')
           expect(warning).to include('some shared group', original_declaration, second_declaration)
+          expect(warning).to_not include 'Called from'
         end
 
         it 'works with top level defined examples in modules' do
