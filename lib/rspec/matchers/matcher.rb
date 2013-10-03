@@ -158,8 +158,8 @@ module RSpec
         #
         #     expect(minor).to have_errors_on(:age).with("Not old enough to participate")
         def chain(name, &definition)
-          define_user_override(name, definition) do |*args|
-            super(*args)
+          define_user_override(name, definition) do |*args, &block|
+            super(*args, &block)
             self
           end
         end

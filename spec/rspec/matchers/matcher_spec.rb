@@ -686,6 +686,16 @@ module RSpec::Matchers::DSL
       expect(matcher.expecting('value').matches?('other value')).to be_falsey
     end
 
+    it 'allows chainable methods to accept blocks' do
+      matcher = new_matcher(:name) do
+        chain(:for_block) { |&b| @block = b }
+        match { |value| @block.call == value }
+      end
+
+      expect(matcher.for_block { 5 }.matches?(5)).to be true
+      expect(matcher.for_block { 3 }.matches?(4)).to be false
+    end
+
     it "prevents name collisions on chainable methods from different matchers" do
       m1 = new_matcher(:m1) { chain(:foo) { raise "foo in m1" } }
       m2 = new_matcher(:m2) { chain(:foo) { raise "foo in m2" } }
