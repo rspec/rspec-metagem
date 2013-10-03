@@ -201,9 +201,6 @@ module RSpec
       # `RSpec::Matchers.define` will be evaluated in the context
       # of a subclass, and will have the +Macros+ methods available.
       class Matcher
-        # Provides the DSL macros meant for use in a `define` block.
-        extend Macros
-
         # Provides default implementations for the matcher protocol methods.
         include DefaultImplementations
 
@@ -253,9 +250,15 @@ module RSpec
 
         # @api private
         def self.for_expected(*expected)
-          duplicate = dup
-          duplicate.class_exec(*expected, &@declarations)
-          duplicate.new(*expected)
+          new(*expected).tap do |instance|
+            singleton_class = (class << instance; self; end)
+            singleton_class.extend Macros
+
+            # Because our DSL yields the `expected` value
+            # (which can change on each use), we have to
+            # re-eval the declarations block each time.
+            singleton_class.class_exec(*expected, &@declarations)
+          end
         end
 
         # @api private
