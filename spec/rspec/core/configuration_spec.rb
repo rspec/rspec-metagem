@@ -477,9 +477,9 @@ module RSpec::Core
 
         context "after files have already been loaded" do
           it 'will warn that it will have no effect' do
-            expect(RSpec).to receive(:warning).with /has no effect/
+            expect_warning_with_call_site __FILE__, __LINE__ +2, /has no effect/
             config.load_spec_files
-            config.send(setter, "rspec/**/*.spec"); line = __LINE__
+            config.send(setter, "rspec/**/*.spec")
           end
 
           it 'will not warn if reset is called after load_spec_files' do
@@ -732,12 +732,12 @@ module RSpec::Core
 
             context "with ANSICON NOT available" do
               before do
-                allow(RSpec).to receive(:warning)
+                allow_warning
               end
 
               it "warns to install ANSICON" do
                 config.stub(:require) { raise LoadError }
-                expect(RSpec).to receive(:warning).with(/You must use ANSICON/)
+                expect_warning_with_call_site __FILE__, __LINE__ +1, /You must use ANSICON/
                 config.send "#{color_option}=", true
               end
 
