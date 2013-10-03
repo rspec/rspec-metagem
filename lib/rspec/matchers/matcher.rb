@@ -50,8 +50,7 @@ module RSpec
         def match_for_should_not(&match_block)
           define_method :does_not_match? do |actual|
             @actual = actual
-            # TODO: instance_eval it...
-            match_block.call(actual)
+            instance_exec(actual, &match_block)
           end
         end
 
@@ -96,8 +95,7 @@ module RSpec
         # @yield [Object] actual the actual object
         def failure_message_for_should(&definition)
           define_method(:failure_message_for_should) do
-            # TODO: should this be instance eval'd?
-            definition.call(@actual)
+            instance_exec(@actual, &definition)
           end
         end
 
@@ -118,8 +116,7 @@ module RSpec
         # @yield [Object] actual the actual object
         def failure_message_for_should_not(&definition)
           define_method(:failure_message_for_should_not) do
-            # TODO: should this be instance eval'd?
-            definition.call(@actual)
+            instance_exec(@actual, &definition)
           end
         end
 
@@ -137,8 +134,7 @@ module RSpec
         #     end
         def description(&definition)
           define_method(:description) do
-            # TODO: instance_eval
-            definition.call(@actual)
+            instance_exec(@actual, &definition)
           end
         end
 

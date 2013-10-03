@@ -121,6 +121,20 @@ module RSpec::Matchers::DSL
         matcher.does_not_match?(77)
         expect(matcher.failure_message_for_should_not).to eq "expected 77 not to to be composed of 7 and 11"
       end
+
+      it 'can access helper methods from `match_for_should_not`' do
+        matcher = new_matcher(:be_foo) do
+          def foo
+            :foo
+          end
+
+          match_for_should_not do |actual|
+            actual != foo
+          end
+        end
+
+        expect(matcher.does_not_match?(:bar)).to be true
+      end
     end
 
     it "allows helper methods to be defined with #define_method to have access to matcher parameters" do
@@ -285,6 +299,33 @@ module RSpec::Matchers::DSL
       it "overrides the failure message for #should_not" do
         matcher.matches?(true)
         expect(matcher.failure_message_for_should_not).to eq "expected true not to be the boolean true"
+      end
+
+      it 'can access helper methods from `description`' do
+        matcher = new_matcher(:desc) do
+          def subdesc() "sub description" end
+          description { "Desc (#{subdesc})" }
+        end
+
+        expect(matcher.description).to eq("Desc (sub description)")
+      end
+
+      it 'can access helper methods from `failure_message_for_should`' do
+        matcher = new_matcher(:positive_failure_message) do
+          def helper() "helper" end
+          failure_message_for_should { helper }
+        end
+
+        expect(matcher.failure_message_for_should).to eq("helper")
+      end
+
+      it 'can access helper methods from `failure_message_for_should_not`' do
+        matcher = new_matcher(:negative_failure_message) do
+          def helper() "helper" end
+          failure_message_for_should_not { helper }
+        end
+
+        expect(matcher.failure_message_for_should_not).to eq("helper")
       end
     end
 
