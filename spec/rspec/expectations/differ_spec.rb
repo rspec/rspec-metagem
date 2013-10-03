@@ -59,6 +59,11 @@ EOD
             @actual="Tu avec carte {count} item has"
             expect(subject).to eql 'Could not produce a diff because the encoding of the actual string (UTF-8) differs from the encoding of the expected string (UTF-16LE)'
           end
+          it "handles conversions that aren't possible" do
+            @expected = "강인철".encode('UTF-8')
+            @actual   = "abc".encode('us-ascii')
+            expect(subject).to eql "\n@@ -1,2 +1,2 @@\n-abc\n+???\n"
+          end
         end
       end
 
