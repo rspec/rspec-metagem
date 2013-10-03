@@ -228,6 +228,24 @@ module RSpec::Matchers::DSL
       expect(matcher.actual).to eq 'actual string'
     end
 
+    it "provides actual when the `match` block accepts splat args" do
+      matcher = new_matcher(:actual) do
+        match { |*actual| actual == [5] }
+      end
+
+      expect(matcher.matches?(5)).to be true
+      expect(matcher.matches?(4)).to be false
+    end
+
+    it 'allows an early `return` to be used from a `match` block' do
+      matcher = new_matcher(:with_return, 5) do |expected|
+        match { |actual| return true if expected == actual }
+      end
+
+      expect(matcher.matches?(5)).to be true
+      expect(matcher.matches?(4)).to be_falsey
+    end
+
     it 'provides actual when `match_unless_raises` is used' do
       matcher = new_matcher(:name, 'expected string') do
         match_unless_raises(SyntaxError) {|actual|}
@@ -238,6 +256,20 @@ module RSpec::Matchers::DSL
       expect(matcher.actual).to eq 'actual string'
     end
 
+    it 'allows an early `return` to be used from a `match_unless_raises` block' do
+      matcher = new_matcher(:with_return) do |expected|
+        match_unless_raises(ArgumentError) do |actual|
+          return actual if [true, false].include?(actual)
+          raise ArgumentError
+        end
+      end
+
+      expect(matcher.matches?(true)).to be true
+      # It should match even if it returns false, because no error was raised.
+      expect(matcher.matches?(false)).to be true
+      expect(matcher.matches?(4)).to be_falsey
+    end
+
     it 'provides actual when `match_for_should_not` is used' do
       matcher = new_matcher(:name, 'expected string') do
         match_for_should_not {|actual|}
@@ -246,6 +278,15 @@ module RSpec::Matchers::DSL
       matcher.does_not_match?('actual string')
 
       expect(matcher.actual).to eq 'actual string'
+    end
+
+    it 'allows an early `return` to be used from a `match_for_should_not` block' do
+      matcher = new_matcher(:with_return, 5) do |expected|
+        match_for_should_not { |actual| return true if expected != actual }
+      end
+
+      expect(matcher.does_not_match?(5)).to be_falsey
+      expect(matcher.does_not_match?(4)).to be true
     end
 
     context "wrapping another expectation (expect(...).to eq ...)" do
@@ -370,6 +411,30 @@ module RSpec::Matchers::DSL
         end
 
         expect(matcher.failure_message_for_should_not).to eq("helper")
+      end
+
+      it 'can exit early with a `return` from `description` just like in a method' do
+        matcher = new_matcher(:desc) do
+          description { return "Desc" }
+        end
+
+        expect(matcher.description).to eq("Desc")
+      end
+
+      it 'can exit early with a `return` from `failure_message_for_should` just like in a method' do
+        matcher = new_matcher(:positive_failure_message) do
+          failure_message_for_should { return "msg" }
+        end
+
+        expect(matcher.failure_message_for_should).to eq("msg")
+      end
+
+      it 'can exit early with a `return` from `failure_message_for_should_not` just like in a method' do
+        matcher = new_matcher(:negative_failure_message) do
+          failure_message_for_should_not { return "msg" }
+        end
+
+        expect(matcher.failure_message_for_should_not).to eq("msg")
       end
     end
 
@@ -600,6 +665,19 @@ module RSpec::Matchers::DSL
       matcher = new_matcher(:name) do
         chain(:expecting) do |expected_value|
           @expected_value = expected_value
+        end
+        match { |actual| actual == @expected_value }
+      end
+
+      expect(matcher.expecting('value').matches?('value')).to be_truthy
+      expect(matcher.expecting('value').matches?('other value')).to be_falsey
+    end
+
+    it 'can use an early return from a `chain` block' do
+      matcher = new_matcher(:name) do
+        chain(:expecting) do |expected_value|
+          @expected_value = expected_value
+          return
         end
         match { |actual| actual == @expected_value }
       end

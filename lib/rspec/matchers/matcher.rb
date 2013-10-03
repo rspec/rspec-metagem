@@ -30,10 +30,10 @@ module RSpec
         #
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
         def match(&match_block)
-          define_method :matches? do |actual|
+          define_user_override(:matches?, match_block) do |actual|
             begin
               @actual = actual
-              instance_exec(actual, &match_block)
+              super(*actual_arg_for(match_block))
             rescue RSpec::Expectations::ExpectationNotMetError
               false
             end
@@ -48,9 +48,9 @@ module RSpec
         #
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
         def match_for_should_not(&match_block)
-          define_method :does_not_match? do |actual|
+          define_user_override(:does_not_match?, match_block) do |actual|
             @actual = actual
-            instance_exec(actual, &match_block)
+            super(*actual_arg_for(match_block))
           end
         end
 
@@ -67,13 +67,14 @@ module RSpec
         #
         #     expect(email_validator).to accept_as_valid("person@company.com")
         def match_unless_raises(expected_exception=Exception, &match_block)
-          define_method :matches? do |actual|
+          define_user_override(:matches?, match_block) do |actual|
+            @actual = actual
             begin
-              @actual = actual
-              instance_exec(actual, &match_block)
-              return true
+              super(*actual_arg_for(match_block))
             rescue expected_exception => @rescued_exception
-              return false
+              false
+            else
+              true
             end
           end
         end
@@ -94,9 +95,7 @@ module RSpec
         #
         # @yield [Object] actual the actual object
         def failure_message_for_should(&definition)
-          define_method(:failure_message_for_should) do
-            instance_exec(@actual, &definition)
-          end
+          define_user_override(__method__, definition)
         end
 
         # Customize the failure messsage to use when this matcher is asked
@@ -115,9 +114,7 @@ module RSpec
         #
         # @yield [Object] actual the actual object
         def failure_message_for_should_not(&definition)
-          define_method(:failure_message_for_should_not) do
-            instance_exec(@actual, &definition)
-          end
+          define_user_override(__method__, definition)
         end
 
         # Customize the description to use for one-liners.  Only use this when
@@ -133,9 +130,7 @@ module RSpec
         #       end
         #     end
         def description(&definition)
-          define_method(:description) do
-            instance_exec(@actual, &definition)
-          end
+          define_user_override(__method__, definition)
         end
 
         # Tells the matcher to diff the actual and expected values in the failure
@@ -162,11 +157,36 @@ module RSpec
         #     end
         #
         #     expect(minor).to have_errors_on(:age).with("Not old enough to participate")
-        def chain(name, &block)
-          define_method(name) do |*args|
-            instance_exec(*args, &block)
+        def chain(name, &definition)
+          define_user_override(name, definition) do |*args|
+            super(*args)
             self
           end
+        end
+
+      private
+
+        # Does the following:
+        #
+        # - Defines the named method usign a user-provided block
+        #   in self::UserMethodDefs, which is included as an ancestor
+        #   in the singleton class in which we eval the `define` block.
+        # - Defines an overriden definition for the same method
+        #   usign the provided `our_def` block.
+        # - Provides a default `our_def` block for the common case
+        #   of needing to call the user's definition with `@actual`
+        #   as an arg, but only if their block's arity can handle it.
+        #
+        # This compiles the user block into an actual method, allowing
+        # them to use normal method constructs like `return`
+        # (e.g. for a early guard statement), while allowing us to define
+        # an override that can provide the wrapped handling
+        # (e.g. assigning `@actual`, rescueing errors, etc) and
+        # can `super` to the user's definition.
+        def define_user_override(method_name, user_def, &our_def)
+          self::UserMethodDefs.__send__(:define_method, method_name, &user_def)
+          our_def ||= lambda { super(*actual_arg_for(user_def)) }
+          define_method(method_name, &our_def)
         end
       end
 
@@ -232,6 +252,12 @@ module RSpec
           super || matcher_execution_context.respond_to?(method, include_private)
         end
 
+      private
+
+        def actual_arg_for(block)
+          block.arity.zero? ? [] : [@actual]
+        end
+
         # Takes care of forwarding unhandled messages to the
         # `matcher_execution_context` (typically the current
         # running `RSpec::Core::Example`). This is needed by
@@ -249,7 +275,11 @@ module RSpec
         # @api private
         def self.for_expected(*expected)
           new(*expected).tap do |instance|
-            singleton_class = (class << instance; self; end)
+            singleton_class = class << instance
+              include const_set(:UserMethodDefs, Module.new)
+              self
+            end
+
             singleton_class.extend Macros
 
             # Because our DSL yields the `expected` value
