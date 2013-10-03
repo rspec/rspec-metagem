@@ -92,7 +92,7 @@ module RSpec::Core::Formatters
         it "prints the true deprecation count to the summary_stream" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
           formatter.deprecation_summary
-          expect(summary_stream.string).to match /5 deprecation warnings total/
+          expect(summary_stream.string).to match(/5 deprecation warnings total/)
         end
       end
     end
