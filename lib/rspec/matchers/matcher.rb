@@ -245,11 +245,19 @@ module RSpec
           "#<#{self.class.name} expected=#{expected}>"
         end
 
-        # Indicates that this matcher responds to messages
-        # from the `matcher_execution_context` as well.
-        # TODO: implement respond_to_missing?
-        def respond_to?(method, include_private=false)
-          super || matcher_execution_context.respond_to?(method, include_private)
+        if RUBY_VERSION.to_f >= 1.9
+          # Indicates that this matcher responds to messages
+          # from the `matcher_execution_context` as well.
+          # Also, supports getting a method object for such methods.
+          def respond_to_missing?(method, include_private=false)
+            super || matcher_execution_context.respond_to?(method, include_private)
+          end
+        else # for 1.8.7
+          # Indicates that this matcher responds to messages
+          # from the `matcher_execution_context` as well.
+          def respond_to?(method, include_private=false)
+            super || matcher_execution_context.respond_to?(method, include_private)
+          end
         end
 
       private

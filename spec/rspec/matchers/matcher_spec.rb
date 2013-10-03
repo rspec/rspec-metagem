@@ -23,7 +23,10 @@ end
 module RSpec::Matchers::DSL
   describe Matcher do
     def new_matcher(name, *expected, &block)
-      RSpec::Matchers::DSL::Matcher.subclass(name, &block).for_expected(*expected)
+      RSpec::Matchers::DSL::Matcher.
+        subclass(name, &block).
+        for_expected(*expected).
+        tap { |m| m.matcher_execution_context = self }
     end
 
     it "can be stored aside and used later" do
@@ -716,6 +719,18 @@ module RSpec::Matchers::DSL
           end
         end
         expect(example).to __access_running_example
+      end
+
+      it 'can get a method object for methods in the running example', :if => (RUBY_VERSION.to_f > 1.8) do
+        matcher = new_matcher(:get_method_object) { }
+        method  = matcher.method(:a_method_in_the_example)
+        expect(method.call).to eq("method defined in the example")
+      end
+
+      it 'indicates that it responds to a method from the running example' do
+        matcher = new_matcher(:respond_to) { }
+        expect(matcher).to respond_to(:a_method_in_the_example)
+        expect(matcher).not_to respond_to(:a_method_not_in_the_example)
       end
 
       it "raises NoMethodError for methods not in the running_example" do |example|
