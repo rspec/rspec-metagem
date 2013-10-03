@@ -66,6 +66,8 @@ module RSpec
         #     end
         #
         #     expect(email_validator).to accept_as_valid("person@company.com")
+        #
+        # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
         def match_unless_raises(expected_exception=Exception, &match_block)
           define_user_override(:matches?, match_block) do |actual|
             @actual = actual
@@ -86,14 +88,14 @@ module RSpec
         # @example
         #
         #     RSpec::Matchers.define :have_strength do |expected|
-        #       match { ... }
+        #       match { your_match_logic }
         #
         #       failure_message_for_should do |actual|
         #         "Expected strength of #{expected}, but had #{actual.strength}"
         #       end
         #     end
         #
-        # @yield [Object] actual the actual object
+        # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
         def failure_message_for_should(&definition)
           define_user_override(__method__, definition)
         end
@@ -105,14 +107,14 @@ module RSpec
         # @example
         #
         #     RSpec::Matchers.define :have_strength do |expected|
-        #       match { ... }
+        #       match { your_match_logic }
         #
         #       failure_message_for_should_not do |actual|
         #         "Expected not to have strength of #{expected}, but did"
         #       end
         #     end
         #
-        # @yield [Object] actual the actual object
+        # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
         def failure_message_for_should_not(&definition)
           define_user_override(__method__, definition)
         end
@@ -123,12 +125,14 @@ module RSpec
         # @example
         #
         #     RSpec::Matchers.define :qualify_for do |expected|
-        #       match { ... }
+        #       match { your_match_logic }
         #
         #       description do
         #         "qualify for #{expected}"
         #       end
         #     end
+        #
+        # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
         def description(&definition)
           define_user_override(__method__, definition)
         end
@@ -192,11 +196,11 @@ module RSpec
 
       # Defines default implementations of the matcher
       # protocol methods for custom matchers. You can
-      # override any of these using the +Macros+ methods
+      # override any of these using the {RSpec::Matchers::DSL::Macros Macros} methods
       # from within an `RSpec::Matchers.define` block.
       module DefaultImplementations
         # @api private
-        # Used internally by objects returns by +should+ and +should_not+.
+        # Used internally by objects returns by `should` and `should_not`.
         def diffable?
           false
         end
@@ -218,8 +222,8 @@ module RSpec
       end
 
       # Provides the base class for custom matchers. The block passed to
-      # `RSpec::Matchers.define` will be evaluated in the context
-      # of a subclass, and will have the +Macros+ methods available.
+      # `RSpec::Matchers.define` will be evaluated in the context of a subclass,
+      # and will have the {RSpec::Matchers::DSL::Macros Macros} methods available.
       class Matcher
         # Provides default implementations for the matcher protocol methods.
         include DefaultImplementations
