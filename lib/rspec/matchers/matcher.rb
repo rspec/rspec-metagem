@@ -219,12 +219,10 @@ module RSpec
           @expected = expected
         end
 
-        # Needed so the matcher is easily identifier in error messages.
-        # Without this, ruby's default instance-of-an-anonymous-class
-        # #inspect would be used (which looks like
-        # `#<#<Class:0x007fca1505c4e0>:0x007fca1505c468>`)
+        # Adds the expected value so we can identify an instance of
+        # the matcher in error messages (e.g. for `NoMethodError`)
         def inspect
-          "#<RSpec::Matchers::DSL::Matcher (#{name})>"
+          "#<#{self.class.name} expected=#{expected}>"
         end
 
         # Indicates that this matcher responds to messages
@@ -266,9 +264,27 @@ module RSpec
           Class.new(self) do
             define_method(:name) { name }
             @declarations = declarations
+          end.tap do |klass|
+            const_name = ('_' + name.to_s).gsub(/_+([[:alpha:]])/) { $1.upcase }
+
+            # Constants must start with [A-Z]
+            const_name.gsub!(/\A_+/, '')          # Remove any leading underscores
+            const_name.gsub!(/\A([^A-Z])/, 'A\1') # Prepend a valid first letter if needed
+
+            # Add a trailing number if needed to disambiguate from an existing constant.
+            if Custom.const_defined?(const_name)
+              const_name << "2"
+              const_name.next! while Custom.const_defined?(const_name)
+            end
+
+            Custom.const_set(const_name, klass)
           end
         end
       end
+    end
+
+    # Namespace module that holds custom matcher classes.
+    module Custom
     end
   end
 end
