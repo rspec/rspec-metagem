@@ -1031,10 +1031,10 @@ module RSpec
           formatter_ref
         elsif string_const?(formatter_ref)
           begin
-            eval(formatter_ref)
+            ::Kernel.const_get(formatter_ref)
           rescue NameError
             require path_for(formatter_ref)
-            eval(formatter_ref)
+            ::Kernel.const_get(formatter_ref)
           end
         end
       end
