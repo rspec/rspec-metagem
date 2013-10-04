@@ -194,11 +194,21 @@ FILTERING
                   '  - TAG is always converted to a symbol') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
 
-          name,value = tag.gsub(/^(~@|~|@)/, '').split(':')
+          name,value = tag.gsub(/^(~@|~|@)/, '').split(':',2)
           name = name.to_sym
 
           options[filter_type] ||= {}
-          options[filter_type][name] = value.nil? ? true : eval(value) rescue value
+          options[filter_type][name] = case value
+                                         when  nil        then true # The default value for tags is true
+                                         when 'true'      then true
+                                         when 'false'     then false
+                                         when 'nil'       then nil
+                                         when /^:/        then value[1..-1].to_sym
+                                         when /^\d+$/     then Integer(value)
+                                         when /^\d+.\d+$/ then Float(value)
+                                       else
+                                         value
+                                       end
         end
 
         parser.on('--default-path PATH', 'Set the default path where RSpec looks for examples (can',
