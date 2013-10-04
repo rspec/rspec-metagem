@@ -1031,7 +1031,7 @@ module RSpec
           formatter_ref
         elsif string_const?(formatter_ref)
           begin
-            formatter_ref.scan(/(?:::|^)(\w+)/).flatten.inject(Object) { |const,string| const.const_get string }
+            formatter_ref.gsub(/^::/,'').split('::').inject(Object) { |const,string| const.const_get string }
           rescue NameError
             require( path_for(formatter_ref) ) ? retry : raise
           end
