@@ -194,7 +194,7 @@ FILTERING
                   '  - TAG is always converted to a symbol') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
 
-          name,value = tag.gsub(/^(~@|~|@)/, '').split(':')
+          name,value = tag.gsub(/^(~@|~|@)/, '').split(':',2)
           name = name.to_sym
 
           options[filter_type] ||= {}
@@ -203,6 +203,7 @@ FILTERING
                                          when 'true'      then true
                                          when 'false'     then false
                                          when 'nil'       then nil
+                                         when /^:/        then value[1..-1].to_sym
                                          when /^\d+$/     then Integer(value)
                                          when /^\d+.\d+$/ then Float(value)
                                        else

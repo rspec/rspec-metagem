@@ -158,6 +158,11 @@ module RSpec::Core
             expect(options[:inclusion_filter]).to eq(:foo => 'any_string')
           end
 
+          it "treats ':any_sym' as :any_sym" do
+            options = Parser.parse!([option, 'foo::any_sym'])
+            expect(options[:inclusion_filter]).to eq(:foo => :any_sym)
+          end
+
           it "treats '42' as 42" do
             options = Parser.parse!([option, 'foo:42'])
             expect(options[:inclusion_filter]).to eq(:foo => 42)
