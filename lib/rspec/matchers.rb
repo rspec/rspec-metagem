@@ -435,18 +435,9 @@ module RSpec
     #
     #   expect(email).to   match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   expect(email).to   match("@example.com")
-    #   expect(zipcode).to match_regex(/\A\d{5}(-\d{4})?\z/)
-    #   expect(zipcode).to match_regex("90210")
-    #
-    # @note Due to Ruby's method dispatch mechanism, using the `#match` matcher
-    # within a custom matcher defined via the matcher DSL
-    # (`RSpec::Matcher.define`) will result Ruby calling the wrong `#match`
-    # method and raising an `ArgumentError`. Instead, use the aliased
-    # `#match_regex` method.
     def match(expected)
       BuiltIn::Match.new(expected)
     end
-
     alias_method :match_regex, :match
 
     # With no args, matches if any error is raised.
