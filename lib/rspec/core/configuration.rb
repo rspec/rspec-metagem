@@ -1031,10 +1031,9 @@ module RSpec
           formatter_ref
         elsif string_const?(formatter_ref)
           begin
-            ::Kernel.const_get(formatter_ref)
+            formatter_ref.scan(/(?:::|^)(\w+)/).flatten.inject(Object) { |const,string| const.const_get string }
           rescue NameError
-            require path_for(formatter_ref)
-            ::Kernel.const_get(formatter_ref)
+            require( path_for(formatter_ref) ) ? retry : raise
           end
         end
       end
