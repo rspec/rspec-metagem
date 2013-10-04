@@ -98,11 +98,11 @@ describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
-      duration, example_count, failure_count, pending_count = 1.0, 2, 1, 1
-      formatter.dump_summary(duration, example_count, failure_count, pending_count)
+      values = { :duration => 1.0, :example_count => 2, :failure_count => 1, :pending_count => 1 }
+      formatter.dump_summary(values[:duration], values[:example_count], values[:failure_count], values[:pending_count])
       summary = formatter.output_hash[:summary]
-      %w(duration example_count failure_count pending_count).each do |key|
-        expect(summary[key.to_sym]).to eq eval(key)
+      values.each do |key,value|
+        expect(summary[key]).to eq value
       end
       summary_line = formatter.output_hash[:summary_line]
       expect(summary_line).to eq "2 examples, 1 failure, 1 pending"
