@@ -25,7 +25,7 @@ module RSpec::Matchers::DSL
     def new_matcher(name, *expected, &block)
       RSpec::Matchers::DSL::Matcher.
         subclass(name, &block).
-        for_expected(*expected).
+        new(*expected).
         tap { |m| m.matcher_execution_context = self }
     end
 

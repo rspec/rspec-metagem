@@ -241,6 +241,12 @@ module RSpec
         def initialize(*expected)
           @actual   = nil
           @expected = expected
+
+          class << self
+            include const_set(:UserMethodDefs, Module.new)
+            extend  Macros
+            self
+          end.class_exec(*expected, &self.class.instance_variable_get(:@declarations))
         end
 
         # Adds the expected value so we can identify an instance of
@@ -281,23 +287,6 @@ module RSpec
             matcher_execution_context.__send__ method, *args, &block
           else
             super(method, *args, &block)
-          end
-        end
-
-        # @api private
-        def self.for_expected(*expected)
-          new(*expected).tap do |instance|
-            singleton_class = class << instance
-              include const_set(:UserMethodDefs, Module.new)
-              self
-            end
-
-            singleton_class.extend Macros
-
-            # Because our DSL yields the `expected` value
-            # (which can change on each use), we have to
-            # re-eval the declarations block each time.
-            singleton_class.class_exec(*expected, &@declarations)
           end
         end
 
