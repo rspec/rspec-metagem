@@ -309,9 +309,9 @@ module RSpec
           end.tap do |klass|
             const_name = ('_' + name.to_s).gsub(/_+([[:alpha:]])/) { $1.upcase }
 
-            # Constants must start with [A-Z]
-            const_name.gsub!(/\A_+/, '')          # Remove any leading underscores
-            const_name.gsub!(/\A([^A-Z])/, 'A\1') # Prepend a valid first letter if needed
+            const_name.gsub!(/\A_+/, '')             # Remove any leading underscores
+            const_name.gsub!(/\W/, '')               # JRuby, RBX and others don't like non-ascii in const names
+            const_name.gsub!(/\A([^A-Z]|\z)/, 'A\1') # Prepend a valid first letter if needed (A-Z)
 
             # Add a trailing number if needed to disambiguate from an existing constant.
             if Custom.const_defined?(const_name)

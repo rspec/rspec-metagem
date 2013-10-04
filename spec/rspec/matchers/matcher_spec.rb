@@ -46,14 +46,21 @@ module RSpec::Matchers::DSL
     end
 
     describe "constant assignment" do
+      RSpec::Matchers.define :have_class_const do |name|
+        match do |matcher|
+          matcher.class.name.split('::').last == name.to_s &&
+            RSpec::Matchers::Custom.const_get(name)
+        end
+      end
+
       it 'gets assigned to a human readable constant' do
         matcher = new_matcher(:be_a_something) { }
-        expect(matcher).to be_a(RSpec::Matchers::Custom::BeASomething)
+        expect(matcher).to have_class_const(:BeASomething)
       end
 
       it 'assigns a constant even when there are extra leading underscores' do
         matcher = new_matcher(:__foo__bar__) { }
-        expect(matcher).to be_a(RSpec::Matchers::Custom::FooBar__)
+        expect(matcher).to have_class_const(:FooBar__)
       end
 
       it 'differentiates redefinitions by appending a number' do
@@ -61,9 +68,9 @@ module RSpec::Matchers::DSL
         m2 = new_matcher(:foo_redef) { }
         m3 = new_matcher(:foo_redef) { }
 
-        expect(m1).to be_a(RSpec::Matchers::Custom::FooRedef)
-        expect(m2).to be_a(RSpec::Matchers::Custom::FooRedef2)
-        expect(m3).to be_a(RSpec::Matchers::Custom::FooRedef3)
+        expect(m1).to have_class_const(:FooRedef)
+        expect(m2).to have_class_const(:FooRedef2)
+        expect(m3).to have_class_const(:FooRedef3)
       end
 
       it 'supports non-ascii characters', :if => (RUBY_VERSION.to_f > 1.8) do
@@ -72,19 +79,19 @@ module RSpec::Matchers::DSL
         # is run, which does not happen on 1.8.7
         eval <<-EOS
           RSpec::Matchers.define(:们) { }
-          expect(们).to be_a(RSpec::Matchers::Custom::A们)
+          expect(们).to have_class_const(:A)
 
           RSpec::Matchers.define(:be_们) { }
-          expect(be_们).to be_a(RSpec::Matchers::Custom::Be们)
+          expect(be_们.class.name).to include("Be")
         EOS
       end
 
       it 'handles the case where the matcher name starts with a capitol letter' do
         matcher = new_matcher(:Capitol_letter) { }
-        expect(matcher).to be_a(RSpec::Matchers::Custom::CapitolLetter)
+        expect(matcher).to have_class_const(:CapitolLetter)
 
         matcher = new_matcher(:__Capitol_prefixed_by_underscores) { }
-        expect(matcher.inspect).to include('CapitolPrefixedByUnderscores')
+        expect(matcher).to have_class_const(:CapitolPrefixedByUnderscores)
       end
     end
 
