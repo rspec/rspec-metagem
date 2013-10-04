@@ -199,7 +199,7 @@ FILTERING
 
           options[filter_type] ||= {}
           options[filter_type][name] = case value
-                                         when  nil        then true
+                                         when  nil        then true # The default value for tags is true
                                          when 'true'      then true
                                          when 'false'     then false
                                          when 'nil'       then nil
