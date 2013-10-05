@@ -5,26 +5,26 @@ Feature: include matcher
   as a string or array):
 
     ```ruby
-    "a string".should include("a")
-    "a string".should include("str")
-    "a string".should include("str", "g")
-    "a string".should_not include("foo")
+    expect("a string").to include("a")
+    expect("a string").to include("str")
+    expect("a string").to include("str", "g")
+    expect("a string").not_to include("foo")
 
-    [1, 2].should include(1)
-    [1, 2].should include(1, 2)
-    [1, 2].should_not include(17)
+    expect([1, 2]).to include(1)
+    expect([1, 2]).to include(1, 2)
+    expect([1, 2]).not_to include(17)
     ```
 
   The matcher also provides flexible handling for hashes:
 
     ```ruby
-    {:a => 1, :b => 2}.should include(:a)
-    {:a => 1, :b => 2}.should include(:a, :b)
-    {:a => 1, :b => 2}.should include(:a => 1)
-    {:a => 1, :b => 2}.should include(:b => 2, :a => 1)
-    {:a => 1, :b => 2}.should_not include(:c)
-    {:a => 1, :b => 2}.should_not include(:a => 2)
-    {:a => 1, :b => 2}.should_not include(:c => 3)
+    expect({:a => 1, :b => 2}).to include(:a)
+    expect({:a => 1, :b => 2}).to include(:a, :b)
+    expect({:a => 1, :b => 2}).to include(:a => 1)
+    expect({:a => 1, :b => 2}).to include(:b => 2, :a => 1)
+    expect({:a => 1, :b => 2}).not_to include(:c)
+    expect({:a => 1, :b => 2}).not_to include(:a => 2)
+    expect({:a => 1, :b => 2}).not_to include(:c => 3)
     ```
 
   Scenario: array usage

@@ -2,19 +2,19 @@ Feature: specify types of objects
 
   rspec-expectations includes two matchers to specify types of objects:
 
-    * `obj.should be_kind_of(type)`: calls `obj.kind_of?(type)`, which returns
+    * `expect(obj).to be_kind_of(type)`: calls `obj.kind_of?(type)`, which returns
       true if type is in obj's class hierarchy or is a module and is
       included in a class in obj's class hierarchy.
-    * `obj.should be_instance_of(type)`: calls `obj.instance_of?(type)`, which
+    * `expect(obj).to be_instance_of(type)`: calls `obj.instance_of?(type)`, which
       returns true if and only if type if obj's class.
 
   Both of these matchers have aliases:
 
     ```ruby
-    obj.should be_a_kind_of(type)      # same as obj.should be_kind_of(type)
-    obj.should be_a(type)              # same as obj.should be_kind_of(type)
-    obj.should be_an(type)             # same as obj.should be_kind_of(type)
-    obj.should be_an_instance_of(type) # same as obj.should be_instance_of(type)
+    expect(obj).to be_a_kind_of(type)      # same as expect(obj).to be_kind_of(type)
+    expect(obj).to be_a(type)              # same as expect(obj).to be_kind_of(type)
+    expect(obj).to be_an(type)             # same as expect(obj).to be_kind_of(type)
+    expect(obj).to be_an_instance_of(type) # same as expect(obj).to be_instance_of(type)
     ```
 
   Scenario: be_(a_)kind_of matcher

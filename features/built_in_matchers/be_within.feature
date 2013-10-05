@@ -14,7 +14,7 @@ Feature: be_within matcher
   is within a delta of your expected value:
 
     ```ruby
-    area_of_circle.should be_within(0.1).of(28.3)
+    expect(area_of_circle).to be_within(0.1).of(28.3)
     ```
 
   Note that the difference between the actual and expected values must be

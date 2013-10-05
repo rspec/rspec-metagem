@@ -3,28 +3,28 @@ Feature: "be" matchers
   There are several related "be" matchers:
 
     ```ruby
-    obj.should be_truthy  # passes if obj is truthy (not nil or false)
-    obj.should be_falsey # passes if obj is falsy (nil or false)
-    obj.should be_nil   # passes if obj is nil
-    obj.should be       # passes if obj is truthy (not nil or false)
+    expect(obj).to be_truthy  # passes if obj is truthy (not nil or false)
+    expect(obj).to be_falsey # passes if obj is falsy (nil or false)
+    expect(obj).to be_nil   # passes if obj is nil
+    expect(obj).to be       # passes if obj is truthy (not nil or false)
     ```
 
   Scenario: be_truthy matcher
     Given a file named "be_truthy_spec.rb" with:
       """ruby
       describe "be_truthy matcher" do
-        specify { true.should be_truthy }
-        specify { 7.should be_truthy }
-        specify { "foo".should be_truthy }
-        specify { nil.should_not be_truthy }
-        specify { false.should_not be_truthy }
+        specify { expect(true).to be_truthy }
+        specify { expect(7).to be_truthy }
+        specify { expect("foo").to be_truthy }
+        specify { expect(nil).not_to be_truthy }
+        specify { expect(false).not_to be_truthy }
 
         # deliberate failures
-        specify { true.should_not be_truthy }
-        specify { 7.should_not be_truthy }
-        specify { "foo".should_not be_truthy }
-        specify { nil.should be_truthy }
-        specify { false.should be_truthy }
+        specify { expect(true).not_to be_truthy }
+        specify { expect(7).not_to be_truthy }
+        specify { expect("foo").not_to be_truthy }
+        specify { expect(nil).to be_truthy }
+        specify { expect(false).to be_truthy }
       end
       """
     When I run `rspec be_truthy_spec.rb`
@@ -59,18 +59,18 @@ Feature: "be" matchers
     Given a file named "be_falsey_spec.rb" with:
       """ruby
       describe "be_falsey matcher" do
-        specify { nil.should be_falsey }
-        specify { false.should be_falsey }
-        specify { true.should_not be_falsey }
-        specify { 7.should_not be_falsey }
-        specify { "foo".should_not be_falsey }
+        specify { expect(nil).to be_falsey }
+        specify { expect(false).to be_falsey }
+        specify { expect(true).not_to be_falsey }
+        specify { expect(7).not_to be_falsey }
+        specify { expect("foo").not_to be_falsey }
 
         # deliberate failures
-        specify { nil.should_not be_falsey }
-        specify { false.should_not be_falsey }
-        specify { true.should be_falsey }
-        specify { 7.should be_falsey }
-        specify { "foo".should be_falsey }
+        specify { expect(nil).not_to be_falsey }
+        specify { expect(false).not_to be_falsey }
+        specify { expect(true).to be_falsey }
+        specify { expect(7).to be_falsey }
+        specify { expect("foo").to be_falsey }
       end
       """
     When I run `rspec be_falsey_spec.rb`
@@ -105,18 +105,18 @@ Feature: "be" matchers
     Given a file named "be_nil_spec.rb" with:
       """ruby
       describe "be_nil matcher" do
-        specify { nil.should be_nil }
-        specify { false.should_not be_nil }
-        specify { true.should_not be_nil }
-        specify { 7.should_not be_nil }
-        specify { "foo".should_not be_nil }
+        specify { expect(nil).to be_nil }
+        specify { expect(false).not_to be_nil }
+        specify { expect(true).not_to be_nil }
+        specify { expect(7).not_to be_nil }
+        specify { expect("foo").not_to be_nil }
 
         # deliberate failures
-        specify { nil.should_not be_nil }
-        specify { false.should be_nil }
-        specify { true.should be_nil }
-        specify { 7.should be_nil }
-        specify { "foo".should be_nil }
+        specify { expect(nil).not_to be_nil }
+        specify { expect(false).to be_nil }
+        specify { expect(true).to be_nil }
+        specify { expect(7).to be_nil }
+        specify { expect("foo").to be_nil }
       end
       """
     When I run `rspec be_nil_spec.rb`
@@ -151,18 +151,18 @@ Feature: "be" matchers
     Given a file named "be_spec.rb" with:
       """ruby
       describe "be_matcher" do
-        specify { true.should be }
-        specify { 7.should be }
-        specify { "foo".should be }
-        specify { nil.should_not be }
-        specify { false.should_not be }
+        specify { expect(true).to be }
+        specify { expect(7).to be }
+        specify { expect("foo").to be }
+        specify { expect(nil).not_to be }
+        specify { expect(false).not_to be }
 
         # deliberate failures
-        specify { true.should_not be }
-        specify { 7.should_not be }
-        specify { "foo".should_not be }
-        specify { nil.should be }
-        specify { false.should be }
+        specify { expect(true).not_to be }
+        specify { expect(7).not_to be }
+        specify { expect("foo").not_to be }
+        specify { expect(nil).to be }
+        specify { expect(false).to be }
       end
       """
     When I run `rspec be_spec.rb`

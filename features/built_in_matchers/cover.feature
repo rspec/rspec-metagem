@@ -6,9 +6,9 @@ Feature: cover matcher
   as a Range):
 
     ```ruby
-    (1..10).should cover(5)
-    (1..10).should cover(4, 6)
-    (1..10).should_not cover(11)
+    expect(1..10).to cover(5)
+    expect(1..10).to cover(4, 6)
+    expect(1..10).not_to cover(11)
     ```
 
   Scenario: range usage

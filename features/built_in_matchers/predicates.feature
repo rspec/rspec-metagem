@@ -14,7 +14,7 @@ Feature: predicate matchers
   You could use a basic equality matcher to set expectations on these:
 
     ```ruby
-    7.zero?.should == true # fails with "expected true, got false (using ==)"
+    expect(7.zero?).to == true # fails with "expected true, got false (using ==)"
     ```
 
   ...but RSpec provides dynamic predicate matchers that are more readable and
@@ -24,9 +24,9 @@ Feature: predicate matchers
   prefix the method with `be_` and remove the question mark.  Examples:
 
     ```ruby
-    7.should_not be_zero       # calls 7.zero?
-    [].should be_empty         # calls [].empty?
-    x.should be_multiple_of(3) # calls x.multiple_of?(3)
+    expect(7).not_to be_zero       # calls 7.zero?
+    expect([]).to be_empty         # calls [].empty?
+    expect(x).to be_multiple_of(3) # calls x.multiple_of?(3)
     ```
 
   Alternately, for a predicate method that begins with `has_` like
@@ -34,8 +34,8 @@ Feature: predicate matchers
   makes no sense.
 
     ```ruby
-    hash.should have_key(:foo)       # calls hash.has_key?(:foo)
-    array.should_not have_odd_values # calls array.has_odd_values?
+    expect(hash).to have_key(:foo)       # calls hash.has_key?(:foo)
+    expect(array).not_to have_odd_values # calls array.has_odd_values?
     ```
 
   In either case, RSpec provides nice, clear error messages, such as:
