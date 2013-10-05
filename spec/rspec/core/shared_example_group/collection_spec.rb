@@ -32,14 +32,8 @@ module RSpec::Core::SharedExampleGroup
         expect(collection['top level group']).to eq example_1
       end
 
-      it 'fetches examples across the nested context' do
-        RSpec.stub(:warn_deprecation)
-        expect(collection['nested level two']).to eq example_3
-      end
-
-      it 'warns about deprecation when you fetch across nested contexts' do
-        RSpec.should_receive(:warn_deprecation)
-        collection['nested level two']
+      it 'wont fetches examples across the nested context' do
+        expect(collection['nested level two']).to eq nil
       end
     end
 
@@ -55,16 +49,9 @@ module RSpec::Core::SharedExampleGroup
         expect(collection['top level group']).to eq example_1
       end
 
-      it 'fetches examples across the nested context' do
-        RSpec.stub(:warn_deprecation)
-        expect(collection['nested level two']).to eq example_3
+      it 'wont fetch examples across the nested context' do
+        expect(collection['nested level two']).to eq nil
       end
-
-      it 'warns about deprecation when you fetch across nested contexts' do
-        RSpec.should_receive(:warn_deprecation)
-        collection['nested level two']
-      end
-
     end
   end
 end
