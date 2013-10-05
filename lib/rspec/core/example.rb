@@ -141,16 +141,8 @@ module RSpec
         RSpec.current_example = nil
       end
 
-      # @api private
-      #
-      # Wraps the example block in a Proc so it can invoked using `run` or
-      # `call` in [around](../Hooks#around-instance_method) hooks.
-      def self.procsy(metadata, &proc)
-        proc.extend(Procsy).with(metadata)
-      end
-
-      # Used to extend a `Proc` with behavior that makes it look something like
-      # an {Example} in an {Hooks#around around} hook.
+      # Wraps a `Proc` and exposes a `run` method for use in {Hooks#around
+      # around} hooks.
       #
       # @note Procsy, itself, is not a public API, but we're documenting it
       #   here to document how to interact with the object yielded to an
@@ -159,32 +151,30 @@ module RSpec
       # @example
       #
       #     RSpec.configure do |c|
-      #       c.around do |ex| # ex is a Proc extended with Procsy
+      #       c.around do |ex| # Procsy which wraps the example
       #         if ex.metadata[:key] == :some_value && some_global_condition
       #           raise "some message"
       #         end
       #         ex.run         # run delegates to ex.call
       #       end
       #     end
-      module Procsy
+      class Procsy
         # The `metadata` of the {Example} instance.
         attr_reader :metadata
 
-        # @api private
-        # @param [Proc]
-        # Adds a `run` method to the extended Proc, allowing it to be invoked
-        # in an [around](../Hooks#around-instance_method) hook using either
-        # `run` or `call`.
-        def self.extended(proc)
-          # @api public
-          # Foo bar
-          def proc.run; call; end
+        Proc.public_instance_methods(false).each do |name|
+          define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
+        end
+        alias run call
+
+        def initialize(metadata, &block)
+          @metadata = metadata
+          @proc = block
         end
 
         # @api private
-        def with(metadata)
-          @metadata = metadata
-          self
+        def wrap(&block)
+          self.class.new(metadata, &block)
         end
       end
 
@@ -250,7 +240,7 @@ An error occurred #{context}
         if around_each_hooks.empty?
           yield
         else
-          @example_group_class.run_around_each_hooks(self, Example.procsy(metadata, &block))
+          @example_group_class.run_around_each_hooks(self, Procsy.new(metadata, &block))
         end
       rescue Exception => e
         set_exception(e, "in an around(:each) hook")
