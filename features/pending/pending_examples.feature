@@ -65,7 +65,7 @@ Feature: pending examples
       describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished") do
-            true.should be(true)
+            expect(true).to be(true)
           end
         end
       end
@@ -113,7 +113,7 @@ Feature: pending examples
       """ruby
       describe "an example" do
         it "checks something" do
-          (3+4).should eq(7)
+          expect(3+4).to eq(7)
         end
         specify do
           pending
@@ -135,10 +135,10 @@ Feature: pending examples
       """ruby
       describe "an example" do
         it "checks something" do
-          (3+4).should eq(7)
+          expect(3+4).to eq(7)
         end
         pending do
-          "string".reverse.should eq("gnirts")
+          expect("string".reverse).to eq("gnirts")
         end
       end
       """
@@ -176,7 +176,7 @@ Feature: pending examples
       end
 
       describe "a passing spec" do
-        def run_test; true.should be(true); end
+        def run_test; expect(true).to be(true); end
 
         it "fails when pending with a true :if condition" do
           pending("true :if", :if => true) { run_test }

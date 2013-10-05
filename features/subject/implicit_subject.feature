@@ -12,7 +12,7 @@ Feature: implicitly defined subject
       """ruby
       describe Array do
         it "should be empty when first created" do
-          subject.should be_empty
+          expect(subject).to be_empty
         end
       end
       """
@@ -25,7 +25,7 @@ Feature: implicitly defined subject
       describe Array do
         describe "when first created" do
           it "should be empty" do
-            subject.should be_empty
+            expect(subject).to be_empty
           end
         end
       end
@@ -47,13 +47,13 @@ Feature: implicitly defined subject
         describe ArrayWithOneElement do
           context "referenced as subject" do
             it "should be empty (because it is the Array declared at the top)" do
-              subject.should be_empty
+              expect(subject).to be_empty
             end
           end
 
           context "created in the example" do
             it "should not be empty" do
-              ArrayWithOneElement.new.should_not be_empty
+              expect(ArrayWithOneElement.new).not_to be_empty
             end
           end
         end

@@ -5,7 +5,7 @@ Feature: arbitrary file suffix
       """ruby
       describe "something" do
         it "does something" do
-          3.should eq(3)
+          expect(3).to eq(3)
         end
       end
       """

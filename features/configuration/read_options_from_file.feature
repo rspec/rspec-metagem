@@ -24,11 +24,11 @@ Feature: read command line configuration options from files
           before do
             # color is disabled for non-tty output, so stub the output stream
             # to say it is tty, even though we're running this with cucumber
-            RSpec.configuration.output_stream.stub(:tty?) { true }
+            allow(RSpec.configuration.output_stream).to receive(:tty?) { true }
           end
 
           it "is true" do
-            RSpec.configuration.should be_color_enabled
+            expect(RSpec.configuration).to be_color_enabled
           end
         end
       end
@@ -45,8 +45,8 @@ Feature: read command line configuration options from files
       """ruby
       describe "formatter set in custom options file" do
         it "sets formatter" do
-          RSpec.configuration.formatters.first.
-            should be_a(RSpec::Core::Formatters::DocumentationFormatter)
+          expect(RSpec.configuration.formatters.first).
+            to be_a(RSpec::Core::Formatters::DocumentationFormatter)
         end
       end
       """
@@ -66,7 +66,7 @@ Feature: read command line configuration options from files
       """ruby
       describe "custom options file" do
         it "causes .rspec to be ignored" do
-          RSpec.configuration.color_enabled.should be_falsey
+          expect(RSpec.configuration.color_enabled).to be_falsey
         end
       end
       """
@@ -82,7 +82,7 @@ Feature: read command line configuration options from files
       """ruby
       describe "formatter" do
         it "is set to documentation" do
-          RSpec.configuration.formatters.first.should be_an(RSpec::Core::Formatters::DocumentationFormatter)
+          expect(RSpec.configuration.formatters.first).to be_an(RSpec::Core::Formatters::DocumentationFormatter)
         end
       end
       """

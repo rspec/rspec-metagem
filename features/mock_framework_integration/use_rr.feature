@@ -88,7 +88,7 @@ Feature: mock with rr
 
       describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :rr" do
-          RSpec.configuration.mock_framework.framework_name.should eq(:rr)
+          expect(RSpec.configuration.mock_framework.framework_name).to eq(:rr)
         end
       end
       """

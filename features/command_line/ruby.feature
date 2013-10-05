@@ -14,7 +14,7 @@ Feature: run with ruby command
 
       describe 1 do
         it "is < 2" do
-          1.should be < 2
+          expect(1).to be < 2
         end
       end
       """

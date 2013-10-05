@@ -13,7 +13,7 @@ Feature: mock with rspec
       describe "mocking with RSpec" do
         it "passes when it should" do
           receiver = double('receiver')
-          receiver.should_receive(:message)
+          expect(receiver).to receive(:message)
           receiver.message
         end
       end
@@ -31,7 +31,7 @@ Feature: mock with rspec
       describe "mocking with RSpec" do
         it "fails when it should" do
           receiver = double('receiver')
-          receiver.should_receive(:message)
+          expect(receiver).to receive(:message)
         end
       end
       """
@@ -49,7 +49,7 @@ Feature: mock with rspec
         it "is listed as pending" do
           pending do
             receiver = double('receiver')
-            receiver.should_receive(:message)
+            expect(receiver).to receive(:message)
           end
         end
       end
@@ -69,7 +69,7 @@ Feature: mock with rspec
         it "fails with FIXED" do
           pending do
             receiver = double('receiver')
-            receiver.should_receive(:message)
+            expect(receiver).to receive(:message)
             receiver.message
           end
         end
@@ -89,7 +89,7 @@ Feature: mock with rspec
 
       describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :rspec" do
-          RSpec.configuration.mock_framework.framework_name.should eq(:rspec)
+          expect(RSpec.configuration.mock_framework.framework_name).to eq(:rspec)
         end
       end
       """

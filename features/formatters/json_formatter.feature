@@ -5,11 +5,11 @@ Feature: JSON formatter
     """ruby
     describe "Various" do
       it "fails" do
-        "fail".should eq("succeed")
+        expect("fail").to eq("succeed")
       end
 
       it "succeeds" do
-        "succeed".should eq("succeed")
+        expect("succeed").to eq("succeed")
       end
 
       it "pends"

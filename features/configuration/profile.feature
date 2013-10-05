@@ -18,56 +18,56 @@ Feature: Profile examples
       describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
-          1.should == 1
+          expect(1).to eq(1)
         end
 
         it "sleeps for 0 seconds (example 2)" do
-          2.should == 2
+          expect(2).to eq(2)
         end
 
         it "sleeps for 0.15 seconds (example 3)" do
           sleep 0.15
-          3.should == 3
+          expect(3).to eq(3)
         end
 
         it "sleeps for 0.05 seconds (example 4)" do
           sleep 0.05
-          4.should == 4
+          expect(4).to eq(4)
         end
 
         it "sleeps for 0.05 seconds (example 5)" do
           sleep 0.05
-          5.should == 5
+          expect(5).to eq(5)
         end
 
         it "sleeps for 0.05 seconds (example 6)" do
           sleep 0.05
-          6.should == 6
+          expect(6).to eq(6)
         end
 
         it "sleeps for 0.05 seconds (example 7)" do
           sleep 0.05
-          7.should == 7
+          expect(7).to eq(7)
         end
 
         it "sleeps for 0.05 seconds (example 8)" do
           sleep 0.05
-          8.should == 8
+          expect(8).to eq(8)
         end
 
         it "sleeps for 0.05 seconds (example 9)" do
           sleep 0.05
-          9.should == 9
+          expect(9).to eq(9)
         end
 
         it "sleeps for 0.05 seconds (example 10)" do
           sleep 0.05
-          10.should == 10
+          expect(10).to eq(10)
         end
 
         it "sleeps for 0.05 seconds (example 11)" do
           sleep 0.05
-          11.should == 11
+          expect(11).to eq(11)
         end
       end
       """
@@ -186,7 +186,7 @@ Feature: Profile examples
       describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
-          1.should == 1
+          expect(1).to eq(1)
         end
 
         it "fails" do
@@ -207,7 +207,7 @@ Feature: Profile examples
       describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
-          1.should == 1
+          expect(1).to eq(1)
         end
 
         it "fails" do

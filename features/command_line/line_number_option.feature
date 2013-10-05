@@ -14,15 +14,15 @@ Feature: --line_number option
       describe 9 do
 
         it "should be > 8" do
-          9.should be > 8
+          expect(9).to be > 8
         end
 
         it "should be < 10" do
-          9.should be < 10
+          expect(9).to be < 10
         end
 
         it "should be 3 squared" do
-          9.should be 3*3
+          expect(9).to be 3*3
         end
 
       end

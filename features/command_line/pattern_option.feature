@@ -11,7 +11,7 @@ Feature: pattern option
       """ruby
       describe "addition" do
         it "adds things" do
-          (1 + 2).should eq(3)
+          expect(1 + 2).to eq(3)
         end
       end
       """
@@ -23,7 +23,7 @@ Feature: pattern option
       """ruby
       describe "addition" do
         it "adds things" do
-          (1 + 2).should eq(3)
+          expect(1 + 2).to eq(3)
         end
       end
       """
@@ -41,7 +41,7 @@ Feature: pattern option
       """ruby
       describe "addition" do
         it "adds things" do
-          (1 + 2).should eq(3)
+          expect(1 + 2).to eq(3)
         end
       end
       """

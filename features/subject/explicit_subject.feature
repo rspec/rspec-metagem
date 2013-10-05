@@ -13,7 +13,7 @@ Feature: explicit subject
       describe Array, "with some elements" do
         subject { [1,2,3] }
         it "should have the prescribed elements" do
-          subject.should == [1,2,3]
+          expect(subject).to eq([1,2,3])
         end
       end
       """
@@ -27,7 +27,7 @@ Feature: explicit subject
         subject { [1,2,3] }
         describe "with some elements" do
           it "should have the prescribed elements" do
-            subject.should == [1,2,3]
+            expect(subject).to eq([1,2,3])
           end
         end
       end
@@ -42,7 +42,7 @@ Feature: explicit subject
         subject { [] }
         before { subject.push(1,2,3) }
         it "should have the prescribed elements" do
-          subject.should == [1,2,3]
+          expect(subject).to eq([1,2,3])
         end
       end
       """
@@ -57,7 +57,7 @@ Feature: explicit subject
         subject { prepared_array }
         describe "with some elements" do
           it "should have the prescribed elements" do
-            subject.should == [1,2,3]
+            expect(subject).to eq([1,2,3])
           end
         end
       end
@@ -71,7 +71,7 @@ Feature: explicit subject
       describe Array do
         describe "#[]" do
           context "with index out of bounds" do
-            before { Array.should_receive(:one_two_three).once.and_return([1,2,3]) }
+            before { expect(Array).to receive(:one_two_three).once.and_return([1,2,3]) }
             subject { Array.one_two_three[42] }
             it { should be_nil }
           end
@@ -89,10 +89,10 @@ Feature: explicit subject
           let(:prepared_array) { [1,2,3] }
           subject! { prepared_array.pop }
           it "removes the last value from the array" do
-            prepared_array.should eq([1,2])
+            expect(prepared_array).to eq([1,2])
           end
           it "returns the last value of the array" do
-            subject.should eq(3)
+            expect(subject).to eq(3)
           end
         end
       end

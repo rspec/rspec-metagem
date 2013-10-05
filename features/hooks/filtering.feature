@@ -28,17 +28,17 @@ Feature: filters
 
         describe "group without matching metadata" do
           it "does not run the hook" do
-            invoked_hooks.should be_empty
+            expect(invoked_hooks).to be_empty
           end
 
           it "runs the hook for an example with matching metadata", :foo => :bar do
-            invoked_hooks.should == [:before_each_foo_bar]
+            expect(invoked_hooks).to eq([:before_each_foo_bar])
           end
         end
 
         describe "group with matching metadata", :foo => :bar do
           it "runs the hook" do
-            invoked_hooks.should == [:before_each_foo_bar]
+            expect(invoked_hooks).to eq([:before_each_foo_bar])
           end
         end
       end
@@ -83,7 +83,7 @@ Feature: filters
         config.around(:each, :foo => :bar) do |example|
           order << :before_around_each_foo_bar
           example.run
-          order.should == [:before_around_each_foo_bar, :example]
+          expect(order).to eq([:before_around_each_foo_bar, :example])
         end
       end
 
@@ -92,18 +92,18 @@ Feature: filters
 
         describe "a group without matching metadata" do
           it "does not run the hook" do
-            order.should be_empty
+            expect(order).to be_empty
           end
 
           it "runs the hook for an example with matching metadata", :foo => :bar do
-            order.should == [:before_around_each_foo_bar]
+            expect(order).to eq([:before_around_each_foo_bar])
             order << :example
           end
         end
 
         describe "a group with matching metadata", :foo => :bar do
           it "runs the hook for an example with matching metadata", :foo => :bar do
-            order.should == [:before_around_each_foo_bar]
+            expect(order).to eq([:before_around_each_foo_bar])
             order << :example
           end
         end
@@ -122,24 +122,24 @@ Feature: filters
       describe "a filtered before(:all) hook" do
         describe "a group without matching metadata" do
           it "does not run the hook" do
-            @hook.should be_nil
+            expect(@hook).to be_nil
           end
 
           describe "a nested subgroup with matching metadata", :foo => :bar do
             it "runs the hook" do
-              @hook.should == :before_all_foo_bar
+              expect(@hook).to eq(:before_all_foo_bar)
             end
           end
         end
 
         describe "a group with matching metadata", :foo => :bar do
           it "runs the hook" do
-            @hook.should == :before_all_foo_bar
+            expect(@hook).to eq(:before_all_foo_bar)
           end
 
           describe "a nested subgroup" do
             it "runs the hook" do
-              @hook.should == :before_all_foo_bar
+              expect(@hook).to eq(:before_all_foo_bar)
             end
           end
         end
