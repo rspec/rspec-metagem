@@ -73,6 +73,7 @@ function test_gem {
     bundle install $bundle_flags
     ./bin/rspec -b
     cd ../
+    rm -rf rspec-$1
 }
 
 # Test rspec-mocks and rspec-expectations.
