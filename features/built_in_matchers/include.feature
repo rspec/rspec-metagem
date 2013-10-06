@@ -18,13 +18,13 @@ Feature: include matcher
   The matcher also provides flexible handling for hashes:
 
     ```ruby
-    expect({:a => 1, :b => 2}).to include(:a)
-    expect({:a => 1, :b => 2}).to include(:a, :b)
-    expect({:a => 1, :b => 2}).to include(:a => 1)
-    expect({:a => 1, :b => 2}).to include(:b => 2, :a => 1)
-    expect({:a => 1, :b => 2}).not_to include(:c)
-    expect({:a => 1, :b => 2}).not_to include(:a => 2)
-    expect({:a => 1, :b => 2}).not_to include(:c => 3)
+    expect(:a => 1, :b => 2).to include(:a)
+    expect(:a => 1, :b => 2).to include(:a, :b)
+    expect(:a => 1, :b => 2).to include(:a => 1)
+    expect(:a => 1, :b => 2).to include(:b => 2, :a => 1)
+    expect(:a => 1, :b => 2).not_to include(:c)
+    expect(:a => 1, :b => 2).not_to include(:a => 2)
+    expect(:a => 1, :b => 2).not_to include(:c => 3)
     ```
 
   Scenario: array usage
