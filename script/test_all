@@ -71,6 +71,7 @@ function test_gem {
     bundle_flags=`cat .travis.yml  | grep bundler_args | tr -d '"' | grep -o " .*"`
 
     bundle install $bundle_flags
+    ls bin
     ./bin/rspec -b
     cd ../
     rm -rf rspec-$1
