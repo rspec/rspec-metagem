@@ -14,7 +14,7 @@ Feature: predicate matchers
   You could use a basic equality matcher to set expectations on these:
 
     ```ruby
-    expect(7.zero?).to == true # fails with "expected true, got false (using ==)"
+    expect(7.zero?).to eq true # fails with "expected true, got false (using ==)"
     ```
 
   ...but RSpec provides dynamic predicate matchers that are more readable and
