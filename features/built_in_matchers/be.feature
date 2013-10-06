@@ -4,9 +4,9 @@ Feature: "be" matchers
 
     ```ruby
     expect(obj).to be_truthy  # passes if obj is truthy (not nil or false)
-    expect(obj).to be_falsey # passes if obj is falsy (nil or false)
-    expect(obj).to be_nil   # passes if obj is nil
-    expect(obj).to be       # passes if obj is truthy (not nil or false)
+    expect(obj).to be_falsey  # passes if obj is falsy (nil or false)
+    expect(obj).to be_nil     # passes if obj is nil
+    expect(obj).to be         # passes if obj is truthy (not nil or false)
     ```
 
   Scenario: be_truthy matcher

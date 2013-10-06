@@ -15,7 +15,7 @@ Feature: equality matchers
     ```ruby
     expect(a).to equal(b) # passes if a.equal?(b)
     expect(a).to eql(b)   # passes if a.eql?(b)
-    expect(a).to be == b     # passes if a == b
+    expect(a).to be == b  # passes if a == b
     ```
 
   It also ships with two matchers that have more of a DSL feel to them:
