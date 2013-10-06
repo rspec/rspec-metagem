@@ -34,8 +34,8 @@ Feature: exist matcher
 
       describe "Tatooine" do
         let(:tatooine) { Planet.new("Tatooine") }
-        it { expect(tatooine).to exist } # deliberate failure
-        it { expect(tatooine).not_to exist }
+        specify { expect(tatooine).to exist } # deliberate failure
+        specify { expect(tatooine).not_to exist }
       end
       """
     When I run `rspec exist_matcher_spec.rb`
