@@ -6,6 +6,11 @@ module RSpec
         def match(expected, actual)
           actual.match expected
         end
+
+        def diffable?
+          true
+        end
+
       end
     end
   end
