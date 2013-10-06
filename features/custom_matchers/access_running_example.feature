@@ -24,7 +24,7 @@ Feature: access running example
         end
 
         it "does something" do
-          "foo".should bar
+          expect("foo").to bar
         end
       end
       """
@@ -42,7 +42,7 @@ Feature: access running example
 
       describe "something" do
         it "does something" do
-          "foo".should bar
+          expect("foo").to bar
         end
       end
       """

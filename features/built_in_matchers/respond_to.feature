@@ -4,22 +4,22 @@ Feature: respond_to matcher
   its most basic form:
 
     ```ruby
-    obj.should respond_to(:foo) # pass if obj.respond_to?(:foo)
+    expect(obj).to respond_to(:foo) # pass if obj.respond_to?(:foo)
     ```
 
   You can specify that an object responds to multiple messages in a single
   statement with multiple arguments passed to the matcher:
 
     ```ruby
-    obj.should respond_to(:foo, :bar) # passes if obj.respond_to?(:foo) && obj.respond_to?(:bar)
+    expect(obj).to respond_to(:foo, :bar) # passes if obj.respond_to?(:foo) && obj.respond_to?(:bar)
     ```
 
   If the number of arguments accepted by the method is important to you,
   you can specify that as well:
 
     ```ruby
-    obj.should respond_to(:foo).with(1).argument
-    obj.should respond_to(:bar).with(2).arguments
+    expect(obj).to respond_to(:foo).with(1).argument
+    expect(obj).to respond_to(:bar).with(2).arguments
     ```
 
   Note that this matcher relies entirely upon #respond_to?.  If an object

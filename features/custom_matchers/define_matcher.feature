@@ -183,7 +183,7 @@ Feature: define matcher
 
       describe "these two arrays" do
         specify "should be similar" do
-          [1,2,3].should have_same_elements_as([2,3,1])
+          expect([1,2,3]).to have_same_elements_as([2,3,1])
         end
       end
       """
@@ -207,14 +207,14 @@ Feature: define matcher
       describe "group with MyHelpers" do
         include MyHelpers
         it "has access to the defined matcher" do
-          5.should be_just_like(5)
+          expect(5).to be_just_like(5)
         end
       end
 
       describe "group without MyHelpers" do
         it "does not have access to the defined matcher" do
           expect do
-            5.should be_just_like(5)
+            expect(5).to be_just_like(5)
           end.to raise_exception
         end
       end
@@ -234,12 +234,12 @@ Feature: define matcher
         end
 
         it "has access to the defined matcher" do
-          5.should be_just_like(5)
+          expect(5).to be_just_like(5)
         end
 
         describe "nested group" do
           it "has access to the defined matcher" do
-            5.should be_just_like(5)
+            expect(5).to be_just_like(5)
           end
         end
 
@@ -248,7 +248,7 @@ Feature: define matcher
       describe "group without matcher" do
         it "does not have access to the defined matcher" do
           expect do
-            5.should be_just_like(5)
+            expect(5).to be_just_like(5)
           end.to raise_exception
         end
       end

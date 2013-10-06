@@ -9,11 +9,11 @@ Feature: implicit docstrings
     """ruby
     describe "Examples with no docstrings generate their own:" do
 
-      specify { 3.should be < 5 }
+      specify { expect(3).to be < 5 }
 
-      specify { [1,2,3].should include(2) }
+      specify { expect([1,2,3]).to include(2) }
 
-      specify { [1,2,3].should respond_to(:size) }
+      specify { expect([1,2,3]).to respond_to(:size) }
 
     end
     """
@@ -29,17 +29,17 @@ Feature: implicit docstrings
     """ruby
     describe "Failing examples with no descriptions" do
 
-      # description is auto-generated as "should equal(5)" based on the last #should
+      # description is auto-generated as "to equal(5)" based on the last #expect
       it do
-        3.should equal(2)
-        5.should equal(5)
+        expect(3).to equal(2)
+        expect(5).to equal(5)
       end
 
-      it { 3.should be > 5 }
+      it { expect(3).to be > 5 }
 
-      it { [1,2,3].should include(4) }
+      it { expect([1,2,3]).to include(4) }
 
-      it { [1,2,3].should_not respond_to(:size) }
+      it { expect([1,2,3]).not_to respond_to(:size) }
 
     end
     """

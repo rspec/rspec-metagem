@@ -4,9 +4,9 @@ Feature: start_with matcher
   the expected characters or elements.
 
     ```ruby
-    "this string".should start_with("this")
-    "this string".should_not start_with("that")
-    [0,1,2].should start_with(0, 1)
+    expect("this string").to start_with("this")
+    expect("this string").not_to start_with("that")
+    expect([0,1,2]).to start_with(0, 1)
     ```
 
   Scenario: with a string

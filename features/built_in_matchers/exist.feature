@@ -4,7 +4,7 @@ Feature: exist matcher
   (as indicated by #exist? or #exists?):
 
     ```ruby
-    obj.should exist # passes if obj.exist? or obj.exists?
+    expect(obj).to exist # passes if obj.exist? or obj.exists?
     ```
 
   Scenario: basic usage
@@ -28,14 +28,14 @@ Feature: exist matcher
 
       describe "Earth" do
         let(:earth) { Planet.new("Earth") }
-        specify { earth.should exist }
-        specify { earth.should_not exist } # deliberate failure
+        specify { expect(earth).to exist }
+        specify { expect(earth).not_to exist } # deliberate failure
       end
 
       describe "Tatooine" do
         let(:tatooine) { Planet.new("Tatooine") }
-        it { tatooine.should exist } # deliberate failure
-        it { tatooine.should_not exist }
+        it { expect(tatooine).to exist } # deliberate failure
+        it { expect(tatooine).not_to exist }
       end
       """
     When I run `rspec exist_matcher_spec.rb`

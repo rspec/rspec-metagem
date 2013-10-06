@@ -5,35 +5,35 @@ Feature: operator matchers
   pass:
 
     ```ruby
-    7.should == 7
-    [1, 2, 3].should == [1, 2, 3]
-    "this is a string".should =~ /^this/
-    "this is a string".should_not =~ /^that/
-    String.should === "this is a string"
+    expect(7).to == 7
+    expect([1, 2, 3]).to == [1, 2, 3]
+    expect("this is a string").to =~ /^this/
+    expect("this is a string").not_to =~ /^that/
+    expect(String).to === "this is a string"
     ```
 
   You can also use comparison operators combined with the "be" matcher like
   this:
 
     ```ruby
-    37.should be < 100
-    37.should be <= 38
-    37.should be >= 2
-    37.should be > 7
+    expect(37).to be < 100
+    expect(37).to be <= 38
+    expect(37).to be >= 2
+    expect(37).to be > 7
     ```
 
   RSpec also provides a `=~` matcher for arrays that disregards differences in
   the ordering between the actual and expected array.  For example:
 
     ```ruby
-    [1, 2, 3].should =~ [2, 3, 1] # pass
-    [:a, :c, :b].should =~ [:a, :c] # fail
+    expect([1, 2, 3]).to =~ [2, 3, 1] # pass
+    expect([:a, :c, :b]).to =~ [:a, :c] # fail
     ```
   However, we recommend the use of `match_array` instead:
 
     ```ruby
-    [1, 2, 3].should match_array [2, 3, 1] # pass
-    [:a, :c, :b].should match_array [:a, :c] # fail
+    expect([1, 2, 3]).to match_array [2, 3, 1] # pass
+    expect([:a, :c, :b]).to match_array [:a, :c] # fail
     ```
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
@@ -111,7 +111,7 @@ Feature: operator matchers
         it { should_not =~ /apple/ }
 
         it "reports that it is a string using ===" do
-          String.should === subject
+          expect(String).to be === subject
         end
 
         # deliberate failures
@@ -126,7 +126,7 @@ Feature: operator matchers
         it { should_not =~ /berry/ }
 
         it "fails a spec asserting that it is a symbol" do
-          Symbol.should === subject
+          expect(Symbol).to be === subject
         end
       end
       """
@@ -182,9 +182,9 @@ Feature: operator matchers
       """
       And the output should contain:
       """
-           Failure/Error: Symbol.should === subject
-             expected: "Strawberry"
-                  got: Symbol (using ===)
+           Failure/Error: expect(Symbol).to be === subject
+             expected: === "Strawberry"
+                  got:     Symbol
       """
 
   Scenario: array operator matchers

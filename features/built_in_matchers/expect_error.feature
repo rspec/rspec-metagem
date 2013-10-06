@@ -110,7 +110,7 @@ Feature: raise_error matcher
       describe "#foo" do
         it "raises NameError" do
           expect { Object.new.foo }.to raise_error { |error|
-            error.should be_a(NameError)
+            expect(error).to be_a(NameError)
           }
         end
       end

@@ -5,10 +5,10 @@ Feature: match matcher
   method.
 
     ```ruby
-    "a string".should match(/str/) # passes
-    "a string".should match(/foo/) # fails
-    /foo/.should match("food")     # passes
-    /foo/.should match("drinks")   # fails
+    expect("a string").to match(/str/) # passes
+    expect("a string").to match(/foo/) # fails
+    expect(/foo/).to match("food")     # passes
+    expect(/foo/).to match("drinks")   # fails
     ```
 
   This is equivalent to using the =~ matcher (see the operator matchers
