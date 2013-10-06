@@ -55,7 +55,7 @@ MAINTENENCE_BRANCH=`cat maintenence-branch`
 # Link self to temporary directory, a copy won't work here because the created
 # directory will be included in the files copy copies, causing an infinite
 # loop
-ln -s `pwd` $TMPDIR/rspec-ci/rspec-core
+ln -s `pwd` `pwd`/$TMPDIR/rspec-ci/rspec-core
 
 #Change to the CI directory
 cd $TMPDIR/rspec-ci
