@@ -25,9 +25,6 @@ Feature: equality matchers
     expect(a).to eq(b) # passes if a == b
     ```
 
-  These are a useful pair if you wish to avoid the warning that Ruby emits on
-  `a.should == b`
-
   Scenario: compare using eq (==)
     Given a file named "compare_using_eq.rb" with:
       """ruby
