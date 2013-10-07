@@ -234,6 +234,9 @@ module RSpec
         # Converts matcher name and expected args to an English expresion.
         include RSpec::Matchers::Pretty
 
+        # Makes the macro methods available to an `RSpec::Matchers.define` block.
+        extend Macros
+
         attr_reader   :expected, :actual, :rescued_exception
         attr_accessor :matcher_execution_context
 
@@ -244,7 +247,6 @@ module RSpec
 
           class << self
             include const_set(:UserMethodDefs, Module.new)
-            extend  Macros
             self
           end.class_exec(*expected, &self.class.instance_variable_get(:@declarations))
         end
