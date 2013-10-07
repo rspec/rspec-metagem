@@ -86,12 +86,12 @@ module RSpec::Matchers::DSL
         EOS
       end
 
-      it 'handles the case where the matcher name starts with a capitol letter' do
-        matcher = new_matcher(:Capitol_letter) { }
-        expect(matcher).to have_class_const(:CapitolLetter)
+      it 'handles the case where the matcher name starts with a capital letter' do
+        matcher = new_matcher(:Capital_letter) { }
+        expect(matcher).to have_class_const(:CapitalLetter)
 
-        matcher = new_matcher(:__Capitol_prefixed_by_underscores) { }
-        expect(matcher).to have_class_const(:CapitolPrefixedByUnderscores)
+        matcher = new_matcher(:__Capital_prefixed_by_underscores) { }
+        expect(matcher).to have_class_const(:CapitalPrefixedByUnderscores)
       end
     end
 
