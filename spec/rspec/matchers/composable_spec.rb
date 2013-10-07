@@ -4,7 +4,7 @@ module RSpec
   module Matchers
     describe Composable do
 
-      context "when included in a matcher class" do
+      context "included in a matcher class" do
 
         let :minimal_composable_matcher do
           Class.new do
@@ -18,21 +18,25 @@ module RSpec
           end.new
         end
 
-        describe "#and" do
+        [:and, :or].each do |composition_method|
 
-          it "returns a composite matcher" do
-            composite_matcher = minimal_composable_matcher.and(minimal_composable_matcher)
-            expect(composite_matcher).to be_kind_of BuiltIn::Composite
+          it "mix the ##{ composition_method } method" do
+            expect(minimal_composable_matcher).to respond_to composition_method
           end
 
-          it "can be composed many times" do
-            composite_matcher = minimal_composable_matcher.and(minimal_composable_matcher).
-              and(minimal_composable_matcher).and(minimal_composable_matcher)
-            expect(composite_matcher).to be_kind_of BuiltIn::Composite
+          describe "##{composition_method}" do
+
+            it "returns a Composite matcher" do
+              composite_matcher = minimal_composable_matcher.send(composition_method, minimal_composable_matcher)
+              expect(composite_matcher).to be_kind_of BuiltIn::Composite
+            end
+
           end
 
         end
+
       end
+
     end
   end
 end

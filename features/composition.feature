@@ -31,7 +31,7 @@ Feature: matcher composition
         subject do
           rand(2)
         end
-       
+
         it "has one of the two available values" do
           expect(subject).to eq(0).or(eq(1))
         end
