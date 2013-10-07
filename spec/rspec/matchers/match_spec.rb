@@ -30,6 +30,19 @@ describe "expect(...).to match(expected)" do
     matcher.matches?("string")
     expect(matcher.failure_message_for_should).to eq "expected \"string\" to match /rings/"
   end
+
+  it "provides a diff on failure" do
+    allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
+
+    failure_message_that_includes_diff = %r%
+\s*Diff:
+\s*@@ -1,2 \+1,2 @@
+\s*-/bar/
+\s*\+"foo"%
+
+    expect { expect("foo").to match(/bar/) }.to fail_with(failure_message_that_includes_diff)
+  end
+
 end
 
 describe "expect(...).not_to match(expected)" do

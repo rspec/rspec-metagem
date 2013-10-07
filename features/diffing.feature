@@ -43,7 +43,7 @@ Feature: diffing
         actual
           string
       ACTUAL
-          actual.should =~ expected
+          expect(actual).to match expected
         end
       end
       """
