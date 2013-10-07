@@ -464,9 +464,6 @@ module RSpec
     #   expect { do_something_risky }.to raise_error(PoorRiskDecisionError, /oo ri/)
     #
     #   expect { do_something_risky }.not_to raise_error
-    #   expect { do_something_risky }.not_to raise_error(PoorRiskDecisionError)
-    #   expect { do_something_risky }.not_to raise_error(PoorRiskDecisionError, "that was too risky")
-    #   expect { do_something_risky }.not_to raise_error(PoorRiskDecisionError, /oo ri/)
     def raise_error(error=Exception, message=nil, &block)
       BuiltIn::RaiseError.new(error, message, &block)
     end
