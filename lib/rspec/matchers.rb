@@ -433,8 +433,13 @@ module RSpec
     #
     # @example
     #
-    #   expect(email).to   match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
-    #   expect(email).to   match("@example.com")
+    #   expect(email).to match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
+    #   expect(email).to match("@example.com")
+    #
+    # @note The `match_regex` alias is deprecated and is not recommended for use.
+    #       It was added in 2.12.1 to facilitate its use from within custom
+    #       matchers (due to how the custom matcher DSL was evaluated in 2.x,
+    #       `match` could not be used there), but is no longer needed in 3.x.
     def match(expected)
       BuiltIn::Match.new(expected)
     end
