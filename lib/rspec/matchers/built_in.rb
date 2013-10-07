@@ -14,6 +14,8 @@ module RSpec
       autoload :BeWithin,                'rspec/matchers/built_in/be_within'
       autoload :Change,                  'rspec/matchers/built_in/change'
       autoload :Composite,               'rspec/matchers/built_in/composite'
+      autoload :AndComposite,            'rspec/matchers/built_in/and_composite'
+      autoload :OrComposite,             'rspec/matchers/built_in/or_composite'
       autoload :Cover,                   'rspec/matchers/built_in/cover' if (1..2).respond_to?(:cover?)
       autoload :EndWith,                 'rspec/matchers/built_in/start_and_end_with'
       autoload :Eq,                      'rspec/matchers/built_in/eq'

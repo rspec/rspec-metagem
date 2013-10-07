@@ -3,23 +3,15 @@ module RSpec
     module BuiltIn
       class Composite < BaseMatcher
 
-        attr_reader :type, :base_matcher, :new_matcher
+        attr_reader :base_matcher, :new_matcher
 
-        def initialize base_matcher, new_matcher, options = {}
-          @type         = options.fetch(:type, :and)
+        def initialize(base_matcher, new_matcher)
           @base_matcher = base_matcher
           @new_matcher  = new_matcher
         end
 
         def matches?(actual)
-          case type
-          when :and
-            base_matcher.matches?(actual) && new_matcher.matches?(actual)
-          when :or
-            base_matcher.matches?(actual) || new_matcher.matches?(actual)
-          else
-            raise ArgumentError
-          end
+          raise NoMethodError, 'This matcher is not intended to be used directly.'
         end
 
       end

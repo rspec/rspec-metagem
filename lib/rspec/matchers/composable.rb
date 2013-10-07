@@ -4,11 +4,11 @@ module RSpec
     module Composable
 
       def and(matcher)
-        BuiltIn::Composite.new self, matcher
+        BuiltIn::AndComposite.new self, matcher
       end
 
       def or(matcher)
-        BuiltIn::Composite.new self, matcher, :type => :or
+        BuiltIn::OrComposite.new self, matcher
       end
 
     end
