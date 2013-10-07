@@ -246,6 +246,7 @@ module RSpec
           @expected = expected
 
           class << self
+            # See `Macros#define_user_override` above, for an explanation.
             include const_set(:UserMethodDefs, Module.new)
             self
           end.class_exec(*expected, &self.class.instance_variable_get(:@declarations))
