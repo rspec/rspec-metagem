@@ -26,7 +26,6 @@ module RSpec::Core
         end
       end
 
-
       describe "##{type}(no scope)" do
         let(:instance) { HooksHost.new }
 

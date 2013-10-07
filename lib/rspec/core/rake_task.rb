@@ -1,4 +1,4 @@
-require 'rspec/core/deprecation'
+require 'rspec/core/warnings'
 require 'rake'
 require 'rake/tasklib'
 require 'shellwords'

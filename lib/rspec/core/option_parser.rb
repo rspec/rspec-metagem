@@ -107,7 +107,7 @@ module RSpec::Core
         end
 
         parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|
-          warn "--configure is deprecated with no effect. Use --init instead."
+          RSpec.warning "--configure is deprecated with no effect. Use --init instead.", :call_site => nil
           exit
         end
 
@@ -149,9 +149,10 @@ module RSpec::Core
                                          begin
                                            Integer(argument)
                                          rescue ArgumentError
-                                           Kernel.warn "Non integer specified as profile count, seperate " +
+                                           RSpec.warning "Non integer specified as profile count, seperate " +
                                                        "your path from options with -- e.g. " +
-                                                       "`rspec --profile -- #{argument}`"
+                                                       "`rspec --profile -- #{argument}`",
+                                                       :call_site => nil
                                            true
                                          end
                                        end

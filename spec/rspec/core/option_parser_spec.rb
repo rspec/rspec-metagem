@@ -232,15 +232,13 @@ module RSpec::Core
       end
 
       it 'sets profile_examples to true when accidentally combined with path' do
-        allow(Kernel).to receive(:warn)
+        allow_warning
         options = Parser.parse!(%w[--profile some/path])
         expect(options[:profile_examples]).to eq true
       end
 
       it 'warns when accidentally combined with path' do
-        expect(Kernel).to receive(:warn) do |msg|
-          expect(msg).to match "Non integer specified as profile count"
-        end
+        expect_warning_without_call_site "Non integer specified as profile count"
         options = Parser.parse!(%w[--profile some/path])
         expect(options[:profile_examples]).to eq true
       end
