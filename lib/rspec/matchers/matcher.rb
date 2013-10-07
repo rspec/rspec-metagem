@@ -228,10 +228,10 @@ module RSpec
         # Provides default implementations for the matcher protocol methods.
         include DefaultImplementations
 
-        # So that expectation expressions can be used in the match block...
+        # Allows expectation expressions to be used in the match block.
         include RSpec::Matchers
 
-        # Converts matcher name and expected args to an English expresion
+        # Converts matcher name and expected args to an English expresion.
         include RSpec::Matchers::Pretty
 
         attr_reader   :expected, :actual, :rescued_exception
