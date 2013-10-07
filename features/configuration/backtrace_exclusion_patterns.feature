@@ -19,7 +19,7 @@ Feature: Excluding lines from the backtrace
     """ruby
     describe "2 + 2" do
       it "is 5" do
-        (2+2).should eq(5)
+        expect(2+2).to eq(5)
       end
     end
     """
@@ -45,7 +45,7 @@ Feature: Excluding lines from the backtrace
     require 'spec_helper'
     describe "foo" do
       it "returns baz" do
-        foo.should eq("baz")
+        expect(foo).to eq("baz")
       end
     end
     """
@@ -70,7 +70,7 @@ Feature: Excluding lines from the backtrace
 
     describe "bar" do
       it "is baz" do
-        "bar".should be_baz
+        expect("bar").to be_baz
       end
     end
     """
@@ -96,7 +96,7 @@ Feature: Excluding lines from the backtrace
 
     describe "bar" do
       it "is baz" do
-        "bar".should be_baz
+        expect("bar").to be_baz
       end
     end
     """

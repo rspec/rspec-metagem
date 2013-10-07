@@ -43,7 +43,7 @@ Feature: before and after hooks
 
         describe "initialized in before(:each)" do
           it "has 0 widgets" do
-            @thing.widgets.count.should eq(0)
+            expect(@thing.widgets.count).to eq(0)
           end
 
           it "can get accept new widgets" do
@@ -51,7 +51,7 @@ Feature: before and after hooks
           end
 
           it "does not share state across examples" do
-            @thing.widgets.count.should eq(0)
+            expect(@thing.widgets.count).to eq(0)
           end
         end
       end
@@ -77,7 +77,7 @@ Feature: before and after hooks
 
         describe "initialized in before(:all)" do
           it "has 0 widgets" do
-            @thing.widgets.count.should eq(0)
+            expect(@thing.widgets.count).to eq(0)
           end
 
           it "can get accept new widgets" do
@@ -85,7 +85,7 @@ Feature: before and after hooks
           end
 
           it "shares state across examples" do
-            @thing.widgets.count.should eq(1)
+            expect(@thing.widgets.count).to eq(1)
           end
         end
       end
@@ -191,12 +191,12 @@ Feature: before and after hooks
       describe "stuff in before blocks" do
         describe "with :all" do
           it "should be available in the example" do
-            @before_all.should eq("before all")
+            expect(@before_all).to eq("before all")
           end
         end
         describe "with :each" do
           it "should be available in the example" do
-            @before_each.should eq("before each")
+            expect(@before_each).to eq("before each")
           end
         end
       end
@@ -355,19 +355,19 @@ Feature: before and after hooks
 
         describe "nested" do
           it "access state set in before(:all)" do
-            @value.should eq(123)
+            expect(@value).to eq(123)
           end
 
           describe "nested more deeply" do
             it "access state set in before(:all)" do
-              @value.should eq(123)
+              expect(@value).to eq(123)
             end
           end
         end
 
         describe "nested in parallel" do
           it "access state set in before(:all)" do
-            @value.should eq(123)
+            expect(@value).to eq(123)
           end
         end
       end
@@ -384,7 +384,7 @@ Feature: before and after hooks
         end
 
         example "in outer group" do
-          @outer_state.should eq("set in outer before all")
+          expect(@outer_state).to eq("set in outer before all")
         end
 
         describe "nested group" do
@@ -393,17 +393,17 @@ Feature: before and after hooks
           end
 
           example "in nested group" do
-            @outer_state.should eq("set in outer before all")
-            @inner_state.should eq("set in inner before all")
+            expect(@outer_state).to eq("set in outer before all")
+            expect(@inner_state).to eq("set in inner before all")
           end
 
           after(:all) do
-            @inner_state.should eq("set in inner before all")
+            expect(@inner_state).to eq("set in inner before all")
           end
         end
 
         after(:all) do
-          @outer_state.should eq("set in outer before all")
+          expect(@outer_state).to eq("set in outer before all")
         end
       end
       """

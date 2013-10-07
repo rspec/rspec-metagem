@@ -192,7 +192,7 @@ Feature: around hooks
         end
 
         it "runs the example in the correct context" do
-          included_in_configure_block.should be_truthy
+          expect(included_in_configure_block).to be_truthy
         end
       end
       """
@@ -259,7 +259,7 @@ Feature: around hooks
 
         it "they should all be run" do
           puts "in the example"
-          1.should eq(1)
+          expect(1).to eq(1)
         end
       end
       """

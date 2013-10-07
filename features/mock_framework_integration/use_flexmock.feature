@@ -88,7 +88,7 @@ Feature: mock with flexmock
 
       describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :flexmock" do
-          RSpec.configuration.mock_framework.framework_name.should eq(:flexmock)
+          expect(RSpec.configuration.mock_framework.framework_name).to eq(:flexmock)
         end
       end
       """

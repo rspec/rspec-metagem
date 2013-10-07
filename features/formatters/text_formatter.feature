@@ -9,7 +9,7 @@ Feature: text formatter
       """ruby
       describe String do
         it "has a failing example" do
-          "foo".reverse.should eq("ofo")
+          expect("foo".reverse).to eq("ofo")
         end
       end
       """
@@ -17,7 +17,7 @@ Feature: text formatter
       """ruby
       describe Integer do
         it "has a failing example" do
-          (7 + 5).should eq(11)
+          expect(7 + 5).to eq(11)
         end
       end
       """
@@ -25,7 +25,7 @@ Feature: text formatter
     Then the backtrace-normalized output should contain:
       """
         1) Integer has a failing example
-           Failure/Error: (7 + 5).should eq(11)
+           Failure/Error: expect(7 + 5).to eq(11)
              
              expected: 11
                   got: 12
@@ -36,7 +36,7 @@ Feature: text formatter
     And the backtrace-normalized output should contain:
       """
         2) String has a failing example
-           Failure/Error: "foo".reverse.should eq("ofo")
+           Failure/Error: expect("foo".reverse).to eq("ofo")
              
              expected: "ofo"
                   got: "oof"

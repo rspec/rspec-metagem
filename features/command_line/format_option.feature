@@ -26,15 +26,15 @@ Feature: --format option
       """ruby
       describe "something" do
         it "does something that passes" do
-          5.should eq(5)
+          expect(5).to eq(5)
         end
 
         it "does something that fails" do
-          5.should eq(4)
+          expect(5).to eq(4)
         end
 
         it "does something that is pending", :pending => true do
-          5.should be > 3
+          expect(5).to be > 3
         end
       end
       """

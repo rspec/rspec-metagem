@@ -8,7 +8,7 @@ Feature: described class
       """ruby
       describe Fixnum do
         it "is available as described_class" do
-          described_class.should eq(Fixnum)
+          expect(described_class).to eq(Fixnum)
         end
       end
       """

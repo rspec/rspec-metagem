@@ -14,7 +14,7 @@ Feature: arbitrary helper methods
         end
 
         it "has access to methods defined in its group" do
-          help.should be(:available)
+          expect(help).to be(:available)
         end
       end
       """
@@ -31,7 +31,7 @@ Feature: arbitrary helper methods
 
         describe "in a nested group" do
           it "has access to methods defined in its parent group" do
-            help.should be(:available)
+            expect(help).to be(:available)
           end
         end
       end

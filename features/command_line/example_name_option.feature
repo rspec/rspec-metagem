@@ -41,7 +41,7 @@ Feature: --example option
       describe Array do
         describe "#length" do
           it "is the number of items" do
-            Array.new([1,2,3]).length.should eq 3
+            expect(Array.new([1,2,3]).length).to eq 3
           end
         end
       end

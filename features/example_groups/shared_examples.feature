@@ -46,20 +46,20 @@ Feature: shared examples
 
         context "initialized with 3 items" do
           it "says it has three items" do
-            collection.size.should eq(3)
+            expect(collection.size).to eq(3)
           end
         end
 
         describe "#include?" do
           context "with an an item that is in the collection" do
             it "returns true" do
-              collection.include?(7).should be_truthy
+              expect(collection.include?(7)).to be_truthy
             end
           end
 
           context "with an an item that is not in the collection" do
             it "returns false" do
-              collection.include?(9).should be_falsey
+              expect(collection.include?(9)).to be_falsey
             end
           end
         end
@@ -146,7 +146,7 @@ Feature: shared examples
     shared_examples "a measurable object" do |measurement, measurement_methods|
       measurement_methods.each do |measurement_method|
         it "should return #{measurement} from ##{measurement_method}" do
-          subject.send(measurement_method).should == measurement
+          expect(subject.send(measurement_method)).to eq(measurement)
         end
       end
     end
@@ -185,7 +185,7 @@ Feature: shared examples
 
       shared_examples 'sortability' do
         it 'responds to <=>' do
-          sortable.should respond_to(:<=>)
+          expect(sortable).to respond_to(:<=>)
         end
       end
 

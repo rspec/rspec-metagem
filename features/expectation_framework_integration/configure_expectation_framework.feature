@@ -38,7 +38,7 @@ Feature: configure expectation framework
 
       describe 5 do
         it "is greater than 4" do
-          5.should be > 4
+          expect(5).to be > 4
         end
       end
       """
@@ -94,7 +94,7 @@ Feature: configure expectation framework
         end
 
         it "is less than 6" do
-          5.should be < 6
+          expect(5).to be < 6
         end
       end
       """

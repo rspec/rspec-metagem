@@ -8,7 +8,7 @@ end
 
 Then /^the output should not contain any of these:$/ do |table|
   table.raw.flatten.each do |string|
-    all_output.should_not =~ regexp(string)
+    expect(all_output).not_to match(regexp(string))
   end
 end
 
@@ -17,7 +17,7 @@ Then /^the output should contain one of the following:$/ do |table|
     all_output =~ regexp(string)
   end
 
-  matching_output.count.should eq(1)
+  expect(matching_output.count).to eq(1)
 end
 
 Then /^the example(?:s)? should(?: all)? pass$/ do
@@ -38,7 +38,7 @@ Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
     line =~ /(^\s+# [^:]+:\d+)/ ? $1 : line # http://rubular.com/r/zDD7DdWyzF
   end.join("\n")
 
-  normalized_output.should =~ regexp(partial_output)
+  expect(normalized_output).to match(regexp(partial_output))
 end
 
 # This step can be generalized if it's ever used to test other colors
