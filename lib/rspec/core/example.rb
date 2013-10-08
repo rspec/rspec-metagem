@@ -251,14 +251,8 @@ An error occurred #{context}
         record :started_at => RSpec::Core::Time.now
       end
 
-      # @private
-      module NotPendingExampleFixed
-        def pending_fixed?; false; end
-      end
-
       def finish(reporter)
         if @exception
-          @exception.extend(NotPendingExampleFixed) unless @exception.respond_to?(:pending_fixed?)
           record_finished 'failed', :exception => @exception
           reporter.example_failed self
           false

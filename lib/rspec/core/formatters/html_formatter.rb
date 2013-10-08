@@ -94,7 +94,7 @@ module RSpec
           extra = extra_failure_content(exception)
 
           @printer.print_example_failed(
-            exception.pending_fixed?,
+            example.execution_result[:pending_fixed],
             example.description,
             example.execution_result[:run_time],
             @failed_examples.size,

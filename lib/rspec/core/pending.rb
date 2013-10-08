@@ -11,10 +11,6 @@ module RSpec
         class PendingExampleFixedError < StandardError; end
       end
 
-      class PendingExampleFixedError
-        def pending_fixed?; true; end
-      end
-
       NO_REASON_GIVEN = 'No reason given'
       NOT_YET_IMPLEMENTED = 'Not yet implemented'
 
@@ -89,6 +85,7 @@ module RSpec
 
         current_example.metadata[:pending] = true
         current_example.metadata[:execution_result][:pending_message] = message
+        current_example.execution_result[:pending_fixed] = false
         if block_given?
           begin
             result = begin
@@ -101,7 +98,10 @@ module RSpec
           ensure
             teardown_mocks_for_rspec
           end
-          raise PendingExampleFixedError.new if result
+          if result
+            current_example.execution_result[:pending_fixed] = true
+            raise PendingExampleFixedError.new
+          end
         end
         raise PendingDeclaredInExample.new(message)
       end

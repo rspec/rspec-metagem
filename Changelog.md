@@ -49,6 +49,7 @@ Bug fixes:
 
 * Limit spamminess of deprecation messages (Bradley Schaefer, Loren Segal)
 * Format stringified numbers correctly when mathn library is loaded (Jay Hayes)
+* Fix an issue that prevented the use of frozen error objects. (Lars Gierth)
 
 Deprecations
 
