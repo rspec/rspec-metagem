@@ -41,3 +41,38 @@ fi
 # For now, use this instead, due to a bug in bundler:
 # https://github.com/carlhuda/bundler/issues/2382
 bundle exec bin/cucumber --strict
+
+# Test against other RSpec gems.
+
+# Delete the directory for idempotency when running locally
+export TMPDIR="/tmp"
+rm -rf $TMPDIR/rspec-ci
+mkdir $TMPDIR/rspec-ci
+
+# Get the branch to test against
+MAINTENENCE_BRANCH=`cat maintenence-branch`
+
+cp -r "./" "$TMPDIR/rspec-ci/rspec-core"
+
+#Change to the CI directory
+cd $TMPDIR/rspec-ci
+
+# The steps to test the gems are the same, this function does them.
+function test_gem {
+    git clone git://github.com/rspec/rspec-$1
+    cd rspec-$1
+    pwd
+    git fetch origin
+    git checkout $MAINTENENCE_BRANCH
+    git branch
+    bundle_flags=`cat .travis.yml  | grep bundler_args | tr -d '"' | grep -o " .*"`
+
+    bundle install $bundle_flags
+    bundle exec rspec -b
+    cd ../
+    rm -rf rspec-$1
+}
+
+# Test rspec-mocks and rspec-expectations.
+test_gem "mocks"
+test_gem "expectations"
