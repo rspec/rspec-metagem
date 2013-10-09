@@ -12,10 +12,26 @@ Breaking Changes for 3.0.0:
        `expect { }.to_not raise_error(message)` invalid, since they are prone
   to hiding failures. Instead, use `expect { }.to_not raise_error` (with no
   args). (Sam Phippen)
+* Within `RSpec::Matchers.define` blocks, helper methods made available
+  either via `def self.helper` or `extend HelperModule` are no longer
+  available to the `match` block (or any of the others). Instead
+  `include` your helper module and define the helper method as an
+  instance method. (Myron Marston)
 
 Enhancements:
 
 * Support do..end style block with `raise_error` matcher. (Yuji Nakayama)
+* Rewrote custom matcher DSL to simplify it's implementation and solve a
+  few issues. (Myron Marston)
+* Allow early `return` from within custom matcher DSL blocks. (Myron
+  Marston)
+* The custom matcher DSL's `chain` can now accept a block. (Myron
+  Marston)
+
+Bug Fixes:
+
+* Allow `include` and `match` matchers to be used from within a
+  DSL-defined custom matcher's `match` block. (Myron Marston)
 
 Deprecations:
 

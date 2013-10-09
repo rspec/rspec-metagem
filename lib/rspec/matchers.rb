@@ -433,20 +433,16 @@ module RSpec
     #
     # @example
     #
-    #   expect(email).to   match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
-    #   expect(email).to   match("@example.com")
-    #   expect(zipcode).to match_regex(/\A\d{5}(-\d{4})?\z/)
-    #   expect(zipcode).to match_regex("90210")
+    #   expect(email).to match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
+    #   expect(email).to match("@example.com")
     #
-    # @note Due to Ruby's method dispatch mechanism, using the `#match` matcher
-    # within a custom matcher defined via the matcher DSL
-    # (`RSpec::Matcher.define`) will result Ruby calling the wrong `#match`
-    # method and raising an `ArgumentError`. Instead, use the aliased
-    # `#match_regex` method.
+    # @note The `match_regex` alias is deprecated and is not recommended for use.
+    #       It was added in 2.12.1 to facilitate its use from within custom
+    #       matchers (due to how the custom matcher DSL was evaluated in 2.x,
+    #       `match` could not be used there), but is no longer needed in 3.x.
     def match(expected)
       BuiltIn::Match.new(expected)
     end
-
     alias_method :match_regex, :match
 
     # With no args, matches if any error is raised.
