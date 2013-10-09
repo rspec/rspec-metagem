@@ -49,4 +49,3 @@ Feature: match matcher
       | 4 examples, 2 failures             |
       | expected /foo/ not to match "food" |
       | expected /foo/ to match "drinks"   |
-
