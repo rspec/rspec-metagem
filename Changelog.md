@@ -23,6 +23,7 @@ Breaking Changes for 3.0.0:
 * Raise an error when a `let` or `subject` declaration is
   accessed in a `before(:all)` or `after(:all)` hook. (Myron Marston)
 * Extract `its` support to a separate gem (Peter Alfvin)
+* `shared_examples` are isolated between contexts (Jon Rowe)
 
 Enhancements
 
