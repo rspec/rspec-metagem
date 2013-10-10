@@ -60,7 +60,7 @@ module RSpec::Matchers::DSL
 
       it 'assigns a constant even when there are extra leading underscores' do
         matcher = new_matcher(:__foo__bar__) { }
-        expect(matcher).to have_class_const(:FooBar__)
+        expect(matcher).to have_class_const(:FooBar_)
       end
 
       it 'differentiates redefinitions by appending a number' do
@@ -71,6 +71,11 @@ module RSpec::Matchers::DSL
         expect(m1).to have_class_const(:FooRedef)
         expect(m2).to have_class_const(:FooRedef2)
         expect(m3).to have_class_const(:FooRedef3)
+      end
+
+      it 'handles numbers in the name' do
+        m1 = new_matcher(:has_4_things) { }
+        expect(m1).to have_class_const(:Has4Things)
       end
 
       it 'supports non-ascii characters', :if => (RUBY_VERSION.to_f > 1.8) do
