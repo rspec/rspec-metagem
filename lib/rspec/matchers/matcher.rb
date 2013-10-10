@@ -299,7 +299,7 @@ module RSpec
             define_method(:name) { name }
             @declarations = declarations
           end.tap do |klass|
-            const_name = ('_' + name.to_s).gsub(/_+([[:alpha:]])/) { $1.upcase }
+            const_name = ('_' + name.to_s).gsub(/_+(\w)/) { $1.upcase }
 
             const_name.gsub!(/\A_+/, '')             # Remove any leading underscores
             const_name.gsub!(/\W/, '')               # JRuby, RBX and others don't like non-ascii in const names
