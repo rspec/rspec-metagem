@@ -27,19 +27,19 @@ describe "RSpec deprecations and warnings" do
 
   shared_examples_for "warning helper" do |helper|
     it 'warns with the message text' do
-      expect(::Kernel).to receive(:warn).with /Message/
+      expect(::Kernel).to receive(:warn).with(/Message/)
       RSpec.send(helper, 'Message')
     end
 
     it 'sets the calling line' do
-      expect(::Kernel).to receive(:warn).with /#{__FILE__}:#{__LINE__+1}/
+      expect(::Kernel).to receive(:warn).with(/#{__FILE__}:#{__LINE__+1}/)
       RSpec.send(helper, 'Message')
     end
   end
 
   describe "#warning" do
     it 'prepends WARNING:' do
-      expect(::Kernel).to receive(:warn).with /WARNING: Message\./
+      expect(::Kernel).to receive(:warn).with(/WARNING: Message\./)
       RSpec.warning 'Message'
     end
     it_should_behave_like 'warning helper', :warning
