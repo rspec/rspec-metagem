@@ -81,7 +81,7 @@ module RSpec::Core
         it "does not run the example" do
           examples = []
           group = ExampleGroup.describe do
-            around do |example|
+            around do
             end
             it "foo" do
               examples << self
