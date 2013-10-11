@@ -82,7 +82,11 @@ module RSpec::Core
         expect(groups[0]).to have_class_const("Collision")
         expect(groups[1]).to have_class_const("Collision_2")
         expect(groups[8]).to have_class_const("Collision_9")
-        expect(groups[9]).to have_class_const("Collision_10")
+
+        if RUBY_VERSION.to_f > 1.8
+          # on 1.8.7, "Collision_9".next => "Collisioo_0"
+          expect(groups[9]).to have_class_const("Collision_10")
+        end
       end
 
       it 'identifies unnamed groups as "Anonymous"' do
