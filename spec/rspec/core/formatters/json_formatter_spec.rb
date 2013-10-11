@@ -110,14 +110,12 @@ describe RSpec::Core::Formatters::JsonFormatter do
   end
 
   describe "#dump_profile_slowest_examples" do
-    example_line_number = nil
 
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
         # Use a sleep so there is some measurable time, to ensure
         # the reported percent is 100%, not 0%.
         example("example") { sleep 0.001 }
-        example_line_number = __LINE__ - 1
       end
       group.run(double('reporter').as_null_object)
 
