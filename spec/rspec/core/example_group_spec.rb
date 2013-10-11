@@ -41,8 +41,8 @@ module RSpec::Core
     describe "constant naming" do
       RSpec::Matchers.define :have_class_const do |class_name|
         match do |group|
-          group.name == "RSpec::UserGroups::#{class_name}" &&
-          group == class_name.split('::').inject(RSpec::UserGroups) do |mod, name|
+          group.name == "RSpec::ExampleGroups::#{class_name}" &&
+          group == class_name.split('::').inject(RSpec::ExampleGroups) do |mod, name|
             mod.const_get(name)
           end
         end
@@ -102,7 +102,7 @@ module RSpec::Core
       it 'assigns the const before evaling the group so error messages include the name' do
         expect {
           ExampleGroup.describe("Calling an undefined method") { foo }
-        }.to raise_error(/UserGroups::CallingAnUndefinedMethod/)
+        }.to raise_error(/ExampleGroups::CallingAnUndefinedMethod/)
       end
     end
 
