@@ -94,6 +94,12 @@ module RSpec::Core
         subgroup = group.describe
         expect(subgroup).to have_class_const("NameOfUnnamedGroup::Anonymous")
       end
+
+      it 'assigns the const before evaling the group so error messages include the name' do
+        expect {
+          ExampleGroup.describe("Calling an undefined method") { foo }
+        }.to raise_error(/UserGroups::CallingAnUndefinedMethod/)
+      end
     end
 
     describe "ordering" do

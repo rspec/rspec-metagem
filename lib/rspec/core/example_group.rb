@@ -271,7 +271,6 @@ WARNING
         args.last.update(:example_group_block => example_group_block)
 
         child = subclass(self, args, &example_group_block)
-        UserGroups.assign_const(child)
         children << child
         child
       end
@@ -284,6 +283,7 @@ WARNING
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
         subclass.set_it_up(*args)
+        UserGroups.assign_const(subclass)
         subclass.module_eval(&example_group_block) if example_group_block
 
         # The LetDefinitions module must be included _after_ other modules
