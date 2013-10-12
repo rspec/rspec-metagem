@@ -8,8 +8,8 @@ Gem::Specification.new do |s|
   s.version     = RSpec::Version::STRING
   s.platform    = Gem::Platform::RUBY
   s.license     = "MIT"
-  s.authors     = ["Steven Baker", "David Chelimsky"]
-  s.email       = "rspec-users@rubyforge.org"
+  s.authors     = ["Steven Baker", "David Chelimsky", "Myron Marston"]
+  s.email       = "rspec@googlegroups.com"
   s.homepage    = "http://github.com/rspec"
   s.summary     = "rspec-#{RSpec::Version::STRING}"
   s.description = "BDD for Ruby"
