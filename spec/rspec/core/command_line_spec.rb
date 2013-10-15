@@ -15,6 +15,7 @@ module RSpec::Core
       allow(config).to receive(:expose_globally?).and_return(false)
     end
     it "configures streams before command line options" do
+      allow(RSpec).to receive(:deprecate)  # remove this and should_receive when ordered
       stdout = StringIO.new
       allow(config).to receive(:load_spec_files)
       allow(config).to receive(:reporter).and_return(double.as_null_object)
