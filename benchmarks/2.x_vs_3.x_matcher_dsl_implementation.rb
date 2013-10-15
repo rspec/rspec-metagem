@@ -80,14 +80,10 @@ Conclusions:
   the commit used for this benchmark, go to:
   https://github.com/rspec/rspec-expectations/compare/v2.14.3...4c47e4c43ee6961c755d325e73181b1f5b6bf097#diff-a51020971ade2c87f1d5b93f20d711c7L6
 * With our new custom matcher DSL, using a matcher is approximately
-  the same perf. However, defining a matcher is about 10x slower
-  (since it defines a subclass) while getting an instance of
-  an already defined matcher is about 10x faster.
+  the same perf. However, defining a matcher is a little bit faster,
+  and getting an instance of an already defined matcher is about 10x faster.
 
-Overall, I think this is a net win, because users almost certainly
-use existing matchers more often then they define them.  (The exception
-would be if they define custom matchers they don't use, but that
-would be very odd).
+Overall, this is definitely a net win.
 
 Results:
 
@@ -201,57 +197,57 @@ Using a previously gotten custom matcher instance -- negative match
 
 3 runs of 1000 times for each example running rspec-expectations 3.0.0.pre -- ruby/2.0.0
 Defining a custom matcher
-   0.040000   0.000000   0.040000 (  0.043132)
-   0.060000   0.000000   0.060000 (  0.058724)
-   0.040000   0.000000   0.040000 (  0.042690)
+   0.000000   0.000000   0.000000 (  0.003138)
+   0.000000   0.000000   0.000000 (  0.003083)
+   0.010000   0.000000   0.010000 (  0.003448)
 Getting an instance of a custom matcher
-   0.010000   0.000000   0.010000 (  0.009272)
-   0.030000   0.010000   0.040000 (  0.033804)
-   0.010000   0.000000   0.010000 (  0.010795)
+   0.000000   0.000000   0.000000 (  0.007273)
+   0.010000   0.000000   0.010000 (  0.007096)
+   0.020000   0.000000   0.020000 (  0.021662)
 Using a previously gotten custom matcher instance -- positive match
-   0.000000   0.000000   0.000000 (  0.002898)
-   0.010000   0.000000   0.010000 (  0.002940)
-   0.000000   0.000000   0.000000 (  0.002053)
+   0.000000   0.000000   0.000000 (  0.002582)
+   0.000000   0.000000   0.000000 (  0.001832)
+   0.010000   0.000000   0.010000 (  0.001588)
 Using a previously gotten custom matcher instance -- negative match
-   0.020000   0.000000   0.020000 (  0.022897)
-   0.020000   0.000000   0.020000 (  0.018954)
-   0.020000   0.000000   0.020000 (  0.020435)
+   0.010000   0.000000   0.010000 (  0.017756)
+   0.030000   0.000000   0.030000 (  0.021225)
+   0.020000   0.010000   0.030000 (  0.021281)
 
 3 runs of 1000 times for each example running rspec-expectations 3.0.0.pre -- ruby/1.9.3
 Defining a custom matcher
-    0.070000   0.010000   0.080000 (  0.074480)
-   0.070000   0.010000   0.080000 (  0.079004)
-   0.070000   0.000000   0.070000 (  0.073920)
+    0.000000   0.000000   0.000000 (  0.002903)
+   0.000000   0.000000   0.000000 (  0.002919)
+   0.010000   0.000000   0.010000 (  0.008956)
 Getting an instance of a custom matcher
-    0.000000   0.000000   0.000000 (  0.007890)
-   0.010000   0.000000   0.010000 (  0.007621)
-   0.010000   0.000000   0.010000 (  0.008062)
+    0.010000   0.000000   0.010000 (  0.006640)
+   0.000000   0.000000   0.000000 (  0.006557)
+   0.010000   0.000000   0.010000 (  0.007869)
 Using a previously gotten custom matcher instance -- positive match
-    0.000000   0.000000   0.000000 (  0.002148)
-   0.000000   0.000000   0.000000 (  0.001961)
-   0.010000   0.000000   0.010000 (  0.002033)
+    0.010000   0.000000   0.010000 (  0.003332)
+   0.000000   0.000000   0.000000 (  0.003288)
+   0.000000   0.000000   0.000000 (  0.002769)
 Using a previously gotten custom matcher instance -- negative match
-    0.070000   0.010000   0.080000 (  0.075097)
-   0.060000   0.000000   0.060000 (  0.060410)
-   0.070000   0.000000   0.070000 (  0.077336)
+    0.070000   0.010000   0.080000 (  0.075547)
+   0.050000   0.000000   0.050000 (  0.053149)
+   0.060000   0.010000   0.070000 (  0.062583)
 
 3 runs of 1000 times for each example running rspec-expectations 3.0.0.pre -- jruby/1.9.3
 Defining a custom matcher
-    1.430000   0.020000   1.450000 (  0.735000)
-   1.450000   0.030000   1.480000 (  0.865000)
-   1.330000   0.010000   1.340000 (  1.090000)
+    0.780000   0.020000   0.800000 (  0.316000)
+   0.170000   0.010000   0.180000 (  0.139000)
+   0.220000   0.000000   0.220000 (  0.135000)
 Getting an instance of a custom matcher
-    0.260000   0.000000   0.260000 (  0.149000)
-   0.200000   0.000000   0.200000 (  0.112000)
-   0.380000   0.010000   0.390000 (  0.132000)
+    0.340000   0.000000   0.340000 (  0.183000)
+   0.230000   0.010000   0.240000 (  0.131000)
+   0.180000   0.000000   0.180000 (  0.104000)
 Using a previously gotten custom matcher instance -- positive match
-    0.170000   0.000000   0.170000 (  0.071000)
-   0.080000   0.000000   0.080000 (  0.042000)
-   0.040000   0.000000   0.040000 (  0.035000)
+    0.170000   0.000000   0.170000 (  0.076000)
+   0.070000   0.000000   0.070000 (  0.049000)
+   0.110000   0.000000   0.110000 (  0.047000)
 Using a previously gotten custom matcher instance -- negative match
-    1.250000   0.040000   1.290000 (  0.471000)
-   0.390000   0.000000   0.390000 (  0.262000)
-   0.330000   0.000000   0.330000 (  0.241000)
+    0.970000   0.010000   0.980000 (  0.461000)
+   0.410000   0.000000   0.410000 (  0.316000)
+   0.350000   0.010000   0.360000 (  0.256000)
 
 =end
 
