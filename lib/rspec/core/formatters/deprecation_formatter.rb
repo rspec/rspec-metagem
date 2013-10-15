@@ -35,17 +35,7 @@ module RSpec
           end
         end
 
-        DeprecationMessage = Struct.new(:type) do
-          def deprecation_string_for(data)
-            return data[:message] if data[:message]
-            msg =  "#{data[:deprecated]} is deprecated."
-            msg << " Use #{data[:replacement]} instead." if data[:replacement]
-            msg << " Called from #{data[:call_site]}." if data[:call_site]
-            msg
-          end
-        end
-
-        class SpecifiedDeprecationMessage < DeprecationMessage
+        SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @message = data[:message]
             super deprecation_type_for(data)
@@ -68,14 +58,17 @@ module RSpec
           end
         end
 
-        class GeneratedDeprecationMessage < DeprecationMessage
+        GeneratedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @data = data
             super data[:deprecated]
           end
 
           def to_s
-            deprecation_string_for @data
+            msg =  "#{@data[:deprecated]} is deprecated."
+            msg << " Use #{@data[:replacement]} instead." if @data[:replacement]
+            msg << " Called from #{@data[:call_site]}." if @data[:call_site]
+            msg
           end
 
           def too_many_warnings_message
