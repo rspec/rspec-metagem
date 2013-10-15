@@ -14,7 +14,7 @@ module RSpec::Core::Formatters
         it "prints a message if provided, ignoring other data" do
           formatter.deprecation(:message => "this message", :deprecated => "x", :replacement => "y", :call_site => "z")
           deprecation_stream.rewind
-          expect(deprecation_stream.read).to eq "this message"
+          expect(deprecation_stream.read).to eq "this message\n"
         end
 
         it "includes the method" do
@@ -89,10 +89,30 @@ module RSpec::Core::Formatters
           expect(deprecation_stream.string).to eq expected
         end
 
+        it "limits :message deprecation warnings with different callsites after 3 calls" do
+          5.times do |n|
+            message = "This is a long string with some callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff can come after."
+            formatter.deprecation(:message => message)
+          end
+          formatter.deprecation_summary
+          expected = "\n" + <<-EOS.gsub(/^ {12}/, '')
+            Deprecation Warnings:
+
+            This is a long string with some callsite info: /path/0/to/some/file.rb:203.  And some more stuff can come after.
+            This is a long string with some callsite info: /path/1/to/some/file.rb:213.  And some more stuff can come after.
+            This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
+            Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output
+          EOS
+          expect(deprecation_stream.string).to eq expected
+        end
+
         it "prints the true deprecation count to the summary_stream" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+          5.times do |n|
+            formatter.deprecation(:message => "callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff")
+          end
           formatter.deprecation_summary
-          expect(summary_stream.string).to match(/5 deprecation warnings total/)
+          expect(summary_stream.string).to match(/10 deprecation warnings total/)
         end
       end
     end
