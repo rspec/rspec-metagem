@@ -173,7 +173,7 @@ module RSpec
         # Does the following:
         #
         # - Defines the named method usign a user-provided block
-        #   in self::UserMethodDefs, which is included as an ancestor
+        #   in @user_method_defs, which is included as an ancestor
         #   in the singleton class in which we eval the `define` block.
         # - Defines an overriden definition for the same method
         #   usign the provided `our_def` block.
@@ -188,7 +188,7 @@ module RSpec
         # (e.g. assigning `@actual`, rescueing errors, etc) and
         # can `super` to the user's definition.
         def define_user_override(method_name, user_def, &our_def)
-          self::UserMethodDefs.__send__(:define_method, method_name, &user_def)
+          @user_method_defs.__send__(:define_method, method_name, &user_def)
           our_def ||= lambda { super(*actual_arg_for(user_def)) }
           define_method(method_name, &our_def)
         end
@@ -221,9 +221,10 @@ module RSpec
         end
       end
 
-      # Provides the base class for custom matchers. The block passed to
-      # `RSpec::Matchers.define` will be evaluated in the context of a subclass,
-      # and will have the {RSpec::Matchers::DSL::Macros Macros} methods available.
+      # The class used for custom matchers. The block passed to
+      # `RSpec::Matchers.define` will be evaluated in the context
+      # of the singleton class of an instance, and will have the
+      # {RSpec::Matchers::DSL::Macros Macros} methods available.
       class Matcher
         # Provides default implementations for the matcher protocol methods.
         include DefaultImplementations
@@ -241,21 +242,23 @@ module RSpec
         attr_accessor :matcher_execution_context
 
         # @api private
-        def initialize(*expected)
+        def initialize(name, declarations, *expected)
+          @name     = name
           @actual   = nil
           @expected = expected
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
-            include const_set(:UserMethodDefs, Module.new)
+            include(@user_method_defs = Module.new)
             self
-          end.class_exec(*expected, &self.class.instance_variable_get(:@declarations))
+          end.class_exec(*expected, &declarations)
         end
 
-        # Adds the expected value so we can identify an instance of
+        # Adds the name (rather than a cryptic hex number)
+        # so we can identify an instance of
         # the matcher in error messages (e.g. for `NoMethodError`)
         def inspect
-          "#<#{self.class.name} expected=#{expected}>"
+          "#<#{self.class.name} #{name}>"
         end
 
         if RUBY_VERSION.to_f >= 1.9
@@ -292,33 +295,7 @@ module RSpec
             super(method, *args, &block)
           end
         end
-
-        # @api private
-        def self.subclass(name, &declarations)
-          Class.new(self) do
-            define_method(:name) { name }
-            @declarations = declarations
-          end.tap do |klass|
-            const_name = ('_' + name.to_s).gsub(/_+(\w)/) { $1.upcase }
-
-            const_name.gsub!(/\A_+/, '')             # Remove any leading underscores
-            const_name.gsub!(/\W/, '')               # JRuby, RBX and others don't like non-ascii in const names
-            const_name.gsub!(/\A([^A-Z]|\z)/, 'A\1') # Prepend a valid first letter if needed (A-Z)
-
-            # Add a trailing number if needed to disambiguate from an existing constant.
-            if Custom.const_defined?(const_name)
-              const_name << "2"
-              const_name.next! while Custom.const_defined?(const_name)
-            end
-
-            Custom.const_set(const_name, klass)
-          end
-        end
       end
-    end
-
-    # Namespace module that holds custom matcher classes.
-    module Custom
     end
   end
 end
