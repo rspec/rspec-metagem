@@ -27,8 +27,16 @@ module RSpec
           printer.deprecation_summary
         end
 
-        module DeprecationMessage
-          def deprecation_message_for(data)
+        def deprecation_message_for(data)
+          if data[:message]
+            SpecifiedDeprecationMessage.new(data)
+          else
+            GeneratedDeprecationMessage.new(data)
+          end
+        end
+
+        DeprecationMessage = Struct.new(:type) do
+          def deprecation_string_for(data)
             return data[:message] if data[:message]
             msg =  "#{data[:deprecated]} is deprecated."
             msg << " Use #{data[:replacement]} instead." if data[:replacement]
@@ -37,7 +45,7 @@ module RSpec
           end
         end
 
-        SpecifiedDeprecationMessage = Struct.new(:type) do
+        class SpecifiedDeprecationMessage < DeprecationMessage
           def initialize(data)
             @message = data[:message]
             super deprecation_type_for(data)
@@ -60,16 +68,14 @@ module RSpec
           end
         end
 
-        GeneratedDeprecationMessage = Struct.new(:type) do
-          include DeprecationMessage
-
+        class GeneratedDeprecationMessage < DeprecationMessage
           def initialize(data)
             @data = data
             super data[:deprecated]
           end
 
           def to_s
-            deprecation_message_for @data
+            deprecation_string_for @data
           end
 
           def too_many_warnings_message
@@ -81,23 +87,23 @@ module RSpec
 
         class FilePrinter
           include ::RSpec::Core::Formatters::Helpers
-          include DeprecationMessage
 
-          attr_reader :deprecation_stream, :summary_stream, :counter
+          attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
 
-          def initialize(deprecation_stream, summary_stream, counter)
+          def initialize(deprecation_stream, summary_stream, deprecation_formatter)
             @deprecation_stream = deprecation_stream
             @summary_stream = summary_stream
-            @counter = counter
+            @deprecation_formatter = deprecation_formatter
           end
 
           def print_deprecation_message(data)
-            deprecation_stream.puts deprecation_message_for(data)
+            deprecation_message = deprecation_formatter.deprecation_message_for(data)
+            deprecation_stream.puts deprecation_message.to_s
           end
 
           def deprecation_summary
-            if counter.count > 0
-              summary_stream.puts "\n#{pluralize(counter.count, 'deprecation')} logged to #{deprecation_stream.path}"
+            if deprecation_formatter.count > 0
+              summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation')} logged to #{deprecation_stream.path}"
             end
           end
         end
@@ -107,25 +113,21 @@ module RSpec
 
           include ::RSpec::Core::Formatters::Helpers
 
-          attr_reader :deprecation_stream, :summary_stream, :counter
+          attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
 
-          def initialize(deprecation_stream, summary_stream, counter)
+          def initialize(deprecation_stream, summary_stream, deprecation_formatter)
             @deprecation_stream = deprecation_stream
             @summary_stream = summary_stream
-            @counter = counter
+            @deprecation_formatter = deprecation_formatter
             @seen_deprecations = Hash.new { 0 }
             @deprecation_messages = Hash.new { |h, k| h[k] = [] }
           end
 
           def print_deprecation_message(data)
-            if data[:message]
-              deprecation_type = SpecifiedDeprecationMessage.new(data)
-            else
-              deprecation_type = GeneratedDeprecationMessage.new(data)
-            end
-            @seen_deprecations[deprecation_type] += 1
+            deprecation_message = deprecation_formatter.deprecation_message_for(data)
+            @seen_deprecations[deprecation_message] += 1
 
-            stash_deprecation_message(deprecation_type)
+            stash_deprecation_message(deprecation_message)
           end
 
           def stash_deprecation_message(deprecation_message)
@@ -142,7 +144,7 @@ module RSpec
 
             print_deferred_deprecation_warnings(messages)
 
-            summary_stream.puts "\n#{pluralize(counter.count, 'deprecation warning')} total"
+            summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation warning')} total"
           end
 
           def print_deferred_deprecation_warnings(messages)
