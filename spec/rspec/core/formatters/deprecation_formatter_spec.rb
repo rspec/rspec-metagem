@@ -101,7 +101,7 @@ module RSpec::Core::Formatters
             This is a long string with some callsite info: /path/0/to/some/file.rb:203.  And some more stuff can come after.
             This is a long string with some callsite info: /path/1/to/some/file.rb:213.  And some more stuff can come after.
             This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
-            Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output
+            Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output.
           EOS
           expect(deprecation_stream.string).to eq expected
         end

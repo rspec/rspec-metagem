@@ -57,7 +57,7 @@ module RSpec
 
           def too_many_warnings_message
             msg = "Too many similar deprecation messages reported, disregarding further reports."
-            msg << " Set config.deprecation_stream to a File for full output"
+            msg << " Set config.deprecation_stream to a File for full output."
             msg
           end
 
