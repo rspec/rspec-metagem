@@ -24,8 +24,7 @@ module RSpec::Matchers::DSL
   describe Matcher do
     def new_matcher(name, *expected, &block)
       RSpec::Matchers::DSL::Matcher.
-        subclass(name, &block).
-        new(*expected).
+        new(name, block, *expected).
         tap { |m| m.matcher_execution_context = self }
     end
 
@@ -43,61 +42,6 @@ module RSpec::Matchers::DSL
 
       expect(m1.matches?(1)).to be_truthy
       expect(m2.matches?(2)).to be_truthy
-    end
-
-    describe "constant assignment" do
-      RSpec::Matchers.define :have_class_const do |name|
-        match do |matcher|
-          matcher.class.name.split('::').last == name.to_s &&
-            RSpec::Matchers::Custom.const_get(name)
-        end
-      end
-
-      it 'gets assigned to a human readable constant' do
-        matcher = new_matcher(:be_a_something) { }
-        expect(matcher).to have_class_const(:BeASomething)
-      end
-
-      it 'assigns a constant even when there are extra leading underscores' do
-        matcher = new_matcher(:__foo__bar__) { }
-        expect(matcher).to have_class_const(:FooBar_)
-      end
-
-      it 'differentiates redefinitions by appending a number' do
-        m1 = new_matcher(:foo_redef) { }
-        m2 = new_matcher(:foo_redef) { }
-        m3 = new_matcher(:foo_redef) { }
-
-        expect(m1).to have_class_const(:FooRedef)
-        expect(m2).to have_class_const(:FooRedef2)
-        expect(m3).to have_class_const(:FooRedef3)
-      end
-
-      it 'handles numbers in the name' do
-        m1 = new_matcher(:has_4_things) { }
-        expect(m1).to have_class_const(:Has4Things)
-      end
-
-      it 'supports non-ascii characters', :if => (RUBY_VERSION.to_f > 1.8) do
-        # We have to eval this because 1.8.7 can't parse it at file load time
-        # if we don't eval it. eval delays when it is parsed until the example
-        # is run, which does not happen on 1.8.7
-        eval <<-EOS
-          RSpec::Matchers.define(:们) { }
-          expect(们).to have_class_const(:A)
-
-          RSpec::Matchers.define(:be_们) { }
-          expect(be_们.class.name).to include("Be")
-        EOS
-      end
-
-      it 'handles the case where the matcher name starts with a capital letter' do
-        matcher = new_matcher(:Capital_letter) { }
-        expect(matcher).to have_class_const(:CapitalLetter)
-
-        matcher = new_matcher(:__Capital_prefixed_by_underscores) { }
-        expect(matcher).to have_class_const(:CapitalPrefixedByUnderscores)
-      end
     end
 
     context "with an included module" do
@@ -754,7 +698,7 @@ module RSpec::Matchers::DSL
 
         expect {
           expect(example).to __raise_no_method_error
-        }.to raise_error(NoMethodError, /RSpec::Matchers::Custom::RaiseNoMethodError/)
+        }.to raise_error(NoMethodError, /Spec::Matchers::DSL::Matcher __raise_no_method_error/)
       end
     end
 
