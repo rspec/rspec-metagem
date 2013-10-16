@@ -54,14 +54,22 @@ Enhancements
 Bug fixes:
 
 * Limit spamminess of deprecation messages (Bradley Schaefer, Loren Segal)
-* Format stringified numbers correctly when mathn library is loaded (Jay Hayes)
-* Fix an issue that prevented the use of frozen error objects. (Lars Gierth)
 
 Deprecations
 
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
   longer has an affect now that the behavior it enabled is always
   enabled (Myron Marston).
+
+### 2.14.6 / 2013-10-15
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.5...v2.14.6)
+
+Bug fixes:
+
+* Format stringified numbers correctly when mathn library is loaded.
+  (Jay Hayes)
+* Fix an issue that prevented the use of frozen error objects. (Lars
+  Gierth)
 
 ### 2.14.5 / 2013-08-13
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.4...v2.14.5)
