@@ -115,6 +115,8 @@ Spork.prefork do
     end
   end
 
+  require 'rspec/support/spec'
+
   RSpec.configure do |c|
     # structural
     c.alias_it_behaves_like_to 'it_has_behavior'

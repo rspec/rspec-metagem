@@ -1,4 +1,4 @@
-require 'rspec/core/warnings'
+require 'rspec/support/warnings'
 require 'rake'
 require 'rake/tasklib'
 require 'shellwords'

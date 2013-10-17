@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift(File.expand_path("../../lib", __FILE__))
 
 require 'benchmark'
-require 'rspec/caller_filter'
+require 'rspec/support/caller_filter'
 
 n = 10000
 
