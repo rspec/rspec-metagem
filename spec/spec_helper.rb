@@ -1,14 +1,4 @@
-require 'rubygems'
-
-unless ENV['NO_COVERALLS']
-  require 'simplecov' if RUBY_VERSION.to_f > 1.8
-  require 'coveralls'
-  Coveralls.wear! do
-    add_filter '/bundle/'
-    add_filter '/spec/'
-    add_filter '/tmp/'
-  end
-end
+require 'rubygems' if RUBY_VERSION.to_f < 1.9
 
 begin
   require 'spork'
@@ -25,8 +15,18 @@ rescue LoadError
 end
 
 Spork.prefork do
-  require 'rspec/autorun'
+  old_verbose, $VERBOSE = $VERBOSE, false
+  if ENV['TRAVIS'] && !ENV['NO_COVERALLS']
+    require 'simplecov' if RUBY_VERSION.to_f > 1.8
+    require 'coveralls'
+    Coveralls.wear! do
+      add_filter '/bundle/'
+      add_filter '/spec/'
+      add_filter '/tmp/'
+    end
+  end
   require 'aruba/api'
+  $VERBOSE = old_verbose
 
   if RUBY_PLATFORM == 'java'
     # Works around https://jira.codehaus.org/browse/JRUBY-5678
