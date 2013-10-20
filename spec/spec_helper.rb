@@ -37,6 +37,8 @@ Spork.prefork do
 
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
+  $stderr = RSpec::StdErrSplitter.new
+
   class NullObject
     private
     def method_missing(method, *args, &block)
@@ -153,6 +155,12 @@ Spork.prefork do
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       end
     }
+
+    c.after(:suite) do
+      if $stderr.has_output?
+        raise "Ruby warnings were emitted:\n\n#{$stderr.output}"
+      end
+    end
   end
 end
 
