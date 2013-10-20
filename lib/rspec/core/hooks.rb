@@ -59,20 +59,23 @@ EOS
         end
       end
 
-      class HookCollection
-        attr_reader :hooks
-        protected   :hooks
-
+      class BaseHookCollection
         Array.public_instance_methods(false).each do |name|
           define_method(name) { |*a, &b| hooks.__send__(name, *a, &b) }
         end
+
+        attr_reader :hooks
+        protected   :hooks
+
         alias append push
         alias prepend unshift
 
         def initialize(hooks=[])
           @hooks = hooks
         end
+      end
 
+      class HookCollection < BaseHookCollection
         def for(example_or_group)
           self.class.
             new(hooks.select {|hook| hook.options_apply?(example_or_group)}).
@@ -89,7 +92,7 @@ EOS
         end
       end
 
-      class AroundHookCollection < HookCollection
+      class AroundHookCollection < BaseHookCollection
         def for(example, initial_procsy=nil)
           self.class.new(hooks.select {|hook| hook.options_apply?(example)}).
             with(example, initial_procsy)
@@ -110,7 +113,7 @@ EOS
         end
       end
 
-      class GroupHookCollection < HookCollection
+      class GroupHookCollection < BaseHookCollection
         def for(group)
           @group = group
           self
