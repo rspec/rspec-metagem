@@ -1,8 +1,11 @@
 require 'spec_helper'
+require 'support/in_sub_process'
 
 main = self
 
 RSpec.describe "The RSpec DSL" do
+  include InSubProcess
+
   methods = [
     :describe,
     :share_examples_for,
@@ -13,11 +16,12 @@ RSpec.describe "The RSpec DSL" do
 
   methods.each do |method_name|
     describe "##{method_name}" do
-      it "is added to the main object and Module when monkey patching is enabled" do
-        pending "how do we sandbox this?"
-        RSpec.configuration { |c| c.expose_globally = true }
-        expect(main).to respond_to(method_name)
-        expect(Module.new).to respond_to(method_name)
+      it "is added to the main object and Module when expose_globally is enabled" do
+        in_sub_process do
+          RSpec.configuration.expose_globally = true
+          expect(main).to respond_to(method_name)
+          expect(Module.new).to respond_to(method_name)
+        end
       end
       it "is added to the RSpec DSL" do
         expect(::RSpec).to respond_to(method_name)

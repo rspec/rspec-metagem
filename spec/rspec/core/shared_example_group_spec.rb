@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'support/in_sub_process'
 
 module RandomTopLevelModule
   def self.setup!
@@ -8,6 +9,7 @@ end
 
 module RSpec::Core
   RSpec.describe SharedExampleGroup do
+    include InSubProcess
 
     ExampleModule = Module.new
     ExampleClass = Class.new
@@ -38,9 +40,11 @@ module RSpec::Core
           group.send(shared_method_name, *args, &block)
         end
 
-        it "is exposed to the global namespace when monkey patching is enabled" do
-          pending "how do we sandbox this"
-          expect(Kernel).to respond_to(shared_method_name)
+        it "is exposed to the global namespace when expose_globally is enabled" do
+          in_sub_process do
+            RSpec.configuration.expose_globally = true
+            expect(Kernel).to respond_to(shared_method_name)
+          end
         end
 
         it "is not exposed to the global namespace when monkey patching is disabled" do
