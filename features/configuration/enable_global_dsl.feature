@@ -30,31 +30,25 @@ Feature: Global namespace DSL
    Then the output should contain "1 example, 0 failures"
 
   Scenario: when exposing globally is disabled the top level DSL no longer works
-    Given a file named "config.rb" with:
-      """ruby
-        RSpec.configure { |c| c.expose_globally = false }
-      """
     Given a file named "spec/example_spec.rb" with:
       """ruby
+      RSpec.configure { |c| c.expose_globally = false }
       describe "specs here" do
         it "passes" do
         end
       end
       """
-   When I run `rspec -r ./config.rb`
+   When I run `rspec`
    Then the output should contain "undefined method `describe'"
 
   Scenario: regardless of setting
-    Given a file named "config.rb" with:
-      """ruby
-        RSpec.configure { |c| c.expose_globally = true }
-      """
     Given a file named "spec/example_spec.rb" with:
       """ruby
+      RSpec.configure { |c| c.expose_globally = true }
       RSpec.describe "specs here" do
         it "passes" do
         end
       end
       """
-   When I run `rspec -r ./config.rb`
+   When I run `rspec`
    Then the output should contain "1 example, 0 failures"

@@ -55,6 +55,35 @@ module RSpec
           end
         end
 
+        # @private
+        def self.exposed_globally?
+          @exposed_globally ||= false
+        end
+
+        def self.expose_globally!
+          return if exposed_globally?
+
+          Core::DSL.top_level.instance_eval(&definitions)
+          Module.class_exec(&definitions)
+          @exposed_globally = true
+        end
+
+        def self.remove_globally!
+          return unless exposed_globally?
+
+          to_undefine = proc do
+            undef shared_examples
+            undef shared_context
+            undef share_examples_for
+            undef shared_examples_for
+            undef shared_example_groups
+          end
+
+          Core::DSL.top_level.instance_eval(&to_undefine)
+          Module.class_exec(&to_undefine)
+          @exposed_globally = false
+        end
+
       end
 
       def self.registry
