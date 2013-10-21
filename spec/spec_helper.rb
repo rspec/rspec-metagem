@@ -35,6 +35,18 @@ Spork.prefork do
     FileUtils.mkdir_p(ENV['TMPDIR'])
   end
 
+  $rspec_core_without_stderr_monkey_patch = RSpec::Core::Configuration.new
+
+  class RSpec::Core::Configuration
+    def self.new(*args, &block)
+      super.tap do |config|
+        # We detect ruby warnings via $stderr,
+        # so direct our deprecations to $stdout instead.
+        config.deprecation_stream = $stdout
+      end
+    end
+  end
+
   Dir['./spec/support/**/*.rb'].map {|f| require f}
 
   $stderr = RSpec::StdErrSplitter.new
