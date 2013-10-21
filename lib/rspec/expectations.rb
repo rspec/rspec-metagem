@@ -1,10 +1,12 @@
+require 'rspec/support/caller_filter'
+require 'rspec/support/warnings'
+
 require 'rspec/expectations/extensions'
 require 'rspec/matchers'
 require 'rspec/expectations/expectation_target'
 require 'rspec/matchers/configuration'
 require 'rspec/expectations/fail_with'
 require 'rspec/expectations/errors'
-require 'rspec/expectations/deprecation'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
 require 'rspec/expectations/differ'
