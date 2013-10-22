@@ -1,5 +1,12 @@
 module RSpec
   module Core
+    if defined?(::Random)
+      RandomNumberGenerator = ::Random
+    else
+      require 'rspec/core/backport_random'
+      RandomNumberGenerator = RSpec::Core::Backports::Random
+    end
+
     # @private
     module Ordering
       # @private
@@ -24,10 +31,25 @@ module RSpec
 
         def order(items)
           @used = true
-          Kernel.srand @configuration.seed
-          ordering = items.shuffle
-          Kernel.srand # reset random generation
-          ordering
+          rng = RandomNumberGenerator.new(@configuration.seed)
+          shuffle items, rng
+        end
+
+        if RUBY_VERSION > '1.9.3'
+          def shuffle(list, rng)
+            list.shuffle(:random => rng)
+          end
+        else
+          def shuffle(list, rng)
+            shuffled = list.dup
+            shuffled.size.times do |i|
+              j = i + rng.rand(shuffled.size - i)
+              next if i == j
+              shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
+            end
+
+            shuffled
+          end
         end
       end
 
@@ -82,7 +104,7 @@ module RSpec
 
         def initialize
           @ordering_registry = Registry.new(self)
-          @seed = srand % 0xFFFF
+          @seed = rand(0xFFFF)
           @seed_forced = false
           @order_forced = false
         end

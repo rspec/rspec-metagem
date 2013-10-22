@@ -10,38 +10,41 @@ module RSpec
       end
 
       describe Random do
-        before { allow(Kernel).to receive(:srand).and_call_original }
+        describe '.order' do
+          subject { described_class.new(configuration) }
 
-        def order_of(input, seed)
-          Kernel.srand(seed)
-          input.shuffle
-        end
+          let(:configuration)  { RSpec::Core::Configuration.new }
+          let(:items)          { 10.times.map { |n| n } }
+          let(:shuffled_items) { subject.order items }
 
-        let(:configuration) { RSpec::Core::Configuration.new }
+          it 'shuffles the items randomly' do
+            expect(shuffled_items).to match_array items
+            expect(shuffled_items).to_not eq items
+          end
 
-        it 'shuffles the items randomly' do
-          configuration.seed = 900
+          context 'given multiple calls' do
+            it 'returns the items in the same order' do
+              expect(subject.order(items)).to eq shuffled_items
+            end
+          end
 
-          expected = order_of([1, 2, 3, 4], 900)
+          context 'given randomization has been seeded explicitly' do
+            before { @seed = srand }
+            after  { srand @seed }
 
-          strategy = Random.new(configuration)
-          expect(strategy.order([1, 2, 3, 4])).to eq(expected)
-        end
+            it "does not affect the global random number generator" do
+              srand 123
+              val1, val2 = rand(1_000), rand(1_000)
 
-        it 'seeds the random number generator' do
-          expect(Kernel).to receive(:srand).with(1234).once
+              subject
 
-          configuration.seed = 1234
-
-          strategy = Random.new(configuration)
-          strategy.order([1, 2, 3, 4])
-        end
-
-        it 'resets random number generation' do
-          expect(Kernel).to receive(:srand).with(no_args)
-
-          strategy = Random.new(configuration)
-          strategy.order([])
+              srand 123
+              subject.order items
+              expect(rand(1_000)).to eq(val1)
+              subject.order items
+              expect(rand(1_000)).to eq(val2)
+            end
+          end
         end
       end
 
@@ -97,4 +100,3 @@ module RSpec
     end
   end
 end
-

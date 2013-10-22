@@ -1264,11 +1264,8 @@ module RSpec::Core
       context "for ordering options" do
         let(:list) { [1, 2, 3, 4] }
         let(:ordering_strategy) { config.ordering_registry.fetch(:global) }
-
-        let(:shuffled) do
-          Kernel.srand(37)
-          list.shuffle
-        end
+        let(:rng) { RSpec::Core::RandomNumberGenerator.new config.seed }
+        let(:shuffled) { Ordering::Random.new(config).shuffle list, rng }
 
         specify "CLI `--order defined` takes precedence over `config.order = rand`" do
           config.force :order => "defined"
