@@ -934,7 +934,7 @@ module RSpec
       #
       # @param name [Symbol] The name of the ordering.
       # @yield Block that will order the given examples or example groups
-      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGropu>] The examples or groups to order
+      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The examples or groups to order
       # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
