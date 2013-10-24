@@ -8,7 +8,7 @@ module RSpec::Core
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
         RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
-        RSpec::Core::Runner.stub(:run).and_return(-1)
+        RSpec::Core::Runner.stub(:invoke)
         RSpec::Core::Runner.should_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
@@ -46,6 +46,28 @@ module RSpec::Core
         ::DRb.stub(:current_server).and_raise(::DRb::DRbServerNotFound)
 
         expect(RSpec::Core::Runner.running_in_drb?).to be_falsey
+      end
+    end
+
+    describe "#invoke" do
+      let(:runner) { RSpec::Core::Runner }
+
+      it "runs the specs via #run" do
+        runner.stub(:exit)
+        runner.should_receive(:run)
+        runner.invoke
+      end
+
+      it "doesn't exit on success" do
+        runner.stub(:run) { 0 }
+        runner.should_not_receive(:exit)
+        runner.invoke
+      end
+
+      it "exits with #run's status on failure" do
+        runner.stub(:run) { 123 }
+        runner.should_receive(:exit).with(123)
+        runner.invoke
       end
     end
 

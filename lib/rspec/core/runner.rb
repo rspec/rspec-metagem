@@ -14,12 +14,16 @@ module RSpec
           # We got here because either the end of the program was reached or
           # somebody called Kernel#exit.  Run the specs and then override any
           # existing exit status with RSpec's exit status if any specs failed.
-          status = run(ARGV, $stderr, $stdout).to_i
-          exit status if status != 0
+          invoke
         end
         @installed_at_exit = true
       end
       AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
+
+      def self.invoke
+        status = run(ARGV, $stderr, $stdout).to_i
+        exit(status) if status != 0
+      end
 
       def self.disable_autorun!
         @autorun_disabled = true
