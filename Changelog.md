@@ -50,6 +50,9 @@ Enhancements
 * Give generated example group classes a friendly name derived
   from the docstring, rather than something like "Nested_2".
   (Myron Marston)
+* Avoid affecting randomization of user code when shuffling
+  examples so that users can count on their own seeds
+  working. (Travis Herrick)
 
 Bug fixes:
 
