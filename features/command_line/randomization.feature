@@ -34,36 +34,30 @@ Feature: Randomization can be reproduced across test runs
       Without this, the call to `srand` will have to be hard-coded any time
       it is necessary to replicate a given test run's randomness.
 
+  Background:
+    And a file named "spec/random_spec.rb" with:
+      """ruby
+      require 'spec_helper'
+
+      describe 'randomized example' do
+        it 'prints random numbers' do
+          puts 5.times.map { rand(99) }.join("-")
+        end
+      end
+      """
+
   Scenario: Specifying a seed using srand provides predictable randomization
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       srand 123
       """
-    And a file named "spec/random_spec.rb" with:
-      """ruby
-      require 'spec_helper'
-      describe 'randomized example' do
-        it 'prints random numbers' do
-          5.times { print rand(99) }
-        end
-      end
-      """
     When I run `rspec`
-    Then the output should contain "6692981783"
+    Then the output should contain "66-92-98-17-83"
 
   Scenario: Passing the RSpec seed to srand provides predictable randomization
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       srand RSpec.configuration.seed
       """
-    And a file named "spec/random_spec.rb" with:
-      """ruby
-      require 'spec_helper'
-      describe 'randomized example' do
-        it 'prints random numbers' do
-          5.times { print rand(99) }
-        end
-      end
-      """
     When I run `rspec --seed 123`
-    Then the output should contain "6692981783"
+    Then the output should contain "66-92-98-17-83"
