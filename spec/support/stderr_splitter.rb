@@ -17,6 +17,13 @@ module RSpec
       @output_tracker.__send__(name, *args, &block)
     end
 
+    # To work around JRuby error:
+    # TypeError: $stderr must have write method, RSpec::StdErrSplitter given
+    def write(*args)
+      @orig_stderr.write(*args)
+      @output_tracker.write(*args)
+    end
+
     def has_output?
       !output.empty?
     end
