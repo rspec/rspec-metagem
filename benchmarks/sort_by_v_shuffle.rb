@@ -22,12 +22,10 @@ Benchmark.bmbm do |x|
 
   # http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
   #
-  # The problems this algorithm attempts to solve are:
-  #
-  # 1. It is ideal if RSpec invokes Kernel.srand only once (on initialization).
-  #    This is to avoid affecting the state of randomization for the application developer.
-  #
-  # 2. Array#shuffle does not accept a RNG until 1.9.3.
+  # We use this algorithm as an alternative to `shuffle` on
+  # rubies (< 1.9.3) for which Array#shuffle does not accept
+  # a `:random` option. We do this to avoid affecting ruby's
+  # global randomization.
   x.report('fisher-yates') do
     1_000.times do
       rng = Random.new
@@ -41,22 +39,45 @@ Benchmark.bmbm do |x|
   end
 end
 
-# Ruby 2.0
-#
-# 21x over 100 list elements:
-#
-#                 user     system      total        real
-#   sort_by   0.080000   0.000000   0.080000 (  0.074924)
-#   shuffle   0.000000   0.000000   0.000000 (  0.003535)
-#
-# 27x over 1,000 list elements:
-#
-#                 user     system      total        real
-#   sort_by   0.870000   0.000000   0.870000 (  0.874661)
-#   shuffle   0.030000   0.000000   0.030000 (  0.031949)
-#
-# 31x over 10,000 list elements:
-#
-#                 user     system      total        real
-#   sort_by  10.690000   0.010000  10.700000 ( 10.695433)
-#   shuffle   0.330000   0.010000   0.340000 (  0.342375)
+=begin
+
+Ruby 2.0.0:
+
+Rehearsal ------------------------------------------------
+sort_by        0.570000   0.010000   0.580000 (  0.581875)
+shuffle        0.020000   0.000000   0.020000 (  0.021524)
+fisher-yates   0.370000   0.020000   0.390000 (  0.387855)
+--------------------------------------- total: 0.990000sec
+
+                   user     system      total        real
+sort_by        0.560000   0.000000   0.560000 (  0.561014)
+shuffle        0.010000   0.000000   0.010000 (  0.019814)
+fisher-yates   0.350000   0.010000   0.360000 (  0.358932)
+
+Ruby 1.9.3:
+
+Rehearsal ------------------------------------------------
+sort_by        0.690000   0.010000   0.700000 (  0.701035)
+shuffle        0.020000   0.000000   0.020000 (  0.017603)
+fisher-yates   0.440000   0.020000   0.460000 (  0.464778)
+--------------------------------------- total: 1.180000sec
+
+                   user     system      total        real
+sort_by        0.690000   0.000000   0.690000 (  0.697824)
+shuffle        0.020000   0.000000   0.020000 (  0.018622)
+fisher-yates   0.440000   0.010000   0.450000 (  0.452260)
+
+JRuby:
+
+Rehearsal ------------------------------------------------
+sort_by        2.550000   0.050000   2.600000 (  1.325000)
+shuffle        0.090000   0.000000   0.090000 (  0.057000)
+fisher-yates   0.770000   0.010000   0.780000 (  0.477000)
+--------------------------------------- total: 3.470000sec
+
+                   user     system      total        real
+sort_by        0.470000   0.010000   0.480000 (  0.442000)
+shuffle        0.040000   0.000000   0.040000 (  0.042000)
+fisher-yates   0.300000   0.010000   0.310000 (  0.283000)
+
+=end
