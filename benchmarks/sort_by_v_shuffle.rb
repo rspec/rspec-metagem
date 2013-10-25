@@ -19,6 +19,26 @@ Benchmark.bmbm do |x|
       LIST.shuffle
     end
   end
+
+  # http://en.wikipedia.org/wiki/Fisher-Yates_shuffle
+  #
+  # The problems this algorithm attempts to solve are:
+  #
+  # 1. It is ideal if RSpec invokes Kernel.srand only once (on initialization).
+  #    This is to avoid affecting the state of randomization for the application developer.
+  #
+  # 2. Array#shuffle does not accept a RNG until 1.9.3.
+  x.report('fisher-yates') do
+    1_000.times do
+      rng = Random.new
+      list = LIST.dup
+      LIST.size.times do |i|
+        j = i + rng.rand(LIST.size - i)
+        next if i == j
+        list[i], list[j] = list[j], list[i]
+      end
+    end
+  end
 end
 
 # Ruby 2.0
