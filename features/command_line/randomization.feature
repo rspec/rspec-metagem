@@ -35,7 +35,7 @@ Feature: Randomization can be reproduced across test runs
       it is necessary to replicate a given test run's randomness.
 
   Background:
-    And a file named "spec/random_spec.rb" with:
+    Given a file named "spec/random_spec.rb" with:
       """ruby
       require 'spec_helper'
 
