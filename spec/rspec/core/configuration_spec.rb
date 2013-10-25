@@ -18,7 +18,7 @@ module RSpec::Core
 
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
-        expect(config.deprecation_stream).to eq $stderr
+        expect($rspec_core_without_stderr_monkey_patch.deprecation_stream).to eq STDERR
       end
 
       it 'is configurable' do
