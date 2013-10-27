@@ -4,7 +4,10 @@ module RSpec
       class OrComposite < Composite
 
         def matches?(actual)
-          base_matcher.matches?(actual) || new_matcher.matches?(actual)
+          matchers.any? do |matcher|
+            evaluated_matchers << matcher
+            matcher.matches? actual
+          end
         end
 
       end

@@ -3,11 +3,12 @@ module RSpec
     module BuiltIn
       class Composite < BaseMatcher
 
-        attr_reader :base_matcher, :new_matcher
+        attr_reader :matchers, :evaluated_matchers
 
-        def initialize(base_matcher, new_matcher)
-          @base_matcher = base_matcher
-          @new_matcher  = new_matcher
+        def initialize(*matchers)
+          raise ArgumentError, 'two or more matchers should be provided' unless matchers.size >= 2
+          @matchers = matchers
+          @evaluated_matchers = []
         end
 
         def matches?(actual)
