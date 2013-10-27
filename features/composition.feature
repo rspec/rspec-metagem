@@ -1,23 +1,26 @@
 Feature: matcher composition
 
-  Matchers can be composed to make complex expectations. For example we can
-  specify that something should be a `Hash` and also that it contains certains
-  keys.
+  Matchers can be composed to make complex expectations.
 
   Scenario: Use `and` to chain expectations
     Given a file named "chained_assertions.rb" with:
       """ruby
       describe "composing matchers" do
+
+        subject do
+          {:foo => 'bar', :other => rand(3)}
+        end
+
         it "pass when both are true" do
-          expect(:foo => 'bar').to be_kind_of(Hash).and(include(:foo))
+          expect(subject).to include(:foo => 'bar').and(include(:other))
         end
 
         it "deliberate failure on the second matcher" do
-          expect(:foo => 'bar').to be_kind_of(Hash).and(include(:not_included))
+          expect(subject).to include(:foo => 'bar').and(include(:not_me))
         end
 
         it "deliberate failure on the first matcher" do
-          expect(:foo => 'bar').to be_kind_of(Array).and(include(:foo))
+          expect(subject).to include(:foo => 'NOTME').and(include(:other))
         end
       end
       """
