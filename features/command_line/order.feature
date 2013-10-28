@@ -1,7 +1,7 @@
 Feature: --order (new in rspec-core-2.8)
 
   Use the `--order` option to tell RSpec how to order the files, groups, and
-  examples. Options are `defined` and `rand`:
+  examples. Options are `defined` and `rand`.
 
   `defined` is the default, which executes groups and examples in the
   order they are defined as the spec files are loaded.
