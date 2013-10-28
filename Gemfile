@@ -21,6 +21,9 @@ end
 ### dep for ci/coverage
 gem 'coveralls', :require => false
 
+# mime-types 2 requires ruby 1.8, so we have to specify an old version.
+gem 'mime-types', '~> 1.0'
+
 platforms :jruby do
   gem "jruby-openssl"
 end
