@@ -965,6 +965,39 @@ module RSpec
         $VERBOSE
       end
 
+      # Exposes the current running example via the named
+      # helper method. RSpec 2.x exposed this via `example`,
+      # but in RSpec 3.0, the example is instead exposed via
+      # an arg yielded to `it`, `before`, `let`, etc. However,
+      # some extension gems (such as Capybara) depend on the
+      # RSpec 2.x's `example` method, so this config option
+      # can be used to maintain compatibility.
+      #
+      # @param method_name [Symbol] the name of the helper method
+      #
+      # @example
+      #
+      #   RSpec.configure do |rspec|
+      #     rspec.expose_current_running_example_as :example
+      #   end
+      #
+      #   describe MyClass do
+      #     before do
+      #       # `example` can be used here because of the above config.
+      #       do_something if example.metadata[:type] == "foo"
+      #     end
+      #   end
+      def expose_current_running_example_as(method_name)
+        ExposeCurrentExample.module_eval do
+          extend RSpec::SharedContext
+          let(method_name) { |ex| ex }
+        end
+
+        include ExposeCurrentExample
+      end
+
+      module ExposeCurrentExample; end
+
     private
 
       def get_files_to_run(paths)

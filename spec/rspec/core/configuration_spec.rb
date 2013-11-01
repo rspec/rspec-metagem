@@ -1436,5 +1436,20 @@ module RSpec::Core
       end
     end
 
+    describe "#expose_current_running_example_as" do
+      it 'exposes the current example via the named method' do
+        RSpec.configuration.expose_current_running_example_as :the_example
+
+        value = nil
+
+        ExampleGroup.describe "Group" do
+          it("works") { value = the_example }
+        end.run
+
+        expect(value).to be_an(RSpec::Core::Example)
+        expect(value.description).to eq("works")
+      end
+    end
+
   end
 end
