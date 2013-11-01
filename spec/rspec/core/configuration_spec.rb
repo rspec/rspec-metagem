@@ -1437,6 +1437,8 @@ module RSpec::Core
     end
 
     describe "#expose_current_running_example_as" do
+      before { stub_const(Configuration::ExposeCurrentExample.name, Module.new) }
+
       it 'exposes the current example via the named method' do
         RSpec.configuration.expose_current_running_example_as :the_example
         RSpec.configuration.expose_current_running_example_as :another_example_helper
