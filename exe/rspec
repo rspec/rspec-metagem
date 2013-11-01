@@ -1,11 +1,12 @@
 #!/usr/bin/env ruby
 
 begin
-  require 'rspec/autorun'
+  require 'rspec/core'
+  RSpec::Core::Runner.invoke
 rescue LoadError
   $stderr.puts <<-EOS
 #{'*'*50}
-  Could not find 'rspec/autorun'
+  Could not find 'rspec/core'
 
   This may happen if you're using rubygems as your package manager, but it is not
   being required through some mechanism before executing the rspec command.
