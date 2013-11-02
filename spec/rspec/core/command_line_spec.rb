@@ -15,6 +15,7 @@ module RSpec::Core
     it "configures streams before command line options" do
       stdout = StringIO.new
       config.stub :load_spec_files
+      config.stub(:reporter => double.as_null_object)
       config.output_stream = $stdout
 
       # this is necessary to ensure that color works correctly on windows

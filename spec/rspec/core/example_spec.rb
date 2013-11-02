@@ -34,6 +34,8 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "#exception" do
     it "supplies the first exception raised, if any" do
+      RSpec.configuration.output_stream = StringIO.new
+
       example = example_group.example { raise "first" }
       example_group.after { raise "second" }
       example_group.run
