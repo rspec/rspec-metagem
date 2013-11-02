@@ -28,6 +28,18 @@ module RSpec::Core
       end
     end
 
+    describe "#output_stream" do
+      it 'defaults to standard output' do
+        expect(config.output_stream).to eq $stdout
+      end
+
+      it 'is configurable' do
+        io = double 'output io'
+        config.output_stream = io
+        expect(config.output_stream).to eq io
+      end
+    end
+
     describe "#setup_load_path_and_require" do
       include_context "isolate load path mutation"
 

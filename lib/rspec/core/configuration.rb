@@ -228,6 +228,7 @@ module RSpec
 
         @default_path = 'spec'
         @deprecation_stream = $stderr
+        @output_stream = $stdout
         @filter_manager = FilterManager.new
         @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
