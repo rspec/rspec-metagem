@@ -557,7 +557,7 @@ module RSpec
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
-        paths << output if paths.empty?
+        paths << output_stream if paths.empty?
         formatters << formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
       end
 
