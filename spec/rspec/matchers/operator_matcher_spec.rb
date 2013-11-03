@@ -44,7 +44,7 @@ describe "operator matchers", :uses_should do
       obj = Object.new
 
       myobj = MethodMissingObject.new(obj)
-      myobj.should == obj
+      (myobj.should == obj).nil? # just to avoid `useless use of == in void context` warning
       myobj.should_not == Object.new
     end
   end
