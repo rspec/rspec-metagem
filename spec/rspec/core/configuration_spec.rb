@@ -28,16 +28,59 @@ module RSpec::Core
       end
     end
 
-    describe "#output_stream" do
+    shared_examples_for "output_stream" do |attribute|
+      define_method :attribute_value do
+        config.public_send(attribute)
+      end
+
+      update_line = __LINE__ + 2
+      define_method :update_attribute do |value|
+        config.public_send(:"#{attribute}=", value)
+      end
+
       it 'defaults to standard output' do
-        expect(config.output_stream).to eq $stdout
+        expect(attribute_value).to eq $stdout
       end
 
       it 'is configurable' do
         io = double 'output io'
-        config.output_stream = io
-        expect(config.output_stream).to eq io
+        update_attribute(io)
+        expect(attribute_value).to eq io
       end
+
+      context 'when the reporter has already been initialized' do
+        before do
+          config.reporter
+          allow(config).to receive(:warn)
+        end
+
+        it 'prints a notice indicating the reconfigured output_stream will be ignored' do
+          update_attribute(StringIO.new)
+          expect(config).to have_received(:warn).with(/output_stream.*#{__FILE__}:#{update_line}/)
+        end
+
+        it 'does not change the value of `output_stream`' do
+          update_attribute(StringIO.new)
+          expect(attribute_value).to eq($stdout)
+        end
+
+        it 'does not print a warning if set to the value it already has' do
+          update_attribute(attribute_value)
+          expect(config).not_to have_received(:warn)
+        end
+      end
+    end
+
+    describe "#output_stream" do
+      include_examples "output_stream", :output_stream
+    end
+
+    describe "#output" do
+      include_examples "output_stream", :output
+    end
+
+    describe "#out" do
+      include_examples "output_stream", :out
     end
 
     describe "#setup_load_path_and_require" do
@@ -1036,14 +1079,6 @@ module RSpec::Core
         config = Configuration.new
         config.backtrace_exclusion_patterns << /.*/
         expect(config.backtrace_formatter.exclude? "this").to be_truthy
-      end
-    end
-
-    describe "#output=" do
-      it "sets the output" do
-        output = double("output")
-        config.output = output
-        expect(config.output).to equal(output)
       end
     end
 

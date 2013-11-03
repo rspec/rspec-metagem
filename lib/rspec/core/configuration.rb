@@ -130,7 +130,21 @@ module RSpec
       # @macro add_setting
       # Default: `$stdout`.
       # Also known as `output` and `out`
-      add_setting :output_stream, :alias_with => [:output, :out]
+      define_reader :output_stream
+      def output_stream=(value)
+        if @reporter && !value.equal?(@output_stream)
+          warn "RSpec's reporter has already been initialized with " +
+            "#{output_stream.inspect} as the output stream, so your change to "+
+            "`output_stream` will be ignored. You should configure it earlier for " +
+            "it to take effect. (Called from #{CallerFilter.first_non_rspec_line})"
+        else
+          @output_stream = value
+        end
+      end
+      alias output output_stream
+      alias out output_stream
+      alias output= output_stream=
+      alias out= output_stream=
 
       # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
@@ -229,6 +243,7 @@ module RSpec
         @default_path = 'spec'
         @deprecation_stream = $stderr
         @output_stream = $stdout
+        @reporter = nil
         @filter_manager = FilterManager.new
         @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
