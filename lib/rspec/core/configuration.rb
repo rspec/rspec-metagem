@@ -141,10 +141,6 @@ module RSpec
           @output_stream = value
         end
       end
-      alias output output_stream
-      alias out output_stream
-      alias output= output_stream=
-      alias out= output_stream=
 
       # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)

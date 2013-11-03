@@ -28,24 +28,15 @@ module RSpec::Core
       end
     end
 
-    shared_examples_for "output_stream" do |attribute|
-      define_method :attribute_value do
-        config.public_send(attribute)
-      end
-
-      update_line = __LINE__ + 2
-      define_method :update_attribute do |value|
-        config.public_send(:"#{attribute}=", value)
-      end
-
+    describe "#output_stream" do
       it 'defaults to standard output' do
-        expect(attribute_value).to eq $stdout
+        expect(config.output_stream).to eq $stdout
       end
 
       it 'is configurable' do
         io = double 'output io'
-        update_attribute(io)
-        expect(attribute_value).to eq io
+        config.output_stream = io
+        expect(config.output_stream).to eq io
       end
 
       context 'when the reporter has already been initialized' do
@@ -55,32 +46,20 @@ module RSpec::Core
         end
 
         it 'prints a notice indicating the reconfigured output_stream will be ignored' do
-          update_attribute(StringIO.new)
-          expect(config).to have_received(:warn).with(/output_stream.*#{__FILE__}:#{update_line}/)
+          config.output_stream = StringIO.new
+          expect(config).to have_received(:warn).with(/output_stream.*#{__FILE__}:#{__LINE__ - 1}/)
         end
 
         it 'does not change the value of `output_stream`' do
-          update_attribute(StringIO.new)
-          expect(attribute_value).to eq($stdout)
+          config.output_stream = StringIO.new
+          expect(config.output_stream).to eq($stdout)
         end
 
         it 'does not print a warning if set to the value it already has' do
-          update_attribute(attribute_value)
+          config.output_stream = config.output_stream
           expect(config).not_to have_received(:warn)
         end
       end
-    end
-
-    describe "#output_stream" do
-      include_examples "output_stream", :output_stream
-    end
-
-    describe "#output" do
-      include_examples "output_stream", :output
-    end
-
-    describe "#out" do
-      include_examples "output_stream", :out
     end
 
     describe "#setup_load_path_and_require" do
