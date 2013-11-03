@@ -26,6 +26,9 @@ Breaking Changes for 3.0.0:
 * Disallow use of a shared example group from sibling contexts, making them
   fully isolated. 2.14 and 2.99 allowed this but printed a deprecation warning.
   (Jon Rowe)
+* Remove `RSpec::Core::Configuration#output` and
+  `RSpec::Core::Configuration#out` aliases of
+  `RSpec::Core::Configuration#output_stream` (Myron Marston).
 
 Enhancements
 
