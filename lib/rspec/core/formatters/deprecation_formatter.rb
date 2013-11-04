@@ -132,18 +132,19 @@ module RSpec
           end
 
           def deprecation_summary
-            messages = @deprecation_messages.values.flatten
-            return unless messages.any?
+            return unless @deprecation_messages.any?
 
-            print_deferred_deprecation_warnings(messages)
+            print_deferred_deprecation_warnings
 
             summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation warning')} total"
           end
 
-          def print_deferred_deprecation_warnings(messages)
+          def print_deferred_deprecation_warnings
             deprecation_stream.puts "\nDeprecation Warnings:\n\n"
-            messages.each do |msg|
-              deprecation_stream.puts msg
+            @deprecation_messages.keys.sort_by(&:type).each do |deprecation|
+              messages = @deprecation_messages[deprecation]
+              messages.each { |msg| deprecation_stream.puts msg }
+              deprecation_stream.puts
             end
           end
         end

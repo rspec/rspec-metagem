@@ -75,16 +75,37 @@ module RSpec::Core::Formatters
       context "with an IO deprecation_stream" do
         let(:deprecation_stream) { StringIO.new }
 
+        it "groups similar deprecations together" do
+          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation(:deprecated => 'i_am_a_different_deprecation')
+          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation_summary
+
+          expected = <<-EOS.gsub(/^\s+\|/, '')
+            |
+            |Deprecation Warnings:
+            |
+            |i_am_a_different_deprecation is deprecated.
+            |
+            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated.
+            |
+          EOS
+          expect(deprecation_stream.string).to eq expected
+        end
+
         it "limits the deprecation warnings after 3 calls" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
           formatter.deprecation_summary
-          expected = <<-EOS.gsub(/^ {12}/, '')
-            \nDeprecation Warnings:
-
-            i_am_deprecated is deprecated.
-            i_am_deprecated is deprecated.
-            i_am_deprecated is deprecated.
-            Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output.
+          expected = <<-EOS.gsub(/^\s+\|/, '')
+            |
+            |Deprecation Warnings:
+            |
+            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated.
+            |Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output.
+            |
           EOS
           expect(deprecation_stream.string).to eq expected
         end
@@ -95,13 +116,15 @@ module RSpec::Core::Formatters
             formatter.deprecation(:message => message)
           end
           formatter.deprecation_summary
-          expected = "\n" + <<-EOS.gsub(/^ {12}/, '')
-            Deprecation Warnings:
-
-            This is a long string with some callsite info: /path/0/to/some/file.rb:203.  And some more stuff can come after.
-            This is a long string with some callsite info: /path/1/to/some/file.rb:213.  And some more stuff can come after.
-            This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
-            Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output.
+          expected = <<-EOS.gsub(/^\s+\|/, '')
+            |
+            |Deprecation Warnings:
+            |
+            |This is a long string with some callsite info: /path/0/to/some/file.rb:203.  And some more stuff can come after.
+            |This is a long string with some callsite info: /path/1/to/some/file.rb:213.  And some more stuff can come after.
+            |This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
+            |Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output.
+            |
           EOS
           expect(deprecation_stream.string).to eq expected
         end
