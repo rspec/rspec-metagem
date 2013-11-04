@@ -75,6 +75,25 @@ module RSpec::Core::Formatters
       context "with an IO deprecation_stream" do
         let(:deprecation_stream) { StringIO.new }
 
+        it "groups similar deprecations together" do
+          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation(:deprecated => 'i_am_a_different_deprecation')
+          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation_summary
+
+          expected = <<-EOS.gsub(/^\s+\|/, '')
+            |
+            |Deprecation Warnings:
+            |
+            |i_am_a_different_deprecation is deprecated.
+            |
+            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated.
+            |
+          EOS
+          expect(deprecation_stream.string).to eq expected
+        end
+
         it "limits the deprecation warnings after 3 calls" do
           5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
           formatter.deprecation_summary
