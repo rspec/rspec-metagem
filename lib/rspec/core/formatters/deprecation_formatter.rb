@@ -127,7 +127,7 @@ module RSpec
             if @seen_deprecations[deprecation_message] < TOO_MANY_USES_LIMIT
               @deprecation_messages[deprecation_message] << deprecation_message.to_s
             elsif @seen_deprecations[deprecation_message] == TOO_MANY_USES_LIMIT
-              @deprecation_messages[deprecation_message] << deprecation_message.too_many_warnings_message
+              @deprecation_messages[deprecation_message] << deprecation_message.too_many_warnings_message + "\n\n"
             end
           end
 
