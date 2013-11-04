@@ -25,7 +25,7 @@ module RSpec
         let(:generated_html) do
           options = %w[spec/rspec/core/resources/formatter_specs.rb --format html --order defined]
 
-          err, out = StringIO.new, RSpec.configuration.output
+          err, out = StringIO.new, StringIO.new
           err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
 
           command_line = RSpec::Core::CommandLine.new(options)

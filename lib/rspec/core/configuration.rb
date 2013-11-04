@@ -130,7 +130,17 @@ module RSpec
       # @macro add_setting
       # Default: `$stdout`.
       # Also known as `output` and `out`
-      add_setting :output_stream, :alias_with => [:output, :out]
+      define_reader :output_stream
+      def output_stream=(value)
+        if @reporter && !value.equal?(@output_stream)
+          warn "RSpec's reporter has already been initialized with " +
+            "#{output_stream.inspect} as the output stream, so your change to "+
+            "`output_stream` will be ignored. You should configure it earlier for " +
+            "it to take effect. (Called from #{CallerFilter.first_non_rspec_line})"
+        else
+          @output_stream = value
+        end
+      end
 
       # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
@@ -228,6 +238,8 @@ module RSpec
 
         @default_path = 'spec'
         @deprecation_stream = $stderr
+        @output_stream = $stdout
+        @reporter = nil
         @filter_manager = FilterManager.new
         @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
@@ -556,7 +568,7 @@ module RSpec
           custom_formatter(formatter_to_use) ||
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
-        paths << output if paths.empty?
+        paths << output_stream if paths.empty?
         formatters << formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
       end
 

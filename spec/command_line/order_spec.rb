@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'command line', :ui do
   let(:stderr) { StringIO.new }
-  let(:stdout) { current_sandboxed_output_stream }
+  let(:stdout) { StringIO.new }
 
   before :all do
     write_file 'spec/simple_spec.rb', """

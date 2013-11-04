@@ -5,7 +5,7 @@ require 'tmpdir'
 module RSpec::Core
   describe CommandLine do
 
-    let(:out)    { current_sandboxed_output_stream }
+    let(:out)    { StringIO.new         }
     let(:err)    { StringIO.new         }
     let(:config) { RSpec::configuration }
     let(:world)  { RSpec::world         }
@@ -15,7 +15,8 @@ module RSpec::Core
     it "configures streams before command line options" do
       stdout = StringIO.new
       config.stub :load_spec_files
-      config.output_stream = nil
+      config.stub(:reporter => double.as_null_object)
+      config.output_stream = $stdout
 
       # this is necessary to ensure that color works correctly on windows
       config.should_receive(:error_stream=).ordered
