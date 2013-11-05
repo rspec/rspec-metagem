@@ -3,7 +3,7 @@
 
 Breaking Changes for 3.0.0:
 
-* Remove explicit support for 1.8.6 (Jon Rowe)
+* Remove explicit support for 1.8.6. (Jon Rowe)
 * Remove the deprecated `be_close` matcher, preferring `be_within` instead.
   (Sam Phippen)
 * Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
@@ -20,8 +20,8 @@ Breaking Changes for 3.0.0:
 
 Enhancements:
 
-* Support do..end style block with `raise_error` matcher. (Yuji Nakayama)
-* Rewrote custom matcher DSL to simplify it's implementation and solve a
+* Support `do..end` style block with `raise_error` matcher. (Yuji Nakayama)
+* Rewrote custom matcher DSL to simplify its implementation and solve a
   few issues. (Myron Marston)
 * Allow early `return` from within custom matcher DSL blocks. (Myron
   Marston)
@@ -41,7 +41,7 @@ Deprecations:
 
 Bug fixes:
 
-* Make the `match` matcher produce a diff output (Jon Rowe, Ben Moss)
+* Make the `match` matcher produce a diff output. (Jon Rowe, Ben Moss)
 
 ### 2.14.3 / 2013-09-22
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.2...v2.14.3)
