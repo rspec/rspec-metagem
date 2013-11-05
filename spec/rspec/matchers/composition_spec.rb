@@ -36,5 +36,13 @@ module RSpec::Matchers::BuiltIn
 
     end
 
+    describe "expect(...).not_to matcher.and(other_matcher)" do
+      it "is not supported" do
+        expect {
+          expect(3).not_to eq(2).and( be > 2)
+        }.to fail_with(/Chained matchers does not support not_to/)
+      end
+    end
+
   end
 end
