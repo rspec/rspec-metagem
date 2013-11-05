@@ -164,6 +164,38 @@ describe "expect { ... }.to raise_error(message)" do
   end
 end
 
+describe "expect { ... }.to raise_error.with_message(message)" do
+  it "raises an argument error if raise_error itself expects a message" do
+    expect {
+      expect { }.to raise_error("bees").with_message("sup")
+    }.to raise_error.with_message(/`expect { }\.to raise_error\(message\)\.with_message\(message\)` is not valid/)
+  end
+
+  it "passes if RuntimeError is raised with the right message" do
+    expect {raise 'blah'}.to raise_error.with_message('blah')
+  end
+
+  it "passes if RuntimeError is raised with a matching message" do
+    expect {raise 'blah'}.to raise_error.with_message(/blah/)
+  end
+
+  it "passes if any other error is raised with the right message" do
+    expect {raise NameError.new('blah')}.to raise_error.with_message('blah')
+  end
+
+  it "fails if RuntimeError error is raised with the wrong message" do
+    expect do
+      expect {raise 'blarg'}.to raise_error.with_message('blah')
+    end.to fail_with(/expected Exception with \"blah\", got #<RuntimeError: blarg>/)
+  end
+
+  it "fails if any other error is raised with the wrong message" do
+    expect do
+      expect {raise NameError.new('blarg')}.to raise_error.with_message('blah')
+    end.to fail_with(/expected Exception with \"blah\", got #<NameError: blarg>/)
+  end
+end
+
 describe "expect { ... }.not_to raise_error(message)" do
   it "is invalid" do
     expect {
