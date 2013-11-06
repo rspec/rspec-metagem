@@ -142,7 +142,7 @@ EOD
           expect(diff).to eq expected_diff
         end
 
-        it 'outputs unified diff messaoge of two hashes with differing encoding' do
+        it 'outputs unified diff message of two hashes with differing encoding' do
           expected_diff = %Q{
 @@ -1,2 +1,2 @@
 -"a" => "a"
@@ -150,6 +150,17 @@ EOD
 }
 
           diff = differ.diff_as_object({'ö' => 'ö'}, {'a' => 'a'})
+          expect(diff).to eq expected_diff
+        end
+
+        it 'outputs unified diff message of two hashes with encoding different to key encoding' do
+          expected_diff = %Q{
+@@ -1,2 +1,2 @@
+-:a => "a"
+#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+\"한글\" => \"한글2\"} : '+"\355\225\234\352\270\200" => "\355\225\234\352\270\2002"' }
+}
+
+          diff = differ.diff_as_object({ "한글" => "한글2"}, { :a => "a"})
           expect(diff).to eq expected_diff
         end
 
