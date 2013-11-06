@@ -32,6 +32,8 @@ Bug Fixes:
 
 * Allow `include` and `match` matchers to be used from within a
   DSL-defined custom matcher's `match` block. (Myron Marston)
+* Choose encoding for diff's more intelligently, and when all else fails fall
+  back to default internal encoding with replacing characters. (Jon Rowe)
 
 Deprecations:
 

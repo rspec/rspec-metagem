@@ -5,11 +5,13 @@ require 'pp'
 module RSpec
   module Expectations
     class Differ
+
       # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
       def diff_as_string(input_data_new, input_data_old)
-        output = matching_encoding("", input_data_old)
-        data_old = input_data_old.split(matching_encoding("\n", input_data_old)).map! { |e| e.chomp }
-        data_new = input_data_new.split(matching_encoding("\n", input_data_new)).map! { |e| e.chomp }
+        encoding = pick_encoding input_data_new, input_data_old
+        output = matching_encoding("", encoding)
+        data_old = input_data_old.split(matching_encoding("\n", encoding)).map! { |e| e.chomp }
+        data_new = input_data_new.split(matching_encoding("\n", encoding)).map! { |e| e.chomp }
         diffs = Diff::LCS.diff(data_old, data_new)
         return output if diffs.empty?
         oldhunk = hunk = nil
@@ -33,16 +35,16 @@ module RSpec
                 hunk.unshift(oldhunk)
               end
             else
-              output << matching_encoding(oldhunk.diff(format).to_s, output)
+              output << matching_encoding(oldhunk.diff(format).to_s, encoding)
             end
           ensure
             oldhunk = hunk
-            output << matching_encoding("\n", output)
+            output << matching_encoding("\n", encoding)
           end
         end
         #Handle the last remaining hunk
-        output << matching_encoding(oldhunk.diff(format).to_s,output)
-        output << matching_encoding("\n",output)
+        output << matching_encoding(oldhunk.diff(format).to_s, encoding)
+        output << matching_encoding("\n", encoding)
         color_diff output
       rescue Encoding::CompatibilityError
         if input_data_new.encoding != input_data_old.encoding
@@ -115,7 +117,8 @@ module RSpec
             #
             # note, PP is used to ensure the ordering of the internal values of key/value e.g.
             # <# a: b: c:> not <# c: a: b:>
-            matching_encoding("#{pp_key} => #{pp_value}", key.to_s)
+            encoding = pick_encoding pp_key, pp_value
+            matching_encoding("#{pp_key} => #{pp_value}", encoding)
           end.join(",\n")
         when String
           object =~ /\n/ ? object : object.inspect
@@ -124,12 +127,23 @@ module RSpec
         end
       end
 
+    private
+
       if String.method_defined?(:encoding)
-        def matching_encoding(string, source)
-          string.encode(source.encoding)
+        def pick_encoding(source_a, source_b)
+          Encoding.compatible?(source_a, source_b) || Encoding.default_external
+        end
+
+        def matching_encoding(string, encoding)
+          string.encode encoding
+        rescue Encoding::UndefinedConversionError
+          string.encode(encoding, :undef => :replace)
         end
       else
-        def matching_encoding(string, source)
+        def pick_encoding(source_a, source_b)
+        end
+
+        def matching_encoding(string, encoding)
           string
         end
       end
