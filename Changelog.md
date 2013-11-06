@@ -32,8 +32,6 @@ Bug Fixes:
 
 * Allow `include` and `match` matchers to be used from within a
   DSL-defined custom matcher's `match` block. (Myron Marston)
-* Choose encoding for diff's more intelligently, and when all else fails fall
-  back to default internal encoding with replacing characters. (Jon Rowe)
 
 Deprecations:
 
@@ -41,9 +39,14 @@ Deprecations:
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
 
-Bug fixes:
+### 2.14.4 / 2013-11-06
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.3...v2.14.4)
+
+Bug fixes
 
 * Make the `match` matcher produce a diff output. (Jon Rowe, Ben Moss)
+* Choose encoding for diff's more intelligently, and when all else fails fall
+  back to default internal encoding with replacing characters. (Jon Rowe)
 
 ### 2.14.3 / 2013-09-22
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.2...v2.14.3)
