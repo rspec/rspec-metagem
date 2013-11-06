@@ -85,6 +85,13 @@ module RSpec
 
           def initialize(deprecation_stream, summary_stream, deprecation_formatter)
             @deprecation_stream = deprecation_stream
+
+            # In one of my test suites, I got lots of duplicate output in the
+            # deprecation file (e.g. 200 of the same deprecation, even though
+            # the `puts` below was only called 6 times). Setting `sync = true`
+            # fixes this (but we really have no idea why!).
+            @deprecation_stream.sync = true
+
             @summary_stream = summary_stream
             @deprecation_formatter = deprecation_formatter
           end

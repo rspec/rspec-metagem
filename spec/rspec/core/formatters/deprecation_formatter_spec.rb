@@ -70,6 +70,12 @@ module RSpec::Core::Formatters
           formatter.deprecation_summary
           expect(summary_stream.string).to eq ""
         end
+
+        it 'uses synchronized/non-buffered output to work around odd duplicate output behavior we have observed' do
+          expect {
+            formatter.deprecation(:deprecated => 'foo')
+          }.to change { deprecation_stream.sync }.from(false).to(true)
+        end
       end
 
       context "with an IO deprecation_stream" do
