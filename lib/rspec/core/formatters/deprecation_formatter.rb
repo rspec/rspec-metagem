@@ -9,6 +9,7 @@ module RSpec
         def initialize(deprecation_stream, summary_stream)
           @deprecation_stream = deprecation_stream
           @summary_stream = summary_stream
+          @seen_deprecations = Set.new
           @count = 0
         end
 
@@ -19,8 +20,11 @@ module RSpec
         end
 
         def deprecation(data)
+          return if @seen_deprecations.include?(data)
+
           @count += 1
           printer.print_deprecation_message data
+          @seen_deprecations << data
         end
 
         def deprecation_summary

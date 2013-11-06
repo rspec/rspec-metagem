@@ -76,15 +76,23 @@ module RSpec::Core::Formatters
             formatter.deprecation(:deprecated => 'foo')
           }.to change { deprecation_stream.sync }.from(false).to(true)
         end
+
+        it 'does not print duplicate messages' do
+          3.times { formatter.deprecation(:deprecated => 'foo') }
+          formatter.deprecation_summary
+
+          expect(summary_stream.string).to match(/1 deprecation/)
+          expect(File.read(deprecation_stream.path)).to eq("foo is deprecated.\n")
+        end
       end
 
       context "with an IO deprecation_stream" do
         let(:deprecation_stream) { StringIO.new }
 
         it "groups similar deprecations together" do
-          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:1")
           formatter.deprecation(:deprecated => 'i_am_a_different_deprecation')
-          formatter.deprecation(:deprecated => 'i_am_deprecated')
+          formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:2")
           formatter.deprecation_summary
 
           expected = <<-EOS.gsub(/^\s+\|/, '')
@@ -93,23 +101,23 @@ module RSpec::Core::Formatters
             |
             |i_am_a_different_deprecation is deprecated.
             |
-            |i_am_deprecated is deprecated.
-            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated. Called from foo.rb:1.
+            |i_am_deprecated is deprecated. Called from foo.rb:2.
             |
           EOS
           expect(deprecation_stream.string).to eq expected
         end
 
         it "limits the deprecation warnings after 3 calls" do
-          5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+          5.times { |i| formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}") }
           formatter.deprecation_summary
           expected = <<-EOS.gsub(/^\s+\|/, '')
             |
             |Deprecation Warnings:
             |
-            |i_am_deprecated is deprecated.
-            |i_am_deprecated is deprecated.
-            |i_am_deprecated is deprecated.
+            |i_am_deprecated is deprecated. Called from foo.rb:1.
+            |i_am_deprecated is deprecated. Called from foo.rb:2.
+            |i_am_deprecated is deprecated. Called from foo.rb:3.
             |Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output.
             |
           EOS
@@ -136,12 +144,20 @@ module RSpec::Core::Formatters
         end
 
         it "prints the true deprecation count to the summary_stream" do
-          5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+          5.times { |i| formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}") }
           5.times do |n|
             formatter.deprecation(:message => "callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff")
           end
           formatter.deprecation_summary
           expect(summary_stream.string).to match(/10 deprecation warnings total/)
+        end
+
+        it 'does not print duplicate messages' do
+          3.times { formatter.deprecation(:deprecated => 'foo') }
+          formatter.deprecation_summary
+
+          expect(summary_stream.string).to match(/1 deprecation/)
+          expect(deprecation_stream.string).to eq("\nDeprecation Warnings:\n\nfoo is deprecated.\n\n")
         end
       end
     end
