@@ -82,7 +82,7 @@ module RSpec::Core::Formatters
           formatter.deprecation_summary
 
           expect(summary_stream.string).to match(/1 deprecation/)
-          expect(File.read(deprecation_stream.path)).to eq("foo is deprecated.\n")
+          expect(File.read(deprecation_stream.path)).to eq("foo is deprecated.\n#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}")
         end
       end
 
@@ -104,8 +104,9 @@ module RSpec::Core::Formatters
             |i_am_deprecated is deprecated. Called from foo.rb:1.
             |i_am_deprecated is deprecated. Called from foo.rb:2.
             |
+            |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
           EOS
-          expect(deprecation_stream.string).to eq expected
+          expect(deprecation_stream.string).to eq expected.chomp
         end
 
         it "limits the deprecation warnings after 3 calls" do
@@ -120,8 +121,9 @@ module RSpec::Core::Formatters
             |i_am_deprecated is deprecated. Called from foo.rb:3.
             |Too many uses of deprecated 'i_am_deprecated'. Set config.deprecation_stream to a File for full output.
             |
+            |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
           EOS
-          expect(deprecation_stream.string).to eq expected
+          expect(deprecation_stream.string).to eq expected.chomp
         end
 
         it "limits :message deprecation warnings with different callsites after 3 calls" do
@@ -139,8 +141,9 @@ module RSpec::Core::Formatters
             |This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
             |Too many similar deprecation messages reported, disregarding further reports. Set config.deprecation_stream to a File for full output.
             |
+            |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
           EOS
-          expect(deprecation_stream.string).to eq expected
+          expect(deprecation_stream.string).to eq expected.chomp
         end
 
         it "prints the true deprecation count to the summary_stream" do
@@ -157,7 +160,17 @@ module RSpec::Core::Formatters
           formatter.deprecation_summary
 
           expect(summary_stream.string).to match(/1 deprecation/)
-          expect(deprecation_stream.string).to eq("\nDeprecation Warnings:\n\nfoo is deprecated.\n\n")
+
+          expected = <<-EOS.gsub(/^\s+\|/, '')
+            |
+            |Deprecation Warnings:
+            |
+            |foo is deprecated.
+            |
+            |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
+          EOS
+
+          expect(deprecation_stream.string).to eq expected.chomp
         end
       end
     end
