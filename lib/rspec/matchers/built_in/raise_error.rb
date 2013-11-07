@@ -14,7 +14,7 @@ module RSpec
         end
 
         def with_message(expected_message)
-          raise message_already_set if @expected_message
+          raise_message_already_set if @expected_message
           @expected_message = expected_message
           self
         end
@@ -145,7 +145,7 @@ module RSpec
           @expected_error != Exception
         end
 
-        def message_already_set
+        def raise_message_already_set
           raise "`expect { }.to raise_error(message).with_message(message)` is not valid. The matcher only allows the expected message to be specified once"
         end
       end
