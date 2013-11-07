@@ -54,6 +54,7 @@ module RSpec::Core
       let(:out) { StringIO.new }
 
       it "tells RSpec to reset" do
+        CommandLine.stub(:new => double.as_null_object)
         RSpec.configuration.stub(:files_to_run => [], :warn => nil)
         RSpec.should_receive(:reset)
         RSpec::Core::Runner.run([], err, out)
