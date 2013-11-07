@@ -34,9 +34,6 @@ Breaking Changes for 3.0.0:
 Enhancements
 
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
-* Block-based DSL methods that run in the context of an example
-  (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
-  now yield the example as a block argument. (David Chelimsky)
 * Times in profile output are now bold instead of `failure_color`.
   (Matthew Boedicker)
 * Add `--no-fail-fast` command line option. (Gonzalo Rodríguez-Baltanás Díaz)
@@ -58,6 +55,27 @@ Enhancements
 * Avoid affecting randomization of user code when shuffling
   examples so that users can count on their own seeds
   working. (Travis Herrick)
+
+Deprecations
+
+* `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
+  longer has an affect now that the behavior it enabled is always
+  enabled. (Myron Marston)
+
+### 2.99.0.beta1 / 2013-11-07
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.7...v2.99.0.beta1)
+
+Enhancements
+
+* Block-based DSL methods that run in the context of an example
+  (`it`, `before(:each)`, `after(:each)`, `let` and `subject`)
+  now yield the example as a block argument. (David Chelimsky)
+* Warn when the name of more than one example group is submitted to
+  `include_examples` and it's aliases. (David Chelimsky)
+* Add `expose_current_running_example_as` config option for
+  use during the upgrade process when external gems use the
+  deprecated `RSpec::Core::ExampleGroup#example` and
+  `RSpec::Core::ExampleGroup#running_example` methods. (Myron Marston)
 * Limit spamminess of deprecation messages. (Bradley Schaefer, Loren Segal)
 * Add `config.raise_errors_for_deprecations!` option, which turns
   deprecations warnings into errors to surface the full backtrace
@@ -65,9 +83,37 @@ Enhancements
 
 Deprecations
 
-* `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
-  longer has an affect now that the behavior it enabled is always
-  enabled. (Myron Marston)
+* Deprecate `RSpec::Core::ExampleGroup#example` and
+  `RSpec::Core::ExampleGroup#running_example` methods. If you need
+  access to the example (e.g. to get its metadata), use a block argument
+  instead. (David Chelimsky)
+* Deprecate use of `autotest/rspec2` in favour of `rspec-autotest`. (Jon Rowe)
+* Deprecate RSpec's built-in debugger support. Use a CLI option like
+  `-rruby-debug` (for the ruby-debug gem) or `-rdebugger` (for the
+  debugger gem) instead. (Myron Marston)
+* Deprecate `RSpec.configuration.treat_symbols_as_metadata_keys_with_true_values = false`.
+  RSpec 3 will not support having this option set to `false`. (Myron Marston)
+* Deprecate accessing a `let` or `subject` declaration in
+  a `after(:all)` hook. (Myron Marston, Jon Rowe)
+* Deprecate built-in `its` usage in favor of `rspec-its` gem due to planned
+  removal in RSpec 3. (Peter Alfvin)
+* Deprecate `RSpec::Core::PendingExampleFixedError` in favor of
+  `RSpec::Core::Pending::PendingExampleFixedError`. (Myron Marston)
+* Deprecate `RSpec::Core::Configuration#out` and
+  `RSpec::Core::Configuration#output` in favor of
+  `RSpec::Core::Configuration#output_stream`. (Myron Marston)
+* Deprecate legacy ordering APIs.
+  * You should use `register_ordering(:global)` instead of these:
+    * `RSpec::Core::Configuration#order_examples`
+    * `RSpec::Core::Configuration#order_groups`
+    * `RSpec::Core::Configuration#order_groups_and_examples`
+  * These are deprecated with no replacement because in RSpec 3
+    ordering is a property of individual example groups rather than
+    just a global property of the entire test suite:
+    * `RSpec::Core::Configuration#order`
+    * `RSpec::Core::Configuration#randomize?`
+  * `--order default` is deprecated in favor of `--order defined`
+  (Myron Marston)
 
 ### 2.14.7 / 2013-10-29
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.6...v2.14.7)
