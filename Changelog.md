@@ -58,13 +58,10 @@ Enhancements
 * Avoid affecting randomization of user code when shuffling
   examples so that users can count on their own seeds
   working. (Travis Herrick)
+* Limit spamminess of deprecation messages. (Bradley Schaefer, Loren Segal)
 * Add `config.raise_errors_for_deprecations!` option, which turns
   deprecations warnings into errors to surface the full backtrace
   of the call site. (Myron Marston)
-
-Bug fixes:
-
-* Limit spamminess of deprecation messages. (Bradley Schaefer, Loren Segal)
 
 Deprecations
 
