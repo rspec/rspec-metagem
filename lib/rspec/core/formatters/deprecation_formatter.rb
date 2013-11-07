@@ -43,6 +43,14 @@ module RSpec
           end
         end
 
+        RAISE_ERROR_CONFIG_NOTICE = <<-EOS.gsub(/^\s+\|/, '')
+          |
+          |If you need more of the backtrace for any of these deprecations to
+          |identify where to make the necessary changes, you can configure
+          |`config.raise_errors_for_deprecations!`, and it will turn the
+          |deprecation warnings into errors, giving you the full backtrace.
+        EOS
+
         SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @message = data[:message]
@@ -112,6 +120,7 @@ module RSpec
           def deprecation_summary
             if deprecation_formatter.count > 0
               summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation')} logged to #{deprecation_stream.path}"
+              deprecation_stream.puts RAISE_ERROR_CONFIG_NOTICE
             end
           end
         end
@@ -150,6 +159,7 @@ module RSpec
             return unless @deprecation_messages.any?
 
             print_deferred_deprecation_warnings
+            deprecation_stream.puts RAISE_ERROR_CONFIG_NOTICE
 
             summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation warning')} total"
           end
