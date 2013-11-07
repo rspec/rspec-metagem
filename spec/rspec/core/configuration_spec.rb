@@ -1462,6 +1462,19 @@ module RSpec::Core
       end
     end
 
+    describe "#raise_errors_for_deprecations!" do
+      it 'causes deprecations to raise errors rather than printing to the deprecation stream' do
+        config.deprecation_stream = stream = StringIO.new
+        config.raise_errors_for_deprecations!
+
+        expect {
+          config.reporter.deprecation(:deprecated => "foo", :call_site => "foo.rb:1")
+        }.to raise_error(RSpec::Core::DeprecationError, /foo is deprecated/)
+
+        expect(stream.string).to eq("")
+      end
+    end
+
     describe "#expose_current_running_example_as" do
       before { stub_const(Configuration::ExposeCurrentExample.name, Module.new) }
 

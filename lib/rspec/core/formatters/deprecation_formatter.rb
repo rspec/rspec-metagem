@@ -15,9 +15,12 @@ module RSpec
         end
 
         def printer
-          @printer ||= File === deprecation_stream ?
-            FilePrinter.new(deprecation_stream, summary_stream, self) :
-            IOPrinter.new(deprecation_stream, summary_stream, self)
+          @printer ||= case deprecation_stream
+                       when File, RaiseErrorStream
+                         FilePrinter.new(deprecation_stream, summary_stream, self)
+                       else
+                         IOPrinter.new(deprecation_stream, summary_stream, self)
+                       end
         end
 
         def deprecation(data)
@@ -161,7 +164,20 @@ module RSpec
           end
         end
 
+        # Not really a stream, but is usable in place of one.
+        class RaiseErrorStream
+          def puts(message)
+            raise DeprecationError, message
+          end
+
+          def sync=(value)
+            # no-op
+          end
+        end
+
       end
     end
+
+    DeprecationError = Class.new(StandardError)
   end
 end
