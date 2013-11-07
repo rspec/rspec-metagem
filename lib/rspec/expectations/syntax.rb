@@ -50,7 +50,7 @@ module RSpec
       def self.warn_about_should_unless_configured(method_name)
         if @warn_about_should
           RSpec.deprecate(
-            "Using `#{method_name}` from the old `:should` syntax without explicitly enabling the syntax",
+            "Using `#{method_name}` from rspec-expectations' old `:should` syntax without explicitly enabling the syntax",
             :replacement => "the new `:expect` syntax or explicitly enable `:should`"
           )
 
