@@ -17,9 +17,9 @@ module RSpec
         def printer
           @printer ||= case deprecation_stream
                        when File, RaiseErrorStream
-                         FilePrinter.new(deprecation_stream, summary_stream, self)
+                         ImmediatePrinter.new(deprecation_stream, summary_stream, self)
                        else
-                         IOPrinter.new(deprecation_stream, summary_stream, self)
+                         DelayedPrinter.new(deprecation_stream, summary_stream, self)
                        end
         end
 
@@ -94,7 +94,7 @@ module RSpec
           end
         end
 
-        class FilePrinter
+        class ImmediatePrinter
           include ::RSpec::Core::Formatters::Helpers
 
           attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
@@ -125,7 +125,7 @@ module RSpec
           end
         end
 
-        class IOPrinter
+        class DelayedPrinter
           TOO_MANY_USES_LIMIT = 4
 
           include ::RSpec::Core::Formatters::Helpers
