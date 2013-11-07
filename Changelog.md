@@ -27,6 +27,8 @@ Enhancements:
   Marston)
 * The custom matcher DSL's `chain` can now accept a block. (Myron
   Marston)
+* Support setting an expectation on a `raise_error` matcher via a chained
+  `with_message` method call. (Sam Phippen)
 
 Bug Fixes:
 
