@@ -25,6 +25,12 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = '>= 1.8.7'
 
+  private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')
+  if File.exists?(private_key)
+    s.signing_key = private_key
+    s.cert_chain = [File.expand_path('~/.gem/rspec-gem-public_cert.pem')]
+  end
+
   if RSpec::Core::Version::STRING =~ /[a-zA-Z]+/
     # rspec-support is locked to our version when running pre,rc etc
     s.add_runtime_dependency "rspec-support", "= #{RSpec::Core::Version::STRING}"
