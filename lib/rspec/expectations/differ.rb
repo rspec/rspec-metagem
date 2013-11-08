@@ -10,37 +10,29 @@ module RSpec
         @expected = expected
 
         output = matching_encoding("", expected)
+        file_length_difference = 0
 
         return output if diffs.empty?
+
         oldhunk = hunk = nil
-        file_length_difference = 0
         diffs.each do |piece|
           begin
             hunk = build_hunk(piece, file_length_difference)
             file_length_difference = hunk.file_length_difference
             next unless oldhunk
-            # Hunks may overlap, which is why we need to be careful when our
-            # diff includes lines of context. Otherwise, we might print
-            # redundant lines.
-            if (context_lines > 0) and hunk.overlaps?(oldhunk)
-              if hunk.respond_to?(:merge)
-                # diff-lcs 1.2.x
-                hunk.merge(oldhunk)
-              else
-                # diff-lcs 1.1.3
-                hunk.unshift(oldhunk)
-              end
+
+            if hunk.overlaps?(oldhunk)
+              add_old_hunk_to_hunk(hunk, oldhunk)
             else
-              output << matching_encoding(oldhunk.diff(format).to_s, output)
+              add_to_output(output, oldhunk.diff(format).to_s)
             end
           ensure
             oldhunk = hunk
-            output << matching_encoding("\n", output)
+            add_to_output(output, "\n")
           end
         end
         #Handle the last remaining hunk
-        output << matching_encoding(oldhunk.diff(format).to_s,output)
-        output << matching_encoding("\n",output)
+        finalize_output(output, oldhunk.diff(format).to_s)
         color_diff output
       rescue Encoding::CompatibilityError
         if actual.encoding != expected.encoding
@@ -62,6 +54,33 @@ module RSpec
     private
 
       attr_reader :expected, :actual
+
+      def finalize_output(output, final_line)
+        add_to_output(output, final_line)
+        add_to_output(output, "\n")
+      end
+
+      def hunk_diff_string(hunk)
+        hunk.diff(format).to_s
+      end
+
+      def add_to_output(output, string)
+        output << matching_encoding(string, output)
+      end
+
+      def add_old_hunk_to_hunk
+        output << matching_encoding(hunk_diff_string(oldhunk), output)
+      end
+
+      def add_old_hunk_to_hunk(hunk, oldhunk)
+        if hunk.respond_to?(:merge)
+          # diff-lcs 1.2.x
+          hunk.merge(oldhunk)
+        else
+          # diff-lcs 1.1.3
+          hunk.unshift(oldhunk)
+        end
+      end
 
       def build_hunk(piece, file_length_difference)
         Diff::LCS::Hunk.new(
