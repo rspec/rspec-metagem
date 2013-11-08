@@ -1,4 +1,5 @@
 require 'diff/lcs'
+require "rspec/expectations/encoded_string"
 require 'diff/lcs/hunk'
 require 'pp'
 
@@ -6,19 +7,21 @@ module RSpec
   module Expectations
     class Differ
       def diff_as_string(actual, expected)
-        @actual = actual
-        @expected = expected
+        @actual   = EncodedString.new(actual, actual)
+        @expected = EncodedString.new(expected, expected)
 
-        output = matching_encoding("", expected)
+        output = EncodedString.new("", expected)
         file_length_difference = 0
 
         return output if diffs.empty?
 
         oldhunk = hunk = nil
+
         diffs.each do |piece|
           begin
             hunk = build_hunk(piece, file_length_difference)
             file_length_difference = hunk.file_length_difference
+
             next unless oldhunk
 
             if hunk.overlaps?(oldhunk)
@@ -31,7 +34,7 @@ module RSpec
             add_to_output(output, "\n")
           end
         end
-        #Handle the last remaining hunk
+
         finalize_output(output, oldhunk.diff(format).to_s)
         color_diff output
       rescue Encoding::CompatibilityError
@@ -65,11 +68,7 @@ module RSpec
       end
 
       def add_to_output(output, string)
-        output << matching_encoding(string, output)
-      end
-
-      def add_old_hunk_to_hunk
-        output << matching_encoding(hunk_diff_string(oldhunk), output)
+        output << string
       end
 
       def add_old_hunk_to_hunk(hunk, oldhunk)
@@ -93,11 +92,11 @@ module RSpec
       end
 
       def expected_lines
-        expected.split(matching_encoding("\n", expected)).map! { |e| e.chomp }
+        expected.split("\n").map! { |e| e.chomp }
       end
 
       def actual_lines
-        actual.split(matching_encoding("\n", actual)).map! { |e| e.chomp }
+        actual.split("\n").map! { |e| e.chomp }
       end
 
       def format
@@ -148,11 +147,7 @@ module RSpec
             pp_key   = PP.singleline_pp(key, "")
             pp_value = PP.singleline_pp(object[key], "")
 
-            # on 1.9.3 PP seems to minimise to US-ASCII, ensure we're matching source encoding
-            #
-            # note, PP is used to ensure the ordering of the internal values of key/value e.g.
-            # <# a: b: c:> not <# c: a: b:>
-            matching_encoding("#{pp_key} => #{pp_value}", key.to_s)
+            "#{pp_key} => #{pp_value}"
           end.join(",\n")
         when String
           object =~ /\n/ ? object : object.inspect
@@ -160,18 +155,7 @@ module RSpec
           PP.pp(object,"")
         end
       end
-
-      if String.method_defined?(:encoding)
-        def matching_encoding(string, source)
-          string.encode(source.encoding)
-        end
-      else
-        def matching_encoding(string, source)
-          string
-        end
-      end
     end
-
   end
 end
 
