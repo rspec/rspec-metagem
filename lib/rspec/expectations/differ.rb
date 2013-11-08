@@ -5,19 +5,19 @@ require 'pp'
 module RSpec
   module Expectations
     class Differ
-      # This is snagged from diff/lcs/ldiff.rb (which is a commandline tool)
-      def diff_as_string(input_data_new, input_data_old)
-        output = matching_encoding("", input_data_old)
-        data_old = input_data_old.split(matching_encoding("\n", input_data_old)).map! { |e| e.chomp }
-        data_new = input_data_new.split(matching_encoding("\n", input_data_new)).map! { |e| e.chomp }
-        diffs = Diff::LCS.diff(data_old, data_new)
+      def diff_as_string(actual, expected)
+        @actual = actual
+        @expected = expected
+
+        output = matching_encoding("", expected)
+
         return output if diffs.empty?
         oldhunk = hunk = nil
         file_length_difference = 0
         diffs.each do |piece|
           begin
             hunk = Diff::LCS::Hunk.new(
-              data_old, data_new, piece, context_lines, file_length_difference
+              expected_lines, actual_lines, piece, context_lines, file_length_difference
             )
             file_length_difference = hunk.file_length_difference
             next unless oldhunk
@@ -45,11 +45,11 @@ module RSpec
         output << matching_encoding("\n",output)
         color_diff output
       rescue Encoding::CompatibilityError
-        if input_data_new.encoding != input_data_old.encoding
-          "Could not produce a diff because the encoding of the actual string (#{input_data_old.encoding}) "+
-          "differs from the encoding of the expected string (#{input_data_new.encoding})"
+        if actual.encoding != expected.encoding
+          "Could not produce a diff because the encoding of the actual string (#{expected.encoding}) "+
+          "differs from the encoding of the expected string (#{actual.encoding})"
         else
-          "Could not produce a diff because of the encoding of the string (#{input_data_old.encoding})"
+          "Could not produce a diff because of the encoding of the string (#{expected.encoding})"
         end
       end
 
@@ -61,7 +61,21 @@ module RSpec
         end
       end
 
-    protected
+    private
+
+      attr_reader :expected, :actual
+
+      def diffs
+        Diff::LCS.diff(expected_lines, actual_lines)
+      end
+
+      def expected_lines
+        expected.split(matching_encoding("\n", expected)).map! { |e| e.chomp }
+      end
+
+      def actual_lines
+        actual.split(matching_encoding("\n", actual)).map! { |e| e.chomp }
+      end
 
       def format
         :unified
