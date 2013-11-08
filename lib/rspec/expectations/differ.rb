@@ -16,9 +16,7 @@ module RSpec
         file_length_difference = 0
         diffs.each do |piece|
           begin
-            hunk = Diff::LCS::Hunk.new(
-              expected_lines, actual_lines, piece, context_lines, file_length_difference
-            )
+            hunk = build_hunk(piece, file_length_difference)
             file_length_difference = hunk.file_length_difference
             next unless oldhunk
             # Hunks may overlap, which is why we need to be careful when our
@@ -64,6 +62,12 @@ module RSpec
     private
 
       attr_reader :expected, :actual
+
+      def build_hunk(piece, file_length_difference)
+        Diff::LCS::Hunk.new(
+          expected_lines, actual_lines, piece, context_lines, file_length_difference
+        )
+      end
 
       def diffs
         Diff::LCS.diff(expected_lines, actual_lines)
