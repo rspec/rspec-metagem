@@ -24,6 +24,12 @@ Gem::Specification.new do |s|
   s.rdoc_options     = ["--charset=UTF-8"]
   s.require_path     = "lib"
 
+  private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')
+  if File.exists?(private_key)
+    s.signing_key = private_key
+    s.cert_chain = [File.expand_path('~/.gem/rspec-gem-public_cert.pem')]
+  end
+
   %w[core expectations mocks].each do |name|
     if RSpec::Version::STRING =~ /[a-zA-Z]+/
       s.add_runtime_dependency "rspec-#{name}", "= #{RSpec::Version::STRING}"
