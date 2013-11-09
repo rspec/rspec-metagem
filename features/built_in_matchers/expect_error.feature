@@ -78,6 +78,19 @@ Feature: raise_error matcher
     When I run `rspec example_spec.rb`
     Then the example should pass
 
+  Scenario: matching message with `with_message`
+    Given a file named "example_spec.rb" with:
+      """ruby
+      describe "matching error message with regex" do
+        it "matches the error message" do
+          expect { raise StandardError, "my message" }.
+            to raise_error.with_message(/my mess/)
+        end
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the example should pass
+
   Scenario: match type + message with string
     Given a file named "example_spec.rb" with:
       """ruby

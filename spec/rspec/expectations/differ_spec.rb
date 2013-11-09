@@ -54,7 +54,12 @@ EOD
             @actual="Tu avec carte {count} item has".encode('UTF-16LE')
             expect(subject).to eql 'Could not produce a diff because of the encoding of the string (UTF-16LE)'
           end
-          it 'ouputs a message when encountering differently encoded strings' do
+          it 'handles differently encoded strings that are compatible' do
+            @expected = "강인철".encode('UTF-8')
+            @actual   = "abc".encode('us-ascii')
+            expect(subject).to eql "\n@@ -1,2 +1,2 @@\n-abc\n+강인철\n"
+          end
+          it 'outputs a message when encountering differently encoded strings' do
             @expected="Tu avec carté {count} itém has".encode('UTF-16LE')
             @actual="Tu avec carte {count} item has"
             expect(subject).to eql 'Could not produce a diff because the encoding of the actual string (UTF-8) differs from the encoding of the expected string (UTF-16LE)'
@@ -137,7 +142,7 @@ EOD
           expect(diff).to eq expected_diff
         end
 
-        it 'outputs unified diff messaoge of two hashes with differing encoding' do
+        it 'outputs unified diff message of two hashes with differing encoding' do
           expected_diff = %Q{
 @@ -1,2 +1,2 @@
 -"a" => "a"
@@ -145,6 +150,17 @@ EOD
 }
 
           diff = differ.diff_as_object({'ö' => 'ö'}, {'a' => 'a'})
+          expect(diff).to eq expected_diff
+        end
+
+        it 'outputs unified diff message of two hashes with encoding different to key encoding' do
+          expected_diff = %Q{
+@@ -1,2 +1,2 @@
+-:a => "a"
+#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+\"한글\" => \"한글2\"} : '+"\355\225\234\352\270\200" => "\355\225\234\352\270\2002"' }
+}
+
+          diff = differ.diff_as_object({ "한글" => "한글2"}, { :a => "a"})
           expect(diff).to eq expected_diff
         end
 
@@ -211,4 +227,3 @@ EOD
     end
   end
 end
-

@@ -3,10 +3,10 @@ require "delegate"
 module RSpec
   module Expectations
     class EncodedString < SimpleDelegator
-      def initialize(string, source=nil)
+      def initialize(string, encoding=nil)
         super(string)
         @string = string
-        @source = source
+        @encoding = encoding
       end
 
       def <<(string)
@@ -19,11 +19,11 @@ module RSpec
 
       private
 
-      attr_reader :source
+      attr_reader :encoding
 
       if String.method_defined?(:encoding)
         def matching_encoding(string)
-          string.encode(source.encoding)
+          string.encode(encoding)
         end
       else
         def matching_encoding(string)
