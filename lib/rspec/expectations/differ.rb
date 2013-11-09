@@ -11,40 +11,35 @@ module RSpec
         @actual   = EncodedString.new(actual, encoding)
         @expected = EncodedString.new(expected, encoding)
 
-        output = EncodedString.new("", encoding)
+        output = EncodedString.new("\n", encoding)
         file_length_difference = 0
 
         return output if diffs.empty?
 
         oldhunk = hunk = nil
 
-        diffs.each do |piece|
+        hunks = diffs.map do |piece|
+          build_hunk(piece, file_length_difference).tap do |h|
+            file_length_difference = h.file_length_difference
+          end
+        end
+
+        hunks.each_cons(2) do |prev_hunk, current_hunk|
           begin
-            hunk = build_hunk(piece, file_length_difference)
-            file_length_difference = hunk.file_length_difference
-
-            next unless oldhunk
-
-            if hunk.overlaps?(oldhunk)
-              add_old_hunk_to_hunk(hunk, oldhunk)
+            if current_hunk.overlaps?(prev_hunk)
+              add_old_hunk_to_hunk(current_hunk, prev_hunk)
             else
-              add_to_output(output, oldhunk.diff(format).to_s)
+              add_to_output(output, prev_hunk.diff(format).to_s)
             end
           ensure
-            oldhunk = hunk
             add_to_output(output, "\n")
           end
         end
 
-        finalize_output(output, oldhunk.diff(format).to_s)
+        finalize_output(output, hunks.last.diff(format).to_s)
         color_diff output
       rescue Encoding::CompatibilityError
-        if actual.encoding != expected.encoding
-          "Could not produce a diff because the encoding of the actual string (#{expected.encoding}) "+
-          "differs from the encoding of the expected string (#{actual.encoding})"
-        else
-          "Could not produce a diff because of the encoding of the string (#{expected.encoding})"
-        end
+        handle_encoding_errors
       end
 
       def diff_as_object(actual, expected)
@@ -55,7 +50,7 @@ module RSpec
         end
       end
 
-    private
+      private
 
       attr_reader :expected, :actual, :encoding
 
@@ -157,24 +152,21 @@ module RSpec
         end
       end
 
-    private
-
       if String.method_defined?(:encoding)
         def pick_encoding(source_a, source_b)
           Encoding.compatible?(source_a, source_b) || Encoding.default_external
         end
-
-        def matching_encoding(string, encoding)
-          string.encode encoding
-        rescue Encoding::UndefinedConversionError
-          string.encode(encoding, :undef => :replace)
-        end
       else
         def pick_encoding(source_a, source_b)
         end
+      end
 
-        def matching_encoding(string, encoding)
-          string
+      def handle_encoding_errors
+        if actual.encoding != expected.encoding
+          "Could not produce a diff because the encoding of the actual string (#{expected.encoding}) "+
+            "differs from the encoding of the expected string (#{actual.encoding})"
+        else
+          "Could not produce a diff because of the encoding of the string (#{expected.encoding})"
         end
       end
     end
