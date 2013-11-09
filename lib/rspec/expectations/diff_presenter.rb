@@ -5,7 +5,7 @@ require 'pp'
 
 module RSpec
   module Expectations
-    class Differ
+    class DiffPresenter
       def diff_as_string(actual, expected)
         @encoding = pick_encoding actual, expected
 

@@ -4,14 +4,11 @@ require 'ostruct'
 
 module RSpec
   module Expectations
-    describe Differ do
+    describe DiffPresenter do
+      let(:differ) { RSpec::Expectations::DiffPresenter.new }
       context "without --color" do
 
       before { RSpec::Matchers.configuration.stub(:color? => false) }
-
-      let(:differ) { RSpec::Expectations::Differ.new }
-
-        # color disabled context
 
       describe '#diff_as_string' do
         subject { differ.diff_as_string(@expected, @actual) }
@@ -210,8 +207,6 @@ EOD
 
     context "with --color" do
       before { RSpec::Matchers.configuration.stub(:color? => true) }
-
-      let(:differ) { RSpec::Expectations::Differ.new }
 
       it "outputs colored diffs" do
         expected = "foo bar baz"
