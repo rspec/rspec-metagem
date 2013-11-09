@@ -37,18 +37,6 @@ module RSpec
         end
 
         finalize_output(output, oldhunk.diff(format).to_s)
-=======
-              output << matching_encoding(oldhunk.diff(format).to_s, encoding)
-            end
-          ensure
-            oldhunk = hunk
-            output << matching_encoding("\n", encoding)
-          end
-        end
-        #Handle the last remaining hunk
-        output << matching_encoding(oldhunk.diff(format).to_s, encoding)
-        output << matching_encoding("\n", encoding)
->>>>>>> 311b60baad804fc19c12b07903138c04cc60d570
         color_diff output
       rescue Encoding::CompatibilityError
         if actual.encoding != expected.encoding
@@ -69,7 +57,7 @@ module RSpec
 
     private
 
-      attr_reader :expected, :actual
+      attr_reader :expected, :actual, :encoding
 
       def finalize_output(output, final_line)
         add_to_output(output, final_line)
@@ -160,16 +148,7 @@ module RSpec
             pp_key   = PP.singleline_pp(key, "")
             pp_value = PP.singleline_pp(object[key], "")
 
-<<<<<<< HEAD
             "#{pp_key} => #{pp_value}"
-=======
-            # on 1.9.3 PP seems to minimise to US-ASCII, ensure we're matching source encoding
-            #
-            # note, PP is used to ensure the ordering of the internal values of key/value e.g.
-            # <# a: b: c:> not <# c: a: b:>
-            encoding = pick_encoding pp_key, pp_value
-            matching_encoding("#{pp_key} => #{pp_value}", encoding)
->>>>>>> 311b60baad804fc19c12b07903138c04cc60d570
           end.join(",\n")
         when String
           object =~ /\n/ ? object : object.inspect
@@ -177,8 +156,6 @@ module RSpec
           PP.pp(object,"")
         end
       end
-<<<<<<< HEAD
-=======
 
     private
 
@@ -200,7 +177,6 @@ module RSpec
           string
         end
       end
->>>>>>> 311b60baad804fc19c12b07903138c04cc60d570
     end
   end
 end

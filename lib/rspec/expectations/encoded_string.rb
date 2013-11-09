@@ -4,9 +4,9 @@ module RSpec
   module Expectations
     class EncodedString < SimpleDelegator
       def initialize(string, encoding=nil)
-        super(string)
-        @string = string
         @encoding = encoding
+        @string = matching_encoding(string)
+        super(@string)
       end
 
       def <<(string)
@@ -24,6 +24,8 @@ module RSpec
       if String.method_defined?(:encoding)
         def matching_encoding(string)
           string.encode(encoding)
+        rescue Encoding::UndefinedConversionError
+          string.encode(encoding, :undef => :replace)
         end
       else
         def matching_encoding(string)
