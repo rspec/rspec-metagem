@@ -3,7 +3,7 @@ module RSpec
     class << self
       # @private
       def differ
-        @differ ||= Differ.new
+        Differ.new
       end
 
       # Raises an RSpec::Expectations::ExpectationNotMetError with message.

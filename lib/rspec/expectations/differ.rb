@@ -8,21 +8,11 @@ module RSpec
     class Differ
       def diff_as_string(actual, expected)
         @encoding = pick_encoding actual, expected
+
         @actual   = EncodedString.new(actual, encoding)
         @expected = EncodedString.new(expected, encoding)
 
         output = EncodedString.new("\n", encoding)
-        file_length_difference = 0
-
-        return output if diffs.empty?
-
-        oldhunk = hunk = nil
-
-        hunks = diffs.map do |piece|
-          build_hunk(piece, file_length_difference).tap do |h|
-            file_length_difference = h.file_length_difference
-          end
-        end
 
         hunks.each_cons(2) do |prev_hunk, current_hunk|
           begin
@@ -36,7 +26,10 @@ module RSpec
           end
         end
 
-        finalize_output(output, hunks.last.diff(format).to_s)
+        if hunks.last
+          finalize_output(output, hunks.last.diff(format).to_s)
+        end
+
         color_diff output
       rescue Encoding::CompatibilityError
         handle_encoding_errors
@@ -53,6 +46,13 @@ module RSpec
       private
 
       attr_reader :expected, :actual, :encoding
+
+      def hunks
+        @file_length_difference = 0
+        @hunks ||= diffs.map do |piece|
+          build_hunk(piece)
+        end
+      end
 
       def finalize_output(output, final_line)
         add_to_output(output, final_line)
@@ -77,10 +77,12 @@ module RSpec
         end
       end
 
-      def build_hunk(piece, file_length_difference)
+      def build_hunk(piece)
         Diff::LCS::Hunk.new(
-          expected_lines, actual_lines, piece, context_lines, file_length_difference
-        )
+          expected_lines, actual_lines, piece, context_lines, @file_length_difference
+        ).tap do |h|
+          @file_length_difference = h.file_length_difference
+        end
       end
 
       def diffs
