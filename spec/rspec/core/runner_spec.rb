@@ -53,20 +53,20 @@ module RSpec::Core
       let(:runner) { RSpec::Core::Runner }
 
       it "runs the specs via #run" do
-        runner.stub(:exit)
-        runner.should_receive(:run)
+        allow(runner).to receive(:exit)
+        expect(runner).to receive(:run)
         runner.invoke
       end
 
       it "doesn't exit on success" do
-        runner.stub(:run) { 0 }
-        runner.should_not_receive(:exit)
+        allow(runner).to receive(:run) { 0 }
+        expect(runner).to_not receive(:exit)
         runner.invoke
       end
 
       it "exits with #run's status on failure" do
-        runner.stub(:run) { 123 }
-        runner.should_receive(:exit).with(123)
+        allow(runner).to receive(:run) { 123 }
+        expect(runner).to receive(:exit).with(123)
         runner.invoke
       end
     end
