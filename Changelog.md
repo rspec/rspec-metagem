@@ -30,6 +30,9 @@ Breaking Changes for 3.0.0:
 * Remove `RSpec::Core::Configuration#output` and
   `RSpec::Core::Configuration#out` aliases of
   `RSpec::Core::Configuration#output_stream`. (Myron Marston)
+* Don't autorun specs via `#at_exit` by default; `require 'rspec/autorun'`
+  is needed when running specs via `ruby` now (`rake` & `rspec` are both
+  unaffected). (Ben Hoskings)
 
 Enhancements
 
