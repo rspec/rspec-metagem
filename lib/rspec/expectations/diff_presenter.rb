@@ -1,5 +1,6 @@
 require 'diff/lcs'
 require "rspec/expectations/encoded_string"
+require "rspec/expectations/differ"
 require 'diff/lcs/hunk'
 require 'pp'
 
@@ -48,19 +49,12 @@ module RSpec
       attr_reader :expected, :actual, :encoding
 
       def hunks
-        @file_length_difference = 0
-        @hunks ||= diffs.map do |piece|
-          build_hunk(piece)
-        end
+        @hunks ||= Differ.new(@actual, @expected).hunks
       end
 
       def finalize_output(output, final_line)
         add_to_output(output, final_line)
         add_to_output(output, "\n")
-      end
-
-      def hunk_diff_string(hunk)
-        hunk.diff(format).to_s
       end
 
       def add_to_output(output, string)
@@ -77,32 +71,8 @@ module RSpec
         end
       end
 
-      def build_hunk(piece)
-        Diff::LCS::Hunk.new(
-          expected_lines, actual_lines, piece, context_lines, @file_length_difference
-        ).tap do |h|
-          @file_length_difference = h.file_length_difference
-        end
-      end
-
-      def diffs
-        Diff::LCS.diff(expected_lines, actual_lines)
-      end
-
-      def expected_lines
-        expected.split("\n").map! { |e| e.chomp }
-      end
-
-      def actual_lines
-        actual.split("\n").map! { |e| e.chomp }
-      end
-
       def format
         :unified
-      end
-
-      def context_lines
-        3
       end
 
       def color(text, color_code)
