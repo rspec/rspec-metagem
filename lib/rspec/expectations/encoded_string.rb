@@ -25,7 +25,17 @@ module RSpec
         def matching_encoding(string)
           string.encode(encoding)
         rescue Encoding::UndefinedConversionError
-          string.encode(encoding, :undef => :replace)
+          normalize_missing(string.encode(encoding, :invalid => :replace, :undef => :replace))
+        rescue Encoding::ConverterNotFoundError
+          normalize_missing(string.force_encoding(encoding).encode(:invalid => :replace))
+        end
+
+        def normalize_missing(string)
+          if encoding.to_s == "UTF-8"
+            string.gsub("\xEF\xBF\xBD".force_encoding(encoding), "?")
+          else
+            string
+          end
         end
       else
         def matching_encoding(string)

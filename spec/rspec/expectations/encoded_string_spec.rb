@@ -17,13 +17,15 @@ module RSpec::Expectations
         end
 
         context 'with a string that cannot be converted to the target encoding' do
-          it 'replaces undefined characters' do
+          it 'replaces undefined characters with either a ? or a unicode ?' do
             ascii_string = "\xAE".force_encoding("ASCII-8BIT")
             valid_unicode_string = "\xE2\x82\xAC".force_encoding('UTF-8')
 
             resulting_string = build_encoded_string(valid_unicode_string, target_encoding) << ascii_string
-            expected_bytes = [226, 130, 172, 239, 191, 189]
-            expect(resulting_string.each_byte.to_a).to eq expected_bytes
+            expected_bytes = [226, 130, 172, "?".unpack("c").first]
+            actual_bytes = resulting_string.each_byte.to_a
+
+            expect(actual_bytes).to eq(expected_bytes)
           end
         end
 
