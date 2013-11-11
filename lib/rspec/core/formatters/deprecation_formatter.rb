@@ -16,7 +16,9 @@ module RSpec
 
         def printer
           @printer ||= case deprecation_stream
-                       when File, RaiseErrorStream
+                       when File
+                         ImmediatePrinter.new(FileStream.new(deprecation_stream), summary_stream, self)
+                       when RaiseErrorStream
                          ImmediatePrinter.new(deprecation_stream, summary_stream, self)
                        else
                          DelayedPrinter.new(deprecation_stream, summary_stream, self)
@@ -95,18 +97,10 @@ module RSpec
         end
 
         class ImmediatePrinter
-          include ::RSpec::Core::Formatters::Helpers
-
           attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
 
           def initialize(deprecation_stream, summary_stream, deprecation_formatter)
             @deprecation_stream = deprecation_stream
-
-            # In one of my test suites, I got lots of duplicate output in the
-            # deprecation file (e.g. 200 of the same deprecation, even though
-            # the `puts` below was only called 6 times). Setting `sync = true`
-            # fixes this (but we really have no idea why!).
-            @deprecation_stream.sync = true
 
             @summary_stream = summary_stream
             @deprecation_formatter = deprecation_formatter
@@ -118,10 +112,8 @@ module RSpec
           end
 
           def deprecation_summary
-            if deprecation_formatter.count > 0
-              summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation')} logged to #{deprecation_stream.path}"
-              deprecation_stream.puts RAISE_ERROR_CONFIG_NOTICE
-            end
+            return if deprecation_formatter.count.zero?
+            deprecation_stream.summarize(summary_stream, deprecation_formatter.count)
           end
         end
 
@@ -176,12 +168,38 @@ module RSpec
 
         # Not really a stream, but is usable in place of one.
         class RaiseErrorStream
+          include ::RSpec::Core::Formatters::Helpers
+
           def puts(message)
             raise DeprecationError, message
           end
 
-          def sync=(value)
-            # no-op
+          def summarize(summary_stream, deprecation_count)
+            summary_stream.puts "\n#{pluralize(deprecation_count, 'deprecation')} found."
+          end
+        end
+
+        # Wraps a File object and provides file-specific operations.
+        class FileStream
+          include ::RSpec::Core::Formatters::Helpers
+
+          def initialize(file)
+            @file = file
+
+            # In one of my test suites, I got lots of duplicate output in the
+            # deprecation file (e.g. 200 of the same deprecation, even though
+            # the `puts` below was only called 6 times). Setting `sync = true`
+            # fixes this (but we really have no idea why!).
+            @file.sync = true
+          end
+
+          def puts(*args)
+            @file.puts(*args)
+          end
+
+          def summarize(summary_stream, deprecation_count)
+            summary_stream.puts "\n#{pluralize(deprecation_count, 'deprecation')} logged to #{@file.path}"
+            puts RAISE_ERROR_CONFIG_NOTICE
           end
         end
 
