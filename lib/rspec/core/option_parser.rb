@@ -2,6 +2,7 @@
 require 'optparse'
 
 module RSpec::Core
+  # @api private
   class Parser
     def self.parse!(args)
       new.parse!(args)
