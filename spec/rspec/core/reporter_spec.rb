@@ -8,7 +8,7 @@ module RSpec::Core
       Reporter.new(config, *formatters)
     end
 
-    describe "abort" do
+    describe "finish" do
       let(:formatter) { double("formatter") }
       let(:example)   { double("example") }
       let(:reporter)  { reporter_for(formatter) }
@@ -16,11 +16,11 @@ module RSpec::Core
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
         it "sends #{message} to the formatter(s) that respond to message" do
           formatter.as_null_object.should_receive(message)
-          reporter.abort
+          reporter.finish
         end
 
         it "doesnt notify formatters about messages they dont implement" do
-          expect { reporter.abort }.to_not raise_error
+          expect { reporter.finish }.to_not raise_error
         end
       end
     end

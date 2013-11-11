@@ -110,8 +110,6 @@ module RSpec::Core
       end
     end
 
-    alias_method :abort, :finish
-
     def stop
       @duration = (RSpec::Core::Time.now - @start).to_f if @start
       notify :stop
