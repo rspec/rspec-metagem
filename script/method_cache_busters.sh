@@ -8,7 +8,7 @@ cat script/ignores | ruby -ne 'puts $_.split(/\s+###/)[0]' > $IGNORE_FILE
 
 egrep 'def [a-z]*\..*' -R lib | grep -v "def self" | grep -v -f $IGNORE_FILE
 grep undef -R lib | grep -v -f $IGNORE_FILE
-grep alias_method -R lib
+grep alias_method -R lib | grep -v -f $IGNORE_FILE
 grep remove_method -R lib | grep -v -f $IGNORE_FILE
 grep const_set -R lib | grep -v -f $IGNORE_FILE
 grep remove_const -R lib | grep -v -f $IGNORE_FILE
