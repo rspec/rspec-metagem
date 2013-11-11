@@ -1,3 +1,11 @@
+### 3.0.0.beta2 Development
+[full changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...master)
+
+Bug Fixes:
+
+* Fix failure (undefined method `path`) in end-of-run summary
+  when `raise_errors_for_deprecations!` is configured. (Myron Marston)
+
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
 

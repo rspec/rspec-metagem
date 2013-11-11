@@ -86,6 +86,27 @@ module RSpec::Core::Formatters
         end
       end
 
+      context "with an Error deprecation_stream" do
+        let(:deprecation_stream) { DeprecationFormatter::RaiseErrorStream.new }
+
+        it 'prints a summary of the number of deprecations found' do
+          expect { formatter.deprecation(:deprecated => 'foo') }.to raise_error(RSpec::Core::DeprecationError)
+
+          formatter.deprecation_summary
+
+          expect(summary_stream.string).to eq("\n1 deprecation found.\n")
+        end
+
+        it 'pluralizes the count when it is greater than 1' do
+          expect { formatter.deprecation(:deprecated => 'foo') }.to raise_error(RSpec::Core::DeprecationError)
+          expect { formatter.deprecation(:deprecated => 'bar') }.to raise_error(RSpec::Core::DeprecationError)
+
+          formatter.deprecation_summary
+
+          expect(summary_stream.string).to eq("\n2 deprecations found.\n")
+        end
+      end
+
       context "with an IO deprecation_stream" do
         let(:deprecation_stream) { StringIO.new }
 
