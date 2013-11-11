@@ -1,1 +1,32 @@
 # grep -v -f <this file> doesn't work properly when empty, so this line is here.
+
+# The `alias_method` calls below are only executed at file load time
+# (when the method cache will be busted by defining methods anyway).
+lib/rspec/core/configuration.rb:        alias_method alias_name, name
+lib/rspec/core/configuration.rb:        alias_method "#{alias_name}=", "#{name}="
+lib/rspec/core/configuration.rb:        names.each {|name| alias_method "#{name}?", name}
+lib/rspec/core/configuration.rb:      alias_method :color_enabled, :color
+lib/rspec/core/configuration.rb:      alias_method :color_enabled=, :color=
+lib/rspec/core/configuration.rb:      alias_method :formatter=, :add_formatter
+lib/rspec/core/configuration.rb:      alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
+lib/rspec/core/configuration.rb:      alias_method :filter_run, :filter_run_including
+lib/rspec/core/configuration.rb:      alias_method :filter=, :inclusion_filter=
+lib/rspec/core/configuration.rb:      alias_method :filter, :inclusion_filter
+lib/rspec/core/example.rb:      alias_method :pending?, :pending
+lib/rspec/core/example_group.rb:        alias_method :display_name, :description
+lib/rspec/core/example_group.rb:        alias_method :describes, :described_class
+lib/rspec/core/example_group.rb:        # Works like `alias_method :name, :example` with the added benefit of
+lib/rspec/core/example_group.rb:        # Works like `alias_method :name, :it_behaves_like` with the added
+lib/rspec/core/example_group.rb:        alias_method :context, :describe
+lib/rspec/core/hooks.rb:      alias_method :append_before, :before
+lib/rspec/core/hooks.rb:      alias_method :prepend_after, :after
+lib/rspec/core/shared_example_group.rb:      alias_method :shared_context,      :shared_examples
+lib/rspec/core/shared_example_group.rb:      alias_method :share_examples_for,  :shared_examples
+lib/rspec/core/shared_example_group.rb:      alias_method :shared_examples_for, :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :shared_context,      :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :share_examples_for,  :shared_examples
+lib/rspec/core/shared_example_group.rb:        alias_method :shared_examples_for, :shared_examples
+
+# The `alias_method` calls below happen when users define a named let.
+# It happens at spec definition time, not spec run time.
+lib/rspec/core/memoized_helpers.rb:            alias_method :subject, name
