@@ -562,6 +562,50 @@ module RSpec::Core
     end
 
     describe "#before, after, and around hooks" do
+      describe "scope aliasing" do
+        it "aliases the `:context` hook scope to `:all`" do
+          group = ExampleGroup.describe
+          order = []
+          group.before(:context) { order << 1 }
+          group.example("example") {}
+
+          group.run
+          expect(order).to eq([1])
+        end
+
+        it "aliases the `:example` hook scope to `:each`" do
+          group = ExampleGroup.describe
+          order = []
+          group.before(:example) { order << 1 }
+          group.example("example") {}
+
+          group.run
+          expect(order).to eq([1])
+        end
+
+        it "should work with `before`" do
+          group = ExampleGroup.describe
+          order = []
+          group.before(:context) { order << 1 }
+          group.before(:example) { order << 2 }
+          group.example("example") {}
+
+          group.run
+          expect(order).to eq([1, 2])
+        end
+
+        it "should work with `after`" do
+          group = ExampleGroup.describe
+          order = []
+          group.after(:example) { order << 1 }
+          group.after(:context) { order << 2 }
+          group.example("example") {}
+
+          group.run
+          expect(order).to eq([1, 2])
+        end
+      end
+
       it "runs the before alls in order" do
         group = ExampleGroup.describe
         order = []

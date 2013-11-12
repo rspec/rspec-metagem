@@ -522,13 +522,28 @@ EOS
       end
 
       def extract_scope_from(args)
-        if SCOPES.include?(args.first)
-          args.shift
+        if known_scope?(args.first)
+          normalized_scope_for(args.shift)
         elsif args.any? { |a| a.is_a?(Symbol) }
-          raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")
+          raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) or scope alias (:example or :context) when using symbols as metadata for a hook.")
         else
           :each
         end
+      end
+
+      def known_scope?(scope)
+        SCOPES.include?(scope) || scope_aliases.keys.include?(scope)
+      end
+
+      def normalized_scope_for(scope)
+        scope_aliases[scope] || scope
+      end
+
+      def scope_aliases
+        @scope_aliases ||= {
+          :example => :each,
+          :context => :all,
+        }
       end
     end
   end
