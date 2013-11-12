@@ -9,7 +9,7 @@ require 'rspec/expectations/fail_with'
 require 'rspec/expectations/errors'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
-require 'rspec/expectations/differ'
+require 'rspec/expectations/diff_presenter'
 
 module RSpec
   # RSpec::Expectations adds two instance methods to every object:

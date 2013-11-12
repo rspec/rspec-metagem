@@ -4,21 +4,18 @@ require 'ostruct'
 
 module RSpec
   module Expectations
-    describe Differ do
+    describe DiffPresenter do
+      let(:differ) { RSpec::Expectations::DiffPresenter.new }
       context "without --color" do
 
       before { RSpec::Matchers.configuration.stub(:color? => false) }
 
-      let(:differ) { RSpec::Expectations::Differ.new }
-
-        # color disabled context
-
       describe '#diff_as_string' do
         subject { differ.diff_as_string(@expected, @actual) }
         it "outputs unified diff of two strings" do
-          @expected="foo\nbar\nzap\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nline\n"
-          @actual="foo\nzap\nbar\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nanother\nline\n"
-          expect(subject).to eql(<<-'EOD')
+          @expected = "foo\nbar\nzap\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nline\n"
+          @actual   = "foo\nzap\nbar\nthis\nis\nsoo\nvery\nvery\nequal\ninsert\na\nanother\nline\n"
+          expect(subject).to eq(<<-'EOD')
 
 
 @@ -1,6 +1,6 @@
@@ -49,20 +46,24 @@ EOD
 +Tu avec carté {count} itém has
 EOD
           end
+
           it 'copes with encoded strings', :pending => (Diff::LCS::VERSION >= '1.2.2') do
             @expected="Tu avec carté {count} itém has".encode('UTF-16LE')
             @actual="Tu avec carte {count} item has".encode('UTF-16LE')
             expect(subject).to eql 'Could not produce a diff because of the encoding of the string (UTF-16LE)'
           end
+
           it 'handles differently encoded strings that are compatible' do
             @expected = "강인철".encode('UTF-8')
             @actual   = "abc".encode('us-ascii')
             expect(subject).to eql "\n@@ -1,2 +1,2 @@\n-abc\n+강인철\n"
           end
-          it 'outputs a message when encountering differently encoded strings' do
-            @expected="Tu avec carté {count} itém has".encode('UTF-16LE')
-            @actual="Tu avec carte {count} item has"
-            expect(subject).to eql 'Could not produce a diff because the encoding of the actual string (UTF-8) differs from the encoding of the expected string (UTF-16LE)'
+
+          it 'uses the default external encoding when the two strings have incompatible encodings' do
+            @expected = "Tu avec carté {count} itém has".encode('UTF-16LE')
+            @actual   = "Tu avec carte {count} item has"
+            expect(subject).to eq("\n@@ -1,2 +1,2 @@\n-Tu avec carte {count} item has\n+Tu avec carté {count} itém has\n")
+            expect(subject.encoding).to eq(Encoding.default_external)
           end
         end
       end
@@ -210,8 +211,6 @@ EOD
 
     context "with --color" do
       before { RSpec::Matchers.configuration.stub(:color? => true) }
-
-      let(:differ) { RSpec::Expectations::Differ.new }
 
       it "outputs colored diffs" do
         expected = "foo bar baz"
