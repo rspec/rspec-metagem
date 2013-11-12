@@ -81,11 +81,11 @@ module RSpec
       end
 
       def env_options
-        ENV["SPEC_OPTS"] ? Parser.parse!(Shellwords.split(ENV["SPEC_OPTS"])) : {}
+        ENV["SPEC_OPTS"] ? Parser.parse(Shellwords.split(ENV["SPEC_OPTS"])) : {}
       end
 
       def command_line_options
-        @command_line_options ||= Parser.parse!(@args).merge :files_or_directories_to_run => @args
+        @command_line_options ||= Parser.parse(@args).merge :files_or_directories_to_run => @args
       end
 
       def custom_options
