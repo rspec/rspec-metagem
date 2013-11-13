@@ -30,3 +30,45 @@ lib/rspec/core/shared_example_group.rb:        alias_method :shared_examples_for
 # The `alias_method` calls below happen when users define a named let.
 # It happens at spec definition time, not spec run time.
 lib/rspec/core/memoized_helpers.rb:            alias_method :subject, name
+
+# These `const_set` calls happen at spec definition time,
+# not at spec run time, so they are OK.
+lib/rspec/core/example_group.rb:      const_scope.const_set(name, group)
+lib/rspec/core/memoized_helpers.rb:              example_group.const_set(:NamedSubjectPreventSuper, self)
+lib/rspec/core/memoized_helpers.rb:          example_group.const_set(:LetDefinitions, mod)
+
+# These mentions of `extend` get executed at spec definition time
+# (unless the user changes their RSpec config at spec run time, but
+# there's no way to work around that).
+lib/rspec/core/configuration.rb:      def extend(mod, \*filters)
+lib/rspec/core/configuration.rb:        include_or_extend_modules << \[:extend, mod, Metadata.build_hash_from(filters)\]
+lib/rspec/core/configuration.rb:          host.extend(mod) unless host.singleton_class < mod
+lib/rspec/core/configuration.rb:          host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
+lib/rspec/core/configuration.rb:          extend RSpec::SharedContext
+lib/rspec/core/dsl.rb:extend RSpec::Core::DSL
+lib/rspec/core/example_group.rb:      extend  Hooks
+lib/rspec/core/example_group.rb:      extend SharedExampleGroup
+lib/rspec/core/memoized_helpers.rb:        mod.extend(ClassMethods)
+lib/rspec/core/shared_example_group.rb:extend RSpec::Core::SharedExampleGroup::TopLevelDSL
+
+# These uses of `extend` would be nice to get rid of, but our prior attempts
+# to convert the metadata hash to a composition-based design have created perf
+# regressions. These lines also only are only executed when an example or
+# example group is defined, so they shouldn't ever blow the method cache
+# at spec run time.
+lib/rspec/core/metadata.rb:          store(:example_group, {:example_group => parent_group_metadata\[:example_group\].extend(GroupMetadataHash)}.extend(GroupMetadataHash))
+lib/rspec/core/metadata.rb:          store(:example_group, {}.extend(GroupMetadataHash))
+lib/rspec/core/metadata.rb:        dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
+
+# This use of `extend` only happens on 1.8.7, when a shared example group
+# is defined (to provide the Proc#source_location method on the provided
+# block). It should only happen at spec definition time (unless users are
+# defining shared example groups at spec run time).
+lib/rspec/core/shared_example_group.rb:            block.extend Module.new {
+
+# This happens when an example group is defined, not at spec run time.
+lib/rspec/core/example_group.rb:        subclass = Class.new(parent)
+
+# This happens at file load time.
+lib/rspec/core/formatters/deprecation_formatter.rb:    DeprecationError = Class.new(StandardError)
+
