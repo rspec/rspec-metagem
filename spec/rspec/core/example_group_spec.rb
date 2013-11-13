@@ -563,46 +563,48 @@ module RSpec::Core
 
     describe "#before, after, and around hooks" do
       describe "scope aliasing" do
-        it "aliases the `:context` hook scope to `:all`" do
+        it "aliases the `:context` hook scope to `:all` for before-hooks" do
           group = ExampleGroup.describe
           order = []
-          group.before(:context) { order << 1 }
-          group.example("example") {}
+          group.before(:context) { order << :before_context }
+          group.example("example") { order << :example }
+          group.example("example") { order << :example }
 
           group.run
-          expect(order).to eq([1])
+          expect(order).to eq([:before_context, :example, :example])
         end
 
-        it "aliases the `:example` hook scope to `:each`" do
+        it "aliases the `:example` hook scope to `:each` for before-hooks" do
           group = ExampleGroup.describe
           order = []
-          group.before(:example) { order << 1 }
-          group.example("example") {}
+          group.before(:example) { order << :before_example }
+          group.example("example") { order << :example }
+          group.example("example") { order << :example }
 
           group.run
-          expect(order).to eq([1])
+          expect(order).to eq([:before_example, :example, :before_example, :example])
         end
 
-        it "should work with `before`" do
+        it "aliases the `:context` hook scope to `:all` for after-hooks" do
           group = ExampleGroup.describe
           order = []
-          group.before(:context) { order << 1 }
-          group.before(:example) { order << 2 }
-          group.example("example") {}
+          group.example("example") { order << :example }
+          group.example("example") { order << :example }
+          group.after(:context) { order << :after_context }
 
           group.run
-          expect(order).to eq([1, 2])
+          expect(order).to eq([:example, :example, :after_context])
         end
 
-        it "should work with `after`" do
+        it "aliases the `:example` hook scope to `:each` for after-hooks" do
           group = ExampleGroup.describe
           order = []
-          group.after(:example) { order << 1 }
-          group.after(:context) { order << 2 }
-          group.example("example") {}
+          group.example("example") { order << :example }
+          group.example("example") { order << :example }
+          group.after(:example) { order << :after_example }
 
           group.run
-          expect(order).to eq([1, 2])
+          expect(order).to eq([:example, :after_example, :example, :after_example])
         end
       end
 
