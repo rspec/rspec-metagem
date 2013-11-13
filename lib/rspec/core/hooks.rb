@@ -525,7 +525,8 @@ EOS
         if known_scope?(args.first)
           normalized_scope_for(args.shift)
         elsif args.any? { |a| a.is_a?(Symbol) }
-          raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) or scope alias (:example or :context) when using symbols as metadata for a hook.")
+          error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{scope_aliases.keys.join(", ")}) when using symbols as metadata for a hook."
+          raise ArgumentError.new error_message
         else
           :each
         end
