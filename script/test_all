@@ -42,6 +42,8 @@ fi
 # https://github.com/carlhuda/bundler/issues/2382
 bundle exec bin/cucumber --strict
 
+script/prevent_runtime_method_cache_busters
+
 # Test against other RSpec gems.
 
 # Delete the directory for idempotency when running locally
