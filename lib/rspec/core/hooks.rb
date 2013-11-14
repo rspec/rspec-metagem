@@ -527,8 +527,8 @@ EOS
       end
 
       def extract_scope_from(args)
-        if known_scope?(args.first)
-          normalized_scope_for(args.shift)
+        if Hooks.known_scope?(args.first)
+          Hooks.normalized_scope_for(args.shift)
         elsif args.any? { |a| a.is_a?(Symbol) }
           error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as metadata for a hook."
           raise ArgumentError.new error_message
@@ -537,11 +537,13 @@ EOS
         end
       end
 
-      def known_scope?(scope)
+      # @api private
+      def self.known_scope?(scope)
         SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
       end
 
-      def normalized_scope_for(scope)
+      # @api private
+      def self.normalized_scope_for(scope)
         SCOPE_ALIASES[scope] || scope
       end
     end
