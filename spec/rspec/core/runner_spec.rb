@@ -3,20 +3,38 @@ require 'rspec/core/drb_command_line'
 
 module RSpec::Core
   describe Runner do
+    describe 'invocation' do
+      before do
+        # Simulate invoking the suite like exe/rspec does.
+        RSpec::Core::Runner.stub(:run)
+        RSpec::Core::Runner.invoke
+      end
+
+      it 'does not autorun after having been invoked' do
+        RSpec::Core::Runner.should_not_receive(:at_exit)
+        RSpec::Core::Runner.autorun
+      end
+
+      it 'prints a warning when autorun is attempted' do
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+        RSpec::Core::Runner.autorun
+      end
+    end
+
     describe 'at_exit' do
       it 'sets an at_exit hook if none is already set' do
+        RSpec::Core::Runner.stub(:autorun_disabled?).and_return(false)
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
-        RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
-        RSpec::Core::Runner.stub(:run).and_return(-1)
+        RSpec::Core::Runner.stub(:invoke)
         RSpec::Core::Runner.should_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
 
       it 'does not set the at_exit hook if it is already set' do
+        RSpec::Core::Runner.stub(:autorun_disabled?).and_return(false)
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(true)
         RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
-        RSpec::Core::Runner.stub(:at_exit_hook_disabled?).and_return(false)
         RSpec::Core::Runner.should_receive(:at_exit).never
         RSpec::Core::Runner.autorun
       end
@@ -46,6 +64,28 @@ module RSpec::Core
         ::DRb.stub(:current_server).and_raise(::DRb::DRbServerNotFound)
 
         expect(RSpec::Core::Runner.running_in_drb?).to be_falsey
+      end
+    end
+
+    describe "#invoke" do
+      let(:runner) { RSpec::Core::Runner }
+
+      it "runs the specs via #run" do
+        allow(runner).to receive(:exit)
+        expect(runner).to receive(:run)
+        runner.invoke
+      end
+
+      it "doesn't exit on success" do
+        allow(runner).to receive(:run) { 0 }
+        expect(runner).to_not receive(:exit)
+        runner.invoke
+      end
+
+      it "exits with #run's status on failure" do
+        allow(runner).to receive(:run) { 123 }
+        expect(runner).to receive(:exit).with(123)
+        runner.invoke
       end
     end
 
