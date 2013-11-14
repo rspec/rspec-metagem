@@ -72,12 +72,12 @@ module RSpec::Core
         end
 
         context "given a hash" do
-          it "delegates extend on configuration" do
+          it "delegates include on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
             define_shared_group(:foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
-            expect(a[0]).to eq(:extend)
-            expect(Class.new.extend(a[1]).new.bar).to eq('bar')
+            expect(a[0]).to eq(:include)
+            expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
             expect(a[2]).to eq(:foo => :bar)
           end
         end
@@ -89,12 +89,12 @@ module RSpec::Core
             expect(SharedExampleGroup.registry.shared_example_groups[group]["name"]).to eq implementation
           end
 
-          it "delegates extend on configuration" do
+          it "delegates include on configuration" do
             implementation = Proc.new { def bar; 'bar'; end }
             define_shared_group("name", :foo => :bar, &implementation)
             a = RSpec.configuration.include_or_extend_modules.first
-            expect(a[0]).to eq(:extend)
-            expect(Class.new.extend(a[1]).new.bar).to eq('bar')
+            expect(a[0]).to eq(:include)
+            expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
             expect(a[2]).to eq(:foo => :bar)
           end
         end
