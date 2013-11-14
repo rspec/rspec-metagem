@@ -16,7 +16,7 @@ module RSpec::Core
       end
 
       it 'prints a warning when autorun is attempted' do
-        RSpec.should_receive(:deprecate).with("Requiring `rspec/autorun` when running RSpec via the `rspec` command")
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
         RSpec::Core::Runner.autorun
       end
     end
