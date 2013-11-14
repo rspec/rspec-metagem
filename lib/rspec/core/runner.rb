@@ -21,6 +21,7 @@ module RSpec
       AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
 
       def self.invoke
+        disable_autorun!
         status = run(ARGV, $stderr, $stdout).to_i
         exit(status) if status != 0
       end

@@ -3,6 +3,19 @@ require 'rspec/core/drb_command_line'
 
 module RSpec::Core
   describe Runner do
+    describe 'invocation' do
+      before {
+        # Simulate invoking the suite like exe/rspec does.
+        RSpec::Core::Runner.stub(:run)
+        RSpec::Core::Runner.invoke
+      }
+
+      it 'does not autorun after having been invoked' do
+        RSpec::Core::Runner.should_not_receive(:at_exit)
+        RSpec::Core::Runner.autorun
+      end
+    end
+
     describe 'at_exit' do
       it 'sets an at_exit hook if none is already set' do
         RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
