@@ -4,7 +4,13 @@ module RSpec
 
       # Register an at_exit hook that runs the suite.
       def self.autorun
-        return if autorun_disabled? || installed_at_exit? || running_in_drb?
+        if autorun_disabled?
+          STDERR.puts "\nDeprecated: requiring rspec/autorun has no effect when running rspec from the command line."
+          return
+        elsif installed_at_exit? || running_in_drb?
+          return
+        end
+
         at_exit do
           # Don't bother running any specs and just let the program terminate
           # if we got here due to an unrescued exception (anything other than

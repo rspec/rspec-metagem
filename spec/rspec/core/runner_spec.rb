@@ -14,6 +14,11 @@ module RSpec::Core
         RSpec::Core::Runner.should_not_receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
+
+      it 'prints a warning when autorun is attempted' do
+        STDERR.should_receive(:puts).with("\nDeprecated: requiring rspec/autorun has no effect when running rspec from the command line.")
+        RSpec::Core::Runner.autorun
+      end
     end
 
     describe 'at_exit' do
