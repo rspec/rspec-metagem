@@ -23,7 +23,7 @@ Feature: configure expectation framework
       end
 
       describe 6 do
-        it { should be_a_multiple_of(3) }
+        it { is_expected.to be_a_multiple_of 3 }
       end
       """
     When I run `rspec example_spec.rb`
