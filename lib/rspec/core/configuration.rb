@@ -861,7 +861,7 @@ module RSpec
       # @private
       if RUBY_VERSION.to_f >= 1.9
         def safe_extend(mod, host)
-          host.extend(mod) unless (class << host; self; end) < mod
+          host.extend(mod) unless host.singleton_class < mod
         end
       else
         def safe_extend(mod, host)

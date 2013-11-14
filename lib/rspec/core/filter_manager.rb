@@ -110,13 +110,13 @@ module RSpec
       module BackwardCompatibility
         def merge(orig, opposite, *updates)
           _warn_deprecated_keys(updates.last)
-          super
         end
 
         def reverse_merge(orig, opposite, *updates)
           _warn_deprecated_keys(updates.last)
-          super
         end
+
+      private
 
         # Supports a use case that probably doesn't exist: overriding the
         # if/unless procs.
@@ -133,12 +133,13 @@ module RSpec
         end
       end
 
+      include BackwardCompatibility
+
       attr_reader :exclusions, :inclusions
 
       def initialize
         @exclusions = ExclusionFilterHash.new
         @inclusions = InclusionFilterHash.new
-        extend(BackwardCompatibility)
       end
 
       def add_location(file_path, line_numbers)
@@ -198,6 +199,7 @@ module RSpec
       end
 
       def merge(orig, opposite, *updates)
+        super
         orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
       end
 
@@ -207,6 +209,7 @@ module RSpec
       end
 
       def reverse_merge(orig, opposite, *updates)
+        super
         updated = updates.last.merge(orig)
         opposite.each_pair {|k,v| updated.delete(k) if updated[k] == v}
         orig.replace(updated)
