@@ -291,7 +291,8 @@ module RSpec
         hooks.register :prepend, :around, *args, &block
       end
 
-      # @private
+      # @api private
+      # Holds the various registered hooks.
       def hooks
         @hooks ||= HookCollections.new(self,
           :around => { :each => AroundHookCollection.new },
@@ -302,6 +303,7 @@ module RSpec
 
     private
 
+      # @private
       class Hook
         attr_reader :block, :options
 
@@ -315,6 +317,7 @@ module RSpec
         end
       end
 
+      # @private
       class BeforeHook < Hook
         def run(example)
           example.instance_exec(example, &block)
@@ -325,6 +328,7 @@ module RSpec
         end
       end
 
+      # @private
       class AfterHook < Hook
         def run(example)
           example.instance_exec_with_rescue("in an after hook", &block)
@@ -335,6 +339,7 @@ module RSpec
         end
       end
 
+      # @private
       class AfterAllHook < Hook
         def run(example)
           example.instance_exec(example, &block)
@@ -354,12 +359,14 @@ EOS
         end
       end
 
+      # @private
       class AroundHook < Hook
         def display_name
           "around hook"
         end
       end
 
+      # @private
       class BaseHookCollection
         Array.public_instance_methods(false).each do |name|
           define_method(name) { |*a, &b| hooks.__send__(name, *a, &b) }
@@ -376,6 +383,7 @@ EOS
         end
       end
 
+      # @private
       class HookCollection < BaseHookCollection
         def for(example_or_group)
           self.class.
@@ -393,6 +401,7 @@ EOS
         end
       end
 
+      # @private
       class AroundHookCollection < BaseHookCollection
         def for(example, initial_procsy=nil)
           self.class.new(hooks.select {|hook| hook.options_apply?(example)}).
@@ -414,6 +423,7 @@ EOS
         end
       end
 
+      # @private
       class GroupHookCollection < BaseHookCollection
         def for(group)
           @group = group
@@ -425,6 +435,7 @@ EOS
         end
       end
 
+      # @private
       class HookCollections
         def initialize(owner, data)
           @owner = owner
