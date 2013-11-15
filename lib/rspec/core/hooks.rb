@@ -125,8 +125,9 @@ EOS
       end
 
       class HookCollections
-        def initialize(data)
-          @data = data
+        def initialize(owner, data)
+          @owner = owner
+          @data  = data
         end
 
         def [](key)
@@ -142,7 +143,43 @@ EOS
           process(host, globals, :after,  :all)
         end
 
-        private
+        def around_each_hooks_for(example, initial_procsy=nil)
+          AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
+            a.hooks[:around][:each]
+          end).for(example, initial_procsy)
+        end
+
+        def register(prepend_or_append, hook, *args, &block)
+          scope, options = scope_and_options_from(*args)
+          self[hook][scope].send(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
+        end
+
+        # @private
+        #
+        # Runs all of the blocks stored with the hook in the context of the
+        # example. If no example is provided, just calls the hook directly.
+        def run(hook, scope, example_or_group=ExampleGroup.new, initial_procsy=nil)
+          return if RSpec.configuration.dry_run?
+
+          find_hook(hook, scope, example_or_group, initial_procsy).run
+        end
+
+        SCOPES = [:each, :all, :suite]
+
+        SCOPE_ALIASES = {
+          :example => :each,
+          :context => :all,
+        }
+
+        HOOK_TYPES = {
+          :before => Hash.new { BeforeHook },
+          :after  => Hash.new { AfterHook  },
+          :around => Hash.new { AroundHook }
+        }
+
+        HOOK_TYPES[:after][:all] = AfterAllHook
+
+      private
 
         def process(host, globals, position, scope)
           globals[position][scope].each do |hook|
@@ -151,11 +188,73 @@ EOS
             self[position][scope] << hook
           end
         end
+
+        def scope_and_options_from(*args)
+          return extract_scope_from(args), Metadata.build_hash_from(args)
+        end
+
+        def extract_scope_from(args)
+          if known_scope?(args.first)
+            normalized_scope_for(args.shift)
+          elsif args.any? { |a| a.is_a?(Symbol) }
+            error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as metadata for a hook."
+            raise ArgumentError.new error_message
+          else
+            :each
+          end
+        end
+
+        # @api private
+        def known_scope?(scope)
+          SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
+        end
+
+        # @api private
+        def normalized_scope_for(scope)
+          SCOPE_ALIASES[scope] || scope
+        end
+
+        def find_hook(hook, scope, example_or_group, initial_procsy)
+          case [hook, scope]
+          when [:before, :all]
+            before_all_hooks_for(example_or_group)
+          when [:after, :all]
+            after_all_hooks_for(example_or_group)
+          when [:around, :each]
+            around_each_hooks_for(example_or_group, initial_procsy)
+          when [:before, :each]
+            before_each_hooks_for(example_or_group)
+          when [:after, :each]
+            after_each_hooks_for(example_or_group)
+          when [:before, :suite], [:after, :suite]
+            self[hook][:suite].with(example_or_group)
+          end
+        end
+
+        def before_all_hooks_for(group)
+          GroupHookCollection.new(self[:before][:all]).for(group)
+        end
+
+        def after_all_hooks_for(group)
+          GroupHookCollection.new(self[:after][:all]).for(group)
+        end
+
+        def before_each_hooks_for(example)
+          HookCollection.new(FlatMap.flat_map(@owner.parent_groups.reverse) do |a|
+            a.hooks[:before][:each]
+          end).for(example)
+        end
+
+        def after_each_hooks_for(example)
+          HookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
+            a.hooks[:after][:each]
+          end).for(example)
+        end
       end
 
       # @private
       def hooks
-        @hooks ||= HookCollections.new(
+        @hooks ||= HookCollections.new(self,
           :around => { :each => AroundHookCollection.new },
           :before => { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new },
           :after =>  { :each => HookCollection.new, :all => HookCollection.new, :suite => HookCollection.new }
@@ -329,7 +428,7 @@ EOS
       #       end
       #     end
       def before(*args, &block)
-        register_hook :append, :before, *args, &block
+        hooks.register :append, :before, *args, &block
       end
 
       alias_method :append_before, :before
@@ -339,7 +438,7 @@ EOS
       #
       # See #before for scoping semantics.
       def prepend_before(*args, &block)
-        register_hook :prepend, :before, *args, &block
+        hooks.register :prepend, :before, *args, &block
       end
 
       # @api public
@@ -391,7 +490,7 @@ EOS
       # Similarly, if more than one `after` is declared within any one scope,
       # they are run in reverse order of that in which they are declared.
       def after(*args, &block)
-        register_hook :prepend, :after, *args, &block
+        hooks.register :prepend, :after, *args, &block
       end
 
       alias_method :prepend_after, :after
@@ -401,7 +500,7 @@ EOS
       #
       # See #after for scoping semantics.
       def append_after(*args, &block)
-        register_hook :append, :after, *args, &block
+        hooks.register :append, :after, *args, &block
       end
 
       # @api public
@@ -449,102 +548,7 @@ EOS
       #     around(:each) {|ex| FakeFS(&ex)}
       #
       def around(*args, &block)
-        register_hook :prepend, :around, *args, &block
-      end
-
-      # @private
-      #
-      # Runs all of the blocks stored with the hook in the context of the
-      # example. If no example is provided, just calls the hook directly.
-      def run_hook(hook, scope, example_or_group=ExampleGroup.new, initial_procsy=nil)
-        return if RSpec.configuration.dry_run?
-
-        find_hook(hook, scope, example_or_group, initial_procsy).run
-      end
-
-      # @private
-      def around_each_hooks_for(example, initial_procsy=nil)
-        AroundHookCollection.new(FlatMap.flat_map(parent_groups) {|a| a.hooks[:around][:each]}).for(example, initial_procsy)
-      end
-
-    private
-
-      SCOPES = [:each, :all, :suite]
-
-      SCOPE_ALIASES = {
-        :example => :each,
-        :context => :all,
-      }
-
-      HOOK_TYPES = {
-        :before => Hash.new { BeforeHook },
-        :after  => Hash.new { AfterHook  },
-        :around => Hash.new { AroundHook }
-      }
-
-      HOOK_TYPES[:after][:all] = AfterAllHook
-
-      def before_all_hooks_for(group)
-        GroupHookCollection.new(hooks[:before][:all]).for(group)
-      end
-
-      def after_all_hooks_for(group)
-        GroupHookCollection.new(hooks[:after][:all]).for(group)
-      end
-
-      def before_each_hooks_for(example)
-        HookCollection.new(FlatMap.flat_map(parent_groups.reverse) {|a| a.hooks[:before][:each]}).for(example)
-      end
-
-      def after_each_hooks_for(example)
-        HookCollection.new(FlatMap.flat_map(parent_groups) {|a| a.hooks[:after][:each]}).for(example)
-      end
-
-      def register_hook prepend_or_append, hook, *args, &block
-        scope, options = scope_and_options_from(*args)
-        hooks[hook][scope].send(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
-      end
-
-      def find_hook(hook, scope, example_or_group, initial_procsy)
-        case [hook, scope]
-        when [:before, :all]
-          before_all_hooks_for(example_or_group)
-        when [:after, :all]
-          after_all_hooks_for(example_or_group)
-        when [:around, :each]
-          around_each_hooks_for(example_or_group, initial_procsy)
-        when [:before, :each]
-          before_each_hooks_for(example_or_group)
-        when [:after, :each]
-          after_each_hooks_for(example_or_group)
-        when [:before, :suite], [:after, :suite]
-          hooks[hook][:suite].with(example_or_group)
-        end
-      end
-
-      def scope_and_options_from(*args)
-        return extract_scope_from(args), Metadata.build_hash_from(args)
-      end
-
-      def extract_scope_from(args)
-        if Hooks.known_scope?(args.first)
-          Hooks.normalized_scope_for(args.shift)
-        elsif args.any? { |a| a.is_a?(Symbol) }
-          error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as metadata for a hook."
-          raise ArgumentError.new error_message
-        else
-          :each
-        end
-      end
-
-      # @api private
-      def self.known_scope?(scope)
-        SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
-      end
-
-      # @api private
-      def self.normalized_scope_for(scope)
-        SCOPE_ALIASES[scope] || scope
+        hooks.register :prepend, :around, *args, &block
       end
     end
   end

@@ -190,7 +190,7 @@ module RSpec
 
       # @private
       def around_each_hooks
-        @around_each_hooks ||= example_group.around_each_hooks_for(self)
+        @around_each_hooks ||= example_group.hooks.around_each_hooks_for(self)
       end
 
       # @private
