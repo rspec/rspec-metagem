@@ -240,7 +240,7 @@ An error occurred #{context}
         if around_each_hooks.empty?
           yield
         else
-          @example_group_class.run_around_each_hooks(self, Procsy.new(metadata, &block))
+          @example_group_class.hooks.run(:around, :each, self, Procsy.new(metadata, &block))
         end
       rescue Exception => e
         set_exception(e, "in an around(:each) hook")
@@ -278,11 +278,11 @@ An error occurred #{context}
 
       def run_before_each
         @example_group_instance.setup_mocks_for_rspec
-        @example_group_class.run_before_each_hooks(self)
+        @example_group_class.hooks.run(:before, :each, self)
       end
 
       def run_after_each
-        @example_group_class.run_after_each_hooks(self)
+        @example_group_class.hooks.run(:after, :each, self)
         verify_mocks
       rescue Exception => e
         set_exception(e, "in an after(:each) hook")

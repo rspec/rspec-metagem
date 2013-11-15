@@ -344,21 +344,6 @@ module RSpec
       end
 
       # @private
-      def self.run_around_each_hooks(example, initial_procsy)
-        hooks.run(:around, :each, example, initial_procsy)
-      end
-
-      # @private
-      def self.run_before_each_hooks(example)
-        hooks.run(:before, :each, example)
-      end
-
-      # @private
-      def self.run_after_each_hooks(example)
-        hooks.run(:after, :each, example)
-      end
-
-      # @private
       def self.run_after_all_hooks(example_group_instance)
         return if descendant_filtered_examples.empty?
         assign_before_all_ivars(before_all_ivars, example_group_instance)
