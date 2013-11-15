@@ -3,7 +3,7 @@
 
 Enhancements:
 
-* Add `is_expected` for one-liners that read will with the
+* Add `is_expected` for one-liners that read well with the
   `expect`-based syntax. `is_expected` is simply defined as
   `expect(subject)` and can be used in an expression like:
   `it { is_expected.to read_well }`. (Myron Marston)
