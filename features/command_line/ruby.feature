@@ -21,17 +21,3 @@ Feature: run with ruby command
     When I run `ruby example_spec.rb`
     Then the output should contain "1 example, 0 failures"
 
-  Scenario: Use ruby's `-r` option to require `rspec/autorun`
-    Given a file named "example_spec.rb" with:
-      """ruby
-      require 'rspec/core'
-
-      describe 1 do
-        it "is < 2" do
-          expect(1).to be < 2
-        end
-      end
-      """
-    When I run `ruby -rrspec/autorun example_spec.rb`
-    Then the output should contain "1 example, 0 failures"
-
