@@ -11,18 +11,18 @@ class Differ
     end
   end
 
-  private
+private
 
   def diffs
     Diff::LCS.diff(expected_lines, actual_lines)
   end
 
   def expected_lines
-    expected.split("\n").map! { |e| e.chomp }
+    @expected.split("\n").map! { |e| e.chomp }
   end
 
   def actual_lines
-    actual.split("\n").map! { |e| e.chomp }
+    @actual.split("\n").map! { |e| e.chomp }
   end
 
   def build_hunk(piece)
@@ -37,5 +37,4 @@ class Differ
     3
   end
 
-  attr_reader :actual, :expected
 end
