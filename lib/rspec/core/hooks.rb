@@ -471,6 +471,11 @@ EOS
 
       SCOPES = [:each, :all, :suite]
 
+      SCOPE_ALIASES = {
+        :example => :each,
+        :context => :all,
+      }
+
       HOOK_TYPES = {
         :before => Hash.new { BeforeHook },
         :after  => Hash.new { AfterHook  },
@@ -522,13 +527,24 @@ EOS
       end
 
       def extract_scope_from(args)
-        if SCOPES.include?(args.first)
-          args.shift
+        if Hooks.known_scope?(args.first)
+          Hooks.normalized_scope_for(args.shift)
         elsif args.any? { |a| a.is_a?(Symbol) }
-          raise ArgumentError.new("You must explicitly give a scope (:each, :all, or :suite) when using symbols as metadata for a hook.")
+          error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as metadata for a hook."
+          raise ArgumentError.new error_message
         else
           :each
         end
+      end
+
+      # @api private
+      def self.known_scope?(scope)
+        SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
+      end
+
+      # @api private
+      def self.normalized_scope_for(scope)
+        SCOPE_ALIASES[scope] || scope
       end
     end
   end
