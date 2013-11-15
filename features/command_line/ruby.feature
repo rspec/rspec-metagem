@@ -4,10 +4,10 @@ Feature: run with ruby command
   `rspec/autorun`.
 
   Generally speaking, you're better off using the `rspec` command, which
-  requires `rspec/autorun` for you, but some tools only work with the `ruby`
-  command.
+  avoids the complexity of `rspec/autorun` (e.g. no `at_exit` hook needed!),
+  but some tools only work with the `ruby` command.
 
-  Scenario:
+  Scenario: Require `rspec/autorun` from a spec file
     Given a file named "example_spec.rb" with:
       """ruby
       require 'rspec/autorun'
@@ -20,3 +20,4 @@ Feature: run with ruby command
       """
     When I run `ruby example_spec.rb`
     Then the output should contain "1 example, 0 failures"
+
