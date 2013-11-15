@@ -47,7 +47,7 @@ module RSpec::Core
         end
         it "passes the example group list to #run_specs" do
           command_line = build_command_line passing_spec_filename
-          expect(command_line).to receive(:run_specs).with(no_args)
+          expect(command_line).to receive(:run_specs).with(world.example_groups)
           command_line.run(err, out)
         end
       end

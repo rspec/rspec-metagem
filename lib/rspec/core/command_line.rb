@@ -14,7 +14,7 @@ module RSpec
       # @param out [IO]
       def run(err, out)
         setup(err, out)
-        run_specs
+        run_specs(@world.ordered_example_groups)
       end
 
       def setup(err, out)
@@ -25,12 +25,12 @@ module RSpec
         @world.announce_filters
       end
 
-      def run_specs
+      def run_specs(example_groups)
         @configuration.reporter.report(@world.example_count) do |reporter|
           begin
             hook_context = SuiteHookContext.new
             @configuration.hooks.run(:before, :suite, hook_context)
-            @world.ordered_example_groups.map {|g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
+            example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
           ensure
             @configuration.hooks.run(:after, :suite, hook_context)
           end
