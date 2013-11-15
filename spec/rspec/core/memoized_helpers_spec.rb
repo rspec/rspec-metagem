@@ -298,7 +298,16 @@ module RSpec::Core
           it { should_not be_not_ok }
         end
 
-        expect(group.run).to be_truthy
+        expect(group.run).to be true
+      end
+
+      it 'supports a new expect-based syntax' do
+        group = ExampleGroup.describe([1, 2, 3]) do
+          it { is_expected.to be_an Array }
+          it { is_expected.not_to include 4 }
+        end
+
+        expect(group.run).to be true
       end
     end
 
@@ -456,7 +465,7 @@ module RSpec::Core
         expect(subject_id_in_let).to eq(@subject_id_in_before)
       end
 
-      it { should eq(subject) }
+      it { is_expected.to eq(subject) }
     end
 
     describe Object do

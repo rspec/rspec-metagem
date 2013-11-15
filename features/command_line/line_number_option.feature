@@ -46,9 +46,9 @@ Feature: --line_number option
 
       describe 9 do
 
-        it { should be > 8 }
+        it { is_expected.to be > 8 }
 
-        it { should be < 10 }
+        it { is_expected.not_to be < 10 }
 
       end
       """

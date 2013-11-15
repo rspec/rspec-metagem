@@ -5,6 +5,8 @@ module RSpec
       #   syntax embraced by shoulda matchers:
       #
       #       describe Widget do
+      #         it { is_expected.to validate_presence_of(:name) }
+      #         # or
       #         it { should validate_presence_of(:name) }
       #       end
       #
@@ -31,8 +33,10 @@ module RSpec
       #     end
       #   end
       #
-      #   # one-liner syntax - should is invoked on subject
+      #   # one-liner syntax - expectation is set on the subject
       #   describe Person do
+      #     it { is_expected.to be_eligible_to_vote }
+      #     # or
       #     it { should be_eligible_to_vote }
       #   end
       #
@@ -64,6 +68,11 @@ module RSpec
       #   end
       #
       # @see #subject
+      # @see #is_expected
+      #
+      # @note This only works if you are using rspec-expectations.
+      # @note If you are using RSpec's newer expect-based syntax you may
+      #       want to use `is_expected.to` instead of `should`.
       def should(matcher=nil, message=nil)
         RSpec::Expectations::PositiveExpectationHandler.handle_matcher(subject, matcher, message)
       end
@@ -78,8 +87,32 @@ module RSpec
       #   end
       #
       # @see #subject
+      # @see #is_expected
+      #
+      # @note This only works if you are using rspec-expectations.
+      # @note If you are using RSpec's newer expect-based syntax you may
+      #       want to use `is_expected.to_not` instead of `should_not`.
       def should_not(matcher=nil, message=nil)
         RSpec::Expectations::NegativeExpectationHandler.handle_matcher(subject, matcher, message)
+      end
+
+      # Wraps the `subject` in `expect` to make it the target of an expectation.
+      # Designed to read nicely for one-liners.
+      #
+      # @example
+      #
+      #   describe [1, 2, 3] do
+      #     it { is_expected.to be_an Array }
+      #     it { is_expected.not_to include 4 }
+      #   end
+      #
+      # @see #subject
+      # @see #should
+      # @see #should_not
+      #
+      # @note This only works if you are using rspec-expectations.
+      def is_expected
+        expect(subject)
       end
 
       private
@@ -265,8 +298,9 @@ EOS
           before { __send__(name) }
         end
 
-        # Declares a `subject` for an example group which can then be the
-        # implicit receiver (through delegation) of calls to `should`.
+        # Declares a `subject` for an example group which can then be wrapped
+        # with `expect` using `is_expected` to make it the target of an expectation
+        # in a concise, one-line example.
         #
         # Given a `name`, defines a method with that name which returns the
         # `subject`. This lets you declare the subject once and access it
@@ -281,13 +315,13 @@ EOS
         #
         #   describe CheckingAccount, "with $50" do
         #     subject { CheckingAccount.new(Money.new(50, :USD)) }
-        #     it { should have_a_balance_of(Money.new(50, :USD)) }
-        #     it { should_not be_overdrawn }
+        #     it { is_expected.to have_a_balance_of(Money.new(50, :USD)) }
+        #     it { is_expected.not_to be_overdrawn }
         #   end
         #
         #   describe CheckingAccount, "with a non-zero starting balance" do
         #     subject(:account) { CheckingAccount.new(Money.new(50, :USD)) }
-        #     it { should_not be_overdrawn }
+        #     it { is_expected.not_to be_overdrawn }
         #     it "has a balance equal to the starting balance" do
         #       account.balance.should eq(Money.new(50, :USD))
         #     end
