@@ -5,6 +5,7 @@ RSpec.configuration.backtrace_exclusion_patterns.push(RR::Errors::BACKTRACE_IDEN
 module RSpec
   module Core
     module MockingAdapters
+      # @api private
       module RR
         def self.framework_name; :rr end
 

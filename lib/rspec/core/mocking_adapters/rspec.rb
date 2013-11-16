@@ -3,6 +3,7 @@ require 'rspec/mocks'
 module RSpec
   module Core
     module MockingAdapters
+      # @api private
       module RSpec
         def self.framework_name; :rspec end
 
