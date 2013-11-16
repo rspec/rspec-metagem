@@ -1,6 +1,15 @@
 ### 3.0.0.beta2 Development
 [full changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...master)
 
+Breaking Changes for 3.0.0:
+
+* Make `mock_with` option more strict. Strings are no longer supported
+  (e.g. `mock_with "mocha"`) -- use a symbol instead. Also, unrecognized
+  values will now result in an error rather than falling back to the
+  null mocking adapter. If you want to use the null mocking adapter,
+  use `mock_with :nothing` (as has been documented for a long time).
+  (Myron Marston)
+
 Enhancements:
 
 * Add `is_expected` for one-liners that read well with the
