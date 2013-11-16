@@ -5,6 +5,8 @@ module RSpec
     module MockingAdapters
       # @api private
       module RSpec
+        include ::RSpec::Mocks::ExampleMethods
+
         def self.framework_name; :rspec end
 
         def self.configuration
