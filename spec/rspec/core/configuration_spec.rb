@@ -161,7 +161,7 @@ module RSpec::Core
       Configuration::MOCKING_ADAPTERS.each_pair do |name, const|
         context "with :#{name}" do
           it "requires the adapter for #{const}" do
-            config.should_receive(:require).with("rspec/core/mocking_adapters/#{name}")
+            config.should_receive(:require).with("rspec/core/mocking_adapters/#{const.to_s.downcase}")
             stub_const("RSpec::Core::MockingAdapters::#{const}", Module.new)
             config.mock_with name
           end
@@ -186,9 +186,21 @@ module RSpec::Core
         end
       end
 
-      it "uses the null adapter when set to any unknown key" do
+      it "uses the null adapter when given :nothing" do
         config.should_receive(:require).with('rspec/core/mocking_adapters/null').and_call_original
-        config.mock_with :crazy_new_mocking_framework_ive_not_yet_heard_of
+        config.mock_with :nothing
+      end
+
+      it "raises an error when given an unknown key" do
+        expect {
+          config.mock_with :crazy_new_mocking_framework_ive_not_yet_heard_of
+        }.to raise_error(ArgumentError, /unknown mocking framework/i)
+      end
+
+      it "raises an error when given another type of object" do
+        expect {
+          config.mock_with Object.new
+        }.to raise_error(ArgumentError, /unknown mocking framework/i)
       end
 
       context 'when there are already some example groups defined' do

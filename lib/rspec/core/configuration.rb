@@ -360,7 +360,13 @@ module RSpec
       end
 
       # @api private
-      MOCKING_ADAPTERS = { :rspec => :RSpec, :flexmock => :Flexmock, :rr => :RR, :mocha => :Mocha }
+      MOCKING_ADAPTERS = {
+        :rspec    => :RSpec,
+        :flexmock => :Flexmock,
+        :rr       => :RR,
+        :mocha    => :Mocha,
+        :nothing  => :Null
+      }
 
       # Sets the mock framework adapter module.
       #
@@ -392,11 +398,15 @@ module RSpec
       #       mod_config.custom_setting = true
       #     end
       def mock_with(framework)
-        framework_module = case framework
-        when Module
-          framework
-        when Symbol
-          const_name = MOCKING_ADAPTERS.fetch(framework, :Null)
+        framework_module = if framework.is_a?(Module)
+           framework
+        else
+          const_name = MOCKING_ADAPTERS.fetch(framework) do
+            raise ArgumentError,
+              "Unknown mocking framework: #{framework.inspect}. " +
+              "Pass a module or one of #{MOCKING_ADAPTERS.keys.inspect}"
+          end
+
           require "rspec/core/mocking_adapters/#{const_name.downcase}"
           RSpec::Core::MockingAdapters.const_get(const_name)
         end
