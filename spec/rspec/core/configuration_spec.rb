@@ -158,16 +158,6 @@ module RSpec::Core
 
       it_behaves_like "a configurable framework adapter", :mock_with
 
-      Configuration::MOCKING_ADAPTERS.each_pair do |name, const|
-        context "with :#{name}" do
-          it "requires the adapter for #{const}" do
-            config.should_receive(:require).with("rspec/core/mocking_adapters/#{const.to_s.downcase}")
-            stub_const("RSpec::Core::MockingAdapters::#{const}", Module.new)
-            config.mock_with name
-          end
-        end
-      end
-
       it "allows rspec-mocks to be configured with a provided block" do
         mod = Module.new
 
@@ -184,6 +174,12 @@ module RSpec::Core
           config.mock_with mod
           expect(config.mock_framework).to eq(mod)
         end
+      end
+
+      it 'uses the named adapter' do
+        config.should_receive(:require).with("rspec/core/mocking_adapters/mocha")
+        stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
+        config.mock_with :mocha
       end
 
       it "uses the null adapter when given :nothing" do
