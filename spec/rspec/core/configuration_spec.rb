@@ -158,12 +158,12 @@ module RSpec::Core
 
       it_behaves_like "a configurable framework adapter", :mock_with
 
-      [:RSpec, :Mocha, :RR, :Flexmock].each do |framework|
-        context "with :#{framework.to_s.downcase}" do
-          it "requires the adapter for #{framework}" do
-            config.should_receive(:require).with("rspec/core/mocking_adapters/#{framework.downcase}")
-            stub_const("RSpec::Core::MockingAdapters::#{framework}", Module.new)
-            config.mock_with framework
+      Configuration::MOCKING_ADAPTERS.each_pair do |name, const|
+        context "with :#{name}" do
+          it "requires the adapter for #{const}" do
+            config.should_receive(:require).with("rspec/core/mocking_adapters/#{name}")
+            stub_const("RSpec::Core::MockingAdapters::#{const}", Module.new)
+            config.mock_with name
           end
         end
       end

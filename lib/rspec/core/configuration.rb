@@ -359,6 +359,9 @@ module RSpec
         @backtrace_formatter.inclusion_patterns = patterns
       end
 
+      # @api private
+      MOCKING_ADAPTERS = { :rspec => :RSpec, :flexmock => :Flexmock, :rr => :RR, :mocha => :Mocha }
+
       # Sets the mock framework adapter module.
       #
       # `framework` can be a Symbol or a Module.
@@ -392,24 +395,10 @@ module RSpec
         framework_module = case framework
         when Module
           framework
-        when String, Symbol
-          case framework.to_s
-            when /rspec/i
-              require 'rspec/core/mocking_adapters/rspec'
-              RSpec::Core::MockingAdapters::RSpec
-            when /mocha/i
-              require 'rspec/core/mocking_adapters/mocha'
-              RSpec::Core::MockingAdapters::Mocha
-            when /rr/i
-              require 'rspec/core/mocking_adapters/rr'
-              RSpec::Core::MockingAdapters::RR
-            when /flexmock/i
-              require 'rspec/core/mocking_adapters/flexmock'
-              RSpec::Core::MockingAdapters::Flexmock
-            else
-              require 'rspec/core/mocking_adapters/null'
-              RSpec::Core::MockingAdapters::Null
-          end
+        when Symbol
+          const_name = MOCKING_ADAPTERS.fetch(framework, :Null)
+          require "rspec/core/mocking_adapters/#{const_name.downcase}"
+          RSpec::Core::MockingAdapters.const_get(const_name)
         end
 
         new_name, old_name = [framework_module, @mock_framework].map do |mod|
