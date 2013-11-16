@@ -62,13 +62,7 @@ module RSpec
       end
 
       def add_old_hunk_to_hunk(hunk, oldhunk)
-        if hunk.respond_to?(:merge)
-          # diff-lcs 1.2.x
-          hunk.merge(oldhunk)
-        else
-          # diff-lcs 1.1.3
-          hunk.unshift(oldhunk)
-        end
+        hunk.merge(oldhunk)
       end
 
       def format

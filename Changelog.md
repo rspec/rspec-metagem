@@ -17,6 +17,7 @@ Breaking Changes for 3.0.0:
   available to the `match` block (or any of the others). Instead
   `include` your helper module and define the helper method as an
   instance method. (Myron Marston)
+* Force upgrading Diff::LCS for encoding compatbility with diffs. (Jon Rowe)
 
 Enhancements:
 
