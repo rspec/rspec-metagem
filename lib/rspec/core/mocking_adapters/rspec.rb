@@ -12,15 +12,15 @@ module RSpec
         end
 
         def setup_mocks_for_rspec
-          ::RSpec::Mocks::setup(self)
+          ::RSpec::Mocks.setup(self)
         end
 
         def verify_mocks_for_rspec
-          ::RSpec::Mocks::verify
+          ::RSpec::Mocks.verify
         end
 
         def teardown_mocks_for_rspec
-          ::RSpec::Mocks::teardown
+          ::RSpec::Mocks.teardown
         end
       end
     end
