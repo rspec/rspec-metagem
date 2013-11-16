@@ -118,7 +118,7 @@ module RSpec::Core
 
     describe "#mock_framework" do
       it "defaults to :rspec" do
-        config.should_receive(:require).with('rspec/core/mocking/with_rspec')
+        config.should_receive(:require).with('rspec/core/mocking_adapters/rspec')
         config.mock_framework
       end
     end
@@ -158,10 +158,11 @@ module RSpec::Core
 
       it_behaves_like "a configurable framework adapter", :mock_with
 
-      [:rspec, :mocha, :rr, :flexmock].each do |framework|
-        context "with #{framework}" do
+      [:RSpec, :Mocha, :RR, :Flexmock].each do |framework|
+        context "with :#{framework.to_s.downcase}" do
           it "requires the adapter for #{framework}" do
-            config.should_receive(:require).with("rspec/core/mocking/with_#{framework}")
+            config.should_receive(:require).with("rspec/core/mocking_adapters/#{framework.downcase}")
+            stub_const("RSpec::Core::MockingAdapters::#{framework}", Module.new)
             config.mock_with framework
           end
         end
@@ -186,13 +187,14 @@ module RSpec::Core
       end
 
       it "uses the null adapter when set to any unknown key" do
-        config.should_receive(:require).with('rspec/core/mocking/with_absolutely_nothing')
+        config.should_receive(:require).with('rspec/core/mocking_adapters/null').and_call_original
         config.mock_with :crazy_new_mocking_framework_ive_not_yet_heard_of
       end
 
       context 'when there are already some example groups defined' do
         it 'raises an error since this setting must be applied before any groups are defined' do
           RSpec.world.stub(:example_groups).and_return([double.as_null_object])
+          stub_const("RSpec::Core::MockingAdapters::Mocha", double(:framework_name => :mocha))
           expect {
             config.mock_with :mocha
           }.to raise_error(/must be configured before any example groups are defined/)
@@ -205,6 +207,7 @@ module RSpec::Core
         end
 
         it 'does not raise an error if re-setting the same config' do
+          stub_const("RSpec::Core::MockingAdapters::Mocha", double(:framework_name => :mocha))
           groups = []
           RSpec.world.stub(:example_groups => groups)
           config.mock_with :mocha

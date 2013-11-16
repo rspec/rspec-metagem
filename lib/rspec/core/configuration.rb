@@ -393,19 +393,23 @@ module RSpec
         when Module
           framework
         when String, Symbol
-          require case framework.to_s
-                  when /rspec/i
-                    'rspec/core/mocking/with_rspec'
-                  when /mocha/i
-                    'rspec/core/mocking/with_mocha'
-                  when /rr/i
-                    'rspec/core/mocking/with_rr'
-                  when /flexmock/i
-                    'rspec/core/mocking/with_flexmock'
-                  else
-                    'rspec/core/mocking/with_absolutely_nothing'
-                  end
-          RSpec::Core::MockFrameworkAdapter
+          case framework.to_s
+            when /rspec/i
+              require 'rspec/core/mocking_adapters/rspec'
+              RSpec::Core::MockingAdapters::RSpec
+            when /mocha/i
+              require 'rspec/core/mocking_adapters/mocha'
+              RSpec::Core::MockingAdapters::Mocha
+            when /rr/i
+              require 'rspec/core/mocking_adapters/rr'
+              RSpec::Core::MockingAdapters::RR
+            when /flexmock/i
+              require 'rspec/core/mocking_adapters/flexmock'
+              RSpec::Core::MockingAdapters::Flexmock
+            else
+              require 'rspec/core/mocking_adapters/null'
+              RSpec::Core::MockingAdapters::Null
+          end
         end
 
         new_name, old_name = [framework_module, @mock_framework].map do |mod|
