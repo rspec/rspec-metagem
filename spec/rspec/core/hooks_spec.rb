@@ -69,7 +69,7 @@ module RSpec::Core
 
             expect { |b|
               instance.send(type, scope, &b)
-              instance.run_hook(type, scope)
+              instance.hooks.run(type, scope)
             }.not_to yield_control
           end
         end
@@ -278,6 +278,17 @@ module RSpec::Core
         group.run
         expect(messages).to eq ["hook 1", "hook 2", "example"]
       end
+    end
+
+    it "only defines methods that are intended to be part of RSpec's public API (+ `hooks`)" do
+      expect(Hooks.private_instance_methods).to eq([])
+
+      expect(Hooks.instance_methods.map(&:to_sym)).to match_array([
+        :before, :after, :around,
+        :append_before, :append_after,
+        :prepend_before, :prepend_after,
+        :hooks
+      ])
     end
   end
 end
