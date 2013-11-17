@@ -5,6 +5,14 @@ module RSpec::Expectations
     let(:target_encoding) { 'UTF-8' }
 
     if String.method_defined?(:encoding)
+
+      describe '#source_encoding' do
+        it 'knows the original encoding of the string' do
+          str = EncodedString.new("abc".encode('ASCII-8BIT'), "UTF-8")
+          expect( str.source_encoding.to_s ).to eq('ASCII-8BIT')
+        end
+      end
+
       describe '#<<' do
         context 'with strings that can be converted to the target encoding' do
           it 'encodes and appends the string' do
@@ -52,6 +60,14 @@ module RSpec::Expectations
 
       def build_encoded_string(string, target_encoding)
         EncodedString.new(string, target_encoding)
+      end
+    else
+
+      describe '#source_encoding' do
+        it 'defaults to US-ASCII' do
+          str = EncodedString.new("abc", "UTF-8")
+          expect( str.source_encoding ).to eq('US-ASCII')
+        end
       end
     end
   end
