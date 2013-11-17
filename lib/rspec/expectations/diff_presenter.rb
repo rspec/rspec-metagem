@@ -10,10 +10,10 @@ module RSpec
       def diff_as_string(actual, expected)
         @encoding = pick_encoding actual, expected
 
-        @actual   = EncodedString.new(actual, encoding)
-        @expected = EncodedString.new(expected, encoding)
+        @actual   = EncodedString.new(actual, @encoding)
+        @expected = EncodedString.new(expected, @encoding)
 
-        output = EncodedString.new("\n", encoding)
+        output = EncodedString.new("\n", @encoding)
 
         hunks.each_cons(2) do |prev_hunk, current_hunk|
           begin
@@ -44,9 +44,7 @@ module RSpec
         end
       end
 
-      private
-
-      attr_reader :expected, :actual, :encoding
+    private
 
       def hunks
         @hunks ||= Differ.new(@actual, @expected).hunks
@@ -128,11 +126,11 @@ module RSpec
       end
 
       def handle_encoding_errors
-        if actual.encoding != expected.encoding
-          "Could not produce a diff because the encoding of the actual string (#{actual.encoding}) "+
-            "differs from the encoding of the expected string (#{expected.encoding})"
+        if @actual.encoding != @expected.encoding
+          "Could not produce a diff because the encoding of the actual string (#{@actual.encoding}) "+
+            "differs from the encoding of the expected string (#{@expected.encoding})"
         else
-          "Could not produce a diff because of the encoding of the string (#{expected.encoding})"
+          "Could not produce a diff because of the encoding of the string (#{@expected.encoding})"
         end
       end
     end

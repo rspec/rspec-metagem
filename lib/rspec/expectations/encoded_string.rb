@@ -17,22 +17,20 @@ module RSpec
         @string.split(matching_encoding(regex_or_string))
       end
 
-      private
-
-      attr_reader :encoding
+    private
 
       if String.method_defined?(:encoding)
         def matching_encoding(string)
-          string.encode(encoding)
+          string.encode(@encoding)
         rescue Encoding::UndefinedConversionError
-          normalize_missing(string.encode(encoding, :invalid => :replace, :undef => :replace))
+          normalize_missing(string.encode(@encoding, :invalid => :replace, :undef => :replace))
         rescue Encoding::ConverterNotFoundError
-          normalize_missing(string.force_encoding(encoding).encode(:invalid => :replace))
+          normalize_missing(string.force_encoding(@encoding).encode(:invalid => :replace))
         end
 
         def normalize_missing(string)
-          if encoding.to_s == "UTF-8"
-            string.gsub("\xEF\xBF\xBD".force_encoding(encoding), "?")
+          if @encoding.to_s == "UTF-8"
+            string.gsub("\xEF\xBF\xBD".force_encoding(@encoding), "?")
           else
             string
           end
