@@ -126,11 +126,11 @@ module RSpec
       end
 
       def handle_encoding_errors
-        if @actual.encoding != @expected.encoding
-          "Could not produce a diff because the encoding of the actual string (#{@actual.encoding}) "+
-            "differs from the encoding of the expected string (#{@expected.encoding})"
+        if @actual.source_encoding != @expected.source_encoding
+          "Could not produce a diff because the encoding of the actual string (#{@actual.source_encoding}) "+
+            "differs from the encoding of the expected string (#{@expected.source_encoding})"
         else
-          "Could not produce a diff because of the encoding of the string (#{@expected.encoding})"
+          "Could not produce a diff because of the encoding of the string (#{@expected.source_encoding})"
         end
       end
     end

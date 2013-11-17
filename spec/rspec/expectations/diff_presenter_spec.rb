@@ -61,6 +61,15 @@ EOD
             expect(subject).to eq("\n@@ -1,2 +1,2 @@\n-Tu avec carte {count} item has\n+Tu avec carté {count} itém has\n")
             expect(subject.encoding).to eq(Encoding.default_external)
           end
+
+          it 'handles any encoding error that occurs with a helpful error message' do
+            expect(Differ).to receive(:new).and_raise(Encoding::CompatibilityError)
+            @expected = "Tu avec carte {count} item has".encode('us-ascii')
+            @actual   = "Tu avec carté {count} itém has"
+            expect(subject).to match /Could not produce a diff/
+            expect(subject).to match /actual string \(UTF-8\)/
+            expect(subject).to match /expected string \(US-ASCII\)/
+          end
         end
       end
 
