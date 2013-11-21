@@ -1,4 +1,4 @@
-### 3.0.0.beta1 Development
+### 3.0.0.beta2 Development
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
 
 Breaking Changes for 3.0.0:
@@ -6,6 +6,7 @@ Breaking Changes for 3.0.0:
 * Remove deprecated support for accessing the `RSpec` constant using
   `Rspec` or `Spec`. (Myron Marston)
 * Remove deprecated `RSpec::Expectations.differ=`. (Myron Marston)
+* Remove support for deprecated `expect(...).should`. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)
