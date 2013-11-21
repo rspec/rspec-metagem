@@ -14,10 +14,12 @@ module RSpec
       class BaseMatcher
         include RSpec::Matchers::Pretty
 
+        UNDEFINED = Object.new.freeze
+
         attr_reader :actual, :expected, :rescued_exception
 
-        def initialize(expected = nil)
-          @expected = expected
+        def initialize(expected = UNDEFINED)
+          @expected = expected unless UNDEFINED.equal?(expected)
         end
 
         def matches?(actual)
@@ -36,17 +38,17 @@ module RSpec
         end
 
         def failure_message_for_should
-          assert_ivars :@actual, :@expected
+          assert_ivars :@actual
           "expected #{@actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         def failure_message_for_should_not
-          assert_ivars :@actual, :@expected
+          assert_ivars :@actual
           "expected #{@actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         def description
-          expected ? "#{name_to_sentence} #{@expected.inspect}" : name_to_sentence
+          defined?(@expected) ? "#{name_to_sentence} #{@expected.inspect}" : name_to_sentence
         end
 
         def diffable?
