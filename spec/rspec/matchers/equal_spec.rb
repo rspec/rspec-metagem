@@ -24,6 +24,32 @@ module RSpec
         expect(matcher.description).to eq "equal 1"
       end
 
+      context "when the expected object is falsey in conditinal semantics" do
+        it "describes itself with the expected object" do
+          matcher = equal(nil)
+          matcher.matches?(nil)
+          expect(matcher.description).to eq "equal nil"
+        end
+      end
+
+      context "when the expected object's #equal? always returns true" do
+        let(:strange_string) do
+          string = "foo"
+
+          def string.equal?(other)
+            true
+          end
+
+          string
+        end
+
+        it "describes itself with the expected object" do
+          matcher = equal(strange_string)
+          matcher.matches?(strange_string)
+          expect(matcher.description).to eq 'equal "foo"'
+        end
+      end
+
       it "suggests the `eq` matcher on failure" do
         expected, actual = "1", "1"
         expect {

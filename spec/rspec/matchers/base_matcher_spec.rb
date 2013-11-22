@@ -39,6 +39,27 @@ module RSpec::Matchers::BuiltIn
 
     end
 
+    describe "#failure_message_for_should" do
+      context "when the parameter to .new is omitted" do
+        it "describes what was expected" do
+          matcher_class = Class.new(BaseMatcher) do
+            def name=(name)
+              @name = name
+            end
+
+            def match(expected, actual)
+              false
+            end
+          end
+
+          matcher = matcher_class.new
+          matcher.name = "be something"
+          matcher.matches?("foo")
+          expect(matcher.failure_message_for_should).to eq('expected "foo" to be something')
+        end
+      end
+    end
+
     describe "#==" do
       it "responds the same way as matches?" do
         matcher = Class.new(BaseMatcher) do
