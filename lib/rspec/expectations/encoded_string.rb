@@ -25,7 +25,7 @@ module RSpec
       if String.method_defined?(:encoding)
         def matching_encoding(string)
           string.encode(@encoding)
-        rescue Encoding::UndefinedConversionError
+        rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
           normalize_missing(string.encode(@encoding, :invalid => :replace, :undef => :replace))
         rescue Encoding::ConverterNotFoundError
           normalize_missing(string.force_encoding(@encoding).encode(:invalid => :replace))
