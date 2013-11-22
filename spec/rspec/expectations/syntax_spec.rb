@@ -73,6 +73,18 @@ module RSpec
         end
       end
 
+      describe "enabling the should syntax on something other than the default syntax host" do
+        include_context "with the default expectation syntax"
+
+        it "continues to warn about the should syntax" do
+          my_host = Class.new
+          expect(RSpec).to receive(:deprecate)
+          Syntax.enable_should(my_host)
+
+          3.should eq 3
+        end
+      end
+
       describe "expression generation" do
         let(:target) { "foo" }
         let(:expectation) { "eq('bar')" }

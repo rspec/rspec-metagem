@@ -61,7 +61,7 @@ module RSpec
       # @api private
       # Enables the `should` syntax.
       def enable_should(syntax_host = default_should_host)
-        @warn_about_should = false
+        @warn_about_should = false if syntax_host == default_should_host
         return if should_enabled?(syntax_host)
 
         syntax_host.module_exec do

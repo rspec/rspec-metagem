@@ -44,6 +44,20 @@ shared_context "with #should enabled", :uses_should do
   end
 end
 
+shared_context "with the default expectation syntax" do
+  orig_syntax = nil
+
+  before(:all) do
+    orig_syntax = RSpec::Matchers.configuration.syntax
+    RSpec::Matchers.configuration.reset_syntaxes_to_default
+  end
+
+  after(:all) do
+    RSpec::Matchers.configuration.syntax = orig_syntax
+  end
+
+end
+
 
 shared_context "with #should exclusively enabled", :uses_only_should do
   orig_syntax = nil
