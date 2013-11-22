@@ -75,8 +75,6 @@ module RSpec
             ::RSpec::Expectations::NegativeExpectationHandler.handle_matcher(self, matcher, message, &block)
           end
         end
-
-        ::RSpec::Expectations::ExpectationTarget.enable_deprecated_should if expect_enabled?
       end
 
       # @api private
@@ -88,8 +86,6 @@ module RSpec
           undef should
           undef should_not
         end
-
-        ::RSpec::Expectations::ExpectationTarget.disable_deprecated_should
       end
 
       # @api private
@@ -104,8 +100,6 @@ module RSpec
             ::RSpec::Expectations::ExpectationTarget.new(target.first)
           end
         end
-
-        ::RSpec::Expectations::ExpectationTarget.enable_deprecated_should if should_enabled?
       end
 
       # @api private
@@ -116,8 +110,6 @@ module RSpec
         syntax_host.module_exec do
           undef expect
         end
-
-        ::RSpec::Expectations::ExpectationTarget.disable_deprecated_should
       end
 
       # @api private

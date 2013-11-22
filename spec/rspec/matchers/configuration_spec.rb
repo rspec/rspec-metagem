@@ -158,40 +158,6 @@ module RSpec
           3.should_not eq(4)
           expect(3).to eq(3)
         end
-
-        it 'does not add the deprecated #should to ExpectationTarget when only :should is enabled' do
-          et = Expectations::ExpectationTarget
-
-          configure_syntax :should
-          et.new(Proc.new {}).should be_an(et)
-          et.new(Proc.new {}).should_not be_a(Proc)
-        end
-
-        it 'does not add the deprecated #should to ExpectationTarget when only :expect is enabled' do
-          configure_syntax :expect
-          expect(expect(3)).not_to respond_to(:should)
-          expect(expect(3)).not_to respond_to(:should_not)
-        end
-
-        context 'when both :expect and :should are enabled' do
-          before { allow(RSpec).to receive(:deprecate) }
-
-          it 'allows `expect {}.should` to be used' do
-            configure_syntax [:should, :expect]
-            expect { raise "boom" }.should raise_error("boom")
-            expect { }.should_not raise_error
-          end
-
-          it 'prints a deprecation notice when `expect {}.should` is used' do
-            configure_syntax [:should, :expect]
-
-            expect(RSpec).to receive(:deprecate)
-            expect { raise "boom" }.should raise_error("boom")
-
-            expect(RSpec).to receive(:deprecate)
-            expect { }.should_not raise_error
-          end
-        end
       end
 
       def configure_default_syntax

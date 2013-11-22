@@ -10,11 +10,6 @@ module RSpec
     #   # with `not_to`
     #   expect(actual).not_to eq(3)
     class ExpectationTarget
-      class << self
-        attr_accessor :deprecated_should_enabled
-        alias deprecated_should_enabled? deprecated_should_enabled
-      end
-
       # @api private
       def initialize(target)
         @target = target
@@ -47,31 +42,6 @@ module RSpec
         RSpec::Expectations::NegativeExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
       alias to_not not_to
-
-      def self.enable_deprecated_should
-        return if deprecated_should_enabled?
-
-        def should(*args)
-          RSpec.deprecate "`expect { }.should`", :replacement => "`expect { }.to`"
-          @target.should(*args)
-        end
-
-        def should_not(*args)
-          RSpec.deprecate "`expect { }.should_not`", :replacement => "`expect { }.not_to`"
-          @target.should_not(*args)
-        end
-
-        self.deprecated_should_enabled = true
-      end
-
-      def self.disable_deprecated_should
-        return unless deprecated_should_enabled?
-
-        remove_method :should
-        remove_method :should_not
-
-        self.deprecated_should_enabled = false
-      end
 
     private
 
