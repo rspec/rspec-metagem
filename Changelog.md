@@ -8,6 +8,10 @@ Breaking Changes for 3.0.0:
 * Remove deprecated `RSpec::Expectations.differ=`. (Myron Marston)
 * Remove support for deprecated `expect(...).should`. (Myron Marston)
 
+Bug Fixes:
+
+* Fix wrong matcher descriptions with falsey expected value (yujinakayama)
+
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)
 
