@@ -7,17 +7,10 @@ module RSpec
         end
 
         def failure_message_for_should
-          @diffable = false
-          case expected
-          when FalseClass
-            builtin_singleton_message("false")
-          when TrueClass
-            builtin_singleton_message("true")
-          when NilClass
-            builtin_singleton_message("nil")
+          if expected_is_a_literal_singleton?
+            simple_failure_message
           else
-            @diffable = true
-            arbitrary_object_message
+            detailed_failure_message
           end
         end
 
@@ -33,16 +26,22 @@ MESSAGE
         end
 
         def diffable?
-          @diffable
+          !expected_is_a_literal_singleton?
         end
 
         private
 
-        def builtin_singleton_message(type)
-          "\nexpected #{type}\n     got #{inspect_object(actual)}\n"
+        LITERAL_SINGLETONS = [true, false, nil]
+
+        def expected_is_a_literal_singleton?
+          LITERAL_SINGLETONS.include?(expected)
         end
 
-        def arbitrary_object_message
+        def simple_failure_message
+          "\nexpected #{expected.inspect}\n     got #{inspect_object(actual)}\n"
+        end
+
+        def detailed_failure_message
           return <<-MESSAGE
 
 expected #{inspect_object(expected)}
