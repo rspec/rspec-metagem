@@ -50,6 +50,27 @@ module RSpec
         end
       end
 
+      it "prints a special message for `false`" do
+        expected, actual = false, "1"
+        expect {
+          expect(actual).to equal(expected)
+        }.to fail_with "\nexpected false\n     got #{inspect_object(actual)}\n"
+      end
+
+      it "prints a special message for `true`" do
+        expected, actual = true, "1"
+        expect {
+          expect(actual).to equal(expected)
+        }.to fail_with "\nexpected true\n     got #{inspect_object(actual)}\n"
+      end
+
+      it "prints a special message for `nil`" do
+        expected, actual = nil, "1"
+        expect {
+          expect(actual).to equal(expected)
+        }.to fail_with "\nexpected nil\n     got #{inspect_object(actual)}\n"
+      end
+
       it "suggests the `eq` matcher on failure" do
         expected, actual = "1", "1"
         expect {
