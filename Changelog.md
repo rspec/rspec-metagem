@@ -1,6 +1,11 @@
 ### 3.0.0.beta2 Development
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
 
+Ehancements:
+
+* Simplify the failure message of the `be` matcher when matching against:
+  `true`, `false` and `nil`. (Sam Phippen)
+
 Breaking Changes for 3.0.0:
 
 * Remove deprecated support for accessing the `RSpec` constant using
