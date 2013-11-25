@@ -177,25 +177,27 @@ module RSpec
       end
 
       def include(*args)
-        unless_standalone(*args) { merge(@inclusions, @exclusions, *args) }
+        override_when_standalone_or_run(*args) { merge(@inclusions, @exclusions, *args) }
       end
 
       def include!(*args)
-        unless_standalone(*args) { replace(@inclusions, @exclusions, *args) }
+        override_when_standalone_or_run(*args) { replace(@inclusions, @exclusions, *args) }
       end
 
       def include_with_low_priority(*args)
-        unless_standalone(*args) { reverse_merge(@inclusions, @exclusions, *args) }
+        override_when_standalone_or_run(*args) { reverse_merge(@inclusions, @exclusions, *args) }
       end
 
       def include?(example)
         @inclusions.empty? ? true : example.any_apply?(@inclusions)
       end
 
-      private
+    private
 
-      def unless_standalone(*args)
-        is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : yield unless already_set_standalone_filter?
+      def override_when_standalone_or_run(*args)
+        unless already_set_standalone_filter?
+          is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : yield
+        end
       end
 
       def merge(orig, opposite, *updates)
