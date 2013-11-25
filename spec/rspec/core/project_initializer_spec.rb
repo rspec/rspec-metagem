@@ -9,13 +9,13 @@ module RSpec::Core
         let(:command_line_config) { ProjectInitializer.new }
 
         before do
-          command_line_config.stub(:puts)
-          command_line_config.stub(:gets => 'no')
+          allow(command_line_config).to receive(:puts)
+          allow(command_line_config).to receive_messages(:gets => 'no')
         end
 
         context "with no .rspec file" do
           it "says it's creating .rspec " do
-            command_line_config.should_receive(:puts).with(/create\s+\.rspec/)
+            expect(command_line_config).to receive(:puts).with(/create\s+\.rspec/)
             command_line_config.run
           end
 
@@ -28,7 +28,7 @@ module RSpec::Core
         context "with a .rspec file" do
           it "says .rspec exists" do
             FileUtils.touch('.rspec')
-            command_line_config.should_receive(:puts).with(/exist\s+\.rspec/)
+            expect(command_line_config).to receive(:puts).with(/exist\s+\.rspec/)
             command_line_config.run
           end
 
@@ -41,7 +41,7 @@ module RSpec::Core
 
         context "with no spec/spec_helper.rb file" do
           it "says it's creating spec/spec_helper.rb " do
-            command_line_config.should_receive(:puts).with(/create\s+spec\/spec_helper.rb/)
+            expect(command_line_config).to receive(:puts).with(/create\s+spec\/spec_helper.rb/)
             command_line_config.run
           end
 
@@ -56,7 +56,7 @@ module RSpec::Core
 
           it "says spec/spec_helper.rb exists" do
             FileUtils.touch('spec/spec_helper.rb')
-            command_line_config.should_receive(:puts).with(/exist\s+spec\/spec_helper.rb/)
+            expect(command_line_config).to receive(:puts).with(/exist\s+spec\/spec_helper.rb/)
             command_line_config.run
           end
 
@@ -75,18 +75,18 @@ module RSpec::Core
           end
 
           it "asks whether to delete the file" do
-            command_line_config.should_receive(:puts).with(/delete/)
+            expect(command_line_config).to receive(:puts).with(/delete/)
             command_line_config.run
           end
 
           it "removes it if confirmed" do
-            command_line_config.stub(:gets => 'yes')
+            allow(command_line_config).to receive_messages(:gets => 'yes')
             command_line_config.run
             expect(File.exist?('lib/tasks/rspec.rake')).to be_falsey
           end
 
           it "leaves it if not confirmed" do
-            command_line_config.stub(:gets => 'no')
+            allow(command_line_config).to receive_messages(:gets => 'no')
             command_line_config.run
             expect(File.exist?('lib/tasks/rspec.rake')).to be_truthy
           end
@@ -96,8 +96,8 @@ module RSpec::Core
       context "given an arg" do
         it "warns if arg received (no longer necessary)" do
           config = ProjectInitializer.new("another_arg")
-          config.stub(:puts)
-          config.stub(:gets => 'no')
+          allow(config).to receive(:puts)
+          allow(config).to receive_messages(:gets => 'no')
           config.run
         end
       end

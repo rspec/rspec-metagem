@@ -17,7 +17,7 @@ module RSpec::Core::Formatters
       ]
 
       output = StringIO.new
-      RSpec.configuration.stub(:color_enabled?) { false }
+      allow(RSpec.configuration).to receive(:color_enabled?) { false }
 
       formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
 
@@ -29,7 +29,7 @@ module RSpec::Core::Formatters
 
     it "represents nested group using hierarchy tree" do
       output = StringIO.new
-      RSpec.configuration.stub(:color_enabled?) { false }
+      allow(RSpec.configuration).to receive(:color_enabled?) { false }
 
       formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
 
@@ -64,7 +64,7 @@ root
 
     it "strips whitespace for each row" do
       output = StringIO.new
-      RSpec.configuration.stub(:color_enabled?) { false }
+      allow(RSpec.configuration).to receive(:color_enabled?) { false }
 
       formatter = RSpec::Core::Formatters::DocumentationFormatter.new(output)
 

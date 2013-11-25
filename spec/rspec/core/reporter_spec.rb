@@ -15,7 +15,7 @@ module RSpec::Core
 
       %w[start_dump dump_pending dump_failures dump_summary close].each do |message|
         it "sends #{message} to the formatter(s) that respond to message" do
-          formatter.as_null_object.should_receive(message)
+          expect(formatter.as_null_object).to receive(message)
           reporter.finish
         end
 
@@ -31,7 +31,7 @@ module RSpec::Core
         example = double("example")
         reporter = reporter_for(formatter)
 
-        formatter.should_receive(:example_started).
+        expect(formatter).to receive(:example_started).
           with(example)
 
         reporter.example_started(example)
@@ -41,8 +41,8 @@ module RSpec::Core
         order = []
 
         formatter = double("formatter").as_null_object
-        formatter.stub(:example_group_started) { |group| order << "Started: #{group.description}" }
-        formatter.stub(:example_group_finished) { |group| order << "Finished: #{group.description}" }
+        allow(formatter).to receive(:example_group_started) { |group| order << "Started: #{group.description}" }
+        allow(formatter).to receive(:example_group_finished) { |group| order << "Finished: #{group.description}" }
 
         group = ExampleGroup.describe("root")
         group.describe("context 1") do
@@ -68,8 +68,8 @@ module RSpec::Core
     context "given an example group with no examples" do
       it "does not pass example_group_started or example_group_finished to formatter" do
         formatter = double("formatter").as_null_object
-        formatter.should_not_receive(:example_group_started)
-        formatter.should_not_receive(:example_group_finished)
+        expect(formatter).not_to receive(:example_group_started)
+        expect(formatter).not_to receive(:example_group_finished)
 
         group = ExampleGroup.describe("root")
 
@@ -84,8 +84,8 @@ module RSpec::Core
         reporter = reporter_for(*formatters)
 
         formatters.each do |formatter|
-          formatter.
-            should_receive(:example_started).
+          expect(formatter).
+            to receive(:example_started).
             with(example)
         end
 
@@ -117,7 +117,7 @@ module RSpec::Core
       end
 
       it 'will send notifications when a subscribed event is triggered' do
-        listener.should_receive(:start).with(42)
+        expect(listener).to receive(:start).with(42)
         reporter.start 42
       end
     end
@@ -127,10 +127,10 @@ module RSpec::Core
         formatter = double(:formatter).as_null_object
         reporter = reporter_for formatter
         reporter.start 1
-        Time.stub(:now => ::Time.utc(2012, 10, 1))
+        allow(Time).to receive_messages(:now => ::Time.utc(2012, 10, 1))
 
         duration = nil
-        formatter.stub(:dump_summary) do |dur, _, _, _|
+        allow(formatter).to receive(:dump_summary) do |dur, _, _, _|
           duration = dur
         end
 

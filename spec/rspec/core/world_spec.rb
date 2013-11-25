@@ -85,14 +85,14 @@ module RSpec::Core
 
     describe "#announce_filters" do
       let(:reporter) { double('reporter').as_null_object }
-      before { world.stub(:reporter) { reporter } }
+      before { allow(world).to receive(:reporter) { reporter } }
 
       context "with no examples" do
-        before { world.stub(:example_count) { 0 } }
+        before { allow(world).to receive(:example_count) { 0 } }
 
         context "with no filters" do
           it "announces" do
-            reporter.should_receive(:message).
+            expect(reporter).to receive(:message).
               with("No examples found.")
             world.announce_filters
           end
@@ -101,7 +101,7 @@ module RSpec::Core
         context "with an inclusion filter" do
           it "announces" do
             configuration.filter_run_including :foo => 'bar'
-            reporter.should_receive(:message).
+            expect(reporter).to receive(:message).
               with(/All examples were filtered out/)
             world.announce_filters
           end
@@ -109,9 +109,9 @@ module RSpec::Core
 
         context "with an inclusion filter and run_all_when_everything_filtered" do
           it "announces" do
-            configuration.stub(:run_all_when_everything_filtered?) { true }
+            allow(configuration).to receive(:run_all_when_everything_filtered?) { true }
             configuration.filter_run_including :foo => 'bar'
-            reporter.should_receive(:message).
+            expect(reporter).to receive(:message).
               with(/All examples were filtered out/)
             world.announce_filters
           end
@@ -120,7 +120,7 @@ module RSpec::Core
         context "with an exclusion filter" do
           it "announces" do
             configuration.filter_run_excluding :foo => 'bar'
-            reporter.should_receive(:message).
+            expect(reporter).to receive(:message).
               with(/All examples were filtered out/)
             world.announce_filters
           end
@@ -128,11 +128,11 @@ module RSpec::Core
       end
 
       context "with examples" do
-        before { world.stub(:example_count) { 1 } }
+        before { allow(world).to receive(:example_count) { 1 } }
 
         context "with no filters" do
           it "does not announce" do
-            reporter.should_not_receive(:message)
+            expect(reporter).not_to receive(:message)
             world.announce_filters
           end
         end

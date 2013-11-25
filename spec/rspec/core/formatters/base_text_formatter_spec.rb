@@ -34,7 +34,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   describe "#dump_failures" do
     let(:group) { RSpec::Core::ExampleGroup.describe("group name") }
 
-    before { RSpec.configuration.stub(:color_enabled?) { false } }
+    before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_failures
       group.run(formatter)
@@ -53,7 +53,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     context "with an exception without a message" do
       it "does not throw NoMethodError" do
         exception_without_message = Exception.new()
-        exception_without_message.stub(:message) { nil }
+        allow(exception_without_message).to receive(:message) { nil }
         group.example("example name") { raise exception_without_message }
         expect { run_all_and_dump_failures }.not_to raise_error
       end
@@ -68,7 +68,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     context "with an exception that has an exception instance as its message" do
       it "does not raise NoMethodError" do
         gonzo_exception = RuntimeError.new
-        gonzo_exception.stub(:message) { gonzo_exception }
+        allow(gonzo_exception).to receive(:message) { gonzo_exception }
         group.example("example name") { raise gonzo_exception }
         expect { run_all_and_dump_failures }.not_to raise_error
       end
@@ -101,7 +101,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
     context "with a failed message expectation (rspec-mocks)" do
       it "does not show the error class" do
-        group.example("example name") { "this".should_receive("that") }
+        group.example("example name") { expect("this").to receive("that") }
         run_all_and_dump_failures
         expect(output.string).not_to match(/RSpec/m)
       end
@@ -150,7 +150,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
   describe "#dump_pending" do
     let(:group) { RSpec::Core::ExampleGroup.describe("group name") }
 
-    before { RSpec.configuration.stub(:color_enabled?) { false } }
+    before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_pending
       group.run(formatter)
@@ -158,7 +158,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     context "with show_failures_in_pending_blocks setting enabled" do
-      before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { true } }
+      before { allow(RSpec.configuration).to receive(:show_failures_in_pending_blocks?) { true } }
 
       it "preserves formatting" do
         group.example("example name") { pending { expect("this").to eq("that") } }
@@ -172,7 +172,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       context "with an exception without a message" do
         it "does not throw NoMethodError" do
           exception_without_message = Exception.new()
-          exception_without_message.stub(:message) { nil }
+          allow(exception_without_message).to receive(:message) { nil }
           group.example("example name") { pending { raise exception_without_message } }
           expect { run_all_and_dump_pending }.not_to raise_error
         end
@@ -243,7 +243,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     context "with show_failures_in_pending_blocks setting disabled" do
-      before { RSpec.configuration.stub(:show_failures_in_pending_blocks?) { false } }
+      before { allow(RSpec.configuration).to receive(:show_failures_in_pending_blocks?) { false } }
 
       it "does not output the failure information" do
         group.example("example name") { pending { expect("this").to eq("that") } }
@@ -265,8 +265,8 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
       end
       group.run(double('reporter').as_null_object)
 
-      formatter.stub(:examples) { group.examples }
-      RSpec.configuration.stub(:profile_examples) { 10 }
+      allow(formatter).to receive(:examples) { group.examples }
+      allow(RSpec.configuration).to receive(:profile_examples) { 10 }
     end
 
     it "names the example" do
@@ -304,11 +304,11 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
     before do
       group.run(rpt)
-      RSpec.configuration.stub(:profile_examples) { 10 }
+      allow(RSpec.configuration).to receive(:profile_examples) { 10 }
     end
 
     context "with one example group" do
-      before { formatter.stub(:examples) { group.examples } }
+      before { allow(formatter).to receive(:examples) { group.examples } }
 
       it "doesn't profile a single example group" do
         formatter.dump_profile_slowest_example_groups
@@ -324,7 +324,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
         end
         group2.run(rpt)
 
-        formatter.stub(:examples) { group.examples + group2.examples }
+        allow(formatter).to receive(:examples) { group.examples + group2.examples }
       end
 
       it "prints the slowest example groups" do

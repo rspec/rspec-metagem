@@ -50,7 +50,7 @@ module RSpec
         let(:next_example_metadata) { group_metadata.for_example('next_example', :caller => ["foo_spec.rb:#{example_line_number + 2}"]) }
         let(:world) { World.new }
 
-        before { RSpec.stub(:world) { world } }
+        before { allow(RSpec).to receive(:world) { world } }
 
         shared_examples_for "matching by line number" do
           let(:preceeding_declaration_lines) {{
@@ -61,7 +61,7 @@ module RSpec
             (example_metadata[:line_number] + 2) => example_metadata[:line_number] + 2,
           }}
           before do
-            world.should_receive(:preceding_declaration_line).at_least(:once).and_return do |v|
+            expect(world).to receive(:preceding_declaration_line).at_least(:once).and_return do |v|
               preceeding_declaration_lines[v]
             end
           end

@@ -62,7 +62,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "when there is no explicit description" do
     def expect_with(*frameworks)
-      RSpec.configuration.stub(:expecting_with_rspec?).and_return(frameworks.include?(:rspec))
+      allow(RSpec.configuration).to receive(:expecting_with_rspec?).and_return(frameworks.include?(:rspec))
 
       if frameworks.include?(:stdlib)
         example_group.class_eval do
@@ -139,7 +139,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       before(:each) { expect_with :stdlib }
 
       it "does not attempt to get the generated description from RSpec::Matchers" do
-        RSpec::Matchers.should_not_receive(:generated_description)
+        expect(RSpec::Matchers).not_to receive(:generated_description)
         example_group.example { assert 5 == 5 }
         example_group.run
       end
@@ -296,7 +296,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         # We can't use should_receive(:message).with(/.../) here,
         # because if that fails, it would fail within our example-under-test,
         # and since there's already two errors, it would just be reported again.
-        RSpec.configuration.reporter.stub(:message) { |msg| reported_msg = msg }
+        allow(RSpec.configuration.reporter).to receive(:message) { |msg| reported_msg = msg }
         group.run
         reported_msg
       end
@@ -483,7 +483,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
       group = RSpec::Core::ExampleGroup.describe
       example = group.example
       example.__send__ :start, reporter
-      Time.stub(:now => Time.utc(2012, 10, 1))
+      allow(Time).to receive_messages(:now => Time.utc(2012, 10, 1))
       example.__send__ :finish, reporter
       expect(example.metadata[:execution_result][:run_time]).to be < 0.2
     end

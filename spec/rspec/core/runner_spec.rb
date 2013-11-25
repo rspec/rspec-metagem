@@ -6,12 +6,12 @@ module RSpec::Core
     describe 'invocation' do
       before do
         # Simulate invoking the suite like exe/rspec does.
-        RSpec::Core::Runner.stub(:run)
+        allow(RSpec::Core::Runner).to receive(:run)
         RSpec::Core::Runner.invoke
       end
 
       it 'does not autorun after having been invoked' do
-        RSpec::Core::Runner.should_not_receive(:at_exit)
+        expect(RSpec::Core::Runner).not_to receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
 
@@ -23,19 +23,19 @@ module RSpec::Core
 
     describe 'at_exit' do
       it 'sets an at_exit hook if none is already set' do
-        RSpec::Core::Runner.stub(:autorun_disabled?).and_return(false)
-        RSpec::Core::Runner.stub(:installed_at_exit?).and_return(false)
-        RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
-        RSpec::Core::Runner.stub(:invoke)
-        RSpec::Core::Runner.should_receive(:at_exit)
+        allow(RSpec::Core::Runner).to receive(:autorun_disabled?).and_return(false)
+        allow(RSpec::Core::Runner).to receive(:installed_at_exit?).and_return(false)
+        allow(RSpec::Core::Runner).to receive(:running_in_drb?).and_return(false)
+        allow(RSpec::Core::Runner).to receive(:invoke)
+        expect(RSpec::Core::Runner).to receive(:at_exit)
         RSpec::Core::Runner.autorun
       end
 
       it 'does not set the at_exit hook if it is already set' do
-        RSpec::Core::Runner.stub(:autorun_disabled?).and_return(false)
-        RSpec::Core::Runner.stub(:installed_at_exit?).and_return(true)
-        RSpec::Core::Runner.stub(:running_in_drb?).and_return(false)
-        RSpec::Core::Runner.should_receive(:at_exit).never
+        allow(RSpec::Core::Runner).to receive(:autorun_disabled?).and_return(false)
+        allow(RSpec::Core::Runner).to receive(:installed_at_exit?).and_return(true)
+        allow(RSpec::Core::Runner).to receive(:running_in_drb?).and_return(false)
+        expect(RSpec::Core::Runner).to receive(:at_exit).never
         RSpec::Core::Runner.autorun
       end
     end
@@ -61,7 +61,7 @@ module RSpec::Core
       end
 
       it "returns false if no drb server is running" do
-        ::DRb.stub(:current_server).and_raise(::DRb::DRbServerNotFound)
+        allow(::DRb).to receive(:current_server).and_raise(::DRb::DRbServerNotFound)
 
         expect(RSpec::Core::Runner.running_in_drb?).to be_falsey
       end
@@ -94,16 +94,16 @@ module RSpec::Core
       let(:out) { StringIO.new }
 
       it "tells RSpec to reset" do
-        CommandLine.stub(:new => double.as_null_object)
-        RSpec.configuration.stub(:files_to_run => [], :warn => nil)
-        RSpec.should_receive(:reset)
+        allow(CommandLine).to receive_messages(:new => double.as_null_object)
+        allow(RSpec.configuration).to receive_messages(:files_to_run => [], :warn => nil)
+        expect(RSpec).to receive(:reset)
         RSpec::Core::Runner.run([], err, out)
       end
 
       context "with --drb or -X" do
         before(:each) do
           @options = RSpec::Core::ConfigurationOptions.new(%w[--drb --drb-port 8181 --color])
-          RSpec::Core::ConfigurationOptions.stub(:new) { @options }
+          allow(RSpec::Core::ConfigurationOptions).to receive(:new) { @options }
         end
 
         def run_specs
@@ -113,9 +113,9 @@ module RSpec::Core
         context 'and a DRb server is running' do
           it "builds a DRbCommandLine and runs the specs" do
             drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
-            drb_proxy.should_receive(:run).with(err, out)
+            expect(drb_proxy).to receive(:run).with(err, out)
 
-            RSpec::Core::DRbCommandLine.should_receive(:new).and_return(drb_proxy)
+            expect(RSpec::Core::DRbCommandLine).to receive(:new).and_return(drb_proxy)
 
             run_specs
           end
@@ -123,12 +123,12 @@ module RSpec::Core
 
         context 'and a DRb server is not running' do
           before(:each) do
-            RSpec::Core::DRbCommandLine.should_receive(:new).and_raise(DRb::DRbConnError)
+            expect(RSpec::Core::DRbCommandLine).to receive(:new).and_raise(DRb::DRbConnError)
           end
 
           it "outputs a message" do
-            RSpec.configuration.stub(:files_to_run) { [] }
-            err.should_receive(:puts).with(
+            allow(RSpec.configuration).to receive(:files_to_run) { [] }
+            expect(err).to receive(:puts).with(
               "No DRb server is running. Running in local process instead ..."
             )
             run_specs
@@ -136,9 +136,9 @@ module RSpec::Core
 
           it "builds a CommandLine and runs the specs" do
             process_proxy = double(RSpec::Core::CommandLine, :run => 0)
-            process_proxy.should_receive(:run).with(err, out)
+            expect(process_proxy).to receive(:run).with(err, out)
 
-            RSpec::Core::CommandLine.should_receive(:new).and_return(process_proxy)
+            expect(RSpec::Core::CommandLine).to receive(:new).and_return(process_proxy)
 
             run_specs
           end
