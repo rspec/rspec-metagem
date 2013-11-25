@@ -28,7 +28,7 @@ if is_jruby; then
   echo "Skipping one-by-one spec runs due to expensive JVM load time"
 else
   for file in `find spec -iname '*_spec.rb'`; do
-    NO_COVERALLS=1 bin/rspec $file -b --format progress
+    NO_COVERAGE=1 bin/rspec $file -b --format progress
   done
 fi
 

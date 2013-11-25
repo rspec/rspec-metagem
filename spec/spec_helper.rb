@@ -1,12 +1,12 @@
-unless ENV['NO_COVERALLS']
-  require 'simplecov' if RUBY_VERSION.to_f >= 1.9
-  require 'coveralls'
-  Coveralls.wear! do
-    add_filter '/bundle/'
-    add_filter '/spec/'
-    add_filter '/tmp/'
+begin
+  require 'simplecov'
+
+  SimpleCov.start do
+    add_filter "bundle"
+    minimum_coverage 97
   end
-end
+rescue LoadError
+end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
 
 Dir['./spec/support/**/*'].each {|f| require f}
 

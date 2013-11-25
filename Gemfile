@@ -18,11 +18,7 @@ group :documentation do
   gem 'github-markup', '0.7.2'
 end
 
-### dep for ci/coverage
-gem 'coveralls', :require => false
-
-# mime-types 2 requires ruby 1.8, so we have to specify an old version.
-gem 'mime-types', '~> 1.0'
+gem 'simplecov'
 
 platforms :jruby do
   gem "jruby-openssl"
