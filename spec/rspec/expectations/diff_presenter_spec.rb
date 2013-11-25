@@ -66,9 +66,9 @@ EOD
             expect(Differ).to receive(:new).and_raise(Encoding::CompatibilityError)
             @expected = "Tu avec carte {count} item has".encode('us-ascii')
             @actual   = "Tu avec carté {count} itém has"
-            expect(subject).to match /Could not produce a diff/
-            expect(subject).to match /actual string \(UTF-8\)/
-            expect(subject).to match /expected string \(US-ASCII\)/
+            expect(subject).to match(/Could not produce a diff/)
+            expect(subject).to match(/actual string \(UTF-8\)/)
+            expect(subject).to match(/expected string \(US-ASCII\)/)
           end
         end
       end
