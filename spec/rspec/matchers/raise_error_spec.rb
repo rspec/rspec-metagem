@@ -116,8 +116,8 @@ describe "expect { ... }.not_to raise_error" do
     end
 
     it 'formats the backtrace using the configured backtrace formatter' do
-      RSpec::Matchers.configuration.backtrace_formatter.
-        stub(:format_backtrace).
+      allow(RSpec::Matchers.configuration.backtrace_formatter).
+        to receive(:format_backtrace).
         and_return("formatted-backtrace")
 
       expect {
@@ -383,7 +383,7 @@ end
 
 describe "misuse of raise_error, with (), not {}" do
   it "fails with warning" do
-    ::Kernel.should_receive(:warn).with(/`raise_error` was called with non-proc object 1\.7/)
+    expect(::Kernel).to receive(:warn).with(/`raise_error` was called with non-proc object 1\.7/)
     expect {
       expect(Math.sqrt(3)).to raise_error
     }.to fail_with(/nothing was raised/)

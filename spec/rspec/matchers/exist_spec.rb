@@ -117,7 +117,7 @@ describe "exist matcher" do
 
   it 'passes any provided arguments to the call to #exist?' do
     object = double
-    object.should_receive(:exist?).with(:foo, :bar) { true }
+    expect(object).to receive(:exist?).with(:foo, :bar) { true }
 
     expect(object).to exist(:foo, :bar)
   end
