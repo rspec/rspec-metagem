@@ -32,6 +32,10 @@ RSpec::configure do |config|
     $default_expectation_syntax = expectations.syntax
     expectations.syntax = :expect
   end
+
+  config.mock_with :rspec do |mocks|
+    mocks.syntax = :expect
+  end
 end
 
 shared_context "with #should enabled", :uses_should do
