@@ -1,4 +1,5 @@
 begin
+  old_verbose, $VERBOSE = $VERBOSE, false
   require 'simplecov'
 
   SimpleCov.start do
@@ -6,6 +7,8 @@ begin
     minimum_coverage 97
   end
 rescue LoadError
+ensure
+  $VERBOSE = old_verbose
 end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
 
 Dir['./spec/support/**/*'].each {|f| require f}
