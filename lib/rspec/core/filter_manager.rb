@@ -148,8 +148,8 @@ module RSpec
         #   { "path/to/file.rb" => [37, 42] }
         locations = @inclusions.delete(:locations) || Hash.new {|h,k| h[k] = []}
         locations[File.expand_path(file_path)].push(*line_numbers)
-        @inclusions.replace(:locations => locations)
-        @exclusions.clear
+
+        override_filters :locations => locations
       end
 
       def empty?
@@ -196,8 +196,13 @@ module RSpec
 
       def override_when_standalone_or_run(*args)
         unless already_set_standalone_filter?
-          is_standalone_filter?(args.last) ? @inclusions.replace(args.last) : yield
+          is_standalone_filter?(args.last) ? override_filters(args.last) : yield
         end
+      end
+
+      def override_filters(rule)
+        @inclusions.replace(rule)
+        @exclusions.clear
       end
 
       def merge(orig, opposite, *updates)
