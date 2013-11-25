@@ -87,9 +87,11 @@ module RSpec
 
         it 'is a no-op when configured to :should twice' do
           configure_syntax :should
-          expect(Expectations::Syntax.default_should_host).not_to receive(:method_added)
+          method_added_count = 0
+          allow(Expectations::Syntax.default_should_host).to receive(:method_added) { method_added_count += 1 }
           configure_syntax :should
-          RSpec::Mocks.verify # because configure_syntax is called again in an after hook
+
+          method_added_count.should eq(0)
         end
 
         it 'can limit the syntax to :expect' do
@@ -128,7 +130,7 @@ module RSpec
 
           it "does not warn when only the should syntax is explicitly configured" do
             configure_syntax(:should)
-            expect(RSpec).not_to receive(:deprecate)
+            RSpec.should_not receive(:deprecate)
             3.should eq(3)
           end
 
