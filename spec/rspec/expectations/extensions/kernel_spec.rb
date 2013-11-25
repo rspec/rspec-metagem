@@ -4,18 +4,18 @@ describe Object, "#should" do
   before(:each) do
     @target = "target"
     @matcher = double("matcher")
-    @matcher.stub(:matches?).and_return(true)
-    @matcher.stub(:failure_message_for_should)
+    allow(@matcher).to receive(:matches?).and_return(true)
+    allow(@matcher).to receive(:failure_message_for_should)
   end
 
   it "accepts and interacts with a matcher" do
-    @matcher.should_receive(:matches?).with(@target).and_return(true)
+    expect(@matcher).to receive(:matches?).with(@target).and_return(true)
     expect(@target).to @matcher
   end
 
   it "asks for a failure_message_for_should when matches? returns false" do
-    @matcher.should_receive(:matches?).with(@target).and_return(false)
-    @matcher.should_receive(:failure_message_for_should).and_return("the failure message")
+    expect(@matcher).to receive(:matches?).with(@target).and_return(false)
+    expect(@matcher).to receive(:failure_message_for_should).and_return("the failure message")
     expect {
       expect(@target).to @matcher
     }.to fail_with("the failure message")
@@ -51,15 +51,15 @@ describe Object, "#should_not" do
   end
 
   it "accepts and interacts with a matcher" do
-    @matcher.should_receive(:matches?).with(@target).and_return(false)
-    @matcher.stub(:failure_message_for_should_not)
+    expect(@matcher).to receive(:matches?).with(@target).and_return(false)
+    allow(@matcher).to receive(:failure_message_for_should_not)
 
     expect(@target).not_to @matcher
   end
 
   it "asks for a failure_message_for_should_not when matches? returns true" do
-    @matcher.should_receive(:matches?).with(@target).and_return(true)
-    @matcher.should_receive(:failure_message_for_should_not).and_return("the failure message for should not")
+    expect(@matcher).to receive(:matches?).with(@target).and_return(true)
+    expect(@matcher).to receive(:failure_message_for_should_not).and_return("the failure message for should not")
     expect {
       expect(@target).not_to @matcher
     }.to fail_with("the failure message for should not")

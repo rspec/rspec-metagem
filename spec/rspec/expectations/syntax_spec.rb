@@ -20,54 +20,54 @@ module RSpec
 
         describe "expect(...).to" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with(/ignoring.*message/)
+            expect(warner).to receive(:warn).with(/ignoring.*message/)
             expect(3).to eq(3), :not_a_string
           end
 
           it "doesn't print a warning when message is a String" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).to eq(3), "a string"
           end
 
           it "doesn't print a warning when message responds to to_str" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).to eq(3), string_like_object
           end
 
           it "prints a warning when the message object handles to_s but not to_str" do
-            warner.should_receive(:warn).with(/ignoring.*message/)
+            expect(warner).to receive(:warn).with(/ignoring.*message/)
             expect(3).to eq(3), insufficiently_string_like_object
           end
 
           it "doesn't print a warning when message responds to call" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).to eq(3), callable_object
           end
         end
 
         describe "expect(...).not_to" do
           it "prints a warning when the message object isn't a String" do
-            warner.should_receive(:warn).with(/ignoring.*message/)
+            expect(warner).to receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), :not_a_string
           end
 
           it "doesn't print a warning when message is a String" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).not_to eq(4), "a string"
           end
 
           it "doesn't print a warning when message responds to to_str" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).not_to eq(4), string_like_object
           end
 
           it "prints a warning when the message object handles to_s but not to_str" do
-            warner.should_receive(:warn).with(/ignoring.*message/)
+            expect(warner).to receive(:warn).with(/ignoring.*message/)
             expect(3).not_to eq(4), insufficiently_string_like_object
           end
 
           it "doesn't print a warning when message responds to call" do
-            warner.should_not_receive(:warn)
+            expect(warner).not_to receive(:warn)
             expect(3).not_to eq(4), callable_object
           end
         end

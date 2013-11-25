@@ -8,7 +8,7 @@ module RSpec
       let(:differ) { RSpec::Expectations::DiffPresenter.new }
       context "without --color" do
 
-      before { RSpec::Matchers.configuration.stub(:color? => false) }
+      before { allow(RSpec::Matchers.configuration).to receive_messages(:color? => false) }
 
       describe '#diff_as_string' do
         subject { differ.diff_as_string(@actual, @expected) }
@@ -215,7 +215,7 @@ EOD
     end
 
     context "with --color" do
-      before { RSpec::Matchers.configuration.stub(:color? => true) }
+      before { allow(RSpec::Matchers.configuration).to receive_messages(:color? => true) }
 
       it "outputs colored diffs" do
         expected = "foo bar baz"

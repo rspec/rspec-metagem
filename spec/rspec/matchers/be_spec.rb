@@ -43,7 +43,7 @@ describe "expect(...).to be_predicate" do
 
   it "fails on error other than NameError" do
     actual = double("actual")
-    actual.should_receive(:foo?).and_raise("aaaah")
+    expect(actual).to receive(:foo?).and_raise("aaaah")
     expect {
       expect(actual).to be_foo
     }.to raise_error(/aaaah/)
@@ -51,7 +51,7 @@ describe "expect(...).to be_predicate" do
 
   it "fails on error other than NameError (with the present tense predicate)" do
     actual = Object.new
-    actual.should_receive(:foos?).and_raise("aaaah")
+    expect(actual).to receive(:foos?).and_raise("aaaah")
     expect {
       expect(actual).to be_foo
     }.to raise_error(/aaaah/)
@@ -92,13 +92,13 @@ end
 describe "expect(...).to be_predicate(*args)" do
   it "passes when actual returns true for :predicate?(*args)" do
     actual = double("actual")
-    actual.should_receive(:older_than?).with(3).and_return(true)
+    expect(actual).to receive(:older_than?).with(3).and_return(true)
     expect(actual).to be_older_than(3)
   end
 
   it "fails when actual returns false for :predicate?(*args)" do
     actual = double("actual")
-    actual.should_receive(:older_than?).with(3).and_return(false)
+    expect(actual).to receive(:older_than?).with(3).and_return(false)
     expect {
       expect(actual).to be_older_than(3)
     }.to fail_with("expected older_than?(3) to return true, got false")
@@ -114,13 +114,13 @@ end
 describe "expect(...).not_to be_predicate(*args)" do
   it "passes when actual returns false for :predicate?(*args)" do
     actual = double("actual")
-    actual.should_receive(:older_than?).with(3).and_return(false)
+    expect(actual).to receive(:older_than?).with(3).and_return(false)
     expect(actual).not_to be_older_than(3)
   end
 
   it "fails when actual returns true for :predicate?(*args)" do
     actual = double("actual")
-    actual.should_receive(:older_than?).with(3).and_return(true)
+    expect(actual).to receive(:older_than?).with(3).and_return(true)
     expect {
       expect(actual).not_to be_older_than(3)
     }.to fail_with("expected older_than?(3) to return false, got true")
@@ -137,16 +137,16 @@ describe "expect(...).to be_predicate(&block)" do
   it "passes when actual returns true for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:happy?).and_yield
-    delegate.should_receive(:check_happy).and_return(true)
+    expect(actual).to receive(:happy?).and_yield
+    expect(delegate).to receive(:check_happy).and_return(true)
     expect(actual).to be_happy { delegate.check_happy }
   end
 
   it "fails when actual returns false for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:happy?).and_yield
-    delegate.should_receive(:check_happy).and_return(false)
+    expect(actual).to receive(:happy?).and_yield
+    expect(delegate).to receive(:check_happy).and_return(false)
     expect {
       expect(actual).to be_happy { delegate.check_happy }
     }.to fail_with("expected happy? to return true, got false")
@@ -164,16 +164,16 @@ describe "expect(...).not_to be_predicate(&block)" do
   it "passes when actual returns false for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:happy?).and_yield
-    delegate.should_receive(:check_happy).and_return(false)
+    expect(actual).to receive(:happy?).and_yield
+    expect(delegate).to receive(:check_happy).and_return(false)
     expect(actual).not_to be_happy { delegate.check_happy }
   end
 
   it "fails when actual returns true for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:happy?).and_yield
-    delegate.should_receive(:check_happy).and_return(true)
+    expect(actual).to receive(:happy?).and_yield
+    expect(delegate).to receive(:check_happy).and_return(true)
     expect {
       expect(actual).not_to be_happy { delegate.check_happy }
     }.to fail_with("expected happy? to return false, got true")
@@ -191,16 +191,16 @@ describe "expect(...).to be_predicate(*args, &block)" do
   it "passes when actual returns true for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:older_than?).with(3).and_yield(3)
-    delegate.should_receive(:check_older_than).with(3).and_return(true)
+    expect(actual).to receive(:older_than?).with(3).and_yield(3)
+    expect(delegate).to receive(:check_older_than).with(3).and_return(true)
     expect(actual).to be_older_than(3) { |age| delegate.check_older_than(age) }
   end
 
   it "fails when actual returns false for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:older_than?).with(3).and_yield(3)
-    delegate.should_receive(:check_older_than).with(3).and_return(false)
+    expect(actual).to receive(:older_than?).with(3).and_yield(3)
+    expect(delegate).to receive(:check_older_than).with(3).and_return(false)
     expect {
       expect(actual).to be_older_than(3) { |age| delegate.check_older_than(age) }
     }.to fail_with("expected older_than?(3) to return true, got false")
@@ -218,16 +218,16 @@ describe "expect(...).not_to be_predicate(*args, &block)" do
   it "passes when actual returns false for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:older_than?).with(3).and_yield(3)
-    delegate.should_receive(:check_older_than).with(3).and_return(false)
+    expect(actual).to receive(:older_than?).with(3).and_yield(3)
+    expect(delegate).to receive(:check_older_than).with(3).and_return(false)
     expect(actual).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
   end
 
   it "fails when actual returns true for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
-    actual.should_receive(:older_than?).with(3).and_yield(3)
-    delegate.should_receive(:check_older_than).with(3).and_return(true)
+    expect(actual).to receive(:older_than?).with(3).and_yield(3)
+    expect(delegate).to receive(:check_older_than).with(3).and_return(true)
     expect {
       expect(actual).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
     }.to fail_with("expected older_than?(3) to return false, got true")
@@ -482,7 +482,7 @@ end
 describe "expect(...).to be(value)" do
   it "delegates to equal" do
     matcher = equal(5)
-    self.should_receive(:equal).with(5).and_return(matcher)
+    expect(self).to receive(:equal).with(5).and_return(matcher)
     expect(5).to be(5)
   end
 end
@@ -490,7 +490,7 @@ end
 describe "expect(...).not_to be(value)" do
   it "delegates to equal" do
     matcher = equal(4)
-    self.should_receive(:equal).with(4).and_return(matcher)
+    expect(self).to receive(:equal).with(4).and_return(matcher)
     expect(5).not_to be(4)
   end
 end

@@ -413,7 +413,7 @@ describe "expect { ... }.to change(actual, message).from(old)" do
 
     it "compares the expected and actual values with ===" do
       expected = "string"
-      expected.should_receive(:===).and_return true
+      expect(expected).to receive(:===).and_return true
       expect { @instance.some_value = "astring" }.to change(@instance, :some_value).from(expected)
     end
 
@@ -437,7 +437,7 @@ describe "expect { ... }.to change { block }.from(old)" do
 
   it "compares the expected and actual values with ===" do
     expected = "string"
-    expected.should_receive(:===).and_return true
+    expect(expected).to receive(:===).and_return true
     expect { @instance.some_value = "astring" }.to change{@instance.some_value}.from(expected)
   end
 
@@ -477,7 +477,7 @@ describe "expect { ... }.to change(actual, message).to(new)" do
 
     it "compares the expected and actual values with ===" do
       expected = "cat"
-      expected.should_receive(:===).and_return true
+      expect(expected).to receive(:===).and_return true
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).to(expected)
     end
 
@@ -501,7 +501,7 @@ describe "expect { ... }.to change { block }.to(new)" do
 
   it "compares the expected and actual values with ===" do
     expected = "cat"
-    expected.should_receive(:===).and_return true
+    expect(expected).to receive(:===).and_return true
     expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to(expected)
   end
 
