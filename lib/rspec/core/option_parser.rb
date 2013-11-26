@@ -48,6 +48,10 @@ module RSpec::Core
           options[:libs] << dir
         end
 
+        parser.on('--I') do
+          raise OptionParser::InvalidOption.new
+        end
+
         parser.on('-r', '--require PATH', 'Require a file.') do |path|
           options[:requires] ||= []
           options[:requires] << path

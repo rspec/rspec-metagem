@@ -26,6 +26,22 @@ module RSpec::Core
       parser.parse([option])
     end
 
+    {
+      '--init' => ['-i','--I'],
+    }.each do |long, shorts|
+      shorts.each do |option|
+        it "won't parse #{option} as a shorthand for #{long}" do
+          parser = Parser.new
+
+          expect(parser).to receive(:abort) do |msg|
+            expect(msg).to include('use --help', option)
+          end
+
+          parser.parse([option])
+        end
+      end
+    end
+
     describe "--formatter" do
       it "is deprecated" do
         expect(RSpec).to receive(:deprecate)
