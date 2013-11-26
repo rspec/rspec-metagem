@@ -26,15 +26,20 @@ module RSpec::Core
       parser.parse([option])
     end
 
-    it "won't parse -i as a shorthand for --init" do
-      parser = Parser.new
-      option = "-i"
+    {
+      '--init' => ['-i','--I'],
+    }.each do |long, shorts|
+      shorts.each do |option|
+        it "won't parse #{option} as a shorthand for #{long}" do
+          parser = Parser.new
 
-      parser.should_receive(:abort) do |msg|
-        expect(msg).to include('use --help', option)
+          parser.should_receive(:abort) do |msg|
+            expect(msg).to include('use --help', option)
+          end
+
+          parser.parse([option])
+        end
       end
-
-      parser.parse([option])
     end
 
     describe "--formatter" do

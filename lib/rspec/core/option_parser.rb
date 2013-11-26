@@ -48,7 +48,7 @@ module RSpec::Core
           options[:libs] << dir
         end
 
-        parser.on('-i') do
+        parser.on('--I') do
           raise OptionParser::InvalidOption.new
         end
 
