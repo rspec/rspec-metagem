@@ -45,6 +45,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
           :status => "passed",
           :file_path => this_file,
           :line_number => succeeding_line,
+          :run_time => formatter.output_hash[:examples][0][:run_time]
         },
         {
           :description => "fails",
@@ -52,7 +53,8 @@ describe RSpec::Core::Formatters::JsonFormatter do
           :status => "failed",
           :file_path => this_file,
           :line_number => failing_line,
-          :exception => {:class => "RuntimeError", :message => "eek", :backtrace => failing_backtrace}
+          :exception => {:class => "RuntimeError", :message => "eek", :backtrace => failing_backtrace},
+          :run_time => formatter.output_hash[:examples][1][:run_time]
         },
         {
           :description => "pends",
@@ -60,6 +62,7 @@ describe RSpec::Core::Formatters::JsonFormatter do
           :status => "pending",
           :file_path => this_file,
           :line_number => pending_line,
+          :run_time => formatter.output_hash[:examples][2][:run_time]
         },
       ],
       :summary => {
