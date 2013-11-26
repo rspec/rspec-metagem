@@ -33,7 +33,7 @@ module RSpec::Core
         it "won't parse #{option} as a shorthand for #{long}" do
           parser = Parser.new
 
-          parser.should_receive(:abort) do |msg|
+          expect(parser).to receive(:abort) do |msg|
             expect(msg).to include('use --help', option)
           end
 
