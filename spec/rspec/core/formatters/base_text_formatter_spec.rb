@@ -196,7 +196,7 @@ describe RSpec::Core::Formatters::BaseTextFormatter do
 
       context "with a failed message expectation (rspec-mocks)" do
         it "does not show the error class" do
-          group.example("example name") { pending { "this".should_receive("that") } }
+          group.example("example name") { pending { expect("this").to receive("that") } }
           run_all_and_dump_pending
           expect(output.string).not_to match(/RSpec/m)
         end

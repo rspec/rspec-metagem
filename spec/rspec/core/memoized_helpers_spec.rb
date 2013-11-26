@@ -73,7 +73,7 @@ module RSpec::Core
           it "is evaluated once per example" do
             group = ExampleGroup.describe(Array)
             group.before do
-              Object.should_receive(:this_question?).once.and_return(falsy_value)
+              expect(Object).to receive(:this_question?).once.and_return(falsy_value)
             end
             group.subject do
               Object.this_question?

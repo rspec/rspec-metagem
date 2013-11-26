@@ -325,7 +325,7 @@ describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group = RSpec::Core::ExampleGroup.describe do
           example do
             foo = double
-            foo.should_receive(:bar)
+            expect(foo).to receive(:bar)
             raise "boom"
           end
         end
