@@ -23,8 +23,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
       config = double("config").as_null_object
-      config.should_receive(:libs=).ordered
-      config.should_receive(:setup_load_path_and_require).ordered
+      expect(config).to receive(:libs=).ordered
+      expect(config).to receive(:setup_load_path_and_require).ordered
       opts.configure(config)
     end
 
@@ -39,24 +39,24 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "sets up load path and requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
       config = double("config").as_null_object
-      config.should_receive(:setup_load_path_and_require).ordered
-      config.should_receive(:add_formatter).ordered
+      expect(config).to receive(:setup_load_path_and_require).ordered
+      expect(config).to receive(:add_formatter).ordered
       opts.configure(config)
     end
 
     it "sends default_path before files_or_directories_to_run" do
       opts = config_options_object(*%w[--default_path spec])
       config = double("config").as_null_object
-      config.should_receive(:force).with(:default_path => 'spec').ordered
-      config.should_receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:force).with(:default_path => 'spec').ordered
+      expect(config).to receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
     end
 
     it "sends pattern before files_or_directories_to_run" do
       opts = config_options_object(*%w[--pattern **/*.spec])
       config = double("config").as_null_object
-      config.should_receive(:force).with(:pattern => '**/*.spec').ordered
-      config.should_receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:force).with(:pattern => '**/*.spec').ordered
+      expect(config).to receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
     end
 
@@ -77,7 +77,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "forces color_enabled" do
       opts = config_options_object(*%w[--color])
       config = RSpec::Core::Configuration.new
-      config.should_receive(:force).with(:color => true)
+      expect(config).to receive(:force).with(:color => true)
       opts.configure(config)
     end
 
@@ -93,7 +93,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       it "forces #{config_key}" do
         opts = config_options_object(cli_option, cli_value)
         config = RSpec::Core::Configuration.new
-        config.should_receive(:force) do |pair|
+        expect(config).to receive(:force) do |pair|
           expect(pair.keys.first).to eq(config_key)
           expect(pair.values.first).to eq(config_value)
         end
@@ -105,8 +105,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       with_env_vars 'SPEC_OPTS' => "--require file_from_env" do
         opts = config_options_object(*%w[--require file_from_opts])
         config = RSpec::Core::Configuration.new
-        config.should_receive(:require).with("file_from_opts")
-        config.should_receive(:require).with("file_from_env")
+        expect(config).to receive(:require).with("file_from_opts")
+        expect(config).to receive(:require).with("file_from_env")
         opts.configure(config)
       end
     end
@@ -115,7 +115,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
       with_env_vars 'SPEC_OPTS' => "-I dir_from_env" do
         opts = config_options_object(*%w[-I dir_from_opts])
         config = RSpec::Core::Configuration.new
-        config.should_receive(:libs=).with(["dir_from_opts", "dir_from_env"])
+        expect(config).to receive(:libs=).with(["dir_from_opts", "dir_from_env"])
         opts.configure(config)
       end
     end
@@ -296,7 +296,7 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     end
 
     it "provides no files or directories if spec directory does not exist" do
-      FileTest.stub(:directory?).with("spec").and_return false
+      allow(FileTest).to receive(:directory?).with("spec").and_return false
       expect(parse_options()).to include(:files_or_directories_to_run => [])
     end
   end
@@ -304,8 +304,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
   describe "default_path" do
     it "gets set before files_or_directories_to_run" do
       config = double("config").as_null_object
-      config.should_receive(:force).with(:default_path => 'foo').ordered
-      config.should_receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:force).with(:default_path => 'foo').ordered
+      expect(config).to receive(:files_or_directories_to_run=).ordered
       opts = config_options_object("--default_path", "foo")
       opts.configure(config)
     end

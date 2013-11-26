@@ -168,7 +168,7 @@ describe "an example" do
 
     context "that fails due to a failed message expectation" do
       def run_example(*pending_args)
-        super(*pending_args) { "foo".should_receive(:bar) }
+        super(*pending_args) { expect("foo").to receive(:bar) }
       end
 
       it "passes" do

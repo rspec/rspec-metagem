@@ -105,7 +105,7 @@ module RSpec::Core
     describe "#prune" do
       def filterable_object_with(args = {})
         object = double('a filterable object')
-        object.stub(:any_apply?) { |f| Metadata.new(args).any_apply?(f) }
+        allow(object).to receive(:any_apply?) { |f| Metadata.new(args).any_apply?(f) }
         object
       end
 

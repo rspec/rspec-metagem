@@ -10,18 +10,18 @@ module RSpec::Core
     let(:config) { RSpec::configuration }
     let(:world)  { RSpec::world         }
 
-    before { config.hooks.stub(:run) }
+    before { allow(config.hooks).to receive(:run) }
 
     it "configures streams before command line options" do
       stdout = StringIO.new
-      config.stub :load_spec_files
-      config.stub(:reporter => double.as_null_object)
+      allow(config).to receive :load_spec_files
+      allow(config).to receive_messages(:reporter => double.as_null_object)
       config.output_stream = $stdout
 
       # this is necessary to ensure that color works correctly on windows
-      config.should_receive(:error_stream=).ordered
-      config.should_receive(:output_stream=).ordered
-      config.should_receive(:force).at_least(:once).ordered
+      expect(config).to receive(:error_stream=).ordered
+      expect(config).to receive(:output_stream=).ordered
+      expect(config).to receive(:force).at_least(:once).ordered
 
       command_line = build_command_line
       command_line.run err, stdout
@@ -60,23 +60,23 @@ module RSpec::Core
       end
 
       context "running hooks" do
-        before { config.stub :load_spec_files }
+        before { allow(config).to receive :load_spec_files }
 
         it "runs before suite hooks" do
-          config.hooks.should_receive(:run).with(:before, :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite)
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks" do
-          config.hooks.should_receive(:run).with(:after, :suite)
+          expect(config.hooks).to receive(:run).with(:after, :suite)
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks even after an error" do
-          config.hooks.should_receive(:run).with(:before, :suite).and_raise "this error"
-          config.hooks.should_receive(:run).with(:after , :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite).and_raise "this error"
+          expect(config.hooks).to receive(:run).with(:after , :suite)
           expect do
             command_line = build_command_line
             command_line.run err, out
@@ -86,7 +86,7 @@ module RSpec::Core
     end
 
     describe "#run with custom output" do
-      before { config.stub :files_to_run => [] }
+      before { allow(config).to receive_messages :files_to_run => [] }
 
       let(:output_file) { File.new("#{Dir.tmpdir}/command_line_spec_output.txt", 'w') }
 
