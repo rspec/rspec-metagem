@@ -144,6 +144,10 @@ Spork.prefork do
       expectations.syntax = :expect
     end
 
+    c.mock_with :rspec do |mocks|
+      mocks.syntax = :expect
+    end
+
     # runtime options
     c.color = !in_editor?
     c.filter_run :focus
