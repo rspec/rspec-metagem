@@ -16,6 +16,7 @@ Enhancements:
   `expect`-based syntax. `is_expected` is simply defined as
   `expect(subject)` and can be used in an expression like:
   `it { is_expected.to read_well }`. (Myron Marston)
+* Add example run time to JSON formatter output. (Karthik Kastury)
 
 Bug Fixes:
 
