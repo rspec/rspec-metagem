@@ -97,7 +97,10 @@ module RSpec
         rescue
           puts failure_message if failure_message
         end
-        abort("#{command} failed") if fail_on_error unless success
+        if fail_on_error && !success
+          $stderr.puts "#{command} failed"
+          exit $?.exitstatus
+        end
       end
 
     private
