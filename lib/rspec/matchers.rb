@@ -6,7 +6,6 @@ require 'rspec/matchers/operator_matcher'
 
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/method_missing'
-require 'rspec/matchers/compatibility'
 require 'rspec/matchers/dsl'
 require 'rspec/matchers/test_unit_integration'
 
