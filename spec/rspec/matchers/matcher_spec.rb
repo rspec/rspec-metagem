@@ -100,22 +100,22 @@ module RSpec::Matchers::DSL
     context "with separate match logic for should and should not" do
       let(:matcher) do
         new_matcher(:to_be_composed_of, 7, 11) do |a, b|
-          match_for_should do |actual|
+          match do |actual|
             actual == a * b
           end
 
-          match_for_should_not do |actual|
+          match_when_negated do |actual|
             actual == a + b
           end
         end
       end
 
-      it "invokes the match_for_should block for #matches?" do
+      it "invokes the match block for #matches?" do
         expect(matcher.matches?(77)).to be_truthy
         expect(matcher.matches?(18)).to be_falsey
       end
 
-      it "invokes the match_for_should_not block for #does_not_match?" do
+      it "invokes the match_when_negated block for #does_not_match?" do
         expect(matcher.does_not_match?(77)).to be_falsey
         expect(matcher.does_not_match?(18)).to be_truthy
       end
@@ -125,13 +125,13 @@ module RSpec::Matchers::DSL
         expect(matcher.failure_message_when_negated).to eq "expected 77 not to to be composed of 7 and 11"
       end
 
-      it 'can access helper methods from `match_for_should_not`' do
+      it 'can access helper methods from `match_when_negated`' do
         matcher = new_matcher(:be_foo) do
           def foo
             :foo
           end
 
-          match_for_should_not do |actual|
+          match_when_negated do |actual|
             actual != foo
           end
         end
@@ -229,9 +229,9 @@ module RSpec::Matchers::DSL
       expect(matcher.matches?(4)).to be_falsey
     end
 
-    it 'provides actual when `match_for_should_not` is used' do
+    it 'provides actual when `match_when_negated` is used' do
       matcher = new_matcher(:name, 'expected string') do
-        match_for_should_not {|actual|}
+        match_when_negated {|actual|}
       end
 
       matcher.does_not_match?('actual string')
@@ -239,9 +239,9 @@ module RSpec::Matchers::DSL
       expect(matcher.actual).to eq 'actual string'
     end
 
-    it 'allows an early `return` to be used from a `match_for_should_not` block' do
+    it 'allows an early `return` to be used from a `match_when_negated` block' do
       matcher = new_matcher(:with_return, 5) do |expected|
-        match_for_should_not { |actual| return true if expected != actual }
+        match_when_negated { |actual| return true if expected != actual }
       end
 
       expect(matcher.does_not_match?(5)).to be_falsey

@@ -12,9 +12,6 @@ module RSpec
         # passes. Similarly, when the matcher is passed to `expect(...).not_to` and the
         # block returns `false`, then the expectation passes.
         #
-        # Use `match_for_should` when used in conjunction with
-        # `match_for_should_not`.
-        #
         # @example
         #
         #     RSpec::Matchers.define :be_even do
@@ -39,7 +36,6 @@ module RSpec
             end
           end
         end
-        alias match_for_should match
 
         # Use this to define the block for a negative expectation (`expect(...).not_to`)
         # when the positive and negative forms require different handling. This
@@ -47,7 +43,7 @@ module RSpec
         # asynchronous processes that require different timeouts.
         #
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
-        def match_for_should_not(&match_block)
+        def match_when_negated(&match_block)
           define_user_override(:does_not_match?, match_block) do |actual|
             @actual = actual
             super(*actual_arg_for(match_block))
