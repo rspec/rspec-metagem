@@ -53,6 +53,15 @@ module RSpec::Core
       end
     end
 
+    context 'with custom exit status' do
+      it 'returns the correct status on exit' do
+        expect($stderr).to receive(:puts) { |cmd| expect(cmd).to match /-e "exit\(2\);".* failed/ }
+        expect(task).to receive(:exit).with(2)
+        task.ruby_opts = '-e "exit(2);" ;#'
+        task.run_task false
+      end
+    end
+
     def specify_consistent_ordering_of_files_to_run(pattern, task)
       orderings = [
         %w[ a/1.rb a/2.rb a/3.rb ],
