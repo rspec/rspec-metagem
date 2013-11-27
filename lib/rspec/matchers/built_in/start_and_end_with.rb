@@ -15,11 +15,11 @@ module RSpec
           end
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected #{@actual.inspect} to #{self.class.name.split('::').last.sub(/With/,'').downcase} with #{@expected.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{@actual.inspect} not to #{self.class.name.split('::').last.sub(/With/,'').downcase} with #{@expected.inspect}"
         end
       end

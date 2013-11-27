@@ -458,7 +458,7 @@ describe "expect(...).to include(matcher)" do
       }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
     end
 
-    it 'works with an old-style matcher that implements failure_message rather than failure_message_for_should' do
+    it 'works with an old-style matcher that implements failure_message rather than failure_message' do
       a_multiple_of = Class.new do
         def initialize(expected)
           @expected = expected

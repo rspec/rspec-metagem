@@ -110,13 +110,13 @@ module RSpec
           self
         end
 
-        def failure_message_for_should
+        def failure_message
           'expected given block to yield control'.tap do |failure_message|
             failure_message << relativity_failure_message
           end
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           'expected given block not to yield control'.tap do |failure_message|
             failure_message << relativity_failure_message
           end
@@ -162,11 +162,11 @@ module RSpec
           @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.empty?
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected given block to yield with no arguments, but #{failure_reason}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected given block not to yield with no arguments, but did"
         end
 
@@ -193,11 +193,11 @@ module RSpec
         end
         alias == matches?
 
-        def failure_message_for_should
+        def failure_message
           "expected given block to yield with arguments, but #{positive_failure_reason}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected given block not to yield with arguments, but #{negative_failure_reason}"
         end
 
@@ -263,13 +263,13 @@ module RSpec
         end
         alias == matches?
 
-        def failure_message_for_should
+        def failure_message
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
             "\nexpected: #{@expected.inspect}" +
             "\n     got: #{@actual.inspect} (compared using === and ==)"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
               "\nexpected not: #{@expected.inspect}" +
               "\n         got: #{@actual.inspect} (compared using === and ==)"

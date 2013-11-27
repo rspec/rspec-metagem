@@ -40,13 +40,13 @@ module RSpec
       it "provides message, expected and actual on #failure_message" do
         matcher = eq("1")
         matcher.matches?(1)
-        expect(matcher.failure_message_for_should).to eq "\nexpected: \"1\"\n     got: 1\n\n(compared using ==)\n"
+        expect(matcher.failure_message).to eq "\nexpected: \"1\"\n     got: 1\n\n(compared using ==)\n"
       end
 
       it "provides message, expected and actual on #negative_failure_message" do
         matcher = eq(1)
         matcher.matches?(1)
-        expect(matcher.failure_message_for_should_not).to eq "\nexpected: value != 1\n     got: 1\n\n(compared using ==)\n"
+        expect(matcher.failure_message_when_negated).to eq "\nexpected: value != 1\n     got: 1\n\n(compared using ==)\n"
       end
 
       it 'fails properly when the actual is an array of multiline strings' do

@@ -15,12 +15,12 @@ module RSpec
   # expectations. A matcher is any object that responds to the following:
   #
   #     matches?(actual)
-  #     failure_message_for_should
+  #     failure_message
   #
   # These methods are also part of the matcher protocol, but are optional:
   #
   #     does_not_match?(actual)
-  #     failure_message_for_should_not
+  #     failure_message_when_negated
   #     description
   #
   # ## Predicates
@@ -98,11 +98,11 @@ module RSpec
   #         player.in_zone?(zone)
   #       end
   #
-  #       failure_message_for_should do |player|
+  #       failure_message do |player|
   #         # generate and return the appropriate string.
   #       end
   #
-  #       failure_message_for_should_not do |player|
+  #       failure_message_when_negated do |player|
   #         # generate and return the appropriate string.
   #       end
   #
@@ -113,8 +113,8 @@ module RSpec
   #
   # Each of the message-generation methods has access to the block arguments
   # passed to the <tt>create</tt> method (in this case, <tt>zone</tt>). The
-  # failure message methods (<tt>failure_message_for_should</tt> and
-  # <tt>failure_message_for_should_not</tt>) are passed the actual value (the
+  # failure message methods (<tt>failure_message</tt> and
+  # <tt>failure_message_when_negated</tt>) are passed the actual value (the
   # receiver of <tt>expect(..)</tt> or <tt>expect(..).not_to</tt>).
   #
   # ### Custom Matcher from scratch
@@ -131,11 +131,11 @@ module RSpec
   #         @target.current_zone.eql?(Zone.new(@expected))
   #       end
   #
-  #       def failure_message_for_should
+  #       def failure_message
   #         "expected #{@target.inspect} to be in Zone #{@expected}"
   #       end
   #
-  #       def failure_message_for_should_not
+  #       def failure_message_when_negated
   #         "expected #{@target.inspect} not to be in Zone #{@expected}"
   #       end
   #     end
@@ -178,7 +178,7 @@ module RSpec
       return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
       return false unless obj.respond_to?(:matches?)
 
-      obj.respond_to?(:failure_message_for_should) || obj.respond_to?(:failure_message)
+      obj.respond_to?(:failure_message) || obj.respond_to?(:failure_message)
     end
 
     # Passes if actual is truthy (anything but false or nil)

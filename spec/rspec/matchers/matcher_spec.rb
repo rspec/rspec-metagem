@@ -88,12 +88,12 @@ module RSpec::Matchers::DSL
 
       it "provides a default failure message for #should" do
         matcher.matches?(8)
-        expect(matcher.failure_message_for_should).to eq "expected 8 to be a multiple of 3"
+        expect(matcher.failure_message).to eq "expected 8 to be a multiple of 3"
       end
 
       it "provides a default failure message for #should_not" do
         matcher.matches?(9)
-        expect(matcher.failure_message_for_should_not).to eq "expected 9 not to be a multiple of 3"
+        expect(matcher.failure_message_when_negated).to eq "expected 9 not to be a multiple of 3"
       end
     end
 
@@ -122,7 +122,7 @@ module RSpec::Matchers::DSL
 
       it "provides a default failure message for #should_not" do
         matcher.does_not_match?(77)
-        expect(matcher.failure_message_for_should_not).to eq "expected 77 not to to be composed of 7 and 11"
+        expect(matcher.failure_message_when_negated).to eq "expected 77 not to to be composed of 7 and 11"
       end
 
       it 'can access helper methods from `match_for_should_not`' do
@@ -313,10 +313,10 @@ module RSpec::Matchers::DSL
           description do |actual|
             "be the boolean #{boolean} (actual was #{actual})"
           end
-          failure_message_for_should do |actual|
+          failure_message do |actual|
             "expected #{actual} to be the boolean #{boolean}"
           end
-          failure_message_for_should_not do |actual|
+          failure_message_when_negated do |actual|
             "expected #{actual} not to be the boolean #{boolean}"
           end
         end
@@ -337,12 +337,12 @@ module RSpec::Matchers::DSL
 
       it "overrides the failure message for #should" do
         matcher.matches?(false)
-        expect(matcher.failure_message_for_should).to eq "expected false to be the boolean true"
+        expect(matcher.failure_message).to eq "expected false to be the boolean true"
       end
 
       it "overrides the failure message for #should_not" do
         matcher.matches?(true)
-        expect(matcher.failure_message_for_should_not).to eq "expected true not to be the boolean true"
+        expect(matcher.failure_message_when_negated).to eq "expected true not to be the boolean true"
       end
 
       it 'can access helper methods from `description`' do
@@ -354,22 +354,22 @@ module RSpec::Matchers::DSL
         expect(matcher.description).to eq("Desc (sub description)")
       end
 
-      it 'can access helper methods from `failure_message_for_should`' do
+      it 'can access helper methods from `failure_message`' do
         matcher = new_matcher(:positive_failure_message) do
           def helper() "helper" end
-          failure_message_for_should { helper }
+          failure_message { helper }
         end
 
-        expect(matcher.failure_message_for_should).to eq("helper")
+        expect(matcher.failure_message).to eq("helper")
       end
 
-      it 'can access helper methods from `failure_message_for_should_not`' do
+      it 'can access helper methods from `failure_message_when_negated`' do
         matcher = new_matcher(:negative_failure_message) do
           def helper() "helper" end
-          failure_message_for_should_not { helper }
+          failure_message_when_negated { helper }
         end
 
-        expect(matcher.failure_message_for_should_not).to eq("helper")
+        expect(matcher.failure_message_when_negated).to eq("helper")
       end
 
       it 'can exit early with a `return` from `description` just like in a method' do
@@ -380,20 +380,20 @@ module RSpec::Matchers::DSL
         expect(matcher.description).to eq("Desc")
       end
 
-      it 'can exit early with a `return` from `failure_message_for_should` just like in a method' do
+      it 'can exit early with a `return` from `failure_message` just like in a method' do
         matcher = new_matcher(:positive_failure_message) do
-          failure_message_for_should { return "msg" }
+          failure_message { return "msg" }
         end
 
-        expect(matcher.failure_message_for_should).to eq("msg")
+        expect(matcher.failure_message).to eq("msg")
       end
 
-      it 'can exit early with a `return` from `failure_message_for_should_not` just like in a method' do
+      it 'can exit early with a `return` from `failure_message_when_negated` just like in a method' do
         matcher = new_matcher(:negative_failure_message) do
-          failure_message_for_should_not { return "msg" }
+          failure_message_when_negated { return "msg" }
         end
 
-        expect(matcher.failure_message_for_should_not).to eq("msg")
+        expect(matcher.failure_message_when_negated).to eq("msg")
       end
     end
 
@@ -515,8 +515,8 @@ module RSpec::Matchers::DSL
       RSpec::Matchers.define(:be_like_a) do |expected|
         match { |actual| actual == expected }
         description { "be like a #{expected}" }
-        failure_message_for_should { "expected to be like a #{expected}" }
-        failure_message_for_should_not { "expected not to be like a #{expected}" }
+        failure_message { "expected to be like a #{expected}" }
+        failure_message_when_negated { "expected not to be like a #{expected}" }
       end
 
       # Note: these bugs were only exposed when creating both instances
@@ -532,13 +532,13 @@ module RSpec::Matchers::DSL
       end
 
       it 'allows them to use the expected value in the positive failure message' do
-        expect(moose.failure_message_for_should).to eq("expected to be like a moose")
-        expect(horse.failure_message_for_should).to eq("expected to be like a horse")
+        expect(moose.failure_message).to eq("expected to be like a moose")
+        expect(horse.failure_message).to eq("expected to be like a horse")
       end
 
       it 'allows them to use the expected value in the negative failure message' do
-        expect(moose.failure_message_for_should_not).to eq("expected not to be like a moose")
-        expect(horse.failure_message_for_should_not).to eq("expected not to be like a horse")
+        expect(moose.failure_message_when_negated).to eq("expected not to be like a moose")
+        expect(horse.failure_message_when_negated).to eq("expected not to be like a horse")
       end
 
       it 'allows them to match separately' do

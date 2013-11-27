@@ -6,7 +6,7 @@ module RSpec
           actual.equal? expected
         end
 
-        def failure_message_for_should
+        def failure_message
           if expected_is_a_literal_singleton?
             simple_failure_message
           else
@@ -14,7 +14,7 @@ module RSpec
           end
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           return <<-MESSAGE
 
 expected not #{inspect_object(actual)}

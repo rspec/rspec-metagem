@@ -8,11 +8,11 @@ module RSpec
           !!actual
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected: truthy value\n     got: #{actual.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected: falsey value\n     got: #{actual.inspect}"
         end
       end
@@ -22,11 +22,11 @@ module RSpec
           !actual
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected: falsey value\n     got: #{actual.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected: truthy value\n     got: #{actual.inspect}"
         end
       end
@@ -36,11 +36,11 @@ module RSpec
           actual.nil?
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected: nil\n     got: #{actual.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected: not nil\n     got: nil"
         end
       end
@@ -80,11 +80,11 @@ module RSpec
           !!actual
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected #{@actual.inspect} to evaluate to true"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{@actual.inspect} to evaluate to false"
         end
 
@@ -106,11 +106,11 @@ module RSpec
           @actual.__send__ @operator, @expected
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected: #{@operator} #{@expected.inspect}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{@actual.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           message = <<-MESSAGE
 `#{negative_expectation_expression}` not only FAILED,
 it is a bit confusing.
@@ -161,11 +161,11 @@ it is a bit confusing.
 
         alias === matches?
 
-        def failure_message_for_should
+        def failure_message
           "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{predicate}#{args_to_s} to return false, got #{@result.inspect}"
         end
 

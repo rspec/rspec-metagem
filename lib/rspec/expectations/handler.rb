@@ -25,10 +25,7 @@ module RSpec
         return match if match
 
         message = message.call if message.respond_to?(:call)
-
-        message ||= matcher.respond_to?(:failure_message_for_should) ?
-                    matcher.failure_message_for_should :
-                    matcher.failure_message
+        message ||= matcher.failure_message
 
         if matcher.respond_to?(:diffable?) && matcher.diffable?
           ::RSpec::Expectations.fail_with message, matcher.expected, matcher.actual
@@ -51,10 +48,7 @@ module RSpec
         return match unless match
 
         message = message.call if message.respond_to?(:call)
-
-        message ||= matcher.respond_to?(:failure_message_for_should_not) ?
-                    matcher.failure_message_for_should_not :
-                    matcher.negative_failure_message
+        message ||= matcher.failure_message_when_negated
 
         if matcher.respond_to?(:diffable?) && matcher.diffable?
           ::RSpec::Expectations.fail_with message, matcher.expected, matcher.actual

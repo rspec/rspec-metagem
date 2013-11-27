@@ -39,7 +39,7 @@ module RSpec::Matchers::BuiltIn
 
     end
 
-    describe "#failure_message_for_should" do
+    describe "#failure_message" do
       context "when the parameter to .new is omitted" do
         it "describes what was expected" do
           matcher_class = Class.new(BaseMatcher) do
@@ -55,7 +55,7 @@ module RSpec::Matchers::BuiltIn
           matcher = matcher_class.new
           matcher.name = "be something"
           matcher.matches?("foo")
-          expect(matcher.failure_message_for_should).to eq('expected "foo" to be something')
+          expect(matcher.failure_message).to eq('expected "foo" to be something')
         end
       end
     end

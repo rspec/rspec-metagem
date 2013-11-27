@@ -111,7 +111,7 @@ MESSAGE
         expected = actual = "1"
         matcher = equal(expected)
         matcher.matches?(actual)
-        expect(matcher.failure_message_for_should_not).to eq <<-MESSAGE
+        expect(matcher.failure_message_when_negated).to eq <<-MESSAGE
 
 expected not #{inspect_object(expected)}
          got #{inspect_object(actual)}

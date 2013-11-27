@@ -90,13 +90,13 @@ module RSpec
         #     RSpec::Matchers.define :have_strength do |expected|
         #       match { your_match_logic }
         #
-        #       failure_message_for_should do |actual|
+        #       failure_message do |actual|
         #         "Expected strength of #{expected}, but had #{actual.strength}"
         #       end
         #     end
         #
         # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
-        def failure_message_for_should(&definition)
+        def failure_message(&definition)
           define_user_override(__method__, definition)
         end
 
@@ -109,13 +109,13 @@ module RSpec
         #     RSpec::Matchers.define :have_strength do |expected|
         #       match { your_match_logic }
         #
-        #       failure_message_for_should_not do |actual|
+        #       failure_message_when_negated do |actual|
         #         "Expected not to have strength of #{expected}, but did"
         #       end
         #     end
         #
         # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
-        def failure_message_for_should_not(&definition)
+        def failure_message_when_negated(&definition)
           define_user_override(__method__, definition)
         end
 
@@ -211,12 +211,12 @@ module RSpec
         end
 
         # The default failure message for positive expectations.
-        def failure_message_for_should
+        def failure_message
           "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         # The default failure message for negative expectations.
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end
       end
