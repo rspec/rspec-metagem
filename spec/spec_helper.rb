@@ -122,6 +122,15 @@ Spork.prefork do
     end
   end
 
+  module StdErrIsolation
+    def with_isolated_stderr
+      original = $stderr
+      $stderr = StringIO.new
+      yield
+      $stderr = original
+    end
+  end
+
   require 'rspec/support/spec'
 
   RSpec.configure do |c|
@@ -129,6 +138,7 @@ Spork.prefork do
     c.alias_it_behaves_like_to 'it_has_behavior'
     c.around {|example| Sandboxing.sandboxed { example.run }}
     c.include(RSpecHelpers)
+    c.include(StdErrIsolation)
     c.include Aruba::Api, :example_group => {
       :file_path => /spec\/command_line/
     }
