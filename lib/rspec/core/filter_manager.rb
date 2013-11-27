@@ -199,6 +199,7 @@ module RSpec
           true
         elsif is_standalone_filter?(args.last)
           replace_filters(args.last)
+          true
         end
       end
 
