@@ -28,6 +28,13 @@ RSpec::configure do |config|
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect
   end
+
+  # Use the doc formatter when running individual files.
+  # This is too verbose when running all spec files but
+  # is nice for a single file.
+  if config.files_to_run.one? && config.formatters.none?
+    config.formatter = 'doc'
+  end
 end
 
 shared_context "with #should enabled", :uses_should do
