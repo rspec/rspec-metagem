@@ -21,23 +21,16 @@ module RSpec
         LegacyMacherAdapter::RSpec2.wrap(matcher) ||
         LegacyMacherAdapter::RSpec1.wrap(matcher) || matcher
       end
-    end
 
-    # @api private
-    class PositiveExpectationHandler < ExpectationHandler
-      def self.handle_matcher(actual, matcher, message=nil, &block)
+      def self.handle_matcher(matcher, message, failure_message_method)
         check_message(message)
         matcher = rspec_3_matcher_from(matcher)
-
-        ::RSpec::Matchers.last_should = :should
         ::RSpec::Matchers.last_matcher = matcher
-        return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) if matcher.nil?
 
-        match = matcher.matches?(actual, &block)
-        return match if match
+        yield
 
         message = message.call if message.respond_to?(:call)
-        message ||= matcher.failure_message
+        message ||= matcher.__send__(failure_message_method)
 
         if matcher.respond_to?(:diffable?) && matcher.diffable?
           ::RSpec::Expectations.fail_with message, matcher.expected, matcher.actual
@@ -48,27 +41,31 @@ module RSpec
     end
 
     # @api private
+    class PositiveExpectationHandler < ExpectationHandler
+      def self.handle_matcher(actual, matcher, message=nil, &block)
+        super(matcher, message, :failure_message) do
+          ::RSpec::Matchers.last_should = :should
+          return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) if matcher.nil?
+
+          match = matcher.matches?(actual, &block)
+          return match if match
+        end
+      end
+    end
+
+    # @api private
     class NegativeExpectationHandler < ExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
-        check_message(message)
-        matcher = rspec_3_matcher_from(matcher)
+        super(matcher, message, :failure_message_when_negated) do
+          ::RSpec::Matchers.last_should = :should_not
+          return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) if matcher.nil?
 
-        ::RSpec::Matchers.last_should = :should_not
-        ::RSpec::Matchers.last_matcher = matcher
-        return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) if matcher.nil?
-
-        match = matcher.respond_to?(:does_not_match?) ?
-                !matcher.does_not_match?(actual, &block) :
-                matcher.matches?(actual, &block)
-        return match unless match
-
-        message = message.call if message.respond_to?(:call)
-        message ||= matcher.failure_message_when_negated
-
-        if matcher.respond_to?(:diffable?) && matcher.diffable?
-          ::RSpec::Expectations.fail_with message, matcher.expected, matcher.actual
-        else
-          ::RSpec::Expectations.fail_with message
+          match = if matcher.respond_to?(:does_not_match?)
+                    !matcher.does_not_match?(actual, &block)
+                  else
+                    matcher.matches?(actual, &block)
+                  end
+          return match unless match
         end
       end
     end
