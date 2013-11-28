@@ -7,6 +7,11 @@ module RSpec
         matcher = matcher_class.new
         before { allow_deprecation }
 
+        backwards_compat_matcher = Class.new(matcher_class) do
+          def failure_message; "failure when positive"; end
+          def failure_message_when_negated; "failure when negative"; end
+        end.new
+
         context 'when matched positively' do
           it 'returns the positive expectation failure message' do
             expect {
@@ -17,6 +22,14 @@ module RSpec
           it 'warns about the deprecated protocol' do
             expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 1, /legacy\s+RSpec\s+matcher/)
             expect(true).to matcher
+          end
+
+          it 'does not warn when it also defines the current methods (i.e. to be compatible on multiple RSpec versions)' do
+            expect_no_deprecations
+
+            expect {
+              expect(false).to backwards_compat_matcher
+            }.to fail_with("failure when positive")
           end
         end
 
@@ -30,6 +43,14 @@ module RSpec
           it 'warns about the deprecated protocol' do
             expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 1, /legacy\s+RSpec\s+matcher/)
             expect(false).not_to matcher
+          end
+
+          it 'does not warn when it also defines the current methods (i.e. to be compatible on multiple RSpec versions)' do
+            expect_no_deprecations
+
+            expect {
+              expect(true).not_to backwards_compat_matcher
+            }.to fail_with("failure when negative")
           end
 
           it 'calls `does_not_match?` if it is defined on the matcher' do

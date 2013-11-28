@@ -117,8 +117,13 @@ module RSpec
         end
 
         def self.interface_matches?(matcher)
-          matcher.respond_to?(:failure_message_for_should) ||
-          matcher.respond_to?(:failure_message_for_should_not)
+          (
+            !matcher.respond_to?(:failure_message) &&
+            matcher.respond_to?(:failure_message_for_should)
+          ) || (
+            !matcher.respond_to?(:failure_message_when_negated) &&
+            matcher.respond_to?(:failure_message_for_should_not)
+          )
         end
       end
 
@@ -139,6 +144,7 @@ module RSpec
         # (paired with `failure_message_when_negated`), so we don't check
         # for `failure_message` here.
         def self.interface_matches?(matcher)
+          !matcher.respond_to?(:failure_message_when_negated) &&
           matcher.respond_to?(:negative_failure_message)
         end
       end
