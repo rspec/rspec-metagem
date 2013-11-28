@@ -43,6 +43,13 @@ module RSpec::Core
                 expect(filter_manager.inclusions).to eq({filter => "value"})
               end
 
+              it "clears previous exclusion" do
+                filter_manager = FilterManager.new
+                filter_manager.include :foo => :bar
+                filter_manager.include filter => "value"
+                expect(filter_manager.exclusions).to be_empty
+              end
+
               it "does nothing when :#{filter} previously set" do
                 filter_manager = FilterManager.new
                 filter_manager.include filter => "a_value"
