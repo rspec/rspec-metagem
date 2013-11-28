@@ -216,7 +216,7 @@ module RSpec::Matchers::DSL
     end
 
     it 'allows an early `return` to be used from a `match_unless_raises` block' do
-      matcher = new_matcher(:with_return) do |expected|
+      matcher = new_matcher(:with_return) do
         match_unless_raises(ArgumentError) do |actual|
           return actual if [true, false].include?(actual)
           raise ArgumentError
