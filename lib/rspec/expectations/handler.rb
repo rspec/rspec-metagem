@@ -1,6 +1,7 @@
 module RSpec
   module Expectations
 
+    # @api private
     class ExpectationHandler
       def self.check_message(msg)
         unless msg.nil? || msg.respond_to?(:to_str) || msg.respond_to?(:call)
@@ -22,6 +23,7 @@ module RSpec
       end
     end
 
+    # @api private
     class PositiveExpectationHandler < ExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
         check_message(message)
@@ -45,6 +47,7 @@ module RSpec
       end
     end
 
+    # @api private
     class NegativeExpectationHandler < ExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
         check_message(message)
