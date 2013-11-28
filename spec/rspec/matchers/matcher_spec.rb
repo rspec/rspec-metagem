@@ -86,18 +86,18 @@ module RSpec::Matchers::DSL
         expect(matcher.description).to eq "be a multiple of 3"
       end
 
-      it "provides a default failure message for #should" do
+      it "provides a default positive expectation failure message" do
         matcher.matches?(8)
         expect(matcher.failure_message).to eq "expected 8 to be a multiple of 3"
       end
 
-      it "provides a default failure message for #should_not" do
+      it "provides a default negative expectation failure message" do
         matcher.matches?(9)
         expect(matcher.failure_message_when_negated).to eq "expected 9 not to be a multiple of 3"
       end
     end
 
-    context "with separate match logic for should and should not" do
+    context "with separate match logic for positive and negative expectations" do
       let(:matcher) do
         new_matcher(:to_be_composed_of, 7, 11) do |a, b|
           match do |actual|
@@ -120,7 +120,7 @@ module RSpec::Matchers::DSL
         expect(matcher.does_not_match?(18)).to be_truthy
       end
 
-      it "provides a default failure message for #should_not" do
+      it "provides a default failure message for negative expectations" do
         matcher.does_not_match?(77)
         expect(matcher.failure_message_when_negated).to eq "expected 77 not to to be composed of 7 and 11"
       end
@@ -335,12 +335,12 @@ module RSpec::Matchers::DSL
         expect(matcher.description).to eq "be the boolean true (actual was true)"
       end
 
-      it "overrides the failure message for #should" do
+      it "overrides the failure message for positive expectations" do
         matcher.matches?(false)
         expect(matcher.failure_message).to eq "expected false to be the boolean true"
       end
 
-      it "overrides the failure message for #should_not" do
+      it "overrides the failure message for negative expectations" do
         matcher.matches?(true)
         expect(matcher.failure_message_when_negated).to eq "expected true not to be the boolean true"
       end
