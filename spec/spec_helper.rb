@@ -12,17 +12,9 @@ ensure
 end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
 
 Dir['./spec/support/**/*'].each {|f| require f}
-
-module DeprecationHelpers
-  def expect_deprecation_with_call_site(file, line)
-    expect(RSpec.configuration.reporter).to receive(:deprecation) do |options|
-      expect(options[:call_site]).to include([file, line].join(':'))
-    end
-  end
-end
+require 'rspec/support/spec'
 
 RSpec::configure do |config|
-  config.include DeprecationHelpers
   config.color_enabled = true
   config.filter_run :focused
   config.run_all_when_everything_filtered = true
@@ -65,7 +57,6 @@ shared_context "with the default expectation syntax" do
 
 end
 
-
 shared_context "with #should exclusively enabled", :uses_only_should do
   orig_syntax = nil
 
@@ -79,8 +70,9 @@ shared_context "with #should exclusively enabled", :uses_only_should do
   end
 end
 
+require 'rspec/support/spec/in_sub_process'
 module TestUnitIntegrationSupport
-  include InSubProcess
+  include ::RSpec::Support::InSubProcess
 
   def with_test_unit_loaded
     in_sub_process do
