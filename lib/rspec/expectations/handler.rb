@@ -13,18 +13,18 @@ module RSpec
         end
       end
 
-      # Returns an RSpec-3 compatible matcher, wrapping a legacy one
+      # Returns an RSpec-3+ compatible matcher, wrapping a legacy one
       # in an adapter if necessary.
       #
       # @api private
-      def self.rspec_3_matcher_from(matcher)
+      def self.modern_matcher_from(matcher)
         LegacyMacherAdapter::RSpec2.wrap(matcher) ||
         LegacyMacherAdapter::RSpec1.wrap(matcher) || matcher
       end
 
       def self.handle_matcher(matcher, message, failure_message_method)
         check_message(message)
-        matcher = rspec_3_matcher_from(matcher)
+        matcher = modern_matcher_from(matcher)
         ::RSpec::Matchers.last_matcher = matcher
 
         yield
