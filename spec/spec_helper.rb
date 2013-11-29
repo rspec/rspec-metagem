@@ -1,18 +1,10 @@
-begin
-  old_verbose, $VERBOSE = $VERBOSE, false
-  require 'simplecov'
+require 'rspec/support/spec'
 
-  SimpleCov.start do
-    add_filter "bundle"
-    minimum_coverage 97
-  end
-rescue LoadError
-ensure
-  $VERBOSE = old_verbose
-end unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
+RSpec::Support::Spec.setup_simplecov do
+  minimum_coverage 97
+end
 
 Dir['./spec/support/**/*'].each {|f| require f}
-require 'rspec/support/spec'
 
 RSpec::configure do |config|
   config.color_enabled = true
