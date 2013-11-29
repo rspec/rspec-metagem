@@ -44,6 +44,90 @@ module RSpec::Matchers::DSL
       expect(m2.matches?(2)).to be_truthy
     end
 
+    context 'using deprecated APIs' do
+      before { allow_deprecation }
+
+      describe "failure_message_for_should" do
+        let(:matcher) do
+          new_matcher(:foo) do
+            match { false }
+            failure_message_for_should { "failed" }
+          end
+        end
+        line = __LINE__ - 3
+
+        it 'defines the failure message for a positive expectation' do
+          expect {
+            expect(nil).to matcher
+          }.to fail_with("failed")
+        end
+
+        it 'prints a deprecation warning' do
+          expect_deprecation_with_call_site(__FILE__, line, /failure_message_for_should/)
+          matcher
+        end
+      end
+
+      describe "failure_message_for_should_not" do
+        let(:matcher) do
+          new_matcher(:foo) do
+            match { true }
+            failure_message_for_should_not { "failed" }
+          end
+        end
+        line = __LINE__ - 3
+
+        it 'defines the failure message for a negative expectation' do
+          expect {
+            expect(nil).not_to matcher
+          }.to fail_with("failed")
+        end
+
+        it 'prints a deprecation warning' do
+          expect_deprecation_with_call_site(__FILE__, line, /failure_message_for_should_not/)
+          matcher
+        end
+      end
+
+      describe "match_for_should" do
+        let(:matcher) do
+          new_matcher(:foo) do
+            match_for_should { |arg| arg }
+          end
+        end
+        line = __LINE__ - 3
+
+        it 'defines the positive expectation match logic' do
+          expect(true).to matcher
+          expect { expect(false).to matcher }.to fail_with(/foo/)
+        end
+
+        it 'prints a deprecation warning' do
+          expect_deprecation_with_call_site(__FILE__, line, /match_for_should/)
+          matcher
+        end
+      end
+
+      describe "match_for_should_not" do
+        let(:matcher) do
+          new_matcher(:foo) do
+            match_for_should_not { |arg| !arg }
+          end
+        end
+        line = __LINE__ - 3
+
+        it 'defines the positive expectation match logic' do
+          expect(false).not_to matcher
+          expect { expect(true).not_to matcher }.to fail_with(/foo/)
+        end
+
+        it 'prints a deprecation warning' do
+          expect_deprecation_with_call_site(__FILE__, line, /match_for_should_not/)
+          matcher
+        end
+      end
+    end
+
     context "with an included module" do
       let(:matcher) do
         new_matcher(:be_a_greeting) do

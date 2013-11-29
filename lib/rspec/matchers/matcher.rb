@@ -188,6 +188,34 @@ module RSpec
           our_def ||= lambda { super(*actual_arg_for(user_def)) }
           define_method(method_name, &our_def)
         end
+
+        # Defines deprecated macro methods from RSpec 2 for backwards compatibility.
+        # @deprecated Use the methods from {Macros} instead.
+        module Deprecated
+          # @deprecated Use {Macros#match} instead.
+          def match_for_should(&definition)
+            RSpec.deprecate("`match_for_should`", :replacement => "`match`")
+            match(&definition)
+          end
+
+          # @deprecated Use {Macros#match_when_negated} instead.
+          def match_for_should_not(&definition)
+            RSpec.deprecate("`match_for_should_not`", :replacement => "`match_when_negated`")
+            match_when_negated(&definition)
+          end
+
+          # @deprecated Use {Macros#failure_message} instead.
+          def failure_message_for_should(&definition)
+            RSpec.deprecate("`failure_message_for_should`", :replacement => "`failure_message`")
+            failure_message(&definition)
+          end
+
+          # @deprecated Use {Macros#failure_message_when_negated} instead.
+          def failure_message_for_should_not(&definition)
+            RSpec.deprecate("`failure_message_for_should_not`", :replacement => "`failure_message_when_negated`")
+            failure_message_when_negated(&definition)
+          end
+        end
       end
 
       # Defines default implementations of the matcher
@@ -233,6 +261,7 @@ module RSpec
 
         # Makes the macro methods available to an `RSpec::Matchers.define` block.
         extend Macros
+        extend Macros::Deprecated
 
         attr_reader   :expected, :actual, :rescued_exception
         attr_accessor :matcher_execution_context
