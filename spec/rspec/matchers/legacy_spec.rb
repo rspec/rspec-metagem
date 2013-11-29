@@ -12,6 +12,10 @@ module RSpec
           def failure_message_when_negated; "failure when negative"; end
         end.new
 
+        it 'is still considered to be a matcher' do
+          expect(Matchers.is_a_matcher?(matcher)).to be true
+        end
+
         context 'when matched positively' do
           it 'returns the positive expectation failure message' do
             expect {
