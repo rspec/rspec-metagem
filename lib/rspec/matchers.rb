@@ -276,8 +276,8 @@ module RSpec
     # but not both.
     #
     # When passing a block, it must use the <tt>{ ... }</tt> format, not
-    # do/end, as <tt>{ ... }</tt> binds to the +change+ method, whereas do/end
-    # would errantly bind to the +expect(..)+ or +expect(..).not_to+ method.
+    # do/end, as <tt>{ ... }</tt> binds to the `change` method, whereas do/end
+    # would errantly bind to the `expect(..).to` or `expect(...).not_to` method.
     #
     # @example
     #
@@ -379,7 +379,7 @@ module RSpec
       BuiltIn::Eq.new(expected)
     end
 
-    # Passes if +actual.eql?(expected)+
+    # Passes if `actual.eql?(expected)`
     #
     # See http://www.ruby-doc.org/core/classes/Object.html#M001057 for more
     # information about equality in Ruby.
