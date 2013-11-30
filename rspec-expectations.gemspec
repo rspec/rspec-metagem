@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.email       = "rspec@googlegroups.com"
   s.homepage    = "http://github.com/rspec/rspec-expectations"
   s.summary     = "rspec-expectations-#{RSpec::Expectations::Version::STRING}"
-  s.description = "rspec expectations (should[_not] and matchers)"
+  s.description = "rspec-expectations provides a simple, readable API to express expected outcomes of a code example."
 
   s.rubyforge_project  = "rspec"
 
