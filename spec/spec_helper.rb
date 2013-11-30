@@ -24,10 +24,6 @@ Spork.prefork do
     end
   end
 
-  RSpec::Support::Spec.setup_simplecov do
-    minimum_coverage 96
-  end
-
   if RUBY_PLATFORM == 'java'
     # Works around https://jira.codehaus.org/browse/JRUBY-5678
     require 'fileutils'
