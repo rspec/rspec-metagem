@@ -18,7 +18,7 @@ export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
 echo "Running all..."
-bin/rspec spec -b --format progress --profile
+script/rspec_with_simplecov spec -b --format progress --profile
 
 echo
 echo "--------------------------------------------------------------------"
@@ -28,7 +28,7 @@ if is_jruby; then
   echo "Skipping one-by-one spec runs due to expensive JVM load time"
 else
   for file in `find spec -iname '*_spec.rb'`; do
-    NO_COVERALLS=1 bin/rspec $file -b --format progress
+    bin/rspec $file -b --format progress
   done
 fi
 

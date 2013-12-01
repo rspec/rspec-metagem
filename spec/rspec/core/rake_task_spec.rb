@@ -56,7 +56,7 @@ module RSpec::Core
     context 'with custom exit status' do
       it 'returns the correct status on exit' do
         with_isolated_stderr do
-          expect($stderr).to receive(:puts) { |cmd| expect(cmd).to match /-e "exit\(2\);".* failed/ }
+          expect($stderr).to receive(:puts) { |cmd| expect(cmd).to match(/-e "exit\(2\);".* failed/) }
           expect(task).to receive(:exit).with(2)
           task.ruby_opts = '-e "exit(2);" ;#'
           task.run_task false
