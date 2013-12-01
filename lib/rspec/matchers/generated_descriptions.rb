@@ -1,17 +1,17 @@
 module RSpec
   module Matchers
     class << self
-      attr_accessor :last_matcher, :last_should
+      attr_accessor :last_matcher, :last_expectation_handler
     end
 
     def self.clear_generated_description
       self.last_matcher = nil
-      self.last_should = nil
+      self.last_expectation_handler = nil
     end
 
     def self.generated_description
-      return nil if last_should.nil?
-      "#{last_should.to_s.gsub('_',' ')} #{last_description}"
+      return nil if last_expectation_handler.nil?
+      "#{last_expectation_handler.verb} #{last_description}"
     end
 
   private

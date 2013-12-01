@@ -32,7 +32,7 @@ module RSpec
       def self.use_custom_matcher_or_delegate(operator)
         define_method(operator) do |expected|
           if uses_generic_implementation_of?(operator) && matcher = OperatorMatcher.get(@actual.class, operator)
-            @actual.__send__(::RSpec::Matchers.last_should, matcher.new(expected))
+            @actual.__send__(::RSpec::Matchers.last_expectation_handler.should_method, matcher.new(expected))
           else
             eval_match(@actual, operator, expected)
           end
@@ -41,8 +41,8 @@ module RSpec
         negative_operator = operator.sub(/^=/, '!')
         if negative_operator != operator && respond_to?(negative_operator)
           define_method(negative_operator) do |expected|
-            opposite_should = ::RSpec::Matchers.last_should == :should ? :should_not : :should
-            raise "RSpec does not support `#{::RSpec::Matchers.last_should} #{negative_operator} expected`.  " +
+            opposite_should = ::RSpec::Matchers.last_expectation_handler.opposite_should_method
+            raise "RSpec does not support `#{::RSpec::Matchers.last_expectation_handler.should_method} #{negative_operator} expected`.  " +
               "Use `#{opposite_should} #{operator} expected` instead."
           end
         end
