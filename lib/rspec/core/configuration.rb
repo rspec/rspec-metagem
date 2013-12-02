@@ -107,14 +107,13 @@ module RSpec
       add_setting :expose_globally
 
       def expose_globally=(value)
-        if !@expose_globally && value
+        if value
           Core::DSL.expose_globally!
           Core::SharedExampleGroup::TopLevelDSL.expose_globally!
-        elsif @expose_globally && !value
+        else
           Core::DSL.remove_globally!
           Core::SharedExampleGroup::TopLevelDSL.remove_globally!
         end
-        @expose_globally = value
       end
 
       # @macro add_setting
@@ -267,7 +266,6 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
-        @expose_globally = false
         self.expose_globally = true
       end
 
