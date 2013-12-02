@@ -104,6 +104,9 @@ module RSpec
 
       # @macro add_setting
       # Default: true
+      # Use this to expose the core RSpec DSL via `Module` and the `main`
+      # object. It will be set automatically but you can override it to
+      # remove the DSL.
       add_setting :expose_globally
 
       def expose_globally=(value)
