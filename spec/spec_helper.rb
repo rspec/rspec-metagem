@@ -132,7 +132,7 @@ Spork.prefork do
       c.formatter = 'doc'
     end
 
-    c.expose_globally = false
+    c.expose_dsl_globally = false
 
     c.expect_with :rspec do |expectations|
       expectations.syntax = :expect

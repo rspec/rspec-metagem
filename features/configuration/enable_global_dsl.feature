@@ -14,7 +14,7 @@ Feature: Global namespace DSL
 
   RSpec 3 now provides an option to disable this global monkey patching:
 
-  `config.expose_globally = false`.
+  `config.expose_dsl_globally = false`.
 
   For backwards compatibility it defaults to true.
 
@@ -32,7 +32,7 @@ Feature: Global namespace DSL
   Scenario: when exposing globally is disabled the top level DSL no longer works
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      RSpec.configure { |c| c.expose_globally = false }
+      RSpec.configure { |c| c.expose_dsl_globally = false }
       describe "specs here" do
         it "passes" do
         end
@@ -44,7 +44,7 @@ Feature: Global namespace DSL
   Scenario: regardless of setting
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      RSpec.configure { |c| c.expose_globally = true }
+      RSpec.configure { |c| c.expose_dsl_globally = true }
       RSpec.describe "specs here" do
         it "passes" do
         end

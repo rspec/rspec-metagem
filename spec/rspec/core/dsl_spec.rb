@@ -16,9 +16,9 @@ RSpec.describe "The RSpec DSL" do
 
   methods.each do |method_name|
     describe "##{method_name}" do
-      it "is added to the main object and Module when expose_globally is enabled" do
+      it "is added to the main object and Module when expose_dsl_globally is enabled" do
         in_sub_process do
-          RSpec.configuration.expose_globally = true
+          RSpec.configuration.expose_dsl_globally = true
           expect(main).to respond_to(method_name)
           expect(Module.new).to respond_to(method_name)
         end

@@ -101,7 +101,7 @@ WARNING
     end
     @configuration ||= begin
                          config = RSpec::Core::Configuration.new
-                         config.expose_globally = true
+                         config.expose_dsl_globally = true
                          config
                        end
 

@@ -107,9 +107,9 @@ module RSpec
       # Use this to expose the core RSpec DSL via `Module` and the `main`
       # object. It will be set automatically but you can override it to
       # remove the DSL.
-      add_setting :expose_globally
+      add_setting :expose_dsl_globally
 
-      def expose_globally=(value)
+      def expose_dsl_globally=(value)
         if value
           Core::DSL.expose_globally!
           Core::SharedExampleGroup::TopLevelDSL.expose_globally!

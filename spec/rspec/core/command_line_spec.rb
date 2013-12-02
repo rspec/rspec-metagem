@@ -12,8 +12,9 @@ module RSpec::Core
 
     before do
       allow(config.hooks).to receive(:run)
-      allow(config).to receive(:expose_globally?).and_return(false)
+      allow(config).to receive(:expose_dsl_globally?).and_return(false)
     end
+
     it "configures streams before command line options" do
       allow(RSpec).to receive(:deprecate)  # remove this and should_receive when ordered
       stdout = StringIO.new

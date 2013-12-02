@@ -40,9 +40,9 @@ module RSpec::Core
           group.send(shared_method_name, *args, &block)
         end
 
-        it "is exposed to the global namespace when expose_globally is enabled" do
+        it "is exposed to the global namespace when expose_dsl_globally is enabled" do
           in_sub_process do
-            RSpec.configuration.expose_globally = true
+            RSpec.configuration.expose_dsl_globally = true
             expect(Kernel).to respond_to(shared_method_name)
           end
         end
