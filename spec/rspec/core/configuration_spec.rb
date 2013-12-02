@@ -873,6 +873,15 @@ module RSpec::Core
           expect(config.formatters.first.output.path).to eq(path)
         end
       end
+
+      context "when a duplicate formatter exists for the same output target" do
+        it "does not add the formatter" do
+          config.add_formatter :documentation
+          expect {
+            config.add_formatter :documentation
+          }.not_to change { config.formatters.length }
+        end
+      end
     end
 
     describe "#filter_run_including" do
