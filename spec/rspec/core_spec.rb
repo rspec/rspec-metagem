@@ -10,7 +10,6 @@ RSpec.describe RSpec do
   describe "::configuration=" do
     it "sets the configuration object" do
       configuration = RSpec::Core::Configuration.new
-      configuration.expose_globally = false
 
       RSpec.configuration = configuration
 

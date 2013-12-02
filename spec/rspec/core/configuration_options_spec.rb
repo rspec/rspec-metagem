@@ -20,7 +20,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
   end
 
   describe "#configure" do
-    let(:config) { RSpec::Core::Configuration.new.tap { |c| c.expose_globally = false } }
+    let(:config) { RSpec::Core::Configuration.new }
 
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])

@@ -6,7 +6,7 @@ class Foo; end
 module RSpec::Core
 
   RSpec.describe RSpec::Core::World do
-    let(:configuration) { RSpec::Core::Configuration.new.tap { |c| c.expose_globally = false } }
+    let(:configuration) { RSpec::Core::Configuration.new }
     let(:world) { RSpec::Core::World.new(configuration) }
 
     describe '#reset' do
