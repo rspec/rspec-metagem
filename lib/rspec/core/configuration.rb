@@ -266,7 +266,6 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
-        self.expose_globally = true
       end
 
       # @private
