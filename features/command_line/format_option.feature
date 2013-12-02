@@ -73,3 +73,27 @@ Feature: --format option
         does something that fails (FAILED - 1)
         does something that is pending (PENDING: No reason given)
       """
+
+  Scenario: sending the same formats to the same output target
+    Given a file named "example_spec.rb" with:
+    """ruby
+    RSpec.configure do |config|
+      config.formatter = :progress
+    end
+
+    describe "something" do
+      it "does something that passes" do
+        expect(5).to eq(5)
+      end
+
+      it "does something that fails" do
+        expect(5).to eq(4)
+      end
+
+      it "does something that is pending", :pending => true do
+        expect(5).to be > 3
+      end
+    end
+    """
+    When I run `rspec example_spec.rb --format progress`
+    Then the output should contain ".F*"
