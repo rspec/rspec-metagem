@@ -1,14 +1,41 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # Describes an expected mutation.
       class Change
-        def initialize(receiver=nil, message=nil, &block)
-          @message = message
-          @value_proc = block || lambda {receiver.__send__(message)}
-          @expected_after = @expected_before = @minimum = @maximum = @expected_delta = nil
-          @eval_before = @eval_after = false
+        # Specifies the delta of the expected change.
+        def by(expected_delta)
+          @expected_delta = expected_delta
+          self
         end
 
+        # Specifies a minimum delta of the expected change.
+        def by_at_least(minimum)
+          @minimum = minimum
+          self
+        end
+
+        # Specifies a maximum delta of the expected change.
+        def by_at_most(maximum)
+          @maximum = maximum
+          self
+        end
+
+        # Specifies the new value you expect.
+        def to(to)
+          @eval_after = true
+          @expected_after = to
+          self
+        end
+
+        # Specifies the original value.
+        def from(before)
+          @eval_before = true
+          @expected_before = before
+          self
+        end
+
+        # @api private
         def matches?(event_proc)
           raise_block_syntax_error if block_given?
 
@@ -20,20 +47,7 @@ module RSpec
         end
         alias == matches?
 
-        def raise_block_syntax_error
-          raise SyntaxError,
-            "The block passed to the `change` matcher must use `{ ... }` instead of do/end"
-        end
-
-        def evaluate_value_proc
-          case val = @value_proc.call
-          when Enumerable, String
-            val.dup
-          else
-            val
-          end
-        end
-
+        # @api private
         def failure_message
           if @eval_before && !expected_matches_actual?(@expected_before, @actual_before)
             "expected #{message} to have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
@@ -50,46 +64,42 @@ module RSpec
           end
         end
 
-        def actual_delta
-          @actual_after - @actual_before
-        end
-
+        # @api private
         def failure_message_when_negated
           "expected #{message} not to have changed, but did change from #{@actual_before.inspect} to #{@actual_after.inspect}"
         end
 
-        def by(expected_delta)
-          @expected_delta = expected_delta
-          self
-        end
-
-        def by_at_least(minimum)
-          @minimum = minimum
-          self
-        end
-
-        def by_at_most(maximum)
-          @maximum = maximum
-          self
-        end
-
-        def to(to)
-          @eval_after = true
-          @expected_after = to
-          self
-        end
-
-        def from(before)
-          @eval_before = true
-          @expected_before = before
-          self
-        end
-
+        # @api private
         def description
           "change ##{message}"
         end
 
-        private
+      private
+
+        def initialize(receiver=nil, message=nil, &block)
+          @message = message
+          @value_proc = block || lambda { receiver.__send__(message) }
+          @expected_after = @expected_before = @minimum = @maximum = @expected_delta = nil
+          @eval_before = @eval_after = false
+        end
+
+        def actual_delta
+          @actual_after - @actual_before
+        end
+
+        def raise_block_syntax_error
+          raise SyntaxError,
+            "The block passed to the `change` matcher must use `{ ... }` instead of do/end"
+        end
+
+        def evaluate_value_proc
+          case val = @value_proc.call
+          when Enumerable, String
+            val.dup
+          else
+            val
+          end
+        end
 
         def failure_message_for_expected_after
           if RSpec::Matchers.is_a_matcher?(@expected_after)
