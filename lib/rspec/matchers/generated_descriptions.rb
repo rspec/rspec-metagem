@@ -1,17 +1,17 @@
 module RSpec
   module Matchers
     class << self
-      attr_accessor :last_matcher, :last_should
+      attr_accessor :last_matcher, :last_expectation_handler
     end
 
     def self.clear_generated_description
       self.last_matcher = nil
-      self.last_should = nil
+      self.last_expectation_handler = nil
     end
 
     def self.generated_description
-      return nil if last_should.nil?
-      "#{last_should.to_s.gsub('_',' ')} #{last_description}"
+      return nil if last_expectation_handler.nil?
+      "#{last_expectation_handler.verb} #{last_description}"
     end
 
   private
@@ -20,11 +20,11 @@ module RSpec
       last_matcher.respond_to?(:description) ? last_matcher.description : <<-MESSAGE
 When you call a matcher in an example without a String, like this:
 
-specify { object.should matcher }
+specify { expect(object).to matcher }
 
 or this:
 
-it { should matcher }
+it { is_expected.to matcher }
 
 RSpec expects the matcher to have a #description method. You should either
 add a String to the example this matcher is being used in, or give it a

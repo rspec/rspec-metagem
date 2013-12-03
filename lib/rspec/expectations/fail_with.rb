@@ -16,7 +16,7 @@ module RSpec
       def fail_with(message, expected=nil, actual=nil)
         if !message
           raise ArgumentError, "Failure message is nil. Does your matcher define the " +
-                               "appropriate failure_message_for_* method to return a string?"
+                               "appropriate failure_message[_when_negated] method to return a string?"
         end
 
         if actual && expected

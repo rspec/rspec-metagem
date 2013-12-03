@@ -25,6 +25,7 @@ module RSpec
       def self.handle_matcher(matcher, message, failure_message_method)
         check_message(message)
         matcher = modern_matcher_from(matcher)
+        ::RSpec::Matchers.last_expectation_handler = self
         ::RSpec::Matchers.last_matcher = matcher
 
         yield
@@ -44,12 +45,23 @@ module RSpec
     class PositiveExpectationHandler < ExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
         super(matcher, message, :failure_message) do
-          ::RSpec::Matchers.last_should = :should
           return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) if matcher.nil?
 
           match = matcher.matches?(actual, &block)
           return match if match
         end
+      end
+
+      def self.verb
+        "should"
+      end
+
+      def self.should_method
+        :should
+      end
+
+      def self.opposite_should_method
+        :should_not
       end
     end
 
@@ -57,7 +69,6 @@ module RSpec
     class NegativeExpectationHandler < ExpectationHandler
       def self.handle_matcher(actual, matcher, message=nil, &block)
         super(matcher, message, :failure_message_when_negated) do
-          ::RSpec::Matchers.last_should = :should_not
           return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) if matcher.nil?
 
           match = if matcher.respond_to?(:does_not_match?)
@@ -67,6 +78,18 @@ module RSpec
                   end
           return match unless match
         end
+      end
+
+      def self.verb
+        "should not"
+      end
+
+      def self.should_method
+        :should_not
+      end
+
+      def self.opposite_should_method
+        :should
       end
     end
 
