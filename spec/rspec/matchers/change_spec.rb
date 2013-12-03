@@ -216,7 +216,7 @@ describe "expect { ... }.to change { block }" do
   it "warns if passed a block using do/end instead of {}" do
     expect do
       expect {}.to change do; end
-    end.to raise_error(SyntaxError, /block passed to should or should_not/)
+    end.to raise_error(SyntaxError, /block passed to the `change` matcher/)
   end
 
   it "provides a #description" do
@@ -243,7 +243,7 @@ describe "expect { ... }.not_to change { block }" do
   it "warns if passed a block using do/end instead of {}" do
     expect do
       expect {}.not_to change do; end
-    end.to raise_error(SyntaxError, /block passed to should or should_not/)
+    end.to raise_error(SyntaxError, /block passed to the `change` matcher/)
   end
 end
 

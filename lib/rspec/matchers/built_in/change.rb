@@ -21,9 +21,8 @@ module RSpec
         alias == matches?
 
         def raise_block_syntax_error
-          raise SyntaxError.new(<<-MESSAGE)
-block passed to should or should_not change must use {} instead of do/end
-MESSAGE
+          raise SyntaxError,
+            "The block passed to the `change` matcher must use `{ ... }` instead of do/end"
         end
 
         def evaluate_value_proc
