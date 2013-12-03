@@ -37,17 +37,17 @@ MESSAGE
 
         def failure_message
           if @eval_before && !expected_matches_actual?(@expected_before, @actual_before)
-            "#{message} should have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
+            "expected #{message} to have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
           elsif @eval_after && !expected_matches_actual?(@expected_after, @actual_after)
-            "#{message} should have been changed to #{failure_message_for_expected_after}, but is now #{@actual_after.inspect}"
+            "expected #{message} to have changed to #{failure_message_for_expected_after}, but is now #{@actual_after.inspect}"
           elsif @expected_delta
-            "#{message} should have been changed by #{@expected_delta.inspect}, but was changed by #{actual_delta.inspect}"
+            "expected #{message} to have changed by #{@expected_delta.inspect}, but was changed by #{actual_delta.inspect}"
           elsif @minimum
-            "#{message} should have been changed by at least #{@minimum.inspect}, but was changed by #{actual_delta.inspect}"
+            "expected #{message} to have changed by at least #{@minimum.inspect}, but was changed by #{actual_delta.inspect}"
           elsif @maximum
-            "#{message} should have been changed by at most #{@maximum.inspect}, but was changed by #{actual_delta.inspect}"
+            "expected #{message} to have changed by at most #{@maximum.inspect}, but was changed by #{actual_delta.inspect}"
           else
-            "#{message} should have changed, but is still #{@actual_before.inspect}"
+            "expected #{message} to have changed, but is still #{@actual_before.inspect}"
           end
         end
 
@@ -56,7 +56,7 @@ MESSAGE
         end
 
         def failure_message_when_negated
-          "#{message} should not have changed, but did change from #{@actual_before.inspect} to #{@actual_after.inspect}"
+          "expected #{message} not to have changed, but did change from #{@actual_before.inspect} to #{@actual_after.inspect}"
         end
 
         def by(expected_delta)
