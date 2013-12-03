@@ -874,20 +874,18 @@ module RSpec::Core
         end
       end
 
-      context "when a duplicate formatter exists for the same output target" do
-        it "does not add the formatter" do
-          config.add_formatter :documentation
+      context "when a duplicate formatter exists" do
+        before { config.add_formatter :documentation }
+
+        it "doesn't add the formatter for the same output target" do
           expect {
             config.add_formatter :documentation
           }.not_to change { config.formatters.length }
         end
-      end
 
-      context "when a duplicate formatter exists for a different output target" do
-        it "does not add the formatter" do
-          config.add_formatter :documentation, path
+        it "adds the formatter for different output targets" do
           expect {
-            config.add_formatter :documentation
+            config.add_formatter :documentation, path
           }.to change { config.formatters.length }
         end
       end
