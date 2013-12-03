@@ -24,6 +24,8 @@ Bug Fixes:
   when `raise_errors_for_deprecations!` is configured. (Myron Marston)
 * Issue error when attempting to use -i or --I on command line,
   to close to -I to be considered short hand for --init (Jon Rowe)
+* Prevent adding formatters to an output target if the same
+  formatter has already been added to that output (Alex Peattie)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
