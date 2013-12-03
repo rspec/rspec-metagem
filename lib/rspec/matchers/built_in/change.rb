@@ -80,7 +80,7 @@ MESSAGE
           self
         end
 
-        def from (before)
+        def from(before)
           @eval_before = true
           @expected_before = before
           self
