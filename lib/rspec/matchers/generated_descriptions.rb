@@ -20,11 +20,11 @@ module RSpec
       last_matcher.respond_to?(:description) ? last_matcher.description : <<-MESSAGE
 When you call a matcher in an example without a String, like this:
 
-specify { object.should matcher }
+specify { expect(object).to matcher }
 
 or this:
 
-it { should matcher }
+it { is_expected.to matcher }
 
 RSpec expects the matcher to have a #description method. You should either
 add a String to the example this matcher is being used in, or give it a
