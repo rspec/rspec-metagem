@@ -28,11 +28,11 @@ module RSpec
           self
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected #{@actual} to #{description}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{@actual} not to #{description}"
         end
 

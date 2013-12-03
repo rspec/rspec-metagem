@@ -37,12 +37,12 @@ module RSpec
           end
         end
 
-        def failure_message_for_should
+        def failure_message
           assert_ivars :@actual
           "expected #{@actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           assert_ivars :@actual
           "expected #{@actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end

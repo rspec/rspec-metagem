@@ -13,11 +13,11 @@ module RSpec
         end
         alias == matches?
 
-        def failure_message_for_should
+        def failure_message
           "expected #{@actual} to satisfy block"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{@actual} not to satisfy block"
         end
 

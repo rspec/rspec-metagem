@@ -26,12 +26,12 @@ Note: You can also use `expect(..).to_not` instead of `expect(..).not_to`.
 A Matcher is any object that responds to the following methods:
 
     matches?(actual)
-    failure_message_for_should
+    failure_message
 
 These methods are also part of the matcher protocol, but are optional:
 
     does_not_match?(actual)
-    failure_message_for_should_not
+    failure_message_when_negated
     description
 
 RSpec ships with a number of built-in matchers and a DSL for writing custom

@@ -53,11 +53,11 @@ module RSpec
         end
         alias == matches?
 
-        def failure_message_for_should
+        def failure_message
           "expected #{expected} to be thrown, got #{caught}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{expected('no Symbol')}#{' not' if @expected_symbol} to be thrown, got #{caught}"
         end
 

@@ -28,7 +28,7 @@ describe "expect(...).to match(expected)" do
   it "provides message, expected and actual on failure" do
     matcher = match(/rings/)
     matcher.matches?("string")
-    expect(matcher.failure_message_for_should).to eq "expected \"string\" to match /rings/"
+    expect(matcher.failure_message).to eq "expected \"string\" to match /rings/"
   end
 
   it "provides a diff on failure" do
@@ -69,6 +69,6 @@ describe "expect(...).not_to match(expected)" do
   it "provides message, expected and actual on failure" do
     matcher = match(/tri/)
     matcher.matches?("string")
-    expect(matcher.failure_message_for_should_not).to eq "expected \"string\" not to match /tri/"
+    expect(matcher.failure_message_when_negated).to eq "expected \"string\" not to match /tri/"
   end
 end

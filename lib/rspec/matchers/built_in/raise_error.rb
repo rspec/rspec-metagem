@@ -87,11 +87,11 @@ module RSpec
           end
         end
 
-        def failure_message_for_should
+        def failure_message
           @eval_block ? @actual_error.message : "expected #{expected_error}#{given_error}"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected no #{expected_error}#{given_error}"
         end
 

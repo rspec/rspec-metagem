@@ -106,7 +106,7 @@ describe "Matchers should be able to generate their own descriptions" do
   it "expect(...).to include(x) when x responds to description and is a matcher" do
     matcher = double(:description                => "description",
                      :matches?                   => true,
-                     :failure_message_for_should => "")
+                     :failure_message => "")
     expect([matcher]).to include(matcher)
     expect(RSpec::Matchers.generated_description).to eq "should include description"
   end

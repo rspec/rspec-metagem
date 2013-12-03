@@ -6,11 +6,11 @@ module RSpec
           actual.eql? expected
         end
 
-        def failure_message_for_should
+        def failure_message
           "\nexpected: #{expected.inspect}\n     got: #{actual.inspect}\n\n(compared using eql?)\n"
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "\nexpected: value != #{expected.inspect}\n     got: #{actual.inspect}\n\n(compared using eql?)\n"
         end
 

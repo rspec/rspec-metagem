@@ -5,7 +5,7 @@ describe Object, "#should" do
     @target = "target"
     @matcher = double("matcher")
     allow(@matcher).to receive(:matches?).and_return(true)
-    allow(@matcher).to receive(:failure_message_for_should)
+    allow(@matcher).to receive(:failure_message)
   end
 
   it "accepts and interacts with a matcher" do
@@ -13,9 +13,9 @@ describe Object, "#should" do
     expect(@target).to @matcher
   end
 
-  it "asks for a failure_message_for_should when matches? returns false" do
+  it "asks for a failure_message when matches? returns false" do
     expect(@matcher).to receive(:matches?).with(@target).and_return(false)
-    expect(@matcher).to receive(:failure_message_for_should).and_return("the failure message")
+    expect(@matcher).to receive(:failure_message).and_return("the failure message")
     expect {
       expect(@target).to @matcher
     }.to fail_with("the failure message")
@@ -52,14 +52,14 @@ describe Object, "#should_not" do
 
   it "accepts and interacts with a matcher" do
     expect(@matcher).to receive(:matches?).with(@target).and_return(false)
-    allow(@matcher).to receive(:failure_message_for_should_not)
+    allow(@matcher).to receive(:failure_message_when_negated)
 
     expect(@target).not_to @matcher
   end
 
-  it "asks for a failure_message_for_should_not when matches? returns true" do
+  it "asks for a failure_message_when_negated when matches? returns true" do
     expect(@matcher).to receive(:matches?).with(@target).and_return(true)
-    expect(@matcher).to receive(:failure_message_for_should_not).and_return("the failure message for should not")
+    expect(@matcher).to receive(:failure_message_when_negated).and_return("the failure message for should not")
     expect {
       expect(@target).not_to @matcher
     }.to fail_with("the failure message for should not")

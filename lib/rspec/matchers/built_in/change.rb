@@ -35,7 +35,7 @@ MESSAGE
           end
         end
 
-        def failure_message_for_should
+        def failure_message
           if @eval_before && !expected_matches_actual?(@expected_before, @actual_before)
             "#{message} should have initially been #{@expected_before.inspect}, but was #{@actual_before.inspect}"
           elsif @eval_after && !expected_matches_actual?(@expected_after, @actual_after)
@@ -55,7 +55,7 @@ MESSAGE
           @actual_after - @actual_before
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "#{message} should not have changed, but did change from #{@actual_before.inspect} to #{@actual_after.inspect}"
         end
 

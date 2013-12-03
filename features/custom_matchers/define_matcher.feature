@@ -46,7 +46,7 @@ Feature: define matcher
     And the output should contain "expected 9 to be a multiple of 4"
     And the output should contain "expected 9 not to be a multiple of 3"
 
-  Scenario: overriding the failure_message_for_should
+  Scenario: overriding the failure_message
     Given a file named "matcher_with_failure_message_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -55,7 +55,7 @@ Feature: define matcher
         match do |actual|
           actual % expected == 0
         end
-        failure_message_for_should do |actual|
+        failure_message do |actual|
           "expected that #{actual} would be a multiple of #{expected}"
         end
       end
@@ -70,7 +70,7 @@ Feature: define matcher
     And the stdout should contain "1 example, 1 failure"
     And the stdout should contain "expected that 9 would be a multiple of 4"
 
-  Scenario: overriding the failure_message_for_should_not
+  Scenario: overriding the failure_message_when_negated
     Given a file named "matcher_with_failure_for_message_spec.rb" with:
       """ruby
       require 'rspec/expectations'
@@ -79,7 +79,7 @@ Feature: define matcher
         match do |actual|
           actual % expected == 0
         end
-        failure_message_for_should_not do |actual|
+        failure_message_when_negated do |actual|
           "expected that #{actual} would not be a multiple of #{expected}"
         end
       end
@@ -261,11 +261,11 @@ Feature: define matcher
     Given a file named "matcher_with_separate_should_not_logic_spec.rb" with:
       """ruby
       RSpec::Matchers.define :contain do |*expected|
-        match_for_should do |actual|
+        match do |actual|
           expected.all? { |e| actual.include?(e) }
         end
 
-        match_for_should_not do |actual|
+        match_when_negated do |actual|
           expected.none? { |e| actual.include?(e) }
         end
       end

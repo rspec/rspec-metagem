@@ -1,10 +1,18 @@
 ### 3.0.0.beta2 Development
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
 
-Ehancements:
+Enhancements:
 
 * Simplify the failure message of the `be` matcher when matching against:
   `true`, `false` and `nil`. (Sam Phippen)
+* Update matcher protocol and custom matcher DSL to better align
+  with the newer `expect` syntax. If you want your matchers to
+  maintain compatibility with multiple versions of RSpec, you can
+  alias the new names to the old. (Myron Marston)
+    * `failure_message_for_should` => `failure_message`
+    * `failure_message_for_should_not` => `failure_message_when_negated`
+    * `match_for_should` => `match`
+    * `match_for_should_not` => `match_when_negated`
 
 Breaking Changes for 3.0.0:
 
@@ -16,6 +24,12 @@ Breaking Changes for 3.0.0:
 Bug Fixes:
 
 * Fix wrong matcher descriptions with falsey expected value (yujinakayama)
+
+Deprecations:
+
+* Retain support for RSpec 2 matcher protocol (e.g. for matchers
+  in 3rd party extension gems like `shoulda`), but it will print
+  a deprecation warning. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)

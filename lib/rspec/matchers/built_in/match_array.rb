@@ -9,7 +9,7 @@ module RSpec
           @extra_items.empty? & @missing_items.empty?
         end
 
-        def failure_message_for_should
+        def failure_message
           if actual.respond_to? :to_ary
             message =  "expected collection contained:  #{safe_sort(expected).inspect}\n"
             message += "actual collection contained:    #{safe_sort(actual).inspect}\n"
@@ -22,7 +22,7 @@ module RSpec
           message
         end
 
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "Matcher does not support should_not"
         end
 

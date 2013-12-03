@@ -16,12 +16,12 @@ module RSpec
           find_failing_method_names(actual, :select).empty?
         end
 
-        def failure_message_for_should
+        def failure_message
           "expected #{@actual.inspect} to respond to #{@failing_method_names.collect {|name| name.inspect }.join(', ')}#{with_arity}"
         end
 
-        def failure_message_for_should_not
-          failure_message_for_should.sub(/to respond to/, 'not to respond to')
+        def failure_message_when_negated
+          failure_message.sub(/to respond to/, 'not to respond to')
         end
 
         def description

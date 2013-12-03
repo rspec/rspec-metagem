@@ -12,9 +12,6 @@ module RSpec
         # passes. Similarly, when the matcher is passed to `expect(...).not_to` and the
         # block returns `false`, then the expectation passes.
         #
-        # Use `match_for_should` when used in conjunction with
-        # `match_for_should_not`.
-        #
         # @example
         #
         #     RSpec::Matchers.define :be_even do
@@ -39,7 +36,6 @@ module RSpec
             end
           end
         end
-        alias match_for_should match
 
         # Use this to define the block for a negative expectation (`expect(...).not_to`)
         # when the positive and negative forms require different handling. This
@@ -47,7 +43,7 @@ module RSpec
         # asynchronous processes that require different timeouts.
         #
         # @yield [Object] actual the actual value (i.e. the value wrapped by `expect`)
-        def match_for_should_not(&match_block)
+        def match_when_negated(&match_block)
           define_user_override(:does_not_match?, match_block) do |actual|
             @actual = actual
             super(*actual_arg_for(match_block))
@@ -90,13 +86,13 @@ module RSpec
         #     RSpec::Matchers.define :have_strength do |expected|
         #       match { your_match_logic }
         #
-        #       failure_message_for_should do |actual|
+        #       failure_message do |actual|
         #         "Expected strength of #{expected}, but had #{actual.strength}"
         #       end
         #     end
         #
         # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
-        def failure_message_for_should(&definition)
+        def failure_message(&definition)
           define_user_override(__method__, definition)
         end
 
@@ -109,13 +105,13 @@ module RSpec
         #     RSpec::Matchers.define :have_strength do |expected|
         #       match { your_match_logic }
         #
-        #       failure_message_for_should_not do |actual|
+        #       failure_message_when_negated do |actual|
         #         "Expected not to have strength of #{expected}, but did"
         #       end
         #     end
         #
         # @yield [Object] actual the actual object (i.e. the value wrapped by `expect`)
-        def failure_message_for_should_not(&definition)
+        def failure_message_when_negated(&definition)
           define_user_override(__method__, definition)
         end
 
@@ -192,6 +188,34 @@ module RSpec
           our_def ||= lambda { super(*actual_arg_for(user_def)) }
           define_method(method_name, &our_def)
         end
+
+        # Defines deprecated macro methods from RSpec 2 for backwards compatibility.
+        # @deprecated Use the methods from {Macros} instead.
+        module Deprecated
+          # @deprecated Use {Macros#match} instead.
+          def match_for_should(&definition)
+            RSpec.deprecate("`match_for_should`", :replacement => "`match`")
+            match(&definition)
+          end
+
+          # @deprecated Use {Macros#match_when_negated} instead.
+          def match_for_should_not(&definition)
+            RSpec.deprecate("`match_for_should_not`", :replacement => "`match_when_negated`")
+            match_when_negated(&definition)
+          end
+
+          # @deprecated Use {Macros#failure_message} instead.
+          def failure_message_for_should(&definition)
+            RSpec.deprecate("`failure_message_for_should`", :replacement => "`failure_message`")
+            failure_message(&definition)
+          end
+
+          # @deprecated Use {Macros#failure_message_when_negated} instead.
+          def failure_message_for_should_not(&definition)
+            RSpec.deprecate("`failure_message_for_should_not`", :replacement => "`failure_message_when_negated`")
+            failure_message_when_negated(&definition)
+          end
+        end
       end
 
       # Defines default implementations of the matcher
@@ -211,12 +235,12 @@ module RSpec
         end
 
         # The default failure message for positive expectations.
-        def failure_message_for_should
+        def failure_message
           "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
         end
 
         # The default failure message for negative expectations.
-        def failure_message_for_should_not
+        def failure_message_when_negated
           "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
         end
       end
@@ -237,6 +261,7 @@ module RSpec
 
         # Makes the macro methods available to an `RSpec::Matchers.define` block.
         extend Macros
+        extend Macros::Deprecated
 
         attr_reader   :expected, :actual, :rescued_exception
         attr_accessor :matcher_execution_context
