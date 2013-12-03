@@ -589,7 +589,8 @@ module RSpec
           (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
 
         paths << output_stream if paths.empty?
-        formatters << formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
+        new_formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
+        formatters << new_formatter unless duplicate_formatter_exists?(new_formatter)
       end
 
       alias_method :formatter=, :add_formatter
@@ -1114,6 +1115,12 @@ module RSpec
           rescue NameError
             require( path_for(formatter_ref) ) ? retry : raise
           end
+        end
+      end
+
+      def duplicate_formatter_exists?(new_formatter)
+        formatters.any? do |formatter|
+          formatter.class === new_formatter && formatter.output == new_formatter.output
         end
       end
 
