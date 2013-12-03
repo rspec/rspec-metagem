@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe RSpec::SharedContext do
+RSpec.describe RSpec::SharedContext do
   it "is accessible as RSpec::Core::SharedContext" do
     RSpec::Core::SharedContext
   end
@@ -42,11 +42,11 @@ describe RSpec::SharedContext do
       c.before(:each) { ordered_hooks << "config" }
     end
 
-    shared_context("before each stuff", :example => :before_each_hook_order) do
+    RSpec.shared_context("before each stuff", :example => :before_each_hook_order) do
       before(:each) { ordered_hooks << "shared_context"}
     end
 
-    group = RSpec::Core::ExampleGroup.describe :example => :before_each_hook_order do
+    group = RSpec.describe :example => :before_each_hook_order do
       before(:each) { ordered_hooks << "example_group" }
       example {}
     end
@@ -61,7 +61,7 @@ describe RSpec::SharedContext do
       extend RSpec::SharedContext
       let(:foo) { 'foo' }
     end
-    group = RSpec::Core::ExampleGroup.describe do
+    group = RSpec.describe do
       include shared
     end
 

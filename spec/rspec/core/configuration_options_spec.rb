@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'ostruct'
 require 'rspec/core/drb_options'
 
-describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
+RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
@@ -20,6 +20,8 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
   end
 
   describe "#configure" do
+    let(:config) { RSpec::Core::Configuration.new }
+
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
       config = double("config").as_null_object
@@ -62,14 +64,12 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
 
     it "assigns inclusion_filter" do
       opts = config_options_object(*%w[--tag awesome])
-      config = RSpec::Core::Configuration.new
       opts.configure(config)
       expect(config.inclusion_filter).to have_key(:awesome)
     end
 
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
-      config = RSpec::Core::Configuration.new
       opts.configure(config)
       expect(config.exclusion_filter).to have_key(:slow)
     end
@@ -104,7 +104,6 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "merges --require specified by multiple configuration sources" do
       with_env_vars 'SPEC_OPTS' => "--require file_from_env" do
         opts = config_options_object(*%w[--require file_from_opts])
-        config = RSpec::Core::Configuration.new
         expect(config).to receive(:require).with("file_from_opts")
         expect(config).to receive(:require).with("file_from_env")
         opts.configure(config)
@@ -114,7 +113,6 @@ describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolat
     it "merges --I specified by multiple configuration sources" do
       with_env_vars 'SPEC_OPTS' => "-I dir_from_env" do
         opts = config_options_object(*%w[-I dir_from_opts])
-        config = RSpec::Core::Configuration.new
         expect(config).to receive(:libs=).with(["dir_from_opts", "dir_from_env"])
         opts.configure(config)
       end

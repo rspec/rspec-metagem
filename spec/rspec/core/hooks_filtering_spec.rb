@@ -1,7 +1,7 @@
 require "spec_helper"
 
 module RSpec::Core
-  describe "config block hook filtering" do
+  RSpec.describe "config block hook filtering" do
     describe "unfiltered hooks" do
       it "is run" do
         filters = []

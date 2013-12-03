@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "an example" do
+RSpec.describe "an example" do
   matcher :be_pending_with do |message|
     match do |example|
       example.pending? && example.metadata[:execution_result][:pending_message] == message

@@ -1,13 +1,15 @@
 require 'spec_helper'
+require 'support/in_sub_process'
 
 module RandomTopLevelModule
   def self.setup!
-    shared_examples_for("top level in module") {}
+    RSpec.shared_examples_for("top level in module") {}
   end
 end
 
 module RSpec::Core
-  describe SharedExampleGroup do
+  RSpec.describe SharedExampleGroup do
+    include InSubProcess
 
     ExampleModule = Module.new
     ExampleClass = Class.new
@@ -18,7 +20,7 @@ module RSpec::Core
     end
 
     module SharedExampleGroup
-      describe Registry do
+      RSpec.describe Registry do
         it "can safely be reset when there aren't any shared groups" do
           expect { Registry.new.clear }.to_not raise_error
         end
@@ -38,8 +40,15 @@ module RSpec::Core
           group.send(shared_method_name, *args, &block)
         end
 
-        it "is exposed to the global namespace" do
-          expect(Kernel).to respond_to(shared_method_name)
+        it "is exposed to the global namespace when expose_dsl_globally is enabled" do
+          in_sub_process do
+            RSpec.configuration.expose_dsl_globally = true
+            expect(Kernel).to respond_to(shared_method_name)
+          end
+        end
+
+        it "is not exposed to the global namespace when monkey patching is disabled" do
+          expect(Kernel).to_not respond_to(shared_method_name)
         end
 
         it "displays a warning when adding a second shared example group with the same name" do

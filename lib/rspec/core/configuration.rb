@@ -103,6 +103,23 @@ module RSpec
       add_setting :error_stream
 
       # @macro add_setting
+      # Default: true
+      # Use this to expose the core RSpec DSL via `Module` and the `main`
+      # object. It will be set automatically but you can override it to
+      # remove the DSL.
+      add_setting :expose_dsl_globally
+
+      def expose_dsl_globally=(value)
+        if value
+          Core::DSL.expose_globally!
+          Core::SharedExampleGroup::TopLevelDSL.expose_globally!
+        else
+          Core::DSL.remove_globally!
+          Core::SharedExampleGroup::TopLevelDSL.remove_globally!
+        end
+      end
+
+      # @macro add_setting
       # Default: `$stderr`.
       add_setting :deprecation_stream
 

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 module RSpec::Core
-  describe BacktraceFormatter do
+  RSpec.describe BacktraceFormatter do
     def make_backtrace_formatter(exclusion_patterns=nil, inclusion_patterns=nil)
       BacktraceFormatter.new.tap do |bc|
         bc.exclusion_patterns = exclusion_patterns if exclusion_patterns

@@ -1,7 +1,7 @@
 require "spec_helper"
 
 module RSpec::Core
-  describe OptionParser do
+  RSpec.describe OptionParser do
     let(:output_file){ mock File }
 
     before do

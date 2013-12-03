@@ -3,19 +3,23 @@ require "stringio"
 require 'tmpdir'
 
 module RSpec::Core
-  describe CommandLine do
+  RSpec.describe CommandLine do
 
     let(:out)    { StringIO.new         }
     let(:err)    { StringIO.new         }
     let(:config) { RSpec::configuration }
     let(:world)  { RSpec::world         }
 
-    before { allow(config.hooks).to receive(:run) }
+    before do
+      allow(config.hooks).to receive(:run)
+      allow(config).to receive(:expose_dsl_globally?).and_return(false)
+    end
 
     it "configures streams before command line options" do
+      allow(RSpec).to receive(:deprecate)  # remove this and should_receive when ordered
       stdout = StringIO.new
-      allow(config).to receive :load_spec_files
-      allow(config).to receive_messages(:reporter => double.as_null_object)
+      allow(config).to receive(:load_spec_files)
+      allow(config).to receive(:reporter).and_return(double.as_null_object)
       config.output_stream = $stdout
 
       # this is necessary to ensure that color works correctly on windows

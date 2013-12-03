@@ -2,7 +2,7 @@ require "spec_helper"
 require 'rspec/core/project_initializer'
 
 module RSpec::Core
-  describe ProjectInitializer, :isolated_directory => true do
+  RSpec.describe ProjectInitializer, :isolated_directory => true do
 
     describe "#run" do
       context "with no args" do

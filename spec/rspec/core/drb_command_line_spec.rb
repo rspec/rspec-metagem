@@ -1,7 +1,7 @@
 require "spec_helper"
 require 'rspec/core/drb_command_line'
 
-describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
+RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }
   let(:out)    { StringIO.new }
   let(:err)    { StringIO.new }
@@ -70,7 +70,8 @@ describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' d
       def self.run(argv, err, out)
         options = RSpec::Core::ConfigurationOptions.new(argv)
         options.parse_options
-        RSpec::Core::CommandLine.new(options, RSpec::Core::Configuration.new).run(err, out)
+        config = RSpec::Core::Configuration.new
+        RSpec::Core::CommandLine.new(options, config).run(err, out)
       end
     end
 

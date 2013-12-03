@@ -3,13 +3,13 @@ require "spec_helper"
 module RSpec
   module Core
     module Ordering
-      describe Identity do
+      RSpec.describe Identity do
         it "does not affect the ordering of the items" do
           expect(Identity.new.order([1, 2, 3])).to eq([1, 2, 3])
         end
       end
 
-      describe Random do
+      RSpec.describe Random do
         describe '.order' do
           subject { described_class.new(configuration) }
 
@@ -48,7 +48,7 @@ module RSpec
         end
       end
 
-      describe Custom do
+      RSpec.describe Custom do
         it 'uses the block to order the list' do
           strategy = Custom.new(proc { |list| list.reverse })
 
@@ -56,7 +56,7 @@ module RSpec
         end
       end
 
-      describe Registry do
+      RSpec.describe Registry do
         let(:configuration) { Configuration.new }
         subject(:registry) { Registry.new(configuration) }
 

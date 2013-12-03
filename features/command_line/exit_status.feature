@@ -71,7 +71,7 @@ Feature: exit status
       require 'rspec/autorun'
       at_exit { exit(0) }
 
-      describe "exit 0 at_exit" do
+      RSpec.describe "exit 0 at_exit" do
         it "does not interfere with rspec's exit code" do
           fail
         end

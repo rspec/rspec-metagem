@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module RSpec::Core
-  describe MemoizedHelpers do
+  RSpec.describe MemoizedHelpers do
     before(:each) { RSpec.configuration.configure_expectation_framework }
 
     def subject_value_for(describe_arg, &block)
@@ -325,7 +325,7 @@ module RSpec::Core
     end
   end
 
-  describe "#let" do
+  RSpec.describe "#let" do
     let(:counter) do
       Class.new do
         def initialize
@@ -443,7 +443,7 @@ module RSpec::Core
     end
   end
 
-  describe "#let!" do
+  RSpec.describe "#let!" do
     subject { [1,2,3] }
     let!(:popped) { subject.pop }
 
@@ -456,7 +456,7 @@ module RSpec::Core
     end
   end
 
-  describe 'using subject in before and let blocks' do
+  RSpec.describe 'using subject in before and let blocks' do
     shared_examples_for 'a subject' do
       let(:subject_id_in_let) { subject.object_id }
       before { @subject_id_in_before = subject.object_id }
@@ -485,7 +485,7 @@ module RSpec::Core
     end
   end
 
-  describe 'Module#define_method' do
+  RSpec.describe 'Module#define_method' do
     it 'is still a private method' do
       a_module = Module.new
       expect { a_module.define_method(:name) { "implementation" } }.to raise_error NoMethodError

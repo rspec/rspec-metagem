@@ -317,12 +317,13 @@ a {
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
 ./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:73:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
     <pre class="ruby"><code><span class="linenum">16</span>  context <span class="string"><span class="delimiter">&quot;</span><span class="content">with content that would pass</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="linenum">17</span>    it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
@@ -357,14 +358,15 @@ expected: 2
 (compared using ==)
 </pre></div>
         <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
 ./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:73:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span>describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">34</span>  <span class="keyword">end</span>
@@ -386,12 +388,13 @@ expected: 2
         <div class="message"><pre>foo</pre></div>
         <div class="backtrace"><pre>(erb):1:in `result'
 ./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
+./spec/support/sandboxed_mock_space.rb:33:in `sandboxed'
 ./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
+./spec/support/sandboxed_mock_space.rb:32:in `sandboxed'
 ./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:73:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:72:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
+./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
 ./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>

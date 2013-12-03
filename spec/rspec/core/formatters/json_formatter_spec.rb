@@ -11,7 +11,7 @@ require 'rspec/core/reporter'
 # it "shows the pending message if one was given"
 # it "shows the seed if run was randomized"
 # it "lists pending specs that were fixed"
-describe RSpec::Core::Formatters::JsonFormatter do
+RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   let(:output) { StringIO.new }
   let(:formatter) { RSpec::Core::Formatters::JsonFormatter.new(output) }
   let(:config) { RSpec::Core::Configuration.new }

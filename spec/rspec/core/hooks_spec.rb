@@ -1,7 +1,7 @@
 require "spec_helper"
 
 module RSpec::Core
-  describe Hooks do
+  RSpec.describe Hooks do
     class HooksHost
       include Hooks
 
