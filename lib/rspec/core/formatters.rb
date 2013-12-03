@@ -51,4 +51,114 @@
 # @see RSpec::Core::Formatters::BaseTextFormatter
 # @see RSpec::Core::Reporter
 module RSpec::Core::Formatters
+
+  class Collection
+    def initialize(reporter)
+      @formatters = []
+      @reporter = reporter
+    end
+
+    # @api private
+    def setup_default output_stream, deprecation_stream
+      if @formatters.empty?
+        add 'progress', output_stream
+      end
+      add DeprecationFormatter, deprecation_stream, output_stream
+    end
+
+    # @api private
+    def add formatter_to_use, *paths
+      formatter_class =
+        built_in_formatter(formatter_to_use) ||
+        custom_formatter(formatter_to_use) ||
+        (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+      formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
+
+      if formatter.respond_to?(:notifications)
+        @reporter.register_listener formatter, *formatter.notifications
+        @formatters << formatter unless duplicate_formatter_exists?(formatter)
+      else
+        raise 'Legacy formatter support yet to be implemented'
+      end
+    end
+
+    # @api private
+    def clear
+      @formatters.clear
+    end
+
+    def empty?
+      @formatters.empty?
+    end
+
+    # @api private
+    def to_a
+      @formatters
+    end
+
+  private
+
+    def duplicate_formatter_exists?(new_formatter)
+      @formatters.any? do |formatter|
+        formatter.class === new_formatter && formatter.output == new_formatter.output
+      end
+    end
+
+    def built_in_formatter(key)
+      case key.to_s
+      when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+        require 'rspec/core/formatters/documentation_formatter'
+        DocumentationFormatter
+      when 'h', 'html'
+        require 'rspec/core/formatters/html_formatter'
+        HtmlFormatter
+      when 'p', 'progress'
+        require 'rspec/core/formatters/progress_formatter'
+        ProgressFormatter
+      when 'j', 'json'
+        require 'rspec/core/formatters/json_formatter'
+        JsonFormatter
+      end
+    end
+
+    def custom_formatter(formatter_ref)
+      if Class === formatter_ref
+        formatter_ref
+      elsif string_const?(formatter_ref)
+        begin
+          formatter_ref.gsub(/^::/,'').split('::').inject(Object) { |const,string| const.const_get string }
+        rescue NameError
+          require( path_for(formatter_ref) ) ? retry : raise
+        end
+      end
+    end
+
+    def string_const?(str)
+      str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
+    end
+
+    def path_for(const_ref)
+      underscore_with_fix_for_non_standard_rspec_naming(const_ref)
+    end
+
+    def underscore_with_fix_for_non_standard_rspec_naming(string)
+      underscore(string).sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2')
+    end
+
+    # activesupport/lib/active_support/inflector/methods.rb, line 48
+    def underscore(camel_cased_word)
+      word = camel_cased_word.to_s.dup
+      word.gsub!(/::/, '/')
+      word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
+      word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+      word.tr!("-", "_")
+      word.downcase!
+      word
+    end
+
+    def file_at(path)
+      FileUtils.mkdir_p(File.dirname(path))
+      File.new(path, 'w')
+    end
+  end
 end

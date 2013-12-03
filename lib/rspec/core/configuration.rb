@@ -255,7 +255,6 @@ module RSpec
         @include_or_extend_modules = []
         @mock_framework = nil
         @files_to_run = []
-        @formatters = []
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
@@ -294,7 +293,7 @@ module RSpec
       def reset
         @spec_files_loaded = false
         @reporter = nil
-        @formatters.clear
+        @formatters = nil
       end
 
       # @overload add_setting(name)
@@ -593,28 +592,24 @@ module RSpec
       # and paths to use for output streams, but you should consider that a
       # private api that may change at any time without notice.
       def add_formatter(formatter_to_use, *paths)
-        formatter_class =
-          built_in_formatter(formatter_to_use) ||
-          custom_formatter(formatter_to_use) ||
-          (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
-
         paths << output_stream if paths.empty?
-        new_formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
-        formatters << new_formatter unless duplicate_formatter_exists?(new_formatter)
+        formatters.add formatter_to_use, *paths
       end
-
       alias_method :formatter=, :add_formatter
 
+      # @api private
       def formatters
-        @formatters ||= []
+        @formatters ||= Formatters::Collection.new(reporter)
       end
 
+      # @api private
+      def setup_default_formatters
+        formatters.setup_default output_stream, deprecation_stream
+      end
+
+      # @api private
       def reporter
-        @reporter ||= begin
-                        add_formatter('progress') if formatters.empty?
-                        add_formatter(RSpec::Core::Formatters::DeprecationFormatter, deprecation_stream, output_stream)
-                        Reporter.new(self, *formatters)
-                      end
+        @reporter ||= Reporter.new(self)
       end
 
       # @api private
@@ -1097,69 +1092,6 @@ module RSpec
 
       def output_to_tty?(output=output_stream)
         tty? || (output.respond_to?(:tty?) && output.tty?)
-      end
-
-      def built_in_formatter(key)
-        case key.to_s
-        when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
-          require 'rspec/core/formatters/documentation_formatter'
-          RSpec::Core::Formatters::DocumentationFormatter
-        when 'h', 'html'
-          require 'rspec/core/formatters/html_formatter'
-          RSpec::Core::Formatters::HtmlFormatter
-        when 'p', 'progress'
-          require 'rspec/core/formatters/progress_formatter'
-          RSpec::Core::Formatters::ProgressFormatter
-        when 'j', 'json'
-          require 'rspec/core/formatters/json_formatter'
-          RSpec::Core::Formatters::JsonFormatter
-        end
-      end
-
-      def custom_formatter(formatter_ref)
-        if Class === formatter_ref
-          formatter_ref
-        elsif string_const?(formatter_ref)
-          begin
-            formatter_ref.gsub(/^::/,'').split('::').inject(Object) { |const,string| const.const_get string }
-          rescue NameError
-            require( path_for(formatter_ref) ) ? retry : raise
-          end
-        end
-      end
-
-      def duplicate_formatter_exists?(new_formatter)
-        formatters.any? do |formatter|
-          formatter.class === new_formatter && formatter.output == new_formatter.output
-        end
-      end
-
-      def string_const?(str)
-        str.is_a?(String) && /\A[A-Z][a-zA-Z0-9_:]*\z/ =~ str
-      end
-
-      def path_for(const_ref)
-        underscore_with_fix_for_non_standard_rspec_naming(const_ref)
-      end
-
-      def underscore_with_fix_for_non_standard_rspec_naming(string)
-        underscore(string).sub(%r{(^|/)r_spec($|/)}, '\\1rspec\\2')
-      end
-
-      # activesupport/lib/active_support/inflector/methods.rb, line 48
-      def underscore(camel_cased_word)
-        word = camel_cased_word.to_s.dup
-        word.gsub!(/::/, '/')
-        word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-        word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
-        word.tr!("-", "_")
-        word.downcase!
-        word
-      end
-
-      def file_at(path)
-        FileUtils.mkdir_p(File.dirname(path))
-        File.new(path, 'w')
       end
     end
   end

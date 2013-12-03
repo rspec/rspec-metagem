@@ -806,87 +806,11 @@ module RSpec::Core
       end
     end
 
-    describe '#formatter=' do
-      it "delegates to add_formatter (better API for user-facing configuration)" do
-        expect(config).to receive(:add_formatter).with('these','options')
-        config.add_formatter('these','options')
-      end
-    end
-
-    describe "#add_formatter" do
-      let(:path) { File.join(Dir.tmpdir, 'output.txt') }
-
-      it "adds to the list of formatters" do
-        config.add_formatter :documentation
-        expect(config.formatters.first).to be_an_instance_of(Formatters::DocumentationFormatter)
-      end
-
-      it "finds a formatter by name (w/ Symbol)" do
-        config.add_formatter :documentation
-        expect(config.formatters.first).to be_an_instance_of(Formatters::DocumentationFormatter)
-      end
-
-      it "finds a formatter by name (w/ String)" do
-        config.add_formatter 'documentation'
-        expect(config.formatters.first).to be_an_instance_of(Formatters::DocumentationFormatter)
-      end
-
-      it "finds a formatter by class" do
-        formatter_class = Class.new(Formatters::BaseTextFormatter)
-        config.add_formatter formatter_class
-        expect(config.formatters.first).to be_an_instance_of(formatter_class)
-      end
-
-      it "finds a formatter by class name" do
-        stub_const("CustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.add_formatter "CustomFormatter"
-        expect(config.formatters.first).to be_an_instance_of(CustomFormatter)
-      end
-
-      it "finds a formatter by class fully qualified name" do
-        stub_const("RSpec::CustomFormatter", Class.new(Formatters::BaseFormatter))
-        config.add_formatter "RSpec::CustomFormatter"
-        expect(config.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)
-      end
-
-      it "requires a formatter file based on its fully qualified name" do
-        expect(config).to receive(:require).with('rspec/custom_formatter') do
-          stub_const("RSpec::CustomFormatter", Class.new(Formatters::BaseFormatter))
-        end
-        config.add_formatter "RSpec::CustomFormatter"
-        expect(config.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)
-      end
-
-      it "raises NameError if class is unresolvable" do
-        expect(config).to receive(:require).with('rspec/custom_formatter3')
-        expect(lambda { config.add_formatter "RSpec::CustomFormatter3" }).to raise_error(NameError)
-      end
-
-      it "raises ArgumentError if formatter is unknown" do
-        expect(lambda { config.add_formatter :progresss }).to raise_error(ArgumentError)
-      end
-
-      context "with a 2nd arg defining the output" do
-        it "creates a file at that path and sets it as the output" do
-          config.add_formatter('doc', path)
-          expect(config.formatters.first.output).to be_a(File)
-          expect(config.formatters.first.output.path).to eq(path)
-        end
-      end
-
-      context "when a duplicate formatter exists" do
-        before { config.add_formatter :documentation }
-
-        it "doesn't add the formatter for the same output target" do
-          expect {
-            config.add_formatter :documentation
-          }.not_to change { config.formatters.length }
-        end
-
-        it "adds the formatter for different output targets" do
-          expect {
-            config.add_formatter :documentation, path
-          }.to change { config.formatters.length }
+    %w[formatter= add_formatter].each do |config_method|
+      describe "##{config_method}" do
+        it "delegates to formatters#add" do
+          expect(config.formatters).to receive(:add).with('these','options')
+          config.send(config_method,'these','options')
         end
       end
     end
@@ -1493,6 +1417,7 @@ module RSpec::Core
       it 'causes deprecations to raise errors rather than printing to the deprecation stream' do
         config.deprecation_stream = stream = StringIO.new
         config.raise_errors_for_deprecations!
+        config.setup_default_formatters
 
         expect {
           config.reporter.deprecation(:deprecated => "foo", :call_site => "foo.rb:1")

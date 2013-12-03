@@ -20,6 +20,7 @@ module RSpec
         @configuration.output_stream = out if @configuration.output_stream == $stdout
         @options.configure(@configuration)
         @configuration.load_spec_files
+        @configuration.setup_default_formatters
         @world.announce_filters
 
         @configuration.reporter.report(@world.example_count) do |reporter|

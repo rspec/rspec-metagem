@@ -126,6 +126,13 @@ Spork.prefork do
       :file_path => /spec\/command_line/
     }
 
+    # Use the doc formatter when running individual files.
+    # This is too verbose when running all spec files but
+    # is nice for a single file.
+    if c.files_to_run.one?
+      c.formatter = 'doc'
+    end
+
     c.expect_with :rspec do |expectations|
       expectations.syntax = :expect
     end
