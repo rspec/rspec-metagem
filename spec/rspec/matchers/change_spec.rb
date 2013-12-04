@@ -247,24 +247,36 @@ describe "expect { ... }.not_to change { block }" do
   end
 end
 
+
 describe "expect { ... }.not_to change { }.from" do
-  it 'passes when the value starts at the from value and does not change' do
-    k = 5
-    expect { }.not_to change { k }.from(5)
-  end
-
-  it 'fails when the value starts at a different value and does not change' do
-    expect {
-      k = 6
-      expect { }.not_to change { k }.from(5)
-    }.to fail_with(/expected result to have initially been 5/)
-  end
-
-  it 'fails when the value starts at the from value and changes' do
-    expect {
+  context 'when the value starts at the from value' do
+    it 'passes when the value does not change' do
       k = 5
-      expect { k += 1 }.not_to change { k }.from(5)
-    }.to fail_with(/but did change from 5 to 6/)
+      expect { }.not_to change { k }.from(5)
+    end
+
+    it 'fails when the value does change' do
+      expect {
+        k = 5
+        expect { k += 1 }.not_to change { k }.from(5)
+      }.to fail_with(/but did change from 5 to 6/)
+    end
+  end
+
+  context 'when the value starts at a different value' do
+    it 'passes when the value does not change' do
+      expect {
+        k = 6
+        expect { }.not_to change { k }.from(5)
+      }.to fail_with(/expected result to have initially been 5/)
+    end
+
+    it 'passes when the value does change' do
+      expect {
+        k = 6
+        expect { k += 1 }.not_to change { k }.from(5)
+      }.to fail_with(/expected result to have initially been 5/)
+    end
   end
 end
 
@@ -638,20 +650,24 @@ describe "expect { ... }.to change { block }.from(old).to(new)" do
     @instance.some_value = 'string'
   end
 
-  it "passes when #to comes before #from" do
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat").from("string")
+  context "when #to comes before #from" do
+    it "passes" do
+      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat").from("string")
+    end
+
+    it "provides a #description" do
+      expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
+    end
   end
 
-  it "passes when #from comes before #to" do
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
-  end
+  context "when #from comes before #to" do
+    it "passes" do
+      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
+    end
 
-  it "provides a #description when #from comes before #to" do
-    expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
-  end
-
-  it "provides a #description when #to comes before #from" do
-    expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
+    it "provides a #description" do
+      expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
+    end
   end
 end
 
