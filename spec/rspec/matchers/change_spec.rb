@@ -650,20 +650,24 @@ describe "expect { ... }.to change { block }.from(old).to(new)" do
     @instance.some_value = 'string'
   end
 
-  it "passes when #to comes before #from" do
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat").from("string")
+  context "when #to comes before #from" do
+    it "passes" do
+      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat").from("string")
+    end
+
+    it "provides a #description" do
+      expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
+    end
   end
 
-  it "passes when #from comes before #to" do
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
-  end
+  context "when #from comes before #to" do
+    it "passes" do
+      expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
+    end
 
-  it "provides a #description when #from comes before #to" do
-    expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
-  end
-
-  it "provides a #description when #to comes before #from" do
-    expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
+    it "provides a #description" do
+      expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
+    end
   end
 end
 
