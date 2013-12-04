@@ -247,24 +247,36 @@ describe "expect { ... }.not_to change { block }" do
   end
 end
 
+
 describe "expect { ... }.not_to change { }.from" do
-  it 'passes when the value starts at the from value and does not change' do
-    k = 5
-    expect { }.not_to change { k }.from(5)
-  end
-
-  it 'fails when the value starts at a different value and does not change' do
-    expect {
-      k = 6
-      expect { }.not_to change { k }.from(5)
-    }.to fail_with(/expected result to have initially been 5/)
-  end
-
-  it 'fails when the value starts at the from value and changes' do
-    expect {
+  context 'when the value starts at the from value' do
+    it 'passes when the value does not change' do
       k = 5
-      expect { k += 1 }.not_to change { k }.from(5)
-    }.to fail_with(/but did change from 5 to 6/)
+      expect { }.not_to change { k }.from(5)
+    end
+
+    it 'fails when the value does change' do
+      expect {
+        k = 5
+        expect { k += 1 }.not_to change { k }.from(5)
+      }.to fail_with(/but did change from 5 to 6/)
+    end
+  end
+
+  context 'when the value starts at a different value' do
+    it 'passes when the value does not change' do
+      expect {
+        k = 6
+        expect { }.not_to change { k }.from(5)
+      }.to fail_with(/expected result to have initially been 5/)
+    end
+
+    it 'passes when the value does change' do
+      expect {
+        k = 6
+        expect { k += 1 }.not_to change { k }.from(5)
+      }.to fail_with(/expected result to have initially been 5/)
+    end
   end
 end
 
