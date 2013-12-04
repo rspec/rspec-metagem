@@ -247,6 +247,65 @@ describe "expect { ... }.not_to change { block }" do
   end
 end
 
+describe "expect { ... }.not_to change { }.from" do
+  it 'passes when the value starts at the from value and does not change' do
+    k = 5
+    expect { }.not_to change { k }.from(5)
+  end
+
+  it 'fails when the value starts at a different value and does not change' do
+    expect {
+      k = 6
+      expect { }.not_to change { k }.from(5)
+    }.to fail_with(/expected result to have initially been 5/)
+  end
+
+  it 'fails when the value starts at the from value and changes' do
+    expect {
+      k = 5
+      expect { k += 1 }.not_to change { k }.from(5)
+    }.to fail_with(/but did change from 5 to 6/)
+  end
+end
+
+describe "expect { ... }.not_to change { }.to" do
+  it 'is not supported' do
+    expect {
+      expect { }.not_to change { }.to(3)
+    }.to raise_error(NotImplementedError)
+  end
+
+  it 'is not supported when it comes after `from`' do
+    expect {
+      expect { }.not_to change { }.from(nil).to(3)
+    }.to raise_error(NotImplementedError)
+  end
+end
+
+describe "expect { ... }.not_to change { }.by" do
+  it 'is not supported' do
+    expect {
+      expect { }.not_to change { }.by(3)
+    }.to raise_error(NotImplementedError)
+  end
+end
+
+describe "expect { ... }.not_to change { }.by_at_least" do
+  it 'is not supported' do
+    expect {
+      expect { }.not_to change { }.by_at_least(3)
+    }.to raise_error(NotImplementedError)
+  end
+end
+
+describe "expect { ... }.not_to change { }.by_at_most" do
+  it 'is not supported' do
+    expect {
+      expect { }.not_to change { }.by_at_most(3)
+    }.to raise_error(NotImplementedError)
+  end
+end
+
 describe "expect { ... }.to change(actual, message).by(expected)" do
   before(:each) do
     @instance = SomethingExpected.new

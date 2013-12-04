@@ -329,9 +329,10 @@ module RSpec
     # Evaluates <tt>receiver.message</tt> or <tt>block</tt> before and after it
     # evaluates the block passed to <tt>expect</tt>.
     #
-    # <tt>expect( ... ).not_to change</tt> only supports the form with no subsequent
-    # calls to <tt>by</tt>, <tt>by_at_least</tt>, <tt>by_at_most</tt>,
-    # <tt>to</tt> or <tt>from</tt>.
+    # `expect( ... ).not_to change` supports the form that specifies `from`
+    # (which specifies what you expect the starting, unchanged value to be)
+    # but does not support forms with subsequent calls to `by`, `by_at_least`,
+    # `by_at_most` or `to`.
     def change(receiver=nil, message=nil, &block)
       BuiltIn::Change.new(receiver, message, &block)
     end

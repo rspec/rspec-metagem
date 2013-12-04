@@ -5,17 +5,17 @@ module RSpec
       class Change
         # Specifies the delta of the expected change.
         def by(expected_delta)
-          ChangeRelatively.new(@change_details, expected_delta, :==, "by")
+          ChangeRelatively.new(@change_details, expected_delta, :==, :by)
         end
 
         # Specifies a minimum delta of the expected change.
         def by_at_least(minimum)
-          ChangeRelatively.new(@change_details, minimum, :>=, "by at least")
+          ChangeRelatively.new(@change_details, minimum, :>=, :by_at_least)
         end
 
         # Specifies a maximum delta of the expected change.
         def by_at_most(maximum)
-          ChangeRelatively.new(@change_details, maximum, :<=, "by at most")
+          ChangeRelatively.new(@change_details, maximum, :<=, :by_at_most)
         end
 
         # Specifies the new value you expect.
@@ -66,15 +66,15 @@ module RSpec
       # Used to specify a relative change.
       # @api private
       class ChangeRelatively
-        def initialize(change_details, expected_delta, comparison, description)
+        def initialize(change_details, expected_delta, comparison, relativity)
           @change_details = change_details
           @expected_delta = expected_delta
           @comparison     = comparison
-          @description    = description
+          @relativity     = relativity
         end
 
         def failure_message
-          "expected #{@change_details.message} to have changed #{@description} #{@expected_delta.inspect}, " +
+          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{@expected_delta.inspect}, " +
           "but was changed by #{@change_details.actual_delta.inspect}"
         end
 
@@ -83,9 +83,13 @@ module RSpec
           @change_details.actual_delta.__send__(@comparison, @expected_delta)
         end
 
+        def does_not_match?(event_proc)
+          raise NotImplementedError, "`expect { }.not_to change { }.#{@relativity}()` is not supported"
+        end
+
         # @api private
         def description
-          "change #{@change_details.message} #{@description} #{@expected_delta.inspect}"
+          "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{@expected_delta.inspect}"
         end
       end
 
@@ -151,6 +155,23 @@ module RSpec
           self
         end
 
+        def does_not_match?(event_proc)
+          if @description_suffix
+            raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
+          end
+
+          @change_details.perform_change(event_proc)
+          !@change_details.changed? && matches_before?
+        end
+
+        def failure_message_when_negated
+          if !matches_before?
+            "expected #{@change_details.message} to have initially been #{@expected_before.inspect}, but was #{@change_details.actual_before.inspect}"
+          else
+            "expected #{@change_details.message} not to have changed, but did change from #{@change_details.actual_before.inspect} to #{@change_details.actual_after.inspect}"
+          end
+        end
+
         def description
           "change #{@change_details.message} from #{@expected_before.inspect}#{@description_suffix}"
         end
@@ -169,6 +190,10 @@ module RSpec
           @expected_before    = value
           @description_suffix = " from #{value.inspect}"
           self
+        end
+
+        def does_not_match?(event_proc)
+          raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
         end
 
         def description
