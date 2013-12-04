@@ -53,7 +53,7 @@ describe "should_not =~ [:with, :multiple, :args]", :uses_should do
   it "is not supported" do
     expect {
       [1,2,3].should_not =~ [1,2,3]
-    }.to fail_with(/Matcher does not support should_not/)
+    }.to fail_with(/`match_array` does not support negation/)
   end
 end
 
@@ -160,7 +160,7 @@ describe "expect(...).not_to match_array [:with, :multiple, :args]" do
   it "is not supported" do
     expect {
       expect([1,2,3]).not_to match_array [1,2,3]
-    }.to fail_with(/Matcher does not support should_not/)
+    }.to fail_with(/`match_array` does not support negation/)
   end
 end
 

@@ -13,6 +13,7 @@ Enhancements:
     * `failure_message_for_should_not` => `failure_message_when_negated`
     * `match_for_should` => `match`
     * `match_for_should_not` => `match_when_negated`
+* Improve generated descriptions from `change` matcher. (Myron Marston)
 
 Breaking Changes for 3.0.0:
 
@@ -20,10 +21,15 @@ Breaking Changes for 3.0.0:
   `Rspec` or `Spec`. (Myron Marston)
 * Remove deprecated `RSpec::Expectations.differ=`. (Myron Marston)
 * Remove support for deprecated `expect(...).should`. (Myron Marston)
+* Explicitly disallow `expect { }.not_to change { }` with `by`,
+  `by_at_least`, `by_at_most` or `to`. These have never been supported
+  but did not raise explicit errors. (Myron Marston)
 
 Bug Fixes:
 
 * Fix wrong matcher descriptions with falsey expected value (yujinakayama)
+* Fix `expect { }.not_to change { }.from(x)` so that the matcher only
+  passes if the starting value is `x`. (Tyler Rick, Myron Marston)
 
 Deprecations:
 

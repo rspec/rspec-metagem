@@ -275,9 +275,18 @@ module RSpec
     # You can either pass <tt>receiver</tt> and <tt>message</tt>, or a block,
     # but not both.
     #
-    # When passing a block, it must use the <tt>{ ... }</tt> format, not
-    # do/end, as <tt>{ ... }</tt> binds to the `change` method, whereas do/end
+    # When passing a block, it must use the `{ ... }` format, not
+    # do/end, as `{ ... }` binds to the `change` method, whereas do/end
     # would errantly bind to the `expect(..).to` or `expect(...).not_to` method.
+    #
+    # You can chain any of the following off of the end to specify details
+    # about the change:
+    #
+    # * `by`
+    # * `by_at_least`
+    # * `by_at_most`
+    # * `from`
+    # * `to`
     #
     # @example
     #
@@ -305,7 +314,7 @@ module RSpec
     #   string = "string"
     #   expect {
     #     string
-    #   }.not_to change { string }
+    #   }.not_to change { string }.from("string")
     #
     #   expect {
     #     person.happy_birthday
@@ -326,12 +335,13 @@ module RSpec
     #
     # == Notes
     #
-    # Evaluates <tt>receiver.message</tt> or <tt>block</tt> before and after it
-    # evaluates the block passed to <tt>expect</tt>.
+    # Evaluates `receiver.message` or `block` before and after it
+    # evaluates the block passed to `expect`.
     #
-    # <tt>expect( ... ).not_to change</tt> only supports the form with no subsequent
-    # calls to <tt>by</tt>, <tt>by_at_least</tt>, <tt>by_at_most</tt>,
-    # <tt>to</tt> or <tt>from</tt>.
+    # `expect( ... ).not_to change` supports the form that specifies `from`
+    # (which specifies what you expect the starting, unchanged value to be)
+    # but does not support forms with subsequent calls to `by`, `by_at_least`,
+    # `by_at_most` or `to`.
     def change(receiver=nil, message=nil, &block)
       BuiltIn::Change.new(receiver, message, &block)
     end
