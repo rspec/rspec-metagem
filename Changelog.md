@@ -13,6 +13,7 @@ Enhancements:
     * `failure_message_for_should_not` => `failure_message_when_negated`
     * `match_for_should` => `match`
     * `match_for_should_not` => `match_when_negated`
+* Improve generated descriptions from `change` matcher. (Myron Marston)
 
 Breaking Changes for 3.0.0:
 

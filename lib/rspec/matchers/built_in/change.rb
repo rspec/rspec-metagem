@@ -48,7 +48,7 @@ module RSpec
 
         # @api private
         def description
-          "change ##{@change_details.message}"
+          "change #{@change_details.message}"
         end
 
       private
@@ -81,6 +81,11 @@ module RSpec
         def matches?(event_proc)
           @change_details.perform_change(event_proc)
           @change_details.actual_delta.__send__(@comparison, @expected_delta)
+        end
+
+        # @api private
+        def description
+          "change #{@change_details.message} #{@description} #{@expected_delta.inspect}"
         end
       end
 
@@ -136,12 +141,18 @@ module RSpec
       # @api private
       class ChangeFromValue < SpecificValuesChange
         def initialize(change_details, expected_before)
+          @description_suffix = nil
           super(change_details, expected_before, MATCH_ANYTHING)
         end
 
         def to(value)
-          @expected_after = value
+          @expected_after     = value
+          @description_suffix = " to #{value.inspect}"
           self
+        end
+
+        def description
+          "change #{@change_details.message} from #{@expected_before.inspect}#{@description_suffix}"
         end
       end
 
@@ -150,12 +161,18 @@ module RSpec
       # @api private
       class ChangeToValue < SpecificValuesChange
         def initialize(change_details, expected_after)
+          @description_suffix = nil
           super(change_details, MATCH_ANYTHING, expected_after)
         end
 
         def from(value)
-          @expected_before = value
+          @expected_before    = value
+          @description_suffix = " from #{value.inspect}"
           self
+        end
+
+        def description
+          "change #{@change_details.message} to #{@expected_after.inspect}#{@description_suffix}"
         end
       end
 
@@ -165,7 +182,7 @@ module RSpec
         attr_reader :message, :actual_before, :actual_after
 
         def initialize(receiver=nil, message=nil, &block)
-          @message    = message || "result"
+          @message    = message ? "##{message}" : "result"
           @value_proc = block || lambda { receiver.__send__(message) }
         end
 

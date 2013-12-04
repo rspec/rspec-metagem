@@ -20,7 +20,7 @@ describe "expect { ... }.to change(actual, message)" do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected some_value to have changed, but is still 5")
+      end.to fail_with("expected #some_value to have changed, but is still 5")
     end
 
     it "provides a #description" do
@@ -55,7 +55,7 @@ describe "expect { ... }.to change(actual, message)" do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected some_value to have changed, but is still true")
+      end.to fail_with("expected #some_value to have changed, but is still true")
     end
   end
 
@@ -72,7 +72,7 @@ describe "expect { ... }.to change(actual, message)" do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected some_value to have changed, but is still nil")
+      end.to fail_with("expected #some_value to have changed, but is still nil")
     end
   end
 
@@ -100,7 +100,7 @@ describe "expect { ... }.to change(actual, message)" do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with("expected some_value to have changed, but is still []")
+      end.to fail_with("expected #some_value to have changed, but is still []")
     end
   end
 
@@ -168,7 +168,7 @@ describe "expect { ... }.to change(actual, message)" do
     it "fails when actual is not modified by the block" do
       expect do
         expect {}.to change(@instance, :some_value)
-      end.to fail_with(/^expected some_value to have changed, but is still/)
+      end.to fail_with(/^expected #some_value to have changed, but is still/)
     end
 
   end
@@ -187,7 +187,7 @@ describe "expect { ... }.not_to change(actual, message)" do
   it "fails when actual is not modified by the block" do
     expect do
       expect {@instance.some_value = 6}.not_to change(@instance, :some_value)
-    end.to fail_with("expected some_value not to have changed, but did change from 5 to 6")
+    end.to fail_with("expected #some_value not to have changed, but did change from 5 to 6")
   end
 end
 
@@ -220,7 +220,7 @@ describe "expect { ... }.to change { block }" do
   end
 
   it "provides a #description" do
-    expect(change { @instance.some_value }.description).to eq "change #result"
+    expect(change { @instance.some_value }.description).to eq "change result"
   end
 end
 
@@ -264,13 +264,17 @@ describe "expect { ... }.to change(actual, message).by(expected)" do
   it "fails when the attribute is changed by unexpected amount" do
     expect do
       expect { @instance.some_value += 2 }.to change(@instance, :some_value).by(1)
-    end.to fail_with("expected some_value to have changed by 1, but was changed by 2")
+    end.to fail_with("expected #some_value to have changed by 1, but was changed by 2")
   end
 
   it "fails when the attribute is changed by unexpected amount in the opposite direction" do
     expect do
       expect { @instance.some_value -= 1 }.to change(@instance, :some_value).by(1)
-    end.to fail_with("expected some_value to have changed by 1, but was changed by -1")
+    end.to fail_with("expected #some_value to have changed by 1, but was changed by -1")
+  end
+
+  it "provides a #description" do
+    expect(change(@instance, :some_value).by(3).description).to eq "change #some_value by 3"
   end
 end
 
@@ -295,6 +299,10 @@ describe "expect { ... }.to change { block }.by(expected)" do
       expect { @instance.some_value -= 1 }.to change{@instance.some_value}.by(1)
     end.to fail_with("expected result to have changed by 1, but was changed by -1")
   end
+
+  it "provides a #description" do
+    expect(change { @instance.some_value }.by(3).description).to eq "change result by 3"
+  end
 end
 
 describe "expect { ... }.to change(actual, message).by_at_least(expected)" do
@@ -314,9 +322,12 @@ describe "expect { ... }.to change(actual, message).by_at_least(expected)" do
   it "fails when the attribute is changed by less than the expected amount" do
     expect do
       expect { @instance.some_value += 1 }.to change(@instance, :some_value).by_at_least(2)
-    end.to fail_with("expected some_value to have changed by at least 2, but was changed by 1")
+    end.to fail_with("expected #some_value to have changed by at least 2, but was changed by 1")
   end
 
+  it "provides a #description" do
+    expect(change(@instance, :some_value).by_at_least(3).description).to eq "change #some_value by at least 3"
+  end
 end
 
 describe "expect { ... }.to change { block }.by_at_least(expected)" do
@@ -338,6 +349,10 @@ describe "expect { ... }.to change { block }.by_at_least(expected)" do
       expect { @instance.some_value += 1 }.to change{@instance.some_value}.by_at_least(2)
     end.to fail_with("expected result to have changed by at least 2, but was changed by 1")
   end
+
+  it "provides a #description" do
+    expect(change { @instance.some_value }.by_at_least(3).description).to eq "change result by at least 3"
+  end
 end
 
 
@@ -358,9 +373,12 @@ describe "expect { ... }.to change(actual, message).by_at_most(expected)" do
   it "fails when the attribute is changed by greater than the expected amount" do
     expect do
       expect { @instance.some_value += 2 }.to change(@instance, :some_value).by_at_most(1)
-    end.to fail_with("expected some_value to have changed by at most 1, but was changed by 2")
+    end.to fail_with("expected #some_value to have changed by at most 1, but was changed by 2")
   end
 
+  it "provides a #description" do
+    expect(change(@instance, :some_value).by_at_most(3).description).to eq "change #some_value by at most 3"
+  end
 end
 
 describe "expect { ... }.to change { block }.by_at_most(expected)" do
@@ -382,6 +400,10 @@ describe "expect { ... }.to change { block }.by_at_most(expected)" do
       expect { @instance.some_value += 2 }.to change{@instance.some_value}.by_at_most(1)
     end.to fail_with("expected result to have changed by at most 1, but was changed by 2")
   end
+
+  it "provides a #description" do
+    expect(change { @instance.some_value }.by_at_most(3).description).to eq "change result by at most 3"
+  end
 end
 
 describe "expect { ... }.to change(actual, message).from(old)" do
@@ -398,7 +420,7 @@ describe "expect { ... }.to change(actual, message).from(old)" do
     it "fails when attribute is not == to expected value before executing block" do
       expect do
         expect { @instance.some_value = 'foo' }.to change(@instance, :some_value).from(false)
-      end.to fail_with("expected some_value to have initially been false, but was true")
+      end.to fail_with("expected #some_value to have initially been false, but was true")
     end
   end
   context "with non-boolean values" do
@@ -420,7 +442,11 @@ describe "expect { ... }.to change(actual, message).from(old)" do
     it "fails when attribute is not === to expected value before executing block" do
       expect do
         expect { @instance.some_value = "knot" }.to change(@instance, :some_value).from("cat")
-      end.to fail_with("expected some_value to have initially been \"cat\", but was \"string\"")
+      end.to fail_with("expected #some_value to have initially been \"cat\", but was \"string\"")
+    end
+
+    it "provides a #description" do
+      expect(change(@instance, :some_value).from(3).description).to eq "change #some_value from 3"
     end
   end
 end
@@ -446,6 +472,10 @@ describe "expect { ... }.to change { block }.from(old)" do
       expect { @instance.some_value = "knot" }.to change{@instance.some_value}.from("cat")
     end.to fail_with("expected result to have initially been \"cat\", but was \"string\"")
   end
+
+  it "provides a #description" do
+    expect(change { }.from(3).description).to eq "change result from 3"
+  end
 end
 
 describe "expect { ... }.to change(actual, message).to(new)" do
@@ -462,7 +492,7 @@ describe "expect { ... }.to change(actual, message).to(new)" do
     it "fails when attribute is not == to expected value after executing block" do
       expect do
         expect { @instance.some_value = 1 }.to change(@instance, :some_value).from(true).to(false)
-      end.to fail_with("expected some_value to have changed to false, but is now 1")
+      end.to fail_with("expected #some_value to have changed to false, but is now 1")
     end
   end
   context "with non-boolean values" do
@@ -484,7 +514,7 @@ describe "expect { ... }.to change(actual, message).to(new)" do
     it "fails when attribute is not === to expected value after executing block" do
       expect do
         expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
-      end.to fail_with("expected some_value to have changed to \"dog\", but is now \"cat\"")
+      end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
     end
   end
 end
@@ -510,6 +540,10 @@ describe "expect { ... }.to change { block }.to(new)" do
       expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("dog")
     end.to fail_with("expected result to have changed to \"dog\", but is now \"cat\"")
   end
+
+  it "provides a #description" do
+    expect(change { }.to(3).description).to eq "change result to 3"
+  end
 end
 
 describe "expect { ... }.to change(actual, message).from(old).to(new)" do
@@ -529,13 +563,13 @@ describe "expect { ... }.to change(actual, message).from(old).to(new)" do
   it "shows the correct messaging when #after and #to are different" do
     expect do
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
-    end.to fail_with("expected some_value to have changed to \"dog\", but is now \"cat\"")
+    end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
   end
 
   it "shows the correct messaging when #before and #from are different" do
     expect do
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("not_string").to("cat")
-    end.to fail_with("expected some_value to have initially been \"not_string\", but was \"string\"")
+    end.to fail_with("expected #some_value to have initially been \"not_string\", but was \"string\"")
   end
 end
 
@@ -551,6 +585,14 @@ describe "expect { ... }.to change { block }.from(old).to(new)" do
 
   it "passes when #from comes before #to" do
     expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("cat")
+  end
+
+  it "provides a #description when #from comes before #to" do
+    expect(change { }.from(1).to(3).description).to eq "change result from 1 to 3"
+  end
+
+  it "provides a #description when #to comes before #from" do
+    expect(change { }.to(1).from(3).description).to eq "change result to 1 from 3"
   end
 end
 
