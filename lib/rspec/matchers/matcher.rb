@@ -286,6 +286,12 @@ module RSpec
           "#<#{self.class.name} #{name}>"
         end
 
+        # Delegates to #matches?. Allows custom matchers to be
+        # used in a composable fashion.
+        def ===(actual)
+          matches?(actual)
+        end
+
         if RUBY_VERSION.to_f >= 1.9
           # Indicates that this matcher responds to messages
           # from the `matcher_execution_context` as well.

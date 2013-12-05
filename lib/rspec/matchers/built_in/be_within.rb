@@ -12,7 +12,7 @@ module RSpec
           raise needs_subtractable unless @actual.respond_to? :-
           (@actual - @expected).abs <= @tolerance
         end
-        alias == matches?
+        alias === matches?
 
         def of(expected)
           @expected  = expected

@@ -60,7 +60,7 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    describe "#==" do
+    describe "#===" do
       it "responds the same way as matches?" do
         matcher = Class.new(BaseMatcher) do
           def initialize(expected)
@@ -73,10 +73,10 @@ module RSpec::Matchers::BuiltIn
         end
 
         expect(matcher.new(3).matches?(3)).to be_truthy
-        expect(matcher.new(3)).to eq(3)
+        expect(matcher.new(3)).to be === 3
 
         expect(matcher.new(3).matches?(4)).to be_falsey
-        expect(matcher.new(3)).not_to eq(4)
+        expect(matcher.new(3)).not_to be === 4
       end
     end
   end
