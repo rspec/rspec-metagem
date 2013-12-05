@@ -4,7 +4,7 @@ require 'rspec/core/formatters/html_printer'
 module RSpec
   module Core
     module Formatters
-      class HtmlFormatter < BaseTextFormatter
+      class HtmlFormatter < BaseFormatter
 
         def initialize(output)
           super(output)
@@ -17,9 +17,8 @@ module RSpec
         def notifications
           (super + [:start, :example_group_started, :start_dump,
                     :example_started, :example_passed, :example_failed,
-                    :example_pending, :dump_summary] - [:dump_failures]).uniq
+                    :example_pending, :dump_summary]).uniq
         end
-        undef dump_failures
 
         def start(example_count)
           super(example_count)
