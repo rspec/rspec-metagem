@@ -74,12 +74,13 @@ module RSpec::Core::Formatters
         (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
       formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
 
-      if formatter.respond_to?(:notifications)
-        @reporter.register_listener formatter, *formatter.notifications
-        @formatters << formatter unless duplicate_formatter_exists?(formatter)
-      else
-        raise 'Legacy formatter support yet to be implemented'
+      unless formatter.respond_to?(:notifications)
+        require 'rspec/core/formatters/legacy_formatter'
+        formatter = LegacyFormatter.new(formatter)
       end
+
+      @reporter.register_listener formatter, *formatter.notifications
+      @formatters << formatter unless duplicate_formatter_exists?(formatter)
     end
 
     # @api private

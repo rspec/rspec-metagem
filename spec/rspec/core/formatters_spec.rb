@@ -36,6 +36,12 @@ module RSpec::Core::Formatters
         expect(collection.to_a.first).to be_an_instance_of(CustomFormatter)
       end
 
+      it "handles formatters that dont implement notifications" do
+        formatter_class = Struct.new(:output)
+        collection.add formatter_class, output
+        expect(collection.to_a.first).to be_an_instance_of(RSpec::Core::Formatters::LegacyFormatter)
+      end
+
       it "finds a formatter by class fully qualified name" do
         stub_const("RSpec::CustomFormatter", Class.new(BaseFormatter))
         collection.add "RSpec::CustomFormatter", output
