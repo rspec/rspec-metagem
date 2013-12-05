@@ -264,14 +264,14 @@ describe "expect { ... }.not_to change { }.from" do
   end
 
   context 'when the value starts at a different value' do
-    it 'passes when the value does not change' do
+    it 'fails when the value does not change' do
       expect {
         k = 6
         expect { }.not_to change { k }.from(5)
       }.to fail_with(/expected result to have initially been 5/)
     end
 
-    it 'passes when the value does change' do
+    it 'fails when the value does change' do
       expect {
         k = 6
         expect { k += 1 }.not_to change { k }.from(5)
