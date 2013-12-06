@@ -45,6 +45,10 @@ Breaking Changes for 3.0.0:
 * Remove explicit support for 1.8.6. (Jon Rowe)
 * Remove the deprecated `be_close` matcher, preferring `be_within` instead.
   (Sam Phippen)
+* Remove the deprecated `have`, `have_at_least` and `have_at_most` matchers.
+  You can continue using those matchers through https://github.com/rspec/rspec-collection_matchers,
+  or you can rewrite your expectations with something like 
+  `expect(your_object.size).to eq(num)`. (Hugo Baraúna)
 * Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
 * Make `expect { }.to_not raise_error(SomeSpecificClass, message)`,
        `expect { }.to_not raise_error(SomeSpecificClass)` and
