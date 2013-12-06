@@ -24,6 +24,9 @@ Breaking Changes for 3.0.0:
 * Explicitly disallow `expect { }.not_to change { }` with `by`,
   `by_at_least`, `by_at_most` or `to`. These have never been supported
   but did not raise explicit errors. (Myron Marston)
+* Provide `===` rather than `==` as an alias of `matches?` for
+  all matchers.  The semantics of `===` are closer to an RSpec
+  matcher than `==`. (Myron Marston)
 
 Bug Fixes:
 

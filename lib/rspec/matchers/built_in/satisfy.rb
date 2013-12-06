@@ -11,7 +11,7 @@ module RSpec
           @actual = actual
           @block.call(actual)
         end
-        alias == matches?
+        alias === matches?
 
         def failure_message
           "expected #{@actual} to satisfy block"

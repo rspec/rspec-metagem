@@ -55,7 +55,7 @@ module RSpec
           false
         end
 
-        def ==(other)
+        def ===(other)
           matches?(other)
         end
 

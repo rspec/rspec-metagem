@@ -192,11 +192,6 @@ describe "expect { ... }.not_to change(actual, message)" do
 end
 
 describe "expect { ... }.to change { block }" do
-  o = SomethingExpected.new
-  it_behaves_like "an RSpec matcher", :valid_value => lambda { o.some_value = 5 },
-                                      :invalid_value => lambda { } do
-    let(:matcher) { change { o.some_value } }
-  end
 
   before(:each) do
     @instance = SomethingExpected.new
@@ -680,5 +675,35 @@ describe RSpec::Matchers::BuiltIn::Change do
     expect {
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value)
     }.not_to raise_error
+  end
+
+  o = SomethingExpected.new
+  it_behaves_like "an RSpec matcher", :valid_value => lambda { o.some_value = 5 },
+                                      :invalid_value => lambda { } do
+    let(:matcher) { change { o.some_value } }
+  end
+end
+
+describe RSpec::Matchers::BuiltIn::ChangeRelatively do
+  k = 0
+  it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
+                                      :invalid_value => lambda { k += 2 } do
+    let(:matcher) { change { k }.by(1) }
+  end
+end
+
+describe RSpec::Matchers::BuiltIn::ChangeFromValue do
+  k = 0
+  it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
+                                      :invalid_value => lambda { } do
+    let(:matcher) { change { k }.from(0) }
+  end
+end
+
+describe RSpec::Matchers::BuiltIn::ChangeToValue do
+  k = 0
+  it_behaves_like "an RSpec matcher", :valid_value => lambda { k = 2 },
+                                      :invalid_value => lambda { k = 3 } do
+    let(:matcher) { change { k }.to(2) }
   end
 end

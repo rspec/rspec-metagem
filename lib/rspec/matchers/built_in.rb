@@ -18,7 +18,6 @@ module RSpec
       autoload :Equal,          'rspec/matchers/built_in/equal'
       autoload :Exist,          'rspec/matchers/built_in/exist'
       autoload :Has,            'rspec/matchers/built_in/has'
-      autoload :Have,           'rspec/matchers/built_in/have'
       autoload :Include,        'rspec/matchers/built_in/include'
       autoload :Match,          'rspec/matchers/built_in/match'
       autoload :MatchArray,     'rspec/matchers/built_in/match_array'
