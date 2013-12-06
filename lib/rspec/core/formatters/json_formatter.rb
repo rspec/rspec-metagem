@@ -18,24 +18,24 @@ module RSpec
           super + %w[message dump_summary stop close dump_profile]
         end
 
-        def message(message)
-          (@output_hash[:messages] ||= []) << message
+        def message(notification)
+          (@output_hash[:messages] ||= []) << notification.message
         end
 
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          super(duration, example_count, failure_count, pending_count)
+        def dump_summary(summary)
+          super
           @output_hash[:summary] = {
-            :duration => duration,
-            :example_count => example_count,
-            :failure_count => failure_count,
-            :pending_count => pending_count
+            :duration => summary.duration,
+            :example_count => summary.examples,
+            :failure_count => summary.failures,
+            :pending_count => summary.pending
           }
           @output_hash[:summary_line] = summary_line(example_count, failure_count, pending_count)
 
           dump_profile unless mute_profile_output?(failure_count)
         end
 
-        def stop
+        def stop(notification)
           @output_hash[:examples] = examples.map do |example|
             format_example(example).tap do |hash|
               if e=example.exception
@@ -49,7 +49,7 @@ module RSpec
           end
         end
 
-        def close
+        def close(notification)
           output.write @output_hash.to_json
           output.close if IO === output && output != $stdout
         end

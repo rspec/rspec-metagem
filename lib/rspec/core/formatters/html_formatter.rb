@@ -18,41 +18,41 @@ module RSpec
           super + %w[start example_group_started start_dump example_started example_passed example_failed example_pending dump_summary]
         end
 
-        def start(example_count)
-          super(example_count)
+        def start(notification)
+          super
           @printer.print_html_start
           @printer.flush
         end
 
-        def example_group_started(example_group)
-          super(example_group)
+        def example_group_started(notification)
+          super
           @example_group_red = false
           @example_group_number += 1
 
           unless example_group_number == 1
             @printer.print_example_group_end
           end
-          @printer.print_example_group_start( example_group_number, example_group.description, example_group.parent_groups.size )
+          @printer.print_example_group_start( example_group_number, notification.group.description, notification.group.parent_groups.size )
           @printer.flush
         end
 
-        def start_dump
+        def start_dump(notification)
           @printer.print_example_group_end
           @printer.flush
         end
 
-        def example_started(example)
+        def example_started(notification)
           @example_number += 1
         end
 
-        def example_passed(example)
+        def example_passed(passed)
           @printer.move_progress(percent_done)
-          @printer.print_example_passed( example.description, example.execution_result[:run_time] )
+          @printer.print_example_passed( passed.example.description, passed.example.execution_result[:run_time] )
           @printer.flush
         end
 
-        def example_failed(example)
-          super(example)
+        def example_failed(failed)
+          super
 
           unless @header_red
             @header_red = true
@@ -65,6 +65,8 @@ module RSpec
           end
 
           @printer.move_progress(percent_done)
+
+          example = failed.example
 
           exception = example.metadata[:execution_result][:exception]
           exception_details = if exception
@@ -89,7 +91,9 @@ module RSpec
           @printer.flush
         end
 
-        def example_pending(example)
+        def example_pending(pending)
+          example = pending.example
+
           @printer.make_header_yellow unless @header_red
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
@@ -97,12 +101,12 @@ module RSpec
           @printer.flush
         end
 
-        def dump_summary(duration, example_count, failure_count, pending_count)
+        def dump_summary(summary)
           @printer.print_summary(
-            duration,
-            example_count,
-            failure_count,
-            pending_count
+            summary.duration,
+            summary.examples,
+            summary.failures,
+            summary.pending
           )
           @printer.flush
         end

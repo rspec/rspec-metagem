@@ -13,6 +13,7 @@ require 'rspec/core/reporter'
 # it "lists pending specs that were fixed"
 RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
+  let(:notification) { double "notification" }
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
@@ -76,7 +77,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#stop" do
     it "adds all examples to the output hash" do
-      send_notification :stop
+      send_notification :stop, notification
       expect(formatter.output_hash[:examples]).not_to be_nil
     end
   end
@@ -84,28 +85,29 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   describe "#close" do
     it "outputs the results as a JSON string" do
       expect(output.string).to eq ""
-      send_notification :close
+      send_notification :close, notification
       expect(output.string).to eq("{}")
     end
   end
 
   describe "#message" do
     it "adds a message to the messages list" do
-      send_notification :message, "good job"
+      send_notification :message, double(:message => "good job")
       expect(formatter.output_hash[:messages]).to eq ["good job"]
     end
   end
 
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
-      values = { :duration => 1.0, :example_count => 2, :failure_count => 1, :pending_count => 1 }
-      send_notification :dump_summary, values[:duration], values[:example_count], values[:failure_count], values[:pending_count]
+      summary = double(:duration => 1.0, :examples => 10, :failures => 3, :pending => 4)
+      send_notification :dump_summary, summary
       summary = formatter.output_hash[:summary]
-      values.each do |key,value|
-        expect(summary[key]).to eq value
-      end
+      expect(summary[:duration]).to eq 1.0
+      expect(summary[:example_count]).to eq 10
+      expect(summary[:failure_count]).to eq 3
+      expect(summary[:pending_count]).to eq 4
       summary_line = formatter.output_hash[:summary_line]
-      expect(summary_line).to eq "2 examples, 1 failure, 1 pending"
+      expect(summary_line).to eq "10 examples, 3 failures, 4 pending"
     end
   end
 

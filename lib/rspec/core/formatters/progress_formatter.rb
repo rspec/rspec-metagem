@@ -8,21 +8,21 @@ module RSpec
           super + %W[example_passed example_pending example_failed start_dump]
         end
 
-        def example_passed(example)
+        def example_passed(notification)
           output.print success_color('.')
         end
 
-        def example_pending(example)
-          super(example)
+        def example_pending(notification)
+          super
           output.print pending_color('*')
         end
 
-        def example_failed(example)
-          super(example)
+        def example_failed(notification)
+          super
           output.print failure_color('F')
         end
 
-        def start_dump
+        def start_dump(notification)
           output.puts
         end
 

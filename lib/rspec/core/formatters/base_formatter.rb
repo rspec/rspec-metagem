@@ -48,9 +48,9 @@ module RSpec
         # is {#example_group_started}.
         #
         # @param example_count
-        def start(example_count)
+        def start(notification)
           start_sync_output
-          @example_count = example_count
+          @example_count = notification.count
         end
 
         # @api public
@@ -63,8 +63,8 @@ module RSpec
         # {#example_pending}, or {#example_group_finished}.
         #
         # @param example_group
-        def example_group_started(example_group)
-          @example_group = example_group
+        def example_group_started(notification)
+          @example_group = notification.group
         end
 
         # @method example_group_finished
@@ -80,8 +80,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_started(example)
-          examples << example
+        def example_started(notification)
+          examples << notification.example
         end
 
         # @method example_passed
@@ -95,8 +95,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_pending(example)
-          @pending_examples << example
+        def example_pending(notification)
+          @pending_examples << notification.example
         end
 
         # @api public
@@ -105,8 +105,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_failed(example)
-          @failed_examples << example
+        def example_failed(notification)
+          @failed_examples << notification.example
         end
 
         # @method message
@@ -148,11 +148,11 @@ module RSpec
         # @param example_count
         # @param failure_count
         # @param pending_count
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          @duration = duration
-          @example_count = example_count
-          @failure_count = failure_count
-          @pending_count = pending_count
+        def dump_summary(summary)
+          @duration      = summary.duration
+          @example_count = summary.examples
+          @failure_count = summary.failures
+          @pending_count = summary.pending
         end
 
         # @method dump_pending
@@ -175,7 +175,7 @@ module RSpec
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
-        def close
+        def close(_)
           restore_sync_output
         end
 

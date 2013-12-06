@@ -6,19 +6,19 @@ module RSpec::Core::Formatters
     include FormatterSupport
 
     before do
-      send_notification :start, 2
+      send_notification :start, double(count: 2)
       allow(formatter).to receive(:color_enabled?).and_return(false)
     end
 
     it "numbers the failures" do
-      send_notification :example_failed, double("example 1",
+      send_notification :example_failed, double( example: double("example 1",
                :description => "first example",
                :execution_result => {:status => 'failed', :exception => Exception.new }
-              )
-      send_notification :example_failed, double("example 2",
+              ))
+      send_notification :example_failed, double( example: double("example 2",
                :description => "second example",
                :execution_result => {:status => 'failed', :exception => Exception.new }
-              )
+              ))
 
       expect(output.string).to match(/first example \(FAILED - 1\)/m)
       expect(output.string).to match(/second example \(FAILED - 2\)/m)
