@@ -12,7 +12,7 @@ def report(header)
     end
   end
 
-  [header, (reals.reduce(&:+) / reals.count).round(5)]
+  [header, (reals.inject(&:+) / reals.count).round(5)]
 end
 
 multi = [

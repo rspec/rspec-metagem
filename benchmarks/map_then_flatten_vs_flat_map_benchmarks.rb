@@ -14,7 +14,7 @@ def report
     end
   end
 
-  reals.reduce(&:+) / reals.count
+  reals.inject(&:+) / reals.count
 end
 
 avgs = []
