@@ -12,7 +12,7 @@ def report(header)
     end
   end
 
-  [header, reals.reduce(&:+) / reals.count]
+  [header, reals.inject(&:+) / reals.count]
 end
 
 avgs = []

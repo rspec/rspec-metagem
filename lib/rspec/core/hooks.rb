@@ -415,7 +415,7 @@ EOS
         end
 
         def run
-          hooks.reduce(@initial_procsy) do |procsy, around_hook|
+          hooks.inject(@initial_procsy) do |procsy, around_hook|
             procsy.wrap do
               @example.instance_exec(procsy, &around_hook.block)
             end
