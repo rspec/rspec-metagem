@@ -59,10 +59,20 @@ module RSpec
           matches?(other)
         end
 
-        private
+      private
 
-        def assert_ivars *ivars
-          raise "#{self.class.name} needs to supply #{to_sentence ivars}" unless ivars.all? { |v| instance_variables.map(&:intern).include? v }
+        def assert_ivars(*expected_ivars)
+          if (expected_ivars - present_ivars).any?
+            raise "#{self.class.name} needs to supply#{to_sentence expected_ivars}"
+          end
+        end
+
+        if RUBY_VERSION.to_f < 1.9
+          def present_ivars
+            instance_variables.map { |v| v.to_sym }
+          end
+        else
+          alias present_ivars instance_variables
         end
       end
     end
