@@ -3,18 +3,14 @@ module RSpec
     module BuiltIn
       class AndComposite < Composite
 
-        def matches?(actual)
+        def match(expected, actual)
           matchers.all? do |matcher|
             evaluated_matchers << matcher
             matcher.matches?(actual)
           end
         end
 
-        def does_not_match?(actual)
-          false
-        end
-
-        def failure_message_for_should
+        def failure_message
           evaluated_matchers.map do |matcher|
             handle_matcher matcher
           end.join "\nand\n"
@@ -23,7 +19,7 @@ module RSpec
         private
 
         def handle_matcher matcher
-          matcher.failure_message_for_should
+          matcher.failure_message
         end
 
         def negative_failure_message_from matcher
