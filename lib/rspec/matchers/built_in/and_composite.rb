@@ -20,10 +20,6 @@ module RSpec
           end.join "\nand\n"
         end
 
-        def failure_message_for_should_not
-          "Chained matchers does not support not_to"
-        end
-
         private
 
         def handle_matcher matcher

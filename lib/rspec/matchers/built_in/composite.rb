@@ -15,6 +15,10 @@ module RSpec
           raise NoMethodError, 'This matcher is not intended to be used directly.'
         end
 
+        def failure_message_when_negated
+          "`chained matchers` does not support negation"
+        end
+
       end
     end
   end

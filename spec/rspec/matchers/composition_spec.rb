@@ -40,7 +40,7 @@ module RSpec::Matchers::BuiltIn
       it "is not supported" do
         expect {
           expect(3).not_to eq(2).and( be > 2)
-        }.to fail_with(/Chained matchers does not support not_to/)
+        }.to fail_with(/`chained matchers` does not support negation/)
       end
     end
 
