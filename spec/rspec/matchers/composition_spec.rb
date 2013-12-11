@@ -24,7 +24,7 @@ module RSpec::Matchers::BuiltIn
 
       it "fails if the second matcher fail" do
         expect {
-          expect(3).to  (be >= 2).and( eq(4) )
+          expect(3).to  be_kind_of(Integer).and( eq(4) )
         }.to fail_with(/expected: 4.*got: 3/m)
       end
 
