@@ -2,13 +2,11 @@ module RSpec
   module Matchers
     module BuiltIn
       class Compound < BaseMatcher
+        attr_reader :matcher_1, :matcher_2
 
-        attr_reader :matchers, :evaluated_matchers
-
-        def initialize(*matchers)
-          raise ArgumentError, 'two or more matchers should be provided' unless matchers.size >= 2
-          @matchers = matchers
-          @evaluated_matchers = []
+        def initialize(matcher_1, matcher_2)
+          @matcher_1 = matcher_1
+          @matcher_2 = matcher_2
         end
 
         def does_not_match?(actual)
@@ -19,42 +17,67 @@ module RSpec
           "`chained matchers` does not support negation"
         end
 
+      private
+
+        def indent_multiline_message(message)
+          message.lines.map do |line|
+            line =~ /\S/ ? '   ' + line : line
+          end.join
+        end
+
+        def compound_failure_message(conjunction)
+          message_1 = matcher_1.failure_message
+          message_2 = matcher_2.failure_message
+
+          if multiline?(message_1) || multiline?(message_2)
+            multiline_failure_message(message_1, conjunction, message_2)
+          else
+            [message_1, conjunction, message_2].join(' ')
+          end
+        end
+
+        def multiline_failure_message(message_1, conjunction, message_2)
+          [
+            indent_multiline_message(message_1.rstrip),
+            "...#{conjunction}:",
+            indent_multiline_message(message_2.lstrip)
+          ].join("\n\n")
+        end
+
+        def multiline?(message)
+          message.lines.count > 1
+        end
+
         class And < self
           def match(expected, actual)
-            matchers.all? do |matcher|
-              evaluated_matchers << matcher
-              matcher.matches?(actual)
-            end
+            @matcher_1_matches = matcher_1.matches?(actual)
+            @matcher_2_matches = matcher_2.matches?(actual)
+
+            @matcher_1_matches && @matcher_2_matches
           end
 
           def failure_message
-            evaluated_matchers.map do |matcher|
-              handle_matcher matcher
-            end.join "\nand\n"
-          end
-
-          private
-
-          def handle_matcher matcher
-            matcher.failure_message
-          end
-
-          def negative_failure_message_from matcher
-            message ||= matcher.respond_to?(:failure_message_for_should_not) ?
-                        matcher.failure_message_for_should_not :
-                        matcher.negative_failure_message
+            if @matcher_1_matches
+              matcher_2.failure_message
+            elsif @matcher_2_matches
+              matcher_1.failure_message
+            else
+              compound_failure_message("and")
+            end
           end
         end
 
         class Or < self
-          def matches?(actual)
-            matchers.any? do |matcher|
-              evaluated_matchers << matcher
-              matcher.matches? actual
-            end
+          def match(expected, actual)
+            matcher_1.matches?(actual) || matcher_2.matches?(actual)
+          end
+
+          def failure_message
+            compound_failure_message("or")
           end
         end
       end
     end
   end
 end
+
