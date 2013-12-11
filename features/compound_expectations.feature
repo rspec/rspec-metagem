@@ -1,12 +1,11 @@
-Feature: matcher composition
+Feature: Compound Expectations
 
-  Matchers can be composed to make complex expectations.
+  Matchers can be composed using `and` or `or` to make compound expectations.
 
   Scenario: Use `and` to chain expectations
     Given a file named "chained_assertions.rb" with:
       """ruby
       describe "composing matchers" do
-
         subject do
           {:foo => 'bar', :other => rand(3)}
         end
@@ -42,3 +41,4 @@ Feature: matcher composition
       """
     When I run `rspec not_predictable.rb`
     Then the example should pass
+

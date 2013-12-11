@@ -28,7 +28,7 @@ module RSpec
 
             it "returns a Composite matcher" do
               composite_matcher = minimal_composable_matcher.send(composition_method, minimal_composable_matcher)
-              expect(composite_matcher).to be_kind_of BuiltIn::Composite
+              expect(composite_matcher).to be_kind_of BuiltIn::Compound
             end
 
           end
