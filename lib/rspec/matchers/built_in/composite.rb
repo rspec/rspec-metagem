@@ -11,8 +11,8 @@ module RSpec
           @evaluated_matchers = []
         end
 
-        def matches?(actual)
-          raise NoMethodError, 'This matcher is not intended to be used directly.'
+        def does_not_match?(actual)
+          false
         end
 
         def failure_message_when_negated
