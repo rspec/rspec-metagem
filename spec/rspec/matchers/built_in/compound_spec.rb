@@ -4,11 +4,9 @@ module RSpec::Matchers::BuiltIn
 
   describe "chain matchers with #and" do
 
-    it_behaves_like "an RSpec matcher",
-      :valid_value => 3,
-      :invalid_value => 4 do
+    it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4 do
       let(:matcher) { eq(3).and( be <= 3 ) }
-      end
+    end
 
     describe "expect(obj).to matcher.and(other_matcher)" do
 
