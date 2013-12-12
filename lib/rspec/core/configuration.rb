@@ -293,7 +293,7 @@ module RSpec
       def reset
         @spec_files_loaded = false
         @reporter = nil
-        @formatters = nil
+        @loader = nil
       end
 
       # @overload add_setting(name)
@@ -593,18 +593,23 @@ module RSpec
       # private api that may change at any time without notice.
       def add_formatter(formatter_to_use, *paths)
         paths << output_stream if paths.empty?
-        formatters.add formatter_to_use, *paths
+        formatter_loader.add formatter_to_use, *paths
       end
       alias_method :formatter=, :add_formatter
 
       # @api private
       def formatters
-        @formatters ||= Formatters::Collection.new(reporter)
+        formatter_loader.formatters
       end
 
       # @api private
       def setup_default_formatters
-        formatters.setup_default output_stream, deprecation_stream
+        formatter_loader.setup_default output_stream, deprecation_stream
+      end
+
+      # @api private
+      def formatter_loader
+        @loader ||= Formatters::Loader.new(reporter)
       end
 
       # @api private

@@ -809,7 +809,7 @@ module RSpec::Core
     %w[formatter= add_formatter].each do |config_method|
       describe "##{config_method}" do
         it "delegates to formatters#add" do
-          expect(config.formatters).to receive(:add).with('these','options')
+          expect(config.formatter_loader).to receive(:add).with('these','options')
           config.send(config_method,'these','options')
         end
       end

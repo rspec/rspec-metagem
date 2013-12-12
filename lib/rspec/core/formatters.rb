@@ -54,17 +54,18 @@ module RSpec::Core::Formatters
 
   # @api private
   #
-  # `RSpec::Core::Formatters::Collection` is an internal class for
+  # `RSpec::Core::Formatters::Loader` is an internal class for
   # managing formatters used by a particular configuration. It is
   # not expected to be used directly, but only through the configuration
-  # interface
-  class Collection
+  # interface.
+  class Loader
 
     # @api private
     def initialize(reporter)
       @formatters = []
       @reporter = reporter
     end
+    attr_reader :formatters
 
     # @api private
     def setup_default(output_stream, deprecation_stream)
@@ -89,18 +90,6 @@ module RSpec::Core::Formatters
 
       @reporter.register_listener formatter, *formatter.notifications
       @formatters << formatter unless duplicate_formatter_exists?(formatter)
-    end
-
-    # Returns true if there are no configured formatters.
-    # @return boolean
-    # @api public
-    def empty?
-      @formatters.empty?
-    end
-
-    # @api private
-    def to_a
-      @formatters
     end
 
   private
