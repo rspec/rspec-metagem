@@ -52,14 +52,22 @@
 # @see RSpec::Core::Reporter
 module RSpec::Core::Formatters
 
+  # @api private
+  #
+  # `RSpec::Core::Formatters::Collection` is an internal class for
+  # managing formatters used by a particular configuration. It is
+  # not expected to be used directly, but only through the configuration
+  # interface
   class Collection
+
+    # @api private
     def initialize(reporter)
       @formatters = []
       @reporter = reporter
     end
 
     # @api private
-    def setup_default output_stream, deprecation_stream
+    def setup_default(output_stream, deprecation_stream)
       if @formatters.empty?
         add 'progress', output_stream
       end
@@ -67,7 +75,7 @@ module RSpec::Core::Formatters
     end
 
     # @api private
-    def add formatter_to_use, *paths
+    def add(formatter_to_use, *paths)
       formatter_class =
         built_in_formatter(formatter_to_use) ||
         custom_formatter(formatter_to_use) ||
@@ -88,6 +96,9 @@ module RSpec::Core::Formatters
       @formatters.clear
     end
 
+    # Returns true if there are no configured formatters.
+    # @return boolean
+    # @api public
     def empty?
       @formatters.empty?
     end

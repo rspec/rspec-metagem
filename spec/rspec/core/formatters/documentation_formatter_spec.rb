@@ -17,7 +17,7 @@ module RSpec::Core::Formatters
       expect(formatter.notifications).to include(
         :example_group_started, :example_group_finished, :example_passed,
         :example_failed
-       )
+      )
     end
 
     it "numbers the failures" do
