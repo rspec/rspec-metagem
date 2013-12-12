@@ -91,11 +91,6 @@ module RSpec::Core::Formatters
       @formatters << formatter unless duplicate_formatter_exists?(formatter)
     end
 
-    # @api private
-    def clear
-      @formatters.clear
-    end
-
     # Returns true if there are no configured formatters.
     # @return boolean
     # @api public
