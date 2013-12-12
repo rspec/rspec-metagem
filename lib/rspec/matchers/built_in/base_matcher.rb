@@ -56,10 +56,6 @@ module RSpec
           false
         end
 
-        def ===(other)
-          matches?(other)
-        end
-
       private
 
         def assert_ivars(*expected_ivars)

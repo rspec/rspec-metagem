@@ -53,7 +53,6 @@ module RSpec
             end
           end
         end
-        alias === matches?
 
         def failure_message
           "expected #{expected} to be thrown, got #{caught}"

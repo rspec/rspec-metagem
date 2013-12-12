@@ -36,7 +36,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.changed?
         end
-        alias === matches?
 
         # @api private
         def failure_message
@@ -86,7 +85,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.actual_delta.__send__(@comparison, @expected_delta)
         end
-        alias === matches?
 
         def does_not_match?(event_proc)
           raise NotImplementedError, "`expect { }.not_to change { }.#{@relativity}()` is not supported"
@@ -114,7 +112,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.changed? && matches_before? && matches_after?
         end
-        alias === matches?
 
         def failure_message
           if !matches_before?

@@ -48,7 +48,6 @@ module RSpec
 
           expectation_matched?
         end
-        alias === matches?
 
         def expectation_matched?
           error_and_message_match? && block_matches?
