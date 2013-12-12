@@ -219,6 +219,41 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
+    context "when chaining many matchers together" do
+      it 'can pass appropriately' do
+        matcher = start_with("f").and end_with("z").or end_with("o")
+        expect("foo").to matcher
+        expect(matcher.description).to eq('start with "f" and end with "z" or end with "o"')
+      end
+
+      it 'fails with a complete message' do
+        expect {
+          expect(3).to eq(1).and eq(2).and eq(3).and eq(4)
+        }.to fail_with(dedent <<-EOS)
+          |
+          |   expected: 1
+          |        got: 3
+          |
+          |   (compared using ==)
+          |
+          |...and:
+          |
+          |      expected: 2
+          |           got: 3
+          |
+          |      (compared using ==)
+          |
+          |   ...and:
+          |
+          |      expected: 4
+          |           got: 3
+          |
+          |      (compared using ==)
+          |
+        EOS
+      end
+    end
+
     def dedent(string)
       string.gsub(/^\s+\|/, '').chomp
     end

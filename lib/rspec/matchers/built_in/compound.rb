@@ -42,9 +42,9 @@ module RSpec
 
         def multiline_message(message_1, conjunction, message_2)
           [
-            indent_multiline_message(message_1.rstrip),
+            indent_multiline_message(message_1.sub(/\n+\z/, '')),
             "...#{conjunction}:",
-            indent_multiline_message(message_2.lstrip)
+            indent_multiline_message(message_2.sub(/\A\n+/, ''))
           ].join("\n\n")
         end
 
