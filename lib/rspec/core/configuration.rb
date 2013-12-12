@@ -603,18 +603,18 @@ module RSpec
       end
 
       # @api private
-      def setup_default_formatters
-        formatter_loader.setup_default output_stream, deprecation_stream
-      end
-
-      # @api private
       def formatter_loader
+        @reporter ||= Reporter.new(self)
         @loader ||= Formatters::Loader.new(reporter)
       end
 
       # @api private
       def reporter
-        @reporter ||= Reporter.new(self)
+        @reporter ||= begin
+                        @reporter = Reporter.new(self)
+                        formatter_loader.setup_default output_stream, deprecation_stream
+                        @reporter
+                      end
       end
 
       # @api private

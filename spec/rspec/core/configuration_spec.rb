@@ -1417,7 +1417,6 @@ module RSpec::Core
       it 'causes deprecations to raise errors rather than printing to the deprecation stream' do
         config.deprecation_stream = stream = StringIO.new
         config.raise_errors_for_deprecations!
-        config.setup_default_formatters
 
         expect {
           config.reporter.deprecation(:deprecated => "foo", :call_site => "foo.rb:1")
