@@ -46,7 +46,7 @@ Feature: before and after hooks
             expect(@thing.widgets.count).to eq(0)
           end
 
-          it "can get accept new widgets" do
+          it "can accept new widgets" do
             @thing.widgets << Object.new
           end
 
@@ -80,7 +80,7 @@ Feature: before and after hooks
             expect(@thing.widgets.count).to eq(0)
           end
 
-          it "can get accept new widgets" do
+          it "can accept new widgets" do
             @thing.widgets << Object.new
           end
 
