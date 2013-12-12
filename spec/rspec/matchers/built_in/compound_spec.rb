@@ -14,6 +14,12 @@ module RSpec::Matchers::BuiltIn
         end
       end
 
+      it 'has a description composed of both matcher descriptions' do
+        matcher = eq(3).and be >= 2
+        expect(3).to matcher
+        expect(matcher.description).to eq("eq 3 and be >= 2")
+      end
+
       context 'when only the first matcher fails' do
         it "fails with the first matcher's failure message" do
           expect {
@@ -121,6 +127,12 @@ module RSpec::Matchers::BuiltIn
     describe "expect(...).to matcher.or(other_matcher)" do
       it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5 do
         let(:matcher) { eq(3).or eq(4) }
+      end
+
+      it 'has a description composed of both matcher descriptions' do
+        matcher = eq(3).or eq(4)
+        expect(3).to matcher
+        expect(matcher.description).to eq("eq 3 or eq 4")
       end
 
       context 'when both matchers pass' do

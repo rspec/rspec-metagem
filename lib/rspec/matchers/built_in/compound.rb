@@ -17,6 +17,10 @@ module RSpec
           "`chained matchers` does not support negation"
         end
 
+        def description
+          singleline_message(matcher_1.description, super, matcher_2.description)
+        end
+
       private
 
         def indent_multiline_message(message)
@@ -30,13 +34,13 @@ module RSpec
           message_2 = matcher_2.failure_message
 
           if multiline?(message_1) || multiline?(message_2)
-            multiline_failure_message(message_1, conjunction, message_2)
+            multiline_message(message_1, conjunction, message_2)
           else
-            [message_1, conjunction, message_2].join(' ')
+            singleline_message(message_1, conjunction, message_2)
           end
         end
 
-        def multiline_failure_message(message_1, conjunction, message_2)
+        def multiline_message(message_1, conjunction, message_2)
           [
             indent_multiline_message(message_1.rstrip),
             "...#{conjunction}:",
@@ -46,6 +50,10 @@ module RSpec
 
         def multiline?(message)
           message.lines.count > 1
+        end
+
+        def singleline_message(message_1, conjunction, message_2)
+          [message_1, conjunction, message_2].join(' ')
         end
 
         class And < self
