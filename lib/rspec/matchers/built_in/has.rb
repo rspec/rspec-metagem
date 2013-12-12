@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class Has
+        include Composable
+
         def initialize(expected, *args)
           @expected, @args = expected, args
         end

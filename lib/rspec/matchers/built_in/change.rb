@@ -3,6 +3,8 @@ module RSpec
     module BuiltIn
       # Describes an expected mutation.
       class Change
+        include Composable
+
         # Specifies the delta of the expected change.
         def by(expected_delta)
           ChangeRelatively.new(@change_details, expected_delta, :==, :by)
@@ -66,6 +68,8 @@ module RSpec
       # Used to specify a relative change.
       # @api private
       class ChangeRelatively
+        include Composable
+
         def initialize(change_details, expected_delta, comparison, relativity)
           @change_details = change_details
           @expected_delta = expected_delta
@@ -97,6 +101,7 @@ module RSpec
       # Base class for specifying a change from and/or to specific values.
       # @api private
       class SpecificValuesChange
+        include Composable
         MATCH_ANYTHING = ::Object.ancestors.last
 
         def initialize(change_details, from, to)

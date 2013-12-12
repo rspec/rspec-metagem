@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class Satisfy
+        include Composable
+
         def initialize(&block)
           @block = block
         end

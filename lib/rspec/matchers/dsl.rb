@@ -273,6 +273,9 @@ module RSpec
         # Converts matcher name and expected args to an English expresion.
         include RSpec::Matchers::Pretty
 
+        # Supports the matcher composability features of RSpec 3+.
+        include Composable
+
         # Makes the macro methods available to an `RSpec::Matchers.define` block.
         extend Macros
         extend Macros::Deprecated

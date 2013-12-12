@@ -182,6 +182,8 @@ module RSpec
       end
 
       class YieldWithArgs
+        include Composable
+
         def initialize(*args)
           @expected = args
         end
@@ -252,6 +254,8 @@ module RSpec
       end
 
       class YieldSuccessiveArgs
+        include Composable
+
         def initialize(*args)
           @expected = args
         end

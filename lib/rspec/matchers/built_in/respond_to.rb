@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class RespondTo
+        include Composable
+
         def initialize(*names)
           @names = names
           @expected_arity = nil

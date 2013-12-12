@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class RaiseError
+        include Composable
+
         def initialize(expected_error_or_message=Exception, expected_message=nil, &block)
           @block = block
           @actual_error = nil

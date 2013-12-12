@@ -15,5 +15,21 @@ shared_examples_for "an RSpec matcher" do |options|
   it 'does not match an invalid value when using #=== so it can be composed' do
     expect(matcher).not_to be === invalid_value
   end
+
+  matcher :always_passes do
+    match { true }
+  end
+
+  matcher :always_fails do
+    match { false }
+  end
+
+  it 'supports compound expecations by chaining `and`' do
+    expect(valid_value).to matcher.and always_passes
+  end
+
+  it 'supports compound expectations by chaining `or`' do
+    expect(valid_value).to matcher.or always_fails
+  end
 end
 

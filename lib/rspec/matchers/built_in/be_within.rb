@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class BeWithin
+        include Composable
+
         def initialize(delta)
           @delta = delta
         end
