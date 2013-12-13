@@ -69,12 +69,20 @@ module RSpec
           define_aliases(opts[:alias], name)
         else
           attr_writer name
-          define_reader name
-          define_predicate_for name
+          add_read_only_setting name
         end
         Array(opts[:alias_with]).each do |alias_name|
           define_aliases(name, alias_name)
         end
+      end
+
+      # @private
+      #
+      # As `add_setting` but only add the reader
+      def self.add_read_only_setting(name, opts={})
+        raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
+        define_reader name
+        define_predicate_for name
       end
 
       # @macro [attach] add_setting
@@ -107,7 +115,7 @@ module RSpec
       # Use this to expose the core RSpec DSL via `Module` and the `main`
       # object. It will be set automatically but you can override it to
       # remove the DSL.
-      add_setting :expose_dsl_globally
+      define_reader :expose_dsl_globally
 
       def expose_dsl_globally=(value)
         if value
