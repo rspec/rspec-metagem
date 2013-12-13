@@ -14,6 +14,10 @@ Enhancements:
     * `match_for_should` => `match`
     * `match_for_should_not` => `match_when_negated`
 * Improve generated descriptions from `change` matcher. (Myron Marston)
+* Add support for compound matcher expressions using `and` and `or`.
+  Simply chain them off of any existing matcher to create an expression
+  like `expect(alphabet).to start_with("a").and end_with("z")`.
+  (Eloy Espinaco)
 
 Breaking Changes for 3.0.0:
 
