@@ -120,7 +120,7 @@ module RSpec::Matchers::BuiltIn
       it "is not supported" do
         expect {
           expect(3).not_to eq(2).and be > 2
-        }.to fail_with(/`chained matchers` does not support negation/)
+        }.to raise_error(NotImplementedError, /matcher.and matcher` is not supported/)
       end
     end
 
@@ -251,6 +251,14 @@ module RSpec::Matchers::BuiltIn
           |      (compared using ==)
           |
         EOS
+      end
+    end
+
+    describe "expect(...).not_to matcher.or(other_matcher)" do
+      it "is not supported" do
+        expect {
+          expect(3).not_to eq(2).or be > 2
+        }.to raise_error(NotImplementedError, /matcher.or matcher` is not supported/)
       end
     end
 
