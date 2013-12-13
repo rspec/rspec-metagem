@@ -3,42 +3,43 @@ Feature: Compound Expectations
   Matchers can be composed using `and` or `or` to make compound expectations.
 
   Scenario: Use `and` to chain expectations
-    Given a file named "chained_assertions.rb" with:
+    Given a file named "compound_and_matcher_spec.rb" with:
       """ruby
-      describe "composing matchers" do
-        subject do
-          {:foo => 'bar', :other => rand(3)}
+      describe "A compound `and` matcher" do
+        let(:string) { "foo bar bazz" }
+
+        it "passes when both are true" do
+          expect(string).to start_with("foo").and end_with("bazz")
         end
 
-        it "pass when both are true" do
-          expect(subject).to include(:foo => 'bar').and(include(:other))
+        it "fails when the first matcher fails" do
+          expect(string).to start_with("bar").and end_with("bazz")
         end
 
-        it "deliberate failure on the second matcher" do
-          expect(subject).to include(:foo => 'bar').and(include(:not_me))
-        end
-
-        it "deliberate failure on the first matcher" do
-          expect(subject).to include(:foo => 'NOTME').and(include(:other))
+        it "fails when the second matcher fails" do
+          expect(string).to start_with("foo").and end_with("bar")
         end
       end
       """
-    When I run `rspec chained_assertions.rb`
+    When I run `rspec compound_and_matcher_spec.rb`
     Then the output should contain "3 examples, 2 failures"
 
   Scenario: Use `or` to chain expectations
-    Given a file named "not_predictable.rb" with:
+    Given a file named "stoplight_spec.rb" with:
       """ruby
-      describe "a random number" do
-        subject do
-          rand(2)
+      class StopLight
+        def color
+          %w[ green yellow red ].shuffle.first
         end
+      end
 
-        it "has one of the two available values" do
-          expect(subject).to eq(0).or(eq(1))
+      describe StopLight, "#color" do
+        it "is green, yellow or red" do
+          light = StopLight.new
+          expect(light.color).to eq("green").or eq("yellow").or eq("red")
         end
       end
       """
-    When I run `rspec not_predictable.rb`
+    When I run `rspec stoplight_spec.rb`
     Then the example should pass
 
