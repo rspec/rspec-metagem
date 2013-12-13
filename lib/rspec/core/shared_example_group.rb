@@ -173,5 +173,5 @@ module RSpec
     end
   end
 
-  instance_eval &Core::SharedExampleGroup::TopLevelDSL.definitions
+  instance_eval(&Core::SharedExampleGroup::TopLevelDSL.definitions)
 end
