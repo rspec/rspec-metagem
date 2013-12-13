@@ -79,42 +79,5 @@ module RSpec::Matchers::BuiltIn
         expect(matcher.new(3)).not_to be === 4
       end
     end
-
-    describe "chain assertions" do
-      let(:matcher) do
-        Class.new(BaseMatcher) do
-          def initialize(expected)
-            @expected = expected
-          end
-
-          def matches?(actual)
-            (@actual = actual) == @expected
-          end
-        end
-      end
-
-      describe "#and" do
-
-        it "chain multiple assertions" do
-          expect(matcher.new(3).and(matcher.new(3)).matches?(3)).to be_truthy
-          expect(matcher.new(4).and(matcher.new(3)).matches?(3)).to be_falsey
-          expect(matcher.new(3).and(matcher.new(4)).matches?(3)).to be_falsey
-          expect(matcher.new(3).and(matcher.new(3)).matches?(4)).to be_falsey
-        end
-
-      end
-
-      describe "#or" do
-
-        it "make ored chained multiple assertions" do
-          expect(matcher.new(3).or(matcher.new(3)).matches?(3)).to be_truthy
-          expect(matcher.new(4).or(matcher.new(3)).matches?(3)).to be_truthy
-          expect(matcher.new(3).or(matcher.new(4)).matches?(3)).to be_truthy
-          expect(matcher.new(3).or(matcher.new(3)).matches?(4)).to be_falsey
-        end
-
-      end
-
-    end
   end
 end
