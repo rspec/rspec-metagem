@@ -47,3 +47,33 @@ Then /^the failing example is printed in magenta$/ do
   # \e[0m  = reset colors
   expect(all_output).to include("\e[35m" + "F" + "\e[0m")
 end
+
+Given /^I have a brand new project with no files$/ do
+  in_current_dir do
+    expect(Dir["**/*"]).to eq([])
+  end
+end
+
+Given /^I have run `([^`]*)`$/ do |cmd|
+  fail_on_error = true
+  run_simple(unescape(cmd), fail_on_error)
+end
+
+When "I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`" do
+  in_current_dir do
+    spec_helper = File.read("spec/spec_helper.rb")
+    expect(spec_helper).to include("=begin", "=end")
+
+    to_keep = spec_helper.lines.reject do |line|
+      line.start_with?("=begin") || line.start_with?("=end")
+    end
+
+    File.open("spec/spec_helper.rb", "w") { |f| f.write(to_keep.join) }
+    expect(File.read("spec/spec_helper.rb")).not_to include("=begin", "=end")
+  end
+end
+
+When /^I create a spec file with the following content:$/ do |content|
+  write_file("spec/example_spec.rb", content)
+end
+
