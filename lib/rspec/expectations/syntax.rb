@@ -4,7 +4,7 @@ module RSpec
     # Provides methods for enabling and disabling the available
     # syntaxes provided by rspec-expectations.
     module Syntax
-      extend self
+      module_function
 
       # @method should
       # Passes if `matcher` returns true.  Available on every `Object`.
@@ -43,11 +43,11 @@ module RSpec
         @default_should_host ||= ::Object.ancestors.last
       end
 
-      def self.warn_about_should!
+      def warn_about_should!
         @warn_about_should = true
       end
 
-      def self.warn_about_should_unless_configured(method_name)
+      def warn_about_should_unless_configured(method_name)
         if @warn_about_should
           RSpec.deprecate(
             "Using `#{method_name}` from rspec-expectations' old `:should` syntax without explicitly enabling the syntax",
