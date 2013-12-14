@@ -14,10 +14,10 @@ module RSpec::Core::Formatters
     end
 
     it "lists its additional notifications" do
-      expect(formatter.notifications).to include(
-        :example_group_started, :example_group_finished, :example_passed,
-        :example_failed
-      )
+      expect(formatter.notifications).to include(*%w[
+        example_group_started example_group_finished example_passed
+        example_failed
+      ])
     end
 
     it "numbers the failures" do

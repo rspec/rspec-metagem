@@ -12,10 +12,10 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   it 'lists its additional notifications' do
-    expect(formatter.notifications).to include(
-      :message, :dump_failures, :dump_summary, :dump_profile,
-      :dump_pending, :seed, :close
-    )
+    expect(formatter.notifications).to include(*%w[
+      message dump_failures dump_summary dump_profile
+      dump_pending seed close
+    ])
   end
 
   describe "#summary_line" do

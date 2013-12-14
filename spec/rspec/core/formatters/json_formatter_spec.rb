@@ -22,9 +22,9 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   end
 
   it "lists its additional notifications" do
-    expect(formatter.notifications).to include(
-      :message, :dump_summary, :dump_profile, :close, :stop
-    )
+    expect(formatter.notifications).to include(*%W[
+      message dump_summary dump_profile close stop
+    ])
   end
 
   it "outputs json (brittle high level functional test)" do

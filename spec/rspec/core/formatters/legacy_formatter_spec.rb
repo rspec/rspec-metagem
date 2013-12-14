@@ -10,7 +10,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
     before { allow(old_formatter).to receive_messages(:start => nil, :other_method => nil) }
 
     it "lists notifications the formatter responds to from the old set" do
-      expect(formatter.notifications).to eq([:start])
+      expect(formatter.notifications).to eq(["start"])
     end
   end
 

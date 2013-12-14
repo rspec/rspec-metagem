@@ -8,9 +8,9 @@ RSpec.describe RSpec::Core::Formatters::BaseFormatter do
 
   describe '#notifications' do
     it 'knows which notifications it responds to' do
-      expect(formatter.notifications).to eq([
-        :start, :example_group_started, :example_started, :example_pending,
-        :example_failed, :dump_summary, :close
+      expect(formatter.notifications).to eq(%w[
+        start example_group_started example_started example_pending
+        example_failed dump_summary close
       ])
     end
   end

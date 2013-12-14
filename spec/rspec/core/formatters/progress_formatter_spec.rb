@@ -12,9 +12,9 @@ RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
    end
 
    it "lists its additional notifications" do
-     expect(formatter.notifications).to include(
-       :example_passed, :example_pending, :example_failed, :start_dump
-      )
+     expect(formatter.notifications).to include(*%w[
+       example_passed example_pending example_failed start_dump
+      ])
    end
 
    it "produces line break on start dump" do

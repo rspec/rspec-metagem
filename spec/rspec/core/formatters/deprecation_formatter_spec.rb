@@ -7,7 +7,7 @@ module RSpec::Core::Formatters
 
     describe '#notifications' do
       it 'returns the notifications the deprecation formatter implements' do
-        expect(DeprecationFormatter.new(nil, nil).notifications).to eq [:deprecation, :deprecation_summary]
+        expect(DeprecationFormatter.new(nil, nil).notifications).to eq %w[deprecation deprecation_summary]
       end
     end
 

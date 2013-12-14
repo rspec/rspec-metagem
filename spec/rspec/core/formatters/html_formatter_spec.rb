@@ -48,10 +48,10 @@ module RSpec
 
         it "lists its additional notifications" do
           formatter = HtmlFormatter.new(double)
-          expect(formatter.notifications).to include(
-            :start, :example_group_started, :start_dump, :example_started,
-            :example_passed, :example_failed, :example_pending, :dump_summary
-           )
+          expect(formatter.notifications).to include(*%w[
+            start example_group_started start_dump example_started
+            example_passed example_failed example_pending dump_summary
+          ])
         end
 
         it 'removes notifications it doesnt support' do
