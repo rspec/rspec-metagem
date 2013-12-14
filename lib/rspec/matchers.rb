@@ -1,8 +1,5 @@
 require 'rspec/matchers/pretty'
-
 require 'rspec/matchers/built_in'
-require 'rspec/matchers/operator_matcher'
-
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/dsl'
 require 'rspec/matchers/test_unit_integration'
@@ -635,8 +632,6 @@ module RSpec
         else super
       end
     end
-
-    OperatorMatcher.register(Enumerable, '=~', BuiltIn::MatchArray)
 
     # @api private
     def self.is_a_matcher?(obj)

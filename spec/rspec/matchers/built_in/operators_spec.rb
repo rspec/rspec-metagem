@@ -211,21 +211,21 @@ describe "operator matchers", :uses_should do
     let(:custom_subklass) { Class.new(custom_klass) }
 
     after {
-      RSpec::Matchers::OperatorMatcher.unregister(custom_klass, "=~")
+      RSpec::Matchers::BuiltIn::OperatorMatcher.unregister(custom_klass, "=~")
     }
 
     it "allows operator matchers to be registered for types" do
-      RSpec::Matchers::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
-      expect(RSpec::Matchers::OperatorMatcher.get(custom_klass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
+      RSpec::Matchers::BuiltIn::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
+      expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_klass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
     end
 
     it "considers ancestors when finding an operator matcher" do
-      RSpec::Matchers::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
-      expect(RSpec::Matchers::OperatorMatcher.get(custom_subklass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
+      RSpec::Matchers::BuiltIn::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
+      expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_subklass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
     end
 
     it "returns nil if there is no matcher registered for a type" do
-      expect(RSpec::Matchers::OperatorMatcher.get(custom_klass, "=~")).to be_nil
+      expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_klass, "=~")).to be_nil
     end
   end
 
