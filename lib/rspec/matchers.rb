@@ -5,7 +5,6 @@ require 'rspec/matchers/matcher'
 require 'rspec/matchers/operator_matcher'
 
 require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/method_missing'
 require 'rspec/matchers/dsl'
 require 'rspec/matchers/test_unit_integration'
 
@@ -626,6 +625,16 @@ module RSpec
     #   expect([1,2,3]).to match_array([1,3,2])
     def match_array(array)
       BuiltIn::MatchArray.new(array)
+    end
+
+  private
+
+    def method_missing(method, *args, &block)
+      case method.to_s
+        when /\Abe_/   then BuiltIn::BePredicate.new(method, *args, &block)
+        when /\Ahave_/ then BuiltIn::Has.new(method, *args, &block)
+        else super
+      end
     end
 
     OperatorMatcher.register(Enumerable, '=~', BuiltIn::MatchArray)
