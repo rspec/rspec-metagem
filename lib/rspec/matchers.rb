@@ -1,11 +1,6 @@
 require 'rspec/matchers/pretty'
-
 require 'rspec/matchers/built_in'
-require 'rspec/matchers/matcher'
-require 'rspec/matchers/operator_matcher'
-
 require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/method_missing'
 require 'rspec/matchers/dsl'
 require 'rspec/matchers/test_unit_integration'
 
@@ -628,7 +623,15 @@ module RSpec
       BuiltIn::MatchArray.new(array)
     end
 
-    OperatorMatcher.register(Enumerable, '=~', BuiltIn::MatchArray)
+  private
+
+    def method_missing(method, *args, &block)
+      case method.to_s
+        when /\Abe_/   then BuiltIn::BePredicate.new(method, *args, &block)
+        when /\Ahave_/ then BuiltIn::Has.new(method, *args, &block)
+        else super
+      end
+    end
 
     # @api private
     def self.is_a_matcher?(obj)

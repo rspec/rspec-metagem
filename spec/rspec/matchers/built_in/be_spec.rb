@@ -435,14 +435,6 @@ describe "expect(...).not_to with operators" do
   end
 end
 
-describe "should_not with operators", :uses_only_should do
-  it "coaches user to stop using operators with should_not" do
-    lambda {
-      5.should_not be < 6
-    }.should raise_error(/`actual.should_not be < 6` not only FAILED,\nit is a bit confusing./m)
-  end
-end
-
 describe "expect(...).to be" do
   it "passes if actual is truthy" do
     expect(true).to be
