@@ -16,7 +16,7 @@ module RSpec::Core
     # events to all registered listeners
     def register_listener(listener, *notifications)
       notifications.each do |notification|
-        @listeners[notification] << listener
+        @listeners[notification.to_sym] << listener
       end
       true
     end

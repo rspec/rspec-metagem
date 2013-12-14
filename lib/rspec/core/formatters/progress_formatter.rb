@@ -5,7 +5,7 @@ module RSpec
       class ProgressFormatter < BaseTextFormatter
 
         def notifications
-          (super + [:example_passed, :example_pending, :example_failed, :start_dump])
+          super + %W[example_passed example_pending example_failed start_dump]
         end
 
         def example_passed(example)

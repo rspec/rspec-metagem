@@ -15,9 +15,7 @@ module RSpec
         end
 
         def notifications
-          (super + [:start, :example_group_started, :start_dump,
-                    :example_started, :example_passed, :example_failed,
-                    :example_pending, :dump_summary])
+          super + %w[start example_group_started start_dump example_started example_passed example_failed example_pending dump_summary]
         end
 
         def start(example_count)

@@ -115,6 +115,11 @@ module RSpec::Core
         expect(reporter.registered_listeners :start).to eq [listener]
       end
 
+      it 'will match string notification names' do
+        reporter.register_listener listener, "stop"
+        expect(reporter.registered_listeners :stop).to eq [listener]
+      end
+
       it 'will send notifications when a subscribed event is triggered' do
         expect(listener).to receive(:start).with(42)
         reporter.start 42

@@ -15,7 +15,7 @@ module RSpec
         end
 
         def notifications
-          [:deprecation, :deprecation_summary]
+          %w[deprecation deprecation_summary]
         end
 
         def printer

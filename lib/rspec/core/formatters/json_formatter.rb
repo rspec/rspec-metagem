@@ -15,7 +15,7 @@ module RSpec
         end
 
         def notifications
-          (super + [:message, :dump_summary, :stop, :close, :dump_profile])
+          super + %w[message dump_summary stop close dump_profile]
         end
 
         def message(message)

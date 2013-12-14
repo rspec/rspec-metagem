@@ -13,8 +13,7 @@ module RSpec
       class BaseTextFormatter < BaseFormatter
 
         def notifications
-          (super + %w[message dump_failures dump_summary dump_profile dump_pending
-                      seed close].map(&:to_sym) )
+          super + %w[message dump_failures dump_summary dump_profile dump_pending seed close]
         end
 
         def message(message)

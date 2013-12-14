@@ -35,8 +35,7 @@ module RSpec
         # a formatters with the reporter
         #
         def notifications
-          %w[start example_group_started example_started example_pending
-             example_failed dump_summary close].map(&:to_sym)
+          %w[start example_group_started example_started example_pending example_failed dump_summary close]
         end
 
         # @api public
