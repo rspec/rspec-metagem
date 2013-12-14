@@ -11,7 +11,7 @@ module RSpec
 
         def notifications
           (super + [:example_group_started, :example_group_finished,
-                    :example_passed, :example_pending, :example_failed]).uniq
+                    :example_passed, :example_pending, :example_failed])
         end
 
         def example_group_started(example_group)

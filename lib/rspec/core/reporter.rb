@@ -3,7 +3,7 @@ module RSpec::Core
 
     def initialize(configuration)
       @configuration = configuration
-      @listeners = Hash.new { |h,k| h[k] = [] }
+      @listeners = Hash.new { |h,k| h[k] = Set.new }
       @example_count = @failure_count = @pending_count = 0
       @duration = @start = nil
     end
@@ -22,7 +22,7 @@ module RSpec::Core
     end
 
     def registered_listeners(notification)
-      @listeners[notification]
+      @listeners[notification].to_a
     end
 
     # @api

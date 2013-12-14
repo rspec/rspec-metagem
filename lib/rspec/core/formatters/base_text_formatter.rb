@@ -14,7 +14,7 @@ module RSpec
 
         def notifications
           (super + %w[message dump_failures dump_summary dump_profile dump_pending
-                      seed close].map(&:to_sym) ).uniq
+                      seed close].map(&:to_sym) )
         end
 
         def message(message)

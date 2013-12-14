@@ -119,6 +119,12 @@ module RSpec::Core
         expect(listener).to receive(:start).with(42)
         reporter.start 42
       end
+
+      it 'will ignore duplicated listeners' do
+        reporter.register_listener listener, :start
+        expect(listener).to receive(:start).with(42).once
+        reporter.start 42
+      end
     end
 
     describe "timing" do
