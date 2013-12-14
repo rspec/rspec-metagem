@@ -27,6 +27,8 @@ Breaking Changes for 3.0.0:
 * Provide `===` rather than `==` as an alias of `matches?` for
   all matchers.  The semantics of `===` are closer to an RSpec
   matcher than `==`. (Myron Marston)
+* Remove deprecated `RSpec::Matchers::OperatorMatcher` constant.
+  (Myron Marston)
 
 Bug Fixes:
 
