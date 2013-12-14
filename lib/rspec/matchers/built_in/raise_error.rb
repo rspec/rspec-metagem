@@ -36,7 +36,7 @@ module RSpec
           begin
             given_proc.call
           rescue Exception => @actual_error
-            if @actual_error == @expected_error || @expected_error === @actual_error
+            if values_match?(@expected_error, @actual_error)
               @raised_expected_error = true
               @with_expected_message = verify_message
             end

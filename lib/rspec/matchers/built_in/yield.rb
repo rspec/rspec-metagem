@@ -244,11 +244,7 @@ module RSpec
         end
 
         def all_args_match?
-          return false if @expected.size != @actual.size
-
-          @expected.zip(@actual).all? do |expected, actual|
-            expected === actual || actual == expected
-          end
+          values_match?(@expected, @actual)
         end
       end
 
@@ -286,11 +282,7 @@ module RSpec
       private
 
         def args_match?
-          return false if @expected.size != @actual.size
-
-          @expected.zip(@actual).all? do |expected, actual|
-            expected === actual || actual == expected
-          end
+          values_match?(@expected, @actual)
         end
       end
     end

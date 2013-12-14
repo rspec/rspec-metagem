@@ -1,3 +1,5 @@
+require 'rspec/support/fuzzy_matcher'
+
 module RSpec
   module Matchers
     # Mixin designed to support the composable matcher features
@@ -38,6 +40,27 @@ module RSpec
       # fashion and also supports using matchers in case statements.
       def ===(value)
         matches?(value)
+      end
+
+    private
+
+      # This provides a generic way to fuzzy-match an expected value against
+      # an actual value. It understands nested data structures (e.g. hashes
+      # and arrays) and is able to match against a matcher being used as
+      # the expected value or within the expected value at any level of
+      # nesting.
+      #
+      # Within a custom matcher you are encouraged to use this whenever your
+      # matcher needs to match two values, unless it needs more precise semantics.
+      # For example, the `eq` matcher _does not_ use this as it is meant to
+      # use `==` (and only `==`) for matching.
+      #
+      # @param expected [Object] what is expected
+      # @param actual [Object] the actual value
+      #
+      # @api public
+      def values_match?(expected, actual)
+        Support::FuzzyMatcher.values_match?(expected, actual)
       end
     end
   end

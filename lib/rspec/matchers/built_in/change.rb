@@ -124,15 +124,11 @@ module RSpec
       private
 
         def matches_before?
-          expected_matches_actual?(@expected_before, @change_details.actual_before)
+          values_match?(@expected_before, @change_details.actual_before)
         end
 
         def matches_after?
-          expected_matches_actual?(@expected_after, @change_details.actual_after)
-        end
-
-        def expected_matches_actual?(expected, actual)
-          expected === actual || actual == expected
+          values_match?(@expected_after, @change_details.actual_after)
         end
 
         def failure_message_for_expected_after
