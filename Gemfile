@@ -25,6 +25,7 @@ platforms :jruby do
 end
 
 platforms :rbx do
+  gem 'rubysl'
   gem 'rubysl-test-unit'
 end
 
