@@ -62,6 +62,11 @@ module RSpec
       def values_match?(expected, actual)
         Support::FuzzyMatcher.values_match?(expected, actual)
       end
+
+      def description_of(object)
+        return object.description if object.respond_to?(:description)
+        object.inspect
+      end
     end
   end
 end

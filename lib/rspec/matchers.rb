@@ -4,6 +4,8 @@ require 'rspec/matchers/built_in'
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/dsl'
 require 'rspec/matchers/test_unit_integration'
+require 'rspec/matchers/matcher_delegator'
+require 'rspec/matchers/aliased_matcher'
 
 module RSpec
   # RSpec::Matchers provides a number of useful matchers we use to define
@@ -167,6 +169,8 @@ module RSpec
   #       config.include(CustomGameMatchers)
   #     end
   module Matchers
+    extend SupportsMatcherAliases
+
     # Passes if actual is truthy (anything but false or nil)
     def be_truthy
       BuiltIn::BeTruthy.new
@@ -250,6 +254,10 @@ module RSpec
     #   expect(result).not_to be_within(0.5).of(3.0)
     def be_within(delta)
       BuiltIn::BeWithin.new(delta)
+    end
+
+    alias_matcher :a_value_within, :be_within do |description|
+      description.gsub("be within", "a value within")
     end
 
     # Applied to a proc, specifies that its execution will cause some value to

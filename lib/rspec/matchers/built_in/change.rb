@@ -7,17 +7,23 @@ module RSpec
 
         # Specifies the delta of the expected change.
         def by(expected_delta)
-          ChangeRelatively.new(@change_details, expected_delta, :==, :by)
+          ChangeRelatively.new(@change_details, expected_delta, :by) do |actual_delta|
+            values_match?(expected_delta, actual_delta)
+          end
         end
 
         # Specifies a minimum delta of the expected change.
         def by_at_least(minimum)
-          ChangeRelatively.new(@change_details, minimum, :>=, :by_at_least)
+          ChangeRelatively.new(@change_details, minimum, :by_at_least) do |actual_delta|
+            actual_delta >= minimum
+          end
         end
 
         # Specifies a maximum delta of the expected change.
         def by_at_most(maximum)
-          ChangeRelatively.new(@change_details, maximum, :<=, :by_at_most)
+          ChangeRelatively.new(@change_details, maximum, :by_at_most) do |actual_delta|
+            actual_delta <= maximum
+          end
         end
 
         # Specifies the new value you expect.
@@ -39,12 +45,12 @@ module RSpec
 
         # @api private
         def failure_message
-          "expected #{@change_details.message} to have changed, but is still #{@change_details.actual_before.inspect}"
+          "expected #{@change_details.message} to have changed, but is still #{description_of @change_details.actual_before}"
         end
 
         # @api private
         def failure_message_when_negated
-          "expected #{@change_details.message} not to have changed, but did change from #{@change_details.actual_before.inspect} to #{@change_details.actual_after.inspect}"
+          "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
         end
 
         # @api private
@@ -69,21 +75,21 @@ module RSpec
       class ChangeRelatively
         include Composable
 
-        def initialize(change_details, expected_delta, comparison, relativity)
+        def initialize(change_details, expected_delta, relativity, &comparer)
           @change_details = change_details
           @expected_delta = expected_delta
-          @comparison     = comparison
           @relativity     = relativity
+          @comparer       = comparer
         end
 
         def failure_message
-          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{@expected_delta.inspect}, " +
-          "but was changed by #{@change_details.actual_delta.inspect}"
+          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}, " +
+          "but was changed by #{description_of @change_details.actual_delta}"
         end
 
         def matches?(event_proc)
           @change_details.perform_change(event_proc)
-          @change_details.actual_delta.__send__(@comparison, @expected_delta)
+          @comparer.call(@change_details.actual_delta)
         end
 
         def does_not_match?(event_proc)
@@ -92,7 +98,7 @@ module RSpec
 
         # @api private
         def description
-          "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{@expected_delta.inspect}"
+          "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}"
         end
       end
 
@@ -115,9 +121,9 @@ module RSpec
 
         def failure_message
           if !matches_before?
-            "expected #{@change_details.message} to have initially been #{@expected_before.inspect}, but was #{@change_details.actual_before.inspect}"
+            "expected #{@change_details.message} to have initially been #{description_of @expected_before}, but was #{description_of @change_details.actual_before}"
           else
-            "expected #{@change_details.message} to have changed to #{failure_message_for_expected_after}, but is now #{@change_details.actual_after.inspect}"
+            "expected #{@change_details.message} to have changed to #{description_of @expected_after}, but is now #{description_of @change_details.actual_after}"
           end
         end
 
@@ -129,14 +135,6 @@ module RSpec
 
         def matches_after?
           values_match?(@expected_after, @change_details.actual_after)
-        end
-
-        def failure_message_for_expected_after
-          if RSpec::Matchers.is_a_matcher?(@expected_after)
-            @expected_after.description
-          else
-            @expected_after.inspect
-          end
         end
       end
 
@@ -151,7 +149,7 @@ module RSpec
 
         def to(value)
           @expected_after     = value
-          @description_suffix = " to #{value.inspect}"
+          @description_suffix = " to #{description_of value}"
           self
         end
 
@@ -166,14 +164,14 @@ module RSpec
 
         def failure_message_when_negated
           if !matches_before?
-            "expected #{@change_details.message} to have initially been #{@expected_before.inspect}, but was #{@change_details.actual_before.inspect}"
+            "expected #{@change_details.message} to have initially been #{description_of @expected_before}, but was #{description_of @change_details.actual_before}"
           else
-            "expected #{@change_details.message} not to have changed, but did change from #{@change_details.actual_before.inspect} to #{@change_details.actual_after.inspect}"
+            "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
           end
         end
 
         def description
-          "change #{@change_details.message} from #{@expected_before.inspect}#{@description_suffix}"
+          "change #{@change_details.message} from #{description_of @expected_before}#{@description_suffix}"
         end
       end
 
@@ -188,7 +186,7 @@ module RSpec
 
         def from(value)
           @expected_before    = value
-          @description_suffix = " from #{value.inspect}"
+          @description_suffix = " from #{description_of value}"
           self
         end
 
@@ -197,7 +195,7 @@ module RSpec
         end
 
         def description
-          "change #{@change_details.message} to #{@expected_after.inspect}#{@description_suffix}"
+          "change #{@change_details.message} to #{description_of @expected_after}#{@description_suffix}"
         end
       end
 
