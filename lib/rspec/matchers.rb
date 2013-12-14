@@ -1,7 +1,6 @@
 require 'rspec/matchers/pretty'
 
 require 'rspec/matchers/built_in'
-require 'rspec/matchers/matcher'
 require 'rspec/matchers/operator_matcher'
 
 require 'rspec/matchers/generated_descriptions'
