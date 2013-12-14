@@ -112,7 +112,7 @@ module RSpec
 
         def failure_message_when_negated
           message = <<-MESSAGE
-`#{negative_expectation_expression}` not only FAILED,
+`expect(actual).not_to be #{@operator} #{@expected}` not only FAILED,
 it is a bit confusing.
           MESSAGE
 
@@ -123,10 +123,6 @@ it is a bit confusing.
 
         def description
           "be #{@operator} #{expected_to_sentence}#{args_to_sentence}"
-        end
-
-        def negative_expectation_expression
-          Expectations::Syntax.negative_expression("actual", "be #{@operator} #{@expected}")
         end
       end
 

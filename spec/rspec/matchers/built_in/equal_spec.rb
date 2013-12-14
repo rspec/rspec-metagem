@@ -88,25 +88,6 @@ object identity in this example.
 MESSAGE
       end
 
-      context "when using only `should`", :uses_only_should do
-        it "suggests the `eq` matcher on failure" do
-          expected, actual = "1", "1"
-          lambda {
-            actual.should equal(expected)
-          }.should fail_with <<-MESSAGE
-
-expected #{inspect_object(expected)}
-     got #{inspect_object(actual)}
-
-Compared using equal?, which compares object identity,
-but expected and actual are not the same object. Use
-`actual.should eq(expected)` if you don't care about
-object identity in this example.
-
-MESSAGE
-        end
-      end
-
       it "provides message on #negative_failure_message" do
         expected = actual = "1"
         matcher = equal(expected)
