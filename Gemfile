@@ -25,7 +25,7 @@ platforms :jruby do
 end
 
 platforms :rbx do
-  gem 'minitest', '~> 4.7'
+  gem 'rubysl-test-unit'
 end
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
