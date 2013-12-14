@@ -5,7 +5,6 @@ require 'rspec/matchers'
 require 'rspec/expectations/expectation_target'
 require 'rspec/matchers/configuration'
 require 'rspec/expectations/fail_with'
-require 'rspec/expectations/errors'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'
 require 'rspec/expectations/diff_presenter'
@@ -53,6 +52,11 @@ module RSpec
   # built-in matchers that ship with rspec-expectations, and how to write your
   # own custom matchers.
   module Expectations
+    ExpectationNotMetError = if defined?(::Test::Unit::AssertionFailedError)
+      Class.new(::Test::Unit::AssertionFailedError)
+    else
+      Class.new(::StandardError)
+    end
 
     # @api private
     KERNEL_METHOD_METHOD = ::Kernel.instance_method(:method)
