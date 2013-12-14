@@ -24,4 +24,8 @@ platforms :jruby do
   gem "jruby-openssl"
 end
 
+platforms :rbx do
+  gem 'minitest', '~> 4.7'
+end
+
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')

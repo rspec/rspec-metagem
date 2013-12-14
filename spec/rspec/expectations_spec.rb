@@ -37,8 +37,10 @@ module RSpec
       end
 
       it 'fetches method definitions for basic objects', :if => RUBY_VERSION.to_i >= 2 do
-        object = BasicClass.new
-        expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+        pending "RBX doesn't yet support this", :if => RUBY_ENGINE == 'rbx' do
+          object = BasicClass.new
+          expect(Expectations.method_handle_for(object, :foo).call).to eq :bar
+        end
       end
 
       it 'fetches method definitions for basic objects with kernel mixed in', :if => RUBY_VERSION.to_f > 1.8 do

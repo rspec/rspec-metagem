@@ -844,9 +844,16 @@ module RSpec::Matchers::DSL
           end
         end
 
+        expected_msg = "RSpec::Matchers::DSL::Matcher"
+        expected_msg << " __raise_no_method_error" unless rbx?
+
         expect {
           expect(example).to __raise_no_method_error
-        }.to raise_error(NoMethodError, /Spec::Matchers::DSL::Matcher __raise_no_method_error/)
+        }.to raise_error(NoMethodError, /#{expected_msg}/)
+      end
+
+      def rbx?
+        defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
       end
     end
 
