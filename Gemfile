@@ -24,6 +24,7 @@ end
 
 platforms :rbx do
   gem 'rubysl'
+  gem 'racc'
 end
 
 gem 'simplecov', '~> 0.8'
