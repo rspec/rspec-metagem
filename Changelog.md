@@ -9,6 +9,7 @@ Breaking Changes for 3.0.0:
   null mocking adapter. If you want to use the null mocking adapter,
   use `mock_with :nothing` (as has been documented for a long time).
   (Myron Marston)
+* Remove `BackwardCompatibility` module from `FilterManager`. (Ashish Dixit)
 
 Enhancements:
 
