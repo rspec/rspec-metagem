@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class ThrowSymbol
+        include Composable
+
         def initialize(expected_symbol = nil, expected_arg=nil)
           @expected_symbol = expected_symbol
           @expected_arg = expected_arg
@@ -51,7 +53,6 @@ module RSpec
             end
           end
         end
-        alias === matches?
 
         def failure_message
           "expected #{expected} to be thrown, got #{caught}"

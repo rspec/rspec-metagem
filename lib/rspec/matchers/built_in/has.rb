@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class Has
+        include Composable
+
         def initialize(expected, *args)
           @expected, @args = expected, args
         end
@@ -9,7 +11,6 @@ module RSpec
         def matches?(actual)
           actual.__send__(predicate(@expected), *@args)
         end
-        alias === matches?
 
         def failure_message
           "expected ##{predicate(@expected)}#{failure_message_args_description} to return true, got false"

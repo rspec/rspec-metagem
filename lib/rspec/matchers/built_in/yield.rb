@@ -182,6 +182,8 @@ module RSpec
       end
 
       class YieldWithArgs
+        include Composable
+
         def initialize(*args)
           @expected = args
         end
@@ -191,7 +193,6 @@ module RSpec
           @actual = @probe.single_yield_args
           @probe.yielded_once?(:yield_with_args) && args_match?
         end
-        alias === matches?
 
         def failure_message
           "expected given block to yield with arguments, but #{positive_failure_reason}"
@@ -252,6 +253,8 @@ module RSpec
       end
 
       class YieldSuccessiveArgs
+        include Composable
+
         def initialize(*args)
           @expected = args
         end
@@ -261,7 +264,6 @@ module RSpec
           @actual = @probe.successive_yield_args
           args_match?
         end
-        alias === matches?
 
         def failure_message
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +

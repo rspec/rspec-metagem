@@ -13,6 +13,7 @@ module RSpec
       # class. If/when this changes, we will announce it and remove this warning.
       class BaseMatcher
         include RSpec::Matchers::Pretty
+        include RSpec::Matchers::Composable
 
         UNDEFINED = Object.new.freeze
 
@@ -53,10 +54,6 @@ module RSpec
 
         def diffable?
           false
-        end
-
-        def ===(other)
-          matches?(other)
         end
 
       private

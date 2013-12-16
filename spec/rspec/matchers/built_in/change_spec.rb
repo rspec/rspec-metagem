@@ -677,15 +677,17 @@ describe RSpec::Matchers::BuiltIn::Change do
     }.not_to raise_error
   end
 
-  o = SomethingExpected.new
-  it_behaves_like "an RSpec matcher", :valid_value => lambda { o.some_value = 5 },
+  k = 1
+  before { k = 1 }
+  it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
                                       :invalid_value => lambda { } do
-    let(:matcher) { change { o.some_value } }
+    let(:matcher) { change { k } }
   end
 end
 
 describe RSpec::Matchers::BuiltIn::ChangeRelatively do
   k = 0
+  before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
                                       :invalid_value => lambda { k += 2 } do
     let(:matcher) { change { k }.by(1) }
@@ -694,6 +696,7 @@ end
 
 describe RSpec::Matchers::BuiltIn::ChangeFromValue do
   k = 0
+  before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
                                       :invalid_value => lambda { } do
     let(:matcher) { change { k }.from(0) }
@@ -702,6 +705,7 @@ end
 
 describe RSpec::Matchers::BuiltIn::ChangeToValue do
   k = 0
+  before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k = 2 },
                                       :invalid_value => lambda { k = 3 } do
     let(:matcher) { change { k }.to(2) }

@@ -3,6 +3,8 @@ module RSpec
     module BuiltIn
       # Describes an expected mutation.
       class Change
+        include Composable
+
         # Specifies the delta of the expected change.
         def by(expected_delta)
           ChangeRelatively.new(@change_details, expected_delta, :==, :by)
@@ -34,7 +36,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.changed?
         end
-        alias === matches?
 
         # @api private
         def failure_message
@@ -66,6 +67,8 @@ module RSpec
       # Used to specify a relative change.
       # @api private
       class ChangeRelatively
+        include Composable
+
         def initialize(change_details, expected_delta, comparison, relativity)
           @change_details = change_details
           @expected_delta = expected_delta
@@ -82,7 +85,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.actual_delta.__send__(@comparison, @expected_delta)
         end
-        alias === matches?
 
         def does_not_match?(event_proc)
           raise NotImplementedError, "`expect { }.not_to change { }.#{@relativity}()` is not supported"
@@ -97,6 +99,7 @@ module RSpec
       # Base class for specifying a change from and/or to specific values.
       # @api private
       class SpecificValuesChange
+        include Composable
         MATCH_ANYTHING = ::Object.ancestors.last
 
         def initialize(change_details, from, to)
@@ -109,7 +112,6 @@ module RSpec
           @change_details.perform_change(event_proc)
           @change_details.changed? && matches_before? && matches_after?
         end
-        alias === matches?
 
         def failure_message
           if !matches_before?

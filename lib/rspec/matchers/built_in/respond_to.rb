@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class RespondTo
+        include Composable
+
         def initialize(*names)
           @names = names
           @expected_arity = nil
@@ -10,7 +12,6 @@ module RSpec
         def matches?(actual)
           find_failing_method_names(actual, :reject).empty?
         end
-        alias === matches?
 
         def does_not_match?(actual)
           find_failing_method_names(actual, :select).empty?

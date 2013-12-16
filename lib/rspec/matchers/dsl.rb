@@ -273,6 +273,9 @@ module RSpec
         # Converts matcher name and expected args to an English expresion.
         include RSpec::Matchers::Pretty
 
+        # Supports the matcher composability features of RSpec 3+.
+        include Composable
+
         # Makes the macro methods available to an `RSpec::Matchers.define` block.
         extend Macros
         extend Macros::Deprecated
@@ -298,12 +301,6 @@ module RSpec
         # the matcher in error messages (e.g. for `NoMethodError`)
         def inspect
           "#<#{self.class.name} #{name}>"
-        end
-
-        # Delegates to #matches?. Allows custom matchers to be
-        # used in a composable fashion.
-        def ===(actual)
-          matches?(actual)
         end
 
         if RUBY_VERSION.to_f >= 1.9

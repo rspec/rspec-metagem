@@ -2,6 +2,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class Satisfy
+        include Composable
+
         def initialize(&block)
           @block = block
         end
@@ -11,7 +13,6 @@ module RSpec
           @actual = actual
           @block.call(actual)
         end
-        alias === matches?
 
         def failure_message
           "expected #{@actual} to satisfy block"
