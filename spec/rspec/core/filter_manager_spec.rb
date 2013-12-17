@@ -211,30 +211,6 @@ module RSpec::Core
         expect(filter_manager.exclusions.description).to eq({ :foo => :bar }.inspect)
       end
 
-      it 'deprecates an overridden :if filter' do
-        expect(RSpec).to receive(:deprecate).with(/exclude\(:if/)
-        filter_manager = FilterManager.new
-        filter_manager.exclude :if => :custom_filter
-      end
-
-      it 'deprecates an :if filter overridden with low priority' do
-        expect(RSpec).to receive(:deprecate).with(/exclude\(:if/)
-        filter_manager = FilterManager.new
-        filter_manager.exclude_with_low_priority :if => :custom_filter
-      end
-
-      it 'deprecates an overridden :unless filter' do
-        expect(RSpec).to receive(:deprecate).with(/exclude\(:unless/)
-        filter_manager = FilterManager.new
-        filter_manager.exclude :unless => :custom_filter
-      end
-
-      it 'deprecates an :unless filter overridden with low priority' do
-        expect(RSpec).to receive(:deprecate).with(/exclude\(:unless/)
-        filter_manager = FilterManager.new
-        filter_manager.exclude_with_low_priority :unless => :custom_filter
-      end
-
       it 'includes an overriden :if filter' do
         allow(RSpec).to receive(:deprecate)
         filter_manager = FilterManager.new

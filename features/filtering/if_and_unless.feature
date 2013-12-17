@@ -136,33 +136,3 @@ Feature: :if and :unless
       | included :if => false example     |
       | included :unless => true example  |
       | excluded                          |
-
-  Scenario: override implicit :if and :unless exclusion filters
-    Given a file named "override_implicit_filters_spec.rb" with:
-      """ruby
-      RSpec.configure do |c|
-        c.filter_run_excluding :if => :exclude_me, :unless => :exclude_me_for_unless
-      end
-
-      describe ":if filtering" do
-        it(":if => true example", :if => true) { }
-        it(":if => false example", :if => false) { }
-        it(":if => :exclude_me example", :if => :exclude_me) { }
-      end
-
-      describe ":unless filtering" do
-        it(":unless => true example", :unless => true) { }
-        it(":unless => false example", :unless => false) { }
-        it(":unless => :exclude_me_for_unless example", :unless => :exclude_me_for_unless) { }
-      end
-      """
-    When I run `rspec override_implicit_filters_spec.rb --format doc`
-    Then the output should contain all of these:
-      | :if => true example      |
-      | :if => false example     |
-      | :unless => true example  |
-      | :unless => false example |
-    And the output should not contain any of these:
-      | :if => :exclude_me example                |
-      | :unless => :exclude_me_for_unless example |
-

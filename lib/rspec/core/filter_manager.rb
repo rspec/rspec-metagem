@@ -107,34 +107,6 @@ module RSpec
         end
       end
 
-      module BackwardCompatibility
-        def merge(orig, opposite, *updates)
-          _warn_deprecated_keys(updates.last)
-        end
-
-        def reverse_merge(orig, opposite, *updates)
-          _warn_deprecated_keys(updates.last)
-        end
-
-      private
-
-        # Supports a use case that probably doesn't exist: overriding the
-        # if/unless procs.
-        def _warn_deprecated_keys(updates)
-          _warn_deprecated_key(:unless, updates) if updates.has_key?(:unless)
-          _warn_deprecated_key(:if, updates)     if updates.has_key?(:if)
-        end
-
-        # Emits a deprecation warning for keys that will not be supported in
-        # the future.
-        def _warn_deprecated_key(key, updates)
-          RSpec.deprecate("FilterManager#exclude(#{key.inspect} => #{updates[key].inspect})")
-          @exclusions[key] = updates.delete(key)
-        end
-      end
-
-      include BackwardCompatibility
-
       attr_reader :exclusions, :inclusions
 
       def initialize
@@ -209,7 +181,6 @@ module RSpec
       end
 
       def merge(orig, opposite, *updates)
-        super
         orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
       end
 
@@ -219,7 +190,6 @@ module RSpec
       end
 
       def reverse_merge(orig, opposite, *updates)
-        super
         updated = updates.last.merge(orig)
         opposite.each_pair {|k,v| updated.delete(k) if updated[k] == v}
         orig.replace(updated)
