@@ -388,3 +388,74 @@ describe "misuse of raise_error, with (), not {}" do
     }.to fail_with(/nothing was raised/)
   end
 end
+
+describe "Composing matchers with `raise_error`" do
+  matcher :an_error_with_attribute do |attr|
+    chain :equal_to do |value|
+      @expected_value = value
+    end
+
+    match do |error|
+      error.__send__(attr) == @expected_value
+    end
+
+    description do
+      super() + " equal to #{@expected_value}"
+    end
+  end
+
+  class FooError < StandardError
+    def foo; :bar; end
+  end
+
+  describe "expect { }.to raise_error(matcher)" do
+    it 'passes when the matcher matches the raised error' do
+      expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(:bar))
+    end
+
+    it 'fails with a clear message when the matcher does not match the raised error' do
+      expect {
+        expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(3))
+      }.to fail_matching("expected an error with attribute :foo equal to 3, got #<FooError: FooError>")
+    end
+
+    it 'provides a description' do
+      description = raise_error(an_error_with_attribute(:foo).equal_to(3)).description
+      expect(description).to eq("raise an error with attribute :foo equal to 3")
+    end
+  end
+
+  describe "expect { }.to raise_error(ErrorClass, matcher)" do
+    it 'passes when the class and matcher match the raised error' do
+      expect { raise FooError, "food" }.to raise_error(FooError, a_value_including("foo"))
+    end
+
+    it 'fails with a clear message when the matcher does not match the raised error' do
+      expect {
+        expect { raise FooError, "food" }.to raise_error(FooError, a_value_including("bar"))
+      }.to fail_matching('expected FooError with a value including "bar", got #<FooError: food')
+    end
+
+    it 'provides a description' do
+      description = raise_error(FooError, a_value_including("foo")).description
+      expect(description).to eq('raise FooError with a value including "foo"')
+    end
+  end
+
+  describe "expect { }.to raise_error(ErrorClass).with_message(matcher)" do
+    it 'passes when the class and matcher match the raised error' do
+      expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_value_including("foo"))
+    end
+
+    it 'fails with a clear message when the matcher does not match the raised error' do
+      expect {
+        expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_value_including("bar"))
+      }.to fail_matching('expected FooError with a value including "bar", got #<FooError: food')
+    end
+
+    it 'provides a description' do
+      description = raise_error(FooError).with_message(a_value_including("foo")).description
+      expect(description).to eq('raise FooError with a value including "foo"')
+    end
+  end
+end

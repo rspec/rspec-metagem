@@ -432,6 +432,9 @@ module RSpec
     def include(*expected)
       BuiltIn::Include.new(*expected)
     end
+    alias_matcher :a_value_including, :include do |description|
+      description.sub("include", "a value including")
+    end
 
     # Given a Regexp or String, passes if actual.match(pattern)
     #
