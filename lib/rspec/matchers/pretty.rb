@@ -6,7 +6,7 @@ module RSpec
       end
 
       def to_sentence(words)
-        return "" unless words
+        return " #{words.inspect}" unless words
         words = Array(words).map { |w| to_word(w) }
         case words.length
           when 0
