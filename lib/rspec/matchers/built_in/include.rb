@@ -20,6 +20,14 @@ module RSpec
           "include#{expected_to_sentence}"
         end
 
+        def failure_message
+          improve_hash_formatting(super)
+        end
+
+        def failure_message_when_negated
+          improve_hash_formatting(super)
+        end
+
         def diffable?
           # Matchers do not diff well, since diff uses their inspect
           # output, which includes their instance variables and such.
