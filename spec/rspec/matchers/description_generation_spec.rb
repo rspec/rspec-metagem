@@ -108,7 +108,7 @@ describe "Matchers should be able to generate their own descriptions" do
                      :matches?                   => true,
                      :failure_message => "")
     expect([matcher]).to include(matcher)
-    expect(RSpec::Matchers.generated_description).to eq "should include description"
+    expect(RSpec::Matchers.generated_description).to eq "should include (description)"
   end
 
   it "expect(array).to match_array [1,2,3]" do

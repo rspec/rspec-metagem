@@ -449,6 +449,10 @@ module RSpec
     end
     alias_method :match_regex, :match
 
+    alias_matcher :a_string_matching, :match do |description|
+      description.sub("match", "a string matching")
+    end
+
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
     # With a named error and messsage specified as a String, matches only if both match.
@@ -650,6 +654,11 @@ module RSpec
 
       obj.respond_to?(:failure_message) ||
       obj.respond_to?(:failure_message_for_should) # support legacy matchers
+    end
+
+    # @api private
+    def self.is_a_describable_matcher?(obj)
+      is_a_matcher?(obj) && obj.respond_to?(:description)
     end
   end
 end

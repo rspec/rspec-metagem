@@ -413,6 +413,129 @@ describe "#include matcher" do
     end
   end
 
+  describe "Composing matchers with `include`" do
+    RSpec::Matchers.define :a_string_containing do |expected|
+      match do |actual|
+        actual.include?(expected)
+      end
+
+      description do
+        "a string containing '#{expected}'"
+      end
+    end
+
+    describe "expect(array).to include(matcher)" do
+      it "passes when the matcher matches one of the values" do
+        expect([10, 20, 30]).to include( a_value_within(5).of(24) )
+      end
+
+      it 'provides a description' do
+        description = include( a_value_within(5).of(24) ).description
+        expect(description).to eq("include (a value within 5 of 24)")
+      end
+
+      it 'fails with a clear message when the matcher matches none of the values' do
+        expect {
+          expect([10, 30]).to include( a_value_within(5).of(24) )
+        }.to fail_with("expected [10, 30] to include (a value within 5 of 24)")
+      end
+
+      it 'does not include a diff when the match fails' do
+        expect {
+          expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
+        }.to raise_error { |e|
+          expect(e.message).not_to match(/diff/i)
+        }
+      end
+
+      it 'does not treat an object that only implements #matches? as a matcher' do
+        domain = Struct.new(:domain) do
+          def matches?(url)
+            URI(url).host == self.domain
+          end
+        end
+
+        expect([domain.new("rspec.info")]).to include(domain.new("rspec.info"))
+
+        expect {
+          expect([domain.new("rspec.info")]).to include(domain.new("foo.com"))
+        }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
+      end
+    end
+
+    describe "expect(array).to include(multiple, matcher, arguments)" do
+      it "passes if target includes items satisfying all matchers" do
+        expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing('oo'))
+      end
+
+      it "fails if target does not include an item satisfying any one of the items" do
+        expect {
+          expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
+        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include (a string containing 'ar') and (a string containing 'abc')|)
+      end
+
+      it 'does not include a diff when the match fails' do
+        expect {
+          expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
+        }.to raise_error { |e|
+          expect(e.message).not_to match(/diff/i)
+        }
+      end
+    end
+
+    describe "expect(hash).to include(key => matcher)" do
+      it "passes when the matcher matches" do
+        expect(:a => 12).to include(:a => a_value_within(3).of(10))
+      end
+
+      it 'provides a description' do
+        description = include(:a => a_value_within(3).of(10)).description
+        expect(description).to eq("include {:a => (a value within 3 of 10)}")
+      end
+
+      it "fails with a clear message when the matcher does not match" do
+        expect {
+          expect(:a => 15).to include(:a => a_value_within(3).of(10))
+        }.to fail_with("expected {:a => 15} to include {:a => (a value within 3 of 10)}")
+      end
+    end
+
+    describe "expect(hash).to include(key_matcher)" do
+      it "passes when the matcher matches a key", :if => (RUBY_VERSION.to_f > 1.8) do
+        expect(:drink => "water", :food => "bread").to include(a_string_matching(/foo/))
+      end
+
+      it 'provides a description' do
+        description = include(a_string_matching(/foo/)).description
+        expect(description).to eq("include (a string matching /foo/)")
+      end
+
+      it 'fails with a clear message when the matcher does not match', :if => (RUBY_VERSION.to_f > 1.8) do
+        expect {
+          expect(:drink => "water", :food => "bread").to include(a_string_matching(/bar/))
+        }.to fail_with('expected {:drink => "water", :food => "bread"} to include (a string matching /bar/)')
+      end
+    end
+
+    describe "expect(array).not_to include(multiple, matcher, arguments)" do
+      it "passes if none of the target values satisfies any of the matchers" do
+        expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("gh"), a_string_containing('de'))
+      end
+
+      it 'fails if all of the matchers are satisfied by one of the target values' do
+        expect {
+          expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('az'))
+        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include (a string containing 'ar') and (a string containing 'az')|)
+      end
+
+      it 'fails if the some (but not all) of the matchers are satisifed' do
+        expect {
+          expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('bz'))
+        }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include (a string containing 'ar') and (a string containing 'bz')|)
+      end
+    end
+  end
+
   include RSpec::Matchers::Pretty
   # We have to use Hash#inspect in examples that have multi-entry
   # hashes because the #inspect output on 1.8.7 is non-deterministic
@@ -420,121 +543,6 @@ describe "#include matcher" do
   # put a literal string for what we expect because it varies.
   def hash_inspect(hash)
     improve_hash_formatting(hash.inspect)
-  end
-end
-
-RSpec::Matchers.define :a_string_containing do |expected|
-  match do |actual|
-    actual.include?(expected)
-  end
-
-  description do
-    "a string containing '#{expected}'"
-  end
-end
-
-describe "expect(...).to include(matcher)" do
-  context 'for an array target' do
-    it "passes if target includes an object that satisfies the matcher" do
-      expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"))
-    end
-
-    it "fails if target doesn't include object that satisfies the matcher" do
-      expect {
-        expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
-      }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'abc'|)
-    end
-
-    it 'does not include a diff when the match fails' do
-      expect {
-        expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
-      }.to raise_error { |e|
-        expect(e.message).not_to match(/diff/i)
-      }
-    end
-
-    it 'does not treat an object that only implements #matches? as a matcher' do
-      domain = Struct.new(:domain) do
-        def matches?(url)
-          URI(url).host == self.domain
-        end
-      end
-
-      expect([domain.new("rspec.info")]).to include(domain.new("rspec.info"))
-
-      expect {
-        expect([domain.new("rspec.info")]).to include(domain.new("foo.com"))
-      }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
-    end
-
-    it 'works with an old-style matcher that implements failure_message rather than failure_message' do
-      a_multiple_of = Class.new do
-        def initialize(expected)
-          @expected = expected
-        end
-
-        def matches?(actual)
-          (actual % @expected).zero?
-        end
-
-        def failure_message
-          "expected a multiple of #{@expected}"
-        end
-      end
-
-      # Verify the matcher works normally
-      expect(10).to a_multiple_of.new(5)
-
-      expect {
-        expect(10).to a_multiple_of.new(7)
-      }.to fail_with("expected a multiple of 7")
-
-      expect([12, 13, 14]).to include(a_multiple_of.new(6))
-
-      expect {
-        expect([12, 13, 14]).to include(a_multiple_of.new(10))
-      }.to fail_matching("expected [12, 13, 14] to include")
-    end
-  end
-end
-
-describe "expect(...).to include(multiple, matcher, arguments)" do
-  context 'for an array target' do
-    it "passes if target includes items satisfying all matchers" do
-      expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing('oo'))
-    end
-
-    it "fails if target does not include an item satisfying any one of the items" do
-      expect {
-        expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
-      }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include a string containing 'ar' and a string containing 'abc'|)
-    end
-
-    it 'does not include a diff when the match fails' do
-      expect {
-        expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
-      }.to raise_error { |e|
-        expect(e.message).not_to match(/diff/i)
-      }
-    end
-  end
-end
-
-describe "expect(...).not_to include(multiple, matcher, arguments)" do
-  it "passes if none of the target values satisfies any of the matchers" do
-    expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("gh"), a_string_containing('de'))
-  end
-
-  it 'fails if all of the matchers are satisfied by one of the target values' do
-    expect {
-      expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('az'))
-    }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include a string containing 'ar' and a string containing 'az'|)
-  end
-
-  it 'fails if the some (but not all) of the matchers are satisifed' do
-    expect {
-      expect(['foo', 'bar', 'baz']).not_to include(a_string_containing("ar"), a_string_containing('bz'))
-    }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} not to include a string containing 'ar' and a string containing 'bz'|)
   end
 end
 

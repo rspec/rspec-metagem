@@ -64,7 +64,7 @@ module RSpec
       end
 
       def description_of(object)
-        return object.description if object.respond_to?(:description)
+        return object.description if Matchers.is_a_describable_matcher?(object)
         object.inspect
       end
     end
