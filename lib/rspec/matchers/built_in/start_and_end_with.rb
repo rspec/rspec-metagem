@@ -7,39 +7,48 @@ module RSpec
         end
 
         def matches?(actual)
-          @actual = actual.respond_to?(:[]) ? actual : (raise ArgumentError.new("#{actual.inspect} does not respond to :[]"))
+          @actual = actual
+          raise invalid_actual_object unless actual.respond_to?(:[])
+
           begin
-            @expected.respond_to?(:length) ? subset_matches?(@expected, @actual) : element_matches?(@expected, @actual)
+            return subset_matches? if expected.respond_to?(:length)
+            element_matches?
           rescue ArgumentError
-            raise ArgumentError.new("#{actual.inspect} does not have ordered elements")
+            raise actual_is_unordered
           end
         end
 
-        def failure_message
-          "expected #{@actual.inspect} to #{self.class.name.split('::').last.sub(/With/,'').downcase} with #{@expected.inspect}"
+      private
+
+        def invalid_actual_object
+          ArgumentError.new("#{actual.inspect} does not respond to :[]")
         end
 
-        def failure_message_when_negated
-          "expected #{@actual.inspect} not to #{self.class.name.split('::').last.sub(/With/,'').downcase} with #{@expected.inspect}"
+        def actual_is_unordered
+          ArgumentError.new("#{actual.inspect} does not have ordered elements")
         end
       end
 
       class StartWith < StartAndEndWith
-        def subset_matches?(expected, actual)
+        private
+
+        def subset_matches?
           actual[0, expected.length] == expected
         end
 
-        def element_matches?(expected, actual)
-          @actual[0] == @expected
+        def element_matches?
+          actual[0] == expected
         end
       end
 
       class EndWith < StartAndEndWith
-        def subset_matches?(expected, actual)
+        private
+
+        def subset_matches?
           actual[-expected.length, expected.length] == expected
         end
 
-        def element_matches?(expected, actual)
+        def element_matches?
           actual[-1] == expected
         end
       end

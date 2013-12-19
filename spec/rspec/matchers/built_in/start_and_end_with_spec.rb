@@ -35,7 +35,7 @@ describe "expect(...).to start_with" do
     it "fails if it the first elements of the array do not match" do
       expect {
         expect([0, 1, 2]).to start_with 1, 2
-      }.to fail_with("expected [0, 1, 2] to start with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] to start with 1 and 2")
     end
   end
 
@@ -87,7 +87,7 @@ describe "expect(...).not_to start_with" do
     it "fails if it the first elements of the array match" do
       expect {
         expect([0, 1, 2]).not_to start_with 0, 1
-      }.to fail_with("expected [0, 1, 2] not to start with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] not to start with 0 and 1")
     end
   end
 end
@@ -127,7 +127,7 @@ describe "expect(...).to end_with" do
     it "fails if it the last elements of the array do not match" do
       expect {
         expect([0, 1, 2]).to end_with [0, 1]
-      }.to fail_with("expected [0, 1, 2] to end with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] to end with 0 and 1")
     end
   end
 
@@ -180,7 +180,7 @@ describe "expect(...).not_to end_with" do
     it "fails if it the last elements of the array match" do
       expect {
         expect([0, 1, 2]).not_to end_with [1, 2]
-      }.to fail_with("expected [0, 1, 2] not to end with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] not to end with 1 and 2")
     end
   end
 end
