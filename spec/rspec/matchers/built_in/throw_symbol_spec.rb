@@ -112,5 +112,24 @@ module RSpec::Matchers::BuiltIn
         }.to raise_error(/Boom/)
       end
     end
+
+    describe "composing with other matchers" do
+      it 'passes when the matcher matches the thrown arg' do
+        expect {
+          throw :foo, "bar"
+        }.to throw_symbol(:foo, a_string_matching(/bar/))
+      end
+
+      it 'fails when the matcher does not match the thrown arg' do
+        expect {
+          expect { throw :foo, "bar" }.to throw_symbol(:foo, a_string_matching(/foo/))
+        }.to fail_with('expected :foo with a string matching /foo/ to be thrown, got :foo with "bar"')
+      end
+
+      it 'provides a description' do
+        description = throw_symbol(:foo, a_string_matching(/bar/)).description
+        expect(description).to eq("throw :foo with a string matching /bar/")
+      end
+    end
   end
 end
