@@ -192,9 +192,11 @@ it is a bit confusing.
           expected
         end
 
+        # http://rubular.com/r/KkwGL6s6yZ
+        REGEX = /^(?:(be_(?:an?_)?)(.*))|(an?_\w+_(?:that|who|which)_is_(?:an?_)?)(.*)/
+
         def prefix_and_expected(symbol)
-          symbol.to_s =~ /^(be_(an?_)?)(.*)/
-          return $1, $3
+          REGEX.match(symbol.to_s).captures.compact
         end
 
         def prefix_to_sentence

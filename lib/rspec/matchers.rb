@@ -645,9 +645,12 @@ module RSpec
 
     def method_missing(method, *args, &block)
       case method.to_s
-        when /\Abe_/   then BuiltIn::BePredicate.new(method, *args, &block)
-        when /\Ahave_/ then BuiltIn::Has.new(method, *args, &block)
-        else super
+        when BuiltIn::BePredicate::REGEX
+          BuiltIn::BePredicate.new(method, *args, &block)
+        when /\Ahave_/
+          BuiltIn::Has.new(method, *args, &block)
+        else
+          super
       end
     end
 

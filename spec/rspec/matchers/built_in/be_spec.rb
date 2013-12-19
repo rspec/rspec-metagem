@@ -6,6 +6,20 @@ describe "expect(...).to be_predicate" do
     expect(actual).to be_happy
   end
 
+  it 'supports composable aliases' do
+    actual = double("actual", :happy? => true)
+    expect(actual).to a_user_who_is_happy
+    expect(a_user_who_is_happy.description).to eq("a user who is happy")
+
+    actual = double("actual", :admin? => true)
+    expect(actual).to a_user_who_is_an_admin
+    expect(a_user_who_is_an_admin.description).to eq("a user who is an admin")
+
+    actual = double("actual", :canine? => true)
+    expect(actual).to an_animal_that_is_a_canine
+    expect(an_animal_that_is_a_canine.description).to eq("an animal that is a canine")
+  end
+
   it "passes when actual returns true for :predicates? (present tense)" do
     actual = double("actual", :exists? => true, :exist? => true)
     expect(actual).to be_exist
