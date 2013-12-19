@@ -33,11 +33,11 @@ module RSpec
         private
 
         def subset_matches?
-          actual[0, expected.length] == expected
+          values_match?(expected, actual[0, expected.length])
         end
 
         def element_matches?
-          actual[0] == expected
+          values_match?(expected, actual[0])
         end
       end
 
@@ -45,11 +45,11 @@ module RSpec
         private
 
         def subset_matches?
-          actual[-expected.length, expected.length] == expected
+          values_match?(expected, actual[-expected.length, expected.length])
         end
 
         def element_matches?
-          actual[-1] == expected
+          values_match?(expected, actual[-1])
         end
       end
     end

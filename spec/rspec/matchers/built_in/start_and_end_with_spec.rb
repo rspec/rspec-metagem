@@ -54,6 +54,27 @@ describe "expect(...).to start_with" do
       }.to raise_error(ArgumentError, /does not have ordered elements/)
     end
   end
+
+  describe "composing with other matchers" do
+    it 'passes if the start of an array matches two given matchers' do
+      expect([1.01, "food", 3]).to start_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+    end
+
+    it 'passes if the start of an array matches one given matcher' do
+      expect([1.01, "food", 3]).to start_with(a_value_within(0.2).of(1))
+    end
+
+    it 'provides a description' do
+      description = start_with(a_value_within(0.1).of(1), a_string_matching(/abc/)).description
+      expect(description).to eq("start with a value within 0.1 of 1 and a string matching /abc/")
+    end
+
+    it 'fails with a clear error message when the matchers do not match' do
+      expect {
+        expect([2.01, "food", 3]).to start_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with('expected [2.01, "food", 3] to start with a value within 0.2 of 1 and a string matching /foo/')
+    end
+  end
 end
 
 describe "expect(...).not_to start_with" do
@@ -89,6 +110,16 @@ describe "expect(...).not_to start_with" do
         expect([0, 1, 2]).not_to start_with 0, 1
       }.to fail_with("expected [0, 1, 2] not to start with 0 and 1")
     end
+  end
+
+  it 'can pass when composed with another matcher' do
+    expect(["a"]).not_to start_with(a_string_matching(/bar/))
+  end
+
+  it 'can fail when composed with another matcher' do
+    expect {
+      expect(["a"]).not_to start_with(a_string_matching(/a/))
+    }.to fail_with('expected ["a"] not to start with a string matching /a/')
   end
 end
 
@@ -147,6 +178,26 @@ describe "expect(...).to end_with" do
     end
   end
 
+  describe "composing with other matchers" do
+    it 'passes if the end of an array matches two given matchers' do
+      expect([3, "food", 1.1]).to end_with(a_string_matching(/foo/), a_value_within(0.2).of(1))
+    end
+
+    it 'passes if the end of an array matches one given matcher' do
+      expect([3, "food", 1.1]).to end_with(a_value_within(0.2).of(1))
+    end
+
+    it 'provides a description' do
+      description = end_with(a_value_within(0.1).of(1), a_string_matching(/abc/)).description
+      expect(description).to eq("end with a value within 0.1 of 1 and a string matching /abc/")
+    end
+
+    it 'fails with a clear error message when the matchers do not match' do
+      expect {
+        expect([2.01, 3, "food"]).to end_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with('expected [2.01, 3, "food"] to end with a value within 0.2 of 1 and a string matching /foo/')
+    end
+  end
 end
 
 describe "expect(...).not_to end_with" do
@@ -182,5 +233,15 @@ describe "expect(...).not_to end_with" do
         expect([0, 1, 2]).not_to end_with [1, 2]
       }.to fail_with("expected [0, 1, 2] not to end with 1 and 2")
     end
+  end
+
+  it 'can pass when composed with another matcher' do
+    expect(["a"]).not_to end_with(a_string_matching(/bar/))
+  end
+
+  it 'can fail when composed with another matcher' do
+    expect {
+      expect(["a"]).not_to end_with(a_string_matching(/a/))
+    }.to fail_with('expected ["a"] not to end with a string matching /a/')
   end
 end
