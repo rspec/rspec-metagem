@@ -26,6 +26,7 @@ module RSpec
 
       # So `===` is delegated via `method_missing`.
       undef ===
+      undef ==
     end
   end
 end

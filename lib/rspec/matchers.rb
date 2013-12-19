@@ -215,6 +215,7 @@ module RSpec
       args.empty? ?
         Matchers::BuiltIn::Be.new : equal(*args)
     end
+    alias_matcher :a_value, :be
 
     # passes if target.kind_of?(klass)
     def be_a(klass)

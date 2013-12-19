@@ -45,6 +45,26 @@ module RSpec
     end
 
     specify do
+      expect(a_value > 3).to be_aliased_to(be > 3).with_description("a value > 3")
+    end
+
+    specify do
+      expect(a_value < 3).to be_aliased_to(be < 3).with_description("a value < 3")
+    end
+
+    specify do
+      expect(a_value <= 3).to be_aliased_to(be <= 3).with_description("a value <= 3")
+    end
+
+    specify do
+      expect(a_value == 3).to be_aliased_to(be == 3).with_description("a value == 3")
+    end
+
+    specify do
+      expect(a_value === 3).to be_aliased_to(be === 3).with_description("a value === 3")
+    end
+
+    specify do
       expect(
         a_value_within(0.1).of(3)
       ).to be_aliased_to(
