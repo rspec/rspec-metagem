@@ -36,6 +36,10 @@ module RSpec
     # @api private
     module SupportsMatcherAliases
       def alias_matcher(new_name, old_name, &description_override)
+        description_override ||= lambda do |old_desc|
+          old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
+        end
+
         define_method(new_name) do |*args, &block|
           matcher = __send__(old_name, *args, &block)
           AliasedMatcher.new(matcher, description_override)

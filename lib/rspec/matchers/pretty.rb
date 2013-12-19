@@ -4,6 +4,7 @@ module RSpec
       def split_words(sym)
         sym.to_s.gsub(/_/,' ')
       end
+      module_function :split_words
 
       def to_sentence(words)
         return " #{words.inspect}" unless words

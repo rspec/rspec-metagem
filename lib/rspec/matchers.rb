@@ -255,10 +255,7 @@ module RSpec
     def be_within(delta)
       BuiltIn::BeWithin.new(delta)
     end
-
-    alias_matcher :a_value_within, :be_within do |description|
-      description.gsub("be within", "a value within")
-    end
+    alias_matcher :a_value_within, :be_within
 
     # Applied to a proc, specifies that its execution will cause some value to
     # change.
@@ -432,9 +429,7 @@ module RSpec
     def include(*expected)
       BuiltIn::Include.new(*expected)
     end
-    alias_matcher :a_value_including, :include do |description|
-      description.sub("include", "a value including")
-    end
+    alias_matcher :a_value_including, :include
 
     # Given a Regexp or String, passes if actual.match(pattern)
     #
@@ -450,11 +445,8 @@ module RSpec
     def match(expected)
       BuiltIn::Match.new(expected)
     end
-    alias_method :match_regex, :match
-
-    alias_matcher :a_string_matching, :match do |description|
-      description.sub("match", "a string matching")
-    end
+    alias_method  :match_regex, :match
+    alias_matcher :a_string_matching, :match
 
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
