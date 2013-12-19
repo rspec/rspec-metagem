@@ -175,18 +175,21 @@ module RSpec
     def be_truthy
       BuiltIn::BeTruthy.new
     end
+    alias_matcher :a_truthy_value, :be_truthy
 
-    # Passes if actual is falsy (false or nil)
+    # Passes if actual is falsey (false or nil)
     def be_falsey
       BuiltIn::BeFalsey.new
     end
-
-    alias_method :be_falsy, :be_falsey
+    alias_matcher :be_falsy,       :be_falsey
+    alias_matcher :a_falsey_value, :be_falsey
+    alias_matcher :a_falsy_value,  :be_falsey
 
     # Passes if actual is nil
     def be_nil
       BuiltIn::BeNil.new
     end
+    alias_matcher :a_nil_value, :be_nil
 
     # @example
     #   expect(actual).to     be_truthy
@@ -351,7 +354,8 @@ module RSpec
     # ### Warning:: Ruby >= 1.9 only
     def cover(*values)
       BuiltIn::Cover.new(*values)
-    end if (1..2).respond_to?(:cover?)
+    end
+    alias_matcher :a_range_covering, :cover
 
     # Matches if the actual value ends with the expected value(s). In the case
     # of a string, matches against the last `expected.length` characters of the
@@ -366,6 +370,9 @@ module RSpec
     def end_with(*expected)
       BuiltIn::EndWith.new(*expected)
     end
+    alias_matcher :a_collection_ending_with, :end_with
+    alias_matcher :a_string_ending_with,     :end_with
+    alias_matcher :an_array_ending_with,     :end_with
 
     # Passes if <tt>actual == expected</tt>.
     #
@@ -510,6 +517,9 @@ module RSpec
     def start_with(*expected)
       BuiltIn::StartWith.new(*expected)
     end
+    alias_matcher :a_collection_starting_with, :start_with
+    alias_matcher :a_string_starting_with,     :start_with
+    alias_matcher :an_array_starting_with,     :start_with
 
     # Given no argument, matches if a proc throws any Symbol.
     #
