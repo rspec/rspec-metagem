@@ -267,19 +267,19 @@ module RSpec
 
         def failure_message
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
-            "\nexpected: #{@expected.inspect}" +
-            "\n     got: #{@actual.inspect} (compared using === and ==)"
+            "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+            "\n     got: #{@actual.inspect}"
         end
 
         def failure_message_when_negated
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
-              "\nexpected not: #{@expected.inspect}" +
-              "\n         got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+              "\n         got: #{@actual.inspect}"
         end
 
         def description
           desc = "yield successive args"
-          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")"
+          desc << "(#{expected_arg_description})"
           desc
         end
 
@@ -287,6 +287,10 @@ module RSpec
 
         def args_match?
           values_match?(@expected, @actual)
+        end
+
+        def expected_arg_description
+          @expected.map { |e| description_of e }.join(", ")
         end
       end
     end

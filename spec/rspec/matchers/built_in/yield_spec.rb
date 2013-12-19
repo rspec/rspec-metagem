@@ -531,6 +531,31 @@ describe "yield_successive_args matcher" do
     end
   end
 
+  describe "expect {...}.to yield_successive_args(matcher, matcher)" do
+    it 'passes when the successively yielded args match the matchers' do
+      expect { |b|
+        %w[ food barn ].each(&b)
+      }.to yield_successive_args(a_string_matching(/foo/), a_string_matching(/bar/))
+    end
+
+    it 'fails when the successively yielded args do not match the matchers' do
+      expect {
+        expect { |b|
+          %w[ barn food ].each(&b)
+        }.to yield_successive_args(a_string_matching(/foo/), a_string_matching(/bar/))
+      }.to fail_with(dedent <<-EOS)
+        |expected given block to yield successively with arguments, but yielded with unexpected arguments
+        |expected: [(a string matching /foo/), (a string matching /bar/)]
+        |     got: ["barn", "food"]
+      EOS
+    end
+
+    it 'provides a description' do
+      description = yield_successive_args(a_string_matching(/foo/), a_string_matching(/bar/)).description
+      expect(description).to eq("yield successive args(a string matching /foo/, a string matching /bar/)")
+    end
+  end
+
   describe "expect {...}.not_to yield_successive_args(1, 2, 3)" do
     it 'passes when the block does not yield' do
       expect { |b| _dont_yield(&b) }.not_to yield_successive_args(1, 2, 3)
@@ -560,6 +585,26 @@ describe "yield_successive_args matcher" do
       expect {
         expect { |b| }.not_to yield_successive_args(1, 2, 3)
       }.to raise_error(/must pass the argument.*as a block/)
+    end
+  end
+
+  describe "expect {...}.not_to yield_successive_args(matcher, matcher)" do
+    it 'passes when the successively yielded args match the matchers' do
+      expect { |b|
+        %w[ barn food ].each(&b)
+      }.not_to yield_successive_args(a_string_matching(/foo/), a_string_matching(/bar/))
+    end
+
+    it 'fails when the successively yielded args do not match the matchers' do
+      expect {
+        expect { |b|
+          %w[ food barn ].each(&b)
+        }.not_to yield_successive_args(a_string_matching(/foo/), a_string_matching(/bar/))
+      }.to fail_with(dedent <<-EOS)
+        |expected given block not to yield successively with arguments, but yielded with expected arguments
+        |expected not: [(a string matching /foo/), (a string matching /bar/)]
+        |         got: ["food", "barn"]
+      EOS
     end
   end
 
