@@ -341,6 +341,11 @@ describe "expect(...).to be <" do
   it "describes itself" do
     expect(be.<(4).description).to eq "be < 4"
   end
+
+  it 'does not lie and say that it is equal to a number' do
+    matcher = (be < 3)
+    expect(5 == matcher).to be false
+  end
 end
 
 describe "expect(...).to be <=" do

@@ -95,10 +95,12 @@ module RSpec
         end
       end
 
-      class BeComparedTo < Be
+      class BeComparedTo < BaseMatcher
+        include BeHelpers
+
         def initialize(operand, operator)
           @expected, @operator = operand, operator
-            @args = []
+          @args = []
         end
 
         def matches?(actual)

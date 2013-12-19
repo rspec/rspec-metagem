@@ -448,6 +448,14 @@ describe "#include matcher" do
         }
       end
 
+      it 'works with comparison matchers' do
+        expect {
+          expect([100, 200]).to include(a_value < 90)
+        }.to fail_with("expected [100, 200] to include (a value < 90)")
+
+        expect([100, 200]).to include(a_value > 150)
+      end
+
       it 'does not treat an object that only implements #matches? as a matcher' do
         domain = Struct.new(:domain) do
           def matches?(url)
