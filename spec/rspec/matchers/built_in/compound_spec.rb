@@ -261,9 +261,5 @@ module RSpec::Matchers::BuiltIn
         }.to raise_error(NotImplementedError, /matcher.or matcher` is not supported/)
       end
     end
-
-    def dedent(string)
-      string.gsub(/^\s+\|/, '').chomp
-    end
   end
 end

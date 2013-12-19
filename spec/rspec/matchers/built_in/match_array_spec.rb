@@ -192,3 +192,77 @@ describe "matching against things that aren't arrays" do
   end
 end
 
+describe "Composing `match_array` with other matchers" do
+  describe "expect(...).to match_array([matcher, matcher])" do
+    it 'passes when the array matches the matchers in the same order' do
+      expect(["food", "barn"]).to match_array([
+        a_string_matching(/foo/),
+        a_string_matching(/bar/)
+      ])
+    end
+
+    it 'passes when the array matches the matchers in a different order' do
+      expect(["food", "barn"]).to match_array([
+        a_string_matching(/bar/),
+        a_string_matching(/foo/)
+      ])
+    end
+
+    it 'fails with a useful message when there is an extra element' do
+      expect {
+        expect(["food", "barn", "goo"]).to match_array([
+          a_string_matching(/bar/),
+          a_string_matching(/foo/)
+        ])
+      }.to fail_with(dedent <<-EOS)
+        |expected collection contained:  [(a string matching /bar/), (a string matching /foo/)]
+        |actual collection contained:    ["barn", "food", "goo"]
+        |the extra elements were:        ["goo"]
+        |
+      EOS
+    end
+
+    it 'fails with a useful message when there is a missing element' do
+      expect {
+        expect(["food", "barn"]).to match_array([
+          a_string_matching(/bar/),
+          a_string_matching(/foo/),
+          a_string_matching(/goo/)
+        ])
+      }.to fail_with(dedent <<-EOS)
+        |expected collection contained:  [(a string matching /bar/), (a string matching /foo/), (a string matching /goo/)]
+        |actual collection contained:    ["barn", "food"]
+        |the missing elements were:      [(a string matching /goo/)]
+        |
+      EOS
+    end
+
+    it 'provides a description' do
+      description = match_array([a_string_matching(/bar/), a_string_matching(/foo/)]).description
+      expect(description).to eq("contain exactly (a string matching /bar/) and (a string matching /foo/)")
+    end
+
+    context 'when an earlier matcher matches more strictly than a later matcher' do
+      it 'works when the actual items match in the same order' do
+        expect(["food", "fool"]).to match_array([a_string_matching(/foo/), a_string_matching(/fool/)])
+      end
+
+      it 'works when the actual items match in reverse order' do
+        pending "need to figure out a matching algorithm that works for this case" do
+          expect(["fool", "food"]).to match_array([a_string_matching(/foo/), a_string_matching(/fool/)])
+        end
+      end
+    end
+
+    context 'when a later matcher matches more strictly than an earlier matcher' do
+      it 'works when the actual items match in the same order' do
+        expect(["fool", "food"]).to match_array([a_string_matching(/fool/), a_string_matching(/foo/)])
+      end
+
+      it 'works when the actual items match in reverse order' do
+        expect(["food", "fool"]).to match_array([a_string_matching(/fool/), a_string_matching(/foo/)])
+      end
+    end
+  end
+end
+

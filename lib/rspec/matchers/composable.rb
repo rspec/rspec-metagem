@@ -67,6 +67,41 @@ module RSpec
         return object.description if Matchers.is_a_describable_matcher?(object)
         object.inspect
       end
+
+      def surface_descriptions_in(items)
+        return Hash[ surface_descriptions_in(items.to_a) ] if items.is_a?(Hash)
+
+        items.map do |item|
+          if Matchers.is_a_describable_matcher?(item)
+            DescribableItem.new(item)
+          elsif enumerable?(item)
+            surface_descriptions_in(item)
+          else
+            item
+          end
+        end
+      end
+
+      if String.ancestors.include?(Enumerable) # 1.8.7
+        # Strings are not enumerable on 1.9, and on 1.8 they are an infinitely
+        # nested enumerable: since ruby lacks a character class, it yields
+        # 1-character strings, which are themselves enumerable, composed of a
+        # a single 1-character string, which is an enumerable, etc.
+        def enumerable?(item)
+          return false if String === item
+          Enumerable === item
+        end
+      else
+        def enumerable?(item)
+          Enumerable === item
+        end
+      end
+
+      DescribableItem = Struct.new(:item) do
+        def inspect
+          "(#{item.description})"
+        end
+      end
     end
   end
 end
