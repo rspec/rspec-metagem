@@ -145,7 +145,6 @@ it is a bit confusing.
           begin
             return @result = actual.__send__(predicate, *@args, &@block)
           rescue NameError => predicate_missing_error
-            "this needs to be here or rcov will not count this branch even though it's executed in a code example"
           end
 
           begin
