@@ -362,6 +362,31 @@ describe "yield_with_args matcher" do
     end
   end
 
+  describe "expect {...}.to yield_with_args(matcher, matcher)" do
+    it 'passes when the matchers match the args' do
+      expect { |b|
+        _yield_with_args(1.1, "food", &b)
+      }.to yield_with_args(a_value_within(0.2).of(1), a_string_matching(/foo/))
+    end
+
+    it 'provides a description' do
+      description = yield_with_args(a_value_within(0.2).of(1), a_string_matching(/foo/)).description
+      expect(description).to eq("yield with args(a value within 0.2 of 1, a string matching /foo/)")
+    end
+
+    it 'fails with a useful error message when the matchers do not match the args' do
+      expect {
+        expect { |b|
+          _yield_with_args(2.1, "food", &b)
+        }.to yield_with_args(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with(dedent <<-EOS)
+        |expected given block to yield with arguments, but yielded with unexpected arguments
+        |expected: [(a value within 0.2 of 1), (a string matching /foo/)]
+        |     got: [2.1, "food"]
+      EOS
+    end
+  end
+
   describe "expect {...}.not_to yield_with_args(3, 17)" do
     it 'passes if the block yields with different arguments' do
       expect { |b| _yield_with_args("a", "b", &b) }.not_to yield_with_args("a", "c")
@@ -371,6 +396,26 @@ describe "yield_with_args matcher" do
       expect {
         expect { |b| _yield_with_args("a", "b", &b) }.not_to yield_with_args("a", "b")
       }.to fail_with(/expected given block not to yield with arguments, but yielded with expected arguments/)
+    end
+  end
+
+  describe "expect {...}.not_to yield_with_args(matcher, matcher)" do
+    it 'passes when the matchers do not match the args' do
+      expect { |b|
+        _yield_with_args(2.1, "food", &b)
+      }.not_to yield_with_args(a_value_within(0.2).of(1), a_string_matching(/foo/))
+    end
+
+    it 'fails with a useful error message when the matchers do not match the args' do
+      expect {
+        expect { |b|
+          _yield_with_args(1.1, "food", &b)
+        }.not_to yield_with_args(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with(dedent <<-EOS)
+        |expected given block not to yield with arguments, but yielded with expected arguments
+        |expected not: [(a value within 0.2 of 1), (a string matching /foo/)]
+        |         got: [1.1, "food"]
+      EOS
     end
   end
 

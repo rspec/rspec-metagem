@@ -204,7 +204,7 @@ module RSpec
 
         def description
           desc = "yield with args"
-          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")" unless @expected.empty?
+          desc << "(#{expected_arg_description})" unless @expected.empty?
           desc
         end
 
@@ -218,11 +218,15 @@ module RSpec
           end
         end
 
+        def expected_arg_description
+          @expected.map { |e| description_of e }.join(", ")
+        end
+
         def negative_failure_reason
           if all_args_match?
             "yielded with expected arguments" +
-              "\nexpected not: #{@expected.inspect}" +
-              "\n         got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+              "\n         got: #{@actual.inspect}"
           else
             "did"
           end
@@ -236,8 +240,8 @@ module RSpec
 
           unless match = all_args_match?
             @positive_args_failure = "yielded with unexpected arguments" +
-              "\nexpected: #{@expected.inspect}" +
-              "\n     got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+              "\n     got: #{@actual.inspect}"
           end
 
           match
