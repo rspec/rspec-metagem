@@ -57,6 +57,16 @@ describe "expect(...).to have_sym(*args)" do
       expect(o).to have_sym(:foo)
     }.to raise_error("Funky exception")
   end
+
+  it 'supports composable aliases' do
+    o = Object.new
+    def o.has_sym?(sym); sym == :foo; end
+
+    expect(o).to an_object_having_sym(:foo)
+    expect(o).not_to an_object_having_sym(:bar)
+
+    expect(an_object_having_sym(:foo).description).to eq("an object having sym :foo")
+  end
 end
 
 describe "expect(...).not_to have_sym(*args)" do

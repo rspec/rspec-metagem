@@ -702,7 +702,7 @@ module RSpec
       case method.to_s
         when BuiltIn::BePredicate::REGEX
           BuiltIn::BePredicate.new(method, *args, &block)
-        when /\Ahave_/
+        when BuiltIn::Has::REGEX
           BuiltIn::Has.new(method, *args, &block)
         else
           super
