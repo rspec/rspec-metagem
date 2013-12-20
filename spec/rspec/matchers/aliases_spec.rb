@@ -208,6 +208,22 @@ module RSpec
 
     specify do
       expect(
+        an_object_matching(/foo/)
+      ).to be_aliased_to(
+        match(/foo/)
+      ).with_description('an object matching /foo/')
+    end
+
+    specify do
+      expect(
+        match_regex(/foo/)
+      ).to be_aliased_to(
+        match(/foo/)
+      ).with_description('match regex /foo/')
+    end
+
+    specify do
+      expect(
         an_array_matching([1, 2])
       ).to be_aliased_to(
         match_array([1, 2])

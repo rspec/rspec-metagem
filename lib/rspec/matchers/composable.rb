@@ -68,17 +68,15 @@ module RSpec
         object.inspect
       end
 
-      def surface_descriptions_in(items)
-        return Hash[ surface_descriptions_in(items.to_a) ] if items.is_a?(Hash)
-
-        items.map do |item|
-          if Matchers.is_a_describable_matcher?(item)
-            DescribableItem.new(item)
-          elsif enumerable?(item)
-            surface_descriptions_in(item)
-          else
-            item
-          end
+      def surface_descriptions_in(item)
+        if Matchers.is_a_describable_matcher?(item)
+          DescribableItem.new(item)
+        elsif Hash === item
+          Hash[ surface_descriptions_in(item.to_a) ]
+        elsif enumerable?(item)
+          item.map { |subitem| surface_descriptions_in(subitem) }
+        else
+          item
         end
       end
 

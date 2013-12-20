@@ -43,6 +43,22 @@ describe "expect(...).to match(expected)" do
     expect { expect("foo").to match(/bar/) }.to fail_with(failure_message_that_includes_diff)
   end
 
+  context "when passed a data structure with matchers" do
+    it 'passes when the matchers match' do
+      expect(["food", 1.1]).to match([ a_string_matching(/foo/), a_value_within(0.2).of(1) ])
+    end
+
+    it 'fails when the matchers do not match' do
+      expect {
+        expect(["fod", 1.1]).to match([ a_string_matching(/foo/), a_value_within(0.2).of(1) ])
+      }.to fail_with('expected ["fod", 1.1] to match [(a string matching /foo/), (a value within 0.2 of 1)]')
+    end
+
+    it 'provides a description' do
+      description = match([ a_string_matching(/foo/), a_value_within(0.2).of(1) ]).description
+      expect(description).to eq("match [(a string matching /foo/), (a value within 0.2 of 1)]")
+    end
+  end
 end
 
 describe "expect(...).not_to match(expected)" do
@@ -70,5 +86,17 @@ describe "expect(...).not_to match(expected)" do
     matcher = match(/tri/)
     matcher.matches?("string")
     expect(matcher.failure_message_when_negated).to eq "expected \"string\" not to match /tri/"
+  end
+
+  context "when passed a data structure with matchers" do
+    it 'passes when the matchers match' do
+      expect(["food", 1.1]).not_to match([ a_string_matching(/fod/), a_value_within(0.2).of(1) ])
+    end
+
+    it 'fails when the matchers do not match' do
+      expect {
+        expect(["fod", 1.1]).not_to match([ a_string_matching(/fod/), a_value_within(0.2).of(1) ])
+      }.to fail_with('expected ["fod", 1.1] not to match [(a string matching /fod/), (a value within 0.2 of 1)]')
+    end
   end
 end

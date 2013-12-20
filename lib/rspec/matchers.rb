@@ -464,8 +464,9 @@ module RSpec
     def match(expected)
       BuiltIn::Match.new(expected)
     end
-    alias_method  :match_regex, :match
-    alias_matcher :a_string_matching, :match
+    alias_matcher :match_regex,        :match
+    alias_matcher :an_object_matching, :match
+    alias_matcher :a_string_matching,  :match
 
     # Passes if actual contains all of the expected regardless of order.
     # This works for collections. Pass in multiple args and it will only
