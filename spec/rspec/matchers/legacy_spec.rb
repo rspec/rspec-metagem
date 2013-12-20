@@ -57,7 +57,14 @@ module RSpec
             }.to fail_with("failure when negative")
           end
 
+          def pending_on_rbx
+            return unless defined?(RUBY_ENGINE) && RUBY_ENGINE == 'rbx'
+            pending "intermittently fails on RBX due to https://github.com/rubinius/rubinius/issues/2845"
+          end
+
           it 'calls `does_not_match?` if it is defined on the matcher' do
+            pending_on_rbx
+
             called = false
             with_does_not_match = Class.new(matcher_class) do
               define_method(:does_not_match?) { |actual| called = true; !actual }
