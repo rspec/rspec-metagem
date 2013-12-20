@@ -427,35 +427,35 @@ describe "Composing matchers with `raise_error`" do
 
   describe "expect { }.to raise_error(ErrorClass, matcher)" do
     it 'passes when the class and matcher match the raised error' do
-      expect { raise FooError, "food" }.to raise_error(FooError, a_value_including("foo"))
+      expect { raise FooError, "food" }.to raise_error(FooError, a_string_including("foo"))
     end
 
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
-        expect { raise FooError, "food" }.to raise_error(FooError, a_value_including("bar"))
-      }.to fail_matching('expected FooError with a value including "bar", got #<FooError: food')
+        expect { raise FooError, "food" }.to raise_error(FooError, a_string_including("bar"))
+      }.to fail_matching('expected FooError with a string including "bar", got #<FooError: food')
     end
 
     it 'provides a description' do
-      description = raise_error(FooError, a_value_including("foo")).description
-      expect(description).to eq('raise FooError with a value including "foo"')
+      description = raise_error(FooError, a_string_including("foo")).description
+      expect(description).to eq('raise FooError with a string including "foo"')
     end
   end
 
   describe "expect { }.to raise_error(ErrorClass).with_message(matcher)" do
     it 'passes when the class and matcher match the raised error' do
-      expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_value_including("foo"))
+      expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_string_including("foo"))
     end
 
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
-        expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_value_including("bar"))
-      }.to fail_matching('expected FooError with a value including "bar", got #<FooError: food')
+        expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_string_including("bar"))
+      }.to fail_matching('expected FooError with a string including "bar", got #<FooError: food')
     end
 
     it 'provides a description' do
-      description = raise_error(FooError).with_message(a_value_including("foo")).description
-      expect(description).to eq('raise FooError with a value including "foo"')
+      description = raise_error(FooError).with_message(a_string_including("foo")).description
+      expect(description).to eq('raise FooError with a string including "foo"')
     end
   end
 end
