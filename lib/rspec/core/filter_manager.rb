@@ -102,8 +102,16 @@ module RSpec
 
         private
 
-        def without_conditional_filters
-          reject {|k,v| CONDITIONAL_FILTERS[k] == v}
+        if RUBY_VERSION.to_f < 2.1
+          def without_conditional_filters
+            # On 1.8.7, Hash#reject returns a hash but Hash#select returns an array.
+            reject {|k,v| CONDITIONAL_FILTERS[k] == v}
+          end
+        else
+          def without_conditional_filters
+            # On ruby 2.1 #reject on a subclass of Hash emits warnings, but #select does not.
+            select {|k,v| CONDITIONAL_FILTERS[k] != v}
+          end
         end
       end
 
