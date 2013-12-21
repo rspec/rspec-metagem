@@ -103,7 +103,8 @@ module RSpec
         private
 
         def without_conditional_filters
-          reject {|k,v| CONDITIONAL_FILTERS[k] == v}
+          # On ruby 2.1 #reject on a subclass of Hash emits warnings, but #select does not.
+          select {|k,v| CONDITIONAL_FILTERS[k] != v}
         end
       end
 
