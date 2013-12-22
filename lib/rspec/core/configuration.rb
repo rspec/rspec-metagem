@@ -664,7 +664,7 @@ module RSpec
       end
 
       def alias_example_group_to(new_name, *args)
-        extra_options = build_metadata_hash_from(args)
+        extra_options = Metadata.build_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_group_to(new_name, extra_options)
       end
 
