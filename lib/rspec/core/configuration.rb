@@ -666,6 +666,7 @@ module RSpec
       def alias_example_group_to(new_name, *args)
         extra_options = Metadata.build_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_group_to(new_name, extra_options)
+        RSpec::Core::DSL.expose_example_group_alias(new_name)
       end
 
       # Define an alias for it_should_behave_like that allows different

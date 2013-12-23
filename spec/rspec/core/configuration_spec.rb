@@ -1283,6 +1283,14 @@ module RSpec::Core
 
     describe "#alias_example_group_to" do
       after do
+        RSpec::Core::DSL.example_group_aliases.delete(:my_group_method)
+
+        RSpec.module_eval do
+          class << self
+            undef :my_group_method if method_defined? :my_group_method
+          end
+        end
+
         RSpec::Core::ExampleGroup.module_eval do
           class << self
             undef :my_group_method if method_defined? :my_group_method

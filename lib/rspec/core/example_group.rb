@@ -125,10 +125,10 @@ module RSpec
         end
 
         def alias_example_group_to(name, metadata={})
-          define_singleton_method(name) do |*args, &block|
+          (class << self; self; end).send(:define_method, name) do |*args, &block|
             combined_metadata = metadata.dup
-            combined_metadata.merge!(args.delete_at(-1)) if args.last.is_a? Hash
-            describe(*args, combined_metadata, &block)
+            combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+            example_group(*args, combined_metadata, &block)
           end
         end
 
@@ -138,7 +138,7 @@ module RSpec
         #   @see SharedExampleGroup
         def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
           define_method(new_name) do |name, *args, &customization_block|
-            group = describe("#{report_label} #{name}") do
+            group = example_group("#{report_label} #{name}") do
               find_and_eval_shared("examples", name, *args, &customization_block)
             end
             group.metadata[:shared_group_name] = name
@@ -226,7 +226,7 @@ module RSpec
       #
       #     describe "something" do # << This describe method is defined in
       #                             # << RSpec::Core::DSL, included in the
-      #                             # << global namespace
+      #                             # << global namespace (optional)
       #       before do
       #         do_something_before
       #       end
