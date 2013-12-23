@@ -21,7 +21,7 @@ module RSpec::Core
 
           it "generates a .rspec" do
             command_line_config.run
-            expect(File.read('.rspec')).to match(/--color\n--format progress/m)
+            expect(File.read('.rspec')).to match(/--color/m)
           end
         end
 
@@ -66,39 +66,6 @@ module RSpec::Core
             command_line_config.run
             expect(File.read('spec/spec_helper.rb')).to eq(random_content)
           end
-        end
-
-        context "with lib/tasks/rspec.rake" do
-          before do
-            FileUtils.mkdir_p('lib/tasks')
-            FileUtils.touch 'lib/tasks/rspec.rake'
-          end
-
-          it "asks whether to delete the file" do
-            expect(command_line_config).to receive(:puts).with(/delete/)
-            command_line_config.run
-          end
-
-          it "removes it if confirmed" do
-            allow(command_line_config).to receive_messages(:gets => 'yes')
-            command_line_config.run
-            expect(File.exist?('lib/tasks/rspec.rake')).to be_falsey
-          end
-
-          it "leaves it if not confirmed" do
-            allow(command_line_config).to receive_messages(:gets => 'no')
-            command_line_config.run
-            expect(File.exist?('lib/tasks/rspec.rake')).to be_truthy
-          end
-        end
-      end
-
-      context "given an arg" do
-        it "warns if arg received (no longer necessary)" do
-          config = ProjectInitializer.new("another_arg")
-          allow(config).to receive(:puts)
-          allow(config).to receive_messages(:gets => 'no')
-          config.run
         end
       end
     end

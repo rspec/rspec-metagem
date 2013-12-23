@@ -100,7 +100,7 @@ module RSpec::Core
 
         parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
           require 'rspec/core/project_initializer'
-          ProjectInitializer.new(cmd).run
+          ProjectInitializer.new.run
           exit
         end
 
