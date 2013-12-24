@@ -343,6 +343,28 @@ module RSpec
     alias_matcher :a_lambda_changing, :change
     alias_matcher :a_proc_changing,   :change
 
+    # Passes if actual contains all of the expected regardless of order.
+    # This works for collections. Pass in multiple args and it will only
+    # pass if all args are found in collection.
+    #
+    # @note This is also available using the `=~` operator with `should`,
+    #       but `=~` is not supported with `expect`.
+    #
+    # @note This matcher only supports positive expectations.
+    #       `expect(...).not_to contain_exactly(other_array)` is not supported.
+    #
+    # @example
+    #
+    #   expect([1, 2, 3]).to contain_exactly(1, 2, 3)
+    #   expect([1, 2, 3]).to contain_exactly(1, 3, 2)
+    #
+    # @see #match_array
+    def contain_exactly(*items)
+      BuiltIn::ContainExactly.new(items)
+    end
+    alias_matcher :a_collection_containing_exactly, :contain_exactly
+    alias_matcher :an_array_containing_exactly, :contain_exactly
+
     # Passes if actual covers expected. This works for
     # Ranges. You can also pass in multiple args
     # and it will only pass if all args are found in Range.
@@ -468,28 +490,19 @@ module RSpec
     alias_matcher :an_object_matching, :match
     alias_matcher :a_string_matching,  :match
 
-    # Passes if actual contains all of the expected regardless of order.
-    # This works for collections. Pass in multiple args and it will only
-    # pass if all args are found in collection.
-    #
-    # @note This is also available using the `=~` operator with `should`,
-    #       but `=~` is not supported with `expect`.
-    #
-    # @note This matcher only supports positive expectations.
-    #       expect(..).not_to match_array(other_array) is not supported.
+    # An alternate form of `contain_exactly` that accepts
+    # the expected contents as a single array arg rather
+    # that splatted out as individual items.
     #
     # @example
     #
-    #   expect([1,2,3]).to match_array([1,2,3])
-    #   expect([1,2,3]).to match_array([1,3,2])
-    def match_array(array)
-      BuiltIn::MatchArray.new(array)
-    end
-    alias_matcher :an_array_matching, :match_array do |desc|
-      desc.sub("contain", "an array containing")
-    end
-    alias_matcher :a_collection_matching, :match_array do |desc|
-      desc.sub("contain", "a collection containing")
+    #   expect(results).to contain_exactly(1, 2)
+    #   # is identical to:
+    #   expect(results).to match_array([1, 2])
+    #
+    # @see #contain_exactly
+    def match_array(items)
+      contain_exactly(*items)
     end
 
     # With no args, matches if any error is raised.

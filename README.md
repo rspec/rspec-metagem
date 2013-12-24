@@ -71,7 +71,6 @@ expect(actual).to be >= expected
 expect(actual).to be <= expected
 expect(actual).to be <  expected
 expect(actual).to be_within(delta).of(expected)
-expect(array).to match_array(expected)
 ```
 
 ### Regular expressions
@@ -152,21 +151,27 @@ expect(1..10).to cover(3)
 expect(actual).to include(expected)
 expect(actual).to start_with(expected)
 expect(actual).to end_with(expected)
+
+expect(actual).to contain_exactly(individual, items)
+# ...which is the same as:
+expect(actual).to match_array(expected_array)
 ```
 
 #### Examples
 
 ```ruby
-expect([1,2,3]).to include(1)
-expect([1,2,3]).to include(1, 2)
-expect([1,2,3]).to start_with(1)
-expect([1,2,3]).to start_with(1,2)
-expect([1,2,3]).to end_with(3)
-expect([1,2,3]).to end_with(2,3)
+expect([1, 2, 3]).to include(1)
+expect([1, 2, 3]).to include(1, 2)
+expect([1, 2, 3]).to start_with(1)
+expect([1, 2, 3]).to start_with(1, 2)
+expect([1, 2, 3]).to end_with(3)
+expect([1, 2, 3]).to end_with(2, 3)
 expect({:a => 'b'}).to include(:a => 'b')
 expect("this string").to include("is str")
 expect("this string").to start_with("this")
 expect("this string").to end_with("ring")
+expect([1, 2, 3]).to contain_exactly(2, 3, 1)
+expect([1, 2, 3]).to match_array([3, 2, 1])
 ```
 
 ## `should` syntax

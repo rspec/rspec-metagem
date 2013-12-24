@@ -26,7 +26,7 @@ module RSpec
           end
         end
 
-        register Enumerable, '=~', BuiltIn::MatchArray
+        register Enumerable, '=~', BuiltIn::ContainExactly
 
         def initialize(actual)
           @actual = actual

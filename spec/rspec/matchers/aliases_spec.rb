@@ -102,6 +102,22 @@ module RSpec
 
     specify do
       expect(
+        an_array_containing_exactly(1, 2)
+      ).to be_aliased_to(
+        contain_exactly(1, 2)
+      ).with_description("an array containing exactly 1 and 2")
+    end
+
+    specify do
+      expect(
+        a_collection_containing_exactly(1, 2)
+      ).to be_aliased_to(
+        contain_exactly(1, 2)
+      ).with_description("a collection containing exactly 1 and 2")
+    end
+
+    specify do
+      expect(
         a_range_covering(1, 2)
       ).to be_aliased_to(
         cover(1, 2)
@@ -220,22 +236,6 @@ module RSpec
       ).to be_aliased_to(
         match(/foo/)
       ).with_description('match regex /foo/')
-    end
-
-    specify do
-      expect(
-        an_array_matching([1, 2])
-      ).to be_aliased_to(
-        match_array([1, 2])
-      ).with_description("an array containing exactly 1 and 2")
-    end
-
-    specify do
-      expect(
-        a_collection_matching([1, 2])
-      ).to be_aliased_to(
-        match_array([1, 2])
-      ).with_description("a collection containing exactly 1 and 2")
     end
 
     specify do

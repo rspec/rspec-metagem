@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     module BuiltIn
-      class MatchArray < BaseMatcher
+      class ContainExactly < BaseMatcher
         def match(expected, actual)
           return false unless actual.respond_to? :to_ary
 
@@ -30,7 +30,7 @@ module RSpec
         end
 
         def failure_message_when_negated
-          "`match_array` does not support negation"
+          "`contain_exactly` does not support negation"
         end
 
         def description
