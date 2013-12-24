@@ -4,24 +4,15 @@ module RSpec
       class ContainExactly < BaseMatcher
         def match(expected, actual)
           return false unless actual.respond_to? :to_ary
-
-          @extra_items = difference_between_arrays(actual, expected) do |a, e|
-            values_match?(e, a)
-          end
-
-          @missing_items = difference_between_arrays(expected, actual) do |e, a|
-            values_match?(e, a)
-          end
-
-          @extra_items.empty? & @missing_items.empty?
+          extra_items.empty? && missing_items.empty?
         end
 
         def failure_message
           if actual.respond_to? :to_ary
             message =  "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
             message += "actual collection contained:    #{safe_sort(actual).inspect}\n"
-            message += "the missing elements were:      #{safe_sort(surface_descriptions_in @missing_items).inspect}\n" unless @missing_items.empty?
-            message += "the extra elements were:        #{safe_sort(@extra_items).inspect}\n"   unless @extra_items.empty?
+            message += "the missing elements were:      #{safe_sort(surface_descriptions_in missing_items).inspect}\n" unless missing_items.empty?
+            message += "the extra elements were:        #{safe_sort(extra_items).inspect}\n" unless extra_items.empty?
           else
             message = "expected an array, actual collection was #{actual.inspect}"
           end
@@ -37,22 +28,147 @@ module RSpec
           "contain exactly #{_pretty_print(surface_descriptions_in expected)}"
         end
 
-        private
+      private
 
         def safe_sort(array)
           array.sort rescue array
         end
 
-        def difference_between_arrays(array_1, array_2)
-          remaining = array_1.to_ary.dup
+        def missing_items
+          @missing_items ||= best_solution.unmatched_expected_indexes.map do |index|
+            expected[index]
+          end
+        end
 
-          array_2.to_ary.each do |e2|
-            if index = remaining.index { |e1| yield e1, e2 }
-              remaining.delete_at(index)
+        def extra_items
+          @extra_items ||= best_solution.unmatched_actual_indexes.map do |index|
+            actual[index]
+          end
+        end
+
+        def best_solution
+          @best_solution ||= pairings_maximizer.find_best_solution
+        end
+
+        def pairings_maximizer
+          @pairings_maximizer ||= begin
+            expected_matches = Array.new(expected.count) { [] }
+            actual_matches   = Array.new(actual.count)   { [] }
+
+            expected.each_with_index do |e, ei|
+              actual.each_with_index do |a, ai|
+                if values_match?(e, a)
+                  expected_matches[ei] << ai
+                  actual_matches[ai] << ei
+                end
+              end
+            end
+
+            PairingsMaximizer.new(expected_matches, actual_matches)
+          end
+        end
+
+        class PairingsMaximizer
+          attr_reader :expected_to_actual_matched_indexes,
+                      :actual_to_expected_matched_indexes,
+                      :unmatched_expected_indexes,
+                      :unmatched_actual_indexes,
+                      :indeterminite_expected_indexes,
+                      :indeterminite_actual_indexes
+
+          def initialize(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
+            @expected_to_actual_matched_indexes = expected_to_actual_matched_indexes
+            @actual_to_expected_matched_indexes = actual_to_expected_matched_indexes
+
+            categorize_indexes(expected_to_actual_matched_indexes,
+                               actual_to_expected_matched_indexes,
+                               @unmatched_expected_indexes     = [],
+                               @indeterminite_expected_indexes = [])
+
+            categorize_indexes(actual_to_expected_matched_indexes,
+                               expected_to_actual_matched_indexes,
+                               @unmatched_actual_indexes     = [],
+                               @indeterminite_actual_indexes = [])
+          end
+
+          def find_best_solution
+            return self if candidate_result?
+            best_solution_so_far = NullSolution
+
+            indeterminite_expected_indexes.each do |index|
+              matches = expected_to_actual_matched_indexes[index]
+
+              matches.each do |match|
+                result = try_pairing(index, match)
+                return result if result.ideal_result?
+                best_solution_so_far = result if result.better_candidate_than?(best_solution_so_far)
+              end
+            end
+
+            best_solution_so_far
+          end
+
+          def better_candidate_than?(other)
+            return false unless candidate_result?
+            unmatched_item_count < other.unmatched_item_count
+          end
+
+          NullSolution = Class.new do
+            INFINITY = 1 / 0.0
+            def self.unmatched_item_count; INFINITY; end
+          end
+
+          # A result is only a candidate solution if there are no
+          # expected or actual items that are indeterminite.
+          def candidate_result?
+            indeterminite_expected_indexes.empty? &&
+            indeterminite_actual_indexes.empty?
+          end
+
+          def ideal_result?
+            candidate_result? && (
+              unmatched_expected_indexes.empty? ||
+              unmatched_actual_indexes.empty?
+            )
+          end
+
+          def unmatched_item_count
+            unmatched_expected_indexes.count + unmatched_actual_indexes.count
+          end
+
+        private
+
+          def categorize_indexes(indexes_to_categorize, other_indexes, unmatched, indeterminite)
+            indexes_to_categorize.each_with_index do |matches, index|
+              if matches.empty?
+                unmatched << index
+              elsif !reciprocal_single_match?(matches, index, other_indexes)
+                indeterminite << index
+              end
             end
           end
 
-          remaining
+          def reciprocal_single_match?(matches, index, other_list)
+            return false unless matches.one?
+            other_list[matches.first] == [index]
+          end
+
+          def try_pairing(expected_index, actual_index)
+            modified_expecteds = apply_pairing_to(expected_to_actual_matched_indexes, expected_index, actual_index)
+            modified_actuals   = apply_pairing_to(actual_to_expected_matched_indexes, actual_index, expected_index)
+
+            self.class.new(modified_expecteds, modified_actuals).find_best_solution
+          end
+
+          def apply_pairing_to(original_matches, this_list_index, other_list_index)
+            original_matches.each_with_index.map do |matches, index|
+              if index == this_list_index
+                [other_list_index]
+              else
+                matches - [other_list_index]
+              end
+            end
+          end
         end
       end
     end

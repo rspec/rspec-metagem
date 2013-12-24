@@ -252,9 +252,16 @@ describe "Composing `contain_exactly` with other matchers" do
       end
 
       it 'works when the actual items match in reverse order' do
-        pending "need to figure out a matching algorithm that works for this case" do
-          expect(["fool", "food"]).to contain_exactly(a_string_matching(/foo/), a_string_matching(/fool/))
-        end
+        expect(["fool", "food"]).to contain_exactly(a_string_matching(/foo/), a_string_matching(/fool/))
+      end
+
+      it 'can handle multiple sets of overlapping matches' do
+        expect(["fool", "barn", "bare", "food"]).to contain_exactly(
+          a_string_matching(/bar/),
+          a_string_matching(/barn/),
+          a_string_matching(/foo/),
+          a_string_matching(/fool/)
+        )
       end
     end
 
@@ -265,6 +272,105 @@ describe "Composing `contain_exactly` with other matchers" do
 
       it 'works when the actual items match in reverse order' do
         expect(["food", "fool"]).to contain_exactly(a_string_matching(/fool/), a_string_matching(/foo/))
+      end
+    end
+  end
+end
+
+module RSpec
+  module Matchers
+    module BuiltIn
+      class ContainExactly
+        describe PairingsMaximizer do
+          it 'finds unmatched expected indexes' do
+            maximizer = PairingsMaximizer.new([ [], [0] ], [ [1] ])
+            expect(maximizer.unmatched_expected_indexes).to eq([0])
+          end
+
+          it 'finds unmatched actual indexes' do
+            maximizer = PairingsMaximizer.new([ [0] ], [ [0], [] ])
+            expect(maximizer.unmatched_actual_indexes).to eq([1])
+          end
+
+          describe "finding indeterminite indexes" do
+            it 'does not include unmatched indexes' do
+              maximizer = PairingsMaximizer.new([ [], [0] ], [ [1], [] ])
+
+              expect(maximizer.indeterminite_expected_indexes).not_to include(0)
+              expect(maximizer.indeterminite_actual_indexes).not_to include(1)
+            end
+
+            it 'does not include indexes that are reciprocally to exactly one index' do
+              maximizer = PairingsMaximizer.new([ [], [0] ], [ [1], [] ])
+
+              expect(maximizer.indeterminite_expected_indexes).not_to include(1)
+              expect(maximizer.indeterminite_actual_indexes).not_to include(0)
+            end
+
+            it 'includes indexes that have multiple matches' do
+              maximizer = PairingsMaximizer.new([ [0, 2], [0, 2], [] ], [ [0, 1], [], [0, 1] ])
+
+              expect(maximizer.indeterminite_expected_indexes).to include(0, 1)
+              expect(maximizer.indeterminite_actual_indexes).to include(0, 2)
+            end
+
+            it 'includes indexes that have one match which has multiple matches' do
+              maximizer = PairingsMaximizer.new([ [0], [0], [1, 2] ], [ [0, 1], [2], [2] ])
+
+              expect(maximizer.indeterminite_expected_indexes).to include(0, 1)
+              expect(maximizer.indeterminite_actual_indexes).to include(1, 2)
+            end
+          end
+
+          describe "#unmatched_item_count" do
+            it 'returns the count of unmatched items' do
+              maximizer = PairingsMaximizer.new([ [1], [0] ], [ [1], [0] ])
+              expect(maximizer.unmatched_item_count).to eq(0)
+
+              maximizer = PairingsMaximizer.new([ [1], [0] ], [ [1], [0], [] ])
+              expect(maximizer.unmatched_item_count).to eq(1)
+            end
+          end
+
+          describe "#find_best_solution" do
+            matcher :produce_result do |unmatched_expected, unmatched_actual|
+              match do |result|
+                result.candidate_result? &&
+                result.unmatched_expected_indexes == unmatched_expected &&
+                result.unmatched_actual_indexes   == unmatched_actual
+              end
+
+              failure_message do |result|
+                if result.candidate_result?
+                  "expected a complete solution, but still had indeterminite indexes: " +
+                  "expected: #{result.indeterminite_expected_indexes.inspect}; " +
+                  "actual: #{result.indeterminite_actual_indexes.inspect}"
+                elsif result.unmatched_expected_indexes != unmatched_expected
+                  "expected unmatched_expected_indexes: #{unmatched_expected.inspect} " +
+                  "but got: #{result.unmatched_expected_indexes.inspect}"
+                elsif result.unmatched_actual_indexes != unmatched_actual
+                  "expected unmatched_actual_indexes: #{unmatched_actual.inspect} " +
+                  "but got: #{result.unmatched_actual_indexes.inspect}"
+                end
+              end
+            end
+
+            it 'returns no unmatched indexes when everything reciprocally matches one item' do
+              maximizer = PairingsMaximizer.new([ [1], [0] ], [ [1], [0] ])
+              expect(maximizer.find_best_solution).to produce_result([], [])
+            end
+
+            it 'returns unmatched indexes for everything that has no matches' do
+              maximizer = PairingsMaximizer.new([ [], [0] ], [ [1], [] ])
+              expect(maximizer.find_best_solution).to produce_result([0], [1])
+            end
+
+            it 'searches the solution space for a perfectly matching solution' do
+              maximizer = PairingsMaximizer.new([ [0, 1], [0] ], [ [0, 1], [0] ])
+              expect(maximizer.find_best_solution).to produce_result([], [])
+            end
+          end
+        end
       end
     end
   end
