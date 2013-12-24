@@ -63,10 +63,10 @@ module RSpec
         }.to raise_error(ArgumentError, /must set an expected value using #of/)
       end
 
-      it "raises an error if the actual does not respond to :-" do
+      it "fails if the actual is not numeric" do
         expect {
           expect(nil).to be_within(0.1).of(0)
-        }.to raise_error(ArgumentError, /The actual value \(nil\) must respond to `-`/)
+        }.to fail_with("expected nil to be within 0.1 of 0, but it could not be treated as a numeric value")
       end
     end
 
@@ -131,6 +131,10 @@ module RSpec
         expect {
           expect(5.5).not_to be_within(0.5).of(5.0)
         }.to fail_with("expected 5.5 not to be within 0.5 of 5.0")
+      end
+
+      it "passes if the actual is not numeric" do
+        expect(nil).not_to be_within(0.1).of(0)
       end
     end
   end
