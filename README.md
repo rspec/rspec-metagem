@@ -185,6 +185,72 @@ actual.should be > 3
 [1, 2, 3].should_not include 4
 ```
 
+## Compound Matcher Expressions
+
+You can also create compound matcher expressions using `and` or `or`:
+
+``` ruby
+expect(alphabet).to start_with("a").and end_with("z")
+expect(stoplight.color).to eq("red").or eq("green").or eq("yellow")
+```
+
+## Composing Matchers
+
+Many of the built-in matchers are designed to take matchers as
+arguments, to allow you to flexibly specify only the essential
+aspects of an object or data structure. In addition, all of the
+built-in matchers have one or more aliases that provide better
+phrasing for when they are used as arguments to another matcher.
+
+### Examples
+
+```ruby
+expect { k += 1.05 }.to change { k }.by( a_value_within(0.1).of(1.0) )
+
+expect { s = "barn" }.to change { s }
+  .from( a_string_matching(/foo/) )
+  .to( a_string_matching(/bar/) )
+
+expect(["barn", 2.45]).to contain_exactly(
+  a_value_within(0.1).of(2.5),
+  a_string_starting_with("bar")
+)
+
+expect(["barn", "food", 2.45]).to end_with(
+  a_string_matching("foo"),
+  a_value > 2
+)
+
+expect(["barn", 2.45]).to include( a_string_starting_with("bar") )
+
+expect(:a => "food", :b => "good").to include(:a => a_string_matching(/foo/))
+
+hash = {
+  :a => {
+    :b => ["foo", 5],
+    :c => { :d => 2.05 }
+  }
+}
+
+expect(hash).to match(
+  :a => {
+    :b => a_collection_containing_exactly(
+      a_string_starting_with("f"),
+      an_instance_of(Fixnum)
+    ),
+    :c => { :d => (a_value < 3) }
+  }
+)
+
+expect { |probe|
+  [1, 2, 3].each(&probe)
+}.to yield_successive_args(
+  a_number_that_is_odd,
+  a_number_that_is_even,
+  a_number_that_is_odd
+)
+```
+
 See [detailed information on the `should` syntax and its usage.](https://github.com/rspec/rspec-expectations/blob/master/Should.md)
 
 ## Also see
