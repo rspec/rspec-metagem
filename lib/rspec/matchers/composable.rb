@@ -63,11 +63,34 @@ module RSpec
         Support::FuzzyMatcher.values_match?(expected, actual)
       end
 
+      # Returns the description of the given object in a way that is
+      # aware of composed matchers. If the object is a matcher with
+      # a `description` method, returns the description; otherwise
+      # returns `object.inspect`.
+      #
+      # You are encouraged to use this in your custom matcher's
+      # `description`, `failure_message` or
+      # `failure_message_when_negated` implementation if you are
+      # supporting matcher arguments.
+      #
+      # @api public
       def description_of(object)
         return object.description if Matchers.is_a_describable_matcher?(object)
         object.inspect
       end
 
+      # Transforms the given data structue (typically a hash or array)
+      # into a new data structure that, when `#inspect` is called on it,
+      # will provide descriptions of any contained matchers rather than
+      # the normal `#inspect` output.
+      #
+      # You are encouraged to use this in your custom matcher's
+      # `description`, `failure_message` or
+      # `failure_message_when_negated` implementation if you are
+      # supporting any arguments which may be a data structure
+      # containing matchers.
+      #
+      # @api public
       def surface_descriptions_in(item)
         if Matchers.is_a_describable_matcher?(item)
           DescribableItem.new(item)
@@ -85,16 +108,21 @@ module RSpec
         # nested enumerable: since ruby lacks a character class, it yields
         # 1-character strings, which are themselves enumerable, composed of a
         # a single 1-character string, which is an enumerable, etc.
+        #
+        # @api private
         def enumerable?(item)
           return false if String === item
           Enumerable === item
         end
       else
+        # @api private
         def enumerable?(item)
           Enumerable === item
         end
       end
 
+      # Wraps an item in order to surface its `description` via `inspect`.
+      # @api private
       DescribableItem = Struct.new(:item) do
         def inspect
           "(#{item.description})"
