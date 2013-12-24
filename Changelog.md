@@ -22,6 +22,15 @@ Enhancements:
   Note that it expects the expected array to be splatted as
   individual args: `expect(array).to contain_exactly(1, 2)` is
   the same as `expect(array).to match_array([1, 2])`. (Myron Marston)
+* Update built-in matchers so that they can accept matchers as arguments
+  to allow you to compose matchers in arbitrary ways. (Myron Marston)
+* Add `RSpec::Matchers::Composable` mixin that can be used to make
+  a custom matcher composable as well. Note that custom matchers
+  defined via `RSpec::Matchers.define` already have this. (Myron
+  Marston)
+* Define noun-phrase aliases for built-in matchers, which can be
+  used when creating composed matcher expressions that read better
+  and provide better failure messages. (Myron Marston)
 
 Breaking Changes for 3.0.0:
 
