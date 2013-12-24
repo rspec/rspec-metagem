@@ -13,10 +13,6 @@ function is_jruby() {
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
 export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
 
-# force jRuby to use client mode JVM or a compilation mode thats as close as possible,
-# idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
-export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
-
 echo "Running all..."
 script/rspec_with_simplecov spec -b --format progress --profile
 
@@ -31,6 +27,10 @@ else
     bin/rspec $file -b --format progress
   done
 fi
+
+# force jRuby to use client mode JVM or a compilation mode thats as close as possible,
+# idea taken from https://github.com/jruby/jruby/wiki/Improving-startup-time
+export JAVA_OPTS='-client -XX:+TieredCompilation -XX:TieredStopAtLevel=1'
 
 # Prepare RUBYOPT for scenarios that are shelling out to ruby,
 # and PATH for those that are using `rspec` or `rake`.
