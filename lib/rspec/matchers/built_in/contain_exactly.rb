@@ -95,14 +95,13 @@ module RSpec
             return self if candidate_result?
             best_solution_so_far = NullSolution
 
-            indeterminite_expected_indexes.each do |index|
-              matches = expected_to_actual_matched_indexes[index]
+            expected_index = indeterminite_expected_indexes.first
+            actuals = expected_to_actual_matched_indexes[expected_index]
 
-              matches.each do |match|
-                result = try_pairing(index, match)
-                return result if result.ideal_result?
-                best_solution_so_far = result if result.better_candidate_than?(best_solution_so_far)
-              end
+            actuals.each do |actual_index|
+              result = try_pairing(expected_index, actual_index)
+              return result if result.ideal_result?
+              best_solution_so_far = result if result.better_candidate_than?(best_solution_so_far)
             end
 
             best_solution_so_far

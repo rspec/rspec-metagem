@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timeout'
 
 class UnsortableObject
   def initialize(id)
@@ -84,6 +85,22 @@ describe "expect(array).to contain_exactly(*other_array)" do
 
   it "passes if target contains all items out of order" do
     expect([1,3,2]).to contain_exactly(1,2,3)
+  end
+
+  def timeout_if_not_debugging(time)
+    return yield if defined?(::Debugger)
+    Timeout.timeout(time) { yield }
+  end
+
+  it 'fails a match of 11 items with duplicates in a reasonable amount of time' do
+    timeout_if_not_debugging(0.1) do
+      expected = [0, 1, 1,    3, 3, 3,    4, 4,    8, 8, 9   ]
+      actual   = [   1,    2, 3, 3, 3, 3,       7, 8, 8, 9, 9]
+
+      expect {
+        expect(actual).to contain_exactly(*expected)
+      }.to fail_matching("the missing elements were:      [0, 1, 4, 4]")
+    end
   end
 
   it "fails if target includes extra items" do
