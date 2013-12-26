@@ -40,18 +40,21 @@ describe "expect(...).to start_with" do
   end
 
   context "with an object that does not respond to :[]" do
-    it "raises an ArgumentError" do
+    it "fails with a useful message" do
+      actual = Object.new
       expect {
-        expect(Object.new).to start_with 0
-      }.to raise_error(ArgumentError, /does not respond to :\[\]/)
+        expect(actual).to start_with 0
+      }.to fail_with("expected #{actual.inspect} to start with 0, but it cannot be indexed using #[]")
     end
   end
 
   context "with a hash" do
-    it "raises an ArgumentError if trying to match more than one element" do
+    it "fails with a useful error if trying to match more than one element" do
+      actual   = { :a => 'b', :b => 'b', :c => 'c' }
+      expected = { :a => 'b', :b => 'b' }
       expect{
-        expect({:a => 'b', :b => 'b', :c => 'c'}).to start_with({:a => 'b', :b => 'b'})
-      }.to raise_error(ArgumentError, /does not have ordered elements/)
+        expect(actual).to start_with(expected)
+      }.to fail_with("expected #{actual.inspect} to start with #{expected.inspect}, but it does not have ordered elements")
     end
   end
 
@@ -163,18 +166,21 @@ describe "expect(...).to end_with" do
   end
 
   context "with an object that does not respond to :[]" do
-    it "raises an error if expected value can't be indexed'" do
+    it "fails with a useful message" do
+      actual = Object.new
       expect {
-        expect(Object.new).to end_with 0
-      }.to raise_error(ArgumentError, /does not respond to :\[\]/)
+        expect(actual).to end_with 0
+      }.to fail_with("expected #{actual.inspect} to end with 0, but it cannot be indexed using #[]")
     end
   end
 
   context "with a hash" do
     it "raises an ArgumentError if trying to match more than one element" do
+      actual   = { :a => 'b', :b => 'b', :c => 'c' }
+      expected = { :a => 'b', :b => 'b' }
       expect{
-        expect({:a => 'b', :b => 'b', :c => 'c'}).to end_with({:a => 'b', :b =>'b'})
-      }.to raise_error(ArgumentError, /does not have ordered elements/)
+        expect(actual).to end_with(expected)
+      }.to fail_with("expected #{actual.inspect} to end with #{expected.inspect}, but it does not have ordered elements")
     end
   end
 

@@ -265,6 +265,13 @@ describe "Composing `contain_exactly` with other matchers" do
       end
     end
 
+    it "can use `a_value_within` and `a_string_starting_with` against multiple types of values" do
+      expect(["barn", 2.45]).to contain_exactly(
+        a_value_within(0.1).of(2.5),
+        a_string_starting_with("bar")
+      )
+    end
+
     context 'when a later matcher matches more strictly than an earlier matcher' do
       it 'works when the actual items match in the same order' do
         expect(["fool", "food"]).to contain_exactly(a_string_matching(/fool/), a_string_matching(/foo/))

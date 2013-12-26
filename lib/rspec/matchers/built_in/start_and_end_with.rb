@@ -3,26 +3,38 @@ module RSpec
     module BuiltIn
       class StartAndEndWith < BaseMatcher
         def initialize(*expected)
+          @actual_does_not_have_ordered_elements = false
           @expected = expected.length == 1 ? expected.first : expected
         end
 
-        def matches?(actual)
-          @actual = actual
-          raise invalid_actual_object unless actual.respond_to?(:[])
+        def match(expected, actual)
+          return false unless actual.respond_to?(:[])
 
           begin
             return subset_matches? if expected.respond_to?(:length)
             element_matches?
           rescue ArgumentError
-            raise actual_is_unordered
+            @actual_does_not_have_ordered_elements = true
+            return false
           end
         end
 
-      private
-
-        def invalid_actual_object
-          ArgumentError.new("#{actual.inspect} does not respond to :[]")
+        def failure_message
+          super.tap do |msg|
+            if @actual_does_not_have_ordered_elements
+              msg << ", but it does not have ordered elements"
+            elsif !actual.respond_to?(:[])
+              msg << ", but it cannot be indexed using #[]"
+            end
+          end
         end
+
+        def description
+          return super unless Hash === expected
+          "#{name_to_sentence} #{surface_descriptions_in(expected).inspect}"
+        end
+
+      private
 
         def actual_is_unordered
           ArgumentError.new("#{actual.inspect} does not have ordered elements")
