@@ -30,9 +30,7 @@ module RSpec
         end
 
         def diffable?
-          # Matchers do not diff well, since diff uses their inspect
-          # output, which includes their instance variables and such.
-          contains_no_matchers?(expected)
+          true
         end
 
         private

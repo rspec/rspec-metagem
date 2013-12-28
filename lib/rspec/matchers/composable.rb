@@ -120,12 +120,17 @@ module RSpec
           Enumerable === item
         end
       end
+      module_function :surface_descriptions_in, :enumerable?
 
       # Wraps an item in order to surface its `description` via `inspect`.
       # @api private
       DescribableItem = Struct.new(:item) do
         def inspect
           "(#{item.description})"
+        end
+
+        def pretty_print(pp)
+          pp.text "(#{item.description})"
         end
       end
     end

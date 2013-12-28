@@ -440,14 +440,6 @@ describe "#include matcher" do
         }.to fail_with("expected [10, 30] to include (a value within 5 of 24)")
       end
 
-      it 'does not include a diff when the match fails' do
-        expect {
-          expect(['foo', 'bar', 'baz']).to include(a_string_containing("abc"))
-        }.to raise_error { |e|
-          expect(e.message).not_to match(/diff/i)
-        }
-      end
-
       it 'works with comparison matchers' do
         expect {
           expect([100, 200]).to include(a_value < 90)
@@ -481,14 +473,6 @@ describe "#include matcher" do
           expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
         }.to fail_matching(%Q|expected #{['foo', 'bar', 'baz'].inspect} to include (a string containing 'ar') and (a string containing 'abc')|)
       end
-
-      it 'does not include a diff when the match fails' do
-        expect {
-          expect(['foo', 'bar', 'baz']).to include(a_string_containing("ar"), a_string_containing("abc"))
-        }.to raise_error { |e|
-          expect(e.message).not_to match(/diff/i)
-        }
-      end
     end
 
     describe "expect(hash).to include(key => matcher)" do
@@ -504,7 +488,7 @@ describe "#include matcher" do
       it "fails with a clear message when the matcher does not match" do
         expect {
           expect(:a => 15).to include(:a => a_value_within(3).of(10))
-        }.to fail_with("expected {:a => 15} to include {:a => (a value within 3 of 10)}")
+        }.to fail_matching("expected {:a => 15} to include {:a => (a value within 3 of 10)}")
       end
     end
 
@@ -521,7 +505,7 @@ describe "#include matcher" do
       it 'fails with a clear message when the matcher does not match', :if => (RUBY_VERSION.to_f > 1.8) do
         expect {
           expect(:drink => "water", :food => "bread").to include(a_string_matching(/bar/))
-        }.to fail_with('expected {:drink => "water", :food => "bread"} to include (a string matching /bar/)')
+        }.to fail_matching('expected {:drink => "water", :food => "bread"} to include (a string matching /bar/)')
       end
     end
 

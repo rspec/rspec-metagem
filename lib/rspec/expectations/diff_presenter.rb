@@ -101,6 +101,7 @@ module RSpec
       end
 
       def object_to_string(object)
+        object = Matchers::Composable.surface_descriptions_in(object)
         case object
         when Hash
           object.keys.sort_by { |k| k.to_s }.map do |key|
