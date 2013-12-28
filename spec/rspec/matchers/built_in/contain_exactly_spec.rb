@@ -189,27 +189,26 @@ describe "matching against things that aren't arrays" do
   it "fails with nil and the expected error message is given" do
     expect {
       expect(nil).to contain_exactly(1, 2, 3)
-    }.to fail_with(/expected an array/)
+    }.to fail_with(/expected a collection/)
   end
 
   it "fails with a float and the expected error message is given" do
     expect {
       expect(3.7).to contain_exactly(1, 2, 3)
-    }.to fail_with(/expected an array/)
+    }.to fail_with(/expected a collection/)
   end
 
   it "fails with a string and the expected error message is given" do
     expect {
       expect("I like turtles").to contain_exactly(1, 2, 3)
-    }.to fail_with(/expected an array/)
+    }.to fail_with(/expected a collection/)
   end
 
-  context "when using the `should =~` syntax", :uses_should do
-    it 'fails with a clear message when given a hash' do
-      expect {
-        {}.should =~ {}
-      }.to fail_with(/expected an array/)
-    end
+  it 'works with other collection types' do
+    expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
+    expect {
+      expect(Set.new([3, 2, 1])).to contain_exactly(1, 2)
+    }.to fail_matching("expected collection contained:  [1, 2]")
   end
 end
 

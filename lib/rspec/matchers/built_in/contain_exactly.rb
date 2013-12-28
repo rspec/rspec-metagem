@@ -3,21 +3,21 @@ module RSpec
     module BuiltIn
       class ContainExactly < BaseMatcher
         def match(expected, actual)
-          return false unless actual.respond_to? :to_ary
+          return false unless actual_is_a_collection?
+          @actual = actual.to_a
           extra_items.empty? && missing_items.empty?
         end
 
         def failure_message
-          if actual.respond_to? :to_ary
-            message =  "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
+          if actual_is_a_collection?
+            message  = "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
             message += "actual collection contained:    #{safe_sort(actual).inspect}\n"
             message += "the missing elements were:      #{safe_sort(surface_descriptions_in missing_items).inspect}\n" unless missing_items.empty?
             message += "the extra elements were:        #{safe_sort(extra_items).inspect}\n" unless extra_items.empty?
+            message
           else
-            message = "expected an array, actual collection was #{actual.inspect}"
+            "expected a collection that can be converted to an array with `#to_a`, but got #{actual.inspect}"
           end
-
-          message
         end
 
         def failure_message_when_negated
@@ -29,6 +29,10 @@ module RSpec
         end
 
       private
+
+        def actual_is_a_collection?
+          enumerable?(actual) && actual.respond_to?(:to_a)
+        end
 
         def safe_sort(array)
           array.sort rescue array

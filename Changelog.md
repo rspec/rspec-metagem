@@ -22,6 +22,8 @@ Enhancements:
   Note that it expects the expected array to be splatted as
   individual args: `expect(array).to contain_exactly(1, 2)` is
   the same as `expect(array).to match_array([1, 2])`. (Myron Marston)
+* Update `contain_exactly`/`match_array` so that it can match against
+  other non-array collections (such as a `Set`). (Myron Marston)
 * Update built-in matchers so that they can accept matchers as arguments
   to allow you to compose matchers in arbitrary ways. (Myron Marston)
 * Add `RSpec::Matchers::Composable` mixin that can be used to make
