@@ -24,6 +24,7 @@ end
 
 platforms :rbx do
   gem 'rubysl'
+  gem 'rubysl-test-unit'
   gem 'racc'
 end
 
