@@ -16,3 +16,8 @@ matrix:
   allow_failures:
     - rvm: rbx-2.2.1
     - rvm: rbx
+before_install:
+  - gem update bundler
+  - bundle --version
+  - gem update --system 2.1.11
+  - gem --version
