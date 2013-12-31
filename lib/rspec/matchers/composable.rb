@@ -42,7 +42,7 @@ module RSpec
         matches?(value)
       end
 
-    private
+    private unless defined?(::YARD)
 
       # This provides a generic way to fuzzy-match an expected value against
       # an actual value. It understands nested data structures (e.g. hashes
@@ -58,7 +58,7 @@ module RSpec
       # @param expected [Object] what is expected
       # @param actual [Object] the actual value
       #
-      # @api public
+      # @public
       def values_match?(expected, actual)
         Support::FuzzyMatcher.values_match?(expected, actual)
       end
@@ -120,7 +120,7 @@ module RSpec
           Enumerable === item
         end
       end
-      module_function :surface_descriptions_in, :enumerable?
+      module_function :surface_descriptions_in, :enumerable? unless defined?(::YARD)
 
       # Wraps an item in order to surface its `description` via `inspect`.
       # @api private
