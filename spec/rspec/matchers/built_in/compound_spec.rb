@@ -2,6 +2,33 @@ require 'spec_helper'
 
 module RSpec::Matchers::BuiltIn
   describe Compound do
+    context "when used as a composable matcher" do
+      it 'can pass' do
+        expect(["food", "barn"]).to include(
+          a_string_starting_with("f").and(ending_with("d")),
+          a_string_starting_with("b").and(ending_with("n"))
+        )
+      end
+
+      it 'can fail' do
+        expect {
+          expect(["foo", "bar"]).to include(
+            a_string_starting_with("f").and(ending_with("d")),
+            a_string_starting_with("b").and(ending_with("n"))
+          )
+        }.to fail_matching('expected ["foo", "bar"] to include (a string starting with "f" and ending with "d") and (a string starting with "b" and ending with "n")')
+      end
+
+      it 'provides a description' do
+        matcher = include(
+          a_string_starting_with("f").and(ending_with("d")),
+          a_string_starting_with("b").and(ending_with("n"))
+        )
+
+        expect(matcher.description).to eq('include (a string starting with "f" and ending with "d") and (a string starting with "b" and ending with "n")')
+      end
+    end
+
     describe "expect(...).to matcher.and(other_matcher)" do
 
       it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4 do

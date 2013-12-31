@@ -321,6 +321,7 @@ module RSpec
       BuiltIn::BeWithin.new(delta)
     end
     alias_matcher :a_value_within, :be_within
+    alias_matcher :within,         :be_within
 
     # Applied to a proc, specifies that its execution will cause some value to
     # change.
@@ -404,6 +405,7 @@ module RSpec
     alias_matcher :a_block_changing,  :change
     alias_matcher :a_lambda_changing, :change
     alias_matcher :a_proc_changing,   :change
+    alias_matcher :changing,          :change
 
     # Passes if actual contains all of the expected regardless of order.
     # This works for collections. Pass in multiple args and it will only
@@ -425,7 +427,8 @@ module RSpec
       BuiltIn::ContainExactly.new(items)
     end
     alias_matcher :a_collection_containing_exactly, :contain_exactly
-    alias_matcher :an_array_containing_exactly, :contain_exactly
+    alias_matcher :an_array_containing_exactly,     :contain_exactly
+    alias_matcher :containing_exactly,              :contain_exactly
 
     # Passes if actual covers expected. This works for
     # Ranges. You can also pass in multiple args
@@ -443,6 +446,7 @@ module RSpec
       BuiltIn::Cover.new(*values)
     end
     alias_matcher :a_range_covering, :cover
+    alias_matcher :covering,         :cover
 
     # Matches if the actual value ends with the expected value(s). In the case
     # of a string, matches against the last `expected.length` characters of the
@@ -460,6 +464,7 @@ module RSpec
     alias_matcher :a_collection_ending_with, :end_with
     alias_matcher :a_string_ending_with,     :end_with
     alias_matcher :an_array_ending_with,     :end_with
+    alias_matcher :ending_with,              :end_with
 
     # Passes if <tt>actual == expected</tt>.
     #
@@ -475,6 +480,7 @@ module RSpec
     end
     alias_matcher :a_value_eq_to,   :eq
     alias_matcher :an_object_eq_to, :eq
+    alias_matcher :eq_to,           :eq
 
     # Passes if `actual.eql?(expected)`
     #
@@ -490,6 +496,7 @@ module RSpec
     end
     alias_matcher :a_value_eql_to,   :eql
     alias_matcher :an_object_eql_to, :eql
+    alias_matcher :eql_to,           :eql
 
     # Passes if <tt>actual.equal?(expected)</tt> (object identity).
     #
@@ -505,6 +512,7 @@ module RSpec
     end
     alias_matcher :a_value_equal_to,   :equal
     alias_matcher :an_object_equal_to, :equal
+    alias_matcher :equal_to,           :equal
 
     # Passes if `actual.exist?` or `actual.exists?`
     #
@@ -514,6 +522,7 @@ module RSpec
       BuiltIn::Exist.new(*args)
     end
     alias_matcher :a_value_existing, :exist
+    alias_matcher :existing,         :exist
 
     # Passes if actual includes expected. This works for
     # collections and Strings. You can also pass in multiple args
@@ -533,6 +542,7 @@ module RSpec
     alias_matcher :a_collection_including, :include
     alias_matcher :a_string_including,     :include
     alias_matcher :an_array_including,     :include
+    alias_matcher :including,              :include
 
     # Given a Regexp or String, passes if actual.match(pattern)
     #
@@ -551,6 +561,7 @@ module RSpec
     alias_matcher :match_regex,        :match
     alias_matcher :an_object_matching, :match
     alias_matcher :a_string_matching,  :match
+    alias_matcher :matching,           :match
 
     # An alternate form of `contain_exactly` that accepts
     # the expected contents as a single array arg rather
@@ -599,6 +610,10 @@ module RSpec
       desc.sub("raise", "a proc raising")
     end
 
+    alias_matcher :raising,        :raise_error do |desc|
+      desc.sub("raise", "raising")
+    end
+
     # Matches if the target object responds to all of the names
     # provided. Names can be Strings or Symbols.
     #
@@ -610,6 +625,7 @@ module RSpec
       BuiltIn::RespondTo.new(*names)
     end
     alias_matcher :an_object_responding_to, :respond_to
+    alias_matcher :responding_to,           :respond_to
 
     # Passes if the submitted block returns true. Yields target to the
     # block.
@@ -628,6 +644,7 @@ module RSpec
       BuiltIn::Satisfy.new(&block)
     end
     alias_matcher :an_object_satisfying, :satisfy
+    alias_matcher :satisfying,           :satisfy
 
     # Matches if the actual value starts with the expected value(s). In the
     # case of a string, matches against the first `expected.length` characters
@@ -645,6 +662,7 @@ module RSpec
     alias_matcher :a_collection_starting_with, :start_with
     alias_matcher :a_string_starting_with,     :start_with
     alias_matcher :an_array_starting_with,     :start_with
+    alias_matcher :starting_with,              :start_with
 
     # Given no argument, matches if a proc throws any Symbol.
     #
@@ -678,6 +696,10 @@ module RSpec
       desc.sub("throw", "a proc throwing")
     end
 
+    alias_matcher :throwing,        :throw_symbol do |desc|
+      desc.sub("throw", "throwing")
+    end
+
     # Passes if the method called in the expect block yields, regardless
     # of whether or not arguments are yielded.
     #
@@ -696,6 +718,7 @@ module RSpec
     alias_matcher :a_block_yielding_control,  :yield_control
     alias_matcher :a_lambda_yielding_control, :yield_control
     alias_matcher :a_proc_yielding_control,   :yield_control
+    alias_matcher :yielding_control,          :yield_control
 
     # Passes if the method called in the expect block yields with
     # no arguments. Fails if it does not yield, or yields with arguments.
@@ -716,6 +739,7 @@ module RSpec
     alias_matcher :a_block_yielding_with_no_args,  :yield_with_no_args
     alias_matcher :a_lambda_yielding_with_no_args, :yield_with_no_args
     alias_matcher :a_proc_yielding_with_no_args,   :yield_with_no_args
+    alias_matcher :yielding_with_no_args,          :yield_with_no_args
 
     # Given no arguments, matches if the method called in the expect
     # block yields with arguments (regardless of what they are or how
@@ -748,6 +772,7 @@ module RSpec
     alias_matcher :a_block_yielding_with_args,  :yield_with_args
     alias_matcher :a_lambda_yielding_with_args, :yield_with_args
     alias_matcher :a_proc_yielding_with_args,   :yield_with_args
+    alias_matcher :yielding_with_args,          :yield_with_args
 
     # Designed for use with methods that repeatedly yield (such as
     # iterators). Passes if the method called in the expect block yields
@@ -771,6 +796,7 @@ module RSpec
     alias_matcher :a_block_yielding_successive_args,  :yield_successive_args
     alias_matcher :a_lambda_yielding_successive_args, :yield_successive_args
     alias_matcher :a_proc_yielding_successive_args,   :yield_successive_args
+    alias_matcher :yielding_successive_args,          :yield_successive_args
 
   private
 

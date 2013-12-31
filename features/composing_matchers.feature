@@ -219,3 +219,15 @@ Feature: Composing Matchers
     When I run `rspec yield_successive_args_spec.rb`
     Then the examples should all pass
 
+  Scenario: Composing matchers using a compound `and` expression
+    Given a file named "include_spec.rb" with:
+      """
+      describe "Passing a compound matcher expression to `include`" do
+        example do
+          expect(["food", "drink"]).to include( a_string_starting_with("f").and ending_with("d"))
+        end
+      end
+      """
+    When I run `rspec include_spec.rb`
+    Then the examples should all pass
+
