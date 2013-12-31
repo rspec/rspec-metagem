@@ -9,7 +9,6 @@ rvm:
   - jruby-18mode
   - jruby-19mode
   - ree
-  - rbx-2.2.1
   - rbx
 before_install:
   - gem update bundler
