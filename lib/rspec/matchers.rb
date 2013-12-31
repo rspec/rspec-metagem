@@ -168,8 +168,70 @@ module RSpec
   #     RSpec::configure do |config|
   #       config.include(CustomGameMatchers)
   #     end
+  #
+  # ### Making custom matchers composable
+  #
+  # RSpec's built-in matchers are designed to be composed, in expressions like:
+  #
+  #     expect(["barn", 2.45]).to contain_exactly(
+  #       a_value_within(0.1).of(2.5),
+  #       a_string_starting_with("bar")
+  #     )
+  #
+  # Custom matchers can easily participate in composed matcher expressions like these.
+  # Include {RSpec::Matchers::Composable} in your custom matcher to make it support
+  # being composed (matchers defined using the DSL have this included automatically).
+  # Within your matcher's `matches?` method (or the `match` block, if using the DSL),
+  # use `values_match?(expected, actual)` rather than `expected == actual` or
+  # `actual == expected`. Under the covers, `values_match?` is able to match arbitrary
+  # nested data structures containing a mix of both matchers and non-matcher objects.
+  # It uses `===` and `==` to perform the matching, considering the values to
+  # match if either returns `true`. The `Composable` mixin also provides some helper
+  # methods for surfacing the matcher descriptions within your matcher's description
+  # or failure messages.
+  #
+  # RSpec's built-in matchers each have a number of aliases that rephrase the matcher
+  # from a verb phrase (such as `be_within`) to a noun phrase (such as `a_value_within`),
+  # which reads better when the matcher is passed as an argument in a composed matcher
+  # expressions, and also uses the noun-phrase wording in the matcher's `description`,
+  # for readable failure messages. You can alias your custom matchers in similar fashion
+  # using {RSpec::Matchers.alias_matcher}.
   module Matchers
-    extend SupportsMatcherAliases
+    # Defines a matcher alias. The returned matcher's `description` will be overriden
+    # to reflect the phrasing of the new name, which will be used in failure messages
+    # when passed as an argument to another matcher in a composed matcher expression.
+    #
+    # @param new_name [Symbol] the new name for the matcher
+    # @param old_name [Symbol] the original name for the matcher
+    # @yield [String] optional block that, when given is used to define the overriden
+    #   description. The yielded arg is the original description. If no block is
+    #   provided, a default description override is used based on the old and
+    #   new names.
+    #
+    # @example
+    #
+    #   RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
+    #   sum_to(3).description # => "sum to 3"
+    #   a_list_that_sums_to(3).description # => "a list that sums to 3"
+    #
+    # @example
+    #
+    #   RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
+    #     description.sub("be sorted by", "a list sorted by")
+    #   end
+    #
+    #   be_sorted_by(:age).description # => "be sorted by age"
+    #   a_list_sorted_by(:age).description # => "a list sorted by age"
+    def self.alias_matcher(new_name, old_name, &description_override)
+      description_override ||= lambda do |old_desc|
+        old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
+      end
+
+      define_method(new_name) do |*args, &block|
+        matcher = __send__(old_name, *args, &block)
+        AliasedMatcher.new(matcher, description_override)
+      end
+    end
 
     # Passes if actual is truthy (anything but false or nil)
     def be_truthy
