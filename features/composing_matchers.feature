@@ -6,8 +6,7 @@ Feature: Composing Matchers
   brittle specs, by using a matcher in place of an exact value to
   specify only the essential aspects of what you expect.
 
-  For RSpec 3, we have updated all matchers to make them accept
-  matchers as arguments. This includes the following:
+  The following matchers accept matchers as arguments:
 
     * `change { }.by(matcher)`
     * `change { }.from(matcher).to(matcher)`
@@ -42,9 +41,11 @@ Feature: Composing Matchers
     * `be_even` => `a_number_that_is_even`
     * `be_within` => `a_value_within`
     * `contain_exactly` => `a_collection_containing_exactly`
-    * `end_with` => `a_string_ending_with`
+    * `end_with` => `a_string_ending_with`, `ending_with`
     * `match` => `a_string_matching`
     * `start_with` => `a_string_starting_with`
+
+  For a full list, see the API docs for the `RSpec::Matchers` module.
 
   Scenario: Composing matchers with `change`
     Given a file named "change_spec.rb" with:

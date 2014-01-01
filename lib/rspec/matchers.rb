@@ -182,8 +182,8 @@ module RSpec
   # Include {RSpec::Matchers::Composable} in your custom matcher to make it support
   # being composed (matchers defined using the DSL have this included automatically).
   # Within your matcher's `matches?` method (or the `match` block, if using the DSL),
-  # use `values_match?(expected, actual)` rather than `expected == actual` or
-  # `actual == expected`. Under the covers, `values_match?` is able to match arbitrary
+  # use `values_match?(expected, actual)` rather than `expected == actual`.
+  # Under the covers, `values_match?` is able to match arbitrary
   # nested data structures containing a mix of both matchers and non-matcher objects.
   # It uses `===` and `==` to perform the matching, considering the values to
   # match if either returns `true`. The `Composable` mixin also provides some helper
@@ -544,12 +544,34 @@ module RSpec
     alias_matcher :an_array_including,     :include
     alias_matcher :including,              :include
 
-    # Given a Regexp or String, passes if actual.match(pattern)
+    # Given a `Regexp` or `String`, passes if `actual.match(pattern)`
+    # Given an arbitrary nested data structure (e.g. arrays and hashes),
+    # matches if `expected === actual` || `actual == expected` for each
+    # pair of elements.
     #
     # @example
     #
     #   expect(email).to match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   expect(email).to match("@example.com")
+    #
+    # @example
+    #
+    #   hash = {
+    #     :a => {
+    #       :b => ["foo", 5],
+    #       :c => { :d => 2.05 }
+    #     }
+    #   }
+    #
+    #   expect(hash).to match(
+    #     :a => {
+    #       :b => a_collection_containing_exactly(
+    #         a_string_starting_with("f"),
+    #         an_instance_of(Fixnum)
+    #       ),
+    #       :c => { :d => (a_value < 3) }
+    #     }
+    #   )
     #
     # @note The `match_regex` alias is deprecated and is not recommended for use.
     #       It was added in 2.12.1 to facilitate its use from within custom
