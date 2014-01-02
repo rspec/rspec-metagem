@@ -72,64 +72,83 @@ module RSpec
           end
         end
 
+        # Once we started supporting composing matchers, the algorithm for this matcher got
+        # much more complicated. Consider this expression:
+        #
+        #   expect(["fool", "food"]).to contain_exactly(/foo/, /fool/)
+        #
+        # This should pass (because we can pair /fool/ with "fool" and /foo/ with "food"), but
+        # the original algorithm used by this matcher would pair the first elements it could
+        # (/foo/ with "fool"), which would leave /fool/ and "food" unmatched.  When we have
+        # an expected elements which is a matcher that matches a superset of actual items
+        # compared to another expected element matcher, we need to consider every possible pairing.
+        #
+        # This class is designed to maximize the number of actual/expected pairings -- or,
+        # conversely, to minimize the number of unpaired items. It's essentially a brute
+        # force solution, but with a few heuristics applied to reduce the size of the
+        # problem space:
+        #
+        #   * Any items which match none of the items in the other list are immediately
+        #     placed into the `unmatched_expected_indexes` or `unmatched_actual_indexes` array.
+        #     The extra items and missing items in the matcher failure message are derived
+        #     from these arrays.
+        #   * Any items which reciprocally match only each other are paired up and not
+        #     considered further.
+        #
+        # What's left is only the items which match multiple items from the other list
+        # (or vice versa). From here, it performs a brute-force depth-first search,
+        # looking for a solution which pairs all elements in both lists, or, barring that,
+        # that produces the fewest unmatched items.
+        #
+        # @private
         class PairingsMaximizer
-          attr_reader :expected_to_actual_matched_indexes,
-                      :actual_to_expected_matched_indexes,
-                      :unmatched_expected_indexes,
-                      :unmatched_actual_indexes,
-                      :indeterminite_expected_indexes,
-                      :indeterminite_actual_indexes
+          attr_reader :expected_to_actual_matched_indexes, :actual_to_expected_matched_indexes,
+                      :unmatched_expected_indexes,         :unmatched_actual_indexes,
+                      :indeterminite_expected_indexes,     :indeterminite_actual_indexes
 
           def initialize(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
             @expected_to_actual_matched_indexes = expected_to_actual_matched_indexes
             @actual_to_expected_matched_indexes = actual_to_expected_matched_indexes
 
-            categorize_indexes(expected_to_actual_matched_indexes,
-                               actual_to_expected_matched_indexes,
-                               @unmatched_expected_indexes     = [],
-                               @indeterminite_expected_indexes = [])
+            @unmatched_expected_indexes, @indeterminite_expected_indexes =
+              categorize_indexes(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
 
-            categorize_indexes(actual_to_expected_matched_indexes,
-                               expected_to_actual_matched_indexes,
-                               @unmatched_actual_indexes     = [],
-                               @indeterminite_actual_indexes = [])
+            @unmatched_actual_indexes, @indeterminite_actual_indexes =
+              categorize_indexes(actual_to_expected_matched_indexes, expected_to_actual_matched_indexes)
           end
 
           def find_best_solution
-            return self if candidate_result?
+            return self if candidate_solution?
             best_solution_so_far = NullSolution
 
             expected_index = indeterminite_expected_indexes.first
             actuals = expected_to_actual_matched_indexes[expected_index]
 
             actuals.each do |actual_index|
-              result = try_pairing(expected_index, actual_index)
-              return result if result.ideal_result?
-              best_solution_so_far = result if result.better_candidate_than?(best_solution_so_far)
+              solution = best_solution_for_pairing(expected_index, actual_index)
+              return solution if solution.ideal_solution?
+              best_solution_so_far = solution if best_solution_so_far.worse_than?(solution)
             end
 
             best_solution_so_far
           end
 
-          def better_candidate_than?(other)
-            return false unless candidate_result?
-            unmatched_item_count < other.unmatched_item_count
+          def worse_than?(other)
+            other.unmatched_item_count > unmatched_item_count
           end
 
+          # Starting solution that is worse than any other real solution.
           NullSolution = Class.new do
-            INFINITY = 1 / 0.0
-            def self.unmatched_item_count; INFINITY; end
+            def self.worse_than?(other); true; end
           end
 
-          # A result is only a candidate solution if there are no
-          # expected or actual items that are indeterminite.
-          def candidate_result?
+          def candidate_solution?
             indeterminite_expected_indexes.empty? &&
             indeterminite_actual_indexes.empty?
           end
 
-          def ideal_result?
-            candidate_result? && (
+          def ideal_solution?
+            candidate_solution? && (
               unmatched_expected_indexes.empty? ||
               unmatched_actual_indexes.empty?
             )
@@ -141,7 +160,10 @@ module RSpec
 
         private
 
-          def categorize_indexes(indexes_to_categorize, other_indexes, unmatched, indeterminite)
+          def categorize_indexes(indexes_to_categorize, other_indexes)
+            unmatched     = []
+            indeterminite = []
+
             indexes_to_categorize.each_with_index do |matches, index|
               if matches.empty?
                 unmatched << index
@@ -149,6 +171,8 @@ module RSpec
                 indeterminite << index
               end
             end
+
+            return unmatched, indeterminite
           end
 
           def reciprocal_single_match?(matches, index, other_list)
@@ -156,7 +180,7 @@ module RSpec
             other_list[matches.first] == [index]
           end
 
-          def try_pairing(expected_index, actual_index)
+          def best_solution_for_pairing(expected_index, actual_index)
             modified_expecteds = apply_pairing_to(expected_to_actual_matched_indexes, expected_index, actual_index)
             modified_actuals   = apply_pairing_to(actual_to_expected_matched_indexes, actual_index, expected_index)
 

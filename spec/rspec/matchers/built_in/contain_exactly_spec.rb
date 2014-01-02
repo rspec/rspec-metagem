@@ -358,7 +358,7 @@ module RSpec
           describe "#find_best_solution" do
             matcher :produce_result do |unmatched_expected, unmatched_actual|
               match do |result|
-                result.candidate_result? &&
+                result.candidate_solution? &&
                 result.unmatched_expected_indexes == unmatched_expected &&
                 result.unmatched_actual_indexes   == unmatched_actual
               end
