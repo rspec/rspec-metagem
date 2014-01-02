@@ -102,63 +102,67 @@ module RSpec
         #
         # @private
         class PairingsMaximizer
-          attr_reader :expected_to_actual_matched_indexes, :actual_to_expected_matched_indexes,
-                      :unmatched_expected_indexes,         :unmatched_actual_indexes,
-                      :indeterminite_expected_indexes,     :indeterminite_actual_indexes
+          Solution = Struct.new(:unmatched_expected_indexes,     :unmatched_actual_indexes,
+                                :indeterminite_expected_indexes, :indeterminite_actual_indexes) do
+            def worse_than?(other)
+              unmatched_item_count > other.unmatched_item_count
+            end
+
+            def candidate?
+              indeterminite_expected_indexes.empty? &&
+              indeterminite_actual_indexes.empty?
+            end
+
+            def ideal?
+              candidate? && (
+                unmatched_expected_indexes.empty? ||
+                unmatched_actual_indexes.empty?
+              )
+            end
+
+            def unmatched_item_count
+              unmatched_expected_indexes.count + unmatched_actual_indexes.count
+            end
+          end
+
+          attr_reader :expected_to_actual_matched_indexes, :actual_to_expected_matched_indexes, :solution
 
           def initialize(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
             @expected_to_actual_matched_indexes = expected_to_actual_matched_indexes
             @actual_to_expected_matched_indexes = actual_to_expected_matched_indexes
 
-            @unmatched_expected_indexes, @indeterminite_expected_indexes =
+            unmatched_expected_indexes, indeterminite_expected_indexes =
               categorize_indexes(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
 
-            @unmatched_actual_indexes, @indeterminite_actual_indexes =
+            unmatched_actual_indexes, indeterminite_actual_indexes =
               categorize_indexes(actual_to_expected_matched_indexes, expected_to_actual_matched_indexes)
+
+            @solution = Solution.new(unmatched_expected_indexes,     unmatched_actual_indexes,
+                                     indeterminite_expected_indexes, indeterminite_actual_indexes)
           end
 
           def find_best_solution
-            return self if candidate_solution?
+            return solution if solution.candidate?
             best_solution_so_far = NullSolution
 
-            expected_index = indeterminite_expected_indexes.first
+            expected_index = solution.indeterminite_expected_indexes.first
             actuals = expected_to_actual_matched_indexes[expected_index]
 
             actuals.each do |actual_index|
               solution = best_solution_for_pairing(expected_index, actual_index)
-              return solution if solution.ideal_solution?
+              return solution if solution.ideal?
               best_solution_so_far = solution if best_solution_so_far.worse_than?(solution)
             end
 
             best_solution_so_far
           end
 
-          def worse_than?(other)
-            unmatched_item_count > other.unmatched_item_count
-          end
+        private
 
           # Starting solution that is worse than any other real solution.
           NullSolution = Class.new do
             def self.worse_than?(other); true; end
           end
-
-          def candidate_solution?
-            indeterminite_expected_indexes.empty? &&
-            indeterminite_actual_indexes.empty?
-          end
-
-          def ideal_solution?
-            candidate_solution? && (
-              unmatched_expected_indexes.empty? ||
-              unmatched_actual_indexes.empty?
-            )
-          end
-
-          def unmatched_item_count
-            unmatched_expected_indexes.count + unmatched_actual_indexes.count
-          end
-
-        private
 
           def categorize_indexes(indexes_to_categorize, other_indexes)
             unmatched     = []
