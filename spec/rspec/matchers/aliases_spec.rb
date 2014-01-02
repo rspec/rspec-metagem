@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module RSpec
-  describe Matchers, "aliases" do
+  describe Matchers, "aliases", :order => :defined do
     matcher :be_aliased_to do |old_matcher|
       chain :with_description do |desc|
         @expected_desc = desc
@@ -101,23 +101,7 @@ module RSpec
     end
 
     specify do
-      expect(a_proc_changing).to be_aliased_to(change).with_description("a proc changing result")
-    end
-
-    specify do
-      expect(a_lambda_changing).to be_aliased_to(change).with_description("a lambda changing result")
-    end
-
-    specify do
       expect(changing).to be_aliased_to(change).with_description("changing result")
-    end
-
-    specify do
-      expect(
-        an_array_containing_exactly(1, 2)
-      ).to be_aliased_to(
-        contain_exactly(1, 2)
-      ).with_description("an array containing exactly 1 and 2")
     end
 
     specify do
@@ -170,24 +154,10 @@ module RSpec
 
     specify do
       expect(
-        an_array_ending_with(23)
-      ).to be_aliased_to(
-        end_with(23)
-      ).with_description("an array ending with 23")
-    end
-
-    specify do
-      expect(
         a_string_ending_with("z")
       ).to be_aliased_to(
         end_with("z")
       ).with_description('a string ending with "z"')
-    end
-
-    specify do
-      expect(
-        a_value_eq_to(3)
-      ).to be_aliased_to(eq 3).with_description("a value eq to 3")
     end
 
     specify do
@@ -204,12 +174,6 @@ module RSpec
 
     specify do
       expect(
-        a_value_eql_to(3)
-      ).to be_aliased_to(eql 3).with_description("a value eql to 3")
-    end
-
-    specify do
-      expect(
         an_object_eql_to(3)
       ).to be_aliased_to(eql 3).with_description("an object eql to 3")
     end
@@ -218,12 +182,6 @@ module RSpec
       expect(
         eql_to(3)
       ).to be_aliased_to(eql 3).with_description("eql to 3")
-    end
-
-    specify do
-      expect(
-        a_value_equal_to(3)
-      ).to be_aliased_to(equal 3).with_description("a value equal to 3")
     end
 
     specify do
@@ -240,8 +198,8 @@ module RSpec
 
     specify do
       expect(
-        a_value_existing
-      ).to be_aliased_to(exist).with_description("a value existing")
+        an_object_existing
+      ).to be_aliased_to(exist).with_description("an object existing")
     end
 
     specify do
@@ -262,14 +220,6 @@ module RSpec
       ).to be_aliased_to(
         include("a")
       ).with_description('a collection including "a"')
-    end
-
-    specify do
-      expect(
-        an_array_including("a")
-      ).to be_aliased_to(
-        include("a")
-      ).with_description('an array including "a"')
     end
 
     specify do
@@ -322,22 +272,6 @@ module RSpec
 
     specify do
       expect(
-        a_lambda_raising(ArgumentError)
-      ).to be_aliased_to(
-        raise_error(ArgumentError)
-      ).with_description('a lambda raising ArgumentError')
-    end
-
-    specify do
-      expect(
-        a_proc_raising(ArgumentError)
-      ).to be_aliased_to(
-        raise_error(ArgumentError)
-      ).with_description('a proc raising ArgumentError')
-    end
-
-    specify do
-      expect(
         raising(ArgumentError)
       ).to be_aliased_to(
         raise_error(ArgumentError)
@@ -386,14 +320,6 @@ module RSpec
 
     specify do
       expect(
-        an_array_starting_with(23)
-      ).to be_aliased_to(
-        start_with(23)
-      ).with_description("an array starting with 23")
-    end
-
-    specify do
-      expect(
         a_string_starting_with("z")
       ).to be_aliased_to(
         start_with("z")
@@ -418,22 +344,6 @@ module RSpec
 
     specify do
       expect(
-        a_lambda_throwing(:foo)
-      ).to be_aliased_to(
-        throw_symbol(:foo)
-      ).with_description("a lambda throwing :foo")
-    end
-
-    specify do
-      expect(
-        a_proc_throwing(:foo)
-      ).to be_aliased_to(
-        throw_symbol(:foo)
-      ).with_description("a proc throwing :foo")
-    end
-
-    specify do
-      expect(
         throwing(:foo)
       ).to be_aliased_to(
         throw_symbol(:foo)
@@ -446,22 +356,6 @@ module RSpec
       ).to be_aliased_to(
         yield_control
       ).with_description("a block yielding control")
-    end
-
-    specify do
-      expect(
-        a_lambda_yielding_control
-      ).to be_aliased_to(
-        yield_control
-      ).with_description("a lambda yielding control")
-    end
-
-    specify do
-      expect(
-        a_proc_yielding_control
-      ).to be_aliased_to(
-        yield_control
-      ).with_description("a proc yielding control")
     end
 
     specify do
@@ -482,22 +376,6 @@ module RSpec
 
     specify do
       expect(
-        a_lambda_yielding_with_no_args
-      ).to be_aliased_to(
-        yield_with_no_args
-      ).with_description("a lambda yielding with no args")
-    end
-
-    specify do
-      expect(
-        a_proc_yielding_with_no_args
-      ).to be_aliased_to(
-        yield_with_no_args
-      ).with_description("a proc yielding with no args")
-    end
-
-    specify do
-      expect(
         yielding_with_no_args
       ).to be_aliased_to(
         yield_with_no_args
@@ -514,22 +392,6 @@ module RSpec
 
     specify do
       expect(
-        a_lambda_yielding_with_args
-      ).to be_aliased_to(
-        yield_with_args
-      ).with_description("a lambda yielding with args")
-    end
-
-    specify do
-      expect(
-        a_proc_yielding_with_args
-      ).to be_aliased_to(
-        yield_with_args
-      ).with_description("a proc yielding with args")
-    end
-
-    specify do
-      expect(
         yielding_with_args
       ).to be_aliased_to(
         yield_with_args
@@ -542,22 +404,6 @@ module RSpec
       ).to be_aliased_to(
         yield_successive_args
       ).with_description("a block yielding successive args()")
-    end
-
-    specify do
-      expect(
-        a_lambda_yielding_successive_args
-      ).to be_aliased_to(
-        yield_successive_args
-      ).with_description("a lambda yielding successive args()")
-    end
-
-    specify do
-      expect(
-        a_proc_yielding_successive_args
-      ).to be_aliased_to(
-        yield_successive_args
-      ).with_description("a proc yielding successive args()")
     end
 
     specify do
