@@ -5,7 +5,7 @@ module RSpec
         def match(expected, actual)
           return false unless actual_is_a_collection?
           @actual = actual.to_a
-          extra_items.empty? && missing_items.empty?
+          match_when_sorted? || (extra_items.empty? && missing_items.empty?)
         end
 
         def failure_message
@@ -29,6 +29,14 @@ module RSpec
         end
 
       private
+
+        # This cannot always work (e.g. when dealing with unsortable items,
+        # or matchers as expected items), but it's practically free compared to
+        # the slowness of the full matching algorithm, and in common cases this
+        # works, so it's worth a try.
+        def match_when_sorted?
+          values_match?(safe_sort(expected), safe_sort(actual))
+        end
 
         def actual_is_a_collection?
           enumerable?(actual) && actual.respond_to?(:to_a)
