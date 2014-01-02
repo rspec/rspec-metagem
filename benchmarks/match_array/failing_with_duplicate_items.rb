@@ -4,7 +4,7 @@ require 'rspec/expectations'
 
 extend RSpec::Matchers
 
-sizes = [10, 20, 25]
+sizes = [10, 100, 1000]
 
 puts "rspec-expectations #{RSpec::Expectations::Version::STRING} -- #{RUBY_ENGINE}/#{RUBY_VERSION}"
 
@@ -85,3 +85,14 @@ With "smaller subproblem" optimization: (way faster!)
    25 items  0.000000   0.000000   0.000000 (  0.002836)
    25 items  0.000000   0.000000   0.000000 (  0.002721)
 
+With "implement `values_match?` ourselves" optimization: (about twice as fast!)
+
+   10 items  0.000000   0.000000   0.000000 (  0.002450)
+   10 items  0.000000   0.000000   0.000000 (  0.000857)
+   10 items  0.000000   0.000000   0.000000 (  0.000883)
+  100 items  0.040000   0.000000   0.040000 (  0.043661)
+  100 items  0.060000   0.000000   0.060000 (  0.053046)
+  100 items  0.040000   0.010000   0.050000 (  0.051760)
+ 1000 items  3.620000   0.060000   3.680000 (  3.688289)
+ 1000 items  2.600000   0.020000   2.620000 (  2.628405)
+ 1000 items  4.660000   0.040000   4.700000 (  4.712196)

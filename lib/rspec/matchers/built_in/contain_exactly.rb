@@ -65,7 +65,11 @@ module RSpec
               actual.each_with_index do |a, ai|
                 actual_matches[ai] ||= []
 
-                if values_match?(e, a)
+                # Normally we'd call `values_match?(e, a)` here but that contains
+                # some extra checks we don't need (e.g. to support nested data
+                # structures), and given that it's called N*M times here, it helps
+                # perf significantly to implement the matching bit ourselves.
+                if (e === a || a == e)
                   expected_matches[ei] << ai
                   actual_matches[ai] << ei
                 end
