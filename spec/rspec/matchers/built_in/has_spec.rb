@@ -58,7 +58,8 @@ describe "expect(...).to have_sym(*args)" do
     }.to raise_error("Funky exception")
   end
 
-  it 'supports composable aliases' do
+  it 'allows composable aliases to be defined' do
+    RSpec::Matchers.alias_matcher :an_object_having_sym, :have_sym
     o = Object.new
     def o.has_sym?(sym); sym == :foo; end
 

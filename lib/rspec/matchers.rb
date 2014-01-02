@@ -56,6 +56,12 @@ module RSpec
   # You can use this feature to invoke any predicate that begins with "has_", whether it is
   # part of the Ruby libraries (like `Hash#has_key?`) or a method you wrote on your own class.
   #
+  # Note that RSpec does not provide composable aliases for these dynamic predicate
+  # matchers. You can easily define your own aliases, though:
+  #
+  #     RSpec::Matchers.alias_matcher :a_user_who_is_an_admin, :be_an_admin
+  #     expect(user_list).to include(a_user_who_is_an_admin)
+  #
   # ## Custom Matchers
   #
   # When you find that none of the stock matchers provide a natural feeling

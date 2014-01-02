@@ -194,8 +194,7 @@ it is a bit confusing.
           expected
         end
 
-        # http://rubular.com/r/KkwGL6s6yZ
-        REGEX = /^(?:(be_(?:an?_)?)(.*))|(an?_\w+_(?:that|who|which)_is_(?:an?_)?)(.*)/
+        REGEX = /^(be_(?:an?_)?)(.*)/
 
         def prefix_and_expected(symbol)
           REGEX.match(symbol.to_s).captures.compact

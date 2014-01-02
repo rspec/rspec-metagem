@@ -35,10 +35,9 @@ Feature: Composing Matchers
   A full list of these aliases is out of scope here, but here are some
   of the aliases used below:
 
+    * `be < 2` => `a_value < 2`
     * `be > 2` => `a_value > 2`
     * `be_an_instance_of` => `an_instance_of`
-    * `be_odd` => `a_number_that_is_odd`
-    * `be_even` => `a_number_that_is_even`
     * `be_within` => `a_value_within`
     * `contain_exactly` => `a_collection_containing_exactly`
     * `end_with` => `a_string_ending_with`, `ending_with`
@@ -180,8 +179,8 @@ Feature: Composing Matchers
       describe "Passing matchers to `throw_symbol`" do
         specify "you can pass a matcher in place of a throw arg" do
           expect {
-            throw :foo, 3
-          }.to throw_symbol(:foo, a_number_that_is_odd)
+            throw :pi, Math::PI
+          }.to throw_symbol(:pi, a_value_within(0.01).of(3.14))
         end
       end
       """
@@ -209,11 +208,7 @@ Feature: Composing Matchers
         specify "you can pass matchers in place of the args" do
           expect { |probe|
             [1, 2, 3].each(&probe)
-          }.to yield_successive_args(
-            a_number_that_is_odd,
-            a_number_that_is_even,
-            a_number_that_is_odd
-          )
+          }.to yield_successive_args(a_value < 2, 2, a_value > 2)
         end
       end
       """

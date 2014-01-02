@@ -26,8 +26,7 @@ module RSpec
 
       private
 
-        # http://rubular.com/r/eqhaERTsCM
-        REGEX = /^(?:(?:have_)|(?:an?_\w+_having_))(.*)/
+        REGEX = /^(?:have_)(.*)/
 
         def predicate
           @predicate ||= :"has_#{@method_name.to_s.match(REGEX).captures.first}?"
