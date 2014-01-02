@@ -107,14 +107,14 @@ module RSpec
         # @private
         class PairingsMaximizer
           Solution = Struct.new(:unmatched_expected_indexes,     :unmatched_actual_indexes,
-                                :indeterminite_expected_indexes, :indeterminite_actual_indexes) do
+                                :indeterminate_expected_indexes, :indeterminate_actual_indexes) do
             def worse_than?(other)
               unmatched_item_count > other.unmatched_item_count
             end
 
             def candidate?
-              indeterminite_expected_indexes.empty? &&
-              indeterminite_actual_indexes.empty?
+              indeterminate_expected_indexes.empty? &&
+              indeterminate_actual_indexes.empty?
             end
 
             def ideal?
@@ -132,8 +132,8 @@ module RSpec
               self.class.new(
                 unmatched_expected_indexes + derived_candidate_solution.unmatched_expected_indexes,
                 unmatched_actual_indexes   + derived_candidate_solution.unmatched_actual_indexes,
-                # Ignore the indeterminite indexes: by the time we get here,
-                # we've dealt with all indeterminites.
+                # Ignore the indeterminate indexes: by the time we get here,
+                # we've dealt with all indeterminates.
                 [], []
               )
             end
@@ -145,21 +145,21 @@ module RSpec
             @expected_to_actual_matched_indexes = expected_to_actual_matched_indexes
             @actual_to_expected_matched_indexes = actual_to_expected_matched_indexes
 
-            unmatched_expected_indexes, indeterminite_expected_indexes =
+            unmatched_expected_indexes, indeterminate_expected_indexes =
               categorize_indexes(expected_to_actual_matched_indexes, actual_to_expected_matched_indexes)
 
-            unmatched_actual_indexes, indeterminite_actual_indexes =
+            unmatched_actual_indexes, indeterminate_actual_indexes =
               categorize_indexes(actual_to_expected_matched_indexes, expected_to_actual_matched_indexes)
 
             @solution = Solution.new(unmatched_expected_indexes,     unmatched_actual_indexes,
-                                     indeterminite_expected_indexes, indeterminite_actual_indexes)
+                                     indeterminate_expected_indexes, indeterminate_actual_indexes)
           end
 
           def find_best_solution
             return solution if solution.candidate?
             best_solution_so_far = NullSolution
 
-            expected_index = solution.indeterminite_expected_indexes.first
+            expected_index = solution.indeterminate_expected_indexes.first
             actuals = expected_to_actual_matched_indexes[expected_index]
 
             actuals.each do |actual_index|
@@ -180,17 +180,17 @@ module RSpec
 
           def categorize_indexes(indexes_to_categorize, other_indexes)
             unmatched     = []
-            indeterminite = []
+            indeterminate = []
 
             indexes_to_categorize.each_pair do |index, matches|
               if matches.empty?
                 unmatched << index
               elsif !reciprocal_single_match?(matches, index, other_indexes)
-                indeterminite << index
+                indeterminate << index
               end
             end
 
-            return unmatched, indeterminite
+            return unmatched, indeterminate
           end
 
           def reciprocal_single_match?(matches, index, other_list)
@@ -200,13 +200,13 @@ module RSpec
 
           def best_solution_for_pairing(expected_index, actual_index)
             modified_expecteds = apply_pairing_to(
-              solution.indeterminite_expected_indexes,
+              solution.indeterminate_expected_indexes,
               expected_to_actual_matched_indexes, actual_index)
 
             modified_expecteds.delete(expected_index)
 
             modified_actuals   = apply_pairing_to(
-              solution.indeterminite_actual_indexes,
+              solution.indeterminate_actual_indexes,
               actual_to_expected_matched_indexes, expected_index)
 
             modified_actuals.delete(actual_index)
@@ -214,8 +214,8 @@ module RSpec
             solution + self.class.new(modified_expecteds, modified_actuals).find_best_solution
           end
 
-          def apply_pairing_to(indeterminites, original_matches, other_list_index)
-            indeterminites.inject({}) do |accum, index|
+          def apply_pairing_to(indeterminates, original_matches, other_list_index)
+            indeterminates.inject({}) do |accum, index|
               accum[index] = original_matches[index] - [other_list_index]
               accum
             end
