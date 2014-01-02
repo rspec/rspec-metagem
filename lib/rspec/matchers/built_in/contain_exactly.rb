@@ -134,7 +134,7 @@ module RSpec
           end
 
           def worse_than?(other)
-            other.unmatched_item_count > unmatched_item_count
+            unmatched_item_count > other.unmatched_item_count
           end
 
           # Starting solution that is worse than any other real solution.

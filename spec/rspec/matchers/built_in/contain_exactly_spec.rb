@@ -257,6 +257,18 @@ describe "Composing `contain_exactly` with other matchers" do
       EOS
     end
 
+    it 'pairs up the items in order to minimize the number of unpaired items' do
+      expect {
+        expect(["fool", "food", "good"]).to contain_exactly(/foo/, /fool/, /poo/)
+      }.to fail_with(dedent <<-EOS)
+        |expected collection contained:  [/foo/, /fool/, /poo/]
+        |actual collection contained:    ["food", "fool", "good"]
+        |the missing elements were:      [/poo/]
+        |the extra elements were:        ["good"]
+        |
+      EOS
+    end
+
     it 'provides a description' do
       description = contain_exactly(a_string_matching(/bar/), a_string_matching(/foo/)).description
       expect(description).to eq("contain exactly (a string matching /bar/) and (a string matching /foo/)")
