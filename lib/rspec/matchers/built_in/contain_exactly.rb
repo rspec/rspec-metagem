@@ -56,11 +56,15 @@ module RSpec
 
         def pairings_maximizer
           @pairings_maximizer ||= begin
-            expected_matches = Array.new(expected.count) { [] }
-            actual_matches   = Array.new(actual.count)   { [] }
+            expected_matches = {}
+            actual_matches   = {}
 
             expected.each_with_index do |e, ei|
+              expected_matches[ei] ||= []
+
               actual.each_with_index do |a, ai|
+                actual_matches[ai] ||= []
+
                 if values_match?(e, a)
                   expected_matches[ei] << ai
                   actual_matches[ai] << ei
@@ -123,6 +127,16 @@ module RSpec
             def unmatched_item_count
               unmatched_expected_indexes.count + unmatched_actual_indexes.count
             end
+
+            def +(derived_candidate_solution)
+              self.class.new(
+                unmatched_expected_indexes + derived_candidate_solution.unmatched_expected_indexes,
+                unmatched_actual_indexes   + derived_candidate_solution.unmatched_actual_indexes,
+                # Ignore the indeterminite indexes: by the time we get here,
+                # we've dealt with all indeterminites.
+                [], []
+              )
+            end
           end
 
           attr_reader :expected_to_actual_matched_indexes, :actual_to_expected_matched_indexes, :solution
@@ -168,7 +182,7 @@ module RSpec
             unmatched     = []
             indeterminite = []
 
-            indexes_to_categorize.each_with_index do |matches, index|
+            indexes_to_categorize.each_pair do |index, matches|
               if matches.empty?
                 unmatched << index
               elsif !reciprocal_single_match?(matches, index, other_indexes)
@@ -185,19 +199,25 @@ module RSpec
           end
 
           def best_solution_for_pairing(expected_index, actual_index)
-            modified_expecteds = apply_pairing_to(expected_to_actual_matched_indexes, expected_index, actual_index)
-            modified_actuals   = apply_pairing_to(actual_to_expected_matched_indexes, actual_index, expected_index)
+            modified_expecteds = apply_pairing_to(
+              solution.indeterminite_expected_indexes,
+              expected_to_actual_matched_indexes, actual_index)
 
-            self.class.new(modified_expecteds, modified_actuals).find_best_solution
+            modified_expecteds.delete(expected_index)
+
+            modified_actuals   = apply_pairing_to(
+              solution.indeterminite_actual_indexes,
+              actual_to_expected_matched_indexes, expected_index)
+
+            modified_actuals.delete(actual_index)
+
+            solution + self.class.new(modified_expecteds, modified_actuals).find_best_solution
           end
 
-          def apply_pairing_to(original_matches, this_list_index, other_list_index)
-            original_matches.each_with_index.map do |matches, index|
-              if index == this_list_index
-                [other_list_index]
-              else
-                matches - [other_list_index]
-              end
+          def apply_pairing_to(indeterminites, original_matches, other_list_index)
+            indeterminites.inject({}) do |accum, index|
+              accum[index] = original_matches[index] - [other_list_index]
+              accum
             end
           end
         end
