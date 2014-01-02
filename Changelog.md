@@ -33,6 +33,9 @@ Enhancements:
 * Define noun-phrase aliases for built-in matchers, which can be
   used when creating composed matcher expressions that read better
   and provide better failure messages. (Myron Marston)
+* Add `RSpec::Machers.alias_matcher` so users can define their own
+  matcher aliases. The `description` of the matcher will reflect the
+  alternate matcher name. (Myron Marston)
 
 Breaking Changes for 3.0.0:
 
