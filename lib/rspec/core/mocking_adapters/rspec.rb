@@ -14,7 +14,7 @@ module RSpec
         end
 
         def setup_mocks_for_rspec
-          ::RSpec::Mocks.setup(self)
+          ::RSpec::Mocks.setup
         end
 
         def verify_mocks_for_rspec

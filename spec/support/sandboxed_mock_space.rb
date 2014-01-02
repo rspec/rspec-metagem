@@ -23,8 +23,11 @@ module RSpec
     # example completes.
     class SandboxedMockSpace < ::RSpec::Mocks::Space
       def self.sandboxed
-        orig_space = RSpec::Mocks.space
-        RSpec::Mocks.space = RSpec::Core::SandboxedMockSpace.new
+        sandboxed_space = RSpec::Core::SandboxedMockSpace.new
+        RSpec::Mocks.send(:remove_const, "ERROR_SPACE")
+        RSpec::Mocks.const_set("ERROR_SPACE", sandboxed_space)
+        RSpec::Mocks.send(:remove_const, "MOCK_SPACE")
+        RSpec::Mocks.const_set("MOCK_SPACE", sandboxed_space)
 
         RSpec::Core::Example.class_eval do
           alias_method :orig_run, :run
@@ -43,7 +46,10 @@ module RSpec
           remove_method :orig_run
         end
 
-        RSpec::Mocks.space = orig_space
+        RSpec::Mocks.send(:remove_const, "MOCK_SPACE")
+        RSpec::Mocks.const_set("MOCK_SPACE", RSpec::Mocks::Space.new)
+        RSpec::Mocks.send(:remove_const, "ERROR_SPACE")
+        RSpec::Mocks.const_set("ERROR_SPACE", RSpec::Mocks::ErrorSpace.new)
       end
 
       class Sandbox
