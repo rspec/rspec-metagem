@@ -108,11 +108,11 @@ describe "Matchers should be able to generate their own descriptions" do
                      :matches?                   => true,
                      :failure_message => "")
     expect([matcher]).to include(matcher)
-    expect(RSpec::Matchers.generated_description).to eq "should include description"
+    expect(RSpec::Matchers.generated_description).to eq "should include (description)"
   end
 
-  it "expect(array).to match_array [1,2,3]" do
-    expect([1,2,3]).to match_array [1,2,3]
+  it "expect(array).to contain_exactly(1, 2, 3)" do
+    expect([1,2,3]).to contain_exactly(1, 2, 3)
     expect(RSpec::Matchers.generated_description).to eq "should contain exactly 1, 2 and 3"
   end
 

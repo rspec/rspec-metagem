@@ -6,6 +6,23 @@ describe "expect(...).to be_predicate" do
     expect(actual).to be_happy
   end
 
+  it 'allows composable aliases to be defined' do
+    RSpec::Matchers.alias_matcher :a_user_who_is_happy, :be_happy
+    actual = double("actual", :happy? => true)
+    expect(actual).to a_user_who_is_happy
+    expect(a_user_who_is_happy.description).to eq("a user who is happy")
+
+    RSpec::Matchers.alias_matcher :a_user_who_is_an_admin, :be_an_admin
+    actual = double("actual", :admin? => true)
+    expect(actual).to a_user_who_is_an_admin
+    expect(a_user_who_is_an_admin.description).to eq("a user who is an admin")
+
+    RSpec::Matchers.alias_matcher :an_animal_that_is_a_canine, :be_a_canine
+    actual = double("actual", :canine? => true)
+    expect(actual).to an_animal_that_is_a_canine
+    expect(an_animal_that_is_a_canine.description).to eq("an animal that is a canine")
+  end
+
   it "passes when actual returns true for :predicates? (present tense)" do
     actual = double("actual", :exists? => true, :exist? => true)
     expect(actual).to be_exist
@@ -326,6 +343,11 @@ describe "expect(...).to be <" do
 
   it "describes itself" do
     expect(be.<(4).description).to eq "be < 4"
+  end
+
+  it 'does not lie and say that it is equal to a number' do
+    matcher = (be < 3)
+    expect(5 == matcher).to be false
   end
 end
 

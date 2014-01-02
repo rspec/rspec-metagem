@@ -6,11 +6,19 @@ end
 
 Dir['./spec/support/**/*'].each {|f| require f}
 
+module FormattingSupport
+  def dedent(string)
+    string.gsub(/^\s+\|/, '').chomp
+  end
+end
+
 RSpec::configure do |config|
   config.color_enabled = true
   config.filter_run :focused
   config.run_all_when_everything_filtered = true
   config.order = :random
+
+  config.include FormattingSupport
 
   config.expect_with :rspec do |expectations|
     $default_expectation_syntax = expectations.syntax

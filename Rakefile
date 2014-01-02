@@ -9,31 +9,9 @@ require 'rspec/expectations/version'
 require 'cucumber/rake/task'
 Cucumber::Rake::Task.new(:cucumber)
 
-task :cleanup_rcov_files do
-  rm_rf 'coverage.data'
-end
-
 desc "Run all examples"
 RSpec::Core::RakeTask.new(:spec) do |t|
   t.ruby_opts = %w[-w]
-end
-
-if RUBY_VERSION.to_f == 1.8
-  namespace :rcov do
-    desc "Run all examples using rcov"
-    RSpec::Core::RakeTask.new :spec => :cleanup_rcov_files do |t|
-      t.rcov = true
-      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-      t.rcov_opts << %[--text-report --sort coverage --no-html --aggregate coverage.data]
-    end
-    desc "Run cucumber features using rcov"
-    Cucumber::Rake::Task.new :cucumber => :cleanup_rcov_files do |t|
-      t.cucumber_opts = %w{--format progress}
-      t.rcov = true
-      t.rcov_opts =  %[-Ilib -Ispec --exclude "gems/*,features"]
-      t.rcov_opts << %[--text-report --sort coverage --aggregate coverage.data]
-    end
-  end
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"

@@ -14,7 +14,8 @@ module RSpec
       autoload :BeWithin,                'rspec/matchers/built_in/be_within'
       autoload :Change,                  'rspec/matchers/built_in/change'
       autoload :Compound,                'rspec/matchers/built_in/compound'
-      autoload :Cover,                   'rspec/matchers/built_in/cover' if (1..2).respond_to?(:cover?)
+      autoload :ContainExactly,          'rspec/matchers/built_in/contain_exactly'
+      autoload :Cover,                   'rspec/matchers/built_in/cover'
       autoload :EndWith,                 'rspec/matchers/built_in/start_and_end_with'
       autoload :Eq,                      'rspec/matchers/built_in/eq'
       autoload :Eql,                     'rspec/matchers/built_in/eql'
@@ -23,7 +24,6 @@ module RSpec
       autoload :Has,                     'rspec/matchers/built_in/has'
       autoload :Include,                 'rspec/matchers/built_in/include'
       autoload :Match,                   'rspec/matchers/built_in/match'
-      autoload :MatchArray,              'rspec/matchers/built_in/match_array'
       autoload :NegativeOperatorMatcher, 'rspec/matchers/built_in/operators'
       autoload :OperatorMatcher,         'rspec/matchers/built_in/operators'
       autoload :PositiveOperatorMatcher, 'rspec/matchers/built_in/operators'

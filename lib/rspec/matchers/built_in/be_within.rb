@@ -10,9 +10,8 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          raise needs_expected     unless defined? @expected
-          raise needs_subtractable unless @actual.respond_to? :-
-          (@actual - @expected).abs <= @tolerance
+          raise needs_expected unless defined? @expected
+          numeric? && (@actual - @expected).abs <= @tolerance
         end
 
         def of(expected)
@@ -30,7 +29,7 @@ module RSpec
         end
 
         def failure_message
-          "expected #{@actual} to #{description}"
+          "expected #{@actual.inspect} to #{description}#{not_numeric_clause}"
         end
 
         def failure_message_when_negated
@@ -41,14 +40,19 @@ module RSpec
           "be within #{@delta}#{@unit} of #{@expected}"
         end
 
-        private
+      private
 
-        def needs_subtractable
-          ArgumentError.new "The actual value (#{@actual.inspect}) must respond to `-`"
+        def numeric?
+          @actual.respond_to?(:-)
         end
 
         def needs_expected
           ArgumentError.new "You must set an expected value using #of: be_within(#{@delta}).of(expected_value)"
+        end
+
+        def not_numeric_clause
+          return "" if numeric?
+          ", but it could not be treated as a numeric value"
         end
       end
     end

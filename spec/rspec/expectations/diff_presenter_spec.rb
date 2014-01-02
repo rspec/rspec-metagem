@@ -211,6 +211,22 @@ EOD
           diff = differ.diff_as_object(expected,actual)
           expect(diff).to eq expected_diff
         end
+
+        it "uses matcher descriptions in place of matchers in diffs" do
+          expected = [a_string_matching(/foo/), a_string_matching(/bar/)]
+          actual   = ["poo", "car"]
+
+          expected_diff = dedent(<<-EOS)
+            |
+            |@@ -1,2 +1,2 @@
+            |-["poo", "car"]
+            |+[(a string matching /foo/), (a string matching /bar/)]
+            |
+          EOS
+
+          diff = differ.diff_as_object(expected,actual)
+          expect(diff).to eq expected_diff
+        end
       end
     end
 

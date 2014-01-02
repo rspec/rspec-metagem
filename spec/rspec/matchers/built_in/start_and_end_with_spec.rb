@@ -35,23 +35,47 @@ describe "expect(...).to start_with" do
     it "fails if it the first elements of the array do not match" do
       expect {
         expect([0, 1, 2]).to start_with 1, 2
-      }.to fail_with("expected [0, 1, 2] to start with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] to start with 1 and 2")
     end
   end
 
   context "with an object that does not respond to :[]" do
-    it "raises an ArgumentError" do
+    it "fails with a useful message" do
+      actual = Object.new
       expect {
-        expect(Object.new).to start_with 0
-      }.to raise_error(ArgumentError, /does not respond to :\[\]/)
+        expect(actual).to start_with 0
+      }.to fail_with("expected #{actual.inspect} to start with 0, but it cannot be indexed using #[]")
     end
   end
 
   context "with a hash" do
-    it "raises an ArgumentError if trying to match more than one element" do
+    it "fails with a useful error if trying to match more than one element" do
+      actual   = { :a => 'b', :b => 'b', :c => 'c' }
+      expected = { :a => 'b', :b => 'b' }
       expect{
-        expect({:a => 'b', :b => 'b', :c => 'c'}).to start_with({:a => 'b', :b => 'b'})
-      }.to raise_error(ArgumentError, /does not have ordered elements/)
+        expect(actual).to start_with(expected)
+      }.to fail_with("expected #{actual.inspect} to start with #{expected.inspect}, but it does not have ordered elements")
+    end
+  end
+
+  describe "composing with other matchers" do
+    it 'passes if the start of an array matches two given matchers' do
+      expect([1.01, "food", 3]).to start_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+    end
+
+    it 'passes if the start of an array matches one given matcher' do
+      expect([1.01, "food", 3]).to start_with(a_value_within(0.2).of(1))
+    end
+
+    it 'provides a description' do
+      description = start_with(a_value_within(0.1).of(1), a_string_matching(/abc/)).description
+      expect(description).to eq("start with a value within 0.1 of 1 and a string matching /abc/")
+    end
+
+    it 'fails with a clear error message when the matchers do not match' do
+      expect {
+        expect([2.01, "food", 3]).to start_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with('expected [2.01, "food", 3] to start with a value within 0.2 of 1 and a string matching /foo/')
     end
   end
 end
@@ -87,8 +111,18 @@ describe "expect(...).not_to start_with" do
     it "fails if it the first elements of the array match" do
       expect {
         expect([0, 1, 2]).not_to start_with 0, 1
-      }.to fail_with("expected [0, 1, 2] not to start with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] not to start with 0 and 1")
     end
+  end
+
+  it 'can pass when composed with another matcher' do
+    expect(["a"]).not_to start_with(a_string_matching(/bar/))
+  end
+
+  it 'can fail when composed with another matcher' do
+    expect {
+      expect(["a"]).not_to start_with(a_string_matching(/a/))
+    }.to fail_with('expected ["a"] not to start with a string matching /a/')
   end
 end
 
@@ -127,26 +161,49 @@ describe "expect(...).to end_with" do
     it "fails if it the last elements of the array do not match" do
       expect {
         expect([0, 1, 2]).to end_with [0, 1]
-      }.to fail_with("expected [0, 1, 2] to end with [0, 1]")
+      }.to fail_with("expected [0, 1, 2] to end with 0 and 1")
     end
   end
 
   context "with an object that does not respond to :[]" do
-    it "raises an error if expected value can't be indexed'" do
+    it "fails with a useful message" do
+      actual = Object.new
       expect {
-        expect(Object.new).to end_with 0
-      }.to raise_error(ArgumentError, /does not respond to :\[\]/)
+        expect(actual).to end_with 0
+      }.to fail_with("expected #{actual.inspect} to end with 0, but it cannot be indexed using #[]")
     end
   end
 
   context "with a hash" do
     it "raises an ArgumentError if trying to match more than one element" do
+      actual   = { :a => 'b', :b => 'b', :c => 'c' }
+      expected = { :a => 'b', :b => 'b' }
       expect{
-        expect({:a => 'b', :b => 'b', :c => 'c'}).to end_with({:a => 'b', :b =>'b'})
-      }.to raise_error(ArgumentError, /does not have ordered elements/)
+        expect(actual).to end_with(expected)
+      }.to fail_with("expected #{actual.inspect} to end with #{expected.inspect}, but it does not have ordered elements")
     end
   end
 
+  describe "composing with other matchers" do
+    it 'passes if the end of an array matches two given matchers' do
+      expect([3, "food", 1.1]).to end_with(a_string_matching(/foo/), a_value_within(0.2).of(1))
+    end
+
+    it 'passes if the end of an array matches one given matcher' do
+      expect([3, "food", 1.1]).to end_with(a_value_within(0.2).of(1))
+    end
+
+    it 'provides a description' do
+      description = end_with(a_value_within(0.1).of(1), a_string_matching(/abc/)).description
+      expect(description).to eq("end with a value within 0.1 of 1 and a string matching /abc/")
+    end
+
+    it 'fails with a clear error message when the matchers do not match' do
+      expect {
+        expect([2.01, 3, "food"]).to end_with(a_value_within(0.2).of(1), a_string_matching(/foo/))
+      }.to fail_with('expected [2.01, 3, "food"] to end with a value within 0.2 of 1 and a string matching /foo/')
+    end
+  end
 end
 
 describe "expect(...).not_to end_with" do
@@ -180,7 +237,17 @@ describe "expect(...).not_to end_with" do
     it "fails if it the last elements of the array match" do
       expect {
         expect([0, 1, 2]).not_to end_with [1, 2]
-      }.to fail_with("expected [0, 1, 2] not to end with [1, 2]")
+      }.to fail_with("expected [0, 1, 2] not to end with 1 and 2")
     end
+  end
+
+  it 'can pass when composed with another matcher' do
+    expect(["a"]).not_to end_with(a_string_matching(/bar/))
+  end
+
+  it 'can fail when composed with another matcher' do
+    expect {
+      expect(["a"]).not_to end_with(a_string_matching(/a/))
+    }.to fail_with('expected ["a"] not to end with a string matching /a/')
   end
 end

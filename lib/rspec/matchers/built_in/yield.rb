@@ -204,7 +204,7 @@ module RSpec
 
         def description
           desc = "yield with args"
-          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")" unless @expected.empty?
+          desc << "(#{expected_arg_description})" unless @expected.empty?
           desc
         end
 
@@ -218,11 +218,15 @@ module RSpec
           end
         end
 
+        def expected_arg_description
+          @expected.map { |e| description_of e }.join(", ")
+        end
+
         def negative_failure_reason
           if all_args_match?
             "yielded with expected arguments" +
-              "\nexpected not: #{@expected.inspect}" +
-              "\n         got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+              "\n         got: #{@actual.inspect}"
           else
             "did"
           end
@@ -236,19 +240,15 @@ module RSpec
 
           unless match = all_args_match?
             @positive_args_failure = "yielded with unexpected arguments" +
-              "\nexpected: #{@expected.inspect}" +
-              "\n     got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+              "\n     got: #{@actual.inspect}"
           end
 
           match
         end
 
         def all_args_match?
-          return false if @expected.size != @actual.size
-
-          @expected.zip(@actual).all? do |expected, actual|
-            expected === actual || actual == expected
-          end
+          values_match?(@expected, @actual)
         end
       end
 
@@ -267,30 +267,30 @@ module RSpec
 
         def failure_message
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
-            "\nexpected: #{@expected.inspect}" +
-            "\n     got: #{@actual.inspect} (compared using === and ==)"
+            "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+            "\n     got: #{@actual.inspect}"
         end
 
         def failure_message_when_negated
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
-              "\nexpected not: #{@expected.inspect}" +
-              "\n         got: #{@actual.inspect} (compared using === and ==)"
+              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+              "\n         got: #{@actual.inspect}"
         end
 
         def description
           desc = "yield successive args"
-          desc << "(" + @expected.map { |e| e.inspect }.join(", ") + ")"
+          desc << "(#{expected_arg_description})"
           desc
         end
 
       private
 
         def args_match?
-          return false if @expected.size != @actual.size
+          values_match?(@expected, @actual)
+        end
 
-          @expected.zip(@actual).all? do |expected, actual|
-            expected === actual || actual == expected
-          end
+        def expected_arg_description
+          @expected.map { |e| description_of e }.join(", ")
         end
       end
     end

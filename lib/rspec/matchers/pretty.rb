@@ -4,9 +4,10 @@ module RSpec
       def split_words(sym)
         sym.to_s.gsub(/_/,' ')
       end
+      module_function :split_words
 
       def to_sentence(words)
-        return "" unless words
+        return " #{words.inspect}" unless words
         words = Array(words).map { |w| to_word(w) }
         case words.length
           when 0
@@ -64,6 +65,16 @@ module RSpec
 
       def is_matcher_with_description?(object)
         RSpec::Matchers.is_a_matcher?(object) && object.respond_to?(:description)
+      end
+
+      # `{ :a => 5, :b => 2 }.inspect` produces:
+      #    {:a=>5, :b=>2}
+      # ...but it looks much better as:
+      #    {:a => 5, :b => 2}
+      #
+      # This is idempotent and safe to run on a string multiple times.
+      def improve_hash_formatting(inspect_string)
+        inspect_string.gsub(/(\S)=>(\S)/, '\1 => \2')
       end
     end
   end
