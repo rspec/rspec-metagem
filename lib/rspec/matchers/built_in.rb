@@ -4,6 +4,7 @@ module RSpec
   module Matchers
     module BuiltIn
       autoload :BeAnInstanceOf,          'rspec/matchers/built_in/be_instance_of'
+      autoload :BeBetween,               'rspec/matchers/built_in/be_between'
       autoload :Be,                      'rspec/matchers/built_in/be'
       autoload :BeTruthy,                'rspec/matchers/built_in/be'
       autoload :BeFalsey,                'rspec/matchers/built_in/be'
