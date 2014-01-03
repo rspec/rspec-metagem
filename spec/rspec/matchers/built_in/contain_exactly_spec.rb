@@ -15,6 +15,18 @@ class UnsortableObject
   end
 end
 
+# AR::Relation is meant to act like a collection, but does
+# not include `Enumerable`. It does implement `to_ary`.
+class FakeActiveRecordRelation
+  def initialize(records)
+    @records = records
+  end
+
+  def to_ary
+    @records
+  end
+end
+
 describe "should =~ array", :uses_should do
   it "passes a valid positive expectation" do
     [1, 2].should =~ [2, 1]
@@ -208,6 +220,14 @@ describe "matching against things that aren't arrays" do
     expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
     expect {
       expect(Set.new([3, 2, 1])).to contain_exactly(1, 2)
+    }.to fail_matching("expected collection contained:  [1, 2]")
+  end
+
+  it 'works with non-enumerables that implement `to_ary`' do
+    relation = FakeActiveRecordRelation.new([1, 2, 3])
+    expect(relation).to contain_exactly(2, 1, 3)
+    expect {
+      expect(relation).to contain_exactly(1, 2)
     }.to fail_matching("expected collection contained:  [1, 2]")
   end
 end
