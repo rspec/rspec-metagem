@@ -33,7 +33,7 @@ module RSpec
         end
 
         def failure_message_when_negated
-          "expected #{@actual} not to #{description}"
+          "expected #{@actual.inspect} not to #{description}"
         end
 
         def description
@@ -51,8 +51,7 @@ module RSpec
         end
 
         def not_numeric_clause
-          return "" if numeric?
-          ", but it could not be treated as a numeric value"
+          ", but it could not be treated as a numeric value" unless numeric?
         end
       end
     end

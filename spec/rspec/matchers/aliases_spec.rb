@@ -82,6 +82,14 @@ module RSpec
 
     specify do
       expect(
+        a_value_between(1, 10)
+      ).to be_aliased_to(
+        be_between(1, 10)
+      ).with_description("a value between 1 and 10 (inclusive)")
+    end
+
+    specify do
+      expect(
         a_value_within(0.1).of(3)
       ).to be_aliased_to(
         be_within(0.1).of(3)

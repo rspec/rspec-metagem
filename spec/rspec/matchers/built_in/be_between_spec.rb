@@ -55,3 +55,20 @@ describe "expect(...).not_to be_between(min, max)" do
     }.to fail_with("expected 10 not to be between 1 and 10 (inclusive)")
   end
 end
+
+describe "composing with other matchers" do
+  it "passes when the matchers both match" do
+    expect([0.1, 2]).to include(a_value_between(2, 4), an_instance_of(Float))
+  end
+
+  it "provides a description" do
+    description = include(a_value_between(2, 4), an_instance_of(Float)).description
+    expect(description).to eq("include (a value between 2 and 4 (inclusive)) and (an instance of Float)")
+  end
+
+  it "fails with a clear error message when the matchers do not match" do
+    expect {
+      expect([0.1, 1]).to include(a_value_between(2, 4), an_instance_of(Float))
+    }.to fail_with("expected [0.1, 1] to include (a value between 2 and 4 (inclusive)) and (an instance of Float)")
+  end
+end

@@ -330,6 +330,7 @@ module RSpec
     def be_between(min, max)
       BuiltIn::BeBetween.new(min, max)
     end
+    alias_matcher :a_value_between, :be_between
 
     # Passes if actual == expected +/- delta
     #
