@@ -263,7 +263,8 @@ module RSpec
         end
 
         def failure_message_expecting(value)
-          validity_message || "expected #{predicate}#{args_to_s} to return #{value}, got #{@predicate_matches.inspect}"
+          validity_message ||
+            "expected (#{@expected.inspect}).#{predicate}#{args_to_s} to return #{value}, got #{@predicate_matches.inspect}"
         end
 
         def validity_message
