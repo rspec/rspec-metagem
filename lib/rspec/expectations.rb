@@ -12,7 +12,6 @@ RSpec::Support.define_optimized_require_for_rspec(:expectations) { |f| require_r
   fail_with
   handler
   version
-  diff_presenter
 ].each { |file| RSpec::Support.require_rspec_expectations(file) }
 
 module RSpec
