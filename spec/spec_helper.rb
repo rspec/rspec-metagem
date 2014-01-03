@@ -126,13 +126,6 @@ Spork.prefork do
       :file_path => /spec\/command_line/
     }
 
-    # Use the doc formatter when running individual files.
-    # This is too verbose when running all spec files but
-    # is nice for a single file.
-    if c.files_to_run.one? && c.formatters.none?
-      c.formatter = 'doc'
-    end
-
     c.expect_with :rspec do |expectations|
       expectations.syntax = :expect
     end
@@ -143,9 +136,7 @@ Spork.prefork do
 
     # runtime options
     c.color = !in_editor?
-    c.filter_run :focus
     c.include EnvHelpers
-    c.run_all_when_everything_filtered = true
     c.filter_run_excluding :ruby => lambda {|version|
       case version.to_s
       when "!jruby"
