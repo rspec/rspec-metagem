@@ -321,6 +321,8 @@ module RSpec
     # including String, Symbol, Time, or Numeric (Fixnum, Bignum, Integer,
     # Float, Complex, and Rational).
     #
+    # @note Inclusive of both min and max values.
+    #
     # @example
     #
     #   expect(5).to      be_between(1, 10)

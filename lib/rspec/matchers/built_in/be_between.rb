@@ -12,7 +12,7 @@ module RSpec
         end
 
         def description
-          "be between #{@min.inspect} and #{@max.inspect}"
+          "be between #{@min.inspect} and #{@max.inspect} (inclusive)"
         end
       end
     end

@@ -47,7 +47,7 @@ describe "Matchers should be able to generate their own descriptions" do
 
   it "expect(...).to be between min and max" do
     expect(10).to be_between(0, 10)
-    expect(RSpec::Matchers.generated_description).to eq "should be between 0 and 10"
+    expect(RSpec::Matchers.generated_description).to eq "should be between 0 and 10 (inclusive)"
   end
 
   it "expect(...).to be predicate arg1, arg2 and arg3" do
