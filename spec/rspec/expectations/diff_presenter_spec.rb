@@ -220,7 +220,7 @@ EOD
       it "outputs colored diffs" do
         expected = "foo bar baz"
         actual = "foo bang baz"
-        expected_diff = "\n\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
+        expected_diff = "\e[0m\n\e[0m\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
 
 
         diff = differ.diff_as_string(expected,actual)
