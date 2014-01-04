@@ -109,8 +109,8 @@ module RSpec
             pp_key   = PP.singleline_pp(key, "")
             pp_value = PP.singleline_pp(object[key], "")
 
-            "#{pp_key} => #{pp_value}"
-          end.join(",\n") << ","
+            "#{pp_key} => #{pp_value},"
+          end.join("\n")
         when String
           object =~ /\n/ ? object : object.inspect
         else
