@@ -16,6 +16,12 @@ describe "expect(...).to be_between(min, max)" do
     }.to fail_with("expected 11 to be between 1 and 10 (inclusive)")
   end
 
+  it 'indicates it was not comparable if it does not respond to `between?`' do
+    expect {
+      expect(nil).to be_between(0, 10)
+    }.to fail_with("expected nil to be between 0 and 10 (inclusive), but it does not respond to `between?`")
+  end
+
   it 'works with strings' do
     expect("baz").to be_between("bar", "foo")
     expect {
@@ -58,7 +64,7 @@ end
 
 describe "composing with other matchers" do
   it "passes when the matchers both match" do
-    expect([0.1, 2]).to include(a_value_between(2, 4), an_instance_of(Float))
+    expect([nil, 2]).to include(a_value_between(2, 4), a_nil_value)
   end
 
   it "provides a description" do
@@ -68,7 +74,7 @@ describe "composing with other matchers" do
 
   it "fails with a clear error message when the matchers do not match" do
     expect {
-      expect([0.1, 1]).to include(a_value_between(2, 4), an_instance_of(Float))
-    }.to fail_with("expected [0.1, 1] to include (a value between 2 and 4 (inclusive)) and (an instance of Float)")
+      expect([nil, 1]).to include(a_value_between(2, 4), a_nil_value)
+    }.to fail_with("expected [nil, 1] to include (a value between 2 and 4 (inclusive)) and (a nil value)")
   end
 end

@@ -36,6 +36,10 @@ Enhancements:
 * Add `RSpec::Machers.alias_matcher` so users can define their own
   matcher aliases. The `description` of the matcher will reflect the
   alternate matcher name. (Myron Marston)
+* Add explicit `be_between` matcher. `be_between` has worked for a
+  long time as a dynamic predicate matcher, but the failure message
+  was suboptimal. The new matcher provides a much better failure
+  message. (Erik Michaels-Ober)
 
 Breaking Changes for 3.0.0:
 

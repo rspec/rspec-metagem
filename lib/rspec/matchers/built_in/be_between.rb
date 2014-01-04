@@ -2,8 +2,6 @@ module RSpec
   module Matchers
     module BuiltIn
       class BeBetween < BaseMatcher
-        include Composable
-
         def initialize(min, max)
           @min, @max = min, max
         end
@@ -14,11 +12,7 @@ module RSpec
         end
 
         def failure_message
-          "expected #{@actual.inspect} to #{description}#{not_comparable_clause}"
-        end
-
-        def failure_message_when_negated
-          "expected #{@actual.inspect} not to #{description}"
+          "#{super}#{not_comparable_clause}"
         end
 
         def description
@@ -32,7 +26,7 @@ module RSpec
         end
 
         def not_comparable_clause
-          ", but #{@actual.inspect} does not respond to `between?`" unless comparable?
+          ", but it does not respond to `between?`" unless comparable?
         end
       end
     end
