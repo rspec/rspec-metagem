@@ -1,5 +1,10 @@
-script: "script/test_all"
+before_install:
+  - gem update bundler
+  - bundle --version
+  - gem update --system 2.1.11
+  - gem --version
 bundler_args: "--standalone --binstubs --without documentation"
+script: "script/test_all"
 rvm:
   - 1.8.7
   - 1.9.2
@@ -8,10 +13,13 @@ rvm:
   - 2.1.0
   - jruby-18mode
   - jruby-19mode
-  - ree
+  - jruby-head
   - rbx
-before_install:
-  - gem update bundler
-  - bundle --version
-  - gem update --system 2.1.11
-  - gem --version
+  - ree
+  - ruby-head
+matrix:
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: ruby-head
+  fast_finish: true
+
