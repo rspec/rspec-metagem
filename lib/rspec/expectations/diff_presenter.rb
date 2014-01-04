@@ -39,9 +39,7 @@ module RSpec
       def diff_as_object(actual, expected)
         actual_as_string = object_to_string(actual)
         expected_as_string = object_to_string(expected)
-        if diff = diff_as_string(actual_as_string, expected_as_string)
-          color_diff diff
-        end
+        diff_as_string(actual_as_string, expected_as_string)
       end
 
     private
