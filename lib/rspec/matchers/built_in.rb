@@ -3,14 +3,15 @@ require 'rspec/matchers/built_in/base_matcher'
 module RSpec
   module Matchers
     module BuiltIn
+      autoload :BeAKindOf,               'rspec/matchers/built_in/be_kind_of'
       autoload :BeAnInstanceOf,          'rspec/matchers/built_in/be_instance_of'
+      autoload :BeBetween,               'rspec/matchers/built_in/be_between'
       autoload :Be,                      'rspec/matchers/built_in/be'
-      autoload :BeTruthy,                'rspec/matchers/built_in/be'
+      autoload :BeComparedTo,            'rspec/matchers/built_in/be'
       autoload :BeFalsey,                'rspec/matchers/built_in/be'
       autoload :BeNil,                   'rspec/matchers/built_in/be'
-      autoload :BeComparedTo,            'rspec/matchers/built_in/be'
       autoload :BePredicate,             'rspec/matchers/built_in/be'
-      autoload :BeAKindOf,               'rspec/matchers/built_in/be_kind_of'
+      autoload :BeTruthy,                'rspec/matchers/built_in/be'
       autoload :BeWithin,                'rspec/matchers/built_in/be_within'
       autoload :Change,                  'rspec/matchers/built_in/change'
       autoload :Compound,                'rspec/matchers/built_in/compound'
@@ -33,11 +34,9 @@ module RSpec
       autoload :StartWith,               'rspec/matchers/built_in/start_and_end_with'
       autoload :ThrowSymbol,             'rspec/matchers/built_in/throw_symbol'
       autoload :YieldControl,            'rspec/matchers/built_in/yield'
+      autoload :YieldSuccessiveArgs,     'rspec/matchers/built_in/yield'
       autoload :YieldWithArgs,           'rspec/matchers/built_in/yield'
       autoload :YieldWithNoArgs,         'rspec/matchers/built_in/yield'
-      autoload :YieldSuccessiveArgs,     'rspec/matchers/built_in/yield'
     end
   end
 end
-
-

@@ -45,9 +45,20 @@ describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq "should be > 3"
   end
 
+  it "expect(...).to be between min and max" do
+    expect(10).to be_between(0, 10)
+    expect(RSpec::Matchers.generated_description).to eq "should be between 0 and 10 (inclusive)"
+  end
+
   it "expect(...).to be predicate arg1, arg2 and arg3" do
-    expect(5.0).to be_between(0,10)
-    expect(RSpec::Matchers.generated_description).to eq "should be between 0 and 10"
+    class Parent; end
+    class Child < Parent
+      def child_of?(*parents)
+        parents.all? { |parent| self.is_a?(parent) }
+      end
+    end
+    expect(Child.new).to be_a_child_of(Parent, Object)
+    expect(RSpec::Matchers.generated_description).to eq "should be a child of Parent and Object"
   end
 
   it "expect(...).to equal" do

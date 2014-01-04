@@ -317,6 +317,21 @@ module RSpec
     alias_method  :be_kind_of, :be_a_kind_of
     alias_matcher :a_kind_of,  :be_a_kind_of
 
+    # Passes if actual.between?(min, max). Works with any Comparable object,
+    # including String, Symbol, Time, or Numeric (Fixnum, Bignum, Integer,
+    # Float, Complex, and Rational).
+    #
+    # @note Inclusive of both min and max values.
+    #
+    # @example
+    #
+    #   expect(5).to      be_between(1, 10)
+    #   expect(11).not_to be_between(1, 10)
+    def be_between(min, max)
+      BuiltIn::BeBetween.new(min, max)
+    end
+    alias_matcher :a_value_between, :be_between
+
     # Passes if actual == expected +/- delta
     #
     # @example
