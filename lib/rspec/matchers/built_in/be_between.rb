@@ -9,6 +9,8 @@ module RSpec
         def matches?(actual)
           @actual = actual
           comparable? and @actual.between?(@min, @max)
+        rescue ArgumentError
+          false
         end
 
         def failure_message

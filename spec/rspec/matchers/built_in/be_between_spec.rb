@@ -67,6 +67,14 @@ describe "composing with other matchers" do
     expect([nil, 2]).to include(a_value_between(2, 4), a_nil_value)
   end
 
+  it 'works with mixed types (even though between? can raise ArgumentErrors)' do
+    expect(["baz", Math::PI]).to include( a_value_between(3.1, 3.2), a_value_between("bar", "foo") )
+
+    expect {
+      expect(["baz", 2.14]).to include( a_value_between(3.1, 3.2), a_value_between("bar", "foo") )
+    }.to fail_with('expected ["baz", 2.14] to include (a value between 3.1 and 3.2 (inclusive)) and (a value between "bar" and "foo" (inclusive))')
+  end
+
   it "provides a description" do
     description = include(a_value_between(2, 4), an_instance_of(Float)).description
     expect(description).to eq("include (a value between 2 and 4 (inclusive)) and (an instance of Float)")
