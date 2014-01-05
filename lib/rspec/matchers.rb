@@ -598,6 +598,14 @@ module RSpec
       contain_exactly(*items)
     end
 
+    def output_to_stdout(expected=nil)
+      BuiltIn::OutputToStream.new($stdout, expected)
+    end
+
+    def output_to_stderr(expected=nil)
+      BuiltIn::OutputToStream.new($stderr, expected)
+    end
+
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
     # With a named error and messsage specified as a String, matches only if both match.
