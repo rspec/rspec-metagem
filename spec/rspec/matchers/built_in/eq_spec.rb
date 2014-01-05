@@ -54,6 +54,12 @@ module RSpec
           expect(["a\nb", "c\nd"]).to eq([])
         }.to fail_matching("expected: []")
       end
+
+      context 'with an array of strings' do
+        it 'has a correct description' do
+          expect(eq(['foo']).description).to eq 'eq ["foo"]'
+        end
+      end
     end
   end
 end
