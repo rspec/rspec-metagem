@@ -48,7 +48,7 @@ e.g.
 
     expect(actual).to be_truthy # passes if actual is truthy (not nil or false)
     expect(actual).to be true   # passes if actual == true
-    expect(actual).to be_falsy  # passes if actual is falsy (nil or false)
+    expect(actual).to be_falsey # passes if actual is falsy (nil or false)
     expect(actual).to be false  # passes if actual == false
     expect(actual).to be_nil    # passes if actual is nil
 
