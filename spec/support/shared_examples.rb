@@ -24,7 +24,7 @@ shared_examples_for "an RSpec matcher" do |options|
     match { false }
   end
 
-  it 'supports compound expecations by chaining `and`' do
+  it 'supports compound expectations by chaining `and`' do
     expect(valid_value).to matcher.and always_passes
   end
 
