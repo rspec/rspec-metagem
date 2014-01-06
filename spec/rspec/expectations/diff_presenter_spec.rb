@@ -141,7 +141,7 @@ EOD
 +:delta => "charlie",
  :foo => "bar",
  :metasyntactic => "variable",
- :width => "quite wide"
+ :width => "quite wide",
 EOD
 
           diff = differ.diff_as_object(expected,actual)
@@ -151,8 +151,8 @@ EOD
         it 'outputs unified diff message of two hashes with differing encoding' do
           expected_diff = %Q{
 @@ -1,2 +1,2 @@
--"a" => "a"
-#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+"ö" => "ö"} : '+"\303\266" => "\303\266"' }
+-"a" => "a",
+#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+"ö" => "ö"} : '+"\303\266" => "\303\266"' },
 }
 
           diff = differ.diff_as_object({'ö' => 'ö'}, {'a' => 'a'})
@@ -162,8 +162,8 @@ EOD
         it 'outputs unified diff message of two hashes with encoding different to key encoding' do
           expected_diff = %Q{
 @@ -1,2 +1,2 @@
--:a => "a"
-#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+\"한글\" => \"한글2\"} : '+"\355\225\234\352\270\200" => "\355\225\234\352\270\2002"' }
+-:a => "a",
+#{ (RUBY_VERSION.to_f > 1.8) ?  %Q{+\"한글\" => \"한글2\"} : '+"\355\225\234\352\270\200" => "\355\225\234\352\270\2002"' },
 }
 
           diff = differ.diff_as_object({ "한글" => "한글2"}, { :a => "a"})
@@ -173,8 +173,8 @@ EOD
         it "outputs unified diff message of two hashes with object keys" do
           expected_diff = %Q{
 @@ -1,2 +1,2 @@
--["a", "c"] => "b"
-+["d", "c"] => "b"
+-["a", "c"] => "b",
++["d", "c"] => "b",
 }
 
           diff = differ.diff_as_object({ ['d','c'] => 'b'}, { ['a','c'] => 'b' })
@@ -236,7 +236,7 @@ EOD
       it "outputs colored diffs" do
         expected = "foo bar baz"
         actual = "foo bang baz"
-        expected_diff = "\n\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
+        expected_diff = "\e[0m\n\e[0m\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
 
 
         diff = differ.diff_as_string(expected,actual)

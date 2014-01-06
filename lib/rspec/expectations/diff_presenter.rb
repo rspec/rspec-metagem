@@ -39,9 +39,7 @@ module RSpec
       def diff_as_object(actual, expected)
         actual_as_string = object_to_string(actual)
         expected_as_string = object_to_string(expected)
-        if diff = diff_as_string(actual_as_string, expected_as_string)
-          color_diff diff
-        end
+        diff_as_string(actual_as_string, expected_as_string)
       end
 
     private
@@ -83,6 +81,10 @@ module RSpec
         color(text, 34)
       end
 
+      def normal(text)
+        color(text, 0)
+      end
+
       def color_diff(diff)
         return diff unless RSpec::Matchers.configuration.color?
 
@@ -93,9 +95,9 @@ module RSpec
           when "-"
             red line
           when "@"
-            line[1].chr == "@" ? blue(line) : line
+            line[1].chr == "@" ? blue(line) : normal(line)
           else
-            line
+            normal(line)
           end
         }.join
       end
@@ -108,8 +110,8 @@ module RSpec
             pp_key   = PP.singleline_pp(key, "")
             pp_value = PP.singleline_pp(object[key], "")
 
-            "#{pp_key} => #{pp_value}"
-          end.join(",\n")
+            "#{pp_key} => #{pp_value},"
+          end.join("\n")
         when String
           object =~ /\n/ ? object : object.inspect
         else
