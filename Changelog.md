@@ -61,6 +61,8 @@ Bug Fixes:
 * Fix wrong matcher descriptions with falsey expected value (yujinakayama)
 * Fix `expect { }.not_to change { }.from(x)` so that the matcher only
   passes if the starting value is `x`. (Tyler Rick, Myron Marston)
+* Fix hash diffing, so that it colorizes properly and doesn't consider trailing
+  commas when performing the diff. (Jared Norman)
 
 Deprecations:
 
