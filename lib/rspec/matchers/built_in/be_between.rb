@@ -25,7 +25,7 @@ module RSpec
           "be between #{@min.inspect} and #{@max.inspect} (inclusive)"
         end
 
-        private
+      private
 
         def comparable?
           @actual.respond_to?(:between?)
@@ -56,7 +56,7 @@ module RSpec
           "be between #{@min.inspect} and #{@max.inspect} (exclusive)"
         end
 
-        private
+      private
 
         def comparable?
           @actual.respond_to?(:>) and @actual.respond_to?(:<)
