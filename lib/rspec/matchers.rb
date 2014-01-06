@@ -599,11 +599,11 @@ module RSpec
     end
 
     def output_to_stdout(expected=nil)
-      BuiltIn::OutputToStream.new($stdout, expected)
+      BuiltIn::OutputToStdout.new(expected)
     end
 
     def output_to_stderr(expected=nil)
-      BuiltIn::OutputToStream.new($stderr, expected)
+      BuiltIn::OutputToStderr.new(expected)
     end
 
     # With no args, matches if any error is raised.
