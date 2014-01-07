@@ -82,11 +82,11 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    describe "expect(...).to be_between(min, max) (inclusive)" do
-      it_behaves_like "an RSpec matcher", :valid_value => (10), :invalid_value => (11) do
-        let(:matcher) { be_between(1, 10) }
-      end
+    it_behaves_like "an RSpec matcher", :valid_value => (10), :invalid_value => (11) do
+      let(:matcher) { be_between(1, 10) }
+    end
 
+    describe "expect(...).to be_between(min, max) (inclusive)" do
       it_behaves_like "be_between", :inclusive do
         def matcher(min, max)
           be_between(min, max)
@@ -94,6 +94,7 @@ module RSpec::Matchers::BuiltIn
       end
 
       it "is inclusive" do
+        expect(1).to be_between(1, 10)
         expect(10).to be_between(1, 10)
       end
 
@@ -118,7 +119,8 @@ module RSpec::Matchers::BuiltIn
       end
 
       it "is exclusive" do
-        expect(10).not_to be_between(1, 10).exclusive
+        expect { expect(1).to be_between(1, 10).exclusive }.to fail
+        expect { expect(10).to be_between(1, 10).exclusive }.to fail
       end
     end
 
