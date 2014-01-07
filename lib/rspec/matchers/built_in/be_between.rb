@@ -4,41 +4,17 @@ module RSpec
       class BeBetween < BaseMatcher
         def initialize(min, max)
           @min, @max = min, max
+
+          @less_than_operator = :<=
+          @greater_than_operator = :>=
+          @mode = :inclusive
         end
 
         def exclusive
-          BeBetweenExclusive.new(@min, @max)
-        end
-
-        def matches?(actual)
-          @actual = actual
-          comparable? and @actual.between?(@min, @max)
-        rescue ArgumentError
-          false
-        end
-
-        def failure_message
-          "#{super}#{not_comparable_clause}"
-        end
-
-        def description
-          "be between #{@min.inspect} and #{@max.inspect} (inclusive)"
-        end
-
-      private
-
-        def comparable?
-          @actual.respond_to?(:between?)
-        end
-
-        def not_comparable_clause
-          ", but it does not respond to `between?`" unless comparable?
-        end
-      end
-
-      class BeBetweenExclusive < BaseMatcher
-        def initialize(min, max)
-          @min, @max = min, max
+          @less_than_operator = :<
+          @greater_than_operator = :>
+          @mode = :exclusive
+          self
         end
 
         def matches?(actual)
@@ -53,21 +29,21 @@ module RSpec
         end
 
         def description
-          "be between #{@min.inspect} and #{@max.inspect} (exclusive)"
+          "be between #{@min.inspect} and #{@max.inspect} (#{@mode})"
         end
 
       private
 
         def comparable?
-          @actual.respond_to?(:>) and @actual.respond_to?(:<)
-        end
-
-        def compare
-          @actual > @min and @actual < @max
+          @actual.respond_to?(@less_than_operator) and @actual.respond_to?(@greater_than_operator)
         end
 
         def not_comparable_clause
-          ", but it does not respond to `<` and `>`" unless comparable?
+          ", but it does not respond to `#{@less_than_operator}` and `#{@greater_than_operator}`" unless comparable?
+        end
+
+        def compare
+          @actual.send(@greater_than_operator, @min) and @actual.send(@less_than_operator, @max)
         end
       end
     end
