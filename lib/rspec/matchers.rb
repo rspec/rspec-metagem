@@ -321,12 +321,8 @@ module RSpec
     # including String, Symbol, Time, or Numeric (Fixnum, Bignum, Integer,
     # Float, Complex, and Rational).
     #
-    # @note by default inclusive of both min and max values.
-    #
-    # You can chain any of the following off of the end to specify details
-    # about the change:
-    #
-    # * `exclusive`
+    # By default, `be_between` is inclusive (i.e. passes when given either the max or min value),
+    # but you can make it `exclusive` by chaining that off the matcher.
     #
     # @example
     #
