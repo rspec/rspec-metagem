@@ -19,7 +19,7 @@ module RSpec
 
         def matches?(actual)
           @actual = actual
-          comparable? and compare
+          comparable? && compare
         rescue ArgumentError
           false
         end
@@ -35,7 +35,7 @@ module RSpec
       private
 
         def comparable?
-          @actual.respond_to?(@less_than_operator) and @actual.respond_to?(@greater_than_operator)
+          @actual.respond_to?(@less_than_operator) && @actual.respond_to?(@greater_than_operator)
         end
 
         def not_comparable_clause
@@ -43,7 +43,7 @@ module RSpec
         end
 
         def compare
-          @actual.__send__(@greater_than_operator, @min) and @actual.__send__(@less_than_operator, @max)
+          @actual.__send__(@greater_than_operator, @min) && @actual.__send__(@less_than_operator, @max)
         end
       end
     end
