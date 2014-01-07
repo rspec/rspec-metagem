@@ -43,7 +43,7 @@ module RSpec
         end
 
         def compare
-          @actual.send(@greater_than_operator, @min) and @actual.send(@less_than_operator, @max)
+          @actual.__send__(@greater_than_operator, @min) and @actual.__send__(@less_than_operator, @max)
         end
       end
     end
