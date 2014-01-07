@@ -41,15 +41,15 @@ module RSpec
         # @api public
         #
         # @param example_group
-        def example_group_started(example_group)
-          @formatter.example_group_started example_group
+        def example_group_started(group)
+          @formatter.example_group_started group
         end
 
         # @api public
         #
         # @param example_group
-        def example_group_finished(example_group)
-          @formatter.example_group_finished example_group
+        def example_group_finished(group)
+          @formatter.example_group_finished group
         end
 
         # @api public

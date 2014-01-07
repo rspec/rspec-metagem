@@ -1,25 +1,17 @@
 require 'spec_helper'
 require 'rspec/core/formatters/legacy_formatter'
+require 'support/old_style_formatter_example'
 
 RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
 
   let(:formatter)     { RSpec::Core::Formatters::LegacyFormatter.new(old_formatter) }
-  let(:old_formatter) { double "a legacy formatter" }
-
-  describe '#notifications' do
-    before { allow(old_formatter).to receive_messages(:start => nil, :other_method => nil) }
-
-    it "lists notifications the formatter responds to from the old set" do
-      expect(formatter.notifications).to eq(["start"])
-    end
-  end
+  let(:old_formatter) { OldStyleFormatterExample.new output }
+  let(:output)        { StringIO.new }
 
   describe "#start" do
-    let(:example_count) { double "count" }
-
     it "notifies formatter of start" do
-      expect(old_formatter).to receive(:start).with(example_count)
-      formatter.start example_count
+      formatter.start 5
+      expect(old_formatter.example_count).to eq 5
     end
   end
 
@@ -27,8 +19,8 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
     let(:group) { double "group" }
 
     it "notifies formatter of example_group_started" do
-      expect(old_formatter).to receive(:example_group_started).with(group)
       formatter.example_group_started group
+      expect(old_formatter.example_group).to eq group
     end
   end
 
@@ -36,8 +28,8 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
     let(:group) { double "group" }
 
     it "notifies formatter of example_group_finished" do
-      expect(old_formatter).to receive(:example_group_finished).with(group)
       formatter.example_group_finished group
+      expect(old_formatter.example_group).to eq group
     end
   end
 
@@ -45,8 +37,8 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
     let(:example) { double "example" }
 
     it "notifies formatter of example_started" do
-      expect(old_formatter).to receive(:example_started).with(example)
       formatter.example_started example
+      expect(old_formatter.examples).to eq [example]
     end
   end
 
