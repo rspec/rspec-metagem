@@ -4,10 +4,14 @@ module RSpec
       class BeBetween < BaseMatcher
         def initialize(min, max)
           @min, @max = min, max
+          inclusive
+        end
 
+        def inclusive
           @less_than_operator = :<=
           @greater_than_operator = :>=
           @mode = :inclusive
+          self
         end
 
         def exclusive
