@@ -172,8 +172,28 @@ RSpec.describe "an example" do
       end
 
       it "passes" do
-        expect(run_example("just because")).to be_pending
+        expect(run_example.exception).to be_nil
       end
+
+      it 'indicates it is pending with the given message' do
+        expect(run_example("just because")).to be_pending_with("just because")
+      end
+
+      it 'indicates the pending block was not fixed' do
+        expect(run_example.metadata[:execution_result][:pending_fixed]).to be false
+      end
+    end
+
+    it 'does not verify or teardown mocks multiple times' do
+      counts = Hash.new(0)
+
+      RSpec::Core::ExampleGroup.describe('group') do
+        define_method(:verify_mocks_for_rspec)   { counts[:verify]   += 1 }
+        define_method(:teardown_mocks_for_rspec) { counts[:teardown] += 1 }
+        example { pending { } }
+      end.run
+
+      expect(counts).to eq(:verify => 1, :teardown => 1)
     end
 
     context "that passes" do
