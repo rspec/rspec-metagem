@@ -321,12 +321,14 @@ module RSpec
     # including String, Symbol, Time, or Numeric (Fixnum, Bignum, Integer,
     # Float, Complex, and Rational).
     #
-    # @note Inclusive of both min and max values.
+    # By default, `be_between` is inclusive (i.e. passes when given either the max or min value),
+    # but you can make it `exclusive` by chaining that off the matcher.
     #
     # @example
     #
     #   expect(5).to      be_between(1, 10)
     #   expect(11).not_to be_between(1, 10)
+    #   expect(10).not_to be_between(1, 10).exclusive
     def be_between(min, max)
       BuiltIn::BeBetween.new(min, max)
     end
