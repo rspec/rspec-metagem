@@ -40,6 +40,9 @@ Enhancements:
   long time as a dynamic predicate matcher, but the failure message
   was suboptimal. The new matcher provides a much better failure
   message. (Erik Michaels-Ober)
+* Enhance the `be_between` matcher to allow for `inclusive` or `exclusive`
+  comparison (e.g. inclusive of min/max or exclusive of min/max).
+  (Pedro Gimenez)
 
 Breaking Changes for 3.0.0:
 
