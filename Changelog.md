@@ -43,6 +43,9 @@ Enhancements:
 * Enhance the `be_between` matcher to allow for `inclusive` or `exclusive`
   comparison (e.g. inclusive of min/max or exclusive of min/max).
   (Pedro Gimenez)
+* Make failure message for `not_to be #{operator}` less confusing by
+  only saying it's confusing when comparison operators are used.
+  (Prathamesh Sonpatki)
 
 Breaking Changes for 3.0.0:
 
