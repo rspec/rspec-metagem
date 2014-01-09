@@ -1,4 +1,8 @@
 require 'spec_helper'
+if RUBY_VERSION < '1.9.3'
+  require 'complex'
+  require 'date'
+end
 
 module RSpec
   module Matchers
@@ -63,15 +67,15 @@ module RSpec
             [:symbol, 'eq :symbol'],
             [1, 'eq 1'],
             [1.2, 'eq 1.2'],
-            [Complex(1, 2), 'eq (1+2i)'],
+            [Complex(1, 2), "eq #{Complex(1, 2).inspect}"],
             ['foo', 'eq "foo"'],
             [/regex/, 'eq /regex/'],
             [['foo'], 'eq ["foo"]'],
             [{:foo => :bar}, 'eq {:foo=>:bar}'],
             [Class, 'eq Class'],
             [RSpec, 'eq RSpec'],
-            [Date.new(2014, 1, 1), 'eq #<Date: 2014-01-01 ((2456659j,0s,0n),+0s,2299161j)>'],
-            [Time.utc(2014, 1, 1), 'eq 2014-01-01 00:00:00 UTC'],
+            [Date.new(2014, 1, 1), "eq #{Date.new(2014, 1, 1).inspect}"],
+            [Time.utc(2014, 1, 1), "eq #{Time.utc(2014, 1, 1).inspect}"],
         ].each do |expected, expected_description|
           context "with #{expected.inspect}" do
             it "is \"#{expected_description}\"" do
