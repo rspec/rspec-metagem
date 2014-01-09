@@ -71,7 +71,7 @@ module RSpec
             [Class, 'eq Class'],
             [RSpec, 'eq RSpec'],
             [Date.new(2014, 1, 1), 'eq #<Date: 2014-01-01 ((2456659j,0s,0n),+0s,2299161j)>'],
-            [Time.new(2014, 1, 1), 'eq 2014-01-01 00:00:00 +0100'],
+            [Time.utc(2014, 1, 1), 'eq 2014-01-01 00:00:00 UTC'],
         ].each do |expected, expected_description|
           context "with #{expected.inspect}" do
             it "is \"#{expected_description}\"" do
@@ -81,8 +81,8 @@ module RSpec
         end
 
         context 'with object' do
-          it 'matches with "^eq #<Object:0x[0-9a-f]{7}>$"' do
-            expect(eq(Object.new).description).to match(/^eq #<Object:0x[0-9a-f]{7}>$/)
+          it 'matches with "^eq #<Object:0x[0-9a-f]*>$"' do
+            expect(eq(Object.new).description).to match(/^eq #<Object:0x[0-9a-f]*>$/)
           end
         end
       end
