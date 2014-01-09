@@ -293,7 +293,14 @@ An error occurred #{context}
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        set_exception(e, :dont_print)
+        if metadata[:execution_result][:pending_fixed]
+          metadata[:execution_result][:pending_fixed] = false
+          metadata[:pending] = true
+          @pending_declared_in_example = metadata[:execution_result][:pending_message]
+          @exception = nil
+        else
+          set_exception(e, :dont_print)
+        end
       end
 
       def assign_generated_description

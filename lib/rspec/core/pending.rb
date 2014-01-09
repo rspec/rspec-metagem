@@ -88,17 +88,15 @@ module RSpec
         current_example.execution_result[:pending_fixed] = false
         if block_given?
           begin
-            result = begin
-                       yield
-                       current_example.example_group_instance.instance_eval { verify_mocks_for_rspec }
-                     end
+            no_failure = false
+            yield
+            no_failure = true
             current_example.metadata[:pending] = false
           rescue Exception => e
             current_example.execution_result[:exception] = e
-          ensure
-            teardown_mocks_for_rspec
           end
-          if result
+
+          if no_failure
             current_example.execution_result[:pending_fixed] = true
             raise PendingExampleFixedError.new
           end

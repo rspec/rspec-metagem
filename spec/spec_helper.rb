@@ -73,7 +73,7 @@ Spork.prefork do
         end
       end
 
-      RSpec::Core::SandboxedMockSpace.sandboxed do
+      RSpec::Mocks.with_temporary_scope do
         object.instance_eval(&block)
       end
     ensure
