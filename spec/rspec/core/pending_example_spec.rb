@@ -188,8 +188,8 @@ RSpec.describe "an example" do
       counts = Hash.new(0)
 
       RSpec::Core::ExampleGroup.describe('group') do
-        define_method(:verify_mocks_for_rspec)   { counts[:verify]   += 1 }
-        define_method(:teardown_mocks_for_rspec) { counts[:teardown] += 1 }
+        define_method(:verify_mocks_for_rspec)   { counts[:verify]   += 1; super() }
+        define_method(:teardown_mocks_for_rspec) { counts[:teardown] += 1; super() }
         example { pending { } }
       end.run
 
