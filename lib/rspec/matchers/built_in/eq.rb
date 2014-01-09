@@ -14,6 +14,10 @@ module RSpec
           "\nexpected: value != #{expected.inspect}\n     got: #{actual.inspect}\n\n(compared using ==)\n"
         end
 
+        def description
+          "#{name_to_sentence} #{@expected.inspect}"
+        end
+
         def diffable?; true; end
       end
     end

@@ -54,6 +54,38 @@ module RSpec
           expect(["a\nb", "c\nd"]).to eq([])
         }.to fail_matching("expected: []")
       end
+
+      describe '#description' do
+        [
+            [nil, 'eq nil'],
+            [true, 'eq true'],
+            [false, 'eq false'],
+            [:symbol, 'eq :symbol'],
+            [1, 'eq 1'],
+            [1.2, 'eq 1.2'],
+            [Complex(1, 2), 'eq (1+2i)'],
+            ['foo', 'eq "foo"'],
+            [/regex/, 'eq /regex/'],
+            [['foo'], 'eq ["foo"]'],
+            [{:foo => :bar}, 'eq {:foo=>:bar}'],
+            [Class, 'eq Class'],
+            [RSpec, 'eq RSpec'],
+            [Date.new(2014, 1, 1), 'eq #<Date: 2014-01-01 ((2456659j,0s,0n),+0s,2299161j)>'],
+            [Time.utc(2014, 1, 1), 'eq 2014-01-01 00:00:00 UTC'],
+        ].each do |expected, expected_description|
+          context "with #{expected.inspect}" do
+            it "is \"#{expected_description}\"" do
+              expect(eq(expected).description).to eq expected_description
+            end
+          end
+        end
+
+        context 'with object' do
+          it 'matches with "^eq #<Object:0x[0-9a-f]*>$"' do
+            expect(eq(Object.new).description).to match(/^eq #<Object:0x[0-9a-f]*>$/)
+          end
+        end
+      end
     end
   end
 end
