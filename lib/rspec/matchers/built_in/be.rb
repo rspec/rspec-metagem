@@ -113,14 +113,12 @@ module RSpec
         end
 
         def failure_message_when_negated
-          message = <<-MESSAGE
-`expect(actual).not_to be #{@operator} #{@expected}` not only FAILED,
-it is a bit confusing.
-          MESSAGE
-
-          raise message << ([:===,:==].include?(@operator) ?
-                            "It might be more clearly expressed without the \"be\"?" :
-                            "It might be more clearly expressed in the positive?")
+          message = "`expect(#{@actual}).not_to be #{@operator} #{@expected}`"
+          if [:<, :>, :<=, :>=].include?(@operator)
+            raise message << " not only FAILED,\nit is a bit confusing."
+          else
+            raise message
+          end
         end
 
         def description

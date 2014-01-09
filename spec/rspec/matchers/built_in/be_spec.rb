@@ -449,11 +449,35 @@ describe "expect(...).to be ===" do
   end
 end
 
-describe "expect(...).not_to with operators" do
-  it "coaches user to stop using operators with expect().not_to" do
+describe "expect(...).not_to with comparison operators" do
+  it "coaches user to stop using operators with expect().not_to with numerical comparison operators" do
     expect {
       expect(5).not_to be < 6
-    }.to raise_error(/`expect\(actual\).not_to be < 6` not only FAILED,\nit is a bit confusing./m)
+    }.to raise_error("`expect(5).not_to be < 6` not only FAILED,\nit is a bit confusing.")
+
+    expect {
+      expect(5).not_to be <= 6
+    }.to raise_error("`expect(5).not_to be <= 6` not only FAILED,\nit is a bit confusing.")
+
+    expect {
+      expect(6).not_to be > 5
+    }.to raise_error("`expect(6).not_to be > 5` not only FAILED,\nit is a bit confusing.")
+
+    expect {
+      expect(6).not_to be >= 5
+    }.to raise_error("`expect(6).not_to be >= 5` not only FAILED,\nit is a bit confusing.")
+  end
+end
+
+describe "expect(...).not_to with equality operators" do
+  it "raises normal error with expect().not_to with equality operators" do
+    expect {
+      expect(6).not_to be == 6
+    }.to raise_error("`expect(6).not_to be == 6`")
+
+    expect {
+      expect(String).not_to be === "Hello"
+    }.to raise_error("`expect(String).not_to be === Hello`")
   end
 end
 
