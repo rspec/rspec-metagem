@@ -98,6 +98,30 @@ shared_examples_for "output_to_stream" do |stream_name|
       }.to fail_with("expected block to not output /foo/ to #{stream_name}, but did")
     end
   end
+
+  context "expect { ... }.to #{matcher_method}(matcher)" do
+    it "passes if the block outputs a string to #{stream_name} that passes the given matcher" do
+      expect { stream.print 'foo' }.to matcher(a_string_starting_with("f"))
+    end
+
+    it "fails if the block outputs a string to #{stream_name} that does not pass the given matcher" do
+      expect {
+        expect { stream.print 'foo' }.to matcher(a_string_starting_with("b"))
+      }.to fail_with("expected block to output a string starting with \"b\" to #{stream_name}, but output \"foo\"")
+    end
+  end
+
+  context "expect { ... }.to_not #{matcher_method}(matcher)" do
+    it "passes if the block does not output a string to #{stream_name} that passes the given matcher" do
+      expect { stream.print 'foo' }.to_not matcher(a_string_starting_with("b"))
+    end
+
+    it "fails if the block outputs a string to #{stream_name} that passes the given matcher" do
+      expect {
+        expect { stream.print 'foo' }.to_not matcher(a_string_starting_with("f"))
+      }.to fail_with("expected block to not output a string starting with \"f\" to #{stream_name}, but did")
+    end
+  end
 end
 
 module RSpec

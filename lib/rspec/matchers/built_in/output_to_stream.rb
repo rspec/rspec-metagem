@@ -15,6 +15,7 @@ module RSpec
           case @expected
           when NilClass then captured?
           when Regexp then @actual =~ @expected
+          when AliasedMatcher then values_match?(@expected, @actual)
           else
             @actual == @expected
           end
@@ -22,7 +23,7 @@ module RSpec
 
         def failure_message
           if @expected
-            "expected block to output #{@expected.inspect} to #{@name}, but output #{formatted_actual}"
+            "expected block to output #{expected_formatted} to #{@name}, but output #{formatted_actual}"
           else
             "expected block to output to #{@name}, but did not"
           end
@@ -30,7 +31,7 @@ module RSpec
 
         def failure_message_when_negated
           if @expected
-            "expected block to not output #{@expected.inspect} to #{@name}, but did"
+            "expected block to not output #{expected_formatted} to #{@name}, but did"
           else
             "expected block to not output to #{@name}, but did"
           end
@@ -40,6 +41,14 @@ module RSpec
 
         def captured?
           @actual.length > 0
+        end
+
+        def expected_formatted
+          case @expected
+          when AliasedMatcher then description_of(@expected)
+          else
+            @expected.inspect
+          end
         end
 
         def formatted_actual
