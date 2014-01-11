@@ -557,6 +557,7 @@ module RSpec
     end
     alias_matcher :a_collection_including, :include
     alias_matcher :a_string_including,     :include
+    alias_matcher :a_hash_including,       :include
     alias_matcher :including,              :include
 
     # Given a `Regexp` or `String`, passes if `actual.match(pattern)`

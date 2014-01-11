@@ -232,6 +232,14 @@ module RSpec
 
     specify do
       expect(
+        a_hash_including(:a => 5)
+      ).to be_aliased_to(
+        include(:a => 5)
+      ).with_description('a hash including {:a => 5}')
+    end
+
+    specify do
+      expect(
         including(3)
       ).to be_aliased_to(
         include(3)
