@@ -90,7 +90,70 @@ module RSpec
           end
         end
       end
+
+      context "Time Equality" do
+        RSpec::Matchers.define :a_string_with_differing_output do
+          match do |string|
+            time_strings = /expected: (.+)\n.*got: (.+)$/.match(string).captures
+            time_strings.uniq.count == 2
+          end
+        end
+
+        RSpec::Matchers.define :a_string_with_identical_output do
+          match do |string|
+            time_strings = /expected: value != (.+)\n.*got: (.+)$/.match(string).captures
+            time_strings.uniq.count == 1
+          end
+        end
+
+        context 'with Time objects' do
+          let(:time1) { Time.utc(1969, 12, 31, 19, 01, 40, 101) }
+          let(:time2) { Time.utc(1969, 12, 31, 19, 01, 40, 102) }
+
+          it 'Should have a different output string when differing by milliseconds' do
+            expect {
+              expect(time1).to eq(time2)
+            }.to fail_with(a_string_with_differing_output)
+          end
+        end
+
+        context 'with DateTime objects' do
+          require 'date'
+          let(:date1) { DateTime.new(2000, 1, 1, 1, 1, Rational(1, 10)) }
+          let(:date2) { DateTime.new(2000, 1, 1, 1, 1, Rational(2, 10)) }
+
+          it 'Should have diffferent output string when differing by milliseconds' do
+            expect {
+              expect(date1).to eq(date2)
+            }.to fail_with(a_string_with_differing_output)
+          end
+
+          it 'should not raise an exception if DateTime is not defined' do
+            hide_const('DateTime')
+            expect {
+              expect(5).to eq(4)
+            }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
+          end
+
+          it 'fails with identical messages' do
+            expect {
+              expect(date1).to_not eq(date1)
+            }.to fail_with(a_string_with_identical_output)
+          end
+
+          describe 'ActiveSuppot is defined' do
+            it 'fails with a differing message' do
+              stub_const("ActiveSupport", Module.new)
+              allow(date1).to receive(:inspect).and_return("Timestamp")
+              allow(date2).to receive(:inspect).and_return("Timestamp")
+
+              expect {
+                expect(date1).to eq(date2)
+              }.to fail_with(a_string_with_differing_output)
+            end
+          end
+        end
+      end
     end
   end
 end
-
