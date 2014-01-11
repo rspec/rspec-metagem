@@ -495,17 +495,11 @@ describe "expect { ... }.to change(actual, message).from(old)" do
       @instance.some_value = 'string'
     end
 
-    it "passes when attribute is === to expected value before executing block" do
+    it "passes when attribute matches expected value before executing block" do
       expect { @instance.some_value = "astring" }.to change(@instance, :some_value).from("string")
     end
 
-    it "compares the expected and actual values with ===" do
-      expected = "string"
-      expect(expected).to receive(:===).and_return true
-      expect { @instance.some_value = "astring" }.to change(@instance, :some_value).from(expected)
-    end
-
-    it "fails when attribute is not === to expected value before executing block" do
+    it "fails when attribute does not match expected value before executing block" do
       expect do
         expect { @instance.some_value = "knot" }.to change(@instance, :some_value).from("cat")
       end.to fail_with("expected #some_value to have initially been \"cat\", but was \"string\"")
@@ -523,17 +517,11 @@ describe "expect { ... }.to change { block }.from(old)" do
     @instance.some_value = 'string'
   end
 
-  it "passes when attribute is === to expected value before executing block" do
+  it "passes when attribute matches expected value before executing block" do
     expect { @instance.some_value = "astring" }.to change{@instance.some_value}.from("string")
   end
 
-  it "compares the expected and actual values with ===" do
-    expected = "string"
-    expect(expected).to receive(:===).and_return true
-    expect { @instance.some_value = "astring" }.to change{@instance.some_value}.from(expected)
-  end
-
-  it "fails when attribute is not === to expected value before executing block" do
+  it "fails when attribute does not match expected value before executing block" do
     expect do
       expect { @instance.some_value = "knot" }.to change{@instance.some_value}.from("cat")
     end.to fail_with("expected result to have initially been \"cat\", but was \"string\"")
@@ -561,23 +549,18 @@ describe "expect { ... }.to change(actual, message).to(new)" do
       end.to fail_with("expected #some_value to have changed to false, but is now 1")
     end
   end
+
   context "with non-boolean values" do
     before(:each) do
       @instance = SomethingExpected.new
       @instance.some_value = 'string'
     end
 
-    it "passes when attribute is === to expected value after executing block" do
+    it "passes when attribute matches expected value after executing block" do
       expect { @instance.some_value = "cat" }.to change(@instance, :some_value).to("cat")
     end
 
-    it "compares the expected and actual values with ===" do
-      expected = "cat"
-      expect(expected).to receive(:===).and_return true
-      expect { @instance.some_value = "cat" }.to change(@instance, :some_value).to(expected)
-    end
-
-    it "fails when attribute is not === to expected value after executing block" do
+    it "fails when attribute does not match expected value after executing block" do
       expect do
         expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
       end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
@@ -591,17 +574,11 @@ describe "expect { ... }.to change { block }.to(new)" do
     @instance.some_value = 'string'
   end
 
-  it "passes when attribute is === to expected value after executing block" do
+  it "passes when attribute matches expected value after executing block" do
     expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to("cat")
   end
 
-  it "compares the expected and actual values with ===" do
-    expected = "cat"
-    expect(expected).to receive(:===).and_return true
-    expect { @instance.some_value = "cat" }.to change{@instance.some_value}.to(expected)
-  end
-
-  it "fails when attribute is not === to expected value after executing block" do
+  it "fails when attribute does not match expected value after executing block" do
     expect do
       expect { @instance.some_value = "cat" }.to change{@instance.some_value}.from("string").to("dog")
     end.to fail_with("expected result to have changed to \"dog\", but is now \"cat\"")
