@@ -1,8 +1,6 @@
 require 'spec_helper'
-if RUBY_VERSION < '1.9.3'
-  require 'complex'
-  require 'date'
-end
+require 'date'
+require 'complex'
 
 module RSpec
   module Matchers
@@ -110,7 +108,7 @@ module RSpec
           let(:time1) { Time.utc(1969, 12, 31, 19, 01, 40, 101) }
           let(:time2) { Time.utc(1969, 12, 31, 19, 01, 40, 102) }
 
-          it 'Should have a different output string when differing by milliseconds' do
+          it 'produces different output for Times differing by milliseconds' do
             expect {
               expect(time1).to eq(time2)
             }.to fail_with(a_string_with_differing_output)
@@ -118,31 +116,30 @@ module RSpec
         end
 
         context 'with DateTime objects' do
-          require 'date'
           let(:date1) { DateTime.new(2000, 1, 1, 1, 1, Rational(1, 10)) }
           let(:date2) { DateTime.new(2000, 1, 1, 1, 1, Rational(2, 10)) }
 
-          it 'Should have diffferent output string when differing by milliseconds' do
+          it 'produces different output for DateTimes differing by milliseconds' do
             expect {
               expect(date1).to eq(date2)
             }.to fail_with(a_string_with_differing_output)
           end
 
-          it 'should not raise an exception if DateTime is not defined' do
+          it 'does not not assume DateTime is defined since you need to require `date` to make it available' do
             hide_const('DateTime')
             expect {
               expect(5).to eq(4)
             }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
           end
 
-          it 'fails with identical messages' do
+          it 'fails with identical output when the DateTimes are exactly the same' do
             expect {
               expect(date1).to_not eq(date1)
             }.to fail_with(a_string_with_identical_output)
           end
 
-          describe 'ActiveSuppot is defined' do
-            it 'fails with a differing message' do
+          context 'when ActiveSupport is loaded' do
+            it "uses a custom format to ensure the output is different when DateTimes differ" do
               stub_const("ActiveSupport", Module.new)
               allow(date1).to receive(:inspect).and_return("Timestamp")
               allow(date2).to receive(:inspect).and_return("Timestamp")

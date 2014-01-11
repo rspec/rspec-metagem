@@ -46,6 +46,9 @@ Enhancements:
 * Make failure message for `not_to be #{operator}` less confusing by
   only saying it's confusing when comparison operators are used.
   (Prathamesh Sonpatki)
+* Improve failure message of `eq` matcher when `Time` or `DateTime`
+  objects are used so that the full sub-second precision is included.
+  (Thomas Holmes)
 
 Breaking Changes for 3.0.0:
 
