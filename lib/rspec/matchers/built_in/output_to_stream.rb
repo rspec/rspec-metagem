@@ -6,19 +6,13 @@ module RSpec
       class OutputToStream < BaseMatcher
         def initialize(stream_name, expected)
           @stream_name = stream_name
-          @expected = expected
+          @expected    = expected
         end
 
         def matches?(block)
           @actual = capture_stream(block)
 
-          case @expected
-          when NilClass then captured?
-          when Regexp then @actual =~ @expected
-          when AliasedMatcher then values_match?(@expected, @actual)
-          else
-            @actual == @expected
-          end
+          @expected ? values_match?(@expected, @actual) : captured?
         end
 
         def failure_message
