@@ -13,7 +13,7 @@ module RSpec
         end
       end
 
-      private
+    private
 
       def diffs
         Diff::LCS.diff(expected_lines, actual_lines)
