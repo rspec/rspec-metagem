@@ -4,8 +4,8 @@ module RSpec
   module Matchers
     module BuiltIn
       class OutputToStream < BaseMatcher
-        def initialize(name, expected)
-          @name = name
+        def initialize(stream_name, expected)
+          @stream_name = stream_name
           @expected = expected
         end
 
@@ -22,19 +22,11 @@ module RSpec
         end
 
         def failure_message
-          if @expected
-            "expected block to output #{expected_formatted} to #{@name}, but output #{formatted_actual}"
-          else
-            "expected block to output to #{@name}, but did not"
-          end
+          "expected block to output #{expected_description}, #{actual_description}"
         end
 
         def failure_message_when_negated
-          if @expected
-            "expected block to not output #{expected_formatted} to #{@name}, but did"
-          else
-            "expected block to not output to #{@name}, but did"
-          end
+          "expected block to not output #{expected_description}, but did"
         end
 
       private
@@ -43,17 +35,18 @@ module RSpec
           @actual.length > 0
         end
 
-        def expected_formatted
-          case @expected
-          when Regexp then "a string matching #{@expected.inspect}"
-          when AliasedMatcher then description_of(@expected)
-          else
-            @expected.inspect
-          end
+        def expected_description
+          description = case @expected
+                        when Regexp then "a string matching #{@expected.inspect}"
+                        when AliasedMatcher then description_of(@expected)
+                        else
+                          @expected.inspect
+                        end
+          @expected ? "#{description} to #{@stream_name}" : "to #{@stream_name}"
         end
 
-        def formatted_actual
-          captured? ? @actual.inspect : "nothing"
+        def actual_description
+          @expected ? "but output #{captured? ? @actual.inspect : 'nothing'}" : "but did not"
         end
       end
 
@@ -65,14 +58,14 @@ module RSpec
         def capture_stream(block)
           captured_stream = StringIO.new
 
-          @original_stream = $stdout
+          original_stream = $stdout
           $stdout = captured_stream
 
           block.call
 
           captured_stream.string
         ensure
-          $stdout = @original_stream
+          $stdout = original_stream
         end
       end
 
@@ -84,14 +77,14 @@ module RSpec
         def capture_stream(block)
           captured_stream = StringIO.new
 
-          @original_stream = $stderr
+          original_stream = $stderr
           $stderr = captured_stream
 
           block.call
 
           captured_stream.string
         ensure
-          $stderr = @original_stream
+          $stderr = original_stream
         end
       end
     end
