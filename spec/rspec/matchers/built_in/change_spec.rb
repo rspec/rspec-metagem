@@ -527,6 +527,12 @@ describe "expect { ... }.to change { block }.from(old)" do
     end.to fail_with("expected result to have initially been \"cat\", but was \"string\"")
   end
 
+  it "fails when attribute does not change" do
+    expect do
+      expect { }.to change { @instance.some_value }.from("string")
+    end.to fail_with('expected result to have changed from "string", but did not change')
+  end
+
   it "provides a #description" do
     expect(change { }.from(3).description).to eq "change result from 3"
   end
@@ -564,6 +570,12 @@ describe "expect { ... }.to change(actual, message).to(new)" do
       expect do
         expect { @instance.some_value = "cat" }.to change(@instance, :some_value).from("string").to("dog")
       end.to fail_with("expected #some_value to have changed to \"dog\", but is now \"cat\"")
+    end
+
+    it "fails with a clear message when it ends with the right value but did not change" do
+      expect {
+        expect { }.to change(@instance, :some_value).to("string")
+      }.to fail_with('expected #some_value to have changed to "string", but did not change')
     end
   end
 end
