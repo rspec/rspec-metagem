@@ -29,7 +29,7 @@ module RSpec
           end
         end
 
-        private
+      private
 
         def capture_stream(block)
           captured_stdout, captured_stderr = StringIO.new, StringIO.new
@@ -52,11 +52,11 @@ module RSpec
         end
 
         def formatted_stream
-         @stream == $stdout ? "stdout" : "stderr"
+          @stream == $stdout ? "stdout" : "stderr"
         end
 
         def formatted_actual
-         captured? ? @actual.inspect : "nothing"
+          captured? ? @actual.inspect : "nothing"
         end
       end
     end
