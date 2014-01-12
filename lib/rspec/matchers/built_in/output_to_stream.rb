@@ -45,6 +45,7 @@ module RSpec
 
         def expected_formatted
           case @expected
+          when Regexp then "a string matching #{@expected.inspect}"
           when AliasedMatcher then description_of(@expected)
           else
             @expected.inspect

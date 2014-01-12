@@ -73,13 +73,13 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block does not output to #{stream_name}" do
       expect {
         expect { }.to matcher(/foo/)
-      }.to fail_with("expected block to output /foo/ to #{stream_name}, but output nothing")
+      }.to fail_with("expected block to output a string matching /foo/ to #{stream_name}, but output nothing")
     end
 
     it "fails if the block outputs a string to #{stream_name} that does not match" do
       expect {
         expect { stream.print 'foo' }.to matcher(/food/)
-      }.to fail_with("expected block to output /food/ to #{stream_name}, but output \"foo\"")
+      }.to fail_with("expected block to output a string matching /food/ to #{stream_name}, but output \"foo\"")
     end
   end
 
@@ -95,7 +95,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that matches the regex" do
       expect {
         expect { stream.print 'foo' }.to_not matcher(/foo/)
-      }.to fail_with("expected block to not output /foo/ to #{stream_name}, but did")
+      }.to fail_with("expected block to not output a string matching /foo/ to #{stream_name}, but did")
     end
   end
 
