@@ -322,7 +322,12 @@ module RSpec::Matchers::DSL
 
     it "provides expected" do
       matcher = new_matcher(:name, "expected string") { }
-      expect(matcher.expected).to eq ['expected string']
+      expect(matcher.expected).to eq 'expected string'
+    end
+
+    it "provides expected when there is more than one argument" do
+      matcher = new_matcher(:name, "expected string", "another arg") { }
+      expect(matcher.expected).to eq ['expected string', "another arg"]
     end
 
     it "provides actual when `match` is used" do

@@ -287,7 +287,11 @@ module RSpec
         def initialize(name, declarations, *expected)
           @name     = name
           @actual   = nil
-          @expected = expected
+          if expected.size == 1
+            @expected = expected[0]
+          else
+            @expected = expected
+          end
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
