@@ -264,6 +264,22 @@ module RSpec
 
     specify do
       expect(
+        a_block_outputting_to_stdout('foo')
+      ).to be_aliased_to(
+        output_to_stdout('foo')
+      ).with_description('a block outputting "foo" to stdout')
+    end
+
+    specify do
+      expect(
+        a_block_outputting_to_stderr('foo')
+      ).to be_aliased_to(
+        output_to_stderr('foo')
+      ).with_description('a block outputting "foo" to stderr')
+    end
+
+    specify do
+      expect(
         a_block_raising(ArgumentError)
       ).to be_aliased_to(
         raise_error(ArgumentError)

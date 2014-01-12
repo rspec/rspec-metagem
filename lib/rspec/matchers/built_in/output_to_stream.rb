@@ -22,27 +22,27 @@ module RSpec
         end
 
         def failure_message
-          "expected block to output #{expected_description}, #{actual_description}"
+          "expected block to #{description}, #{actual_description}"
         end
 
         def failure_message_when_negated
-          "expected block to not output #{expected_description}, but did"
+          "expected block to not #{description}, but did"
+        end
+
+        def description
+          expected = case @expected
+                     when Regexp then "a string matching #{@expected.inspect}"
+                     when AliasedMatcher then description_of(@expected)
+                     else
+                       @expected.inspect
+                     end
+          @expected ? "output #{expected} to #{@stream_name}" : "output to #{@stream_name}"
         end
 
       private
 
         def captured?
           @actual.length > 0
-        end
-
-        def expected_description
-          description = case @expected
-                        when Regexp then "a string matching #{@expected.inspect}"
-                        when AliasedMatcher then description_of(@expected)
-                        else
-                          @expected.inspect
-                        end
-          @expected ? "#{description} to #{@stream_name}" : "to #{@stream_name}"
         end
 
         def actual_description

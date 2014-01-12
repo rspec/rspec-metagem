@@ -598,12 +598,48 @@ module RSpec
       contain_exactly(*items)
     end
 
+    # With no args, passes if the block outputs to $stdout.
+    # With a string, passes if the blocks outputs that specific string to $stdout.
+    # With a regexp, passes if the blocks outputs a string to $stdout that matches.
+    #
+    # @example
+    #
+    #   expect { $stdout.print 'foo' }.to output_to_stdout
+    #   expect { $stdout.print 'foo' }.to output_to_stdout('foo')
+    #   expect { $stdout.print 'foo' }.to output_to_stdout(/foo/)
+    #
+    #   expect { do_something }.to_not output_to_stdout
+    #
+    # @note This matcher won't be able to intercept output to STDOUT when the
+    # explicit STDOUT.puts 'foo' is used or in case a reference to STDOUT is
+    # stored before the matcher is used.
     def output_to_stdout(expected=nil)
       BuiltIn::OutputToStdout.new(expected)
     end
+    alias_matcher :a_block_outputting_to_stdout, :output_to_stdout do |desc|
+      desc.sub('output', 'a block outputting')
+    end
 
+    # With no args, passes if the block outputs to $stderr.
+    # With a string, passes if the blocks outputs that specific string to $stderr.
+    # With a regexp, passes if the blocks outputs a string to $stderr that matches.
+    #
+    # @example
+    #
+    #   expect { $stderr.print 'foo' }.to output_to_stderr
+    #   expect { $stderr.print 'foo' }.to output_to_stderr('foo')
+    #   expect { $stderr.print 'foo' }.to output_to_stderr(/foo/)
+    #
+    #   expect { do_something }.to_not output_to_stderr
+    #
+    # @note This matcher won't be able to intercept output to STDERR when the
+    # explicit STDERR.puts 'foo' is used or in case a reference to STDERR is
+    # stored before the matcher is used.
     def output_to_stderr(expected=nil)
       BuiltIn::OutputToStderr.new(expected)
+    end
+    alias_matcher :a_block_outputting_to_stderr, :output_to_stderr do |desc|
+      desc.sub('output', 'a block outputting')
     end
 
     # With no args, matches if any error is raised.
