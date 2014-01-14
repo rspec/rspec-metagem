@@ -604,9 +604,9 @@ module RSpec
     #
     # @example
     #
-    #   expect { $stdout.print 'foo' }.to output_to_stdout
-    #   expect { $stdout.print 'foo' }.to output_to_stdout('foo')
-    #   expect { $stdout.print 'foo' }.to output_to_stdout(/foo/)
+    #   expect { print 'foo' }.to output_to_stdout
+    #   expect { print 'foo' }.to output_to_stdout('foo')
+    #   expect { print 'foo' }.to output_to_stdout(/foo/)
     #
     #   expect { do_something }.to_not output_to_stdout
     #
@@ -626,9 +626,9 @@ module RSpec
     #
     # @example
     #
-    #   expect { $stderr.print 'foo' }.to output_to_stderr
-    #   expect { $stderr.print 'foo' }.to output_to_stderr('foo')
-    #   expect { $stderr.print 'foo' }.to output_to_stderr(/foo/)
+    #   expect { warn('foo') }.to output_to_stderr
+    #   expect { warn('foo') }.to output_to_stderr('foo')
+    #   expect { warn('foo') }.to output_to_stderr(/foo/)
     #
     #   expect { do_something }.to_not output_to_stderr
     #

@@ -127,7 +127,7 @@ end
 module RSpec
   module Matchers
     describe "output_to_stderr matcher" do
-      it_behaves_like("an RSpec matcher", :valid_value => lambda { $stderr.print 'foo' }, :invalid_value => lambda {}) do
+      it_behaves_like("an RSpec matcher", :valid_value => lambda { warn('foo') }, :invalid_value => lambda {}) do
         let(:matcher) { output_to_stderr }
       end
 
@@ -137,7 +137,7 @@ module RSpec
     end
 
     describe "output_to_stdout matcher" do
-      it_behaves_like("an RSpec matcher", :valid_value => lambda { $stdout.print 'foo' }, :invalid_value => lambda {}) do
+      it_behaves_like("an RSpec matcher", :valid_value => lambda { print 'foo' }, :invalid_value => lambda {}) do
         let(:matcher) { output_to_stdout }
       end
 
