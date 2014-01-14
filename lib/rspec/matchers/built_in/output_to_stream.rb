@@ -24,13 +24,7 @@ module RSpec
         end
 
         def description
-          expected = case @expected
-                     when Regexp then "a string matching #{@expected.inspect}"
-                     when AliasedMatcher then description_of(@expected)
-                     else
-                       @expected.inspect
-                     end
-          @expected ? "output #{expected} to #{@stream_name}" : "output to #{@stream_name}"
+          @expected ? "output #{description_of @expected} to #{@stream_name}" : "output to #{@stream_name}"
         end
 
       private
