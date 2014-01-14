@@ -15,6 +15,8 @@ Feature: Composing Matchers
     * `include(matcher, matcher)`
     * `include(:key => matcher, :other => matcher)`
     * `match(arbitrary_nested_structure_with_matchers)`
+    * `output_to_stdout(matcher)`
+    * `output_to_stderr(matcher)`
     * `raise_error(ErrorClass, matcher)`
     * `start_with(matcher, matcher)`
     * `throw_symbol(:sym, matcher)`
@@ -142,6 +144,34 @@ Feature: Composing Matchers
       end
       """
     When I run `rspec match_spec.rb`
+    Then the examples should all pass
+
+  Scenario: Composing matchers with `output_to_stdout`
+    Given a file named "output_to_stdout_spec.rb" with:
+      """
+      describe "Passing matchers to `output_to_stdout`" do
+        specify "you can pass a matcher in place of the output" do
+          expect {
+            print 'foo'
+          }.to output_to_stdout(a_string_starting_with('f'))
+        end
+      end
+      """
+    When I run `rspec output_to_stdout_spec.rb`
+    Then the examples should all pass
+
+  Scenario: Composing matchers with `output_to_stderr`
+    Given a file named "output_to_stderr_spec.rb" with:
+      """
+      describe "Passing matchers to `output_to_stderr`" do
+        specify "you can pass a matcher in place of the output" do
+          expect {
+            warn 'foo'
+          }.to output_to_stderr(a_string_starting_with('f'))
+        end
+      end
+      """
+    When I run `rspec output_to_stderr_spec.rb`
     Then the examples should all pass
 
   Scenario: Composing matchers with `raise_error`
