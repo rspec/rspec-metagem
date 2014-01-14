@@ -1,11 +1,14 @@
 Feature: output to stream matchers
 
-  There are two related matchers that allow you to specify whether a block
-  outputs to a stream. With no args, the matcher passes whenever the
-  block-under-test outputs. With a string argument, it passes whenever
-  block-under-test outputs a string that `==` the given string. With a regex,
-  it passes whenever the block-under-test outputs a string that matches the
-  given string.
+  The `output_to_stdout` and `output_to_stderr` matcher(s) provides a way to
+  assert that the block-under-test has emitted content to either `stdout` or
+  `stderr`.
+
+  With no argument the matcher asserts that there has been output, when you
+  pass a string then it asserts the output is equal (`==`) to that string and
+  if you pass a regular expression then it asserts the output matches it. With
+  a regex or a matcher, it passes whenever the block-under-test outputs a
+  string that matches the given string.
 
     * `output_to_stdout` matches if the block-under-test outputs to
       $stdout.
