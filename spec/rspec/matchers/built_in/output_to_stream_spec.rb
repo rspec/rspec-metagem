@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 shared_examples_for "output_to_stream" do |stream_name|
-  matcher_method = :"output_to_#{stream_name}"
+  matcher_method = :"to_#{stream_name}"
 
   define_method :matcher do |*args|
-    send(matcher_method, *args)
+    output(args.first).send(matcher_method)
   end
 
   it 'is diffable' do
     expect(matcher).to be_diffable
   end
 
-  context "expect { ... }.to #{matcher_method} (with no arg)" do
+  context "expect { ... }.to output.#{matcher_method}" do
     it "passes if the block outputs to #{stream_name}" do
       expect { stream.print 'foo' }.to matcher
     end
@@ -23,7 +23,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.not_to #{matcher_method} (with no arg)" do
+  context "expect { ... }.not_to output.#{matcher_method}" do
     it "passes if the block does not output to #{stream_name}" do
       expect { }.not_to matcher
     end
@@ -35,7 +35,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to #{matcher_method}('string')" do
+  context "expect { ... }.to output('string').#{matcher_method}" do
     it "passes if the block outputs that string to #{stream_name}" do
       expect { stream.print 'foo' }.to matcher("foo")
     end
@@ -53,7 +53,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to_not #{matcher_method}('string')" do
+  context "expect { ... }.to_not output('string').#{matcher_method}" do
     it "passes if the block outputs a different string to #{stream_name}" do
       expect { stream.print 'food' }.to_not matcher('foo')
     end
@@ -69,7 +69,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to #{matcher_method}(/regex/)" do
+  context "expect { ... }.to output(/regex/).#{matcher_method}" do
     it "passes if the block outputs a string to #{stream_name} that matches the regex" do
       expect { stream.print 'foo' }.to matcher(/foo/)
     end
@@ -87,7 +87,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to_not #{matcher_method}(/regex/)" do
+  context "expect { ... }.to_not output(/regex/).#{matcher_method}" do
     it "passes if the block outputs a string to #{stream_name} that does not match the regex" do
       expect { stream.print 'food' }.to_not matcher(/bar/)
     end
@@ -103,7 +103,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to #{matcher_method}(matcher)" do
+  context "expect { ... }.to output(matcher).#{matcher_method}" do
     it "passes if the block outputs a string to #{stream_name} that passes the given matcher" do
       expect { stream.print 'foo' }.to matcher(a_string_starting_with("f"))
     end
@@ -115,7 +115,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     end
   end
 
-  context "expect { ... }.to_not #{matcher_method}(matcher)" do
+  context "expect { ... }.to_not output(matcher).#{matcher_method}" do
     it "passes if the block does not output a string to #{stream_name} that passes the given matcher" do
       expect { stream.print 'foo' }.to_not matcher(a_string_starting_with("b"))
     end
@@ -130,9 +130,9 @@ end
 
 module RSpec
   module Matchers
-    describe "output_to_stderr matcher" do
+    describe "output.to_stderr matcher" do
       it_behaves_like("an RSpec matcher", :valid_value => lambda { warn('foo') }, :invalid_value => lambda {}) do
-        let(:matcher) { output_to_stderr }
+        let(:matcher) { output.to_stderr }
       end
 
       include_examples "output_to_stream", :stderr do
@@ -140,9 +140,9 @@ module RSpec
       end
     end
 
-    describe "output_to_stdout matcher" do
+    describe "output.to_stdout matcher" do
       it_behaves_like("an RSpec matcher", :valid_value => lambda { print 'foo' }, :invalid_value => lambda {}) do
-        let(:matcher) { output_to_stdout }
+        let(:matcher) { output.to_stdout }
       end
 
       include_examples "output_to_stream", :stdout do

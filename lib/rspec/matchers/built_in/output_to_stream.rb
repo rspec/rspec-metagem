@@ -4,15 +4,24 @@ module RSpec
   module Matchers
     module BuiltIn
       class OutputToStream < BaseMatcher
-        def initialize(stream_name, expected)
-          @stream_name = stream_name
-          @expected    = expected
+        def initialize(expected)
+          @expected = expected
         end
 
         def matches?(block)
-          @actual = capture_stream(block)
+          @actual = @stream.capture(block)
 
           @expected ? values_match?(@expected, @actual) : captured?
+        end
+
+        def to_stdout
+          @stream = CaptureStdout.new
+          self
+        end
+
+        def to_stderr
+          @stream = CaptureStderr.new
+          self
         end
 
         def failure_message
@@ -24,7 +33,7 @@ module RSpec
         end
 
         def description
-          @expected ? "output #{description_of @expected} to #{@stream_name}" : "output to #{@stream_name}"
+          @expected ? "output #{description_of @expected} to #{@stream.name}" : "output to #{@stream.name}"
         end
 
         def diffable?
@@ -42,12 +51,12 @@ module RSpec
         end
       end
 
-      class OutputToStdout < OutputToStream
-        def initialize(expected)
-          super('stdout', expected)
+      class CaptureStdout
+        def name
+          'stdout'
         end
 
-        def capture_stream(block)
+        def capture(block)
           captured_stream = StringIO.new
 
           original_stream = $stdout
@@ -61,12 +70,12 @@ module RSpec
         end
       end
 
-      class OutputToStderr < OutputToStream
-        def initialize(expected)
-          super('stderr', expected)
+      class CaptureStderr
+        def name
+          'stderr'
         end
 
-        def capture_stream(block)
+        def capture(block)
           captured_stream = StringIO.new
 
           original_stream = $stderr

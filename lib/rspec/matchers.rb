@@ -598,47 +598,31 @@ module RSpec
       contain_exactly(*items)
     end
 
-    # With no args, passes if the block outputs to `$stdout`.
-    # With a string, passes if the blocks outputs that specific string to `$stdout`.
-    # With a regexp or matcher, passes if the blocks outputs a string to `$stdout` that matches.
+    # With no args, passes if the block outputs `to_stdout` or `to_stderr`.
+    # With a string, passes if the blocks outputs that specific string `to_stdout` or `to_stderr`.
+    # With a regexp or matcher, passes if the blocks outputs a string `to_stdout` or `to_stderr` that matches.
     #
     # @example
     #
-    #   expect { print 'foo' }.to output_to_stdout
-    #   expect { print 'foo' }.to output_to_stdout('foo')
-    #   expect { print 'foo' }.to output_to_stdout(/foo/)
+    #   expect { print 'foo' }.to output.to_stdout
+    #   expect { print 'foo' }.to output('foo').to_stdout
+    #   expect { print 'foo' }.to output(/foo/).to_stdout
     #
-    #   expect { do_something }.to_not output_to_stdout
+    #   expect { do_something }.to_not output.to_stdout
     #
-    # @note This matcher won't be able to intercept output to `STDOUT` when the
-    # explicit `STDOUT.puts 'foo'` is used or in case a reference to `$stdout` is
-    # stored before the matcher is used.
-    def output_to_stdout(expected=nil)
-      BuiltIn::OutputToStdout.new(expected)
+    #   expect { warn('foo') }.to output.to_stderr
+    #   expect { warn('foo') }.to output('foo').to_stderr
+    #   expect { warn('foo') }.to output(/foo/).to_stderr
+    #
+    #   expect { do_something }.to_not output.to_stderr
+    #
+    # @note This matcher won't be able to intercept output to `STDOUT` or `STDERR`
+    # when the reference in a constant is used, like in `STDOUT.puts 'foo'`, or in
+    # case a reference to `$stdout` or `$stderr` is stored before the matcher is used.
+    def output(expected=nil)
+      BuiltIn::OutputToStream.new(expected)
     end
-    alias_matcher :a_block_outputting_to_stdout, :output_to_stdout do |desc|
-      desc.sub('output', 'a block outputting')
-    end
-
-    # With no args, passes if the block outputs to `$stderr`.
-    # With a string, passes if the blocks outputs that specific string to `$stderr`.
-    # With a regexp or matcher, passes if the blocks outputs a string to `$stderr` that matches.
-    #
-    # @example
-    #
-    #   expect { warn('foo') }.to output_to_stderr
-    #   expect { warn('foo') }.to output_to_stderr('foo')
-    #   expect { warn('foo') }.to output_to_stderr(/foo/)
-    #
-    #   expect { do_something }.to_not output_to_stderr
-    #
-    # @note This matcher won't be able to intercept output to `STDERR` when the
-    # explicit `STDERR.puts 'foo'` is used or in case a reference to `$stderr` is
-    # stored before the matcher is used.
-    def output_to_stderr(expected=nil)
-      BuiltIn::OutputToStderr.new(expected)
-    end
-    alias_matcher :a_block_outputting_to_stderr, :output_to_stderr do |desc|
+    alias_matcher :a_block_outputting, :output do |desc|
       desc.sub('output', 'a block outputting')
     end
 

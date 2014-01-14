@@ -1,8 +1,7 @@
 Feature: output to stream matchers
 
-  The `output_to_stdout` and `output_to_stderr` matcher(s) provides a way to
-  assert that the block-under-test has emitted content to either `stdout` or
-  `stderr`.
+   The `output` matcher provides a way to assert that the block-under-test
+   has emitted content to either `to_stdout` or `to_stderr`.
 
   With no argument the matcher asserts that there has been output, when you
   pass a string then it asserts the output is equal (`==`) to that string and
@@ -10,10 +9,10 @@ Feature: output to stream matchers
   a regex or a matcher, it passes whenever the block-under-test outputs a
   string that matches the given string.
 
-    * `output_to_stdout` matches if the block-under-test outputs to
+    * `output.to_stdout` matches if the block-under-test outputs to
       $stdout.
 
-    * `output_to_stderr` matchets if the block-under-test outputs to
+    * `output.to_stderr` matchets if the block-under-test outputs to
       $stderr.
 
     Note: This matchers won't be able to intercept output to stream when the
@@ -24,20 +23,20 @@ Feature: output to stream matchers
     Given a file named "output_to_stdout_spec.rb" with:
       """ruby
 
-      describe "output_to_stdout matcher" do
-        specify { expect { print('foo') }.to output_to_stdout }
-        specify { expect { print('foo') }.to output_to_stdout('foo') }
-        specify { expect { print('foo') }.to output_to_stdout(/foo/) }
-        specify { expect { }.to_not output_to_stdout }
-        specify { expect { print('foo') }.to_not output_to_stdout('bar') }
-        specify { expect { print('foo') }.to_not output_to_stdout(/bar/) }
+      describe "output.to_stdout matcher" do
+        specify { expect { print('foo') }.to output.to_stdout }
+        specify { expect { print('foo') }.to output('foo').to_stdout }
+        specify { expect { print('foo') }.to output(/foo/).to_stdout }
+        specify { expect { }.to_not output.to_stdout }
+        specify { expect { print('foo') }.to_not output('bar').to_stdout }
+        specify { expect { print('foo') }.to_not output(/bar/).to_stdout }
 
         # deliberate failures
-        specify { expect { }.to output_to_stdout }
-        specify { expect { }.to output_to_stdout('foo') }
-        specify { expect { print('foo') }.to_not output_to_stdout }
-        specify { expect { print('foo') }.to output_to_stdout('bar') }
-        specify { expect { print('foo') }.to output_to_stdout(/bar/) }
+        specify { expect { }.to output.to_stdout }
+        specify { expect { }.to output('foo').to_stdout }
+        specify { expect { print('foo') }.to_not output.to_stdout }
+        specify { expect { print('foo') }.to output('bar').to_stdout }
+        specify { expect { print('foo') }.to output(/bar/).to_stdout }
       end
       """
     When I run `rspec output_to_stdout_spec.rb`
@@ -54,19 +53,19 @@ Feature: output to stream matchers
       """ruby
 
       describe "output_to_stderr matcher" do
-        specify { expect { warn('foo') }.to output_to_stderr }
-        specify { expect { warn('foo') }.to output_to_stderr("foo\n") }
-        specify { expect { warn('foo') }.to output_to_stderr(/foo/) }
-        specify { expect { }.to_not output_to_stderr }
-        specify { expect { warn('foo') }.to_not output_to_stderr('bar') }
-        specify { expect { warn('foo') }.to_not output_to_stderr(/bar/) }
+        specify { expect { warn('foo') }.to output.to_stderr }
+        specify { expect { warn('foo') }.to output("foo\n").to_stderr }
+        specify { expect { warn('foo') }.to output(/foo/).to_stderr }
+        specify { expect { }.to_not output.to_stderr }
+        specify { expect { warn('foo') }.to_not output('bar').to_stderr }
+        specify { expect { warn('foo') }.to_not output(/bar/).to_stderr }
 
         # deliberate failures
-        specify { expect { }.to output_to_stderr }
-        specify { expect { }.to output_to_stderr('foo') }
-        specify { expect { warn('foo') }.to_not output_to_stderr }
-        specify { expect { warn('foo') }.to output_to_stderr('bar') }
-        specify { expect { warn('foo') }.to output_to_stderr(/bar/) }
+        specify { expect { }.to output.to_stderr }
+        specify { expect { }.to output('foo').to_stderr }
+        specify { expect { warn('foo') }.to_not output.to_stderr }
+        specify { expect { warn('foo') }.to output('bar').to_stderr }
+        specify { expect { warn('foo') }.to output(/bar/).to_stderr }
       end
       """
     When I run `rspec output_to_stderr.rb`

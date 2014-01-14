@@ -264,17 +264,17 @@ module RSpec
 
     specify do
       expect(
-        a_block_outputting_to_stdout('foo')
+        a_block_outputting('foo').to_stdout
       ).to be_aliased_to(
-        output_to_stdout('foo')
+        output('foo').to_stdout
       ).with_description('a block outputting "foo" to stdout')
     end
 
     specify do
       expect(
-        a_block_outputting_to_stderr('foo')
+        a_block_outputting('foo').to_stderr
       ).to be_aliased_to(
-        output_to_stderr('foo')
+        output('foo').to_stderr
       ).with_description('a block outputting "foo" to stderr')
     end
 
