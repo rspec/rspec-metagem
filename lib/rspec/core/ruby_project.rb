@@ -24,7 +24,7 @@ module RSpec
       end
 
       def find_first_parent_containing(dir)
-        ascend_until {|path| File.exists?(File.join(path, dir))}
+        ascend_until {|path| File.exist?(File.join(path, dir))}
       end
 
       def ascend_until
