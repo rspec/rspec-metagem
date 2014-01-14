@@ -185,6 +185,8 @@ actual.should be > 3
 [1, 2, 3].should_not include 4
 ```
 
+See [detailed information on the `should` syntax and its usage.](https://github.com/rspec/rspec-expectations/blob/master/Should.md)
+
 ## Compound Matcher Expressions
 
 You can also create compound matcher expressions using `and` or `or`:
@@ -250,8 +252,6 @@ expect { |probe|
   a_number_that_is_odd
 )
 ```
-
-See [detailed information on the `should` syntax and its usage.](https://github.com/rspec/rspec-expectations/blob/master/Should.md)
 
 ## Also see
 
