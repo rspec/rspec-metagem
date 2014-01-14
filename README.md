@@ -246,11 +246,7 @@ expect(hash).to match(
 
 expect { |probe|
   [1, 2, 3].each(&probe)
-}.to yield_successive_args(
-  a_number_that_is_odd,
-  a_number_that_is_even,
-  a_number_that_is_odd
-)
+}.to yield_successive_args( a_value < 2, 2, a_value > 2 )
 ```
 
 ## Also see
