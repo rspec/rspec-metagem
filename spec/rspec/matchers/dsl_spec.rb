@@ -306,6 +306,26 @@ module RSpec::Matchers::DSL
       expect(matcher).to be_diffable
     end
 
+    it 'handles multiline string diffs' do
+      actual   = "LINE1\nline2\n"
+      expected = "line1\nline2\n"
+
+      matcher = new_matcher(:custom_match, expected) do
+        match { |actual| actual == expected }
+        diffable
+      end
+
+      diff = nil
+      begin
+        allow(RSpec::Matchers.configuration).to receive(:color?).and_return(false)
+        expect(actual).to matcher
+      rescue RSpec::Expectations::ExpectationNotMetError => e
+        diff = e.message.sub(/\A.*Diff:/m, "Diff:").gsub(/^\s*/,'')
+      end
+
+      expect(diff).to eq "Diff:\n@@ -1,3 +1,3 @@\n-line1\n+LINE1\nline2\n"
+    end
+
     it 'does not confuse the diffability of different matchers' do
       # Necessary to guard against a regression that involved
       # using a class variable to store the diffable state,
