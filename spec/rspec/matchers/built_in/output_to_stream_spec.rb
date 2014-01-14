@@ -7,6 +7,10 @@ shared_examples_for "output_to_stream" do |stream_name|
     send(matcher_method, *args)
   end
 
+  it 'is diffable' do
+    expect(matcher).to be_diffable
+  end
+
   context "expect { ... }.to #{matcher_method} (with no arg)" do
     it "passes if the block outputs to #{stream_name}" do
       expect { stream.print 'foo' }.to matcher
@@ -73,13 +77,13 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block does not output to #{stream_name}" do
       expect {
         expect { }.to matcher(/foo/)
-      }.to fail_with("expected block to output /foo/ to #{stream_name}, but output nothing")
+      }.to fail_matching("expected block to output /foo/ to #{stream_name}, but output nothing\nDiff")
     end
 
     it "fails if the block outputs a string to #{stream_name} that does not match" do
       expect {
         expect { stream.print 'foo' }.to matcher(/food/)
-      }.to fail_with("expected block to output /food/ to #{stream_name}, but output \"foo\"")
+      }.to fail_matching("expected block to output /food/ to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -95,7 +99,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that matches the regex" do
       expect {
         expect { stream.print 'foo' }.to_not matcher(/foo/)
-      }.to fail_with("expected block to not output /foo/ to #{stream_name}, but did")
+      }.to fail_matching("expected block to not output /foo/ to #{stream_name}, but did\nDiff")
     end
   end
 
@@ -107,7 +111,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that does not pass the given matcher" do
       expect {
         expect { stream.print 'foo' }.to matcher(a_string_starting_with("b"))
-      }.to fail_with("expected block to output a string starting with \"b\" to #{stream_name}, but output \"foo\"")
+      }.to fail_matching("expected block to output a string starting with \"b\" to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -119,7 +123,7 @@ shared_examples_for "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that passes the given matcher" do
       expect {
         expect { stream.print 'foo' }.to_not matcher(a_string_starting_with("f"))
-      }.to fail_with("expected block to not output a string starting with \"f\" to #{stream_name}, but did")
+      }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but did\nDiff")
     end
   end
 end

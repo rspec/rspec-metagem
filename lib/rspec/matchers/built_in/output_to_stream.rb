@@ -27,6 +27,10 @@ module RSpec
           @expected ? "output #{description_of @expected} to #{@stream_name}" : "output to #{@stream_name}"
         end
 
+        def diffable?
+          true
+        end
+
       private
 
         def captured?
