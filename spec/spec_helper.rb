@@ -69,13 +69,16 @@ shared_context "with #should exclusively enabled", :uses_only_should do
 end
 
 require 'rspec/support/spec/in_sub_process'
-module TestUnitIntegrationSupport
+module MinitestIntegration
   include ::RSpec::Support::InSubProcess
 
-  def with_test_unit_loaded
+  def with_minitest_loaded
     in_sub_process do
-      require 'test/unit'
-      load 'rspec/matchers/test_unit_integration.rb'
+      with_isolated_stderr do
+        require 'minitest/autorun'
+      end
+
+      require 'rspec/expectations/minitest_integration'
       yield
     end
   end

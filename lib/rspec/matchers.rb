@@ -3,7 +3,6 @@ require 'rspec/matchers/composable'
 require 'rspec/matchers/built_in'
 require 'rspec/matchers/generated_descriptions'
 require 'rspec/matchers/dsl'
-require 'rspec/matchers/test_unit_integration'
 require 'rspec/matchers/matcher_delegator'
 require 'rspec/matchers/aliased_matcher'
 
