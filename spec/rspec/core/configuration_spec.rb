@@ -1311,6 +1311,16 @@ module RSpec::Core
         group = ExampleGroup.my_group_method("a group", another: "thing")
         expect(group.metadata).to include(some: "thing", another: "thing")
       end
+
+      context 'when the aliased method is used' do
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.alias_example_group_to :my_group_method
+            group = ExampleGroup.my_group_method("a group", *args)
+            group.metadata
+          end
+        end
+      end
     end
 
     describe "#alias_example_to" do
