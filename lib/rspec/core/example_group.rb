@@ -124,6 +124,13 @@ module RSpec
           (class << self; self; end).define_example_method name, extra
         end
 
+        # Works like `alias_method name, :example_group` with the added benefit of
+        # assigning default metadata to the generated example group.
+        #
+        # @note Use with caution. This extends the language used in your
+        #   specs, but does not add any additional documentation.  We use this
+        #   in rspec to define methods like `fdescribe` and `xdescribe`, but we
+        #   also add docs for those methods.
         def alias_example_group_to(name, metadata={})
           (class << self; self; end).send(:define_method, name) do |*args, &block|
             combined_metadata = metadata.dup

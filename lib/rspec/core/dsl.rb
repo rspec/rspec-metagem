@@ -1,8 +1,8 @@
 module RSpec
   module Core
     # DSL defines methods to group examples, most notably `describe`,
-    # and exposes them as class methods of {RSpec}.
-    # They can also be exposed globally (on main and Module) through
+    # and exposes them as class methods of {RSpec}. They can also be
+    # exposed globally (on `main` and instances of `Module`) through
     # the {Configuration} option `expose_dsl_globally`.
     #
     # By default the methods `describe`, `context` and `example_group`
@@ -22,8 +22,6 @@ module RSpec
     #
     # @see ExampleGroup
     # @see ExampleGroup.example_group
-    #
-
     module DSL
       # @private
       def self.example_group_aliases
