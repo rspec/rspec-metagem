@@ -463,7 +463,7 @@ EOS
 
         def register(prepend_or_append, hook, *args, &block)
           scope, options = scope_and_options_from(*args)
-          self[hook][scope].send(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
+          self[hook][scope].__send__(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
         end
 
         # @private

@@ -109,7 +109,7 @@ module RSpec
 
           unless args.empty?
             mod = Module.new
-            (class << mod; self; end).send :define_method, :included  do |host|
+            (class << mod; self; end).__send__(:define_method, :included) do |host|
               host.class_eval(&block)
             end
             RSpec.configuration.include mod, *args
@@ -121,7 +121,7 @@ module RSpec
         end
 
         def shared_example_groups
-          @shared_example_groups ||= Hash.new { |hash,key| hash[key] = Hash.new }
+          @shared_example_groups ||= Hash.new { |hash, key| hash[key] = Hash.new }
         end
 
         def clear

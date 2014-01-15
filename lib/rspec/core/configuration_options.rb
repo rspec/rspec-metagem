@@ -68,7 +68,7 @@ module RSpec
         opts = options.reject { |k, _| UNPROCESSABLE_OPTIONS.include? k }
 
         order(opts.keys, :default_path, :pattern).each do |key|
-          force?(key) ? config.force(key => opts[key]) : config.send("#{key}=", opts[key])
+          force?(key) ? config.force(key => opts[key]) : config.__send__("#{key}=", opts[key])
         end
       end
 

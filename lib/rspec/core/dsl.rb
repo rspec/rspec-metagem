@@ -31,8 +31,8 @@ module RSpec
       def self.expose_example_group_alias(name)
         example_group_aliases << name
 
-        (class << RSpec; self; end).send(:define_method, name) do |*args, &example_group_block|
-          RSpec::Core::ExampleGroup.send(name, *args, &example_group_block).register
+        (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
+          RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block).register
         end
       end
 
@@ -66,8 +66,8 @@ module RSpec
 
         example_group_aliases.each do |method_name|
           to_define = proc do
-            send(:define_method, method_name) do |*args, &block|
-              ::RSpec.send(method_name, *args, &block)
+            __send__(:define_method, method_name) do |*args, &block|
+              ::RSpec.__send__(method_name, *args, &block)
             end
           end
 
@@ -83,7 +83,7 @@ module RSpec
 
         example_group_aliases.each do |method_name|
           to_undefine = proc do
-            send(:undef_method, method_name) if method_defined?(method_name)
+            __send__(:undef_method, method_name) if method_defined?(method_name)
           end
 
           (class << top_level; self; end).instance_eval(&to_undefine)

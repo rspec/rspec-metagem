@@ -132,7 +132,7 @@ module RSpec
         #   in rspec to define methods like `fdescribe` and `xdescribe`, but we
         #   also add docs for those methods.
         def alias_example_group_to(name, metadata={})
-          (class << self; self; end).send(:define_method, name) do |*args, &block|
+          (class << self; self; end).__send__(:define_method, name) do |*args, &block|
             combined_metadata = metadata.dup
             combined_metadata.merge!(args.pop) if args.last.is_a? Hash
             example_group(*args, combined_metadata, &block)

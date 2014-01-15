@@ -337,7 +337,7 @@ module RSpec
         (class << self; self; end).class_eval do
           add_setting(name, opts)
         end
-        send("#{name}=", default) if default
+        __send__("#{name}=", default) if default
       end
 
       # Returns the configured mock framework adapter module
@@ -878,13 +878,13 @@ module RSpec
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.any_apply?(filters)
-          send("safe_#{include_or_extend}", mod, group)
+          __send__("safe_#{include_or_extend}", mod, group)
         end
       end
 
       # @private
       def safe_include(mod, host)
-        host.send(:include,mod) unless host < mod
+        host.__send__(:include, mod) unless host < mod
       end
 
       # @private
@@ -908,13 +908,13 @@ module RSpec
 
       # @private
       def configure_mock_framework
-        RSpec::Core::ExampleGroup.send(:include, mock_framework)
+        RSpec::Core::ExampleGroup.__send__(:include, mock_framework)
       end
 
       # @private
       def configure_expectation_framework
         expectation_frameworks.each do |framework|
-          RSpec::Core::ExampleGroup.send(:include, framework)
+          RSpec::Core::ExampleGroup.__send__(:include, framework)
         end
       end
 
