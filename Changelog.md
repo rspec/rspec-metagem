@@ -68,6 +68,10 @@ Breaking Changes for 3.0.0:
   matcher than `==`. (Myron Marston)
 * Remove deprecated `RSpec::Matchers::OperatorMatcher` constant.
   (Myron Marston)
+* Make `RSpec::Expectations::ExpectationNotMetError` subclass
+  `Exception` rather than `StandardError` so they can bypass
+  a bare `rescue` in end-user code (e.g. when an expectation is
+  set from within a rspec-mocks stub implementation). (Myron Marston)
 
 Bug Fixes:
 

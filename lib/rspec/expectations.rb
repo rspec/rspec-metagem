@@ -55,7 +55,10 @@ module RSpec
     ExpectationNotMetError = if defined?(::Test::Unit::AssertionFailedError)
       Class.new(::Test::Unit::AssertionFailedError)
     else
-      Class.new(::StandardError)
+      # We subclass Exception so that in a stub implementation if
+      # the user sets an expectation, it can't be caught in their
+      # code by a bare `rescue`.
+      Class.new(::Exception)
     end
   end
 end
