@@ -3,7 +3,7 @@ require 'stringio'
 module RSpec
   module Matchers
     module BuiltIn
-      class OutputToStream < BaseMatcher
+      class Output < BaseMatcher
         def initialize(expected)
           @expected = expected
           @stream = NullCapture.new

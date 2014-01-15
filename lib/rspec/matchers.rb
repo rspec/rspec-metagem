@@ -620,7 +620,7 @@ module RSpec
     # when the reference in a constant is used, like in `STDOUT.puts 'foo'`, or in
     # case a reference to `$stdout` or `$stderr` is stored before the matcher is used.
     def output(expected=nil)
-      BuiltIn::OutputToStream.new(expected)
+      BuiltIn::Output.new(expected)
     end
     alias_matcher :a_block_outputting, :output
 

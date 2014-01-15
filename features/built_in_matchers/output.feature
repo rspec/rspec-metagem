@@ -1,4 +1,4 @@
-Feature: output to stream matchers
+Feature: output matcher
 
   The `output` matcher provides a way to assert that the
   has emitted content to either `to_stdout` or `to_stderr`.
