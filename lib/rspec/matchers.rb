@@ -622,9 +622,7 @@ module RSpec
     def output(expected=nil)
       BuiltIn::OutputToStream.new(expected)
     end
-    alias_matcher :a_block_outputting, :output do |desc|
-      desc.sub('output', 'a block outputting')
-    end
+    alias_matcher :a_block_outputting, :output
 
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
