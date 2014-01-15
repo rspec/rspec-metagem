@@ -39,6 +39,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency     'diff-lcs', '>= 1.2.0', '< 2.0'
 
   s.add_development_dependency 'rake',     '~> 10.0.0'
-  s.add_development_dependency 'cucumber', '~> 1.1.9'
+  s.add_development_dependency 'cucumber', '~> 1.3'
   s.add_development_dependency 'aruba',    '~> 0.5'
 end
