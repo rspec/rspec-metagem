@@ -1,23 +1,23 @@
 Feature: output to stream matchers
 
-   The `output` matcher provides a way to assert that the block-under-test
-   has emitted content to either `to_stdout` or `to_stderr`.
+  The `output` matcher provides a way to assert that the
+  has emitted content to either `to_stdout` or `to_stderr`.
 
   With no argument the matcher asserts that there has been output, when you
   pass a string then it asserts the output is equal (`==`) to that string and
   if you pass a regular expression then it asserts the output matches it. With
-  a regex or a matcher, it passes whenever the block-under-test outputs a
+  a regex or a matcher, it passes whenever the code in the block outputs a
   string that matches the given string.
 
-    * `output.to_stdout` matches if the block-under-test outputs to
-      $stdout.
+    * `output.to_stdout` matches if the code in the block outputs to
+      `$stdout`.
 
-    * `output.to_stderr` matchets if the block-under-test outputs to
-      $stderr.
+    * `output.to_stderr` matches if the code in the block outputs to
+      `$stderr`.
 
-    Note: This matchers won't be able to intercept output to stream when the
-    explicit form `STDOUT.puts 'foo'` is used or in case the reference to the
-    stream is stored before the matcher is used.
+  Note: This matchers won't be able to intercept output to stream when the
+  explicit form `STDOUT.puts 'foo'` is used or in case the reference to the
+  stream is stored before the matcher is used.
 
   Scenario: output_to_stdout matcher
     Given a file named "output_to_stdout_spec.rb" with:
