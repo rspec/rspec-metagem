@@ -126,6 +126,14 @@ shared_examples_for "output_to_stream" do |stream_name|
       }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but did\nDiff")
     end
   end
+
+  context "without #{matcher_method}" do
+    it 'raises an error' do
+      expect {
+        expect { stream.print 'foo' }.to output
+      }.to raise_error(RSpec::Expectations::ExpectationNotMetError).with_message("expectation set without a stream")
+    end
+  end
 end
 
 module RSpec

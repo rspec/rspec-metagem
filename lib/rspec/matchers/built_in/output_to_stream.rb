@@ -6,6 +6,7 @@ module RSpec
       class OutputToStream < BaseMatcher
         def initialize(expected)
           @expected = expected
+          @stream = NullCapture.new
         end
 
         def matches?(block)
@@ -48,6 +49,20 @@ module RSpec
 
         def actual_description
           @expected ? "but output #{captured? ? @actual.inspect : 'nothing'}" : "but did not"
+        end
+      end
+
+      class NullCapture
+        def name
+          raise_error
+        end
+
+        def capture(block)
+          raise_error
+        end
+
+        def raise_error
+          raise RSpec::Expectations::ExpectationNotMetError.new("expectation set without a stream")
         end
       end
 
