@@ -616,7 +616,7 @@ module RSpec
       contain_exactly(*items)
     end
 
-    # With no args, passes if the block outputs `to_stdout` or `to_stderr`.
+    # With no arg, passes if the block outputs `to_stdout` or `to_stderr`.
     # With a string, passes if the blocks outputs that specific string `to_stdout` or `to_stderr`.
     # With a regexp or matcher, passes if the blocks outputs a string `to_stdout` or `to_stderr` that matches.
     #
@@ -634,9 +634,10 @@ module RSpec
     #
     #   expect { do_something }.to_not output.to_stderr
     #
-    # @note This matcher won't be able to intercept output to `STDOUT` or `STDERR`
-    # when the reference in a constant is used, like in `STDOUT.puts 'foo'`, or in
-    # case a reference to `$stdout` or `$stderr` is stored before the matcher is used.
+    # @note This matcher works by temporarily replacing `$stdout` or `$stderr`,
+    # so it's not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
+    # or that uses a reference to `$stdout`/`$stderr` that was stored before the
+    # matcher is used.
     def output(expected=nil)
       BuiltIn::Output.new(expected)
     end

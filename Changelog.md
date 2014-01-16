@@ -49,6 +49,8 @@ Enhancements:
 * Improve failure message of `eq` matcher when `Time` or `DateTime`
   objects are used so that the full sub-second precision is included.
   (Thomas Holmes)
+* Add `output` matcher for expecting that a block outputs `to_stdout`
+  or `to_stderr`. (Luca Pette, Matthias Günther)
 
 Breaking Changes for 3.0.0:
 

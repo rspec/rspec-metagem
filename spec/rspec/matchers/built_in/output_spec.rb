@@ -126,14 +126,6 @@ shared_examples_for "output_to_stream" do |stream_name|
       }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but did\nDiff")
     end
   end
-
-  context "without #{matcher_method}" do
-    it 'raises an error' do
-      expect {
-        expect { stream.print 'foo' }.to output
-      }.to raise_error(RSpec::Expectations::ExpectationNotMetError).with_message("expectation set without a stream")
-    end
-  end
 end
 
 module RSpec
@@ -155,6 +147,18 @@ module RSpec
 
       include_examples "output_to_stream", :stdout do
         let(:stream) { $stdout }
+      end
+    end
+
+    describe "output (without `to_stdout` or `to_stderr`)" do
+      it 'raises an error explaining the use is invalid' do
+        expect {
+          expect { stream.print 'foo' }.to output
+        }.to raise_error(/must chain.*to_stdout.*to_stderr/)
+      end
+
+      it 'still provides a description (e.g. when used in a one-liner)' do
+        expect(output("foo").description).to eq('output "foo" to some stream')
       end
     end
   end

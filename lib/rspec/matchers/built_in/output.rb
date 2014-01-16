@@ -6,22 +6,22 @@ module RSpec
       class Output < BaseMatcher
         def initialize(expected)
           @expected = expected
-          @stream = NullCapture.new
+          @stream_capturer = NullCapture
         end
 
         def matches?(block)
-          @actual = @stream.capture(block)
+          @actual = @stream_capturer.capture(block)
 
           @expected ? values_match?(@expected, @actual) : captured?
         end
 
         def to_stdout
-          @stream = CaptureStdout.new
+          @stream_capturer = CaptureStdout
           self
         end
 
         def to_stderr
-          @stream = CaptureStderr.new
+          @stream_capturer = CaptureStderr
           self
         end
 
@@ -34,7 +34,11 @@ module RSpec
         end
 
         def description
-          @expected ? "output #{description_of @expected} to #{@stream.name}" : "output to #{@stream.name}"
+          if @expected
+            "output #{description_of @expected} to #{@stream_capturer.name}"
+          else
+            "output to #{@stream_capturer.name}"
+          end
         end
 
         def diffable?
@@ -52,26 +56,22 @@ module RSpec
         end
       end
 
-      class NullCapture
-        def name
-          raise_error
+      module NullCapture
+        def self.name
+          "some stream"
         end
 
-        def capture(block)
-          raise_error
-        end
-
-        def raise_error
-          raise RSpec::Expectations::ExpectationNotMetError.new("expectation set without a stream")
+        def self.capture(block)
+          raise "You must chain `to_stdout` or `to_stderr` off of the `output(...)` matcher."
         end
       end
 
-      class CaptureStdout
-        def name
+      module CaptureStdout
+        def self.name
           'stdout'
         end
 
-        def capture(block)
+        def self.capture(block)
           captured_stream = StringIO.new
 
           original_stream = $stdout
@@ -85,12 +85,12 @@ module RSpec
         end
       end
 
-      class CaptureStderr
-        def name
+      module CaptureStderr
+        def self.name
           'stderr'
         end
 
-        def capture(block)
+        def self.capture(block)
           captured_stream = StringIO.new
 
           original_stream = $stderr
