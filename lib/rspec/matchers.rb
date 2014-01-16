@@ -616,6 +616,32 @@ module RSpec
       contain_exactly(*items)
     end
 
+    # With no args, passes if the block outputs `to_stdout` or `to_stderr`.
+    # With a string, passes if the blocks outputs that specific string `to_stdout` or `to_stderr`.
+    # With a regexp or matcher, passes if the blocks outputs a string `to_stdout` or `to_stderr` that matches.
+    #
+    # @example
+    #
+    #   expect { print 'foo' }.to output.to_stdout
+    #   expect { print 'foo' }.to output('foo').to_stdout
+    #   expect { print 'foo' }.to output(/foo/).to_stdout
+    #
+    #   expect { do_something }.to_not output.to_stdout
+    #
+    #   expect { warn('foo') }.to output.to_stderr
+    #   expect { warn('foo') }.to output('foo').to_stderr
+    #   expect { warn('foo') }.to output(/foo/).to_stderr
+    #
+    #   expect { do_something }.to_not output.to_stderr
+    #
+    # @note This matcher won't be able to intercept output to `STDOUT` or `STDERR`
+    # when the reference in a constant is used, like in `STDOUT.puts 'foo'`, or in
+    # case a reference to `$stdout` or `$stderr` is stored before the matcher is used.
+    def output(expected=nil)
+      BuiltIn::Output.new(expected)
+    end
+    alias_matcher :a_block_outputting, :output
+
     # With no args, matches if any error is raised.
     # With a named error, matches only if that specific error is raised.
     # With a named error and messsage specified as a String, matches only if both match.

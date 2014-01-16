@@ -27,6 +27,7 @@ module RSpec
       autoload :Match,                   'rspec/matchers/built_in/match'
       autoload :NegativeOperatorMatcher, 'rspec/matchers/built_in/operators'
       autoload :OperatorMatcher,         'rspec/matchers/built_in/operators'
+      autoload :Output,                  'rspec/matchers/built_in/output'
       autoload :PositiveOperatorMatcher, 'rspec/matchers/built_in/operators'
       autoload :RaiseError,              'rspec/matchers/built_in/raise_error'
       autoload :RespondTo,               'rspec/matchers/built_in/respond_to'
