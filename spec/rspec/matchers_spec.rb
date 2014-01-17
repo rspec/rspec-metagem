@@ -1,5 +1,24 @@
 require 'spec_helper'
 
+main = self
+describe RSpec::Matchers do
+  include ::RSpec::Support::InSubProcess
+
+  it 'can be mixed into `main`' do
+    in_sub_process do
+      main.instance_eval do
+        include RSpec::Matchers
+        expect(3).to eq(3)
+        expect(3).to be_odd
+
+        expect {
+          expect(4).to be_zero
+        }.to fail_with("expected zero? to return true, got false")
+      end
+    end
+  end
+end
+
 module RSpec
   module Matchers
     describe "built in matchers" do
