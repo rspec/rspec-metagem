@@ -26,10 +26,8 @@ module RSpec
 
       private
 
-        REGEX = /^(?:have_)(.*)/
-
         def predicate
-          @predicate ||= :"has_#{@method_name.to_s.match(REGEX).captures.first}?"
+          @predicate ||= :"has_#{@method_name.to_s.match(Matchers::HAS_REGEX).captures.first}?"
         end
 
         def method_description
