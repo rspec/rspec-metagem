@@ -4,12 +4,12 @@ module RSpec
       class Has
         include Composable
 
-        def initialize(method_name, *args)
-          @method_name, @args = method_name, args
+        def initialize(method_name, *args, &block)
+          @method_name, @args, @block = method_name, args, block
         end
 
         def matches?(actual)
-          actual.__send__(predicate, *@args)
+          actual.__send__(predicate, *@args, &@block)
         end
 
         def failure_message
