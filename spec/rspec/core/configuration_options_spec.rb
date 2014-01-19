@@ -311,6 +311,12 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       )
     end
 
+    it "parses file names that look like options line-number and default-path" do
+      expect(parse_options("spec/default_path_spec.rb", "spec/line_number_spec.rb")).to include(
+        :files_or_directories_to_run => ["spec/default_path_spec.rb", "spec/line_number_spec.rb"]
+      )
+    end
+
     it "provides no files or directories if spec directory does not exist" do
       allow(FileTest).to receive(:directory?).with("spec").and_return false
       expect(parse_options()).to include(:files_or_directories_to_run => [])

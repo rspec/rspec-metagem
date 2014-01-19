@@ -6,9 +6,7 @@ module RSpec
     # @private
     class ConfigurationOptions
       def initialize(args)
-        @args = args.map {|a|
-          a.sub("default_path", "default-path").sub("line_number",  "line-number")
-        }
+        @args = args.dup
       end
 
       def configure(config)
