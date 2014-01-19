@@ -12,20 +12,7 @@ require 'rspec/core/reporter'
 # it "shows the seed if run was randomized"
 # it "lists pending specs that were fixed"
 RSpec.describe RSpec::Core::Formatters::JsonFormatter do
-  let(:output)    { StringIO.new }
-  let(:formatter) { RSpec::Core::Formatters::JsonFormatter.new(output) }
-  let(:config)    { RSpec::Core::Configuration.new }
-  let(:reporter)  { RSpec::Core::Reporter.new(config) }
-
-  before do
-    reporter.register_listener formatter, *formatter.notifications
-  end
-
-  it "lists its additional notifications" do
-    expect(formatter.notifications).to include(*%W[
-      message dump_summary dump_profile close stop
-    ])
-  end
+  include FormatterSupport
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
@@ -89,7 +76,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#stop" do
     it "adds all examples to the output hash" do
-      formatter.stop
+      send_notification :stop
       expect(formatter.output_hash[:examples]).not_to be_nil
     end
   end
@@ -97,14 +84,18 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   describe "#close" do
     it "outputs the results as a JSON string" do
       expect(output.string).to eq ""
-      formatter.close
-      expect(output.string).to eq({}.to_json)
+      send_notification :close
+      begin
+        JSON.parse(output.string)
+      rescue
+        fail "output was expected to be valid json"
+      end
     end
   end
 
   describe "#message" do
     it "adds a message to the messages list" do
-      formatter.message("good job")
+      send_notification :message, "good job"
       expect(formatter.output_hash[:messages]).to eq ["good job"]
     end
   end
@@ -112,7 +103,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
       values = { :duration => 1.0, :example_count => 2, :failure_count => 1, :pending_count => 1 }
-      formatter.dump_summary(values[:duration], values[:example_count], values[:failure_count], values[:pending_count])
+      send_notification :dump_summary, values[:duration], values[:example_count], values[:failure_count], values[:pending_count]
       summary = formatter.output_hash[:summary]
       values.each do |key,value|
         expect(summary[key]).to eq value
@@ -130,7 +121,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
         # the reported percent is 100%, not 0%.
         example("example") { sleep 0.001 }
       end
-      group.run(double('reporter').as_null_object)
+      group.run(reporter)
 
       allow(formatter).to receive(:examples) { group.examples }
       allow(RSpec.configuration).to receive(:profile_examples) { 10 }
@@ -160,11 +151,10 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
         example("example") { sleep 0.01 }
       end
     end
-    let(:rpt) { double('reporter').as_null_object }
 
     before do
       allow(RSpec.configuration).to receive(:profile_examples) { 10 }
-      group.run(rpt)
+      group.run(reporter)
     end
 
     context "with one example group" do
@@ -182,7 +172,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           example("example 1") { sleep 0.004 }
           example("example 2") { sleep 0.007 }
         end
-        group2.run(rpt)
+        group2.run(reporter)
 
         allow(formatter).to receive(:examples) { group.examples + group2.examples }
       end

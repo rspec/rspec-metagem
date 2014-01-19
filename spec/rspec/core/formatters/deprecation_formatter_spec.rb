@@ -4,40 +4,39 @@ require 'tempfile'
 
 module RSpec::Core::Formatters
   RSpec.describe DeprecationFormatter do
+    include FormatterSupport
 
-    describe '#notifications' do
-      it 'returns the notifications the deprecation formatter implements' do
-        expect(DeprecationFormatter.new(nil, nil).notifications).to eq %w[deprecation deprecation_summary]
-      end
+    let(:summary_stream) { StringIO.new }
+
+    before do
+      setup_reporter deprecation_stream, summary_stream
     end
 
     describe "#deprecation" do
-      let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
-      let(:summary_stream)     { StringIO.new }
 
       context "with a File deprecation_stream" do
         let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w+") }
 
         it "prints a message if provided, ignoring other data" do
-          formatter.deprecation(:message => "this message", :deprecated => "x", :replacement => "y", :call_site => "z")
+          send_notification :deprecation, :message => "this message", :deprecated => "x", :replacement => "y", :call_site => "z"
           deprecation_stream.rewind
           expect(deprecation_stream.read).to eq "this message\n"
         end
 
         it "includes the method" do
-          formatter.deprecation(:deprecated => "i_am_deprecated")
+          send_notification :deprecation, :deprecated => "i_am_deprecated"
           deprecation_stream.rewind
           expect(deprecation_stream.read).to match(/i_am_deprecated is deprecated/)
         end
 
         it "includes the replacement" do
-          formatter.deprecation(:replacement => "use_me")
+          send_notification :deprecation, :replacement => "use_me"
           deprecation_stream.rewind
           expect(deprecation_stream.read).to match(/Use use_me instead/)
         end
 
         it "includes the call site if provided" do
-          formatter.deprecation(:call_site => "somewhere")
+          send_notification :deprecation, :call_site => "somewhere"
           deprecation_stream.rewind
           expect(deprecation_stream.read).to match(/Called from somewhere/)
         end
@@ -47,46 +46,43 @@ module RSpec::Core::Formatters
         let(:deprecation_stream) { StringIO.new }
 
         it "prints nothing" do
-          5.times { formatter.deprecation(:deprecated => 'i_am_deprecated') }
+          5.times { send_notification :deprecation, :deprecated => "i_am_deprecated" }
           expect(deprecation_stream.string).to eq ""
         end
       end
     end
 
     describe "#deprecation_summary" do
-      let(:formatter) { DeprecationFormatter.new(deprecation_stream, summary_stream) }
-      let(:summary_stream) { StringIO.new }
-
       context "with a File deprecation_stream" do
         let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w") }
 
         it "prints a count of the deprecations" do
-          formatter.deprecation(:deprecated => 'i_am_deprecated')
-          formatter.deprecation_summary
+          send_notification :deprecation, :deprecated => 'i_am_deprecated'
+          send_notification :deprecation_summary
           expect(summary_stream.string).to match(/1 deprecation logged to .*deprecation_summary_example_output/)
         end
 
         it "pluralizes the reported deprecation count for more than one deprecation" do
-          formatter.deprecation(:deprecated => 'i_am_deprecated')
-          formatter.deprecation(:deprecated => 'i_am_deprecated_also')
-          formatter.deprecation_summary
+          send_notification :deprecation, :deprecated => 'i_am_deprecated'
+          send_notification :deprecation, :deprecated => 'i_am_deprecated_also'
+          send_notification :deprecation_summary
           expect(summary_stream.string).to match(/2 deprecations/)
         end
 
         it "is not printed when there are no deprecations" do
-          formatter.deprecation_summary
+          send_notification :deprecation_summary
           expect(summary_stream.string).to eq ""
         end
 
         it 'uses synchronized/non-buffered output to work around odd duplicate output behavior we have observed' do
           expect {
-            formatter.deprecation(:deprecated => 'foo')
+            send_notification :deprecation, :deprecated => 'foo'
           }.to change { deprecation_stream.sync }.from(false).to(true)
         end
 
         it 'does not print duplicate messages' do
-          3.times { formatter.deprecation(:deprecated => 'foo') }
-          formatter.deprecation_summary
+          3.times { send_notification :deprecation, :deprecated => 'foo' }
+          send_notification :deprecation_summary
 
           expect(summary_stream.string).to match(/1 deprecation/)
           expect(File.read(deprecation_stream.path)).to eq("foo is deprecated.\n#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}")
@@ -97,18 +93,18 @@ module RSpec::Core::Formatters
         let(:deprecation_stream) { DeprecationFormatter::RaiseErrorStream.new }
 
         it 'prints a summary of the number of deprecations found' do
-          expect { formatter.deprecation(:deprecated => 'foo') }.to raise_error(RSpec::Core::DeprecationError)
+          expect { send_notification :deprecation, :deprecated => 'foo' }.to raise_error(RSpec::Core::DeprecationError)
 
-          formatter.deprecation_summary
+          send_notification :deprecation_summary
 
           expect(summary_stream.string).to eq("\n1 deprecation found.\n")
         end
 
         it 'pluralizes the count when it is greater than 1' do
-          expect { formatter.deprecation(:deprecated => 'foo') }.to raise_error(RSpec::Core::DeprecationError)
-          expect { formatter.deprecation(:deprecated => 'bar') }.to raise_error(RSpec::Core::DeprecationError)
+          expect { send_notification :deprecation, :deprecated => 'foo' }.to raise_error(RSpec::Core::DeprecationError)
+          expect { send_notification :deprecation, :deprecated => 'bar' }.to raise_error(RSpec::Core::DeprecationError)
 
-          formatter.deprecation_summary
+          send_notification :deprecation_summary
 
           expect(summary_stream.string).to eq("\n2 deprecations found.\n")
         end
@@ -118,10 +114,10 @@ module RSpec::Core::Formatters
         let(:deprecation_stream) { StringIO.new }
 
         it "groups similar deprecations together" do
-          formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:1")
-          formatter.deprecation(:deprecated => 'i_am_a_different_deprecation')
-          formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:2")
-          formatter.deprecation_summary
+          send_notification :deprecation, :deprecated => 'i_am_deprecated', :call_site => "foo.rb:1"
+          send_notification :deprecation, :deprecated => 'i_am_a_different_deprecation'
+          send_notification :deprecation, :deprecated => 'i_am_deprecated', :call_site => "foo.rb:2"
+          send_notification :deprecation_summary
 
           expected = <<-EOS.gsub(/^\s+\|/, '')
             |
@@ -138,8 +134,8 @@ module RSpec::Core::Formatters
         end
 
         it "limits the deprecation warnings after 3 calls" do
-          5.times { |i| formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}") }
-          formatter.deprecation_summary
+          5.times { |i| send_notification :deprecation, :deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}" }
+          send_notification :deprecation_summary
           expected = <<-EOS.gsub(/^\s+\|/, '')
             |
             |Deprecation Warnings:
@@ -157,9 +153,9 @@ module RSpec::Core::Formatters
         it "limits :message deprecation warnings with different callsites after 3 calls" do
           5.times do |n|
             message = "This is a long string with some callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff can come after."
-            formatter.deprecation(:message => message)
+            send_notification :deprecation, :message => message
           end
-          formatter.deprecation_summary
+          send_notification :deprecation_summary
           expected = <<-EOS.gsub(/^\s+\|/, '')
             |
             |Deprecation Warnings:
@@ -175,17 +171,17 @@ module RSpec::Core::Formatters
         end
 
         it "prints the true deprecation count to the summary_stream" do
-          5.times { |i| formatter.deprecation(:deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}") }
+          5.times { |i| send_notification :deprecation, :deprecated => 'i_am_deprecated', :call_site => "foo.rb:#{i + 1}" }
           5.times do |n|
-            formatter.deprecation(:message => "callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff")
+            send_notification :deprecation, :message => "callsite info: /path/#{n}/to/some/file.rb:2#{n}3.  And some more stuff"
           end
-          formatter.deprecation_summary
+          send_notification :deprecation_summary
           expect(summary_stream.string).to match(/10 deprecation warnings total/)
         end
 
         it 'does not print duplicate messages' do
-          3.times { formatter.deprecation(:deprecated => 'foo') }
-          formatter.deprecation_summary
+          3.times { send_notification :deprecation, :deprecated => 'foo' }
+          send_notification :deprecation_summary
 
           expect(summary_stream.string).to match(/1 deprecation/)
 

@@ -7,6 +7,7 @@ module RSpec
   module Core
     module Formatters
       RSpec.describe HtmlFormatter do
+
         let(:suffix) do
           case
             when ::RUBY_PLATFORM == 'java' then "-jruby"
@@ -44,19 +45,6 @@ module RSpec
           allow(RSpec.configuration).to receive(:load_spec_files) do
             RSpec.configuration.files_to_run.map {|f| load File.expand_path(f) }
           end
-        end
-
-        it "lists its additional notifications" do
-          formatter = HtmlFormatter.new(double)
-          expect(formatter.notifications).to include(*%w[
-            start example_group_started start_dump example_started
-            example_passed example_failed example_pending dump_summary
-          ])
-        end
-
-        it 'removes notifications it doesnt support' do
-          formatter = HtmlFormatter.new(double)
-          expect(formatter.notifications).to_not include(:dump_failures)
         end
 
         # Uncomment this group temporarily in order to overwrite the expected
@@ -108,7 +96,7 @@ module RSpec
             include MathnIntegrationSupport
 
             it "produces HTML identical to the one we designed manually" do
-              with_mathn_loaded{ build_and_verify_formatter_output }
+              with_mathn_loaded { build_and_verify_formatter_output }
             end
           end
         end

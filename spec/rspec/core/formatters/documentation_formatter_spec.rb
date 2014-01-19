@@ -3,35 +3,22 @@ require 'rspec/core/formatters/documentation_formatter'
 
 module RSpec::Core::Formatters
   RSpec.describe DocumentationFormatter do
-    let(:output)    { StringIO.new }
-    let(:config)    { RSpec::Core::Configuration.new }
-    let(:reporter)  { RSpec::Core::Reporter.new(config) }
-    let(:formatter) { RSpec::Core::Formatters::DocumentationFormatter.new(output) }
+    include FormatterSupport
 
     before do
-      reporter.register_listener formatter, *formatter.notifications
-      allow(config).to receive(:color_enabled?) { false }
-    end
-
-    it "lists its additional notifications" do
-      expect(formatter.notifications).to include(*%w[
-        example_group_started example_group_finished example_passed
-        example_failed
-      ])
+      send_notification :start, 2
+      allow(formatter).to receive(:color_enabled?).and_return(false)
     end
 
     it "numbers the failures" do
-      examples = [
-        double("example 1",
+      send_notification :example_failed, double("example 1",
                :description => "first example",
                :execution_result => {:status => 'failed', :exception => Exception.new }
-              ),
-        double("example 2",
+              )
+      send_notification :example_failed, double("example 2",
                :description => "second example",
                :execution_result => {:status => 'failed', :exception => Exception.new }
               )
-      ]
-      examples.each {|e| formatter.example_failed(e) }
 
       expect(output.string).to match(/first example \(FAILED - 1\)/m)
       expect(output.string).to match(/second example \(FAILED - 2\)/m)
