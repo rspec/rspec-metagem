@@ -16,6 +16,18 @@ describe "expect(...).to have_sym(*args)" do
     }.to fail_with("expected #has_key?(:a) to return true, got false")
   end
 
+  it 'passes based on the result of a block being proxied' do
+    o = Object.new
+    def o.has_some_stuff?; yield; end
+    expect(o).to have_some_stuff { true }
+  end
+
+  it 'fails based off the result of a block being proxied' do
+    o = Object.new
+    def o.has_some_stuff?; yield; end
+    expect(o).to_not have_some_stuff { false }
+  end
+
   it 'does not include any args in the failure message if no args were given to the matcher' do
     o = Object.new
     def o.has_some_stuff?; false; end
