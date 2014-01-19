@@ -51,6 +51,8 @@ Enhancements:
   (Thomas Holmes)
 * Add `output` matcher for expecting that a block outputs `to_stdout`
   or `to_stderr`. (Luca Pette, Matthias Günther)
+* Forward a provided block on to the `has_xyz?` method call when
+  the `have_xyz` matcher is used. (Damian Galarza)
 
 Breaking Changes for 3.0.0:
 

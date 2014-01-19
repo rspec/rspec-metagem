@@ -16,16 +16,32 @@ describe "expect(...).to have_sym(*args)" do
     }.to fail_with("expected #has_key?(:a) to return true, got false")
   end
 
-  it 'passes based on the result of a block being proxied' do
-    o = Object.new
-    def o.has_some_stuff?; yield; end
-    expect(o).to have_some_stuff { true }
+  obj_with_block_method = Object.new
+  def obj_with_block_method.has_some_stuff?; yield; end
+
+  it 'forwards the given `{ }` block on to the `has_xyz?` method' do
+    expect(obj_with_block_method).to have_some_stuff { true }
+    expect(obj_with_block_method).to_not have_some_stuff { false }
   end
 
-  it 'fails based off the result of a block being proxied' do
-    o = Object.new
-    def o.has_some_stuff?; yield; end
-    expect(o).to_not have_some_stuff { false }
+  it 'forwards the given `do..end` block on to the `has_xyz?` method' do
+    expect(obj_with_block_method).to have_some_stuff do
+      true
+    end
+
+    expect(obj_with_block_method).to_not have_some_stuff do
+      false
+    end
+  end
+
+  it 'favors a curly brace block over a do...end one since it binds to the matcher method' do
+    expect(obj_with_block_method).to have_some_stuff { true } do
+      false
+    end
+
+    expect(obj_with_block_method).not_to have_some_stuff { false } do
+      true
+    end
   end
 
   it 'does not include any args in the failure message if no args were given to the matcher' do

@@ -8,8 +8,8 @@ module RSpec
           @method_name, @args, @block = method_name, args, block
         end
 
-        def matches?(actual)
-          actual.__send__(predicate, *@args, &@block)
+        def matches?(actual, &block)
+          actual.__send__(predicate, *@args, &(@block || block))
         end
 
         def failure_message
