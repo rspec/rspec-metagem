@@ -293,7 +293,7 @@ module RSpec
       def reset
         @spec_files_loaded = false
         @reporter = nil
-        @loader = nil
+        @formatter_loader = nil
       end
 
       # @overload add_setting(name)
@@ -605,7 +605,7 @@ module RSpec
       # @api private
       def formatter_loader
         @reporter ||= Reporter.new(self)
-        @loader ||= Formatters::Loader.new(reporter)
+        @formatter_loader ||= Formatters::Loader.new(reporter)
       end
 
       # @api private

@@ -85,11 +85,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     it "outputs the results as a JSON string" do
       expect(output.string).to eq ""
       send_notification :close
-      begin
-        JSON.parse(output.string)
-      rescue
-        fail "output was expected to be valid json"
-      end
+      expect(output.string).to eq("{}")
     end
   end
 

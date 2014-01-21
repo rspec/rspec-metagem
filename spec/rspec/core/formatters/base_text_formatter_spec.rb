@@ -363,7 +363,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         config.tty = true
         config.success_color = :cyan
       end
-      send_notification :dump_summary, 0,1,0,0
+      send_notification :dump_summary, 0, 1, 0, 0
       expect(output.string).to include("\e[36m")
     end
   end
