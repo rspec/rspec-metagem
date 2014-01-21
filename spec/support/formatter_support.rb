@@ -44,7 +44,7 @@ module FormatterSupport
                     :description      => "Example",
                     :full_description => "Example",
                     :execution_result => { :exception => Exception.new },
-                    :metadata         => {},
+                    :metadata         => {}
                    )
   end
 

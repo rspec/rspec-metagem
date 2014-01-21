@@ -15,7 +15,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   end
 
   describe "#example_group_started" do
-    let(:group) { class_double "RSpec::Core::ExampleGroup", description: "Group" }
+    let(:group) { class_double "RSpec::Core::ExampleGroup", :description => "Group" }
 
     it "notifies formatter of example_group_started" do
       send_notification :example_group_started, group
@@ -24,7 +24,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   end
 
   describe "#example_group_finished" do
-    let(:group) { class_double "RSpec::Core::ExampleGroup", description: "Group" }
+    let(:group) { class_double "RSpec::Core::ExampleGroup", :description => "Group" }
 
     it "notifies formatter of example_group_finished" do
       send_notification :example_group_finished, group
@@ -33,7 +33,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   end
 
   describe "#example_started" do
-    let(:example) { instance_double "RSpec::Core::Example", full_description: "Example" }
+    let(:example) { instance_double "RSpec::Core::Example", :full_description => "Example" }
 
     it "notifies formatter of example_started" do
       send_notification :example_started, example
