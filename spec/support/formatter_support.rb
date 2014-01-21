@@ -4,15 +4,15 @@ module FormatterSupport
     reporter.notify notification, *args
   end
 
-  def reporter(*streams)
-    @reporter ||=
-      begin
-        config.add_formatter described_class, *streams
-        @formatter = config.formatters.last
-        config.reporter
-      end
+  def reporter
+    @reporter ||= setup_reporter
   end
-  alias setup_reporter reporter
+
+  def setup_reporter(*streams)
+    config.add_formatter described_class, *streams
+    @formatter = config.formatters.last
+    @reporter = config.reporter
+  end
 
   def output
     @output ||= StringIO.new
