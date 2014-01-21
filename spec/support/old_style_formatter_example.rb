@@ -1,98 +1,69 @@
 class OldStyleFormatterExample
-  include ::RSpec::Core::Formatters::Helpers
-  attr_reader :example_group, :duration, :examples, :output
-  attr_reader :example_count, :pending_count, :failure_count
-  attr_reader :failed_examples, :pending_examples
 
   def initialize(output)
-    @output = output || StringIO.new
-    @example_count = @pending_count = @failure_count = 0
-    @examples = []
-    @failed_examples = []
-    @pending_examples = []
-    @example_group = nil
+    @output = output
   end
 
   def start(example_count)
-    @example_count = example_count
+    @output.puts "Started #{example_count.to_s} examples"
   end
 
   def example_group_started(group)
-    @example_group = group
+    @output.puts "Started #{group.description}"
   end
 
   def example_group_finished(group)
-    @example_group = group
+    @output.puts "Finished #{group.description}"
   end
 
   def example_started(example)
-    examples << example
+    @output.puts "Started #{example.full_description}"
   end
 
   def stop
+    @output.puts "Stopped"
   end
 
   def message(message)
-    output.puts message
+    @output.puts message
   end
 
   def dump_failures
-    return if failed_examples.empty?
-    output.puts
-    output.puts "Failures:"
-    failed_examples.each_with_index do |example, index|
-      output.puts example.full_description
-    end
+    @output.puts "Failures:"
   end
 
   def dump_summary(duration, example_count, failure_count, pending_count)
-    @duration = duration
-    @example_count = example_count
-    @failure_count = failure_count
-    @pending_count = pending_count
-    output.puts "\nFinished in #{duration}\n"
-  end
-
-  def dump_profile
-    'PROFILE DISABLED'
+    @output.puts "\nFinished in #{duration}\n" +
+                 "#{failure_count}/#{example_count} failed.\n" +
+                 "#{pending_count} pending."
   end
 
   def dump_pending
-    unless pending_examples.empty?
-      output.puts
-      output.puts "Pending:"
-      pending_examples.each do |pending_example|
-        output.puts pending_example.full_description
-      end
-    end
+    @output.puts "Pending:"
   end
 
   def seed(number)
-    output.puts
-    output.puts "Randomized with seed #{number}"
-    output.puts
+    @output.puts "Randomized with seed #{number}"
   end
 
   def close
-    output.close if IO === output && output != $stdout
+    @output.close
   end
 
   def example_passed(example)
-    output.print '.'
+    @output.print '.'
   end
 
   def example_pending(example)
-    @pending_examples << example
-    output.print '*'
+    @output.print 'P'
   end
 
   def example_failed(example)
-    @failed_examples << example
-    output.print 'F'
+    @output.print 'F'
   end
 
   def start_dump
-    output.puts
+    @output.puts "Dumping!"
   end
 
 end
