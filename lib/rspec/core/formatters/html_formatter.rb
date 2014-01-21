@@ -99,7 +99,6 @@ module RSpec
 
         def dump_summary(duration, example_count, failure_count, pending_count)
           @printer.print_summary(
-            dry_run?,
             duration,
             example_count,
             failure_count,
@@ -118,10 +117,6 @@ module RSpec
         # The number of the currently running example (a global counter)
         def example_number
           @example_number
-        end
-
-        def method_missing(m, *a, &b)
-          # no-op
         end
 
         def percent_done
