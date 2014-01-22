@@ -6,46 +6,60 @@ main = self
 RSpec.describe "The RSpec DSL" do
   include InSubProcess
 
-  shared_examples_for "a dsl method" do
-    it "is added to the main object and Module when expose_dsl_globally is enabled" do
-      in_sub_process do
-        RSpec.configuration.expose_dsl_globally = true
-        expect(main).to respond_to(method_name)
-        expect(Module.new).to respond_to(method_name)
+  shared_examples_for "a dsl method" do |*method_names|
+    context "when expose_dsl_globally is enabled" do
+      def enable
+        in_sub_process do
+          sub_process_setup if defined?(sub_process_setup)
+          RSpec.configuration.expose_dsl_globally = true
+          yield
+        end
+      end
+
+      it 'are only available off of `RSpec`, `main` and modules' do
+        enable do
+          expect(::RSpec).to respond_to(*method_names)
+          expect(main).to respond_to(*method_names)
+          expect(Module.new).to respond_to(*method_names)
+
+          expect(Object.new).not_to respond_to(*method_names)
+        end
       end
     end
 
-    it "is added to the RSpec DSL" do
-      expect(::RSpec).to respond_to(method_name)
-    end
+    context "when expose_dsl_globally is disabled" do
+      def disable
+        in_sub_process do
+          sub_process_setup if defined?(sub_process_setup)
+          RSpec.configuration.expose_dsl_globally = false
+          yield
+        end
+      end
 
-    it "is not added to every object in the system" do
-      expect(Object.new).not_to respond_to(method_name)
-    end
-  end
+      it 'are only available off of `RSpec`' do
+        disable do
+          expect(::RSpec).to respond_to(*method_names)
 
-  methods = [
-    :example_group,
-    :describe,
-    :context,
-    :share_examples_for,
-    :shared_examples_for,
-    :shared_examples,
-    :shared_context,
-  ]
-
-  methods.each do |method_name|
-    describe "##{method_name}" do
-      let(:method_name) { method_name }
-      it_behaves_like "a dsl method"
+          expect(main).not_to respond_to(*method_names)
+          expect(Module.new).not_to respond_to(*method_names)
+          expect(Object.new).not_to respond_to(*method_names)
+        end
+      end
     end
   end
 
-  describe "a custom example_group alias" do
-    before(:all) { RSpec.configuration.alias_example_group_to(:detail) }
+  describe "built in DSL methods" do
+    include_examples "a dsl method",
+      :example_group, :describe, :context,
+      :share_examples_for, :shared_examples_for, :shared_examples, :shared_context
+  end
 
-    let(:method_name) { :detail }
-    it_behaves_like "a dsl method"
+  describe "custom example group aliases" do
+    include_examples "a dsl method", :detail do
+      def sub_process_setup
+        RSpec.configuration.alias_example_group_to(:detail)
+      end
+    end
   end
 end
 
