@@ -10,8 +10,10 @@ RSpec.describe "The RSpec DSL" do
     context "when expose_dsl_globally is enabled" do
       def enable
         in_sub_process do
-          sub_process_setup if defined?(sub_process_setup)
-          RSpec.configuration.expose_dsl_globally = true
+          changing_expose_dsl_globally do
+            RSpec.configuration.expose_dsl_globally = true
+          end
+
           yield
         end
       end
@@ -30,8 +32,10 @@ RSpec.describe "The RSpec DSL" do
     context "when expose_dsl_globally is disabled" do
       def disable
         in_sub_process do
-          sub_process_setup if defined?(sub_process_setup)
-          RSpec.configuration.expose_dsl_globally = false
+          changing_expose_dsl_globally do
+            RSpec.configuration.expose_dsl_globally = false
+          end
+
           yield
         end
       end
@@ -51,13 +55,30 @@ RSpec.describe "The RSpec DSL" do
   describe "built in DSL methods" do
     include_examples "a dsl method",
       :example_group, :describe, :context,
-      :share_examples_for, :shared_examples_for, :shared_examples, :shared_context
+      :share_examples_for, :shared_examples_for, :shared_examples, :shared_context do
+
+      def changing_expose_dsl_globally
+        yield
+      end
+    end
   end
 
   describe "custom example group aliases" do
-    include_examples "a dsl method", :detail do
-      def sub_process_setup
-        RSpec.configuration.alias_example_group_to(:detail)
+    context "when adding aliases before exposing the DSL globally" do
+      include_examples "a dsl method", :detail do
+        def changing_expose_dsl_globally
+          RSpec.configuration.alias_example_group_to(:detail)
+          yield
+        end
+      end
+    end
+
+    context "when adding aliases after exposing the DSL globally" do
+      include_examples "a dsl method", :detail do
+        def changing_expose_dsl_globally
+          yield
+          RSpec.configuration.alias_example_group_to(:detail)
+        end
       end
     end
   end

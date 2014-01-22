@@ -28,12 +28,19 @@ module RSpec
         @example_group_aliases ||= []
       end
 
+      # @private
+      def self.exposed_globally?
+        @exposed_globally ||= false
+      end
+
       def self.expose_example_group_alias(name)
         example_group_aliases << name
 
         (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
           RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block).register
         end
+
+        expose_example_group_alias_globally(name) if exposed_globally?
       end
 
       # Defines a named context for one or more examples
@@ -55,24 +62,12 @@ module RSpec
         attr_accessor :top_level
       end
 
-      # @private
-      def self.exposed_globally?
-        @exposed_globally ||= false
-      end
-
       # Add's the describe method to Module and the top level binding
       def self.expose_globally!
         return if exposed_globally?
 
         example_group_aliases.each do |method_name|
-          to_define = proc do
-            __send__(:define_method, method_name) do |*args, &block|
-              ::RSpec.__send__(method_name, *args, &block)
-            end
-          end
-
-          (class << top_level; self; end).instance_eval(&to_define)
-          Module.class_exec(&to_define)
+          expose_example_group_alias_globally(method_name)
         end
 
         @exposed_globally = true
@@ -91,6 +86,17 @@ module RSpec
         end
 
         @exposed_globally = false
+      end
+
+      def self.expose_example_group_alias_globally(method_name)
+        to_define = proc do
+          __send__(:define_method, method_name) do |*args, &block|
+            ::RSpec.__send__(method_name, *args, &block)
+          end
+        end
+
+        (class << top_level; self; end).instance_eval(&to_define)
+        Module.class_exec(&to_define)
       end
 
     end
