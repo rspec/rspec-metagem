@@ -77,26 +77,21 @@ module RSpec
         return unless exposed_globally?
 
         example_group_aliases.each do |method_name|
-          to_undefine = proc do
-            __send__(:undef_method, method_name) if method_defined?(method_name)
-          end
-
-          (class << top_level; self; end).instance_eval(&to_undefine)
-          Module.class_exec(&to_undefine)
+          change_global_dsl { undef_method method_name }
         end
 
         @exposed_globally = false
       end
 
       def self.expose_example_group_alias_globally(method_name)
-        to_define = proc do
-          __send__(:define_method, method_name) do |*args, &block|
-            ::RSpec.__send__(method_name, *args, &block)
-          end
+        change_global_dsl do
+          define_method(method_name) { |*a, &b| ::RSpec.__send__(method_name, *a, &b) }
         end
+      end
 
-        (class << top_level; self; end).instance_eval(&to_define)
-        Module.class_exec(&to_define)
+      def self.change_global_dsl(&changes)
+        (class << top_level; self; end).class_exec(&changes)
+        Module.class_exec(&changes)
       end
 
     end

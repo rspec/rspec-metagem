@@ -62,16 +62,14 @@ module RSpec
 
         def self.expose_globally!
           return if exposed_globally?
-
-          Core::DSL.top_level.instance_eval(&definitions)
-          Module.class_exec(&definitions)
+          Core::DSL.change_global_dsl(&definitions)
           @exposed_globally = true
         end
 
         def self.remove_globally!
           return unless exposed_globally?
 
-          to_undefine = proc do
+          Core::DSL.change_global_dsl do
             undef shared_examples
             undef shared_context
             undef share_examples_for
@@ -79,8 +77,6 @@ module RSpec
             undef shared_example_groups
           end
 
-          Core::DSL.top_level.instance_eval(&to_undefine)
-          Module.class_exec(&to_undefine)
           @exposed_globally = false
         end
 
