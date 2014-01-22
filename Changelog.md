@@ -48,7 +48,7 @@ Enhancements:
   (Prathamesh Sonpatki)
 * Improve failure message of `eq` matcher when `Time` or `DateTime`
   objects are used so that the full sub-second precision is included.
-  (Thomas Holmes)
+  (Thomas Holmes, Jeff Wallace)
 * Add `output` matcher for expecting that a block outputs `to_stdout`
   or `to_stderr`. (Luca Pette, Matthias Günther)
 * Forward a provided block on to the `has_xyz?` method call when
