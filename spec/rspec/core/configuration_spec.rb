@@ -1307,9 +1307,9 @@ module RSpec::Core
       end
 
       it "allows adding additional metadata" do
-        config.alias_example_group_to :my_group_method, { some: "thing" }
-        group = ExampleGroup.my_group_method("a group", another: "thing")
-        expect(group.metadata).to include(some: "thing", another: "thing")
+        config.alias_example_group_to :my_group_method, { :some => "thing" }
+        group = ExampleGroup.my_group_method("a group", :another => "thing")
+        expect(group.metadata).to include(:some => "thing", :another => "thing")
       end
 
       context 'when the aliased method is used' do
