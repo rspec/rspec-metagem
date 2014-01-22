@@ -53,6 +53,9 @@ Enhancements:
   or `to_stderr`. (Luca Pette, Matthias Günther)
 * Forward a provided block on to the `has_xyz?` method call when
   the `have_xyz` matcher is used. (Damian Galarza)
+* Provide integration with Minitest 5.x. Require
+  `rspec/expectations/minitest_integration` after loading minitest
+  to use rspec-expectations with minitest. (Myron Marston)
 
 Breaking Changes for 3.0.0:
 
@@ -68,6 +71,11 @@ Breaking Changes for 3.0.0:
   matcher than `==`. (Myron Marston)
 * Remove deprecated `RSpec::Matchers::OperatorMatcher` constant.
   (Myron Marston)
+* Make `RSpec::Expectations::ExpectationNotMetError` subclass
+  `Exception` rather than `StandardError` so they can bypass
+  a bare `rescue` in end-user code (e.g. when an expectation is
+  set from within a rspec-mocks stub implementation). (Myron Marston)
+* Remove Test::Unit and Minitest 4.x integration. (Myron Marston)
 
 Bug Fixes:
 

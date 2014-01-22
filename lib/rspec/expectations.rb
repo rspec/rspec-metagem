@@ -52,10 +52,13 @@ module RSpec
   # built-in matchers that ship with rspec-expectations, and how to write your
   # own custom matchers.
   module Expectations
-    ExpectationNotMetError = if defined?(::Test::Unit::AssertionFailedError)
-      Class.new(::Test::Unit::AssertionFailedError)
-    else
-      Class.new(::StandardError)
-    end
+    # Exception raised when an expectation fails.
+    #
+    # @note We subclass Exception so that in a stub implementation if
+    # the user sets an expectation, it can't be caught in their
+    # code by a bare `rescue`.
+    # @api public
+    ExpectationNotMetError = Class.new(::Exception)
   end
 end
+

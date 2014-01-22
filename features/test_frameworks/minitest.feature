@@ -1,18 +1,18 @@
-Feature: Test::Unit integration
+Feature: Minitest integration
 
-  RSpec-expectations is a stand-alone gem that can be used without the rest of
-  RSpec. If you like the way Test::Unit (or MiniTest) organizes tests, but
-  prefer RSpec's approach to expressing expectations, you can have both.
+  rspec-expectations is a stand-alone gem that can be used without the rest of
+  RSpec. If you like minitest as your test runner, but prefer RSpec's
+  approach to expressing expectations, you can have both.
 
-  The one downside is that failures are reported as errors with MiniTest.
+  To integrate rspec-expectations with minitest, require `rspec/expectations/minitest_integration`.
 
-  Scenario: use rspec/expectations with Test::Unit
+  Scenario: use rspec/expectations with minitest
     Given a file named "rspec_expectations_test.rb" with:
       """ruby
-      require 'test/unit'
-      require 'rspec/expectations'
+      require 'minitest/autorun'
+      require 'rspec/expectations/minitest_integration'
 
-      class RSpecExpectationsTest < Test::Unit::TestCase
+      class RSpecExpectationsTest < Minitest::Test
         RSpec::Matchers.define :be_an_integer do
           match { |actual| Integer === actual }
         end
@@ -30,7 +30,7 @@ Feature: Test::Unit integration
         end
 
         def test_failing_expectation
-          expect([1,2]).to be_empty
+          expect([1, 2]).to be_empty
         end
 
         def test_custom_matcher_with_deprecation_warning
@@ -39,6 +39,6 @@ Feature: Test::Unit integration
       end
       """
      When I run `ruby rspec_expectations_test.rb`
-     Then the output should contain "3 tests, 0 assertions, 0 failures, 1 errors" or "3 tests, 0 assertions, 1 failures, 0 errors"
+     Then the output should contain "3 runs, 3 assertions, 1 failures, 0 errors"
       And the output should contain "expected empty? to return true, got false"
       And the output should contain "be_an_int is deprecated"
