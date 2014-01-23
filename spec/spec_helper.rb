@@ -75,6 +75,14 @@ module MinitestIntegration
   def with_minitest_loaded
     in_sub_process do
       with_isolated_stderr do
+        if ENV['TRAVIS']
+          # in some situations on Travis we've seen stdlib minitest get loaded rathe
+          # than the minitest 5.x gem. Printing the load path to help troubleshoot why.
+          puts "\nLoading minitest/autorun. $LOAD_PATH:"
+          puts $LOAD_PATH.join("\n")
+          puts
+        end
+
         require 'minitest/autorun'
       end
 
