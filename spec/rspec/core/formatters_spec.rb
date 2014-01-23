@@ -42,6 +42,13 @@ module RSpec::Core::Formatters
         expect(loader.formatters.first).to be_an_instance_of(RSpec::Core::Formatters::LegacyFormatter)
       end
 
+      it "issues a deprecation on legacy formatter use" do
+        formatter_class = Struct.new(:output)
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 2,
+          /The #{formatter_class} formatter uses the deprecated formatter interface/)
+        loader.add formatter_class, output
+      end
+
       it "finds a formatter by class fully qualified name" do
         stub_const("RSpec::CustomFormatter", Class.new(BaseFormatter))
         loader.add "RSpec::CustomFormatter", output

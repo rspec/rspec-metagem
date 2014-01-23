@@ -85,6 +85,7 @@ module RSpec::Core::Formatters
 
       unless formatter.respond_to?(:notifications)
         require 'rspec/core/formatters/legacy_formatter'
+        RSpec.deprecate "The #{formatter.class} formatter uses the deprecated formatter interface."
         formatter = LegacyFormatter.new(formatter)
       end
 
