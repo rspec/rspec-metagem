@@ -10,7 +10,7 @@ module FormatterSupport
 
   def setup_reporter(*streams)
     config.add_formatter described_class, *streams
-    @formatter = config.formatters.last
+    @formatter = config.formatters.first
     @reporter = config.reporter
   end
 

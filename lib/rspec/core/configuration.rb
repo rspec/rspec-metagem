@@ -604,17 +604,16 @@ module RSpec
 
       # @api private
       def formatter_loader
-        @reporter ||= Reporter.new(self)
-        @formatter_loader ||= Formatters::Loader.new(reporter)
+        @formatter_loader ||= Formatters::Loader.new(Reporter.new(self))
       end
 
       # @api private
       def reporter
-        @reporter ||= begin
-                        @reporter = Reporter.new(self)
-                        formatter_loader.setup_default output_stream, deprecation_stream
-                        @reporter
-                      end
+        @reporter ||=
+          begin
+            formatter_loader.setup_default output_stream, deprecation_stream
+            formatter_loader.reporter
+          end
       end
 
       # @api private
