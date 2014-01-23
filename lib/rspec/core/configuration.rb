@@ -110,13 +110,16 @@ module RSpec
       # Default: `$stderr`.
       add_setting :error_stream
 
-      # @macro add_setting
+      # Indicates if the DSL has been exposed off of modules and `main`.
       # Default: true
+      def expose_dsl_globally?
+        Core::DSL.exposed_globally?
+      end
+
       # Use this to expose the core RSpec DSL via `Module` and the `main`
       # object. It will be set automatically but you can override it to
       # remove the DSL.
-      define_reader :expose_dsl_globally
-
+      # Default: true
       def expose_dsl_globally=(value)
         if value
           Core::DSL.expose_globally!

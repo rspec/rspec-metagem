@@ -12,6 +12,7 @@ RSpec.describe "The RSpec DSL" do
         in_sub_process do
           changing_expose_dsl_globally do
             RSpec.configuration.expose_dsl_globally = true
+            expect(RSpec.configuration.expose_dsl_globally?).to eq true
           end
 
           yield
@@ -34,6 +35,7 @@ RSpec.describe "The RSpec DSL" do
         in_sub_process do
           changing_expose_dsl_globally do
             RSpec.configuration.expose_dsl_globally = false
+            expect(RSpec.configuration.expose_dsl_globally?).to eq false
           end
 
           yield

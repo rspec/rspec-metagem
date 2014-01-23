@@ -12,7 +12,6 @@ module RSpec::Core
 
     before do
       allow(config.hooks).to receive(:run)
-      allow(config).to receive(:expose_dsl_globally?).and_return(false)
     end
 
     it "configures streams before command line options" do
