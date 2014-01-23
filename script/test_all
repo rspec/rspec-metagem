@@ -45,6 +45,7 @@ bundle exec bin/cucumber --strict
 script/prevent_runtime_method_cache_busters
 
 # Test against other RSpec gems.
+unset BUNDLE_GEMFILE
 
 # Delete the directory for idempotency when running locally
 export TMPDIR="/tmp"
@@ -61,7 +62,7 @@ cd $TMPDIR/rspec-ci
 
 # The steps to test the gems are the same, this function does them.
 function test_gem {
-    git clone git://github.com/rspec/rspec-$1
+    git clone git://github.com/rspec/rspec-$1 --depth 1
     cd rspec-$1
     pwd
     git fetch origin
@@ -70,9 +71,8 @@ function test_gem {
     bundle_flags=`cat .travis.yml  | grep bundler_args | tr -d '"' | grep -o " .*"`
 
     bundle install $bundle_flags
-    bundle exec rspec -b
+    bin/rspec -b
     cd ../
-    rm -rf rspec-$1
 }
 
 # Test rspec-mocks and rspec-expectations.
