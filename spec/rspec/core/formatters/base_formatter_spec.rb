@@ -2,9 +2,7 @@ require 'spec_helper'
 require 'rspec/core/formatters/base_formatter'
 
 RSpec.describe RSpec::Core::Formatters::BaseFormatter do
-
-  let(:output)    { StringIO.new }
-  let(:formatter) { RSpec::Core::Formatters::BaseFormatter.new(output) }
+  include FormatterSupport
 
   describe "read_failed_line" do
     it "deals gracefully with a heterogeneous language stack trace" do

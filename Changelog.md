@@ -11,6 +11,11 @@ Breaking Changes for 3.0.0:
   (Myron Marston)
 * Remove support for overriding RSpec's built-in `:if` and `:unless`
   filters. (Ashish Dixit)
+* Formatters are now required to implement a `notifications` method
+  returning a list of events they wish to be notified about. Notifications
+  are handled by methods matching the names on formatters. This allows
+  us to add or remove notifications without breaking existing formatters.
+  (Jon Rowe)
 
 Enhancements:
 

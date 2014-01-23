@@ -2,20 +2,22 @@ require 'spec_helper'
 require 'rspec/core/formatters/base_text_formatter'
 
 RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
-  let(:output) { StringIO.new }
-  let(:formatter) { RSpec::Core::Formatters::BaseTextFormatter.new(output) }
+  include FormatterSupport
 
-  describe "#summary_line" do
+  describe "#dump_summary" do
     it "with 0s outputs pluralized (excluding pending)" do
-      expect(formatter.summary_line(0,0,0)).to eq("0 examples, 0 failures")
+      send_notification :dump_summary, 0, 0, 0, 0
+      expect(output.string).to match("0 examples, 0 failures")
     end
 
     it "with 1s outputs singular (including pending)" do
-      expect(formatter.summary_line(1,1,1)).to eq("1 example, 1 failure, 1 pending")
+      send_notification :dump_summary, 1, 1, 1, 1
+      expect(output.string).to match("1 example, 1 failure, 1 pending")
     end
 
     it "with 2s outputs pluralized (including pending)" do
-      expect(formatter.summary_line(2,2,2)).to eq("2 examples, 2 failures, 2 pending")
+      send_notification :dump_summary, 2, 2, 2, 2
+      expect(output.string).to match("2 examples, 2 failures, 2 pending")
     end
   end
 
@@ -25,7 +27,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         it("fails") { fail }
       end
       line = __LINE__ - 2
-      group.run(formatter)
+      group.run(reporter)
       formatter.dump_commands_to_rerun_failed_examples
       expect(output.string).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
     end
@@ -37,8 +39,8 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_failures
-      group.run(formatter)
-      formatter.dump_failures
+      group.run(reporter)
+      send_notification :dump_failures
     end
 
     it "preserves formatting" do
@@ -153,8 +155,8 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 
     def run_all_and_dump_pending
-      group.run(formatter)
-      formatter.dump_pending
+      group.run(reporter)
+      send_notification :dump_pending
     end
 
     context "with show_failures_in_pending_blocks setting enabled" do
@@ -263,7 +265,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         example("example") { sleep 0.001 }
         example_line_number = __LINE__ - 1
       end
-      group.run(double('reporter').as_null_object)
+      group.run(reporter)
 
       allow(formatter).to receive(:examples) { group.examples }
       allow(RSpec.configuration).to receive(:profile_examples) { 10 }
@@ -293,17 +295,16 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   describe "#dump_profile_slowest_example_groups" do
-    let(:group) do 
+    let(:group) do
       RSpec::Core::ExampleGroup.describe("slow group") do
         # Use a sleep so there is some measurable time, to ensure
         # the reported percent is 100%, not 0%.
         example("example") { sleep 0.01 }
-      end 
+      end
     end
-    let(:rpt) { double('reporter').as_null_object }
 
     before do
-      group.run(rpt)
+      group.run(reporter)
       allow(RSpec.configuration).to receive(:profile_examples) { 10 }
     end
 
@@ -322,7 +323,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
           example("example 1") { sleep 0.004 }
           example("example 2") { sleep 0.007 }
         end
-        group2.run(rpt)
+        group2.run(reporter)
 
         allow(formatter).to receive(:examples) { group.examples + group2.examples }
       end
@@ -345,9 +346,9 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     it "depends on parent_groups to get the top level example group" do
       ex = ""
-      group.describe("group 2") do 
+      group.describe("group 2") do
         describe "group 3" do
-          ex = example("nested example 1") 
+          ex = example("nested example 1")
         end
       end
 
@@ -362,7 +363,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         config.tty = true
         config.success_color = :cyan
       end
-      formatter.dump_summary(0,1,0,0)
+      send_notification :dump_summary, 0, 1, 0, 0
       expect(output.string).to include("\e[36m")
     end
   end

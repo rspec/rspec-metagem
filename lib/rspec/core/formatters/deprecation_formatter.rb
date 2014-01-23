@@ -13,6 +13,11 @@ module RSpec
           @seen_deprecations = Set.new
           @count = 0
         end
+        alias :output :deprecation_stream
+
+        def notifications
+          %w[deprecation deprecation_summary]
+        end
 
         def printer
           @printer ||= case deprecation_stream

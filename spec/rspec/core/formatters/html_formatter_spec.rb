@@ -7,15 +7,15 @@ module RSpec
   module Core
     module Formatters
       RSpec.describe HtmlFormatter do
-        let(:suffix) {
-          if ::RUBY_PLATFORM == 'java'
-            "-jruby"
-          elsif defined?(Rubinius)
-            "-rbx"
+
+        let(:suffix) do
+          case
+            when ::RUBY_PLATFORM == 'java' then "-jruby"
+            when defined?(Rubinius)        then "-rbx"
           else
             ""
           end
-        }
+        end
 
         let(:root) { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
         let(:expected_file) do
@@ -96,7 +96,7 @@ module RSpec
             include MathnIntegrationSupport
 
             it "produces HTML identical to the one we designed manually" do
-              with_mathn_loaded{ build_and_verify_formatter_output }
+              with_mathn_loaded { build_and_verify_formatter_output }
             end
           end
         end
