@@ -65,14 +65,16 @@ module RSpec::Core::Formatters
       @formatters = []
       @reporter = reporter
     end
-    attr_reader :formatters
+    attr_reader :formatters, :reporter
 
     # @api private
     def setup_default(output_stream, deprecation_stream)
       if @formatters.empty?
         add 'progress', output_stream
       end
-      add DeprecationFormatter, deprecation_stream, output_stream
+      unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
+        add DeprecationFormatter, deprecation_stream, output_stream
+      end
     end
 
     # @api private
