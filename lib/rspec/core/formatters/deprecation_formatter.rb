@@ -31,7 +31,7 @@ module RSpec
         end
 
         def deprecation(data)
-          return if @seen_deprecations.include?(data)
+          return if @seen_deprecations.any? { |deprecation| deprecation == data }
 
           @count += 1
           printer.print_deprecation_message data
