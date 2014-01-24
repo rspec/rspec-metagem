@@ -666,6 +666,30 @@ module RSpec
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
+      # Creates a method that defines an example group with the provided
+      # metadata. Can be used to define example group/metadata shortcuts.
+      #
+      # @example
+      #     alias_example_group_to :describe_model, :type => :model
+      #     shared_context_for "model tests", :type => :model do
+      #       # define common model test helper methods, `let` declarations, etc
+      #     end
+      #
+      #     # This lets you do this:
+      #
+      #     RSpec.describe_model User do
+      #     end
+      #
+      #     # ... which is the equivalent of
+      #
+      #     RSpec.describe User, :type => :model do
+      #     end
+      #
+      # @note The defined aliased will also be added to the top level
+      #       (e.g. `main` and from within modules) if
+      #       `expose_dsl_globally` is set to true.
+      # @see #alias_example_to
+      # @see #expose_dsl_globally=
       def alias_example_group_to(new_name, *args)
         extra_options = Metadata.build_hash_from(args)
         RSpec::Core::ExampleGroup.alias_example_group_to(new_name, extra_options)
