@@ -912,6 +912,59 @@ module RSpec::Core
       end
     end
 
+    %w[ xdescribe xcontext ].each do |method_name|
+      describe ".#{method_name}" do
+        def extract_execution_results(group)
+          group.examples.map do |ex|
+            ex.metadata.fetch(:execution_result)
+          end
+        end
+
+        it 'generates a pending example group' do
+          group = ExampleGroup.send(method_name) do
+            it("passes") { }
+            it("fails")  { expect(2).to eq(3) }
+          end
+          group.run
+
+          expect(extract_execution_results(group)).to match([
+            a_hash_including(
+              :status => "pending",
+              :pending_message => "Temporarily disabled with #{method_name}"
+            )
+          ] * 2)
+        end
+      end
+    end
+
+    %w[ fdescribe fcontext ].each do |method_name|
+      def executed_examples_of(group)
+        examples = group.examples.select { |ex| ex.metadata[:execution_result][:started_at] }
+        group.children.inject(examples) { |exs, child| exs + executed_examples_of(child) }
+      end
+
+      [:focus, :focused].each do |metadata|
+        it "generates an example group that can be filtered with :#{metadata}" do
+          RSpec.configuration.filter_run metadata
+
+          parent_group = ExampleGroup.describe do
+            describe "not focused" do
+              example("not focused example") { }
+            end
+
+            send(method_name, "focused") do
+              example("focused example") { }
+            end
+          end
+
+          parent_group.run
+
+          executed_descriptions = executed_examples_of(parent_group).map(&:description)
+          expect(executed_descriptions).to eq(["focused example"])
+        end
+      end
+    end
+
     describe "adding examples" do
 
       it "allows adding an example using 'it'" do

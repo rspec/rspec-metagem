@@ -124,13 +124,12 @@ module RSpec
           (class << self; self; end).define_example_method name, extra
         end
 
-        # Works like `alias_method name, :example_group` with the added benefit of
-        # assigning default metadata to the generated example group.
-        #
-        # @note Use with caution. This extends the language used in your
-        #   specs, but does not add any additional documentation.  We use this
-        #   in rspec to define methods like `fdescribe` and `xdescribe`, but we
-        #   also add docs for those methods.
+        # @private
+        # @macro [attach] alias_example_group_to
+        #   @scope class
+        #   @param [String] docstring The example group doc string
+        #   @param [Hash] metadata Additional metadata to attach to the example group
+        #   @yield The example group definition
         def alias_example_group_to(name, metadata={})
           (class << self; self; end).__send__(:define_method, name) do |*args, &block|
             combined_metadata = metadata.dup
@@ -259,8 +258,31 @@ module RSpec
         child
       end
 
+      # An alias of `example_group`. Generally used when grouping
+      # examples by a thing you are describing (e.g. an object, class or method).
+      # @see example_group
       alias_example_group_to :describe
+
+      # An alias of `example_group`. Generally used when grouping examples
+      # contextually.
+      # @see example_group
       alias_example_group_to :context
+
+      # Shortcut to temporarily make an example group pending.
+      # @see example_group
+      alias_example_group_to :xdescribe, :pending => "Temporarily disabled with xdescribe"
+
+      # Shortcut to temporarily make an example group pending.
+      # @see example_group
+      alias_example_group_to :xcontext,  :pending => "Temporarily disabled with xcontext"
+
+      # Shortcut to define an example group with `:focus` => true
+      # @see example_group
+      alias_example_group_to :fdescribe, :focus => true, :focused => true
+
+      # Shortcut to define an example group with `:focus` => true
+      # @see example_group
+      alias_example_group_to :fcontext,  :focus => true, :focused => true
 
       # @private
       def self.subclass(parent, args, &example_group_block)
