@@ -28,8 +28,9 @@ module RSpec::Core
         example = double("example")
         reporter.register_listener formatter, :example_started
 
-        expect(formatter).to receive(:example_started).
-          with(example)
+        expect(formatter).to receive(:example_started) do |notification|
+          expect(notification.example).to eq example
+        end
 
         reporter.example_started(example)
       end
@@ -38,8 +39,8 @@ module RSpec::Core
         order = []
 
         formatter = double("formatter")
-        allow(formatter).to receive(:example_group_started) { |group| order << "Started: #{group.description}" }
-        allow(formatter).to receive(:example_group_finished) { |group| order << "Finished: #{group.description}" }
+        allow(formatter).to receive(:example_group_started)  { |n| order << "Started: #{n.group.description}" }
+        allow(formatter).to receive(:example_group_finished) { |n| order << "Finished: #{n.group.description}" }
 
         reporter.register_listener formatter, :example_group_started, :example_group_finished
 
@@ -84,9 +85,9 @@ module RSpec::Core
         example = double("example")
 
         formatters.each do |formatter|
-          expect(formatter).
-            to receive(:example_started).
-            with(example)
+          expect(formatter).to receive(:example_started) do |notification|
+            expect(notification.example).to eq example
+          end
           reporter.register_listener formatter, :example_started
         end
 
@@ -121,13 +122,15 @@ module RSpec::Core
       end
 
       it 'will send notifications when a subscribed event is triggered' do
-        expect(listener).to receive(:start).with(42)
+        expect(listener).to receive(:start) do |notification|
+          expect(notification.count).to eq 42
+        end
         reporter.start 42
       end
 
       it 'will ignore duplicated listeners' do
         reporter.register_listener listener, :start
-        expect(listener).to receive(:start).with(42).once
+        expect(listener).to receive(:start).once
         reporter.start 42
       end
     end
@@ -140,8 +143,8 @@ module RSpec::Core
         allow(Time).to receive_messages(:now => ::Time.utc(2012, 10, 1))
 
         duration = nil
-        allow(formatter).to receive(:dump_summary) do |dur, _, _, _|
-          duration = dur
+        allow(formatter).to receive(:dump_summary) do |notification|
+          duration = notification.duration
         end
 
         reporter.finish
