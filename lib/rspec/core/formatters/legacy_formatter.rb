@@ -34,74 +34,74 @@ module RSpec
         # @api public
         #
         # @param example_count
-        def start(example_count)
-          @formatter.start example_count
+        def start(notification)
+          @formatter.start notification.count
         end
 
         # @api public
         #
         # @param example_group
-        def example_group_started(group)
-          @formatter.example_group_started group
+        def example_group_started(notification)
+          @formatter.example_group_started notification.group
         end
 
         # @api public
         #
         # @param example_group
-        def example_group_finished(group)
-          @formatter.example_group_finished group
+        def example_group_finished(notification)
+          @formatter.example_group_finished notification.group
         end
 
         # @api public
         #
         # @param example
-        def example_started(example)
-          @formatter.example_started example
+        def example_started(notification)
+          @formatter.example_started notification.example
         end
 
         # @api public
         #
         # @param example
-        def example_passed(example)
-          @formatter.example_passed example
+        def example_passed(notification)
+          @formatter.example_passed notification.example
         end
 
         # @api public
         #
         # @param example
-        def example_pending(example)
-          @formatter.example_pending example
+        def example_pending(notification)
+          @formatter.example_pending notification.example
         end
 
         # @api public
         #
         # @param example
-        def example_failed(example)
-          @formatter.example_failed example
+        def example_failed(notification)
+          @formatter.example_failed notification.example
         end
 
         # @api public
         #
         # @param message
-        def message(message)
-          @formatter.message message
+        def message(notification)
+          @formatter.message notification.message
         end
 
         # @api public
         #
-        def stop
+        def stop(notification)
           @formatter.stop
         end
 
         # @api public
         #
-        def start_dump
+        def start_dump(notification)
           @formatter.start_dump
         end
 
         # @api public
         #
-        def dump_failures
+        def dump_failures(notification)
           @formatter.dump_failures
         end
 
@@ -111,32 +111,32 @@ module RSpec
         # @param example_count
         # @param failure_count
         # @param pending_count
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          @formatter.dump_summary duration, example_count, failure_count, pending_count
+        def dump_summary(summary)
+          @formatter.dump_summary summary.duration, summary.examples, summary.failures, summary.pending
         end
 
         # @api public
         #
-        def dump_pending
+        def dump_pending(notification)
           @formatter.dump_pending
         end
 
         # @api public
         #
-        def dump_profile
+        def dump_profile(notification)
           @formatter.dump_profile
         end
 
         # @api public
         #
         # @param seed
-        def seed(number)
-          @formatter.seed number
+        def seed(notification)
+          @formatter.seed notification.seed
         end
 
         # @api public
         #
-        def close
+        def close(notification)
           @formatter.close
         end
 
