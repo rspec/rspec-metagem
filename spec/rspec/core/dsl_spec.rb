@@ -56,7 +56,7 @@ RSpec.describe "The RSpec DSL" do
 
   describe "built in DSL methods" do
     include_examples "a dsl method",
-      :example_group, :describe, :context,
+      :describe, :context,
       :share_examples_for, :shared_examples_for, :shared_examples, :shared_context do
 
       def changing_expose_dsl_globally

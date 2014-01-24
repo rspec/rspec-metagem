@@ -45,13 +45,6 @@ module RSpec
 
       # Defines a named context for one or more examples
       # @example_group
-      # RSpec.example_group do
-      #   it "does something" do
-      #   end
-      # end
-      expose_example_group_alias(:example_group)
-      # Defines a named context for one or more examples
-      # @example_group
       expose_example_group_alias(:describe)
       # Defines a named context for one or more examples
       # @example_group
