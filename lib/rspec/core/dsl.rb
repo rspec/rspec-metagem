@@ -43,13 +43,6 @@ module RSpec
         expose_example_group_alias_globally(name) if exposed_globally?
       end
 
-      # Defines a named context for one or more examples
-      # @example_group
-      expose_example_group_alias(:describe)
-      # Defines a named context for one or more examples
-      # @example_group
-      expose_example_group_alias(:context)
-
       class << self
         # @private
         attr_accessor :top_level

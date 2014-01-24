@@ -138,6 +138,8 @@ module RSpec
             args << combined_metadata
             example_group(*args, &block)
           end
+
+          RSpec::Core::DSL.expose_example_group_alias(name)
         end
 
         # @private
@@ -257,10 +259,8 @@ module RSpec
         child
       end
 
-      class << self
-        alias_method :describe, :example_group
-        alias_method :context, :example_group
-      end
+      alias_example_group_to :describe
+      alias_example_group_to :context
 
       # @private
       def self.subclass(parent, args, &example_group_block)
