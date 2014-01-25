@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file was generated on 2014-01-24T19:39:30-08:00 from the rspec-dev repo.
+# This file was generated on 2014-01-25T09:32:04-08:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
@@ -17,4 +17,3 @@ if is_mri; then
 else
   echo "Skipping the rest of the build on non-MRI rubies"
 fi
-
