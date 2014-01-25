@@ -1,25 +1,23 @@
-before_install:
-  - gem update bundler
-  - bundle --version
-  - gem update --system 2.1.11
-  - gem --version
-bundler_args: "--standalone --binstubs --without documentation"
-script: "script/test_all"
+# This file was generated on 2014-01-25T09:32:04-08:00 from the rspec-dev repo.
+# DO NOT modify it by hand as your changes will get lost the next time it is generated.
+
+before_install: "script/clone_all_rspec_repos"
+bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
+script: "script/run_build"
 rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
   - 2.0.0
   - 2.1.0
+  - ruby-head
+  - ree
   - jruby-18mode
   - jruby-19mode
   - jruby-head
   - rbx
-  - ree
-  - ruby-head
 matrix:
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
   fast_finish: true
-
