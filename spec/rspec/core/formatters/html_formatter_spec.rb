@@ -35,10 +35,11 @@ module RSpec
         end
 
         let(:expected_html) do
-          unless File.file?(expected_file)
-            raise "There is no HTML file with expected content for this platform: #{expected_file}"
+          if File.file?(expected_file)
+            File.read(expected_file)
+          else
+            pending "There is no HTML file with expected content for this platform: #{expected_file}"
           end
-          File.read(expected_file)
         end
 
         before do
