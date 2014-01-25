@@ -59,11 +59,39 @@ module RSpec
           define_method(name) do |*all_args, &block|
             desc, *args = *all_args
             options = Metadata.build_hash_from(args)
-            options.update(:pending => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
+            options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
             options.update(extra_options)
+
+            # Metadata inheritance normally happens in `Example#initialize`,
+            # but for `:pending` specifically we need it earlier.
+            pending_metadata = options[:pending] || metadata[:pending]
+
+            if pending_metadata
+              options, block = ExampleGroup.pending_metadata_and_block_for(
+                options.merge(:pending => pending_metadata),
+                block
+              )
+            end
+
             examples << RSpec::Core::Example.new(self, desc, options, block)
             examples.last
           end
+        end
+
+        def pending_metadata_and_block_for(options, block)
+          if String === options[:pending]
+            reason = options[:pending]
+          else
+            options[:pending] = true
+            reason = RSpec::Core::Pending::NO_REASON_GIVEN
+          end
+
+          # This will fail if no block is provided, which is effectively the
+          # same as failing the example so it will be marked correctly as
+          # pending.
+          callback = Proc.new { pending(reason); instance_exec(&block) }
+
+          return options, callback
         end
 
         # Defines an example within a group.
@@ -100,18 +128,21 @@ module RSpec
         # @see example
         define_example_method :fit,     :focused => true, :focus => true
 
+        # Shortcut to define an example with :skip => 'Temporarily skipped with xexample'
+        # @see example
+        define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
+        # Shortcut to define an example with :skip => 'Temporarily skipped with xit'
+        # @see example
+        define_example_method :xit,      :skip => 'Temporarily skipped with xit'
+        # Shortcut to define an example with :skip => 'Temporarily skipped with xspecify'
+        # @see example
+        define_example_method :xspecify, :skip => 'Temporarily skipped with xspecify'
+        # Shortcut to define an example with :skip => true
+        # @see example
+        define_example_method :skip,     :skip => true
         # Shortcut to define an example with :pending => true
         # @see example
         define_example_method :pending,  :pending => true
-        # Shortcut to define an example with :pending => 'Temporarily disabled with xexample'
-        # @see example
-        define_example_method :xexample, :pending => 'Temporarily disabled with xexample'
-        # Shortcut to define an example with :pending => 'Temporarily disabled with xit'
-        # @see example
-        define_example_method :xit,      :pending => 'Temporarily disabled with xit'
-        # Shortcut to define an example with :pending => 'Temporarily disabled with xspecify'
-        # @see example
-        define_example_method :xspecify, :pending => 'Temporarily disabled with xspecify'
 
         # Works like `alias_method :name, :example` with the added benefit of
         # assigning default metadata to the generated example.
@@ -270,11 +301,11 @@ module RSpec
 
       # Shortcut to temporarily make an example group pending.
       # @see example_group
-      alias_example_group_to :xdescribe, :pending => "Temporarily disabled with xdescribe"
+      alias_example_group_to :xdescribe, :skip => "Temporarily skipped with xdescribe"
 
       # Shortcut to temporarily make an example group pending.
       # @see example_group
-      alias_example_group_to :xcontext,  :pending => "Temporarily disabled with xcontext"
+      alias_example_group_to :xcontext,  :skip => "Temporarily skipped with xcontext"
 
       # Shortcut to define an example group with `:focus` => true
       # @see example_group

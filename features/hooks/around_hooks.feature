@@ -230,6 +230,7 @@ Feature: around hooks
 
         it "should be detected as pending" do
           pending
+          fail
         end
       end
       """
