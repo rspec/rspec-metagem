@@ -2,6 +2,11 @@
 
 # This is necessary for when `--standalone` is being used.
 $:.unshift File.expand_path '../../bundle', __FILE__
+
+# For the travis build we put the bundle directory up a directory
+# so it can be shared among the repos for faster bundle installs.
+$:.unshift File.expand_path '../../../bundle', __FILE__
+
 require 'bundler/setup'
 
 # To use simplecov while running rspec-core's test suite, we must
