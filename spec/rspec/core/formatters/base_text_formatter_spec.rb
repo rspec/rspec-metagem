@@ -6,17 +6,17 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
   describe "#dump_summary" do
     it "with 0s outputs pluralized (excluding pending)" do
-      send_notification :dump_summary, ::RSpec::Core::SummaryNotification.new(0, 0, 0, 0)
+      send_notification :dump_summary, summary_notification(0, 0, 0, 0)
       expect(output.string).to match("0 examples, 0 failures")
     end
 
     it "with 1s outputs singular (including pending)" do
-      send_notification :dump_summary, ::RSpec::Core::SummaryNotification.new(1, 1, 1, 1)
+      send_notification :dump_summary, summary_notification(1, 1, 1, 1)
       expect(output.string).to match("1 example, 1 failure, 1 pending")
     end
 
     it "with 2s outputs pluralized (including pending)" do
-      send_notification :dump_summary, ::RSpec::Core::SummaryNotification.new(2, 2, 2, 2)
+      send_notification :dump_summary, summary_notification(2, 2, 2, 2)
       expect(output.string).to match("2 examples, 2 failures, 2 pending")
     end
   end
@@ -40,7 +40,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     def run_all_and_dump_failures
       group.run(reporter)
-      send_notification :dump_failures, double("notification")
+      send_notification :dump_failures, null_notification
     end
 
     it "preserves formatting" do
@@ -156,7 +156,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     def run_all_and_dump_pending
       group.run(reporter)
-      send_notification :dump_pending, double("notification")
+      send_notification :dump_pending, null_notification
     end
 
     context "with show_failures_in_pending_blocks setting enabled" do
@@ -365,7 +365,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         config.tty = true
         config.success_color = :cyan
       end
-      send_notification :dump_summary, double("summary", :duration => 0, :examples => 1, :failures => 0, :pending => 0)
+      send_notification :dump_summary, summary_notification(0, 1, 0, 0)
       expect(output.string).to include("\e[36m")
     end
   end

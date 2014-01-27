@@ -13,7 +13,6 @@ require 'rspec/core/reporter'
 # it "lists pending specs that were fixed"
 RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
-  let(:notification) { double "notification" }
 
   it "outputs json (brittle high level functional test)" do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
@@ -77,7 +76,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#stop" do
     it "adds all examples to the output hash" do
-      send_notification :stop, notification
+      send_notification :stop, null_notification
       expect(formatter.output_hash[:examples]).not_to be_nil
     end
   end
@@ -85,22 +84,21 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   describe "#close" do
     it "outputs the results as a JSON string" do
       expect(output.string).to eq ""
-      send_notification :close, notification
+      send_notification :close, null_notification
       expect(output.string).to eq("{}")
     end
   end
 
   describe "#message" do
     it "adds a message to the messages list" do
-      send_notification :message, double(:message => "good job")
+      send_notification :message, message_notification("good job")
       expect(formatter.output_hash[:messages]).to eq ["good job"]
     end
   end
 
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
-      summary = double(:duration => 1.0, :examples => 10, :failures => 3, :pending => 4)
-      send_notification :dump_summary, summary
+      send_notification :dump_summary, summary_notification(1.0, 10, 3, 4)
       summary = formatter.output_hash[:summary]
       expect(summary[:duration]).to eq 1.0
       expect(summary[:example_count]).to eq 10
