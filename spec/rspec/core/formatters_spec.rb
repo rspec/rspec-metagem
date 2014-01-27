@@ -44,7 +44,7 @@ module RSpec::Core::Formatters
 
       it "issues a deprecation on legacy formatter use" do
         formatter_class = Struct.new(:output)
-        expect_deprecation_with_call_site(__FILE__, __LINE__ + 2,
+        expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 2,
           /The #{formatter_class} formatter uses the deprecated formatter interface/)
         loader.add formatter_class, output
       end
