@@ -15,6 +15,61 @@ module RSpec
                            example_passed example_failed example_pending start_dump dump_pending
                            dump_failures dump_summary seed close stop deprecation deprecation_summary]
 
+        module LegacyInterface
+
+          def start(count)
+            super CountNotification.new(count)
+          end
+
+          %w[example_group_started example_group_finished].each do |name|
+            define_method(name) do |group|
+              begin
+                super GroupNotification.new(group)
+              rescue NoMethodError
+                # no implemented so no-op
+              end
+            end
+          end
+
+          %w[example_started example_passed example_pending example_failed].each do |name|
+            define_method(name) do |example|
+              begin
+                super ExampleNotification.new(example)
+              rescue NoMethodError
+                # no implemented so no-op
+              end
+            end
+          end
+
+          def message(message)
+            super MessageNotification.new(message)
+          rescue NoMethodError
+            # no implemented so no-op
+          end
+
+          def dump_summary(duration, examples, failures, pending)
+            super SummaryNotification.new(duration, examples, failures, pending)
+          rescue NoMethodError
+            # no implemented so no-op
+          end
+
+          def seed(seed)
+            super SeedNotification.new(seed, true)
+          rescue NoMethodError
+            # no implemented so no-op
+          end
+
+          %w[start_dump dump_failures dump_pending dump_profile close stop].each do |name|
+            define_method(name) do
+              begin
+                super(NullNotification.instance)
+              rescue NoMethodError
+                # no implemented so no-op
+              end
+            end
+          end
+        end
+
         # @api private
         def self.can_detect?(formatter)
           return true unless formatter.respond_to? :notifications
@@ -27,6 +82,11 @@ module RSpec
         # @param formatter
         def initialize(oldstyle_formatter)
           @formatter = oldstyle_formatter
+          if @formatter.respond_to?(:notifications)
+            @formatter.class.class_eval do
+              include LegacyInterface
+            end
+          end
         end
 
         # @api public
