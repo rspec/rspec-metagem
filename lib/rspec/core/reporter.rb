@@ -86,8 +86,8 @@ module RSpec::Core
       notify :example_pending, ExampleNotification.new(example)
     end
 
-    def deprecation(message)
-      notify :deprecation, DeprecationNotification.new(message)
+    def deprecation(hash)
+      notify :deprecation, DeprecationNotification.from_hash(hash)
     end
 
     def finish

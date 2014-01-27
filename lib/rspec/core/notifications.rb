@@ -11,20 +11,12 @@ module RSpec::Core
   end
   SummaryNotification     = Struct.new(:duration, :examples, :failures, :pending)
 
-  class DeprecationNotification
-    def initialize(data)
-      @call_site   = data[:call_site]
-      @deprecated  = data[:deprecated]
-      @message     = data[:message]
-      @replacement = data[:replacement]
-      @data = data
-    end
-    attr_reader :message, :replacement, :deprecated, :call_site, :data
-
-    def ==(other)
-      other.is_a?(self.class) && other.data == data
+  DeprecationNotification = Struct.new(:message, :replacement, :deprecated, :call_site) do
+    def self.from_hash(data)
+      new data[:message], data[:replacement], data[:deprecated], data[:call_site]
     end
   end
+
   class Notification
   end
 
