@@ -93,20 +93,20 @@ module RSpec::Core
     def finish
       begin
         stop
-        notify :start_dump,    Notification.new
-        notify :dump_pending,  Notification.new
-        notify :dump_failures, Notification.new
+        notify :start_dump,    NullNotification.instance
+        notify :dump_pending,  NullNotification.instance
+        notify :dump_failures, NullNotification.instance
         notify :dump_summary, SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
-        notify :deprecation_summary, Notification.new
+        notify :deprecation_summary, NullNotification.instance
         notify :seed, SeedNotification.new(@configuration.seed, seed_used?)
       ensure
-        notify :close, Notification.new
+        notify :close, NullNotification.instance
       end
     end
 
     def stop
       @duration = (RSpec::Core::Time.now - @start).to_f if @start
-      notify :stop, Notification.new
+      notify :stop, NullNotification.instance
     end
 
     def notify(event, notification)

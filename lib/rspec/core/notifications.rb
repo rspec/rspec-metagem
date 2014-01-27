@@ -1,3 +1,5 @@
+require 'singleton'
+
 module RSpec::Core
 
   # The `CountNotification` represents notifications sent by the formatter
@@ -103,9 +105,10 @@ module RSpec::Core
     end
   end
 
-  # `Notification` represents a placeholder value for notifications that
+  # `NullNotification` represents a placeholder value for notifications that
   # currently require no information, but we may wish to extend in future.
-  class Notification
+  class NullNotification
+    include Singleton
   end
 
 end
