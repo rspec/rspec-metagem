@@ -4,10 +4,11 @@ module RSpec::Core
   ExampleNotification     = Struct.new(:example)
   GroupNotification       = Struct.new(:group)
   MessageNotification     = Struct.new(:message)
-  SeedNotification        = Struct.new(:seed,:used) do
+  SeedNotification        = Struct.new(:seed, :used) do
     def seed_used?
       !!used
     end
+    private :used
   end
   SummaryNotification     = Struct.new(:duration, :examples, :failures, :pending)
 
