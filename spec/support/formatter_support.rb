@@ -1,7 +1,7 @@
 module FormatterSupport
 
-  def send_notification notification, *args
-    reporter.notify notification, *args
+  def send_notification type, notification
+    reporter.notify type, notification
   end
 
   def reporter
