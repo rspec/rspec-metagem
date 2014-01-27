@@ -27,7 +27,10 @@ module RSpec::Core
     end
 
     {
-      '--init' => ['-i','--I'],
+      '--init'         => ['-i','--I'],
+      '--default-path' => ['-d'],
+      '--dry-run'      => ['-d'],
+      '--drb-port'     => ['-d'],
     }.each do |long, shorts|
       shorts.each do |option|
         it "won't parse #{option} as a shorthand for #{long}" do
