@@ -1,3 +1,5 @@
+require 'rspec/core/formatters/legacy_formatter'
+
 # ## Built-in Formatters
 #
 # * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
@@ -85,8 +87,7 @@ module RSpec::Core::Formatters
         (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
       formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
 
-      unless formatter.respond_to?(:notifications)
-        require 'rspec/core/formatters/legacy_formatter'
+      if LegacyFormatter.can_detect?(formatter)
         RSpec.warn_deprecation "The #{formatter.class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
         formatter = LegacyFormatter.new(formatter)
       end
