@@ -79,23 +79,27 @@ module RSpec::Core
   # part of RSpec is encountered. It represents information about the deprecated
   # call site.
   #
-  # @!attribute [r] deprecated
-  #   @api
-  #   @return [String] The thing thats deprecated
+  # @!method initialize(deprecated, message, replacement, call_site)
+  #   @api private
+  #   The preferred initialization method is `from_hash`
+  #
   # @!attribute [r] message
   #   @api
   #   @return [String] A custom message about the deprecation
+  # @!attribute [r] deprecated
+  #   @api
+  #   @return [String] A custom message about the deprecation (alias of message)
   # @!attribute [r] replacement
   #   @api
   #   @return [String] An optional replacement for the deprecation
   # @!attribute [r] call_site
   #   @api
   #   @return [String] An optional call site from which the deprecation was issued
-  DeprecationNotification = Struct.new(:message, :replacement, :deprecated, :call_site) do
+  DeprecationNotification = Struct.new(:deprecated, :message, :replacement, :call_site) do
     # @api
     # Convenience way to initialize the notification
     def self.from_hash(data)
-      new data[:message], data[:replacement], data[:deprecated], data[:call_site]
+      new data[:deprecated], data[:message], data[:replacement], data[:call_site]
     end
   end
 
