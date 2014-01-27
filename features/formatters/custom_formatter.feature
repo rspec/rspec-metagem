@@ -19,8 +19,8 @@ Feature: custom formatters
           super(output)
         end
 
-        def example_started(proxy)
-          output << "example: " << proxy.description
+        def example_started(notification)
+          output << "example: " << notification.example.description
         end
       end
       """
