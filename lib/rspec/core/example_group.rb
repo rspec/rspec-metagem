@@ -125,12 +125,29 @@ module RSpec
         end
 
         # @private
+        # @macro [attach] alias_example_group_to
+        #   @scope class
+        #   @param [String] docstring The example group doc string
+        #   @param [Hash] metadata Additional metadata to attach to the example group
+        #   @yield The example group definition
+        def alias_example_group_to(name, metadata={})
+          (class << self; self; end).__send__(:define_method, name) do |*args, &block|
+            combined_metadata = metadata.dup
+            combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+            args << combined_metadata
+            example_group(*args, &block)
+          end
+
+          RSpec::Core::DSL.expose_example_group_alias(name)
+        end
+
+        # @private
         # @macro [attach] define_nested_shared_group_method
         #
         #   @see SharedExampleGroup
         def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
           define_method(new_name) do |name, *args, &customization_block|
-            group = describe("#{report_label} #{name}") do
+            group = example_group("#{report_label} #{name}") do
               find_and_eval_shared("examples", name, *args, &customization_block)
             end
             group.metadata[:shared_group_name] = name
@@ -218,7 +235,7 @@ module RSpec
       #
       #     describe "something" do # << This describe method is defined in
       #                             # << RSpec::Core::DSL, included in the
-      #                             # << global namespace
+      #                             # << global namespace (optional)
       #       before do
       #         do_something_before
       #       end
@@ -232,7 +249,7 @@ module RSpec
       #     end
       #
       # @see DSL#describe
-      def self.describe(*args, &example_group_block)
+      def self.example_group(*args, &example_group_block)
         args << {} unless args.last.is_a?(Hash)
         args.last.update(:example_group_block => example_group_block)
 
@@ -241,9 +258,31 @@ module RSpec
         child
       end
 
-      class << self
-        alias_method :context, :describe
-      end
+      # An alias of `example_group`. Generally used when grouping
+      # examples by a thing you are describing (e.g. an object, class or method).
+      # @see example_group
+      alias_example_group_to :describe
+
+      # An alias of `example_group`. Generally used when grouping examples
+      # contextually.
+      # @see example_group
+      alias_example_group_to :context
+
+      # Shortcut to temporarily make an example group pending.
+      # @see example_group
+      alias_example_group_to :xdescribe, :pending => "Temporarily disabled with xdescribe"
+
+      # Shortcut to temporarily make an example group pending.
+      # @see example_group
+      alias_example_group_to :xcontext,  :pending => "Temporarily disabled with xcontext"
+
+      # Shortcut to define an example group with `:focus` => true
+      # @see example_group
+      alias_example_group_to :fdescribe, :focus => true, :focused => true
+
+      # Shortcut to define an example group with `:focus` => true
+      # @see example_group
+      alias_example_group_to :fcontext,  :focus => true, :focused => true
 
       # @private
       def self.subclass(parent, args, &example_group_block)

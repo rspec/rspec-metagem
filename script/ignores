@@ -26,6 +26,8 @@ lib/rspec/core/shared_example_group.rb:      alias_method :shared_examples_for, 
 lib/rspec/core/shared_example_group.rb:        alias_method :shared_context,      :shared_examples
 lib/rspec/core/shared_example_group.rb:        alias_method :share_examples_for,  :shared_examples
 lib/rspec/core/shared_example_group.rb:        alias_method :shared_examples_for, :shared_examples
+lib/rspec/core/example_group.rb:        alias_method :describe, :example_group
+lib/rspec/core/example_group.rb:        alias_method :context, :example_group
 
 # The `alias_method` calls below happen when users define a named let.
 # It happens at spec definition time, not spec run time.
@@ -73,15 +75,9 @@ lib/rspec/core/example_group.rb:        subclass = Class.new(parent)
 lib/rspec/core/formatters/deprecation_formatter.rb:    DeprecationError = Class.new(StandardError)
 
 # This enables / disable monkey patching and only happens on demand
-lib/rspec/core/dsl.rb:        to_undefine = proc do
-lib/rspec/core/dsl.rb:          undef describe
-lib/rspec/core/dsl.rb:        top_level.instance_eval(&to_undefine)
-lib/rspec/core/dsl.rb:        Module.class_exec(&to_undefine)
-lib/rspec/core/shared_example_group.rb:          to_undefine = proc do
+lib/rspec/core/dsl.rb:          change_global_dsl { undef_method method_name }
 lib/rspec/core/shared_example_group.rb:            undef shared_examples
 lib/rspec/core/shared_example_group.rb:            undef shared_context
 lib/rspec/core/shared_example_group.rb:            undef share_examples_for
 lib/rspec/core/shared_example_group.rb:            undef shared_examples_for
 lib/rspec/core/shared_example_group.rb:            undef shared_example_groups
-lib/rspec/core/shared_example_group.rb:          Core::DSL.top_level.instance_eval(&to_undefine)
-lib/rspec/core/shared_example_group.rb:          Module.class_exec(&to_undefine)

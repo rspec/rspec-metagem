@@ -1205,6 +1205,48 @@ module RSpec::Core
       end
     end
 
+    describe "#alias_example_group_to" do
+      after do
+        RSpec::Core::DSL.example_group_aliases.delete(:my_group_method)
+
+        RSpec.module_eval do
+          class << self
+            undef :my_group_method if method_defined? :my_group_method
+          end
+        end
+
+        RSpec::Core::ExampleGroup.module_eval do
+          class << self
+            undef :my_group_method if method_defined? :my_group_method
+          end
+        end
+      end
+
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.alias_example_group_to :my_group_method, *args
+          group = ExampleGroup.my_group_method("a group")
+          group.metadata
+        end
+      end
+
+      it "allows adding additional metadata" do
+        config.alias_example_group_to :my_group_method, { :some => "thing" }
+        group = ExampleGroup.my_group_method("a group", :another => "thing")
+        expect(group.metadata).to include(:some => "thing", :another => "thing")
+      end
+
+      context 'when the aliased method is used' do
+        it_behaves_like "metadata hash builder" do
+          def metadata_hash(*args)
+            config.alias_example_group_to :my_group_method
+            group = ExampleGroup.my_group_method("a group", *args)
+            group.metadata
+          end
+        end
+      end
+    end
+
     describe "#alias_example_to" do
       it_behaves_like "metadata hash builder" do
         after do

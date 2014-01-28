@@ -1,29 +1,31 @@
 module RSpec
-
-  # Defines a named context for one or more examples. The given block
-  # is evaluated in the context of a generated subclass of
-  # {RSpec::Core::ExampleGroup}
-  #
-  # ## Examples:
-  #
-  #     describe "something" do
-  #       it "does something" do
-  #         # example code goes here
-  #       end
-  #     end
-  #
-  # @see ExampleGroup
-  # @see ExampleGroup.describe
-  def self.describe(*args, &example_group_block)
-    RSpec::Core::ExampleGroup.describe(*args, &example_group_block).register
-  end
-
   module Core
+    # DSL defines methods to group examples, most notably `describe`,
+    # and exposes them as class methods of {RSpec}. They can also be
+    # exposed globally (on `main` and instances of `Module`) through
+    # the {Configuration} option `expose_dsl_globally`.
+    #
+    # By default the methods `describe`, `context` and `example_group`
+    # are exposed. These methods define a named context for one or
+    # more examples. The given block is evaluated in the context of
+    # a generated subclass of {RSpec::Core::ExampleGroup}
+    #
+    # ## Examples:
+    #
+    #     RSpec.describe "something" do
+    #       context "when something is a certain way" do
+    #         it "does something" do
+    #           # example code goes here
+    #         end
+    #       end
+    #     end
+    #
+    # @see ExampleGroup
+    # @see ExampleGroup.example_group
     module DSL
-
-      class << self
-        # @private
-        attr_accessor :top_level
+      # @private
+      def self.example_group_aliases
+        @example_group_aliases ||= []
       end
 
       # @private
@@ -31,36 +33,56 @@ module RSpec
         @exposed_globally ||= false
       end
 
+      def self.expose_example_group_alias(name)
+        example_group_aliases << name
+
+        (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
+          RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block).register
+        end
+
+        expose_example_group_alias_globally(name) if exposed_globally?
+      end
+
+      class << self
+        # @private
+        attr_accessor :top_level
+      end
+
       # Add's the describe method to Module and the top level binding
       def self.expose_globally!
         return if exposed_globally?
 
-        to_define = proc do
-          def describe(*args, &block)
-            ::RSpec.describe(*args, &block)
-          end
+        example_group_aliases.each do |method_name|
+          expose_example_group_alias_globally(method_name)
         end
 
-        top_level.instance_eval(&to_define)
-        Module.class_exec(&to_define)
         @exposed_globally = true
       end
 
       def self.remove_globally!
         return unless exposed_globally?
 
-        to_undefine = proc do
-          undef describe
+        example_group_aliases.each do |method_name|
+          change_global_dsl { undef_method method_name }
         end
 
-        top_level.instance_eval(&to_undefine)
-        Module.class_exec(&to_undefine)
         @exposed_globally = false
+      end
+
+      def self.expose_example_group_alias_globally(method_name)
+        change_global_dsl do
+          define_method(method_name) { |*a, &b| ::RSpec.__send__(method_name, *a, &b) }
+        end
+      end
+
+      def self.change_global_dsl(&changes)
+        (class << top_level; self; end).class_exec(&changes)
+        Module.class_exec(&changes)
       end
 
     end
   end
 end
 
-# cature main without an eval
+# capture main without an eval
 ::RSpec::Core::DSL.top_level = self

@@ -110,13 +110,16 @@ module RSpec
       # Default: `$stderr`.
       add_setting :error_stream
 
-      # @macro add_setting
+      # Indicates if the DSL has been exposed off of modules and `main`.
       # Default: true
+      def expose_dsl_globally?
+        Core::DSL.exposed_globally?
+      end
+
       # Use this to expose the core RSpec DSL via `Module` and the `main`
       # object. It will be set automatically but you can override it to
       # remove the DSL.
-      define_reader :expose_dsl_globally
-
+      # Default: true
       def expose_dsl_globally=(value)
         if value
           Core::DSL.expose_globally!
@@ -336,7 +339,7 @@ module RSpec
         (class << self; self; end).class_eval do
           add_setting(name, opts)
         end
-        send("#{name}=", default) if default
+        __send__("#{name}=", default) if default
       end
 
       # Returns the configured mock framework adapter module
@@ -662,6 +665,35 @@ module RSpec
         RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
       end
 
+      # Creates a method that defines an example group with the provided
+      # metadata. Can be used to define example group/metadata shortcuts.
+      #
+      # @example
+      #     alias_example_group_to :describe_model, :type => :model
+      #     shared_context_for "model tests", :type => :model do
+      #       # define common model test helper methods, `let` declarations, etc
+      #     end
+      #
+      #     # This lets you do this:
+      #
+      #     RSpec.describe_model User do
+      #     end
+      #
+      #     # ... which is the equivalent of
+      #
+      #     RSpec.describe User, :type => :model do
+      #     end
+      #
+      # @note The defined aliased will also be added to the top level
+      #       (e.g. `main` and from within modules) if
+      #       `expose_dsl_globally` is set to true.
+      # @see #alias_example_to
+      # @see #expose_dsl_globally=
+      def alias_example_group_to(new_name, *args)
+        extra_options = Metadata.build_hash_from(args)
+        RSpec::Core::ExampleGroup.alias_example_group_to(new_name, extra_options)
+      end
+
       # Define an alias for it_should_behave_like that allows different
       # language (like "it_has_behavior" or "it_behaves_like") to be
       # employed when including shared examples.
@@ -871,13 +903,13 @@ module RSpec
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
           next unless filters.empty? || group.any_apply?(filters)
-          send("safe_#{include_or_extend}", mod, group)
+          __send__("safe_#{include_or_extend}", mod, group)
         end
       end
 
       # @private
       def safe_include(mod, host)
-        host.send(:include,mod) unless host < mod
+        host.__send__(:include, mod) unless host < mod
       end
 
       # @private
@@ -901,13 +933,13 @@ module RSpec
 
       # @private
       def configure_mock_framework
-        RSpec::Core::ExampleGroup.send(:include, mock_framework)
+        RSpec::Core::ExampleGroup.__send__(:include, mock_framework)
       end
 
       # @private
       def configure_expectation_framework
         expectation_frameworks.each do |framework|
-          RSpec::Core::ExampleGroup.send(:include, framework)
+          RSpec::Core::ExampleGroup.__send__(:include, framework)
         end
       end
 
