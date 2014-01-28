@@ -6,7 +6,7 @@ main = self
 RSpec.describe "The RSpec DSL" do
   include InSubProcess
 
-  shared_examples_for "a dsl method" do |*method_names|
+  shared_examples_for "dsl methods" do |*method_names|
     context "when expose_dsl_globally is enabled" do
       def enable
         in_sub_process do
@@ -19,7 +19,7 @@ RSpec.describe "The RSpec DSL" do
         end
       end
 
-      it 'are only available off of `RSpec`, `main` and modules' do
+      it 'makes them only available off of `RSpec`, `main` and modules' do
         enable do
           expect(::RSpec).to respond_to(*method_names)
           expect(main).to respond_to(*method_names)
@@ -42,7 +42,7 @@ RSpec.describe "The RSpec DSL" do
         end
       end
 
-      it 'are only available off of `RSpec`' do
+      it 'makes them only available off of `RSpec`' do
         disable do
           expect(::RSpec).to respond_to(*method_names)
 
@@ -55,7 +55,7 @@ RSpec.describe "The RSpec DSL" do
   end
 
   describe "built in DSL methods" do
-    include_examples "a dsl method",
+    include_examples "dsl methods",
       :describe, :context,
       :share_examples_for, :shared_examples_for, :shared_examples, :shared_context do
 
@@ -67,7 +67,7 @@ RSpec.describe "The RSpec DSL" do
 
   describe "custom example group aliases" do
     context "when adding aliases before exposing the DSL globally" do
-      include_examples "a dsl method", :detail do
+      include_examples "dsl methods", :detail do
         def changing_expose_dsl_globally
           RSpec.configuration.alias_example_group_to(:detail)
           yield
@@ -76,7 +76,7 @@ RSpec.describe "The RSpec DSL" do
     end
 
     context "when adding aliases after exposing the DSL globally" do
-      include_examples "a dsl method", :detail do
+      include_examples "dsl methods", :detail do
         def changing_expose_dsl_globally
           yield
           RSpec.configuration.alias_example_group_to(:detail)
