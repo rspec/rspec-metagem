@@ -81,4 +81,3 @@ lib/rspec/core/shared_example_group.rb:            undef shared_context
 lib/rspec/core/shared_example_group.rb:            undef share_examples_for
 lib/rspec/core/shared_example_group.rb:            undef shared_examples_for
 lib/rspec/core/shared_example_group.rb:            undef shared_example_groups
-
