@@ -1,3 +1,5 @@
+require 'rspec/core/formatters/base_text_formatter'
+
 class SuperStyleOldFormatterExample < RSpec::Core::Formatters::BaseTextFormatter
 
   def initialize(output)
