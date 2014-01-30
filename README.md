@@ -1,10 +1,10 @@
-# RSpec-2
+# RSpec
 
 Behaviour Driven Development for Ruby
 
 # Description
 
-rspec-2.x is a meta-gem, which depends on the rspec-core, rspec-expectations
+rspec is a meta-gem, which depends on the rspec-core, rspec-expectations
 and rspec-mocks gems. Each of these can be installed separately and actived in
 isolation with the `gem` command. Among other benefits, this allows you to use
 rspec-expectations, for example, in Test::Unit::TestCase if you happen to
