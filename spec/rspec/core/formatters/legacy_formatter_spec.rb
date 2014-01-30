@@ -1,12 +1,12 @@
 require 'spec_helper'
 require 'rspec/core/formatters/legacy_formatter'
 require 'support/old_style_formatter_example'
-require 'support/super_style_old_formatter_example'
+require 'support/legacy_formatter_using_sub_classing_example'
 
 RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   include FormatterSupport
 
-  [OldStyleFormatterExample, SuperStyleOldFormatterExample].each do |klass|
+  [OldStyleFormatterExample, LegacyFormatterUsingSubClassing].each do |klass|
 
     describe "#{klass}" do
       let(:described_class) { klass }
@@ -92,9 +92,11 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
         it "notifies formatter of dump_summary" do
           duration, count, failures, pending = 3.5, 10, 3, 2
           send_notification :dump_summary, summary_notification(duration, count, failures, pending)
-          expect(output.string).to match "Finished in 3.5"
-          expect(output.string).to match "3/10 failed."
-          expect(output.string).to match "2 pending."
+          expect(output.string).to(
+                match("Finished in 3.5").
+            and match("3/10 failed.").
+            and match("2 pending.")
+          )
         end
       end
 

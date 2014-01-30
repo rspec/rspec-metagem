@@ -1,6 +1,6 @@
 require 'rspec/core/formatters/base_text_formatter'
 
-class SuperStyleOldFormatterExample < RSpec::Core::Formatters::BaseTextFormatter
+class LegacyFormatterUsingSubClassing < RSpec::Core::Formatters::BaseTextFormatter
 
   def initialize(output)
     super nil
