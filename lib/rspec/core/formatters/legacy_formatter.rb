@@ -21,52 +21,65 @@ module RSpec
             super CountNotification.new(count)
           end
 
-          %w[example_group_started example_group_finished].each do |name|
-            define_method(name) do |group|
-              begin
-                super GroupNotification.new(group)
-              rescue NoMethodError
-                # no implemented so no-op
-              end
-            end
+          def example_group_started(group)
+            super GroupNotification.new(group) if defined?(super)
           end
 
-          %w[example_started example_passed example_pending example_failed].each do |name|
-            define_method(name) do |example|
-              begin
-                super ExampleNotification.new(example)
-              rescue NoMethodError
-                # no implemented so no-op
-              end
-            end
+          def example_group_finished(group)
+            super GroupNotification.new(group) if defined?(super)
+          end
+
+          def example_started(example)
+            super ExampleNotification.new(example) if defined?(super)
+          end
+
+          def example_passed(example)
+            super ExampleNotification.new(example) if defined?(super)
+          end
+
+          def example_pending(example)
+            super ExampleNotification.new(example) if defined?(super)
+          end
+
+          def example_failed(example)
+            super ExampleNotification.new(example) if defined?(super)
           end
 
           def message(message)
-            super MessageNotification.new(message)
-          rescue NoMethodError
-            # no implemented so no-op
+            super MessageNotification.new(message) if defined?(super)
           end
 
           def dump_summary(duration, examples, failures, pending)
-            super SummaryNotification.new(duration, examples, failures, pending)
-          rescue NoMethodError
-            # no implemented so no-op
+            super SummaryNotification.new(duration, examples, failures, pending) if defined?(super)
           end
 
           def seed(seed)
-            super SeedNotification.new(seed, true)
-          rescue NoMethodError
-            # no implemented so no-op
+            super SeedNotification.new(seed, true) if defined?(super)
           end
 
-          %w[start_dump dump_failures dump_pending dump_profile close stop].each do |name|
-            define_method(name) do
-              begin
-                super(NullNotification.instance)
-              rescue NoMethodError
-                # no implemented so no-op
-              end
-            end
+
+          def start_dump
+            super(NullNotification.instance) if defined?(super)
+          end
+
+          def dump_failures
+            super(NullNotification.instance) if defined?(super)
+          end
+
+          def dump_pending
+            super(NullNotification.instance) if defined?(super)
+          end
+
+          def dump_profile
+            super(NullNotification.instance) if defined?(super)
+          end
+
+          def close
+            super(NullNotification.instance) if defined?(super)
+          end
+
+          def stop
+            super(NullNotification.instance) if defined?(super)
           end
         end
 
