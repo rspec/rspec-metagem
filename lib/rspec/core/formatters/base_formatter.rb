@@ -11,6 +11,9 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class BaseFormatter
+        Formatters.register self, :start, :example_group_started, :example_started,
+                                  :example_pending, :example_failed, :dump_summary,
+                                  :close
         include Helpers
         attr_accessor :example_group
         attr_reader :duration, :examples, :output
@@ -27,16 +30,6 @@ module RSpec
           @failed_examples = []
           @pending_examples = []
           @example_group = nil
-        end
-
-        # @method notifications
-        # @api public
-        #
-        # This method is invoked during the setup phase to register
-        # a formatters with the reporter
-        #
-        def notifications
-          %w[start example_group_started example_started example_pending example_failed dump_summary close]
         end
 
         # @api public

@@ -11,10 +11,8 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseFormatter
       # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
-
-        def notifications
-          super + %w[message dump_failures dump_summary dump_profile dump_pending seed close]
-        end
+        Formatters.register self, :message, :dump_summary, :dump_failures,
+                                  :dump_profile, :dump_pending, :seed
 
         def message(notification)
           output.puts notification.message

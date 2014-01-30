@@ -5,6 +5,9 @@ module RSpec
   module Core
     module Formatters
       class HtmlFormatter < BaseFormatter
+        Formatters.register self, :start, :example_group_started, :start_dump,
+                                  :example_started, :example_passed, :example_failed,
+                                  :example_pending, :dump_summary
 
         def initialize(output)
           super(output)
@@ -12,10 +15,6 @@ module RSpec
           @example_number = 0
           @header_red = nil
           @printer = HtmlPrinter.new(output)
-        end
-
-        def notifications
-          super + %w[start example_group_started start_dump example_started example_passed example_failed example_pending dump_summary]
         end
 
         def start(notification)

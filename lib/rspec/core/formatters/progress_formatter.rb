@@ -3,10 +3,7 @@ module RSpec
   module Core
     module Formatters
       class ProgressFormatter < BaseTextFormatter
-
-        def notifications
-          super + %W[example_passed example_pending example_failed start_dump]
-        end
+        Formatters.register self, :example_passed, :example_pending, :example_failed, :start_dump
 
         def example_passed(notification)
           output.print success_color('.')

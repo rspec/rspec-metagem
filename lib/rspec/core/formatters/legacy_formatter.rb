@@ -95,7 +95,7 @@ module RSpec
         # @param formatter
         def initialize(oldstyle_formatter)
           @formatter = oldstyle_formatter
-          if @formatter.respond_to?(:notifications)
+          if @formatter.class.ancestors.include?(BaseFormatter)
             @formatter.class.class_eval do
               include LegacyInterface
             end

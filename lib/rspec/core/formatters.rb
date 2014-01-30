@@ -53,6 +53,14 @@ require 'rspec/core/formatters/legacy_formatter'
 # @see RSpec::Core::Formatters::BaseTextFormatter
 # @see RSpec::Core::Reporter
 module RSpec::Core::Formatters
+  autoload :DocumentationFormatter, 'rspec/core/formatters/documentation_formatter'
+  autoload :HtmlFormatter,          'rspec/core/formatters/html_formatter'
+  autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
+  autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
+
+  def self.register(formatter_class, *notifications)
+    Loader.formatters[formatter_class] = notifications
+  end
 
   # @api private
   #
@@ -61,6 +69,12 @@ module RSpec::Core::Formatters
   # not expected to be used directly, but only through the configuration
   # interface.
   class Loader
+    # @api private
+    #
+    # Internal formatters are stored here when loaded
+    def self.formatters
+      @formatters ||= {}
+    end
 
     # @api private
     def initialize(reporter)
@@ -81,22 +95,28 @@ module RSpec::Core::Formatters
 
     # @api private
     def add(formatter_to_use, *paths)
-      formatter_class =
-        built_in_formatter(formatter_to_use) ||
-        custom_formatter(formatter_to_use) ||
-        (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+      formatter_class = find_formatter(formatter_to_use)
       formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
 
-      if LegacyFormatter.can_detect?(formatter)
+      if !Loader.formatters[formatter_class].nil?
+        @reporter.register_listener formatter, *notifications_for(formatter_class)
+      else
         RSpec.warn_deprecation "The #{formatter.class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
         formatter = LegacyFormatter.new(formatter)
+        @reporter.register_listener formatter, *formatter.notifications
       end
 
-      @reporter.register_listener formatter, *formatter.notifications
       @formatters << formatter unless duplicate_formatter_exists?(formatter)
+      formatter
     end
 
   private
+
+    def find_formatter(formatter_to_use)
+      built_in_formatter(formatter_to_use) ||
+      custom_formatter(formatter_to_use)   ||
+      (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+    end
 
     def duplicate_formatter_exists?(new_formatter)
       @formatters.any? do |formatter|
@@ -107,17 +127,19 @@ module RSpec::Core::Formatters
     def built_in_formatter(key)
       case key.to_s
       when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
-        require 'rspec/core/formatters/documentation_formatter'
         DocumentationFormatter
       when 'h', 'html'
-        require 'rspec/core/formatters/html_formatter'
         HtmlFormatter
       when 'p', 'progress'
-        require 'rspec/core/formatters/progress_formatter'
         ProgressFormatter
       when 'j', 'json'
-        require 'rspec/core/formatters/json_formatter'
         JsonFormatter
+      end
+    end
+
+    def notifications_for(formatter_class)
+      formatter_class.ancestors.inject(Set.new) do |notifications, klass|
+        notifications + Loader.formatters.fetch(klass) { Set.new }
       end
     end
 

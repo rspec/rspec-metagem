@@ -4,18 +4,15 @@ require 'json'
 module RSpec
   module Core
     module Formatters
-
       class JsonFormatter < BaseFormatter
+        Formatters.register self, :message, :dump_summary, :stop, :close,
+                                  :dump_profile
 
         attr_reader :output_hash
 
         def initialize(output)
           super
           @output_hash = {}
-        end
-
-        def notifications
-          super + %w[message dump_summary stop close dump_profile]
         end
 
         def message(notification)

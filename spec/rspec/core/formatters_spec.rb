@@ -25,13 +25,15 @@ module RSpec::Core::Formatters
       end
 
       it "finds a formatter by class" do
-        formatter_class = Class.new(BaseTextFormatter) { def notifications; super; end }
+        formatter_class = Class.new(BaseTextFormatter)
+        Loader.formatters[formatter_class] = []
         loader.add formatter_class, output
         expect(loader.formatters.first).to be_an_instance_of(formatter_class)
       end
 
       it "finds a formatter by class name" do
-        stub_const("CustomFormatter", Class.new(BaseFormatter) { def notifications; super; end })
+        stub_const("CustomFormatter", Class.new(BaseFormatter))
+        Loader.formatters[CustomFormatter] = []
         loader.add "CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(CustomFormatter)
       end
@@ -50,14 +52,16 @@ module RSpec::Core::Formatters
       end
 
       it "finds a formatter by class fully qualified name" do
-        stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter) { def notifications; super; end }))
+        stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter)))
+        Loader.formatters[RSpec::CustomFormatter] = []
         loader.add "RSpec::CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)
       end
 
       it "requires a formatter file based on its fully qualified name" do
         expect(loader).to receive(:require).with('rspec/custom_formatter') do
-          stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter) { def notifications; super; end }))
+          stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter)))
+          Loader.formatters[RSpec::CustomFormatter] = []
         end
         loader.add "RSpec::CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)

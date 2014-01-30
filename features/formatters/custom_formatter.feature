@@ -15,13 +15,11 @@ Feature: custom formatters
       require "rspec/core/formatters/base_text_formatter"
 
       class CustomFormatter < RSpec::Core::Formatters::BaseTextFormatter
+        # this tells RSpec we're a compliant formatter
+        RSpec::Core::Formatters.register self, :example_started
+
         def initialize(output)
           super(output)
-        end
-
-        # this tells RSpec we're a compliant formatter
-        def notifications
-          super
         end
 
         def example_started(notification)
