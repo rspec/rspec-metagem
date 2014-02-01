@@ -83,13 +83,6 @@ module RSpec
           end
         end
 
-        # @api private
-        def self.can_detect?(formatter)
-          return true unless formatter.respond_to? :notifications
-          return true if formatter.respond_to?(:summary) && formatter.method(:summary).arity != 1
-          formatter.method(:notifications).owner != formatter.class
-        end
-
         # @api public
         #
         # @param formatter
