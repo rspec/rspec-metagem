@@ -45,18 +45,6 @@ module RSpec::Core
       end
     end
 
-    describe "--formatter" do
-      it "is deprecated" do
-        expect(RSpec).to receive(:deprecate)
-        Parser.parse(%w[--formatter doc])
-      end
-
-      it "gets converted to --format" do
-        options = Parser.parse(%w[--formatter doc])
-        expect(options[:formatters].first).to eq(["doc"])
-      end
-    end
-
     describe "--default_path" do
       it "gets converted to --default-path" do
         options = Parser.parse(%w[--default_path foo])

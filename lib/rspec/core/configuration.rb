@@ -42,11 +42,6 @@ module RSpec
       end
 
       # @private
-      def self.deprecate_alias_key
-        RSpec.deprecate("add_setting with :alias option", :replacement => ":alias_with")
-      end
-
-      # @private
       def self.define_aliases(name, alias_name)
         alias_method alias_name, name
         alias_method "#{alias_name}=", "#{name}="
@@ -64,13 +59,9 @@ module RSpec
       # `Configuration` instance rather than this class method.
       def self.add_setting(name, opts={})
         raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
-        if opts[:alias]
-          deprecate_alias_key
-          define_aliases(opts[:alias], name)
-        else
-          attr_writer name
-          add_read_only_setting name
-        end
+        attr_writer name
+        add_read_only_setting name
+
         Array(opts[:alias_with]).each do |alias_name|
           define_aliases(name, alias_name)
         end
@@ -557,13 +548,6 @@ module RSpec
           @libs.unshift lib
           $LOAD_PATH.unshift lib
         end
-      end
-
-      def requires=(paths)
-        RSpec.deprecate("RSpec::Core::Configuration#requires=(paths)",
-                        :replacement => "paths.each {|path| require path}")
-        paths.map {|path| require path}
-        @requires += paths
       end
 
       # Run examples defined on `line_numbers` in all files to run.

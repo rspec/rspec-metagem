@@ -7,15 +7,6 @@ module RSpec::Core
 
     let(:config) { Configuration.new }
 
-    describe "RSpec.configuration with a block" do
-      before { allow(RSpec).to receive(:warn_deprecation) }
-
-      it "is deprecated" do
-        expect(RSpec).to receive(:warn_deprecation)
-        RSpec.configuration {}
-      end
-    end
-
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
         expect($rspec_core_without_stderr_monkey_patch.deprecation_stream).to eq STDERR
@@ -1030,22 +1021,6 @@ module RSpec::Core
       end
     end
 
-    describe "#requires=" do
-      before { expect(RSpec).to receive :deprecate }
-
-      it "requires the configured files" do
-        expect(config).to receive(:require).with('foo').ordered
-        expect(config).to receive(:require).with('bar').ordered
-        config.requires = ['foo', 'bar']
-      end
-
-      it "stores require paths" do
-        expect(config).to receive(:require).with("a/path")
-        config.requires = ["a/path"]
-        expect(config.requires).to eq ['a/path']
-      end
-    end
-
     describe "#add_setting" do
       describe "with no modifiers" do
         context "with no additional options" do
@@ -1094,14 +1069,6 @@ module RSpec::Core
             config.custom_option = false
             expect(config.custom_option).to eq(false)
           end
-        end
-      end
-
-      context "with :alias => " do
-        it "is deprecated" do
-          expect(RSpec)::to receive(:deprecate).with(/:alias option/, :replacement => ":alias_with")
-          config.add_setting :custom_option
-          config.add_setting :another_custom_option, :alias => :custom_option
         end
       end
 
