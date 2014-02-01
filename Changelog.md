@@ -165,6 +165,14 @@ Deprecations
   * RSpec 2.x allowed helper methods defined either way to be used for
     either purpose, but RSpec 3.0 will not.
 
+### 2.14.5 / 2014-02-01
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.14.5)
+
+Bug fixes
+
+* Fix wrong matcher descriptions with falsey expected value
+  (yujinakayama)
+
 ### 2.14.4 / 2013-11-06
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.3...v2.14.4)
 
