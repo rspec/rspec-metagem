@@ -16,6 +16,14 @@ Breaking Changes for 3.0.0:
   are handled by methods matching the names on formatters. This allows
   us to add or remove notifications without breaking existing formatters.
   (Jon Rowe)
+* Remove support for deprecated `:alias` option for
+  `RSpec.configuration.add_setting`. (Myron Marston)
+* Remove support for deprecated `RSpec.configuration.requires = [...]`.
+  (Myron Marston)
+* Remove support for deprecated `--formatter` CLI option. (Myron Marston)
+* Remove support for deprecated `--configure` CLI option. (Myron Marston)
+* Remove support for deprecated `RSpec::Core::RakeTask#spec_opts=`.
+  (Myron Marston)
 
 Enhancements:
 

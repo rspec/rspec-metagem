@@ -54,18 +54,6 @@ module RSpec
       #   nil
       attr_accessor :rspec_opts
 
-      # @deprecated
-      # Use rspec_opts instead.
-      #
-      # Command line options to pass to rspec.
-      #
-      # default:
-      #   nil
-      def spec_opts=(opts)
-        RSpec.deprecate('RSpec::Core::RakeTask#spec_opts=', :replacement => 'rspec_opts=')
-        @rspec_opts = opts
-      end
-
       def initialize(*args, &task_block)
         setup_ivars(args)
 

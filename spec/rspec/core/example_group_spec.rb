@@ -938,29 +938,31 @@ module RSpec::Core
     end
 
     %w[ fdescribe fcontext ].each do |method_name|
-      def executed_examples_of(group)
-        examples = group.examples.select { |ex| ex.metadata[:execution_result][:started_at] }
-        group.children.inject(examples) { |exs, child| exs + executed_examples_of(child) }
-      end
+      describe ".#{method_name}" do
+        def executed_examples_of(group)
+          examples = group.examples.select { |ex| ex.metadata[:execution_result][:started_at] }
+          group.children.inject(examples) { |exs, child| exs + executed_examples_of(child) }
+        end
 
-      [:focus, :focused].each do |metadata|
-        it "generates an example group that can be filtered with :#{metadata}" do
-          RSpec.configuration.filter_run metadata
+        [:focus, :focused].each do |metadata|
+          it "generates an example group that can be filtered with :#{metadata}" do
+            RSpec.configuration.filter_run metadata
 
-          parent_group = ExampleGroup.describe do
-            describe "not focused" do
-              example("not focused example") { }
+            parent_group = ExampleGroup.describe do
+              describe "not focused" do
+                example("not focused example") { }
+              end
+
+              send(method_name, "focused") do
+                example("focused example") { }
+              end
             end
 
-            send(method_name, "focused") do
-              example("focused example") { }
-            end
+            parent_group.run
+
+            executed_descriptions = executed_examples_of(parent_group).map(&:description)
+            expect(executed_descriptions).to eq(["focused example"])
           end
-
-          parent_group.run
-
-          executed_descriptions = executed_examples_of(parent_group).map(&:description)
-          expect(executed_descriptions).to eq(["focused example"])
         end
       end
     end

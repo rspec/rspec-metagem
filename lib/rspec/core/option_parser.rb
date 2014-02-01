@@ -26,9 +26,6 @@ module RSpec::Core
     def convert_deprecated_args(args)
       args.map! { |arg|
         case arg
-        when "--formatter"
-          RSpec.deprecate("the --formatter option", :replacement => "-f or --format")
-          "--format"
         when "--default_path"
           "--default-path"
         when "--line_number"
@@ -97,11 +94,6 @@ module RSpec::Core
         parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
           require 'rspec/core/project_initializer'
           ProjectInitializer.new.run
-          exit
-        end
-
-        parser.on('--configure', 'Deprecated. Use --init instead.') do |cmd|
-          RSpec.warning "--configure is deprecated with no effect. Use --init instead.", :call_site => nil
           exit
         end
 
