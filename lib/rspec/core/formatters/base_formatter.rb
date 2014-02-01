@@ -5,12 +5,15 @@ module RSpec
   module Core
     module Formatters
       # RSpec's built-in formatters are all subclasses of RSpec::Core::Formatters::BaseTextFormatter,
-      # but the BaseTextFormatter documents all of the methods needed to be implemented by a formatter,
-      # as they are called from the reporter.
+      # but the BaseTextFormatter documents all of the notifications implemented as part of the standard
+      # interface. The reporter will issue these during a normal test suite run, but a formatter will
+      # only receive those notifications it has registered itself to receive.
       #
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class BaseFormatter
+
+        # all formatters inheriting from this formatter will receive these notifications
         Formatters.register self, :start, :example_group_started, :example_started,
                                   :example_pending, :example_failed, :dump_summary,
                                   :close

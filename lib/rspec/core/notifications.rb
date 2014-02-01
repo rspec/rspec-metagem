@@ -6,8 +6,7 @@ module RSpec::Core
   # which a single numerical count attribute. Currently used to notify
   # formatters of the expected number of examples.
   #
-  # @!attribute [r] count
-  #   @return [Fixnum] the number counted
+  # @attr [Fixnum] count the number counted
   CountNotification = Struct.new(:count)
 
   # The `ExampleNotification` represents notifications sent by the reporter
@@ -19,9 +18,7 @@ module RSpec::Core
   #     puts "Hey I started #{notification.example.description}"
   #   end
   #
-  # @!attribute [r] example
-  #   @api
-  #   @return [RSpec::Core::Example] the current example
+  # @attr [RSpec::Core::Example] example the current example
   ExampleNotification = Struct.new(:example)
 
   # The `GroupNotification` represents notifications sent by the reporter which
@@ -33,23 +30,19 @@ module RSpec::Core
   #     puts "Hey I started #{notification.group.description}"
   #   end
   #
-  # @!attribute [r] group
-  #   @api
-  #   @return [RSpec::Core::ExampleGroup] the current group
+  # @attr [RSpec::Core::ExampleGroup] group the current group
   GroupNotification = Struct.new(:group)
 
   # The `MessageNotification` encapsulates generic messages that the reporter
   # sends to formatters.
   #
-  # @!attribute [r] message
-  #   @return [String] the message
+  # @attr [String] message the message
   MessageNotification = Struct.new(:message)
 
   # The `SeedNotification` holds the seed used to randomize examples and
   # wether that seed has been used or not.
   #
-  # @!attribute [r] seed
-  #   @return [Fixnum] the seed used to randomize ordering
+  # @attr [Fixnum] seed the seed used to randomize ordering
   SeedNotification = Struct.new(:seed, :used) do
     # @api
     # @return [Boolean] has the seed been used?
@@ -63,18 +56,10 @@ module RSpec::Core
   # a test suite. It is used by formatters to provide information at the end
   # of the test run.
   #
-  # @!attribute [r] duration
-  #   @api
-  #   @return [Float] the time taken (in seconds) to run the suite
-  # @!attribute [r] examples
-  #   @api
-  #   @return [Fixnum] the number of examples run
-  # @!attribute [r] failures
-  #   @api
-  #   @return [Fixnum] the number of failed examples
-  # @!attribute [r] pending
-  #   @api
-  #   @return [Fixnum] the number of pending examples
+  # @attr [Float] duration the time taken (in seconds) to run the suite
+  # @attr [Fixnum] examples the number of examples run
+  # @attr [Fixnum] failures the number of failed examples
+  # @attr [Fixnum] pending the number of pending examples
   SummaryNotification = Struct.new(:duration, :examples, :failures, :pending)
 
   # The `DeprecationNotification` is issued by the reporter when a deprecated
@@ -85,18 +70,10 @@ module RSpec::Core
   #   @api private
   #   The preferred initialization method is `from_hash`
   #
-  # @!attribute [r] message
-  #   @api
-  #   @return [String] A custom message about the deprecation
-  # @!attribute [r] deprecated
-  #   @api
-  #   @return [String] A custom message about the deprecation (alias of message)
-  # @!attribute [r] replacement
-  #   @api
-  #   @return [String] An optional replacement for the deprecation
-  # @!attribute [r] call_site
-  #   @api
-  #   @return [String] An optional call site from which the deprecation was issued
+  # @attr [String] message A custom message about the deprecation
+  # @attr [String] deprecated A custom message about the deprecation (alias of message)
+  # @attr [String] replacement An optional replacement for the deprecation
+  # @attr [String] call_site An optional call site from which the deprecation was issued
   DeprecationNotification = Struct.new(:deprecated, :message, :replacement, :call_site) do
     # @api
     # Convenience way to initialize the notification
