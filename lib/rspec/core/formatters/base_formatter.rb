@@ -29,6 +29,7 @@ module RSpec
           @example_group = nil
         end
 
+        # @method notifications
         # @api public
         #
         # This method is invoked during the setup phase to register
