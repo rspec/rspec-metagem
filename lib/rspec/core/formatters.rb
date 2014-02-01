@@ -126,7 +126,7 @@ module RSpec::Core::Formatters
 
     def built_in_formatter(key)
       case key.to_s
-      when 'd', 'doc', 'documentation', 's', 'n', 'spec', 'nested'
+      when 'd', 'doc', 'documentation'
         DocumentationFormatter
       when 'h', 'html'
         HtmlFormatter
