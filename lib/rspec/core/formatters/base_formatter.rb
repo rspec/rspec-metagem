@@ -172,7 +172,7 @@ module RSpec
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
-        def close(_)
+        def close(notification)
           restore_sync_output
         end
 
