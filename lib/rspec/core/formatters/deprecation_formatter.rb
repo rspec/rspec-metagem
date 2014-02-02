@@ -28,12 +28,12 @@ module RSpec
                        end
         end
 
-        def deprecation(data)
-          return if @seen_deprecations.any? { |deprecation| deprecation == data }
+        def deprecation(notification)
+          return if @seen_deprecations.include? notification
 
           @count += 1
-          printer.print_deprecation_message data
-          @seen_deprecations << data
+          printer.print_deprecation_message notification
+          @seen_deprecations << notification
         end
 
         def deprecation_summary(notification)
