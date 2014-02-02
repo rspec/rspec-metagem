@@ -109,7 +109,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     end
   end
 
-  describe "#dump_profile_slowest_examples" do
+  describe "#dump_profile_slowest_examples", :slow do
 
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
@@ -139,7 +139,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     end
   end
 
-  describe "#dump_profile_slowest_example_groups" do
+  describe "#dump_profile_slowest_example_groups", :slow do
     let(:group) do
       RSpec::Core::ExampleGroup.describe("slow group") do
         # Use a sleep so there is some measurable time, to ensure
@@ -162,7 +162,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       end
     end
 
-    context "with multiple example groups" do
+    context "with multiple example groups", :slow do
       before do
         group2 = RSpec::Core::ExampleGroup.describe("fast group") do
           example("example 1") { sleep 0.004 }

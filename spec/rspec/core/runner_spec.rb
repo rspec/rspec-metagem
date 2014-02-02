@@ -40,7 +40,9 @@ module RSpec::Core
       end
     end
 
-    describe "#running_in_drb?" do
+    # This is intermittently slow because this method calls out to the network
+    # interface.
+    describe "#running_in_drb?", :slow do
       it "returns true if drb server is started with 127.0.0.1" do
         allow(::DRb).to receive(:current_server).and_return(double(:uri => "druby://127.0.0.1:0000/"))
 

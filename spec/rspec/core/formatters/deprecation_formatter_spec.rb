@@ -14,7 +14,7 @@ module RSpec::Core::Formatters
 
     describe "#deprecation" do
 
-      context "with a File deprecation_stream" do
+      context "with a File deprecation_stream", :slow do
         let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w+") }
 
         it "prints a message if provided, ignoring other data" do
@@ -53,7 +53,7 @@ module RSpec::Core::Formatters
     end
 
     describe "#deprecation_summary" do
-      context "with a File deprecation_stream" do
+      context "with a File deprecation_stream", :slow do
         let(:deprecation_stream) { File.open("#{Dir.tmpdir}/deprecation_summary_example_output", "w") }
 
         it "prints a count of the deprecations" do

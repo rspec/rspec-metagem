@@ -65,7 +65,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
     end
   end
 
-  context "with server running" do
+  context "with server running", :slow do
     class SimpleDRbSpecServer
       def self.run(argv, err, out)
         options = RSpec::Core::ConfigurationOptions.new(argv)
