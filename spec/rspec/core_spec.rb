@@ -72,7 +72,7 @@ RSpec.describe RSpec do
 
   # This is hard to test :(. Best way I could come up with was starting
   # fresh ruby process w/o this stuff already loaded.
-  it "loads mocks and expectations when the constants are referenced" do
+  it "loads mocks and expectations when the constants are referenced", :slow do
     code = "$LOAD_PATH.replace(#{$LOAD_PATH.inspect}); " +
            'require "rspec"; ' +
            "puts RSpec::Mocks.name; " +

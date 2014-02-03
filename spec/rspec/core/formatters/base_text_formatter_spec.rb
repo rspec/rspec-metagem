@@ -255,7 +255,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
-  describe "#dump_profile_slowest_examples" do
+  describe "#dump_profile_slowest_examples", :slow do
     example_line_number = nil
 
     before do
@@ -294,7 +294,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
-  describe "#dump_profile_slowest_example_groups" do
+  describe "#dump_profile_slowest_example_groups", :slow do
     let(:group) do
       RSpec::Core::ExampleGroup.describe("slow group") do
         # Use a sleep so there is some measurable time, to ensure

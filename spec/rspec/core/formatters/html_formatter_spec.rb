@@ -65,7 +65,7 @@ module RSpec
             select  {|e| e =~ /formatter_specs\.rb/}
         end
 
-        describe 'produced HTML' do
+        describe 'produced HTML', :slow do
           def build_and_verify_formatter_output
             Dir.chdir(root) do
               actual_doc = Nokogiri::HTML(generated_html)
@@ -96,7 +96,7 @@ module RSpec
           context 'with mathn loaded' do
             include MathnIntegrationSupport
 
-            it "produces HTML identical to the one we designed manually" do
+            it "produces HTML identical to the one we designed manually", :slow do
               with_mathn_loaded { build_and_verify_formatter_output }
             end
           end
