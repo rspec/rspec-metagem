@@ -15,12 +15,10 @@ module RSpec
 
         # all formatters inheriting from this formatter will receive these notifications
         Formatters.register self, :start, :example_group_started, :example_started,
-                                  :example_pending, :example_failed, :dump_summary,
-                                  :close
+                                  :example_pending, :example_failed, :close
         include Helpers
         attr_accessor :example_group
-        attr_reader :duration, :examples, :output
-        attr_reader :example_count, :pending_count, :failure_count
+        attr_reader :examples, :output
         attr_reader :failed_examples, :pending_examples
 
         # @api public
@@ -136,6 +134,7 @@ module RSpec
         #
         # @return [nil]
 
+        # @method dump_summary
         # @api public
         #
         # This method is invoked after the dumping of examples and failures. Each parameter
@@ -145,12 +144,6 @@ module RSpec
         # @param example_count
         # @param failure_count
         # @param pending_count
-        def dump_summary(summary)
-          @duration      = summary.duration
-          @example_count = summary.examples
-          @failure_count = summary.failures
-          @pending_count = summary.pending
-        end
 
         # @method dump_pending
         # @api public

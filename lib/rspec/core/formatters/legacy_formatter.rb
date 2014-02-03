@@ -49,7 +49,12 @@ module RSpec
             super MessageNotification.new(message) if defined?(super)
           end
 
+          attr_reader :duration, :example_count, :failure_count, :pending_count
           def dump_summary(duration, examples, failures, pending)
+            @duration      = duration
+            @example_count = examples
+            @failure_count = failures
+            @pending_count = pending
             super SummaryNotification.new(duration, examples, failures, pending) if defined?(super)
           end
 
