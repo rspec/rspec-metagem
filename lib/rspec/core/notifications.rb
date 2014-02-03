@@ -1,4 +1,5 @@
 require 'singleton'
+require 'rspec/core/formatters/helpers'
 
 module RSpec::Core
 
@@ -60,7 +61,18 @@ module RSpec::Core
   # @attr [Fixnum] examples the number of examples run
   # @attr [Fixnum] failures the number of failed examples
   # @attr [Fixnum] pending the number of pending examples
-  SummaryNotification = Struct.new(:duration, :examples, :failures, :pending)
+  class SummaryNotification < Struct.new(:duration, :examples, :failures, :pending)
+    include Formatters::Helpers
+
+    # @api
+    # @return [String] A line summarising the results of the spec run.
+    def summary_line
+      summary = pluralize(examples, "example")
+      summary << ", " << pluralize(failures, "failure")
+      summary << ", #{pending} pending" if pending > 0
+      summary
+    end
+  end
 
   # The `DeprecationNotification` is issued by the reporter when a deprecated
   # part of RSpec is encountered. It represents information about the deprecated

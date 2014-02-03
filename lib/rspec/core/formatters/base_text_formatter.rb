@@ -35,20 +35,20 @@ module RSpec
         # pending, and green otherwise.
         #
         # @param [String] string
-        def colorise_summary(summary, failure_count, pending_count)
-          if failure_count > 0
-            color(summary, RSpec.configuration.failure_color)
-          elsif pending_count > 0
-            color(summary, RSpec.configuration.pending_color)
+        def colorise_summary(summary)
+          if summary.failures > 0
+            color(summary.summary_line, RSpec.configuration.failure_color)
+          elsif summary.pending > 0
+            color(summary.summary_line, RSpec.configuration.pending_color)
           else
-            color(summary, RSpec.configuration.success_color)
+            color(summary.summary_line, RSpec.configuration.success_color)
           end
         end
 
         def dump_summary(summary)
           dump_profile unless mute_profile_output?(summary.failures)
           output.puts "\nFinished in #{format_duration(summary.duration)}\n"
-          output.puts colorise_summary(summary_line(summary.examples, summary.failures, summary.pending), summary.failures, summary.pending_count)
+          output.puts colorise_summary(summary)
           dump_commands_to_rerun_failed_examples
         end
 
@@ -105,18 +105,6 @@ module RSpec
             output.puts "  #{hash[:description]}"
             output.puts "    #{average} (#{total} / #{count}) #{loc}"
           end
-        end
-
-        # @api private
-        #
-        # To be refactored to notification
-        # Outputs summary with number of examples, failures and pending.
-        #
-        def summary_line(example_count, failure_count, pending_count)
-          summary = pluralize(example_count, "example")
-          summary << ", " << pluralize(failure_count, "failure")
-          summary << ", #{pending_count} pending" if pending_count > 0
-          summary
         end
 
         def dump_pending(notification)

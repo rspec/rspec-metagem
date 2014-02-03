@@ -26,7 +26,7 @@ module RSpec
             :failure_count => summary.failures,
             :pending_count => summary.pending
           }
-          @output_hash[:summary_line] = summary_line(summary.examples, summary.failures, summary.pending)
+          @output_hash[:summary_line] = summary.summary_line
 
           dump_profile unless mute_profile_output?(summary.failures)
         end
@@ -78,14 +78,6 @@ module RSpec
         end
 
       private
-
-        def summary_line(example_count, failure_count, pending_count)
-          summary = pluralize(example_count, "example")
-          summary << ", " << pluralize(failure_count, "failure")
-          summary << ", #{pending_count} pending" if pending_count > 0
-          summary
-        end
-
 
         def format_example(example)
           {
