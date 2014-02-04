@@ -71,6 +71,10 @@ module RSpec
       # running this example.
       attr_reader :example_group_instance
 
+      # @attr_accessor
+      # @private
+      attr_accessor :clock
+
       # Creates a new instance of Example.
       # @param example_group_class the subclass of ExampleGroup in which this Example is declared
       # @param description the String passed to the `it` method (or alias)
@@ -81,6 +85,7 @@ module RSpec
         @metadata  = @example_group_class.metadata.for_example(description, metadata)
         @example_group_instance = @exception = nil
         @pending_declared_in_example = false
+        @clock = RSpec::Core::Time
       end
 
       # @deprecated access options via metadata instead
@@ -248,7 +253,7 @@ An error occurred #{context}
 
       def start(reporter)
         reporter.example_started(self)
-        record :started_at => RSpec::Core::Time.now
+        record :started_at => clock.now
       end
 
       def finish(reporter)
@@ -272,7 +277,7 @@ An error occurred #{context}
       end
 
       def record_finished(status, results={})
-        finished_at = RSpec::Core::Time.now
+        finished_at = clock.now
         record results.merge(:status => status, :finished_at => finished_at, :run_time => (finished_at - execution_result[:started_at]).to_f)
       end
 
