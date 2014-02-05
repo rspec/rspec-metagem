@@ -113,9 +113,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
     before do
       group = RSpec::Core::ExampleGroup.describe("group") do
-        # Use a sleep so there is some measurable time, to ensure
-        # the reported percent is 100%, not 0%.
-        example("example") { sleep 0.001 }
+        example("example") { }
       end
       group.run(reporter)
 
@@ -142,9 +140,10 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   describe "#dump_profile_slowest_example_groups", :slow do
     let(:group) do
       RSpec::Core::ExampleGroup.describe("slow group") do
-        # Use a sleep so there is some measurable time, to ensure
-        # the reported percent is 100%, not 0%.
-        example("example") { sleep 0.01 }
+        example("example") do |example|
+          # make it look slow without actually taking up precious time
+          example.clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
+        end
       end
     end
 
@@ -165,8 +164,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     context "with multiple example groups", :slow do
       before do
         group2 = RSpec::Core::ExampleGroup.describe("fast group") do
-          example("example 1") { sleep 0.004 }
-          example("example 2") { sleep 0.007 }
+          example("example 1") { }
+          example("example 2") { }
         end
         group2.run(reporter)
 
