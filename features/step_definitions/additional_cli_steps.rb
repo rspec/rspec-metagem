@@ -73,7 +73,7 @@ When "I accept the recommended settings by removing `=begin` and `=end` from `sp
   end
 end
 
-When /^I create a spec file with the following content:$/ do |content|
-  write_file("spec/example_spec.rb", content)
+When /^I create "([^"]*)" with the following content:$/ do |file_name, content|
+  write_file(file_name, content)
 end
 

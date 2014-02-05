@@ -52,17 +52,38 @@ module RSpec
         !UNFORCED_OPTIONS.include?(key)
       end
 
-      def order(keys, *ordered)
-        ordered.reverse.each do |key|
+      def order(keys)
+        OPTIONS_ORDER.reverse.each do |key|
           keys.unshift(key) if keys.delete(key)
         end
         keys
       end
 
+      OPTIONS_ORDER = [
+        # load paths depend on nothing, but must be set before `requires`
+        # to support load-path-relative requires.
+        :libs,
+
+        # `files_or_directories_to_run` uses `default_path` so it must be
+        # set before it.
+        :default_path,
+
+        # must be set before `requires` to support checking `config.files_to_run`
+        # from within `spec_helper.rb` when a `-rspec_helper` option is used.
+        :files_or_directories_to_run,
+
+        # In general, we want to require the specified files as early as possible.
+        # The `--require` option is specifically intended to allow early requires.
+        # For later requires, they can just put the require in their spec files, but
+        # `--require` provides a unique opportunity for users to instruct RSpec to
+        # load an extension file early for maximum flexibility.
+        :requires
+      ]
+
       def process_options_into(config)
         opts = options.reject { |k, _| UNPROCESSABLE_OPTIONS.include? k }
 
-        order(opts.keys, :libs, :requires, :default_path, :pattern).each do |key|
+        order(opts.keys).each do |key|
           force?(key) ? config.force(key => opts[key]) : config.__send__("#{key}=", opts[key])
         end
       end

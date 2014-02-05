@@ -326,26 +326,36 @@ module RSpec::Core
 
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
-        config.files_or_directories_to_run = "spec/rspec/core/resources/a_bar.rb"
+        assign_files_or_directories_to_run "spec/rspec/core/resources/a_bar.rb"
         expect(config.files_to_run).to eq([      "spec/rspec/core/resources/a_bar.rb"])
       end
 
       it "prevents repetition of dir when start of the pattern" do
         config.pattern = "spec/**/a_spec.rb"
-        config.files_or_directories_to_run = "spec"
+        assign_files_or_directories_to_run "spec"
         expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
       end
 
       it "does not prevent repetition of dir when later of the pattern" do
         config.pattern = "rspec/**/a_spec.rb"
-        config.files_or_directories_to_run = "spec"
+        assign_files_or_directories_to_run "spec"
         expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
+      end
+
+      it 'reloads when `files_or_directories_to_run` is reassigned' do
+        config.pattern = "spec/**/a_spec.rb"
+        config.files_or_directories_to_run = "empty_dir"
+
+        expect {
+          config.files_or_directories_to_run = "spec"
+        }.to change { config.files_to_run }.
+          to(["spec/rspec/core/resources/a_spec.rb"])
       end
 
       context "with <path>:<line_number>" do
         it "overrides inclusion filters set on config" do
           config.filter_run_including :foo => :bar
-          config.files_or_directories_to_run = "path/to/file.rb:37"
+          assign_files_or_directories_to_run "path/to/file.rb:37"
           expect(config.inclusion_filter.size).to eq(1)
           expect(config.inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
           expect(config.inclusion_filter[:locations].values.first).to eq([37])
@@ -353,7 +363,7 @@ module RSpec::Core
 
         it "overrides inclusion filters set before config" do
           config.force(:inclusion_filter => {:foo => :bar})
-          config.files_or_directories_to_run = "path/to/file.rb:37"
+          assign_files_or_directories_to_run "path/to/file.rb:37"
           expect(config.inclusion_filter.size).to eq(1)
           expect(config.inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
           expect(config.inclusion_filter[:locations].values.first).to eq([37])
@@ -361,14 +371,14 @@ module RSpec::Core
 
         it "clears exclusion filters set on config" do
           config.exclusion_filter = { :foo => :bar }
-          config.files_or_directories_to_run = "path/to/file.rb:37"
+          assign_files_or_directories_to_run "path/to/file.rb:37"
           expect(config.exclusion_filter).to be_empty,
             "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
         end
 
         it "clears exclusion filters set before config" do
           config.force(:exclusion_filter => { :foo => :bar })
-          config.files_or_directories_to_run = "path/to/file.rb:37"
+          assign_files_or_directories_to_run "path/to/file.rb:37"
           expect(config.exclusion_filter).to be_empty,
             "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
         end
@@ -376,17 +386,17 @@ module RSpec::Core
 
       context "with default pattern" do
         it "loads files named _spec.rb" do
-          config.files_or_directories_to_run = "spec/rspec/core/resources"
+          assign_files_or_directories_to_run "spec/rspec/core/resources"
           expect(config.files_to_run).to eq([      "spec/rspec/core/resources/a_spec.rb"])
         end
 
         it "loads files in Windows", :if => RSpec.windows_os? do
-          config.files_or_directories_to_run = "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
+          assign_files_or_directories_to_run "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
           expect(config.files_to_run).to eq([      "C:/path/to/project/spec/sub/foo_spec.rb"])
         end
 
         it "loads files in Windows when directory is specified", :if => RSpec.windows_os? do
-          config.files_or_directories_to_run = "spec\\rspec\\core\\resources"
+          assign_files_or_directories_to_run "spec\\rspec\\core\\resources"
           expect(config.files_to_run).to eq([      "spec/rspec/core/resources/a_spec.rb"])
         end
       end
@@ -394,33 +404,35 @@ module RSpec::Core
       context "with default default_path" do
         it "loads files in the default path when run by rspec" do
           allow(config).to receive(:command) { 'rspec' }
-          config.files_or_directories_to_run = []
+          assign_files_or_directories_to_run []
           expect(config.files_to_run).not_to be_empty
         end
 
         it "loads files in the default path when run with DRB (e.g., spork)" do
           allow(config).to receive(:command) { 'spork' }
           allow(RSpec::Core::Runner).to receive(:running_in_drb?) { true }
-          config.files_or_directories_to_run = []
+          assign_files_or_directories_to_run []
           expect(config.files_to_run).not_to be_empty
         end
 
         it "does not load files in the default path when run by ruby" do
           allow(config).to receive(:command) { 'ruby' }
-          config.files_or_directories_to_run = []
+          assign_files_or_directories_to_run []
           expect(config.files_to_run).to be_empty
         end
       end
 
       def specify_consistent_ordering_of_files_to_run
         allow(File).to receive(:directory?).with('a') { true }
+        globbed_files = nil
+        allow(Dir).to receive(:[]).with(/^\{?a/) { globbed_files }
 
         orderings = [
           %w[ a/1.rb a/2.rb a/3.rb ],
           %w[ a/2.rb a/1.rb a/3.rb ],
           %w[ a/3.rb a/2.rb a/1.rb ]
         ].map do |files|
-          expect(Dir).to receive(:[]).with(/^\{?a/) { files }
+          globbed_files = files
           yield
           config.files_to_run
         end
@@ -432,7 +444,7 @@ module RSpec::Core
         it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
           specify_consistent_ordering_of_files_to_run do
             config.pattern = 'a/*.rb'
-            config.files_or_directories_to_run = 'a'
+            assign_files_or_directories_to_run 'a'
           end
         end
       end
@@ -441,7 +453,7 @@ module RSpec::Core
         it 'orders the files in a consistent ordering, regardless of the underlying OS ordering' do
           specify_consistent_ordering_of_files_to_run do
             config.pattern = '*.rb'
-            config.files_or_directories_to_run = 'a'
+            assign_files_or_directories_to_run 'a'
           end
         end
       end
@@ -451,10 +463,10 @@ module RSpec::Core
           allow(File).to receive(:directory?) { false } # fake it into thinking these a full file paths
 
           files = ['a/b/c_spec.rb', 'c/b/a_spec.rb']
-          config.files_or_directories_to_run = *files
+          assign_files_or_directories_to_run(*files)
           ordering_1 = config.files_to_run
 
-          config.files_or_directories_to_run = *(files.reverse)
+          assign_files_or_directories_to_run(*files.reverse)
           ordering_2 = config.files_to_run
 
           expect(ordering_1).to eq(ordering_2)
@@ -468,19 +480,19 @@ module RSpec::Core
           before { config.send(setter, "**/*_foo.rb") }
           it "loads files following pattern" do
             file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
-            config.files_or_directories_to_run = file
+            assign_files_or_directories_to_run file
             expect(config.files_to_run).to include(file)
           end
 
           it "loads files in directories following pattern" do
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-            config.files_or_directories_to_run = dir
+            assign_files_or_directories_to_run dir
             expect(config.files_to_run).to include("#{dir}/a_foo.rb")
           end
 
           it "does not load files in directories not following pattern" do
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-            config.files_or_directories_to_run = dir
+            assign_files_or_directories_to_run dir
             expect(config.files_to_run).not_to include("#{dir}/a_bar.rb")
           end
         end
@@ -489,7 +501,7 @@ module RSpec::Core
           it "supports comma separated values" do
             config.send(setter, "**/*_foo.rb,**/*_bar.rb")
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-            config.files_or_directories_to_run = dir
+            assign_files_or_directories_to_run dir
             expect(config.files_to_run).to include("#{dir}/a_foo.rb")
             expect(config.files_to_run).to include("#{dir}/a_bar.rb")
           end
@@ -497,7 +509,7 @@ module RSpec::Core
           it "supports comma separated values with spaces" do
             config.send(setter, "**/*_foo.rb, **/*_bar.rb")
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-            config.files_or_directories_to_run = dir
+            assign_files_or_directories_to_run dir
             expect(config.files_to_run).to include("#{dir}/a_foo.rb")
             expect(config.files_to_run).to include("#{dir}/a_bar.rb")
           end
@@ -505,7 +517,7 @@ module RSpec::Core
           it "supports curly braces glob syntax" do
             config.send(setter, "**/*_{foo,bar}.rb")
             dir = File.expand_path(File.dirname(__FILE__) + "/resources")
-            config.files_or_directories_to_run = dir
+            assign_files_or_directories_to_run dir
             expect(config.files_to_run).to include("#{dir}/a_foo.rb")
             expect(config.files_to_run).to include("#{dir}/a_bar.rb")
           end
@@ -530,7 +542,7 @@ module RSpec::Core
 
     describe "path with line number" do
       it "assigns the line number as a location filter" do
-        config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+        assign_files_or_directories_to_run "path/to/a_spec.rb:37"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
     end
@@ -556,25 +568,25 @@ module RSpec::Core
 
     context "with line number" do
       it "assigns the file and line number as a location filter" do
-        config.files_or_directories_to_run = "path/to/a_spec.rb:37"
+        assign_files_or_directories_to_run "path/to/a_spec.rb:37"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
 
       it "assigns multiple files with line numbers as location filters" do
-        config.files_or_directories_to_run = "path/to/a_spec.rb:37", "other_spec.rb:44"
+        assign_files_or_directories_to_run "path/to/a_spec.rb:37", "other_spec.rb:44"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37],
                                                 File.expand_path("other_spec.rb") => [44]}})
       end
 
       it "assigns files with multiple line numbers as location filters" do
-        config.files_or_directories_to_run = "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
+        assign_files_or_directories_to_run "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}})
       end
     end
 
     context "with multiple line numbers" do
       it "assigns the file and line numbers as a location filter" do
-        config.files_or_directories_to_run = "path/to/a_spec.rb:1:3:5:7"
+        assign_files_or_directories_to_run "path/to/a_spec.rb:1:3:5:7"
         expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
       end
     end
@@ -1457,5 +1469,11 @@ module RSpec::Core
       end
     end
 
+    # assigns files_or_directories_to_run and triggers post-processing
+    # via `files_to_run`.
+    def assign_files_or_directories_to_run(*value)
+      config.files_or_directories_to_run = value
+      config.files_to_run
+    end
   end
 end

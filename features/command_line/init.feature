@@ -22,14 +22,36 @@ Feature: --init option
     Given I have a brand new project with no files
       And I have run `rspec --init`
      When I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`
-      And I create a spec file with the following content:
-        """
+      And I create "spec/addition_spec.rb" with the following content:
+        """ruby
         RSpec.describe "Addition" do
           it "works" do
             expect(1 + 1).to eq(2)
           end
         end
         """
-      And I run `rspec`
+      And I create "spec/subtraction_spec.rb" with the following content:
+        """ruby
+        RSpec.describe "Subtraction" do
+          it "works" do
+            expect(1 - 1).to eq(0)
+          end
+        end
+        """
+
+     When I run `rspec`
      Then the examples should all pass
+      And the output should not contain:
+        """
+        Addition
+          works
+        """
+
+     When I run `rspec spec/addition_spec.rb`
+     Then the examples should all pass
+      And the output should contain:
+        """
+        Addition
+          works
+        """
 

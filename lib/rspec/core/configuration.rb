@@ -231,7 +231,7 @@ module RSpec
       # @private
       add_setting :include_or_extend_modules
       # @private
-      add_setting :files_to_run
+      attr_writer :files_to_run
       # @private
       add_setting :expecting_with_rspec
       # @private
@@ -248,7 +248,7 @@ module RSpec
         @expectation_frameworks = []
         @include_or_extend_modules = []
         @mock_framework = nil
-        @files_to_run = []
+        @files_or_directories_to_run = []
         @color = false
         @pattern = '**/*_spec.rb'
         @failure_exit_code = 1
@@ -620,7 +620,12 @@ module RSpec
       def files_or_directories_to_run=(*files)
         files = files.flatten
         files << default_path if (command == 'rspec' || Runner.running_in_drb?) && default_path && files.empty?
-        self.files_to_run = get_files_to_run(files)
+        @files_or_directories_to_run = files
+        @files_to_run = nil
+      end
+
+      def files_to_run
+        @files_to_run ||= get_files_to_run(@files_or_directories_to_run)
       end
 
       # Creates a method that delegates to `example` including the submitted

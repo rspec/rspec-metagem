@@ -29,12 +29,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       opts.configure(config)
     end
 
-    it "sends loads requires before loading specs" do
+    it "loads requires before loading specs" do
       opts = config_options_object(*%w[-rspec_helper])
-      config = double("config").as_null_object
+      config = RSpec::Core::Configuration.new
       expect(config).to receive(:requires=).ordered
-      expect(config).to receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:get_files_to_run).ordered
       opts.configure(config)
+      config.files_to_run
     end
 
     it "sets up load path and requires before formatter" do
@@ -45,20 +46,38 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       opts.configure(config)
     end
 
-    it "sends default_path before files_or_directories_to_run" do
+    it "sets default_path before loading specs" do
       opts = config_options_object(*%w[--default_path spec])
-      config = double("config").as_null_object
+      config = RSpec::Core::Configuration.new
+      expect(config).to receive(:force).with(:default_path => 'spec').ordered
+      expect(config).to receive(:get_files_to_run).ordered
+      opts.configure(config)
+      config.files_to_run
+    end
+
+    it "sets `files_or_directories_to_run` before `requires` so users can check `files_to_run` in a spec_helper loaded by `--require`" do
+      opts = config_options_object(*%w[--require spec_helper])
+      config = RSpec::Core::Configuration.new
+      expect(config).to receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:requires=).ordered
+      opts.configure(config)
+    end
+
+    it "sets default_path before `files_or_directories_to_run` since it relies on it" do
+      opts = config_options_object(*%w[--default_path spec])
+      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'spec').ordered
       expect(config).to receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
     end
 
-    it "sends pattern before files_or_directories_to_run" do
+    it "sets pattern before loading specs" do
       opts = config_options_object(*%w[--pattern **/*.spec])
-      config = double("config").as_null_object
+      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:pattern => '**/*.spec').ordered
-      expect(config).to receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:get_files_to_run).ordered
       opts.configure(config)
+      config.files_to_run
     end
 
     it "assigns inclusion_filter" do
@@ -300,11 +319,12 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
   describe "default_path" do
     it "gets set before files_or_directories_to_run" do
-      config = double("config").as_null_object
+      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'foo').ordered
-      expect(config).to receive(:files_or_directories_to_run=).ordered
+      expect(config).to receive(:get_files_to_run).ordered
       opts = config_options_object("--default_path", "foo")
       opts.configure(config)
+      config.files_to_run
     end
   end
 
