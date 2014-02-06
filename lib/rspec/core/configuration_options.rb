@@ -16,9 +16,6 @@ module RSpec
       def configure(config)
         config.filter_manager = filter_manager
 
-        config.libs = options[:libs] || []
-        config.setup_load_path_and_require(options[:requires] || [])
-
         process_options_into config
         load_formatters_into config
       end
@@ -29,7 +26,7 @@ module RSpec
             filter_manager.include opts.delete(:inclusion_filter) if opts.has_key?(:inclusion_filter)
             filter_manager.exclude opts.delete(:exclusion_filter) if opts.has_key?(:exclusion_filter)
           }.
-          inject {|h, opts|
+          inject(:libs => [], :requires => []) {|h, opts|
             h.merge(opts) {|k, oldval, newval|
               [:libs, :requires].include?(k) ? oldval + newval : newval
             }
@@ -51,7 +48,7 @@ module RSpec
         :line_numbers, :full_description, :full_backtrace, :tty
       ].to_set
 
-      UNPROCESSABLE_OPTIONS = [:libs, :formatters, :requires].to_set
+      UNPROCESSABLE_OPTIONS = [:formatters].to_set
 
       def force?(key)
         !UNFORCED_OPTIONS.include?(key)
@@ -67,7 +64,7 @@ module RSpec
       def process_options_into(config)
         opts = options.reject { |k, _| UNPROCESSABLE_OPTIONS.include? k }
 
-        order(opts.keys, :default_path, :pattern).each do |key|
+        order(opts.keys, :libs, :requires, :default_path, :pattern).each do |key|
           force?(key) ? config.force(key => opts[key]) : config.__send__("#{key}=", opts[key])
         end
       end

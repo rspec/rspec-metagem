@@ -53,7 +53,7 @@ module RSpec::Core
       end
     end
 
-    describe "#setup_load_path_and_require" do
+    describe "#requires=" do
       include_context "isolate load path mutation"
 
       def absolute_path_to(dir)
@@ -65,7 +65,7 @@ module RSpec::Core
         $LOAD_PATH.delete(lib_dir)
 
         expect($LOAD_PATH).not_to include(lib_dir)
-        config.setup_load_path_and_require []
+        config.requires = []
         expect($LOAD_PATH).to include(lib_dir)
       end
 
@@ -74,20 +74,20 @@ module RSpec::Core
         foo_dir = absolute_path_to("features")
 
         expect($LOAD_PATH).not_to include(foo_dir)
-        config.setup_load_path_and_require []
+        config.requires = []
         expect($LOAD_PATH).to include(foo_dir)
       end
 
       it 'stores the required files' do
         expect(config).to receive(:require).with('a/path')
-        config.setup_load_path_and_require ['a/path']
+        config.requires = ['a/path']
         expect(config.requires).to eq ['a/path']
       end
 
       context "when `default_path` refers to a file rather than a directory" do
         it 'does not add it to the load path' do
           config.default_path = 'Rakefile'
-          config.setup_load_path_and_require []
+          config.requires = []
           expect($LOAD_PATH).not_to include(match(/Rakefile/))
         end
       end

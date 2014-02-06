@@ -897,7 +897,7 @@ module RSpec
       end
 
       # @private
-      def setup_load_path_and_require(paths)
+      def requires=(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
         paths.each {|path| require path}
