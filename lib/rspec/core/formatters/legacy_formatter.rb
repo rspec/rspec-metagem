@@ -64,27 +64,27 @@ module RSpec
 
 
           def start_dump
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
 
           def dump_failures
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
 
           def dump_pending
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
 
           def dump_profile
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
 
           def close
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
 
           def stop
-            super(NullNotification.instance) if defined?(super)
+            super(NullNotification) if defined?(super)
           end
         end
 

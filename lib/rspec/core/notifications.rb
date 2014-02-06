@@ -1,4 +1,3 @@
-require 'singleton'
 require 'rspec/core/formatters/helpers'
 
 module RSpec::Core
@@ -97,7 +96,6 @@ module RSpec::Core
   # `NullNotification` represents a placeholder value for notifications that
   # currently require no information, but we may wish to extend in future.
   class NullNotification
-    include Singleton
   end
 
 end

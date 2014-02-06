@@ -69,7 +69,7 @@ module FormatterSupport
   end
 
   def null_notification
-    ::RSpec::Core::NullNotification.instance
+    ::RSpec::Core::NullNotification
   end
 
   def seed_notification(seed, used = true)
