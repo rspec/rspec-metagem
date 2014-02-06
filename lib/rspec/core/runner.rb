@@ -87,7 +87,6 @@ module RSpec
       def self.run(args, err=$stderr, out=$stdout)
         trap_interrupt
         options = ConfigurationOptions.new(args)
-        options.parse_options
 
         if options.options[:drb]
           require 'rspec/core/drb_command_line'
