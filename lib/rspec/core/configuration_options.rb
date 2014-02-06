@@ -5,8 +5,6 @@ module RSpec
   module Core
     # @private
     class ConfigurationOptions
-      attr_reader :options
-
       def initialize(args)
         @args = args.map {|a|
           a.sub("default_path", "default-path").sub("line_number",  "line-number")
@@ -20,8 +18,8 @@ module RSpec
         load_formatters_into config
       end
 
-      def parse_options
-        @options = (file_options << command_line_options << env_options).
+      def options
+        @options ||= (file_options << command_line_options << env_options).
           each {|opts|
             filter_manager.include opts.delete(:inclusion_filter) if opts.has_key?(:inclusion_filter)
             filter_manager.exclude opts.delete(:exclusion_filter) if opts.has_key?(:exclusion_filter)

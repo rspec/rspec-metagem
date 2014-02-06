@@ -8,14 +8,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
   it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
     without_env_vars 'HOME' do
       expect_warning_with_call_site(__FILE__, __LINE__ + 1)
-      RSpec::Core::ConfigurationOptions.new([]).parse_options
+      RSpec::Core::ConfigurationOptions.new([]).options
     end
   end
 
-  it "duplicates the arguments array" do
+  it "does not mutate the provided args array" do
     args = ['-e', 'some spec']
-    coo = RSpec::Core::ConfigurationOptions.new(args)
-    coo.parse_options
+    RSpec::Core::ConfigurationOptions.new(args).options
     expect(args).to eq(['-e', 'some spec'])
   end
 

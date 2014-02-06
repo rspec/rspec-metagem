@@ -13,9 +13,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
   end
 
   def config_options(*args)
-    options = RSpec::Core::ConfigurationOptions.new(args)
-    options.parse_options
-    options
+    RSpec::Core::ConfigurationOptions.new(args)
   end
 
   context "without server running" do
@@ -69,7 +67,6 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
     class SimpleDRbSpecServer
       def self.run(argv, err, out)
         options = RSpec::Core::ConfigurationOptions.new(argv)
-        options.parse_options
         config = RSpec::Core::Configuration.new
         RSpec::Core::CommandLine.new(options, config).run(err, out)
       end

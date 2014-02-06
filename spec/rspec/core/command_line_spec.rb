@@ -33,7 +33,7 @@ module RSpec::Core
     it "assigns ConfigurationOptions built from Array of options to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(%w[--color])
-      expect(command_line.instance_eval { @options.options }).to eq(config_options.parse_options)
+      expect(command_line.instance_eval { @options.options }).to eq(config_options.options)
     end
 
     it "assigns submitted ConfigurationOptions to @options" do
@@ -106,9 +106,7 @@ module RSpec::Core
     end
 
     def build_config_options *args
-      options = ConfigurationOptions.new args
-      options.parse_options
-      options
+      ConfigurationOptions.new args
     end
   end
 end
