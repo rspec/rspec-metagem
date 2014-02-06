@@ -190,7 +190,7 @@ module RSpec
         # @param failure_count
         # @param pending_count
         def dump_summary(summary)
-          @formatter.dump_summary summary.duration, summary.examples, summary.failures, summary.pending
+          @formatter.dump_summary summary.duration, summary.example_count, summary.failure_count, summary.pending_count
         end
 
         # @api public

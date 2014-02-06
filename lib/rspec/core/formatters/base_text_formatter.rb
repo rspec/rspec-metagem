@@ -36,9 +36,9 @@ module RSpec
         #
         # @param [String] string
         def colorise_summary(summary)
-          if summary.failures > 0
+          if summary.failure_count > 0
             color(summary.summary_line, RSpec.configuration.failure_color)
-          elsif summary.pending > 0
+          elsif summary.pending_count > 0
             color(summary.summary_line, RSpec.configuration.pending_color)
           else
             color(summary.summary_line, RSpec.configuration.success_color)
@@ -46,7 +46,7 @@ module RSpec
         end
 
         def dump_summary(summary)
-          dump_profile unless mute_profile_output?(summary.failures)
+          dump_profile unless mute_profile_output?(summary.failure_count)
           output.puts "\nFinished in #{format_duration(summary.duration)}\n"
           output.puts colorise_summary(summary)
           dump_commands_to_rerun_failed_examples

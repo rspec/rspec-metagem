@@ -22,13 +22,13 @@ module RSpec
         def dump_summary(summary)
           @output_hash[:summary] = {
             :duration => summary.duration,
-            :example_count => summary.examples,
-            :failure_count => summary.failures,
-            :pending_count => summary.pending
+            :example_count => summary.example_count,
+            :failure_count => summary.failure_count,
+            :pending_count => summary.pending_count
           }
           @output_hash[:summary_line] = summary.summary_line
 
-          dump_profile unless mute_profile_output?(summary.failures)
+          dump_profile unless mute_profile_output?(summary.failure_count)
         end
 
         def stop(notification)

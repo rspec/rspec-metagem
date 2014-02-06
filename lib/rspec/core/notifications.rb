@@ -58,18 +58,18 @@ module RSpec::Core
   # of the test run.
   #
   # @attr [Float] duration the time taken (in seconds) to run the suite
-  # @attr [Fixnum] examples the number of examples run
-  # @attr [Fixnum] failures the number of failed examples
-  # @attr [Fixnum] pending the number of pending examples
-  class SummaryNotification < Struct.new(:duration, :examples, :failures, :pending)
+  # @attr [Fixnum] example_count the number of examples run
+  # @attr [Fixnum] failure_count the number of failed examples
+  # @attr [Fixnum] pending_count the number of pending examples
+  class SummaryNotification < Struct.new(:duration, :example_count, :failure_count, :pending_count)
     include Formatters::Helpers
 
     # @api
     # @return [String] A line summarising the results of the spec run.
     def summary_line
-      summary = pluralize(examples, "example")
-      summary << ", " << pluralize(failures, "failure")
-      summary << ", #{pending} pending" if pending > 0
+      summary = pluralize(example_count, "example")
+      summary << ", " << pluralize(failure_count, "failure")
+      summary << ", #{pending_count} pending" if pending_count > 0
       summary
     end
   end

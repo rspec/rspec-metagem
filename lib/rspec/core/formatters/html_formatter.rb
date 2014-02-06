@@ -103,9 +103,9 @@ module RSpec
         def dump_summary(summary)
           @printer.print_summary(
             summary.duration,
-            summary.examples,
-            summary.failures,
-            summary.pending
+            summary.example_count,
+            summary.failure_count,
+            summary.pending_count
           )
           @printer.flush
         end
