@@ -10,7 +10,7 @@ module RSpec::Core::Formatters
     let(:summary_stream) { StringIO.new }
 
     def notification(hash)
-      ::RSpec::Core::DeprecationNotification.from_hash(hash)
+      ::RSpec::Core::Notifications::DeprecationNotification.from_hash(hash)
     end
 
     before do

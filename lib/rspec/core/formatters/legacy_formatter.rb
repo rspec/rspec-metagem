@@ -18,35 +18,35 @@ module RSpec
         module LegacyInterface
 
           def start(count)
-            super CountNotification.new(count)
+            super Notifications::CountNotification.new(count)
           end
 
           def example_group_started(group)
-            super GroupNotification.new(group) if defined?(super)
+            super Notifications::GroupNotification.new(group) if defined?(super)
           end
 
           def example_group_finished(group)
-            super GroupNotification.new(group) if defined?(super)
+            super Notifications::GroupNotification.new(group) if defined?(super)
           end
 
           def example_started(example)
-            super ExampleNotification.new(example) if defined?(super)
+            super Notifications::ExampleNotification.new(example) if defined?(super)
           end
 
           def example_passed(example)
-            super ExampleNotification.new(example) if defined?(super)
+            super Notifications::ExampleNotification.new(example) if defined?(super)
           end
 
           def example_pending(example)
-            super ExampleNotification.new(example) if defined?(super)
+            super Notifications::ExampleNotification.new(example) if defined?(super)
           end
 
           def example_failed(example)
-            super ExampleNotification.new(example) if defined?(super)
+            super Notifications::ExampleNotification.new(example) if defined?(super)
           end
 
           def message(message)
-            super MessageNotification.new(message) if defined?(super)
+            super Notifications::MessageNotification.new(message) if defined?(super)
           end
 
           attr_reader :duration, :example_count, :failure_count, :pending_count
@@ -55,36 +55,36 @@ module RSpec
             @example_count = examples
             @failure_count = failures
             @pending_count = pending
-            super SummaryNotification.new(duration, examples, failures, pending) if defined?(super)
+            super Notifications::SummaryNotification.new(duration, examples, failures, pending) if defined?(super)
           end
 
           def seed(seed)
-            super SeedNotification.new(seed, true) if defined?(super)
+            super Notifications::SeedNotification.new(seed, true) if defined?(super)
           end
 
 
           def start_dump
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
 
           def dump_failures
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
 
           def dump_pending
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
 
           def dump_profile
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
 
           def close
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
 
           def stop
-            super(NullNotification) if defined?(super)
+            super(Notifications::NullNotification) if defined?(super)
           end
         end
 

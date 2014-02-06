@@ -53,31 +53,31 @@ module FormatterSupport
   end
 
   def count_notification(count)
-   ::RSpec::Core::CountNotification.new count
+   ::RSpec::Core::Notifications::CountNotification.new count
   end
 
   def example_notification(specific_example = example)
-   ::RSpec::Core::ExampleNotification.new specific_example
+   ::RSpec::Core::Notifications::ExampleNotification.new specific_example
   end
 
   def group_notification
-   ::RSpec::Core::GroupNotification.new group
+   ::RSpec::Core::Notifications::GroupNotification.new group
   end
 
   def message_notification(message)
-    ::RSpec::Core::MessageNotification.new message
+    ::RSpec::Core::Notifications::MessageNotification.new message
   end
 
   def null_notification
-    ::RSpec::Core::NullNotification
+    ::RSpec::Core::Notifications::NullNotification
   end
 
   def seed_notification(seed, used = true)
-    ::RSpec::Core::SeedNotification.new seed, used
+    ::RSpec::Core::Notifications::SeedNotification.new seed, used
   end
 
   def summary_notification(duration, examples, failed, pending)
-    ::RSpec::Core::SummaryNotification.new duration, examples, failed, pending
+    ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending
   end
 
 end

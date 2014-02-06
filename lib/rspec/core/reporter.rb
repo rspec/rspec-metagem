@@ -52,61 +52,61 @@ module RSpec::Core
 
     def start(expected_example_count)
       @start = RSpec::Core::Time.now
-      notify :start, CountNotification.new(expected_example_count)
+      notify :start, Notifications::CountNotification.new(expected_example_count)
     end
 
     def message(message)
-      notify :message, MessageNotification.new(message)
+      notify :message, Notifications::MessageNotification.new(message)
     end
 
     def example_group_started(group)
-      notify :example_group_started, GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
+      notify :example_group_started, Notifications::GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
     end
 
     def example_group_finished(group)
-      notify :example_group_finished, GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
+      notify :example_group_finished, Notifications::GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
     end
 
     def example_started(example)
       @example_count += 1
-      notify :example_started, ExampleNotification.new(example)
+      notify :example_started, Notifications::ExampleNotification.new(example)
     end
 
     def example_passed(example)
-      notify :example_passed, ExampleNotification.new(example)
+      notify :example_passed, Notifications::ExampleNotification.new(example)
     end
 
     def example_failed(example)
       @failure_count += 1
-      notify :example_failed, ExampleNotification.new(example)
+      notify :example_failed, Notifications::ExampleNotification.new(example)
     end
 
     def example_pending(example)
       @pending_count += 1
-      notify :example_pending, ExampleNotification.new(example)
+      notify :example_pending, Notifications::ExampleNotification.new(example)
     end
 
     def deprecation(hash)
-      notify :deprecation, DeprecationNotification.from_hash(hash)
+      notify :deprecation, Notifications::DeprecationNotification.from_hash(hash)
     end
 
     def finish
       begin
         stop
-        notify :start_dump,    NullNotification
-        notify :dump_pending,  NullNotification
-        notify :dump_failures, NullNotification
-        notify :dump_summary, SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
-        notify :deprecation_summary, NullNotification
-        notify :seed, SeedNotification.new(@configuration.seed, seed_used?)
+        notify :start_dump,    Notifications::NullNotification
+        notify :dump_pending,  Notifications::NullNotification
+        notify :dump_failures, Notifications::NullNotification
+        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
+        notify :deprecation_summary, Notifications::NullNotification
+        notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
-        notify :close, NullNotification
+        notify :close, Notifications::NullNotification
       end
     end
 
     def stop
       @duration = (RSpec::Core::Time.now - @start).to_f if @start
-      notify :stop, NullNotification
+      notify :stop, Notifications::NullNotification
     end
 
     def notify(event, notification)
