@@ -21,6 +21,7 @@ require 'rspec/support/warnings'
 require_rspec['core/flat_map']
 require_rspec['core/filter_manager']
 require_rspec['core/dsl']
+require_rspec['core/notifications']
 require_rspec['core/reporter']
 
 require_rspec['core/hooks']

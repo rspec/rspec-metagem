@@ -5,16 +5,20 @@ module RSpec
   module Core
     module Formatters
       # RSpec's built-in formatters are all subclasses of RSpec::Core::Formatters::BaseTextFormatter,
-      # but the BaseTextFormatter documents all of the methods needed to be implemented by a formatter,
-      # as they are called from the reporter.
+      # but the BaseTextFormatter documents all of the notifications implemented as part of the standard
+      # interface. The reporter will issue these during a normal test suite run, but a formatter will
+      # only receive those notifications it has registered itself to receive.
       #
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class BaseFormatter
+
+        # all formatters inheriting from this formatter will receive these notifications
+        Formatters.register self, :start, :example_group_started, :example_started,
+                                  :example_pending, :example_failed, :close
         include Helpers
         attr_accessor :example_group
-        attr_reader :duration, :examples, :output
-        attr_reader :example_count, :pending_count, :failure_count
+        attr_reader :examples, :output
         attr_reader :failed_examples, :pending_examples
 
         # @api public
@@ -31,15 +35,6 @@ module RSpec
 
         # @api public
         #
-        # This method is invoked during the setup phase to register
-        # a formatters with the reporter
-        #
-        def notifications
-          %w[start example_group_started example_started example_pending example_failed dump_summary close]
-        end
-
-        # @api public
-        #
         # This method is invoked before any examples are run, right after
         # they have all been collected. This can be useful for special
         # formatters that need to provide progress on feedback (graphical ones).
@@ -48,9 +43,9 @@ module RSpec
         # is {#example_group_started}.
         #
         # @param example_count
-        def start(example_count)
+        def start(notification)
           start_sync_output
-          @example_count = example_count
+          @example_count = notification.count
         end
 
         # @api public
@@ -63,8 +58,8 @@ module RSpec
         # {#example_pending}, or {#example_group_finished}.
         #
         # @param example_group
-        def example_group_started(example_group)
-          @example_group = example_group
+        def example_group_started(notification)
+          @example_group = notification.group
         end
 
         # @method example_group_finished
@@ -80,8 +75,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_started(example)
-          examples << example
+        def example_started(notification)
+          examples << notification.example
         end
 
         # @method example_passed
@@ -95,8 +90,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_pending(example)
-          @pending_examples << example
+        def example_pending(notification)
+          @pending_examples << notification.example
         end
 
         # @api public
@@ -105,8 +100,8 @@ module RSpec
         #
         # @param example instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
-        def example_failed(example)
-          @failed_examples << example
+        def example_failed(notification)
+          @failed_examples << notification.example
         end
 
         # @method message
@@ -139,6 +134,7 @@ module RSpec
         #
         # @return [nil]
 
+        # @method dump_summary
         # @api public
         #
         # This method is invoked after the dumping of examples and failures. Each parameter
@@ -148,12 +144,6 @@ module RSpec
         # @param example_count
         # @param failure_count
         # @param pending_count
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          @duration = duration
-          @example_count = example_count
-          @failure_count = failure_count
-          @pending_count = pending_count
-        end
 
         # @method dump_pending
         # @api public
@@ -175,7 +165,7 @@ module RSpec
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
-        def close
+        def close(notification)
           restore_sync_output
         end
 

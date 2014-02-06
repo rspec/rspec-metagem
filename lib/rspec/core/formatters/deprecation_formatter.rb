@@ -5,6 +5,8 @@ module RSpec
   module Core
     module Formatters
       class DeprecationFormatter
+        Formatters.register self, :deprecation, :deprecation_summary
+
         attr_reader :count, :deprecation_stream, :summary_stream
 
         def initialize(deprecation_stream, summary_stream)
@@ -14,10 +16,6 @@ module RSpec
           @count = 0
         end
         alias :output :deprecation_stream
-
-        def notifications
-          %w[deprecation deprecation_summary]
-        end
 
         def printer
           @printer ||= case deprecation_stream
@@ -30,20 +28,20 @@ module RSpec
                        end
         end
 
-        def deprecation(data)
-          return if @seen_deprecations.include?(data)
+        def deprecation(notification)
+          return if @seen_deprecations.include? notification
 
           @count += 1
-          printer.print_deprecation_message data
-          @seen_deprecations << data
+          printer.print_deprecation_message notification
+          @seen_deprecations << notification
         end
 
-        def deprecation_summary
+        def deprecation_summary(notification)
           printer.deprecation_summary
         end
 
         def deprecation_message_for(data)
-          if data[:message]
+          if data.message
             SpecifiedDeprecationMessage.new(data)
           else
             GeneratedDeprecationMessage.new(data)
@@ -60,7 +58,7 @@ module RSpec
 
         SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
-            @message = data[:message]
+            @message = data.message
             super deprecation_type_for(data)
           end
 
@@ -77,20 +75,20 @@ module RSpec
           private
 
           def deprecation_type_for(data)
-            data[:message].gsub(/(\w+\/)+\w+\.rb:\d+/, '')
+            data.message.gsub(/(\w+\/)+\w+\.rb:\d+/, '')
           end
         end
 
         GeneratedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @data = data
-            super data[:deprecated]
+            super data.deprecated
           end
 
           def to_s
-            msg =  "#{@data[:deprecated]} is deprecated."
-            msg << " Use #{@data[:replacement]} instead." if @data[:replacement]
-            msg << " Called from #{@data[:call_site]}." if @data[:call_site]
+            msg =  "#{@data.deprecated} is deprecated."
+            msg << " Use #{@data.replacement} instead." if @data.replacement
+            msg << " Called from #{@data.call_site}." if @data.call_site
             msg
           end
 

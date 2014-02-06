@@ -23,7 +23,7 @@ Feature: basic structure (describe/it)
       end
     end
     """
-    When I run `rspec sample_spec.rb -fn`
+    When I run `rspec sample_spec.rb -fdoc`
     Then the output should contain:
       """
       something

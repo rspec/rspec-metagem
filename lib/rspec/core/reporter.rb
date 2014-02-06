@@ -52,66 +52,66 @@ module RSpec::Core
 
     def start(expected_example_count)
       @start = RSpec::Core::Time.now
-      notify :start, expected_example_count
+      notify :start, Notifications::CountNotification.new(expected_example_count)
     end
 
     def message(message)
-      notify :message, message
+      notify :message, Notifications::MessageNotification.new(message)
     end
 
     def example_group_started(group)
-      notify :example_group_started, group unless group.descendant_filtered_examples.empty?
+      notify :example_group_started, Notifications::GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
     end
 
     def example_group_finished(group)
-      notify :example_group_finished, group unless group.descendant_filtered_examples.empty?
+      notify :example_group_finished, Notifications::GroupNotification.new(group) unless group.descendant_filtered_examples.empty?
     end
 
     def example_started(example)
       @example_count += 1
-      notify :example_started, example
+      notify :example_started, Notifications::ExampleNotification.new(example)
     end
 
     def example_passed(example)
-      notify :example_passed, example
+      notify :example_passed, Notifications::ExampleNotification.new(example)
     end
 
     def example_failed(example)
       @failure_count += 1
-      notify :example_failed, example
+      notify :example_failed, Notifications::ExampleNotification.new(example)
     end
 
     def example_pending(example)
       @pending_count += 1
-      notify :example_pending, example
+      notify :example_pending, Notifications::ExampleNotification.new(example)
     end
 
-    def deprecation(message)
-      notify :deprecation, message
+    def deprecation(hash)
+      notify :deprecation, Notifications::DeprecationNotification.from_hash(hash)
     end
 
     def finish
       begin
         stop
-        notify :start_dump
-        notify :dump_pending
-        notify :dump_failures
-        notify :dump_summary, @duration, @example_count, @failure_count, @pending_count
-        notify :deprecation_summary
-        notify :seed, @configuration.seed if seed_used?
+        notify :start_dump,    Notifications::NullNotification
+        notify :dump_pending,  Notifications::NullNotification
+        notify :dump_failures, Notifications::NullNotification
+        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
+        notify :deprecation_summary, Notifications::NullNotification
+        notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
-        notify :close
+        notify :close, Notifications::NullNotification
       end
     end
 
     def stop
       @duration = (RSpec::Core::Time.now - @start).to_f if @start
-      notify :stop
+      notify :stop, Notifications::NullNotification
     end
 
-    def notify(event, *args, &block)
+    def notify(event, notification)
       registered_listeners(event).each do |formatter|
-        formatter.__send__(event, *args, &block)
+        formatter.__send__(event, notification)
       end
     end
 

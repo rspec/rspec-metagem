@@ -4,8 +4,9 @@ require 'json'
 module RSpec
   module Core
     module Formatters
-
       class JsonFormatter < BaseFormatter
+        Formatters.register self, :message, :dump_summary, :stop, :close,
+                                  :dump_profile
 
         attr_reader :output_hash
 
@@ -14,28 +15,23 @@ module RSpec
           @output_hash = {}
         end
 
-        def notifications
-          super + %w[message dump_summary stop close dump_profile]
+        def message(notification)
+          (@output_hash[:messages] ||= []) << notification.message
         end
 
-        def message(message)
-          (@output_hash[:messages] ||= []) << message
-        end
-
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          super(duration, example_count, failure_count, pending_count)
+        def dump_summary(summary)
           @output_hash[:summary] = {
-            :duration => duration,
-            :example_count => example_count,
-            :failure_count => failure_count,
-            :pending_count => pending_count
+            :duration => summary.duration,
+            :example_count => summary.example_count,
+            :failure_count => summary.failure_count,
+            :pending_count => summary.pending_count
           }
-          @output_hash[:summary_line] = summary_line(example_count, failure_count, pending_count)
+          @output_hash[:summary_line] = summary.summary_line
 
-          dump_profile unless mute_profile_output?(failure_count)
+          dump_profile unless mute_profile_output?(summary.failure_count)
         end
 
-        def stop
+        def stop(notification)
           @output_hash[:examples] = examples.map do |example|
             format_example(example).tap do |hash|
               if e=example.exception
@@ -49,7 +45,7 @@ module RSpec
           end
         end
 
-        def close
+        def close(notification)
           output.write @output_hash.to_json
           output.close if IO === output && output != $stdout
         end
@@ -82,14 +78,6 @@ module RSpec
         end
 
       private
-
-        def summary_line(example_count, failure_count, pending_count)
-          summary = pluralize(example_count, "example")
-          summary << ", " << pluralize(failure_count, "failure")
-          summary << ", #{pending_count} pending" if pending_count > 0
-          summary
-        end
-
 
         def format_example(example)
           {

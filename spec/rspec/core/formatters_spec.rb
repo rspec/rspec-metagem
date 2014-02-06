@@ -26,12 +26,14 @@ module RSpec::Core::Formatters
 
       it "finds a formatter by class" do
         formatter_class = Class.new(BaseTextFormatter)
+        Loader.formatters[formatter_class] = []
         loader.add formatter_class, output
         expect(loader.formatters.first).to be_an_instance_of(formatter_class)
       end
 
       it "finds a formatter by class name" do
         stub_const("CustomFormatter", Class.new(BaseFormatter))
+        Loader.formatters[CustomFormatter] = []
         loader.add "CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(CustomFormatter)
       end
@@ -44,20 +46,22 @@ module RSpec::Core::Formatters
 
       it "issues a deprecation on legacy formatter use" do
         formatter_class = Struct.new(:output)
-        expect_deprecation_with_call_site(__FILE__, __LINE__ + 2,
+        expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 2,
           /The #{formatter_class} formatter uses the deprecated formatter interface/)
         loader.add formatter_class, output
       end
 
       it "finds a formatter by class fully qualified name" do
-        stub_const("RSpec::CustomFormatter", Class.new(BaseFormatter))
+        stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter)))
+        Loader.formatters[RSpec::CustomFormatter] = []
         loader.add "RSpec::CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)
       end
 
       it "requires a formatter file based on its fully qualified name" do
         expect(loader).to receive(:require).with('rspec/custom_formatter') do
-          stub_const("RSpec::CustomFormatter", Class.new(BaseFormatter))
+          stub_const("RSpec::CustomFormatter", (Class.new(BaseFormatter)))
+          Loader.formatters[RSpec::CustomFormatter] = []
         end
         loader.add "RSpec::CustomFormatter", output
         expect(loader.formatters.first).to be_an_instance_of(RSpec::CustomFormatter)

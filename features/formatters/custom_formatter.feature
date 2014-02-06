@@ -15,6 +15,37 @@ Feature: custom formatters
       require "rspec/core/formatters/base_text_formatter"
 
       class CustomFormatter < RSpec::Core::Formatters::BaseTextFormatter
+
+        # This registers the notifications this formatter supports, and tells
+        # us that this was written against the RSpec 3.x formatter API.
+        RSpec::Core::Formatters.register self, :example_started
+
+        def initialize(output)
+          super(output)
+        end
+
+        def example_started(notification)
+          output << "example: " << notification.example.description
+        end
+      end
+      """
+    And a file named "example_spec.rb" with:
+      """ruby
+      describe "my group" do
+        specify "my example" do
+        end
+      end
+      """
+    When I run `rspec example_spec.rb --require ./custom_formatter.rb --format CustomFormatter`
+    Then the output should contain "example: my example"
+    And  the exit status should be 0
+
+  Scenario: a legacy custom formatter
+    Given a file named "custom_formatter.rb" with:
+      """ruby
+      require "rspec/core/formatters/base_text_formatter"
+
+      class CustomFormatter < RSpec::Core::Formatters::BaseTextFormatter
         def initialize(output)
           super(output)
         end
@@ -33,4 +64,5 @@ Feature: custom formatters
       """
     When I run `rspec example_spec.rb --require ./custom_formatter.rb --format CustomFormatter`
     Then the output should contain "example: my example"
+    And the output should contain "The CustomFormatter formatter uses the deprecated formatter interface."
     And  the exit status should be 0

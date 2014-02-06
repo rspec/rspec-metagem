@@ -11,16 +11,14 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseFormatter
       # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
+        Formatters.register self, :message, :dump_summary, :dump_failures,
+                                  :dump_profile, :dump_pending, :seed
 
-        def notifications
-          super + %w[message dump_failures dump_summary dump_profile dump_pending seed close]
+        def message(notification)
+          output.puts notification.message
         end
 
-        def message(message)
-          output.puts message
-        end
-
-        def dump_failures
+        def dump_failures(notification)
           return if failed_examples.empty?
           output.puts
           output.puts "Failures:"
@@ -38,20 +36,19 @@ module RSpec
         #
         # @param [String] string
         def colorise_summary(summary)
-          if failure_count > 0
-            color(summary, RSpec.configuration.failure_color)
-          elsif pending_count > 0
-            color(summary, RSpec.configuration.pending_color)
+          if summary.failure_count > 0
+            color(summary.summary_line, RSpec.configuration.failure_color)
+          elsif summary.pending_count > 0
+            color(summary.summary_line, RSpec.configuration.pending_color)
           else
-            color(summary, RSpec.configuration.success_color)
+            color(summary.summary_line, RSpec.configuration.success_color)
           end
         end
 
-        def dump_summary(duration, example_count, failure_count, pending_count)
-          super(duration, example_count, failure_count, pending_count)
-          dump_profile unless mute_profile_output?(failure_count)
-          output.puts "\nFinished in #{format_duration(duration)}\n"
-          output.puts colorise_summary(summary_line(example_count, failure_count, pending_count))
+        def dump_summary(summary)
+          dump_profile unless mute_profile_output?(summary.failure_count)
+          output.puts "\nFinished in #{format_duration(summary.duration)}\n"
+          output.puts colorise_summary(summary)
           dump_commands_to_rerun_failed_examples
         end
 
@@ -110,19 +107,7 @@ module RSpec
           end
         end
 
-        # @api private
-        #
-        # To be refactored to notification
-        # Outputs summary with number of examples, failures and pending.
-        #
-        def summary_line(example_count, failure_count, pending_count)
-          summary = pluralize(example_count, "example")
-          summary << ", " << pluralize(failure_count, "failure")
-          summary << ", #{pending_count} pending" if pending_count > 0
-          summary
-        end
-
-        def dump_pending
+        def dump_pending(notification)
           unless pending_examples.empty?
             output.puts
             output.puts "Pending:"
@@ -139,13 +124,14 @@ module RSpec
           end
         end
 
-        def seed(number)
+        def seed(notification)
+          return unless notification.seed_used?
           output.puts
-          output.puts "Randomized with seed #{number}"
+          output.puts "Randomized with seed #{notification.seed}"
           output.puts
         end
 
-        def close
+        def close(notification)
           output.close if IO === output && output != $stdout
         end
 
