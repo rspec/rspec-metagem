@@ -61,7 +61,7 @@ module RSpec
             (example_metadata[:line_number] + 2) => example_metadata[:line_number] + 2,
           }}
           before do
-            expect(world).to receive(:preceding_declaration_line).at_least(:once).and_return do |v|
+            expect(world).to receive(:preceding_declaration_line).at_least(:once) do |v|
               preceeding_declaration_lines[v]
             end
           end
