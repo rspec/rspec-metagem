@@ -41,6 +41,10 @@ Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
   expect(normalized_output).to match(regexp(partial_output))
 end
 
+Then /^the output should not contain any error backtraces$/ do
+  step %q{the output should not contain "lib/rspec/core"}
+end
+
 # This step can be generalized if it's ever used to test other colors
 Then /^the failing example is printed in magenta$/ do
   # \e[35m = enable magenta
