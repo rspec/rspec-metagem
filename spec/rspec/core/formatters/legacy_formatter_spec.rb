@@ -6,6 +6,19 @@ require 'support/legacy_formatter_using_sub_classing_example'
 RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   include FormatterSupport
 
+  it 'can access attributes provided by base class accessors in #initialize' do
+    klass = Class.new(LegacyFormatterUsingSubClassing) do
+      def initialize(*args)
+        example_count
+        super
+      end
+    end
+
+    config.add_formatter klass
+    expect(config.formatters.first).to be_a(RSpec::Core::Formatters::LegacyFormatter)
+    expect(config.formatters.first.formatter).to be_a(klass)
+  end
+
   [OldStyleFormatterExample, LegacyFormatterUsingSubClassing].each do |klass|
 
     describe "#{klass}" do

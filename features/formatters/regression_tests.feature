@@ -38,7 +38,6 @@ Feature: Regression tests for legacy custom formatters
       end
       """
 
-  @wip @announce
   Scenario: Use fuubar formatter
     When I run `rspec --format Fuubar`
     Then the output should contain "Progress: |============"

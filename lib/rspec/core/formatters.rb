@@ -96,13 +96,15 @@ module RSpec::Core::Formatters
     # @api private
     def add(formatter_to_use, *paths)
       formatter_class = find_formatter(formatter_to_use)
-      formatter = formatter_class.new(*paths.map {|p| String === p ? file_at(p) : p})
+
+      args = paths.map { |p| String === p ? file_at(p) : p }
 
       if !Loader.formatters[formatter_class].nil?
+        formatter = formatter_class.new(*args)
         @reporter.register_listener formatter, *notifications_for(formatter_class)
       else
-        RSpec.warn_deprecation "The #{formatter.class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
-        formatter = LegacyFormatter.new(formatter)
+        RSpec.warn_deprecation "The #{formatter_class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
+        formatter = LegacyFormatter.new(formatter_class, *args)
         @reporter.register_listener formatter, *formatter.notifications
       end
 
