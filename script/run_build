@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file was generated on 2014-01-25T09:32:04-08:00 from the rspec-dev repo.
+# This file was generated on 2014-02-08T14:27:25+11:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
@@ -13,7 +13,10 @@ if is_mri; then
   run_spec_suite_for "rspec-core"
   run_spec_suite_for "rspec-expectations"
   run_spec_suite_for "rspec-mocks"
-  run_spec_suite_for "rspec-support"
+
+  if [ "$MAINTENANCE_BRANCH" != "2-99-maintenance" ]; then
+    run_spec_suite_for "rspec-support"
+  fi
 else
   echo "Skipping the rest of the build on non-MRI rubies"
 fi
