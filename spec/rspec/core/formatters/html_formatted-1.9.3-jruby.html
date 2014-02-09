@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang='en'>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
 <head>
   <title>RSpec results</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta http-equiv="Expires" content="-1" />
-  <meta http-equiv="Pragma" content="no-cache" />
+  <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+  <meta content="-1" http-equiv="Expires">
+  <meta content="no-cache" http-equiv="Pragma">
   <style type="text/css">
   body {
     margin: 0;
@@ -14,7 +14,7 @@
   }
   </style>
   <script type="text/javascript">
-    // <![CDATA[
+    // &lt;![CDATA[
 
 function addClass(element_id, classname) {
   document.getElementById(element_id).className += (" " + classname);
@@ -71,7 +71,7 @@ function get_display_style(display_flag) {
 function assign_display_style(classname, display_flag) {
   var style_mode = get_display_style(display_flag);
   var elems = document.getElementsByClassName(classname)
-  for (var i=0; i<elems.length;i++) {
+  for (var i=0; i&lt;elems.length;i++) {
     elems[i].style.display = style_mode;
   }
 }
@@ -80,9 +80,9 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
   var display_style_mode = get_display_style(display_flag);
   var subgroup_style_mode = get_display_style(subgroup_flag);
   var elems = document.getElementsByClassName(classname)
-  for (var i=0; i<elems.length;i++) {
+  for (var i=0; i&lt;elems.length;i++) {
     var style_mode = display_style_mode;
-    if ((display_flag != subgroup_flag) && (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
+    if ((display_flag != subgroup_flag) &amp;&amp; (elems[i].getElementsByTagName('dt')[0].innerHTML.indexOf(", ") != -1)) {
       elems[i].style.display = subgroup_style_mode;
     } else {
       elems[i].style.display = display_style_mode;
@@ -90,7 +90,7 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
   }
 }
 
-    // ]]>
+    // ]]&gt;
   </script>
   <style type="text/css">
 #rspec-header {
@@ -266,22 +266,22 @@ a {
   </div>
 
   <div id="display-filters">
-    <input id="passed_checkbox"  name="passed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="1" /> <label for="passed_checkbox">Passed</label>
-    <input id="failed_checkbox"  name="failed_checkbox"  type="checkbox" checked="checked" onchange="apply_filters()" value="2" /> <label for="failed_checkbox">Failed</label>
-    <input id="pending_checkbox" name="pending_checkbox" type="checkbox" checked="checked" onchange="apply_filters()" value="3" /> <label for="pending_checkbox">Pending</label>
+    <input checked id="passed_checkbox" name="passed_checkbox" onchange="apply_filters()" type="checkbox" value="1"> <label for="passed_checkbox">Passed</label>
+    <input checked id="failed_checkbox" name="failed_checkbox" onchange="apply_filters()" type="checkbox" value="2"> <label for="failed_checkbox">Failed</label>
+    <input checked id="pending_checkbox" name="pending_checkbox" onchange="apply_filters()" type="checkbox" value="3"> <label for="pending_checkbox">Pending</label>
   </div>
 
   <div id="summary">
-    <p id="totals">&#160;</p>
-    <p id="duration">&#160;</p>
+    <p id="totals"> </p>
+    <p id="duration"> </p>
   </div>
 </div>
 
 
 <div class="results">
-<div id="div_group_1" class="example_group passed">
+<div class="example_group passed" id="div_group_1">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_1" class="passed">pending spec with no implementation</dt>
+  <dt class="passed" id="example_group_1">pending spec with no implementation</dt>
     <script type="text/javascript">makeYellow('rspec-header');</script>
     <script type="text/javascript">makeYellow('div_group_1');</script>
     <script type="text/javascript">makeYellow('example_group_1');</script>
@@ -289,14 +289,14 @@ a {
     <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: Not yet implemented)</span></dd>
   </dl>
 </div>
-<div id="div_group_2" class="example_group passed">
+<div class="example_group passed" id="div_group_2">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_2" class="passed">pending command with block format</dt>
+  <dt class="passed" id="example_group_2">pending command with block format</dt>
   </dl>
 </div>
-<div id="div_group_3" class="example_group passed">
+<div class="example_group passed" id="div_group_3">
   <dl style="margin-left: 15px;">
-  <dt id="example_group_3" class="passed">with content that would fail</dt>
+  <dt class="passed" id="example_group_3">with content that would fail</dt>
     <script type="text/javascript">makeYellow('rspec-header');</script>
     <script type="text/javascript">makeYellow('div_group_3');</script>
     <script type="text/javascript">makeYellow('example_group_3');</script>
@@ -304,9 +304,9 @@ a {
     <dd class="example not_implemented"><span class="not_implemented_spec_name">is pending (PENDING: No reason given)</span></dd>
   </dl>
 </div>
-<div id="div_group_4" class="example_group passed">
+<div class="example_group passed" id="div_group_4">
   <dl style="margin-left: 15px;">
-  <dt id="example_group_4" class="passed">with content that would pass</dt>
+  <dt class="passed" id="example_group_4">with content that would pass</dt>
     <script type="text/javascript">makeRed('rspec-header');</script>
     <script type="text/javascript">makeRed('div_group_4');</script>
     <script type="text/javascript">makeRed('example_group_4');</script>
@@ -316,17 +316,9 @@ a {
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_1">
         <div class="message"><pre>RSpec::Core::Pending::PendingExampleFixedError</pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
-./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
-./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
-./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">16</span>  context <span class="string"><span class="delimiter">&quot;</span><span class="content">with content that would pass</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
-<span class="linenum">17</span>    it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:18</pre></div>
+    <pre class="ruby"><code><span class="linenum">16</span>  context <span class="string"><span class="delimiter">"</span><span class="content">with content that would pass</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+<span class="linenum">17</span>    it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">18</span>      pending <span class="keyword">do</span></span>
 <span class="linenum">19</span>        expect(<span class="integer">1</span>).to eq(<span class="integer">1</span>)
 <span class="linenum">20</span>      <span class="keyword">end</span></code></pre>
@@ -334,16 +326,16 @@ a {
     </dd>
   </dl>
 </div>
-<div id="div_group_5" class="example_group passed">
+<div class="example_group passed" id="div_group_5">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_5" class="passed">passing spec</dt>
+  <dt class="passed" id="example_group_5">passing spec</dt>
     <script type="text/javascript">moveProgressBar('57.1');</script>
-    <dd class="example passed"><span class="passed_spec_name">passes</span><span class='duration'>n.nnnns</span></dd>
+    <dd class="example passed"><span class="passed_spec_name">passes</span><span class="duration">n.nnnns</span></dd>
   </dl>
 </div>
-<div id="div_group_6" class="example_group passed">
+<div class="example_group passed" id="div_group_6">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_6" class="passed">failing spec</dt>
+  <dt class="passed" id="example_group_6">failing spec</dt>
     <script type="text/javascript">makeRed('div_group_6');</script>
     <script type="text/javascript">makeRed('example_group_6');</script>
     <script type="text/javascript">moveProgressBar('71.4');</script>
@@ -357,17 +349,9 @@ expected: 2
 
 (compared using ==)
 </pre></div>
-        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
-./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
-./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
-./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
-    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">&quot;</span><span class="content">failing spec</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
-<span class="linenum">32</span>  it <span class="string"><span class="delimiter">&quot;</span><span class="content">fails</span><span class="delimiter">&quot;</span></span> <span class="keyword">do</span>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:33</pre></div>
+    <pre class="ruby"><code><span class="linenum">31</span><span class="constant">RSpec</span>.describe <span class="string"><span class="delimiter">"</span><span class="content">failing spec</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
+<span class="linenum">32</span>  it <span class="string"><span class="delimiter">"</span><span class="content">fails</span><span class="delimiter">"</span></span> <span class="keyword">do</span>
 <span class="offending"><span class="linenum">33</span>    expect(<span class="integer">1</span>).to eq(<span class="integer">2</span>)</span>
 <span class="linenum">34</span>  <span class="keyword">end</span>
 <span class="linenum">35</span><span class="keyword">end</span></code></pre>
@@ -375,9 +359,9 @@ expected: 2
     </dd>
   </dl>
 </div>
-<div id="div_group_7" class="example_group passed">
+<div class="example_group passed" id="div_group_7">
   <dl style="margin-left: 0px;">
-  <dt id="example_group_7" class="passed">a failing spec with odd backtraces</dt>
+  <dt class="passed" id="example_group_7">a failing spec with odd backtraces</dt>
     <script type="text/javascript">makeRed('div_group_7');</script>
     <script type="text/javascript">makeRed('example_group_7');</script>
     <script type="text/javascript">moveProgressBar('85.7');</script>
@@ -386,16 +370,7 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_3">
         <div class="message"><pre>foo</pre></div>
-        <div class="backtrace"><pre>(erb):1:in `result'
-./spec/rspec/core/resources/formatter_specs.rb:41:in `(root)'
-./spec/support/sandboxed_mock_space.rb:33:in `run'
-./spec/support/sandboxed_mock_space.rb:72:in `sandboxed'
-./spec/support/sandboxed_mock_space.rb:32:in `run'
-./spec/rspec/core/formatters/html_formatter_spec.rb:37:in `generated_html'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:59:in `Formatters'
-./spec/rspec/core/formatters/html_formatter_spec.rb:58:in `Formatters'
-./spec/support/sandboxed_mock_space.rb:38:in `sandboxed'</pre></div>
+        <div class="backtrace"><pre>./spec/rspec/core/resources/formatter_specs.rb:41</pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for (erb)</span></code></pre>
       </div>
     </dd>
@@ -405,15 +380,16 @@ expected: 2
       <span class="duration">n.nnnns</span>
       <div class="failure" id="failure_4">
         <div class="message"><pre>Exception</pre></div>
-        <div class="backtrace"><pre>/foo.html.erb:1:in `&lt;main&gt;': foo (RuntimeError)</pre></div>
+        <div class="backtrace"><pre></pre></div>
     <pre class="ruby"><code><span class="linenum">-1</span><span class="comment"># Couldn't get snippet for /foo.html.erb</span></code></pre>
       </div>
     </dd>
   </dl>
 </div>
-<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in <strong>n.nnnn seconds</strong>";</script>
+<script type="text/javascript">document.getElementById('duration').innerHTML = "Finished in &lt;strong&gt;n.nnnn seconds&lt;/strong&gt;";</script>
 <script type="text/javascript">document.getElementById('totals').innerHTML = "7 examples, 4 failures, 2 pending";</script>
 </div>
 </div>
-</body>
-</html>
+
+
+</body></html>

@@ -31,7 +31,20 @@ module RSpec
           command_line = RSpec::Core::CommandLine.new(options)
           command_line.instance_variable_get("@configuration").backtrace_formatter.inclusion_patterns = []
           command_line.run(err, out)
-          out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
+          html = out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
+
+          actual_doc = Nokogiri::HTML(html)
+          actual_doc.css("div.backtrace pre").each do |elem|
+            # This is to minimize churn on backtrace lines that we do not
+            # assert on anyway.
+            backtrace = elem.inner_html.lines.
+              select {|e| e =~ /formatter_specs\.rb/ }.
+              map {|x| x.chomp.split(":")[0..1].join(':') }.
+              join("\n")
+
+            elem.inner_html = backtrace
+          end
+          actual_doc.inner_html
         end
 
         let(:expected_html) do
