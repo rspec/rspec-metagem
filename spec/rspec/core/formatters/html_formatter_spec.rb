@@ -8,17 +8,9 @@ module RSpec
     module Formatters
       RSpec.describe HtmlFormatter do
 
-        let(:suffix) do
-          case
-            when ::RUBY_PLATFORM == 'java' then "-jruby"
-          else
-            ""
-          end
-        end
-
         let(:root) { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
         let(:expected_file) do
-          "#{File.dirname(__FILE__)}/html_formatted-#{::RUBY_VERSION}#{suffix}.html"
+          "#{File.dirname(__FILE__)}/html_formatted.html"
         end
 
         let(:generated_html) do
@@ -77,7 +69,18 @@ module RSpec
             select  {|e| e =~ /formatter_specs\.rb/}
         end
 
-        describe 'produced HTML', :slow do
+        describe 'produced HTML', :if => RUBY_VERSION <= '2.0.0' do
+          # Rubies before 2 are a wild west of different outputs, and it's not
+          # worth the effort to maintain accurate fixtures for all of them.
+          # Since we are verifying fixtures on other rubies, if this code at
+          # least runs we can be reasonably confident the output is right since
+          # behaviour variances that we care about across versions is neglible.
+          it 'is present' do
+            expect(generated_html).to be
+          end
+        end
+
+        describe 'produced HTML', :slow, :if => RUBY_VERSION >= '2.0.0' do
           def build_and_verify_formatter_output
             Dir.chdir(root) do
               actual_doc = Nokogiri::HTML(generated_html)
@@ -101,14 +104,14 @@ module RSpec
             end
           end
 
-          it "produces HTML identical to the one we designed manually" do
+          it "is identical to the one we designed manually" do
             build_and_verify_formatter_output
           end
 
           context 'with mathn loaded' do
             include MathnIntegrationSupport
 
-            it "produces HTML identical to the one we designed manually", :slow do
+            it "is identical to the one we designed manually", :slow do
               with_mathn_loaded { build_and_verify_formatter_output }
             end
           end
