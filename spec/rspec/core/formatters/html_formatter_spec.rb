@@ -11,7 +11,6 @@ module RSpec
         let(:suffix) do
           case
             when ::RUBY_PLATFORM == 'java' then "-jruby"
-            when defined?(Rubinius)        then "-rbx"
           else
             ""
           end
