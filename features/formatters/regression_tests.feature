@@ -40,11 +40,11 @@ Feature: Regression tests for legacy custom formatters
       RSpec.describe "Some pending examples" do
         context "pending" do
           it "is reported as pending" do
-            pending { expect(1).to eq(2) }
+            pending; expect(1).to eq(2)
           end
 
           it "is reported as failing" do
-            pending { expect(1).to eq(1) }
+            pending; expect(1).to eq(1)
           end
         end
       end
