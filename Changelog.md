@@ -24,6 +24,19 @@ Breaking Changes for 3.0.0:
 * Remove support for deprecated `--configure` CLI option. (Myron Marston)
 * Remove support for deprecated `RSpec::Core::RakeTask#spec_opts=`.
   (Myron Marston)
+* An example group level `pending` block or `:pending` metadata now executes
+  the example and cause a failure if it passes, otherwise it will be pending if
+  it fails. The old "never run" behaviour is still used for `xexample`, `xit`,
+  and `xspecify`, or via a new `skip` method or `:skip` metadata option.
+  (Xavier Shay)
+* After calling `pending` inside an example, the remainder of the example will
+  now be run. If it passes a failure is raised, otherwise the example is marked
+  pending. The old "never run" behaviour is provided a by a new `skip` method.
+  (Xavier Shay)
+* Pending blocks inside an example have been removed as a feature with no
+  direct replacement. Either use `skip`, or `pending` with no block.
+  (Xavier Shay)
+* Remove `show_failures_in_pending_blocks` configuration option. (Xavier Shay)
 
 Enhancements:
 

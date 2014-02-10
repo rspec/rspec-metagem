@@ -41,7 +41,8 @@ module RSpec
         keys.each { |key| define_method(key) { @metadata[key] } }
       end
 
-      delegate_to_metadata :full_description, :execution_result, :file_path, :pending, :location
+      delegate_to_metadata :execution_result, :file_path, :full_description,
+                           :location, :pending, :skip
 
       # Returns the string submitted to `example` or its aliases (e.g.
       # `specify`, `it`, etc).  If no string is submitted (e.g. `it { is_expected.to
@@ -49,7 +50,9 @@ module RSpec
       # there is one, otherwise returns a message including the location of the
       # example.
       def description
-        description = metadata[:description].to_s.empty? ? "example at #{location}" : metadata[:description]
+        description = metadata[:description].to_s.empty? ?
+          "example at #{location}" :
+          metadata[:description]
         RSpec.configuration.format_docstrings_block.call(description)
       end
 
@@ -84,7 +87,6 @@ module RSpec
         @example_group_class, @options, @example_block = example_group_class, metadata, example_block
         @metadata  = @example_group_class.metadata.for_example(description, metadata)
         @example_group_instance = @exception = nil
-        @pending_declared_in_example = false
         @clock = RSpec::Core::Time
       end
 
@@ -100,6 +102,7 @@ module RSpec
       end
 
       alias_method :pending?, :pending
+      alias_method :skipped?, :skip
 
       # @api private
       # instance_evals the block passed to the constructor in the context of
@@ -112,15 +115,30 @@ module RSpec
         start(reporter)
 
         begin
-          unless pending || RSpec.configuration.dry_run?
+          if skipped?
+            Pending.mark_pending! self, skip
+          elsif !RSpec.configuration.dry_run?
             with_around_each_hooks do
               begin
                 run_before_each
                 @example_group_instance.instance_exec(self, &@example_block)
-              rescue Pending::PendingDeclaredInExample => e
-                @pending_declared_in_example = e.message
+
+                if pending?
+                  Pending.mark_fixed! self
+
+                  raise Pending::PendingExampleFixedError,
+                    'Expected example to fail since it is pending, but it passed.',
+                    metadata[:caller]
+                end
+              rescue Pending::SkipDeclaredInExample
+                # no-op, required metadata has already been set by the `skip`
+                # method.
               rescue Exception => e
-                set_exception(e)
+                if pending?
+                  metadata[:execution_result][:pending_exception] = e
+                else
+                  set_exception(e)
+                end
               ensure
                 run_after_each
               end
@@ -257,16 +275,14 @@ An error occurred #{context}
       end
 
       def finish(reporter)
+        pending_message = metadata[:execution_result][:pending_message]
+
         if @exception
           record_finished 'failed', :exception => @exception
           reporter.example_failed self
           false
-        elsif @pending_declared_in_example
-          record_finished 'pending', :pending_message => @pending_declared_in_example
-          reporter.example_pending self
-          true
-        elsif pending
-          record_finished 'pending', :pending_message => String === pending ? pending : Pending::NO_REASON_GIVEN
+        elsif pending_message
+          record_finished 'pending', :pending_message => pending_message
           reporter.example_pending self
           true
         else
@@ -278,7 +294,11 @@ An error occurred #{context}
 
       def record_finished(status, results={})
         finished_at = clock.now
-        record results.merge(:status => status, :finished_at => finished_at, :run_time => (finished_at - execution_result[:started_at]).to_f)
+        record results.merge(
+          :status      => status,
+          :finished_at => finished_at,
+          :run_time    => (finished_at - execution_result[:started_at]).to_f
+        )
       end
 
       def run_before_each
@@ -298,10 +318,9 @@ An error occurred #{context}
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        if metadata[:execution_result][:pending_fixed]
+        if metadata[:execution_result][:pending_message]
           metadata[:execution_result][:pending_fixed] = false
           metadata[:pending] = true
-          @pending_declared_in_example = metadata[:execution_result][:pending_message]
           @exception = nil
         else
           set_exception(e, :dont_print)
@@ -320,6 +339,14 @@ An error occurred #{context}
 
       def record(results={})
         execution_result.update(results)
+      end
+
+      def skip_message
+        if String === skip
+          skip
+        else
+          Pending::NO_REASON_GIVEN
+        end
       end
     end
   end

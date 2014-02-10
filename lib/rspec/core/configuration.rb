@@ -212,11 +212,6 @@ module RSpec
       # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :detail_color
 
-      # @macro add_setting
-      # When a block passed to pending fails (as expected), display the failure
-      # without reporting it as a failure (default: false).
-      add_setting :show_failures_in_pending_blocks
-
       # Deprecated. This config option was added in RSpec 2 to pave the way
       # for this being the default behavior in RSpec 3. Now this option is
       # a no-op.

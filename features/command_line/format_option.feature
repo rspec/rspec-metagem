@@ -34,7 +34,7 @@ Feature: --format option
         end
 
         it "does something that is pending", :pending => true do
-          expect(5).to be > 3
+          expect(5).to be < 3
         end
       end
       """

@@ -18,7 +18,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     group = RSpec::Core::ExampleGroup.describe("one apiece") do
       it("succeeds") { expect(1).to eq 1 }
       it("fails") { fail "eek" }
-      it("pends") { pending "world peace" }
+      it("pends") { pending "world peace"; fail "eek" }
     end
     succeeding_line = __LINE__ - 4
     failing_line = __LINE__ - 4
@@ -31,7 +31,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
     end
 
     # grab the actual backtrace -- kind of a cheat
-    failing_backtrace = formatter.output_hash[:examples][1][:exception][:backtrace]
+    examples = formatter.output_hash[:examples]
+    failing_backtrace = examples[1][:exception][:backtrace]
     this_file = relative_path(__FILE__)
 
     expected = {
@@ -51,7 +52,11 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
           :file_path => this_file,
           :line_number => failing_line,
           :run_time => formatter.output_hash[:examples][1][:run_time],
-          :exception => {:class => "RuntimeError", :message => "eek", :backtrace => failing_backtrace}
+          :exception => {
+            :class     => "RuntimeError",
+            :message   => "eek",
+            :backtrace => failing_backtrace
+          }
         },
         {
           :description => "pends",

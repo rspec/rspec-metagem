@@ -115,11 +115,6 @@ module RSpec
               output.puts pending_color("  #{pending_example.full_description}")
               output.puts detail_color("    # #{pending_example.execution_result[:pending_message]}")
               output.puts detail_color("    # #{format_caller(pending_example.location)}")
-              if pending_example.execution_result[:exception] \
-                && RSpec.configuration.show_failures_in_pending_blocks?
-                dump_failure_info(pending_example)
-                dump_backtrace(pending_example)
-              end
             end
           end
         end
@@ -245,8 +240,8 @@ module RSpec
           configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
-        def dump_backtrace(example)
-          format_backtrace(example.execution_result[:exception].backtrace, example).each do |backtrace_info|
+        def dump_backtrace(example, key = :exception)
+          format_backtrace(example.execution_result[key].backtrace, example).each do |backtrace_info|
             output.puts detail_color("#{long_padding}# #{backtrace_info}")
           end
         end
@@ -265,8 +260,8 @@ module RSpec
           dump_failure_info(example)
         end
 
-        def dump_failure_info(example)
-          exception = example.execution_result[:exception]
+        def dump_failure_info(example, key = :exception)
+          exception = example.execution_result[key]
           exception_class_name = exception_class_name_for(exception)
           output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{failure_color(exception_class_name)}:" unless exception_class_name =~ /RSpec/

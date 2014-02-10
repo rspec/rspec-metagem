@@ -58,7 +58,7 @@ root
       group = RSpec::Core::ExampleGroup.describe(" root ")
       context1 = group.describe(" nested ")
       context1.example(" example 1 ") {}
-      context1.example(" example 2 ", :pending => true){}
+      context1.example(" example 2 ", :pending => true){ fail }
       context1.example(" example 3 ") { fail }
 
       group.run(reporter)
