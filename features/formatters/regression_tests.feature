@@ -1,7 +1,19 @@
 Feature: Regression tests for legacy custom formatters
 
   Background:
-    Given a file named "spec/passing_and_failing_spec.rb" with:
+    Given a file named ".rspec" with:
+      """
+      --require spec_helper
+      """
+      And a file named "spec/spec_helper.rb" with:
+      """
+      RSpec.configure do |rspec|
+        rspec.after(:suite) do
+          puts rspec.formatters.map(&:class).inspect
+        end
+      end
+      """
+      And a file named "spec/passing_and_failing_spec.rb" with:
       """ruby
       RSpec.describe "Some examples" do
         it "passes" do
@@ -44,12 +56,14 @@ Feature: Regression tests for legacy custom formatters
      And the output should contain "6 examples, 3 failures, 1 pending"
      And the output should contain "The Fuubar formatter uses the deprecated formatter interface"
      But the output should not contain any error backtraces
+     And the output should not contain "ProgressFormatter"
 
   Scenario: Use rspec-instafail formatter
     When I run `rspec --format RSpec::Instafail`
     Then the output should contain "6 examples, 3 failures, 1 pending"
      And the output should contain "The RSpec::Instafail formatter uses the deprecated formatter interface"
      But the output should not contain any error backtraces
+     And the output should not contain "ProgressFormatter"
 
   Scenario: Use rspec-extra-formatters JUnit formatter
     When I run `rspec --require rspec-extra-formatters --format JUnitFormatter`
@@ -59,6 +73,7 @@ Feature: Regression tests for legacy custom formatters
       """
      And the output should contain "The JUnitFormatter formatter uses the deprecated formatter interface"
      But the output should not contain any error backtraces
+     And the output should not contain "ProgressFormatter"
 
   @wip @announce
   Scenario: Use rspec-extra-formatters Tap formatter
@@ -66,6 +81,7 @@ Feature: Regression tests for legacy custom formatters
     Then the output should contain "TAP version 13"
      And the output should contain "The TapFormatter formatter uses the deprecated formatter interface"
      But the output should not contain any error backtraces
+     And the output should not contain "ProgressFormatter"
 
   @wip @announce
   Scenario: Use rspec-spinner formatter

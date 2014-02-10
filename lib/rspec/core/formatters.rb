@@ -103,12 +103,15 @@ module RSpec::Core::Formatters
         formatter = formatter_class.new(*args)
         @reporter.register_listener formatter, *notifications_for(formatter_class)
       else
-        RSpec.warn_deprecation "The #{formatter_class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
         formatter = LegacyFormatter.new(formatter_class, *args)
         @reporter.register_listener formatter, *formatter.notifications
       end
 
       @formatters << formatter unless duplicate_formatter_exists?(formatter)
+      if formatter.is_a?(LegacyFormatter)
+        RSpec.warn_deprecation "The #{formatter_class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
+      end
+
       formatter
     end
 
