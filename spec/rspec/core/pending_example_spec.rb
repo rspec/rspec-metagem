@@ -1,26 +1,6 @@
 require 'spec_helper'
 
 RSpec.describe "an example" do
-  matcher :be_pending_with do |message|
-    match do |example|
-      example.pending? && example.metadata[:execution_result][:pending_message] == message
-    end
-
-    failure_message_for_should do |example|
-      "expected: example pending with #{message.inspect}\n     got: #{example.metadata[:execution_result][:pending_message].inspect}"
-    end
-  end
-
-  matcher :be_skipped_with do |message|
-    match do |example|
-      example.skipped? && example.metadata[:execution_result][:pending_message] == message
-    end
-
-    failure_message_for_should do |example|
-      "expected: example skipped with #{message.inspect}\n     got: #{example.metadata[:execution_result][:pending_message].inspect}"
-    end
-  end
-
   context "declared pending with metadata" do
     it "uses the value assigned to :pending as the message" do
       group = RSpec::Core::ExampleGroup.describe('group') do

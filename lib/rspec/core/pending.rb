@@ -105,7 +105,7 @@ module RSpec
         current_example = RSpec.current_example
 
         if current_example
-          Pending.mark_pending! current_example, args
+          Pending.mark_pending! current_example, args.first
           current_example.metadata[:skip] = true
           raise SkipDeclaredInExample
         else
