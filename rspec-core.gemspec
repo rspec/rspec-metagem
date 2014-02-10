@@ -46,8 +46,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency "nokogiri", "1.5.2"
   s.add_development_dependency "coderay",  "~> 1.0.9"
 
-
   s.add_development_dependency "mocha",    "~> 0.13.0"
   s.add_development_dependency "rr",       "~> 1.0.4"
   s.add_development_dependency "flexmock", "~> 0.9.0"
+
+  # For legacy custom formatter regression tests
+  s.add_development_dependency "fuubar",                 "1.3.2"
+  s.add_development_dependency "nyan-cat-formatter",     "0.5.2"
+  s.add_development_dependency "rspec-instafail",        "0.2.4"
+  s.add_development_dependency "rspec_spinner",          "2.0.0"
+  s.add_development_dependency "rspec-extra-formatters", "1.0.0"
 end

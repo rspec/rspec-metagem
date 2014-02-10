@@ -44,11 +44,27 @@ module RSpec::Core::Formatters
         expect(loader.formatters.first).to be_an_instance_of(RSpec::Core::Formatters::LegacyFormatter)
       end
 
-      it "issues a deprecation on legacy formatter use" do
+      context "when a legacy formatter is added" do
         formatter_class = Struct.new(:output)
-        expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 2,
-          /The #{formatter_class} formatter uses the deprecated formatter interface/)
-        loader.add formatter_class, output
+
+        it "issues a deprecation" do
+          expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 2,
+            /The #{formatter_class} formatter uses the deprecated formatter interface/)
+          loader.add formatter_class, output
+        end
+
+        it "does not mistakenly add in the progress formatter" do
+          # When we issue a deprecation warning it triggers `setup_defaults`,
+          # which adds the progress formatter if it thinks no formatter has been
+          # added yet.
+          allow(RSpec).to receive(:warn_deprecation) do
+            loader.setup_default(StringIO.new, StringIO.new)
+          end
+
+          loader.add formatter_class, output
+
+          expect(loader.formatters.grep(RSpec::Core::Formatters::ProgressFormatter)).to eq([])
+        end
       end
 
       it "finds a formatter by class fully qualified name" do
