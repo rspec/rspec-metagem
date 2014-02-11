@@ -504,6 +504,16 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.run
         expect(blah).to be(:success)
       end
+
+      context "with a message" do
+        it "sets the example to skipped with the provided message" do
+          group = RSpec::Core::ExampleGroup.describe do
+            example { skip "lorem ipsum" }
+          end
+          group.run
+          expect(group.examples.first).to be_skipped_with("lorem ipsum")
+        end
+      end
     end
 
     context "in before(:each)" do

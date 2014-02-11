@@ -63,3 +63,23 @@ RSpec::Matchers.module_eval do
   alias_method :have_failed_with, :fail_with
   alias_method :have_passed, :pass
 end
+
+RSpec::Matchers.define :be_pending_with do |message|
+  match do |example|
+    example.pending? && example.metadata[:execution_result][:pending_message] == message
+  end
+
+  failure_message_for_should do |example|
+    "expected: example pending with #{message.inspect}\n     got: #{example.metadata[:execution_result][:pending_message].inspect}"
+  end
+end
+
+RSpec::Matchers.define :be_skipped_with do |message|
+  match do |example|
+    example.skipped? && example.metadata[:execution_result][:pending_message] == message
+  end
+
+  failure_message_for_should do |example|
+    "expected: example skipped with #{message.inspect}\n     got: #{example.metadata[:execution_result][:pending_message].inspect}"
+  end
+end
