@@ -1,4 +1,4 @@
-# This file was generated on 2014-02-08T14:27:25+11:00 from the rspec-dev repo.
+# This file was generated on 2014-02-12T08:24:06+11:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
@@ -51,6 +51,15 @@ function is_mri_192 {
     return 1
   fi
 }
+
+function rspec_support_compatible {
+  if [ "$MAINTENANCE_BRANCH" != "2-99-maintenance" ] && [ "$MAINTENANCE_BRANCH" != "2-14-maintenance" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 
 function clone_repo {
   if [ ! -d $1 ]; then # don't clone if the dir is already there
