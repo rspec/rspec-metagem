@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file was generated on 2014-02-10T09:50:59-08:00 from the rspec-dev repo.
+# This file was generated on 2014-02-12T08:24:06+11:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
@@ -13,7 +13,7 @@ if is_mri; then
   clone_repo "rspec-expectations"
   clone_repo "rspec-mocks"
 
-  if [ "$MAINTENANCE_BRANCH" != "2-99-maintenance" ]; then
+  if rspec_support_compatible; then
     clone_repo "rspec-support"
   fi
 
