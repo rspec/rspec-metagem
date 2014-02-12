@@ -300,6 +300,10 @@ module RSpec
           end.class_exec(*expected, &declarations)
         end
 
+        def expected_as_array
+          Array(@expected)
+        end
+
         # Adds the name (rather than a cryptic hex number)
         # so we can identify an instance of
         # the matcher in error messages (e.g. for `NoMethodError`)
