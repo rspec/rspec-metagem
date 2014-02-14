@@ -353,6 +353,8 @@ module RSpec::Matchers::DSL
     it "provides expected_as_array which returns an array regardless of expected" do
       matcher = new_matcher(:name, "expected string") { }
       expect(matcher.expected_as_array).to eq ['expected string']
+      matcher = new_matcher(:name, "expected\nstring") { }
+      expect(matcher.expected_as_array).to eq ["expected\nstring"]
       matcher = new_matcher(:name, "expected string", "another arg") { }
       expect(matcher.expected_as_array).to eq ['expected string', "another arg"]
     end
