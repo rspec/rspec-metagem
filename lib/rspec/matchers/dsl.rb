@@ -280,7 +280,7 @@ module RSpec
         extend Macros
         extend Macros::Deprecated
 
-        attr_reader   :expected, :expected_as_array, :actual, :rescued_exception
+        attr_reader   :expected_as_array, :actual, :rescued_exception
         attr_accessor :matcher_execution_context
 
         # @api private
@@ -288,17 +288,20 @@ module RSpec
           @name     = name
           @actual   = nil
           @expected_as_array = expected
-          if expected.size == 1
-            @expected = expected[0]
-          else
-            @expected = expected
-          end
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
             include(@user_method_defs = Module.new)
             self
           end.class_exec(*expected, &declarations)
+        end
+
+        def expected
+          if expected_as_array.size == 1
+            expected_as_array[0]
+          else
+            expected_as_array
+          end
         end
 
         # Adds the name (rather than a cryptic hex number)
