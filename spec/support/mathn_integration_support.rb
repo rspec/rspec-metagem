@@ -1,7 +1,7 @@
-require 'support/in_sub_process'
+require 'rspec/support/spec/in_sub_process'
 
 module MathnIntegrationSupport
-  include InSubProcess
+  include RSpec::Support::InSubProcess
 
   def with_mathn_loaded
     in_sub_process do
