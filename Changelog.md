@@ -1,6 +1,26 @@
 ### 3.0.0.beta2 Development
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
 
+Breaking Changes for 3.0.0:
+
+* Remove deprecated support for accessing the `RSpec` constant using
+  `Rspec` or `Spec`. (Myron Marston)
+* Remove deprecated `RSpec::Expectations.differ=`. (Myron Marston)
+* Remove support for deprecated `expect(...).should`. (Myron Marston)
+* Explicitly disallow `expect { }.not_to change { }` with `by`,
+  `by_at_least`, `by_at_most` or `to`. These have never been supported
+  but did not raise explicit errors. (Myron Marston)
+* Provide `===` rather than `==` as an alias of `matches?` for
+  all matchers.  The semantics of `===` are closer to an RSpec
+  matcher than `==`. (Myron Marston)
+* Remove deprecated `RSpec::Matchers::OperatorMatcher` constant.
+  (Myron Marston)
+* Make `RSpec::Expectations::ExpectationNotMetError` subclass
+  `Exception` rather than `StandardError` so they can bypass
+  a bare `rescue` in end-user code (e.g. when an expectation is
+  set from within a rspec-mocks stub implementation). (Myron Marston)
+* Remove Test::Unit and Minitest 4.x integration. (Myron Marston)
+
 Enhancements:
 
 * Simplify the failure message of the `be` matcher when matching against:
@@ -57,26 +77,6 @@ Enhancements:
   `rspec/expectations/minitest_integration` after loading minitest
   to use rspec-expectations with minitest. (Myron Marston)
 
-Breaking Changes for 3.0.0:
-
-* Remove deprecated support for accessing the `RSpec` constant using
-  `Rspec` or `Spec`. (Myron Marston)
-* Remove deprecated `RSpec::Expectations.differ=`. (Myron Marston)
-* Remove support for deprecated `expect(...).should`. (Myron Marston)
-* Explicitly disallow `expect { }.not_to change { }` with `by`,
-  `by_at_least`, `by_at_most` or `to`. These have never been supported
-  but did not raise explicit errors. (Myron Marston)
-* Provide `===` rather than `==` as an alias of `matches?` for
-  all matchers.  The semantics of `===` are closer to an RSpec
-  matcher than `==`. (Myron Marston)
-* Remove deprecated `RSpec::Matchers::OperatorMatcher` constant.
-  (Myron Marston)
-* Make `RSpec::Expectations::ExpectationNotMetError` subclass
-  `Exception` rather than `StandardError` so they can bypass
-  a bare `rescue` in end-user code (e.g. when an expectation is
-  set from within a rspec-mocks stub implementation). (Myron Marston)
-* Remove Test::Unit and Minitest 4.x integration. (Myron Marston)
-
 Bug Fixes:
 
 * Fix wrong matcher descriptions with falsey expected value (yujinakayama)
@@ -84,6 +84,11 @@ Bug Fixes:
   passes if the starting value is `x`. (Tyler Rick, Myron Marston)
 * Fix hash diffing, so that it colorizes properly and doesn't consider trailing
   commas when performing the diff. (Jared Norman)
+* Fix built-in matchers to fail normally rather than raising
+  `ArgumentError` when given an object of the wrong type to match
+  against, so that they work well in composite matcher expressions like
+  `expect([1.51, "foo"]).to include(a_string_matching(/foo/), a_value_within(0.1).of(1.5))`.
+  (Myron Marston)
 
 Deprecations:
 
