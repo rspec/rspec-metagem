@@ -37,7 +37,7 @@ Breaking Changes for 3.0.0:
   and `xspecify`, or via a new `skip` method or `:skip` metadata option.
   (Xavier Shay)
 * After calling `pending` inside an example, the remainder of the example will
-  now be run. If it passes, a failure is raised, otherwise the example is marked
+  now be run. If it passes a failure is raised, otherwise the example is marked
   pending. The old "never run" behaviour is provided a by a new `skip` method.
   (Xavier Shay)
 * Pending blocks inside an example have been removed as a feature with no
@@ -65,16 +65,15 @@ Enhancements:
 * Don't autorun specs via `#at_exit` by default. `require 'rspec/autorun'`
   is only needed when running specs via `ruby`, as it always has been.
   Running specs via `rake` or `rspec` are both unaffected. (Ben Hoskings)
-* Add `expose_dsl_globally` config option. This defaults to true but
-  when disabled, it will remove the monkey patches rspec-core adds to
-  `main` and `Module` (e.g. `describe`, `shared_examples_for`, etc).
-  (Jon Rowe)
+* Add `expose_dsl_globally` config option, defaulting to true. When disabled
+  it will remove the monkey patches rspec-core adds to `main` and `Module`
+  (e.g. `describe`, `shared_examples_for`, etc).  (Jon Rowe)
 * Expose RSpec DSL entry point methods (`describe`,
-  `shared_examples_for`, etc) off of `RSpec`, intended for use
+  `shared_examples_for`, etc) on the `RSpec` constant. Intended for use
   when `expose_dsl_globally` is set to `false`. (Jon Rowe)
 * For consistency, expose all example group aliases (including
-  `context`) off of `RSpec` and, if `expose_dsl_globally` is set to
-  `true`, off of `main` and `Module`. Historically, only `describe`
+  `context`) on the `RSpec` constant. If `expose_dsl_globally` is set to
+  `true`, also expose them on `main` and `Module`. Historically, only `describe`
   was exposed. (Jon Rowe, Michi Huber)
 
 Bug Fixes:
@@ -87,7 +86,7 @@ Bug Fixes:
   formatter has already been added to that output. (Alex Peattie)
 * Allow a matcher-generated example description to be used when
   the example is pending. (Myron Marston)
-* Ensure the configured `failure_exit_code` gets used by the rake
+* Ensure the configured `failure_exit_code` is used by the rake
   task when there is a failure. (Jon Rowe)
 
 ### 3.0.0.beta1 / 2013-11-07
