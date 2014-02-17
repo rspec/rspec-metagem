@@ -406,13 +406,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   end
 
   describe "#pending" do
+    def expect_pending_result(example)
+      expect(example).to be_pending
+      expect(example.metadata[:execution_result][:status]).to eq("pending")
+      expect(example.metadata[:execution_result][:pending_message]).to be
+    end
+
     context "in the example" do
       it "sets the example to pending" do
         group = RSpec::Core::ExampleGroup.describe do
           example { pending; fail }
         end
         group.run
-        expect(group.examples.first).to be_pending
+        expect_pending_result(group.examples.first)
       end
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
@@ -452,8 +458,8 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example { fail }
         end
         group.run
-        expect(group.examples.first).to be_pending
-        expect(group.examples.last).to be_pending
+        expect_pending_result(group.examples.first)
+        expect_pending_result(group.examples.last)
       end
     end
 
@@ -465,8 +471,8 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           example { fail }
         end
         group.run
-        expect(group.examples.first).to be_pending
-        expect(group.examples.last).to be_pending
+        expect_pending_result(group.examples.first)
+        expect_pending_result(group.examples.last)
       end
     end
 
@@ -474,20 +480,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it "sets the example to pending" do
         group = RSpec::Core::ExampleGroup.describe do
           around(:each) { pending }
-          example {}
+          example { fail }
         end
         group.run
-        expect(group.examples.first).to be_pending
+        expect_pending_result(group.examples.first)
       end
 
       it 'sets example to pending when failure occurs in around(:each)' do
         group = RSpec::Core::ExampleGroup.describe do
-          around(:each) { pending; raise }
+          around(:each) { pending; fail }
           example {}
         end
         group.run
-        expect(group.examples.first.metadata[:execution_result][:status]).to eq("pending")
-        expect(group.examples.first).to be_pending
+        expect_pending_result(group.examples.first)
       end
     end
   end
