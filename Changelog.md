@@ -62,8 +62,8 @@ Enhancements:
   pending. (Myron Marston)
 * Add `fdescribe` and `fcontext` as shortcuts to focus an example group.
   (Myron Marston)
-* Don't autorun specs via `#at_exit` by default; `require 'rspec/autorun'`
-  is only needed when running specs via `ruby` now, as it always has been.
+* Don't autorun specs via `#at_exit` by default. `require 'rspec/autorun'`
+  is only needed when running specs via `ruby`, as it always has been.
   Running specs via `rake` or `rspec` are both unaffected. (Ben Hoskings)
 * Add `expose_dsl_globally` config option. This defaults to true but
   when disabled, it will remove the monkey patches rspec-core adds to
