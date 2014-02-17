@@ -461,6 +461,15 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect_pending_result(group.examples.first)
         expect_pending_result(group.examples.last)
       end
+
+      it 'sets example to pending when failure occurs in before(:each)' do
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:each) { pending; fail }
+          example {}
+        end
+        group.run
+        expect_pending_result(group.examples.first)
+      end
     end
 
     context "in before(:all)" do
@@ -473,6 +482,17 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.run
         expect_pending_result(group.examples.first)
         expect_pending_result(group.examples.last)
+      end
+
+      it 'sets example to pending when failure occurs in before(:all)' do
+        pending("Unimplemented")
+
+        group = RSpec::Core::ExampleGroup.describe do
+          before(:all) { pending; fail }
+          example {}
+        end
+        group.run
+        expect_pending_result(group.examples.first)
       end
     end
 
@@ -495,6 +515,20 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect_pending_result(group.examples.first)
       end
     end
+
+    context "in after(:each)" do
+      it "sets each example to pending" do
+        group = RSpec::Core::ExampleGroup.describe do
+          after(:each) { pending; fail }
+          example { }
+          example { }
+        end
+        group.run
+        expect_pending_result(group.examples.first)
+        expect_pending_result(group.examples.last)
+      end
+    end
+
   end
 
   describe "#skip" do
