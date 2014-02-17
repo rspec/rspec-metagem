@@ -134,11 +134,7 @@ module RSpec
                 # no-op, required metadata has already been set by the `skip`
                 # method.
               rescue Exception => e
-                if pending?
-                  metadata[:execution_result][:pending_exception] = e
-                else
-                  set_exception(e)
-                end
+                set_exception(e)
               ensure
                 run_after_each
               end
@@ -221,20 +217,24 @@ module RSpec
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
       def set_exception(exception, context=nil)
-        if @exception && context != :dont_print
-          # An error has already been set; we don't want to override it,
-          # but we also don't want silence the error, so let's print it.
-          msg = <<-EOS
+        if pending?
+          metadata[:execution_result][:pending_exception] = exception
+        else
+          if @exception && context != :dont_print
+            # An error has already been set; we don't want to override it,
+            # but we also don't want silence the error, so let's print it.
+            msg = <<-EOS
 
-An error occurred #{context}
-  #{exception.class}: #{exception.message}
-  occurred at #{exception.backtrace.first}
+  An error occurred #{context}
+    #{exception.class}: #{exception.message}
+    occurred at #{exception.backtrace.first}
 
-          EOS
-          RSpec.configuration.reporter.message(msg)
+            EOS
+            RSpec.configuration.reporter.message(msg)
+          end
+
+          @exception ||= exception
         end
-
-        @exception ||= exception
       end
 
       # @private

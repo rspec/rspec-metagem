@@ -479,6 +479,16 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         group.run
         expect(group.examples.first).to be_pending
       end
+
+      it 'sets example to pending when failure occurs in around(:each)' do
+        group = RSpec::Core::ExampleGroup.describe do
+          around(:each) { pending; raise }
+          example {}
+        end
+        group.run
+        expect(group.examples.first.metadata[:execution_result][:status]).to eq("pending")
+        expect(group.examples.first).to be_pending
+      end
     end
   end
 
