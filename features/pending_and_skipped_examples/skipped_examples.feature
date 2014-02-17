@@ -1,7 +1,7 @@
 Feature: skipped examples
 
-  RSpec offers four ways to indicate that an example should be skipped and not
-  executed.
+  RSpec offers a number of ways to indicate that an example should be skipped
+  and not executed.
 
   Scenario: no implementation provided
     Given a file named "example_without_block_spec.rb" with:
@@ -84,4 +84,23 @@ Feature: skipped examples
         an example is skipped using xexample
           # Temporarily skipped with xexample
           # ./temporarily_skipped_spec.rb:8
+      """
+
+  Scenario: skipping using metadata
+    Given a file named "skipped_spec.rb" with:
+      """ruby
+      describe "an example" do
+        example "is skipped", :skip => true do
+        end
+      end
+      """
+    When I run `rspec skipped_spec.rb`
+    Then the exit status should be 0
+    And the output should contain "1 example, 0 failures, 1 pending"
+    And the output should contain:
+      """
+      Pending:
+        an example is skipped
+          # No reason given
+          # ./skipped_spec.rb:2
       """
