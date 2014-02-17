@@ -38,7 +38,7 @@ module RSpec
   #
   # Given the expression:
   #
-  #     expet(order.entries).not_to include(entry)
+  #     expect(order.entries).not_to include(entry)
   #
   # ...the `not_to` method (also available as `to_not`) invokes the equivalent of
   # `include.matches?(order.entries)`, but it interprets `false` as success, and
