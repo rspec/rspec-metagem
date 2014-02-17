@@ -11,11 +11,18 @@ Breaking Changes for 3.0.0:
   (Myron Marston)
 * Remove support for overriding RSpec's built-in `:if` and `:unless`
   filters. (Ashish Dixit)
-* Formatters are now required to implement a `notifications` method
-  returning a list of events they wish to be notified about. Notifications
-  are handled by methods matching the names on formatters. This allows
-  us to add or remove notifications without breaking existing formatters.
-  (Jon Rowe)
+* Custom formatters are now required to call
+  `RSpec::Core::Formatters.register(formatter_class, *notifications)`
+  where `notifications` is the list of events the formatter wishes to
+  be notified about. Notifications are handled by methods matching the
+  names on formatters. This allows us to add or remove notifications
+  without breaking existing formatters. (Jon Rowe)
+* Change arguments passed to formatters. Rather than passing multiple
+  arguments (which limits are ability to add additional arguments as
+  doing so would break existing formatters), we now pass a notification
+  value object that exposes the same data via attributes. This will
+  allow us to add new bits of data to a notification event without
+  breaking existing formattesr. (Jon Rowe)
 * Remove support for deprecated `:alias` option for
   `RSpec.configuration.add_setting`. (Myron Marston)
 * Remove support for deprecated `RSpec.configuration.requires = [...]`.
@@ -30,12 +37,14 @@ Breaking Changes for 3.0.0:
   and `xspecify`, or via a new `skip` method or `:skip` metadata option.
   (Xavier Shay)
 * After calling `pending` inside an example, the remainder of the example will
-  now be run. If it passes a failure is raised, otherwise the example is marked
+  now be run. If it passes, a failure is raised, otherwise the example is marked
   pending. The old "never run" behaviour is provided a by a new `skip` method.
   (Xavier Shay)
 * Pending blocks inside an example have been removed as a feature with no
   direct replacement. Use `skip` or `pending` without a block. (Xavier Shay)
 * Remove `show_failures_in_pending_blocks` configuration option. (Xavier Shay)
+* Remove support for specifying the documentation formatter using
+  's', 'n', 'spec' or 'nested'. (Jon Rowe)
 
 Enhancements:
 
@@ -53,17 +62,33 @@ Enhancements:
   pending. (Myron Marston)
 * Add `fdescribe` and `fcontext` as shortcuts to focus an example group.
   (Myron Marston)
+* Don't autorun specs via `#at_exit` by default; `require 'rspec/autorun'`
+  is only needed when running specs via `ruby` now, as it always has been.
+  Running specs via `rake` or `rspec` are both unaffected. (Ben Hoskings)
+* Add `expose_dsl_globally` config option. This defaults to true but
+  when disabled, it will remove the monkey patches rspec-core adds to
+  `main` and `Module` (e.g. `describe`, `shared_examples_for`, etc).
+  (Jon Rowe)
+* Expose RSpec DSL entry point methods (`describe`,
+  `shared_examples_for`, etc) off of `RSpec`, intended for use
+  when `expose_dsl_globally` is set to `false`. (Jon Rowe)
+* For consistency, expose all example group aliases (including
+  `context`) off of `RSpec` and, if `expose_dsl_globally` is set to
+  `true`, off of `main` and `Module`. Historically, only `describe`
+  was exposed. (Jon Rowe, Michi Huber)
 
 Bug Fixes:
 
 * Fix failure (undefined method `path`) in end-of-run summary
   when `raise_errors_for_deprecations!` is configured. (Myron Marston)
 * Issue error when attempting to use -i or --I on command line,
-  to close to -I to be considered short hand for --init. (Jon Rowe)
+  too close to -I to be considered short hand for --init. (Jon Rowe)
 * Prevent adding formatters to an output target if the same
   formatter has already been added to that output. (Alex Peattie)
 * Allow a matcher-generated example description to be used when
   the example is pending. (Myron Marston)
+* Ensure the configured `failure_exit_code` gets used by the rake
+  task when there is a failure. (Jon Rowe)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
@@ -97,9 +122,6 @@ Breaking Changes for 3.0.0:
 * Remove `RSpec::Core::Configuration#output` and
   `RSpec::Core::Configuration#out` aliases of
   `RSpec::Core::Configuration#output_stream`. (Myron Marston)
-* Don't autorun specs via `#at_exit` by default; `require 'rspec/autorun'`
-  is needed when running specs via `ruby` now (`rake` & `rspec` are both
-  unaffected). (Ben Hoskings)
 
 Enhancements
 
