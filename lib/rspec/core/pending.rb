@@ -98,10 +98,7 @@ module RSpec
       #         end
       #       end
       #     end
-      def skip(*args, &block)
-        return block && block.call if Pending.guarded?(*args)
-        return if block
-
+      def skip(*args)
         current_example = RSpec.current_example
 
         if current_example
@@ -128,12 +125,6 @@ module RSpec
       def self.mark_fixed!(example)
         example.metadata[:pending] = false
         example.metadata[:execution_result][:pending_fixed] = true
-      end
-
-      def self.guarded?(*args)
-        options = args.last.is_a?(Hash) ? args.pop : {}
-
-        options[:unless] || (options.has_key?(:if) && !options[:if])
       end
     end
   end

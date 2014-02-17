@@ -34,8 +34,7 @@ Breaking Changes for 3.0.0:
   pending. The old "never run" behaviour is provided a by a new `skip` method.
   (Xavier Shay)
 * Pending blocks inside an example have been removed as a feature with no
-  direct replacement. Either use `skip`, or `pending` with no block.
-  (Xavier Shay)
+  direct replacement. Use `skip` or `pending` without a block. (Xavier Shay)
 * Remove `show_failures_in_pending_blocks` configuration option. (Xavier Shay)
 
 Enhancements:
