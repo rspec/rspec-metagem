@@ -93,6 +93,20 @@ module RSpec::Core
           expect(BacktraceFormatter.new.format_backtrace(backtrace).drop(4).join).to match(/Showing full backtrace/)
         end
       end
+
+      context "when rspec is installed in the current working directory" do
+        it "excludes lines from rspec libs by default", :unless => RSpec.windows_os? do
+          backtrace = [
+            "#{Dir.getwd}/.bundle/path/to/rspec-expectations/lib/rspec/expectations/foo.rb:37",
+            "#{Dir.getwd}/.bundle/path/to/rspec-expectations/lib/rspec/matchers/foo.rb:37",
+            "#{Dir.getwd}/my_spec.rb:5",
+            "#{Dir.getwd}/.bundle/path/to/rspec-mocks/lib/rspec/mocks/foo.rb:37",
+            "#{Dir.getwd}/.bundle/path/to/rspec-core/lib/rspec/core/foo.rb:37"
+          ]
+
+          expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq(["./my_spec.rb:5"])
+        end
+      end
     end
 
     describe "#full_backtrace=true" do
