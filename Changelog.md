@@ -157,6 +157,46 @@ Deprecations
   longer has an affect now that the behavior it enabled is always
   enabled. (Myron Marston)
 
+### 2.99.0.beta2 / 2014-02-17
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v2.99.0.beta2)
+
+Enhancements:
+
+* Add `is_expected` for one-liners that read well with the
+  `expect`-based syntax. `is_expected` is simply defined as
+  `expect(subject)` and can be used in an expression like:
+  `it { is_expected.to read_well }`. (Myron Marston)
+* Backport `skip` from RSpec 3, which acts like `pending` did in RSpec 2
+  when not given a block, since the behavior of `pending` is changing in
+  RSpec 3. (Xavier Shay)
+
+Deprecations:
+
+* Deprecate inexact `mock_with` config options. RSpec 3 will only support
+  the exact symbols `:rspec`, `:mocha`, `:flexmock`, `:rr` or `:nothing`
+  (or any module that implements the adapter interface). RSpec 2 did
+  fuzzy matching but this will not be supported going forward.
+  (Myron Marston)
+* Deprecate `show_failures_in_pending_blocks` config option. To achieve
+  the same behavior as the option enabled, you can use a custom
+  formatter instead. (Xavier Shay)
+* Add a deprecation warning for the fact that the behavior of `pending`
+  is changing in RSpec 3 -- rather than skipping the example (as it did
+  in 2.x when no block was provided), it will run the example and mark
+  it as failed if no exception is raised. Use `skip` instead to preserve
+  the old behavior. (Xavier Shay)
+* Deprecate 's', 'n', 'spec' and 'nested' as aliases for documentation
+  formatter. (Jon Rowe)
+* Deprecate `RSpec::Core::Reporter#abort` in favor of
+  `RSpec::Core::Reporter#finish`. (Jon Rowe)
+
+Bug Fixes:
+
+* Fix failure (undefined method `path`) in end-of-run summary
+  when `raise_errors_for_deprecations!` is configured. (Myron Marston)
+* Fix issue were overridding spec ordering from the command line wasnt
+  fully recognised interally. (Jon Rowe)
+
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.14.7...v2.99.0.beta1)
 
