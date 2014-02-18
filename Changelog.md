@@ -42,6 +42,8 @@ Breaking Changes for 3.0.0:
   (Xavier Shay)
 * Pending blocks inside an example have been removed as a feature with no
   direct replacement. Use `skip` or `pending` without a block. (Xavier Shay)
+* Pending statement is no longer allowed in `before(:all)` hooks. Use `skip`
+  instead.  (Xavier Shay)
 * Remove `show_failures_in_pending_blocks` configuration option. (Xavier Shay)
 * Remove support for specifying the documentation formatter using
   's', 'n', 'spec' or 'nested'. (Jon Rowe)

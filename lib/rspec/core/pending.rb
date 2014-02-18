@@ -1,7 +1,13 @@
 module RSpec
   module Core
     module Pending
-      class SkipDeclaredInExample < StandardError; end
+      class SkipDeclaredInExample < StandardError
+        attr_reader :argument
+
+        def initialize(argument)
+          @argument = argument
+        end
+      end
 
       # If Test::Unit is loaed, we'll use its error as baseclass, so that Test::Unit
       # will report unmet RSpec expectations as failures rather than errors.
@@ -61,7 +67,8 @@ module RSpec
         if current_example
           Pending.mark_pending! current_example, args.first
         else
-          self.class.before(:each) { pending(*args) }
+          raise "`pending` may not be used outside of examples, such as in " +
+                "before(:all). Maybe you want `skip`?"
         end
       end
 
@@ -102,12 +109,15 @@ module RSpec
         current_example = RSpec.current_example
 
         if current_example
-          Pending.mark_pending! current_example, args.first
-          current_example.metadata[:skip] = true
-          raise SkipDeclaredInExample
-        else
-          self.class.before(:each) { skip(*args) }
+          Pending.mark_skipped! current_example, args.first
         end
+
+        raise SkipDeclaredInExample.new(args.first)
+      end
+
+      def self.mark_skipped!(example, message_or_bool)
+        Pending.mark_pending! example, message_or_bool
+        example.metadata[:skip] = true
       end
 
       def self.mark_pending!(example, message_or_bool)

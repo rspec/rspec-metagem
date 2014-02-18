@@ -248,6 +248,16 @@ module RSpec
       end
 
       # @private
+      #
+      # Used internally to skip without actually executing the example when
+      # skip is used in before(:all)
+      def skip_with_exception(reporter, exception)
+        start(reporter)
+        Pending.mark_skipped! self, exception.argument
+        finish(reporter)
+      end
+
+      # @private
       def instance_exec_with_rescue(context = nil, &block)
         @example_group_instance.instance_exec_with_rescue(self, context, &block)
       end
