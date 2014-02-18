@@ -7,3 +7,5 @@ Gemfile.lock
 .bundle
 *.rbc
 bin
+bundle
+.bundle
