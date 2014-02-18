@@ -1,3 +1,6 @@
+### 3.0.0.rc1 Development
+[full changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta2...master)
+
 ### 3.0.0.beta2 / 2014-02-17
 [full changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)
 
@@ -196,7 +199,7 @@ Bug Fixes:
 
 * Fix failure (undefined method `path`) in end-of-run summary
   when `raise_errors_for_deprecations!` is configured. (Myron Marston)
-* Fix issue were overridding spec ordering from the command line wasnt
+* Fix issue were overridding spec ordering from the command line wasn't
   fully recognised interally. (Jon Rowe)
 
 ### 2.99.0.beta1 / 2013-11-07
