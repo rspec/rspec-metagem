@@ -90,6 +90,8 @@ Bug Fixes:
   the example is pending. (Myron Marston)
 * Ensure the configured `failure_exit_code` is used by the rake
   task when there is a failure. (Jon Rowe)
+* Restore behaviour whereby system exclusion filters take priority over working
+  directory (was broken in beta1). (Jon Rowe)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
