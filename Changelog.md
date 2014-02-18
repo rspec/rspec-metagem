@@ -92,6 +92,8 @@ Bug Fixes:
   task when there is a failure. (Jon Rowe)
 * Restore behaviour whereby system exclusion filters take priority over working
   directory (was broken in beta1). (Jon Rowe)
+* Prevent RSpec mangling file names that have substrings containing `line_number`
+  or `default_path`. (Matijs van Zuijlen)
 
 ### 3.0.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
