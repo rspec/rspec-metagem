@@ -473,26 +473,16 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     context "in before(:all)" do
-      it "sets each example to pending" do
+      it "is forbidden" do
         group = RSpec::Core::ExampleGroup.describe do
           before(:all) { pending }
           example { fail }
           example { fail }
         end
         group.run
-        expect_pending_result(group.examples.first)
-        expect_pending_result(group.examples.last)
-      end
-
-      it 'sets example to pending when failure occurs in before(:all)' do
-        pending("Unimplemented")
-
-        group = RSpec::Core::ExampleGroup.describe do
-          before(:all) { pending; fail }
-          example {}
-        end
-        group.run
-        expect_pending_result(group.examples.first)
+        expect(group.examples.first.exception).to be
+        expect(group.examples.first.exception.message).to \
+          match(/may not be used outside of examples/)
       end
     end
 
@@ -581,13 +571,13 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     context "in before(:all)" do
       it "sets each example to pending" do
         group = RSpec::Core::ExampleGroup.describe do
-          before(:all) { skip }
+          before(:all) { skip("not done"); fail }
           example {}
           example {}
         end
         group.run
-        expect(group.examples.first).to be_skipped
-        expect(group.examples.last).to be_skipped
+        expect(group.examples.first).to be_skipped_with("not done")
+        expect(group.examples.last).to be_skipped_with("not done")
       end
     end
 
