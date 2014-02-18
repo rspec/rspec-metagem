@@ -145,6 +145,32 @@ Deprecations:
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
 
+### 2.99.0.beta2 / 2014-02-17
+[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v2.99.0.beta2)
+
+Deprecations:
+
+* Deprecate chaining `by`, `by_at_least`, `by_at_most` or `to` off of
+  `expect { }.not_to change { }`. The docs have always said these are
+  not supported for the negative form but now they explicitly raise
+  errors in RSpec 3. (Myron Marston)
+* Change the semantics of `expect { }.not_to change { x }.from(y)`.
+  In RSpec 2.x, this expectation would only fail if `x` started with
+  the value of `y` and changed. If it started with a different value
+  and changed, it would pass. In RSpec 3, it will pass only if the
+  value starts at `y` and it does not change. (Myron Marston)
+* Deprecate `matcher == value` as an alias for `matcher.matches?(value)`,
+  in favor of `matcher === value`. (Myron Marston)
+* Deprecate `RSpec::Matchers::OperatorMatcher` in favor of
+  `RSpec::Matchers::BuiltIn::OperatorMatcher`. (Myron Marston)
+* Deprecate auto-integration with Test::Unit and minitest.
+  Instead, include `RSpec::Matchers` in the appropriate test case
+  base class yourself. (Myron Marston)
+* Deprecate treating `#expected` on a DSL-generated custom matcher
+  as an array when only 1 argument is passed to the matcher method.
+  In RSpec 3 it will be the single value in order to make diffs
+  work properly. (Jon Rowe)
+
 ### 2.99.0.beta1 / 2013-11-07
 [full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.99.0.beta1)
 
