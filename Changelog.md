@@ -1,8 +1,8 @@
 ### 3.0.0.rc1 Development
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta2...master)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta2...master)
 
 ### 3.0.0.beta2 / 2014-02-17
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
 
 Breaking Changes for 3.0.0:
 
@@ -100,7 +100,7 @@ Deprecations:
   a deprecation warning. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -149,7 +149,7 @@ Deprecations:
    you do not explicitly enable it. (Sam Phippen)
 
 ### 2.99.0.beta2 / 2014-02-17
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v2.99.0.beta2)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v2.99.0.beta2)
 
 Deprecations:
 
@@ -175,7 +175,7 @@ Deprecations:
   work properly. (Jon Rowe)
 
 ### 2.99.0.beta1 / 2013-11-07
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.99.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.99.0.beta1)
 
 Deprecations
 
@@ -200,7 +200,7 @@ Deprecations
     either purpose, but RSpec 3.0 will not.
 
 ### 2.14.5 / 2014-02-01
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.14.5)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.4...v2.14.5)
 
 Bug fixes
 
@@ -208,7 +208,7 @@ Bug fixes
   (yujinakayama)
 
 ### 2.14.4 / 2013-11-06
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.3...v2.14.4)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.3...v2.14.4)
 
 Bug fixes
 
@@ -217,7 +217,7 @@ Bug fixes
   back to default internal encoding with replacing characters. (Jon Rowe)
 
 ### 2.14.3 / 2013-09-22
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.2...v2.14.3)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.2...v2.14.3)
 
 Bug fixes
 
@@ -228,7 +228,7 @@ Bug fixes
   `method_missing` (Jon Rowe)
 
 ### 2.14.2 / 2013-08-14
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.1...v2.14.2)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.1...v2.14.2)
 
 Bug fixes
 
@@ -244,7 +244,7 @@ Bug fixes
   `SomeClass === SomeClass` returns false. (Myron Marston)
 
 ### 2.14.1 / 2013-08-08
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...2.14.1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0...2.14.1)
 
 Bug fixes
 
@@ -253,7 +253,7 @@ Bug fixes
   errors (Jon Rowe).
 
 ### 2.14.0 / 2013-07-06
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.14.0.rc1...v2.14.0)
 
 Bug fixes
 
@@ -265,7 +265,7 @@ Bug fixes
   change...`  (Sam Phippen).
 
 ### 2.14.0.rc1 / 2013-05-27
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.13.0...v2.14.0.rc1)
 
 Enhancements
 
@@ -299,7 +299,7 @@ Deprecations
   error_ to pass. (Sam Phippen and David Chelimsky)
 
 ### 2.13.0 / 2013-02-23
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.1...v2.13.0)
 
 Enhancements
 
@@ -330,7 +330,7 @@ Bug fixes
   printed for empty diffs (Myron Marston).
 
 ### 2.12.1 / 2012-12-15
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.0...v2.12.1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.12.0...v2.12.1)
 
 Bug fixes
 
@@ -342,7 +342,7 @@ Bug fixes
   (Steven Harman)
 
 ### 2.12.0 / 2012-11-12
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.3...v2.12.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.3...v2.12.0)
 
 Enhancements
 
@@ -365,7 +365,7 @@ Bug fixes
   (Tom Stuart)
 
 ### 2.11.3 / 2012-09-04
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...v2.11.3)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.2...v2.11.3)
 
 Bug fixes
 
@@ -381,7 +381,7 @@ Bug fixes
     }.to change { user.last_emailed_at }.to be_within(1.second).of(Time.zone.now)
 
 ### 2.11.2 / 2012-07-25
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.1...v2.11.2)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.1...v2.11.2)
 
 Bug fixes
 
@@ -390,7 +390,7 @@ Bug fixes
   of the object hierarchy. (Gabriel Gilder)
 
 ### 2.11.1 / 2012-07-08
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.0...v2.11.1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.11.0...v2.11.1)
 
 Bug fixes
 
@@ -399,7 +399,7 @@ Bug fixes
     * `Time`, for example, is a legit alternative.
 
 ### 2.11.0 / 2012-07-07
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.10.0...v2.11.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.10.0...v2.11.0)
 
 Enhancements
 
@@ -422,7 +422,7 @@ Bug fixes
   Marston)
 
 ### 2.10.0 / 2012-05-03
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...v2.10.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.1...v2.10.0)
 
 Enhancements
 
@@ -440,7 +440,7 @@ Bug fixes
 * Fix message-specific specs to pass on Rubinius (John Firebaugh)
 
 ### 2.9.1 / 2012-04-03
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...v2.9.1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.9.0...v2.9.1)
 
 Bug fixes
 
@@ -451,7 +451,7 @@ Bug fixes
 * Fix using execution context methods in nested DSL matchers (mirasrael)
 
 ### 2.9.0 / 2012-03-17
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0...v2.9.0)
 
 Enhancements
 
@@ -471,7 +471,7 @@ Bug fixes
 
 ### 2.8.0 / 2012-01-04
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc2...v2.8.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc2...v2.8.0)
 
 Enhancements
 
@@ -480,13 +480,13 @@ Enhancements
 
 ### 2.8.0.rc2 / 2011-12-19
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc1...v2.8.0.rc2)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.8.0.rc1...v2.8.0.rc2)
 
 No changes for this release. Just releasing with the other rspec gems.
 
 ### 2.8.0.rc1 / 2011-11-06
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...v2.8.0.rc1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.7.0...v2.8.0.rc1)
 
 Enhancements
 
@@ -495,7 +495,7 @@ Enhancements
 
 ### 2.7.0 / 2011-10-16
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...v2.7.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.6.0...v2.7.0)
 
 Enhancements
 
@@ -513,7 +513,7 @@ Bug fixes
 
 ### 2.6.0 / 2011-05-12
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.5.0...v2.6.0)
 
 Enhancements
 
@@ -531,7 +531,7 @@ Bug fixes
 
 ### 2.5.0 / 2011-02-05
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.4.0...v2.5.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.4.0...v2.5.0)
 
 Enhancements
 
@@ -544,7 +544,7 @@ Documentation
 
 ### 2.4.0 / 2011-01-02
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.3.0...v2.4.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.3.0...v2.4.0)
 
 No functional changes in this release, which was made to align with the
 rspec-core-2.4.0 release.
@@ -555,7 +555,7 @@ Enhancements
 
 ### 2.3.0 / 2010-12-12
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.2.1...v2.3.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.2.1...v2.3.0)
 
 Enhancements
 
@@ -563,11 +563,11 @@ Enhancements
 
 ### 2.2.0 / 2010-11-28
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.1.0...v2.2.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.1.0...v2.2.0)
 
 ### 2.1.0 / 2010-11-07
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.1...v2.1.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.1...v2.1.0)
 
 Enhancements
 
@@ -586,7 +586,7 @@ Bug fixes
 
 ### 2.0.0 / 2010-10-10
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.rc...v2.0.0)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.rc...v2.0.0)
 
 Enhancements
 
@@ -601,7 +601,7 @@ Bug fixes
 
 ### 2.0.0.rc / 2010-10-05
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.22...v2.0.0.rc)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.22...v2.0.0.rc)
 
 Enhancements
 
@@ -614,7 +614,7 @@ Bug fixes
 
 ### 2.0.0.beta.22 / 2010-09-12
 
-[full changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.20...v2.0.0.beta.22)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.0.0.beta.20...v2.0.0.beta.22)
 
 Enhancements
 
