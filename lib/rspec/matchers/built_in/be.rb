@@ -166,7 +166,7 @@ module RSpec
           "#{prefix_to_sentence}#{expected_to_sentence}#{args_to_sentence}"
         end
 
-        private
+      private
 
         # support 1.8.7
         if methods.first.is_a? String
