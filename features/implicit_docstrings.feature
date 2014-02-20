@@ -35,14 +35,14 @@ Feature: implicit docstrings
     """ruby
     RSpec.describe "Failing examples with no descriptions" do
       # description is auto-generated as "to equal(5)" based on the last #expect
-      it do
+      specify do
         expect(3).to equal(2)
         expect(5).to equal(5)
       end
 
-      it { expect(3).to be > 5 }
-      it { expect([1,2,3]).to include(4) }
-      it { expect([1,2,3]).not_to respond_to(:size) }
+      specify { expect(3).to be > 5 }
+      specify { expect([1,2,3]).to include(4) }
+      specify { expect([1,2,3]).not_to respond_to(:size) }
     end
     """
 
