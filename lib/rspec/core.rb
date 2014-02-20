@@ -16,7 +16,6 @@ require_rspec['core/version']
 
 require 'rspec/support/caller_filter'
 require 'rspec/core/warnings'
-require 'rspec/support/warnings'
 
 require_rspec['core/flat_map']
 require_rspec['core/filter_manager']
@@ -44,6 +43,8 @@ require_rspec['core/example_group']
 
 module RSpec
   autoload :SharedContext, 'rspec/core/shared_context'
+
+  extend RSpec::Core::Warnings
 
   # @private
   def self.wants_to_quit
