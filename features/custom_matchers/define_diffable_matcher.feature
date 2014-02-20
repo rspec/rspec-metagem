@@ -1,10 +1,9 @@
 Feature: define diffable matcher
 
-  When a matcher is defined as diffable, and the --diff
-  flag is set, the output will include a diff of the submitted
-  objects.
+  When a matcher is defined as diffable, the output will
+  include a diff of the submitted objects when the objects
+  are more than simple primitives.
 
-  @wip
   Scenario: define a diffable matcher
     Given a file named "diffable_matcher_spec.rb" with:
       """ruby
@@ -16,12 +15,17 @@ Feature: define diffable matcher
         diffable
       end
 
-      describe "this" do
-        it {should be_just_like("that")}
+      describe "two\nlines" do
+        it { should be_just_like("three\nlines") }
       end
       """
-    When I run `rspec ./diffable_matcher_spec.rb --diff`
-    Then the exit status should not be 0
-
-    And the output should contain "should be just like that"
-    And the output should contain "Diff:\n@@ -1,2 +1,2 @@\n-that\n+this"
+    When I run `rspec ./diffable_matcher_spec.rb`
+    Then it should fail with:
+      """
+             expected "two\nlines" to be just like "three\nlines"
+             Diff:
+             @@ -1,3 +1,3 @@
+             -three
+             +two
+              lines
+      """
