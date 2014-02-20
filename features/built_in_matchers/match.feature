@@ -17,13 +17,13 @@ Feature: match matcher
   Scenario: string usage
     Given a file named "string_match_spec.rb" with:
       """ruby
-      describe "a string" do
-        it { should match(/str/) }
-        it { should_not match(/foo/) }
+      RSpec.describe "a string" do
+        it { is_expected.to match(/str/) }
+        it { is_expected.not_to match(/foo/) }
 
         # deliberate failures
-        it { should_not match(/str/) }
-        it { should match(/foo/) }
+        it { is_expected.not_to match(/str/) }
+        it { is_expected.to match(/foo/) }
       end
       """
     When I run `rspec string_match_spec.rb`
@@ -35,13 +35,13 @@ Feature: match matcher
   Scenario: regular expression usage
     Given a file named "regexp_match_spec.rb" with:
       """ruby
-      describe /foo/ do
-        it { should match("food") }
-        it { should_not match("drinks") }
+      RSpec.describe /foo/ do
+        it { is_expected.to match("food") }
+        it { is_expected.not_to match("drinks") }
 
         # deliberate failures
-        it { should_not match("food") }
-        it { should match("drinks") }
+        it { is_expected.not_to match("food") }
+        it { is_expected.to match("drinks") }
       end
       """
     When I run `rspec regexp_match_spec.rb`

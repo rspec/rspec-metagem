@@ -14,25 +14,25 @@ Feature: cover matcher
   Scenario: range usage
     Given a file named "range_cover_matcher_spec.rb" with:
       """ruby
-      describe (1..10) do
-        it { should cover(4) }
-        it { should cover(6) }
-        it { should cover(8) }
-        it { should cover(4, 6) }
-        it { should cover(4, 6, 8) }
-        it { should_not cover(11) }
-        it { should_not cover(11, 12) }
+      RSpec.describe (1..10) do
+        it { is_expected.to cover(4) }
+        it { is_expected.to cover(6) }
+        it { is_expected.to cover(8) }
+        it { is_expected.to cover(4, 6) }
+        it { is_expected.to cover(4, 6, 8) }
+        it { is_expected.not_to cover(11) }
+        it { is_expected.not_to cover(11, 12) }
 
         # deliberate failures
-        it { should cover(11) }
-        it { should_not cover(4) }
-        it { should_not cover(6) }
-        it { should_not cover(8) }
-        it { should_not cover(4, 6, 8) }
+        it { is_expected.to cover(11) }
+        it { is_expected.not_to cover(4) }
+        it { is_expected.not_to cover(6) }
+        it { is_expected.not_to cover(8) }
+        it { is_expected.not_to cover(4, 6, 8) }
 
         # both of these should fail since it covers 5 but not 11
-        it { should cover(5, 11) }
-        it { should_not cover(5, 11) }
+        it { is_expected.to cover(5, 11) }
+        it { is_expected.not_to cover(5, 11) }
       end
       """
     When I run `rspec range_cover_matcher_spec.rb`

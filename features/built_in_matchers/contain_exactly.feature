@@ -21,7 +21,7 @@ Feature: contain_exactly matcher
   Scenario: array operator matchers
     Given a file named "contain_exactly_matcher_spec.rb" with:
       """ruby
-      describe do
+      RSpec.describe do
         example { expect([1, 2, 3]).to contain_exactly(1, 2, 3) }
         example { expect([1, 2, 3]).to contain_exactly(1, 3, 2) }
         example { expect([1, 2, 3]).to contain_exactly(2, 1, 3) }

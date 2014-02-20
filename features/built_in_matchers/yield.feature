@@ -48,7 +48,7 @@ Feature: yield matchers
       """ruby
       require './my_class'
 
-      describe "yield_control matcher" do
+      RSpec.describe "yield_control matcher" do
         specify { expect { |b| MyClass.yield_once_with(1, &b) }.to yield_control }
         specify { expect { |b| MyClass.dont_yield(&b) }.not_to yield_control }
         specify { expect { |b| MyClass.yield_twice_with(1, &b) }.to yield_control.twice }
@@ -79,7 +79,7 @@ Feature: yield matchers
       """ruby
       require './my_class'
 
-      describe "yield_with_args matcher" do
+      RSpec.describe "yield_with_args matcher" do
         specify { expect { |b| MyClass.yield_once_with("foo", &b) }.to yield_with_args }
         specify { expect { |b| MyClass.yield_once_with("foo", &b) }.to yield_with_args("foo") }
         specify { expect { |b| MyClass.yield_once_with("foo", &b) }.to yield_with_args(String) }
@@ -112,7 +112,7 @@ Feature: yield matchers
       """ruby
       require './my_class'
 
-      describe "yield_with_no_args matcher" do
+      RSpec.describe "yield_with_no_args matcher" do
         specify { expect { |b| MyClass.raw_yield(&b) }.to yield_with_no_args }
         specify { expect { |b| MyClass.dont_yield(&b) }.not_to yield_with_no_args }
         specify { expect { |b| MyClass.yield_once_with("a", &b) }.not_to yield_with_no_args }
@@ -141,7 +141,7 @@ Feature: yield matchers
         [[:a, :b], [:c, :d]]
       end
 
-      describe "yield_successive_args matcher" do
+      RSpec.describe "yield_successive_args matcher" do
         specify { expect { |b| array.each(&b) }.to yield_successive_args(1, 2, 3) }
         specify { expect { |b| array_of_tuples.each(&b) }.to yield_successive_args([:a, :b], [:c, :d]) }
         specify { expect { |b| array.each(&b) }.to yield_successive_args(Fixnum, Fixnum, Fixnum) }

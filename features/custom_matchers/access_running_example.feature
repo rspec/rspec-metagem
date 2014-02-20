@@ -14,7 +14,7 @@ Feature: access running example
         end
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         def foo
           "foo"
         end
@@ -36,7 +36,7 @@ Feature: access running example
         end
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does something" do
           expect("foo").to bar
         end

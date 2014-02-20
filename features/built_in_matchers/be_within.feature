@@ -23,20 +23,20 @@ Feature: be_within matcher
   Scenario: basic usage
     Given a file named "be_within_matcher_spec.rb" with:
       """ruby
-      describe 27.5 do
-        it { should be_within(0.5).of(27.9) }
-        it { should be_within(0.5).of(28.0) }
-        it { should be_within(0.5).of(27.1) }
-        it { should be_within(0.5).of(27.0) }
+      RSpec.describe 27.5 do
+        it { is_expected.to be_within(0.5).of(27.9) }
+        it { is_expected.to be_within(0.5).of(28.0) }
+        it { is_expected.to be_within(0.5).of(27.1) }
+        it { is_expected.to be_within(0.5).of(27.0) }
 
-        it { should_not be_within(0.5).of(28.1) }
-        it { should_not be_within(0.5).of(26.9) }
+        it { is_expected.not_to be_within(0.5).of(28.1) }
+        it { is_expected.not_to be_within(0.5).of(26.9) }
 
         # deliberate failures
-        it { should_not be_within(0.5).of(28) }
-        it { should_not be_within(0.5).of(27) }
-        it { should be_within(0.5).of(28.1) }
-        it { should be_within(0.5).of(26.9) }
+        it { is_expected.not_to be_within(0.5).of(28) }
+        it { is_expected.not_to be_within(0.5).of(27) }
+        it { is_expected.to be_within(0.5).of(28.1) }
+        it { is_expected.to be_within(0.5).of(26.9) }
       end
       """
     When I run `rspec be_within_matcher_spec.rb`

@@ -15,32 +15,31 @@ Feature: define matcher
         end
       end
 
-      describe 9 do
-        it {should be_a_multiple_of(3)}
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(3) }
       end
 
-      describe 9 do
-        it {should_not be_a_multiple_of(4)}
-      end
-
-      # fail intentionally to generate expected output
-      describe 9 do
-        it {should be_a_multiple_of(4)}
+      RSpec.describe 9 do
+        it { is_expected.not_to be_a_multiple_of(4) }
       end
 
       # fail intentionally to generate expected output
-      describe 9 do
-        it {should_not be_a_multiple_of(3)}
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(4) }
       end
 
+      # fail intentionally to generate expected output
+      RSpec.describe 9 do
+        it { is_expected.not_to be_a_multiple_of(3) }
+      end
       """
     When I run `rspec ./matcher_with_default_message_spec.rb --format documentation`
     Then the exit status should not be 0
 
     And the output should contain "should be a multiple of 3"
     And the output should contain "should not be a multiple of 4"
-    And the output should contain "Failure/Error: it {should be_a_multiple_of(4)}"
-    And the output should contain "Failure/Error: it {should_not be_a_multiple_of(3)}"
+    And the output should contain "Failure/Error: it { is_expected.to be_a_multiple_of(4) }"
+    And the output should contain "Failure/Error: it { is_expected.not_to be_a_multiple_of(3) }"
 
     And the output should contain "4 examples, 2 failures"
     And the output should contain "expected 9 to be a multiple of 4"
@@ -61,8 +60,8 @@ Feature: define matcher
       end
 
       # fail intentionally to generate expected output
-      describe 9 do
-        it {should be_a_multiple_of(4)}
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(4) }
       end
       """
     When I run `rspec ./matcher_with_failure_message_spec.rb`
@@ -85,8 +84,8 @@ Feature: define matcher
       end
 
       # fail intentionally to generate expected output
-      describe 9 do
-        it {should_not be_a_multiple_of(3)}
+      RSpec.describe 9 do
+        it { is_expected.not_to be_a_multiple_of(3) }
       end
       """
     When I run `rspec ./matcher_with_failure_for_message_spec.rb`
@@ -108,12 +107,12 @@ Feature: define matcher
         end
       end
 
-      describe 9 do
-        it {should be_a_multiple_of(3)}
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(3) }
       end
 
-      describe 9 do
-        it {should_not be_a_multiple_of(4)}
+      RSpec.describe 9 do
+        it { is_expected.not_to be_a_multiple_of(4) }
       end
       """
     When I run `rspec ./matcher_overriding_description_spec.rb --format documentation`
@@ -137,8 +136,8 @@ Feature: define matcher
         def fingers; (1..7).collect {"finger"}; end
       end
 
-      describe Thing do
-        it {should have_7_fingers}
+      RSpec.describe Thing do
+        it { is_expected.to have_7_fingers }
       end
       """
     When I run `rspec ./matcher_with_no_args_spec.rb --format documentation`
@@ -157,8 +156,8 @@ Feature: define matcher
         end
       end
 
-      describe 10 do
-        it {should be_the_sum_of(1,2,3,4)}
+      RSpec.describe 10 do
+        it { is_expected.to be_the_sum_of(1,2,3,4) }
       end
       """
     When I run `rspec ./matcher_with_multiple_args_spec.rb --format documentation`
@@ -181,7 +180,7 @@ Feature: define matcher
         end
       end
 
-      describe "these two arrays" do
+      RSpec.describe "these two arrays" do
         specify "should be similar" do
           expect([1,2,3]).to have_same_elements_as([2,3,1])
         end
@@ -204,14 +203,14 @@ Feature: define matcher
         end
       end
 
-      describe "group with MyHelpers" do
+      RSpec.describe "group with MyHelpers" do
         include MyHelpers
         it "has access to the defined matcher" do
           expect(5).to be_just_like(5)
         end
       end
 
-      describe "group without MyHelpers" do
+      RSpec.describe "group without MyHelpers" do
         it "does not have access to the defined matcher" do
           expect do
             expect(5).to be_just_like(5)
@@ -228,7 +227,7 @@ Feature: define matcher
       """ruby
       require 'rspec/expectations'
 
-      describe "group with matcher" do
+      RSpec.describe "group with matcher" do
         matcher :be_just_like do |expected|
           match {|actual| actual == expected}
         end
@@ -242,10 +241,9 @@ Feature: define matcher
             expect(5).to be_just_like(5)
           end
         end
-
       end
 
-      describe "group without matcher" do
+      RSpec.describe "group without matcher" do
         it "does not have access to the defined matcher" do
           expect do
             expect(5).to be_just_like(5)
@@ -270,13 +268,13 @@ Feature: define matcher
         end
       end
 
-      describe [1, 2, 3] do
-        it { should contain(1, 2) }
-        it { should_not contain(4, 5, 6) }
+      RSpec.describe [1, 2, 3] do
+        it { is_expected.to contain(1, 2) }
+        it { is_expected.not_to contain(4, 5, 6) }
 
         # deliberate failures
-        it { should contain(1, 4) }
-        it { should_not contain(1, 4) }
+        it { is_expected.to contain(1, 4) }
+        it { is_expected.not_to contain(1, 4) }
       end
       """
     When I run `rspec matcher_with_separate_should_not_logic_spec.rb`
@@ -295,13 +293,13 @@ Feature: define matcher
         match { |actual| is_multiple?(actual) }
       end
 
-      describe 9 do
-        it { should be_a_multiple_of(3) }
-        it { should_not be_a_multiple_of(4) }
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(3) }
+        it { is_expected.not_to be_a_multiple_of(4) }
 
         # deliberate failures
-        it { should be_a_multiple_of(2) }
-        it { should_not be_a_multiple_of(3) }
+        it { is_expected.to be_a_multiple_of(2) }
+        it { is_expected.not_to be_a_multiple_of(3) }
       end
       """
     When I run `rspec define_method_spec.rb`
@@ -324,13 +322,13 @@ Feature: define matcher
         match { |actual| is_multiple?(actual, expected) }
       end
 
-      describe 9 do
-        it { should be_a_multiple_of(3) }
-        it { should_not be_a_multiple_of(4) }
+      RSpec.describe 9 do
+        it { is_expected.to be_a_multiple_of(3) }
+        it { is_expected.not_to be_a_multiple_of(4) }
 
         # deliberate failures
-        it { should be_a_multiple_of(2) }
-        it { should_not be_a_multiple_of(3) }
+        it { is_expected.to be_a_multiple_of(2) }
+        it { is_expected.not_to be_a_multiple_of(3) }
       end
       """
     When I run `rspec include_module_spec.rb`

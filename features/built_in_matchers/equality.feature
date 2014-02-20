@@ -28,7 +28,7 @@ Feature: equality matchers
   Scenario: compare using eq (==)
     Given a file named "compare_using_eq.rb" with:
       """ruby
-      describe "a string" do
+      RSpec.describe "a string" do
         it "is equal to another string of the same value" do
           expect("this string").to eq("this string")
         end
@@ -38,7 +38,7 @@ Feature: equality matchers
         end
       end
 
-      describe "an integer" do
+      RSpec.describe "an integer" do
         it "is equal to a float of the same value" do
           expect(5).to eq(5.0)
         end
@@ -50,7 +50,7 @@ Feature: equality matchers
   Scenario: compare using ==
     Given a file named "compare_using_==.rb" with:
       """ruby
-      describe "a string" do
+      RSpec.describe "a string" do
         it "is equal to another string of the same value" do
           expect("this string").to be == "this string"
         end
@@ -60,7 +60,7 @@ Feature: equality matchers
         end
       end
 
-      describe "an integer" do
+      RSpec.describe "an integer" do
         it "is equal to a float of the same value" do
           expect(5).to be == 5.0
         end
@@ -72,7 +72,7 @@ Feature: equality matchers
   Scenario: compare using eql (eql?)
     Given a file named "compare_using_eql.rb" with:
       """ruby
-      describe "an integer" do
+      RSpec.describe "an integer" do
         it "is equal to another integer of the same value" do
           expect(5).to eql(5)
         end
@@ -93,7 +93,7 @@ Feature: equality matchers
   Scenario: compare using equal (equal?)
     Given a file named "compare_using_equal.rb" with:
       """ruby
-      describe "a string" do
+      RSpec.describe "a string" do
         it "is equal to itself" do
           string = "this string"
           expect(string).to equal(string)
@@ -115,7 +115,7 @@ Feature: equality matchers
   Scenario: compare using be (equal?)
     Given a file named "compare_using_be.rb" with:
       """ruby
-      describe "a string" do
+      RSpec.describe "a string" do
         it "is equal to itself" do
           string = "this string"
           expect(string).to be(string)

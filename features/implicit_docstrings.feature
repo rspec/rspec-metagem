@@ -17,7 +17,7 @@ Feature: implicit docstrings
   Scenario: run passing examples
     Given a file named "implicit_docstrings_spec.rb" with:
     """ruby
-    describe "Examples with no docstrings generate their own:" do
+    RSpec.describe "Examples with no docstrings generate their own:" do
       specify { expect(3).to be < 5 }
       specify { expect([1,2,3]).to include(2) }
       specify { expect([1,2,3]).to respond_to(:size) }
@@ -33,7 +33,7 @@ Feature: implicit docstrings
   Scenario: run failing examples
     Given a file named "failing_implicit_docstrings_spec.rb" with:
     """ruby
-    describe "Failing examples with no descriptions" do
+    RSpec.describe "Failing examples with no descriptions" do
       # description is auto-generated as "to equal(5)" based on the last #expect
       it do
         expect(3).to equal(2)

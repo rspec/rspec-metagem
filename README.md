@@ -23,7 +23,7 @@ Minitest, or Cucumber, you can install it directly:
 Here's an example using rspec-core:
 
 ```ruby
-describe Order do
+RSpec.describe Order do
   it "sums the prices of the items in its line items" do
     order = Order.new
     order.add_entry(LineItem.new(:item => Item.new(

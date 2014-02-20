@@ -5,7 +5,7 @@ Feature: Compound Expectations
   Scenario: Use `and` to chain expectations
     Given a file named "compound_and_matcher_spec.rb" with:
       """ruby
-      describe "A compound `and` matcher" do
+      RSpec.describe "A compound `and` matcher" do
         let(:string) { "foo bar bazz" }
 
         it "passes when both are true" do
@@ -33,7 +33,7 @@ Feature: Compound Expectations
         end
       end
 
-      describe StopLight, "#color" do
+      RSpec.describe StopLight, "#color" do
         it "is green, yellow or red" do
           light = StopLight.new
           expect(light.color).to eq("green").or eq("yellow").or eq("red")

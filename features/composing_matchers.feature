@@ -51,7 +51,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `change`
     Given a file named "change_spec.rb" with:
       """
-      describe "Passing matchers to `change`" do
+      RSpec.describe "Passing matchers to `change`" do
         specify "you can pass a matcher to `by`" do
           k = 0
           expect { k += 1.05 }.to change { k }.
@@ -72,7 +72,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `contain_exactly`
     Given a file named "contain_exactly_spec.rb" with:
       """
-      describe "Passing matchers to `contain_exactly`" do
+      RSpec.describe "Passing matchers to `contain_exactly`" do
         specify "you can pass matchers in place of exact values" do
           expect(["barn", 2.45]).to contain_exactly(
             a_value_within(0.1).of(2.5),
@@ -87,7 +87,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `end_with`
     Given a file named "end_with_spec.rb" with:
       """
-      describe "Passing matchers to `end_with`" do
+      RSpec.describe "Passing matchers to `end_with`" do
         specify "you can pass matchers in place of exact values" do
           expect(["barn", "food", 2.45]).to end_with(
             a_string_matching("foo"),
@@ -102,7 +102,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `include`
     Given a file named "include_spec.rb" with:
       """
-      describe "Passing matchers to `contain_exactly`" do
+      RSpec.describe "Passing matchers to `contain_exactly`" do
         specify "you can use matchers in place of array values" do
           expect(["barn", 2.45]).to include( a_string_starting_with("bar") )
         end
@@ -122,7 +122,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `match`:
     Given a file named "match_spec.rb" with:
       """
-      describe "Passing matchers to `match`" do
+      RSpec.describe "Passing matchers to `match`" do
         specify "you can match nested data structures against matchers" do
           hash = {
             :a => {
@@ -149,7 +149,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `output`
     Given a file named "output_spec.rb" with:
       """
-      describe "Passing matchers to `output`" do
+      RSpec.describe "Passing matchers to `output`" do
         specify "you can pass a matcher in place of the output (to_stdout)" do
           expect {
             print 'foo'
@@ -168,7 +168,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `raise_error`
     Given a file named "raise_error_spec.rb" with:
       """
-      describe "Passing matchers to `raise_error`" do
+      RSpec.describe "Passing matchers to `raise_error`" do
         specify "you can pass a matcher in place of the message" do
           expect {
             raise RuntimeError, "this goes boom"
@@ -182,7 +182,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `start_with`
     Given a file named "start_with_spec.rb" with:
       """
-      describe "Passing matchers to `start_with`" do
+      RSpec.describe "Passing matchers to `start_with`" do
         specify "you can pass matchers in place of exact values" do
           expect(["barn", "food", 2.45]).to start_with(
             a_string_matching("bar"),
@@ -197,7 +197,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `throw_symbol`
     Given a file named "throw_symbol_spec.rb" with:
       """
-      describe "Passing matchers to `throw_symbol`" do
+      RSpec.describe "Passing matchers to `throw_symbol`" do
         specify "you can pass a matcher in place of a throw arg" do
           expect {
             throw :pi, Math::PI
@@ -211,7 +211,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `yield_with_args`
     Given a file named "yield_with_args_spec.rb" with:
       """
-      describe "Passing matchers to `yield_with_args`" do
+      RSpec.describe "Passing matchers to `yield_with_args`" do
         specify "you can pass matchers in place of the args" do
           expect { |probe|
             "food".tap(&probe)
@@ -225,7 +225,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers with `yield_successive_args`
     Given a file named "yield_successive_args_spec.rb" with:
       """
-      describe "Passing matchers to `yield_successive_args`" do
+      RSpec.describe "Passing matchers to `yield_successive_args`" do
         specify "you can pass matchers in place of the args" do
           expect { |probe|
             [1, 2, 3].each(&probe)
@@ -239,7 +239,7 @@ Feature: Composing Matchers
   Scenario: Composing matchers using a compound `and` expression
     Given a file named "include_spec.rb" with:
       """
-      describe "Passing a compound matcher expression to `include`" do
+      RSpec.describe "Passing a compound matcher expression to `include`" do
         example do
           expect(["food", "drink"]).to include( a_string_starting_with("f").and ending_with("d"))
         end

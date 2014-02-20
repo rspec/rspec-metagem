@@ -5,7 +5,7 @@ Feature: diffing
   Scenario: diff for a multiline string
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "a multiline string" do
+      RSpec.describe "a multiline string" do
         it "is like another string" do
           expected = <<-EXPECTED
       this is the
@@ -35,7 +35,7 @@ Feature: diffing
   Scenario: diff for a multiline string and a regexp
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "a multiline string" do
+      RSpec.describe "a multiline string" do
         it "is like another string" do
           expected = /expected/m
           actual = <<-ACTUAL
@@ -61,7 +61,7 @@ Feature: diffing
   Scenario: no diff for a single line strings
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "a single line string" do
+      RSpec.describe "a single line string" do
         it "is like another string" do
           expected = "this string"
           actual   = "that string"
@@ -75,7 +75,7 @@ Feature: diffing
   Scenario: no diff for numbers
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "a number" do
+      RSpec.describe "a number" do
         it "is like another number" do
           expect(1).to eq(2)
         end

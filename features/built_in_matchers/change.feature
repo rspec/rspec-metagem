@@ -32,7 +32,7 @@ Feature: change matcher
       """ruby
       require "counter"
 
-      describe Counter, "#increment" do
+      RSpec.describe Counter, "#increment" do
         it "should increment the count" do
           expect { Counter.increment }.to change{Counter.count}.from(0).to(1)
         end
@@ -52,7 +52,7 @@ Feature: change matcher
       """ruby
       require "counter"
 
-      describe Counter, "#increment" do
+      RSpec.describe Counter, "#increment" do
         it "should not increment the count by 1 (using not_to)" do
           expect { Counter.increment }.not_to change{Counter.count}
         end

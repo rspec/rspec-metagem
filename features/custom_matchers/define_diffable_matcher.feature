@@ -15,8 +15,8 @@ Feature: define diffable matcher
         diffable
       end
 
-      describe "two\nlines" do
-        it { should be_just_like("three\nlines") }
+      RSpec.describe "two\nlines" do
+        it { is_expected.to be_just_like("three\nlines") }
       end
       """
     When I run `rspec ./diffable_matcher_spec.rb`

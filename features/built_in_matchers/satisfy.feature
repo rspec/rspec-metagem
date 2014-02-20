@@ -16,13 +16,13 @@ Feature: satisfy matcher
   Scenario: basic usage
     Given a file named "satisfy_matcher_spec.rb" with:
       """ruby
-      describe 10 do
-        it { should satisfy { |v| v > 5 } }
-        it { should_not satisfy { |v| v > 15 } }
+      RSpec.describe 10 do
+        it { is_expected.to satisfy { |v| v > 5 } }
+        it { is_expected.not_to satisfy { |v| v > 15 } }
 
         # deliberate failures
-        it { should_not satisfy { |v| v > 5 } }
-        it { should satisfy { |v| v > 15 } }
+        it { is_expected.not_to satisfy { |v| v > 5 } }
+        it { is_expected.to satisfy { |v| v > 15 } }
       end
       """
     When I run `rspec satisfy_matcher_spec.rb`

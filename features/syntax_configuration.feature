@@ -1,3 +1,4 @@
+@allow-disallowed-api
 Feature: Syntax Configuration
 
   In addition to the long-supported `should` syntax, rspec-expectations
@@ -7,14 +8,14 @@ Feature: Syntax Configuration
   Background:
     Given a file named "syntaxes_spec.rb" with:
       """ruby
-      describe "using the should syntax" do
+      RSpec.describe "using the should syntax" do
         specify { 3.should eq(3) }
         specify { 3.should_not eq(4) }
         specify { lambda { raise "boom" }.should raise_error("boom") }
         specify { lambda { }.should_not raise_error }
       end
 
-      describe "using the expect syntax" do
+      RSpec.describe "using the expect syntax" do
         specify { expect(3).to eq(3) }
         specify { expect(3).not_to eq(4) }
         specify { expect { raise "boom" }.to raise_error("boom") }

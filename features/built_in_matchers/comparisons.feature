@@ -12,7 +12,7 @@ Feature: comparison matchers
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
       """ruby
-      describe do
+      RSpec.describe do
         example { expect(18).to be < 20 }
         example { expect(18).to be > 15 }
         example { expect(18).to be <= 19 }
@@ -55,7 +55,7 @@ Feature: comparison matchers
   Scenario: string operator matchers
     Given a file named "string_operator_matchers_spec.rb" with:
       """ruby
-      describe do
+      RSpec.describe do
         example { expect("Strawberry").to be < "Tomato" }
         example { expect("Strawberry").to be > "Apple" }
         example { expect("Strawberry").to be <= "Turnip" }

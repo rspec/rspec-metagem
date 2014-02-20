@@ -26,40 +26,40 @@ Feature: specify types of objects
         include MyModule
       end
 
-      describe 17 do
+      RSpec.describe 17 do
         # the actual class
-        it { should be_kind_of(Fixnum) }
-        it { should be_a_kind_of(Fixnum) }
-        it { should be_a(Fixnum) }
+        it { is_expected.to be_kind_of(Fixnum) }
+        it { is_expected.to be_a_kind_of(Fixnum) }
+        it { is_expected.to be_a(Fixnum) }
 
         # the superclass
-        it { should be_kind_of(Integer) }
-        it { should be_a_kind_of(Integer) }
-        it { should be_an(Integer) }
+        it { is_expected.to be_kind_of(Integer) }
+        it { is_expected.to be_a_kind_of(Integer) }
+        it { is_expected.to be_an(Integer) }
 
         # an included module
-        it { should be_kind_of(MyModule) }
-        it { should be_a_kind_of(MyModule) }
-        it { should be_a(MyModule) }
+        it { is_expected.to be_kind_of(MyModule) }
+        it { is_expected.to be_a_kind_of(MyModule) }
+        it { is_expected.to be_a(MyModule) }
 
         # negative passing case
-        it { should_not be_kind_of(String) }
-        it { should_not be_a_kind_of(String) }
-        it { should_not be_a(String) }
+        it { is_expected.not_to be_kind_of(String) }
+        it { is_expected.not_to be_a_kind_of(String) }
+        it { is_expected.not_to be_a(String) }
 
         # deliberate failures
-        it { should_not be_kind_of(Fixnum) }
-        it { should_not be_a_kind_of(Fixnum) }
-        it { should_not be_a(Fixnum) }
-        it { should_not be_kind_of(Integer) }
-        it { should_not be_a_kind_of(Integer) }
-        it { should_not be_an(Integer) }
-        it { should_not be_kind_of(MyModule) }
-        it { should_not be_a_kind_of(MyModule) }
-        it { should_not be_a(MyModule) }
-        it { should be_kind_of(String) }
-        it { should be_a_kind_of(String) }
-        it { should be_a(String) }
+        it { is_expected.not_to be_kind_of(Fixnum) }
+        it { is_expected.not_to be_a_kind_of(Fixnum) }
+        it { is_expected.not_to be_a(Fixnum) }
+        it { is_expected.not_to be_kind_of(Integer) }
+        it { is_expected.not_to be_a_kind_of(Integer) }
+        it { is_expected.not_to be_an(Integer) }
+        it { is_expected.not_to be_kind_of(MyModule) }
+        it { is_expected.not_to be_a_kind_of(MyModule) }
+        it { is_expected.not_to be_a(MyModule) }
+        it { is_expected.to be_kind_of(String) }
+        it { is_expected.to be_a_kind_of(String) }
+        it { is_expected.to be_a(String) }
       end
       """
     When I run `rspec be_kind_of_matcher_spec.rb`
@@ -79,32 +79,32 @@ Feature: specify types of objects
         include MyModule
       end
 
-      describe 17 do
+      RSpec.describe 17 do
         # the actual class
-        it { should be_instance_of(Fixnum) }
-        it { should be_an_instance_of(Fixnum) }
+        it { is_expected.to be_instance_of(Fixnum) }
+        it { is_expected.to be_an_instance_of(Fixnum) }
 
         # the superclass
-        it { should_not be_instance_of(Integer) }
-        it { should_not be_an_instance_of(Integer) }
+        it { is_expected.not_to be_instance_of(Integer) }
+        it { is_expected.not_to be_an_instance_of(Integer) }
 
         # an included module
-        it { should_not be_instance_of(MyModule) }
-        it { should_not be_an_instance_of(MyModule) }
+        it { is_expected.not_to be_instance_of(MyModule) }
+        it { is_expected.not_to be_an_instance_of(MyModule) }
 
         # another class with no relation to the subject's hierarchy
-        it { should_not be_instance_of(String) }
-        it { should_not be_an_instance_of(String) }
+        it { is_expected.not_to be_instance_of(String) }
+        it { is_expected.not_to be_an_instance_of(String) }
 
         # deliberate failures
-        it { should_not be_instance_of(Fixnum) }
-        it { should_not be_an_instance_of(Fixnum) }
-        it { should be_instance_of(Integer) }
-        it { should be_an_instance_of(Integer) }
-        it { should be_instance_of(MyModule) }
-        it { should be_an_instance_of(MyModule) }
-        it { should be_instance_of(String) }
-        it { should be_an_instance_of(String) }
+        it { is_expected.not_to be_instance_of(Fixnum) }
+        it { is_expected.not_to be_an_instance_of(Fixnum) }
+        it { is_expected.to be_instance_of(Integer) }
+        it { is_expected.to be_an_instance_of(Integer) }
+        it { is_expected.to be_instance_of(MyModule) }
+        it { is_expected.to be_an_instance_of(MyModule) }
+        it { is_expected.to be_instance_of(String) }
+        it { is_expected.to be_an_instance_of(String) }
       end
       """
     When I run `rspec be_instance_of_matcher_spec.rb`
