@@ -9,7 +9,6 @@ Feature: comparison matchers
     expect(1).to be < 6
     ```
 
-
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
       """ruby

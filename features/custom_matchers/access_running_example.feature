@@ -1,13 +1,9 @@
 Feature: access running example
 
-  In order to take advantage of services that are available
-    in my examples when I'm writing matchers
-  As a spec author
-  I want to call methods on the running example
-
-  If the method exists in the context of the example, it gets
-  called. If not, a NoMethodError is raised on the Matcher itself
-  (not the example).
+  In the context of a custom matcher, you can call helper methods that are
+  available from the current example's example group. This is used, for example,
+  by rspec-rails in order to wrap rails' built-in assertions (which depend on
+  helper methods available in the test context).
 
   Scenario: call method defined on example from matcher
     Given a file named "example_spec.rb" with:

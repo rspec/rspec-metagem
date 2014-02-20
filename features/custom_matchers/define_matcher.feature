@@ -1,8 +1,8 @@
 Feature: define matcher
 
-  In order to express my domain clearly in my code examples
-  As an RSpec user
-  I want a shortcut to define custom matchers
+  rspec-expectations provides a DSL for defining custom matchers.
+  These are often useful for expressing expectations in the domain
+  of your application.
 
   Scenario: define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:

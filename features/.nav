@@ -9,8 +9,8 @@
   - be_within.feature
   - equality.feature
   - exist.feature
-  - expect_change.feature
-  - expect_error.feature
+  - change.feature
+  - raise_error.feature
   - have.feature
   - include.feature
   - match.feature

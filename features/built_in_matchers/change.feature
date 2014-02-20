@@ -1,6 +1,14 @@
-Feature: expect change
+Feature: change matcher
 
-  Expect the execution of a block of code to change the state of an object.
+  The `change` matcher is used to specify that a block of code changes
+  some mutable state. You can specify what will change using either of
+  two forms:
+
+  * `expect { do_something }.to change(object, :attribute)`
+  * `expect { do_something }.to change { object.attribute }`
+
+  You can further qualify the change by chaining `by`, `by_at_most`,
+  `by_at_least`, `from` and/or `to`.
 
   Background:
     Given a file named "lib/counter.rb" with:
