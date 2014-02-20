@@ -311,7 +311,7 @@ module RSpec::Matchers::DSL
       expected = "line1\nline2\n"
 
       matcher = new_matcher(:custom_match, expected) do
-        match { |actual| actual == expected }
+        match { |act| act == expected }
         diffable
       end
 
