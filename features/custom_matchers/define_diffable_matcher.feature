@@ -22,7 +22,6 @@ Feature: define diffable matcher
     When I run `rspec ./diffable_matcher_spec.rb`
     Then it should fail with:
       """
-             expected "two\nlines" to be just like "three\nlines"
              Diff:
              @@ -1,3 +1,3 @@
              -three
