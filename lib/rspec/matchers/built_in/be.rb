@@ -180,11 +180,11 @@ module RSpec
         end
 
         def predicate
-          "#{@expected}?".to_sym
+          :"#{@expected}?"
         end
 
         def present_tense_predicate
-          "#{@expected}s?".to_sym
+          :"#{@expected}s?"
         end
 
         def parse_expected(expected)
