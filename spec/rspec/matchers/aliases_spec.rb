@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   describe Matchers, "aliases", :order => :defined do
     matcher :be_aliased_to do |old_matcher|

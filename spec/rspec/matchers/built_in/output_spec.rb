@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 shared_examples_for "output_to_stream" do |stream_name|
   matcher_method = :"to_#{stream_name}"
 

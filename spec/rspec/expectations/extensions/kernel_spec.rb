@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe Object, "#should" do
   before(:each) do
     @target = "target"

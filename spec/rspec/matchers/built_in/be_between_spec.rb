@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Matchers::BuiltIn
   describe BeBetween do
     class SizeMatters

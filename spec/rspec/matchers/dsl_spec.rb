@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 
 describe "a matcher defined using the matcher DSL" do
   def question?

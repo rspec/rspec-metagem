@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 if (1..2).respond_to?(:cover?)
   describe "expect(...).to cover(expected)" do
     it_behaves_like "an RSpec matcher", :valid_value => (1..10), :invalid_value => (20..30) do

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Expectations
     describe Syntax do

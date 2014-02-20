@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
                                       :invalid_value => lambda { }) do

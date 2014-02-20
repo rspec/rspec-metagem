@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Matchers
     describe "expect(actual).to be_within(delta).of(expected)" do

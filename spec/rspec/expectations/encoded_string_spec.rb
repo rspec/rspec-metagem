@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Expectations
   describe EncodedString do
     let(:target_encoding) { 'UTF-8' }

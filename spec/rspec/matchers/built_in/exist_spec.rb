@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'ostruct'
 
 describe "exist matcher" do

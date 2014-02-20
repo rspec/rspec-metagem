@@ -1,6 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
-
 
 describe RSpec::Expectations, "#fail_with with diff of arrays" do
   before { allow(RSpec::Matchers.configuration).to receive_messages(:color? => false) }
