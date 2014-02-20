@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Expectations
     # so our examples below can set expectations about the target

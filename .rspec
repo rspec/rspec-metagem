@@ -1,2 +1,2 @@
---backtrace
 --warnings
+--require spec_helper

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 class MethodOverrideObject
   def method
     :foo

@@ -9,46 +9,45 @@ Feature: comparison matchers
     expect(1).to be < 6
     ```
 
-
   Scenario: numeric operator matchers
     Given a file named "numeric_operator_matchers_spec.rb" with:
       """ruby
-      describe do
-        example { expect(18).to be < 20 }
-        example { expect(18).to be > 15 }
-        example { expect(18).to be <= 19 }
-        example { expect(18).to be >= 17 }
+      RSpec.describe 18 do
+        it { is_expected.to be < 20 }
+        it { is_expected.to be > 15 }
+        it { is_expected.to be <= 19 }
+        it { is_expected.to be >= 17 }
 
         # deliberate failures
-        example { expect(18).to be < 15 }
-        example { expect(18).to be > 20 }
-        example { expect(18).to be <= 17 }
-        example { expect(18).to be >= 19 }
+        it { is_expected.to be < 15 }
+        it { is_expected.to be > 20 }
+        it { is_expected.to be <= 17 }
+        it { is_expected.to be >= 19 }
       end
       """
      When I run `rspec numeric_operator_matchers_spec.rb`
      Then the output should contain "8 examples, 4 failures"
       And the output should contain:
       """
-           Failure/Error: example { expect(18).to be < 15 }
+           Failure/Error: it { is_expected.to be < 15 }
              expected: < 15
                   got:   18
       """
       And the output should contain:
       """
-           Failure/Error: example { expect(18).to be > 20 }
+           Failure/Error: it { is_expected.to be > 20 }
              expected: > 20
                   got:   18
       """
       And the output should contain:
       """
-           Failure/Error: example { expect(18).to be <= 17 }
+           Failure/Error: it { is_expected.to be <= 17 }
              expected: <= 17
                   got:    18
       """
       And the output should contain:
       """
-           Failure/Error: example { expect(18).to be >= 19 }
+           Failure/Error: it { is_expected.to be >= 19 }
              expected: >= 19
                   got:    18
       """
@@ -56,42 +55,42 @@ Feature: comparison matchers
   Scenario: string operator matchers
     Given a file named "string_operator_matchers_spec.rb" with:
       """ruby
-      describe do
-        example { expect("Strawberry").to be < "Tomato" }
-        example { expect("Strawberry").to be > "Apple" }
-        example { expect("Strawberry").to be <= "Turnip" }
-        example { expect("Strawberry").to be >= "Banana" }
+      RSpec.describe "Strawberry" do
+        it { is_expected.to be < "Tomato" }
+        it { is_expected.to be > "Apple" }
+        it { is_expected.to be <= "Turnip" }
+        it { is_expected.to be >= "Banana" }
 
         # deliberate failures
-        example { expect("Strawberry").to be < "Cranberry" }
-        example { expect("Strawberry").to be > "Zuchini" }
-        example { expect("Strawberry").to be <= "Potato" }
-        example { expect("Strawberry").to be >= "Tomato" }
+        it { is_expected.to be < "Cranberry" }
+        it { is_expected.to be > "Zuchini" }
+        it { is_expected.to be <= "Potato" }
+        it { is_expected.to be >= "Tomato" }
       end
       """
      When I run `rspec string_operator_matchers_spec.rb`
      Then the output should contain "8 examples, 4 failures"
       And the output should contain:
       """
-           Failure/Error: example { expect("Strawberry").to be < "Cranberry" }
+           Failure/Error: it { is_expected.to be < "Cranberry" }
              expected: < "Cranberry"
                   got:   "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: example { expect("Strawberry").to be > "Zuchini" }
+           Failure/Error: it { is_expected.to be > "Zuchini" }
              expected: > "Zuchini"
                   got:   "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: example { expect("Strawberry").to be <= "Potato" }
+           Failure/Error: it { is_expected.to be <= "Potato" }
              expected: <= "Potato"
                   got:    "Strawberry"
       """
       And the output should contain:
       """
-           Failure/Error: example { expect("Strawberry").to be >= "Tomato" }
+           Failure/Error: it { is_expected.to be >= "Tomato" }
              expected: >= "Tomato"
                   got:    "Strawberry"
       """

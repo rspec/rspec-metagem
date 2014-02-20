@@ -1,8 +1,6 @@
 Feature: define matcher outside rspec
 
-  In order to express my domain clearly in my code examples
-  As a non-rspec user
-  I want a shortcut to define custom matchers
+  You can define custom matchers when using rspec-expectations outside of rspec-core.
 
   Scenario: define a matcher with default messages
     Given a file named "test_multiples.rb" with:

@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 
 describe "a matcher defined using the matcher DSL" do
   def question?
@@ -311,7 +310,7 @@ module RSpec::Matchers::DSL
       expected = "line1\nline2\n"
 
       matcher = new_matcher(:custom_match, expected) do
-        match { |actual| actual == expected }
+        match { |act| act == expected }
         diffable
       end
 

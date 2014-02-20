@@ -12,7 +12,7 @@ Feature: "be" matchers
   Scenario: be_truthy matcher
     Given a file named "be_truthy_spec.rb" with:
       """ruby
-      describe "be_truthy matcher" do
+      RSpec.describe "be_truthy matcher" do
         specify { expect(true).to be_truthy }
         specify { expect(7).to be_truthy }
         specify { expect("foo").to be_truthy }
@@ -58,7 +58,7 @@ Feature: "be" matchers
   Scenario: be_falsey matcher
     Given a file named "be_falsey_spec.rb" with:
       """ruby
-      describe "be_falsey matcher" do
+      RSpec.describe "be_falsey matcher" do
         specify { expect(nil).to be_falsey }
         specify { expect(false).to be_falsey }
         specify { expect(true).not_to be_falsey }
@@ -104,7 +104,7 @@ Feature: "be" matchers
   Scenario: be_nil matcher
     Given a file named "be_nil_spec.rb" with:
       """ruby
-      describe "be_nil matcher" do
+      RSpec.describe "be_nil matcher" do
         specify { expect(nil).to be_nil }
         specify { expect(false).not_to be_nil }
         specify { expect(true).not_to be_nil }
@@ -150,7 +150,7 @@ Feature: "be" matchers
   Scenario: be matcher
     Given a file named "be_spec.rb" with:
       """ruby
-      describe "be_matcher" do
+      RSpec.describe "be_matcher" do
         specify { expect(true).to be }
         specify { expect(7).to be }
         specify { expect("foo").to be }

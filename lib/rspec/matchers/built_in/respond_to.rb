@@ -39,7 +39,7 @@ module RSpec
         end
         alias :arguments :argument
 
-        private
+      private
 
         def find_failing_method_names(actual, filter_method)
           @actual = actual

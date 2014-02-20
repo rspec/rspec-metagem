@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 require 'ostruct'
 
 module RSpec

@@ -1,5 +1,3 @@
-require "spec_helper"
-
 describe "expect(...).to start_with" do
   it_behaves_like "an RSpec matcher", :valid_value => "ab", :invalid_value => "bc" do
     let(:matcher) { start_with("a") }

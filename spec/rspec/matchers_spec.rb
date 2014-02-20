@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 main = self
 describe RSpec::Matchers do
   include ::RSpec::Support::InSubProcess

@@ -1,6 +1,6 @@
 Feature: define matcher with fluent interface
 
-  Use the chain() method to define matchers with a fluent interface.
+  Use the `chain` method to define matchers with a fluent interface.
 
   Scenario: chained method with argument
     Given a file named "between_spec.rb" with:
@@ -15,8 +15,8 @@ Feature: define matcher with fluent interface
         end
       end
 
-      describe 5 do
-        it { should be_bigger_than(4).but_smaller_than(6) }
+      RSpec.describe 5 do
+        it { is_expected.to be_bigger_than(4).but_smaller_than(6) }
       end
       """
     When I run `rspec between_spec.rb --format documentation`

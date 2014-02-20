@@ -12,13 +12,13 @@ Feature: start_with matcher
   Scenario: with a string
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "this string" do
-        it { should start_with "this" }
-        it { should_not start_with "that" }
+      RSpec.describe "this string" do
+        it { is_expected.to start_with "this" }
+        it { is_expected.not_to start_with "that" }
 
         # deliberate failures
-        it { should_not start_with "this" }
-        it { should start_with "that" }
+        it { is_expected.not_to start_with "this" }
+        it { is_expected.to start_with "that" }
       end
       """
     When I run `rspec example_spec.rb`
@@ -30,15 +30,15 @@ Feature: start_with matcher
   Scenario: with an array
     Given a file named "example_spec.rb" with:
       """ruby
-      describe [0, 1, 2, 3, 4] do
-        it { should start_with 0 }
-        it { should start_with(0, 1)}
-        it { should_not start_with(2) }
-        it { should_not start_with(0, 1, 2, 3, 4, 5) }
+      RSpec.describe [0, 1, 2, 3, 4] do
+        it { is_expected.to start_with 0 }
+        it { is_expected.to start_with(0, 1)}
+        it { is_expected.not_to start_with(2) }
+        it { is_expected.not_to start_with(0, 1, 2, 3, 4, 5) }
 
         # deliberate failures
-        it { should_not start_with 0 }
-        it { should start_with 3 }
+        it { is_expected.not_to start_with 0 }
+        it { is_expected.to start_with 3 }
       end
       """
     When I run `rspec example_spec.rb`

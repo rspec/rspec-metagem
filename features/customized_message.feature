@@ -7,7 +7,7 @@ Feature: customized message
   Scenario: customize failure message
     Given a file named "example_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         context "when created with `new`" do
           it "is empty" do
             array = Array.new
@@ -24,7 +24,7 @@ Feature: customized message
   Scenario: customize failure message with a proc
     Given a file named "example_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         context "when created with `new`" do
           it "is empty" do
             array = Array.new

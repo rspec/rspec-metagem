@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   describe Expectations do
     it 'does not allow expectation failures to be caught by a bare rescue' do

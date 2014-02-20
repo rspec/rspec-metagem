@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Matchers
     describe AliasedMatcher do

@@ -16,7 +16,7 @@ Feature: output matcher
   Scenario: output_to_stdout matcher
     Given a file named "output_to_stdout_spec.rb" with:
       """ruby
-      describe "output.to_stdout matcher" do
+      RSpec.describe "output.to_stdout matcher" do
         specify { expect { print('foo') }.to output.to_stdout }
         specify { expect { print('foo') }.to output('foo').to_stdout }
         specify { expect { print('foo') }.to output(/foo/).to_stdout }
@@ -44,7 +44,7 @@ Feature: output matcher
   Scenario: output_to_stderr matcher
     Given a file named "output_to_stderr.rb" with:
       """ruby
-      describe "output_to_stderr matcher" do
+      RSpec.describe "output_to_stderr matcher" do
         specify { expect { warn('foo') }.to output.to_stderr }
         specify { expect { warn('foo') }.to output("foo\n").to_stderr }
         specify { expect { warn('foo') }.to output(/foo/).to_stderr }

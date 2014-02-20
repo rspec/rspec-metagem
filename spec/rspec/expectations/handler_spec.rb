@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module ExampleExpectations
 
   class ArbitraryMatcher

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Matchers::BuiltIn
   describe Compound do
     context "when used as a composable matcher" do

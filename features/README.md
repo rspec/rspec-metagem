@@ -1,6 +1,6 @@
 rspec-expectations is used to define expected outcomes.
 
-    describe Account do
+    RSpec.describe Account do
       it "has a balance of zero when first created" do
         expect(Account.new.balance).to eq(Money.new(0))
       end

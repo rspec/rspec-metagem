@@ -26,13 +26,13 @@ Feature: exist matcher
         end
       end
 
-      describe "Earth" do
+      RSpec.describe "Earth" do
         let(:earth) { Planet.new("Earth") }
         specify { expect(earth).to exist }
         specify { expect(earth).not_to exist } # deliberate failure
       end
 
-      describe "Tatooine" do
+      RSpec.describe "Tatooine" do
         let(:tatooine) { Planet.new("Tatooine") }
         specify { expect(tatooine).to exist } # deliberate failure
         specify { expect(tatooine).not_to exist }

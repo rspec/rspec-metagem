@@ -31,7 +31,7 @@ Feature: raise_error matcher
   Scenario: expect any error
     Given a file named "example_spec" with:
       """
-      describe "calling a missing method" do
+      RSpec.describe "calling a missing method" do
         it "raises" do
           expect { Object.new.foo }.to raise_error
         end
@@ -43,7 +43,7 @@ Feature: raise_error matcher
   Scenario: expect specific error
     Given a file named "example_spec" with:
       """
-      describe "calling a missing method" do
+      RSpec.describe "calling a missing method" do
         it "raises" do
           expect { Object.new.foo }.to raise_error(NameError)
         end
@@ -55,7 +55,7 @@ Feature: raise_error matcher
   Scenario: match message with a string
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "matching error message with string" do
+      RSpec.describe "matching error message with string" do
         it "matches the error message" do
           expect { raise StandardError, 'this message exactly'}.
             to raise_error('this message exactly')
@@ -68,7 +68,7 @@ Feature: raise_error matcher
   Scenario: match message with a regexp
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "matching error message with regex" do
+      RSpec.describe "matching error message with regex" do
         it "matches the error message" do
           expect { raise StandardError, "my message" }.
             to raise_error(/my mess/)
@@ -81,7 +81,7 @@ Feature: raise_error matcher
   Scenario: matching message with `with_message`
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "matching error message with regex" do
+      RSpec.describe "matching error message with regex" do
         it "matches the error message" do
           expect { raise StandardError, "my message" }.
             to raise_error.with_message(/my mess/)
@@ -94,7 +94,7 @@ Feature: raise_error matcher
   Scenario: match type + message with string
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "matching error message with string" do
+      RSpec.describe "matching error message with string" do
         it "matches the error message" do
           expect { raise StandardError, 'this message exactly'}.
             to raise_error(StandardError, 'this message exactly')
@@ -107,7 +107,7 @@ Feature: raise_error matcher
   Scenario: match type + message with regexp
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "matching error message with regex" do
+      RSpec.describe "matching error message with regex" do
         it "matches the error message" do
           expect { raise StandardError, "my message" }.
             to raise_error(StandardError, /my mess/)
@@ -120,7 +120,7 @@ Feature: raise_error matcher
   Scenario: set expectations on error object passed to block
     Given a file named "example_spec" with:
       """
-      describe "#foo" do
+      RSpec.describe "#foo" do
         it "raises NameError" do
           expect { Object.new.foo }.to raise_error { |error|
             expect(error).to be_a(NameError)
@@ -134,7 +134,7 @@ Feature: raise_error matcher
   Scenario: expect no error at all
     Given a file named "example_spec" with:
       """
-      describe "#to_s" do
+      RSpec.describe "#to_s" do
         it "does not raise" do
           expect { Object.new.to_s }.not_to raise_error
         end

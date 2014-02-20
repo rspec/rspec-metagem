@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Matchers::BuiltIn
   describe BaseMatcher do
     describe "#match_unless_raises" do

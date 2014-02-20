@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module YieldHelpers
   # these helpers are prefixed with an underscore to prevent
   # collisions with the matchers (some of which have the same names)

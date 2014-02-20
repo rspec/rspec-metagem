@@ -51,12 +51,12 @@ Feature: predicate matchers
   Scenario: should be_zero (based on Fixnum#zero?)
     Given a file named "should_be_zero_spec.rb" with:
       """ruby
-      describe 0 do
-        it { should be_zero }
+      RSpec.describe 0 do
+        it { is_expected.to be_zero }
       end
 
-      describe 7 do
-        it { should be_zero } # deliberate failure
+      RSpec.describe 7 do
+        it { is_expected.to be_zero } # deliberate failure
       end
       """
     When I run `rspec should_be_zero_spec.rb`
@@ -66,12 +66,12 @@ Feature: predicate matchers
   Scenario: should_not be_empty (based on Array#empty?)
     Given a file named "should_not_be_empty_spec.rb" with:
       """ruby
-      describe [1, 2, 3] do
-        it { should_not be_empty }
+      RSpec.describe [1, 2, 3] do
+        it { is_expected.not_to be_empty }
       end
 
-      describe [] do
-        it { should_not be_empty } # deliberate failure
+      RSpec.describe [] do
+        it { is_expected.not_to be_empty } # deliberate failure
       end
       """
     When I run `rspec should_not_be_empty_spec.rb`
@@ -81,10 +81,10 @@ Feature: predicate matchers
    Scenario: should have_key (based on Hash#has_key?)
     Given a file named "should_have_key_spec.rb" with:
       """ruby
-      describe Hash do
+      RSpec.describe Hash do
         subject { { :foo => 7 } }
-        it { should have_key(:foo) }
-        it { should have_key(:bar) } # deliberate failure
+        it { is_expected.to have_key(:foo) }
+        it { is_expected.to have_key(:bar) } # deliberate failure
       end
       """
     When I run `rspec should_have_key_spec.rb`
@@ -100,15 +100,15 @@ Feature: predicate matchers
          end
        end
 
-       describe Hash do
+       RSpec.describe Hash do
          context 'with symbol keys' do
            subject { { :foo => 7, :bar => 5 } }
-           it { should_not have_all_string_keys }
+           it { is_expected.not_to have_all_string_keys }
          end
 
          context 'with string keys' do
            subject { { 'foo' => 7, 'bar' => 5 } }
-           it { should_not have_all_string_keys } # deliberate failure
+           it { is_expected.not_to have_all_string_keys } # deliberate failure
          end
        end
        """
@@ -125,13 +125,13 @@ Feature: predicate matchers
          end
        end
 
-       describe 12 do
-         it { should be_multiple_of(3) }
-         it { should_not be_multiple_of(7) }
+       RSpec.describe 12 do
+         it { is_expected.to be_multiple_of(3) }
+         it { is_expected.not_to be_multiple_of(7) }
 
          # deliberate failures
-         it { should_not be_multiple_of(4) }
-         it { should be_multiple_of(5) }
+         it { is_expected.not_to be_multiple_of(4) }
+         it { is_expected.to be_multiple_of(5) }
        end
        """
      When I run `rspec predicate_matcher_argument_spec.rb`
@@ -149,11 +149,11 @@ Feature: predicate matchers
          private :secret?
        end
 
-       describe 'private methods' do
+       RSpec.describe 'private methods' do
          subject { WithPrivateMethods.new }
 
          # deliberate failure
-         it { should be_secret }
+         it { is_expected.to be_secret }
        end
        """
      When I run `rspec attempting_to_match_private_method_spec.rb`
