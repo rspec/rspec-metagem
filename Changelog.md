@@ -25,7 +25,7 @@ Breaking Changes for 3.0.0:
   doing so would break existing formatters), we now pass a notification
   value object that exposes the same data via attributes. This will
   allow us to add new bits of data to a notification event without
-  breaking existing formattesr. (Jon Rowe)
+  breaking existing formatters. (Jon Rowe)
 * Remove support for deprecated `:alias` option for
   `RSpec.configuration.add_setting`. (Myron Marston)
 * Remove support for deprecated `RSpec.configuration.requires = [...]`.
@@ -85,8 +85,8 @@ Bug Fixes:
 
 * Fix failure (undefined method `path`) in end-of-run summary
   when `raise_errors_for_deprecations!` is configured. (Myron Marston)
-* Issue error when attempting to use -i or --I on command line,
-  too close to -I to be considered short hand for --init. (Jon Rowe)
+* Issue error when attempting to use `-i` or `--I` on command line,
+  too close to `-I` to be considered short hand for `--init`. (Jon Rowe)
 * Prevent adding formatters to an output target if the same
   formatter has already been added to that output. (Alex Peattie)
 * Allow a matcher-generated example description to be used when
