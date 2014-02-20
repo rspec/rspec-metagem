@@ -102,7 +102,7 @@ module RSpec
         # This should pass (because we can pair /fool/ with "fool" and /foo/ with "food"), but
         # the original algorithm used by this matcher would pair the first elements it could
         # (/foo/ with "fool"), which would leave /fool/ and "food" unmatched.  When we have
-        # an expected elements which is a matcher that matches a superset of actual items
+        # an expected element which is a matcher that matches a superset of actual items
         # compared to another expected element matcher, we need to consider every possible pairing.
         #
         # This class is designed to maximize the number of actual/expected pairings -- or,
