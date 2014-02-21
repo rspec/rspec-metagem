@@ -24,16 +24,21 @@ RSpec.describe "rspec warnings and deprecations" do
       expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :message => "this is the message")
       RSpec.warn_deprecation("this is the message")
     end
+
+    it "passes along additional options" do
+      expect(RSpec.configuration.reporter).to receive(:deprecation).with(hash_including :type => :tag)
+      RSpec.warn_deprecation("this is the message", :type => :tag)
+    end
   end
 
   describe "#warn_with" do
     context "when :use_spec_location_as_call_site => true is passed" do
-      let(:options) {
+      let(:options) do
         {
           :use_spec_location_as_call_site => true,
           :call_site                      => nil,
         }
-      }
+      end
 
       it "adds the source location of spec" do
         line = __LINE__ - 1
