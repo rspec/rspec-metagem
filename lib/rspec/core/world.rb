@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # Internal container for global non-configuration data
     class World
 
       include RSpec::Core::Hooks
@@ -20,52 +21,85 @@ module RSpec
         }
       end
 
+      # @api private
+      #
+      # Apply ordering strategy from configuration to example groups
       def ordered_example_groups
         ordering_strategy = @configuration.ordering_registry.fetch(:global)
         ordering_strategy.order(@example_groups)
       end
 
+      # @api private
+      #
+      # Clear example groups and registry
       def reset
         example_groups.clear
         SharedExampleGroup.registry.clear
       end
 
+      # @api private
+      #
+      # Get filter manager - delegated to configuration
       def filter_manager
         @configuration.filter_manager
       end
 
+      # @api private
+      #
+      # Register an example group
       def register(example_group)
         example_groups << example_group
         example_group
       end
 
+      # @api private
+      #
+      # Get inclusion filter - delegated to configuration
       def inclusion_filter
         @configuration.inclusion_filter
       end
 
+      # @api private
+      #
+      # Get exclusion filter - delegated to configuration
       def exclusion_filter
         @configuration.exclusion_filter
       end
 
+      # @api private
+      #
+      # Configure a group - delegated to configuration
       def configure_group(group)
         @configuration.configure_group(group)
       end
 
+      # @api private
+      #
+      # Get count of examples to be run
       def example_count
         FlatMap.flat_map(example_groups) {|g| g.descendants}.
           inject(0) {|sum, g| sum + g.filtered_examples.size}
       end
 
+      # @api private
+      #
+      # Find line number of previous declaration
       def preceding_declaration_line(filter_line)
         declaration_line_numbers.sort.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
         end
       end
 
+      # @api private
+      #
+      # Get reporter instance - delegated to configuration
       def reporter
         @configuration.reporter
       end
 
+      # @api private
+      #
+      # Notify reporter of filters
       def announce_filters
         filter_announcements = []
 
@@ -102,16 +136,25 @@ module RSpec
         end
       end
 
+      # @api private
+      #
+      # Message to display if all examples were excluded by filters
       def everything_filtered_message
         "\nAll examples were filtered out"
       end
 
+      # @api private
+      #
+      # Add inclusion filters to announcement message
       def announce_inclusion_filter(announcements)
         unless inclusion_filter.empty?
           announcements << "include #{inclusion_filter.description}"
         end
       end
 
+      # @api private
+      #
+      # Add exclusion filters to announcement message
       def announce_exclusion_filter(announcements)
         unless exclusion_filter.empty_without_conditional_filters?
           announcements << "exclude #{exclusion_filter.description}"
