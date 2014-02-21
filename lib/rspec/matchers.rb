@@ -227,6 +227,10 @@ module RSpec
     #
     #   be_sorted_by(:age).description # => "be sorted by age"
     #   a_list_sorted_by(:age).description # => "a list sorted by age"
+    #
+    # @!macro [attach] alias_matcher
+    #   @!parse
+    #     alias $1 $2
     def self.alias_matcher(new_name, old_name, &description_override)
       description_override ||= lambda do |old_desc|
         old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
