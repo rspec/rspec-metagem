@@ -1,16 +1,18 @@
-require "delegate"
-
 module RSpec
   module Expectations
-    class EncodedString < SimpleDelegator
+    class EncodedString
 
       def initialize(string, encoding = nil)
         @encoding = encoding
         @source_encoding = detect_source_encoding(string)
         @string = matching_encoding(string)
-        super(@string)
       end
       attr_reader :source_encoding
+
+      delegated_methods = String.instance_methods.map(&:to_s) & %w[eql? lines == encoding]
+      delegated_methods.each do |name|
+        define_method(name) { |*args, &block| @string.__send__(name, *args, &block) }
+      end
 
       def <<(string)
         @string << matching_encoding(string)
@@ -20,9 +22,15 @@ module RSpec
         @string.split(matching_encoding(regex_or_string))
       end
 
+      def to_s
+        @string
+      end
+      alias :to_str :to_s
+
     private
 
       if String.method_defined?(:encoding)
+
         def matching_encoding(string)
           string.encode(@encoding)
         rescue Encoding::UndefinedConversionError, Encoding::InvalidByteSequenceError
