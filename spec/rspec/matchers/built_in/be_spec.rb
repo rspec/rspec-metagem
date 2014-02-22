@@ -192,6 +192,52 @@ describe "expect(...).to be_predicate(&block)" do
     expect(mouth).to be_frown { true }
     expect(mouth).not_to be_frown { false }
   end
+
+  it 'works with a do..end block for either predicate form' do
+    mouth1 = Object.new
+    def mouth1.frown?; yield; end
+    mouth2 = Object.new
+    def mouth2.frowns?; yield; end
+
+    expect(mouth1).to be_frown do
+      true
+    end
+
+    expect(mouth1).not_to be_frown do
+      false
+    end
+
+    expect(mouth2).to be_frown do
+      true
+    end
+
+    expect(mouth2).not_to be_frown do
+      false
+    end
+  end
+
+  it 'prefers a { ... } block to a do/end block because it binds more tightly' do
+    mouth1 = Object.new
+    def mouth1.frown?; yield; end
+    mouth2 = Object.new
+    def mouth2.frowns?; yield; end
+
+    expect(mouth1).to be_frown { true } do
+      false
+    end
+
+    expect(mouth1).not_to be_frown { false } do
+      true
+    end
+
+    expect(mouth2).to be_frown { true } do
+      false
+    end
+
+    expect(mouth2).not_to be_frown { false } do
+      true
+    end
+  end
 end
 
 describe "expect(...).not_to be_predicate(&block)" do
