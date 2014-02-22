@@ -18,8 +18,8 @@ module RSpec
       # @private
       #
       # Used internally to print deprecation warnings
-      def warn_deprecation(message)
-        RSpec.configuration.reporter.deprecation :message => message
+      def warn_deprecation(message, opts = {})
+        RSpec.configuration.reporter.deprecation opts.merge( :message => message )
       end
 
       def warn_with(message, options = {})
