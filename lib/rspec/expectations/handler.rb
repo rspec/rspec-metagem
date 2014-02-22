@@ -99,7 +99,7 @@ module RSpec
     class LegacyMacherAdapter < Matchers::MatcherDelegator
       def initialize(matcher)
         super
-        ::RSpec.warn_deprecation(<<-EOS.gsub(/^\s+\|/, ''))
+        ::RSpec.warn_deprecation(<<-EOS.gsub(/^\s+\|/, ''), :type => "legacy_matcher")
           |--------------------------------------------------------------------------
           |#{matcher.class.name || matcher.inspect} implements a legacy RSpec matcher
           |protocol. For the current protocol you should expose the failure messages
