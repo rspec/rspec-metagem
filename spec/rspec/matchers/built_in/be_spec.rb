@@ -64,7 +64,7 @@ describe "expect(...).to be_predicate" do
           true
         end
     end
-    expect { expect(privately_happy.new).to be_happy }.to raise_error
+    expect { expect(privately_happy.new).to be_happy }.to fail_with(/private/)
   end
 
   it "fails on error other than NameError" do
