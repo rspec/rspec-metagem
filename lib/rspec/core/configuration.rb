@@ -217,7 +217,7 @@ module RSpec
       # a no-op.
       def treat_symbols_as_metadata_keys_with_true_values=(value)
         RSpec.deprecate("RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
-                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=" +
+                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " +
                                     "is deprecated, it is now set to true as default and setting it to false has no effect.")
       end
 
