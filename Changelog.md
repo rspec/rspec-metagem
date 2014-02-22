@@ -5,6 +5,7 @@ Bug Fixes:
 
 * Fix `NoMethodError` triggered by beta2 when `YARD` was loaded in
   the test environment. (Myron Marston)
+* Fix `be_xyz` matcher to accept a `do...end` block. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)

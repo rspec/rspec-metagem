@@ -46,6 +46,17 @@ describe "expect(...).to be_predicate" do
     }.to raise_error(NameError, /happy\?/)
   end
 
+  it 'falls back to a present-tense form of the predicate when needed' do
+    mouth = Object.new
+    def mouth.frowns?(return_val); return_val; end
+
+    expect(mouth).to be_frown(true)
+    expect(mouth).not_to be_frown(false)
+
+    expect { expect(mouth).to be_frown(false) }.to fail
+    expect { expect(mouth).not_to be_frown(true) }.to fail
+  end
+
   it 'fails when :predicate? is private' do
     privately_happy = Class.new do
       private
@@ -53,7 +64,7 @@ describe "expect(...).to be_predicate" do
           true
         end
     end
-    expect { expect(privately_happy.new).to be_happy }.to raise_error
+    expect { expect(privately_happy.new).to be_happy }.to fail_with(/private/)
   end
 
   it "fails on error other than NameError" do
@@ -172,6 +183,60 @@ describe "expect(...).to be_predicate(&block)" do
     expect {
       expect(Object.new).to be_happy { delegate.check_happy }
     }.to raise_error(NameError)
+  end
+
+  it 'passes the block on to the present-tense predicate form' do
+    mouth = Object.new
+    def mouth.frowns?; yield; end
+
+    expect(mouth).to be_frown { true }
+    expect(mouth).not_to be_frown { false }
+  end
+
+  it 'works with a do..end block for either predicate form' do
+    mouth1 = Object.new
+    def mouth1.frown?; yield; end
+    mouth2 = Object.new
+    def mouth2.frowns?; yield; end
+
+    expect(mouth1).to be_frown do
+      true
+    end
+
+    expect(mouth1).not_to be_frown do
+      false
+    end
+
+    expect(mouth2).to be_frown do
+      true
+    end
+
+    expect(mouth2).not_to be_frown do
+      false
+    end
+  end
+
+  it 'prefers a { ... } block to a do/end block because it binds more tightly' do
+    mouth1 = Object.new
+    def mouth1.frown?; yield; end
+    mouth2 = Object.new
+    def mouth2.frowns?; yield; end
+
+    expect(mouth1).to be_frown { true } do
+      false
+    end
+
+    expect(mouth1).not_to be_frown { false } do
+      true
+    end
+
+    expect(mouth2).to be_frown { true } do
+      false
+    end
+
+    expect(mouth2).not_to be_frown { false } do
+      true
+    end
   end
 end
 
