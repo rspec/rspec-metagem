@@ -1,5 +1,7 @@
 module RSpec
   module Core
+    # @api private
+    #
     # Internal container for global non-configuration data
     class World
 
@@ -31,7 +33,7 @@ module RSpec
 
       # @api private
       #
-      # Clear example groups and registry
+      # Reset world to 'scratch' before running suite
       def reset
         example_groups.clear
         SharedExampleGroup.registry.clear
@@ -39,7 +41,7 @@ module RSpec
 
       # @api private
       #
-      # Get filter manager - delegated to configuration
+      # Get current filter manager
       def filter_manager
         @configuration.filter_manager
       end
@@ -54,21 +56,21 @@ module RSpec
 
       # @api private
       #
-      # Get inclusion filter - delegated to configuration
+      # Get inclusion filter
       def inclusion_filter
         @configuration.inclusion_filter
       end
 
       # @api private
       #
-      # Get exclusion filter - delegated to configuration
+      # Get exclusion filter
       def exclusion_filter
         @configuration.exclusion_filter
       end
 
       # @api private
       #
-      # Configure a group - delegated to configuration
+      # Set the current config on a group
       def configure_group(group)
         @configuration.configure_group(group)
       end
@@ -92,7 +94,7 @@ module RSpec
 
       # @api private
       #
-      # Get reporter instance - delegated to configuration
+      # Get reporter instance
       def reporter
         @configuration.reporter
       end
@@ -137,8 +139,6 @@ module RSpec
       end
 
       # @api private
-      #
-      # Message to display if all examples were excluded by filters
       def everything_filtered_message
         "\nAll examples were filtered out"
       end
