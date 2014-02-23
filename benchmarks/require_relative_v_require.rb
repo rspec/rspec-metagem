@@ -49,3 +49,27 @@ end
 # virtually no penalty
 #
 # ###################################
+
+__END__
+
+Ruby 2.0:
+
+➜  rspec-core git:(benchmark-require-relative) REQUIRE_RELATIVE=1 bundle exec ruby benchmarks/require_relative_v_require.rb
+   0.000000   0.030000   1.470000 (  1.481949)
+   0.000000   0.020000   1.440000 (  1.462620)
+   0.000000   0.020000   1.470000 (  1.491825)
+➜  rspec-core git:(benchmark-require-relative) bundle exec ruby benchmarks/require_relative_v_require.rb
+   0.000000   0.010000   1.510000 (  1.549906)
+   0.000000   0.010000   1.530000 (  1.546252)
+   0.000000   0.020000   1.510000 (  1.531644)
+
+Ruby 2.1:
+
+➜  rspec-core git:(benchmark-require-relative) bundle exec ruby benchmarks/require_relative_v_require.rb
+   0.000000   0.020000   1.570000 (  1.613217)
+   0.000000   0.020000   1.600000 (  1.618540)
+   0.010000   0.020000   1.570000 (  1.608205)
+➜  rspec-core git:(benchmark-require-relative) REQUIRE_RELATIVE=1 bundle exec ruby benchmarks/require_relative_v_require.rb
+   0.000000   0.020000   1.480000 (  1.515131)
+   0.000000   0.010000   1.480000 (  1.527766)
+   0.000000   0.020000   1.490000 (  1.515631)
