@@ -1,4 +1,4 @@
-require_rspec = if defined?(require_relative)
+require_rspec = if ENV['REQUIRE_RELATIVE']
   lambda do |path|
     require_relative path
   end
