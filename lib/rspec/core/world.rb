@@ -40,8 +40,6 @@ module RSpec
       end
 
       # @api private
-      #
-      # Get current filter manager
       def filter_manager
         @configuration.filter_manager
       end
@@ -55,15 +53,11 @@ module RSpec
       end
 
       # @api private
-      #
-      # Get inclusion filter
       def inclusion_filter
         @configuration.inclusion_filter
       end
 
       # @api private
-      #
-      # Get exclusion filter
       def exclusion_filter
         @configuration.exclusion_filter
       end
@@ -93,8 +87,6 @@ module RSpec
       end
 
       # @api private
-      #
-      # Get reporter instance
       def reporter
         @configuration.reporter
       end
