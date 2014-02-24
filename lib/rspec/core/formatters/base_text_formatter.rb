@@ -1,4 +1,4 @@
-require 'rspec/core/formatters/base_formatter'
+RSpec::Support.require_rspec_core "formatters/base_formatter"
 require 'set'
 
 module RSpec

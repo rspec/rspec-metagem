@@ -1,45 +1,19 @@
-require_rspec = if ENV['REQUIRE_RELATIVE']
-  lambda do |path|
-    require_relative path
-  end
-else # for 1.8.7
-  lambda do |path|
-    require "rspec/#{path}"
-  end
-end
-
 require 'set'
 require 'time'
 require 'rbconfig'
 
-require_rspec['core/version']
+require "rspec/support"
+RSpec::Support.require_rspec_support "caller_filter"
 
-require 'rspec/support/caller_filter'
-require 'rspec/core/warnings'
+RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative f }
 
-require_rspec['core/flat_map']
-require_rspec['core/filter_manager']
-require_rspec['core/dsl']
-require_rspec['core/notifications']
-require_rspec['core/reporter']
-
-require_rspec['core/hooks']
-require_rspec['core/memoized_helpers']
-require_rspec['core/metadata']
-require_rspec['core/pending']
-require_rspec['core/formatters']
-require_rspec['core/ordering']
-
-require_rspec['core/world']
-require_rspec['core/configuration']
-require_rspec['core/option_parser']
-require_rspec['core/configuration_options']
-require_rspec['core/command_line']
-require_rspec['core/runner']
-require_rspec['core/example']
-require_rspec['core/shared_example_group/collection']
-require_rspec['core/shared_example_group']
-require_rspec['core/example_group']
+%w[
+  version warnings flat_map filter_manager dsl notifications
+  reporter hooks memoized_helpers metadata pending formatters
+  ordering world configuration option_parser configuration_options
+  command_line runner example shared_example_group/collection
+  shared_example_group example_group
+].each { |name| RSpec::Support.require_rspec_core name }
 
 module RSpec
   autoload :SharedContext, 'rspec/core/shared_context'

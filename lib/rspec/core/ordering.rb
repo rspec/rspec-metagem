@@ -3,7 +3,7 @@ module RSpec
     if defined?(::Random)
       RandomNumberGenerator = ::Random
     else
-      require 'rspec/core/backport_random'
+      RSpec::Support.require_rspec_core "backport_random"
       RandomNumberGenerator = RSpec::Core::Backports::Random
     end
 

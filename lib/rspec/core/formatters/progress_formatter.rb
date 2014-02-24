@@ -1,4 +1,5 @@
-require 'rspec/core/formatters/base_text_formatter'
+RSpec::Support.require_rspec_core "formatters/base_text_formatter"
+
 module RSpec
   module Core
     module Formatters

@@ -1,7 +1,8 @@
 require 'fileutils'
-require 'rspec/core/backtrace_formatter'
-require 'rspec/core/ruby_project'
-require 'rspec/core/formatters/deprecation_formatter'
+
+RSpec::Support.require_rspec_core "backtrace_formatter"
+RSpec::Support.require_rspec_core "ruby_project"
+RSpec::Support.require_rspec_core "formatters/deprecation_formatter"
 
 module RSpec
   module Core
@@ -422,7 +423,7 @@ module RSpec
               "Pass a module or one of #{MOCKING_ADAPTERS.keys.inspect}"
           end
 
-          require "rspec/core/mocking_adapters/#{const_name.to_s.downcase}"
+          RSpec::Support.require_rspec_core "mocking_adapters/#{const_name.to_s.downcase}"
           RSpec::Core::MockingAdapters.const_get(const_name)
         end
 

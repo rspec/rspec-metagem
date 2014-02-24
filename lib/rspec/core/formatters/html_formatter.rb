@@ -1,5 +1,5 @@
-require 'rspec/core/formatters/base_text_formatter'
-require 'rspec/core/formatters/html_printer'
+RSpec::Support.require_rspec_core "formatters/base_text_formatter"
+RSpec::Support.require_rspec_core "formatters/html_printer"
 
 module RSpec
   module Core
@@ -134,7 +134,7 @@ module RSpec
         # could output links to images or other files produced during the specs.
         #
         def extra_failure_content(exception)
-          require 'rspec/core/formatters/snippet_extractor'
+          RSpec::Support.require_rspec_core "formatters/snippet_extractor"
           backtrace = exception.backtrace.map {|line| configuration.backtrace_formatter.backtrace_line(line)}
           backtrace.compact!
           @snippet_extractor ||= SnippetExtractor.new
