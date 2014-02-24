@@ -75,7 +75,7 @@ module RSpec
           private
 
           def output_formatted(str)
-            return str unless str.include? "\n"
+            return str unless str.lines.count > 1
             separator = "#{'-' * 80}"
             "#{separator}\n#{str}\n#{separator}"
           end
