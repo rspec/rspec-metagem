@@ -7,11 +7,32 @@ RSpec::Support.require_rspec_support "caller_filter"
 RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative f }
 
 %w[
-  version warnings flat_map filter_manager dsl notifications
-  reporter hooks memoized_helpers metadata pending formatters
-  ordering world configuration option_parser configuration_options
-  command_line runner example shared_example_group/collection
-  shared_example_group example_group
+  version
+  warnings
+
+  flat_map
+  filter_manager
+  dsl
+  notifications
+  reporter
+
+  hooks
+  memoized_helpers
+  metadata
+  pending
+  formatters
+  ordering
+
+  world
+  configuration
+  option_parser
+  configuration_options
+  command_line
+  runner
+  example
+  shared_example_group/collection
+  shared_example_group
+  example_group
 ].each { |name| RSpec::Support.require_rspec_core name }
 
 module RSpec
