@@ -824,6 +824,41 @@ module RSpec::Core
       end
     end
 
+    describe "#default_formatter" do
+      it 'defaults to `progress`' do
+        expect(config.default_formatter).to eq('progress')
+      end
+
+      it 'remembers changes' do
+        config.default_formatter = 'doc'
+        expect(config.default_formatter).to eq('doc')
+      end
+
+      context 'when another formatter has been set' do
+        it 'does not get used' do
+          config.default_formatter = 'doc'
+          config.add_formatter 'progress'
+
+          expect(used_formatters).to include(an_instance_of Formatters::ProgressFormatter)
+          expect(used_formatters).not_to include(an_instance_of Formatters::DocumentationFormatter)
+        end
+      end
+
+      context 'when no other formatter has been set' do
+        it 'gets used' do
+          config.default_formatter = 'doc'
+
+          expect(used_formatters).not_to include(an_instance_of Formatters::ProgressFormatter)
+          expect(used_formatters).to include(an_instance_of Formatters::DocumentationFormatter)
+        end
+      end
+
+      def used_formatters
+        config.reporter # to force freezing of formatters
+        config.formatters
+      end
+    end
+
     describe "#filter_run_including" do
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)

@@ -580,6 +580,23 @@ module RSpec
       end
       alias_method :formatter=, :add_formatter
 
+      # The formatter that will be used if no formatter has been set.
+      # Defaults to 'progress'.
+      def default_formatter
+        formatter_loader.default_formatter
+      end
+
+      # Sets a fallback formatter to use if none other has been set.
+      #
+      # @example
+      #
+      #   RSpec.configure do |rspec|
+      #     rspec.default_formatter = 'doc'
+      #   end
+      def default_formatter=(value)
+        formatter_loader.default_formatter = value
+      end
+
       # @api private
       def formatters
         formatter_loader.formatters

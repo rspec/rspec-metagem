@@ -31,6 +31,17 @@ Then /^the process should succeed even though no examples were run$/ do
   step %q{the exit status should be 0}
 end
 
+addition_example_formatter_output = <<-EOS
+Addition
+  works
+EOS
+
+Then /^the output from `([^`]+)` (should(?: not)?) be in documentation format$/ do |cmd, should_or_not|
+  step %Q{I run `#{cmd}`}
+  step %q{the examples should all pass}
+  step %Q{the output from "#{cmd}" #{should_or_not} contain "#{addition_example_formatter_output}"}
+end
+
 Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
   # ruby 1.9 includes additional stuff in the backtrace,
   # so we need to normalize it to compare it with our expected output.
