@@ -1,4 +1,4 @@
-require 'rspec/core/formatters/legacy_formatter'
+RSpec::Support.require_rspec_core 'formatters/legacy_formatter'
 
 # ## Built-in Formatters
 #

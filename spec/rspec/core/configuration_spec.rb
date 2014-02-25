@@ -109,7 +109,7 @@ module RSpec::Core
 
     describe "#mock_framework" do
       it "defaults to :rspec" do
-        expect(config).to receive(:require).with('rspec/core/mocking_adapters/rspec')
+        expect(RSpec::Support).to receive(:require_rspec_core).with('mocking_adapters/rspec')
         config.mock_framework
       end
     end
@@ -168,13 +168,13 @@ module RSpec::Core
       end
 
       it 'uses the named adapter' do
-        expect(config).to receive(:require).with("rspec/core/mocking_adapters/mocha")
+        expect(RSpec::Support).to receive(:require_rspec_core).with('mocking_adapters/mocha')
         stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
         config.mock_with :mocha
       end
 
       it "uses the null adapter when given :nothing" do
-        expect(config).to receive(:require).with('rspec/core/mocking_adapters/null').and_call_original
+        expect(RSpec::Support).to receive(:require_rspec_core).with('mocking_adapters/null').and_call_original
         config.mock_with :nothing
       end
 
@@ -191,9 +191,13 @@ module RSpec::Core
       end
 
       context 'when there are already some example groups defined' do
+        before { allow(RSpec::Support).to receive(:require_rspec_core) }
+
         it 'raises an error since this setting must be applied before any groups are defined' do
           allow(RSpec.world).to receive(:example_groups).and_return([double.as_null_object])
-          stub_const("RSpec::Core::MockingAdapters::Mocha", double(:framework_name => :mocha))
+          mocha = stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
+          allow(mocha).to receive_messages(:framework_name => :mocha)
+
           expect {
             config.mock_with :mocha
           }.to raise_error(/must be configured before any example groups are defined/)
@@ -206,7 +210,9 @@ module RSpec::Core
         end
 
         it 'does not raise an error if re-setting the same config' do
-          stub_const("RSpec::Core::MockingAdapters::Mocha", double(:framework_name => :mocha))
+          mocha = stub_const("RSpec::Core::MockingAdapters::Mocha", Module.new)
+          allow(mocha).to receive_messages(:framework_name => :mocha)
+
           groups = []
           allow(RSpec.world).to receive_messages(:example_groups => groups)
           config.mock_with :mocha

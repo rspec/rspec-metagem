@@ -1,5 +1,6 @@
 require 'erb'
 require 'shellwords'
+require 'set'
 
 module RSpec
   module Core
