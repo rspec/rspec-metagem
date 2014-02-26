@@ -4,6 +4,10 @@ Feature: --init option
   files for an rspec project. It generates a `.rspec` and
   `spec/spec_helper.rb` with some example settings to get you started.
 
+  These settings treat the case where you run an individual spec file
+  differently, using the documentation formatter if no formatter has
+  been explicitly set.
+
   Scenario: generate .rspec
     When I run `rspec --init`
     Then the following files should exist:
@@ -39,19 +43,7 @@ Feature: --init option
         end
         """
 
-     When I run `rspec`
-     Then the examples should all pass
-      And the output should not contain:
-        """
-        Addition
-          works
-        """
-
-     When I run `rspec spec/addition_spec.rb`
-     Then the examples should all pass
-      And the output should contain:
-        """
-        Addition
-          works
-        """
+     Then the output from `rspec` should not be in documentation format
+      But the output from `rspec spec/addition_spec.rb` should be in documentation format
+      But the output from `rspec spec/addition_spec.rb --format progress` should not be in documentation format
 
