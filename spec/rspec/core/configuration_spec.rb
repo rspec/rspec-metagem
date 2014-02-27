@@ -6,6 +6,8 @@ module RSpec::Core
   RSpec.describe Configuration do
 
     let(:config) { Configuration.new }
+    let(:exclusion_filter) { config.exclusion_filter.rules }
+    let(:inclusion_filter) { config.inclusion_filter.rules }
 
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
@@ -362,24 +364,24 @@ module RSpec::Core
         it "overrides inclusion filters set on config" do
           config.filter_run_including :foo => :bar
           assign_files_or_directories_to_run "path/to/file.rb:37"
-          expect(config.inclusion_filter.size).to eq(1)
-          expect(config.inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
-          expect(config.inclusion_filter[:locations].values.first).to eq([37])
+          expect(inclusion_filter.size).to eq(1)
+          expect(inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
+          expect(inclusion_filter[:locations].values.first).to eq([37])
         end
 
         it "overrides inclusion filters set before config" do
           config.force(:inclusion_filter => {:foo => :bar})
           assign_files_or_directories_to_run "path/to/file.rb:37"
-          expect(config.inclusion_filter.size).to eq(1)
-          expect(config.inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
-          expect(config.inclusion_filter[:locations].values.first).to eq([37])
+          expect(inclusion_filter.size).to eq(1)
+          expect(inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
+          expect(inclusion_filter[:locations].values.first).to eq([37])
         end
 
         it "clears exclusion filters set on config" do
           config.exclusion_filter = { :foo => :bar }
           assign_files_or_directories_to_run "path/to/file.rb:37"
-          expect(config.exclusion_filter).to be_empty,
-            "expected exclusion filter to be empty:\n#{config.exclusion_filter}"
+          expect(exclusion_filter).to be_empty,
+            "expected exclusion filter to be empty:\n#{exclusion_filter}"
         end
 
         it "clears exclusion filters set before config" do
@@ -393,17 +395,17 @@ module RSpec::Core
       context "with default pattern" do
         it "loads files named _spec.rb" do
           assign_files_or_directories_to_run "spec/rspec/core/resources"
-          expect(config.files_to_run).to eq([      "spec/rspec/core/resources/a_spec.rb"])
+          expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
         end
 
         it "loads files in Windows", :if => RSpec.world.windows_os? do
           assign_files_or_directories_to_run "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
-          expect(config.files_to_run).to eq([      "C:/path/to/project/spec/sub/foo_spec.rb"])
+          expect(config.files_to_run).to eq(["C:/path/to/project/spec/sub/foo_spec.rb"])
         end
 
         it "loads files in Windows when directory is specified", :if => RSpec.world.windows_os? do
           assign_files_or_directories_to_run "spec\\rspec\\core\\resources"
-          expect(config.files_to_run).to eq([      "spec/rspec/core/resources/a_spec.rb"])
+          expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
         end
       end
 
@@ -549,7 +551,7 @@ module RSpec::Core
     describe "path with line number" do
       it "assigns the line number as a location filter" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:37"
-        expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
+        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
     end
 
@@ -557,7 +559,7 @@ module RSpec::Core
       it "overrides filters" do
         config.filter_run :focused => true
         config.full_description = "foo"
-        expect(config.filter).not_to have_key(:focused)
+        expect(inclusion_filter).not_to have_key(:focused)
       end
 
       it 'is possible to access the full description regular expression' do
@@ -575,36 +577,36 @@ module RSpec::Core
     context "with line number" do
       it "assigns the file and line number as a location filter" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:37"
-        expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
+        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
       end
 
       it "assigns multiple files with line numbers as location filters" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:37", "other_spec.rb:44"
-        expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37],
+        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37],
                                                 File.expand_path("other_spec.rb") => [44]}})
       end
 
       it "assigns files with multiple line numbers as location filters" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:37", "path/to/a_spec.rb:44"
-        expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}})
+        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37, 44]}})
       end
     end
 
     context "with multiple line numbers" do
       it "assigns the file and line numbers as a location filter" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:1:3:5:7"
-        expect(config.filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
+        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
       end
     end
 
     it "assigns the example name as the filter on description" do
       config.full_description = "foo"
-      expect(config.filter).to eq({:full_description => /foo/})
+      expect(inclusion_filter).to eq({:full_description => /foo/})
     end
 
     it "assigns the example names as the filter on description if description is an array" do
       config.full_description = [ "foo", "bar" ]
-      expect(config.filter).to eq({:full_description => Regexp.union(/foo/, /bar/)})
+      expect(inclusion_filter).to eq({:full_description => Regexp.union(/foo/, /bar/)})
     end
 
     it 'is possible to access the full description regular expression' do
@@ -863,26 +865,24 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.filter_run_including(*args)
-          config.inclusion_filter
+          config.inclusion_filter.rules
         end
       end
 
       it "sets the filter with a hash" do
         config.filter_run_including :foo => true
-        expect(config.inclusion_filter[:foo]).to be(true)
+        expect(inclusion_filter).to eq( {:foo => true} )
       end
 
       it "sets the filter with a symbol" do
         config.filter_run_including :foo
-        expect(config.inclusion_filter[:foo]).to be(true)
+        expect(inclusion_filter).to eq( {:foo => true} )
       end
 
       it "merges with existing filters" do
         config.filter_run_including :foo => true
         config.filter_run_including :bar => false
-
-        expect(config.inclusion_filter[:foo]).to be(true)
-        expect(config.inclusion_filter[:bar]).to be(false)
+        expect(inclusion_filter).to eq( {:foo => true, :bar => false} )
       end
     end
 
@@ -890,53 +890,51 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.filter_run_excluding(*args)
-          config.exclusion_filter
+          config.exclusion_filter.rules
         end
       end
 
       it "sets the filter" do
         config.filter_run_excluding :foo => true
-        expect(config.exclusion_filter[:foo]).to be(true)
+        expect(exclusion_filter).to eq( {:foo => true} )
       end
 
       it "sets the filter using a symbol" do
         config.filter_run_excluding :foo
-        expect(config.exclusion_filter[:foo]).to be(true)
+        expect(exclusion_filter).to eq( {:foo => true} )
       end
 
       it "merges with existing filters" do
         config.filter_run_excluding :foo => true
         config.filter_run_excluding :bar => false
-
-        expect(config.exclusion_filter[:foo]).to be(true)
-        expect(config.exclusion_filter[:bar]).to be(false)
+        expect(exclusion_filter).to eq( {:foo => true, :bar => false} )
       end
     end
 
     describe "#inclusion_filter" do
       it "returns {} even if set to nil" do
         config.inclusion_filter = nil
-        expect(config.inclusion_filter).to eq({})
+        expect(inclusion_filter).to eq({})
       end
     end
 
     describe "#inclusion_filter=" do
       it "treats symbols as hash keys with true values when told to" do
         config.inclusion_filter = :foo
-        expect(config.inclusion_filter).to eq({:foo => true})
+        expect(inclusion_filter).to eq( {:foo => true} )
       end
 
       it "overrides any inclusion filters set on the command line or in configuration files" do
         config.force(:inclusion_filter => { :foo => :bar })
         config.inclusion_filter = {:want => :this}
-        expect(config.inclusion_filter).to eq({:want => :this})
+        expect(inclusion_filter).to eq( {:want => :this} )
       end
     end
 
     describe "#exclusion_filter" do
       it "returns {} even if set to nil" do
         config.exclusion_filter = nil
-        expect(config.exclusion_filter).to eq({})
+        expect(exclusion_filter).to eq( {} )
       end
 
       describe "the default :if filter" do
@@ -978,32 +976,32 @@ module RSpec::Core
     describe "#exclusion_filter=" do
       it "treats symbols as hash keys with true values when told to" do
         config.exclusion_filter = :foo
-        expect(config.exclusion_filter).to eq({:foo => true})
+        expect(exclusion_filter).to eq({:foo => true})
       end
 
       it "overrides any exclusion filters set on the command line or in configuration files" do
         config.force(:exclusion_filter => { :foo => :bar })
         config.exclusion_filter = {:want => :this}
-        expect(config.exclusion_filter).to eq({:want => :this})
+        expect(exclusion_filter).to eq({:want => :this})
       end
     end
 
     describe "line_numbers=" do
       it "sets the line numbers" do
         config.line_numbers = ['37']
-        expect(config.filter).to eq({:line_numbers => [37]})
+        expect(inclusion_filter).to eq({:line_numbers => [37]})
       end
 
       it "overrides filters" do
         config.filter_run :focused => true
         config.line_numbers = ['37']
-        expect(config.filter).to eq({:line_numbers => [37]})
+        expect(inclusion_filter).to eq({:line_numbers => [37]})
       end
 
       it "prevents subsequent filters" do
         config.line_numbers = ['37']
         config.filter_run :focused => true
-        expect(config.filter).to eq({:line_numbers => [37]})
+        expect(inclusion_filter).to eq({:line_numbers => [37]})
       end
     end
 

@@ -83,13 +83,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     it "assigns inclusion_filter" do
       opts = config_options_object(*%w[--tag awesome])
       opts.configure(config)
-      expect(config.inclusion_filter).to have_key(:awesome)
+      expect(config.inclusion_filter.rules).to have_key(:awesome)
     end
 
     it "merges the :exclusion_filter option with the default exclusion_filter" do
       opts = config_options_object(*%w[--tag ~slow])
       opts.configure(config)
-      expect(config.exclusion_filter).to have_key(:slow)
+      expect(config.exclusion_filter.rules).to have_key(:slow)
     end
 
     it "forces color_enabled" do

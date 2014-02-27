@@ -66,74 +66,23 @@ module RSpec
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
     class FilterManager
-      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
-
-      PROC_HEX_NUMBER = /0x[0-9a-f]+@/
-      PROJECT_DIR = File.expand_path('.')
-
-      def self.inspect_filter_hash(hash)
-        hash.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
-      end
-
-      class InclusionFilterHash < Hash
-        def description
-          FilterManager.inspect_filter_hash self
-        end
-      end
-
-      class ExclusionFilterHash < Hash
-        CONDITIONAL_FILTERS = {
-          :if     => lambda { |value| !value },
-          :unless => lambda { |value| value }
-        }
-
-        def initialize(*)
-          super
-          CONDITIONAL_FILTERS.each {|k,v| store(k, v)}
-        end
-
-        def description
-          FilterManager.inspect_filter_hash without_conditional_filters
-        end
-
-        def empty_without_conditional_filters?
-          without_conditional_filters.empty?
-        end
-
-        private
-
-        if RUBY_VERSION.to_f < 2.1
-          def without_conditional_filters
-            # On 1.8.7, Hash#reject returns a hash but Hash#select returns an array.
-            reject {|k,v| CONDITIONAL_FILTERS[k] == v}
-          end
-        else
-          def without_conditional_filters
-            # On ruby 2.1 #reject on a subclass of Hash emits warnings, but #select does not.
-            select {|k,v| CONDITIONAL_FILTERS[k] != v}
-          end
-        end
-      end
-
       attr_reader :exclusions, :inclusions
 
       def initialize
-        @exclusions = ExclusionFilterHash.new
-        @inclusions = InclusionFilterHash.new
+        @exclusions, @inclusions = FilterRules.build
       end
 
       def add_location(file_path, line_numbers)
         # locations is a hash of expanded paths to arrays of line
         # numbers to match against. e.g.
         #   { "path/to/file.rb" => [37, 42] }
-        locations = @inclusions.delete(:locations) || Hash.new {|h,k| h[k] = []}
+        locations = inclusions.delete(:locations) || Hash.new { |h,k| h[k] = [] }
         locations[File.expand_path(file_path)].push(*line_numbers)
-
-        replace_filters :locations => locations
+        inclusions.add_location(locations)
       end
 
       def empty?
-        inclusions.empty? && exclusions.empty_without_conditional_filters?
+        inclusions.empty? && exclusions.empty?
       end
 
       def prune(examples)
@@ -141,74 +90,182 @@ module RSpec
       end
 
       def exclude(*args)
-        merge(@exclusions, @inclusions, *args)
+        exclusions.add(args.last)
       end
 
       def exclude!(*args)
-        replace(@exclusions, @inclusions, *args)
+        exclusions.use(args.last)
       end
 
       def exclude_with_low_priority(*args)
-        reverse_merge(@exclusions, @inclusions, *args)
+        exclusions.add_with_low_priority(args.last)
       end
 
       def exclude?(example)
-        @exclusions.empty? ? false : example.any_apply?(@exclusions)
+        exclusions.include_example?(example)
       end
 
-      def include(*filters)
-        set_standalone_filter(*filters) || merge(@inclusions, @exclusions, *filters)
+      def include(*args)
+        inclusions.add(args.last)
       end
 
-      def include!(*filters)
-        set_standalone_filter(*filters) || replace(@inclusions, @exclusions, *filters)
+      def include!(*args)
+        inclusions.use(args.last)
       end
 
-      def include_with_low_priority(*filters)
-        set_standalone_filter(*filters) || reverse_merge(@inclusions, @exclusions, *filters)
+      def include_with_low_priority(*args)
+        inclusions.add_with_low_priority(args.last)
       end
 
       def include?(example)
-        @inclusions.empty? ? true : example.any_apply?(@inclusions)
+        inclusions.include_example?(example)
+      end
+    end
+
+    class FilterRules
+      PROC_HEX_NUMBER = /0x[0-9a-f]+@/
+      PROJECT_DIR = File.expand_path('.')
+
+      attr_accessor :opposite
+
+      def self.build
+        exclusions = ExclusionRules.new
+        inclusions = InclusionRules.new
+        exclusions.opposite = inclusions
+        inclusions.opposite = exclusions
+        [exclusions, inclusions]
+      end
+
+      def initialize(*args, &block)
+        @rules = Hash.new(*args, &block)
+      end
+
+      def add(updated)
+        @rules.merge!(updated).each_key { |k| opposite.delete(k) }
+      end
+
+      def add_with_low_priority(_updated)
+        updated = _updated.merge(@rules)
+        opposite.each_pair { |k,v| updated.delete(k) if updated[k] == v }
+        @rules.replace(updated)
+      end
+
+      def use(updated)
+        updated.each_key { |k| opposite.delete(k) }
+        @rules.replace(updated)
+      end
+
+      def clear
+        @rules.clear
+      end
+
+      def delete(key)
+        @rules.delete(key)
+      end
+
+      def fetch(*args, &block)
+        @rules.fetch(*args, &block)
+      end
+
+      def [](key)
+        @rules[key]
+      end
+
+      def empty?
+        rules.empty?
+      end
+
+      def each_pair(&block)
+        @rules.each_pair(&block)
+      end
+
+      def description
+        rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+      end
+
+      def rules
+        raise NotImplementedError
       end
 
     private
 
-      def set_standalone_filter(*args)
-        if already_set_standalone_filter?
-          true
-        elsif is_standalone_filter?(args.last)
-          replace_filters(args.last)
+      def method_missing(meth_name, *args, &block)
+        if Hash.instance_methods.include?(meth_name)
+          RSpec.warn_deprecation("#{ self.class }##{ meth_name }")
+          @rules.send(meth_name, *args, &block)
+        else
+          super(meth_name, *args, &block)
+        end
+      end
+    end
+
+    class InclusionRules < FilterRules
+      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
+
+      attr_reader :rules
+
+      def add_location(locations)
+        replace_filters({ :locations => locations })
+      end
+
+      def add(*args)
+        set_standalone_filter(*args) || super
+      end
+
+      def add_with_low_priority(*args)
+        set_standalone_filter(*args) || super
+      end
+
+      def use(*args)
+        set_standalone_filter(*args) || super
+      end
+
+      def include_example?(example)
+        @rules.empty? ? true : example.any_apply?(@rules)
+      end
+
+    private
+
+      def set_standalone_filter(updated)
+        return true if already_set_standalone_filter?
+
+        if is_standalone_filter?(updated)
+          replace_filters(updated)
           true
         end
       end
 
-      def replace_filters(rule)
-        @inclusions.replace(rule)
-        @exclusions.clear
-      end
-
-      def merge(orig, opposite, *updates)
-        orig.merge!(updates.last).each_key {|k| opposite.delete(k)}
-      end
-
-      def replace(orig, opposite, *updates)
-        updates.last.each_key {|k| opposite.delete(k)}
-        orig.replace(updates.last)
-      end
-
-      def reverse_merge(orig, opposite, *updates)
-        updated = updates.last.merge(orig)
-        opposite.each_pair {|k,v| updated.delete(k) if updated[k] == v}
-        orig.replace(updated)
+      def replace_filters(new_rules)
+        @rules.replace(new_rules)
+        opposite.clear
       end
 
       def already_set_standalone_filter?
-        is_standalone_filter?(inclusions)
+        is_standalone_filter?(@rules)
       end
 
-      def is_standalone_filter?(filter)
-        STANDALONE_FILTERS.any? {|key| filter.has_key?(key)}
+      def is_standalone_filter?(rules)
+        STANDALONE_FILTERS.any? { |key| rules.has_key?(key) }
+      end
+    end
+
+    class ExclusionRules < FilterRules
+      CONDITIONAL_FILTERS = {
+        :if     => lambda { |value| !value },
+        :unless => lambda { |value| value }
+      }
+
+      def initialize(*)
+        super
+        CONDITIONAL_FILTERS.each { |k,v| @rules.store(k, v) }
+      end
+
+      def include_example?(example)
+        @rules.empty? ? false : example.any_apply?(@rules)
+      end
+
+      def rules
+        @rules.reject { |k,v| CONDITIONAL_FILTERS[k] == v }
       end
     end
   end
