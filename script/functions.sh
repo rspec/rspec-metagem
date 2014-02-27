@@ -123,7 +123,7 @@ function run_spec_suite_for {
 }
 
 function check_documentation_coverage {
-  yard stats --list-undoc | ruby -e "
+  bin/yard stats --list-undoc | ruby -e "
     while line = gets
       coverage ||= line[/([\d\.]+)% documented/, 1]
       puts line
