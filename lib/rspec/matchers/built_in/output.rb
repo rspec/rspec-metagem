@@ -3,6 +3,9 @@ require 'stringio'
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `output`.
+      # Not intended to be instantiated directly.
       class Output < BaseMatcher
         def initialize(expected)
           @expected = expected
@@ -15,11 +18,15 @@ module RSpec
           @expected ? values_match?(@expected, @actual) : captured?
         end
 
+        # @api public
+        # Tells the matcher to match against stdout.
         def to_stdout
           @stream_capturer = CaptureStdout
           self
         end
 
+        # @api public
+        # Tells the matcher to match against stderr.
         def to_stderr
           @stream_capturer = CaptureStderr
           self
@@ -56,6 +63,7 @@ module RSpec
         end
       end
 
+      # @private
       module NullCapture
         def self.name
           "some stream"
@@ -66,6 +74,7 @@ module RSpec
         end
       end
 
+      # @private
       module CaptureStdout
         def self.name
           'stdout'
@@ -85,6 +94,7 @@ module RSpec
         end
       end
 
+      # @private
       module CaptureStderr
         def self.name
           'stderr'

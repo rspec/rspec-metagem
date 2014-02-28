@@ -1,7 +1,7 @@
 module RSpec
   module Expectations
+    # @private
     class EncodedString
-
       def initialize(string, encoding = nil)
         @encoding = encoding
         @source_encoding = detect_source_encoding(string)

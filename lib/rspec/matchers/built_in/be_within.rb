@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `be_within`.
+      # Not intended to be instantiated directly.
       class BeWithin
         include Composable
 
@@ -8,12 +11,8 @@ module RSpec
           @delta = delta
         end
 
-        def matches?(actual)
-          @actual = actual
-          raise needs_expected unless defined? @expected
-          numeric? && (@actual - @expected).abs <= @tolerance
-        end
-
+        # @api public
+        # Sets the expected value.
         def of(expected)
           @expected  = expected
           @tolerance = @delta
@@ -21,6 +20,9 @@ module RSpec
           self
         end
 
+        # @api public
+        # Sets the expected value, and makes the matcher do
+        # a percent comparison.
         def percent_of(expected)
           @expected  = expected
           @tolerance = @delta * @expected.abs / 100.0
@@ -28,14 +30,24 @@ module RSpec
           self
         end
 
+        # @private
+        def matches?(actual)
+          @actual = actual
+          raise needs_expected unless defined? @expected
+          numeric? && (@actual - @expected).abs <= @tolerance
+        end
+
+        # @private
         def failure_message
           "expected #{@actual.inspect} to #{description}#{not_numeric_clause}"
         end
 
+        # @private
         def failure_message_when_negated
           "expected #{@actual.inspect} not to #{description}"
         end
 
+        # @private
         def description
           "be within #{@delta}#{@unit} of #{@expected}"
         end

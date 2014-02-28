@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `raise_error`.
+      # Not intended to be instantiated directly.
       class RaiseError
         include Composable
 
@@ -15,12 +18,15 @@ module RSpec
           end
         end
 
+        # @api public
+        # Specifies the expected error message.
         def with_message(expected_message)
           raise_message_already_set if @expected_message
           @expected_message = expected_message
           self
         end
 
+        # @private
         def matches?(given_proc, negative_expectation = false, &block)
           @block ||= block
           @raised_expected_error = false
@@ -49,6 +55,29 @@ module RSpec
           expectation_matched?
         end
 
+        # @private
+        def does_not_match?(given_proc)
+          prevent_invalid_expectations
+          !matches?(given_proc, :negative_expectation)
+        end
+
+        # @private
+        def failure_message
+          @eval_block ? @actual_error.message : "expected #{expected_error}#{given_error}"
+        end
+
+        # @private
+        def failure_message_when_negated
+          "expected no #{expected_error}#{given_error}"
+        end
+
+        # @private
+        def description
+          "raise #{expected_error}"
+        end
+
+      private
+
         def expectation_matched?
           error_and_message_match? && block_matches?
         end
@@ -59,11 +88,6 @@ module RSpec
 
         def block_matches?
           @eval_block ? @eval_block_passed : true
-        end
-
-        def does_not_match?(given_proc)
-          prevent_invalid_expectations
-          !matches?(given_proc, :negative_expectation)
         end
 
         def eval_block
@@ -80,20 +104,6 @@ module RSpec
           return true if @expected_message.nil?
           values_match?(@expected_message, @actual_error.message)
         end
-
-        def failure_message
-          @eval_block ? @actual_error.message : "expected #{expected_error}#{given_error}"
-        end
-
-        def failure_message_when_negated
-          "expected no #{expected_error}#{given_error}"
-        end
-
-        def description
-          "raise #{expected_error}"
-        end
-
-        private
 
         def prevent_invalid_expectations
           if (expecting_specific_exception? || @expected_message)

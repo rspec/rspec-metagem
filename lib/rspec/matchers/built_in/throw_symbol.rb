@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `throw_symbol`.
+      # Not intended to be instantiated directly.
       class ThrowSymbol
         include Composable
 
@@ -10,6 +13,7 @@ module RSpec
           @caught_symbol = @caught_arg = nil
         end
 
+        # @private
         def matches?(given_proc)
           begin
             if @expected_symbol.nil?
@@ -54,19 +58,22 @@ module RSpec
           end
         end
 
+        # @private
         def failure_message
           "expected #{expected} to be thrown, got #{caught}"
         end
 
+        # @private
         def failure_message_when_negated
           "expected #{expected('no Symbol')}#{' not' if @expected_symbol} to be thrown, got #{caught}"
         end
 
+        # @private
         def description
           "throw #{expected}"
         end
 
-        private
+      private
 
         def expected(symbol_desc = 'a Symbol')
           throw_description(@expected_symbol || symbol_desc, @expected_arg)

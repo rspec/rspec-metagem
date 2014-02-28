@@ -1,8 +1,8 @@
 module RSpec
   module Expectations
 
-    # @api private
-    class ExpectationHelper
+    # @private
+    module ExpectationHelper
       def self.check_message(msg)
         unless msg.nil? || msg.respond_to?(:to_str) || msg.respond_to?(:call)
           ::Kernel.warn [
@@ -16,7 +16,7 @@ module RSpec
       # Returns an RSpec-3+ compatible matcher, wrapping a legacy one
       # in an adapter if necessary.
       #
-      # @api private
+      # @private
       def self.modern_matcher_from(matcher)
         LegacyMacherAdapter::RSpec2.wrap(matcher) ||
         LegacyMacherAdapter::RSpec1.wrap(matcher) || matcher
@@ -40,7 +40,7 @@ module RSpec
       end
     end
 
-    # @api private
+    # @private
     class PositiveExpectationHandler
       def self.handle_matcher(actual, initial_matcher, message=nil, &block)
         matcher = ExpectationHelper.setup(self, initial_matcher, message)
@@ -62,7 +62,7 @@ module RSpec
       end
     end
 
-    # @api private
+    # @private
     class NegativeExpectationHandler
       def self.handle_matcher(actual, initial_matcher, message=nil, &block)
         matcher = ExpectationHelper.setup(self, initial_matcher, message)
@@ -95,7 +95,7 @@ module RSpec
     # Wraps a matcher written against one of the legacy protocols in
     # order to present the current protocol.
     #
-    # @api private
+    # @private
     class LegacyMacherAdapter < Matchers::MatcherDelegator
       def initialize(matcher)
         super
@@ -117,7 +117,7 @@ module RSpec
       # the failure message protocol was:
       #   * `failure_message_for_should`
       #   * `failure_message_for_should_not`
-      # @api private
+      # @private
       class RSpec2 < self
         def failure_message
           base_matcher.failure_message_for_should
@@ -141,7 +141,7 @@ module RSpec
       # Before RSpec 1.2, the failure message protocol was:
       #   * `failure_message`
       #   * `negative_failure_message`
-      # @api private
+      # @private
       class RSpec1 < self
         def failure_message
           base_matcher.failure_message

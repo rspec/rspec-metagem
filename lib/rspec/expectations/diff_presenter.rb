@@ -6,6 +6,8 @@ require 'pp'
 
 module RSpec
   module Expectations
+    # Produces a diff for the submitted objects.
+    # @private
     class DiffPresenter
       def diff_as_string(actual, expected)
         @encoding = pick_encoding actual, expected

@@ -1,12 +1,23 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `be_between`.
+      # Not intended to be instantiated directly.
       class BeBetween < BaseMatcher
         def initialize(min, max)
           @min, @max = min, max
           inclusive
         end
 
+        # @api public
+        # Makes the between comparison inclusive.
+        #
+        # @example
+        #   expect(3).to be_between(2, 3).inclusive
+        #
+        # @note The matcher is inclusive by default; this simply provides
+        #       a way to be more explicit about it.
         def inclusive
           @less_than_operator = :<=
           @greater_than_operator = :>=
@@ -14,6 +25,11 @@ module RSpec
           self
         end
 
+        # @api public
+        # Makes the between comparison exclusive.
+        #
+        # @example
+        #   expect(3).to be_between(2, 4).exclusive
         def exclusive
           @less_than_operator = :<
           @greater_than_operator = :>

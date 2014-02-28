@@ -1,6 +1,10 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @private
+      # Object that is yielded to `expect` when one of the
+      # yield matchers is used. Provides information about
+      # the yield behavior of the object-under-test.
       class YieldProbe
         def self.probe(block)
           probe = new
@@ -65,12 +69,57 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `yield_control`.
+      # Not intended to be instantiated directly.
       class YieldControl < BaseMatcher
         def initialize
           @expectation_type = nil
           @expected_yields_count = nil
         end
 
+        # @api public
+        # Specifies that the method is expected to yield once.
+        def once
+          exactly(1)
+          self
+        end
+
+        # @api public
+        # Specifies that the method is expected to yield once.
+        def twice
+          exactly(2)
+          self
+        end
+
+        # @api public
+        # Specifies that the method is expected to yield the given number of times.
+        def exactly(number)
+          set_expected_yields_count(:==, number)
+          self
+        end
+
+        # @api public
+        # Specifies the maximum number of times the method is expected to yield
+        def at_most(number)
+          set_expected_yields_count(:<=, number)
+          self
+        end
+
+        # @api public
+        # Specifies the minimum number of times the method is expected to yield
+        def at_least(number)
+          set_expected_yields_count(:>=, number)
+          self
+        end
+
+        # @api public
+        # No-op. Provides syntactic sugar.
+        def times
+          self
+        end
+
+        # @private
         def matches?(block)
           probe = YieldProbe.probe(block)
 
@@ -81,48 +130,21 @@ module RSpec
           end
         end
 
-        def once
-          exactly(1)
-          self
-        end
-
-        def twice
-          exactly(2)
-          self
-        end
-
-        def exactly(number)
-          set_expected_yields_count(:==, number)
-          self
-        end
-
-        def at_most(number)
-          set_expected_yields_count(:<=, number)
-          self
-        end
-
-        def at_least(number)
-          set_expected_yields_count(:>=, number)
-          self
-        end
-
-        def times
-          self
-        end
-
+        # @private
         def failure_message
           'expected given block to yield control'.tap do |failure_message|
             failure_message << relativity_failure_message
           end
         end
 
+        # @private
         def failure_message_when_negated
           'expected given block not to yield control'.tap do |failure_message|
             failure_message << relativity_failure_message
           end
         end
 
-        private
+      private
 
         def set_expected_yields_count(relativity, n)
           @expectation_type = relativity
@@ -155,17 +177,22 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `yield_with_no_args`.
+      # Not intended to be instantiated directly.
       class YieldWithNoArgs < BaseMatcher
-
+        # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
           @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.empty?
         end
 
+        # @private
         def failure_message
           "expected given block to yield with no arguments, but #{failure_reason}"
         end
 
+        # @private
         def failure_message_when_negated
           "expected given block not to yield with no arguments, but did"
         end
@@ -181,6 +208,9 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `yield_with_args`.
+      # Not intended to be instantiated directly.
       class YieldWithArgs
         include Composable
 
@@ -188,20 +218,24 @@ module RSpec
           @expected = args
         end
 
+        # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
           @actual = @probe.single_yield_args
           @probe.yielded_once?(:yield_with_args) && args_match?
         end
 
+        # @private
         def failure_message
           "expected given block to yield with arguments, but #{positive_failure_reason}"
         end
 
+        # @private
         def failure_message_when_negated
           "expected given block not to yield with arguments, but #{negative_failure_reason}"
         end
 
+        # @private
         def description
           desc = "yield with args"
           desc << "(#{expected_arg_description})" unless @expected.empty?
@@ -252,6 +286,9 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `yield_successive_args`.
+      # Not intended to be instantiated directly.
       class YieldSuccessiveArgs
         include Composable
 
@@ -259,24 +296,28 @@ module RSpec
           @expected = args
         end
 
+        # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
           @actual = @probe.successive_yield_args
           args_match?
         end
 
+        # @private
         def failure_message
           "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
             "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
             "\n     got: #{@actual.inspect}"
         end
 
+        # @private
         def failure_message_when_negated
           "expected given block not to yield successively with arguments, but yielded with expected arguments" +
               "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
               "\n         got: #{@actual.inspect}"
         end
 
+        # @private
         def description
           desc = "yield successive args"
           desc << "(#{expected_arg_description})"

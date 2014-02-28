@@ -3,39 +3,48 @@ require 'rspec/matchers/dsl'
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `be_truthy`.
+      # Not intended to be instantiated directly.
       class BeTruthy < BaseMatcher
+        def failure_message
+          "expected: truthy value\n     got: #{actual.inspect}"
+        end
+
+        def failure_message_when_negated
+          "expected: falsey value\n     got: #{actual.inspect}"
+        end
+
+      private
+
         def match(_, actual)
           !!actual
         end
+      end
 
+      # @api private
+      # Provides the implementation for `be_falsey`.
+      # Not intended to be instantiated directly.
+      class BeFalsey < BaseMatcher
         def failure_message
-          "expected: truthy value\n     got: #{actual.inspect}"
+          "expected: falsey value\n     got: #{actual.inspect}"
         end
 
         def failure_message_when_negated
-          "expected: falsey value\n     got: #{actual.inspect}"
+          "expected: truthy value\n     got: #{actual.inspect}"
         end
-      end
 
-      class BeFalsey < BaseMatcher
+      private
+
         def match(_, actual)
           !actual
         end
-
-        def failure_message
-          "expected: falsey value\n     got: #{actual.inspect}"
-        end
-
-        def failure_message_when_negated
-          "expected: truthy value\n     got: #{actual.inspect}"
-        end
       end
 
+      # @api private
+      # Provides the implementation for `be_nil`.
+      # Not intended to be instantiated directly.
       class BeNil < BaseMatcher
-        def match(_, actual)
-          actual.nil?
-        end
-
         def failure_message
           "expected: nil\n     got: #{actual.inspect}"
         end
@@ -43,8 +52,15 @@ module RSpec
         def failure_message_when_negated
           "expected: not nil\n     got: nil"
         end
+
+      private
+
+        def match(_, actual)
+          actual.nil?
+        end
       end
 
+      # @private
       module BeHelpers
         private
 
@@ -69,15 +85,14 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `be`.
+      # Not intended to be instantiated directly.
       class Be < BaseMatcher
         include BeHelpers
 
         def initialize(*args, &block)
           @args = args
-        end
-
-        def match(_, actual)
-          !!actual
         end
 
         def failure_message
@@ -93,8 +108,17 @@ module RSpec
             BeComparedTo.new(operand, operator)
           end
         end
+
+      private
+
+        def match(_, actual)
+          !!actual
+        end
       end
 
+      # @api private
+      # Provides the implementation of `be <operator> value`.
+      # Not intended to be instantiated directly.
       class BeComparedTo < BaseMatcher
         include BeHelpers
 
@@ -126,6 +150,9 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation of `be_<predicate>`.
+      # Not intended to be instantiated directly.
       class BePredicate < BaseMatcher
         include BeHelpers
 

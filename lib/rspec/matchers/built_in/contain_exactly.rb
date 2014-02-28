@@ -1,12 +1,10 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `contain_exactly` and `match_array`.
+      # Not intended to be instantiated directly.
       class ContainExactly < BaseMatcher
-        def match(expected, actual)
-          convert_actual_to_an_array or return false
-          match_when_sorted? || (extra_items.empty? && missing_items.empty?)
-        end
-
         def failure_message
           if Array === actual
             message  = "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
@@ -29,6 +27,11 @@ module RSpec
         end
 
       private
+
+        def match(expected, actual)
+          convert_actual_to_an_array or return false
+          match_when_sorted? || (extra_items.empty? && missing_items.empty?)
+        end
 
         # This cannot always work (e.g. when dealing with unsortable items,
         # or matchers as expected items), but it's practically free compared to
@@ -191,6 +194,7 @@ module RSpec
 
         private
 
+          # @private
           # Starting solution that is worse than any other real solution.
           NullSolution = Class.new do
             def self.worse_than?(other); true; end

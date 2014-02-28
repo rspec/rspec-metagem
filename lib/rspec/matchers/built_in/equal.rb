@@ -1,11 +1,10 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `equal`.
+      # Not intended to be instantiated directly.
       class Equal < BaseMatcher
-        def match(expected, actual)
-          actual.equal? expected
-        end
-
         def failure_message
           if expected_is_a_literal_singleton?
             simple_failure_message
@@ -29,7 +28,11 @@ MESSAGE
           !expected_is_a_literal_singleton?
         end
 
-        private
+      private
+
+        def match(expected, actual)
+          actual.equal? expected
+        end
 
         LITERAL_SINGLETONS = [true, false, nil]
 
@@ -54,7 +57,6 @@ object identity in this example.
 
 MESSAGE
         end
-
 
         def inspect_object(o)
           "#<#{o.class}:#{o.object_id}> => #{o.inspect}"

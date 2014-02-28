@@ -1,8 +1,8 @@
 module RSpec
   module Matchers
     module BuiltIn
-      # Base class for `and` and `or` compound matchers.
       # @api private
+      # Base class for `and` and `or` compound matchers.
       class Compound < BaseMatcher
         attr_reader :matcher_1, :matcher_2
 
@@ -55,8 +55,8 @@ module RSpec
           [message_1, conjunction, message_2].join(' ')
         end
 
-        # Matcher used to represent a compound `and` expectation.
         # @api public
+        # Matcher used to represent a compound `and` expectation.
         class And < self
           def failure_message
             if @matcher_1_matches
@@ -82,8 +82,8 @@ module RSpec
           end
         end
 
-        # Matcher used to represent a compound `or` expectation.
         # @api public
+        # Matcher used to represent a compound `or` expectation.
         class Or < self
           def failure_message
             compound_failure_message

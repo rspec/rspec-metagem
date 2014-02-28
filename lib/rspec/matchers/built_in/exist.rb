@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `exist`.
+      # Not intended to be instantiated directly.
       class Exist < BaseMatcher
         def initialize(*expected)
           @expected = expected

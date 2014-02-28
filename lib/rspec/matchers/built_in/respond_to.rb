@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `respond_to`.
+      # Not intended to be instantiated directly.
       class RespondTo
         include Composable
 
@@ -9,35 +12,50 @@ module RSpec
           @expected_arity = nil
         end
 
-        def matches?(actual)
-          find_failing_method_names(actual, :reject).empty?
-        end
-
-        def does_not_match?(actual)
-          find_failing_method_names(actual, :select).empty?
-        end
-
-        def failure_message
-          "expected #{@actual.inspect} to respond to #{@failing_method_names.collect {|name| name.inspect }.join(', ')}#{with_arity}"
-        end
-
-        def failure_message_when_negated
-          failure_message.sub(/to respond to/, 'not to respond to')
-        end
-
-        def description
-          "respond to #{pp_names}#{with_arity}"
-        end
-
+        # @api public
+        # Specifies the number of expected arguments.
+        #
+        # @example
+        #   expect(obj).to respond_to(:message).with(3).arguments
         def with(n)
           @expected_arity = n
           self
         end
 
+        # @api public
+        # No-op. Intended to be used as syntactic sugar when using `with`.
+        #
+        # @example
+        #   expect(obj).to respond_to(:message).with(3).arguments
         def argument
           self
         end
         alias :arguments :argument
+
+        # @private
+        def matches?(actual)
+          find_failing_method_names(actual, :reject).empty?
+        end
+
+        # @private
+        def does_not_match?(actual)
+          find_failing_method_names(actual, :select).empty?
+        end
+
+        # @private
+        def failure_message
+          "expected #{@actual.inspect} to respond to #{@failing_method_names.collect {|name| name.inspect }.join(', ')}#{with_arity}"
+        end
+
+        # @private
+        def failure_message_when_negated
+          failure_message.sub(/to respond to/, 'not to respond to')
+        end
+
+        # @private
+        def description
+          "respond to #{pp_names}#{with_arity}"
+        end
 
       private
 

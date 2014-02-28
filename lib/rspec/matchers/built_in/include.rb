@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `include`.
+      # Not intended to be instantiated directly.
       class Include < BaseMatcher
         def initialize(*expected)
           @expected = expected
@@ -33,7 +36,7 @@ module RSpec
           true
         end
 
-        private
+      private
 
         def perform_match(predicate, hash_subset_predicate)
           expected.__send__(predicate) do |expected_item|

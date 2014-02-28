@@ -1,11 +1,10 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `eq`.
+      # Not intended to be instantiated directly.
       class Eq < BaseMatcher
-        def match(expected, actual)
-          actual == expected
-        end
-
         def failure_message
           "\nexpected: #{format_object(expected)}\n     got: #{format_object(actual)}\n\n(compared using ==)\n"
         end
@@ -18,9 +17,15 @@ module RSpec
           "#{name_to_sentence} #{@expected.inspect}"
         end
 
-        def diffable?; true; end
+        def diffable?
+          true
+        end
 
       private
+
+        def match(expected, actual)
+          actual == expected
+        end
 
         def format_object(object)
           if Time === object
