@@ -679,7 +679,7 @@ module RSpec
     #
     # @example
     #
-    # expect("string").to respond_to(:length)
+    #   expect("string").to respond_to(:length)
     #
     def respond_to(*names)
       BuiltIn::RespondTo.new(*names)
