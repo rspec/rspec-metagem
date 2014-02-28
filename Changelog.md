@@ -263,6 +263,14 @@ Deprecations
   * `--order default` is deprecated in favor of `--order defined`
   (Myron Marston)
 
+### 2.14.8 / 2014-02-27
+[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.7...v2.14.8)
+
+Bug fixes:
+
+* Fix regression with the `textmateformatter` that prevented backtrace links
+  from being clickable. (Stefan Daschek)
+
 ### 2.14.7 / 2013-10-29
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v2.14.6...v2.14.7)
 
