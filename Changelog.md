@@ -1,6 +1,11 @@
 ### 3.0.0.rc1 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta2...master)
 
+Breaking Changes:
+
+* Removed `matcher_execution_context` attribute from DSL-defined
+  custom matchers. (Myron Marston)
+
 Bug Fixes:
 
 * Fix `NoMethodError` triggered by beta2 when `YARD` was loaded in

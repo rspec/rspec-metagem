@@ -6,9 +6,7 @@ module RSpec
       # @see RSpec::Matchers
       def define(name, &declarations)
         define_method name do |*expected|
-          matcher = RSpec::Matchers::DSL::Matcher.new(name, declarations, *expected)
-          matcher.matcher_execution_context = @matcher_execution_context ||= self
-          matcher
+          RSpec::Matchers::DSL::Matcher.new(name, declarations, self, *expected)
         end
       end
       alias_method :matcher, :define
@@ -288,16 +286,12 @@ module RSpec
         # Could be useful to extract details for a failure message.
         attr_reader :rescued_exception
 
-        # Used as the target of `method_missing` delegation, so that methods
-        # available in the context the matcher was created in (e.g. an rspec-core
-        # example) are available from within the matcher, too.
-        attr_accessor :matcher_execution_context
-
         # @api private
-        def initialize(name, declarations, *expected)
+        def initialize(name, declarations, matcher_execution_context, *expected)
           @name     = name
           @actual   = nil
           @expected_as_array = expected
+          @matcher_execution_context = matcher_execution_context
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
@@ -333,16 +327,16 @@ module RSpec
 
         if RUBY_VERSION.to_f >= 1.9
           # Indicates that this matcher responds to messages
-          # from the `matcher_execution_context` as well.
+          # from the `@matcher_execution_context` as well.
           # Also, supports getting a method object for such methods.
           def respond_to_missing?(method, include_private=false)
-            super || matcher_execution_context.respond_to?(method, include_private)
+            super || @matcher_execution_context.respond_to?(method, include_private)
           end
         else # for 1.8.7
           # Indicates that this matcher responds to messages
-          # from the `matcher_execution_context` as well.
+          # from the `@matcher_execution_context` as well.
           def respond_to?(method, include_private=false)
-            super || matcher_execution_context.respond_to?(method, include_private)
+            super || @matcher_execution_context.respond_to?(method, include_private)
           end
         end
 
@@ -353,14 +347,14 @@ module RSpec
         end
 
         # Takes care of forwarding unhandled messages to the
-        # `matcher_execution_context` (typically the current
+        # `@matcher_execution_context` (typically the current
         # running `RSpec::Core::Example`). This is needed by
         # rspec-rails so that it can define matchers that wrap
         # Rails' test helper methods, but it's also a useful
         # feature in its own right.
         def method_missing(method, *args, &block)
-          if matcher_execution_context.respond_to?(method)
-            matcher_execution_context.__send__ method, *args, &block
+          if @matcher_execution_context.respond_to?(method)
+            @matcher_execution_context.__send__ method, *args, &block
           else
             super(method, *args, &block)
           end
