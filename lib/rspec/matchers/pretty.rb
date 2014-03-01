@@ -40,12 +40,6 @@ module RSpec
         split_words(name)
       end
 
-      # @private
-      # Going away.
-      def expected_to_sentence
-        to_sentence(expected) if defined?(expected)
-      end
-
       # @api private
       # Provides a name for the matcher.
       def name

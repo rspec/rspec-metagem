@@ -243,17 +243,17 @@ module RSpec
 
         # The default description.
         def description
-          "#{name_to_sentence}#{expected_to_sentence}"
+          "#{name_to_sentence}#{to_sentence expected}"
         end
 
         # The default failure message for positive expectations.
         def failure_message
-          "expected #{actual.inspect} to #{name_to_sentence}#{expected_to_sentence}"
+          "expected #{actual.inspect} to #{name_to_sentence}#{to_sentence expected}"
         end
 
         # The default failure message for negative expectations.
         def failure_message_when_negated
-          "expected #{actual.inspect} not to #{name_to_sentence}#{expected_to_sentence}"
+          "expected #{actual.inspect} not to #{name_to_sentence}#{to_sentence expected}"
         end
       end
 
