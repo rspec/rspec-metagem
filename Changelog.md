@@ -3,8 +3,9 @@
 
 Breaking Changes:
 
-* Removed `matcher_execution_context` attribute from DSL-defined
+* Remove `matcher_execution_context` attribute from DSL-defined
   custom matchers. (Myron Marston)
+* Remove `RSpec::Matchers::Pretty#_pretty_print`. (Myron Marston)
 
 Bug Fixes:
 

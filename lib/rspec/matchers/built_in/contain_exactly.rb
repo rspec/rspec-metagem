@@ -23,7 +23,7 @@ module RSpec
         end
 
         def description
-          "contain exactly #{_pretty_print(surface_descriptions_in expected)}"
+          "contain exactly#{to_sentence(surface_descriptions_in expected)}"
         end
 
       private
