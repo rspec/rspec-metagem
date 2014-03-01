@@ -62,8 +62,8 @@ module RSpec
 
       def self.trap_interrupt
         trap('INT') do
-          exit!(1) if RSpec.wants_to_quit
-          RSpec.wants_to_quit = true
+          exit!(1) if RSpec.world.wants_to_quit
+          RSpec.world.wants_to_quit = true
           STDERR.puts "\nExiting... Interrupt again to exit immediately."
         end
       end

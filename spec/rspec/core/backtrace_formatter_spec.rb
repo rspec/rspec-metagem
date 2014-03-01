@@ -41,7 +41,7 @@ module RSpec::Core
     end
 
     describe "#format_backtrace" do
-      it "excludes lines from rspec libs by default", :unless => RSpec.windows_os? do
+      it "excludes lines from rspec libs by default", :unless => RSpec.world.windows_os? do
         backtrace = [
           "/path/to/rspec-expectations/lib/rspec/expectations/foo.rb:37",
           "/path/to/rspec-expectations/lib/rspec/matchers/foo.rb:37",
@@ -53,7 +53,7 @@ module RSpec::Core
         expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq(["./my_spec.rb:5"])
       end
 
-      it "excludes lines from rspec libs by default", :if => RSpec.windows_os? do
+      it "excludes lines from rspec libs by default", :if => RSpec.world.windows_os? do
         backtrace = [
           "\\path\\to\\rspec-expectations\\lib\\rspec\\expectations\\foo.rb:37",
           "\\path\\to\\rspec-expectations\\lib\\rspec\\matchers\\foo.rb:37",
@@ -95,7 +95,7 @@ module RSpec::Core
       end
 
       context "when rspec is installed in the current working directory" do
-        it "excludes lines from rspec libs by default", :unless => RSpec.windows_os? do
+        it "excludes lines from rspec libs by default", :unless => RSpec.world.windows_os? do
           backtrace = [
             "#{Dir.getwd}/.bundle/path/to/rspec-expectations/lib/rspec/expectations/foo.rb:37",
             "#{Dir.getwd}/.bundle/path/to/rspec-expectations/lib/rspec/matchers/foo.rb:37",
