@@ -3,7 +3,7 @@ require 'rspec/support/warnings'
 
 require 'rspec/matchers'
 require 'rspec/expectations/expectation_target'
-require 'rspec/matchers/configuration'
+require 'rspec/expectations/configuration'
 require 'rspec/expectations/fail_with'
 require 'rspec/expectations/handler'
 require 'rspec/expectations/version'

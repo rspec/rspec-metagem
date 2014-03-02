@@ -1,7 +1,7 @@
 require 'rspec/expectations/syntax'
 
 module RSpec
-  module Matchers
+  module Expectations
     # Provides configuration options for rspec-expectations.
     # If you are using rspec-core, you can access this via a
     # block passed to `RSpec::Core::Configuration#expect_with`.
@@ -125,8 +125,8 @@ module RSpec
       end
     end
 
-    # The configuration object
-    # @return [RSpec::Matchers::Configuration] the configuration object
+    # The configuration object.
+    # @return [RSpec::Expectations::Configuration] the configuration object
     def self.configuration
       @configuration ||= Configuration.new
     end

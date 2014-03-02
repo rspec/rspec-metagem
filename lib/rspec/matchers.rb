@@ -843,6 +843,15 @@ module RSpec
     alias_matcher :a_block_yielding_successive_args,  :yield_successive_args
     alias_matcher :yielding_successive_args,          :yield_successive_args
 
+    # Delegates to {RSpec::Expectations.configuration}.
+    # This is here because rspec-core's `expect_with` option
+    # looks for a `configuration` method on the mixin
+    # (`RSpec::Matchers`) to yield to a block.
+    # @return [RSpec::Expectations::Configuration] the configuration object
+    def self.configuration
+      Expectations.configuration
+    end
+
   private
 
     BE_PREDICATE_REGEX = /^(be_(?:an?_)?)(.*)/
