@@ -319,7 +319,7 @@ module RSpec
               child[:example_group][key] = Hash
 
               grandchild = Metadata.new(child)
-              grandchild.process(Array)
+              grandchild.process("sub context")
 
               expect(grandchild[:example_group][key]).to be(Hash)
               expect(child[:example_group][key]).to be(Hash)

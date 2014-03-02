@@ -148,9 +148,7 @@ module RSpec
                 return value unless value.nil?
               end
             end
-          end
 
-          container_stack.each do |g|
             candidate = g[:description_args].first
             return candidate unless String === candidate || Symbol === candidate
           end

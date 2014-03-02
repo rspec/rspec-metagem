@@ -482,16 +482,27 @@ module RSpec::Core
           expect(group.run).to be_truthy, "expected examples in group to pass"
         end
 
-        it "overrides the described class when a class is passed" do
-          value = nil
+        context "when a class is passed" do
+          def described_class_value
+            value = nil
 
-          ExampleGroup.describe(String) do
-            describe Array do
-              example { value = described_class }
-            end
-          end.run
+            ExampleGroup.describe(String) do
+              yield if block_given?
+              describe Array do
+                example { value = described_class }
+              end
+            end.run
 
-          expect(value).to eq(Array)
+            value
+          end
+
+          it "overrides the described class" do
+            expect(described_class_value).to eq(Array)
+          end
+
+          it "overrides the described class even when described_class is referenced in the outer group" do
+            expect(described_class_value { described_class }).to eq(Array)
+          end
         end
       end
 
