@@ -8,6 +8,8 @@ module RSpec
       include RSpec::Core::Hooks
 
       attr_reader :example_groups, :filtered_examples
+
+      # Used internally to determine what to do when a SIGINT is received
       attr_accessor :wants_to_quit
 
       def initialize(configuration=RSpec.configuration)
@@ -21,6 +23,17 @@ module RSpec
             examples
           end
         }
+      end
+
+      # @private
+      # Used internally to clear remaining groups when fail_fast is set
+      def clear_remaining_example_groups
+        example_groups.clear
+      end
+
+      # @private
+      def windows_os?
+        RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
       end
 
       # @api private

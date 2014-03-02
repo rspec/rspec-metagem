@@ -41,30 +41,6 @@ module RSpec
   extend RSpec::Core::Warnings
 
   # @private
-  def self.wants_to_quit
-  # Used internally to determine what to do when a SIGINT is received
-    world.wants_to_quit
-  end
-
-  # @private
-  # Used internally to determine what to do when a SIGINT is received
-  def self.wants_to_quit=(maybe)
-    world.wants_to_quit=(maybe)
-  end
-
-  # @private
-  # Internal container for global non-configuration data
-  def self.world
-    @world ||= RSpec::Core::World.new
-  end
-
-  # @private
-  # Used internally to set the global object
-  def self.world=(new_world)
-    @world = new_world
-  end
-
-  # @private
   # Used internally to ensure examples get reloaded between multiple runs in
   # the same process.
   def self.reset
@@ -107,12 +83,6 @@ module RSpec
     yield configuration if block_given?
   end
 
-  # @private
-  # Used internally to clear remaining groups when fail_fast is set
-  def self.clear_remaining_example_groups
-    world.example_groups.clear
-  end
-
   # The example being executed.
   #
   # The primary audience for this method is library authors who need access
@@ -145,8 +115,15 @@ module RSpec
   end
 
   # @private
-  def self.windows_os?
-    RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
+  # Internal container for global non-configuration data
+  def self.world
+    @world ||= RSpec::Core::World.new
+  end
+
+  # @private
+  # Used internally to set the global object
+  def self.world=(new_world)
+    @world = new_world
   end
 
   module Core

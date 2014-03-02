@@ -420,8 +420,8 @@ module RSpec
 
       # Runs all the examples in this group
       def self.run(reporter)
-        if RSpec.wants_to_quit
-          RSpec.clear_remaining_example_groups if top_level?
+        if RSpec.world.wants_to_quit
+          RSpec.world.clear_remaining_example_groups if top_level?
           return
         end
         reporter.example_group_started(self)
@@ -434,7 +434,7 @@ module RSpec
         rescue Pending::SkipDeclaredInExample => ex
           for_filtered_examples(reporter) {|example| example.skip_with_exception(reporter, ex) }
         rescue Exception => ex
-          RSpec.wants_to_quit = true if fail_fast?
+          RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) {|example| example.fail_with_exception(reporter, ex) }
         ensure
           run_after_all_hooks(new)
@@ -462,11 +462,11 @@ module RSpec
       # @private
       def self.run_examples(reporter)
         ordering_strategy.order(filtered_examples).map do |example|
-          next if RSpec.wants_to_quit
+          next if RSpec.world.wants_to_quit
           instance = new
           set_ivars(instance, before_all_ivars)
           succeeded = example.run(instance, reporter)
-          RSpec.wants_to_quit = true if fail_fast? && !succeeded
+          RSpec.world.wants_to_quit = true if fail_fast? && !succeeded
           succeeded
         end.all?
       end

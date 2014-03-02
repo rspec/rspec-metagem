@@ -621,13 +621,13 @@ module RSpec::Core
         expect(order).to eq([1,2,3])
       end
 
-      it "does not set RSpec.wants_to_quit in case of an error in before all (without fail_fast?)" do
+      it "does not set RSpec.world.wants_to_quit in case of an error in before all (without fail_fast?)" do
         group = ExampleGroup.describe
         group.before(:all) { raise "error in before all" }
         group.example("example") {}
 
         group.run
-        expect(RSpec.wants_to_quit).to be_falsey
+        expect(RSpec.world.wants_to_quit).to be_falsey
       end
 
       it "runs the before eachs in order" do
@@ -1260,20 +1260,20 @@ module RSpec::Core
           expect(examples_run.length).to eq(2)
         end
 
-        it "sets RSpec.wants_to_quit flag if encountering an exception in before(:all)" do
+        it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
           group.before(:all) { raise "error in before all" }
           group.example("equality") { expect(1).to eq(2) }
           expect(group.run).to be_falsey
-          expect(RSpec.wants_to_quit).to be_truthy
+          expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
 
-      context "with RSpec.wants_to_quit=true" do
+      context "with RSpec.world.wants_to_quit=true" do
         let(:group) { RSpec::Core::ExampleGroup.describe }
 
         before do
-          allow(RSpec).to receive(:wants_to_quit) { true }
-          allow(RSpec).to receive(:clear_remaining_example_groups)
+          allow(RSpec.world).to receive(:wants_to_quit) { true }
+          allow(RSpec.world).to receive(:clear_remaining_example_groups)
         end
 
         it "returns without starting the group" do
@@ -1283,7 +1283,7 @@ module RSpec::Core
 
         context "at top level" do
           it "purges remaining groups" do
-            expect(RSpec).to receive(:clear_remaining_example_groups)
+            expect(RSpec.world).to receive(:clear_remaining_example_groups)
             group.run(reporter)
           end
         end
@@ -1291,7 +1291,7 @@ module RSpec::Core
         context "in a nested group" do
           it "does not purge remaining groups" do
             nested_group = group.describe
-            expect(RSpec).not_to receive(:clear_remaining_example_groups)
+            expect(RSpec.world).not_to receive(:clear_remaining_example_groups)
             nested_group.run(reporter)
           end
         end
