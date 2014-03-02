@@ -1,10 +1,15 @@
-require 'rspec/matchers/pretty'
-require 'rspec/matchers/composable'
-require 'rspec/matchers/built_in'
-require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/dsl'
-require 'rspec/matchers/matcher_delegator'
-require 'rspec/matchers/aliased_matcher'
+require 'rspec/support'
+RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relative(f) }
+
+%w[
+  pretty
+  composable
+  built_in
+  generated_descriptions
+  dsl
+  matcher_delegator
+  aliased_matcher
+].each { |file| RSpec::Support.require_rspec_matchers(file) }
 
 # RSpec's top level namespace. All of rspec-expectations is contained
 # in the `RSpec::Expectations` and `RSpec::Matchers` namespaces.
@@ -842,6 +847,15 @@ module RSpec
     end
     alias_matcher :a_block_yielding_successive_args,  :yield_successive_args
     alias_matcher :yielding_successive_args,          :yield_successive_args
+
+    # Delegates to {RSpec::Expectations.configuration}.
+    # This is here because rspec-core's `expect_with` option
+    # looks for a `configuration` method on the mixin
+    # (`RSpec::Matchers`) to yield to a block.
+    # @return [RSpec::Expectations::Configuration] the configuration object
+    def self.configuration
+      Expectations.configuration
+    end
 
   private
 

@@ -2,6 +2,13 @@ main = self
 describe RSpec::Matchers do
   include ::RSpec::Support::InSubProcess
 
+  describe ".configuration" do
+    it 'returns a memoized configuration instance' do
+      expect(RSpec::Matchers.configuration).to be_a(RSpec::Expectations::Configuration)
+      expect(RSpec::Matchers.configuration).to be(RSpec::Matchers.configuration)
+    end
+  end
+
   it 'can be mixed into `main`' do
     in_sub_process do
       main.instance_eval do

@@ -1,8 +1,8 @@
 require 'diff/lcs'
-require "rspec/expectations/encoded_string"
-require "rspec/expectations/differ"
 require 'diff/lcs/hunk'
 require 'pp'
+RSpec::Support.require_rspec_expectations "encoded_string"
+RSpec::Support.require_rspec_expectations "differ"
 
 module RSpec
   module Expectations

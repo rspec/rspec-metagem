@@ -1,4 +1,4 @@
-require 'rspec/support/fuzzy_matcher'
+RSpec::Support.require_rspec_support "fuzzy_matcher"
 
 module RSpec
   module Matchers

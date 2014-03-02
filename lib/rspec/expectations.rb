@@ -1,13 +1,19 @@
-require 'rspec/support/caller_filter'
-require 'rspec/support/warnings'
+require 'rspec/support'
+RSpec::Support.require_rspec_support "caller_filter"
+RSpec::Support.require_rspec_support "warnings"
 
 require 'rspec/matchers'
-require 'rspec/expectations/expectation_target'
-require 'rspec/matchers/configuration'
-require 'rspec/expectations/fail_with'
-require 'rspec/expectations/handler'
-require 'rspec/expectations/version'
-require 'rspec/expectations/diff_presenter'
+
+RSpec::Support.define_optimized_require_for_rspec(:expectations) { |f| require_relative(f) }
+
+%w[
+  expectation_target
+  configuration
+  fail_with
+  handler
+  version
+  diff_presenter
+].each { |file| RSpec::Support.require_rspec_expectations(file) }
 
 module RSpec
   # RSpec::Expectations provides a simple, readable API to express

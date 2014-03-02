@@ -1,4 +1,4 @@
-require 'rspec/matchers/built_in/base_matcher'
+RSpec::Support.require_rspec_matchers "built_in/base_matcher"
 
 module RSpec
   module Matchers
