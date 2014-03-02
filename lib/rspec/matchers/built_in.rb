@@ -2,6 +2,13 @@ require 'rspec/matchers/built_in/base_matcher'
 
 module RSpec
   module Matchers
+    # Container module for all built-in matchers. The matcher classes are here
+    # (rather than directly under `RSpec::Matchers`) in order to prevent name
+    # collisions, since `RSpec::Matchers` gets included into the user's namespace.
+    #
+    # Autoloading is used to delay when the matcher classes get loaded, allowing
+    # rspec-matchers to boot faster, and avoiding loading matchers the user is
+    # not using.
     module BuiltIn
       autoload :BeAKindOf,               'rspec/matchers/built_in/be_kind_of'
       autoload :BeAnInstanceOf,          'rspec/matchers/built_in/be_instance_of'

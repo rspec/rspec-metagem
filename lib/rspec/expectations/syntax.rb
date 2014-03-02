@@ -43,10 +43,16 @@ module RSpec
         @default_should_host ||= ::Object.ancestors.last
       end
 
+      # @api private
+      # Instructs rspec-expectations to warn on first usage of `should` or `should_not`.
+      # Enabled by default. This is largely here to facilitate testing.
       def warn_about_should!
         @warn_about_should = true
       end
 
+      # @api private
+      # Generates a deprecation warning for the given method if no warning
+      # has already been issued.
       def warn_about_should_unless_configured(method_name)
         if @warn_about_should
           RSpec.deprecate(

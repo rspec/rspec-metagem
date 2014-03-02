@@ -1,11 +1,18 @@
 module RSpec
   module Matchers
+    # @api private
+    # Contains logic to facilitate converting ruby symbols and
+    # objects to english phrases.
     module Pretty
+      # @api private
+      # Converts a symbol into an english expression.
       def split_words(sym)
         sym.to_s.gsub(/_/,' ')
       end
       module_function :split_words
 
+      # @api private
+      # Converts a collection of objects into an english expression.
       def to_sentence(words)
         return " #{words.inspect}" unless words
         words = Array(words).map { |w| to_word(w) }
@@ -21,6 +28,8 @@ module RSpec
         end
       end
 
+      # @private
+      # Going away.
       def _pretty_print(array)
         result = ""
         array.each_with_index do |item, index|
@@ -35,22 +44,31 @@ module RSpec
         result
       end
 
+      # @api private
+      # Converts the given item to string suitable for use in a list expression.
       def to_word(item)
         is_matcher_with_description?(item) ? item.description : item.inspect
       end
 
+      # @private
+      # Provides an English expression for the matcher name.
       def name_to_sentence
         split_words(name)
       end
 
+      # @private
+      # Going away.
       def expected_to_sentence
         to_sentence(expected) if defined?(expected)
       end
 
+      # @api private
+      # Provides a name for the matcher.
       def name
         defined?(@name) ? @name : underscore(self.class.name.split("::").last)
       end
 
+      # @private
       # Borrowed from ActiveSupport
       def underscore(camel_cased_word)
         word = camel_cased_word.to_s.dup
@@ -61,7 +79,7 @@ module RSpec
         word
       end
 
-      private
+    private
 
       def is_matcher_with_description?(object)
         RSpec::Matchers.is_a_matcher?(object) && object.respond_to?(:description)

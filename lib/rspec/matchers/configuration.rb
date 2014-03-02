@@ -3,6 +3,20 @@ require 'rspec/expectations/syntax'
 module RSpec
   module Matchers
     # Provides configuration options for rspec-expectations.
+    # If you are using rspec-core, you can access this via a
+    # block passed to `RSpec::Core::Configuration#expect_with`.
+    # Otherwise, you can access it via RSpec::Matchers.configuration.
+    #
+    # @example
+    #   RSpec.configure do |rspec|
+    #     rspec.expect_with :rspec do |c|
+    #       # c is the config object
+    #     end
+    #   end
+    #
+    #   # or
+    #
+    #   RSpec::Matchers.configuration
     class Configuration
       # Configures the supported syntax.
       # @param [Array<Symbol>, Symbol] values the syntaxes to enable
@@ -32,6 +46,10 @@ module RSpec
 
       # The list of configured syntaxes.
       # @return [Array<Symbol>] the list of configured syntaxes.
+      # @example
+      #   unless RSpec::Matchers.configuration.syntax.include?(:expect)
+      #     raise "this RSpec extension gem requires the rspec-expectations `:expect` syntax"
+      #   end
       def syntax
         syntaxes = []
         syntaxes << :should if Expectations::Syntax.should_enabled?
@@ -39,14 +57,21 @@ module RSpec
         syntaxes
       end
 
-      # color config for expectations
-      # fallback if rspec core not available
       if ::RSpec.respond_to?(:configuration)
         def color?
           ::RSpec.configuration.color_enabled?
         end
       else
-        attr_writer :color
+        # Indicates whether or not diffs should be colored.
+        # Delegates to rspec-core's color option if rspec-core
+        # is loaded; otherwise you can set it here.
+        def color=(value)
+          @color = value
+        end
+
+        # Indicates whether or not diffs should be colored.
+        # Delegates to rspec-core's color option if rspec-core
+        # is loaded; otherwise you can set it here.
         def color?
           @color
         end
@@ -74,10 +99,7 @@ module RSpec
       # will be used (including respecting the presence or absence of
       # the `--backtrace` option).
       #
-      # @overload backtrace_formatter
-      #   @return [#format_backtrace] the backtrace formatter
-      # @overload backtrace_formatter=
-      #   @param value [#format_backtrace] sets the backtrace formatter
+      # @!attribute [rw] backtrace_formatter
       attr_writer :backtrace_formatter
       def backtrace_formatter
         @backtrace_formatter ||= if defined?(::RSpec::Core::BacktraceFormatter)
@@ -87,12 +109,15 @@ module RSpec
         end
       end
 
+      # @private
       def reset_syntaxes_to_default
         self.syntax = [:should, :expect]
         RSpec::Expectations::Syntax.warn_about_should!
       end
 
       # @api private
+      # Null implementation of a backtrace formatter used by default
+      # when rspec-core is not loaded. Does no filtering.
       NullBacktraceFormatter = Module.new do
         def self.format_backtrace(backtrace)
           backtrace

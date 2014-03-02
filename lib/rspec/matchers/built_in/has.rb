@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `has_<predicate>`.
+      # Not intended to be instantiated directly.
       class Has
         include Composable
 
@@ -8,18 +11,22 @@ module RSpec
           @method_name, @args, @block = method_name, args, block
         end
 
+        # @private
         def matches?(actual, &block)
           actual.__send__(predicate, *@args, &(@block || block))
         end
 
+        # @private
         def failure_message
           "expected ##{predicate}#{failure_message_args_description} to return true, got false"
         end
 
+        # @private
         def failure_message_when_negated
           "expected ##{predicate}#{failure_message_args_description} to return false, got true"
         end
 
+        # @private
         def description
           [method_description, args_description].compact.join(' ')
         end

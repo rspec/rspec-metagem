@@ -121,3 +121,18 @@ function run_spec_suite_for {
     popd
   fi;
 }
+
+function check_documentation_coverage {
+  bin/yard stats --list-undoc | ruby -e "
+    while line = gets
+      coverage ||= line[/([\d\.]+)% documented/, 1]
+      puts line
+    end
+
+    unless Float(coverage) == 100
+      puts \"\n\nMissing documentation coverage (currently at #{coverage}%)\"
+      exit(1)
+    end
+  "
+}
+

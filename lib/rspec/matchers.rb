@@ -6,6 +6,8 @@ require 'rspec/matchers/dsl'
 require 'rspec/matchers/matcher_delegator'
 require 'rspec/matchers/aliased_matcher'
 
+# RSpec's top level namespace. All of rspec-expectations is contained
+# in the `RSpec::Expectations` and `RSpec::Matchers` namespaces.
 module RSpec
   # RSpec::Matchers provides a number of useful matchers we use to define
   # expectations. A matcher is any object that responds to the following:
@@ -679,7 +681,7 @@ module RSpec
     #
     # @example
     #
-    # expect("string").to respond_to(:length)
+    #   expect("string").to respond_to(:length)
     #
     def respond_to(*names)
       BuiltIn::RespondTo.new(*names)

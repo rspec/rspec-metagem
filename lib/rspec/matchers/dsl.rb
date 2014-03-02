@@ -1,5 +1,6 @@
 module RSpec
   module Matchers
+    # Defines the custom matcher DSL.
     module DSL
       # Defines a custom matcher.
       # @see RSpec::Matchers
@@ -10,7 +11,6 @@ module RSpec
           matcher
         end
       end
-
       alias_method :matcher, :define
 
       if RSpec.respond_to?(:configure)
@@ -280,7 +280,17 @@ module RSpec
         extend Macros
         extend Macros::Deprecated
 
-        attr_reader   :expected_as_array, :actual, :rescued_exception
+        # Exposes the value being matched against -- generally the object
+        # object wrapped by `expect`.
+        attr_reader :actual
+
+        # Exposes the exception raised during the matching by `match_unless_raises`.
+        # Could be useful to extract details for a failure message.
+        attr_reader :rescued_exception
+
+        # Used as the target of `method_missing` delegation, so that methods
+        # available in the context the matcher was created in (e.g. an rspec-core
+        # example) are available from within the matcher, too.
         attr_accessor :matcher_execution_context
 
         # @api private
@@ -296,6 +306,10 @@ module RSpec
           end.class_exec(*expected, &declarations)
         end
 
+        # Provides the expected value. This will return an array if
+        # multiple arguments were passed to the matcher; otherwise it
+        # will return a single value.
+        # @see #expected_as_array
         def expected
           if expected_as_array.size == 1
             expected_as_array[0]
@@ -303,6 +317,12 @@ module RSpec
             expected_as_array
           end
         end
+
+        # Returns the expected value as an an array. This exists primarily
+        # to aid in upgrading from RSpec 2.x, since in RSpec 2, `expected`
+        # always returned an array.
+        # @see #expected
+        attr_reader :expected_as_array
 
         # Adds the name (rather than a cryptic hex number)
         # so we can identify an instance of

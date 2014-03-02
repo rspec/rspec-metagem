@@ -1,8 +1,7 @@
 module RSpec
   module Matchers
     # Provides the necessary plumbing to wrap a matcher with a decorator.
-    #
-    # @api private
+    # @private
     class MatcherDelegator
       attr_reader :base_matcher
 

@@ -27,6 +27,12 @@ module RSpec
         AliasedMatcher.new(return_val, @description_block)
       end
 
+      # Provides the description of the aliased matcher. Aliased matchers
+      # are designed to behave identically to the original matcher except
+      # for this method. The description is different to reflect the aliased
+      # name.
+      #
+      # @api private
       def description
         @description_block.call(super)
       end

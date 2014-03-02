@@ -3,21 +3,29 @@ require 'rspec/support'
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for operator matchers.
+      # Not intended to be instantiated directly.
+      # Only available for use with `should`.
       class OperatorMatcher
         class << self
+          # @private
           def registry
             @registry ||= {}
           end
 
+          # @private
           def register(klass, operator, matcher)
             registry[klass] ||= {}
             registry[klass][operator] = matcher
           end
 
+          # @private
           def unregister(klass, operator)
             registry[klass] && registry[klass].delete(operator)
           end
 
+          # @private
           def get(klass, operator)
             klass.ancestors.each { |ancestor|
               matcher = registry[ancestor] && registry[ancestor][operator]
@@ -34,6 +42,7 @@ module RSpec
           @actual = actual
         end
 
+        # @private
         def self.use_custom_matcher_or_delegate(operator)
           define_method(operator) do |expected|
             if uses_generic_implementation_of?(operator) && matcher = OperatorMatcher.get(@actual.class, operator)
@@ -57,10 +66,12 @@ module RSpec
           use_custom_matcher_or_delegate operator
         end
 
+        # @private
         def fail_with_message(message)
           RSpec::Expectations.fail_with(message, @expected, @actual)
         end
 
+        # @private
         def description
           "#{@operator} #{@expected.inspect}"
         end
@@ -80,6 +91,8 @@ module RSpec
         end
       end
 
+      # @private
+      # Handles operator matcher for `should`.
       class PositiveOperatorMatcher < OperatorMatcher
         def __delegate_operator(actual, operator, expected)
           if actual.__send__(operator, expected)
@@ -92,6 +105,8 @@ module RSpec
         end
       end
 
+      # @private
+      # Handles operator matcher for `should_not`.
       class NegativeOperatorMatcher < OperatorMatcher
         def __delegate_operator(actual, operator, expected)
           return false unless actual.__send__(operator, expected)

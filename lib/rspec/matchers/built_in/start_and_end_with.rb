@@ -1,22 +1,13 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Base class for the `end_with` and `start_with` matchers.
+      # Not intended to be instantiated directly.
       class StartAndEndWith < BaseMatcher
         def initialize(*expected)
           @actual_does_not_have_ordered_elements = false
           @expected = expected.length == 1 ? expected.first : expected
-        end
-
-        def match(expected, actual)
-          return false unless actual.respond_to?(:[])
-
-          begin
-            return subset_matches? if expected.respond_to?(:length)
-            element_matches?
-          rescue ArgumentError
-            @actual_does_not_have_ordered_elements = true
-            return false
-          end
         end
 
         def failure_message
@@ -36,13 +27,29 @@ module RSpec
 
       private
 
+        def match(expected, actual)
+          return false unless actual.respond_to?(:[])
+
+          begin
+            return subset_matches? if expected.respond_to?(:length)
+            element_matches?
+          rescue ArgumentError
+            @actual_does_not_have_ordered_elements = true
+            return false
+          end
+        end
+
         def actual_is_unordered
           ArgumentError.new("#{actual.inspect} does not have ordered elements")
         end
       end
 
+      # @api private
+      # Provides the implementation for `start_with`.
+      # Not intended to be instantiated directly.
       class StartWith < StartAndEndWith
-        private
+
+      private
 
         def subset_matches?
           values_match?(expected, actual[0, expected.length])
@@ -53,8 +60,12 @@ module RSpec
         end
       end
 
+      # @api private
+      # Provides the implementation for `end_with`.
+      # Not intended to be instantiated directly.
       class EndWith < StartAndEndWith
-        private
+
+      private
 
         def subset_matches?
           values_match?(expected, actual[-expected.length, expected.length])

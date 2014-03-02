@@ -1,14 +1,21 @@
 module RSpec
   module Matchers
     class << self
+      # @private
       attr_accessor :last_matcher, :last_expectation_handler
     end
 
+    # @api private
+    # Used by rspec-core to clear the state used to generate
+    # descriptions after an example.
     def self.clear_generated_description
       self.last_matcher = nil
       self.last_expectation_handler = nil
     end
 
+    # @api private
+    # Generates an an example description based on the last expectation.
+    # Used by rspec-core's one-liner syntax.
     def self.generated_description
       return nil if last_expectation_handler.nil?
       "#{last_expectation_handler.verb} #{last_description}"

@@ -7,6 +7,7 @@ source script/functions.sh
 
 run_specs_and_record_done
 run_cukes
+check_documentation_coverage
 
 if is_mri; then
   run_specs_one_by_one

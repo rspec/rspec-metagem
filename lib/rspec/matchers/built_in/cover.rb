@@ -1,6 +1,9 @@
 module RSpec
   module Matchers
     module BuiltIn
+      # @api private
+      # Provides the implementation for `cover`.
+      # Not intended to be instantiated directly.
       class Cover < BaseMatcher
         def initialize(*expected)
           @expected = expected

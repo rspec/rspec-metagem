@@ -1,5 +1,6 @@
 module RSpec
   module Expectations
+    # @private
     class Differ
       def initialize(actual, expected)
         @actual = actual

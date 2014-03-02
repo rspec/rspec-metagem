@@ -1,10 +1,13 @@
 module RSpec
   module Matchers
     module BuiltIn
-      # Describes an expected mutation.
+      # @api private
+      # Provides the implementation for `change`.
+      # Not intended to be instantiated directly.
       class Change
         include Composable
 
+        # @api public
         # Specifies the delta of the expected change.
         def by(expected_delta)
           ChangeRelatively.new(@change_details, expected_delta, :by) do |actual_delta|
@@ -12,6 +15,7 @@ module RSpec
           end
         end
 
+        # @api public
         # Specifies a minimum delta of the expected change.
         def by_at_least(minimum)
           ChangeRelatively.new(@change_details, minimum, :by_at_least) do |actual_delta|
@@ -19,6 +23,7 @@ module RSpec
           end
         end
 
+        # @api public
         # Specifies a maximum delta of the expected change.
         def by_at_most(maximum)
           ChangeRelatively.new(@change_details, maximum, :by_at_most) do |actual_delta|
@@ -26,34 +31,36 @@ module RSpec
           end
         end
 
+        # @api public
         # Specifies the new value you expect.
         def to(value)
           ChangeToValue.new(@change_details, value)
         end
 
+        # @api public
         # Specifies the original value.
         def from(value)
           ChangeFromValue.new(@change_details, value)
         end
 
-        # @api private
+        # @private
         def matches?(event_proc)
           raise_block_syntax_error if block_given?
           @change_details.perform_change(event_proc)
           @change_details.changed?
         end
 
-        # @api private
+        # @private
         def failure_message
           "expected #{@change_details.message} to have changed, but is still #{description_of @change_details.actual_before}"
         end
 
-        # @api private
+        # @private
         def failure_message_when_negated
           "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
         end
 
-        # @api private
+        # @private
         def description
           "change #{@change_details.message}"
         end
@@ -82,30 +89,34 @@ module RSpec
           @comparer       = comparer
         end
 
+        # @private
         def failure_message
           "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}, " +
           "but was changed by #{description_of @change_details.actual_delta}"
         end
 
+        # @private
         def matches?(event_proc)
           @change_details.perform_change(event_proc)
           @comparer.call(@change_details.actual_delta)
         end
 
+        # @private
         def does_not_match?(event_proc)
           raise NotImplementedError, "`expect { }.not_to change { }.#{@relativity}()` is not supported"
         end
 
-        # @api private
+        # @private
         def description
           "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}"
         end
       end
 
-      # Base class for specifying a change from and/or to specific values.
       # @api private
+      # Base class for specifying a change from and/or to specific values.
       class SpecificValuesChange
         include Composable
+        # @private
         MATCH_ANYTHING = ::Object.ancestors.last
 
         def initialize(change_details, from, to)
@@ -114,15 +125,18 @@ module RSpec
           @expected_after  = to
         end
 
+        # @private
         def matches?(event_proc)
           @change_details.perform_change(event_proc)
           @change_details.changed? && matches_before? && matches_after?
         end
 
+        # @private
         def description
           "change #{@change_details.message} #{change_description}"
         end
 
+        # @private
         def failure_message
           return before_value_failure   unless matches_before?
           return did_not_change_failure unless @change_details.changed?
@@ -156,21 +170,24 @@ module RSpec
         end
       end
 
+      # @api private
       # Used to specify a change from a specific value
       # (and, optionally, to a specific value).
-      # @api private
       class ChangeFromValue < SpecificValuesChange
         def initialize(change_details, expected_before)
           @description_suffix = nil
           super(change_details, expected_before, MATCH_ANYTHING)
         end
 
+        # @api public
+        # Specifies the new value you expect.
         def to(value)
           @expected_after     = value
           @description_suffix = " to #{description_of value}"
           self
         end
 
+        # @private
         def does_not_match?(event_proc)
           if @description_suffix
             raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
@@ -180,6 +197,7 @@ module RSpec
           !@change_details.changed? && matches_before?
         end
 
+        # @private
         def failure_message_when_negated
           return before_value_failure unless matches_before?
           did_change_failure
@@ -192,21 +210,24 @@ module RSpec
         end
       end
 
+      # @api private
       # Used to specify a change to a specific value
       # (and, optionally, from a specific value).
-      # @api private
       class ChangeToValue < SpecificValuesChange
         def initialize(change_details, expected_after)
           @description_suffix = nil
           super(change_details, MATCH_ANYTHING, expected_after)
         end
 
+        # @api public
+        # Specifies the original value.
         def from(value)
           @expected_before    = value
           @description_suffix = " from #{description_of value}"
           self
         end
 
+        # @private
         def does_not_match?(event_proc)
           raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
         end
@@ -218,8 +239,8 @@ module RSpec
         end
       end
 
+      # @private
       # Encapsulates the details of the before/after values.
-      # @api private
       class ChangeDetails
         attr_reader :message, :actual_before, :actual_after
 
