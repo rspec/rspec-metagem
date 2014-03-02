@@ -1,12 +1,14 @@
 ### 3.0.0.rc1 Development
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta2...master)
 
-Breaking Changes:
+Breaking Changes for 3.0.0:
 
 * Remove `matcher_execution_context` attribute from DSL-defined
   custom matchers. (Myron Marston)
 * Remove `RSpec::Matchers::Pretty#_pretty_print`. (Myron Marston)
 * Remove `RSpec::Matchers::Pretty#expected_to_sentence`. (Myron Marston)
+* Rename `RSpec::Matchers::Configuration` constant to
+  `RSpec::Expectations::Configuration`. (Myron Marston)
 
 Bug Fixes:
 
