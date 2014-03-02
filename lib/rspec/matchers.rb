@@ -1,10 +1,15 @@
-require 'rspec/matchers/pretty'
-require 'rspec/matchers/composable'
-require 'rspec/matchers/built_in'
-require 'rspec/matchers/generated_descriptions'
-require 'rspec/matchers/dsl'
-require 'rspec/matchers/matcher_delegator'
-require 'rspec/matchers/aliased_matcher'
+require 'rspec/support'
+RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relative(f) }
+
+%w[
+  pretty
+  composable
+  built_in
+  generated_descriptions
+  dsl
+  matcher_delegator
+  aliased_matcher
+].each { |file| RSpec::Support.require_rspec_matchers(file) }
 
 # RSpec's top level namespace. All of rspec-expectations is contained
 # in the `RSpec::Expectations` and `RSpec::Matchers` namespaces.

@@ -1,4 +1,4 @@
-require 'rspec/expectations/syntax'
+RSpec::Support.require_rspec_expectations "syntax"
 
 module RSpec
   module Expectations

@@ -1,5 +1,3 @@
-require 'rspec/matchers/dsl'
-
 module RSpec
   module Matchers
     module BuiltIn
