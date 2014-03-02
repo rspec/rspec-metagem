@@ -1,6 +1,12 @@
 ### 3.0.0.rc1 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta2...master)
 
+Breaking Changes for 3.0.0:
+
+* Change `described_class` so that in a nested group like `describe
+  MyClass`, it returns `MyClass` rather than the outer group's described
+  class. (Myron Marston)
+
 Enhancements:
 
 * Add `config.default_formatter` attribute, which can be used to set a
