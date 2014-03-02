@@ -78,9 +78,7 @@ end
 module RSpec::Matchers::DSL
   describe Matcher do
     def new_matcher(name, *expected, &block)
-      RSpec::Matchers::DSL::Matcher.
-        new(name, block, *expected).
-        tap { |m| m.matcher_execution_context = self }
+      RSpec::Matchers::DSL::Matcher.new(name, block, self, *expected)
     end
 
     it_behaves_like "an RSpec matcher", :valid_value => 1, :invalid_value => 2 do

@@ -28,22 +28,6 @@ module RSpec
         end
       end
 
-      # @private
-      # Going away.
-      def _pretty_print(array)
-        result = ""
-        array.each_with_index do |item, index|
-          if index < (array.length - 2)
-            result << "#{item.inspect}, "
-          elsif index < (array.length - 1)
-            result << "#{item.inspect} and "
-          else
-            result << "#{item.inspect}"
-          end
-        end
-        result
-      end
-
       # @api private
       # Converts the given item to string suitable for use in a list expression.
       def to_word(item)
@@ -54,12 +38,6 @@ module RSpec
       # Provides an English expression for the matcher name.
       def name_to_sentence
         split_words(name)
-      end
-
-      # @private
-      # Going away.
-      def expected_to_sentence
-        to_sentence(expected) if defined?(expected)
       end
 
       # @api private
