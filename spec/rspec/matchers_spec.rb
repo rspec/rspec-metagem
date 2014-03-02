@@ -56,7 +56,7 @@ module RSpec
         end
       end
 
-      describe "RSpec::Matchers method_missing hook" do
+      describe "RSpec::Matchers method_missing hook", :slow do
         subject { self }
 
         it_behaves_like "a well-behaved method_missing hook"

@@ -7,7 +7,7 @@ module RSpec
        :be_kind_of]
     end
 
-    context "once required" do
+    context "once required", :slow do
       include MinitestIntegration
 
       it "includes itself in Minitest::Test" do
