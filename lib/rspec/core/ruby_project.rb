@@ -6,6 +6,7 @@ require 'pathname'
 
 module RSpec
   module Core
+    # @private
     module RubyProject
       def add_to_load_path(*dirs)
         dirs.map {|dir| add_dir_to_load_path(File.join(root, dir))}

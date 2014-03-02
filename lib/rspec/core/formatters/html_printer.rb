@@ -3,6 +3,7 @@ require 'erb'
 module RSpec
   module Core
     module Formatters
+      # @private
       class HtmlPrinter
         include ERB::Util # for the #h method
         def initialize(output)

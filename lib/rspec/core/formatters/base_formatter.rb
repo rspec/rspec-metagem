@@ -42,7 +42,7 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is {#example_group_started}.
         #
-        # @param example_count
+        # @param notification
         def start(notification)
           start_sync_output
           @example_count = notification.count
@@ -52,12 +52,12 @@ module RSpec
         #
         # This method is invoked at the beginning of the execution of each example group.
         #
-        # @param example_group subclass of `RSpec::Core::ExampleGroup`
+        # notification example_group subclass of `RSpec::Core::ExampleGroup`
         #
         # The next method to be invoked after this is {#example_passed},
         # {#example_pending}, or {#example_group_finished}.
         #
-        # @param example_group
+        # @param notification
         def example_group_started(notification)
           @example_group = notification.group
         end
@@ -73,7 +73,7 @@ module RSpec
         #
         # Invoked at the beginning of the execution of each example.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @param notification
         # @return [Array]
         def example_started(notification)
           examples << notification.example
@@ -88,7 +88,7 @@ module RSpec
 
         # Invoked when an example is pending.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @param notification instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
         def example_pending(notification)
           @pending_examples << notification.example
@@ -98,7 +98,7 @@ module RSpec
         #
         # Invoked when an example fails.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @param notification instance of subclass of `RSpec::Core::ExampleGroup`
         # @return [Array]
         def example_failed(notification)
           @failed_examples << notification.example

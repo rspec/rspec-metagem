@@ -1,9 +1,11 @@
 module RSpec
   module Core
     if defined?(::Random)
+      # @private
       RandomNumberGenerator = ::Random
     else
       RSpec::Support.require_rspec_core "backport_random"
+      # @private
       RandomNumberGenerator = RSpec::Core::Backports::Random
     end
 

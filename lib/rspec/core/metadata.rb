@@ -26,6 +26,10 @@ module RSpec
     # @see Configuration#filter_run_excluding
     class Metadata < Hash
 
+      # @api private
+      #
+      # @param [String] line - current code line
+      # @return [String] relative path to line
       def self.relative_path(line)
         line = line.sub(File.expand_path("."), ".")
         line = line.sub(/\A([^:]+:\d+)$/, '\\1')
@@ -50,6 +54,7 @@ module RSpec
         hash
       end
 
+      # @private
       module MetadataHash
 
         # @private
@@ -126,10 +131,12 @@ module RSpec
       module ExampleMetadataHash
         include MetadataHash
 
+        # @private
         def described_class
           self[:example_group].described_class
         end
 
+        # @private
         def full_description
           build_description_from(self[:example_group][:full_description], *self[:description_args])
         end
@@ -140,6 +147,7 @@ module RSpec
       module GroupMetadataHash
         include MetadataHash
 
+        # @private
         def described_class
           container_stack.each do |g|
             [:described_class, :describes].each do |key|
@@ -156,10 +164,12 @@ module RSpec
           nil
         end
 
+        # @private
         def full_description
           build_description_from(*FlatMap.flat_map(container_stack.reverse) {|a| a[:description_args]})
         end
 
+        # @private
         def container_stack
           @container_stack ||= begin
                                  groups = [group = self]

@@ -1,8 +1,13 @@
 module RSpec
   module Core
     module Formatters
+      # Formatters helpers
       module Helpers
+
+        # @private
         SUB_SECOND_PRECISION = 5
+
+        # @private
         DEFAULT_PRECISION = 2
 
         # @api private

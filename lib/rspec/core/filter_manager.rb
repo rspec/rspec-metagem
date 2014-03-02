@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # @private
     # Manages the filtering of examples and groups by matching tags declared on
     # the command line or options files, or filters declared via
     # `RSpec.configure`, with hash key/values submitted within example group
@@ -72,6 +73,10 @@ module RSpec
         @exclusions, @inclusions = FilterRules.build
       end
 
+      # @api private
+      #
+      # @param [String] file_path
+      # @param [Array] line_numbers
       def add_location(file_path, line_numbers)
         # locations is a hash of expanded paths to arrays of line
         # numbers to match against. e.g.

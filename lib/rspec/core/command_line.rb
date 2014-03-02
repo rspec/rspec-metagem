@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # The 'rspec' command line
     class CommandLine
       def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
         if Array === options

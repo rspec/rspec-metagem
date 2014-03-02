@@ -6,7 +6,7 @@ require 'flexmock/rspec'
 module RSpec
   module Core
     module MockingAdapters
-      # @api private
+      # @private
       module Flexmock
         include ::FlexMock::MockContainer
 

@@ -144,12 +144,14 @@ module RSpec
     end
   end
 
+  # @private
   MODULES_TO_AUTOLOAD = {
     :Matchers     => "rspec/expectations",
     :Expectations => "rspec/expectations",
     :Mocks        => "rspec/mocks"
   }
 
+  # @private
   def self.const_missing(name)
     # Load rspec-expectations when RSpec::Matchers is referenced. This allows
     # people to define custom matchers (using `RSpec::Matchers.define`) before

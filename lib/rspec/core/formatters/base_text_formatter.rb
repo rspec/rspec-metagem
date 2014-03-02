@@ -33,8 +33,7 @@ module RSpec
         #
         # Colorizes the output red for failure, yellow for
         # pending, and green otherwise.
-        #
-        # @param [String] string
+        # @param [SummaryNotification] summary
         def colorise_summary(summary)
           if summary.failure_count > 0
             color(summary.summary_line, RSpec.configuration.failure_color)
@@ -76,7 +75,7 @@ module RSpec
           dump_profile_slowest_example_groups
         end
 
-        # @api private
+        # @private
         def dump_profile_slowest_examples
           sorted_examples = slowest_examples
 
@@ -91,7 +90,7 @@ module RSpec
           end
         end
 
-        # @api private
+        # @private
         def dump_profile_slowest_example_groups
 
           sorted_groups = slowest_groups
@@ -107,6 +106,7 @@ module RSpec
           end
         end
 
+        # @private
         def dump_pending(notification)
           unless pending_examples.empty?
             output.puts
@@ -119,6 +119,7 @@ module RSpec
           end
         end
 
+        # @private
         def seed(notification)
           return unless notification.seed_used?
           output.puts

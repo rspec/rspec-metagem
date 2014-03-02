@@ -1,5 +1,8 @@
 module RSpec
   module Core
+    # @api private
+    #
+    # The default backtrace formatter
     class BacktraceFormatter
       # This is only used externally by rspec-expectations. Can be removed once
       # rspec-expectations uses
@@ -23,14 +26,17 @@ module RSpec
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
 
+      # @private
       def full_backtrace=(full_backtrace)
         @full_backtrace = full_backtrace
       end
 
+      # @private
       def full_backtrace?
         @full_backtrace || @exclusion_patterns.empty?
       end
 
+      # @private
       def format_backtrace(backtrace, options = {})
         return backtrace if options[:full_backtrace]
         backtrace.
@@ -48,7 +54,7 @@ module RSpec
           end
       end
 
-      # @api private
+      # @private
       def backtrace_line(line)
         RSpec::Core::Metadata::relative_path(line) unless exclude?(line)
       rescue SecurityError

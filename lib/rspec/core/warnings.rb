@@ -2,6 +2,9 @@ require "rspec/support/warnings"
 
 module RSpec
   module Core
+    # @api private
+    #
+    # Internal container for warning messages
     module Warnings
       # @private
       #
@@ -22,6 +25,7 @@ module RSpec
         RSpec.configuration.reporter.deprecation opts.merge( :message => message )
       end
 
+      # @private
       def warn_with(message, options = {})
         if options[:use_spec_location_as_call_site]
           message += "." unless message.end_with?(".")

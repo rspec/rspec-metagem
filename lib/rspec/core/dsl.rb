@@ -33,6 +33,7 @@ module RSpec
         @exposed_globally ||= false
       end
 
+      # @private
       def self.expose_example_group_alias(name)
         example_group_aliases << name
 
@@ -48,7 +49,7 @@ module RSpec
         attr_accessor :top_level
       end
 
-      # Add's the describe method to Module and the top level binding
+      # Adds the describe method to Module and the top level binding
       def self.expose_globally!
         return if exposed_globally?
 
@@ -59,6 +60,7 @@ module RSpec
         @exposed_globally = true
       end
 
+      # Removes the describe method from Module and the top level binding
       def self.remove_globally!
         return unless exposed_globally?
 
@@ -69,12 +71,14 @@ module RSpec
         @exposed_globally = false
       end
 
+      # @private
       def self.expose_example_group_alias_globally(method_name)
         change_global_dsl do
           define_method(method_name) { |*a, &b| ::RSpec.__send__(method_name, *a, &b) }
         end
       end
 
+      # @private
       def self.change_global_dsl(&changes)
         (class << top_level; self; end).class_exec(&changes)
         Module.class_exec(&changes)

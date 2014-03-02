@@ -3,7 +3,7 @@ require 'rspec/mocks'
 module RSpec
   module Core
     module MockingAdapters
-      # @api private
+      # @private
       module RSpec
         include ::RSpec::Mocks::ExampleMethods
 

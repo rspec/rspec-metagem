@@ -58,6 +58,11 @@ module RSpec::Core::Formatters
   autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
 
+  # Register the formatter class
+  # @param [Class] formatter_class formatter class to register
+  # @param [Symbol, ...] notifications one or more notifications to be registered to the specified formatter
+  #
+  # @see RSpec::Core::Formatters::BaseFormatter
   def self.register(formatter_class, *notifications)
     Loader.formatters[formatter_class] = notifications
   end
@@ -85,7 +90,7 @@ module RSpec::Core::Formatters
     attr_reader :formatters, :reporter
     attr_accessor :default_formatter
 
-    # @api private
+    # @private
     def setup_default(output_stream, deprecation_stream)
       if @formatters.empty?
         add default_formatter, output_stream
@@ -95,7 +100,7 @@ module RSpec::Core::Formatters
       end
     end
 
-    # @api private
+    # @private
     def add(formatter_to_use, *paths)
       formatter_class = find_formatter(formatter_to_use)
 

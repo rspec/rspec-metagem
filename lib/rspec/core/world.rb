@@ -52,7 +52,7 @@ module RSpec
         SharedExampleGroup.registry.clear
       end
 
-      # @api private
+      # @private
       def filter_manager
         @configuration.filter_manager
       end
@@ -65,19 +65,17 @@ module RSpec
         example_group
       end
 
-      # @api private
+      # @private
       def inclusion_filter
         @configuration.inclusion_filter
       end
 
-      # @api private
+      # @private
       def exclusion_filter
         @configuration.exclusion_filter
       end
 
-      # @api private
-      #
-      # Set the current config on a group
+      # @private
       def configure_group(group)
         @configuration.configure_group(group)
       end
@@ -99,7 +97,7 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       def reporter
         @configuration.reporter
       end
@@ -143,7 +141,7 @@ module RSpec
         end
       end
 
-      # @api private
+      # @private
       def everything_filtered_message
         "\nAll examples were filtered out"
       end

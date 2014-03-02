@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # Memoized helpers
     module MemoizedHelpers
       # @note `subject` was contributed by Joe Ferris to support the one-liner
       #   syntax embraced by shoulda matchers:
@@ -159,6 +160,7 @@ is reset between each example, while #{hook_expression} exists to
 EOS
         end
 
+        # @private
         class Before < self
           def self.hook_expression
             "`before(:all)`"
@@ -173,6 +175,7 @@ EOS
           end
         end
 
+        # @private
         class After < self
           def self.hook_expression
             "`after(:all)`"
@@ -192,6 +195,7 @@ EOS
         mod.extend(ClassMethods)
       end
 
+      # @private
       module ClassMethods
         # Generates a method whose return value is memoized after the first
         # call. Useful for reducing duplication between examples that assign

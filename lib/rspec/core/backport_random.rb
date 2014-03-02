@@ -25,6 +25,7 @@ module RSpec
         ret
       end
 
+      # @private
       def self.coerce_to_int(obj)
         coerce_to(obj, Integer, :to_int)
       end
@@ -33,7 +34,9 @@ module RSpec
       # (from Rubinius)
       Undefined = Object.new
 
+      # @private
       class Random
+        # @private
         # An implementation of Mersenne Twister MT19937 in Ruby
         class MT19937
           STATE_SIZE = 624
@@ -198,6 +201,7 @@ module RSpec
           end
         end
 
+        # @private
         # Implementation corresponding to the actual Random class of Ruby
         # The actual random generator (mersenne twister) is in MT19937.
         # Ruby specific conversions are handled in bits_and_bytes.
