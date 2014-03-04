@@ -96,8 +96,8 @@ module RSpec::Core
         notify :start_dump,    Notifications::NullNotification
         notify :dump_pending,  Notifications::NullNotification
         notify :dump_failures, Notifications::NullNotification
-        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
         notify :deprecation_summary, Notifications::NullNotification
+        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
         notify :close, Notifications::NullNotification

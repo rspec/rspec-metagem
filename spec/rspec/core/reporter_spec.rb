@@ -20,6 +20,16 @@ module RSpec::Core
           expect { reporter.finish }.to_not raise_error
         end
       end
+
+      it "dumps the failure summary after the deprecation summary so failures don't scroll off the screen and get missed" do
+        formatter = instance_double("RSpec::Core::Formatter::ProgressFormatter")
+        reporter.register_listener(formatter, :dump_summary, :deprecation_summary)
+
+        expect(formatter).to receive(:deprecation_summary).ordered
+        expect(formatter).to receive(:dump_summary).ordered
+
+        reporter.finish
+      end
     end
 
     context "given one formatter" do
