@@ -472,7 +472,7 @@ module RSpec::Core
       context "in a nested group" do
         it "inherits the described class/module from the outer group" do
           group = ExampleGroup.describe(String) do
-            describe Array do
+            describe "nested" do
               example "describes is String" do
                 expect(described_class).to eq(String)
               end
@@ -480,6 +480,29 @@ module RSpec::Core
           end
 
           expect(group.run).to be_truthy, "expected examples in group to pass"
+        end
+
+        context "when a class is passed" do
+          def described_class_value
+            value = nil
+
+            ExampleGroup.describe(String) do
+              yield if block_given?
+              describe Array do
+                example { value = described_class }
+              end
+            end.run
+
+            value
+          end
+
+          it "overrides the described class" do
+            expect(described_class_value).to eq(Array)
+          end
+
+          it "overrides the described class even when described_class is referenced in the outer group" do
+            expect(described_class_value { described_class }).to eq(Array)
+          end
         end
       end
 
@@ -1111,8 +1134,8 @@ module RSpec::Core
     describe Object, "describing nested example_groups", :little_less_nested => 'yep' do
 
       describe "A sample nested group", :nested_describe => "yep" do
-        it "sets the described class to the described class of the outer most group" do |ex|
-          expect(ex.example_group.described_class).to eq(ExampleGroup)
+        it "sets the described class to the nearest described class" do |ex|
+          expect(ex.example_group.described_class).to eq(Object)
         end
 
         it "sets the description to 'A sample nested describe'" do |ex|

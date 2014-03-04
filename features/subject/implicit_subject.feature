@@ -33,7 +33,7 @@ Feature: implicitly defined subject
     When I run `rspec nested_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: subject in a nested group with a different class (outermost wins)
+  Scenario: subject in a nested group with a different class (innermost wins)
     Given a file named "nested_subject_spec.rb" with:
       """ruby
       class ArrayWithOneElement < Array
@@ -46,14 +46,8 @@ Feature: implicitly defined subject
       describe Array do
         describe ArrayWithOneElement do
           context "referenced as subject" do
-            it "should be empty (because it is the Array declared at the top)" do
-              expect(subject).to be_empty
-            end
-          end
-
-          context "created in the example" do
-            it "should not be empty" do
-              expect(ArrayWithOneElement.new).not_to be_empty
+            it "contains one element" do
+              expect(subject).to include("first element")
             end
           end
         end

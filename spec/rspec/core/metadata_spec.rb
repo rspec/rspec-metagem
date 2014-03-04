@@ -290,36 +290,36 @@ module RSpec
           end
 
           context "in a nested group" do
-            it "returns the parent group's described class" do
-              sm = Metadata.new
-              sm.process(String)
+            it "inherits the parent group's described class" do
+              parent = Metadata.new
+              parent.process(Hash)
 
-              m = Metadata.new(sm)
-              m.process(Array)
+              child = Metadata.new(parent)
+              child.process("sub context")
 
-              expect(m[:example_group][key]).to be(String)
+              expect(child[:example_group][key]).to be(Hash)
             end
 
-            it "returns own described class if parent doesn't have one" do
-              sm = Metadata.new
-              sm.process("foo")
-
-              m = Metadata.new(sm)
-              m.process(Array)
-
-              expect(m[:example_group][key]).to be(Array)
-            end
-
-            it "can override a parent group's described class" do
+            it "sets the described class when passing a class" do
               parent = Metadata.new
               parent.process(String)
 
               child = Metadata.new(parent)
-              child.process(Fixnum)
+              child.process(Array)
+
+              expect(child[:example_group][key]).to be(Array)
+            end
+
+            it "can override a parent group's described class using metdata" do
+              parent = Metadata.new
+              parent.process(String)
+
+              child = Metadata.new(parent)
+              child.process("sub context")
               child[:example_group][key] = Hash
 
               grandchild = Metadata.new(child)
-              grandchild.process(Array)
+              grandchild.process("sub context")
 
               expect(grandchild[:example_group][key]).to be(Hash)
               expect(child[:example_group][key]).to be(Hash)
