@@ -6,6 +6,8 @@ Breaking Changes for 3.0.0:
 * Change `described_class` so that in a nested group like `describe
   MyClass`, it returns `MyClass` rather than the outer group's described
   class. (Myron Marston)
+* Refactor filter manager so that it no longer subclasses Hash and has a
+  tighter, more domain-specific interface. (Sergey Pchelincev)
 
 Enhancements:
 
