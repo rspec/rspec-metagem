@@ -183,10 +183,6 @@ module RSpec
         rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
       end
 
-      def rules
-        raise NotImplementedError
-      end
-
     private
 
       def method_missing(meth_name, *args, &block)
