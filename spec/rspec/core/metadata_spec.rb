@@ -179,9 +179,11 @@ module RSpec
 
         context "with an Array" do
           let(:metadata_with_array) do
+            meta = nil
             RSpec.describe("group") do
-              return example('example_with_array', :tag => [:one, 2, 'three', /four/]).metadata
+              meta = example('example_with_array', :tag => [:one, 2, 'three', /four/]).metadata
             end
+            meta
           end
 
           it "matches a symbol" do
@@ -294,9 +296,7 @@ module RSpec
 
           context "in an outer group" do
             define_method :value_for do |arg|
-              RSpec.describe(arg) do
-                return extract_key_from[self]
-              end
+              extract_key_from[RSpec.describe(arg)]
             end
 
             context "with a String" do
