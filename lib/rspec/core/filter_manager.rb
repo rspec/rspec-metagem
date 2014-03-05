@@ -93,8 +93,8 @@ module RSpec
         exclusions.add(args.last)
       end
 
-      def exclude!(*args)
-        exclusions.use(args.last)
+      def exclude_only(*args)
+        exclusions.use_only(args.last)
       end
 
       def exclude_with_low_priority(*args)
@@ -109,8 +109,8 @@ module RSpec
         inclusions.add(args.last)
       end
 
-      def include!(*args)
-        inclusions.use(args.last)
+      def include_only(*args)
+        inclusions.use_only(args.last)
       end
 
       def include_with_low_priority(*args)
@@ -150,7 +150,7 @@ module RSpec
         @rules.replace(updated)
       end
 
-      def use(updated)
+      def use_only(updated)
         updated.each_key { |k| opposite.delete(k) }
         @rules.replace(updated)
       end

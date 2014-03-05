@@ -60,19 +60,19 @@ module RSpec::Core
         end
       end
 
-      describe "##{name}!" do
+      describe "##{name}_only" do
         subject(:rules) { send(type).rules }
         let(:opposite_rules) { send(opposite(type)).rules }
 
         it "replaces existing #{type}" do
           filter_manager.send name, :foo => 1, :bar => 2
-          filter_manager.send "#{name}!", :foo => 3
+          filter_manager.send "#{name}_only", :foo => 3
           expect(rules).to eq(:foo => 3)
         end
 
         it "deletes matching opposites" do
           filter_manager.send opposite(name), :foo => 1
-          filter_manager.send "#{name}!", :foo => 2
+          filter_manager.send "#{name}_only", :foo => 2
           expect(rules).to eq(:foo => 2)
           expect(opposite_rules).to be_empty
         end
