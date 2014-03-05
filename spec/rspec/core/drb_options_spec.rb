@@ -52,13 +52,15 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       it "leaves inclusion tags intact" do
         coo = config_options_object("--tag", "tag")
         coo.drb_argv
-        expect(coo.filter_manager.inclusions).to eq( {:tag=>true} )
+        rules = coo.filter_manager.inclusions.rules
+        expect(rules).to eq( {:tag=>true} )
       end
 
       it "leaves inclusion tags with values intact" do
         coo = config_options_object("--tag", "tag:foo")
         coo.drb_argv
-        expect(coo.filter_manager.inclusions).to eq( {:tag=>'foo'} )
+        rules = coo.filter_manager.inclusions.rules
+        expect(rules).to eq( {:tag=>'foo'} )
       end
 
       it "includes the exclusion tags" do
@@ -74,13 +76,15 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       it "leaves exclusion tags intact" do
         coo = config_options_object("--tag", "~tag")
         coo.drb_argv
-        expect(coo.filter_manager.exclusions).to include(:tag=>true)
+        rules = coo.filter_manager.exclusions.rules
+        expect(rules).to eq( {:tag => true} )
       end
 
       it "leaves exclusion tags with values intact" do
         coo = config_options_object("--tag", "~tag:foo")
         coo.drb_argv
-        expect(coo.filter_manager.exclusions).to include(:tag=>'foo')
+        rules = coo.filter_manager.exclusions.rules
+        expect(rules).to eq( {:tag => 'foo'} )
       end
     end
 

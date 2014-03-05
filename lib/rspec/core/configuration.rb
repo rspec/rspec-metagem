@@ -766,7 +766,7 @@ module RSpec
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        filter_manager.include! Metadata.build_hash_from([filter])
+        filter_manager.include_only Metadata.build_hash_from([filter])
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -820,7 +820,7 @@ module RSpec
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        filter_manager.exclude! Metadata.build_hash_from([filter])
+        filter_manager.exclude_only Metadata.build_hash_from([filter])
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
