@@ -348,11 +348,11 @@ module RSpec
         end
 
         context "with a non-string" do
-          it "provides the submitted description" do
+          it "provides the string form of the submitted object" do
             m = Metadata.new
-            m.process("group")
+            m.process(Hash)
 
-            expect(m[:example_group][:description]).to eq("group")
+            expect(m[:example_group][:description]).to eq("Hash")
           end
         end
 
