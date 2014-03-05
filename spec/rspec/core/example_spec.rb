@@ -62,7 +62,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "when there is no explicit description" do
     def expect_with(*frameworks)
-      allow(RSpec.configuration).to receive(:expecting_with_rspec?).and_return(frameworks.include?(:rspec))
+      RSpec.configuration.expecting_with_rspec = frameworks.include?(:rspec)
 
       if frameworks.include?(:stdlib)
         example_group.class_eval do
@@ -76,7 +76,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     context "when RSpec.configuration.format_docstrings is set to a block" do
       it "formats the description using the block" do
         RSpec.configuration.format_docstrings { |s| s.upcase }
-        example_group.example { expect(5).to eq(5) }
+        example_group.example { }
         example_group.run
         pattern = /EXAMPLE AT #{relative_path(__FILE__).upcase}:#{__LINE__ - 2}/
         expect(example_group.examples.first.description).to match(pattern)
@@ -163,6 +163,10 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example_group.run
         expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
+
+      # Needed since `expecting_with_rspec?` in this context returns false
+      # so it won't automatically clear it for us.
+      after { RSpec::Matchers.clear_generated_description }
     end
   end
 

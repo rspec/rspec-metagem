@@ -69,7 +69,7 @@ RSpec.describe "an example" do
 
   context "with no docstring" do
     context "declared with the pending method" do
-      it "does not have an auto-generated description" do
+      it "has an auto-generated description" do
         group = RSpec::Core::ExampleGroup.describe('group') do
           it "checks something" do
             expect((3+4)).to eq(7)
@@ -80,7 +80,7 @@ RSpec.describe "an example" do
         end
         example = group.examples.last
         example.run(group.new, double.as_null_object)
-        expect(example.description).to match(/example at/)
+        expect(example.description).to eq('should eq "gnirts"')
       end
     end
 
