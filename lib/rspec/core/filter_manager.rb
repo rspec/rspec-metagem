@@ -182,17 +182,6 @@ module RSpec
       def description
         rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
       end
-
-    private
-
-      def method_missing(meth_name, *args, &block)
-        if Hash.instance_methods.include?(meth_name)
-          RSpec.warn_deprecation("#{ self.class }##{ meth_name }")
-          @rules.send(meth_name, *args, &block)
-        else
-          super(meth_name, *args, &block)
-        end
-      end
     end
 
     class InclusionRules < FilterRules
