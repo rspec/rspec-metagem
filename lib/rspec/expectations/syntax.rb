@@ -6,37 +6,6 @@ module RSpec
     module Syntax
       module_function
 
-      # @method should
-      # Passes if `matcher` returns true.  Available on every `Object`.
-      # @example
-      #   actual.should eq expected
-      #   actual.should match /expression/
-      # @param [Matcher]
-      #   matcher
-      # @param [String] message optional message to display when the expectation fails
-      # @return [Boolean] true if the expectation succeeds (else raises)
-      # @see RSpec::Matchers
-
-      # @method should_not
-      # Passes if `matcher` returns false.  Available on every `Object`.
-      # @example
-      #   actual.should_not eq expected
-      # @param [Matcher]
-      #   matcher
-      # @param [String] message optional message to display when the expectation fails
-      # @return [Boolean] false if the negative expectation succeeds (else raises)
-      # @see RSpec::Matchers
-
-      # @method expect
-      # Supports `expect(actual).to matcher` syntax by wrapping `actual` in an
-      # `ExpectationTarget`.
-      # @example
-      #   expect(actual).to eq(expected)
-      #   expect(actual).not_to eq(expected)
-      # @return [ExpectationTarget]
-      # @see ExpectationTarget#to
-      # @see ExpectationTarget#not_to
-
       # @api private
       # Determines where we add `should` and `should_not`.
       def default_should_host
@@ -131,4 +100,33 @@ module RSpec
       end
     end
   end
+end
+
+# The legacy `:should` syntax adds the following methods directly to
+# `BasicObject` so that they are available off of any object. Note, however,
+# that this syntax does not always play nice with delegate/proxy objects.
+# We recommend you use the non-monkeypatching `:expect` syntax instead.
+class BasicObject
+  # @method should
+  # Passes if `matcher` returns true.  Available on every `Object`.
+  # @example
+  #   actual.should eq expected
+  #   actual.should match /expression/
+  # @param [Matcher]
+  #   matcher
+  # @param [String] message optional message to display when the expectation fails
+  # @return [Boolean] true if the expectation succeeds (else raises)
+  # @note This is only available when you have enabled the `:should` syntax.
+  # @see RSpec::Matchers
+
+  # @method should_not
+  # Passes if `matcher` returns false.  Available on every `Object`.
+  # @example
+  #   actual.should_not eq expected
+  # @param [Matcher]
+  #   matcher
+  # @param [String] message optional message to display when the expectation fails
+  # @return [Boolean] false if the negative expectation succeeds (else raises)
+  # @note This is only available when you have enabled the `:should` syntax.
+  # @see RSpec::Matchers
 end

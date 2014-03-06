@@ -209,6 +209,16 @@ module RSpec
   # for readable failure messages. You can alias your custom matchers in similar fashion
   # using {RSpec::Matchers.alias_matcher}.
   module Matchers
+    # @method expect
+    # Supports `expect(actual).to matcher` syntax by wrapping `actual` in an
+    # `ExpectationTarget`.
+    # @example
+    #   expect(actual).to eq(expected)
+    #   expect(actual).not_to eq(expected)
+    # @return [ExpectationTarget]
+    # @see ExpectationTarget#to
+    # @see ExpectationTarget#not_to
+
     # Defines a matcher alias. The returned matcher's `description` will be overriden
     # to reflect the phrasing of the new name, which will be used in failure messages
     # when passed as an argument to another matcher in a composed matcher expression.
