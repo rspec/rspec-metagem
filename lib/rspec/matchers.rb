@@ -580,6 +580,24 @@ module RSpec
     alias_matcher :a_hash_including,       :include
     alias_matcher :including,              :include
 
+    # Passes if actual all expected objects pass. This works for
+    # collections and Strings.
+    #
+    # @example
+    #
+    #   expect([1, 3, 5]).to      all be_odd
+    #   expect([1, 3, 6]).to      all be_odd # fails
+    #   expect([1, 3, 5]).not_to  all be_even
+    #
+    # You can also use this with compound matchers
+    #
+    # @example
+    #
+    #   expect([1, 3, 5]).to all( be_odd.and be_an(Integer) )
+    def all(expected)
+      BuiltIn::All.new(expected)
+    end
+
     # Given a `Regexp` or `String`, passes if `actual.match(pattern)`
     # Given an arbitrary nested data structure (e.g. arrays and hashes),
     # matches if `expected === actual` || `actual == expected` for each

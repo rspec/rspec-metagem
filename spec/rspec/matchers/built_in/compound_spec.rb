@@ -1,8 +1,5 @@
 module RSpec::Matchers::BuiltIn
   describe Compound do
-    RSpec::Matchers.define :custom_include do |*args|
-      match { |actual| expect(actual).to include(*args) }
-    end
 
     shared_examples "making a copy" do |compound_method, copy_method|
       context "when making a copy via `#{copy_method}`" do

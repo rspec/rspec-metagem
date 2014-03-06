@@ -41,6 +41,10 @@ Enhancements:
 * Improve the failure message for `be_xyz` predicate matchers so
   that it includes the `inspect` output of the receiver.
   (Erik Michaels-Ober, Sam Phippen)
+* Add support for `all` matcher, to allow you to match matcher on a collection.
+  * `expect(stoplight.color).to ~eq("blue")`
+  * `expect([1, 3, 5]).to all( be_odd.and be_an(Integer) )`
+  (Adam Farhi)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)

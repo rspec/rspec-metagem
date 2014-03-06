@@ -31,6 +31,7 @@ module RSpec
       autoload :Exist,                   'rspec/matchers/built_in/exist'
       autoload :Has,                     'rspec/matchers/built_in/has'
       autoload :Include,                 'rspec/matchers/built_in/include'
+      autoload :All,                     'rspec/matchers/built_in/all'
       autoload :Match,                   'rspec/matchers/built_in/match'
       autoload :NegativeOperatorMatcher, 'rspec/matchers/built_in/operators'
       autoload :OperatorMatcher,         'rspec/matchers/built_in/operators'
