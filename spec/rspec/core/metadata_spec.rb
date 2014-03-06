@@ -26,31 +26,45 @@ module RSpec
 
       end
 
-      describe "#process" do
+      context "when created" do
         Metadata::RESERVED_KEYS.each do |key|
           it "prohibits :#{key} as a hash key" do
-            m = Metadata.new
             expect do
-              m.process('group', key => {})
+              RSpec.describe("group", key => {})
             end.to raise_error(/:#{key} is not allowed/)
           end
         end
 
         it "uses :caller if passed as part of the user metadata" do
-          m = Metadata.new
-          m.process('group', :caller => ['example_file:42'])
+          m = nil
+
+          RSpec.describe('group', :caller => ['example_file:42']) do
+            m = metadata
+          end
+
           expect(m[:example_group][:location]).to eq("example_file:42")
         end
       end
 
       describe "#filter_applies?" do
-        let(:parent_group_metadata) { Metadata.new.process('parent group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
-        let(:group_metadata) { Metadata.new(parent_group_metadata).process('group', :caller => ["foo_spec.rb:#{__LINE__}"]) }
-        let(:example_metadata) { group_metadata.for_example('example', :caller => ["foo_spec.rb:#{__LINE__}"], :if => true) }
-        let(:next_example_metadata) { group_metadata.for_example('next_example', :caller => ["foo_spec.rb:#{example_line_number + 2}"]) }
+        attr_accessor :parent_group_metadata, :group_metadata, :example_metadata, :next_example_metadata
+
+        def create_metadatas
+          container = self
+
+          RSpec.describe "parent group", :caller => ["foo_spec.rb:#{__LINE__}"] do; container.parent_group_metadata = metadata
+            describe "group", :caller => ["foo_spec.rb:#{__LINE__}"] do; container.group_metadata = metadata
+              container.example_metadata = it("example", :caller => ["foo_spec.rb:#{__LINE__}"], :if => true).metadata
+            end
+          end
+        end
+
         let(:world) { World.new }
 
-        before { allow(RSpec).to receive(:world) { world } }
+        before do
+          allow(RSpec).to receive(:world) { world }
+          create_metadatas
+        end
 
         shared_examples_for "matching by line number" do
           let(:preceeding_declaration_lines) {{
@@ -164,9 +178,13 @@ module RSpec
         end
 
         context "with an Array" do
-          let(:metadata_with_array) {
-            group_metadata.for_example('example_with_array', :tag => [:one, 2, 'three', /four/])
-          }
+          let(:metadata_with_array) do
+            meta = nil
+            RSpec.describe("group") do
+              meta = example('example_with_array', :tag => [:one, 2, 'three', /four/]).metadata
+            end
+            meta
+          end
 
           it "matches a symbol" do
             expect(metadata_with_array.filter_applies?(:tag, 'one')).to be_truthy
@@ -202,59 +220,69 @@ module RSpec
         end
       end
 
-      describe "#for_example" do
-        let(:metadata)           { Metadata.new.process("group description") }
-        let(:mfe)                { metadata.for_example("example description", {:arbitrary => :options}) }
-        let(:line_number)        { __LINE__ - 1 }
+      context "for an example" do
+        let(:line_number) { __LINE__ + 3 }
+        def metadata_for(*args)
+          RSpec.describe("group description") do
+            return example(*args).metadata
+          end
+        end
+        alias example_metadata metadata_for
+
+        RSpec::Matchers.define :have_value do |value|
+          chain(:for) { |key| @key = key }
+
+          match do |metadata|
+            expect(metadata.fetch(@key)).to eq(value)
+            expect(metadata[@key]).to eq(value)
+          end
+        end
 
         it "stores the description args" do
-          expect(mfe.fetch(:description_args)).to eq ["example description"]
-          expect(mfe[:description_args]).to eq ["example description"]
+          expect(metadata_for "example description").to have_value(["example description"]).for(:description_args)
         end
 
         it "ignores nil description args" do
-          expect(metadata.for_example(nil, {}).fetch(:description_args)).to eq []
-          expect(metadata.for_example(nil, {})[:description_args]).to eq []
+          expect(example_metadata).to have_value([]).for(:description_args)
         end
 
         it "stores the full_description (group description + example description)" do
-          expect(mfe.fetch(:full_description)).to eq("group description example description")
-          expect(mfe[:full_description]).to eq("group description example description")
+          expect(metadata_for "example description").to have_value("group description example description").for(:full_description)
         end
 
         it "creates an empty execution result" do
-          expect(mfe.fetch(:execution_result)).to eq({})
-          expect(mfe[:execution_result]).to eq({})
+          expect(example_metadata).to have_value({}).for(:execution_result)
         end
 
         it "extracts file path from caller" do
-          expect(mfe.fetch(:file_path)).to eq(relative_path(__FILE__))
-          expect(mfe[:file_path]).to eq(relative_path(__FILE__))
+          expect(example_metadata).to have_value(relative_path(__FILE__)).for(:file_path)
         end
 
         it "extracts line number from caller" do
-          expect(mfe.fetch(:line_number)).to eq(line_number)
-          expect(mfe[:line_number]).to eq(line_number)
+          expect(example_metadata).to have_value(line_number).for(:line_number)
         end
 
         it "extracts location from caller" do
-          expect(mfe.fetch(:location)).to eq("#{relative_path(__FILE__)}:#{line_number}")
-          expect(mfe[:location]).to eq("#{relative_path(__FILE__)}:#{line_number}")
+          expect(example_metadata).to have_value("#{relative_path(__FILE__)}:#{line_number}").for(:location)
         end
 
         it "uses :caller if passed as an option" do
-          example_metadata = metadata.for_example('example description', {:caller => ['example_file:42']})
-          expect(example_metadata[:location]).to eq("example_file:42")
+          example_metadata = metadata_for('example description', :caller => ['example_file:42'])
+          expect(example_metadata).to have_value("example_file:42").for(:location)
         end
 
         it "merges arbitrary options" do
-          expect(mfe.fetch(:arbitrary)).to eq(:options)
-          expect(mfe[:arbitrary]).to eq(:options)
+          expect(metadata_for("desc", :arbitrary => :options)).to have_value(:options).for(:arbitrary)
         end
 
         it "points :example_group to the same hash object" do
-          a = metadata.for_example("foo", {})[:example_group]
-          b = metadata.for_example("bar", {})[:example_group]
+          a = b = nil
+
+          RSpec.describe "group" do
+            a = example("foo").metadata[:example_group]
+            b = example("bar").metadata[:example_group]
+          end
+
           a[:description] = "new description"
           expect(b[:description]).to eq("new description")
         end
@@ -262,183 +290,220 @@ module RSpec
 
       [:described_class, :describes].each do |key|
         describe key do
-          context "with a String" do
-            it "returns nil" do
-              m = Metadata.new
-              m.process('group')
-
-              expect(m[:example_group][key]).to be_nil
-            end
+          extract_key_from = lambda do |group|
+            group.metadata[:example_group][key]
           end
 
-          context "with a Symbol" do
-            it "returns nil" do
-              m = Metadata.new
-              m.process(:group)
-
-              expect(m[:example_group][key]).to be_nil
+          context "in an outer group" do
+            define_method :value_for do |arg|
+              extract_key_from[RSpec.describe(arg)]
             end
-          end
 
-          context "with a class" do
-            it "returns the class" do
-              m = Metadata.new
-              m.process(String)
+            context "with a String" do
+              it "returns nil" do
+                expect(value_for "group").to be_nil
+              end
+            end
 
-              expect(m[:example_group][key]).to be(String)
+            context "with a Symbol" do
+              it "returns nil" do
+                expect(value_for :group).to be_nil
+              end
+            end
+
+            context "with a class" do
+              it "returns the class" do
+                expect(value_for String).to be(String)
+              end
             end
           end
 
           context "in a nested group" do
             it "inherits the parent group's described class" do
-              parent = Metadata.new
-              parent.process(Hash)
+              value = nil
 
-              child = Metadata.new(parent)
-              child.process("sub context")
+              RSpec.describe(Hash) do
+                describe "sub context" do
+                  value = extract_key_from[self]
+                end
+              end
 
-              expect(child[:example_group][key]).to be(Hash)
+              expect(value).to be(Hash)
             end
 
             it "sets the described class when passing a class" do
-              parent = Metadata.new
-              parent.process(String)
+              value = nil
 
-              child = Metadata.new(parent)
-              child.process(Array)
+              RSpec.describe(String) do
+                describe Array do
+                  value = extract_key_from[self]
+                end
+              end
 
-              expect(child[:example_group][key]).to be(Array)
+              expect(value).to be(Array)
             end
 
             it "can override a parent group's described class using metdata" do
-              parent = Metadata.new
-              parent.process(String)
+              parent_value = child_value = grandchild_value = nil
 
-              child = Metadata.new(parent)
-              child.process("sub context")
-              child[:example_group][key] = Hash
+              RSpec.describe(String) do
+                parent_value = extract_key_from[self]
 
-              grandchild = Metadata.new(child)
-              grandchild.process("sub context")
+                describe "sub context" do
+                  metadata[:example_group][key] = Hash
+                  child_value = extract_key_from[self]
 
-              expect(grandchild[:example_group][key]).to be(Hash)
-              expect(child[:example_group][key]).to be(Hash)
-              expect(parent[:example_group][key]).to be(String)
+                  describe "sub context" do
+                    grandchild_value = extract_key_from[self]
+                  end
+                end
+              end
+
+              expect(grandchild_value).to be(Hash)
+              expect(child_value).to be(Hash)
+              expect(parent_value).to be(String)
             end
           end
         end
       end
 
       describe ":description" do
-        it "just has the example description" do
-          m = Metadata.new
-          m.process("group")
+        context "on a example" do
+          it "just has the example description" do
+            value = nil
 
-          m = m.for_example("example", {})
-          expect(m[:description]).to eq("example")
-        end
+            RSpec.describe "group" do
+              value = example("example").metadata[:description]
+            end
 
-        context "with a string" do
-          it "provides the submitted description" do
-            m = Metadata.new
-            m.process("group")
-
-            expect(m[:example_group][:description]).to eq("group")
+            expect(value).to eq("example")
           end
         end
 
-        context "with a non-string" do
-          it "provides the submitted description" do
-            m = Metadata.new
-            m.process("group")
+        context "on a group" do
+          def group_value_for(*args)
+            value = nil
 
-            expect(m[:example_group][:description]).to eq("group")
+            RSpec.describe(*args) do
+              value = metadata[:example_group][:description]
+            end
+
+            value
           end
-        end
 
-        context "with a non-string and a string" do
-          it "concats the args" do
-            m = Metadata.new
-            m.process(Object, 'group')
-
-            expect(m[:example_group][:description]).to eq("Object group")
+          context "with a string" do
+            it "provides the submitted description" do
+              expect(group_value_for "group").to eq("group")
+            end
           end
-        end
 
-        context "with empty args" do
-          it "returns empty string for [:example_group][:description]" do
-            m = Metadata.new
-            m.process()
+          context "with a non-string" do
+            it "provides the string form of the submitted object" do
+              expect(group_value_for Hash).to eq("Hash")
+            end
+          end
 
-            expect(m[:example_group][:description]).to eq("")
+          context "with a non-string and a string" do
+            it "concats the args" do
+              expect(group_value_for Object, 'group').to eq("Object group")
+            end
+          end
+
+          context "with empty args" do
+            it "returns empty string for [:example_group][:description]" do
+              expect(group_value_for()).to eq("")
+            end
           end
         end
       end
 
       describe ":full_description" do
-        it "concats example group name and description" do
-          group_metadata = Metadata.new
-          group_metadata.process('group')
+        context "on an example" do
+          it "concats example group name and description" do
+            value = nil
 
-          example_metadata = group_metadata.for_example("example", {})
-          expect(example_metadata[:full_description]).to eq("group example")
+            RSpec.describe "group" do
+              value = example("example").metadata[:full_description]
+            end
+
+            expect(value).to eq("group example")
+          end
         end
 
         it "concats nested example group descriptions" do
-          parent = Metadata.new
-          parent.process('parent')
+          group_value = example_value = nil
 
-          child = Metadata.new(parent)
-          child.process('child')
+          RSpec.describe "parent" do
+            describe "child" do
+              group_value = metadata[:example_group][:full_description]
+              example_value = example("example").metadata[:full_description]
+            end
+          end
 
-          expect(child[:example_group][:full_description]).to eq("parent child")
-          expect(child.for_example('example', child)[:full_description]).to eq("parent child example")
+          expect(group_value).to eq("parent child")
+          expect(example_value).to eq("parent child example")
         end
 
         it "concats nested example group descriptions three deep" do
-          grandparent = Metadata.new
-          grandparent.process('grandparent')
+          grandparent_value = parent_value = child_value = example_value = nil
 
-          parent = Metadata.new(grandparent)
-          parent.process('parent')
+          RSpec.describe "grandparent" do
+            grandparent_value = metadata[:example_group][:full_description]
+            describe "parent" do
+              parent_value = metadata[:example_group][:full_description]
+              describe "child" do
+                child_value = metadata[:example_group][:full_description]
+                example_value = example("example").metadata[:full_description]
+              end
+            end
+          end
 
-          child = Metadata.new(parent)
-          child.process('child')
-
-          expect(grandparent[:example_group][:full_description]).to eq("grandparent")
-          expect(parent[:example_group][:full_description]).to eq("grandparent parent")
-          expect(child[:example_group][:full_description]).to eq("grandparent parent child")
-          expect(child.for_example('example', child)[:full_description]).to eq("grandparent parent child example")
+          expect(grandparent_value).to eq("grandparent")
+          expect(parent_value).to eq("grandparent parent")
+          expect(child_value).to eq("grandparent parent child")
+          expect(example_value).to eq("grandparent parent child example")
         end
 
         %w[# . ::].each do |char|
           context "with a 2nd arg starting with #{char}" do
             it "removes the space" do
-              m = Metadata.new
-              m.process(Array, "#{char}method")
-              expect(m[:example_group][:full_description]).to eq("Array#{char}method")
+              value = nil
+
+              RSpec.describe Array, "#{char}method" do
+                value = metadata[:example_group][:full_description]
+              end
+
+              expect(value).to eq("Array#{char}method")
             end
           end
 
           context "with a description starting with #{char} nested under a module" do
             it "removes the space" do
-              parent = Metadata.new
-              parent.process(Object)
-              child = Metadata.new(parent)
-              child.process("#{char}method")
-              expect(child[:example_group][:full_description]).to eq("Object#{char}method")
+              value = nil
+
+              RSpec.describe Object do
+                describe "#{char}method" do
+                  value = metadata[:example_group][:full_description]
+                end
+              end
+
+              expect(value).to eq("Object#{char}method")
             end
           end
 
           context "with a description starting with #{char} nested under a context string" do
             it "does not remove the space" do
-              grandparent = Metadata.new
-              grandparent.process(Array)
-              parent = Metadata.new(grandparent)
-              parent.process("with 2 items")
-              child = Metadata.new(parent)
-              child.process("#{char}method")
-              expect(child[:example_group][:full_description]).to eq("Array with 2 items #{char}method")
+              value = nil
+
+              RSpec.describe(Array) do
+                context "with 2 items" do
+                  describe "#{char}method" do
+                    value = metadata[:example_group][:full_description]
+                  end
+                end
+              end
+
+              expect(value).to eq("Array with 2 items #{char}method")
             end
           end
         end
@@ -446,42 +511,49 @@ module RSpec
 
       describe ":file_path" do
         it "finds the first non-rspec lib file in the caller array" do
-          m = Metadata.new
-          m.process(:caller => [
-                    "./lib/rspec/core/foo.rb",
-                    "#{__FILE__}:#{__LINE__}"
-          ])
-          expect(m[:example_group][:file_path]).to eq(relative_path(__FILE__))
+          value = nil
+
+          RSpec.describe(:caller => ["./lib/rspec/core/foo.rb", "#{__FILE__}:#{__LINE__}"]) do
+            value = metadata[:example_group][:file_path]
+          end
+
+          expect(value).to eq(relative_path(__FILE__))
         end
       end
 
       describe ":line_number" do
+        def value_for(*args)
+          value = nil
+
+          @describe_line = __LINE__ + 1
+          RSpec.describe(*args) do
+            value = metadata[:example_group][:line_number]
+          end
+
+          value
+        end
+
         it "finds the line number with the first non-rspec lib file in the backtrace" do
-          m = Metadata.new
-          m.process({})
-          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
+          expect(value_for()).to eq(@describe_line)
         end
 
         it "finds the line number with the first spec file with drive letter" do
-          m = Metadata.new
-          m.process(:caller => [ "C:/path/to/file_spec.rb:#{__LINE__}" ])
-          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
+          expect(value_for(:caller => [ "C:/path/to/file_spec.rb:#{__LINE__}" ])).to eq(__LINE__)
         end
 
         it "uses the number after the first : for ruby 1.9" do
-          m = Metadata.new
-          m.process(:caller => [ "#{__FILE__}:#{__LINE__}:999" ])
-          expect(m[:example_group][:line_number]).to eq(__LINE__ - 1)
+          expect(value_for(:caller => [ "#{__FILE__}:#{__LINE__}:999" ])).to eq(__LINE__)
         end
       end
 
       describe "child example group" do
         it "nests the parent's example group metadata" do
-          parent = Metadata.new
-          parent.process(Object, 'parent')
+          child = parent = nil
 
-          child = Metadata.new(parent)
-          child.process()
+          RSpec.describe Object, "parent" do
+            parent = metadata
+            describe { child = metadata }
+          end
 
           expect(child[:example_group][:example_group]).to eq(parent[:example_group])
         end

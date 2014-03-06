@@ -105,10 +105,10 @@ module RSpec::Core
     end
 
     describe "#prune" do
-      def filterable_object_with(args = {})
-        object = double('a filterable object')
-        allow(object).to receive(:any_apply?) { |f| Metadata.new(args).any_apply?(f) }
-        object
+      def filterable_object_with(*args)
+        meta = nil
+        RSpec.describe("group", *args) { meta = metadata }
+        meta
       end
 
       it "includes objects with tags matching inclusions" do
