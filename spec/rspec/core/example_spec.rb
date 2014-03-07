@@ -202,6 +202,17 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(group.examples.first.instance_variable_get("@example_group_instance")).to be_nil
     end
 
+    it "generates a description before tearing down mocks in case a mock object is used in the description" do
+      group = RSpec::Core::ExampleGroup.describe do
+        example { test = double('Test'); expect(test).to eq test }
+      end
+
+      expect(RSpec::Matchers).to receive(:generated_description).and_call_original.ordered
+      expect(RSpec::Mocks).to receive(:teardown).and_call_original.ordered
+
+      group.run
+    end
+
     it "runs after(:each) when the example passes" do
       after_run = false
       group = RSpec::Core::ExampleGroup.describe do
