@@ -93,3 +93,21 @@ Feature: mock with rspec
       """
     When I run `rspec example_spec.rb`
     Then the examples should all pass
+
+  Scenario: doubles may be used in generated descriptions
+    Given a file named "example_spec.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.mock_framework = :rspec
+      end
+
+      RSpec.describe "Testing" do
+        # Examples with no descriptions will default to RSpec-generated descriptions
+        it do
+          foo = double("Test")
+          expect(foo).to be foo
+        end
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the examples should all pass
