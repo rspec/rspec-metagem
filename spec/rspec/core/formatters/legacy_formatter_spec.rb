@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'rspec/core/formatters/console_codes'
 require 'rspec/core/formatters/legacy_formatter'
 require 'support/old_style_formatter_example'
 require 'support/legacy_formatter_using_sub_classing_example'
@@ -138,8 +139,8 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   describe LegacyFormatterUsingSubClassing do
     let(:legacy_formatter) { formatter.formatter }
 
-    described_class::VT100_COLORS.each do |name, number|
-      next if name == :black
+    ::RSpec::Core::Formatters::ConsoleCodes::VT100_CODES.each do |name, number|
+      next if name == :black || name == :bold
 
       describe "##{name}" do
         before do

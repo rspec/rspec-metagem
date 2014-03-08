@@ -1,5 +1,5 @@
 RSpec::Support.require_rspec_core "formatters/base_formatter"
-require 'set'
+RSpec::Support.require_rspec_core "formatters/console_codes"
 
 module RSpec
   module Core
@@ -130,41 +130,14 @@ module RSpec
           output.close if IO === output && output != $stdout
         end
 
-        VT100_COLORS = {
-          :black => 30,
-          :red => 31,
-          :green => 32,
-          :yellow => 33,
-          :blue => 34,
-          :magenta => 35,
-          :cyan => 36,
-          :white => 37
-        }
-
-        VT100_COLOR_CODES = VT100_COLORS.values.to_set
-
-        def color_code_for(code_or_symbol)
-          if VT100_COLOR_CODES.include?(code_or_symbol)
-            code_or_symbol
-          else
-            VT100_COLORS.fetch(code_or_symbol) do
-              color_code_for(:white)
-            end
-          end
-        end
-
-        def colorize(text, code_or_symbol)
-          "\e[#{color_code_for(code_or_symbol)}m#{text}\e[0m"
-        end
-
       protected
 
         def bold(text)
-          color_enabled? ? "\e[1m#{text}\e[0m" : text
+          ConsoleCodes.wrap(text, :bold)
         end
 
         def color(text, color_code)
-          color_enabled? ? colorize(text, color_code) : text
+          ConsoleCodes.wrap(text, color_code)
         end
 
         def failure_color(text)
