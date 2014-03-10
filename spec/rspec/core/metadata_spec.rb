@@ -47,7 +47,7 @@ module RSpec
       end
 
       describe "#filter_applies?" do
-        attr_accessor :parent_group_metadata, :group_metadata, :example_metadata, :next_example_metadata
+        attr_accessor :parent_group_metadata, :group_metadata, :example_metadata
 
         def create_metadatas
           container = self
