@@ -375,7 +375,6 @@ module RSpec
         args << Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
-        @order = nil
         hooks.register_globals(self, RSpec.configuration.hooks)
         world.configure_group(self)
       end
