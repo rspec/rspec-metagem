@@ -132,12 +132,12 @@ module RSpec
         #
         # @param formatter
         def initialize(formatter_class, *args)
-          if formatter_class.ancestors.include?(BaseFormatter)
+          if defined?(BaseFormatter) && formatter_class.ancestors.include?(BaseFormatter)
             formatter_class.class_eval do
               include LegacyInterface
             end
           end
-          if formatter_class.ancestors.include?(BaseTextFormatter)
+          if defined?(BaseTextFormatter) && formatter_class.ancestors.include?(BaseTextFormatter)
             formatter_class.class_eval do
               include LegacyColorSupport
             end
