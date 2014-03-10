@@ -8,12 +8,14 @@ Breaking Changes for 3.0.0:
   class. (Myron Marston)
 * Refactor filter manager so that it no longer subclasses Hash and has a
   tighter, more domain-specific interface. (Sergey Pchelincev)
+* Remove legacy colours definitions from `BaseTextFormatter`. (Jon Rowe)
 
 Enhancements:
 
 * Add `config.default_formatter` attribute, which can be used to set a
   formatter which will only be used if no other formatter is set
   (e.g. via `--formatter`). (Myron Marston)
+* Support legacy colour definitions in `LegacyFormatterAdaptor`. (Jon Rowe)
 
 Bug Fixes:
 

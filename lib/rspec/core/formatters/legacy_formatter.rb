@@ -88,6 +88,43 @@ module RSpec
           end
         end
 
+        module LegacyColorSupport
+          def red(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#red", :replacement => "#failure_color")
+            color(text, :red)
+          end
+
+          def green(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#green", :replacement => "#success_color")
+            color(text, :green)
+          end
+
+          def yellow(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#yellow", :replacement => "#pending_color")
+            color(text, :yellow)
+          end
+
+          def blue(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#blue", :replacement => "#fixed_color")
+            color(text, :blue)
+          end
+
+          def magenta(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#magenta")
+            color(text, :magenta)
+          end
+
+          def cyan(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#cyan", :replacement => "#detail_color")
+            color(text, :cyan)
+          end
+
+          def white(text)
+            RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#white", :replacement => "#default_color")
+            color(text, :white)
+          end
+        end
+
         # @api private
         attr_reader :formatter
 
@@ -95,9 +132,14 @@ module RSpec
         #
         # @param formatter
         def initialize(formatter_class, *args)
-          if formatter_class.ancestors.include?(BaseFormatter)
+          if defined?(BaseFormatter) && formatter_class.ancestors.include?(BaseFormatter)
             formatter_class.class_eval do
               include LegacyInterface
+            end
+          end
+          if defined?(BaseTextFormatter) && formatter_class.ancestors.include?(BaseTextFormatter)
+            formatter_class.class_eval do
+              include LegacyColorSupport
             end
           end
           @formatter = formatter_class.new(*args)
