@@ -87,7 +87,7 @@ module RSpec
 
           sorted_examples[:examples].each do |example|
             output.puts "  #{example.full_description}"
-            output.puts "    #{bold(format_seconds(example.execution_result[:run_time]))} #{bold("seconds")} #{format_caller(example.location)}"
+            output.puts "    #{bold(format_seconds(example.execution_result.run_time))} #{bold("seconds")} #{format_caller(example.location)}"
           end
         end
 
@@ -113,7 +113,7 @@ module RSpec
             output.puts "Pending:"
             pending_examples.each do |pending_example|
               output.puts pending_color("  #{pending_example.full_description}")
-              output.puts detail_color("    # #{pending_example.execution_result[:pending_message]}")
+              output.puts detail_color("    # #{pending_example.execution_result.pending_message}")
               output.puts detail_color("    # #{format_caller(pending_example.location)}")
             end
           end
@@ -205,19 +205,19 @@ module RSpec
           configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
-        def dump_backtrace(example, key = :exception)
-          format_backtrace(example.execution_result[key].backtrace, example).each do |backtrace_info|
+        def dump_backtrace(example)
+          format_backtrace(example.execution_result.exception.backtrace, example).each do |backtrace_info|
             output.puts detail_color("#{long_padding}# #{backtrace_info}")
           end
         end
 
         def dump_pending_fixed(example, index)
           output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
-          output.puts fixed_color("#{long_padding}Expected pending '#{example.metadata[:execution_result][:pending_message]}' to fail. No Error was raised.")
+          output.puts fixed_color("#{long_padding}Expected pending '#{example.metadata[:execution_result].pending_message}' to fail. No Error was raised.")
         end
 
         def pending_fixed?(example)
-          example.execution_result[:pending_fixed]
+          example.execution_result.pending_fixed
         end
 
         def dump_failure(example, index)
@@ -225,8 +225,8 @@ module RSpec
           dump_failure_info(example)
         end
 
-        def dump_failure_info(example, key = :exception)
-          exception = example.execution_result[key]
+        def dump_failure_info(example)
+          exception = example.execution_result.exception
           exception_class_name = exception_class_name_for(exception)
           output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
           output.puts "#{long_padding}#{failure_color(exception_class_name)}:" unless exception_class_name =~ /RSpec/

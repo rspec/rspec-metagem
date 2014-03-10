@@ -61,9 +61,9 @@ RSpec.describe "an example" do
       example = group.examples.first
       example.run(group.new, double.as_null_object)
       expect(called).to eq(true)
-      result = example.metadata[:execution_result]
-      expect(result[:pending_fixed]).to eq(true)
-      expect(result[:status]).to eq("failed")
+      result = example.execution_result
+      expect(result.pending_fixed).to eq(true)
+      expect(result.status).to eq("failed")
     end
   end
 

@@ -241,10 +241,10 @@ module RSpec
         def slowest_examples
           number_of_examples = RSpec.configuration.profile_examples
           sorted_examples = examples.sort_by {|example|
-            example.execution_result[:run_time] }.reverse.first(number_of_examples)
+            example.execution_result.run_time }.reverse.first(number_of_examples)
 
           total, slows = [examples, sorted_examples].map do |exs|
-            exs.inject(0.0) {|i, e| i + e.execution_result[:run_time] }
+            exs.inject(0.0) {|i, e| i + e.execution_result.run_time }
           end
           {:examples => sorted_examples, :total => total, :slows => slows}
         end
@@ -258,7 +258,7 @@ module RSpec
             location = example.example_group.parent_groups.last.metadata[:example_group][:location]
 
             example_groups[location] ||= Hash.new(0)
-            example_groups[location][:total_time]  += example.execution_result[:run_time]
+            example_groups[location][:total_time]  += example.execution_result.run_time
             example_groups[location][:count]       += 1
             example_groups[location][:description] = example.example_group.top_level_description unless example_groups[location].has_key?(:description)
           end

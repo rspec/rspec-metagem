@@ -806,7 +806,7 @@ module RSpec::Core
         example = group.example("equality") { expect(1).to eq(2) }
         expect(group.run).to be(false)
 
-        expect(example.metadata[:execution_result][:exception].message).to eq("error in before each")
+        expect(example.execution_result.exception.message).to eq("error in before each")
       end
 
       it "treats an error in before(:all) as a failure" do
@@ -816,9 +816,8 @@ module RSpec::Core
         expect(group.run).to be_falsey
 
         expect(example.metadata).not_to be_nil
-        expect(example.metadata[:execution_result]).not_to be_nil
-        expect(example.metadata[:execution_result][:exception]).not_to be_nil
-        expect(example.metadata[:execution_result][:exception].message).to eq("error in before all")
+        expect(example.execution_result.exception).not_to be_nil
+        expect(example.execution_result.exception.message).to eq("error in before all")
       end
 
       it "exposes instance variables set in before(:all) from after(:all) even if a before(:all) error occurs" do
@@ -851,9 +850,8 @@ module RSpec::Core
         group.run
 
         expect(example.metadata).not_to be_nil
-        expect(example.metadata[:execution_result]).not_to be_nil
-        expect(example.metadata[:execution_result][:exception]).not_to be_nil
-        expect(example.metadata[:execution_result][:exception].message).to eq("error in before all")
+        expect(example.execution_result.exception).not_to be_nil
+        expect(example.execution_result.exception.message).to eq("error in before all")
       end
 
       context "when an error occurs in an after(:all) hook" do
@@ -875,9 +873,7 @@ module RSpec::Core
         it "allows the example to pass" do
           group.run
           example = group.examples.first
-          expect(example.metadata).not_to be_nil
-          expect(example.metadata[:execution_result]).not_to be_nil
-          expect(example.metadata[:execution_result][:status]).to eq("passed")
+          expect(example.execution_result.status).to eq("passed")
         end
 
         it "rescues any error(s) and prints them out" do
@@ -921,7 +917,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -937,7 +933,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -953,7 +949,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq("not done")
+        expect(group.examples.first.execution_result.pending_message).to eq("not done")
       end
     end
 
@@ -967,7 +963,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -983,7 +979,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -999,7 +995,7 @@ module RSpec::Core
 
       it "sets the pending message" do
         group.run
-        expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq('not done')
+        expect(group.examples.first.execution_result.pending_message).to eq('not done')
       end
     end
 
@@ -1016,7 +1012,7 @@ module RSpec::Core
 
         it "sets the pending message" do
           group.run
-          expect(group.examples.first.metadata[:execution_result][:pending_message]).to eq("Temporarily skipped with #{method_name}")
+          expect(group.examples.first.execution_result.pending_message).to eq("Temporarily skipped with #{method_name}")
         end
       end
     end
@@ -1036,7 +1032,7 @@ module RSpec::Core
           end
           group.run
 
-          expect(extract_execution_results(group)).to match([
+          expect(extract_execution_results(group).map(&:to_h)).to match([
             a_hash_including(
               :status => "pending",
               :pending_message => "Temporarily skipped with #{method_name}"
@@ -1049,7 +1045,7 @@ module RSpec::Core
     %w[ fdescribe fcontext ].each do |method_name|
       describe ".#{method_name}" do
         def executed_examples_of(group)
-          examples = group.examples.select { |ex| ex.metadata[:execution_result][:started_at] }
+          examples = group.examples.select { |ex| ex.execution_result.started_at }
           group.children.inject(examples) { |exs, child| exs + executed_examples_of(child) }
         end
 
@@ -1090,7 +1086,7 @@ module RSpec::Core
         end
         group.run
 
-        expect(extract_execution_results(group)).to match([
+        expect(extract_execution_results(group).map(&:to_h)).to match([
           a_hash_including(
             :status => "failed",
             :pending_message => "No reason given"
