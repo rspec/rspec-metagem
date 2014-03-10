@@ -193,12 +193,12 @@ module RSpec
 
       # @private
       def any_apply?(filters)
-        metadata.any_apply?(filters)
+        MetadataFilter.any_apply?(filters, metadata)
       end
 
       # @private
       def all_apply?(filters)
-        @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
+        MetadataFilter.all_apply?(filters, metadata) || @example_group_class.all_apply?(filters)
       end
 
       # @private

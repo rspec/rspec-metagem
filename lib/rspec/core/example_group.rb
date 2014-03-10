@@ -489,12 +489,12 @@ module RSpec
 
       # @private
       def self.any_apply?(filters)
-        metadata.any_apply?(filters)
+        MetadataFilter.any_apply?(filters, metadata)
       end
 
       # @private
       def self.all_apply?(filters)
-        metadata.all_apply?(filters)
+        MetadataFilter.all_apply?(filters, metadata)
       end
 
       # @private

@@ -199,62 +199,6 @@ module RSpec
         dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
       end
 
-      # @private
-      def any_apply?(filters)
-        filters.any? {|k,v| filter_applies?(k,v)}
-      end
-
-      # @private
-      def all_apply?(filters)
-        filters.all? {|k,v| filter_applies?(k,v)}
-      end
-
-      # @private
-      def filter_applies?(key, value, metadata=self)
-        return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key] && !(Proc === value)
-        return metadata.line_number_filter_applies?(value)       if key == :line_numbers
-        return metadata.location_filter_applies?(value)          if key == :locations
-        return metadata.filters_apply?(key, value)               if Hash === value
-
-        return false unless metadata.has_key?(key)
-
-        case value
-        when Regexp
-          metadata[key] =~ value
-        when Proc
-          case value.arity
-          when 0 then value.call
-          when 2 then value.call(metadata[key], metadata)
-          else value.call(metadata[key])
-          end
-        else
-          metadata[key].to_s == value.to_s
-        end
-      end
-
-      # @private
-      def filters_apply?(key, value)
-        value.all? {|k, v| filter_applies?(k, v, self[key])}
-      end
-
-      # @private
-      def filter_applies_to_any_value?(key, value)
-        self[key].any? {|v| filter_applies?(key, v, {key => value})}
-      end
-
-      # @private
-      def location_filter_applies?(locations)
-        # it ignores location filters for other files
-        line_number = example_group_declaration_line(locations)
-        line_number ? line_number_filter_applies?(line_number) : true
-      end
-
-      # @private
-      def line_number_filter_applies?(line_numbers)
-        preceding_declaration_lines = line_numbers.map {|n| RSpec.world.preceding_declaration_line(n)}
-        !(relevant_line_numbers & preceding_declaration_lines).empty?
-      end
-
       protected
 
       def configure_for_example(description, user_metadata)
@@ -294,16 +238,6 @@ Here are all of RSpec's reserved hash keys:
             EOM
           end
         end
-      end
-
-      def example_group_declaration_line(locations)
-        locations[File.expand_path(self[:example_group][:file_path])] if self[:example_group]
-      end
-
-      # TODO - make this a method on metadata - the problem is
-      # metadata[:example_group] is not always a kind of GroupMetadataHash.
-      def relevant_line_numbers(metadata=self)
-        [metadata[:line_number]] + (metadata[:example_group] ? relevant_line_numbers(metadata[:example_group]) : [])
       end
 
     end

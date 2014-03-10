@@ -105,53 +105,51 @@ module RSpec::Core
     end
 
     describe "#prune" do
-      def filterable_object_with(*args)
-        meta = nil
-        RSpec.describe("group", *args) { meta = metadata }
-        meta
+      def example_with(*args)
+        RSpec.describe("group", *args).example("example")
       end
 
       it "includes objects with tags matching inclusions" do
-        included = filterable_object_with({:foo => :bar})
-        excluded = filterable_object_with
+        included = example_with({:foo => :bar})
+        excluded = example_with
         filter_manager.include :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
       it "excludes objects with tags matching exclusions" do
-        included = filterable_object_with
-        excluded = filterable_object_with({:foo => :bar})
+        included = example_with
+        excluded = example_with({:foo => :bar})
         filter_manager.exclude :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
       it "prefers exclusion when matches previously set inclusion" do
-        included = filterable_object_with
-        excluded = filterable_object_with({:foo => :bar})
+        included = example_with
+        excluded = example_with({:foo => :bar})
         filter_manager.include :foo => :bar
         filter_manager.exclude :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
       it "prefers inclusion when matches previously set exclusion" do
-        included = filterable_object_with({:foo => :bar})
-        excluded = filterable_object_with
+        included = example_with({:foo => :bar})
+        excluded = example_with
         filter_manager.exclude :foo => :bar
         filter_manager.include :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
       it "prefers previously set inclusion when exclusion matches but has lower priority" do
-        included = filterable_object_with({:foo => :bar})
-        excluded = filterable_object_with
+        included = example_with({:foo => :bar})
+        excluded = example_with
         filter_manager.include :foo => :bar
         filter_manager.exclude_with_low_priority :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
       it "prefers previously set exclusion when inclusion matches but has lower priority" do
-        included = filterable_object_with
-        excluded = filterable_object_with({:foo => :bar})
+        included = example_with
+        excluded = example_with({:foo => :bar})
         filter_manager.exclude :foo => :bar
         filter_manager.include_with_low_priority :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
