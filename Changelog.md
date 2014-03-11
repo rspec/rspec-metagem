@@ -9,6 +9,7 @@ Breaking Changes for 3.0.0:
 * Refactor filter manager so that it no longer subclasses Hash and has a
   tighter, more domain-specific interface. (Sergey Pchelincev)
 * Remove legacy colours definitions from `BaseTextFormatter`. (Jon Rowe)
+* Remove console color definitions from `BaseTextFormatter`. (Jon Rowe)
 
 Enhancements:
 
@@ -19,6 +20,7 @@ Enhancements:
 * Migrate `execution_result` (exposed by metadata) from a hash to a
   first-class object with appropriate attributes. It retains deprecated
   hash behavior for backwards compatibility. (Myron Marston)
+* Provide console code helper for formatters. (Jon Rowe)
 
 Bug Fixes:
 
