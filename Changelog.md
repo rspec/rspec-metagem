@@ -16,6 +16,9 @@ Enhancements:
   formatter which will only be used if no other formatter is set
   (e.g. via `--formatter`). (Myron Marston)
 * Support legacy colour definitions in `LegacyFormatterAdaptor`. (Jon Rowe)
+* Migrate `execution_result` (exposed by metadata) from a hash to a
+  first-class object with appropriate attributes. It retains deprecated
+  hash behavior for backwards compatibility. (Myron Marston)
 
 Bug Fixes:
 
