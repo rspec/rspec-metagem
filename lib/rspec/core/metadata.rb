@@ -274,7 +274,14 @@ Here are all of RSpec's reserved hash keys:
 
           hash.__send__(method_name, *args, &block).tap do
             # apply mutations back to the object
-            hash.each { |name, value| __send__(:"#{name}=", value) }
+            hash.each do |name, value|
+              setter = :"#{name}="
+              if respond_to?(setter)
+                __send__(setter, value)
+              else
+                extra_hash_attributes[name] = value
+              end
+            end
           end
         end
       end
