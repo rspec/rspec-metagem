@@ -128,13 +128,13 @@ module RSpec
         end
 
         example.metadata[:pending] = true
-        example.metadata[:execution_result][:pending_message] = message
-        example.execution_result[:pending_fixed] = false
+        example.execution_result.pending_message = message
+        example.execution_result.pending_fixed = false
       end
 
       def self.mark_fixed!(example)
         example.metadata[:pending] = false
-        example.metadata[:execution_result][:pending_fixed] = true
+        example.execution_result.pending_fixed = true
       end
     end
   end

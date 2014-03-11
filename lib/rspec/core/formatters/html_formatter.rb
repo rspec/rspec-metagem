@@ -46,7 +46,7 @@ module RSpec
 
         def example_passed(passed)
           @printer.move_progress(percent_done)
-          @printer.print_example_passed( passed.example.description, passed.example.execution_result[:run_time] )
+          @printer.print_example_passed( passed.example.description, passed.example.execution_result.run_time )
           @printer.flush
         end
 
@@ -67,7 +67,7 @@ module RSpec
 
           example = failed.example
 
-          exception = example.metadata[:execution_result][:exception]
+          exception = example.execution_result.exception
           exception_details = if exception
             {
               :message => exception.message,
@@ -79,9 +79,9 @@ module RSpec
           extra = extra_failure_content(exception)
 
           @printer.print_example_failed(
-            example.execution_result[:pending_fixed],
+            example.execution_result.pending_fixed,
             example.description,
-            example.execution_result[:run_time],
+            example.execution_result.run_time,
             @failed_examples.size,
             exception_details,
             (extra == "") ? false : extra,
@@ -96,7 +96,7 @@ module RSpec
           @printer.make_header_yellow unless @header_red
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
-          @printer.print_example_pending( example.description, example.metadata[:execution_result][:pending_message] )
+          @printer.print_example_pending( example.description, example.execution_result.pending_message )
           @printer.flush
         end
 

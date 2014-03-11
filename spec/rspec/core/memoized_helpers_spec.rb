@@ -264,8 +264,8 @@ module RSpec::Core
               end
             end.run
 
-            expect(ex.execution_result[:status]).to eq("failed")
-            expect(ex.execution_result[:exception].message).to match(/super.*not supported/)
+            expect(ex.execution_result.status).to eq("failed")
+            expect(ex.execution_result.exception.message).to match(/super.*not supported/)
           end
 
           it 'raises a "not supported" error' do

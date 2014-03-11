@@ -31,12 +31,12 @@ module RSpec
 
         def example_pending(pending)
           super
-          output.puts pending_output(pending.example, pending.example.execution_result[:pending_message])
+          output.puts pending_output(pending.example, pending.example.execution_result.pending_message)
         end
 
         def example_failed(failure)
           super
-          output.puts failure_output(failure.example, failure.example.execution_result[:exception])
+          output.puts failure_output(failure.example, failure.example.execution_result.exception)
         end
 
       private

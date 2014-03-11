@@ -77,7 +77,7 @@ module RSpec
             store(:file_path, file_path)
             store(:line_number, line_number)
           when :execution_result
-            store(:execution_result, {})
+            store(:execution_result, Example::ExecutionResult.new)
           when :describes, :described_class
             klass = described_class
             store(:described_class, klass)
@@ -199,62 +199,6 @@ module RSpec
         dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
       end
 
-      # @private
-      def any_apply?(filters)
-        filters.any? {|k,v| filter_applies?(k,v)}
-      end
-
-      # @private
-      def all_apply?(filters)
-        filters.all? {|k,v| filter_applies?(k,v)}
-      end
-
-      # @private
-      def filter_applies?(key, value, metadata=self)
-        return metadata.filter_applies_to_any_value?(key, value) if Array === metadata[key] && !(Proc === value)
-        return metadata.line_number_filter_applies?(value)       if key == :line_numbers
-        return metadata.location_filter_applies?(value)          if key == :locations
-        return metadata.filters_apply?(key, value)               if Hash === value
-
-        return false unless metadata.has_key?(key)
-
-        case value
-        when Regexp
-          metadata[key] =~ value
-        when Proc
-          case value.arity
-          when 0 then value.call
-          when 2 then value.call(metadata[key], metadata)
-          else value.call(metadata[key])
-          end
-        else
-          metadata[key].to_s == value.to_s
-        end
-      end
-
-      # @private
-      def filters_apply?(key, value)
-        value.all? {|k, v| filter_applies?(k, v, self[key])}
-      end
-
-      # @private
-      def filter_applies_to_any_value?(key, value)
-        self[key].any? {|v| filter_applies?(key, v, {key => value})}
-      end
-
-      # @private
-      def location_filter_applies?(locations)
-        # it ignores location filters for other files
-        line_number = example_group_declaration_line(locations)
-        line_number ? line_number_filter_applies?(line_number) : true
-      end
-
-      # @private
-      def line_number_filter_applies?(line_numbers)
-        preceding_declaration_lines = line_numbers.map {|n| RSpec.world.preceding_declaration_line(n)}
-        !(relevant_line_numbers & preceding_declaration_lines).empty?
-      end
-
       protected
 
       def configure_for_example(description, user_metadata)
@@ -296,16 +240,85 @@ Here are all of RSpec's reserved hash keys:
         end
       end
 
-      def example_group_declaration_line(locations)
-        locations[File.expand_path(self[:example_group][:file_path])] if self[:example_group]
+    end
+
+    # Mixin that makes the including class imitate a hash for backwards
+    # compatibility. The including class should use `attr_accessor` to
+    # declare attributes and define a `deprecation_prefix` method.
+    # @private
+    module HashImitatable
+      def self.included(klass)
+        klass.extend ClassMethods
       end
 
-      # TODO - make this a method on metadata - the problem is
-      # metadata[:example_group] is not always a kind of GroupMetadataHash.
-      def relevant_line_numbers(metadata=self)
-        [metadata[:line_number]] + (metadata[:example_group] ? relevant_line_numbers(metadata[:example_group]) : [])
+      def to_h
+        hash = extra_hash_attributes.dup
+
+        self.class.hash_attribute_names.each do |name|
+          hash[name] = __send__(name)
+        end
+
+        hash
       end
 
+      (Hash.public_instance_methods - Object.public_instance_methods).each do |method_name|
+        next if [:[], :[]=, :to_h].include?(method_name.to_sym)
+
+        define_method(method_name) do |*args, &block|
+          RSpec.deprecate("`#{deprecation_prefix}.#{method_name}`")
+
+          hash = to_h
+          self.class.hash_attribute_names.each do |name|
+            hash.delete(name) unless instance_variable_defined?(:"@#{name}")
+          end
+
+          hash.__send__(method_name, *args, &block).tap do
+            # apply mutations back to the object
+            hash.each { |name, value| __send__(:"#{name}=", value) }
+          end
+        end
+      end
+
+      def [](key)
+        if respond_to?(key)
+          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`",
+                            :replacement => "`#{deprecation_prefix}.#{key}`")
+          __send__(key)
+        else
+          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`")
+          extra_hash_attributes[key]
+        end
+      end
+
+      def []=(key, value)
+        sender = :"#{key}="
+
+        if respond_to?(sender)
+          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `",
+                            :replacement => "`#{deprecation_prefix}.#{key} =`")
+          __send__(sender, value)
+        else
+          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `")
+          extra_hash_attributes[key] = value
+        end
+      end
+
+    private
+
+      def extra_hash_attributes
+        @extra_hash_attributes ||= {}
+      end
+
+      module ClassMethods
+        def hash_attribute_names
+          @hash_attribute_names ||= []
+        end
+
+        def attr_accessor(*names)
+          hash_attribute_names.concat(names)
+          super
+        end
+      end
     end
   end
 end

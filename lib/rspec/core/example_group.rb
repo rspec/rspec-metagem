@@ -375,7 +375,6 @@ module RSpec
         args << Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
         @metadata = RSpec::Core::Metadata.new(superclass_metadata).process(*args)
-        @order = nil
         hooks.register_globals(self, RSpec.configuration.hooks)
         world.configure_group(self)
       end
@@ -490,12 +489,12 @@ module RSpec
 
       # @private
       def self.any_apply?(filters)
-        metadata.any_apply?(filters)
+        MetadataFilter.any_apply?(filters, metadata)
       end
 
       # @private
       def self.all_apply?(filters)
-        metadata.all_apply?(filters)
+        MetadataFilter.all_apply?(filters, metadata)
       end
 
       # @private

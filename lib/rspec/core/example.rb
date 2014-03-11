@@ -193,12 +193,12 @@ module RSpec
 
       # @private
       def any_apply?(filters)
-        metadata.any_apply?(filters)
+        MetadataFilter.any_apply?(filters, metadata)
       end
 
       # @private
       def all_apply?(filters)
-        @metadata.all_apply?(filters) || @example_group_class.all_apply?(filters)
+        MetadataFilter.all_apply?(filters, metadata) || @example_group_class.all_apply?(filters)
       end
 
       # @private
@@ -212,7 +212,7 @@ module RSpec
       # captures the exception but doesn't raise it.
       def set_exception(exception, context=nil)
         if pending?
-          metadata[:execution_result][:pending_exception] = exception
+          metadata[:execution_result].pending_exception = exception
         else
           if @exception && context != :dont_print
             # An error has already been set; we don't want to override it,
@@ -275,18 +275,20 @@ module RSpec
 
       def start(reporter)
         reporter.example_started(self)
-        record :started_at => clock.now
+        execution_result.started_at = clock.now
       end
 
       def finish(reporter)
-        pending_message = metadata[:execution_result][:pending_message]
+        pending_message = metadata[:execution_result].pending_message
 
         if @exception
-          record_finished 'failed', :exception => @exception
+          record_finished 'failed'
+          execution_result.exception = @exception
           reporter.example_failed self
           false
         elsif pending_message
-          record_finished 'pending', :pending_message => pending_message
+          record_finished 'pending'
+          execution_result.pending_message = pending_message
           reporter.example_pending self
           true
         else
@@ -296,13 +298,8 @@ module RSpec
         end
       end
 
-      def record_finished(status, results={})
-        finished_at = clock.now
-        record results.merge(
-          :status      => status,
-          :finished_at => finished_at,
-          :run_time    => (finished_at - execution_result[:started_at]).to_f
-        )
+      def record_finished(status)
+        execution_result.record_finished(status, clock.now)
       end
 
       def run_before_each
@@ -323,8 +320,12 @@ module RSpec
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        if metadata[:execution_result][:pending_message]
-          metadata[:execution_result][:pending_fixed] = false
+        if metadata[:execution_result].pending_message
+          metadata[:execution_result].pending_fixed = false
+          # TODO: should we really change this? In the user metadata,
+          # `:pending` indicates the user intends to make the example
+          # pending, not that it actually was -- that's what the
+          # execution_result is for.
           metadata[:pending] = true
           @exception = nil
         else
@@ -342,15 +343,38 @@ module RSpec
         RSpec::Matchers.clear_generated_description
       end
 
-      def record(results={})
-        execution_result.update(results)
-      end
-
       def skip_message
         if String === skip
           skip
         else
           Pending::NO_REASON_GIVEN
+        end
+      end
+
+      # Represents the result of executing an example.
+      # Behaves like a hash for backwards compatibility.
+      # @note Needs more docs for the individual attributes.
+      class ExecutionResult
+        include HashImitatable
+
+        attr_accessor :status, :exception,
+                      :started_at, :finished_at, :run_time,
+                      :pending_message, :pending_exception, :pending_fixed
+
+        alias pending_fixed? pending_fixed
+
+        # @api private
+        # Records the finished status of the example.
+        def record_finished(status, finished_at)
+          self.status      = status
+          self.finished_at = finished_at
+          self.run_time    = (finished_at - started_at).to_f
+        end
+
+      private
+
+        def deprecation_prefix
+          "execution_result"
         end
       end
     end

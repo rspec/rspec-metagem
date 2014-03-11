@@ -62,7 +62,7 @@ module RSpec
           sorted_examples = slowest_examples
           @output_hash[:profile][:examples] = sorted_examples[:examples].map do |example|
             format_example(example).tap do |hash|
-              hash[:run_time] = example.execution_result[:run_time]
+              hash[:run_time] = example.execution_result.run_time
             end
           end
           @output_hash[:profile][:slowest] = sorted_examples[:slows]
@@ -83,10 +83,10 @@ module RSpec
           {
             :description => example.description,
             :full_description => example.full_description,
-            :status => example.execution_result[:status],
+            :status => example.execution_result.status,
             :file_path => example.metadata[:file_path],
             :line_number  => example.metadata[:line_number],
-            :run_time => example.execution_result[:run_time]
+            :run_time => example.execution_result.run_time
           }
         end
       end
