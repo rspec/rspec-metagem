@@ -139,6 +139,23 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
   describe LegacyFormatterUsingSubClassing do
     let(:legacy_formatter) { formatter.formatter }
 
+    it "will lookup colour codes" do
+      expect(legacy_formatter.color_code_for(:black)).to eq 30
+    end
+
+    it "will colorize text" do
+      allow(RSpec.configuration).to receive(:color_enabled?) { true }
+      expect(legacy_formatter.colorize("text", :black)).to eq "\e[30mtext\e[0m"
+    end
+
+    it "allows access to the deprecated constants" do
+      legacy_formatter
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      expect(described_class::VT100_COLORS).to eq ::RSpec::Core::Formatters::ConsoleCodes::VT100_CODES
+      expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
+      expect(described_class::VT100_COLOR_CODES).to eq ::RSpec::Core::Formatters::ConsoleCodes::VT100_CODE_VALUES
+    end
+
     ::RSpec::Core::Formatters::ConsoleCodes::VT100_CODES.each do |name, number|
       next if name == :black || name == :bold
 

@@ -123,6 +123,31 @@ module RSpec
             RSpec.deprecate("RSpec::Core::Formatters::BaseTextFormatter#white", :replacement => "#default_color")
             color(text, :white)
           end
+
+          module ConstantLookup
+            def const_missing(name)
+              base_name = "RSpec::Core::Formatters::BaseTextFormatter"
+              case name
+              when :VT100_COLORS then
+                RSpec.deprecate("#{base_name}::VT100_COLORS", :replacement => "RSpec::Core::Formatters::ConsoleCodes.code_for(code_or_symbol)")
+                RSpec::Core::Formatters::ConsoleCodes::VT100_CODES
+              when :VT100_COLOR_CODES then
+                RSpec.deprecate("#{base_name}::VT100_COLOR_CODES", :replacement => "RSpec::Core::Formatters::ConsoleCodes.code_for(code_or_symbol)")
+                RSpec::Core::Formatters::ConsoleCodes::VT100_CODE_VALUES
+              else
+                super
+              end
+            end
+          end
+
+          # These are part of the deprecated interface, so no individual deprecations
+          def color_code_for(code_or_symbol)
+            ConsoleCodes.console_code_for(code_or_symbol)
+          end
+
+          def colorize(text, code_or_symbol)
+            ConsoleCodes.wrap(text, code_or_symbol)
+          end
         end
 
         # @api private
@@ -140,6 +165,7 @@ module RSpec
           if defined?(BaseTextFormatter) && formatter_class.ancestors.include?(BaseTextFormatter)
             formatter_class.class_eval do
               include LegacyColorSupport
+              extend  LegacyColorSupport::ConstantLookup
             end
           end
           @formatter = formatter_class.new(*args)
