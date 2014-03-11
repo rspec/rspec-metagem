@@ -57,6 +57,13 @@ module RSpec
             expect(er.exception).to be_a(ArgumentError)
           end
 
+          it 'can set undefined attribute keys through any hash mutation method' do
+            allow_deprecation
+            er = ExecutionResult.new
+            er.update(:status => "failed", :foo => 3)
+            expect(er.to_h).to include(:status => "failed", :foo => 3)
+          end
+
           it 'supports `merge` like a hash' do
             er = ExecutionResult.new
             er.status = "pending"
