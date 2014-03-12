@@ -77,10 +77,6 @@ module RSpec
             super(Notifications::NullNotification) if defined?(super)
           end
 
-          def dump_profile
-            super(Notifications::NullNotification) if defined?(super)
-          end
-
           def close
             super(Notifications::NullNotification) if defined?(super)
           end

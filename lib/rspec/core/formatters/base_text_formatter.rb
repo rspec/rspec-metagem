@@ -12,7 +12,7 @@ module RSpec
       # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
         Formatters.register self, :message, :dump_summary, :dump_failures,
-                                  :dump_profile, :dump_pending, :seed
+                                  :dump_pending, :seed
 
         def message(notification)
           output.puts notification.message
