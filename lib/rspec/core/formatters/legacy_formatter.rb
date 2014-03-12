@@ -157,7 +157,8 @@ module RSpec
 
         # @api public
         #
-        # @param [Class] formatter_class
+        # @param formatter_class [Class] formatter class to build
+        # @param [...] arguments for the formatter
         def initialize(formatter_class, *args)
           if defined?(BaseFormatter) && formatter_class.ancestors.include?(BaseFormatter)
             formatter_class.class_eval do
@@ -178,83 +179,84 @@ module RSpec
         # This method is invoked during the setup phase to register
         # a formatters with the reporter
         #
+        # @return [Array] notifications the legacy formatter implements
         def notifications
           @notifications ||= NOTIFICATIONS.select { |m| @formatter.respond_to? m }
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def start(notification)
           @formatter.start notification.count
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
         def example_group_started(notification)
           @formatter.example_group_started notification.group
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
         def example_group_finished(notification)
           @formatter.example_group_finished notification.group
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_started(notification)
           @formatter.example_started notification.example
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_passed(notification)
           @formatter.example_passed notification.example
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_pending(notification)
           @formatter.example_pending notification.example
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_failed(notification)
           @formatter.example_failed notification.example
         end
 
         # @api public
         #
-        # @param notification
+        # @param [MessageNotification] notification containing message
         def message(notification)
           @formatter.message notification.message
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def stop(notification)
           @formatter.stop
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def start_dump(notification)
           @formatter.start_dump
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def dump_failures(notification)
           @formatter.dump_failures
         end
@@ -268,28 +270,28 @@ module RSpec
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def dump_pending(notification)
           @formatter.dump_pending
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def dump_profile(notification)
           @formatter.dump_profile
         end
 
         # @api public
         #
-        # @param notification
+        # @param notification [SeedNotification] containing the seed
         def seed(notification)
           @formatter.seed notification.seed
         end
 
         # @api public
         #
-        # @param notification
+        # @param [NullNotification]
         def close(notification)
           @formatter.close
         end

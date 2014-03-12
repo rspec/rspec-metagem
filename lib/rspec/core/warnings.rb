@@ -4,7 +4,7 @@ module RSpec
   module Core
     # @api private
     #
-    # Internal container for warning messages
+    # Warnings namespace
     module Warnings
       # @private
       #

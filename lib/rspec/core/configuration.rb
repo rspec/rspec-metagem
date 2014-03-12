@@ -154,7 +154,7 @@ module RSpec
       define_reader :output_stream
 
       # Set the output stream for reporter
-      # @attr [IO] defaults to $stdout
+      # @attr value [IO] value for output, defaults to $stdout
       def output_stream=(value)
         if @reporter && !value.equal?(@output_stream)
           warn "RSpec's reporter has already been initialized with " +
@@ -170,8 +170,8 @@ module RSpec
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
       add_setting :pattern, :alias_with => :filename_pattern
 
-      # Set pattern matching files to load
-      # @attr [String] filename pattern to set
+      # Set pattern to match files to load
+      # @attr value [String] the filename pattern to filter spec files by
       def pattern= value
         if @spec_files_loaded
           RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
@@ -362,7 +362,7 @@ module RSpec
       end
 
       # Set regular expressions used to exclude lines in backtrace
-      # @attr [Regexp] backtrace_formatter.exclusion_patterns
+      # @attr [Regexp] set the backtrace exlusion pattern
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
       end
@@ -576,11 +576,12 @@ module RSpec
       end
 
       # Run examples matching on `description` in all files to run.
+      # @param [String, Regexp] description pattern to filter on
       def full_description=(description)
         filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
 
-      # @return [Array] filtered full description
+      # @return [Array] full description filter
       def full_description
         filter.fetch :full_description, nil
       end
@@ -659,6 +660,7 @@ module RSpec
         @files_to_run = nil
       end
 
+      # The spec files RSpec will run
       # @return [Array] specified files about to run
       def files_to_run
         @files_to_run ||= get_files_to_run(@files_or_directories_to_run)

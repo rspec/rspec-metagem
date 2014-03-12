@@ -123,6 +123,9 @@ module RSpec
       # @api private
       #
       # Mark example as skipped
+      #
+      # @param example [RSpec::Core::Example] the example to mark as skipped
+      # @param message [Boolean, String] the message to use, or true
       def self.mark_skipped!(example, message_or_bool)
         Pending.mark_pending! example, message_or_bool
         example.metadata[:skip] = true
@@ -131,6 +134,9 @@ module RSpec
       # @api private
       #
       # Mark example as pending
+      #
+      # @param example [RSpec::Core::Example] the example to mark as pending
+      # @param message [Boolean, String] the message to use, or true
       def self.mark_pending!(example, message_or_bool)
         message = if !message_or_bool || !(String === message_or_bool)
           NO_REASON_GIVEN
@@ -146,6 +152,8 @@ module RSpec
       # @api private
       #
       # Mark example as fixed
+      #
+      # @param example [RSpec::Core::Example] the example to mark as fixed
       def self.mark_fixed!(example)
         example.metadata[:pending] = false
         example.execution_result.pending_fixed = true
