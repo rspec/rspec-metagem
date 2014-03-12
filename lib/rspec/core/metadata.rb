@@ -54,51 +54,33 @@ module RSpec
         hash
       end
 
-      # @private
-      module MetadataHash
-
-        # @private
-        # Supports lazy evaluation of some values. Extended by
-        # ExampleMetadataHash and GroupMetadataHash, which get mixed in to
-        # Metadata for ExampleGroups and Examples (respectively).
-        def [](key)
-          store_computed(key) unless has_key?(key)
-          super
+      class PopulatorBase
+        def self.populate(metadata, description_args)
+          new(metadata, description_args).populate
         end
 
-        def fetch(key, *args)
-          store_computed(key) unless has_key?(key)
-          super
+        attr_reader :metadata, :description_args
+
+        def initialize(metadata, description_args)
+          @metadata         = metadata
+          @description_args = description_args
         end
 
-        private
+        def populate
+          metadata[:execution_result] = Example::ExecutionResult.new
+          metadata[:description_args] = description_args
+          metadata[:description]      = build_description_from(*metadata[:description_args])
+          metadata[:full_description] = full_description
+          metadata[:described_class]  = metadata[:describes] = described_class
 
-        def store_computed(key)
-          case key
-          when :location
-            store(:location, location)
-          when :file_path, :line_number
-            file_path, line_number = file_and_line_number
-            store(:file_path, file_path)
-            store(:line_number, line_number)
-          when :execution_result
-            store(:execution_result, Example::ExecutionResult.new)
-          when :describes, :described_class
-            klass = described_class
-            store(:described_class, klass)
-            # TODO (2011-11-07 DC) deprecate :describes as a key
-            store(:describes, klass)
-          when :full_description
-            store(:full_description, full_description)
-          when :description
-            store(:description, build_description_from(*self[:description_args]))
-          when :description_args
-            store(:description_args, [])
-          end
+          metadata[:file_path], metadata[:line_number] = file_and_line_number
+          metadata[:location]                          = location
         end
+
+      private
 
         def location
-          "#{self[:file_path]}:#{self[:line_number]}"
+          "#{metadata[:file_path]}:#{metadata[:line_number]}"
         end
 
         def file_and_line_number
@@ -107,7 +89,7 @@ module RSpec
         end
 
         def first_caller_from_outside_rspec
-          self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+          metadata[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
         def method_description_after_module?(parent_part, child_part)
@@ -126,26 +108,23 @@ module RSpec
         end
       end
 
-      # Mixed in to Metadata for an Example (extends MetadataHash) to support
-      # lazy evaluation of some values.
-      module ExampleMetadataHash
-        include MetadataHash
+      class ExamplePopulator < PopulatorBase
+      private
 
         # @private
         def described_class
-          self[:example_group].described_class
+          metadata[:example_group][:described_class]
         end
 
         # @private
         def full_description
-          build_description_from(self[:example_group][:full_description], *self[:description_args])
+          build_description_from(metadata[:example_group][:full_description], *metadata[:description_args])
         end
       end
 
-      # Mixed in to Metadata for an ExampleGroup (extends MetadataHash) to
-      # support lazy evaluation of some values.
-      module GroupMetadataHash
-        include MetadataHash
+      class ExampleGroupPopulator < PopulatorBase
+
+      private
 
         # @private
         def described_class
@@ -172,7 +151,7 @@ module RSpec
         # @private
         def container_stack
           @container_stack ||= begin
-                                 groups = [group = self]
+                                 groups = [group = metadata]
                                  while group.has_key?(:example_group)
                                    groups << group[:example_group]
                                    group = group[:example_group]
@@ -182,39 +161,28 @@ module RSpec
         end
       end
 
-      def initialize(parent_group_metadata=nil)
+      def initialize(parent_group_metadata, user_metadata, *args)
         if parent_group_metadata
           update(parent_group_metadata)
-          store(:example_group, {:example_group => parent_group_metadata[:example_group].extend(GroupMetadataHash)}.extend(GroupMetadataHash))
+          store(:example_group, {:example_group => parent_group_metadata[:example_group]})
         else
-          store(:example_group, {}.extend(GroupMetadataHash))
+          store(:example_group, {})
         end
 
-        yield self if block_given?
-      end
-
-      # @private
-      def process(*args)
-        user_metadata = args.last.is_a?(Hash) ? args.pop : {}
         ensure_valid_keys(user_metadata)
 
-        self[:example_group].store(:description_args, args)
         self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
 
+        ExampleGroupPopulator.populate(self[:example_group], args)
         update(user_metadata)
       end
 
       # @private
       def for_example(description, user_metadata)
-        dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
-      end
-
-      protected
-
-      def configure_for_example(description, user_metadata)
-        store(:description_args, [description]) if description
-        store(:caller, user_metadata.delete(:caller) || caller)
-        update(user_metadata)
+        metadata = dup
+        metadata.store(:caller, user_metadata.delete(:caller) || caller)
+        ExamplePopulator.populate(metadata, [description].compact)
+        metadata.update(user_metadata)
       end
 
       private

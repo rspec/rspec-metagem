@@ -334,8 +334,9 @@ module RSpec
       end
 
       def assign_generated_description
-        if metadata[:description_args].empty?
-          metadata[:description_args] << RSpec::Matchers.generated_description
+        if metadata[:description].empty? && (description = RSpec::Matchers.generated_description)
+          metadata[:description] = description
+          metadata[:full_description] << " #{description}"
         end
       rescue Exception => e
         set_exception(e, "while assigning the example description")

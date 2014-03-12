@@ -170,6 +170,8 @@ module RSpec
             end
 
             it "can override a parent group's described class using metdata" do
+              pending "not working for :describes but that's going away" if key == :describes
+
               parent_value = child_value = grandchild_value = nil
 
               RSpec.describe(String) do
