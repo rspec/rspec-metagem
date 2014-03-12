@@ -29,21 +29,6 @@ module RSpec
           end
         end
 
-        # @api public
-        #
-        # Colorizes the output red for failure, yellow for
-        # pending, and green otherwise.
-        # @param summary [SummaryNotification]
-        def colorise_summary(summary)
-          if summary.failure_count > 0
-            color(summary.summary_line, RSpec.configuration.failure_color)
-          elsif summary.pending_count > 0
-            color(summary.summary_line, RSpec.configuration.pending_color)
-          else
-            color(summary.summary_line, RSpec.configuration.success_color)
-          end
-        end
-
         def dump_summary(summary)
           dump_profile unless mute_profile_output?(summary.failure_count)
           output.puts "\nFinished in #{format_duration(summary.duration)}\n"
@@ -132,6 +117,21 @@ module RSpec
         end
 
       protected
+
+        # @api public
+        #
+        # Colorizes the output red for failure, yellow for
+        # pending, and green otherwise.
+        # @param [SummaryNotification] summary
+        def colorise_summary(summary)
+          if summary.failure_count > 0
+            color(summary.summary_line, RSpec.configuration.failure_color)
+          elsif summary.pending_count > 0
+            color(summary.summary_line, RSpec.configuration.pending_color)
+          else
+            color(summary.summary_line, RSpec.configuration.success_color)
+          end
+        end
 
         def bold(text)
           ConsoleCodes.wrap(text, :bold)
