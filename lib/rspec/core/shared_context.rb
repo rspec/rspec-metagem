@@ -17,25 +17,26 @@ module RSpec
     #       # ...
     #     end
     module SharedContext
-      # @api private
+      # @private
       def included(group)
         __shared_context_recordings.each do |recording|
           recording.playback_onto(group)
         end
       end
 
-      # @api private
+      # @private
       def __shared_context_recordings
         @__shared_context_recordings ||= []
       end
 
+      # @private
       Recording = Struct.new(:method_name, :args, :block) do
         def playback_onto(group)
           group.__send__(method_name, *args, &block)
         end
       end
 
-      # @api private
+      # @private
       def self.record(methods)
         methods.each do |meth|
           define_method(meth) do |*args, &block|
@@ -44,10 +45,11 @@ module RSpec
         end
       end
 
+      # @private
       record [:describe, :context] + Hooks.instance_methods(false) +
         MemoizedHelpers::ClassMethods.instance_methods(false)
     end
   end
-
+  # @private
   SharedContext = Core::SharedContext
 end

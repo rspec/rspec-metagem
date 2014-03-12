@@ -3,6 +3,7 @@ RSpec::Support.require_rspec_core "formatters/base_text_formatter"
 module RSpec
   module Core
     module Formatters
+      # @private
       class ProgressFormatter < BaseTextFormatter
         Formatters.register self, :example_passed, :example_pending, :example_failed, :start_dump
 

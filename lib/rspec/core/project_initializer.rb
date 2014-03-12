@@ -1,5 +1,7 @@
 module RSpec
   module Core
+    # @private
+    # Generates conventional files for an rspec project
     class ProjectInitializer
       def run
         create_spec_helper_file

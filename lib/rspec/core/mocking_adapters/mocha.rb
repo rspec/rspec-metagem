@@ -27,7 +27,7 @@ end
 module RSpec
   module Core
     module MockingAdapters
-      # @api private
+      # @private
       module Mocha
         def self.framework_name; :mocha end
 

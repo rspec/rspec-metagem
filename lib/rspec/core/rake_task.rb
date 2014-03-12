@@ -7,6 +7,9 @@ require 'shellwords'
 
 module RSpec
   module Core
+    # Rspec rake task
+    #
+    # @see Rakefile
     class RakeTask < ::Rake::TaskLib
       include ::Rake::DSL if defined?(::Rake::DSL)
 
@@ -69,6 +72,7 @@ module RSpec
         end
       end
 
+      # @private
       def setup_ivars(args)
         @name = args.shift || :spec
         @ruby_opts, @rspec_opts = nil, nil, nil
@@ -78,6 +82,7 @@ module RSpec
         @pattern    = './spec{,/*/**}/*_spec.rb'
       end
 
+      # @private
       def run_task(verbose)
         command = spec_command
 

@@ -1,6 +1,7 @@
 RSpec::Support.require_rspec_core "formatters/helpers"
 
 module RSpec::Core
+  # Notifications namespace
   module Notifications
 
     # The `CountNotification` represents notifications sent by the formatter

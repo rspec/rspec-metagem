@@ -4,6 +4,7 @@ RSpec::Support.require_rspec_core "formatters/html_printer"
 module RSpec
   module Core
     module Formatters
+      # @private
       class HtmlFormatter < BaseFormatter
         Formatters.register self, :start, :example_group_started, :start_dump,
                                   :example_started, :example_passed, :example_failed,

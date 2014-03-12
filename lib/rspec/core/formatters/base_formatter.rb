@@ -23,7 +23,7 @@ module RSpec
 
         # @api public
         #
-        # @param output
+        # @param output [IO] the formatter output
         def initialize(output)
           @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
@@ -42,7 +42,7 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is {#example_group_started}.
         #
-        # @param example_count
+        # @param [NullNotification]
         def start(notification)
           start_sync_output
           @example_count = notification.count
@@ -52,12 +52,10 @@ module RSpec
         #
         # This method is invoked at the beginning of the execution of each example group.
         #
-        # @param example_group subclass of `RSpec::Core::ExampleGroup`
-        #
         # The next method to be invoked after this is {#example_passed},
         # {#example_pending}, or {#example_group_finished}.
         #
-        # @param example_group
+        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
         def example_group_started(notification)
           @example_group = notification.group
         end
@@ -67,14 +65,13 @@ module RSpec
         #
         # Invoked at the end of the execution of each example group.
         #
-        # @param example_group subclass of `RSpec::Core::ExampleGroup`
+        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
 
         # @api public
         #
         # Invoked at the beginning of the execution of each example.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
-        # @return [Array]
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_started(notification)
           examples << notification.example
         end
@@ -84,12 +81,11 @@ module RSpec
         #
         # Invoked when an example passes.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
 
         # Invoked when an example is pending.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
-        # @return [Array]
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_pending(notification)
           @pending_examples << notification.example
         end
@@ -98,8 +94,7 @@ module RSpec
         #
         # Invoked when an example fails.
         #
-        # @param example instance of subclass of `RSpec::Core::ExampleGroup`
-        # @return [Array]
+        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_failed(notification)
           @failed_examples << notification.example
         end
@@ -109,14 +104,14 @@ module RSpec
         #
         # Used by the reporter to send messages to the output stream.
         #
-        # @param [String] message
+        # @param [MessageNotification] notification containing message
 
         # @method stop
         # @api public
         #
         # Invoked after all examples have executed, before dumping post-run reports.
         #
-        # @return [nil]
+        # @param  [NullNotification]
 
         # @method start_dump
         # @api public
@@ -125,14 +120,14 @@ module RSpec
         # to be invoked after this one is {#dump_failures}
         # (BaseTextFormatter then calls {#dump_failure} once for each failed example.)
         #
-        # @return [nil]
+        # @param  [NullNotification]
 
         # @method dump_failures
         # @api public
         #
         # Dumps detailed information about each example failure.
         #
-        # @return [nil]
+        # @param  [NullNotification]
 
         # @method dump_summary
         # @api public
@@ -140,10 +135,8 @@ module RSpec
         # This method is invoked after the dumping of examples and failures. Each parameter
         # is assigned to a corresponding attribute.
         #
-        # @param duration
-        # @param example_count
-        # @param failure_count
-        # @param pending_count
+        # @param summary [SummaryNotification] containing duration, example_count,
+        #                                      failure_count and pending_count
 
         # @method dump_pending
         # @api public
@@ -151,25 +144,19 @@ module RSpec
         # Outputs a report of pending examples.  This gets invoked
         # after the summary if option is set to do so.
         #
-        # @return [nil]
-
-        # @method dump_profile
-        # @api public
-        #
-        # This methods is invoked form formatters to show slowest examples and example groups
-        # when using `--profile COUNT` (default 10).
-        #
-        # @return [nil]
+        # @param  [NullNotification]
 
         # @api public
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
+        #
+        # @param  [NullNotification]
         def close(notification)
           restore_sync_output
         end
 
-        # @api public
+        # @api private
         #
         # Formats the given backtrace based on configuration and
         # the metadata of the given example.

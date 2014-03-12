@@ -32,6 +32,7 @@ module RSpec
     class Configuration
       include RSpec::Core::Hooks
 
+      # @private
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
       # @private
@@ -151,6 +152,9 @@ module RSpec
       # Default: `$stdout`.
       # Also known as `output` and `out`
       define_reader :output_stream
+
+      # Set the output stream for reporter
+      # @attr value [IO] value for output, defaults to $stdout
       def output_stream=(value)
         if @reporter && !value.equal?(@output_stream)
           warn "RSpec's reporter has already been initialized with " +
@@ -166,6 +170,8 @@ module RSpec
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
       add_setting :pattern, :alias_with => :filename_pattern
 
+      # Set pattern to match files to load
+      # @attr value [String] the filename pattern to filter spec files by
       def pattern= value
         if @spec_files_loaded
           RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
@@ -355,6 +361,8 @@ module RSpec
         @backtrace_formatter.exclusion_patterns
       end
 
+      # Set regular expressions used to exclude lines in backtrace
+      # @attr [Regexp] set the backtrace exlusion pattern
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
       end
@@ -371,11 +379,13 @@ module RSpec
         @backtrace_formatter.inclusion_patterns
       end
 
+      # Set regular expressions used to include lines in backtrace
+      # @attr [Regexp] backtrace_formatter.inclusion_patterns
       def backtrace_inclusion_patterns=(patterns)
         @backtrace_formatter.inclusion_patterns = patterns
       end
 
-      # @api private
+      # @private
       MOCKING_ADAPTERS = {
         :rspec    => :RSpec,
         :flexmock => :Flexmock,
@@ -506,14 +516,20 @@ module RSpec
         @expectation_frameworks.push(*modules)
       end
 
+      # Check if full backtrace is enabled
+      # @return [Boolean] is full backtrace enabled
       def full_backtrace?
         @backtrace_formatter.full_backtrace?
       end
 
+      # Toggle full backtrace
+      # @attr [Boolean] toggle full backtrace display
       def full_backtrace=(true_or_false)
         @backtrace_formatter.full_backtrace = true_or_false
       end
 
+      # Check color in enabled
+      # @return [Boolean]
       def color(output=output_stream)
         # rspec's built-in formatters all call this with the output argument,
         # but defaulting to output_stream for backward compatibility with
@@ -522,6 +538,8 @@ module RSpec
         value_for(:color, @color)
       end
 
+      # Toggle output color
+      # @attr [Boolean] toggle color enabled
       def color=(bool)
         if bool
           if RSpec.world.windows_os? and not ENV['ANSICON']
@@ -539,6 +557,7 @@ module RSpec
       alias_method :color_enabled=, :color=
       define_predicate_for :color_enabled, :color
 
+      # @private
       def libs=(libs)
         libs.map do |lib|
           @libs.unshift lib
@@ -551,14 +570,18 @@ module RSpec
         filter_run :line_numbers => line_numbers.map{|l| l.to_i}
       end
 
+      # @return [Array] filtered line numbers
       def line_numbers
         filter.fetch(:line_numbers,[])
       end
 
+      # Run examples matching on `description` in all files to run.
+      # @param [String, Regexp] description pattern to filter on
       def full_description=(description)
         filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
 
+      # @return [Array] full description filter
       def full_description
         filter.fetch :full_description, nil
       end
@@ -597,17 +620,17 @@ module RSpec
         formatter_loader.default_formatter = value
       end
 
-      # @api private
+      # @private
       def formatters
         formatter_loader.formatters
       end
 
-      # @api private
+      # @private
       def formatter_loader
         @formatter_loader ||= Formatters::Loader.new(Reporter.new(self))
       end
 
-      # @api private
+      # @private
       def reporter
         @reporter ||=
           begin
@@ -637,6 +660,8 @@ module RSpec
         @files_to_run = nil
       end
 
+      # The spec files RSpec will run
+      # @return [Array] specified files about to run
       def files_to_run
         @files_to_run ||= get_files_to_run(@files_or_directories_to_run)
       end
@@ -924,10 +949,12 @@ module RSpec
 
       # @private
       if RUBY_VERSION.to_f >= 1.9
+        # @private
         def safe_extend(mod, host)
           host.extend(mod) unless host.singleton_class < mod
         end
       else
+        # @private
         def safe_extend(mod, host)
           host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
         end
@@ -1037,6 +1064,8 @@ module RSpec
         $VERBOSE = !!value
       end
 
+      # Get Ruby warning verbosity
+      # @return [Fixnum] Ruby's warning level
       def warnings
         $VERBOSE
       end
@@ -1072,6 +1101,7 @@ module RSpec
         include ExposeCurrentExample
       end
 
+      # @private
       module ExposeCurrentExample; end
 
       # Turns deprecation warnings into errors, in order to surface

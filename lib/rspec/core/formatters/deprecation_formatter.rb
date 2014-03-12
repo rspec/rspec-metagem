@@ -4,6 +4,7 @@ require 'set'
 module RSpec
   module Core
     module Formatters
+      # @private
       class DeprecationFormatter
         Formatters.register self, :deprecation, :deprecation_summary
 
@@ -99,6 +100,7 @@ module RSpec
           end
         end
 
+        # @private
         class ImmediatePrinter
           attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
 
@@ -120,6 +122,7 @@ module RSpec
           end
         end
 
+        # @private
         class DelayedPrinter
           TOO_MANY_USES_LIMIT = 4
 
@@ -169,6 +172,7 @@ module RSpec
           end
         end
 
+        # @private
         # Not really a stream, but is usable in place of one.
         class RaiseErrorStream
           include ::RSpec::Core::Formatters::Helpers
@@ -182,6 +186,7 @@ module RSpec
           end
         end
 
+        # @private
         # Wraps a File object and provides file-specific operations.
         class FileStream
           include ::RSpec::Core::Formatters::Helpers
@@ -209,6 +214,7 @@ module RSpec
       end
     end
 
+    # Deprecation Error
     DeprecationError = Class.new(StandardError)
   end
 end

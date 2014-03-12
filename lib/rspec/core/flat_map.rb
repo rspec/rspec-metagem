@@ -1,5 +1,6 @@
 module RSpec
   module Core
+    # @private
     module FlatMap
       if [].respond_to?(:flat_map)
         def flat_map(array)

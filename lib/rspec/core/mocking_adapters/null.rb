@@ -1,7 +1,7 @@
 module RSpec
   module Core
     module MockingAdapters
-      # @api private
+      # @private
       module Null
         def setup_mocks_for_rspec; end
         def verify_mocks_for_rspec; end

@@ -74,7 +74,7 @@ module RSpec
       # running this example.
       attr_reader :example_group_instance
 
-      # @attr_accessor
+      # @attr
       # @private
       attr_accessor :clock
 
@@ -185,7 +185,7 @@ module RSpec
           @proc = block
         end
 
-        # @api private
+        # @private
         def wrap(&block)
           self.class.new(metadata, &block)
         end
