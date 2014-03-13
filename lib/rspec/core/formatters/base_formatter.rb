@@ -23,7 +23,7 @@ module RSpec
 
         # @api public
         #
-        # @param output [IO] the formatter output
+        # @param [IO] output the formatter output
         def initialize(output)
           @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
@@ -42,7 +42,7 @@ module RSpec
         # This will only be invoked once, and the next one to be invoked
         # is {#example_group_started}.
         #
-        # @param [NullNotification]
+        # @param [NullNotification] notification
         def start(notification)
           start_sync_output
           @example_count = notification.count
@@ -55,7 +55,7 @@ module RSpec
         # The next method to be invoked after this is {#example_passed},
         # {#example_pending}, or {#example_group_finished}.
         #
-        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
+        # @param [GroupNotification] notification containing example_group subclass of `RSpec::Core::ExampleGroup`
         def example_group_started(notification)
           @example_group = notification.group
         end
@@ -71,7 +71,7 @@ module RSpec
         #
         # Invoked at the beginning of the execution of each example.
         #
-        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
+        # @param [ExampleNotification] notification containing example subclass of `RSpec::Core::Example`
         def example_started(notification)
           examples << notification.example
         end
@@ -85,7 +85,7 @@ module RSpec
 
         # Invoked when an example is pending.
         #
-        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
+        # @param [ExampleNotification] notification containing example subclass of `RSpec::Core::Example`
         def example_pending(notification)
           @pending_examples << notification.example
         end
@@ -94,7 +94,7 @@ module RSpec
         #
         # Invoked when an example fails.
         #
-        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
+        # @param [ExampleNotification] notification containing example subclass of `RSpec::Core::Example`
         def example_failed(notification)
           @failed_examples << notification.example
         end
@@ -111,7 +111,7 @@ module RSpec
         #
         # Invoked after all examples have executed, before dumping post-run reports.
         #
-        # @param  [NullNotification]
+        # @param  [NullNotification] notification
 
         # @method start_dump
         # @api public
@@ -120,14 +120,14 @@ module RSpec
         # to be invoked after this one is {#dump_failures}
         # (BaseTextFormatter then calls {#dump_failure} once for each failed example.)
         #
-        # @param  [NullNotification]
+        # @param  [NullNotification] notification
 
         # @method dump_failures
         # @api public
         #
         # Dumps detailed information about each example failure.
         #
-        # @param  [NullNotification]
+        # @param  [NullNotification] notification
 
         # @method dump_summary
         # @api public
@@ -135,7 +135,7 @@ module RSpec
         # This method is invoked after the dumping of examples and failures. Each parameter
         # is assigned to a corresponding attribute.
         #
-        # @param summary [SummaryNotification] containing duration, example_count,
+        # @param [SummaryNotification] summary containing duration, example_count,
         #                                      failure_count and pending_count
 
         # @method dump_pending
@@ -144,14 +144,14 @@ module RSpec
         # Outputs a report of pending examples.  This gets invoked
         # after the summary if option is set to do so.
         #
-        # @param  [NullNotification]
+        # @param  [NullNotification] notification
 
         # @api public
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
         #
-        # @param  [NullNotification]
+        # @param  [NullNotification] notification
         def close(notification)
           restore_sync_output
         end

@@ -326,6 +326,7 @@ Here are all of RSpec's reserved hash keys:
         @extra_hash_attributes ||= {}
       end
 
+      # @private
       module ClassMethods
         def hash_attribute_names
           @hash_attribute_names ||= []

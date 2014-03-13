@@ -4,6 +4,7 @@ module RSpec
       # ConsoleCodes provides helpers for formatting console output
       # with ANSI codes, e.g. color's and bold.
       module ConsoleCodes
+        # @private
         VT100_CODES =
           {
             :black   => 30,
@@ -16,6 +17,7 @@ module RSpec
             :white   => 37,
             :bold    => 1,
           }
+        # @private
         VT100_CODE_VALUES = VT100_CODES.invert
 
         module_function
@@ -23,7 +25,7 @@ module RSpec
         # Fetches the correct code for the supplied symbol, or checks
         # that a code is valid. Defaults to white (37).
         #
-        # @param [Symbol, Fixnum] Symbol or code to check
+        # @param [Symbol, Fixnum] code_or_symbol Symbol or code to check
         # @return [Fixnum] a console code
         def console_code_for(code_or_symbol)
           if VT100_CODE_VALUES.has_key?(code_or_symbol)
@@ -35,12 +37,12 @@ module RSpec
           end
         end
 
-        # Wraps a peice of text in ANSI codes with the supplied code. Will
+        # Wraps a piece of text in ANSI codes with the supplied code. Will
         # only apply the control code if `RSpec.configuration.color_enabled?`
         # returns true.
         #
-        # @param text [String] the text to wrap
-        # @param code_or_symbol [Symbol, Fixnum] the desired control code
+        # @param [String] text the text to wrap
+        # @param [Symbol, Fixnum] code_or_symbol the desired control code
         # @return [String] the wrapped text
         def wrap(text, code_or_symbol)
           if RSpec.configuration.color_enabled?
