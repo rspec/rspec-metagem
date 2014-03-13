@@ -95,6 +95,23 @@ module RSpec::Core
         summary << ", #{pending_count} pending" if pending_count > 0
         summary
       end
+
+      # @api public
+      #
+      # Colorizes the output red for failure, yellow for
+      # pending, and green otherwise.
+      #
+      # @param A colorizer
+      # @return [String] A colorized summary line.
+      def colorize_with(colorizer)
+        if failure_count > 0
+          colorizer.wrap(summary_line, RSpec.configuration.failure_color)
+        elsif pending_count > 0
+          colorizer.wrap(summary_line, RSpec.configuration.pending_color)
+        else
+          colorizer.wrap(summary_line, RSpec.configuration.success_color)
+        end
+      end
     end
 
     # The `DeprecationNotification` is issued by the reporter when a deprecated
