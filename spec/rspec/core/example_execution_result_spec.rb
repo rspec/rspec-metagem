@@ -31,13 +31,13 @@ module RSpec
           it 'supports indexed access like a hash' do
             er = ExecutionResult.new
             er.status = "failed"
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result\[:status\]/)
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result/)
             expect(er[:status]).to eq("failed")
           end
 
           it 'supports indexed updates like a hash' do
             er = ExecutionResult.new
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result\[:status\] =/)
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result/)
             er[:status] = "passed"
             expect(er.status).to eq("passed")
           end
@@ -51,7 +51,7 @@ module RSpec
 
           it 'supports `update` like a hash' do
             er = ExecutionResult.new
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result\.update/)
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result/)
             er.update(:status => "failed", :exception => ArgumentError.new)
             expect(er.status).to eq("failed")
             expect(er.exception).to be_a(ArgumentError)
@@ -69,7 +69,7 @@ module RSpec
             er.status = "pending"
             er.pending_message = "just because"
 
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result\.merge/)
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result/)
             merged = er.merge(:status => "failed", :foo => 3)
 
             expect(merged).to include(
@@ -83,7 +83,7 @@ module RSpec
 
           it 'supports blocks for hash methods that support one' do
             er = ExecutionResult.new
-            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result\.fetch/)
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /execution_result/)
             expect(er.fetch(:foo) { 3 }).to eq(3)
           end
 

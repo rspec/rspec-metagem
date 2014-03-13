@@ -373,8 +373,9 @@ module RSpec
 
       private
 
-        def deprecation_prefix
-          "execution_result"
+        def issue_deprecation(method_name, *args)
+          RSpec.deprecate("Treating `metadata[:execution_result]` as a hash",
+                          :replacement => "the attributes methods to access the data")
         end
       end
     end

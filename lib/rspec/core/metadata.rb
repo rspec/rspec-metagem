@@ -254,7 +254,7 @@ Here are all of RSpec's reserved hash keys:
 
     # Mixin that makes the including class imitate a hash for backwards
     # compatibility. The including class should use `attr_accessor` to
-    # declare attributes and define a `deprecation_prefix` method.
+    # declare attributes.
     # @private
     module HashImitatable
       def self.included(klass)
@@ -275,7 +275,7 @@ Here are all of RSpec's reserved hash keys:
         next if [:[], :[]=, :to_h].include?(method_name.to_sym)
 
         define_method(method_name) do |*args, &block|
-          RSpec.deprecate("`#{deprecation_prefix}.#{method_name}`")
+          issue_deprecation(method_name, *args)
 
           hash = to_h
           self.class.hash_attribute_names.each do |name|
@@ -285,9 +285,8 @@ Here are all of RSpec's reserved hash keys:
           hash.__send__(method_name, *args, &block).tap do
             # apply mutations back to the object
             hash.each do |name, value|
-              setter = :"#{name}="
-              if respond_to?(setter)
-                __send__(setter, value)
+              if directly_supports_attribute?(name)
+                set_value(name, value)
               else
                 extra_hash_attributes[name] = value
               end
@@ -297,25 +296,21 @@ Here are all of RSpec's reserved hash keys:
       end
 
       def [](key)
-        if respond_to?(key)
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`",
-                            :replacement => "`#{deprecation_prefix}.#{key}`")
-          __send__(key)
+        issue_deprecation(:[], key)
+
+        if directly_supports_attribute?(key)
+          get_value(key)
         else
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`")
           extra_hash_attributes[key]
         end
       end
 
       def []=(key, value)
-        sender = :"#{key}="
+        issue_deprecation(:[]=, key, value)
 
-        if respond_to?(sender)
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `",
-                            :replacement => "`#{deprecation_prefix}.#{key} =`")
-          __send__(sender, value)
+        if directly_supports_attribute?(key)
+          set_value(key, value)
         else
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `")
           extra_hash_attributes[key] = value
         end
       end
@@ -324,6 +319,22 @@ Here are all of RSpec's reserved hash keys:
 
       def extra_hash_attributes
         @extra_hash_attributes ||= {}
+      end
+
+      def directly_supports_attribute?(name)
+        self.class.hash_attribute_names.include?(name)
+      end
+
+      def get_value(name)
+        __send__(name)
+      end
+
+      def set_value(name, value)
+        __send__(:"#{name}=", value)
+      end
+
+      def issue_deprecation(method_name, *args)
+        # no-op by default: subclasses can override
       end
 
       # @private
