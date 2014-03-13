@@ -127,6 +127,7 @@ module RSpec
       end
     end
 
+    # @private
     class FilterRules
       PROC_HEX_NUMBER = /0x[0-9a-f]+@/
       PROJECT_DIR = File.expand_path('.')
@@ -189,6 +190,7 @@ module RSpec
       end
     end
 
+    # @private
     class InclusionRules < FilterRules
       STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
 
@@ -239,6 +241,7 @@ module RSpec
       end
     end
 
+    # @private
     class ExclusionRules < FilterRules
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value| !value },
