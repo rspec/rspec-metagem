@@ -138,6 +138,27 @@ module RSpec
           }.to raise_error(ArgumentError)
         end
 
+        context "with a nested hash" do
+          it 'matches when the nested entry matches' do
+            metadata = { :foo => { :bar => "words" } }
+            expect(filter_applies?(:foo, { :bar => /wor/ }, metadata)).to be_truthy
+          end
+
+          it 'does not match when the nested entry does not match' do
+            metadata = { :foo => { :bar => "words" } }
+            expect(filter_applies?(:foo, { :bar => /sword/ }, metadata)).to be_falsey
+          end
+
+          it 'does not match when the metadata lacks the key' do
+            expect(filter_applies?(:foo, { :bar => /sword/ }, {})).to be_falsey
+          end
+
+          it 'does not match when the metadata does not have a hash entry for the key' do
+            metadata = { :foo => "words" }
+            expect(filter_applies?(:foo, { :bar => /word/ }, metadata)).to be_falsey
+          end
+        end
+
         context "with an Array" do
           let(:metadata_with_array) do
             meta = nil

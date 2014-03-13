@@ -67,7 +67,9 @@ module RSpec
       end
 
       def filters_apply?(key, value, metadata)
-        value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+        subhash = metadata[key]
+        return false unless Hash === subhash
+        value.all? { |k, v| filter_applies?(k, v, subhash) }
       end
     end
   end
