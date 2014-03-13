@@ -33,15 +33,13 @@ module RSpec
         # @private
         def self.delegate_to_metadata(*names)
           names.each do |name|
-            define_method name do
-              metadata[:example_group][name]
-            end
+            define_method(name) { metadata.fetch(name) }
           end
         end
 
         # @return [String] the current example group description
         def description
-          description = metadata[:example_group][:description]
+          description = metadata[:description]
           RSpec.configuration.format_docstrings_block.call(description)
         end
 
@@ -452,7 +450,7 @@ module RSpec
           warn <<-WARNING.gsub(/^ +\|/, '')
             |WARNING: Ignoring unknown ordering specified using `:order => #{order.inspect}` metadata.
             |         Falling back to configured global ordering.
-            |         Unrecognized ordering specified at: #{metadata[:example_group][:location]}
+            |         Unrecognized ordering specified at: #{metadata[:location]}
           WARNING
 
           registry.fetch(:global)
@@ -500,7 +498,7 @@ module RSpec
 
       # @private
       def self.declaration_line_numbers
-        @declaration_line_numbers ||= [metadata[:example_group][:line_number]] +
+        @declaration_line_numbers ||= [metadata[:line_number]] +
           examples.collect {|e| e.metadata[:line_number]} +
           children.inject([]) {|l,c| l + c.declaration_line_numbers}
       end

@@ -456,7 +456,7 @@ module RSpec::Core
           it "is the redefined level constant" do
             group = ExampleGroup.describe(String) do
               described_class
-              metadata[:example_group][:described_class] = Object
+              metadata[:described_class] = Object
               describe :symbol do
                 example "described_class is Object" do
                   expect(described_class).to eq(Object)
@@ -548,7 +548,7 @@ module RSpec::Core
     describe '#description' do
       it "grabs the description from the metadata" do
         group = ExampleGroup.describe(Object, "my desc") { }
-        expect(group.description).to eq(group.metadata[:example_group][:description])
+        expect(group.description).to eq(group.metadata[:description])
       end
     end
 
@@ -558,7 +558,7 @@ module RSpec::Core
       end
 
       it "adds the the file_path to metadata" do
-        expect(ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path]).to eq(relative_path(__FILE__))
+        expect(ExampleGroup.describe(Object) { }.metadata[:file_path]).to eq(relative_path(__FILE__))
       end
 
       it "has a reader for file_path" do
@@ -566,7 +566,7 @@ module RSpec::Core
       end
 
       it "adds the line_number to metadata" do
-        expect(ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number]).to eq(__LINE__)
+        expect(ExampleGroup.describe(Object) { }.metadata[:line_number]).to eq(__LINE__)
       end
     end
 

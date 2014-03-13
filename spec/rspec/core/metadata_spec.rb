@@ -42,7 +42,7 @@ module RSpec
             m = metadata
           end
 
-          expect(m[:example_group][:location]).to eq("example_file:42")
+          expect(m[:location]).to eq("example_file:42")
         end
       end
 
@@ -101,7 +101,7 @@ module RSpec
           expect(metadata_for("desc", :arbitrary => :options)).to have_value(:options).for(:arbitrary)
         end
 
-        it "points :example_group to the same hash object" do
+        it "points :example_group to the same hash object as other examples in the same group" do
           a = b = nil
 
           RSpec.describe "group" do
@@ -112,12 +112,24 @@ module RSpec
           a[:description] = "new description"
           expect(b[:description]).to eq("new description")
         end
+
+        it 'does not include example-group specific keys' do
+          metadata = nil
+
+          RSpec.describe "group" do
+            context "nested" do
+              metadata = example("foo").metadata
+            end
+          end
+
+          expect(metadata.keys).not_to include(:parent_example_group, :example_group_block)
+        end
       end
 
       [:described_class, :describes].each do |key|
         describe key do
           extract_key_from = lambda do |group|
-            group.metadata[:example_group][key]
+            group.metadata[key]
           end
 
           context "in an outer group" do
@@ -178,7 +190,7 @@ module RSpec
                 parent_value = extract_key_from[self]
 
                 describe "sub context" do
-                  metadata[:example_group][key] = Hash
+                  metadata[key] = Hash
                   child_value = extract_key_from[self]
 
                   describe "sub context" do
@@ -213,7 +225,7 @@ module RSpec
             value = nil
 
             RSpec.describe(*args) do
-              value = metadata[:example_group][:description]
+              value = metadata[:description]
             end
 
             value
@@ -238,7 +250,7 @@ module RSpec
           end
 
           context "with empty args" do
-            it "returns empty string for [:example_group][:description]" do
+            it "returns empty string for [:description]" do
               expect(group_value_for()).to eq("")
             end
           end
@@ -263,7 +275,7 @@ module RSpec
 
           RSpec.describe "parent" do
             describe "child" do
-              group_value = metadata[:example_group][:full_description]
+              group_value = metadata[:full_description]
               example_value = example("example").metadata[:full_description]
             end
           end
@@ -276,11 +288,11 @@ module RSpec
           grandparent_value = parent_value = child_value = example_value = nil
 
           RSpec.describe "grandparent" do
-            grandparent_value = metadata[:example_group][:full_description]
+            grandparent_value = metadata[:full_description]
             describe "parent" do
-              parent_value = metadata[:example_group][:full_description]
+              parent_value = metadata[:full_description]
               describe "child" do
-                child_value = metadata[:example_group][:full_description]
+                child_value = metadata[:full_description]
                 example_value = example("example").metadata[:full_description]
               end
             end
@@ -298,7 +310,7 @@ module RSpec
               value = nil
 
               RSpec.describe Array, "#{char}method" do
-                value = metadata[:example_group][:full_description]
+                value = metadata[:full_description]
               end
 
               expect(value).to eq("Array#{char}method")
@@ -311,7 +323,7 @@ module RSpec
 
               RSpec.describe Object do
                 describe "#{char}method" do
-                  value = metadata[:example_group][:full_description]
+                  value = metadata[:full_description]
                 end
               end
 
@@ -326,7 +338,7 @@ module RSpec
               RSpec.describe(Array) do
                 context "with 2 items" do
                   describe "#{char}method" do
-                    value = metadata[:example_group][:full_description]
+                    value = metadata[:full_description]
                   end
                 end
               end
@@ -342,7 +354,7 @@ module RSpec
           value = nil
 
           RSpec.describe(:caller => ["./lib/rspec/core/foo.rb", "#{__FILE__}:#{__LINE__}"]) do
-            value = metadata[:example_group][:file_path]
+            value = metadata[:file_path]
           end
 
           expect(value).to eq(relative_path(__FILE__))
@@ -355,7 +367,7 @@ module RSpec
 
           @describe_line = __LINE__ + 1
           RSpec.describe(*args) do
-            value = metadata[:example_group][:line_number]
+            value = metadata[:line_number]
           end
 
           value
@@ -383,7 +395,71 @@ module RSpec
             describe { child = metadata }
           end
 
-          expect(child[:example_group][:example_group]).to eq(parent[:example_group])
+          expect(child[:parent_example_group]).to eq(parent)
+        end
+      end
+
+      describe "backwards compatibility" do
+        before { allow_deprecation }
+
+        it 'issues a deprecation warning when the `:example_group` key is accessed' do
+          pending "failing since 1.8.7 lacks Hash#default_proc=" if RUBY_VERSION.to_f < 1.9
+
+          expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:example_group/)
+          RSpec.describe(Object, "group") do
+            metadata[:example_group]
+          end
+        end
+
+        it 'can still access the example group attributes via [:example_group]' do
+          meta = nil
+          RSpec.describe(Object, "group") { meta = metadata }
+
+          expect(meta[:example_group][:line_number]).to eq(__LINE__ - 2)
+          expect(meta[:example_group][:description]).to eq("Object group")
+        end
+
+        it 'can access the parent example group attributes via [:example_group][:example_group]' do
+          parent = child = nil
+          parent_line = __LINE__ + 1
+          RSpec.describe(Object, "group", :foo => 3) do
+            parent = metadata
+            describe("nested") { child = metadata }
+          end
+
+          expect(child[:example_group][:example_group]).to include(
+            :foo => 3,
+            :description => "Object group",
+            :line_number => parent_line
+          )
+        end
+
+        it 'can mutate attributes when accessing them via [:example_group]' do
+          meta = nil
+
+          RSpec.describe(String) do
+            describe "sub context" do
+              meta = metadata
+            end
+          end
+
+          expect {
+            meta[:example_group][:described_class] = Hash
+          }.to change { meta[:described_class] }.from(String).to(Hash)
+        end
+
+        it 'can still be filtered via a nested key under [:example_group] as before' do
+          meta = nil
+
+          line = __LINE__ + 1
+          RSpec.describe("group") { meta = metadata }
+
+          applies = MetadataFilter.any_apply?(
+            { :example_group => { :line_number => line } },
+            meta
+          )
+
+          expect(applies).to be true
         end
       end
     end

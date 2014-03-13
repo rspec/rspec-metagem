@@ -124,23 +124,19 @@ module RSpec
 
       class ExampleGroupPopulator < PopulatorBase
 
+        def populate
+          super
+          add_example_group_backwards_compatibility
+        end
+
       private
 
         # @private
         def described_class
-          container_stack.each do |g|
-            [:described_class, :describes].each do |key|
-              if g.has_key?(key)
-                value = g[key]
-                return value unless value.nil?
-              end
-            end
-
-            candidate = g[:description_args].first
-            return candidate unless String === candidate || Symbol === candidate
-          end
-
-          nil
+          candidate = metadata[:description_args].first
+          return candidate unless String === candidate || Symbol === candidate
+          parent_group = metadata[:parent_example_group]
+          parent_group && parent_group[:described_class]
         end
 
         # @private
@@ -152,35 +148,53 @@ module RSpec
         def container_stack
           @container_stack ||= begin
                                  groups = [group = metadata]
-                                 while group.has_key?(:example_group)
-                                   groups << group[:example_group]
-                                   group = group[:example_group]
+                                 while group.has_key?(:parent_example_group)
+                                   group = group[:parent_example_group]
+                                   groups << group
                                  end
                                  groups
                                end
+        end
+
+        if Hash.method_defined?(:default_proc=)
+          def add_example_group_backwards_compatibility
+            metadata.default_proc = Proc.new do |hash, key|
+              if key == :example_group
+                RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
+                                :replacement => "the example group's hash directly for the " +
+                                "computed keys and `:parent_example_group` to access the parent " +
+                                "example group metadata")
+                LegacyExampleGroupHash.new(hash)
+              end
+            end
+          end
+        else
+          def add_example_group_backwards_compatibility
+            metadata[:example_group] = LegacyExampleGroupHash.new(metadata)
+          end
         end
       end
 
       def initialize(parent_group_metadata, user_metadata, *args)
         if parent_group_metadata
           update(parent_group_metadata)
-          store(:example_group, {:example_group => parent_group_metadata[:example_group]})
-        else
-          store(:example_group, {})
+          store(:parent_example_group, parent_group_metadata)
         end
 
         ensure_valid_keys(user_metadata)
+        store(:caller, user_metadata.delete(:caller) || caller)
 
-        self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
-
-        ExampleGroupPopulator.populate(self[:example_group], args)
+        ExampleGroupPopulator.populate(self, args)
         update(user_metadata)
       end
 
       # @private
       def for_example(description, user_metadata)
         metadata = dup
+        metadata.delete(:parent_example_group)
+        metadata.delete(:example_group_block)
         metadata.store(:caller, user_metadata.delete(:caller) || caller)
+        metadata.store(:example_group, self)
         ExamplePopulator.populate(metadata, [description].compact)
         metadata.update(user_metadata)
       end
@@ -315,6 +329,33 @@ Here are all of RSpec's reserved hash keys:
           hash_attribute_names.concat(names)
           super
         end
+      end
+    end
+
+    class LegacyExampleGroupHash
+      include HashImitatable
+
+      def initialize(metadata)
+        @metadata = metadata
+        self[:example_group] = metadata[:parent_example_group]
+      end
+
+      def to_h
+        super.merge(@metadata)
+      end
+
+    private
+
+      def directly_supports_attribute?(name)
+        name != :example_group
+      end
+
+      def get_value(name)
+        @metadata[name]
+      end
+
+      def set_value(name, value)
+        @metadata[name] = value
       end
     end
   end
