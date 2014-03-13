@@ -362,7 +362,7 @@ module RSpec
       end
 
       # Set regular expressions used to exclude lines in backtrace
-      # @attr [Regexp] set the backtrace exlusion pattern
+      # @param [Regexp] patterns set the backtrace exlusion pattern
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
       end
@@ -576,7 +576,7 @@ module RSpec
       end
 
       # Run examples matching on `description` in all files to run.
-      # @param [String, Regexp] description pattern to filter on
+      # @param [String, Regexp] description the pattern to filter on
       def full_description=(description)
         filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
@@ -1035,9 +1035,9 @@ module RSpec
       # used to order an example group's subgroups by adding
       # `:order => <name>` metadata to the example group.
       #
-      # @param name [Symbol] The name of the ordering.
+      # @param [Symbol] name The name of the ordering.
       # @yield Block that will order the given examples or example groups
-      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The examples or groups to order
+      # @yieldparam [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] list The examples or groups to order
       # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
@@ -1078,7 +1078,7 @@ module RSpec
       # RSpec 2.x's `example` method, so this config option
       # can be used to maintain compatibility.
       #
-      # @param method_name [Symbol] the name of the helper method
+      # @param [Symbol] method_name the name of the helper method
       #
       # @example
       #

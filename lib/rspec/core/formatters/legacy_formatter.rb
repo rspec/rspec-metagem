@@ -64,7 +64,6 @@ module RSpec
             super Notifications::SeedNotification.new(seed, true) if defined?(super)
           end
 
-
           def start_dump
             super(Notifications::NullNotification) if defined?(super)
           end
@@ -156,7 +155,7 @@ module RSpec
         # @api public
         #
         # @param [Class] formatter_class formatter class to build
-        # @param [...] args arguments for the formatter
+        # @param [Array<IO, Object>] *args arguments for the formatter, (usually IO but don't have to be)
         def initialize(formatter_class, *args)
           if defined?(BaseFormatter) && formatter_class.ancestors.include?(BaseFormatter)
             formatter_class.class_eval do

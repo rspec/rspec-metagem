@@ -65,7 +65,7 @@ module RSpec
         #
         # Invoked at the end of the execution of each example group.
         #
-        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
+        # @param [GroupNotification] notification containing example_group subclass of `RSpec::Core::ExampleGroup`
 
         # @api public
         #
@@ -81,7 +81,7 @@ module RSpec
         #
         # Invoked when an example passes.
         #
-        # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
+        # @param [ExampleNotification] notification containing example subclass of `RSpec::Core::Example`
 
         # Invoked when an example is pending.
         #
@@ -111,7 +111,7 @@ module RSpec
         #
         # Invoked after all examples have executed, before dumping post-run reports.
         #
-        # @param  [NullNotification] notification
+        # @param [NullNotification] notification
 
         # @method start_dump
         # @api public
@@ -120,14 +120,14 @@ module RSpec
         # to be invoked after this one is {#dump_failures}
         # (BaseTextFormatter then calls {#dump_failure} once for each failed example.)
         #
-        # @param  [NullNotification] notification
+        # @param [NullNotification] notification
 
         # @method dump_failures
         # @api public
         #
         # Dumps detailed information about each example failure.
         #
-        # @param  [NullNotification] notification
+        # @param [NullNotification] notification
 
         # @method dump_summary
         # @api public
@@ -144,14 +144,14 @@ module RSpec
         # Outputs a report of pending examples.  This gets invoked
         # after the summary if option is set to do so.
         #
-        # @param  [NullNotification] notification
+        # @param [NullNotification] notification
 
         # @api public
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
         #
-        # @param  [NullNotification] notification
+        # @param [NullNotification] notification
         def close(notification)
           restore_sync_output
         end

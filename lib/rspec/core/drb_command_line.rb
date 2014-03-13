@@ -3,7 +3,7 @@ RSpec::Support.require_rspec_core "drb_options"
 
 module RSpec
   module Core
-    # The 'RSpec' command line in DRB mode
+    # The 'rspec' command line in DRB mode
     class DRbCommandLine
       def initialize(options)
         @options = options

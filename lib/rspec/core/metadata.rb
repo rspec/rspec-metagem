@@ -28,7 +28,7 @@ module RSpec
 
       # @api private
       #
-      # @param line [String] current code line
+      # @param [String] line current code line
       # @return [String] relative path to line
       def self.relative_path(line)
         line = line.sub(File.expand_path("."), ".")
