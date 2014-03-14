@@ -159,30 +159,24 @@ module RSpec
 
       class ExampleGroupHash < Base
         def self.create(parent_group_metadata, user_metadata, *args)
-          group_metadata = parent_group_metadata.dup
+          group_metadata = hash_with_backwards_compatibility_default_proc
+          group_metadata.update(parent_group_metadata)
           group_metadata[:parent_example_group] = parent_group_metadata
 
           hash = new(group_metadata, user_metadata, args)
-          hash.add_example_group_backwards_compatibility
           hash.populate
           hash.metadata
         end
 
-        if Hash.method_defined?(:default_proc=)
-          def add_example_group_backwards_compatibility
-            metadata.default_proc = Proc.new do |hash, key|
-              if key == :example_group
-                RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
-                                :replacement => "the example group's hash directly for the " +
-                                "computed keys and `:parent_example_group` to access the parent " +
-                                "example group metadata")
-                LegacyExampleGroupHash.new(hash)
-              end
+        def self.hash_with_backwards_compatibility_default_proc
+          Hash.new do |hash, key|
+            if key == :example_group
+              RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
+                              :replacement => "the example group's hash directly for the " +
+                              "computed keys and `:parent_example_group` to access the parent " +
+                              "example group metadata")
+              LegacyExampleGroupHash.new(hash)
             end
-          end
-        else
-          def add_example_group_backwards_compatibility
-            metadata[:example_group] = LegacyExampleGroupHash.new(metadata)
           end
         end
 

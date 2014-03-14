@@ -410,8 +410,6 @@ module RSpec
         before { allow_deprecation }
 
         it 'issues a deprecation warning when the `:example_group` key is accessed' do
-          pending "failing since 1.8.7 lacks Hash#default_proc=" if RUBY_VERSION.to_f < 1.9
-
           expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:example_group/)
           RSpec.describe(Object, "group") do
             metadata[:example_group]
