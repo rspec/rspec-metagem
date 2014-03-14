@@ -373,7 +373,8 @@ module RSpec
         symbol_description = args.shift if args.first.is_a?(Symbol)
         user_metadata = Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
-        @metadata = RSpec::Core::Metadata.new(superclass_metadata, user_metadata, *args)
+        @metadata = Metadata::ExampleGroupHash.create(superclass_metadata, user_metadata, *args)
+
         hooks.register_globals(self, RSpec.configuration.hooks)
         world.configure_group(self)
       end

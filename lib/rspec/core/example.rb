@@ -83,9 +83,14 @@ module RSpec
       # @param description the String passed to the `it` method (or alias)
       # @param metadata additional args passed to `it` to be used as metadata
       # @param example_block the block of code that represents the example
-      def initialize(example_group_class, description, metadata, example_block=nil)
-        @example_group_class, @options, @example_block = example_group_class, metadata, example_block
-        @metadata  = @example_group_class.metadata.for_example(description, metadata)
+      def initialize(example_group_class, description, user_metadata, example_block=nil)
+        @example_group_class = example_group_class
+        @options             = user_metadata
+        @example_block       = example_block
+
+        @metadata = Metadata::ExampleHash.
+          create(@example_group_class.metadata, user_metadata, description)
+
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time
       end

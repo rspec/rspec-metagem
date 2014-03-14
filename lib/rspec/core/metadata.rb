@@ -24,8 +24,7 @@ module RSpec
     # @see FilterManager
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
-    class Metadata < Hash
-
+    module Metadata
       # @api private
       #
       # @param line [String] current code line
@@ -54,16 +53,11 @@ module RSpec
         hash
       end
 
-      class PopulatorBase
-        def self.populate(metadata, parent, user_metadata, description_args)
-          new(metadata, parent, user_metadata, description_args).populate
-        end
+      class Base
+        attr_reader :metadata, :user_metadata, :description_args
 
-        attr_reader :metadata, :parent, :user_metadata, :description_args
-
-        def initialize(metadata, parent, user_metadata, description_args)
+        def initialize(metadata, user_metadata, description_args)
           @metadata         = metadata
-          @parent           = parent
           @user_metadata    = user_metadata
           @description_args = description_args
         end
@@ -136,12 +130,16 @@ module RSpec
         end
       end
 
-      class ExamplePopulator < PopulatorBase
-        def populate
-          metadata[:example_group] = parent
-          metadata.delete(:parent_example_group)
-          metadata.delete(:example_group_block)
-          super
+      class ExampleHash < Base
+        def self.create(group_metadata, user_metadata, description)
+          example_metadata = group_metadata.dup
+          example_metadata[:example_group] = group_metadata
+          example_metadata.delete(:parent_example_group)
+          example_metadata.delete(:example_group_block)
+
+          hash = new(example_metadata, user_metadata, [description].compact)
+          hash.populate
+          hash.metadata
         end
 
       private
@@ -157,15 +155,37 @@ module RSpec
         end
       end
 
-      class ExampleGroupPopulator < PopulatorBase
-        def populate
-          if parent
-            metadata.update(parent)
-            metadata[:parent_example_group] = parent
+      class ExampleGroupHash < Base
+        def self.create(parent_group_metadata, user_metadata, *args)
+          group_metadata = {}
+
+          if parent_group_metadata
+            group_metadata.update(parent_group_metadata)
+            group_metadata[:parent_example_group] = parent_group_metadata
           end
 
-          add_example_group_backwards_compatibility
-          super
+          hash = new(group_metadata, user_metadata, args)
+          hash.add_example_group_backwards_compatibility
+          hash.populate
+          hash.metadata
+        end
+
+        if Hash.method_defined?(:default_proc=)
+          def add_example_group_backwards_compatibility
+            metadata.default_proc = Proc.new do |hash, key|
+              if key == :example_group
+                RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
+                                :replacement => "the example group's hash directly for the " +
+                                "computed keys and `:parent_example_group` to access the parent " +
+                                "example group metadata")
+                LegacyExampleGroupHash.new(hash)
+              end
+            end
+          end
+        else
+          def add_example_group_backwards_compatibility
+            metadata[:example_group] = LegacyExampleGroupHash.new(metadata)
+          end
         end
 
       private
@@ -194,35 +214,6 @@ module RSpec
                                  groups
                                end
         end
-
-        if Hash.method_defined?(:default_proc=)
-          def add_example_group_backwards_compatibility
-            metadata.default_proc = Proc.new do |hash, key|
-              if key == :example_group
-                RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
-                                :replacement => "the example group's hash directly for the " +
-                                "computed keys and `:parent_example_group` to access the parent " +
-                                "example group metadata")
-                LegacyExampleGroupHash.new(hash)
-              end
-            end
-          end
-        else
-          def add_example_group_backwards_compatibility
-            metadata[:example_group] = LegacyExampleGroupHash.new(metadata)
-          end
-        end
-      end
-
-      def initialize(parent_group_metadata, user_metadata, *args)
-        ExampleGroupPopulator.populate(self, parent_group_metadata, user_metadata, args)
-      end
-
-      # @private
-      def for_example(description, user_metadata)
-        metadata = dup
-        ExamplePopulator.populate(metadata, self, user_metadata, [description].compact)
-        metadata
       end
 
       RESERVED_KEYS = [
