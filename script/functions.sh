@@ -1,4 +1,4 @@
-# This file was generated on 2014-02-25T12:00:45+11:00 from the rspec-dev repo.
+# This file was generated on 2014-03-14T11:33:06+13:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
@@ -60,6 +60,13 @@ function rspec_support_compatible {
   fi
 }
 
+function documentation_enforced {
+  if [ -x ./bin/yard ]; then
+    return 0
+  else
+    return 1
+  fi
+}
 
 function clone_repo {
   if [ ! -d $1 ]; then # don't clone if the dir is already there
@@ -120,4 +127,18 @@ function run_spec_suite_for {
     run_specs_and_record_done
     popd
   fi;
+}
+
+function check_documentation_coverage {
+  bin/yard stats --list-undoc | ruby -e "
+    while line = gets
+      coverage ||= line[/([\d\.]+)% documented/, 1]
+      puts line
+    end
+
+    unless Float(coverage) == 100
+      puts \"\n\nMissing documentation coverage (currently at #{coverage}%)\"
+      exit(1)
+    end
+  "
 }
