@@ -60,7 +60,7 @@ module RSpec
 
       def relevant_line_numbers(metadata)
         return [] unless metadata
-        [metadata[:line_number]] + (relevant_line_numbers(parent_of metadata))
+        [metadata[:line_number]].compact + (relevant_line_numbers(parent_of metadata))
       end
 
       def example_group_declaration_line(locations, metadata)
@@ -76,9 +76,11 @@ module RSpec
       end
 
       def parent_of(metadata)
-        parent = metadata[:parent_example_group]
-        return parent if parent
-        metadata[:example_group]
+        if metadata.has_key?(:parent_example_group)
+          metadata[:parent_example_group]
+        else
+          metadata[:example_group]
+        end
       end
     end
   end

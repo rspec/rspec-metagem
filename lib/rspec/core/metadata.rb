@@ -93,19 +93,18 @@ module RSpec
           metadata[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
         end
 
-        def method_description_after_module?(parent_part, child_part)
-          return false unless parent_part.is_a?(Module)
-          child_part =~ /^(#|::|\.)/
+        def description_separator(parent_part, child_part)
+          if parent_part.is_a?(Module) && child_part =~ /^(#|::|\.)/
+            ''
+          else
+            ' '
+          end
         end
 
-        def build_description_from(first_part = '', *parts)
-          description, _ = parts.inject([first_part.to_s, first_part]) do |(desc, last_part), this_part|
-            this_part = this_part.to_s
-            this_part = (' ' + this_part) unless method_description_after_module?(last_part, this_part)
-            [(desc + this_part), this_part]
-          end
-
-          description
+        def build_description_from(parent_description=nil, my_description=nil)
+          return parent_description.to_s unless my_description
+          separator = description_separator(parent_description, my_description)
+          parent_description.to_s + separator + my_description
         end
 
         def ensure_valid_user_keys
@@ -151,18 +150,17 @@ module RSpec
 
         # @private
         def full_description
-          build_description_from(metadata[:example_group][:full_description], *metadata[:description_args])
+          build_description_from(
+            metadata[:example_group][:full_description],
+            metadata[:description]
+          )
         end
       end
 
       class ExampleGroupHash < Base
         def self.create(parent_group_metadata, user_metadata, *args)
-          group_metadata = {}
-
-          if parent_group_metadata
-            group_metadata.update(parent_group_metadata)
-            group_metadata[:parent_example_group] = parent_group_metadata
-          end
+          group_metadata = parent_group_metadata.dup
+          group_metadata[:parent_example_group] = parent_group_metadata
 
           hash = new(group_metadata, user_metadata, args)
           hash.add_example_group_backwards_compatibility
@@ -200,19 +198,16 @@ module RSpec
 
         # @private
         def full_description
-          build_description_from(*FlatMap.flat_map(container_stack.reverse) {|a| a[:description_args]})
-        end
+          description          = metadata[:description]
+          parent_example_group = metadata[:parent_example_group]
+          parent_description   = parent_example_group[:full_description]
 
-        # @private
-        def container_stack
-          @container_stack ||= begin
-                                 groups = [group = metadata]
-                                 while group.has_key?(:parent_example_group)
-                                   group = group[:parent_example_group]
-                                   groups << group
-                                 end
-                                 groups
-                               end
+          return description unless parent_description
+
+          separator = description_separator(parent_example_group[:description_args].last,
+                                            metadata[:description_args].first)
+
+          parent_description + separator + description
         end
       end
 
