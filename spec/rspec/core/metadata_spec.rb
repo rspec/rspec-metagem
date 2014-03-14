@@ -129,7 +129,26 @@ module RSpec
             end
           end
 
-          expect(metadata.keys).not_to include(:parent_example_group, :example_group_block)
+          expect(metadata.keys).not_to include(:parent_example_group)
+        end
+      end
+
+      describe ":block" do
+        context "for example group metadata" do
+          it "contains the example group block" do
+            block = Proc.new { }
+            group = RSpec.describe("group", &block)
+            expect(group.metadata[:block]).to equal(block)
+          end
+        end
+
+        context "for example metadata" do
+          it "contains the example block" do
+            block = Proc.new { }
+            group = RSpec.describe("group")
+            example = group.example("example", &block)
+            expect(example.metadata[:block]).to equal(block)
+          end
         end
       end
 

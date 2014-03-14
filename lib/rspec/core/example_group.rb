@@ -281,8 +281,6 @@ module RSpec
       # @see DSL#describe
       def self.example_group(*args, &example_group_block)
         args << {} unless args.last.is_a?(Hash)
-        args.last.update(:example_group_block => example_group_block)
-
         child = subclass(self, args, &example_group_block)
         children << child
         child
@@ -317,7 +315,7 @@ module RSpec
       # @private
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
-        subclass.set_it_up(*args)
+        subclass.set_it_up(*args, &example_group_block)
         ExampleGroups.assign_const(subclass)
         subclass.module_eval(&example_group_block) if example_group_block
 
@@ -360,7 +358,7 @@ module RSpec
       end
 
       # @private
-      def self.set_it_up(*args)
+      def self.set_it_up(*args, &example_group_block)
         # Ruby 1.9 has a bug that can lead to infinite recursion and a
         # SystemStackError if you include a module in a superclass after
         # including it in a subclass: https://gist.github.com/845896
@@ -373,7 +371,9 @@ module RSpec
         symbol_description = args.shift if args.first.is_a?(Symbol)
         user_metadata = Metadata.build_hash_from(args)
         args.unshift(symbol_description) if symbol_description
-        @metadata = Metadata::ExampleGroupHash.create(superclass_metadata || {}, user_metadata, *args)
+        @metadata = Metadata::ExampleGroupHash.create(
+          superclass_metadata || {}, user_metadata, *args, &example_group_block
+        )
 
         hooks.register_globals(self, RSpec.configuration.hooks)
         world.configure_group(self)

@@ -54,18 +54,20 @@ module RSpec
       end
 
       class Base
-        attr_reader :metadata, :user_metadata, :description_args
+        attr_reader :metadata, :user_metadata, :description_args, :block
 
-        def initialize(metadata, user_metadata, description_args)
+        def initialize(metadata, user_metadata, description_args, block = nil)
           @metadata         = metadata
           @user_metadata    = user_metadata
           @description_args = description_args
+          @block            = block
         end
 
         def populate
           ensure_valid_user_keys
 
           metadata[:execution_result] = Example::ExecutionResult.new
+          metadata[:block]            = block
           metadata[:description_args] = description_args
           metadata[:description]      = build_description_from(*metadata[:description_args])
           metadata[:full_description] = full_description
@@ -130,13 +132,12 @@ module RSpec
       end
 
       class ExampleHash < Base
-        def self.create(group_metadata, user_metadata, description)
+        def self.create(group_metadata, user_metadata, description, block)
           example_metadata = group_metadata.dup
           example_metadata[:example_group] = group_metadata
           example_metadata.delete(:parent_example_group)
-          example_metadata.delete(:example_group_block)
 
-          hash = new(example_metadata, user_metadata, [description].compact)
+          hash = new(example_metadata, user_metadata, [description].compact, block)
           hash.populate
           hash.metadata
         end
@@ -158,12 +159,12 @@ module RSpec
       end
 
       class ExampleGroupHash < Base
-        def self.create(parent_group_metadata, user_metadata, *args)
+        def self.create(parent_group_metadata, user_metadata, *args, &block)
           group_metadata = hash_with_backwards_compatibility_default_proc
           group_metadata.update(parent_group_metadata)
           group_metadata[:parent_example_group] = parent_group_metadata
 
-          hash = new(group_metadata, user_metadata, args)
+          hash = new(group_metadata, user_metadata, args, block)
           hash.populate
           hash.metadata
         end
@@ -212,7 +213,8 @@ module RSpec
         :file_path,
         :full_description,
         :line_number,
-        :location
+        :location,
+        :block
       ]
     end
 

@@ -88,8 +88,9 @@ module RSpec
         @options             = user_metadata
         @example_block       = example_block
 
-        @metadata = Metadata::ExampleHash.
-          create(@example_group_class.metadata, user_metadata, description)
+        @metadata = Metadata::ExampleHash.create(
+          @example_group_class.metadata, user_metadata, description, example_block
+        )
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time
