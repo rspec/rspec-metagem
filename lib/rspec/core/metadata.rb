@@ -55,26 +55,33 @@ module RSpec
       end
 
       class PopulatorBase
-        def self.populate(metadata, description_args)
-          new(metadata, description_args).populate
+        def self.populate(metadata, parent, user_metadata, description_args)
+          new(metadata, parent, user_metadata, description_args).populate
         end
 
-        attr_reader :metadata, :description_args
+        attr_reader :metadata, :parent, :user_metadata, :description_args
 
-        def initialize(metadata, description_args)
+        def initialize(metadata, parent, user_metadata, description_args)
           @metadata         = metadata
+          @parent           = parent
+          @user_metadata    = user_metadata
           @description_args = description_args
         end
 
         def populate
+          ensure_valid_user_keys
+
           metadata[:execution_result] = Example::ExecutionResult.new
           metadata[:description_args] = description_args
           metadata[:description]      = build_description_from(*metadata[:description_args])
           metadata[:full_description] = full_description
           metadata[:described_class]  = metadata[:describes] = described_class
 
+          metadata[:caller] = user_metadata.delete(:caller) || caller
           metadata[:file_path], metadata[:line_number] = file_and_line_number
           metadata[:location]                          = location
+
+          metadata.update(user_metadata)
         end
 
       private
@@ -106,9 +113,37 @@ module RSpec
 
           description
         end
+
+        def ensure_valid_user_keys
+          RESERVED_KEYS.each do |key|
+            if user_metadata.has_key?(key)
+              raise <<-EOM.gsub(/^\s+\|/, '')
+                |#{"*"*50}
+                |:#{key} is not allowed
+                |
+                |RSpec reserves some hash keys for its own internal use,
+                |including :#{key}, which is used on:
+                |
+                |  #{CallerFilter.first_non_rspec_line}.
+                |
+                |Here are all of RSpec's reserved hash keys:
+                |
+                |  #{RESERVED_KEYS.join("\n  ")}
+                |#{"*"*50}
+              EOM
+            end
+          end
+        end
       end
 
       class ExamplePopulator < PopulatorBase
+        def populate
+          metadata[:example_group] = parent
+          metadata.delete(:parent_example_group)
+          metadata.delete(:example_group_block)
+          super
+        end
+
       private
 
         # @private
@@ -123,10 +158,14 @@ module RSpec
       end
 
       class ExampleGroupPopulator < PopulatorBase
-
         def populate
-          super
+          if parent
+            metadata.update(parent)
+            metadata[:parent_example_group] = parent
+          end
+
           add_example_group_backwards_compatibility
+          super
         end
 
       private
@@ -176,30 +215,15 @@ module RSpec
       end
 
       def initialize(parent_group_metadata, user_metadata, *args)
-        if parent_group_metadata
-          update(parent_group_metadata)
-          store(:parent_example_group, parent_group_metadata)
-        end
-
-        ensure_valid_keys(user_metadata)
-        store(:caller, user_metadata.delete(:caller) || caller)
-
-        ExampleGroupPopulator.populate(self, args)
-        update(user_metadata)
+        ExampleGroupPopulator.populate(self, parent_group_metadata, user_metadata, args)
       end
 
       # @private
       def for_example(description, user_metadata)
         metadata = dup
-        metadata.delete(:parent_example_group)
-        metadata.delete(:example_group_block)
-        metadata.store(:caller, user_metadata.delete(:caller) || caller)
-        metadata.store(:example_group, self)
-        ExamplePopulator.populate(metadata, [description].compact)
-        metadata.update(user_metadata)
+        ExamplePopulator.populate(metadata, self, user_metadata, [description].compact)
+        metadata
       end
-
-      private
 
       RESERVED_KEYS = [
         :description,
@@ -210,28 +234,6 @@ module RSpec
         :line_number,
         :location
       ]
-
-      def ensure_valid_keys(user_metadata)
-        RESERVED_KEYS.each do |key|
-          if user_metadata.has_key?(key)
-            raise <<-EOM
-            #{"*"*50}
-:#{key} is not allowed
-
-RSpec reserves some hash keys for its own internal use,
-including :#{key}, which is used on:
-
-            #{CallerFilter.first_non_rspec_line}.
-
-Here are all of RSpec's reserved hash keys:
-
-            #{RESERVED_KEYS.join("\n  ")}
-            #{"*"*50}
-            EOM
-          end
-        end
-      end
-
     end
 
     # Mixin that makes the including class imitate a hash for backwards

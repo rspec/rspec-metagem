@@ -28,10 +28,17 @@ module RSpec
 
       context "when created" do
         Metadata::RESERVED_KEYS.each do |key|
-          it "prohibits :#{key} as a hash key" do
-            expect do
+          it "prohibits :#{key} as a hash key for an example group" do
+            expect {
               RSpec.describe("group", key => {})
-            end.to raise_error(/:#{key} is not allowed/)
+            }.to raise_error(/:#{key} is not allowed/)
+          end
+
+          it "prohibits :#{key} as a hash key for an example" do
+            group = RSpec.describe("group")
+            expect {
+              group.example("example", key => {})
+            }.to raise_error(/:#{key} is not allowed/)
           end
         end
 
