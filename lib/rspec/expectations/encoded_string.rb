@@ -2,6 +2,9 @@ module RSpec
   module Expectations
     # @private
     class EncodedString
+
+      MRI_UNICODE_UNKOWN_CHARACTER = "\xEF\xBF\xBD"
+
       def initialize(string, encoding = nil)
         @encoding = encoding
         @source_encoding = detect_source_encoding(string)
@@ -41,7 +44,7 @@ module RSpec
 
         def normalize_missing(string)
           if @encoding.to_s == "UTF-8"
-            string.gsub("\xEF\xBF\xBD".force_encoding(@encoding), "?")
+            string.gsub(MRI_UNICODE_UNKOWN_CHARACTER.force_encoding(@encoding), "?")
           else
             string
           end
