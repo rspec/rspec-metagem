@@ -86,6 +86,10 @@ module RSpec
             reason = RSpec::Core::Pending::NO_REASON_GIVEN
           end
 
+          # Assign :caller so that the callback's source_location isn't used
+          # as the example location.
+          options[:caller] ||= Metadata.backtrace_from(block)
+
           # This will fail if no block is provided, which is effectively the
           # same as failing the example so it will be marked correctly as
           # pending.
@@ -177,7 +181,10 @@ module RSpec
         #   @see SharedExampleGroup
         def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
           define_method(new_name) do |name, *args, &customization_block|
-            group = example_group("#{report_label} #{name}") do
+            # Pass :caller so the :location metadata is set properly...
+            # otherwise, it'll be set to the next line because that's
+            # the block's source_location.
+            group = example_group("#{report_label} #{name}", :caller => caller) do
               find_and_eval_shared("examples", name, *args, &customization_block)
             end
             group.metadata[:shared_group_name] = name

@@ -134,7 +134,7 @@ module RSpec
 
                   raise Pending::PendingExampleFixedError,
                     'Expected example to fail since it is pending, but it passed.',
-                    metadata[:caller]
+                    [location]
                 end
               rescue Pending::SkipDeclaredInExample
                 # no-op, required metadata has already been set by the `skip`

@@ -53,6 +53,16 @@ module RSpec
         hash
       end
 
+      if Proc.method_defined?(:source_location)
+        def self.backtrace_from(block)
+          [block.source_location.join(':')]
+        end
+      else
+        def self.backtrace_from(block)
+          caller
+        end
+      end
+
       class Base
         attr_reader :metadata, :user_metadata, :description_args, :block
 
@@ -73,26 +83,30 @@ module RSpec
           metadata[:full_description] = full_description
           metadata[:described_class]  = described_class
 
-          metadata[:caller] = user_metadata.delete(:caller) || caller
-          metadata[:file_path], metadata[:line_number] = file_and_line_number
-          metadata[:location]                          = location
-
+          populate_location_attributes
           metadata.update(user_metadata)
         end
 
       private
 
-        def location
-          "#{metadata[:file_path]}:#{metadata[:line_number]}"
+        def populate_location_attributes
+          file_path, line_number = if backtrace = user_metadata.delete(:caller)
+            file_path_and_line_number_from(backtrace)
+          elsif block.respond_to?(:source_location)
+            block.source_location
+          else
+            file_path_and_line_number_from(caller)
+          end
+
+          file_path              = Metadata.relative_path(file_path)
+          metadata[:file_path]   = file_path
+          metadata[:line_number] = line_number.to_i
+          metadata[:location]    = "#{file_path}:#{line_number}"
         end
 
-        def file_and_line_number
-          first_caller_from_outside_rspec =~ /(.+?):(\d+)(|:\d+)/
-          return [Metadata::relative_path($1), $2.to_i]
-        end
-
-        def first_caller_from_outside_rspec
-          metadata[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
+        def file_path_and_line_number_from(backtrace)
+          first_caller_from_outside_rspec = backtrace.detect {|l| l !~ /\/lib\/rspec\/core/}
+          /(.+?):(\d+)(?:|:\d+)/.match(first_caller_from_outside_rspec).captures
         end
 
         def description_separator(parent_part, child_part)

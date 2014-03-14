@@ -919,6 +919,18 @@ module RSpec::Core
         group.run
         expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
+
+      it 'sets the backtrace to the example definition so it can be located by the user' do
+        file = RSpec::Core::Metadata.relative_path(__FILE__)
+        expected = [file, __LINE__ + 2].map(&:to_s)
+        group = RSpec::Core::ExampleGroup.describe do
+          pending { }
+        end
+        group.run
+
+        actual = group.examples.first.exception.backtrace.first.split(':')[0..1]
+        expect(actual).to eq(expected)
+      end
     end
 
     describe "pending with metadata" do
