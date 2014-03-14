@@ -133,83 +133,79 @@ module RSpec
         end
       end
 
-      [:described_class, :describes].each do |key|
-        describe key do
-          extract_key_from = lambda do |group|
-            group.metadata[key]
+      describe ":described_class" do
+        value_from = lambda do |group|
+          group.metadata[:described_class]
+        end
+
+        context "in an outer group" do
+          define_method :value_for do |arg|
+            value_from[RSpec.describe(arg)]
           end
 
-          context "in an outer group" do
-            define_method :value_for do |arg|
-              extract_key_from[RSpec.describe(arg)]
-            end
-
-            context "with a String" do
-              it "returns nil" do
-                expect(value_for "group").to be_nil
-              end
-            end
-
-            context "with a Symbol" do
-              it "returns nil" do
-                expect(value_for :group).to be_nil
-              end
-            end
-
-            context "with a class" do
-              it "returns the class" do
-                expect(value_for String).to be(String)
-              end
+          context "with a String" do
+            it "returns nil" do
+              expect(value_for "group").to be_nil
             end
           end
 
-          context "in a nested group" do
-            it "inherits the parent group's described class" do
-              value = nil
+          context "with a Symbol" do
+            it "returns nil" do
+              expect(value_for :group).to be_nil
+            end
+          end
 
-              RSpec.describe(Hash) do
+          context "with a class" do
+            it "returns the class" do
+              expect(value_for String).to be(String)
+            end
+          end
+        end
+
+        context "in a nested group" do
+          it "inherits the parent group's described class" do
+            value = nil
+
+            RSpec.describe(Hash) do
+              describe "sub context" do
+                value = value_from[self]
+              end
+            end
+
+            expect(value).to be(Hash)
+          end
+
+          it "sets the described class when passing a class" do
+            value = nil
+
+            RSpec.describe(String) do
+              describe Array do
+                value = value_from[self]
+              end
+            end
+
+            expect(value).to be(Array)
+          end
+
+          it "can override a parent group's described class using metdata" do
+            parent_value = child_value = grandchild_value = nil
+
+            RSpec.describe(String) do
+              parent_value = value_from[self]
+
+              describe "sub context" do
+                metadata[:described_class] = Hash
+                child_value = value_from[self]
+
                 describe "sub context" do
-                  value = extract_key_from[self]
+                  grandchild_value = value_from[self]
                 end
               end
-
-              expect(value).to be(Hash)
             end
 
-            it "sets the described class when passing a class" do
-              value = nil
-
-              RSpec.describe(String) do
-                describe Array do
-                  value = extract_key_from[self]
-                end
-              end
-
-              expect(value).to be(Array)
-            end
-
-            it "can override a parent group's described class using metdata" do
-              pending "not working for :describes but that's going away" if key == :describes
-
-              parent_value = child_value = grandchild_value = nil
-
-              RSpec.describe(String) do
-                parent_value = extract_key_from[self]
-
-                describe "sub context" do
-                  metadata[key] = Hash
-                  child_value = extract_key_from[self]
-
-                  describe "sub context" do
-                    grandchild_value = extract_key_from[self]
-                  end
-                end
-              end
-
-              expect(grandchild_value).to be(Hash)
-              expect(child_value).to be(Hash)
-              expect(parent_value).to be(String)
-            end
+            expect(grandchild_value).to be(Hash)
+            expect(child_value).to be(Hash)
+            expect(parent_value).to be(String)
           end
         end
       end

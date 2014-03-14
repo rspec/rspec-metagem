@@ -69,7 +69,7 @@ module RSpec
           metadata[:description_args] = description_args
           metadata[:description]      = build_description_from(*metadata[:description_args])
           metadata[:full_description] = full_description
-          metadata[:described_class]  = metadata[:describes] = described_class
+          metadata[:described_class]  = described_class
 
           metadata[:caller] = user_metadata.delete(:caller) || caller
           metadata[:file_path], metadata[:line_number] = file_and_line_number
