@@ -87,7 +87,7 @@ module RSpec::Core
     # @private
     def example_failed(example)
       @failure_count += 1
-      notify :example_failed, Notifications::ExampleNotification.new(example)
+      notify :example_failed, Notifications::FailedExampleNotification.new(example)
     end
 
     # @private
