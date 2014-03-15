@@ -54,15 +54,18 @@ module RSpec
       end
 
       if Proc.method_defined?(:source_location)
+        # @private
         def self.backtrace_from(block)
           [block.source_location.join(':')]
         end
       else
+        # @private
         def self.backtrace_from(block)
           caller
         end
       end
 
+      # @private
       class Base
         attr_reader :metadata, :user_metadata, :description_args, :block
 
@@ -145,6 +148,7 @@ module RSpec
         end
       end
 
+      # @private
       class ExampleHash < Base
         def self.create(group_metadata, user_metadata, description, block)
           example_metadata = group_metadata.dup
@@ -158,12 +162,10 @@ module RSpec
 
       private
 
-        # @private
         def described_class
           metadata[:example_group][:described_class]
         end
 
-        # @private
         def full_description
           build_description_from(
             metadata[:example_group][:full_description],
@@ -172,6 +174,7 @@ module RSpec
         end
       end
 
+      # @private
       class ExampleGroupHash < Base
         def self.create(parent_group_metadata, user_metadata, *args, &block)
           group_metadata = hash_with_backwards_compatibility_default_proc
@@ -197,7 +200,6 @@ module RSpec
 
       private
 
-        # @private
         def described_class
           candidate = metadata[:description_args].first
           return candidate unless String === candidate || Symbol === candidate
@@ -205,7 +207,6 @@ module RSpec
           parent_group && parent_group[:described_class]
         end
 
-        # @private
         def full_description
           description          = metadata[:description]
           parent_example_group = metadata[:parent_example_group]
@@ -220,6 +221,7 @@ module RSpec
         end
       end
 
+      # @private
       RESERVED_KEYS = [
         :description,
         :example_group,
@@ -330,6 +332,7 @@ module RSpec
       end
     end
 
+    # @private
     class LegacyExampleGroupHash
       include HashImitatable
 

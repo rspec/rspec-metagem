@@ -79,10 +79,11 @@ module RSpec
       attr_accessor :clock
 
       # Creates a new instance of Example.
-      # @param example_group_class the subclass of ExampleGroup in which this Example is declared
-      # @param description the String passed to the `it` method (or alias)
-      # @param metadata additional args passed to `it` to be used as metadata
-      # @param example_block the block of code that represents the example
+      # @param example_group_class [Class] the subclass of ExampleGroup in which this Example is declared
+      # @param description [String] the String passed to the `it` method (or alias)
+      # @param user_metadata [Hash] additional args passed to `it` to be used as metadata
+      # @param example_block [Proc] the block of code that represents the example
+      # @api private
       def initialize(example_group_class, description, user_metadata, example_block=nil)
         @example_group_class = example_group_class
         @options             = user_metadata
