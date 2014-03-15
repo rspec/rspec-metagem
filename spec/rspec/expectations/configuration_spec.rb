@@ -26,13 +26,18 @@ module RSpec
         end
 
         it "defaults to rspec-core's backtrace formatter when rspec-core is loaded" do
-          expect(config.backtrace_formatter).to be(RSpec::Core::BacktraceFormatter)
+          expect(config.backtrace_formatter).to be(RSpec.configuration.backtrace_formatter)
           expect(formatted_backtrace).to eq(cleaned_backtrace)
         end
 
         it "defaults to a null formatter when rspec-core is not loaded" do
-          hide_const("RSpec::Core::BacktraceFormatter")
-          expect(formatted_backtrace).to eq(original_backtrace)
+          RSpec::Mocks.with_temporary_scope do
+            rspec_dup = ::RSpec.dup
+            class << rspec_dup; undef configuration; end
+            stub_const("RSpec", rspec_dup)
+
+            expect(formatted_backtrace).to eq(original_backtrace)
+          end
         end
 
         it "can be set to another backtrace formatter" do
