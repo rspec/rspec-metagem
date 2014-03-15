@@ -111,7 +111,6 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     context 'for #share_examples_for' do
       it 'outputs the name and location' do
-
         group.share_examples_for 'foo bar' do
           it("example name") { expect("this").to eq("that") }
         end
@@ -123,7 +122,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
         expect(output.string).to include(
           'Shared Example Group: "foo bar" called from ' +
-            "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
+            "#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}"
         )
       end
 

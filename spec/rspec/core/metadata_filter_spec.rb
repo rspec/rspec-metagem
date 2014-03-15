@@ -29,8 +29,8 @@ module RSpec
 
         shared_examples_for "matching by line number" do
           let(:preceeding_declaration_lines) {{
-            parent_group_metadata[:example_group][:line_number] => parent_group_metadata[:example_group][:line_number],
-            group_metadata[:example_group][:line_number] => group_metadata[:example_group][:line_number],
+            parent_group_metadata[:line_number] => parent_group_metadata[:line_number],
+            group_metadata[:line_number] => group_metadata[:line_number],
             example_metadata[:line_number] => example_metadata[:line_number],
             (example_metadata[:line_number] + 1) => example_metadata[:line_number],
             (example_metadata[:line_number] + 2) => example_metadata[:line_number] + 2,
@@ -70,10 +70,10 @@ module RSpec
 
         context "with a single line number" do
           let(:condition_key){ :line_numbers }
-          let(:parent_group_condition) { [parent_group_metadata[:example_group][:line_number]] }
-          let(:group_condition) { [group_metadata[:example_group][:line_number]] }
+          let(:parent_group_condition) { [parent_group_metadata[:line_number]] }
+          let(:group_condition) { [group_metadata[:line_number]] }
           let(:example_condition) { [example_metadata[:line_number]] }
-          let(:between_examples_condition) { [group_metadata[:example_group][:line_number] + 1] }
+          let(:between_examples_condition) { [group_metadata[:line_number] + 1] }
           let(:next_example_condition) { [example_metadata[:line_number] + 2] }
 
           it_has_behavior "matching by line number"
@@ -81,10 +81,10 @@ module RSpec
 
         context "with multiple line numbers" do
           let(:condition_key){ :line_numbers }
-          let(:parent_group_condition) { [-1, parent_group_metadata[:example_group][:line_number]] }
-          let(:group_condition) { [-1, group_metadata[:example_group][:line_number]] }
+          let(:parent_group_condition) { [-1, parent_group_metadata[:line_number]] }
+          let(:group_condition) { [-1, group_metadata[:line_number]] }
           let(:example_condition) { [-1, example_metadata[:line_number]] }
-          let(:between_examples_condition) { [-1, group_metadata[:example_group][:line_number] + 1] }
+          let(:between_examples_condition) { [-1, group_metadata[:line_number] + 1] }
           let(:next_example_condition) { [-1, example_metadata[:line_number] + 2] }
 
           it_has_behavior "matching by line number"
@@ -93,16 +93,16 @@ module RSpec
         context "with locations" do
           let(:condition_key){ :locations }
           let(:parent_group_condition) do
-            {File.expand_path(parent_group_metadata[:example_group][:file_path]) => [parent_group_metadata[:example_group][:line_number]]}
+            {File.expand_path(parent_group_metadata[:file_path]) => [parent_group_metadata[:line_number]]}
           end
           let(:group_condition) do
-            {File.expand_path(group_metadata[:example_group][:file_path]) => [group_metadata[:example_group][:line_number]]}
+            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number]]}
           end
           let(:example_condition) do
             {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number]]}
           end
           let(:between_examples_condition) do
-            {File.expand_path(group_metadata[:example_group][:file_path]) => [group_metadata[:example_group][:line_number] + 1]}
+            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number] + 1]}
           end
           let(:next_example_condition) do
             {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number] + 2]}
@@ -136,6 +136,27 @@ module RSpec
           expect {
             filter_applies?(:if, lambda { |a,b,c| true }, example_metadata)
           }.to raise_error(ArgumentError)
+        end
+
+        context "with a nested hash" do
+          it 'matches when the nested entry matches' do
+            metadata = { :foo => { :bar => "words" } }
+            expect(filter_applies?(:foo, { :bar => /wor/ }, metadata)).to be_truthy
+          end
+
+          it 'does not match when the nested entry does not match' do
+            metadata = { :foo => { :bar => "words" } }
+            expect(filter_applies?(:foo, { :bar => /sword/ }, metadata)).to be_falsey
+          end
+
+          it 'does not match when the metadata lacks the key' do
+            expect(filter_applies?(:foo, { :bar => /sword/ }, {})).to be_falsey
+          end
+
+          it 'does not match when the metadata does not have a hash entry for the key' do
+            metadata = { :foo => "words" }
+            expect(filter_applies?(:foo, { :bar => /word/ }, metadata)).to be_falsey
+          end
         end
 
         context "with an Array" do

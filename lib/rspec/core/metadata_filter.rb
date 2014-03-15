@@ -59,15 +59,28 @@ module RSpec
       end
 
       def relevant_line_numbers(metadata)
-        [metadata[:line_number]] + (metadata[:example_group] ? relevant_line_numbers(metadata[:example_group]) : [])
+        return [] unless metadata
+        [metadata[:line_number]].compact + (relevant_line_numbers(parent_of metadata))
       end
 
       def example_group_declaration_line(locations, metadata)
-        locations[File.expand_path(metadata[:example_group][:file_path])] if metadata[:example_group]
+        parent = parent_of(metadata)
+        return nil unless parent
+        locations[File.expand_path(parent[:file_path])]
       end
 
       def filters_apply?(key, value, metadata)
-        value.all? { |k, v| filter_applies?(k, v, metadata[key]) }
+        subhash = metadata[key]
+        return false unless Hash === subhash || HashImitatable === subhash
+        value.all? { |k, v| filter_applies?(k, v, subhash) }
+      end
+
+      def parent_of(metadata)
+        if metadata.has_key?(:parent_example_group)
+          metadata[:parent_example_group]
+        else
+          metadata[:example_group]
+        end
       end
     end
   end

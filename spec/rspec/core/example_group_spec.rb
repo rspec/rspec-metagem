@@ -456,7 +456,7 @@ module RSpec::Core
           it "is the redefined level constant" do
             group = ExampleGroup.describe(String) do
               described_class
-              metadata[:example_group][:described_class] = Object
+              metadata[:described_class] = Object
               describe :symbol do
                 example "described_class is Object" do
                   expect(described_class).to eq(Object)
@@ -548,7 +548,7 @@ module RSpec::Core
     describe '#description' do
       it "grabs the description from the metadata" do
         group = ExampleGroup.describe(Object, "my desc") { }
-        expect(group.description).to eq(group.metadata[:example_group][:description])
+        expect(group.description).to eq(group.metadata[:description])
       end
     end
 
@@ -558,7 +558,7 @@ module RSpec::Core
       end
 
       it "adds the the file_path to metadata" do
-        expect(ExampleGroup.describe(Object) { }.metadata[:example_group][:file_path]).to eq(relative_path(__FILE__))
+        expect(ExampleGroup.describe(Object) { }.metadata[:file_path]).to eq(relative_path(__FILE__))
       end
 
       it "has a reader for file_path" do
@@ -566,7 +566,7 @@ module RSpec::Core
       end
 
       it "adds the line_number to metadata" do
-        expect(ExampleGroup.describe(Object) { }.metadata[:example_group][:line_number]).to eq(__LINE__)
+        expect(ExampleGroup.describe(Object) { }.metadata[:line_number]).to eq(__LINE__)
       end
     end
 
@@ -887,24 +887,6 @@ module RSpec::Core
           expect(hooks_run).to eq [:two,:one]
         end
       end
-
-      it "has access to example options within before(:each)" do
-        group = ExampleGroup.describe
-        option = nil
-        group.before(:each) {|ex| option = ex.options[:data] }
-        group.example("no-op", :data => :sample) { }
-        group.run
-        expect(option).to eq(:sample)
-      end
-
-      it "has access to example options within after(:each)" do
-        group = ExampleGroup.describe
-        option = nil
-        group.after(:each) {|ex| option = ex.options[:data] }
-        group.example("no-op", :data => :sample) { }
-        group.run
-        expect(option).to eq(:sample)
-      end
     end
 
     describe ".pending" do
@@ -918,6 +900,18 @@ module RSpec::Core
       it "sets the pending message" do
         group.run
         expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+      end
+
+      it 'sets the backtrace to the example definition so it can be located by the user' do
+        file = RSpec::Core::Metadata.relative_path(__FILE__)
+        expected = [file, __LINE__ + 2].map(&:to_s)
+        group = RSpec::Core::ExampleGroup.describe do
+          pending { }
+        end
+        group.run
+
+        actual = group.examples.first.exception.backtrace.first.split(':')[0..1]
+        expect(actual).to eq(expected)
       end
     end
 

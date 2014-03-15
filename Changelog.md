@@ -10,6 +10,18 @@ Breaking Changes for 3.0.0:
   tighter, more domain-specific interface. (Sergey Pchelincev)
 * Remove legacy colours definitions from `BaseTextFormatter`. (Jon Rowe)
 * Remove console color definitions from `BaseTextFormatter`. (Jon Rowe)
+* Restructure example group metadata so that the computed keys are
+  exposed directly off of the metadata hash rather than being on
+  a nested `:example_group` subhash. In addition, the parent example
+  group metadata is now available as `[:parent_example_group]` rather
+  than `[:example_group][:example_group]`. Deprecated access via the
+  old key structure is still provided. (Myron Marston)
+* Remove `:describes` metadata key. It duplicates `:described_class`
+  for no good reason. Deprecated access via `:describes` is still
+  provided. (Myron Marston)
+* Rename `:example_group_block` metadata key to `:block`.
+  (Myron Marston)
+* Remove deprecated `RSpec::Core::Example#options`. (Myron Marston)
 
 Enhancements:
 
@@ -21,6 +33,11 @@ Enhancements:
   first-class object with appropriate attributes. It retains deprecated
   hash behavior for backwards compatibility. (Myron Marston)
 * Provide console code helper for formatters. (Jon Rowe)
+* Use raw ruby hashes for the metadata hashes rather than a subclass of
+  a hash. Computed metadata entries are now computed in advance rather
+  than being done lazily on first access. (Myron Marston)
+* Add `:block` metadata entry to the example metadata, bringing
+  parity with `:block` in the example group metadata. (Myron Marston)
 
 Bug Fixes:
 

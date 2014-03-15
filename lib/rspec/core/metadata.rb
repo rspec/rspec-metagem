@@ -24,8 +24,7 @@ module RSpec
     # @see FilterManager
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
-    class Metadata < Hash
-
+    module Metadata
       # @api private
       #
       # @param line [String] current code line
@@ -54,171 +53,186 @@ module RSpec
         hash
       end
 
-      # @private
-      module MetadataHash
-
+      if Proc.method_defined?(:source_location)
         # @private
-        # Supports lazy evaluation of some values. Extended by
-        # ExampleMetadataHash and GroupMetadataHash, which get mixed in to
-        # Metadata for ExampleGroups and Examples (respectively).
-        def [](key)
-          store_computed(key) unless has_key?(key)
-          super
+        def self.backtrace_from(block)
+          [block.source_location.join(':')]
         end
-
-        def fetch(key, *args)
-          store_computed(key) unless has_key?(key)
-          super
-        end
-
-        private
-
-        def store_computed(key)
-          case key
-          when :location
-            store(:location, location)
-          when :file_path, :line_number
-            file_path, line_number = file_and_line_number
-            store(:file_path, file_path)
-            store(:line_number, line_number)
-          when :execution_result
-            store(:execution_result, Example::ExecutionResult.new)
-          when :describes, :described_class
-            klass = described_class
-            store(:described_class, klass)
-            # TODO (2011-11-07 DC) deprecate :describes as a key
-            store(:describes, klass)
-          when :full_description
-            store(:full_description, full_description)
-          when :description
-            store(:description, build_description_from(*self[:description_args]))
-          when :description_args
-            store(:description_args, [])
-          end
-        end
-
-        def location
-          "#{self[:file_path]}:#{self[:line_number]}"
-        end
-
-        def file_and_line_number
-          first_caller_from_outside_rspec =~ /(.+?):(\d+)(|:\d+)/
-          return [Metadata::relative_path($1), $2.to_i]
-        end
-
-        def first_caller_from_outside_rspec
-          self[:caller].detect {|l| l !~ /\/lib\/rspec\/core/}
-        end
-
-        def method_description_after_module?(parent_part, child_part)
-          return false unless parent_part.is_a?(Module)
-          child_part =~ /^(#|::|\.)/
-        end
-
-        def build_description_from(first_part = '', *parts)
-          description, _ = parts.inject([first_part.to_s, first_part]) do |(desc, last_part), this_part|
-            this_part = this_part.to_s
-            this_part = (' ' + this_part) unless method_description_after_module?(last_part, this_part)
-            [(desc + this_part), this_part]
-          end
-
-          description
-        end
-      end
-
-      # Mixed in to Metadata for an Example (extends MetadataHash) to support
-      # lazy evaluation of some values.
-      module ExampleMetadataHash
-        include MetadataHash
-
+      else
         # @private
-        def described_class
-          self[:example_group].described_class
+        def self.backtrace_from(block)
+          caller
         end
-
-        # @private
-        def full_description
-          build_description_from(self[:example_group][:full_description], *self[:description_args])
-        end
-      end
-
-      # Mixed in to Metadata for an ExampleGroup (extends MetadataHash) to
-      # support lazy evaluation of some values.
-      module GroupMetadataHash
-        include MetadataHash
-
-        # @private
-        def described_class
-          container_stack.each do |g|
-            [:described_class, :describes].each do |key|
-              if g.has_key?(key)
-                value = g[key]
-                return value unless value.nil?
-              end
-            end
-
-            candidate = g[:description_args].first
-            return candidate unless String === candidate || Symbol === candidate
-          end
-
-          nil
-        end
-
-        # @private
-        def full_description
-          build_description_from(*FlatMap.flat_map(container_stack.reverse) {|a| a[:description_args]})
-        end
-
-        # @private
-        def container_stack
-          @container_stack ||= begin
-                                 groups = [group = self]
-                                 while group.has_key?(:example_group)
-                                   groups << group[:example_group]
-                                   group = group[:example_group]
-                                 end
-                                 groups
-                               end
-        end
-      end
-
-      def initialize(parent_group_metadata=nil)
-        if parent_group_metadata
-          update(parent_group_metadata)
-          store(:example_group, {:example_group => parent_group_metadata[:example_group].extend(GroupMetadataHash)}.extend(GroupMetadataHash))
-        else
-          store(:example_group, {}.extend(GroupMetadataHash))
-        end
-
-        yield self if block_given?
       end
 
       # @private
-      def process(*args)
-        user_metadata = args.last.is_a?(Hash) ? args.pop : {}
-        ensure_valid_keys(user_metadata)
+      # Used internally to populate metadata hashes with computed keys
+      # managed by RSpec.
+      class HashPopulator
+        attr_reader :metadata, :user_metadata, :description_args, :block
 
-        self[:example_group].store(:description_args, args)
-        self[:example_group].store(:caller, user_metadata.delete(:caller) || caller)
+        def initialize(metadata, user_metadata, description_args, block)
+          @metadata         = metadata
+          @user_metadata    = user_metadata
+          @description_args = description_args
+          @block            = block
+        end
 
-        update(user_metadata)
-      end
+        def populate
+          ensure_valid_user_keys
 
-      # @private
-      def for_example(description, user_metadata)
-        dup.extend(ExampleMetadataHash).configure_for_example(description, user_metadata)
-      end
+          metadata[:execution_result] = Example::ExecutionResult.new
+          metadata[:block]            = block
+          metadata[:description_args] = description_args
+          metadata[:description]      = build_description_from(*metadata[:description_args])
+          metadata[:full_description] = full_description
+          metadata[:described_class]  = described_class
 
-      protected
-
-      def configure_for_example(description, user_metadata)
-        store(:description_args, [description]) if description
-        store(:caller, user_metadata.delete(:caller) || caller)
-        update(user_metadata)
-      end
+          populate_location_attributes
+          metadata.update(user_metadata)
+        end
 
       private
 
+        def populate_location_attributes
+          file_path, line_number = if backtrace = user_metadata.delete(:caller)
+            file_path_and_line_number_from(backtrace)
+          elsif block.respond_to?(:source_location)
+            block.source_location
+          else
+            file_path_and_line_number_from(caller)
+          end
+
+          file_path              = Metadata.relative_path(file_path)
+          metadata[:file_path]   = file_path
+          metadata[:line_number] = line_number.to_i
+          metadata[:location]    = "#{file_path}:#{line_number}"
+        end
+
+        def file_path_and_line_number_from(backtrace)
+          first_caller_from_outside_rspec = backtrace.detect { |l| l !~ CallerFilter::LIB_REGEX }
+          /(.+?):(\d+)(?:|:\d+)/.match(first_caller_from_outside_rspec).captures
+        end
+
+        def description_separator(parent_part, child_part)
+          if parent_part.is_a?(Module) && child_part =~ /^(#|::|\.)/
+            ''
+          else
+            ' '
+          end
+        end
+
+        def build_description_from(parent_description=nil, my_description=nil)
+          return parent_description.to_s unless my_description
+          separator = description_separator(parent_description, my_description)
+          parent_description.to_s + separator + my_description
+        end
+
+        def ensure_valid_user_keys
+          RESERVED_KEYS.each do |key|
+            if user_metadata.has_key?(key)
+              raise <<-EOM.gsub(/^\s+\|/, '')
+                |#{"*"*50}
+                |:#{key} is not allowed
+                |
+                |RSpec reserves some hash keys for its own internal use,
+                |including :#{key}, which is used on:
+                |
+                |  #{CallerFilter.first_non_rspec_line}.
+                |
+                |Here are all of RSpec's reserved hash keys:
+                |
+                |  #{RESERVED_KEYS.join("\n  ")}
+                |#{"*"*50}
+              EOM
+            end
+          end
+        end
+      end
+
+      # @private
+      class ExampleHash < HashPopulator
+        def self.create(group_metadata, user_metadata, description, block)
+          example_metadata = group_metadata.dup
+          example_metadata[:example_group] = group_metadata
+          example_metadata.delete(:parent_example_group)
+
+          hash = new(example_metadata, user_metadata, [description].compact, block)
+          hash.populate
+          hash.metadata
+        end
+
+      private
+
+        def described_class
+          metadata[:example_group][:described_class]
+        end
+
+        def full_description
+          build_description_from(
+            metadata[:example_group][:full_description],
+            metadata[:description]
+          )
+        end
+      end
+
+      # @private
+      class ExampleGroupHash < HashPopulator
+        def self.create(parent_group_metadata, user_metadata, *args, &block)
+          group_metadata = hash_with_backwards_compatibility_default_proc
+          group_metadata.update(parent_group_metadata)
+          group_metadata[:parent_example_group] = parent_group_metadata
+
+          hash = new(group_metadata, user_metadata, args, block)
+          hash.populate
+          hash.metadata
+        end
+
+        def self.hash_with_backwards_compatibility_default_proc
+          Hash.new do |hash, key|
+            case key
+            when :example_group
+              RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
+                              :replacement => "the example group's hash directly for the " +
+                              "computed keys and `:parent_example_group` to access the parent " +
+                              "example group metadata")
+              LegacyExampleGroupHash.new(hash)
+            when :example_group_block
+              RSpec.deprecate("`metadata[:example_group_block]`",
+                              :replacement => "`metadata[:block]`")
+              hash[:block]
+            when :describes
+              RSpec.deprecate("`metadata[:describes]`",
+                              :replacement => "`metadata[:described_class]`")
+              hash[:described_class]
+            end
+          end
+        end
+
+      private
+
+        def described_class
+          candidate = metadata[:description_args].first
+          return candidate unless String === candidate || Symbol === candidate
+          parent_group = metadata[:parent_example_group]
+          parent_group && parent_group[:described_class]
+        end
+
+        def full_description
+          description          = metadata[:description]
+          parent_example_group = metadata[:parent_example_group]
+          parent_description   = parent_example_group[:full_description]
+
+          return description unless parent_description
+
+          separator = description_separator(parent_example_group[:description_args].last,
+                                            metadata[:description_args].first)
+
+          parent_description + separator + description
+        end
+      end
+
+      # @private
       RESERVED_KEYS = [
         :description,
         :example_group,
@@ -226,35 +240,14 @@ module RSpec
         :file_path,
         :full_description,
         :line_number,
-        :location
+        :location,
+        :block
       ]
-
-      def ensure_valid_keys(user_metadata)
-        RESERVED_KEYS.each do |key|
-          if user_metadata.has_key?(key)
-            raise <<-EOM
-            #{"*"*50}
-:#{key} is not allowed
-
-RSpec reserves some hash keys for its own internal use,
-including :#{key}, which is used on:
-
-            #{CallerFilter.first_non_rspec_line}.
-
-Here are all of RSpec's reserved hash keys:
-
-            #{RESERVED_KEYS.join("\n  ")}
-            #{"*"*50}
-            EOM
-          end
-        end
-      end
-
     end
 
     # Mixin that makes the including class imitate a hash for backwards
     # compatibility. The including class should use `attr_accessor` to
-    # declare attributes and define a `deprecation_prefix` method.
+    # declare attributes.
     # @private
     module HashImitatable
       def self.included(klass)
@@ -275,7 +268,7 @@ Here are all of RSpec's reserved hash keys:
         next if [:[], :[]=, :to_h].include?(method_name.to_sym)
 
         define_method(method_name) do |*args, &block|
-          RSpec.deprecate("`#{deprecation_prefix}.#{method_name}`")
+          issue_deprecation(method_name, *args)
 
           hash = to_h
           self.class.hash_attribute_names.each do |name|
@@ -285,9 +278,8 @@ Here are all of RSpec's reserved hash keys:
           hash.__send__(method_name, *args, &block).tap do
             # apply mutations back to the object
             hash.each do |name, value|
-              setter = :"#{name}="
-              if respond_to?(setter)
-                __send__(setter, value)
+              if directly_supports_attribute?(name)
+                set_value(name, value)
               else
                 extra_hash_attributes[name] = value
               end
@@ -297,25 +289,21 @@ Here are all of RSpec's reserved hash keys:
       end
 
       def [](key)
-        if respond_to?(key)
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`",
-                            :replacement => "`#{deprecation_prefix}.#{key}`")
-          __send__(key)
+        issue_deprecation(:[], key)
+
+        if directly_supports_attribute?(key)
+          get_value(key)
         else
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}]`")
           extra_hash_attributes[key]
         end
       end
 
       def []=(key, value)
-        sender = :"#{key}="
+        issue_deprecation(:[]=, key, value)
 
-        if respond_to?(sender)
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `",
-                            :replacement => "`#{deprecation_prefix}.#{key} =`")
-          __send__(sender, value)
+        if directly_supports_attribute?(key)
+          set_value(key, value)
         else
-          RSpec.deprecate("`#{deprecation_prefix}[#{key.inspect}] = `")
           extra_hash_attributes[key] = value
         end
       end
@@ -324,6 +312,22 @@ Here are all of RSpec's reserved hash keys:
 
       def extra_hash_attributes
         @extra_hash_attributes ||= {}
+      end
+
+      def directly_supports_attribute?(name)
+        self.class.hash_attribute_names.include?(name)
+      end
+
+      def get_value(name)
+        __send__(name)
+      end
+
+      def set_value(name, value)
+        __send__(:"#{name}=", value)
+      end
+
+      def issue_deprecation(method_name, *args)
+        # no-op by default: subclasses can override
       end
 
       # @private
@@ -336,6 +340,55 @@ Here are all of RSpec's reserved hash keys:
           hash_attribute_names.concat(names)
           super
         end
+      end
+    end
+
+    # @private
+    # Together with the example group metadata hash default block,
+    # provides backwards compatibility for the old `:example_group`
+    # key. In RSpec 2.x, the computed keys of a group's metadata
+    # were exposed from a nested subhash keyed by `[:example_group]`, and
+    # then the parent group's metadata was exposed by sub-subhash
+    # keyed by `[:example_group][:example_group]`.
+    #
+    # In RSpec 3, we reorganized this to that the computed keys are
+    # exposed directly of the group metadata hash (no nesting), and
+    # `:parent_example_group` returns the parent group's metadata.
+    #
+    # Maintaining backwards compatibility was difficult: we wanted
+    # `:example_group` to return an object that:
+    #
+    #   * Exposes the top-level metadata keys that used to be nested
+    #     under `:example_group`.
+    #   * Supports mutation (rspec-rails, for example, assigns
+    #     `metadata[:example_group][:described_class]` when you use
+    #     anonymous controller specs) such that changes are written
+    #     back to the top-level metadata hash.
+    #   * Exposes the parent group metadata as `[:example_group][:example_group]`.
+    class LegacyExampleGroupHash
+      include HashImitatable
+
+      def initialize(metadata)
+        @metadata = metadata
+        self[:example_group] = metadata[:parent_example_group]
+      end
+
+      def to_h
+        super.merge(@metadata)
+      end
+
+    private
+
+      def directly_supports_attribute?(name)
+        name != :example_group
+      end
+
+      def get_value(name)
+        @metadata[name]
+      end
+
+      def set_value(name, value)
+        @metadata[name] = value
       end
     end
   end

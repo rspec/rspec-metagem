@@ -42,7 +42,7 @@ module RSpec::Core
         end
       end
 
-      let(:group_declaration_line) { group.metadata[:example_group][:line_number] }
+      let(:group_declaration_line) { group.metadata[:line_number] }
       let(:example_declaration_line) { group_declaration_line + 2 }
 
       context "with one example" do
@@ -70,7 +70,7 @@ module RSpec::Core
       end
 
       context "with two exaples and the second example is registre first" do
-        let(:second_group_declaration_line) { second_group.metadata[:example_group][:line_number] }
+        let(:second_group_declaration_line) { second_group.metadata[:line_number] }
 
         before do
           world.register(second_group)

@@ -450,17 +450,16 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it 'sets the backtrace to the example definition so it can be located by the user' do
-        expected = [__FILE__, __LINE__ + 2].map(&:to_s)
+        file = RSpec::Core::Metadata.relative_path(__FILE__)
+        expected = [file, __LINE__ + 2].map(&:to_s)
         group = RSpec::Core::ExampleGroup.describe do
           example {
             pending
           }
         end
         group.run
-        # TODO: De-dup this logic in rspec-support
-        actual = group.examples.first.exception.backtrace.
-          find { |line| line !~ RSpec::CallerFilter::LIB_REGEX }.
-          split(':')[0..1]
+
+        actual = group.examples.first.exception.backtrace.first.split(':')[0..1]
         expect(actual).to eq(expected)
       end
     end
