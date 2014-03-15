@@ -22,6 +22,8 @@ Breaking Changes for 3.0.0:
 * Rename `:example_group_block` metadata key to `:block`.
   (Myron Marston)
 * Remove deprecated `RSpec::Core::Example#options`. (Myron Marston)
+* Move `BaseTextFormatter#colorize_summary` to `SummaryNotification#colorize_with`
+  (Jon Rowe).
 
 Enhancements:
 
