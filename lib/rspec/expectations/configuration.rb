@@ -102,8 +102,8 @@ module RSpec
       # @!attribute [rw] backtrace_formatter
       attr_writer :backtrace_formatter
       def backtrace_formatter
-        @backtrace_formatter ||= if defined?(::RSpec::Core::BacktraceFormatter)
-          ::RSpec::Core::BacktraceFormatter
+        @backtrace_formatter ||= if defined?(::RSpec.configuration.backtrace_formatter)
+         ::RSpec.configuration.backtrace_formatter
         else
           NullBacktraceFormatter
         end
