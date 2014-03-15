@@ -98,10 +98,12 @@ module RSpec::Core
 
       # @api public
       #
-      # Colorizes the output red for failure, yellow for
-      # pending, and green otherwise.
+      # Wraps the summary line with colors based on the configured
+      # colors for failure, pending, and success. Defaults to red,
+      # yellow, green accordingly.
       #
-      # @param A colorizer
+      # @param colorizer [#wrap] An object which supports wrapping text with
+      #                          specific colors.
       # @return [String] A colorized summary line.
       def colorize_with(colorizer)
         if failure_count > 0
