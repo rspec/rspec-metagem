@@ -14,7 +14,7 @@ module RSpec
         #
         # Formats seconds into a human-readable string.
         #
-        # @param [Float, Fixnum] duration in seconds
+        # @param duration [Float, Fixnum] in seconds
         # @return [String] human-readable time
         #
         # @example
@@ -43,7 +43,7 @@ module RSpec
         # Formats seconds to have 5 digits of precision with trailing zeros removed if the number
         # is less than 1 or with 2 digits of precision if the number is greater than zero.
         #
-        # @param [Float] float
+        # @param float [Float]
         # @return [String] formatted float
         #
         # @example
@@ -64,7 +64,7 @@ module RSpec
         #
         # Remove trailing zeros from a string.
         #
-        # @param [String] string string with trailing zeros
+        # @param string [String] string with trailing zeros
         # @return [String] string with trailing zeros removed
         def strip_trailing_zeroes(string)
           stripped = string.sub(/[^1-9]+$/, '')
@@ -75,8 +75,8 @@ module RSpec
         #
         # Pluralize a word based on a count.
         #
-        # @param [Fixnum] count number of objects
-        # @param [String] string word to be pluralized
+        # @param count [Fixnum] number of objects
+        # @param string [String] word to be pluralized
         # @return [String] pluralized word
         def pluralize(count, string)
           "#{count} #{string}#{'s' unless count.to_f == 1}"

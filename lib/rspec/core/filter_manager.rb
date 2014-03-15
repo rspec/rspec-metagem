@@ -75,8 +75,8 @@ module RSpec
 
       # @api private
       #
-      # @param [String] file_path
-      # @param [Array] line_numbers
+      # @param file_path [String]
+      # @param line_numbers [Array]
       def add_location(file_path, line_numbers)
         # locations is a hash of expanded paths to arrays of line
         # numbers to match against. e.g.

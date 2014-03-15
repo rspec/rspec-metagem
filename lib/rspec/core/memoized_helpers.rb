@@ -311,7 +311,7 @@ EOS
         # implicitly in one-liners and explicitly using an intention revealing
         # name.
         #
-        # @param [String,Symbol] name used to define an accessor with an
+        # @param name [String,Symbol] used to define an accessor with an
         #   intention revealing name
         # @param block defines the value to be returned by `subject` in examples
         #

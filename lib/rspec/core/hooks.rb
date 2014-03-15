@@ -8,8 +8,8 @@ module RSpec
       # @overload before(scope, conditions, &block)
       # @overload before(conditions, &block)
       #
-      # @option [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @option [Hash] conditions
+      # @option scope [Symbol] `:each`, `:all`, or `:suite` (defaults to `:each`)
+      # @option conditions [Hash]
       #   constrains this hook to examples matching these conditions e.g.
       #   `before(:each, :ui => true) { ... }` will only run with examples or
       #   groups declared with `:ui => true`.
@@ -188,8 +188,8 @@ module RSpec
       # @overload after(scope, conditions, &block)
       # @overload after(conditions, &block)
       #
-      # @option [Symbol] scope `:each`, `:all`, or `:suite` (defaults to `:each`)
-      # @option [Hash] conditions
+      # @option scope [Symbol] `:each`, `:all`, or `:suite` (defaults to `:each`)
+      # @option conditions [Hash]
       #   constrains this hook to examples matching these conditions e.g.
       #   `after(:each, :ui => true) { ... }` will only run with examples or
       #   groups declared with `:ui => true`.
@@ -250,11 +250,11 @@ module RSpec
       # @overload around(scope, conditions, &block)
       # @overload around(conditions, &block)
       #
-      # @option [Symbol] scope `:each` (defaults to `:each`)
+      # @option scope [Symbol] `:each` (defaults to `:each`)
       #   present for syntax parity with `before` and `after`, but `:each` is
       #   the only supported value.
       #
-      # @option [Hash] conditions
+      # @option conditions [Hash]
       #   constrains this hook to examples matching these conditions e.g.
       #   `around(:each, :ui => true) { ... }` will only run with examples or
       #   groups declared with `:ui => true`.

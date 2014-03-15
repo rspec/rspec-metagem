@@ -13,8 +13,8 @@ module RSpec::Core
     # Registers a listener to a list of notifications. The reporter will send notification of
     # events to all registered listeners
     #
-    # @param [Object] listener An obect that wishes to be notified of reporter events
-    # @param [Array] notifications Array of symbols represents the events a listener wishes to subscribe too
+    # @param listener [Object] An obect that wishes to be notified of reporter events
+    # @param notifications [Array] Array of symbols represents the events a listener wishes to subscribe too
     def register_listener(listener, *notifications)
       notifications.each do |notification|
         @listeners[notification.to_sym] << listener
@@ -30,7 +30,7 @@ module RSpec::Core
     # @api
     # @overload report(count, &block)
     # @overload report(count, &block)
-    # @param [Integer] expected_example_count the number of examples being run
+    # @param expected_example_count [Integer] the number of examples being run
     # @yield [Block] block yields itself for further reporting.
     #
     # Initializes the report run and yields itself for further reporting. The

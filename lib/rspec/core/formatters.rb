@@ -59,8 +59,8 @@ module RSpec::Core::Formatters
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
 
   # Register the formatter class
-  # @param [Class] formatter_class formatter class to register
-  # @param [Symbol, ...] notifications one or more notifications to be registered to the specified formatter
+  # @param formatter_class [Class] formatter class to register
+  # @param notifications [Symbol, ...] one or more notifications to be registered to the specified formatter
   #
   # @see RSpec::Core::Formatters::BaseFormatter
   def self.register(formatter_class, *notifications)

@@ -18,8 +18,8 @@ module RSpec
 
       # Configures and runs a suite
       #
-      # @param [IO] err
-      # @param [IO] out
+      # @param err [IO]
+      # @param out [IO]
       def run(err, out)
         begin
           DRb.start_service("druby://localhost:0")

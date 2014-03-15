@@ -191,32 +191,32 @@ module RSpec
 
       # @macro add_setting
       # Color to use to indicate success.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :success_color
 
       # @macro add_setting
       # Color to use to print pending examples.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :pending_color
 
       # @macro add_setting
       # Color to use to indicate failure.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :failure_color
 
       # @macro add_setting
       # The default output color.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :default_color
 
       # @macro add_setting
       # Color used when a pending example is fixed.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :fixed_color
 
       # @macro add_setting
       # Color used to print details.
-      # @param [Symbol] color one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
       add_setting :detail_color
 
       # Deprecated. This config option was added in RSpec 2 to pave the way
@@ -362,7 +362,7 @@ module RSpec
       end
 
       # Set regular expressions used to exclude lines in backtrace
-      # @param [Regexp] patterns set the backtrace exlusion pattern
+      # @param patterns [Regexp] set the backtrace exlusion pattern
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
       end
@@ -380,7 +380,7 @@ module RSpec
       end
 
       # Set regular expressions used to include lines in backtrace
-      # @attr [Regexp] backtrace_formatter.inclusion_patterns
+      # @attr patterns [Regexp] set backtrace_formatter inclusion_patterns
       def backtrace_inclusion_patterns=(patterns)
         @backtrace_formatter.inclusion_patterns = patterns
       end
@@ -523,7 +523,7 @@ module RSpec
       end
 
       # Toggle full backtrace
-      # @attr [Boolean] toggle full backtrace display
+      # @attr true_or_false [Boolean] toggle full backtrace display
       def full_backtrace=(true_or_false)
         @backtrace_formatter.full_backtrace = true_or_false
       end
@@ -539,9 +539,9 @@ module RSpec
       end
 
       # Toggle output color
-      # @attr [Boolean] toggle color enabled
-      def color=(bool)
-        if bool
+      # @attr true_or_false [Boolean] toggle color enabled
+      def color=(true_or_false)
+        if true_or_false
           if RSpec.world.windows_os? and not ENV['ANSICON']
             RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
             @color = false
@@ -576,7 +576,7 @@ module RSpec
       end
 
       # Run examples matching on `description` in all files to run.
-      # @param [String, Regexp] description the pattern to filter on
+      # @param description [String, Regexp] the pattern to filter on
       def full_description=(description)
         filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
       end
@@ -1035,9 +1035,9 @@ module RSpec
       # used to order an example group's subgroups by adding
       # `:order => <name>` metadata to the example group.
       #
-      # @param [Symbol] name The name of the ordering.
+      # @param name [Symbol] The name of the ordering.
       # @yield Block that will order the given examples or example groups
-      # @yieldparam [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] list The examples or groups to order
+      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The examples or groups to order
       # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
@@ -1078,7 +1078,7 @@ module RSpec
       # RSpec 2.x's `example` method, so this config option
       # can be used to maintain compatibility.
       #
-      # @param [Symbol] method_name the name of the helper method
+      # @param method_name [Symbol] the name of the helper method
       #
       # @example
       #

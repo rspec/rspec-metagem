@@ -13,8 +13,8 @@ module RSpec
 
       # Configures and runs a suite
       #
-      # @param [IO] err
-      # @param [IO] out
+      # @param err [IO]
+      # @param out [IO]
       def run(err, out)
         @configuration.error_stream = err
         @configuration.output_stream = out if @configuration.output_stream == $stdout

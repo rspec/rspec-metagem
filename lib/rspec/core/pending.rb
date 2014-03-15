@@ -33,7 +33,7 @@ module RSpec
       # executed, and if it passes the example will fail to indicate that the
       # pending can be removed.
       #
-      # @option [String] message optional message to add to the summary report.
+      # @option message [String] optional message to add to the summary report.
       #
       # @example
       #
@@ -87,7 +87,7 @@ module RSpec
       # for RSpec 2's pending-with-block feature, and is not recommended for
       # new code. Use simple conditionals instead.
       #
-      # @option [String] message optional message to add to the summary report.
+      # @option message [String] optional message to add to the summary report.
       # @yield [Block] block optional block to be skipped
       #
       # @example
@@ -124,8 +124,8 @@ module RSpec
       #
       # Mark example as skipped
       #
-      # @param [RSpec::Core::Example] example the example to mark as skipped
-      # @param [Boolean, String] message_or_bool the message to use, or true
+      # @param example [RSpec::Core::Example] the example to mark as skipped
+      # @param message_or_bool [Boolean, String] the message to use, or true
       def self.mark_skipped!(example, message_or_bool)
         Pending.mark_pending! example, message_or_bool
         example.metadata[:skip] = true
@@ -135,8 +135,8 @@ module RSpec
       #
       # Mark example as pending
       #
-      # @param [RSpec::Core::Example] example the example to mark as pending
-      # @param [Boolean, String] message_or_bool the message to use, or true
+      # @param example [RSpec::Core::Example] the example to mark as pending
+      # @param message_or_bool [Boolean, String] the message to use, or true
       def self.mark_pending!(example, message_or_bool)
         message = if !message_or_bool || !(String === message_or_bool)
           NO_REASON_GIVEN
@@ -153,7 +153,7 @@ module RSpec
       #
       # Mark example as fixed
       #
-      # @param [RSpec::Core::Example] example the example to mark as fixed
+      # @param example [RSpec::Core::Example] the example to mark as fixed
       def self.mark_fixed!(example)
         example.metadata[:pending] = false
         example.execution_result.pending_fixed = true
