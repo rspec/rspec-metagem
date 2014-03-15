@@ -114,4 +114,37 @@ RSpec.describe "an example" do
       expect(example).to be_pending_with('just because')
     end
   end
+
+  context "with a block" do
+    it "fails with an ArgumentError stating the syntax is deprecated" do
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        it "calls pending with a block" do
+          pending("with invalid syntax") do
+            :no_op
+          end
+          fail
+        end
+      end
+      example = group.examples.first
+      group.run
+      expect(example).to fail_with ArgumentError
+      expect(example.exception.message).to match(
+        /Passing a block within an example is now deprecated./
+      )
+    end
+
+    it "does not yield to the block" do
+      example_to_have_yielded = :did_not_yield
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        it "calls pending with a block" do
+          pending("just because") do
+            example_to_have_yielded = :pending_block
+          end
+          fail
+        end
+      end
+      group.run
+      expect(example_to_have_yielded).to eq :did_not_yield
+    end
+  end
 end
