@@ -335,6 +335,27 @@ module RSpec
     end
 
     # @private
+    # Together with the example group metadata hash default block,
+    # provides backwards compatibility for the old `:example_group`
+    # key. In RSpec 2.x, the computed keys of a group's metadata
+    # were exposed from a nested subhash keyed by `[:example_group]`, and
+    # then the parent group's metadata was exposed by sub-subhash
+    # keyed by `[:example_group][:example_group]`.
+    #
+    # In RSpec 3, we reorganized this to that the computed keys are
+    # exposed directly of the group metadata hash (no nesting), and
+    # `:parent_example_group` returns the parent group's metadata.
+    #
+    # Maintaining backwards compatibility was difficult: we wanted
+    # `:example_group` to return an object that:
+    #
+    #   * Exposes the top-level metadata keys that used to be nested
+    #     under `:example_group`.
+    #   * Supports mutation (rspec-rails, for example, assigns
+    #     `metadata[:example_group][:described_class]` when you use
+    #     anonymous controller specs) such that changes are written
+    #     back to the top-level metadata hash.
+    #   * Exposes the parent group metadata as `[:example_group][:example_group]`.
     class LegacyExampleGroupHash
       include HashImitatable
 
