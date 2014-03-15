@@ -424,62 +424,123 @@ module RSpec
       describe "backwards compatibility" do
         before { allow_deprecation }
 
-        it 'issues a deprecation warning when the `:example_group` key is accessed' do
-          expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:example_group/)
-          RSpec.describe(Object, "group") do
-            metadata[:example_group]
-          end
-        end
-
-        it 'can still access the example group attributes via [:example_group]' do
-          meta = nil
-          RSpec.describe(Object, "group") { meta = metadata }
-
-          expect(meta[:example_group][:line_number]).to eq(__LINE__ - 2)
-          expect(meta[:example_group][:description]).to eq("Object group")
-        end
-
-        it 'can access the parent example group attributes via [:example_group][:example_group]' do
-          parent = child = nil
-          parent_line = __LINE__ + 1
-          RSpec.describe(Object, "group", :foo => 3) do
-            parent = metadata
-            describe("nested") { child = metadata }
-          end
-
-          expect(child[:example_group][:example_group]).to include(
-            :foo => 3,
-            :description => "Object group",
-            :line_number => parent_line
-          )
-        end
-
-        it 'can mutate attributes when accessing them via [:example_group]' do
-          meta = nil
-
-          RSpec.describe(String) do
-            describe "sub context" do
-              meta = metadata
+        describe ":example_group" do
+          it 'issues a deprecation warning when the `:example_group` key is accessed' do
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:example_group/)
+            RSpec.describe(Object, "group") do
+              metadata[:example_group]
             end
           end
 
-          expect {
-            meta[:example_group][:described_class] = Hash
-          }.to change { meta[:described_class] }.from(String).to(Hash)
+          it 'can still access the example group attributes via [:example_group]' do
+            meta = nil
+            RSpec.describe(Object, "group") { meta = metadata }
+
+            expect(meta[:example_group][:line_number]).to eq(__LINE__ - 2)
+            expect(meta[:example_group][:description]).to eq("Object group")
+          end
+
+          it 'can access the parent example group attributes via [:example_group][:example_group]' do
+            parent = child = nil
+            parent_line = __LINE__ + 1
+            RSpec.describe(Object, "group", :foo => 3) do
+              parent = metadata
+              describe("nested") { child = metadata }
+            end
+
+            expect(child[:example_group][:example_group]).to include(
+              :foo => 3,
+              :description => "Object group",
+              :line_number => parent_line
+            )
+          end
+
+          it 'can mutate attributes when accessing them via [:example_group]' do
+            meta = nil
+
+            RSpec.describe(String) do
+              describe "sub context" do
+                meta = metadata
+              end
+            end
+
+            expect {
+              meta[:example_group][:described_class] = Hash
+            }.to change { meta[:described_class] }.from(String).to(Hash)
+          end
+
+          it 'can still be filtered via a nested key under [:example_group] as before' do
+            meta = nil
+
+            line = __LINE__ + 1
+            RSpec.describe("group") { meta = metadata }
+
+            applies = MetadataFilter.any_apply?(
+              { :example_group => { :line_number => line } },
+              meta
+            )
+
+            expect(applies).to be true
+          end
         end
 
-        it 'can still be filtered via a nested key under [:example_group] as before' do
-          meta = nil
+        describe ":example_group_block" do
+          it 'returns the block' do
+            meta = nil
 
-          line = __LINE__ + 1
-          RSpec.describe("group") { meta = metadata }
+            RSpec.describe "group" do
+              meta = metadata
+            end
 
-          applies = MetadataFilter.any_apply?(
-            { :example_group => { :line_number => line } },
-            meta
-          )
+            expect(meta[:example_group_block]).to be_a(Proc).and eq(meta[:block])
+          end
 
-          expect(applies).to be true
+          it 'issues a deprecation warning' do
+            expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:example_group_block/)
+            RSpec.describe "group" do
+              metadata[:example_group_block]
+            end
+          end
+        end
+
+        describe ":describes" do
+          context "on an example group metadata hash" do
+            it 'returns the described_class' do
+              meta = nil
+
+              RSpec.describe Hash do
+                meta = metadata
+              end
+
+              expect(meta[:describes]).to be(Hash).and eq(meta[:described_class])
+            end
+
+            it 'issues a deprecation warning' do
+              expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:describes/)
+              RSpec.describe "group" do
+                metadata[:describes]
+              end
+            end
+          end
+
+          context "an an example metadata hash" do
+            it 'returns the described_class' do
+              meta = nil
+
+              RSpec.describe Hash do
+                meta = example("ex").metadata
+              end
+
+              expect(meta[:describes]).to be(Hash).and eq(meta[:described_class])
+            end
+
+            it 'issues a deprecation warning' do
+              expect_deprecation_with_call_site(__FILE__, __LINE__ + 2, /:describes/)
+              RSpec.describe "group" do
+                example("ex").metadata[:describes]
+              end
+            end
+          end
         end
       end
     end

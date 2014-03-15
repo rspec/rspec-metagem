@@ -190,12 +190,21 @@ module RSpec
 
         def self.hash_with_backwards_compatibility_default_proc
           Hash.new do |hash, key|
-            if key == :example_group
+            case key
+            when :example_group
               RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
                               :replacement => "the example group's hash directly for the " +
                               "computed keys and `:parent_example_group` to access the parent " +
                               "example group metadata")
               LegacyExampleGroupHash.new(hash)
+            when :example_group_block
+              RSpec.deprecate("`metadata[:example_group_block]`",
+                              :replacement => "`metadata[:block]`")
+              hash[:block]
+            when :describes
+              RSpec.deprecate("`metadata[:describes]`",
+                              :replacement => "`metadata[:described_class]`")
+              hash[:described_class]
             end
           end
         end
