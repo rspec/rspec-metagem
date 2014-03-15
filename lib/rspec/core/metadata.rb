@@ -66,10 +66,12 @@ module RSpec
       end
 
       # @private
-      class Base
+      # Used internally to populate metadata hashes with computed keys
+      # managed by RSpec.
+      class HashPopulator
         attr_reader :metadata, :user_metadata, :description_args, :block
 
-        def initialize(metadata, user_metadata, description_args, block = nil)
+        def initialize(metadata, user_metadata, description_args, block)
           @metadata         = metadata
           @user_metadata    = user_metadata
           @description_args = description_args
@@ -149,7 +151,7 @@ module RSpec
       end
 
       # @private
-      class ExampleHash < Base
+      class ExampleHash < HashPopulator
         def self.create(group_metadata, user_metadata, description, block)
           example_metadata = group_metadata.dup
           example_metadata[:example_group] = group_metadata
@@ -175,7 +177,7 @@ module RSpec
       end
 
       # @private
-      class ExampleGroupHash < Base
+      class ExampleGroupHash < HashPopulator
         def self.create(parent_group_metadata, user_metadata, *args, &block)
           group_metadata = hash_with_backwards_compatibility_default_proc
           group_metadata.update(parent_group_metadata)
