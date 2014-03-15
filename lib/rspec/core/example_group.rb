@@ -324,7 +324,7 @@ module RSpec
         subclass.module_eval(&example_group_block) if example_group_block
 
         # The LetDefinitions module must be included _after_ other modules
-        # to ensure that it takes precendence when there are name collisions.
+        # to ensure that it takes precedence when there are name collisions.
         # Thus, we delay including it until after the example group block
         # has been eval'd.
         MemoizedHelpers.define_helpers_on(subclass)
