@@ -2,6 +2,7 @@ require "spec_helper"
 
 module RSpec::Core
   RSpec.describe OptionParser do
+
     let(:output_file){ mock File }
 
     before do
@@ -43,6 +44,18 @@ module RSpec::Core
           parser.parse([option])
         end
       end
+    end
+
+    it "won't display invalid options in the help output" do
+      def generate_help_text
+        parser = Parser.new
+        allow(parser).to receive(:exit)
+        parser.parse(["--help"])
+      end
+
+      useless_lines = /^\s*--?\w+\s*$\n/
+
+      expect { generate_help_text }.to_not output(useless_lines).to_stdout
     end
 
     describe "--default_path" do

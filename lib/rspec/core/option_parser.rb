@@ -210,12 +210,19 @@ FILTERING
           exit
         end
 
+        # these options would otherwise be confusing to users, so we forcibly prevent them from executing
+        # --I is too similar to -I
+        # -d was a shorthand for --debugger, which is removed, but now would trigger --default_path
+        invalid_options = %w[-d --I]
+
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          puts parser
+          # removing the blank invalid options from the output
+          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/,'')
           exit
         end
 
-        %w[-d --I].each do |option|
+        # this prevents usage of the invalid_options
+        invalid_options.each do |option|
           parser.on(option) do
             raise OptionParser::InvalidOption.new
           end
