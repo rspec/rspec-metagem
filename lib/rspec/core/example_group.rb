@@ -52,9 +52,9 @@ module RSpec
 
         # @private
         # @macro [attach] define_example_method
-        #   @param [String] name
-        #   @param [Hash] extra_options
-        #   @param [Block] implementation
+        #   @param name [String]
+        #   @param extra_options [Hash]
+        #   @param implementation [Block]
         #   @yield [Example] the example object
         def self.define_example_method(name, extra_options={})
           define_method(name) do |*all_args, &block|
@@ -159,8 +159,8 @@ module RSpec
         # @private
         # @macro [attach] alias_example_group_to
         #   @scope class
-        #   @param [String] docstring The example group doc string
-        #   @param [Hash] metadata Additional metadata to attach to the example group
+        #   @param name [String] The example group doc string
+        #   @param metadata [Hash] Additional metadata to attach to the example group
         #   @yield The example group definition
         def alias_example_group_to(name, metadata={})
           (class << self; self; end).__send__(:define_method, name) do |*args, &block|

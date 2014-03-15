@@ -1,6 +1,6 @@
 module RSpec
   module Core
-    # The 'RSpec' command line
+    # The 'rspec' command line
     class CommandLine
       def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
         if Array === options
@@ -13,8 +13,8 @@ module RSpec
 
       # Configures and runs a suite
       #
-      # @param [IO] err
-      # @param [IO] out
+      # @param err [IO]
+      # @param out [IO]
       def run(err, out)
         @configuration.error_stream = err
         @configuration.output_stream = out if @configuration.output_stream == $stdout

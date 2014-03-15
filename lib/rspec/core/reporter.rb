@@ -30,7 +30,7 @@ module RSpec::Core
     # @api
     # @overload report(count, &block)
     # @overload report(count, &block)
-    # @param [Integer] expected_example_count the number of examples being run
+    # @param expected_example_count [Integer] the number of examples being run
     # @yield [Block] block yields itself for further reporting.
     #
     # Initializes the report run and yields itself for further reporting. The

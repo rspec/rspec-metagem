@@ -1,9 +1,9 @@
 module RSpec
   module Core
     # Wrapper for an instance of a subclass of {ExampleGroup}. An instance of
-    # `Example` is returned by the {ExampleGroup#example example} method
-    # exposed to examples, {Hooks#before before} and {Hooks#after after} hooks,
-    # and yielded to {Hooks#around around} hooks.
+    # `RSpec::Core::Example` is returned by the {ExampleGroup#example example}
+    # method exposed to examples, {Hooks#before before} and {Hooks#after after}
+    # hooks, and yielded to {Hooks#around around} hooks.
     #
     # Useful for configuring logging and/or taking some action based
     # on the state of an example's metadata.

@@ -3,7 +3,7 @@ RSpec::Support.require_rspec_core "drb_options"
 
 module RSpec
   module Core
-    # The 'RSpec' command line in DRB mode
+    # The 'rspec' command line in DRB mode
     class DRbCommandLine
       def initialize(options)
         @options = options
@@ -18,8 +18,8 @@ module RSpec
 
       # Configures and runs a suite
       #
-      # @param [IO] err
-      # @param [IO] out
+      # @param err [IO]
+      # @param out [IO]
       def run(err, out)
         begin
           DRb.start_service("druby://localhost:0")

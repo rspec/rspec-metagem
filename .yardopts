@@ -1,6 +1,7 @@
 --exclude features
 --no-private
 --markup markdown
+--default-return void
 -
 Changelog.md
 License.txt

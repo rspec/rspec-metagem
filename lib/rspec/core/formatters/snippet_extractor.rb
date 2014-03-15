@@ -30,7 +30,7 @@ module RSpec
         #
         # Extract lines of code corresponding to  a backtrace.
         #
-        # @param [String] backtrace the backtrace from a test failure
+        # @param backtrace [String] the backtrace from a test failure
         # @return [String] highlighted code snippet indicating where the test failure occured
         #
         # @see #post_process
@@ -44,7 +44,7 @@ module RSpec
         #
         # Create a snippet from a line of code.
         #
-        # @param [String] error_line file name with line number (i.e. 'foo_spec.rb:12')
+        # @param error_line [String] file name with line number (i.e. 'foo_spec.rb:12')
         # @return [String] lines around the target line within the file
         #
         # @see #lines_around
@@ -62,8 +62,8 @@ module RSpec
         #
         # Extract lines of code centered around a particular line within a source file.
         #
-        # @param [String] file filename
-        # @param [Fixnum] line line number
+        # @param file [String] filename
+        # @param line [Fixnum] line number
         # @return [String] lines around the target line within the file (2 above and 1 below).
         def lines_around(file, line)
           if File.file?(file)
@@ -84,8 +84,8 @@ module RSpec
         #
         # Adds line numbers to all lines and highlights the line where the failure occurred using html `span` tags.
         #
-        # @param [String] highlighted syntax-highlighted snippet surrounding the offending line of code
-        # @param [Fixnum] offending_line line where failure occured
+        # @param highlighted [String] syntax-highlighted snippet surrounding the offending line of code
+        # @param offending_line [Fixnum] line where failure occured
         # @return [String] completed snippet
         def post_process(highlighted, offending_line)
           new_lines = []
