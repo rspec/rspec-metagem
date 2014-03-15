@@ -23,6 +23,28 @@ module RSpec::Core
     # @attr example [RSpec::Core::Example] the current example
     ExampleNotification = Struct.new(:example)
 
+    # The `FailedExampleNotification` extends `ExampleNotification` with
+    # things useful for failed specs.
+    #
+    # @example
+    #   def example_failed(notification)
+    #     puts "Hey I failed :("
+    #     puts "Here's my stack trace"
+    #     puts notification.exception.backtrace.join("\n")
+    #   end
+    #
+    # @attr [RSpec::Core::Example] example the current example
+    # @see ExampleNotification
+    class FailedExampleNotification < ExampleNotification
+
+      # Returns the examples failure
+      #
+      # @return [Exception] The example failure
+      def exception
+        example.execution_result.exception
+      end
+    end
+
     # The `GroupNotification` represents notifications sent by the reporter which
     # contain information about the currently running (or soon to be) example group
     # It is used by formatters to access information about that group.

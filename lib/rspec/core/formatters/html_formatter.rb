@@ -51,7 +51,7 @@ module RSpec
           @printer.flush
         end
 
-        def example_failed(failed)
+        def example_failed(failure)
           super
 
           unless @header_red
@@ -66,9 +66,9 @@ module RSpec
 
           @printer.move_progress(percent_done)
 
-          example = failed.example
+          example = failure.example
 
-          exception = example.execution_result.exception
+          exception = failure.exception
           exception_details = if exception
             {
               :message => exception.message,
@@ -77,7 +77,7 @@ module RSpec
           else
             false
           end
-          extra = extra_failure_content(exception)
+          extra = extra_failure_content(failure)
 
           @printer.print_example_failed(
             example.execution_result.pending_fixed,
@@ -134,9 +134,9 @@ module RSpec
         # Override this method if you wish to output extra HTML for a failed spec. For example, you
         # could output links to images or other files produced during the specs.
         #
-        def extra_failure_content(exception)
+        def extra_failure_content(failure)
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-          backtrace = exception.backtrace.map {|line| configuration.backtrace_formatter.backtrace_line(line)}
+          backtrace = failure.exception.backtrace.map {|line| configuration.backtrace_formatter.backtrace_line(line)}
           backtrace.compact!
           @snippet_extractor ||= SnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"
