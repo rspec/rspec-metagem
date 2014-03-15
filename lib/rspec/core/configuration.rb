@@ -145,12 +145,12 @@ module RSpec
       define_reader :requires
 
       # @macro define_reader
-      # Returns dirs that have been prepended to the load path by #lib=
+      # Returns dirs that have been prepended to the load path by the `-I` command line option
       define_reader :libs
 
       # @macro add_setting
+      # Determines where RSpec will send its output.
       # Default: `$stdout`.
-      # Also known as `output` and `out`
       define_reader :output_stream
 
       # Set the output stream for reporter
@@ -528,7 +528,7 @@ module RSpec
         @backtrace_formatter.full_backtrace = true_or_false
       end
 
-      # Check color in enabled
+      # Check if color is enabled.
       # @return [Boolean]
       def color(output=output_stream)
         # rspec's built-in formatters all call this with the output argument,
