@@ -213,7 +213,7 @@ module RSpec
       # captures the exception but doesn't raise it.
       def set_exception(exception, context=nil)
         if pending?
-          metadata[:execution_result].pending_exception = exception
+          execution_result.pending_exception = exception
         else
           if @exception && context != :dont_print
             # An error has already been set; we don't want to override it,
@@ -280,7 +280,7 @@ module RSpec
       end
 
       def finish(reporter)
-        pending_message = metadata[:execution_result].pending_message
+        pending_message = execution_result.pending_message
 
         if @exception
           record_finished 'failed'
@@ -321,8 +321,8 @@ module RSpec
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        if metadata[:execution_result].pending_message
-          metadata[:execution_result].pending_fixed = false
+        if execution_result.pending_message
+          execution_result.pending_fixed = false
           # TODO: should we really change this? In the user metadata,
           # `:pending` indicates the user intends to make the example
           # pending, not that it actually was -- that's what the

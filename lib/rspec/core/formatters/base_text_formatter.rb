@@ -219,7 +219,7 @@ module RSpec
 
         def dump_shared_failure_info(group)
           output.puts "#{long_padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
-            "#{configuration.backtrace_formatter.backtrace_line(group.metadata[:location])}"
+            "#{configuration.backtrace_formatter.backtrace_line(group.location)}"
         end
 
         def find_shared_group(example)

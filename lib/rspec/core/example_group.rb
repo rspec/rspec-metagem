@@ -43,7 +43,7 @@ module RSpec
           RSpec.configuration.format_docstrings_block.call(description)
         end
 
-        delegate_to_metadata :described_class, :file_path
+        delegate_to_metadata :described_class, :file_path, :location
         alias_method :display_name, :description
         # @private
         alias_method :describes, :described_class
@@ -458,7 +458,7 @@ module RSpec
           warn <<-WARNING.gsub(/^ +\|/, '')
             |WARNING: Ignoring unknown ordering specified using `:order => #{order.inspect}` metadata.
             |         Falling back to configured global ordering.
-            |         Unrecognized ordering specified at: #{metadata[:location]}
+            |         Unrecognized ordering specified at: #{location}
           WARNING
 
           registry.fetch(:global)
