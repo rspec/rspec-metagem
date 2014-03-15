@@ -21,6 +21,7 @@ Breaking Changes for 3.0.0:
   provided. (Myron Marston)
 * Rename `:example_group_block` metadata key to `:block`.
   (Myron Marston)
+* Remove deprecated `RSpec::Core::Example#options`. (Myron Marston)
 
 Enhancements:
 

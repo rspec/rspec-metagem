@@ -887,24 +887,6 @@ module RSpec::Core
           expect(hooks_run).to eq [:two,:one]
         end
       end
-
-      it "has access to example options within before(:each)" do
-        group = ExampleGroup.describe
-        option = nil
-        group.before(:each) {|ex| option = ex.options[:data] }
-        group.example("no-op", :data => :sample) { }
-        group.run
-        expect(option).to eq(:sample)
-      end
-
-      it "has access to example options within after(:each)" do
-        group = ExampleGroup.describe
-        option = nil
-        group.after(:each) {|ex| option = ex.options[:data] }
-        group.example("no-op", :data => :sample) { }
-        group.run
-        expect(option).to eq(:sample)
-      end
     end
 
     describe ".pending" do

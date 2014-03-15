@@ -86,7 +86,6 @@ module RSpec
       # @api private
       def initialize(example_group_class, description, user_metadata, example_block=nil)
         @example_group_class = example_group_class
-        @options             = user_metadata
         @example_block       = example_block
 
         @metadata = Metadata::ExampleHash.create(
@@ -95,11 +94,6 @@ module RSpec
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time
-      end
-
-      # @deprecated access options via metadata instead
-      def options
-        @options
       end
 
       # Returns the example group class that provides the context for running
