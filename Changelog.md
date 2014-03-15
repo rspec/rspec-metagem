@@ -66,6 +66,7 @@ Enhancements:
   parity with `:block` in the example group metadata. (Myron Marston)
 * Add `fspecify` and `fexample` as aliases of `specify` and `example`
   with `:focus => true` metadata for parity with `fit`. (Myron Marston)
+* Add legacy support for `colorize_summary`. (Jon Rowe)
 
 Bug Fixes:
 
