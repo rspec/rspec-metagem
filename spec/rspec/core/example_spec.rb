@@ -3,6 +3,7 @@ require 'pp'
 require 'stringio'
 
 RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
+
   let(:example_group) do
     RSpec::Core::ExampleGroup.describe('group description')
   end
@@ -18,18 +19,8 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
   end
 
-  def capture_stdout
-    orig_stdout = $stdout
-    $stdout = StringIO.new
-    yield
-    $stdout.string
-  ensure
-    $stdout = orig_stdout
-  end
-
   it "can be pretty printed" do
-    output = ignoring_warnings { capture_stdout { pp example_instance } }
-    expect(output).to include("RSpec::Core::Example")
+    expect { ignoring_warnings { pp example_instance }}.to output(/RSpec::Core::Example/).to_stdout
   end
 
   describe "#exception" do
