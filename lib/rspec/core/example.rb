@@ -215,7 +215,7 @@ module RSpec
         if pending? && !(Pending::PendingExampleFixedError === exception)
           execution_result.pending_exception = exception
         else
-          if @exception && context != :dont_print
+          if @exception
             # An error has already been set; we don't want to override it,
             # but we also don't want silence the error, so let's print it.
             msg = <<-EOS
@@ -319,14 +319,18 @@ module RSpec
       end
 
       def verify_mocks
-        @example_group_instance.verify_mocks_for_rspec
+        @example_group_instance.verify_mocks_for_rspec if mocks_need_verification?
       rescue Exception => e
         if pending?
           execution_result.pending_fixed = false
           @exception = nil
         else
-          set_exception(e, :dont_print)
+          set_exception(e)
         end
+      end
+
+      def mocks_need_verification?
+        exception.nil? || execution_result.pending_fixed?
       end
 
       def assign_generated_description
