@@ -206,6 +206,18 @@ module RSpec
             expect(value).to be(Array)
           end
 
+          it 'does not override the :described_class when passing no describe args' do
+            value = nil
+
+            RSpec.describe(String) do
+              describe do
+                value = value_from[self]
+              end
+            end
+
+            expect(value).to be(String)
+          end
+
           it "can override a parent group's described class using metdata" do
             parent_value = child_value = grandchild_value = nil
 
