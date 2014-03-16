@@ -441,7 +441,7 @@ module RSpec::Core
         context "and a string in an inner group" do
           it "is the top level constant" do
             group = ExampleGroup.describe(String) do
-              describe :symbol do
+              describe "inner" do
                 example "described_class is String" do
                   expect(described_class).to eq(String)
                 end
@@ -457,7 +457,7 @@ module RSpec::Core
             group = ExampleGroup.describe(String) do
               described_class
               metadata[:described_class] = Object
-              describe :symbol do
+              describe "inner" do
                 example "described_class is Object" do
                   expect(described_class).to eq(Object)
                 end

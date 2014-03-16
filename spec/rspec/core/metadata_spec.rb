@@ -169,8 +169,8 @@ module RSpec
           end
 
           context "with a Symbol" do
-            it "returns nil" do
-              expect(value_for :group).to be_nil
+            it "returns the symbol" do
+              expect(value_for :group).to be(:group)
             end
           end
 

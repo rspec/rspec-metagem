@@ -37,6 +37,18 @@ module RSpec::Core
         end
       end
 
+      describe "with a hash" do
+        it "returns the hash" do
+          expect(subject_value_for(:foo => 3)).to eq(:foo => 3)
+        end
+      end
+
+      describe "with a symbol" do
+        it "returns the symbol" do
+          expect(subject_value_for(:foo)).to eq(:foo)
+        end
+      end
+
       it "can be overriden and super'd to from a nested group" do
         outer_subject_value = inner_subject_value = nil
 

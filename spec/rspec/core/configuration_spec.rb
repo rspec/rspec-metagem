@@ -1254,6 +1254,17 @@ module RSpec::Core
         expect(group.metadata).to include(:some => "thing", :another => "thing")
       end
 
+      it "passes `nil` as the description arg when no args are given" do
+        config.alias_example_group_to :my_group_method, { :some => "thing" }
+        group = ExampleGroup.my_group_method
+
+        expect(group.metadata).to include(
+          :description_args => [nil],
+          :description => "",
+          :some => "thing",
+        )
+      end
+
       context 'when the aliased method is used' do
         it_behaves_like "metadata hash builder" do
           def metadata_hash(*args)
