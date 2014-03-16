@@ -4,13 +4,6 @@ module RSpec
     #
     # The default backtrace formatter
     class BacktraceFormatter
-      # This is only used externally by rspec-expectations. Can be removed once
-      # rspec-expectations uses
-      # RSpec.configuration.backtrace_formatter.format_backtrace instead.
-      def self.format_backtrace(backtrace, options = {})
-        RSpec.configuration.backtrace_formatter.format_backtrace(backtrace, options)
-      end
-
       attr_accessor :exclusion_patterns, :inclusion_patterns
 
       def initialize
