@@ -913,6 +913,13 @@ module RSpec::Core
         actual = group.examples.first.exception.backtrace.first.split(':')[0..1]
         expect(actual).to eq(expected)
       end
+
+      it 'generates a pending example when no block is provided' do
+        group = RSpec.describe "group"
+        example = group.pending "just because"
+        group.run
+        expect(example).to be_pending
+      end
     end
 
     describe "pending with metadata" do
