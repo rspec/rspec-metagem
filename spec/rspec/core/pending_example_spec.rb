@@ -36,6 +36,18 @@ RSpec.describe "an example" do
       expect(example).to be_pending_with('because')
       expect(example.execution_result.status).to eq('pending')
     end
+
+    it "does not mutate the :pending attribute of the user metadata when handling mock expectation errors" do
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        example "example", :pending => "because" do
+          expect(RSpec).to receive(:a_message_in_a_bottle)
+        end
+      end
+
+      group.run
+      example = group.examples.first
+      expect(example.metadata[:pending]).to be_truthy
+    end
   end
 
   context "with no block" do
@@ -77,6 +89,18 @@ RSpec.describe "an example" do
       result = example.execution_result
       expect(result.pending_fixed).to eq(true)
       expect(result.status).to eq("failed")
+    end
+
+    it "does not mutate the :pending attribute of the user metadata when the rest of the example passes" do
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        it "does something" do
+          pending
+        end
+      end
+
+      group.run
+      example = group.examples.first
+      expect(example.metadata).to include(:pending => true)
     end
   end
 
