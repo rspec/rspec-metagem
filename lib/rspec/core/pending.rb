@@ -155,7 +155,6 @@ module RSpec
       #
       # @param example [RSpec::Core::Example] the example to mark as fixed
       def self.mark_fixed!(example)
-        example.metadata[:pending] = false
         example.execution_result.pending_fixed = true
       end
     end

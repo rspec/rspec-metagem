@@ -212,7 +212,7 @@ module RSpec
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
       def set_exception(exception, context=nil)
-        if pending?
+        if pending? && !(Pending::PendingExampleFixedError === exception)
           execution_result.pending_exception = exception
         else
           if @exception && context != :dont_print
@@ -321,13 +321,8 @@ module RSpec
       def verify_mocks
         @example_group_instance.verify_mocks_for_rspec
       rescue Exception => e
-        if execution_result.pending_message
+        if pending?
           execution_result.pending_fixed = false
-          # TODO: should we really change this? In the user metadata,
-          # `:pending` indicates the user intends to make the example
-          # pending, not that it actually was -- that's what the
-          # execution_result is for.
-          metadata[:pending] = true
           @exception = nil
         else
           set_exception(e, :dont_print)
