@@ -53,16 +53,10 @@ module RSpec
         hash
       end
 
-      if Proc.method_defined?(:source_location)
-        # @private
-        def self.backtrace_from(block)
-          [block.source_location.join(':')]
-        end
-      else
-        # @private
-        def self.backtrace_from(block)
-          caller
-        end
+      # @private
+      def self.backtrace_from(block)
+        return caller unless block.respond_to?(:source_location)
+        [block.source_location.join(':')]
       end
 
       # @private
