@@ -23,6 +23,19 @@ RSpec.describe "an example" do
       example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('No reason given')
     end
+
+    it "passes if a mock expectation is not satisifed" do
+      group = RSpec::Core::ExampleGroup.describe('group') do
+        example "example", :pending => "because" do
+          expect(RSpec).to receive(:a_message_in_a_bottle)
+        end
+      end
+
+      example = group.examples.first
+      example.run(group.new, double.as_null_object)
+      expect(example).to be_pending_with('because')
+      expect(example.execution_result.status).to eq('pending')
+    end
   end
 
   context "with no block" do
