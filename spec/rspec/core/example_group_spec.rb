@@ -1027,7 +1027,7 @@ module RSpec::Core
         end
 
         it 'generates a pending example group' do
-          group = ExampleGroup.send(method_name) do
+          group = ExampleGroup.send(method_name, "group") do
             it("passes") { }
             it("fails")  { expect(2).to eq(3) }
           end
@@ -1081,7 +1081,7 @@ module RSpec::Core
       end
 
       it 'marks every example as pending' do
-        group = ExampleGroup.describe(:pending => true) do
+        group = ExampleGroup.describe("group", :pending => true) do
           it("passes") { }
           it("fails", :pending => 'unimplemented')  { fail }
         end

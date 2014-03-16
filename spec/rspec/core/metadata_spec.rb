@@ -400,7 +400,7 @@ module RSpec
           value = nil
 
           @describe_line = __LINE__ + 1
-          RSpec.describe(*args) do
+          RSpec.describe("group", *args) do
             value = metadata[:line_number]
           end
 
