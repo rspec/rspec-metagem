@@ -166,10 +166,11 @@ module RSpec
         #   @yield The example group definition
         def alias_example_group_to(name, metadata={})
           (class << self; self; end).__send__(:define_method, name) do |*args, &block|
+            description = args.shift
             combined_metadata = metadata.dup
             combined_metadata.merge!(args.pop) if args.last.is_a? Hash
             args << combined_metadata
-            example_group(*args, &block)
+            example_group(description, *args, &block)
           end
 
           RSpec::Core::DSL.expose_example_group_alias(name)
@@ -287,10 +288,9 @@ module RSpec
       #
       # @see DSL#describe
       def self.example_group(*args, &example_group_block)
-        args << {} unless args.last.is_a?(Hash)
-        child = subclass(self, args, &example_group_block)
-        children << child
-        child
+        subclass(self, args, &example_group_block).tap do |child|
+          children << child
+        end
       end
 
       # An alias of `example_group`. Generally used when grouping
@@ -375,9 +375,10 @@ module RSpec
         # So we need to configure example groups here.
         ensure_example_groups_are_configured
 
-        symbol_description = args.shift if args.first.is_a?(Symbol)
+        description = args.shift
         user_metadata = Metadata.build_hash_from(args)
-        args.unshift(symbol_description) if symbol_description
+        args.unshift(description)
+
         @metadata = Metadata::ExampleGroupHash.create(
           superclass_metadata || {}, user_metadata, *args, &example_group_block
         )

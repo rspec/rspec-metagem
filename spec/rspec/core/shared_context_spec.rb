@@ -46,7 +46,7 @@ RSpec.describe RSpec::SharedContext do
       before(:each) { ordered_hooks << "shared_context"}
     end
 
-    group = RSpec.describe :example => :before_each_hook_order do
+    group = RSpec.describe "description", :example => :before_each_hook_order do
       before(:each) { ordered_hooks << "example_group" }
       example {}
     end

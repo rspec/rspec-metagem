@@ -169,8 +169,8 @@ module RSpec
           end
 
           context "with a Symbol" do
-            it "returns nil" do
-              expect(value_for :group).to be_nil
+            it "returns the symbol" do
+              expect(value_for :group).to be(:group)
             end
           end
 
@@ -204,6 +204,18 @@ module RSpec
             end
 
             expect(value).to be(Array)
+          end
+
+          it 'does not override the :described_class when passing no describe args' do
+            value = nil
+
+            RSpec.describe(String) do
+              describe do
+                value = value_from[self]
+              end
+            end
+
+            expect(value).to be(String)
           end
 
           it "can override a parent group's described class using metdata" do
@@ -388,7 +400,7 @@ module RSpec
           value = nil
 
           @describe_line = __LINE__ + 1
-          RSpec.describe(*args) do
+          RSpec.describe("group", *args) do
             value = metadata[:line_number]
           end
 

@@ -24,6 +24,9 @@ Breaking Changes for 3.0.0:
 * Remove deprecated `RSpec::Core::Example#options`. (Myron Marston)
 * Move `BaseTextFormatter#colorize_summary` to `SummaryNotification#colorize_with`
   (Jon Rowe).
+* `describe some_hash` treated `some_hash` as metadata in RSpec 2.x but
+  will treat it as the described object in RSpec 3.0. Metadata must
+  always come after the description args. (Myron Marston)
 
 Enhancements:
 
@@ -49,6 +52,8 @@ Bug Fixes:
 * Fix ordering problem where descriptions were generated after
   tearing down mocks, which resulted in unexpected exceptions.
   (Bradley Schaefer, Aaron Kromer, Andrey Savchenko)
+* Allow a symbol to be used as an implicit subject (e.g. `describe
+  :foo`). (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)

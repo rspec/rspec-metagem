@@ -207,7 +207,7 @@ module RSpec
 
         def described_class
           candidate = metadata[:description_args].first
-          return candidate unless String === candidate || Symbol === candidate
+          return candidate unless NilClass === candidate || String === candidate
           parent_group = metadata[:parent_example_group]
           parent_group && parent_group[:described_class]
         end
