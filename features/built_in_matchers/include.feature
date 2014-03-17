@@ -89,9 +89,7 @@ Feature: include matcher
   Scenario: hash usage
     Given a file named "hash_include_matcher_spec.rb" with:
       """ruby
-      RSpec.describe Hash do
-        subject { { :a => 7, :b => 5 } }
-
+      RSpec.describe :a => 7, :b => 5 do
         it { is_expected.to include(:a) }
         it { is_expected.to include(:b, :a) }
         it { is_expected.to include(:a => 7) }
