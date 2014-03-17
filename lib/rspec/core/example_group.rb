@@ -165,7 +165,8 @@ module RSpec
         #   @param metadata [Hash] Additional metadata to attach to the example group
         #   @yield The example group definition
         def alias_example_group_to(name, metadata={})
-          (class << self; self; end).__send__(:define_method, name) do |description=nil, *args, &block|
+          (class << self; self; end).__send__(:define_method, name) do |*args, &block|
+            description = args.shift
             combined_metadata = metadata.dup
             combined_metadata.merge!(args.pop) if args.last.is_a? Hash
             args << combined_metadata

@@ -1261,7 +1261,7 @@ module RSpec::Core
         expect(group.metadata).to include(
           :description_args => [nil],
           :description => "",
-          :some => "thing",
+          :some => "thing"
         )
       end
 
