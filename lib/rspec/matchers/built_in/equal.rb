@@ -40,8 +40,16 @@ MESSAGE
           LITERAL_SINGLETONS.include?(expected)
         end
 
+        def actual_inspected
+          if LITERAL_SINGLETONS.include?(actual)
+            actual.inspect
+          else
+            inspect_object(actual)
+          end
+        end
+
         def simple_failure_message
-          "\nexpected #{expected.inspect}\n     got #{inspect_object(actual)}\n"
+          "\nexpected #{expected.inspect}\n     got #{actual_inspected}\n"
         end
 
         def detailed_failure_message
