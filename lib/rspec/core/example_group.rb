@@ -27,12 +27,6 @@ module RSpec
           end
         end
 
-        # @return [String] the current example group description
-        def description
-          description = metadata[:description]
-          RSpec.configuration.format_docstrings_block.call(description)
-        end
-
         delegate_to_metadata :described_class, :file_path, :location
 
         # @private
@@ -62,27 +56,6 @@ module RSpec
             examples << RSpec::Core::Example.new(self, desc, options, block)
             examples.last
           end
-        end
-
-        # @private
-        def pending_metadata_and_block_for(options, block)
-          if String === options[:pending]
-            reason = options[:pending]
-          else
-            options[:pending] = true
-            reason = RSpec::Core::Pending::NO_REASON_GIVEN
-          end
-
-          # Assign :caller so that the callback's source_location isn't used
-          # as the example location.
-          options[:caller] ||= Metadata.backtrace_from(block)
-
-          # This will fail if no block is provided, which is effectively the
-          # same as failing the example so it will be marked correctly as
-          # pending.
-          callback = Proc.new { pending(reason); instance_exec(&block) }
-
-          return options, callback
         end
 
         # Defines an example within a group.
@@ -134,35 +107,6 @@ module RSpec
         # @see example
         define_example_method :pending,  :pending => true
 
-        # Works like `alias_method :name, :example` with the added benefit of
-        # assigning default metadata to the generated example.
-        #
-        # @note Use with caution. This extends the language used in your
-        #   specs, but does not add any additional documentation.  We use this
-        #   in rspec to define methods like `focus` and `xit`, but we also add
-        #   docs for those methods.
-        def alias_example_to name, extra={}
-          (class << self; self; end).define_example_method name, extra
-        end
-
-        # @private
-        # @macro [attach] alias_example_group_to
-        #   @scope class
-        #   @param name [String] The example group doc string
-        #   @param metadata [Hash] Additional metadata to attach to the example group
-        #   @yield The example group definition
-        def alias_example_group_to(name, metadata={})
-          (class << self; self; end).__send__(:define_method, name) do |*args, &block|
-            description = args.shift
-            combined_metadata = metadata.dup
-            combined_metadata.merge!(args.pop) if args.last.is_a? Hash
-            args << combined_metadata
-            example_group(description, *args, &block)
-          end
-
-          RSpec::Core::DSL.expose_example_group_alias(name)
-        end
-
         # @private
         # @macro [attach] define_nested_shared_group_method
         #
@@ -186,17 +130,73 @@ module RSpec
         # Generates a nested example group and includes the shared content
         # mapped to `name` in the nested group.
         define_nested_shared_group_method :it_should_behave_like
+      end
 
-        # Works like `alias_method :name, :it_behaves_like` with the added
-        # benefit of assigning default metadata to the generated example.
-        #
-        # @note Use with caution. This extends the language used in your
-        #   specs, but does not add any additional documentation.  We use this
-        #   in rspec to define `it_should_behave_like` (for backward
-        #   compatibility), but we also add docs for that method.
-        def alias_it_behaves_like_to name, *args, &block
-          (class << self; self; end).define_nested_shared_group_method name, *args, &block
+      # @return [String] the current example group description
+      def self.description
+        description = metadata[:description]
+        RSpec.configuration.format_docstrings_block.call(description)
+      end
+
+      # Works like `alias_method :name, :it_behaves_like` with the added
+      # benefit of assigning default metadata to the generated example.
+      #
+      # @note Use with caution. This extends the language used in your
+      #   specs, but does not add any additional documentation.  We use this
+      #   in rspec to define `it_should_behave_like` (for backward
+      #   compatibility), but we also add docs for that method.
+      def self.alias_it_behaves_like_to name, *args, &block
+        (class << self; self; end).define_nested_shared_group_method name, *args, &block
+      end
+
+      # Works like `alias_method :name, :example` with the added benefit of
+      # assigning default metadata to the generated example.
+      #
+      # @note Use with caution. This extends the language used in your
+      #   specs, but does not add any additional documentation.  We use this
+      #   in rspec to define methods like `focus` and `xit`, but we also add
+      #   docs for those methods.
+      def self.alias_example_to(name, extra={})
+        (class << self; self; end).define_example_method name, extra
+      end
+
+      # @private
+      # @macro [attach] alias_example_group_to
+      #   @scope class
+      #   @param name [String] The example group doc string
+      #   @param metadata [Hash] Additional metadata to attach to the example group
+      #   @yield The example group definition
+      def self.alias_example_group_to(name, metadata={})
+        (class << self; self; end).__send__(:define_method, name) do |*args, &block|
+          description = args.shift
+          combined_metadata = metadata.dup
+          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+          args << combined_metadata
+          example_group(description, *args, &block)
         end
+
+        RSpec::Core::DSL.expose_example_group_alias(name)
+      end
+
+      # @private
+      def self.pending_metadata_and_block_for(options, block)
+        if String === options[:pending]
+          reason = options[:pending]
+        else
+          options[:pending] = true
+          reason = RSpec::Core::Pending::NO_REASON_GIVEN
+        end
+
+        # Assign :caller so that the callback's source_location isn't used
+        # as the example location.
+        options[:caller] ||= Metadata.backtrace_from(block)
+
+        # This will fail if no block is provided, which is effectively the
+        # same as failing the example so it will be marked correctly as
+        # pending.
+        callback = Proc.new { pending(reason); instance_exec(&block) }
+
+        return options, callback
       end
 
       # Includes shared content mapped to `name` directly in the group in which
