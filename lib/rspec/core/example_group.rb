@@ -34,9 +34,6 @@ module RSpec
         end
 
         delegate_to_metadata :described_class, :file_path, :location
-        alias_method :display_name, :description
-        # @private
-        alias_method :describes, :described_class
 
         # @private
         # @macro [attach] define_example_method
