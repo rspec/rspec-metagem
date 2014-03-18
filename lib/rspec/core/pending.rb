@@ -11,7 +11,7 @@ module RSpec
         end
       end
 
-      # If Test::Unit is loaed, we'll use its error as baseclass, so that Test::Unit
+      # If Test::Unit is loaded, we'll use its error as baseclass, so that Test::Unit
       # will report unmet RSpec expectations as failures rather than errors.
       begin
         class PendingExampleFixedError < Test::Unit::AssertionFailedError; end
@@ -41,7 +41,7 @@ module RSpec
       #       # reported as "Pending: no reason given"
       #       it "is pending with no message" do
       #         pending
-      #         raise "broken" 
+      #         raise "broken"
       #       end
       #
       #       # reported as "Pending: something else getting finished"
@@ -69,7 +69,25 @@ module RSpec
       def pending(*args)
         current_example = RSpec.current_example
 
-        if current_example
+        if block_given?
+          raise ArgumentError, <<-EOS.gsub(/^\s+\|/, '')
+            |The semantics of `RSpec::Core::Pending#pending` have changed in
+            |RSpec 3.  In RSpec 2.x, it caused the example to be skipped. In
+            |RSpec 3, the rest of the example is still run but is expected to
+            |fail, and will be marked as a failure (rather than as pending) if
+            |the example passes.
+            |
+            |Passing a block within an example is now deprecated. Marking the
+            |example as pending provides the same behavior in RSpec 3 which was
+            |provided only by the block in RSpec 2.x.
+            |
+            |Move the code in the block provided to `pending` into the rest of
+            |the example body.
+            |
+            |Called from #{CallerFilter.first_non_rspec_line}.
+            |
+          EOS
+        elsif current_example
           Pending.mark_pending! current_example, args.first
         else
           raise "`pending` may not be used outside of examples, such as in " +

@@ -489,6 +489,21 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         expect(group.examples.first.exception.message).to \
           match(/may not be used outside of examples/)
       end
+
+      it "fails with an ArgumentError if a block is provided" do
+        group = RSpec::Core::ExampleGroup.describe('group') do
+          before(:all) do
+            pending { :no_op }
+          end
+          example { fail }
+        end
+        example = group.examples.first
+        group.run
+        expect(example).to fail_with ArgumentError
+        expect(example.exception.message).to match(
+          /Passing a block within an example is now deprecated./
+        )
+      end
     end
 
     context "in around(:each)" do
