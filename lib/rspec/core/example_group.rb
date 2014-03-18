@@ -540,15 +540,10 @@ module RSpec
       # instance_evals the block, capturing and reporting an exception if
       # raised
       def instance_exec_with_rescue(example, context = nil, &hook)
-        begin
-          instance_exec(example, &hook)
-        rescue Exception => e
-          if RSpec.current_example
-            RSpec.current_example.set_exception(e, context)
-          else
-            raise
-          end
-        end
+        instance_exec(example, &hook)
+      rescue Exception => e
+        raise unless ex = RSpec.current_example
+        ex.set_exception(e, context)
       end
     end
   end
