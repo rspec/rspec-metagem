@@ -383,7 +383,7 @@ module RSpec
         attr_accessor :pending_exception
 
         # @return [Boolean] For examples tagged with `:pending`,
-        # this indicates whether or not it now passes.
+        #   this indicates whether or not it now passes.
         attr_accessor :pending_fixed
 
         alias pending_fixed? pending_fixed

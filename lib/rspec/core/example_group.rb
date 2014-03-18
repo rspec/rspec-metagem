@@ -145,12 +145,15 @@ module RSpec
       #   specs, but does not add any additional documentation.  We use this
       #   in rspec to define `it_should_behave_like` (for backward
       #   compatibility), but we also add docs for that method.
-      def self.alias_it_behaves_like_to name, *args, &block
+      def self.alias_it_behaves_like_to(name, *args, &block)
         (class << self; self; end).define_nested_shared_group_method name, *args, &block
       end
 
       # Works like `alias_method :name, :example` with the added benefit of
       # assigning default metadata to the generated example.
+      #
+      # @param name [String] example name alias
+      # @param extra [Hash] metadata for the generated example
       #
       # @note Use with caution. This extends the language used in your
       #   specs, but does not add any additional documentation.  We use this
@@ -291,11 +294,11 @@ module RSpec
       # @see example_group
       alias_example_group_to :context
 
-      # Shortcut to temporarily make an example group pending.
+      # Shortcut to temporarily make an example group skipped.
       # @see example_group
       alias_example_group_to :xdescribe, :skip => "Temporarily skipped with xdescribe"
 
-      # Shortcut to temporarily make an example group pending.
+      # Shortcut to temporarily make an example group skipped.
       # @see example_group
       alias_example_group_to :xcontext,  :skip => "Temporarily skipped with xcontext"
 
