@@ -27,6 +27,10 @@ Breaking Changes for 3.0.0:
 * `describe some_hash` treated `some_hash` as metadata in RSpec 2.x but
   will treat it as the described object in RSpec 3.0. Metadata must
   always come after the description args. (Myron Marston)
+* Remove deprecated `display_name` alias of `ExampleGroup.description`.
+  (Myron Marston)
+* Remove deprecated `describes` alias of `ExampleGroup.described_class`.
+  (Myron Marston)
 
 Enhancements:
 

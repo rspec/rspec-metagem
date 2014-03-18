@@ -354,13 +354,37 @@ module RSpec
 
       # Represents the result of executing an example.
       # Behaves like a hash for backwards compatibility.
-      # @note Needs more docs for the individual attributes.
       class ExecutionResult
         include HashImitatable
 
-        attr_accessor :status, :exception,
-                      :started_at, :finished_at, :run_time,
-                      :pending_message, :pending_exception, :pending_fixed
+        # @return [String] "passed", "failed" or "pending".
+        attr_accessor :status
+
+        # @return [Exception, nil] The failure, if there was one.
+        attr_accessor :exception
+
+        # @return [Time] When the example started.
+        attr_accessor :started_at
+
+        # @return [Time] When the example finished.
+        attr_accessor :finished_at
+
+        # @return [Float] How long the example took in seconds.
+        attr_accessor :run_time
+
+        # @return [String, nil] The reason the example was pending,
+        #   or nil if the example was not pending.
+        attr_accessor :pending_message
+
+        # @return [Exception, nil] The exception triggered while
+        #   executing the pending example. If no exception was triggered
+        #   it would no longer get a status of "pending" unless it was
+        #   tagged with `:skip`.
+        attr_accessor :pending_exception
+
+        # @return [Boolean] For examples tagged with `:pending`,
+        #   this indicates whether or not it now passes.
+        attr_accessor :pending_fixed
 
         alias pending_fixed? pending_fixed
 
