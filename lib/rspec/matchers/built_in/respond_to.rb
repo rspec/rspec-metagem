@@ -69,13 +69,8 @@ module RSpec
         def matches_arity?(actual, name)
           return true unless @expected_arity
 
-          actual_arity = actual.method(name).arity
-          if actual_arity < 0
-            # ~ inverts the one's complement and gives us the number of required args
-            ~actual_arity <= @expected_arity
-          else
-            actual_arity == @expected_arity
-          end
+          signature = Support::MethodSignature.new(actual.method(name))
+          Support::MethodSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
         end
 
         def with_arity
