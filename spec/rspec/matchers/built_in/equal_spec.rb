@@ -49,25 +49,50 @@ module RSpec
         end
       end
 
-      it "prints a special message for `false`" do
-        expected, actual = false, "1"
-        expect {
-          expect(actual).to equal(expected)
-        }.to fail_with "\nexpected false\n     got #{inspect_object(actual)}\n"
+      context "the output for expected" do
+        it "doesn't include extra object detail for `true`" do
+          expected, actual = true, "1"
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected true\n     got #{inspect_object(actual)}\n"
+        end
+
+        it "doesn't include extra object detail for `false`" do
+          expected, actual = false, "1"
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected false\n     got #{inspect_object(actual)}\n"
+        end
+
+        it "doesn't include extra object detail for `nil`" do
+          expected, actual = nil, "1"
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected nil\n     got #{inspect_object(actual)}\n"
+        end
       end
 
-      it "prints a special message for `true`" do
-        expected, actual = true, "1"
-        expect {
-          expect(actual).to equal(expected)
-        }.to fail_with "\nexpected true\n     got #{inspect_object(actual)}\n"
-      end
+      context "the output for actual" do
+        it "doesn't include extra object detail for `true`" do
+          expected, actual = true, false
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected true\n     got false\n"
+        end
 
-      it "prints a special message for `nil`" do
-        expected, actual = nil, "1"
-        expect {
-          expect(actual).to equal(expected)
-        }.to fail_with "\nexpected nil\n     got #{inspect_object(actual)}\n"
+        it "doesn't include extra object detail for `false`" do
+          expected, actual = false, nil
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected false\n     got nil\n"
+        end
+
+        it "doesn't include extra object detail for `nil`" do
+          expected, actual = nil, false
+          expect {
+            expect(actual).to equal(expected)
+          }.to fail_with "\nexpected nil\n     got false\n"
+        end
       end
 
       it "suggests the `eq` matcher on failure" do
