@@ -276,6 +276,7 @@ module RSpec::Core
 
     describe "filtering" do
       let(:world) { World.new }
+      before { allow(RSpec).to receive_messages(:world => world) }
 
       shared_examples "matching filters" do
         context "inclusion" do
@@ -287,7 +288,6 @@ module RSpec::Core
 
           it "includes examples in groups matching filter" do
             group = ExampleGroup.describe("does something", spec_metadata)
-            allow(group).to receive(:world) { world }
             all_examples = [ group.example("first"), group.example("second") ]
 
             expect(group.filtered_examples).to eq(all_examples)
@@ -295,7 +295,6 @@ module RSpec::Core
 
           it "includes examples directly matching filter" do
             group = ExampleGroup.describe("does something")
-            allow(group).to receive(:world) { world }
             filtered_examples = [
               group.example("first", spec_metadata),
               group.example("second", spec_metadata)
@@ -315,7 +314,6 @@ module RSpec::Core
 
           it "excludes examples in groups matching filter" do
             group = ExampleGroup.describe("does something", spec_metadata)
-            allow(group).to receive(:world) { world }
             [ group.example("first"), group.example("second") ]
 
             expect(group.filtered_examples).to be_empty
@@ -323,7 +321,6 @@ module RSpec::Core
 
           it "excludes examples directly matching filter" do
             group = ExampleGroup.describe("does something")
-            allow(group).to receive(:world) { world }
             [
               group.example("first", spec_metadata),
               group.example("second", spec_metadata)

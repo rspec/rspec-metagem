@@ -19,16 +19,6 @@ module RSpec
       include Pending
       extend SharedExampleGroup
 
-      # @private
-      def self.world
-        RSpec.world
-      end
-
-      # @private
-      def self.register
-        world.register(self)
-      end
-
       class << self
         # @private
         def self.delegate_to_metadata(*names)
@@ -246,7 +236,7 @@ module RSpec
 
       # @private
       def self.filtered_examples
-        world.filtered_examples[self]
+        RSpec.world.filtered_examples[self]
       end
 
       # @private
@@ -384,7 +374,7 @@ module RSpec
         )
 
         hooks.register_globals(self, RSpec.configuration.hooks)
-        world.configure_group(self)
+        RSpec.world.configure_group(self)
       end
 
       # @private
