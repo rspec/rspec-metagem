@@ -19,118 +19,123 @@ module RSpec
       include Pending
       extend SharedExampleGroup
 
-      class << self
+      unless respond_to?(:define_singleton_method)
         # @private
-        def self.delegate_to_metadata(*names)
-          names.each do |name|
-            define_method(name) { metadata.fetch(name) }
-          end
+        def self.define_singleton_method(*a, &b)
+          (class << self; self; end).__send__(:define_method, *a, &b)
         end
-
-        delegate_to_metadata :described_class, :file_path, :location
-
-        # @private
-        # @macro [attach] define_example_method
-        #   @param name [String]
-        #   @param extra_options [Hash]
-        #   @param implementation [Block]
-        #   @yield [Example] the example object
-        def self.define_example_method(name, extra_options={})
-          define_method(name) do |*all_args, &block|
-            desc, *args = *all_args
-            options = Metadata.build_hash_from(args)
-            options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
-            options.update(extra_options)
-
-            # Metadata inheritance normally happens in `Example#initialize`,
-            # but for `:pending` specifically we need it earlier.
-            pending_metadata = options[:pending] || metadata[:pending]
-
-            if pending_metadata
-              options, block = ExampleGroup.pending_metadata_and_block_for(
-                options.merge(:pending => pending_metadata),
-                block
-              )
-            end
-
-            examples << RSpec::Core::Example.new(self, desc, options, block)
-            examples.last
-          end
-        end
-
-        # Defines an example within a group.
-        # @example
-        #   example do
-        #   end
-        #
-        #   example "does something" do
-        #   end
-        #
-        #   example "does something", :with => 'additional metadata' do
-        #   end
-        #
-        #   example "does something" do |ex|
-        #     # ex is the Example object that evals this block
-        #   end
-        define_example_method :example
-        # Defines an example within a group.
-        define_example_method :it
-        # Defines an example within a group.
-        # This is here primarily for backward compatibility with early versions
-        # of RSpec which used `context` and `specify` instead of `describe` and
-        # `it`.
-        define_example_method :specify
-
-        # Shortcut to define an example with `:focus` => true
-        # @see example
-        define_example_method :focus,   :focused => true, :focus => true
-        # Shortcut to define an example with `:focus` => true
-        # @see example
-        define_example_method :focused, :focused => true, :focus => true
-        # Shortcut to define an example with `:focus` => true
-        # @see example
-        define_example_method :fit,     :focused => true, :focus => true
-
-        # Shortcut to define an example with :skip => 'Temporarily skipped with xexample'
-        # @see example
-        define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
-        # Shortcut to define an example with :skip => 'Temporarily skipped with xit'
-        # @see example
-        define_example_method :xit,      :skip => 'Temporarily skipped with xit'
-        # Shortcut to define an example with :skip => 'Temporarily skipped with xspecify'
-        # @see example
-        define_example_method :xspecify, :skip => 'Temporarily skipped with xspecify'
-        # Shortcut to define an example with :skip => true
-        # @see example
-        define_example_method :skip,     :skip => true
-        # Shortcut to define an example with :pending => true
-        # @see example
-        define_example_method :pending,  :pending => true
-
-        # @private
-        # @macro [attach] define_nested_shared_group_method
-        #
-        #   @see SharedExampleGroup
-        def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
-          define_method(new_name) do |name, *args, &customization_block|
-            # Pass :caller so the :location metadata is set properly...
-            # otherwise, it'll be set to the next line because that's
-            # the block's source_location.
-            group = example_group("#{report_label} #{name}", :caller => caller) do
-              find_and_eval_shared("examples", name, *args, &customization_block)
-            end
-            group.metadata[:shared_group_name] = name
-            group
-          end
-        end
-
-        # Generates a nested example group and includes the shared content
-        # mapped to `name` in the nested group.
-        define_nested_shared_group_method :it_behaves_like, "behaves like"
-        # Generates a nested example group and includes the shared content
-        # mapped to `name` in the nested group.
-        define_nested_shared_group_method :it_should_behave_like
       end
+
+      # @private
+      def self.delegate_to_metadata(*names)
+        names.each do |name|
+          define_singleton_method(name) { metadata.fetch(name) }
+        end
+      end
+
+      delegate_to_metadata :described_class, :file_path, :location
+
+      # @private
+      # @macro [attach] define_example_method
+      #   @param name [String]
+      #   @param extra_options [Hash]
+      #   @param implementation [Block]
+      #   @yield [Example] the example object
+      def self.define_example_method(name, extra_options={})
+        define_singleton_method(name) do |*all_args, &block|
+          desc, *args = *all_args
+          options = Metadata.build_hash_from(args)
+          options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
+          options.update(extra_options)
+
+          # Metadata inheritance normally happens in `Example#initialize`,
+          # but for `:pending` specifically we need it earlier.
+          pending_metadata = options[:pending] || metadata[:pending]
+
+          if pending_metadata
+            options, block = ExampleGroup.pending_metadata_and_block_for(
+              options.merge(:pending => pending_metadata),
+              block
+            )
+          end
+
+          examples << RSpec::Core::Example.new(self, desc, options, block)
+          examples.last
+        end
+      end
+
+      # Defines an example within a group.
+      # @example
+      #   example do
+      #   end
+      #
+      #   example "does something" do
+      #   end
+      #
+      #   example "does something", :with => 'additional metadata' do
+      #   end
+      #
+      #   example "does something" do |ex|
+      #     # ex is the Example object that evals this block
+      #   end
+      define_example_method :example
+      # Defines an example within a group.
+      define_example_method :it
+      # Defines an example within a group.
+      # This is here primarily for backward compatibility with early versions
+      # of RSpec which used `context` and `specify` instead of `describe` and
+      # `it`.
+      define_example_method :specify
+
+      # Shortcut to define an example with `:focus` => true
+      # @see example
+      define_example_method :focus,   :focused => true, :focus => true
+      # Shortcut to define an example with `:focus` => true
+      # @see example
+      define_example_method :focused, :focused => true, :focus => true
+      # Shortcut to define an example with `:focus` => true
+      # @see example
+      define_example_method :fit,     :focused => true, :focus => true
+
+      # Shortcut to define an example with :skip => 'Temporarily skipped with xexample'
+      # @see example
+      define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
+      # Shortcut to define an example with :skip => 'Temporarily skipped with xit'
+      # @see example
+      define_example_method :xit,      :skip => 'Temporarily skipped with xit'
+      # Shortcut to define an example with :skip => 'Temporarily skipped with xspecify'
+      # @see example
+      define_example_method :xspecify, :skip => 'Temporarily skipped with xspecify'
+      # Shortcut to define an example with :skip => true
+      # @see example
+      define_example_method :skip,     :skip => true
+      # Shortcut to define an example with :pending => true
+      # @see example
+      define_example_method :pending,  :pending => true
+
+      # @private
+      # @macro [attach] define_nested_shared_group_method
+      #
+      #   @see SharedExampleGroup
+      def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
+        define_singleton_method(new_name) do |name, *args, &customization_block|
+          # Pass :caller so the :location metadata is set properly...
+          # otherwise, it'll be set to the next line because that's
+          # the block's source_location.
+          group = example_group("#{report_label} #{name}", :caller => caller) do
+            find_and_eval_shared("examples", name, *args, &customization_block)
+          end
+          group.metadata[:shared_group_name] = name
+          group
+        end
+      end
+
+      # Generates a nested example group and includes the shared content
+      # mapped to `name` in the nested group.
+      define_nested_shared_group_method :it_behaves_like, "behaves like"
+      # Generates a nested example group and includes the shared content
+      # mapped to `name` in the nested group.
+      define_nested_shared_group_method :it_should_behave_like
 
       # @return [String] the current example group description
       def self.description
@@ -146,7 +151,7 @@ module RSpec
       #   in rspec to define `it_should_behave_like` (for backward
       #   compatibility), but we also add docs for that method.
       def self.alias_it_behaves_like_to(name, *args, &block)
-        (class << self; self; end).define_nested_shared_group_method name, *args, &block
+        define_nested_shared_group_method name, *args, &block
       end
 
       # Works like `alias_method :name, :example` with the added benefit of
@@ -160,7 +165,7 @@ module RSpec
       #   in rspec to define methods like `focus` and `xit`, but we also add
       #   docs for those methods.
       def self.alias_example_to(name, extra={})
-        (class << self; self; end).define_example_method name, extra
+        define_example_method name, extra
       end
 
       # @private
@@ -170,7 +175,7 @@ module RSpec
       #   @param metadata [Hash] Additional metadata to attach to the example group
       #   @yield The example group definition
       def self.alias_example_group_to(name, metadata={})
-        (class << self; self; end).__send__(:define_method, name) do |*args, &block|
+        define_singleton_method(name) do |*args, &block|
           description = args.shift
           combined_metadata = metadata.dup
           combined_metadata.merge!(args.pop) if args.last.is_a? Hash
