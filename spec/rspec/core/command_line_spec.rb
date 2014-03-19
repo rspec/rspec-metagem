@@ -66,24 +66,24 @@ module RSpec::Core
         before { allow(config).to receive :load_spec_files }
 
         it "runs before suite hooks" do
-          expect(config.hooks).to receive(:run).with(:before, :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext))
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks" do
-          expect(config.hooks).to receive(:run).with(:after, :suite)
+          expect(config.hooks).to receive(:run).with(:after, :suite, instance_of(SuiteHookContext))
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks even after an error" do
-          expect(config.hooks).to receive(:run).with(:before, :suite).and_raise "this error"
-          expect(config.hooks).to receive(:run).with(:after , :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext)).and_raise "this error"
+          expect(config.hooks).to receive(:run).with(:after , :suite, instance_of(SuiteHookContext))
           expect do
             command_line = build_command_line
             command_line.run err, out
-          end.to raise_error
+          end.to raise_error("this error")
         end
       end
     end

@@ -526,15 +526,13 @@ module RSpec
       def described_class
         self.class.described_class
       end
+    end
 
-      # @private
-      # instance_execs the block, capturing and reporting an exception if
-      # raised
-      def instance_exec_with_rescue(example, context = nil, &hook)
-        instance_exec(example, &hook)
-      rescue Exception => e
-        raise unless ex = RSpec.current_example
-        ex.set_exception(e, context)
+    # @private
+    # Unnamed example group used by `SuiteHookContext`.
+    class AnonymousExampleGroup < ExampleGroup
+      def self.metadata
+        {}
       end
     end
   end

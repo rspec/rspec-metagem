@@ -69,10 +69,30 @@ module RSpec::Core
 
             expect { |b|
               instance.send(type, scope, &b)
-              instance.hooks.run(type, scope)
+              instance.hooks.run(type, scope, double("Example").as_null_object)
             }.not_to yield_control
           end
         end
+      end
+    end
+
+    context "when an error happens in `after(:suite)`" do
+      it 'allows the error to propagate to the user' do
+        RSpec.configuration.after(:suite) { 1 / 0 }
+
+        expect {
+          RSpec.configuration.hooks.run(:after, :suite, SuiteHookContext.new)
+        }.to raise_error(ZeroDivisionError)
+      end
+    end
+
+    context "when an error happens in `before(:suite)`" do
+      it 'allows the error to propagate to the user' do
+        RSpec.configuration.before(:suite) { 1 / 0 }
+
+        expect {
+          RSpec.configuration.hooks.run(:before, :suite, SuiteHookContext.new)
+        }.to raise_error(ZeroDivisionError)
       end
     end
 

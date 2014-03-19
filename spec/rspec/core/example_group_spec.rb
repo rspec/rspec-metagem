@@ -1546,5 +1546,10 @@ module RSpec::Core
         end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
       end
     end
+
+    it 'minimizes the number of methods that users could inadvertantly overwrite' do
+      methods = ExampleGroup.instance_methods(false).map(&:to_sym)
+      expect(methods).to contain_exactly(:described_class)
+    end
   end
 end
