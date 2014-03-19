@@ -668,48 +668,62 @@ module RSpec
 
       # Creates a method that delegates to `example` including the submitted
       # `args`. Used internally to add variants of `example` like `pending`:
+      # @param name [String] example name alias
+      # @param args [Array<Symbol>, Hash] metadata for the generated example
+      #
+      # @note The specific example alias below (`pending`) is already
+      #   defined for you.
+      # @note Use with caution. This extends the language used in your
+      #   specs, but does not add any additional documentation.  We use this
+      #   in rspec to define methods like `focus` and `xit`, but we also add
+      #   docs for those methods.
       #
       # @example
-      #     alias_example_to :pending, :pending => true
+      #   RSpec.configure do |config|
+      #     config.alias_example_to :pending, :pending => true
+      #   end
       #
-      #     # This lets you do this:
+      #   # This lets you do this:
       #
-      #     describe Thing do
-      #       pending "does something" do
-      #         thing = Thing.new
-      #       end
+      #   describe Thing do
+      #     pending "does something" do
+      #       thing = Thing.new
       #     end
+      #   end
       #
-      #     # ... which is the equivalent of
+      #   # ... which is the equivalent of
       #
-      #     describe Thing do
-      #       it "does something", :pending => true do
-      #         thing = Thing.new
-      #       end
+      #   describe Thing do
+      #     it "does something", :pending => true do
+      #       thing = Thing.new
       #     end
-      def alias_example_to(new_name, *args)
+      #   end
+      def alias_example_to(name, *args)
         extra_options = Metadata.build_hash_from(args)
-        RSpec::Core::ExampleGroup.alias_example_to(new_name, extra_options)
+        RSpec::Core::ExampleGroup.define_example_method(name, extra_options)
       end
 
       # Creates a method that defines an example group with the provided
       # metadata. Can be used to define example group/metadata shortcuts.
       #
       # @example
+      #   RSpec.configure do |config|
       #     alias_example_group_to :describe_model, :type => :model
-      #     shared_context_for "model tests", :type => :model do
-      #       # define common model test helper methods, `let` declarations, etc
-      #     end
+      #   end
       #
-      #     # This lets you do this:
+      #   shared_context_for "model tests", :type => :model do
+      #     # define common model test helper methods, `let` declarations, etc
+      #   end
       #
-      #     RSpec.describe_model User do
-      #     end
+      #   # This lets you do this:
       #
-      #     # ... which is the equivalent of
+      #   RSpec.describe_model User do
+      #   end
       #
-      #     RSpec.describe User, :type => :model do
-      #     end
+      #   # ... which is the equivalent of
+      #
+      #   RSpec.describe User, :type => :model do
+      #   end
       #
       # @note The defined aliased will also be added to the top level
       #       (e.g. `main` and from within modules) if
@@ -725,27 +739,31 @@ module RSpec
       # language (like "it_has_behavior" or "it_behaves_like") to be
       # employed when including shared examples.
       #
-      # Example:
+      # @example
+      #   RSpec.configure do |config|
+      #     config.alias_it_behaves_like_to(:it_has_behavior, 'has behavior:')
+      #   end
       #
-      #     alias_it_behaves_like_to(:it_has_behavior, 'has behavior:')
+      #   # allows the user to include a shared example group like:
       #
-      # allows the user to include a shared example group like:
-      #
-      #     describe Entity do
-      #       it_has_behavior 'sortability' do
-      #         let(:sortable) { Entity.new }
-      #       end
+      #   describe Entity do
+      #     it_has_behavior 'sortability' do
+      #       let(:sortable) { Entity.new }
       #     end
+      #   end
       #
-      # which is reported in the output as:
+      #   # which is reported in the output as:
+      #   # Entity
+      #   #   has behavior: sortability
+      #   #     ...sortability examples here
       #
-      #     Entity
-      #       has behavior: sortability
-      #         # sortability examples here
+      # @note Use with caution. This extends the language used in your
+      #   specs, but does not add any additional documentation.  We use this
+      #   in rspec to define `it_should_behave_like` (for backward
+      #   compatibility), but we also add docs for that method.
       def alias_it_behaves_like_to(new_name, report_label = '')
-        RSpec::Core::ExampleGroup.alias_it_behaves_like_to(new_name, report_label)
+        RSpec::Core::ExampleGroup.define_nested_shared_group_method(new_name, report_label)
       end
-
       alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
 
       # Adds key/value pairs to the `inclusion_filter`. If `args`

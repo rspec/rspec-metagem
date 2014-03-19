@@ -31,6 +31,12 @@ Breaking Changes for 3.0.0:
   (Myron Marston)
 * Remove deprecated `describes` alias of `ExampleGroup.described_class`.
   (Myron Marston)
+* Remove deprecated `RSpec::Core::ExampleGroup.alias_it_behaves_like_to`.
+  Use `RSpec::Core::Configuration#alias_it_behaves_like_to` instead.
+  (Myron Marston)
+* Remove deprecated `RSpec::Core::ExampleGroup.alias_example_to`.
+  Use `RSpec::Core::Configuration#alias_example_to` instead.
+  (Myron Marston)
 
 Enhancements:
 
