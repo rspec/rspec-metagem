@@ -66,7 +66,7 @@ Spork.prefork do
       object = Object.new
       object.extend(RSpec::Core::SharedExampleGroup)
 
-      (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+      (class << RSpec::Core::ExampleGroup; self; end).class_exec do
         alias_method :orig_run, :run
         def run(reporter=nil)
           RSpec.current_example = nil
@@ -75,10 +75,10 @@ Spork.prefork do
       end
 
       RSpec::Mocks.with_temporary_scope do
-        object.instance_eval(&block)
+        object.instance_exec(&block)
       end
     ensure
-      (class << RSpec::Core::ExampleGroup; self; end).class_eval do
+      (class << RSpec::Core::ExampleGroup; self; end).class_exec do
         remove_method :run
         alias_method :run, :orig_run
         remove_method :orig_run

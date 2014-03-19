@@ -1193,7 +1193,7 @@ module RSpec::Core
       module IncludeOrExtendMeOnce
         def self.included(host)
           raise "included again" if host.instance_methods.include?(:foobar)
-          host.class_eval { def foobar; end }
+          host.class_exec { def foobar; end }
         end
 
         def self.extended(host)
@@ -1227,13 +1227,13 @@ module RSpec::Core
       after do
         RSpec::Core::DSL.example_group_aliases.delete(:my_group_method)
 
-        RSpec.module_eval do
+        RSpec.module_exec do
           class << self
             undef :my_group_method if method_defined? :my_group_method
           end
         end
 
-        RSpec::Core::ExampleGroup.module_eval do
+        RSpec::Core::ExampleGroup.module_exec do
           class << self
             undef :my_group_method if method_defined? :my_group_method
           end
@@ -1279,7 +1279,7 @@ module RSpec::Core
     describe "#alias_example_to" do
       it_behaves_like "metadata hash builder" do
         after do
-          RSpec::Core::ExampleGroup.module_eval do
+          RSpec::Core::ExampleGroup.module_exec do
             class << self
               undef :my_example_method if method_defined? :my_example_method
             end

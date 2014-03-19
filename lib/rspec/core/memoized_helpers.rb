@@ -131,7 +131,7 @@ module RSpec
         def self.isolate_for_all_hook(example_group_instance)
           hash = self
 
-          example_group_instance.instance_eval do
+          example_group_instance.instance_exec do
             @__memoized = hash
 
             begin

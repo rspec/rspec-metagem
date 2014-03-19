@@ -15,7 +15,7 @@ RSpec::Matchers.define :map_specs do |specs|
 
   def prepare(autotest)
     find_order = @specs.dup << @file
-    autotest.instance_eval { @find_order = find_order }
+    autotest.instance_exec { @find_order = find_order }
     autotest
   end
 end
@@ -59,7 +59,7 @@ RSpec::Matchers.define :pass do
   end
 end
 
-RSpec::Matchers.module_eval do
+RSpec::Matchers.module_exec do
   alias_method :have_failed_with, :fail_with
   alias_method :have_passed, :pass
 end

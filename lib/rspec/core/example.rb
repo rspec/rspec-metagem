@@ -106,7 +106,7 @@ module RSpec
       alias_method :skipped?, :skip
 
       # @api private
-      # instance_evals the block passed to the constructor in the context of
+      # instance_execs the block passed to the constructor in the context of
       # the instance of {ExampleGroup}.
       # @param example_group_instance the instance of an ExampleGroup subclass
       def run(example_group_instance, reporter)

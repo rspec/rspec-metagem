@@ -33,13 +33,13 @@ module RSpec::Core
     it "assigns ConfigurationOptions built from Array of options to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(%w[--color])
-      expect(command_line.instance_eval { @options.options }).to eq(config_options.options)
+      expect(command_line.instance_exec { @options.options }).to eq(config_options.options)
     end
 
     it "assigns submitted ConfigurationOptions to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(config_options)
-      expect(command_line.instance_eval { @options }).to be(config_options)
+      expect(command_line.instance_exec { @options }).to be(config_options)
     end
 
     describe "#run" do
@@ -97,7 +97,7 @@ module RSpec::Core
         config.output_stream = output_file
         command_line = build_command_line
         command_line.run err, nil
-        expect(command_line.instance_eval { @configuration.output_stream }).to eq output_file
+        expect(command_line.instance_exec { @configuration.output_stream }).to eq output_file
       end
     end
 
