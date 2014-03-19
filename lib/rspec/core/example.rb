@@ -5,6 +5,10 @@ module RSpec
     # method exposed to examples, {Hooks#before before} and {Hooks#after after}
     # hooks, and yielded to {Hooks#around around} hooks.
     #
+    # This allows us to provide rich metadata about each individual
+    # example without adding tons of methods directly to the ExampleGroup
+    # that users may inadvertantly redefine.
+    #
     # Useful for configuring logging and/or taking some action based
     # on the state of an example's metadata.
     #
@@ -33,6 +37,8 @@ module RSpec
     #     end
     #
     # @see ExampleGroup
+    # @note Example blocks are evaluated in the context of an instance
+    # of an `ExampleGroup`, not in the context of an instance of `Example`.
     class Example
       # @private
       #

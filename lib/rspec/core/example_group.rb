@@ -12,6 +12,11 @@ module RSpec
     # The object returned by `it "does something"` is an instance of Example,
     # which serves as a wrapper for an instance of the ExampleGroup in which it
     # is declared.
+    #
+    # Example group bodies (e.g. `describe` or `context` blocks) are evaluated
+    # in the context of a new subclass of ExampleGroup. Individual examples are
+    # evalutaed in the context of an instance of the specific ExampleGroup subclass
+    # to which they belong.
     class ExampleGroup
       extend  Hooks
 
@@ -37,10 +42,24 @@ module RSpec
 
       # @private
       # @macro [attach] define_example_method
+      #   @!scope class
       #   @param name [String]
       #   @param extra_options [Hash]
       #   @param implementation [Block]
       #   @yield [Example] the example object
+      #   @example
+      #     $1 do
+      #     end
+      #
+      #     $1 "does something" do
+      #     end
+      #
+      #     $1 "does something", :with => 'additional metadata' do
+      #     end
+      #
+      #     $1 "does something" do |ex|
+      #       # ex is the Example object that contains metadata about the example
+      #     end
       def self.define_example_method(name, extra_options={})
         define_singleton_method(name) do |*all_args, &block|
           desc, *args = *all_args
@@ -65,56 +84,49 @@ module RSpec
       end
 
       # Defines an example within a group.
-      # @example
-      #   example do
-      #   end
-      #
-      #   example "does something" do
-      #   end
-      #
-      #   example "does something", :with => 'additional metadata' do
-      #   end
-      #
-      #   example "does something" do |ex|
-      #     # ex is the Example object that evals this block
-      #   end
       define_example_method :example
       # Defines an example within a group.
+      # This is the primary API to define a code example.
       define_example_method :it
       # Defines an example within a group.
-      # This is here primarily for backward compatibility with early versions
-      # of RSpec which used `context` and `specify` instead of `describe` and
-      # `it`.
+      # Useful for when your docstring does not read well off of `it`.
+      # @example
+      #  RSpec.describe MyClass do
+      #    specify "#do_something is deprecated" do
+      #      # ...
+      #    end
+      #  end
       define_example_method :specify
 
-      # Shortcut to define an example with `:focus` => true
+      # Shortcut to define an example with `:focus => true`
       # @see example
       define_example_method :focus,   :focused => true, :focus => true
-      # Shortcut to define an example with `:focus` => true
+      # Shortcut to define an example with `:focus => true`
       # @see example
       define_example_method :focused, :focused => true, :focus => true
-      # Shortcut to define an example with `:focus` => true
+      # Shortcut to define an example with `:focus => true`
       # @see example
       define_example_method :fit,     :focused => true, :focus => true
 
-      # Shortcut to define an example with :skip => 'Temporarily skipped with xexample'
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`
       # @see example
       define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
-      # Shortcut to define an example with :skip => 'Temporarily skipped with xit'
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xit'`
       # @see example
       define_example_method :xit,      :skip => 'Temporarily skipped with xit'
-      # Shortcut to define an example with :skip => 'Temporarily skipped with xspecify'
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xspecify'`
       # @see example
       define_example_method :xspecify, :skip => 'Temporarily skipped with xspecify'
-      # Shortcut to define an example with :skip => true
+      # Shortcut to define an example with `:skip => true`
       # @see example
       define_example_method :skip,     :skip => true
-      # Shortcut to define an example with :pending => true
+      # Shortcut to define an example with `:pending => true`
       # @see example
       define_example_method :pending,  :pending => true
 
       # @private
       # @macro [attach] define_nested_shared_group_method
+      #   @!scope class
       #
       #   @see SharedExampleGroup
       def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
@@ -145,7 +157,7 @@ module RSpec
 
       # @private
       # @macro [attach] alias_example_group_to
-      #   @scope class
+      #   @!scope class
       #   @param name [String] The example group doc string
       #   @param metadata [Hash] Additional metadata to attach to the example group
       #   @yield The example group definition
