@@ -56,7 +56,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       RSpec.configuration.expecting_with_rspec = frameworks.include?(:rspec)
 
       if frameworks.include?(:stdlib)
-        example_group.class_eval do
+        example_group.class_exec do
           def assert(val)
             raise "Expected #{val} to be true" unless val
           end

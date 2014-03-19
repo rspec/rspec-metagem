@@ -33,13 +33,13 @@ module RSpec::Core
     it "assigns ConfigurationOptions built from Array of options to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(%w[--color])
-      expect(command_line.instance_eval { @options.options }).to eq(config_options.options)
+      expect(command_line.instance_exec { @options.options }).to eq(config_options.options)
     end
 
     it "assigns submitted ConfigurationOptions to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(config_options)
-      expect(command_line.instance_eval { @options }).to be(config_options)
+      expect(command_line.instance_exec { @options }).to be(config_options)
     end
 
     describe "#run" do
@@ -66,24 +66,24 @@ module RSpec::Core
         before { allow(config).to receive :load_spec_files }
 
         it "runs before suite hooks" do
-          expect(config.hooks).to receive(:run).with(:before, :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext))
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks" do
-          expect(config.hooks).to receive(:run).with(:after, :suite)
+          expect(config.hooks).to receive(:run).with(:after, :suite, instance_of(SuiteHookContext))
           command_line = build_command_line
           command_line.run err, out
         end
 
         it "runs after suite hooks even after an error" do
-          expect(config.hooks).to receive(:run).with(:before, :suite).and_raise "this error"
-          expect(config.hooks).to receive(:run).with(:after , :suite)
+          expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext)).and_raise "this error"
+          expect(config.hooks).to receive(:run).with(:after , :suite, instance_of(SuiteHookContext))
           expect do
             command_line = build_command_line
             command_line.run err, out
-          end.to raise_error
+          end.to raise_error("this error")
         end
       end
     end
@@ -97,7 +97,7 @@ module RSpec::Core
         config.output_stream = output_file
         command_line = build_command_line
         command_line.run err, nil
-        expect(command_line.instance_eval { @configuration.output_stream }).to eq output_file
+        expect(command_line.instance_exec { @configuration.output_stream }).to eq output_file
       end
     end
 

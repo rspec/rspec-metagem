@@ -105,6 +105,7 @@ module RSpec
 
         def file_path_and_line_number_from(backtrace)
           first_caller_from_outside_rspec = backtrace.detect { |l| l !~ CallerFilter::LIB_REGEX }
+          first_caller_from_outside_rspec ||= backtrace.first
           /(.+?):(\d+)(?:|:\d+)/.match(first_caller_from_outside_rspec).captures
         end
 

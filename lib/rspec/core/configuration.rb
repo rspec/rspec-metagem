@@ -329,7 +329,7 @@ module RSpec
       #     RSpec.configuration.foo? # returns true if foo returns anything but nil or false
       def add_setting(name, opts={})
         default = opts.delete(:default)
-        (class << self; self; end).class_eval do
+        (class << self; self; end).class_exec do
           add_setting(name, opts)
         end
         __send__("#{name}=", default) if default
@@ -1093,7 +1093,7 @@ module RSpec
       #     end
       #   end
       def expose_current_running_example_as(method_name)
-        ExposeCurrentExample.module_eval do
+        ExposeCurrentExample.module_exec do
           extend RSpec::SharedContext
           let(method_name) { |ex| ex }
         end

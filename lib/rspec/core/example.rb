@@ -106,7 +106,7 @@ module RSpec
       alias_method :skipped?, :skip
 
       # @api private
-      # instance_evals the block passed to the constructor in the context of
+      # instance_execs the block passed to the constructor in the context of
       # the instance of {ExampleGroup}.
       # @param example_group_instance the instance of an ExampleGroup subclass
       def run(example_group_instance, reporter)
@@ -253,8 +253,10 @@ module RSpec
       end
 
       # @private
-      def instance_exec_with_rescue(context = nil, &block)
-        @example_group_instance.instance_exec_with_rescue(self, context, &block)
+      def instance_exec_with_rescue(context, &block)
+        @example_group_instance.instance_exec(self, &block)
+      rescue Exception => e
+        set_exception(e, context)
       end
 
       # @private
@@ -402,6 +404,19 @@ module RSpec
           RSpec.deprecate("Treating `metadata[:execution_result]` as a hash",
                           :replacement => "the attributes methods to access the data")
         end
+      end
+    end
+
+    # @private
+    # Provides an execution context for before/after :suite hooks.
+    class SuiteHookContext < Example
+      def initialize
+        super(AnonymousExampleGroup, "", {})
+      end
+
+      # To ensure we don't silence errors...
+      def set_exception(exception, context=nil)
+        raise exception
       end
     end
   end

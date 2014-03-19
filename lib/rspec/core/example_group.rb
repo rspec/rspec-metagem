@@ -227,7 +227,7 @@ module RSpec
         end
 
         module_exec(*args, &shared_block)
-        module_eval(&customization_block) if customization_block
+        module_exec(&customization_block) if customization_block
       end
 
       # @private
@@ -315,7 +315,7 @@ module RSpec
         subclass = Class.new(parent)
         subclass.set_it_up(*args, &example_group_block)
         ExampleGroups.assign_const(subclass)
-        subclass.module_eval(&example_group_block) if example_group_block
+        subclass.module_exec(&example_group_block) if example_group_block
 
         # The LetDefinitions module must be included _after_ other modules
         # to ensure that it takes precedence when there are name collisions.
@@ -526,15 +526,13 @@ module RSpec
       def described_class
         self.class.described_class
       end
+    end
 
-      # @private
-      # instance_evals the block, capturing and reporting an exception if
-      # raised
-      def instance_exec_with_rescue(example, context = nil, &hook)
-        instance_exec(example, &hook)
-      rescue Exception => e
-        raise unless ex = RSpec.current_example
-        ex.set_exception(e, context)
+    # @private
+    # Unnamed example group used by `SuiteHookContext`.
+    class AnonymousExampleGroup < ExampleGroup
+      def self.metadata
+        {}
       end
     end
   end

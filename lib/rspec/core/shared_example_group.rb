@@ -125,7 +125,7 @@ module RSpec
           unless args.empty?
             mod = Module.new
             (class << mod; self; end).__send__(:define_method, :included) do |host|
-              host.class_eval(&block)
+              host.class_exec(&block)
             end
             RSpec.configuration.include mod, *args
           end
@@ -191,5 +191,5 @@ module RSpec
     end
   end
 
-  instance_eval(&Core::SharedExampleGroup::TopLevelDSL.definitions)
+  instance_exec(&Core::SharedExampleGroup::TopLevelDSL.definitions)
 end

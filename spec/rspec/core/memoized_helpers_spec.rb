@@ -269,7 +269,7 @@ module RSpec::Core
               subject { [1, 2, 3] }
 
               describe 'first' do
-                module_eval(&block) if block
+                module_exec(&block) if block
 
                 subject(:list) { super().first(2) }
                 ex = example { subject }
