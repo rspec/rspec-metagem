@@ -567,13 +567,9 @@ module RSpec::Core
       end
     end
 
-    [:focus, :focused, :fit].each do |example_alias|
+    [:focus, :fit].each do |example_alias|
       describe "##{example_alias}" do
         let(:focused_example) { ExampleGroup.describe.send example_alias, "a focused example" }
-
-        it 'defines an example that can be filtered with :focused => true' do
-          expect(focused_example.metadata[:focused]).to be_truthy
-        end
 
         it 'defines an example that can be filtered with :focus => true' do
           expect(focused_example.metadata[:focus]).to be_truthy
@@ -1047,25 +1043,23 @@ module RSpec::Core
           group.children.inject(examples) { |exs, child| exs + executed_examples_of(child) }
         end
 
-        [:focus, :focused].each do |metadata|
-          it "generates an example group that can be filtered with :#{metadata}" do
-            RSpec.configuration.filter_run metadata
+        it "generates an example group that can be filtered with :focus" do
+          RSpec.configuration.filter_run :focus
 
-            parent_group = ExampleGroup.describe do
-              describe "not focused" do
-                example("not focused example") { }
-              end
-
-              send(method_name, "focused") do
-                example("focused example") { }
-              end
+          parent_group = ExampleGroup.describe do
+            describe "not focused" do
+              example("not focused example") { }
             end
 
-            parent_group.run
-
-            executed_descriptions = executed_examples_of(parent_group).map(&:description)
-            expect(executed_descriptions).to eq(["focused example"])
+            send(method_name, "focused") do
+              example("focused example") { }
+            end
           end
+
+          parent_group.run
+
+          executed_descriptions = executed_examples_of(parent_group).map(&:description)
+          expect(executed_descriptions).to eq(["focused example"])
         end
       end
     end

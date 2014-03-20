@@ -132,13 +132,10 @@ module RSpec
 
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :focus,   :focused => true, :focus => true
+      define_example_method :focus,   :focus => true
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :focused, :focused => true, :focus => true
-      # Shortcut to define an example with `:focus => true`
-      # @see example
-      define_example_method :fit,     :focused => true, :focus => true
+      define_example_method :fit,     :focus => true
 
       # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`
       # @see example
@@ -221,11 +218,11 @@ module RSpec
 
       # Shortcut to define an example group with `:focus` => true
       # @see example_group
-      define_example_group_method :fdescribe, :focus => true, :focused => true
+      define_example_group_method :fdescribe, :focus => true
 
       # Shortcut to define an example group with `:focus` => true
       # @see example_group
-      define_example_group_method :fcontext,  :focus => true, :focused => true
+      define_example_group_method :fcontext,  :focus => true
 
       # @private
       # @macro [attach] define_nested_shared_group_method

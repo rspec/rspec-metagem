@@ -37,6 +37,11 @@ Breaking Changes for 3.0.0:
 * Remove deprecated `RSpec::Core::ExampleGroup.alias_example_to`.
   Use `RSpec::Core::Configuration#alias_example_to` instead.
   (Myron Marston)
+* Removed `focused` example alias and change example/group aliases
+  `fit`, `focus`, `fcontext` and `fdescribe` to no longer include
+  `:focused => true` metadata. They only contain `:focus => true`
+  metadata now. This means that you will need to filter them with
+  `filter_run :focus`, not `filter_run :focused`. (Myron Marston)
 
 Enhancements:
 
