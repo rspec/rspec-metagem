@@ -132,11 +132,16 @@ module RSpec
 
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :focus,   :focus => true
+      define_example_method :focus,    :focus => true
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :fit,     :focus => true
-
+      define_example_method :fexample, :focus => true
+      # Shortcut to define an example with `:focus => true`
+      # @see example
+      define_example_method :fit,      :focus => true
+      # Shortcut to define an example with `:focus => true`
+      # @see example
+      define_example_method :fspecify, :focus => true
       # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`
       # @see example
       define_example_method :xexample, :skip => 'Temporarily skipped with xexample'

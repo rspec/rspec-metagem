@@ -58,6 +58,8 @@ Enhancements:
   than being done lazily on first access. (Myron Marston)
 * Add `:block` metadata entry to the example metadata, bringing
   parity with `:block` in the example group metadata. (Myron Marston)
+* Add `fspecify` and `fexample` as aliases of `specify` and `example`
+  with `:focus => true` metadata for parity with `fit`. (Myron Marston)
 
 Bug Fixes:
 

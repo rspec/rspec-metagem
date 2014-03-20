@@ -567,8 +567,8 @@ module RSpec::Core
       end
     end
 
-    [:focus, :fit].each do |example_alias|
-      describe "##{example_alias}" do
+    [:focus, :fexample, :fit, :fspecify].each do |example_alias|
+      describe ".#{example_alias}" do
         let(:focused_example) { ExampleGroup.describe.send example_alias, "a focused example" }
 
         it 'defines an example that can be filtered with :focus => true' do
