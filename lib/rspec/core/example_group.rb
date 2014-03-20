@@ -31,6 +31,20 @@ module RSpec
         end
       end
 
+      # @!group Metadata
+
+      # The [Metadata](Metadata) object associated with this group.
+      # @see Metadata
+      def self.metadata
+        @metadata if defined?(@metadata)
+      end
+
+      # @private
+      # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
+      def self.superclass_metadata
+        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
+      end
+
       # @private
       def self.delegate_to_metadata(*names)
         names.each do |name|
@@ -39,6 +53,30 @@ module RSpec
       end
 
       delegate_to_metadata :described_class, :file_path, :location
+
+      # @return [String] the current example group description
+      def self.description
+        description = metadata[:description]
+        RSpec.configuration.format_docstrings_block.call(description)
+      end
+
+      # Returns the class or module passed to the `describe` method (or alias).
+      # Returns nil if the subject is not a class or module.
+      # @example
+      #     describe Thing do
+      #       it "does something" do
+      #         described_class == Thing
+      #       end
+      #     end
+      #
+      #
+      def described_class
+        self.class.described_class
+      end
+
+      # @!endgroup
+
+      # @!group Defining Examples
 
       # @private
       # @macro [attach] define_example_method
@@ -100,14 +138,16 @@ module RSpec
 
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :focus,   :focused => true, :focus => true
+      define_example_method :focus,    :focus => true
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :focused, :focused => true, :focus => true
+      define_example_method :fexample, :focus => true
       # Shortcut to define an example with `:focus => true`
       # @see example
-      define_example_method :fit,     :focused => true, :focus => true
-
+      define_example_method :fit,      :focus => true
+      # Shortcut to define an example with `:focus => true`
+      # @see example
+      define_example_method :fspecify, :focus => true
       # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`
       # @see example
       define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
@@ -123,6 +163,85 @@ module RSpec
       # Shortcut to define an example with `:pending => true`
       # @see example
       define_example_method :pending,  :pending => true
+
+      # @!endgroup
+
+      # @!group Defining Example Groups
+
+      # @private
+      # @macro [attach] alias_example_group_to
+      #   @!scope class
+      #   @param name [String] The example group doc string
+      #   @param metadata [Hash] Additional metadata to attach to the example group
+      #   @yield The example group definition
+      #
+      #   Generates a subclass of this example group which inherits
+      #   everything except the examples themselves.
+      #
+      #   @example
+      #
+      #     RSpec.describe "something" do # << This describe method is defined in
+      #                                   # << RSpec::Core::DSL, included in the
+      #                                   # << global namespace (optional)
+      #       before do
+      #         do_something_before
+      #       end
+      #
+      #       let(:thing) { Thing.new }
+      #
+      #       $1 "attribute (of something)" do
+      #         # examples in the group get the before hook
+      #         # declared above, and can access `thing`
+      #       end
+      #     end
+      #
+      # @see DSL#describe
+      def self.define_example_group_method(name, metadata={})
+        define_singleton_method(name) do |*args, &example_group_block|
+          description = args.shift
+          combined_metadata = metadata.dup
+          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+          args << combined_metadata
+
+          subclass(self, description, args, &example_group_block).tap do |child|
+            children << child
+          end
+        end
+
+        RSpec::Core::DSL.expose_example_group_alias(name)
+      end
+
+      define_example_group_method :example_group
+
+      # An alias of `example_group`. Generally used when grouping
+      # examples by a thing you are describing (e.g. an object, class or method).
+      # @see example_group
+      define_example_group_method :describe
+
+      # An alias of `example_group`. Generally used when grouping examples
+      # contextually (e.g. "with xyz", "when xyz" or "if xyz").
+      # @see example_group
+      define_example_group_method :context
+
+      # Shortcut to temporarily make an example group skipped.
+      # @see example_group
+      define_example_group_method :xdescribe, :skip => "Temporarily skipped with xdescribe"
+
+      # Shortcut to temporarily make an example group skipped.
+      # @see example_group
+      define_example_group_method :xcontext,  :skip => "Temporarily skipped with xcontext"
+
+      # Shortcut to define an example group with `:focus => true`.
+      # @see example_group
+      define_example_group_method :fdescribe, :focus => true
+
+      # Shortcut to define an example group with `:focus => true`.
+      # @see example_group
+      define_example_group_method :fcontext,  :focus => true
+
+      # @!endgroup
+
+      # @!group Including Shared Example Groups
 
       # @private
       # @macro [attach] define_nested_shared_group_method
@@ -148,51 +267,6 @@ module RSpec
       # Generates a nested example group and includes the shared content
       # mapped to `name` in the nested group.
       define_nested_shared_group_method :it_should_behave_like
-
-      # @return [String] the current example group description
-      def self.description
-        description = metadata[:description]
-        RSpec.configuration.format_docstrings_block.call(description)
-      end
-
-      # @private
-      # @macro [attach] alias_example_group_to
-      #   @!scope class
-      #   @param name [String] The example group doc string
-      #   @param metadata [Hash] Additional metadata to attach to the example group
-      #   @yield The example group definition
-      def self.alias_example_group_to(name, metadata={})
-        define_singleton_method(name) do |*args, &block|
-          description = args.shift
-          combined_metadata = metadata.dup
-          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
-          args << combined_metadata
-          example_group(description, *args, &block)
-        end
-
-        RSpec::Core::DSL.expose_example_group_alias(name)
-      end
-
-      # @private
-      def self.pending_metadata_and_block_for(options, block)
-        if String === options[:pending]
-          reason = options[:pending]
-        else
-          options[:pending] = true
-          reason = RSpec::Core::Pending::NO_REASON_GIVEN
-        end
-
-        # Assign :caller so that the callback's source_location isn't used
-        # as the example location.
-        options[:caller] ||= Metadata.backtrace_from(block)
-
-        # This will fail if no block is provided, which is effectively the
-        # same as failing the example so it will be marked correctly as
-        # pending.
-        callback = Proc.new { pending(reason); instance_exec(&block) }
-
-        return options, callback
-      end
 
       # Includes shared content mapped to `name` directly in the group in which
       # it is declared, as opposed to `it_behaves_like`, which creates a nested
@@ -222,6 +296,47 @@ module RSpec
         module_exec(&customization_block) if customization_block
       end
 
+      # @!endgroup
+
+      # @private
+      def self.subclass(parent, description, args, &example_group_block)
+        subclass = Class.new(parent)
+        subclass.set_it_up(description, *args, &example_group_block)
+        ExampleGroups.assign_const(subclass)
+        subclass.module_exec(&example_group_block) if example_group_block
+
+        # The LetDefinitions module must be included _after_ other modules
+        # to ensure that it takes precedence when there are name collisions.
+        # Thus, we delay including it until after the example group block
+        # has been eval'd.
+        MemoizedHelpers.define_helpers_on(subclass)
+
+        subclass
+      end
+
+      # @private
+      def self.set_it_up(*args, &example_group_block)
+        # Ruby 1.9 has a bug that can lead to infinite recursion and a
+        # SystemStackError if you include a module in a superclass after
+        # including it in a subclass: https://gist.github.com/845896
+        # To prevent this, we must include any modules in RSpec::Core::ExampleGroup
+        # before users create example groups and have a chance to include
+        # the same module in a subclass of RSpec::Core::ExampleGroup.
+        # So we need to configure example groups here.
+        ensure_example_groups_are_configured
+
+        description = args.shift
+        user_metadata = Metadata.build_hash_from(args)
+        args.unshift(description)
+
+        @metadata = Metadata::ExampleGroupHash.create(
+          superclass_metadata || {}, user_metadata, *args, &example_group_block
+        )
+
+        hooks.register_globals(self, RSpec.configuration.hooks)
+        RSpec.world.configure_group(self)
+      end
+
       # @private
       def self.examples
         @examples ||= []
@@ -235,87 +350,6 @@ module RSpec
       # @private
       def self.descendant_filtered_examples
         @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
-      end
-
-      # The [Metadata](Metadata) object associated with this group.
-      # @see Metadata
-      def self.metadata
-        @metadata if defined?(@metadata)
-      end
-
-      # @private
-      # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
-      def self.superclass_metadata
-        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
-      end
-
-      # Generates a subclass of this example group which inherits
-      # everything except the examples themselves.
-      #
-      # ## Examples
-      #
-      #     describe "something" do # << This describe method is defined in
-      #                             # << RSpec::Core::DSL, included in the
-      #                             # << global namespace (optional)
-      #       before do
-      #         do_something_before
-      #       end
-      #
-      #       let(:thing) { Thing.new }
-      #
-      #       describe "attribute (of something)" do
-      #         # examples in the group get the before hook
-      #         # declared above, and can access `thing`
-      #       end
-      #     end
-      #
-      # @see DSL#describe
-      def self.example_group(*args, &example_group_block)
-        subclass(self, args, &example_group_block).tap do |child|
-          children << child
-        end
-      end
-
-      # An alias of `example_group`. Generally used when grouping
-      # examples by a thing you are describing (e.g. an object, class or method).
-      # @see example_group
-      alias_example_group_to :describe
-
-      # An alias of `example_group`. Generally used when grouping examples
-      # contextually.
-      # @see example_group
-      alias_example_group_to :context
-
-      # Shortcut to temporarily make an example group skipped.
-      # @see example_group
-      alias_example_group_to :xdescribe, :skip => "Temporarily skipped with xdescribe"
-
-      # Shortcut to temporarily make an example group skipped.
-      # @see example_group
-      alias_example_group_to :xcontext,  :skip => "Temporarily skipped with xcontext"
-
-      # Shortcut to define an example group with `:focus` => true
-      # @see example_group
-      alias_example_group_to :fdescribe, :focus => true, :focused => true
-
-      # Shortcut to define an example group with `:focus` => true
-      # @see example_group
-      alias_example_group_to :fcontext,  :focus => true, :focused => true
-
-      # @private
-      def self.subclass(parent, args, &example_group_block)
-        subclass = Class.new(parent)
-        subclass.set_it_up(*args, &example_group_block)
-        ExampleGroups.assign_const(subclass)
-        subclass.module_exec(&example_group_block) if example_group_block
-
-        # The LetDefinitions module must be included _after_ other modules
-        # to ensure that it takes precedence when there are name collisions.
-        # Thus, we delay including it until after the example group block
-        # has been eval'd.
-        MemoizedHelpers.define_helpers_on(subclass)
-
-        subclass
       end
 
       # @private
@@ -345,29 +379,6 @@ module RSpec
           RSpec.configuration.configure_expectation_framework
           @@example_groups_configured = true
         end
-      end
-
-      # @private
-      def self.set_it_up(*args, &example_group_block)
-        # Ruby 1.9 has a bug that can lead to infinite recursion and a
-        # SystemStackError if you include a module in a superclass after
-        # including it in a subclass: https://gist.github.com/845896
-        # To prevent this, we must include any modules in RSpec::Core::ExampleGroup
-        # before users create example groups and have a chance to include
-        # the same module in a subclass of RSpec::Core::ExampleGroup.
-        # So we need to configure example groups here.
-        ensure_example_groups_are_configured
-
-        description = args.shift
-        user_metadata = Metadata.build_hash_from(args)
-        args.unshift(description)
-
-        @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata || {}, user_metadata, *args, &example_group_block
-        )
-
-        hooks.register_globals(self, RSpec.configuration.hooks)
-        RSpec.world.configure_group(self)
       end
 
       # @private
@@ -505,18 +516,25 @@ module RSpec
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
-      # Returns the class or module passed to the `describe` method (or alias).
-      # Returns nil if the subject is not a class or module.
-      # @example
-      #     describe Thing do
-      #       it "does something" do
-      #         described_class == Thing
-      #       end
-      #     end
-      #
-      #
-      def described_class
-        self.class.described_class
+      # @private
+      def self.pending_metadata_and_block_for(options, block)
+        if String === options[:pending]
+          reason = options[:pending]
+        else
+          options[:pending] = true
+          reason = RSpec::Core::Pending::NO_REASON_GIVEN
+        end
+
+        # Assign :caller so that the callback's source_location isn't used
+        # as the example location.
+        options[:caller] ||= Metadata.backtrace_from(block)
+
+        # This will fail if no block is provided, which is effectively the
+        # same as failing the example so it will be marked correctly as
+        # pending.
+        callback = Proc.new { pending(reason); instance_exec(&block) }
+
+        return options, callback
       end
     end
 
