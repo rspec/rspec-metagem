@@ -31,6 +31,8 @@ module RSpec
         end
       end
 
+      # @!group Metadata
+
       # The [Metadata](Metadata) object associated with this group.
       # @see Metadata
       def self.metadata
@@ -71,6 +73,10 @@ module RSpec
       def described_class
         self.class.described_class
       end
+
+      # @!endgroup
+
+      # @!group Defining Examples
 
       # @private
       # @macro [attach] define_example_method
@@ -158,6 +164,10 @@ module RSpec
       # @see example
       define_example_method :pending,  :pending => true
 
+      # @!endgroup
+
+      # @!group Defining Example Groups
+
       # @private
       # @macro [attach] alias_example_group_to
       #   @!scope class
@@ -221,13 +231,17 @@ module RSpec
       # @see example_group
       define_example_group_method :xcontext,  :skip => "Temporarily skipped with xcontext"
 
-      # Shortcut to define an example group with `:focus` => true
+      # Shortcut to define an example group with `:focus => true`.
       # @see example_group
       define_example_group_method :fdescribe, :focus => true
 
-      # Shortcut to define an example group with `:focus` => true
+      # Shortcut to define an example group with `:focus => true`.
       # @see example_group
       define_example_group_method :fcontext,  :focus => true
+
+      # @!endgroup
+
+      # @!group Including Shared Example Groups
 
       # @private
       # @macro [attach] define_nested_shared_group_method
@@ -281,6 +295,8 @@ module RSpec
         module_exec(*args, &shared_block)
         module_exec(&customization_block) if customization_block
       end
+
+      # @!endgroup
 
       # @private
       def self.subclass(parent, description, args, &example_group_block)
