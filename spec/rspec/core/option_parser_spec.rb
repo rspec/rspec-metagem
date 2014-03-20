@@ -65,27 +65,10 @@ module RSpec::Core
       end
     end
 
-    describe "--line_number" do
-      it "gets converted to --line-number" do
-        options = Parser.parse(%w[--line_number 3])
-        expect(options[:line_numbers]).to eq ["3"]
-      end
-    end
-
-
     describe "--default-path" do
       it "sets the default path where RSpec looks for examples" do
         options = Parser.parse(%w[--default-path foo])
         expect(options[:default_path]).to eq "foo"
-      end
-    end
-
-    %w[--line-number -l].each do |option|
-      describe option do
-        it "sets the line number of an example to run" do
-          options = Parser.parse([option, "3"])
-          expect(options[:line_numbers]).to eq ["3"]
-        end
       end
     end
 

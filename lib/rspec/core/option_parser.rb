@@ -28,8 +28,6 @@ module RSpec::Core
         case arg
         when "--default_path"
           "--default-path"
-        when "--line_number"
-          "--line-number"
         else
           arg
         end
@@ -167,11 +165,6 @@ FILTERING
         parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING (may be",
                                             "  used more than once)") do |o|
           (options[:full_description] ||= []) << Regexp.compile(Regexp.escape(o))
-        end
-
-        parser.on('-l', '--line-number LINE', 'Specify line number of an example or group (may be',
-                                              '  used more than once).') do |o|
-          (options[:line_numbers] ||= []) << o
         end
 
         parser.on('-t', '--tag TAG[:VALUE]',

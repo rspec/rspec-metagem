@@ -192,7 +192,7 @@ module RSpec
 
     # @private
     class InclusionRules < FilterRules
-      STANDALONE_FILTERS = [:locations, :line_numbers, :full_description]
+      STANDALONE_FILTERS = [:locations, :full_description]
 
       attr_reader :rules
 

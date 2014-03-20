@@ -42,6 +42,11 @@ Breaking Changes for 3.0.0:
   `:focused => true` metadata. They only contain `:focus => true`
   metadata now. This means that you will need to filter them with
   `filter_run :focus`, not `filter_run :focused`. (Myron Marston)
+* Remove `--line-number` filtering. It's semantically dubious since it's
+  a global filter (potentially applied to multiple files) but there's no
+  meaningful connection between the same line number in multiple files.
+  Instead use the `rspec path/to/spec.rb:23:46` form, which is terser
+  and makes more sense as it is scoped to a file. (Myron Marston)
 
 Enhancements:
 

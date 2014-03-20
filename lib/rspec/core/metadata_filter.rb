@@ -21,7 +21,6 @@ module RSpec
       # @private
       def filter_applies?(key, value, metadata)
         return filter_applies_to_any_value?(key, value, metadata) if Array === metadata[key] && !(Proc === value)
-        return line_number_filter_applies?(value, metadata)       if key == :line_numbers
         return location_filter_applies?(value, metadata)          if key == :locations
         return filters_apply?(key, value, metadata)               if Hash === value
 

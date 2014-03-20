@@ -36,7 +36,7 @@ module RSpec::Core
         end
 
         if name == "include"
-          [:locations, :line_numbers, :full_description].each do |filter|
+          [:locations, :full_description].each do |filter|
             context "with :#{filter}" do
               it "clears previous inclusions" do
                 filter_manager.include :foo => :bar
