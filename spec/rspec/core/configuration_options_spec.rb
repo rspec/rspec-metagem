@@ -204,18 +204,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
   end
 
-  describe '--line_number' do
-    it "sets :line_number" do
-      expect(parse_options('-l','3')).to include(:line_numbers => ['3'])
-      expect(parse_options('--line_number','3')).to include(:line_numbers => ['3'])
-    end
-
-    it "can be specified multiple times" do
-      expect(parse_options('-l','3', '-l', '6')).to include(:line_numbers => ['3', '6'])
-      expect(parse_options('--line_number','3', '--line_number', '6')).to include(:line_numbers => ['3', '6'])
-    end
-  end
-
   describe "--example" do
     it "sets :full_description" do
       expect(parse_options('--example','foo')).to include(:full_description => [/foo/])
@@ -311,9 +299,9 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       )
     end
 
-    it "parses file names that look like options line-number and default-path" do
-      expect(parse_options("spec/default_path_spec.rb", "spec/line_number_spec.rb")).to include(
-        :files_or_directories_to_run => ["spec/default_path_spec.rb", "spec/line_number_spec.rb"]
+    it "parses file names that look like `default-path` option" do
+      expect(parse_options("spec/default_path_spec.rb")).to include(
+        :files_or_directories_to_run => ["spec/default_path_spec.rb"]
       )
     end
 
@@ -342,13 +330,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
   describe "sources: ~/.rspec, ./.rspec, ./.rspec-local, custom, CLI, and SPEC_OPTS" do
     it "merges global, local, SPEC_OPTS, and CLI" do
-      File.open("./.rspec", "w") {|f| f << "--line 37"}
+      File.open("./.rspec", "w") {|f| f << "--warnings"}
       File.open("./.rspec-local", "w") {|f| f << "--format global"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
       with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
         expect(options[:color]).to be_truthy
-        expect(options[:line_numbers]).to eq(["37"])
+        expect(options[:warnings]).to eq(true)
         expect(options[:full_description]).to eq([/foo\ bar/])
         expect(options[:drb]).to be_truthy
         expect(options[:formatters]).to eq([['global']])

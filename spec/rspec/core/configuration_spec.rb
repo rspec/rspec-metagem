@@ -986,36 +986,6 @@ module RSpec::Core
       end
     end
 
-    describe "line_numbers=" do
-      it "sets the line numbers" do
-        config.line_numbers = ['37']
-        expect(inclusion_filter).to eq({:line_numbers => [37]})
-      end
-
-      it "overrides filters" do
-        config.filter_run :focused => true
-        config.line_numbers = ['37']
-        expect(inclusion_filter).to eq({:line_numbers => [37]})
-      end
-
-      it "prevents subsequent filters" do
-        config.line_numbers = ['37']
-        config.filter_run :focused => true
-        expect(inclusion_filter).to eq({:line_numbers => [37]})
-      end
-    end
-
-    describe "line_numbers" do
-      it "returns the line numbers from the filter" do
-        config.line_numbers = ['42']
-        expect(config.line_numbers).to eq [42]
-      end
-
-      it "defaults to empty" do
-        expect(config.line_numbers).to eq []
-      end
-    end
-
     describe "#full_backtrace=" do
       it "doesn't impact other instances of config" do
         config_1 = Configuration.new

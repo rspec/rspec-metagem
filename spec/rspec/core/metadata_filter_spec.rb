@@ -27,7 +27,24 @@ module RSpec
           MetadataFilter.filter_applies?(key, value, metadata)
         end
 
-        shared_examples_for "matching by line number" do
+        context "with locations" do
+          let(:condition_key){ :locations }
+          let(:parent_group_condition) do
+            {File.expand_path(parent_group_metadata[:file_path]) => [parent_group_metadata[:line_number]]}
+          end
+          let(:group_condition) do
+            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number]]}
+          end
+          let(:example_condition) do
+            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number]]}
+          end
+          let(:between_examples_condition) do
+            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number] + 1]}
+          end
+          let(:next_example_condition) do
+            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number] + 2]}
+          end
+
           let(:preceeding_declaration_lines) {{
             parent_group_metadata[:line_number] => parent_group_metadata[:line_number],
             group_metadata[:line_number] => group_metadata[:line_number],
@@ -35,6 +52,7 @@ module RSpec
             (example_metadata[:line_number] + 1) => example_metadata[:line_number],
             (example_metadata[:line_number] + 2) => example_metadata[:line_number] + 2,
           }}
+
           before do
             expect(world).to receive(:preceding_declaration_line).at_least(:once) do |v|
               preceeding_declaration_lines[v]
@@ -68,51 +86,8 @@ module RSpec
           end
         end
 
-        context "with a single line number" do
-          let(:condition_key){ :line_numbers }
-          let(:parent_group_condition) { [parent_group_metadata[:line_number]] }
-          let(:group_condition) { [group_metadata[:line_number]] }
-          let(:example_condition) { [example_metadata[:line_number]] }
-          let(:between_examples_condition) { [group_metadata[:line_number] + 1] }
-          let(:next_example_condition) { [example_metadata[:line_number] + 2] }
-
-          it_has_behavior "matching by line number"
-        end
-
-        context "with multiple line numbers" do
-          let(:condition_key){ :line_numbers }
-          let(:parent_group_condition) { [-1, parent_group_metadata[:line_number]] }
-          let(:group_condition) { [-1, group_metadata[:line_number]] }
-          let(:example_condition) { [-1, example_metadata[:line_number]] }
-          let(:between_examples_condition) { [-1, group_metadata[:line_number] + 1] }
-          let(:next_example_condition) { [-1, example_metadata[:line_number] + 2] }
-
-          it_has_behavior "matching by line number"
-        end
-
-        context "with locations" do
-          let(:condition_key){ :locations }
-          let(:parent_group_condition) do
-            {File.expand_path(parent_group_metadata[:file_path]) => [parent_group_metadata[:line_number]]}
-          end
-          let(:group_condition) do
-            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number]]}
-          end
-          let(:example_condition) do
-            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number]]}
-          end
-          let(:between_examples_condition) do
-            {File.expand_path(group_metadata[:file_path]) => [group_metadata[:line_number] + 1]}
-          end
-          let(:next_example_condition) do
-            {File.expand_path(example_metadata[:file_path]) => [example_metadata[:line_number] + 2]}
-          end
-
-          it_has_behavior "matching by line number"
-
-          it "ignores location filters for other files" do
-            expect(filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]}, example_metadata)).to be_truthy
-          end
+        it "ignores location filters for other files" do
+          expect(filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]}, example_metadata)).to be_truthy
         end
 
         it "matches a proc with no arguments that evaluates to true" do

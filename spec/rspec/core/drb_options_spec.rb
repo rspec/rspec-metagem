@@ -114,18 +114,6 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       end
     end
 
-    context "with --line_number" do
-      it "includes --line_number" do
-        expect(config_options_object(*%w[--line_number 35]).drb_argv).to eq(%w[--line_number 35])
-      end
-
-      it "includes multiple lines" do
-        expect(config_options_object(*%w[-l 90 -l 4 -l 55]).drb_argv).to eq(
-          %w[--line_number 90 --line_number 4 --line_number 55]
-        )
-      end
-    end
-
     context "with -I libs" do
       it "includes -I" do
         expect(config_options_object(*%w[-I a_dir]).drb_argv).to eq(%w[-I a_dir])
@@ -153,10 +141,10 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
         drb_argv = config_options_object(*%w[ --drb --color --format s --example pattern
-                                              --line_number 1 --profile --backtrace -I
+                                              --profile --backtrace -I
                                               path/a -I path/b --require path/c --require
                                               path/d]).drb_argv
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s -I path/a -I path/b --require path/c --require path/d])
+        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s -I path/a -I path/b --require path/c --require path/d])
       end
     end
 
@@ -164,11 +152,10 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       it "renders all the original arguments except --drb" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
         drb_argv = config_options_object(*%w[ --tty --format s --example
-                                         pattern --line_number 1 --profile
-                                         --backtrace ]).drb_argv
+                                         pattern --profile --backtrace ]).drb_argv
 
         expect(drb_argv).to eq(%w[ --color --profile --backtrace --tty
-                               --example pattern --line_number 1 --format s])
+                               --example pattern --format s])
       end
     end
 
@@ -176,10 +163,9 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       it "renders all the original arguments except --drb" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
         drb_argv = config_options_object(*%w[ --drb --format s --example
-                                         pattern --line_number 1 --profile
-                                         --backtrace]).drb_argv
+                                         pattern --profile --backtrace]).drb_argv
 
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s])
+        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s])
       end
     end
 
@@ -187,10 +173,9 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
       it "renders all the original arguments except --drb and --options" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
         drb_argv = config_options_object(*%w[ --drb --format s --example
-                                         pattern --line_number 1 --profile
-                                         --backtrace]).drb_argv
+                                         pattern --profile --backtrace]).drb_argv
 
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --line_number 1 --format s ])
+        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s ])
       end
     end
   end

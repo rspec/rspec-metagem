@@ -36,6 +36,16 @@ Feature: line number appended to file path
         end
       end
       """
+    And a file named "one_liner_spec.rb" with:
+      """ruby
+      RSpec.describe 9 do
+
+        it { is_expected.to be > 8 }
+
+        it { is_expected.to be < 10 }
+
+      end
+      """
 
   Scenario: nested groups - outer group on declaration line
     When I run `rspec example_spec.rb:1 --format doc`
@@ -138,3 +148,9 @@ Feature: line number appended to file path
     And the output should contain "nested group"
     But the output should not contain "first example in outer group"
     And the output should not contain "second file"
+
+  Scenario: matching one-liners
+    When I run `rspec one_liner_spec.rb:3 --format doc`
+    Then the examples should all pass
+    Then the output should contain "should be > 8"
+    But the output should not contain "should be < 10"

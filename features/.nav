@@ -9,7 +9,6 @@
   - configure.feature
   - example_name_option.feature
   - format_option.feature
-  - line_number_option.feature
   - tag.feature
   - line_number_appended_to_path.feature
   - exit_status.feature

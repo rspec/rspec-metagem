@@ -20,7 +20,6 @@ module RSpec::Core
 
       add_failure_exit_code(argv)
       add_full_description(argv)
-      add_line_numbers(argv)
       add_filter(argv, :inclusion, @filter_manager.inclusions)
       add_filter(argv, :exclusion, @filter_manager.exclusions)
       add_formatters(argv)
@@ -45,12 +44,6 @@ module RSpec::Core
         @submitted_options[:full_description].each do |description|
           argv << "--example" << description.source.delete('\\')
         end
-      end
-    end
-
-    def add_line_numbers(argv)
-      if @submitted_options[:line_numbers]
-        argv.push(*@submitted_options[:line_numbers].inject([]){|a,l| a << "--line_number" << l})
       end
     end
 

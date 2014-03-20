@@ -565,16 +565,6 @@ module RSpec
         end
       end
 
-      # Run examples defined on `line_numbers` in all files to run.
-      def line_numbers=(line_numbers)
-        filter_run :line_numbers => line_numbers.map{|l| l.to_i}
-      end
-
-      # @return [Array] filtered line numbers
-      def line_numbers
-        filter.fetch(:line_numbers,[])
-      end
-
       # Run examples matching on `description` in all files to run.
       # @param description [String, Regexp] the pattern to filter on
       def full_description=(description)
