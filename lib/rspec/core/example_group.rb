@@ -162,70 +162,70 @@ module RSpec
       #   @param name [String] The example group doc string
       #   @param metadata [Hash] Additional metadata to attach to the example group
       #   @yield The example group definition
-      def self.alias_example_group_to(name, metadata={})
-        define_singleton_method(name) do |*args, &block|
-          description = args.shift
-          combined_metadata = metadata.dup
-          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
-          args << combined_metadata
-          example_group(description, *args, &block)
-        end
-
-        RSpec::Core::DSL.expose_example_group_alias(name)
-      end
-
-      # Generates a subclass of this example group which inherits
-      # everything except the examples themselves.
       #
-      # ## Examples
+      #   Generates a subclass of this example group which inherits
+      #   everything except the examples themselves.
       #
-      #     describe "something" do # << This describe method is defined in
-      #                             # << RSpec::Core::DSL, included in the
-      #                             # << global namespace (optional)
+      #   @example
+      #
+      #     RSpec.describe "something" do # << This describe method is defined in
+      #                                   # << RSpec::Core::DSL, included in the
+      #                                   # << global namespace (optional)
       #       before do
       #         do_something_before
       #       end
       #
       #       let(:thing) { Thing.new }
       #
-      #       describe "attribute (of something)" do
+      #       $1 "attribute (of something)" do
       #         # examples in the group get the before hook
       #         # declared above, and can access `thing`
       #       end
       #     end
       #
       # @see DSL#describe
-      def self.example_group(*args, &example_group_block)
-        subclass(self, args, &example_group_block).tap do |child|
-          children << child
+      def self.define_example_group_method(name, metadata={})
+        define_singleton_method(name) do |*args, &example_group_block|
+          description = args.shift
+          combined_metadata = metadata.dup
+          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+          args << combined_metadata
+
+          subclass(self, description, args, &example_group_block).tap do |child|
+            children << child
+          end
         end
+
+        RSpec::Core::DSL.expose_example_group_alias(name)
       end
+
+      define_example_group_method :example_group
 
       # An alias of `example_group`. Generally used when grouping
       # examples by a thing you are describing (e.g. an object, class or method).
       # @see example_group
-      alias_example_group_to :describe
+      define_example_group_method :describe
 
       # An alias of `example_group`. Generally used when grouping examples
-      # contextually.
+      # contextually (e.g. "with xyz", "when xyz" or "if xyz").
       # @see example_group
-      alias_example_group_to :context
+      define_example_group_method :context
 
       # Shortcut to temporarily make an example group skipped.
       # @see example_group
-      alias_example_group_to :xdescribe, :skip => "Temporarily skipped with xdescribe"
+      define_example_group_method :xdescribe, :skip => "Temporarily skipped with xdescribe"
 
       # Shortcut to temporarily make an example group skipped.
       # @see example_group
-      alias_example_group_to :xcontext,  :skip => "Temporarily skipped with xcontext"
+      define_example_group_method :xcontext,  :skip => "Temporarily skipped with xcontext"
 
       # Shortcut to define an example group with `:focus` => true
       # @see example_group
-      alias_example_group_to :fdescribe, :focus => true, :focused => true
+      define_example_group_method :fdescribe, :focus => true, :focused => true
 
       # Shortcut to define an example group with `:focus` => true
       # @see example_group
-      alias_example_group_to :fcontext,  :focus => true, :focused => true
+      define_example_group_method :fcontext,  :focus => true, :focused => true
 
       # @private
       # @macro [attach] define_nested_shared_group_method
@@ -281,9 +281,9 @@ module RSpec
       end
 
       # @private
-      def self.subclass(parent, args, &example_group_block)
+      def self.subclass(parent, description, args, &example_group_block)
         subclass = Class.new(parent)
-        subclass.set_it_up(*args, &example_group_block)
+        subclass.set_it_up(description, *args, &example_group_block)
         ExampleGroups.assign_const(subclass)
         subclass.module_exec(&example_group_block) if example_group_block
 

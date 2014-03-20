@@ -708,7 +708,7 @@ module RSpec
       #
       # @example
       #   RSpec.configure do |config|
-      #     alias_example_group_to :describe_model, :type => :model
+      #     config.alias_example_group_to :describe_model, :type => :model
       #   end
       #
       #   shared_context_for "model tests", :type => :model do
@@ -732,7 +732,7 @@ module RSpec
       # @see #expose_dsl_globally=
       def alias_example_group_to(new_name, *args)
         extra_options = Metadata.build_hash_from(args)
-        RSpec::Core::ExampleGroup.alias_example_group_to(new_name, extra_options)
+        RSpec::Core::ExampleGroup.define_example_group_method(new_name, extra_options)
       end
 
       # Define an alias for it_should_behave_like that allows different
