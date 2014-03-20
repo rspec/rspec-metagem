@@ -31,6 +31,18 @@ module RSpec
         end
       end
 
+      # The [Metadata](Metadata) object associated with this group.
+      # @see Metadata
+      def self.metadata
+        @metadata if defined?(@metadata)
+      end
+
+      # @private
+      # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
+      def self.superclass_metadata
+        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
+      end
+
       # @private
       def self.delegate_to_metadata(*names)
         names.each do |name|
@@ -39,6 +51,26 @@ module RSpec
       end
 
       delegate_to_metadata :described_class, :file_path, :location
+
+      # @return [String] the current example group description
+      def self.description
+        description = metadata[:description]
+        RSpec.configuration.format_docstrings_block.call(description)
+      end
+
+      # Returns the class or module passed to the `describe` method (or alias).
+      # Returns nil if the subject is not a class or module.
+      # @example
+      #     describe Thing do
+      #       it "does something" do
+      #         described_class == Thing
+      #       end
+      #     end
+      #
+      #
+      def described_class
+        self.class.described_class
+      end
 
       # @private
       # @macro [attach] define_example_method
@@ -125,37 +157,6 @@ module RSpec
       define_example_method :pending,  :pending => true
 
       # @private
-      # @macro [attach] define_nested_shared_group_method
-      #   @!scope class
-      #
-      #   @see SharedExampleGroup
-      def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
-        define_singleton_method(new_name) do |name, *args, &customization_block|
-          # Pass :caller so the :location metadata is set properly...
-          # otherwise, it'll be set to the next line because that's
-          # the block's source_location.
-          group = example_group("#{report_label} #{name}", :caller => caller) do
-            find_and_eval_shared("examples", name, *args, &customization_block)
-          end
-          group.metadata[:shared_group_name] = name
-          group
-        end
-      end
-
-      # Generates a nested example group and includes the shared content
-      # mapped to `name` in the nested group.
-      define_nested_shared_group_method :it_behaves_like, "behaves like"
-      # Generates a nested example group and includes the shared content
-      # mapped to `name` in the nested group.
-      define_nested_shared_group_method :it_should_behave_like
-
-      # @return [String] the current example group description
-      def self.description
-        description = metadata[:description]
-        RSpec.configuration.format_docstrings_block.call(description)
-      end
-
-      # @private
       # @macro [attach] alias_example_group_to
       #   @!scope class
       #   @param name [String] The example group doc string
@@ -171,82 +172,6 @@ module RSpec
         end
 
         RSpec::Core::DSL.expose_example_group_alias(name)
-      end
-
-      # @private
-      def self.pending_metadata_and_block_for(options, block)
-        if String === options[:pending]
-          reason = options[:pending]
-        else
-          options[:pending] = true
-          reason = RSpec::Core::Pending::NO_REASON_GIVEN
-        end
-
-        # Assign :caller so that the callback's source_location isn't used
-        # as the example location.
-        options[:caller] ||= Metadata.backtrace_from(block)
-
-        # This will fail if no block is provided, which is effectively the
-        # same as failing the example so it will be marked correctly as
-        # pending.
-        callback = Proc.new { pending(reason); instance_exec(&block) }
-
-        return options, callback
-      end
-
-      # Includes shared content mapped to `name` directly in the group in which
-      # it is declared, as opposed to `it_behaves_like`, which creates a nested
-      # group. If given a block, that block is also eval'd in the current context.
-      #
-      # @see SharedExampleGroup
-      def self.include_context(name, *args, &block)
-        find_and_eval_shared("context", name, *args, &block)
-      end
-
-      # Includes shared content mapped to `name` directly in the group in which
-      # it is declared, as opposed to `it_behaves_like`, which creates a nested
-      # group. If given a block, that block is also eval'd in the current context.
-      #
-      # @see SharedExampleGroup
-      def self.include_examples(name, *args, &block)
-        find_and_eval_shared("examples", name, *args, &block)
-      end
-
-      # @private
-      def self.find_and_eval_shared(label, name, *args, &customization_block)
-        unless shared_block = shared_example_groups[name]
-          raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
-        end
-
-        module_exec(*args, &shared_block)
-        module_exec(&customization_block) if customization_block
-      end
-
-      # @private
-      def self.examples
-        @examples ||= []
-      end
-
-      # @private
-      def self.filtered_examples
-        RSpec.world.filtered_examples[self]
-      end
-
-      # @private
-      def self.descendant_filtered_examples
-        @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
-      end
-
-      # The [Metadata](Metadata) object associated with this group.
-      # @see Metadata
-      def self.metadata
-        @metadata if defined?(@metadata)
-      end
-
-      # @private
-      # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
-      def self.superclass_metadata
-        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
       end
 
       # Generates a subclass of this example group which inherits
@@ -303,6 +228,59 @@ module RSpec
       alias_example_group_to :fcontext,  :focus => true, :focused => true
 
       # @private
+      # @macro [attach] define_nested_shared_group_method
+      #   @!scope class
+      #
+      #   @see SharedExampleGroup
+      def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
+        define_singleton_method(new_name) do |name, *args, &customization_block|
+          # Pass :caller so the :location metadata is set properly...
+          # otherwise, it'll be set to the next line because that's
+          # the block's source_location.
+          group = example_group("#{report_label} #{name}", :caller => caller) do
+            find_and_eval_shared("examples", name, *args, &customization_block)
+          end
+          group.metadata[:shared_group_name] = name
+          group
+        end
+      end
+
+      # Generates a nested example group and includes the shared content
+      # mapped to `name` in the nested group.
+      define_nested_shared_group_method :it_behaves_like, "behaves like"
+      # Generates a nested example group and includes the shared content
+      # mapped to `name` in the nested group.
+      define_nested_shared_group_method :it_should_behave_like
+
+      # Includes shared content mapped to `name` directly in the group in which
+      # it is declared, as opposed to `it_behaves_like`, which creates a nested
+      # group. If given a block, that block is also eval'd in the current context.
+      #
+      # @see SharedExampleGroup
+      def self.include_context(name, *args, &block)
+        find_and_eval_shared("context", name, *args, &block)
+      end
+
+      # Includes shared content mapped to `name` directly in the group in which
+      # it is declared, as opposed to `it_behaves_like`, which creates a nested
+      # group. If given a block, that block is also eval'd in the current context.
+      #
+      # @see SharedExampleGroup
+      def self.include_examples(name, *args, &block)
+        find_and_eval_shared("examples", name, *args, &block)
+      end
+
+      # @private
+      def self.find_and_eval_shared(label, name, *args, &customization_block)
+        unless shared_block = shared_example_groups[name]
+          raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
+        end
+
+        module_exec(*args, &shared_block)
+        module_exec(&customization_block) if customization_block
+      end
+
+      # @private
       def self.subclass(parent, args, &example_group_block)
         subclass = Class.new(parent)
         subclass.set_it_up(*args, &example_group_block)
@@ -316,6 +294,44 @@ module RSpec
         MemoizedHelpers.define_helpers_on(subclass)
 
         subclass
+      end
+
+      # @private
+      def self.set_it_up(*args, &example_group_block)
+        # Ruby 1.9 has a bug that can lead to infinite recursion and a
+        # SystemStackError if you include a module in a superclass after
+        # including it in a subclass: https://gist.github.com/845896
+        # To prevent this, we must include any modules in RSpec::Core::ExampleGroup
+        # before users create example groups and have a chance to include
+        # the same module in a subclass of RSpec::Core::ExampleGroup.
+        # So we need to configure example groups here.
+        ensure_example_groups_are_configured
+
+        description = args.shift
+        user_metadata = Metadata.build_hash_from(args)
+        args.unshift(description)
+
+        @metadata = Metadata::ExampleGroupHash.create(
+          superclass_metadata || {}, user_metadata, *args, &example_group_block
+        )
+
+        hooks.register_globals(self, RSpec.configuration.hooks)
+        RSpec.world.configure_group(self)
+      end
+
+      # @private
+      def self.examples
+        @examples ||= []
+      end
+
+      # @private
+      def self.filtered_examples
+        RSpec.world.filtered_examples[self]
+      end
+
+      # @private
+      def self.descendant_filtered_examples
+        @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
       end
 
       # @private
@@ -345,29 +361,6 @@ module RSpec
           RSpec.configuration.configure_expectation_framework
           @@example_groups_configured = true
         end
-      end
-
-      # @private
-      def self.set_it_up(*args, &example_group_block)
-        # Ruby 1.9 has a bug that can lead to infinite recursion and a
-        # SystemStackError if you include a module in a superclass after
-        # including it in a subclass: https://gist.github.com/845896
-        # To prevent this, we must include any modules in RSpec::Core::ExampleGroup
-        # before users create example groups and have a chance to include
-        # the same module in a subclass of RSpec::Core::ExampleGroup.
-        # So we need to configure example groups here.
-        ensure_example_groups_are_configured
-
-        description = args.shift
-        user_metadata = Metadata.build_hash_from(args)
-        args.unshift(description)
-
-        @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata || {}, user_metadata, *args, &example_group_block
-        )
-
-        hooks.register_globals(self, RSpec.configuration.hooks)
-        RSpec.world.configure_group(self)
       end
 
       # @private
@@ -505,18 +498,25 @@ module RSpec
         ivars.each {|name, value| instance.instance_variable_set(name, value)}
       end
 
-      # Returns the class or module passed to the `describe` method (or alias).
-      # Returns nil if the subject is not a class or module.
-      # @example
-      #     describe Thing do
-      #       it "does something" do
-      #         described_class == Thing
-      #       end
-      #     end
-      #
-      #
-      def described_class
-        self.class.described_class
+      # @private
+      def self.pending_metadata_and_block_for(options, block)
+        if String === options[:pending]
+          reason = options[:pending]
+        else
+          options[:pending] = true
+          reason = RSpec::Core::Pending::NO_REASON_GIVEN
+        end
+
+        # Assign :caller so that the callback's source_location isn't used
+        # as the example location.
+        options[:caller] ||= Metadata.backtrace_from(block)
+
+        # This will fail if no block is provided, which is effectively the
+        # same as failing the example so it will be marked correctly as
+        # pending.
+        callback = Proc.new { pending(reason); instance_exec(&block) }
+
+        return options, callback
       end
     end
 
