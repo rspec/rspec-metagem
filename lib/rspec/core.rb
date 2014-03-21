@@ -66,12 +66,6 @@ module RSpec
 
   end
 
-  # @private
-  # Used internally to set the global object
-  def self.configuration=(new_configuration)
-    @configuration = new_configuration
-  end
-
   # Yields the global configuration to a block.
   # @yield [Configuration] global configuration
   #
@@ -126,12 +120,6 @@ module RSpec
   # Internal container for global non-configuration data
   def self.world
     @world ||= RSpec::Core::World.new
-  end
-
-  # @private
-  # Used internally to set the global object
-  def self.world=(new_world)
-    @world = new_world
   end
 
   # Namespace for the rspec-core code.
