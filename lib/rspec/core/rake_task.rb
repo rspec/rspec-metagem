@@ -73,16 +73,6 @@ module RSpec
       end
 
       # @private
-      def setup_ivars(args)
-        @name = args.shift || :spec
-        @ruby_opts, @rspec_opts = nil, nil, nil
-        @verbose, @fail_on_error = true, true
-
-        @rspec_path = 'rspec'
-        @pattern    = './spec{,/*/**}/*_spec.rb'
-      end
-
-      # @private
       def run_task(verbose)
         command = spec_command
 
@@ -99,6 +89,17 @@ module RSpec
       end
 
     private
+
+      # @private
+      def setup_ivars(args)
+        @name          = args.shift || :spec
+        @ruby_opts     = nil
+        @rspec_opts    = nil
+        @verbose       = true
+        @fail_on_error = true
+        @rspec_path    = 'rspec'
+        @pattern       = './spec{,/*/**}/*_spec.rb'
+      end
 
       def files_to_run
         if ENV['SPEC']
