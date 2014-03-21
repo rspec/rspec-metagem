@@ -10,12 +10,6 @@ end
 module RSpec
   module Core
     module SharedExampleGroup
-      RSpec.describe Registry do
-        it "can safely be reset when there aren't any shared groups" do
-          expect { Registry.new.clear }.to_not raise_error
-        end
-      end
-
       RSpec.describe Collection do
 
         # this represents:
@@ -85,7 +79,7 @@ module RSpec
         expect(Module.private_methods & seg_methods).to eq([])
       end
 
-      before(:all) do
+      before do
         # this is a work around as SharedExampleGroup is not world safe
         RandomTopLevelModule.setup!
       end
@@ -133,7 +127,7 @@ module RSpec
               it "captures the given #{type} and block in the collection of shared example groups" do
                 implementation = lambda {}
                 define_shared_group(object, &implementation)
-                expect(SharedExampleGroup.registry.shared_example_groups[group][object]).to eq implementation
+                expect(RSpec.world.shared_example_group_registry.shared_example_groups[group][object]).to eq implementation
               end
             end
           end
@@ -153,7 +147,7 @@ module RSpec
             it "captures the given string and block in the World's collection of shared example groups" do
               implementation = lambda {}
               define_shared_group("name", :foo => :bar, &implementation)
-              expect(SharedExampleGroup.registry.shared_example_groups[group]["name"]).to eq implementation
+              expect(RSpec.world.shared_example_group_registry.shared_example_groups[group]["name"]).to eq implementation
             end
 
             it "delegates include on configuration" do

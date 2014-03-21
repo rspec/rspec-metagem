@@ -39,8 +39,7 @@ module RSpec
                 "not allowed. Remove `RSpec.` prefix or move this to a " +
                 "top-level scope."
         end
-
-        SharedExampleGroup.registry.add_group(self, *args, &block)
+        RSpec.world.shared_example_group_registry.add_group(self, *args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -49,7 +48,7 @@ module RSpec
 
       # @private
       def shared_example_groups
-        SharedExampleGroup.registry.shared_example_groups_for('main', *ancestors[0..-1])
+        RSpec.world.shared_example_group_registry.shared_example_groups_for('main', *ancestors[0..-1])
       end
 
       # @api private
@@ -60,13 +59,15 @@ module RSpec
         def self.definitions
           proc do
             def shared_examples(*args, &block)
-              SharedExampleGroup.registry.add_group('main', *args, &block)
+              RSpec.world.shared_example_group_registry.add_group('main', *args, &block)
             end
+
             alias :shared_context      :shared_examples
             alias :share_examples_for  :shared_examples
             alias :shared_examples_for :shared_examples
+
             def shared_example_groups
-              SharedExampleGroup.registry.shared_example_groups_for('main')
+              RSpec.world.shared_example_group_registry.shared_example_groups_for('main')
             end
           end
         end
@@ -104,13 +105,6 @@ module RSpec
 
       end
 
-      # @api private
-      #
-      # @return [Registry]
-      def self.registry
-        @registry ||= Registry.new
-      end
-
       # @private
       #
       # Used internally to manage the shared example groups and
@@ -145,11 +139,6 @@ module RSpec
         # @api private
         def shared_example_groups
           @shared_example_groups ||= Hash.new { |hash, key| hash[key] = Hash.new }
-        end
-
-        # @api private
-        def clear
-          shared_example_groups.clear
         end
 
       private
