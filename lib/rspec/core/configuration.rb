@@ -411,8 +411,8 @@ module RSpec
       #       - called before each example
       #
       #     verify_mocks_for_rspec
-      #       - called after each example. Framework should raise an exception
-      #         when expectations fail
+      #       - called after each example if the example hasn't yet failed.
+      #         Framework should raise an exception when expectations fail
       #
       #     teardown_mocks_for_rspec
       #       - called after verify_mocks_for_rspec (even if there are errors)
@@ -1068,7 +1068,7 @@ module RSpec
       delegate_to_ordering_manager :seed_used?, :ordering_registry
 
       # Set Ruby warnings on or off
-      def warnings= value
+      def warnings=(value)
         $VERBOSE = !!value
       end
 
