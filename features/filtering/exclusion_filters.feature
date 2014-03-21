@@ -58,7 +58,7 @@ Feature: exclusion filters
       end
 
       describe "group 1", :broken => true do
-        before(:all) do
+        before(:context) do
           raise "you should not see me"
         end
 
@@ -70,7 +70,7 @@ Feature: exclusion filters
       end
 
       describe "group 2", :broken => true do
-        before(:each) do
+        before(:example) do
           raise "you should not see me"
         end
 
@@ -83,24 +83,24 @@ Feature: exclusion filters
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 
-  Scenario: before/after(:all) hooks in excluded example group are not run
-    Given a file named "spec/before_after_all_exclusion_filter_spec.rb" with:
+  Scenario: before/after(:context) hooks in excluded example group are not run
+    Given a file named "spec/before_after_context_exclusion_filter_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
 
       describe "group 1" do
-        before(:all) { puts "before all in included group" }
-        after(:all)  { puts "after all in included group"  }
+        before(:context) { puts "before context in included group" }
+        after(:context)  { puts "after context in included group"  }
 
         it "group 1 example" do
         end
       end
 
       describe "group 2", :broken => true do
-        before(:all) { puts "before all in excluded group" }
-        after(:all)  { puts "after all in excluded group"  }
+        before(:context) { puts "before context in excluded group" }
+        after(:context)  { puts "after context in excluded group"  }
 
         context "context 1" do
           it "group 2 context 1 example 1" do
@@ -108,11 +108,11 @@ Feature: exclusion filters
         end
       end
       """
-    When I run `rspec ./spec/before_after_all_exclusion_filter_spec.rb`
-    Then the output should contain "before all in included group"
-     And the output should contain "after all in included group"
-     And the output should not contain "before all in excluded group"
-     And the output should not contain "after all in excluded group"
+    When I run `rspec ./spec/before_after_context_exclusion_filter_spec.rb`
+    Then the output should contain "before context in included group"
+     And the output should contain "after context in included group"
+     And the output should not contain "before context in excluded group"
+     And the output should not contain "after context in excluded group"
 
   Scenario: Use symbols as metadata
     Given a file named "symbols_as_metadata_spec.rb" with:

@@ -98,7 +98,7 @@ module RSpec
   #       fetch_current_example = RSpec.respond_to?(:current_example) ?
   #         proc { RSpec.current_example } : proc { |context| context.example }
   #
-  #       c.before(:each) do
+  #       c.before(:example) do
   #         example = fetch_current_example.call(self)
   #
   #         # ...

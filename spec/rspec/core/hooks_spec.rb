@@ -11,8 +11,8 @@ module RSpec::Core
     end
 
     [:before, :after, :around].each do |type|
-      [:each, :all].each do |scope|
-        next if type == :around && scope == :all
+      [:example, :context].each do |scope|
+        next if type == :around && scope == :context
 
         describe "##{type}(#{scope})" do
           it_behaves_like "metadata hash builder" do
@@ -29,16 +29,16 @@ module RSpec::Core
       describe "##{type}(no scope)" do
         let(:instance) { HooksHost.new }
 
-        it "defaults to :each scope if no arguments are given" do
+        it "defaults to :example scope if no arguments are given" do
           hooks = instance.send(type) {}
           hook = hooks.first
-          expect(instance.hooks[type][:each]).to include(hook)
+          expect(instance.hooks[type][:example]).to include(hook)
         end
 
-        it "defaults to :each scope if the only argument is a metadata hash" do
+        it "defaults to :example scope if the only argument is a metadata hash" do
           hooks = instance.send(type, :foo => :bar) {}
           hook = hooks.first
-          expect(instance.hooks[type][:each]).to include(hook)
+          expect(instance.hooks[type][:example]).to include(hook)
         end
 
         it "raises an error if only metadata symbols are given as arguments" do
@@ -48,7 +48,7 @@ module RSpec::Core
     end
 
     [:before, :after].each do |type|
-      [:each, :all, :suite].each do |scope|
+      [:example, :context, :suite].each do |scope|
         describe "##{type}(#{scope.inspect})" do
           let(:instance) { HooksHost.new }
           let!(:hook) do

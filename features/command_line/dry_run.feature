@@ -12,15 +12,15 @@ Feature: --dry-run
       end
 
       describe "dry run" do
-        before(:all)  { fail }
-        before(:each) { fail }
+        before(:context) { fail }
+        before(:example) { fail }
 
         it "fails in example" do
           fail
         end
 
-        after(:each) { fail }
-        after(:all)  { fail }
+        after(:example) { fail }
+        after(:context) { fail }
       end
       """
     When I run `rspec --dry-run`

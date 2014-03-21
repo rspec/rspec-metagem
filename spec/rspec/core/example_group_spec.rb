@@ -786,10 +786,10 @@ module RSpec::Core
 
           outer.run
 
-          expect(inner.before_all_ivars[:@inner]).to be_nil
-          expect(inner.before_all_ivars[:@outer]).to be_nil
-          expect(outer.before_all_ivars[:@inner]).to be_nil
-          expect(outer.before_all_ivars[:@outer]).to be_nil
+          expect(inner.before_context_ivars[:@inner]).to be_nil
+          expect(inner.before_context_ivars[:@outer]).to be_nil
+          expect(outer.before_context_ivars[:@inner]).to be_nil
+          expect(outer.before_context_ivars[:@outer]).to be_nil
         end
       end
 
@@ -1194,11 +1194,11 @@ module RSpec::Core
       end
 
       it "can access the before all ivars in the before_all_ivars hash", :ruby => 1.8 do |ex|
-        expect(ex.example_group.before_all_ivars).to include('@before_all_top_level' => 'before_all_top_level')
+        expect(ex.example_group.before_context_ivars).to include('@before_all_top_level' => 'before_all_top_level')
       end
 
       it "can access the before all ivars in the before_all_ivars hash", :ruby => 1.9 do |ex|
-        expect(ex.example_group.before_all_ivars).to include(:@before_all_top_level => 'before_all_top_level')
+        expect(ex.example_group.before_context_ivars).to include(:@before_all_top_level => 'before_all_top_level')
       end
 
       describe "but now I am nested" do
@@ -1542,8 +1542,19 @@ module RSpec::Core
     end
 
     it 'minimizes the number of methods that users could inadvertantly overwrite' do
-      methods = ExampleGroup.instance_methods(false).map(&:to_sym)
-      expect(methods).to contain_exactly(:described_class)
+      rspec_core_methods = ExampleGroup.instance_methods -
+        RSpec::Matchers.instance_methods -
+        RSpec::Mocks::ExampleMethods.instance_methods -
+        Object.instance_methods
+
+      # Feel free to expand this list if you intend to add another public API
+      # for users. RSpec internals should not add methods here, though.
+      expect(rspec_core_methods.map(&:to_sym)).to contain_exactly(
+        :described_class, :subject,
+        :is_expected, :should, :should_not,
+        :pending, :skip,
+        :setup_mocks_for_rspec, :teardown_mocks_for_rspec, :verify_mocks_for_rspec
+      )
     end
   end
 end

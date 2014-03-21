@@ -1,6 +1,9 @@
 module RSpec
   module Core
-    # Memoized helpers
+    # This module is included in {ExampleGroup}, making the methods
+    # available to be called from within example blocks.
+    #
+    # @see ClassMethods
     module MemoizedHelpers
       # @note `subject` was contributed by Joe Ferris to support the one-liner
       #   syntax embraced by shoulda matchers:
@@ -42,13 +45,13 @@ module RSpec
       #   end
       #
       # @note Because `subject` is designed to create state that is reset between
-      #   each example, and `before(:all)` is designed to setup state that is
+      #   each example, and `before(:context)` is designed to setup state that is
       #   shared across _all_ examples in an example group, `subject` is _not_
-      #   intended to be used in a `before(:all)` hook. RSpec 2.13.1 prints
-      #   a warning when you reference a `subject` from `before(:all)` and we plan
-      #   to have it raise an error in RSpec 3.
+      #   intended to be used in a `before(:context)` hook.
       #
       # @see #should
+      # @see #should_not
+      # @see #is_expected
       def subject
         __memoized.fetch(:subject) do
           __memoized[:subject] = begin
@@ -116,7 +119,7 @@ module RSpec
         expect(subject)
       end
 
-      private
+    private
 
       # @private
       def __memoized
@@ -124,11 +127,11 @@ module RSpec
       end
 
       # Used internally to customize the behavior of the
-      # memoized hash when used in a `before(:all)` hook.
+      # memoized hash when used in a `before(:context)` hook.
       #
       # @private
-      class AllHookMemoizedHash
-        def self.isolate_for_all_hook(example_group_instance)
+      class ContextHookMemoizedHash
+        def self.isolate_for_context_hook(example_group_instance)
           hash = self
 
           example_group_instance.instance_exec do
@@ -163,7 +166,7 @@ EOS
         # @private
         class Before < self
           def self.hook_expression
-            "`before(:all)`"
+            "`before(:context)`"
           end
 
           def self.article
@@ -178,7 +181,7 @@ EOS
         # @private
         class After < self
           def self.hook_expression
-            "`after(:all)`"
+            "`after(:context)`"
           end
 
           def self.article
@@ -191,11 +194,9 @@ EOS
         end
       end
 
-      def self.included(mod)
-        mod.extend(ClassMethods)
-      end
-
-      # @private
+      # This module is extended onto {ExampleGroup}, making the methods
+      # available to be called from within example group blocks.
+      # You can think of them as being analagous to class macros.
       module ClassMethods
         # Generates a method whose return value is memoized after the first
         # call. Useful for reducing duplication between examples that assign
@@ -210,11 +211,9 @@ EOS
         #   though we have yet to see this in practice. You've been warned.
         #
         # @note Because `let` is designed to create state that is reset between
-        #   each example, and `before(:all)` is designed to setup state that is
+        #   each example, and `before(:context)` is designed to setup state that is
         #   shared across _all_ examples in an example group, `let` is _not_
-        #   intended to be used in a `before(:all)` hook. RSpec 2.13.1 prints
-        #   a warning when you reference a `let` from `before(:all)` and we plan
-        #   to have it raise an error in RSpec 3.
+        #   intended to be used in a `before(:context)` hook.
         #
         # @example
         #
@@ -269,7 +268,7 @@ EOS
         #   end
         #
         #   describe Thing do
-        #     after(:each) { Thing.reset_count }
+        #     after(:example) { Thing.reset_count }
         #
         #     context "using let" do
         #       let(:thing) { Thing.new }
@@ -332,6 +331,8 @@ EOS
         #   end
         #
         # @see MemoizedHelpers#should
+        # @see MemoizedHelpers#should_not
+        # @see MemoizedHelpers#is_expected
         def subject(name=nil, &block)
           if name
             let(name, &block)
@@ -370,7 +371,7 @@ EOS
         #   end
         #
         #   describe Thing do
-        #     after(:each) { Thing.reset_count }
+        #     after(:example) { Thing.reset_count }
         #
         #     context "using subject" do
         #       subject { Thing.new }
@@ -404,7 +405,7 @@ EOS
         end
       end
 
-      # @api private
+      # @private
       #
       # Gets the LetDefinitions module. The module is mixed into
       # the example group and is used to hold all let definitions.
@@ -429,13 +430,13 @@ EOS
         end
       end
 
-      # @api private
+      # @private
       def self.define_helpers_on(example_group)
         example_group.__send__(:include, module_for(example_group))
       end
 
       if Module.method(:const_defined?).arity == 1 # for 1.8
-        # @api private
+        # @private
         #
         # Gets the named constant or yields.
         # On 1.8, const_defined? / const_get do not take into
@@ -448,7 +449,7 @@ EOS
           end
         end
       else
-        # @api private
+        # @private
         #
         # Gets the named constant or yields.
         # On 1.9, const_defined? / const_get take into account the

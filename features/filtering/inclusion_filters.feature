@@ -52,22 +52,22 @@ Feature: inclusion filters
     And  the output should contain "group 1 example 2"
     And  the output should not contain "group 2 example 1"
 
-  Scenario: before/after(:all) hooks in unmatched example group are not run
+  Scenario: before/after(:context) hooks in unmatched example group are not run
     Given a file named "spec/before_after_all_inclusion_filter_spec.rb" with:
       """ruby
       require "spec_helper"
 
       describe "group 1", :focus => true do
-        before(:all) { puts "before all in focused group" }
-        after(:all)  { puts "after all in focused group"  }
+        before(:context) { puts "before all in focused group" }
+        after(:context)  { puts "after all in focused group"  }
 
         it "group 1 example" do
         end
       end
 
       describe "group 2" do
-        before(:all) { puts "before all in unfocused group" }
-        after(:all)  { puts "after all in unfocused group"  }
+        before(:context) { puts "before all in unfocused group" }
+        after(:context)  { puts "after all in unfocused group"  }
 
         context "context 1" do
           it "group 2 context 1 example 1" do
