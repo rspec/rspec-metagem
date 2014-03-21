@@ -9,7 +9,7 @@ Feature: --order (new in rspec-core-2.8)
   Use `rand` to randomize the order of groups and examples within groups.*
 
   * Nested groups are always run from top-level to bottom-level in order to avoid
-    executing `before(:all)` and `after(:all)` hooks more than once, but the order
+    executing `before(:context)` and `after(:all)` hooks more than once, but the order
     of groups at each level is randomized.
 
   You can also specify a seed:

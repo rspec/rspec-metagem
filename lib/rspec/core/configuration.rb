@@ -22,9 +22,9 @@ module RSpec
     #
     # @example Hooks
     #     RSpec.configure do |c|
-    #       c.before(:suite) { establish_connection }
-    #       c.before(:each)  { log_in_as :authorized }
-    #       c.around(:each)  { |ex| Database.transaction(&ex) }
+    #       c.before(:suite)   { establish_connection }
+    #       c.before(:example) { log_in_as :authorized }
+    #       c.around(:example) { |ex| Database.transaction(&ex) }
     #     end
     #
     # @see RSpec.configure

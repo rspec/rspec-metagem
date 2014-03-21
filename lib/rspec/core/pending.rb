@@ -51,7 +51,7 @@ module RSpec
       #       end
       #     end
       #
-      # @note `before(:each)` hooks are eval'd when you use the `pending`
+      # @note `before(:example)` hooks are eval'd when you use the `pending`
       #   method within an example. If you want to declare an example `pending`
       #   and bypass the `before` hooks as well, you can pass `:pending => true`
       #   to the `it` method:
@@ -91,7 +91,7 @@ module RSpec
           Pending.mark_pending! current_example, args.first
         else
           raise "`pending` may not be used outside of examples, such as in " +
-                "before(:all). Maybe you want `skip`?"
+                "before(:context). Maybe you want `skip`?"
         end
       end
 

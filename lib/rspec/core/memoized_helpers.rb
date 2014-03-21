@@ -42,11 +42,9 @@ module RSpec
       #   end
       #
       # @note Because `subject` is designed to create state that is reset between
-      #   each example, and `before(:all)` is designed to setup state that is
+      #   each example, and `before(:context)` is designed to setup state that is
       #   shared across _all_ examples in an example group, `subject` is _not_
-      #   intended to be used in a `before(:all)` hook. RSpec 2.13.1 prints
-      #   a warning when you reference a `subject` from `before(:all)` and we plan
-      #   to have it raise an error in RSpec 3.
+      #   intended to be used in a `before(:context)` hook.
       #
       # @see #should
       def subject
@@ -124,11 +122,11 @@ module RSpec
       end
 
       # Used internally to customize the behavior of the
-      # memoized hash when used in a `before(:all)` hook.
+      # memoized hash when used in a `before(:context)` hook.
       #
       # @private
-      class AllHookMemoizedHash
-        def self.isolate_for_all_hook(example_group_instance)
+      class ContextHookMemoizedHash
+        def self.isolate_for_context_hook(example_group_instance)
           hash = self
 
           example_group_instance.instance_exec do
@@ -163,7 +161,7 @@ EOS
         # @private
         class Before < self
           def self.hook_expression
-            "`before(:all)`"
+            "`before(:context)`"
           end
 
           def self.article
@@ -178,7 +176,7 @@ EOS
         # @private
         class After < self
           def self.hook_expression
-            "`after(:all)`"
+            "`after(:context)`"
           end
 
           def self.article
@@ -210,11 +208,9 @@ EOS
         #   though we have yet to see this in practice. You've been warned.
         #
         # @note Because `let` is designed to create state that is reset between
-        #   each example, and `before(:all)` is designed to setup state that is
+        #   each example, and `before(:context)` is designed to setup state that is
         #   shared across _all_ examples in an example group, `let` is _not_
-        #   intended to be used in a `before(:all)` hook. RSpec 2.13.1 prints
-        #   a warning when you reference a `let` from `before(:all)` and we plan
-        #   to have it raise an error in RSpec 3.
+        #   intended to be used in a `before(:context)` hook.
         #
         # @example
         #
@@ -269,7 +265,7 @@ EOS
         #   end
         #
         #   describe Thing do
-        #     after(:each) { Thing.reset_count }
+        #     after(:example) { Thing.reset_count }
         #
         #     context "using let" do
         #       let(:thing) { Thing.new }
@@ -370,7 +366,7 @@ EOS
         #   end
         #
         #   describe Thing do
-        #     after(:each) { Thing.reset_count }
+        #     after(:example) { Thing.reset_count }
         #
         #     context "using subject" do
         #       subject { Thing.new }

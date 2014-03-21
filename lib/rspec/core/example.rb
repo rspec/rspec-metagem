@@ -125,9 +125,9 @@ module RSpec
           if skipped?
             Pending.mark_pending! self, skip
           elsif !RSpec.configuration.dry_run?
-            with_around_each_hooks do
+            with_around_example_hooks do
               begin
-                run_before_each
+                run_before_example
                 @example_group_instance.instance_exec(self, &@example_block)
 
                 if pending?
@@ -143,7 +143,7 @@ module RSpec
               rescue Exception => e
                 set_exception(e)
               ensure
-                run_after_each
+                run_after_example
               end
             end
           end
@@ -209,8 +209,8 @@ module RSpec
       end
 
       # @private
-      def around_each_hooks
-        @around_each_hooks ||= example_group.hooks.around_each_hooks_for(self)
+      def around_example_hooks
+        @around_example_hooks ||= example_group.hooks.around_example_hooks_for(self)
       end
 
       # @private
@@ -241,7 +241,7 @@ module RSpec
       # @private
       #
       # Used internally to set an exception and fail without actually executing
-      # the example when an exception is raised in before(:all).
+      # the example when an exception is raised in before(:context).
       def fail_with_exception(reporter, exception)
         start(reporter)
         set_exception(exception)
@@ -251,7 +251,7 @@ module RSpec
       # @private
       #
       # Used internally to skip without actually executing the example when
-      # skip is used in before(:all)
+      # skip is used in before(:context)
       def skip_with_exception(reporter, exception)
         start(reporter)
         Pending.mark_skipped! self, exception.argument
@@ -272,14 +272,14 @@ module RSpec
 
     private
 
-      def with_around_each_hooks(&block)
-        if around_each_hooks.empty?
+      def with_around_example_hooks(&block)
+        if around_example_hooks.empty?
           yield
         else
-          @example_group_class.hooks.run(:around, :each, self, Procsy.new(metadata, &block))
+          @example_group_class.hooks.run(:around, :example, self, Procsy.new(metadata, &block))
         end
       rescue Exception => e
-        set_exception(e, "in an around(:each) hook")
+        set_exception(e, "in an `around(:example)` hook")
       end
 
       def start(reporter)
@@ -311,17 +311,17 @@ module RSpec
         execution_result.record_finished(status, clock.now)
       end
 
-      def run_before_each
+      def run_before_example
         @example_group_instance.setup_mocks_for_rspec
-        @example_group_class.hooks.run(:before, :each, self)
+        @example_group_class.hooks.run(:before, :example, self)
       end
 
-      def run_after_each
-        @example_group_class.hooks.run(:after, :each, self)
+      def run_after_example
+        @example_group_class.hooks.run(:after, :example, self)
         verify_mocks
         assign_generated_description if RSpec.configuration.expecting_with_rspec?
       rescue Exception => e
-        set_exception(e, "in an after(:each) hook")
+        set_exception(e, "in an `after(:example)` hook")
       ensure
         @example_group_instance.teardown_mocks_for_rspec
       end

@@ -17,7 +17,7 @@ Feature: Overriding global ordering
     Given a file named "order_dependent_spec.rb" with:
       """ruby
       describe "examples only pass when they are run in order", :order => :defined do
-        before(:all) { @list = [] }
+        before(:context) { @list = [] }
 
         it "passes when run first" do
           @list << 1
@@ -49,7 +49,7 @@ Feature: Overriding global ordering
       end
 
       describe "A group that must run in reverse order", :order => :reverse do
-        before(:all) { @list = [] }
+        before(:context) { @list = [] }
 
         it "passes when run second" do
           @list << 2
@@ -75,7 +75,7 @@ Feature: Overriding global ordering
       end
 
       describe "A group without :order metadata" do
-        before(:all) { @list = [] }
+        before(:context) { @list = [] }
 
         it "passes when run second" do
           @list << 2
