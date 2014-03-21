@@ -24,7 +24,7 @@ module RSpec
           command_line.run(err, out)
           html = out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
 
-          actual_doc = Nokogiri::HTML(html)
+          actual_doc = Nokogiri::HTML(html, &:noblanks)
           actual_doc.css("div.backtrace pre").each do |elem|
             # This is to minimize churn on backtrace lines that we do not
             # assert on anyway.
@@ -83,11 +83,11 @@ module RSpec
         describe 'produced HTML', :slow, :if => RUBY_VERSION >= '2.0.0' do
           def build_and_verify_formatter_output
             Dir.chdir(root) do
-              actual_doc = Nokogiri::HTML(generated_html)
+              actual_doc = Nokogiri::HTML(generated_html, &:noblanks)
               actual_backtraces = extract_backtrace_from(actual_doc)
               actual_doc.css("div.backtrace").remove
 
-              expected_doc = Nokogiri::HTML(expected_html)
+              expected_doc = Nokogiri::HTML(expected_html, &:noblanks)
               expected_backtraces = extract_backtrace_from(expected_doc)
               expected_doc.search("div.backtrace").remove
 
