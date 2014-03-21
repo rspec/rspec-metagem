@@ -58,13 +58,6 @@ module RSpec::Core
       expect { generate_help_text }.to_not output(useless_lines).to_stdout
     end
 
-    describe "--default_path" do
-      it "gets converted to --default-path" do
-        options = Parser.parse(%w[--default_path foo])
-        expect(options[:default_path]).to eq "foo"
-      end
-    end
-
     describe "--default-path" do
       it "sets the default path where RSpec looks for examples" do
         options = Parser.parse(%w[--default-path foo])

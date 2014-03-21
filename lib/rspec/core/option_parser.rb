@@ -11,8 +11,6 @@ module RSpec::Core
     def parse(args)
       return {} if args.empty?
 
-      convert_deprecated_args(args)
-
       options = args.delete('--tty') ? {:tty => true} : {}
       begin
         parser(options).parse!(args)
@@ -21,17 +19,6 @@ module RSpec::Core
       end
 
       options
-    end
-
-    def convert_deprecated_args(args)
-      args.map! { |arg|
-        case arg
-        when "--default_path"
-          "--default-path"
-        else
-          arg
-        end
-      }
     end
 
     def parser(options)
@@ -205,7 +192,7 @@ FILTERING
 
         # these options would otherwise be confusing to users, so we forcibly prevent them from executing
         # --I is too similar to -I
-        # -d was a shorthand for --debugger, which is removed, but now would trigger --default_path
+        # -d was a shorthand for --debugger, which is removed, but now would trigger --default-path
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
