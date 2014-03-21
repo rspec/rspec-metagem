@@ -318,7 +318,7 @@ module RSpec
         @hooks ||= HookCollections.new(self,
           :around => { :example => AroundHookCollection.new },
           :before => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new },
-          :after =>  { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new }
+          :after  => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new }
         )
       end
 
@@ -343,20 +343,12 @@ module RSpec
         def run(example)
           example.instance_exec(example, &block)
         end
-
-        def display_name
-          "before hook"
-        end
       end
 
       # @private
       class AfterHook < Hook
         def run(example)
           example.instance_exec_with_rescue("in an after hook", &block)
-        end
-
-        def display_name
-          "after hook"
         end
       end
 
@@ -374,18 +366,10 @@ An error occurred in an `after(:context)` hook.
 
 EOS
         end
-
-        def display_name
-          "after(:context) hook"
-        end
       end
 
       # @private
-      class AroundHook < Hook
-        def display_name
-          "around hook"
-        end
-      end
+      AroundHook = Hook
 
       # @private
       class BaseHookCollection
