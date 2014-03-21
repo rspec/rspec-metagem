@@ -21,8 +21,9 @@ module RSpec
       extend  Hooks
 
       include MemoizedHelpers
+      extend  MemoizedHelpers::ClassMethods
       include Pending
-      extend SharedExampleGroup
+      extend  SharedExampleGroup
 
       unless respond_to?(:define_singleton_method)
         # @private

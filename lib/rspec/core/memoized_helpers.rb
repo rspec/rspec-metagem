@@ -1,6 +1,9 @@
 module RSpec
   module Core
-    # Memoized helpers
+    # This module is included in {ExampleGroup}, making the methods
+    # available to be called from within example blocks.
+    #
+    # @see ClassMethods
     module MemoizedHelpers
       # @note `subject` was contributed by Joe Ferris to support the one-liner
       #   syntax embraced by shoulda matchers:
@@ -47,6 +50,8 @@ module RSpec
       #   intended to be used in a `before(:context)` hook.
       #
       # @see #should
+      # @see #should_not
+      # @see #is_expected
       def subject
         __memoized.fetch(:subject) do
           __memoized[:subject] = begin
@@ -114,7 +119,7 @@ module RSpec
         expect(subject)
       end
 
-      private
+    private
 
       # @private
       def __memoized
@@ -189,11 +194,9 @@ EOS
         end
       end
 
-      def self.included(mod)
-        mod.extend(ClassMethods)
-      end
-
-      # @private
+      # This module is extended onto {ExampleGroup}, making the methods
+      # available to be called from within example group blocks.
+      # You can think of them as being analagous to class macros.
       module ClassMethods
         # Generates a method whose return value is memoized after the first
         # call. Useful for reducing duplication between examples that assign
@@ -328,6 +331,8 @@ EOS
         #   end
         #
         # @see MemoizedHelpers#should
+        # @see MemoizedHelpers#should_not
+        # @see MemoizedHelpers#is_expected
         def subject(name=nil, &block)
           if name
             let(name, &block)
@@ -400,7 +405,7 @@ EOS
         end
       end
 
-      # @api private
+      # @private
       #
       # Gets the LetDefinitions module. The module is mixed into
       # the example group and is used to hold all let definitions.
@@ -425,13 +430,13 @@ EOS
         end
       end
 
-      # @api private
+      # @private
       def self.define_helpers_on(example_group)
         example_group.__send__(:include, module_for(example_group))
       end
 
       if Module.method(:const_defined?).arity == 1 # for 1.8
-        # @api private
+        # @private
         #
         # Gets the named constant or yields.
         # On 1.8, const_defined? / const_get do not take into
@@ -444,7 +449,7 @@ EOS
           end
         end
       else
-        # @api private
+        # @private
         #
         # Gets the named constant or yields.
         # On 1.9, const_defined? / const_get take into account the

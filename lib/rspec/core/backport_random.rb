@@ -7,6 +7,7 @@
 module RSpec
   module Core
     # Methods used internally by the backports.
+    # @private
     module Backports
       # Helper method to coerce a value into a specific class.
       # Raises a TypeError if the coercion fails or the returned value
