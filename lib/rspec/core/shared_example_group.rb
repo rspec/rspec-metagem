@@ -1,6 +1,5 @@
 module RSpec
   module Core
-
     # Shared examples let you describe behaviour of types or modules.
     # When declared, a shared group's content is stored.
     # It is only realized in the context of another example group,
@@ -193,6 +192,28 @@ module RSpec
               end
             }
           end
+        end
+      end
+
+      # @private
+      class Collection
+        def initialize(sources, examples)
+          @sources, @examples = sources, examples
+        end
+
+        # @private
+        def [](key)
+          fetch_examples(key)
+        end
+
+      private
+
+        def fetch_examples(key)
+          @examples[source_for key][key]
+        end
+
+        def source_for(key)
+          @sources.reverse.find { |source| @examples[source].has_key? key }
         end
       end
     end

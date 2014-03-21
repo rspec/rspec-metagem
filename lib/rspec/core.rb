@@ -31,7 +31,6 @@ RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative 
   command_line
   runner
   example
-  shared_example_group/collection
   shared_example_group
   example_group
 ].each { |name| RSpec::Support.require_rspec_core name }
