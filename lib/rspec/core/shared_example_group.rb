@@ -48,7 +48,7 @@ module RSpec
 
       # @private
       def shared_example_groups
-        RSpec.world.shared_example_group_registry.shared_example_groups_for('main', *ancestors[0..-1])
+        RSpec.world.shared_example_group_registry.shared_example_groups_for(*parent_groups)
       end
 
       # @api private
@@ -59,7 +59,7 @@ module RSpec
         def self.definitions
           proc do
             def shared_examples(*args, &block)
-              RSpec.world.shared_example_group_registry.add_group('main', *args, &block)
+              RSpec.world.shared_example_group_registry.add_group(:main, *args, &block)
             end
 
             alias :shared_context      :shared_examples
@@ -67,7 +67,7 @@ module RSpec
             alias :shared_examples_for :shared_examples
 
             def shared_example_groups
-              RSpec.world.shared_example_group_registry.shared_example_groups_for('main')
+              RSpec.world.shared_example_group_registry.shared_example_groups_for()
             end
           end
         end
@@ -113,13 +113,13 @@ module RSpec
       # us to have helper methods that don't get added to those
       # objects.
       class Registry
-        def add_group(source, *args, &block)
+        def add_group(context, *args, &block)
           ensure_block_has_source_location(block, CallerFilter.first_non_rspec_line)
 
           if key? args.first
             key = args.shift
-            warn_if_key_taken source, key, block
-            add_shared_example_group source, key, block
+            warn_if_key_taken context, key, block
+            add_shared_example_group context, key, block
           end
 
           unless args.empty?
@@ -132,27 +132,27 @@ module RSpec
         end
 
         # @api private
-        def shared_example_groups_for(*sources)
-          Collection.new(sources, shared_example_groups)
+        def shared_example_groups_for(*contexts)
+          Collection.new(contexts, shared_example_groups)
         end
 
         # @api private
         def shared_example_groups
-          @shared_example_groups ||= Hash.new { |hash, key| hash[key] = Hash.new }
+          @shared_example_groups ||= Hash.new { |hash, context| hash[context] = {} }
         end
 
       private
 
-        def add_shared_example_group(source, key, block)
-          shared_example_groups[source][key] = block
+        def add_shared_example_group(context, key, block)
+          shared_example_groups[context][key] = block
         end
 
         def key?(candidate)
           [String, Symbol, Module].any? { |cls| cls === candidate }
         end
 
-        def warn_if_key_taken(source, key, new_block)
-          return unless existing_block = example_block_for(source, key)
+        def warn_if_key_taken(context, key, new_block)
+          return unless existing_block = example_block_for(context, key)
 
           RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
             |WARNING: Shared example group '#{key}' has been previously defined at:
@@ -167,8 +167,8 @@ module RSpec
           block.source_location.join ":"
         end
 
-        def example_block_for(source, key)
-          shared_example_groups[source][key]
+        def example_block_for(context, key)
+          shared_example_groups[context][key]
         end
 
         if Proc.method_defined?(:source_location)
@@ -186,23 +186,16 @@ module RSpec
 
       # @private
       class Collection
-        def initialize(sources, examples)
-          @sources, @examples = sources, examples
+        def initialize(contexts, examples)
+          @contexts = contexts
+          @contexts << :main
+          @examples = examples
         end
 
         # @private
         def [](key)
-          fetch_examples(key)
-        end
-
-      private
-
-        def fetch_examples(key)
-          @examples[source_for key][key]
-        end
-
-        def source_for(key)
-          @sources.reverse.find { |source| @examples[source].has_key? key }
+          context = @contexts.find { |c| @examples[c].has_key? key }
+          @examples[context][key]
         end
       end
     end

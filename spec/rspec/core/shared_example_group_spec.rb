@@ -228,7 +228,6 @@ module RSpec
             end
 
             it 'is trumped by a shared group with the same name that is defined in the including context' do
-              pending "this is expected behavior but isn't passing yet"
               group = nil
 
               in_group_with_shared_group_def do
@@ -245,7 +244,6 @@ module RSpec
             end
 
             it 'is trumped by a shared group with the same name that is defined in nearer parent group' do
-              pending "this is expected behavior but isn't passing yet"
               group = nil
 
               in_group_with_shared_group_def do
