@@ -11,6 +11,7 @@ module RSpec
   module Core
     RSpec.describe SharedExampleGroup do
       include RSpec::Support::InSubProcess
+      let(:registry) { RSpec.world.shared_example_group_registry }
 
       ExampleModule = Module.new
       ExampleClass  = Class.new
@@ -77,9 +78,9 @@ module RSpec
             type = object.class.name.downcase
             context "given a #{type}" do
               it "captures the given #{type} and block in the collection of shared example groups" do
-                implementation = lambda {}
+                implementation = lambda { }
                 define_shared_group(object, &implementation)
-                expect(RSpec.world.shared_example_group_registry.shared_example_groups[group][object]).to eq implementation
+                expect(registry.find([group], object)).to eq implementation
               end
             end
           end
@@ -97,9 +98,9 @@ module RSpec
 
           context "given a string and a hash" do
             it "captures the given string and block in the World's collection of shared example groups" do
-              implementation = lambda {}
+              implementation = lambda { }
               define_shared_group("name", :foo => :bar, &implementation)
-              expect(RSpec.world.shared_example_group_registry.shared_example_groups[group]["name"]).to eq implementation
+              expect(registry.find([group], "name")).to eq implementation
             end
 
             it "delegates include on configuration" do

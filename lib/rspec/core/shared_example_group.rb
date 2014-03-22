@@ -130,12 +130,11 @@ module RSpec
           shared_example_groups[:main][name]
         end
 
-        # @api private
+      private
+
         def shared_example_groups
           @shared_example_groups ||= Hash.new { |hash, context| hash[context] = {} }
         end
-
-      private
 
         def add_shared_example_group(context, key, block)
           shared_example_groups[context][key] = block
