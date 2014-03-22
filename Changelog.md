@@ -47,6 +47,7 @@ Breaking Changes for 3.0.0:
   meaningful connection between the same line number in multiple files.
   Instead use the `rspec path/to/spec.rb:23:46` form, which is terser
   and makes more sense as it is scoped to a file. (Myron Marston)
+* Remove `--default_path` as an alias for `--default-path`. (Jon Rowe)
 
 Enhancements:
 

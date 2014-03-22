@@ -311,7 +311,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
   end
 
-  describe "default-path" do
+  describe "default_path" do
     it "gets set before files_or_directories_to_run" do
       config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'foo').ordered
