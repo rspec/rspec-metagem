@@ -9,65 +9,6 @@ end
 
 module RSpec
   module Core
-    module SharedExampleGroup
-      RSpec.describe Collection do
-
-        # this represents:
-        #
-        # shared_examples "top level group"
-        #
-        # context do
-        #   shared_examples "nested level one"
-        # end
-        #
-        # context do
-        #   shared_examples "nested level two"
-        # end
-        #
-        let(:examples) do
-          Hash.new { |hash,k| hash[k] = Hash.new }.tap do |hash|
-            hash["main"]     = { "top level group"  => example_1 }
-            hash["nested 1"] = { "nested level one" => example_2 }
-            hash["nested 2"] = { "nested level two" => example_3 }
-          end
-        end
-
-        let(:example_1) { double("example 1") }
-        let(:example_2) { double("example 2") }
-        let(:example_3) { double("example 3") }
-
-        context 'setup with one source, which is the top level' do
-
-          let(:collection) { Collection.new ['main'], examples }
-
-          it 'fetches examples from the top level' do
-            expect(collection['top level group']).to eq example_1
-          end
-
-          it 'wont fetches examples across the nested context' do
-            expect(collection['nested level two']).to eq nil
-          end
-        end
-
-        context 'setup with multiple sources' do
-
-          let(:collection) { Collection.new ['main','nested 1'], examples }
-
-          it 'fetches examples from the context' do
-            expect(collection['nested level one']).to eq example_2
-          end
-
-          it 'fetches examples from main' do
-            expect(collection['top level group']).to eq example_1
-          end
-
-          it 'wont fetch examples across the nested context' do
-            expect(collection['nested level two']).to eq nil
-          end
-        end
-      end
-    end
-
     RSpec.describe SharedExampleGroup do
       include RSpec::Support::InSubProcess
 
@@ -82,6 +23,17 @@ module RSpec
       before do
         # this is a work around as SharedExampleGroup is not world safe
         RandomTopLevelModule.setup!
+      end
+
+      RSpec::Matchers.define :have_example_descriptions do |*descriptions|
+        match do |group|
+          group.examples.map(&:description) == descriptions
+        end
+
+        failure_message do |group|
+          actual = group.examples.map(&:description)
+          "expected #{group.name} to have descriptions: #{descriptions.inspect} but had #{actual.inspect}"
+        end
       end
 
       %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
@@ -157,6 +109,156 @@ module RSpec
               expect(a[0]).to eq(:include)
               expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
               expect(a[2]).to eq(:foo => :bar)
+            end
+          end
+
+          context "when called at the top level" do
+            before do
+              RSpec.__send__(shared_method_name, "shared context") do
+                example "shared spec"
+              end
+            end
+
+            it 'is available for inclusion from a top level group' do
+              group = RSpec.describe "group" do
+                include_examples "shared context"
+              end
+
+              expect(group).to have_example_descriptions("shared spec")
+            end
+
+            it 'is available for inclusion from a nested example group' do
+              group = nil
+
+              RSpec.describe "parent" do
+                context "child" do
+                  group = context("grand child") { include_examples "shared context" }
+                end
+              end
+
+              expect(group).to have_example_descriptions("shared spec")
+            end
+
+            it 'is trumped by a shared group with the same name that is defined in the including context' do
+              group = RSpec.describe "parent" do
+                __send__ shared_method_name, "shared context" do
+                  example "a different spec"
+                end
+
+                include_examples "shared context"
+              end
+
+              expect(group).to have_example_descriptions("a different spec")
+            end
+
+            it 'is trumped by a shared group with the same name that is defined in a parent group' do
+              group = nil
+
+              RSpec.describe "parent" do
+                __send__ shared_method_name, "shared context" do
+                  example "a different spec"
+                end
+
+                group = context("nested") { include_examples "shared context" }
+              end
+
+              expect(group).to have_example_descriptions("a different spec")
+            end
+          end
+
+          context "when called from within an example group" do
+            define_method :in_group_with_shared_group_def do |&block|
+              RSpec.describe "an example group" do
+                __send__ shared_method_name, "shared context" do
+                  example "shared spec"
+                end
+
+                module_exec(&block)
+              end
+            end
+
+            it 'is available for inclusion within that group' do
+              group = in_group_with_shared_group_def do
+                include_examples "shared context"
+              end
+
+              expect(group).to have_example_descriptions("shared spec")
+            end
+
+            it 'is available for inclusion in a child group' do
+              group = nil
+
+              in_group_with_shared_group_def do
+                group = context("nested") { include_examples "shared context" }
+              end
+
+              expect(group).to have_example_descriptions("shared spec")
+            end
+
+            it 'is not available for inclusion in a different top level group' do
+              in_group_with_shared_group_def { }
+
+              expect {
+                RSpec.describe "another top level group" do
+                  include_examples "shared context"
+                end
+              }.to raise_error(/Could not find/)
+            end
+
+            it 'is not available for inclusion in a nested group of a different top level group' do
+              in_group_with_shared_group_def { }
+
+              expect {
+                RSpec.describe "another top level group" do
+                  context("nested") { include_examples "shared context" }
+                end
+              }.to raise_error(/Could not find/)
+            end
+
+            it 'trumps a shared group with the same name defined at the top level' do
+              RSpec.__send__(shared_method_name, "shared context") do
+                example "a different spec"
+              end
+
+              group = in_group_with_shared_group_def do
+                include_examples "shared context"
+              end
+
+              expect(group).to have_example_descriptions("shared spec")
+            end
+
+            it 'is trumped by a shared group with the same name that is defined in the including context' do
+              pending "this is expected behavior but isn't passing yet"
+              group = nil
+
+              in_group_with_shared_group_def do
+                group = context "child" do
+                  __send__ shared_method_name, "shared context" do
+                    example "a different spec"
+                  end
+
+                  include_examples "shared context"
+                end
+              end
+
+              expect(group).to have_example_descriptions("a different spec")
+            end
+
+            it 'is trumped by a shared group with the same name that is defined in nearer parent group' do
+              pending "this is expected behavior but isn't passing yet"
+              group = nil
+
+              in_group_with_shared_group_def do
+                context "child" do
+                  __send__ shared_method_name, "shared context" do
+                    example "a different spec"
+                  end
+
+                  group = context("grandchild") { include_examples "shared context" }
+                end
+              end
+
+              expect(group).to have_example_descriptions("a different spec")
             end
           end
         end
