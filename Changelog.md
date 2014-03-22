@@ -77,6 +77,9 @@ Bug Fixes:
   (Bradley Schaefer, Aaron Kromer, Andrey Savchenko)
 * Allow a symbol to be used as an implicit subject (e.g. `describe
   :foo`). (Myron Marston)
+* Prevent creating an isolated context (i.e. using `RSpec.describe`) when
+  already inside a context. There is no reason to do this, and it could
+  potentially cause unexpected bugs. (Xavier Shay)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)

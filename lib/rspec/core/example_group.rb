@@ -199,13 +199,32 @@ module RSpec
       # @see DSL#describe
       def self.define_example_group_method(name, metadata={})
         define_singleton_method(name) do |*args, &example_group_block|
-          description = args.shift
-          combined_metadata = metadata.dup
-          combined_metadata.merge!(args.pop) if args.last.is_a? Hash
-          args << combined_metadata
+          thread_data = RSpec.thread_local_metadata
+          top_level   = self == ExampleGroup
 
-          subclass(self, description, args, &example_group_block).tap do |child|
-            children << child
+          if top_level
+            if thread_data[:in_example_group]
+              raise "Creating an isolated context from within a context is " +
+                    "not allowed. Change `RSpec.#{name}` to `#{name}` or " +
+                    "move this to a top-level scope."
+            end
+
+            thread_data[:in_example_group] = true
+          end
+
+          begin
+
+            description = args.shift
+            combined_metadata = metadata.dup
+            combined_metadata.merge!(args.pop) if args.last.is_a? Hash
+            args << combined_metadata
+
+            subclass(self, description, args, &example_group_block).tap do |child|
+              children << child
+            end
+
+          ensure
+            thread_data.delete(:in_example_group) if top_level
           end
         end
 

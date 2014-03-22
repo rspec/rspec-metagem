@@ -106,13 +106,20 @@ module RSpec
   #     end
   #
   def self.current_example
-    Thread.current[:_rspec_current_example]
+    thread_local_metadata[:current_example]
   end
 
   # Set the current example being executed.
   # @api private
   def self.current_example=(example)
-    Thread.current[:_rspec_current_example] = example
+    thread_local_metadata[:current_example] = example
+  end
+
+  # @private
+  # A single thread local variable so we don't excessively pollute that
+  # namespace.
+  def self.thread_local_metadata
+    Thread.current[:_rspec] ||= {}
   end
 
   # @private
@@ -163,7 +170,7 @@ module RSpec
     #
     # As of rspec 2.14.1, we no longer require `rspec/mocks` and
     # `rspec/expectations` when `rspec` is required, so we want
-    # to make them available as an autoload. For more info, see:
+    # to make them available as an autoload.
     require MODULES_TO_AUTOLOAD.fetch(name) { return super }
     ::RSpec.const_get(name)
   end
