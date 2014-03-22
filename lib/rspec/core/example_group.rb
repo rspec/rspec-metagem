@@ -17,6 +17,11 @@ module RSpec
     # in the context of a new subclass of ExampleGroup. Individual examples are
     # evalutaed in the context of an instance of the specific ExampleGroup subclass
     # to which they belong.
+    #
+    # Besides the class methods defined here, there are other interesting macros
+    # defined in {Hooks}, {MemoizedHelpers::ClassMethods} and {SharedExampleGroup}.
+    # There are additional instance methods available to your examples defined in
+    # {MemoizedHelpers} and {Pending}.
     class ExampleGroup
       extend  Hooks
 

@@ -1,6 +1,11 @@
 module RSpec
   module Core
-    # Hooks
+    # Provides `before`, `after` and `around` hooks as a means of
+    # supporting common setup and teardown. This module is extended
+    # onto {ExampleGroup}, making the methods available from any `describe`
+    # or `context` block and included in {Configuration}, making them
+    # available off of the configuration object to define global setup
+    # or teardown logic.
     module Hooks
       # @api public
       #
