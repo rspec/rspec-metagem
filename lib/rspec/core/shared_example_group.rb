@@ -48,10 +48,8 @@ module RSpec
 
         RSpec.world.shared_example_group_registry.add(self, name, *args, &block)
       end
-
-      alias_method :shared_context,      :shared_examples
-      alias_method :share_examples_for,  :shared_examples
-      alias_method :shared_examples_for, :shared_examples
+      alias shared_context      shared_examples
+      alias shared_examples_for shared_examples
 
       # @api private
       #
@@ -63,10 +61,8 @@ module RSpec
             def shared_examples(name, *args, &block)
               RSpec.world.shared_example_group_registry.add(:main, name, *args, &block)
             end
-
-            alias :shared_context      :shared_examples
-            alias :share_examples_for  :shared_examples
-            alias :shared_examples_for :shared_examples
+            alias shared_context      shared_examples
+            alias shared_examples_for shared_examples
           end
         end
 
@@ -93,7 +89,6 @@ module RSpec
           Core::DSL.change_global_dsl do
             undef shared_examples
             undef shared_context
-            undef share_examples_for
             undef shared_examples_for
           end
 

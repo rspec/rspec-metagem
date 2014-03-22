@@ -109,9 +109,9 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       end
     end
 
-    context 'for #share_examples_for' do
+    context 'for #shared_examples' do
       it 'outputs the name and location' do
-        group.share_examples_for 'foo bar' do
+        group.shared_examples 'foo bar' do
           it("example name") { expect("this").to eq("that") }
         end
 
@@ -128,7 +128,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
       context 'that contains nested example groups' do
         it 'outputs the name and location' do
-          group.share_examples_for 'foo bar' do
+          group.shared_examples 'foo bar' do
             describe 'nested group' do
               it("example name") { expect("this").to eq("that") }
             end

@@ -37,7 +37,7 @@ module RSpec
         end
       end
 
-      %w[share_examples_for shared_examples_for shared_examples shared_context].each do |shared_method_name|
+      %w[shared_examples shared_examples_for shared_context].each do |shared_method_name|
         describe shared_method_name do
           let(:group) { ExampleGroup.describe('example group') }
 
