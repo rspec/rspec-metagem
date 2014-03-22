@@ -111,7 +111,7 @@ module RSpec
       # objects.
       class Registry
         def add(context, name, *metadata_args, &block)
-          ensure_block_has_source_location(block, CallerFilter.first_non_rspec_line)
+          ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
 
           if valid_name?(name)
             warn_if_key_taken context, name, block
@@ -168,14 +168,11 @@ module RSpec
         end
 
         if Proc.method_defined?(:source_location)
-          def ensure_block_has_source_location(block, caller_line); end
+          def ensure_block_has_source_location(block); end
         else # for 1.8.7
-          def ensure_block_has_source_location(block, caller_line)
-            block.extend Module.new {
-              define_method :source_location do
-                caller_line.split(':')
-              end
-            }
+          def ensure_block_has_source_location(block)
+            source_location = yield.split(':')
+            block.extend Module.new { define_method(:source_location) { source_location } }
           end
         end
       end
