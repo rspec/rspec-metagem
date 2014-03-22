@@ -106,13 +106,20 @@ module RSpec
   #     end
   #
   def self.current_example
-    Thread.current[:_rspec_current_example]
+    thread_local_metadata[:current_example]
   end
 
   # Set the current example being executed.
   # @api private
   def self.current_example=(example)
-    Thread.current[:_rspec_current_example] = example
+    thread_local_metadata[:current_example] = example
+  end
+
+  # @private
+  # A single thread current variable so we don't pollute that namespace
+  # excessively.
+  def self.thread_local_metadata
+    Thread.current[:_rspec] ||= {}
   end
 
   # @private
