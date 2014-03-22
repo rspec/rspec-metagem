@@ -153,6 +153,8 @@ Enhancements:
   `context`) on the `RSpec` constant. If `expose_dsl_globally` is set to
   `true`, also expose them on `main` and `Module`. Historically, only `describe`
   was exposed. (Jon Rowe, Michi Huber)
+* Add hook scope `:example` as an alias for `:each`, and `:context` as an alias
+  for `:all`. (John Feminella)
 
 Bug Fixes:
 
