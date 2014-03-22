@@ -14,7 +14,7 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    shared_examples_for "be_between" do |mode|
+    shared_examples "be_between" do |mode|
       it "passes if target is between min and max" do
         expect(5).to matcher(1, 10)
       end
@@ -43,7 +43,7 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    shared_examples_for "not_to be_between" do |mode|
+    shared_examples "not_to be_between" do |mode|
       it "passes if target is not between min and max" do
         expect(11).not_to matcher(1, 10)
       end
@@ -55,7 +55,7 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    shared_examples_for "composing with other matchers" do |mode|
+    shared_examples "composing with other matchers" do |mode|
       it "passes when the matchers both match" do
         expect([nil, 3]).to include(matcher(2, 4), a_nil_value)
       end

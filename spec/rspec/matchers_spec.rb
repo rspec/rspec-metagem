@@ -53,7 +53,7 @@ module RSpec
         expect(noncompound_matchers).to eq([])
       end
 
-      shared_examples_for "a well-behaved method_missing hook" do
+      shared_examples "a well-behaved method_missing hook" do
         include MinitestIntegration
 
         it "raises a NoMethodError (and not SystemStackError) for an undefined method" do

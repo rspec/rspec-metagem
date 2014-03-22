@@ -64,7 +64,7 @@ module RSpec
         end
       end
 
-      shared_examples_for "configuring the expectation syntax" do
+      shared_examples "configuring the expectation syntax" do
         before do
           @orig_syntax = RSpec::Matchers.configuration.syntax
         end
