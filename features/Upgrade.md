@@ -12,11 +12,11 @@ Now you can just type
     rspec
 
 to run all the specs in the `spec` directory.  If you keep your specs in a
-different directory, you can override the default with the `--default_path`
+different directory, you can override the default with the `--default-path`
 argument in a config file:
 
     # in .rspec
-    --default_path specs
+    --default-path specs
 
 ### `rspec` command supports multiple line numbers
 

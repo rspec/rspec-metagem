@@ -47,7 +47,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
 
     it "sets default_path before loading specs" do
-      opts = config_options_object(*%w[--default_path spec])
+      opts = config_options_object(*%w[--default-path spec])
       config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'spec').ordered
       expect(config).to receive(:get_files_to_run).ordered
@@ -64,7 +64,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
 
     it "sets default_path before `files_or_directories_to_run` since it relies on it" do
-      opts = config_options_object(*%w[--default_path spec])
+      opts = config_options_object(*%w[--default-path spec])
       config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'spec').ordered
       expect(config).to receive(:files_or_directories_to_run=).ordered
@@ -103,7 +103,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       ["--failure-exit-code", "3", :failure_exit_code, 3 ],
       ["--pattern", "foo/bar", :pattern, "foo/bar"],
       ["--failure-exit-code", "37", :failure_exit_code, 37],
-      ["--default_path", "behavior", :default_path, "behavior"],
+      ["--default-path", "behavior", :default_path, "behavior"],
       ["--order", "rand", :order, "rand"],
       ["--seed", "37", :order, "rand:37"],
       ["--drb-port", "37", :drb_port, 37]
@@ -316,7 +316,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'foo').ordered
       expect(config).to receive(:get_files_to_run).ordered
-      opts = config_options_object("--default_path", "foo")
+      opts = config_options_object("--default-path", "foo")
       opts.configure(config)
       config.files_to_run
     end
