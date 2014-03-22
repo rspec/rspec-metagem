@@ -170,7 +170,7 @@ module RSpec
     #
     # As of rspec 2.14.1, we no longer require `rspec/mocks` and
     # `rspec/expectations` when `rspec` is required, so we want
-    # to make them available as an autoload. For more info, see:
+    # to make them available as an autoload.
     require MODULES_TO_AUTOLOAD.fetch(name) { return super }
     ::RSpec.const_get(name)
   end
