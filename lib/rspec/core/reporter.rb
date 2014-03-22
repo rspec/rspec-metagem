@@ -7,7 +7,7 @@ module RSpec::Core
       @configuration = configuration
       @listeners = Hash.new { |h,k| h[k] = Set.new }
       @example_count = @failure_count = @pending_count = 0
-      @duration = @start = nil
+      @duration = @start = @load_time = nil
     end
 
     # Registers a listener to a list of notifications. The reporter will send notification of
@@ -55,8 +55,8 @@ module RSpec::Core
     # @private
     def start(expected_example_count, time = RSpec::Core::Time.now)
       @start = time
-      load_time = (@start - RSpec.configuration.start_time).to_f
-      notify :start, Notifications::StartNotification.new(expected_example_count, load_time)
+      @load_time = (@start - RSpec.configuration.start_time).to_f
+      notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
     end
 
     # @private
@@ -110,7 +110,7 @@ module RSpec::Core
         notify :dump_pending,  Notifications::NullNotification
         notify :dump_failures, Notifications::NullNotification
         notify :deprecation_summary, Notifications::NullNotification
-        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count)
+        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count, @load_time)
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
         notify :close, Notifications::NullNotification

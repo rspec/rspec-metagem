@@ -18,7 +18,7 @@ module RSpec
                                   :example_pending, :example_failed, :close
         include Helpers
         attr_accessor :example_group
-        attr_reader :examples, :output, :load_time
+        attr_reader :examples, :output
         attr_reader :failed_examples, :pending_examples
 
         # @api public
@@ -31,7 +31,6 @@ module RSpec
           @failed_examples = []
           @pending_examples = []
           @example_group = nil
-          @load_time = 0
         end
 
         # @api public
@@ -47,7 +46,6 @@ module RSpec
         def start(notification)
           start_sync_output
           @example_count = notification.count
-          @load_time = notification.load_time
         end
 
         # @api public

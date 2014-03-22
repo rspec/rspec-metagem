@@ -52,8 +52,8 @@ module FormatterSupport
     class_double "RSpec::Core::ExampleGroup", :description => "Group"
   end
 
-  def count_notification(count)
-   ::RSpec::Core::Notifications::CountNotification.new count
+  def start_notification(count)
+   ::RSpec::Core::Notifications::StartNotification.new count
   end
 
   def example_notification(specific_example = example)
@@ -76,8 +76,8 @@ module FormatterSupport
     ::RSpec::Core::Notifications::SeedNotification.new seed, used
   end
 
-  def summary_notification(duration, examples, failed, pending)
-    ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending
+  def summary_notification(duration, examples, failed, pending, time = nil)
+    ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending, time
   end
 
 end

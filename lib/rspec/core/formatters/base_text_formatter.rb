@@ -31,7 +31,7 @@ module RSpec
 
         def dump_summary(summary)
           dump_profile unless mute_profile_output?(summary.failure_count)
-          output.puts "\nFinished in #{format_duration(summary.duration)} (Files took #{format_duration(load_time)} to load)\n"
+          output.puts "\nFinished in #{format_duration(summary.duration)} (files took #{format_duration(summary.load_time)} to load)\n"
           output.puts summary.colorize_with ConsoleCodes
           dump_commands_to_rerun_failed_examples
         end

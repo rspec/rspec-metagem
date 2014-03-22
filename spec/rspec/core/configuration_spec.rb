@@ -1520,13 +1520,12 @@ module RSpec::Core
 
     describe 'recording spec start time (for measuring load)' do
       it 'returns a time' do
-        expect(config.start_time).to be_a Time
+        expect(config.start_time).to be_an_instance_of ::Time
       end
 
       it 'is configurable' do
-        time = Time.new - 5
-        config.start_time = time
-        expect(config.start_time).to eq time
+        config.start_time = 42
+        expect(config.start_time).to eq 42
       end
     end
 

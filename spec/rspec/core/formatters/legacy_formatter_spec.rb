@@ -27,7 +27,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
 
       describe "#start" do
         it "notifies formatter of start" do
-          send_notification :start, count_notification(5)
+          send_notification :start, start_notification(5)
           expect(output.string).to include "Started 5 examples"
         end
       end

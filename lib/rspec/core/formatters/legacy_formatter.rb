@@ -20,7 +20,7 @@ module RSpec
         module LegacyInterface
 
           def start(count)
-            super Notifications::CountNotification.new(count)
+            super Notifications::StartNotification.new(count)
           end
 
           def example_group_started(group)

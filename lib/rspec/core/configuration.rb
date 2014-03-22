@@ -271,7 +271,7 @@ module RSpec
       attr_reader :backtrace_formatter, :ordering_manager
 
       def initialize
-        @start_time = Time.now
+        @start_time = ::RSpec::Core::Time.now
         @expectation_frameworks = []
         @include_or_extend_modules = []
         @mock_framework = nil
