@@ -1569,7 +1569,7 @@ module RSpec::Core
     it 'prevents defining nested isolated shared contexts' do
       expect {
         ExampleGroup.describe do
-          ExampleGroup.shared_examples {}
+          ExampleGroup.shared_examples("common functionality") {}
         end
       }.to raise_error(/not allowed/)
     end

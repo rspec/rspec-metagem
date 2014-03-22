@@ -6,40 +6,47 @@ module RSpec
     # which provides any context the shared group needs to run.
     module SharedExampleGroup
       # @overload shared_examples(name, &block)
-      # @overload shared_examples(name, tags, &block)
+      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
+      #   @param block The block to be eval'd
+      # @overload shared_examples(name, metadata, &block)
+      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
+      #     with matching metadata will automatically include this shared example group.
+      #   @param block The block to be eval'd
+      # @overload shared_examples(metadata, &block)
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
+      #     with matching metadata will automatically include this shared example group.
+      #   @param block The block to be eval'd
       #
       # Stores the block for later use. The block will be evaluated
       # in the context of an example group via `include_examples`,
       # `include_context`, or `it_behaves_like`.
       #
-      # @option name [String] to match when looking up this shared group
-      # @param block The block to be eval'd
-      #
       # @example
-      #
       #   shared_examples "auditable" do
       #     it "stores an audit record on save!" do
-      #       lambda { auditable.save! }.should change(Audit, :count).by(1)
+      #       expect { auditable.save! }.to change(Audit, :count).by(1)
       #     end
       #   end
       #
-      #   class Account do
+      #   describe Account do
       #     it_behaves_like "auditable" do
-      #       def auditable; Account.new; end
+      #       let(:auditable) { Account.new }
       #     end
       #   end
       #
       # @see ExampleGroup.it_behaves_like
       # @see ExampleGroup.include_examples
       # @see ExampleGroup.include_context
-      def shared_examples(*args, &block)
+      def shared_examples(name, *args, &block)
         top_level = self == ExampleGroup
         if top_level && RSpec.thread_local_metadata[:in_example_group]
           raise "Creating isolated shared examples from within a context is " +
                 "not allowed. Remove `RSpec.` prefix or move this to a " +
                 "top-level scope."
         end
-        RSpec.world.shared_example_group_registry.add_group(self, *args, &block)
+
+        RSpec.world.shared_example_group_registry.add(self, name, *args, &block)
       end
 
       alias_method :shared_context,      :shared_examples
@@ -53,8 +60,8 @@ module RSpec
         # @private
         def self.definitions
           proc do
-            def shared_examples(*args, &block)
-              RSpec.world.shared_example_group_registry.add_group(:main, *args, &block)
+            def shared_examples(name, *args, &block)
+              RSpec.world.shared_example_group_registry.add(:main, name, *args, &block)
             end
 
             alias :shared_context      :shared_examples
@@ -103,21 +110,22 @@ module RSpec
       # us to have helper methods that don't get added to those
       # objects.
       class Registry
-        def add_group(context, *args, &block)
+        def add(context, name, *metadata_args, &block)
           ensure_block_has_source_location(block, CallerFilter.first_non_rspec_line)
 
-          if key? args.first
-            key = args.shift
-            warn_if_key_taken context, key, block
-            add_shared_example_group context, key, block
+          if valid_name?(name)
+            warn_if_key_taken context, name, block
+            shared_example_groups[context][name] = block
+          else
+            metadata_args.unshift name
           end
 
-          unless args.empty?
+          unless metadata_args.empty?
             mod = Module.new
             (class << mod; self; end).__send__(:define_method, :included) do |host|
               host.class_exec(&block)
             end
-            RSpec.configuration.include mod, *args
+            RSpec.configuration.include mod, *metadata_args
           end
         end
 
@@ -136,12 +144,11 @@ module RSpec
           @shared_example_groups ||= Hash.new { |hash, context| hash[context] = {} }
         end
 
-        def add_shared_example_group(context, key, block)
-          shared_example_groups[context][key] = block
-        end
-
-        def key?(candidate)
-          [String, Symbol, Module].any? { |cls| cls === candidate }
+        def valid_name?(candidate)
+          case candidate
+            when String, Symbol, Module then true
+            else false
+          end
         end
 
         def warn_if_key_taken(context, key, new_block)
