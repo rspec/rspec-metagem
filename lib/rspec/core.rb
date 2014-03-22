@@ -116,8 +116,8 @@ module RSpec
   end
 
   # @private
-  # A single thread current variable so we don't pollute that namespace
-  # excessively.
+  # A single thread local variable so we don't excessively pollute that
+  # namespace.
   def self.thread_local_metadata
     Thread.current[:_rspec] ||= {}
   end

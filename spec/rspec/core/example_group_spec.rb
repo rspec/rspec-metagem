@@ -1556,5 +1556,22 @@ module RSpec::Core
         :setup_mocks_for_rspec, :teardown_mocks_for_rspec, :verify_mocks_for_rspec
       )
     end
+
+    it 'prevents defining nested isolated contexts' do
+      expect {
+        RSpec.describe do
+          describe {}
+          RSpec.describe {}
+        end
+      }.to raise_error(/not allowed/)
+    end
+
+    it 'prevents defining nested isolated shared contexts' do
+      expect {
+        ExampleGroup.describe do
+          ExampleGroup.shared_examples {}
+        end
+      }.to raise_error(/not allowed/)
+    end
   end
 end

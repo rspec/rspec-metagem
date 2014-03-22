@@ -8,6 +8,14 @@ module RandomTopLevelModule
 end
 
 module RSpec::Core
+  module SharedExampleGroup
+    RSpec.describe Registry do
+      it "can safely be reset when there aren't any shared groups" do
+        expect { Registry.new.clear }.to_not raise_error
+      end
+    end
+  end
+
   RSpec.describe SharedExampleGroup do
     include RSpec::Support::InSubProcess
 
@@ -17,14 +25,6 @@ module RSpec::Core
     it 'does not add a bunch of private methods to Module' do
       seg_methods = RSpec::Core::SharedExampleGroup.private_instance_methods
       expect(Module.private_methods & seg_methods).to eq([])
-    end
-
-    module SharedExampleGroup
-      RSpec.describe Registry do
-        it "can safely be reset when there aren't any shared groups" do
-          expect { Registry.new.clear }.to_not raise_error
-        end
-      end
     end
 
     before(:all) do
