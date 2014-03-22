@@ -1,9 +1,18 @@
 module RSpec
   module Core
-    # Shared examples let you describe behaviour of types or modules.
-    # When declared, a shared group's content is stored.
-    # It is only realized in the context of another example group,
-    # which provides any context the shared group needs to run.
+    # Shared example groups let you define common context and/or common
+    # examples that you wish to use in multiple example groups.
+    #
+    # When defined, the shared group block is stored for later evaluation.
+    # It can later be included in an example group either explicitly
+    # (using `include_examples`, `include_context` or `it_behaves_like`)
+    # or implicitly (via matching metadata).
+    #
+    # Named shared example groups are scoped based on where they are
+    # defined. Shared groups defined in an example group are available
+    # for inclusion in that example group or any child example groups,
+    # but not in any parent or sibling example groups. Shared example
+    # groups defined at the top level can be included from any example group.
     module SharedExampleGroup
       # @overload shared_examples(name, &block)
       #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
@@ -98,12 +107,6 @@ module RSpec
       end
 
       # @private
-      #
-      # Used internally to manage the shared example groups and
-      # constants. We want to limit the number of methods we add
-      # to objects we don't own (main and Module) so this allows
-      # us to have helper methods that don't get added to those
-      # objects.
       class Registry
         def add(context, name, *metadata_args, &block)
           ensure_block_has_source_location(block) { CallerFilter.first_non_rspec_line }
