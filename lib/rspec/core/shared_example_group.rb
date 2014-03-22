@@ -46,11 +46,6 @@ module RSpec
       alias_method :share_examples_for,  :shared_examples
       alias_method :shared_examples_for, :shared_examples
 
-      # @private
-      def shared_example_groups
-        RSpec.world.shared_example_group_registry.shared_example_groups_for(*parent_groups)
-      end
-
       # @api private
       #
       # Shared examples top level DSL
@@ -65,10 +60,6 @@ module RSpec
             alias :shared_context      :shared_examples
             alias :share_examples_for  :shared_examples
             alias :shared_examples_for :shared_examples
-
-            def shared_example_groups
-              RSpec.world.shared_example_group_registry.shared_example_groups_for()
-            end
           end
         end
 
@@ -97,7 +88,6 @@ module RSpec
             undef shared_context
             undef share_examples_for
             undef shared_examples_for
-            undef shared_example_groups
           end
 
           @exposed_globally = false
@@ -131,9 +121,13 @@ module RSpec
           end
         end
 
-        # @api private
-        def shared_example_groups_for(*contexts)
-          Collection.new(contexts, shared_example_groups)
+        def find(lookup_contexts, name)
+          lookup_contexts.each do |context|
+            found = shared_example_groups[context][name]
+            return found if found
+          end
+
+          shared_example_groups[:main][name]
         end
 
         # @api private
@@ -152,7 +146,7 @@ module RSpec
         end
 
         def warn_if_key_taken(context, key, new_block)
-          return unless existing_block = example_block_for(context, key)
+          return unless existing_block = shared_example_groups[context][key]
 
           RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
             |WARNING: Shared example group '#{key}' has been previously defined at:
@@ -167,10 +161,6 @@ module RSpec
           block.source_location.join ":"
         end
 
-        def example_block_for(context, key)
-          shared_example_groups[context][key]
-        end
-
         if Proc.method_defined?(:source_location)
           def ensure_block_has_source_location(block, caller_line); end
         else # for 1.8.7
@@ -181,21 +171,6 @@ module RSpec
               end
             }
           end
-        end
-      end
-
-      # @private
-      class Collection
-        def initialize(contexts, examples)
-          @contexts = contexts
-          @contexts << :main
-          @examples = examples
-        end
-
-        # @private
-        def [](key)
-          context = @contexts.find { |c| @examples[c].has_key? key }
-          @examples[context][key]
         end
       end
     end

@@ -313,7 +313,7 @@ module RSpec
 
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
-        unless shared_block = shared_example_groups[name]
+        unless shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
