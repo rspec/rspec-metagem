@@ -191,32 +191,44 @@ module RSpec
 
       # @macro add_setting
       # Color to use to indicate success.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:green` but can be set to one of the
+      #                       following: `[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :success_color
 
       # @macro add_setting
       # Color to use to print pending examples.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:yellow` but can be set to one of the
+      #                       following: `[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :pending_color
 
       # @macro add_setting
       # Color to use to indicate failure.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:red` but can be set to one of the
+      #                       following: `[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :failure_color
 
       # @macro add_setting
       # The default output color.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:white` but can be set to one of the
+      #                       following:`[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :default_color
 
       # @macro add_setting
       # Color used when a pending example is fixed.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:blue` but can be set to one of the
+      #                       following: `[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :fixed_color
 
       # @macro add_setting
       # Color used to print details.
-      # @param color [Symbol] one of the following: [:black, :white, :red, :green, :yellow, :blue, :magenta, :cyan]
+      # @param color [Symbol] defaults to `:cyan` but can be set to one of the
+      #                       following: `[:black, :white, :red, :green, :yellow,
+      #                       :blue, :magenta, :cyan]`
       add_setting :detail_color
 
       # Deprecated. This config option was added in RSpec 2 to pave the way
