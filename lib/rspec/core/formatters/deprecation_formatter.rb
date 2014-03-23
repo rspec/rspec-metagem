@@ -64,7 +64,7 @@ module RSpec
           end
 
           def to_s
-            @message
+            output_formatted @message
           end
 
           def too_many_warnings_message
@@ -74,6 +74,12 @@ module RSpec
           end
 
           private
+
+          def output_formatted(str)
+            return str unless str.lines.count > 1
+            separator = "#{'-' * 80}"
+            "#{separator}\n#{str}\n#{separator}"
+          end
 
           def deprecation_type_for(data)
             data.message.gsub(/(\w+\/)+\w+\.rb:\d+/, '')
