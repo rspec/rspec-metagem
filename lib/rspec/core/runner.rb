@@ -99,7 +99,7 @@ module RSpec
         options = ConfigurationOptions.new(args)
 
         if options.options[:drb]
-          require 'rspec/core/drb_command_line'
+          require 'rspec/core/drb'
           begin
             DRbCommandLine.new(options).run(err, out)
           rescue DRb::DRbConnError
