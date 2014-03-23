@@ -148,6 +148,11 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
       expect(legacy_formatter.colorize("text", :black)).to eq "\e[30mtext\e[0m"
     end
 
+    it "will colorize summary" do
+      allow(RSpec.configuration).to receive(:color_enabled?) { true }
+      expect(legacy_formatter.colorize_summary("text")).to include "\e[32mtext\e[0m"
+    end
+
     it "allows access to the deprecated constants" do
       legacy_formatter
       expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)

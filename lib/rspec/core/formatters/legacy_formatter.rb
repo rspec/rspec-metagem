@@ -147,6 +147,16 @@ module RSpec
           def colorize(text, code_or_symbol)
             ConsoleCodes.wrap(text, code_or_symbol)
           end
+
+          def colorize_summary(summary)
+            if failure_count > 0
+              color(summary, RSpec.configuration.failure_color)
+            elsif pending_count > 0
+              color(summary, RSpec.configuration.pending_color)
+            else
+              color(summary, RSpec.configuration.success_color)
+            end
+          end
         end
 
         # @api private
