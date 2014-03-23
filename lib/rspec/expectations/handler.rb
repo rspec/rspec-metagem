@@ -100,12 +100,10 @@ module RSpec
       def initialize(matcher)
         super
         ::RSpec.warn_deprecation(<<-EOS.gsub(/^\s+\|/, ''), :type => "legacy_matcher")
-          |--------------------------------------------------------------------------
           |#{matcher.class.name || matcher.inspect} implements a legacy RSpec matcher
           |protocol. For the current protocol you should expose the failure messages
           |via the `failure_message` and `failure_message_when_negated` methods.
           |(Used from #{CallerFilter.first_non_rspec_line})
-          |--------------------------------------------------------------------------
         EOS
       end
 
