@@ -130,7 +130,7 @@ module RSpec::Core
         end
 
         parser.on('-w', '--warnings', 'Enable ruby warnings') do
-          options[:warnings] = true
+          $VERBOSE = true
         end
 
         parser.separator <<-FILTERING

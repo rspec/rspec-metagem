@@ -1429,9 +1429,9 @@ module RSpec::Core
 
     describe '#warnings' do
       around do |example|
-        @_original_setting = $VERBOSE
+        original_setting = $VERBOSE
         example.run
-        $VERBOSE = @_original_setting
+        $VERBOSE = original_setting
       end
 
       it "sets verbose to true when true" do
@@ -1445,7 +1445,11 @@ module RSpec::Core
       end
 
       it 'returns the verbosity setting' do
-        expect(config.warnings).to eq $VERBOSE
+        config.warnings = true
+        expect(config.warnings?).to eq true
+
+        config.warnings = false
+        expect(config.warnings?).to eq false
       end
 
       it 'is loaded from config by #force' do

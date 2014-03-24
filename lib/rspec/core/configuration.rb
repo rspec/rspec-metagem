@@ -294,7 +294,6 @@ module RSpec
       def force(hash)
         ordering_manager.force(hash)
         @preferred_options.merge!(hash)
-        self.warnings = value_for :warnings, nil
       end
 
       # @private
@@ -1084,9 +1083,8 @@ module RSpec
         $VERBOSE = !!value
       end
 
-      # Get Ruby warning verbosity
-      # @return [Fixnum] Ruby's warning level
-      def warnings
+      # @return [Boolean] Whether or not ruby warnings are enabled.
+      def warnings?
         $VERBOSE
       end
 

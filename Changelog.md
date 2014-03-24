@@ -50,6 +50,9 @@ Breaking Changes for 3.0.0:
 * Remove `--default_path` as an alias for `--default-path`. (Jon Rowe)
 * Remove deprecated `share_examples_for`. There's still
   `shared_examples` and `shared_examples_for`. (Myron Marston)
+* Rename `RSpec::Core::Configuration#warnings` to
+  `RSpec::Core::Configuration#warnings?` since it's a boolean flag.
+  (Myron Marston)
 
 Enhancements:
 
@@ -86,6 +89,8 @@ Bug Fixes:
 * Fix shared example group scoping so that when two shared example
   groups share the same name at different levels of nested contexts,
   the one in the nearest context is used. (Myron Marston)
+* Fix `--warnings` option so that it enables warnings immediately so
+  that it applies to files loaded by `--require`. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)
