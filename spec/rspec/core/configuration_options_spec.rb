@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'ostruct'
-require 'rspec/core/drb_options'
+require 'rspec/core/drb'
 
 RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper

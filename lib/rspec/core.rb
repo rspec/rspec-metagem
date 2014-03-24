@@ -134,6 +134,7 @@ module RSpec
     @world = new_world
   end
 
+  # Namespace for the rspec-core code.
   module Core
     # @private
     # This avoids issues with reporting time caused by examples that

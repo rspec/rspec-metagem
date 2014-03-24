@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'rspec/core/drb_command_line'
+require 'rspec/core/drb'
 
 module RSpec::Core
   RSpec.describe Runner do
