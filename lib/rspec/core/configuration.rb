@@ -1083,9 +1083,8 @@ module RSpec
         $VERBOSE = !!value
       end
 
-      # Get Ruby warning verbosity
-      # @return [Fixnum] Ruby's warning level
-      def warnings
+      # @return [Boolean] Whether or not ruby warnings are enabled.
+      def warnings?
         $VERBOSE
       end
 

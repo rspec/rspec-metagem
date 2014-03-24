@@ -50,6 +50,9 @@ Breaking Changes for 3.0.0:
 * Remove `--default_path` as an alias for `--default-path`. (Jon Rowe)
 * Remove deprecated `share_examples_for`. There's still
   `shared_examples` and `shared_examples_for`. (Myron Marston)
+* Rename `RSpec::Core::Configuration#warnings` to
+  `RSpec::Core::Configuration#warnings?` since it's a boolean flag.
+  (Myron Marston)
 
 Enhancements:
 
