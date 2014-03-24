@@ -49,7 +49,7 @@ module RSpec
       # Reset world to 'scratch' before running suite
       def reset
         example_groups.clear
-        SharedExampleGroup.registry.clear
+        @shared_example_group_registry = nil
       end
 
       # @private
@@ -63,6 +63,11 @@ module RSpec
       def register(example_group)
         example_groups << example_group
         example_group
+      end
+
+      # @private
+      def shared_example_group_registry
+        @shared_example_group_registry ||= SharedExampleGroup::Registry.new
       end
 
       # @private

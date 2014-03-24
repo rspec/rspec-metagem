@@ -1,6 +1,7 @@
 module RSpec
   module Core
-    # Pending and skipped examples
+    # Provides methods to mark examples as pending. These methods are available to be
+    # called from within any example or hook.
     module Pending
       # Raised in the middle of an example to indicate that it should be marked as skipped.
       class SkipDeclaredInExample < StandardError
@@ -27,16 +28,14 @@ module RSpec
 
       # @overload pending()
       # @overload pending(message)
-      # @overload pending(message, &block)
       #
       # Marks an example as pending. The rest of the example will still be
       # executed, and if it passes the example will fail to indicate that the
       # pending can be removed.
       #
-      # @option message [String] optional message to add to the summary report.
+      # @param message [String] optional message to add to the summary report.
       #
       # @example
-      #
       #     describe "an example" do
       #       # reported as "Pending: no reason given"
       #       it "is pending with no message" do
@@ -66,7 +65,7 @@ module RSpec
       #       it "does something", :pending => "something else getting finished" do
       #         # ...
       #       end
-      def pending(*args)
+      def pending(message=nil)
         current_example = RSpec.current_example
 
         if block_given?
@@ -88,7 +87,7 @@ module RSpec
             |
           EOS
         elsif current_example
-          Pending.mark_pending! current_example, args.first
+          Pending.mark_pending! current_example, message
         else
           raise "`pending` may not be used outside of examples, such as in " +
                 "before(:context). Maybe you want `skip`?"
@@ -97,19 +96,12 @@ module RSpec
 
       # @overload skip()
       # @overload skip(message)
-      # @overload skip(message, &block)
       #
-      # Marks an example as pending and skips execution when called without a
-      # block. When called with a block, skips just that block and does not
-      # mark the example as pending. The block form is provided as replacement
-      # for RSpec 2's pending-with-block feature, and is not recommended for
-      # new code. Use simple conditionals instead.
+      # Marks an example as pending and skips execution.
       #
-      # @option message [String] optional message to add to the summary report.
-      # @yield [Block] block optional block to be skipped
+      # @param message [String] optional message to add to the summary report.
       #
       # @example
-      #
       #     describe "an example" do
       #       # reported as "Pending: no reason given"
       #       it "is skipped with no message" do
@@ -120,25 +112,18 @@ module RSpec
       #       it "is skipped with a custom message" do
       #         skip "something else getting finished"
       #       end
-      #
-      #       # Passes
-      #       it "contains a skipped statement" do
-      #         skip do
-      #           fail
-      #         end
-      #       end
       #     end
-      def skip(*args)
+      def skip(message=nil)
         current_example = RSpec.current_example
 
         if current_example
-          Pending.mark_skipped! current_example, args.first
+          Pending.mark_skipped! current_example, message
         end
 
-        raise SkipDeclaredInExample.new(args.first)
+        raise SkipDeclaredInExample.new(message)
       end
 
-      # @api private
+      # @private
       #
       # Mark example as skipped
       #
@@ -149,7 +134,7 @@ module RSpec
         example.metadata[:skip] = true
       end
 
-      # @api private
+      # @private
       #
       # Mark example as pending
       #
@@ -167,7 +152,7 @@ module RSpec
         example.execution_result.pending_fixed = false
       end
 
-      # @api private
+      # @private
       #
       # Mark example as fixed
       #

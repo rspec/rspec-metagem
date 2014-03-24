@@ -31,7 +31,6 @@ RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative 
   command_line
   runner
   example
-  shared_example_group/collection
   shared_example_group
   example_group
 ].each { |name| RSpec::Support.require_rspec_core name }
@@ -64,12 +63,6 @@ module RSpec
                          config
                        end
 
-  end
-
-  # @private
-  # Used internally to set the global object
-  def self.configuration=(new_configuration)
-    @configuration = new_configuration
   end
 
   # Yields the global configuration to a block.
@@ -126,12 +119,6 @@ module RSpec
   # Internal container for global non-configuration data
   def self.world
     @world ||= RSpec::Core::World.new
-  end
-
-  # @private
-  # Used internally to set the global object
-  def self.world=(new_world)
-    @world = new_world
   end
 
   # Namespace for the rspec-core code.

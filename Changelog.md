@@ -48,6 +48,8 @@ Breaking Changes for 3.0.0:
   Instead use the `rspec path/to/spec.rb:23:46` form, which is terser
   and makes more sense as it is scoped to a file. (Myron Marston)
 * Remove `--default_path` as an alias for `--default-path`. (Jon Rowe)
+* Remove deprecated `share_examples_for`. There's still
+  `shared_examples` and `shared_examples_for`. (Myron Marston)
 
 Enhancements:
 
@@ -81,6 +83,9 @@ Bug Fixes:
 * Prevent creating an isolated context (i.e. using `RSpec.describe`) when
   already inside a context. There is no reason to do this, and it could
   potentially cause unexpected bugs. (Xavier Shay)
+* Fix shared example group scoping so that when two shared example
+  groups share the same name at different levels of nested contexts,
+  the one in the nearest context is used. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)

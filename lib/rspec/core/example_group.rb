@@ -17,6 +17,11 @@ module RSpec
     # in the context of a new subclass of ExampleGroup. Individual examples are
     # evalutaed in the context of an instance of the specific ExampleGroup subclass
     # to which they belong.
+    #
+    # Besides the class methods defined here, there are other interesting macros
+    # defined in {Hooks}, {MemoizedHelpers::ClassMethods} and {SharedExampleGroup}.
+    # There are additional instance methods available to your examples defined in
+    # {MemoizedHelpers} and {Pending}.
     class ExampleGroup
       extend  Hooks
 
@@ -308,7 +313,7 @@ module RSpec
 
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
-        unless shared_block = shared_example_groups[name]
+        unless shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 

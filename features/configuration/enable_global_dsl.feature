@@ -4,7 +4,7 @@ Feature: Global namespace DSL
   behaviour:
 
   * `RSpec.describe`: Define a named context for a group of examples.
-  * `RSpec.shared_examples_for`: Define a set of shared examples that can later be included in an example group.
+  * `RSpec.shared_examples`: Define a set of shared examples that can later be included in an example group.
   * `RSpec.shared_context`: define some common context (using `before`, `let`, helper methods, etc) that can later be included in an example group.
 
   Historically, these constructs have been available directly off of the main

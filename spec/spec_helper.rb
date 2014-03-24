@@ -24,6 +24,10 @@ Spork.prefork do
     end
   end
 
+  class << RSpec
+    attr_writer :configuration, :world
+  end
+
   if RUBY_PLATFORM == 'java'
     # Works around https://jira.codehaus.org/browse/JRUBY-5678
     require 'fileutils'
@@ -142,12 +146,6 @@ Spork.prefork do
         !(RUBY_VERSION.to_s =~ /^#{version.to_s}/)
       end
     }
-
-    c.after(:suite) do
-      if $stderr.has_output?
-        raise "Ruby warnings were emitted:\n\n#{$stderr.output}"
-      end
-    end
   end
 end
 
