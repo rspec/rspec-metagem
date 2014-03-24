@@ -207,5 +207,7 @@ RSpec.describe 'command line', :ui, :slow do
     in_current_dir do
       RSpec::Core::Runner.run(cmd.split, stderr, stdout)
     end
+  ensure
+    RSpec.reset
   end
 end
