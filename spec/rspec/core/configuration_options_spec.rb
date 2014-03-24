@@ -330,13 +330,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
   describe "sources: ~/.rspec, ./.rspec, ./.rspec-local, custom, CLI, and SPEC_OPTS" do
     it "merges global, local, SPEC_OPTS, and CLI" do
-      File.open("./.rspec", "w") {|f| f << "--warnings"}
+      File.open("./.rspec", "w") {|f| f << "--require some_file"}
       File.open("./.rspec-local", "w") {|f| f << "--format global"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--color"}
       with_env_vars 'SPEC_OPTS' => "--example 'foo bar'" do
         options = parse_options("--drb")
         expect(options[:color]).to be_truthy
-        expect(options[:warnings]).to eq(true)
+        expect(options[:requires]).to eq(["some_file"])
         expect(options[:full_description]).to eq([/foo\ bar/])
         expect(options[:drb]).to be_truthy
         expect(options[:formatters]).to eq([['global']])

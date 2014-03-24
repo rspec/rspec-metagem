@@ -294,7 +294,6 @@ module RSpec
       def force(hash)
         ordering_manager.force(hash)
         @preferred_options.merge!(hash)
-        self.warnings = value_for :warnings, nil
       end
 
       # @private

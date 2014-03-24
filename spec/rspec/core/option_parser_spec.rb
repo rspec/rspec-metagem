@@ -241,9 +241,18 @@ module RSpec::Core
     end
 
     describe '--warning' do
-      it 'enables warnings' do
-        options = Parser.parse(%w[--warnings])
-        expect(options[:warnings]).to eq true
+      around do |ex|
+        verbose = $VERBOSE
+        ex.run
+        $VERBOSE = verbose
+      end
+
+      it 'immediately enables warnings so that warnings are issued for files loaded by `--require`' do
+        $VERBOSE = false
+
+        expect {
+          Parser.parse(%w[--warnings])
+        }.to change { $VERBOSE }.from(false).to(true)
       end
     end
 

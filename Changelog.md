@@ -86,6 +86,8 @@ Bug Fixes:
 * Fix shared example group scoping so that when two shared example
   groups share the same name at different levels of nested contexts,
   the one in the nearest context is used. (Myron Marston)
+* Fix `--warnings` option so that it enables warnings immediately so
+  that it applies to files loaded by `--require`. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)
