@@ -11,7 +11,7 @@ gemspec
   end
 end
 
-gem 'yard', '0.8.7.3', :require => false
+gem 'yard', '0.8.7.4', :require => false
 
 ### deps for rdoc.info
 group :documentation do
