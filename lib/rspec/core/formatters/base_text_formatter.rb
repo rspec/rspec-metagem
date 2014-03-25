@@ -14,10 +14,22 @@ module RSpec
         Formatters.register self, :message, :dump_summary, :dump_failures,
                                   :dump_pending, :seed
 
+        # @method message
+        # @api public
+        #
+        # Used by the reporter to send messages to the output stream.
+        #
+        # @param notification [MessageNotification] containing message
         def message(notification)
           output.puts notification.message
         end
 
+        # @method dump_failures
+        # @api public
+        #
+        # Dumps detailed information about each example failure.
+        #
+        # @param notification [NullNotification]
         def dump_failures(notification)
           return if failed_examples.empty?
           output.puts
@@ -29,6 +41,14 @@ module RSpec
           end
         end
 
+        # @method dump_summary
+        # @api public
+        #
+        # This method is invoked after the dumping of examples and failures. Each parameter
+        # is assigned to a corresponding attribute.
+        #
+        # @param summary [SummaryNotification] containing duration, example_count,
+        #                                      failure_count and pending_count
         def dump_summary(summary)
           dump_profile unless mute_profile_output?(summary.failure_count)
           output.puts "\nFinished in #{format_duration(summary.duration)}" +
@@ -113,6 +133,12 @@ module RSpec
           output.puts
         end
 
+        # @api public
+        #
+        # Invoked at the very end, `close` allows the formatter to clean
+        # up resources, e.g. open streams, etc.
+        #
+        # @param notification [NullNotification]
         def close(notification)
           output.close if IO === output && output != $stdout
         end
