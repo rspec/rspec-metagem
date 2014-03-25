@@ -61,17 +61,20 @@ module RSpec
           !matches?(given_proc, :negative_expectation)
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message
           @eval_block ? @actual_error.message : "expected #{expected_error}#{given_error}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected no #{expected_error}#{given_error}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def description
           "raise #{expected_error}"
         end

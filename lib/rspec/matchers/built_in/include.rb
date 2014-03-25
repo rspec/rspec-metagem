@@ -9,29 +9,41 @@ module RSpec
           @expected = expected
         end
 
+        # @api private
+        # @return [Boolean]
         def matches?(actual)
           @actual = actual
           perform_match(:all?, :all?)
         end
 
+        # @api private
+        # @return [Boolean]
         def does_not_match?(actual)
           @actual = actual
           perform_match(:none?, :any?)
         end
 
+        # @api private
+        # @return [String]
         def description
           described_items = surface_descriptions_in(expected)
           improve_hash_formatting "include#{to_sentence(described_items)}"
         end
 
+        # @api private
+        # @return [String]
         def failure_message
           improve_hash_formatting(super)
         end
 
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           improve_hash_formatting(super)
         end
 
+        # @api private
+        # @return [Boolean]
         def diffable?
           true
         end

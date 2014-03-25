@@ -20,6 +20,7 @@ module RSpec
         # `nil` cannot be used because it's a valid value to pass.
         UNDEFINED = Object.new.freeze
 
+        # @private
         attr_reader :actual, :expected, :rescued_exception
 
         def initialize(expected = UNDEFINED)
@@ -55,6 +56,7 @@ module RSpec
         # Provides a good generic failure message. Based on `description`.
         # When subclassing, if you are not satisifed with this failure message
         # you often only need to override `description`.
+        # @return [String]
         def failure_message
           assert_ivars :@actual
           "expected #{@actual.inspect} to #{description}"
@@ -64,6 +66,7 @@ module RSpec
         # Provides a good generic negative failure message. Based on `description`.
         # When subclassing, if you are not satisifed with this failure message
         # you often only need to override `description`.
+        # @return [String]
         def failure_message_when_negated
           assert_ivars :@actual
           "expected #{@actual.inspect} not to #{description}"
@@ -71,6 +74,7 @@ module RSpec
 
         # @api private
         # Generates a "pretty" description using the logic in {Pretty}.
+        # @return [String]
         def description
           return name_to_sentence unless defined?(@expected)
           "#{name_to_sentence}#{to_sentence @expected}"

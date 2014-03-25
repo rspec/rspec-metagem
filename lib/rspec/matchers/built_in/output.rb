@@ -32,14 +32,20 @@ module RSpec
           self
         end
 
+        # @api private
+        # @return [String]
         def failure_message
           "expected block to #{description}, #{actual_description}"
         end
 
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected block to not #{description}, but did"
         end
 
+        # @api private
+        # @return [String]
         def description
           if @expected
             "output #{description_of @expected} to #{@stream_capturer.name}"
@@ -48,6 +54,8 @@ module RSpec
           end
         end
 
+        # @api private
+        # @return [Boolean]
         def diffable?
           true
         end
