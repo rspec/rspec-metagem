@@ -30,10 +30,10 @@ RSpec::Matchers.define :fail_with do |exception_klass|
   end
 
   def failure_reason(example, exception_klass)
-    result = example.metadata[:execution_result]
+    result = example.execution_result
     case
       when example.metadata[:pending] then "was pending"
-      when result.status != 'failed' then result.status
+      when result.status != :failed then result.status
       when !result.exception.is_a?(exception_klass) then "failed with a #{result.exception.class}"
       else nil
     end
@@ -53,7 +53,7 @@ RSpec::Matchers.define :pass do
     result = example.metadata[:execution_result]
     case
       when example.metadata[:pending] then "was pending"
-      when result.status != 'passed' then result.status
+      when result.status != :passed then result.status
       else nil
     end
   end
@@ -66,7 +66,9 @@ end
 
 RSpec::Matchers.define :be_pending_with do |message|
   match do |example|
-    example.pending? && example.execution_result.pending_message == message
+    example.pending? &&
+    example.execution_result.status == :pending &&
+    example.execution_result.pending_message == message
   end
 
   failure_message_for_should do |example|
@@ -76,7 +78,9 @@ end
 
 RSpec::Matchers.define :be_skipped_with do |message|
   match do |example|
-    example.skipped? && example.execution_result.pending_message == message
+    example.skipped? &&
+    example.pending? &&
+    example.execution_result.pending_message == message
   end
 
   failure_message_for_should do |example|

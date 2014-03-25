@@ -66,8 +66,9 @@ Enhancements:
   (e.g. via `--formatter`). (Myron Marston)
 * Support legacy colour definitions in `LegacyFormatterAdaptor`. (Jon Rowe)
 * Migrate `execution_result` (exposed by metadata) from a hash to a
-  first-class object with appropriate attributes. It retains deprecated
-  hash behavior for backwards compatibility. (Myron Marston)
+  first-class object with appropriate attributes. `status` is now
+  stored and returned as a symbol rather than a string. It retains
+  deprecated hash behavior for backwards compatibility. (Myron Marston)
 * Provide console code helper for formatters. (Jon Rowe)
 * Use raw ruby hashes for the metadata hashes rather than a subclass of
   a hash. Computed metadata entries are now computed in advance rather

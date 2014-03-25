@@ -866,7 +866,7 @@ module RSpec::Core
         it "allows the example to pass" do
           group.run
           example = group.examples.first
-          expect(example.execution_result.status).to eq("passed")
+          expect(example.execution_result.status).to eq(:passed)
         end
 
         it "rescues any error(s) and prints them out" do
@@ -1028,7 +1028,7 @@ module RSpec::Core
 
           expect(extract_execution_results(group).map(&:to_h)).to match([
             a_hash_including(
-              :status => "pending",
+              :status => :pending,
               :pending_message => "Temporarily skipped with #{method_name}"
             )
           ] * 2)
@@ -1080,11 +1080,11 @@ module RSpec::Core
 
         expect(extract_execution_results(group).map(&:to_h)).to match([
           a_hash_including(
-            :status => "failed",
+            :status => :failed,
             :pending_message => "No reason given"
           ),
           a_hash_including(
-            :status => "pending",
+            :status => :pending,
             :pending_message => "unimplemented"
           )
         ])

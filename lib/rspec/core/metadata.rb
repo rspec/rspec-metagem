@@ -265,7 +265,7 @@ module RSpec
         define_method(method_name) do |*args, &block|
           issue_deprecation(method_name, *args)
 
-          hash = to_h
+          hash = hash_for_delegation
           self.class.hash_attribute_names.each do |name|
             hash.delete(name) unless instance_variable_defined?(:"@#{name}")
           end
@@ -319,6 +319,10 @@ module RSpec
 
       def set_value(name, value)
         __send__(:"#{name}=", value)
+      end
+
+      def hash_for_delegation
+        to_h
       end
 
       def issue_deprecation(method_name, *args)
