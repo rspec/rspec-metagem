@@ -291,17 +291,17 @@ module RSpec
         pending_message = execution_result.pending_message
 
         if @exception
-          record_finished 'failed'
+          record_finished :failed
           execution_result.exception = @exception
           reporter.example_failed self
           false
         elsif pending_message
-          record_finished 'pending'
+          record_finished :pending
           execution_result.pending_message = pending_message
           reporter.example_pending self
           true
         else
-          record_finished 'passed'
+          record_finished :passed
           reporter.example_passed self
           true
         end
@@ -365,7 +365,7 @@ module RSpec
       class ExecutionResult
         include HashImitatable
 
-        # @return [String] "passed", "failed" or "pending".
+        # @return [Symbol] `:passed`, `:failed` or `:pending`.
         attr_accessor :status
 
         # @return [Exception, nil] The failure, if there was one.
@@ -386,7 +386,7 @@ module RSpec
 
         # @return [Exception, nil] The exception triggered while
         #   executing the pending example. If no exception was triggered
-        #   it would no longer get a status of "pending" unless it was
+        #   it would no longer get a status of `:pending` unless it was
         #   tagged with `:skip`.
         attr_accessor :pending_exception
 
@@ -405,6 +405,27 @@ module RSpec
         end
 
       private
+
+        # For backwards compatibility we present `status` as a string
+        # when presenting the legacy hash interface.
+        def hash_for_delegation
+          super.tap do |hash|
+            hash[:status] &&= status.to_s
+          end
+        end
+
+        def set_value(name, value)
+          value &&= value.to_sym if name == :status
+          super(name, value)
+        end
+
+        def get_value(name)
+          if name == :status
+            status.to_s if status
+          else
+            super
+          end
+        end
 
         def issue_deprecation(method_name, *args)
           RSpec.deprecate("Treating `metadata[:execution_result]` as a hash",

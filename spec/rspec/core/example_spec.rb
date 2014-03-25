@@ -414,7 +414,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   describe "#pending" do
     def expect_pending_result(example)
       expect(example).to be_pending
-      expect(example.execution_result.status).to eq("pending")
+      expect(example.execution_result.status).to eq(:pending)
       expect(example.execution_result.pending_message).to be
     end
 

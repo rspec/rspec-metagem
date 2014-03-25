@@ -34,7 +34,7 @@ RSpec.describe "an example" do
       example = group.examples.first
       example.run(group.new, double.as_null_object)
       expect(example).to be_pending_with('because')
-      expect(example.execution_result.status).to eq('pending')
+      expect(example.execution_result.status).to eq(:pending)
     end
 
     it "does not mutate the :pending attribute of the user metadata when handling mock expectation errors" do
@@ -88,7 +88,7 @@ RSpec.describe "an example" do
       expect(called).to eq(true)
       result = example.execution_result
       expect(result.pending_fixed).to eq(true)
-      expect(result.status).to eq("failed")
+      expect(result.status).to eq(:failed)
     end
 
     it "does not mutate the :pending attribute of the user metadata when the rest of the example passes" do
