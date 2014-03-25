@@ -2,6 +2,7 @@ module RSpec
   module Core
     # @private
     class BacktraceFormatter
+      # @private
       attr_accessor :exclusion_patterns, :inclusion_patterns
 
       def initialize
