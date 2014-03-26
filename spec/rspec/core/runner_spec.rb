@@ -174,19 +174,32 @@ module RSpec::Core
       end
 
       describe "#run" do
-        context "delegation" do
-          include_context "spec files"
+        it 'supports a test-queue like subclass that can perform setup once and run different sets of example groups multiple times' do
+          order = []
 
-          it "passes output streams to #setup" do
-            runner = build_runner passing_spec_filename
-            expect(runner).to receive(:setup).with(err, out)
-            runner.run(err, out)
+          RSpec.describe("group 1") do
+            before { order << :group_1 }
+            example("passing") { expect(1).to eq(1) }
           end
-          it "passes the example group list to #run_specs" do
-            runner = build_runner passing_spec_filename
-            expect(runner).to receive(:run_specs).with(world.example_groups)
-            runner.run(err, out)
+
+          RSpec.describe("group 2") do
+            before { order << :group_2 }
+            example("failed") { expect(1).to eq(2) }
           end
+
+          subclass = Class.new(Runner) do
+            define_method :run_specs do |example_groups|
+              set_1, set_2 = example_groups.partition { |g| g.description.include?('1') }
+              order << :start_set_1
+              super(set_1)
+              order << :start_set_2
+              super(set_2)
+            end
+          end
+
+          expect(config).to receive(:load_spec_files).once
+          subclass.new(ConfigurationOptions.new([]), config, world).run(err, out)
+          expect(order).to eq([:start_set_1, :group_1, :start_set_2, :group_2])
         end
 
         context "running files" do
