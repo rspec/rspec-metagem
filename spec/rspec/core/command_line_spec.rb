@@ -30,12 +30,6 @@ module RSpec::Core
       command_line.run err, stdout
     end
 
-    it "assigns ConfigurationOptions built from Array of options to @options" do
-      config_options = ConfigurationOptions.new(%w[--color])
-      command_line   = CommandLine.new(%w[--color])
-      expect(command_line.instance_exec { @options.options }).to eq(config_options.options)
-    end
-
     it "assigns submitted ConfigurationOptions to @options" do
       config_options = ConfigurationOptions.new(%w[--color])
       command_line   = CommandLine.new(config_options)

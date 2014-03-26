@@ -3,9 +3,6 @@ module RSpec
     # The 'rspec' command line
     class CommandLine
       def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
-        if Array === options
-          options = ConfigurationOptions.new(options)
-        end
         @options       = options
         @configuration = configuration
         @world         = world
