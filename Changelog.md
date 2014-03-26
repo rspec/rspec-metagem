@@ -58,6 +58,8 @@ Breaking Changes for 3.0.0:
   want the state reset. Alternate runners are now responsible for
   calling this (or doing a similar reset) if they are going to run
   the spec suite multiple times in the same process. (Sam Phippen)
+* Merge `RSpec::Core::CommandLine` (never formally declared public)
+  into `RSpec::Core::Runner`. (Myron Marston)
 
 Enhancements:
 
@@ -78,6 +80,8 @@ Enhancements:
 * Add `fspecify` and `fexample` as aliases of `specify` and `example`
   with `:focus => true` metadata for parity with `fit`. (Myron Marston)
 * Add legacy support for `colorize_summary`. (Jon Rowe)
+* Restructure runner so it can be more easily customized in a subclass
+  for an alternate runner. (Ben Hoskings)
 
 Bug Fixes:
 

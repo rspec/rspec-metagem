@@ -32,10 +32,8 @@ module RSpec
       # @private
       def format_backtrace(backtrace, options = {})
         return backtrace if options[:full_backtrace]
-        backtrace.
-          take_while {|l| l != RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE}.
-          map        {|l| backtrace_line(l)}.
-          compact.
+
+        backtrace.map { |l| backtrace_line(l) }.compact.
           tap do |filtered|
             if filtered.empty?
               filtered.concat backtrace

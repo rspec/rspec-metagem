@@ -1,11 +1,15 @@
 module RSpec
   module Core
-    # @api private
-    #
-    # RSpec test suite runner
+    # Provides the main entry point to run a suite of RSpec examples.
     class Runner
 
-      # Register an at_exit hook that runs the suite.
+      # Register an `at_exit` hook that runs the suite when the process exits.
+      #
+      # @note This is not generally needed. The `rspec` command takes care
+      #       of running examples for you without involving an `at_exit`
+      #       hook. This is only needed if you are running specs using
+      #       the `ruby` command, and even then, the normal way to invoke
+      #       this is by requiring `rspec/autorun`.
       def self.autorun
         if autorun_disabled?
           RSpec.deprecate("Requiring `rspec/autorun` when running RSpec via the `rspec` command")
@@ -28,14 +32,88 @@ module RSpec
         @installed_at_exit = true
       end
 
-      # @private
-      AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
-
-      # Invoke the Rspec runner
+      # Runs the suite of specs and exits the process with an appropriate exit code.
       def self.invoke
         disable_autorun!
         status = run(ARGV, $stderr, $stdout).to_i
         exit(status) if status != 0
+      end
+
+      # Run a suite of RSpec examples. Does not exit.
+      #
+      # This is used internally by RSpec to run a suite, but is available
+      # for use by any other automation tool.
+      #
+      # If you want to run this multiple times in the same process, and you
+      # want files like `spec_helper.rb` to be reloaded, be sure to load `load`
+      # instead of `require`.
+      #
+      # @param args [Array] command-line-supported arguments
+      # @param err [IO] error stream
+      # @param out [IO] output stream
+      # @return [Fixnum] exit status code. 0 if all specs passed,
+      #   or the configured failure exit code (1 by default) if specs
+      #   failed.
+      def self.run(args, err=$stderr, out=$stdout)
+        trap_interrupt
+        options = ConfigurationOptions.new(args)
+
+        if options.options[:drb]
+          require 'rspec/core/drb'
+          begin
+            DRbCommandLine.new(options).run(err, out)
+          rescue DRb::DRbConnError
+            err.puts "No DRb server is running. Running in local process instead ..."
+            new(options).run(err, out)
+          end
+        else
+          new(options).run(err, out)
+        end
+      end
+
+      def initialize(options, configuration=RSpec.configuration, world=RSpec.world)
+        @options       = options
+        @configuration = configuration
+        @world         = world
+      end
+
+      # Configures and runs a spec suite.
+      #
+      # @param err [IO] error stream
+      # @param out [IO] output stream
+      def run(err, out)
+        setup(err, out)
+        run_specs(@world.ordered_example_groups)
+      end
+
+      # Wires together the various configuration objects and state holders.
+      #
+      # @param err [IO] error stream
+      # @param out [IO] output stream
+      def setup(err, out)
+        @configuration.error_stream = err
+        @configuration.output_stream = out if @configuration.output_stream == $stdout
+        @options.configure(@configuration)
+        @configuration.load_spec_files
+        @world.announce_filters
+      end
+
+      # Runs the provided example groups.
+      #
+      # @param example_groups [Array<RSpec::Core::ExampleGroup>] groups to run
+      # @return [Fixnum] exit status code. 0 if all specs passed,
+      #   or the configured failure exit code (1 by default) if specs
+      #   failed.
+      def run_specs(example_groups)
+        @configuration.reporter.report(@world.example_count(example_groups)) do |reporter|
+          begin
+            hook_context = SuiteHookContext.new
+            @configuration.hooks.run(:before, :suite, hook_context)
+            example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
+          ensure
+            @configuration.hooks.run(:after, :suite, hook_context)
+          end
+        end
       end
 
       # @private
@@ -53,6 +131,7 @@ module RSpec
         @installed_at_exit ||= false
       end
 
+      # @private
       def self.running_in_drb?
         begin
           if defined?(DRb) && DRb.current_server
@@ -75,39 +154,6 @@ module RSpec
           exit!(1) if RSpec.world.wants_to_quit
           RSpec.world.wants_to_quit = true
           STDERR.puts "\nExiting... Interrupt again to exit immediately."
-        end
-      end
-
-      # Run a suite of RSpec examples.
-      #
-      # This is used internally by RSpec to run a suite, but is available
-      # for use by any other automation tool.
-      #
-      # If you want to run this multiple times in the same process, and you
-      # want files like spec_helper.rb to be reloaded, be sure to load `load`
-      # instead of `require`.
-      #
-      # #### Parameters
-      # * +args+ - an array of command-line-supported arguments
-      # * +err+ - error stream (Default: $stderr)
-      # * +out+ - output stream (Default: $stdout)
-      #
-      # #### Returns
-      # * +Fixnum+ - exit status code (0/1)
-      def self.run(args, err=$stderr, out=$stdout)
-        trap_interrupt
-        options = ConfigurationOptions.new(args)
-
-        if options.options[:drb]
-          require 'rspec/core/drb'
-          begin
-            DRbCommandLine.new(options).run(err, out)
-          rescue DRb::DRbConnError
-            err.puts "No DRb server is running. Running in local process instead ..."
-            CommandLine.new(options).run(err, out)
-          end
-        else
-          CommandLine.new(options).run(err, out)
         end
       end
     end

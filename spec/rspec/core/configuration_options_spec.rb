@@ -263,7 +263,7 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
   describe "--drb, -X" do
     it "does not send --drb back to the parser after parsing options" do
-      expect(config_options_object("--drb", "--color").drb_argv).not_to include("--drb")
+      expect(config_options_object("--drb", "--color").drb_argv_for(RSpec.configuration)).not_to include("--drb")
     end
   end
 
@@ -319,12 +319,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       opts = config_options_object("--default-path", "foo")
       opts.configure(config)
       config.files_to_run
-    end
-  end
-
-  describe "#filter_manager" do
-    it "returns the same object as RSpec::configuration.filter_manager" do
-      expect(config_options_object.filter_manager).to be(RSpec::configuration.filter_manager)
     end
   end
 
