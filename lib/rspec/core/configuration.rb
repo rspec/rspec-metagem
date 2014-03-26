@@ -123,9 +123,24 @@ module RSpec
         end
       end
 
-      # @macro add_setting
-      # Default: `$stderr`.
-      add_setting :deprecation_stream
+      # Determines where deprecation warnings are printed.
+      # Defaults to `$stderr`.
+      # @return [IO, String] IO to write to or filename to write to
+      define_reader :deprecation_stream
+
+      # Determines where deprecation warnings are printed.
+      # @param value [IO, String] IO to write to or filename to write to
+      def deprecation_stream=(value)
+        if @reporter && !value.equal?(@deprecation_stream)
+          warn "RSpec's reporter has already been initialized with " +
+            "#{deprecation_stream.inspect} as the deprecation stream, so your change to "+
+            "`deprecation_stream` will be ignored. You should configure it earlier for " +
+            "it to take effect, or use the `--deprecation-out` CLI option. " +
+            "(Called from #{CallerFilter.first_non_rspec_line})"
+        else
+          @deprecation_stream = value
+        end
+      end
 
       # @macro add_setting
       # Clean up and exit after the first failure (default: `false`).

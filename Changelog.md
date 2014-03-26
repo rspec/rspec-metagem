@@ -105,6 +105,8 @@ Bug Fixes:
   the one in the nearest context is used. (Myron Marston)
 * Fix `--warnings` option so that it enables warnings immediately so
   that it applies to files loaded by `--require`. (Myron Marston)
+* Issue a warning when you set `config.deprecation_stream` too late for
+  it to take effect because the reporter has already been setup. (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)
