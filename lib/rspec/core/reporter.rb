@@ -55,7 +55,7 @@ module RSpec::Core
     # @private
     def start(expected_example_count, time = RSpec::Core::Time.now)
       @start = time
-      @load_time = (@start - RSpec.configuration.start_time).to_f
+      @load_time = (@start - @configuration.start_time).to_f
       notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
     end
 
