@@ -65,16 +65,6 @@ module RSpec::Core
         expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq([".\\my_spec.rb:5"])
       end
 
-      it "excludes lines that come before at_exit autorun hook" do
-        backtrace = [
-          "./spec/my_spec.rb:7",
-          "./spec/my_spec.rb:5",
-          RSpec::Core::Runner::AT_EXIT_HOOK_BACKTRACE_LINE,
-          "./spec/my_spec.rb:3"
-        ]
-        expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq(["./spec/my_spec.rb:7", "./spec/my_spec.rb:5"])
-      end
-
       context "when every line is filtered out" do
         let(:backtrace) do
           [

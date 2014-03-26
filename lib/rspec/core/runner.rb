@@ -28,9 +28,6 @@ module RSpec
         @installed_at_exit = true
       end
 
-      # @private
-      AT_EXIT_HOOK_BACKTRACE_LINE = "#{__FILE__}:#{__LINE__ - 2}:in `autorun'"
-
       # Invoke the Rspec runner
       def self.invoke
         disable_autorun!
