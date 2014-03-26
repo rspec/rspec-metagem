@@ -202,6 +202,43 @@ module RSpec::Core
           expect(order).to eq([:start_set_1, :group_1, :start_set_2, :group_2])
         end
 
+        it 'reports the expected example count accurately, even when subclasses filter example groups' do
+          RSpec.describe("group 1") do
+            example("1") { }
+
+            context "nested" do
+              4.times { example { } }
+            end
+          end
+
+          RSpec.describe("group 2") do
+            example("2") { }
+            example("3") { }
+
+            context "nested" do
+              4.times { example { } }
+            end
+          end
+
+          subclass = Class.new(Runner) do
+            define_method :run_specs do |example_groups|
+              super(example_groups.select { |g| g.description == 'group 2' })
+            end
+          end
+
+          my_formatter = instance_double(Formatters::BaseFormatter).as_null_object
+          config.output_stream = out
+          config.deprecation_stream = err
+          config.reporter.register_listener(my_formatter, :start)
+
+          allow(config).to receive(:load_spec_files)
+          subclass.new(ConfigurationOptions.new([]), config, world).run(err, out)
+
+          expect(my_formatter).to have_received(:start) do |notification|
+            expect(notification.count).to eq(6)
+          end
+        end
+
         context "running files" do
           include_context "spec files"
 

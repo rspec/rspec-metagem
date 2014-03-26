@@ -88,8 +88,8 @@ module RSpec
       # @api private
       #
       # Get count of examples to be run
-      def example_count
-        FlatMap.flat_map(example_groups) {|g| g.descendants}.
+      def example_count(groups=example_groups)
+        FlatMap.flat_map(groups) {|g| g.descendants}.
           inject(0) {|sum, g| sum + g.filtered_examples.size}
       end
 
