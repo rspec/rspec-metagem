@@ -105,177 +105,165 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
   include ConfigOptionsHelper
 
   describe "#drb_argv" do
+    def drb_argv_for(args)
+      config_options_object(*args).drb_argv_for(RSpec.configuration)
+    end
+
+    def drb_filter_manager_for(args)
+      configuration = RSpec::Core::Configuration.new
+      config_options_object(*args).drb_argv_for(configuration)
+      configuration.filter_manager
+    end
+
     it "preserves extra arguments" do
       allow(File).to receive(:exist?) { false }
-      expect(config_options_object(*%w[ a --drb b --color c ]).drb_argv).to match_array %w[ --color a b c ]
+      expect(drb_argv_for(%w[ a --drb b --color c ])).to match_array %w[ --color a b c ]
     end
 
     %w(--color --fail-fast --profile --backtrace --tty).each do |option|
       it "includes #{option}" do
-        expect(config_options_object("#{option}").drb_argv).to include("#{option}")
+        expect(drb_argv_for([option])).to include(option)
       end
     end
 
     it "includes --failure-exit-code" do
-      expect(config_options_object(*%w[--failure-exit-code 2]).drb_argv).to include("--failure-exit-code", "2")
+      expect(drb_argv_for(%w[--failure-exit-code 2])).to include("--failure-exit-code", "2")
     end
 
     it "includes --options" do
-      expect(config_options_object(*%w[--options custom.opts]).drb_argv).to include("--options", "custom.opts")
+      expect(drb_argv_for(%w[--options custom.opts])).to include("--options", "custom.opts")
     end
 
     it "includes --order" do
-      expect(config_options_object(*%w[--order random]).drb_argv).to include('--order', 'random')
+      expect(drb_argv_for(%w[--order random])).to include('--order', 'random')
     end
 
     context "with --example" do
       it "includes --example" do
-        expect(config_options_object(*%w[--example foo]).drb_argv).to include("--example", "foo")
+        expect(drb_argv_for(%w[--example foo])).to include("--example", "foo")
       end
 
       it "unescapes characters which were escaped upon storing --example originally" do
-        expect(config_options_object("--example", "foo\\ bar").drb_argv).to include("--example", "foo bar")
+        expect(drb_argv_for(["--example", "foo\\ bar"])).to include("--example", "foo bar")
       end
     end
 
     context "with tags" do
       it "includes the inclusion tags" do
-        coo = config_options_object("--tag", "tag")
-        expect(coo.drb_argv).to eq(["--tag", "tag"])
+        expect(drb_argv_for ["--tag", "tag"]).to eq(["--tag", "tag"])
       end
 
       it "includes the inclusion tags with values" do
-        coo = config_options_object("--tag", "tag:foo")
-        expect(coo.drb_argv).to eq(["--tag", "tag:foo"])
+        expect(drb_argv_for ["--tag", "tag:foo"]).to eq(["--tag", "tag:foo"])
       end
 
       it "leaves inclusion tags intact" do
-        coo = config_options_object("--tag", "tag")
-        coo.drb_argv
-        rules = coo.filter_manager.inclusions.rules
+        rules = drb_filter_manager_for(%w[ --tag tag ]).inclusions.rules
         expect(rules).to eq( {:tag=>true} )
       end
 
       it "leaves inclusion tags with values intact" do
-        coo = config_options_object("--tag", "tag:foo")
-        coo.drb_argv
-        rules = coo.filter_manager.inclusions.rules
+        rules = drb_filter_manager_for(%w[ --tag tag:foo ]).inclusions.rules
         expect(rules).to eq( {:tag=>'foo'} )
       end
 
       it "includes the exclusion tags" do
-        coo = config_options_object("--tag", "~tag")
-        expect(coo.drb_argv).to eq(["--tag", "~tag"])
+        expect(drb_argv_for ["--tag", "~tag"]).to eq(["--tag", "~tag"])
       end
 
       it "includes the exclusion tags with values" do
-        coo = config_options_object("--tag", "~tag:foo")
-        expect(coo.drb_argv).to eq(["--tag", "~tag:foo"])
+        expect(drb_argv_for ["--tag", "~tag:foo"]).to eq(["--tag", "~tag:foo"])
       end
 
       it "leaves exclusion tags intact" do
-        coo = config_options_object("--tag", "~tag")
-        coo.drb_argv
-        rules = coo.filter_manager.exclusions.rules
+        rules = drb_filter_manager_for(%w[ --tag ~tag ]).exclusions.rules
         expect(rules).to eq( {:tag => true} )
       end
 
       it "leaves exclusion tags with values intact" do
-        coo = config_options_object("--tag", "~tag:foo")
-        coo.drb_argv
-        rules = coo.filter_manager.exclusions.rules
+        rules = drb_filter_manager_for(%w[ --tag ~tag:foo ]).exclusions.rules
         expect(rules).to eq( {:tag => 'foo'} )
       end
     end
 
     context "with formatters" do
       it "includes the formatters" do
-        coo = config_options_object("--format", "d")
-        expect(coo.drb_argv).to eq(["--format", "d"])
+        expect(drb_argv_for ["--format", "d"]).to eq(["--format", "d"])
       end
 
       it "leaves formatters intact" do
         coo = config_options_object("--format", "d")
-        coo.drb_argv
+        coo.drb_argv_for(RSpec::Core::Configuration.new)
         expect(coo.options[:formatters]).to eq([["d"]])
       end
 
       it "leaves output intact" do
         coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
-        coo.drb_argv
+        coo.drb_argv_for(RSpec::Core::Configuration.new)
         expect(coo.options[:formatters]).to eq([["p","foo.txt"],["d"]])
       end
     end
 
     context "with --out" do
       it "combines with formatters" do
-        coo = config_options_object(*%w[--format h --out report.html])
-        expect(coo.drb_argv).to       eq(%w[--format h --out report.html])
+        argv = drb_argv_for(%w[--format h --out report.html])
+        expect(argv).to  eq(%w[--format h --out report.html])
       end
     end
 
     context "with -I libs" do
       it "includes -I" do
-        expect(config_options_object(*%w[-I a_dir]).drb_argv).to eq(%w[-I a_dir])
+        expect(drb_argv_for(%w[-I a_dir])).to eq(%w[-I a_dir])
       end
 
       it "includes multiple paths" do
-        expect(config_options_object(*%w[-I dir_1 -I dir_2 -I dir_3]).drb_argv).to eq(
-                               %w[-I dir_1 -I dir_2 -I dir_3]
-        )
+        argv = drb_argv_for(%w[-I dir_1 -I dir_2 -I dir_3])
+        expect(argv).to  eq(%w[-I dir_1 -I dir_2 -I dir_3])
       end
     end
 
     context "with --require" do
       it "includes --require" do
-        expect(config_options_object(*%w[--require a_path]).drb_argv).to eq(%w[--require a_path])
+        expect(drb_argv_for(%w[--require a_path])).to eq(%w[--require a_path])
       end
 
       it "includes multiple paths" do
-        expect(config_options_object(*%w[--require dir/ --require file.rb]).drb_argv).to eq(
-                               %w[--require dir/ --require file.rb]
-        )
+        argv = drb_argv_for(%w[--require dir/ --require file.rb])
+        expect(argv).to  eq(%w[--require dir/ --require file.rb])
       end
     end
 
     context "--drb specified in ARGV" do
       it "renders all the original arguments except --drb" do
-        drb_argv = config_options_object(*%w[ --drb --color --format s --example pattern
-                                              --profile --backtrace -I
-                                              path/a -I path/b --require path/c --require
-                                              path/d]).drb_argv
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s -I path/a -I path/b --require path/c --require path/d])
+        argv = drb_argv_for(%w[ --drb --color --format s --example pattern
+                                --profile --backtrace -I
+                                path/a -I path/b --require path/c --require
+                                path/d])
+        expect(argv).to eq(%w[ --color --profile --backtrace --example pattern --format s -I path/a -I path/b --require path/c --require path/d])
       end
     end
 
     context "--drb specified in the options file" do
       it "renders all the original arguments except --drb" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
-        drb_argv = config_options_object(*%w[ --tty --format s --example
-                                         pattern --profile --backtrace ]).drb_argv
-
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --tty
-                               --example pattern --format s])
+        drb_argv = drb_argv_for(%w[ --tty --format s --example pattern --profile --backtrace ])
+        expect(drb_argv).to eq(%w[ --color --profile --backtrace --tty --example pattern --format s])
       end
     end
 
     context "--drb specified in ARGV and the options file" do
       it "renders all the original arguments except --drb" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
-        drb_argv = config_options_object(*%w[ --drb --format s --example
-                                         pattern --profile --backtrace]).drb_argv
-
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s])
+        argv = drb_argv_for(%w[ --drb --format s --example pattern --profile --backtrace])
+        expect(argv).to eq(%w[ --color --profile --backtrace --example pattern --format s])
       end
     end
 
     context "--drb specified in ARGV and in as ARGV-specified --options file" do
       it "renders all the original arguments except --drb and --options" do
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
-        drb_argv = config_options_object(*%w[ --drb --format s --example
-                                         pattern --profile --backtrace]).drb_argv
-
-        expect(drb_argv).to eq(%w[ --color --profile --backtrace --example pattern --format s ])
+        argv = drb_argv_for(%w[ --drb --format s --example pattern --profile --backtrace])
+        expect(argv).to eq(%w[ --color --profile --backtrace --example pattern --format s ])
       end
     end
   end

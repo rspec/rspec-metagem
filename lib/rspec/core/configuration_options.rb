@@ -8,37 +8,42 @@ module RSpec
     class ConfigurationOptions
       def initialize(args)
         @args = args.dup
+        organize_options
       end
 
       def configure(config)
-        config.filter_manager = filter_manager
-
+        configure_filter_manager config.filter_manager
         process_options_into config
         load_formatters_into config
       end
 
-      def options
-        @options ||= (file_options << command_line_options << env_options).
-          each {|opts|
-            filter_manager.include opts.delete(:inclusion_filter) if opts.has_key?(:inclusion_filter)
-            filter_manager.exclude opts.delete(:exclusion_filter) if opts.has_key?(:exclusion_filter)
-          }.
-          inject(:libs => [], :requires => []) {|h, opts|
-            h.merge(opts) {|k, oldval, newval|
-              [:libs, :requires].include?(k) ? oldval + newval : newval
-            }
-          }
-      end
+      attr_reader :options
 
-      def drb_argv
-        DrbOptions.new(options, filter_manager).options
-      end
-
-      def filter_manager
-        @filter_manager ||= RSpec::configuration.filter_manager
+      def drb_argv_for(config)
+        configure_filter_manager(config.filter_manager)
+        DrbOptions.new(options, config.filter_manager).options
       end
 
     private
+
+      def organize_options
+        @filter_manager_inclusions = []
+        @filter_manager_exclusions = []
+
+        @options = (file_options << command_line_options << env_options).each { |opts|
+          @filter_manager_inclusions << opts.delete(:inclusion_filter) if opts.key?(:inclusion_filter)
+          @filter_manager_exclusions << opts.delete(:exclusion_filter) if opts.key?(:exclusion_filter)
+        }.inject(:libs => [], :requires => []) { |hash, opts|
+          hash.merge(opts) { |key, oldval, newval|
+            [:libs, :requires].include?(key) ? oldval + newval : newval
+          }
+        }
+      end
+
+      def configure_filter_manager(filter_manager)
+        @filter_manager_inclusions.each { |val| filter_manager.include(val) }
+        @filter_manager_exclusions.each { |val| filter_manager.exclude(val) }
+      end
 
       UNFORCED_OPTIONS = [
         :requires, :profile, :drb, :libs, :files_or_directories_to_run,

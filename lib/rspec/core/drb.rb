@@ -4,8 +4,9 @@ module RSpec
   module Core
     # The 'rspec' command line in DRB mode
     class DRbCommandLine
-      def initialize(options)
-        @options = options
+      def initialize(options, configuration=RSpec.configuration)
+        @options       = options
+        @configuration = configuration
       end
 
       # The DRB port
@@ -26,7 +27,7 @@ module RSpec
           DRb.start_service("druby://:0")
         end
         spec_server = DRbObject.new_with_uri("druby://127.0.0.1:#{drb_port}")
-        spec_server.run(@options.drb_argv, err, out)
+        spec_server.run(@options.drb_argv_for(@configuration), err, out)
       end
     end
 
