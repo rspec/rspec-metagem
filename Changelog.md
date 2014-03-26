@@ -82,6 +82,8 @@ Enhancements:
 * Add legacy support for `colorize_summary`. (Jon Rowe)
 * Restructure runner so it can be more easily customized in a subclass
   for an alternate runner. (Ben Hoskings)
+* Document `RSpec::Core::ConfigurationOptions` as an officially
+  supported public API. (Myron Marston)
 
 Bug Fixes:
 
