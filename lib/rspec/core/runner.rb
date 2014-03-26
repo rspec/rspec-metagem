@@ -71,7 +71,7 @@ module RSpec
         end
       end
 
-      def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
+      def initialize(options, configuration=RSpec.configuration, world=RSpec.world)
         @options       = options
         @configuration = configuration
         @world         = world
