@@ -19,9 +19,9 @@ module RSpec
           err, out = StringIO.new, StringIO.new
           err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
 
-          command_line = RSpec::Core::CommandLine.new(options)
-          command_line.instance_variable_get("@configuration").backtrace_formatter.inclusion_patterns = []
-          command_line.run(err, out)
+          runner = RSpec::Core::Runner.new(options)
+          runner.instance_variable_get("@configuration").backtrace_formatter.inclusion_patterns = []
+          runner.run(err, out)
           html = out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
 
           actual_doc = Nokogiri::HTML(html, &:noblanks)

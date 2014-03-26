@@ -28,7 +28,6 @@ RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative 
   configuration
   option_parser
   configuration_options
-  command_line
   runner
   example
   shared_example_group

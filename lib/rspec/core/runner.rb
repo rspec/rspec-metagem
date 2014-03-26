@@ -64,10 +64,55 @@ module RSpec
             DRbCommandLine.new(options).run(err, out)
           rescue DRb::DRbConnError
             err.puts "No DRb server is running. Running in local process instead ..."
-            CommandLine.new(options).run(err, out)
+            new(options).run(err, out)
           end
         else
-          CommandLine.new(options).run(err, out)
+          new(options).run(err, out)
+        end
+      end
+
+      def initialize(options, configuration=RSpec::configuration, world=RSpec::world)
+        @options       = options
+        @configuration = configuration
+        @world         = world
+      end
+
+      # Configures and runs a spec suite.
+      #
+      # @param err [IO] error stream
+      # @param out [IO] output stream
+      def run(err, out)
+        setup(err, out)
+        run_specs(@world.ordered_example_groups)
+      end
+
+      # Wires together the various configuration objects and state holders.
+      #
+      # @param err [IO] error stream
+      # @param out [IO] output stream
+      def setup(err, out)
+        @configuration.error_stream = err
+        @configuration.output_stream = out if @configuration.output_stream == $stdout
+        @options.configure(@configuration)
+        @configuration.load_spec_files
+        @world.announce_filters
+      end
+
+      # Runs the provided example groups.
+      #
+      # @param example_groups [Array<RSpec::Core::ExampleGroup>] groups to run
+      # @return [Fixnum] exit status code. 0 if all specs passed,
+      #   or the configured failure exit code (1 by default) if specs
+      #   failed.
+      def run_specs(example_groups)
+        @configuration.reporter.report(@world.example_count) do |reporter|
+          begin
+            hook_context = SuiteHookContext.new
+            @configuration.hooks.run(:before, :suite, hook_context)
+            example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
+          ensure
+            @configuration.hooks.run(:after, :suite, hook_context)
+          end
         end
       end
 
