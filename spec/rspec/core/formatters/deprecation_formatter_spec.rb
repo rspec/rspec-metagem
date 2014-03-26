@@ -166,7 +166,7 @@ module RSpec::Core::Formatters
             |i_am_deprecated is deprecated. Called from foo.rb:1.
             |i_am_deprecated is deprecated. Called from foo.rb:2.
             |i_am_deprecated is deprecated. Called from foo.rb:3.
-            |Too many uses of deprecated 'i_am_deprecated'. Set `config.deprecation_stream` to a file for full output.
+            |Too many uses of deprecated 'i_am_deprecated'. #{DeprecationFormatter::DEPRECATION_STREAM_NOTICE}
             |
             |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
           EOS
@@ -186,7 +186,7 @@ module RSpec::Core::Formatters
             |This is a long string with some callsite info: /path/0/to/some/file.rb:203.  And some more stuff can come after.
             |This is a long string with some callsite info: /path/1/to/some/file.rb:213.  And some more stuff can come after.
             |This is a long string with some callsite info: /path/2/to/some/file.rb:223.  And some more stuff can come after.
-            |Too many similar deprecation messages reported, disregarding further reports. Set `config.deprecation_stream` to a file for full output.
+            |Too many similar deprecation messages reported, disregarding further reports. #{DeprecationFormatter::DEPRECATION_STREAM_NOTICE}
             |
             |#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}
           EOS

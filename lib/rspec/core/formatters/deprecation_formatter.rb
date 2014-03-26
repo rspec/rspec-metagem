@@ -57,6 +57,9 @@ module RSpec
           |deprecation warnings into errors, giving you the full backtrace.
         EOS
 
+        DEPRECATION_STREAM_NOTICE = "Pass `--deprecation-out` or set " +
+          "`config.deprecation_stream` to a file for full output."
+
         SpecifiedDeprecationMessage = Struct.new(:type) do
           def initialize(data)
             @message = data.message
@@ -68,8 +71,8 @@ module RSpec
           end
 
           def too_many_warnings_message
-            msg = "Too many similar deprecation messages reported, disregarding further reports."
-            msg << " Set `config.deprecation_stream` to a file for full output."
+            msg = "Too many similar deprecation messages reported, disregarding further reports. "
+            msg << DEPRECATION_STREAM_NOTICE
             msg
           end
 
@@ -100,8 +103,8 @@ module RSpec
           end
 
           def too_many_warnings_message
-            msg = "Too many uses of deprecated '#{type}'."
-            msg << " Set `config.deprecation_stream` to a file for full output."
+            msg = "Too many uses of deprecated '#{type}'. "
+            msg << DEPRECATION_STREAM_NOTICE
             msg
           end
         end
