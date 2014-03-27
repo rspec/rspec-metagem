@@ -229,8 +229,10 @@ Breaking Changes for 3.0.0:
 * Remove `RSpec::Core::Configuration#output` and
   `RSpec::Core::Configuration#out` aliases of
   `RSpec::Core::Configuration#output_stream`. (Myron Marston)
+* Remove legacy ordering APIs deprecated in 2.99.0.beta1. (Myron
+  Marston)
 
-Enhancements
+Enhancements:
 
 * Replace unmaintained syntax gem with coderay gem. (Xavier Shay)
 * Times in profile output are now bold instead of `failure_color`.
@@ -254,8 +256,14 @@ Enhancements
 * Avoid affecting randomization of user code when shuffling
   examples so that users can count on their own seeds
   working. (Travis Herrick)
+* Ordering is no longer a single global property of the test suite.
+  Each group can pick an ordering using `:order` metadata. (Andy
+  Lindeman, Sam Phippen, Myron Marston)
+* Allow named custom ordering strategies to be registered, which can
+  then be used on individual example groups. (Andy Lindeman, Sam
+  Phippen, Myron Marston)
 
-Deprecations
+Deprecations:
 
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
   longer has an affect now that the behavior it enabled is always
