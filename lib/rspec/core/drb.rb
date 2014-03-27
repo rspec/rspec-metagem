@@ -2,24 +2,17 @@ require 'drb/drb'
 
 module RSpec
   module Core
-    # The 'rspec' command line in DRB mode
+    # @private
     class DRbRunner
       def initialize(options, configuration=RSpec.configuration)
         @options       = options
         @configuration = configuration
       end
 
-      # The DRB port
-      #
-      # @return [Fixnum] The port to use for DRB
       def drb_port
         @options.options[:drb_port] || ENV['RSPEC_DRB'] || 8989
       end
 
-      # Configures and runs a suite
-      #
-      # @param err [IO]
-      # @param out [IO]
       def run(err, out)
         begin
           DRb.start_service("druby://localhost:0")
