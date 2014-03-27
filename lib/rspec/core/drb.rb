@@ -33,13 +33,13 @@ module RSpec
       def drb_argv
         @drb_argv ||= begin
           @options.configure_filter_manager(@configuration.filter_manager)
-          DrbOptions.new(@options.options, @configuration.filter_manager).options
+          DRbOptions.new(@options.options, @configuration.filter_manager).options
         end
       end
     end
 
     # @private
-    class DrbOptions
+    class DRbOptions
       def initialize(submitted_options, filter_manager)
         @submitted_options = submitted_options
         @filter_manager = filter_manager

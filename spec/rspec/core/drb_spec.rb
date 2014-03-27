@@ -101,7 +101,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
   end
 end
 
-RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_home => true do
+RSpec.describe RSpec::Core::DRbOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
   describe "DRB args" do
