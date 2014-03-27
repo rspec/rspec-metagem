@@ -1,8 +1,6 @@
 module RSpec
   module Core
-    # @api private
-    #
-    # The default backtrace formatter
+    # @private
     class BacktraceFormatter
       attr_accessor :exclusion_patterns, :inclusion_patterns
 
@@ -19,17 +17,14 @@ module RSpec
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
 
-      # @private
       def full_backtrace=(full_backtrace)
         @full_backtrace = full_backtrace
       end
 
-      # @private
       def full_backtrace?
         @full_backtrace || @exclusion_patterns.empty?
       end
 
-      # @private
       def format_backtrace(backtrace, options = {})
         return backtrace if options[:full_backtrace]
 
@@ -45,14 +40,12 @@ module RSpec
           end
       end
 
-      # @private
       def backtrace_line(line)
         RSpec::Core::Metadata::relative_path(line) unless exclude?(line)
       rescue SecurityError
         nil
       end
 
-      # @api private
       def exclude?(line)
         return false if @full_backtrace
         matches_an_exclusion_pattern?(line) &&

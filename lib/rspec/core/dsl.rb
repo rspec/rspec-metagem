@@ -50,6 +50,7 @@ module RSpec
       end
 
       # Adds the describe method to Module and the top level binding
+      # @api private
       def self.expose_globally!
         return if exposed_globally?
 
@@ -61,6 +62,7 @@ module RSpec
       end
 
       # Removes the describe method from Module and the top level binding
+      # @api private
       def self.remove_globally!
         return unless exposed_globally?
 
