@@ -1,15 +1,15 @@
 require "spec_helper"
 require 'rspec/core/drb'
 
-RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'java' do
+RSpec.describe RSpec::Core::DRbRunner, :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }
   let(:out)    { StringIO.new }
   let(:err)    { StringIO.new }
 
   include_context "spec files"
 
-  def command_line(*args)
-    RSpec::Core::DRbCommandLine.new(config_options(*args))
+  def runner(*args)
+    RSpec::Core::DRbRunner.new(config_options(*args))
   end
 
   def config_options(*args)
@@ -18,7 +18,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
 
   context "without server running" do
     it "raises an error" do
-      expect { command_line.run(err, out) }.to raise_error(DRb::DRbConnError)
+      expect { runner.run(err, out) }.to raise_error(DRb::DRbConnError)
     end
 
     after { DRb.stop_service }
@@ -32,14 +32,14 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
     context "without RSPEC_DRB environment variable set" do
       it "defaults to 8989" do
         with_RSPEC_DRB_set_to(nil) do
-          expect(command_line.drb_port).to eq(8989)
+          expect(runner.drb_port).to eq(8989)
         end
       end
 
       it "sets the DRb port" do
         with_RSPEC_DRB_set_to(nil) do
-          expect(command_line("--drb-port", "1234").drb_port).to eq(1234)
-          expect(command_line("--drb-port", "5678").drb_port).to eq(5678)
+          expect(runner("--drb-port", "1234").drb_port).to eq(1234)
+          expect(runner("--drb-port", "5678").drb_port).to eq(5678)
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
       context "without config variable set" do
         it "uses RSPEC_DRB value" do
           with_RSPEC_DRB_set_to('9000') do
-            expect(command_line.drb_port).to eq("9000")
+            expect(runner.drb_port).to eq("9000")
           end
         end
       end
@@ -56,7 +56,7 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
       context "and config variable set" do
         it "uses configured value" do
           with_RSPEC_DRB_set_to('9000') do
-            expect(command_line(*%w[--drb-port 5678]).drb_port).to eq(5678)
+            expect(runner(*%w[--drb-port 5678]).drb_port).to eq(5678)
           end
         end
       end
@@ -83,18 +83,18 @@ RSpec.describe "::DRbCommandLine", :type => :drb, :unless => RUBY_PLATFORM == 'j
     end
 
     it "returns 0 if spec passes" do
-      result = command_line("--drb-port", @drb_port, passing_spec_filename).run(err, out)
+      result = runner("--drb-port", @drb_port, passing_spec_filename).run(err, out)
       expect(result).to be(0)
     end
 
     it "returns 1 if spec fails" do
-      result = command_line("--drb-port", @drb_port, failing_spec_filename).run(err, out)
+      result = runner("--drb-port", @drb_port, failing_spec_filename).run(err, out)
       expect(result).to be(1)
     end
 
     it "outputs colorized text when running with --colour option" do
       pending "figure out a way to tell the output to say it's tty"
-      command_line(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
+      runner(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
       out.rewind
       expect(out.read).to match(/\e\[31m/m)
     end
@@ -107,12 +107,12 @@ RSpec.describe RSpec::Core::DRbOptions, :isolated_directory => true, :isolated_h
   describe "DRB args" do
     def drb_argv_for(args)
       options = config_options_object(*args)
-      RSpec::Core::DRbCommandLine.new(options, RSpec.configuration).drb_argv
+      RSpec::Core::DRbRunner.new(options, RSpec.configuration).drb_argv
     end
 
     def drb_filter_manager_for(args)
       configuration = RSpec::Core::Configuration.new
-      RSpec::Core::DRbCommandLine.new(config_options_object(*args), configuration).drb_argv
+      RSpec::Core::DRbRunner.new(config_options_object(*args), configuration).drb_argv
       configuration.filter_manager
     end
 
@@ -194,13 +194,13 @@ RSpec.describe RSpec::Core::DRbOptions, :isolated_directory => true, :isolated_h
 
       it "leaves formatters intact" do
         coo = config_options_object("--format", "d")
-        RSpec::Core::DRbCommandLine.new(coo, RSpec::Core::Configuration.new).drb_argv
+        RSpec::Core::DRbRunner.new(coo, RSpec::Core::Configuration.new).drb_argv
         expect(coo.options[:formatters]).to eq([["d"]])
       end
 
       it "leaves output intact" do
         coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
-        RSpec::Core::DRbCommandLine.new(coo, RSpec::Core::Configuration.new).drb_argv
+        RSpec::Core::DRbRunner.new(coo, RSpec::Core::Configuration.new).drb_argv
         expect(coo.options[:formatters]).to eq([["p","foo.txt"],["d"]])
       end
     end

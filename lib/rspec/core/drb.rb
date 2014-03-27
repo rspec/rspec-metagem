@@ -3,7 +3,7 @@ require 'drb/drb'
 module RSpec
   module Core
     # The 'rspec' command line in DRB mode
-    class DRbCommandLine
+    class DRbRunner
       def initialize(options, configuration=RSpec.configuration)
         @options       = options
         @configuration = configuration
