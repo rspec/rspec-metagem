@@ -61,7 +61,7 @@ module RSpec
         if options.options[:drb]
           require 'rspec/core/drb'
           begin
-            DRbCommandLine.new(options).run(err, out)
+            DRbRunner.new(options).run(err, out)
           rescue DRb::DRbConnError
             err.puts "No DRb server is running. Running in local process instead ..."
             new(options).run(err, out)

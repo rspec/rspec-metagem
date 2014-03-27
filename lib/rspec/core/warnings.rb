@@ -2,9 +2,7 @@ require "rspec/support/warnings"
 
 module RSpec
   module Core
-    # @api private
-    #
-    # Warnings namespace
+    # @private
     module Warnings
       # @private
       #

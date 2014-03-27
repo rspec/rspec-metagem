@@ -2,24 +2,17 @@ require 'drb/drb'
 
 module RSpec
   module Core
-    # The 'rspec' command line in DRB mode
-    class DRbCommandLine
+    # @private
+    class DRbRunner
       def initialize(options, configuration=RSpec.configuration)
         @options       = options
         @configuration = configuration
       end
 
-      # The DRB port
-      #
-      # @return [Fixnum] The port to use for DRB
       def drb_port
         @options.options[:drb_port] || ENV['RSPEC_DRB'] || 8989
       end
 
-      # Configures and runs a suite
-      #
-      # @param err [IO]
-      # @param out [IO]
       def run(err, out)
         begin
           DRb.start_service("druby://localhost:0")
@@ -27,12 +20,19 @@ module RSpec
           DRb.start_service("druby://:0")
         end
         spec_server = DRbObject.new_with_uri("druby://127.0.0.1:#{drb_port}")
-        spec_server.run(@options.drb_argv_for(@configuration), err, out)
+        spec_server.run(drb_argv, err, out)
+      end
+
+      def drb_argv
+        @drb_argv ||= begin
+          @options.configure_filter_manager(@configuration.filter_manager)
+          DRbOptions.new(@options.options, @configuration.filter_manager).options
+        end
       end
     end
 
     # @private
-    class DrbOptions
+    class DRbOptions
       def initialize(submitted_options, filter_manager)
         @submitted_options = submitted_options
         @filter_manager = filter_manager

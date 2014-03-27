@@ -106,11 +106,11 @@ module RSpec::Core
         end
 
         context 'and a DRb server is running' do
-          it "builds a DRbCommandLine and runs the specs" do
-            drb_proxy = double(RSpec::Core::DRbCommandLine, :run => true)
+          it "builds a DRbRunner and runs the specs" do
+            drb_proxy = double(RSpec::Core::DRbRunner, :run => true)
             expect(drb_proxy).to receive(:run).with(err, out)
 
-            expect(RSpec::Core::DRbCommandLine).to receive(:new).and_return(drb_proxy)
+            expect(RSpec::Core::DRbRunner).to receive(:new).and_return(drb_proxy)
 
             run_specs
           end
@@ -118,7 +118,7 @@ module RSpec::Core
 
         context 'and a DRb server is not running' do
           before(:each) do
-            expect(RSpec::Core::DRbCommandLine).to receive(:new).and_raise(DRb::DRbConnError)
+            expect(RSpec::Core::DRbRunner).to receive(:new).and_raise(DRb::DRbConnError)
           end
 
           it "outputs a message" do

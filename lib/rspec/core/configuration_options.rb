@@ -4,25 +4,36 @@ require 'set'
 
 module RSpec
   module Core
-    # @private
+    # Responsible for utilizing externally provided configuration options,
+    # whether via the command line, `.rspec`, `~/.rspec`, `.rspec-local`
+    # or a custom options file.
     class ConfigurationOptions
+      # @param args [Array<String>] command line arguments
       def initialize(args)
         @args = args.dup
         organize_options
       end
 
+      # Updates the provided {Configuration} instance based on the provided
+      # external configuration options.
+      #
+      # @param config [Configuration] the configuration instance to update
       def configure(config)
         configure_filter_manager config.filter_manager
         process_options_into config
         load_formatters_into config
       end
 
-      attr_reader :options
-
-      def drb_argv_for(config)
-        configure_filter_manager(config.filter_manager)
-        DrbOptions.new(options, config.filter_manager).options
+      # @api private
+      # Updates the provided {FilterManager} based on the filter options.
+      # @param filter_manager [FilterManager] instance to update
+      def configure_filter_manager(filter_manager)
+        @filter_manager_inclusions.each { |val| filter_manager.include(val) }
+        @filter_manager_exclusions.each { |val| filter_manager.exclude(val) }
       end
+
+      # @return [Hash] the final merged options, drawn from all external sources
+      attr_reader :options
 
     private
 
@@ -38,11 +49,6 @@ module RSpec
             [:libs, :requires].include?(key) ? oldval + newval : newval
           }
         }
-      end
-
-      def configure_filter_manager(filter_manager)
-        @filter_manager_inclusions.each { |val| filter_manager.include(val) }
-        @filter_manager_exclusions.each { |val| filter_manager.exclude(val) }
       end
 
       UNFORCED_OPTIONS = [
