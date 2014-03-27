@@ -1,7 +1,7 @@
 require "spec_helper"
 require 'rspec/core/drb'
 
-RSpec.describe RSpec::Core::DRbRunner, :type => :drb, :unless => RUBY_PLATFORM == 'java' do
+RSpec.describe RSpec::Core::DRbRunner, :isolated_directory => true, :isolated_home => true, :type => :drb, :unless => RUBY_PLATFORM == 'java' do
   let(:config) { RSpec::Core::Configuration.new }
   let(:out)    { StringIO.new }
   let(:err)    { StringIO.new }
@@ -68,6 +68,7 @@ RSpec.describe RSpec::Core::DRbRunner, :type => :drb, :unless => RUBY_PLATFORM =
       def self.run(argv, err, out)
         options = RSpec::Core::ConfigurationOptions.new(argv)
         config  = RSpec::Core::Configuration.new
+        RSpec.configuration = config
         RSpec::Core::Runner.new(options, config).run(err, out)
       end
     end
@@ -92,11 +93,11 @@ RSpec.describe RSpec::Core::DRbRunner, :type => :drb, :unless => RUBY_PLATFORM =
       expect(result).to be(1)
     end
 
-    it "outputs colorized text when running with --colour option" do
-      pending "figure out a way to tell the output to say it's tty"
+    it "outputs colorized text when running with --color option" do
+      failure_symbol = "\e[#{RSpec::Core::Formatters::ConsoleCodes.console_code_for(:red)}mF"
+      allow(out).to receive_messages(:tty? => true)
       runner(failing_spec_filename, "--color", "--drb-port", @drb_port).run(err, out)
-      out.rewind
-      expect(out.read).to match(/\e\[31m/m)
+      expect(out.string).to include(failure_symbol)
     end
   end
 end
