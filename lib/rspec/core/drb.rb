@@ -27,7 +27,14 @@ module RSpec
           DRb.start_service("druby://:0")
         end
         spec_server = DRbObject.new_with_uri("druby://127.0.0.1:#{drb_port}")
-        spec_server.run(@options.drb_argv_for(@configuration), err, out)
+        spec_server.run(drb_argv, err, out)
+      end
+
+      def drb_argv
+        @drb_argv ||= begin
+          @options.configure_filter_manager(@configuration.filter_manager)
+          DrbOptions.new(@options.options, @configuration.filter_manager).options
+        end
       end
     end
 

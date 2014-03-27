@@ -35,11 +35,6 @@ module RSpec
       # @return [Hash] the final merged options, drawn from all external sources
       attr_reader :options
 
-      def drb_argv_for(config)
-        configure_filter_manager(config.filter_manager)
-        DrbOptions.new(options, config.filter_manager).options
-      end
-
     private
 
       def organize_options

@@ -104,14 +104,15 @@ end
 RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
-  describe "#drb_argv" do
+  describe "DRB args" do
     def drb_argv_for(args)
-      config_options_object(*args).drb_argv_for(RSpec.configuration)
+      options = config_options_object(*args)
+      RSpec::Core::DRbCommandLine.new(options, RSpec.configuration).drb_argv
     end
 
     def drb_filter_manager_for(args)
       configuration = RSpec::Core::Configuration.new
-      config_options_object(*args).drb_argv_for(configuration)
+      RSpec::Core::DRbCommandLine.new(config_options_object(*args), configuration).drb_argv
       configuration.filter_manager
     end
 
@@ -193,13 +194,13 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
 
       it "leaves formatters intact" do
         coo = config_options_object("--format", "d")
-        coo.drb_argv_for(RSpec::Core::Configuration.new)
+        RSpec::Core::DRbCommandLine.new(coo, RSpec::Core::Configuration.new).drb_argv
         expect(coo.options[:formatters]).to eq([["d"]])
       end
 
       it "leaves output intact" do
         coo = config_options_object("--format", "p", "--out", "foo.txt", "--format", "d")
-        coo.drb_argv_for(RSpec::Core::Configuration.new)
+        RSpec::Core::DRbCommandLine.new(coo, RSpec::Core::Configuration.new).drb_argv
         expect(coo.options[:formatters]).to eq([["p","foo.txt"],["d"]])
       end
     end
@@ -264,6 +265,12 @@ RSpec.describe RSpec::Core::DrbOptions, :isolated_directory => true, :isolated_h
         File.open("./.rspec", "w") {|f| f << "--drb --color"}
         argv = drb_argv_for(%w[ --drb --format s --example pattern --profile --backtrace])
         expect(argv).to eq(%w[ --color --profile --backtrace --example pattern --format s ])
+      end
+    end
+
+    describe "--drb, -X" do
+      it "does not send --drb back to the parser after parsing options" do
+        expect(drb_argv_for(%w[--drb --color])).not_to include("--drb")
       end
     end
   end

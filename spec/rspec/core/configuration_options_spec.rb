@@ -261,12 +261,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     end
   end
 
-  describe "--drb, -X" do
-    it "does not send --drb back to the parser after parsing options" do
-      expect(config_options_object("--drb", "--color").drb_argv_for(RSpec.configuration)).not_to include("--drb")
-    end
-  end
-
   describe "--no-drb" do
     it "disables drb" do
       expect(parse_options("--no-drb")).to include(:drb => false)
@@ -280,7 +274,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       expect(parse_options("--no-drb", "--drb")).to include(:drb => true)
     end
   end
-
 
   describe "files_or_directories_to_run" do
     it "parses files from '-c file.rb dir/file.rb'" do
