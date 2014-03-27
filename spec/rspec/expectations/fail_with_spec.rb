@@ -1,112 +1,73 @@
 # encoding: utf-8
 
-describe RSpec::Expectations, "#fail_with with diff of arrays" do
-  before { allow(RSpec::Matchers.configuration).to receive_messages(:color? => false) }
-
-  it "splits items with newlines" do
-    expected_diff = "\nDiff:\n@@ -1 +1,3 @@\n+a\\nb\n+c\\nd\n"
-    expect {
-      RSpec::Expectations.fail_with("", [], ["a\nb", "c\nd"])
-    }.to fail_with(expected_diff)
-  end
-
-  it "shows inner arrays on a single line" do
-    expected_diff = "\nDiff:\n@@ -1 +1,3 @@\n+a\\nb\n+[\"c\\nd\"]\n"
-    expect {
-      RSpec::Expectations.fail_with("", [], ["a\nb", ["c\nd"]])
-    }.to fail_with(expected_diff)
-  end
-end
-
-describe RSpec::Expectations, "#fail_with with diff" do
+describe RSpec::Expectations, "#fail_with" do
   let(:differ) { double("differ") }
 
   before(:each) do
+    allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
     allow(RSpec::Expectations).to receive(:differ) { differ }
   end
 
-  it "calls differ if expected/actual are not strings (or numbers or procs)" do
-    expect(differ).to receive(:diff_as_object).and_return("diff")
+  it "includes a diff if expected and actual are diffable" do
+    expect(differ).to receive(:diff).and_return("diff text")
+
     expect {
-      RSpec::Expectations.fail_with "the message", Object.new, Object.new
-    }.to fail_with("the message\nDiff:diff")
+      RSpec::Expectations.fail_with "message", "abc", "def"
+    }.to fail_with("message\nDiff:diff text")
   end
 
-  context "with two strings" do
-    context "and actual is multiline" do
-      it "calls differ" do
-        expect(differ).to receive(:diff_as_string).and_return("diff")
-        expect {
-          RSpec::Expectations.fail_with "the message", "expected\nthis", "actual"
-        }.to fail_with("the message\nDiff:diff")
-      end
-    end
+  it "does not include the diff if expected and actual are not diffable" do
+    expect(differ).to receive(:diff).and_return("")
 
-    context "and expected is multiline" do
-      it "calls differ" do
-        expect(differ).to receive(:diff_as_string).and_return("diff")
-        expect {
-          RSpec::Expectations.fail_with "the message", "expected", "actual\nthat"
-        }.to fail_with("the message\nDiff:diff")
-      end
-    end
-
-    context "and both are single line strings" do
-      it "does not call differ" do
-        expect(differ).not_to receive(:diff_as_string)
-        expect {
-          RSpec::Expectations.fail_with("the message", "expected", "actual")
-        }.to fail_with("the message")
-      end
-    end
-
-    context "and they are UTF-16LE encoded", :if => String.method_defined?(:encode) do
-      it 'does not diff when they are not multiline' do
-        expect(differ).not_to receive(:diff_as_string)
-
-        str_1 = "This is a pile of poo: 💩".encode("UTF-16LE")
-        str_2 = "This is a pile of poo: 💩".encode("UTF-16LE")
-
-        expect {
-          RSpec::Expectations.fail_with("the message", str_1, str_2)
-        }.to fail_with("the message")
-      end
-
-      it 'diffs when they are multiline' do
-        expect(differ).to receive(:diff_as_string).and_return("diff")
-
-        str_1 = "This is a pile of poo:\n💩".encode("UTF-16LE")
-        str_2 = "This is a pile of poo:\n💩".encode("UTF-16LE")
-
-        expect {
-          RSpec::Expectations.fail_with("the message", str_1, str_2)
-        }.to fail_with("the message\nDiff:diff")
-      end
-    end
+    expect {
+      RSpec::Expectations.fail_with "message", "abc", "def"
+    }.to fail_with("message")
   end
 
-  it "does not call differ if no expected/actual" do
-    expect {
-      RSpec::Expectations.fail_with "the message"
-    }.to fail_with("the message")
-  end
+  it "raises an error if message is not present" do
+    expect(differ).not_to receive(:diff)
 
-  it "does not call differ expected is Numeric" do
     expect {
-      RSpec::Expectations.fail_with "the message", 1, "1"
-    }.to fail_with("the message")
-  end
-
-  it "does not call differ when actual is Numeric" do
-    expect {
-      RSpec::Expectations.fail_with "the message", "1", 1
-    }.to fail_with("the message")
-  end
-
-  it "does not call differ if expected or actual are procs" do
-    expect {
-      RSpec::Expectations.fail_with "the message", lambda {}, lambda {}
-    }.to fail_with("the message")
+      RSpec::Expectations.fail_with nil
+    }.to raise_error(ArgumentError, /Failure message is nil\./)
   end
 end
 
+describe RSpec::Expectations, "#fail_with with matchers" do
+  before do
+    allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
+  end
+
+  it "uses matcher descriptions in place of matchers in diffs" do
+    expected = [a_string_matching(/foo/), a_string_matching(/bar/)]
+    actual = ["poo", "car"]
+
+    expected_diff = dedent(<<-EOS)
+      |
+      |@@ -1,2 +1,2 @@
+      |-["poo", "car"]
+      |+[(a string matching /foo/), (a string matching /bar/)]
+      |
+    EOS
+
+    expect {
+      RSpec::Expectations.fail_with "message", actual, expected
+    }.to fail_with("message\nDiff:#{expected_diff}")
+  end
+end
+
+describe RSpec::Expectations, "#fail_with with --color" do
+  before do
+    allow(RSpec::Matchers.configuration).to receive_messages(:color? => true)
+  end
+
+  it "tells the differ to use color" do
+    expected = "foo bar baz\n"
+    actual = "foo bang baz\n"
+    expected_diff = "\e[0m\n\e[0m\e[34m@@ -1,2 +1,2 @@\n\e[0m\e[31m-foo bang baz\n\e[0m\e[32m+foo bar baz\n\e[0m"
+
+    expect {
+      RSpec::Expectations.fail_with "message", actual, expected
+    }.to fail_with("message\nDiff:#{expected_diff}")
+  end
+end
