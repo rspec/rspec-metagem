@@ -8,6 +8,8 @@ Feature: deprecation_stream
 
     RSpec.configure {|c| c.deprecation_stream = 'deprecations.txt' }
 
+  or pass `--deprecation-out`
+
   Background:
     Given a file named "lib/foo.rb" with:
       """ruby
@@ -53,6 +55,19 @@ Feature: deprecation_stream
       end
       """
     When I run `rspec spec/example_spec.rb`
+    Then the output should not contain "Deprecation Warnings:"
+    But the output should contain "1 deprecation logged to deprecations.txt"
+    And the file "deprecations.txt" should contain "Foo#bar is deprecated"
+
+  Scenario: configure using the CLI option
+    Given a file named "spec/example_spec.rb" with:
+      """ruby
+      require "foo"
+      describe "calling a deprecated method" do
+        example { Foo.new.bar }
+      end
+      """
+    When I run `rspec spec/example_spec.rb --deprecation-out deprecations.txt`
     Then the output should not contain "Deprecation Warnings:"
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"

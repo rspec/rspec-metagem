@@ -21,6 +21,37 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
   describe "#configure" do
     let(:config) { RSpec::Core::Configuration.new }
 
+    it "configures deprecation_stream before loading requires (since required files may issue deprecations)" do
+      opts = config_options_object(*%w[--deprecation-out path/to/log --require foo])
+      config = instance_double(RSpec::Core::Configuration).as_null_object
+
+      opts.configure(config)
+
+      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(config).to have_received(:requires=).ordered
+    end
+
+    it "configures deprecation_stream before configuring filter_manager" do
+      opts = config_options_object(*%w[--deprecation-out path/to/log --tag foo])
+      filter_manager = instance_double(RSpec::Core::FilterManager).as_null_object
+      config = instance_double(RSpec::Core::Configuration, :filter_manager => filter_manager).as_null_object
+
+      opts.configure(config)
+
+      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(filter_manager).to have_received(:include).with(:foo => true).ordered
+    end
+
+    it "configures deprecation_stream before configuring formatters" do
+      opts = config_options_object(*%w[--deprecation-out path/to/log --format doc])
+      config = instance_double(RSpec::Core::Configuration).as_null_object
+
+      opts.configure(config)
+
+      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(config).to have_received(:add_formatter).ordered
+    end
+
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
       config = double("config").as_null_object

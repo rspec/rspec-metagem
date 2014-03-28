@@ -19,6 +19,29 @@ module RSpec::Core
         config.deprecation_stream = io
         expect(config.deprecation_stream).to eq io
       end
+
+      context 'when the reporter has already been initialized' do
+        before do
+          config.reporter
+          allow(config).to receive(:warn)
+        end
+
+        it 'prints a notice indicating the reconfigured output_stream will be ignored' do
+          config.deprecation_stream = double("IO")
+          expect(config).to have_received(:warn).with(/deprecation_stream.*#{__FILE__}:#{__LINE__ - 1}/)
+        end
+
+        it 'does not change the value of `output_stream`' do
+          value = config.deprecation_stream
+          config.deprecation_stream = double("IO")
+          expect(config.deprecation_stream).to equal(value)
+        end
+
+        it 'does not print a warning if set to the value it already has' do
+          config.deprecation_stream = config.deprecation_stream
+          expect(config).not_to have_received(:warn)
+        end
+      end
     end
 
     describe "#output_stream" do

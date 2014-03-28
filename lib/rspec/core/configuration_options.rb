@@ -19,8 +19,8 @@ module RSpec
       #
       # @param config [Configuration] the configuration instance to update
       def configure(config)
-        configure_filter_manager config.filter_manager
         process_options_into config
+        configure_filter_manager config.filter_manager
         load_formatters_into config
       end
 
@@ -70,6 +70,10 @@ module RSpec
       end
 
       OPTIONS_ORDER = [
+        # It's important to set this before anything that might issue a
+        # deprecation (or otherwise access the reporter).
+        :deprecation_stream,
+
         # load paths depend on nothing, but must be set before `requires`
         # to support load-path-relative requires.
         :libs,

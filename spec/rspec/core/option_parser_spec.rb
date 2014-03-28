@@ -2,12 +2,15 @@ require "spec_helper"
 
 module RSpec::Core
   RSpec.describe OptionParser do
-
-    let(:output_file){ mock File }
-
     before do
-      allow(RSpec).to receive(:deprecate)
-      allow(File).to receive(:open).with("foo.txt",'w') { (output_file) }
+      allow(RSpec.configuration).to receive(:reporter) do
+        fail "OptionParser is not allowed to access `config.reporter` since we want " +
+             "ConfigurationOptions to have the chance to set `deprecation_stream` " +
+             "(based on `--deprecation-out`) before the deprecation formatter is " +
+             "initialized by the reporter instantiation. If you need to issue a deprecation, " +
+             "populate an `options[:deprecations]` key and have ConfigurationOptions " +
+             "issue the deprecation after configuring `deprecation_stream`"
+      end
     end
 
     it "does not parse empty args" do
@@ -99,6 +102,13 @@ module RSpec::Core
             end
           end
         end
+      end
+    end
+
+    describe "--deprecation-out" do
+      it 'sets the deprecation stream' do
+        options = Parser.parse(["--deprecation-out", "path/to/log"])
+        expect(options).to include(:deprecation_stream => "path/to/log")
       end
     end
 
