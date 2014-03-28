@@ -103,6 +103,10 @@ module RSpec::Core
           options[:formatters].last << o
         end
 
+        parser.on('--deprecation-out FILE', 'Write deprecation warnings to a file instead of $stderr.') do |file|
+          options[:deprecation_stream] = file
+        end
+
         parser.on('-b', '--backtrace', 'Enable full backtrace.') do |o|
           options[:full_backtrace] = true
         end

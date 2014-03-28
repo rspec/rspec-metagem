@@ -84,6 +84,8 @@ Enhancements:
   for an alternate runner. (Ben Hoskings)
 * Document `RSpec::Core::ConfigurationOptions` as an officially
   supported public API. (Myron Marston)
+* Add `--deprecation-out` CLI option which directs deprecation warnings
+  to the named file. (Myron Marston)
 
 Bug Fixes:
 
