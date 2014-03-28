@@ -268,11 +268,6 @@ module RSpec
       # @private
       attr_reader :backtrace_formatter, :ordering_manager
 
-      # Alias for rspec-2.x's backtrace_cleaner (now backtrace_formatter)
-      #
-      # TODO: consider deprecating and removing this rather than aliasing in rspec-3?
-      alias backtrace_cleaner backtrace_formatter
-
       def initialize
         @expectation_frameworks = []
         @include_or_extend_modules = []

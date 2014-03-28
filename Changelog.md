@@ -61,6 +61,7 @@ Breaking Changes for 3.0.0:
 * Merge `RSpec::Core::CommandLine` (never formally declared public)
   into `RSpec::Core::Runner`. (Myron Marston)
 * Remove `color_enabled` as an alias of `color`. (Jon Rowe)
+* Remove `backtrace_cleaner` as an alias of `backtrace_formatter`. (Jon Rowe)
 
 Enhancements:
 
