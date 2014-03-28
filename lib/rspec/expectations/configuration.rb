@@ -5,7 +5,7 @@ module RSpec
     # Provides configuration options for rspec-expectations.
     # If you are using rspec-core, you can access this via a
     # block passed to `RSpec::Core::Configuration#expect_with`.
-    # Otherwise, you can access it via RSpec::Matchers.configuration.
+    # Otherwise, you can access it via RSpec::Expectations.configuration.
     #
     # @example
     #   RSpec.configure do |rspec|
@@ -16,7 +16,7 @@ module RSpec
     #
     #   # or
     #
-    #   RSpec::Matchers.configuration
+    #   RSpec::Expectations.configuration
     class Configuration
       # Configures the supported syntax.
       # @param [Array<Symbol>, Symbol] values the syntaxes to enable
