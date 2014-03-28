@@ -21,7 +21,7 @@ Feature: Define helper methods in a module
       end
       """
 
-  Scenario: include a module in all example groups
+  Scenario: Include a module in all example groups
     Given a file named "include_module_spec.rb" with:
       """ruby
       require './helpers'
@@ -39,7 +39,7 @@ Feature: Define helper methods in a module
     When I run `rspec include_module_spec.rb`
     Then the examples should all pass
 
-  Scenario: extend a module in all example groups
+  Scenario: Extend a module in all example groups
     Given a file named "extend_module_spec.rb" with:
       """ruby
       require './helpers'
@@ -60,7 +60,7 @@ Feature: Define helper methods in a module
     Then the examples should all pass
     And the output should contain "Help is available"
 
-  Scenario: include a module in only some example groups
+  Scenario: Include a module in only some example groups
     Given a file named "include_module_in_some_groups_spec.rb" with:
       """ruby
       require './helpers'
@@ -84,7 +84,7 @@ Feature: Define helper methods in a module
     When I run `rspec include_module_in_some_groups_spec.rb`
     Then the examples should all pass
 
-  Scenario: extend a module in only some example groups
+  Scenario: Extend a module in only some example groups
     Given a file named "extend_module_in_only_some_groups_spec.rb" with:
       """ruby
       require './helpers'
@@ -114,7 +114,7 @@ Feature: Define helper methods in a module
     And the output should contain "In a matching group, help is available"
     And the output should contain "In a non-matching group, help is not available"
 
-  Scenario: use symbols as metadata
+  Scenario: Use symbols as metadata
     Given a file named "symbols_as_metadata_spec.rb" with:
       """ruby
       require './helpers'

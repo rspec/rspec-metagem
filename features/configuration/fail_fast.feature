@@ -10,7 +10,7 @@ Feature: fail fast
       RSpec.configure {|c| c.fail_fast = true}
       """
 
-  Scenario: fail_fast with no failures (runs all examples)
+  Scenario: Fail_fast with no failures (runs all examples)
     Given a file named "spec/example_spec.rb" with:
       """ruby
       describe "something" do
@@ -24,7 +24,7 @@ Feature: fail fast
     When I run `rspec spec/example_spec.rb`
     Then the examples should all pass
 
-  Scenario: fail_fast with first example failing (only runs the one example)
+  Scenario: Fail_fast with first example failing (only runs the one example)
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "spec_helper"
@@ -40,7 +40,7 @@ Feature: fail fast
     When I run `rspec spec/example_spec.rb -fd`
     Then the output should contain "1 example, 1 failure"
 
-  Scenario: fail_fast with multiple files, second example failing (only runs the first two examples)
+  Scenario: Fail_fast with multiple files, second example failing (only runs the first two examples)
     Given a file named "spec/example_1_spec.rb" with:
       """ruby
       require "spec_helper"

@@ -7,7 +7,7 @@ Feature: let and let!
   the method it defines is invoked. You can use `let!` to force the method's
   invocation before each example.
 
-  Scenario: use let to define memoized helper method
+  Scenario: Use let to define memoized helper method
     Given a file named "let_spec.rb" with:
       """ruby
       $count = 0
@@ -27,7 +27,7 @@ Feature: let and let!
     When I run `rspec let_spec.rb`
     Then the examples should all pass
 
-  Scenario: use let! to define a memoized helper method that is called in a before hook
+  Scenario: Use let! to define a memoized helper method that is called in a before hook
     Given a file named "let_bang_spec.rb" with:
       """ruby
       $count = 0

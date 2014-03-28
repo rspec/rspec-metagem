@@ -36,7 +36,7 @@ Feature: shared examples
   3. When all of the groups that include the shared group, just declare
      the shared group in the same file.
 
-  Scenario: shared examples group included in two groups in one file
+  Scenario: Shared examples group included in two groups in one file
     Given a file named "collection_spec.rb" with:
       """ruby
       require "set"

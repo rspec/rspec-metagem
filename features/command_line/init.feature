@@ -8,7 +8,7 @@ Feature: --init option
   differently, using the documentation formatter if no formatter has
   been explicitly set.
 
-  Scenario: generate .rspec
+  Scenario: Generate .rspec
     When I run `rspec --init`
     Then the following files should exist:
       | .rspec |

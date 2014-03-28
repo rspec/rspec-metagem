@@ -12,7 +12,7 @@ Feature: inclusion filters
       end
       """
 
-  Scenario: focus on an example
+  Scenario: Focus on an example
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       require "spec_helper"
@@ -29,7 +29,7 @@ Feature: inclusion filters
     Then the output should contain "does another thing"
     And the output should not contain "does one thing"
 
-  Scenario: focus on a group
+  Scenario: Focus on a group
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       require "spec_helper"
@@ -52,7 +52,7 @@ Feature: inclusion filters
     And  the output should contain "group 1 example 2"
     And  the output should not contain "group 2 example 1"
 
-  Scenario: before/after(:context) hooks in unmatched example group are not run
+  Scenario: Before/after(:context) hooks in unmatched example group are not run
     Given a file named "spec/before_after_all_inclusion_filter_spec.rb" with:
       """ruby
       require "spec_helper"

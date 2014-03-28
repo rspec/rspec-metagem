@@ -12,7 +12,7 @@ Feature: User-defined metadata
   Each symbol passed as an argument to `describe`, `context` or `it` will
   be a key in the metadata hash, with a corresponding value of `true`.
 
-  Scenario: define group metadata using a hash
+  Scenario: Define group metadata using a hash
     Given a file named "define_group_metadata_with_hash_spec.rb" with:
       """ruby
       describe "a group with user-defined metadata", :foo => 17 do
@@ -38,7 +38,7 @@ Feature: User-defined metadata
     When I run `rspec define_group_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
-  Scenario: define example metadata using a hash
+  Scenario: Define example metadata using a hash
     Given a file named "define_example_metadata_with_hash_spec.rb" with:
       """ruby
       describe "a group with no user-defined metadata" do
@@ -57,7 +57,7 @@ Feature: User-defined metadata
     When I run `rspec define_example_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
-  Scenario: override user-defined metadata
+  Scenario: Override user-defined metadata
     Given a file named "override_metadata_spec.rb" with:
       """ruby
       describe "a group with user-defined metadata", :foo => 'bar' do
@@ -75,7 +75,7 @@ Feature: User-defined metadata
     When I run `rspec override_metadata_spec.rb`
     Then the examples should all pass
 
-  Scenario: less verbose metadata
+  Scenario: Less verbose metadata
     Given a file named "less_verbose_metadata_spec.rb" with:
       """ruby
       describe "a group with simple metadata", :fast, :simple, :bug => 73 do

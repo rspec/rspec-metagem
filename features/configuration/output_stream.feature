@@ -10,7 +10,7 @@ Feature: output_stream
       RSpec.configure {|c| c.output_stream = File.open('saved_output', 'w') }
       """
 
-  Scenario: redirecting output
+  Scenario: Redirecting output
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require 'spec_helper'

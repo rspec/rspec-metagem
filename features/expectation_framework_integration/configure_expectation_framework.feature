@@ -13,7 +13,7 @@ Feature: configure expectation framework
   provide a description to every example.  You cannot rely on the generated
   descriptions provided by rspec-expectations.
 
-  Scenario: rspec-expectations can be used by default if nothing is configured
+  Scenario: Rspec-expectations can be used by default if nothing is configured
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec::Matchers.define :be_a_multiple_of do |factor|
@@ -29,7 +29,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: configure rspec-expectations (explicitly)
+  Scenario: Configure rspec-expectations (explicitly)
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -45,7 +45,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: configure test/unit assertions (passing examples)
+  Scenario: Configure test/unit assertions (passing examples)
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -63,7 +63,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the output should contain "2 examples, 0 failures"
 
-  Scenario: configure test/unit assertions (failing examples)
+  Scenario: Configure test/unit assertions (failing examples)
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -81,7 +81,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the output should contain "2 examples, 2 failures"
 
-  Scenario: configure rspec/expecations AND test/unit assertions
+  Scenario: Configure rspec/expecations AND test/unit assertions
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|

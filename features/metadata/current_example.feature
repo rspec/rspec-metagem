@@ -3,7 +3,7 @@ Feature: current example
   You can reference the example object, and access its metadata, using
   a block argument to it, before and after hooks, let, and subject.
 
-  Scenario: access the example object from within an example
+  Scenario: Access the example object from within an example
     Given a file named "spec/example_spec.rb" with:
       """ruby
       describe "example as block arg to it, before, and after" do

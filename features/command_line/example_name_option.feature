@@ -47,35 +47,35 @@ Feature: --example option
       end
       """
 
-  Scenario: no matches
+  Scenario: No matches
     When I run `rspec . --example nothing_like_this`
     Then the process should succeed even though no examples were run
 
-  Scenario: match on one word
+  Scenario: Match on one word
     When I run `rspec . --example example`
     Then the examples should all pass
 
-  Scenario: one match in each context
+  Scenario: One match in each context
     When I run `rspec . --example 'first example'`
     Then the examples should all pass
 
-  Scenario: one match in one file using just the example name
+  Scenario: One match in one file using just the example name
     When I run `rspec . --example 'first example in first group'`
     Then the examples should all pass
 
-  Scenario: one match in one file using the example name and the group name
+  Scenario: One match in one file using the example name and the group name
     When I run `rspec . --example 'first group first example in first group'`
     Then the examples should all pass
 
-  Scenario: all examples in one group
+  Scenario: All examples in one group
     When I run `rspec . --example 'first group'`
     Then the examples should all pass
 
-  Scenario: one match in one file with group name
+  Scenario: One match in one file with group name
     When I run `rspec . --example 'second group first example'`
     Then the examples should all pass
 
-  Scenario: all examples in one group including examples in nested groups
+  Scenario: All examples in one group including examples in nested groups
     When I run `rspec . --example 'third group'`
     Then the examples should all pass
 

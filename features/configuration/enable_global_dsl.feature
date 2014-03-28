@@ -18,7 +18,7 @@ Feature: Global namespace DSL
 
   For backwards compatibility it defaults to true.
 
-  Scenario: by default RSpec allows the DSL to be used globally
+  Scenario: By default RSpec allows the DSL to be used globally
     Given a file named "spec/example_spec.rb" with:
       """ruby
       describe "specs here" do
@@ -29,7 +29,7 @@ Feature: Global namespace DSL
    When I run `rspec`
    Then the output should contain "1 example, 0 failures"
 
-  Scenario: when exposing globally is disabled the top level DSL no longer works
+  Scenario: When exposing globally is disabled the top level DSL no longer works
     Given a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.configure { |c| c.expose_dsl_globally = false }
@@ -41,7 +41,7 @@ Feature: Global namespace DSL
    When I run `rspec`
    Then the output should contain "undefined method `describe'"
 
-  Scenario: regardless of setting
+  Scenario: Regardless of setting
     Given a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.configure { |c| c.expose_dsl_globally = true }

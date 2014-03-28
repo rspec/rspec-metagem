@@ -16,7 +16,7 @@ Feature: around hooks
   Also, mock frameworks are set up and torn down within the context of running
   the example, so you can not interact with them directly in around hooks.
 
-  Scenario: use the example as a proc within the block passed to around()
+  Scenario: Use the example as a proc within the block passed to around()
     Given a file named "example_spec.rb" with:
       """ruby
       class Database
@@ -45,7 +45,7 @@ Feature: around hooks
       close transaction
       """
 
-  Scenario: invoke the example using run()
+  Scenario: Invoke the example using run()
     Given a file named "example_spec.rb" with:
       """ruby
       describe "around hook" do
@@ -68,7 +68,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: access the example metadata
+  Scenario: Access the example metadata
     Given a file named "example_spec.rb" with:
       """ruby
       describe "something" do
@@ -84,7 +84,7 @@ Feature: around hooks
     When I run `rspec example_spec.rb`
     Then the output should contain "this should show up in the output"
 
-  Scenario: define a global around hook
+  Scenario: Define a global around hook
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -109,7 +109,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: before/after(:example) hooks are wrapped by the around hook
+  Scenario: Before/after(:example) hooks are wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
       describe "around filter" do
@@ -142,7 +142,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: before/after(:context) hooks are NOT wrapped by the around hook
+  Scenario: Before/after(:context) hooks are NOT wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
       describe "around filter" do
@@ -175,7 +175,7 @@ Feature: around hooks
       .after context
       """
 
-  Scenario: examples run by an around block are run in the configured context
+  Scenario: Examples run by an around block are run in the configured context
     Given a file named "example_spec.rb" with:
       """ruby
       module IncludedInConfigureBlock
@@ -199,7 +199,7 @@ Feature: around hooks
     When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 0 failure"
 
-  Scenario: implicitly pending examples are detected as Not yet implemented
+  Scenario: Implicitly pending examples are detected as Not yet implemented
     Given a file named "example_spec.rb" with:
       """ruby
       describe "implicit pending example" do
@@ -220,7 +220,7 @@ Feature: around hooks
       """
 
 
-  Scenario: explicitly pending examples are detected as pending
+  Scenario: Explicitly pending examples are detected as pending
     Given a file named "example_spec.rb" with:
       """ruby
       describe "explicit pending example" do
@@ -242,7 +242,7 @@ Feature: around hooks
           # No reason given
       """
 
-  Scenario: multiple around hooks in the same scope
+  Scenario: Multiple around hooks in the same scope
     Given a file named "example_spec.rb" with:
       """ruby
       describe "if there are multiple around hooks in the same scope" do
@@ -275,7 +275,7 @@ Feature: around hooks
       first around hook after
       """
 
-  Scenario: around hooks in multiple scopes
+  Scenario: Around hooks in multiple scopes
     Given a file named "example_spec.rb" with:
     """ruby
     describe "if there are around hooks in an outer scope" do

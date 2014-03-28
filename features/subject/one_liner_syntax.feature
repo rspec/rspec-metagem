@@ -22,7 +22,7 @@ Feature: One-liner syntax
 
   Note: this feature is only available when using rspec-expectations.
 
-  Scenario: implicit subject
+  Scenario: Implicit subject
     Given a file named "example_spec.rb" with:
       """ruby
       describe Array do
@@ -48,7 +48,7 @@ Feature: One-liner syntax
            should be empty
        """
 
-  Scenario: explicit subject
+  Scenario: Explicit subject
     Given a file named "example_spec.rb" with:
       """ruby
       describe Array do

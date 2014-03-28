@@ -21,7 +21,7 @@ Feature: alias_example_to
     Then the output should contain "does something later on (PENDING: Pit alias used)"
     And the output should contain "0 failures"
 
-  Scenario: use symbols as metadata
+  Scenario: Use symbols as metadata
     Given a file named "use_symbols_as_metadata_spec.rb" with:
       """ruby
       RSpec.configure do |c|

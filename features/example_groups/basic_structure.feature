@@ -15,7 +15,7 @@ Feature: basic structure (describe/it)
   `describe` or `context` is evaluated. The blocks passed to `it` are evaluated
   in the context of an _instance_ of that class.
 
-  Scenario: one group, one example
+  Scenario: One group, one example
     Given a file named "sample_spec.rb" with:
     """ruby
     describe "something" do
@@ -30,7 +30,7 @@ Feature: basic structure (describe/it)
         does something
       """
 
-  Scenario: nested example groups (using context)
+  Scenario: Nested example groups (using context)
     Given a file named "nested_example_groups_spec.rb" with:
     """ruby
     describe "something" do

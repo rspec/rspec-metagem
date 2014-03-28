@@ -72,7 +72,7 @@ Feature: Profile examples
       end
       """
 
-  Scenario: by default does not show profile
+  Scenario: By default does not show profile
     When I run `rspec spec`
     Then the examples should all pass
     And the output should not contain "example 1"
@@ -87,7 +87,7 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
-  Scenario: setting `profile_examples` to true shows 10 examples
+  Scenario: Setting `profile_examples` to true shows 10 examples
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure { |c| c.profile_examples = true }
@@ -107,7 +107,7 @@ Feature: Profile examples
     And the output should contain "example 10"
     And the output should contain "example 11"
 
-  Scenario: setting `profile_examples` to 2 shows 2 examples
+  Scenario: Setting `profile_examples` to 2 shows 2 examples
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure { |c| c.profile_examples = 2 }
@@ -127,7 +127,7 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
-  Scenario: setting profile examples through CLI
+  Scenario: Setting profile examples through CLI
     When I run `rspec spec --profile 2`
     Then the examples should all pass
     And the output should contain "Top 2 slowest examples"

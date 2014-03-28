@@ -4,7 +4,7 @@ Feature: exclusion filters
   then tagging examples, or entire groups, with that filter.  You can also
   specify metadata using only symbols.
 
-  Scenario: exclude an example
+  Scenario: Exclude an example
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -25,7 +25,7 @@ Feature: exclusion filters
     Then the output should contain "does one thing"
     And the output should not contain "does another thing"
 
-  Scenario: exclude a group
+  Scenario: Exclude a group
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -50,7 +50,7 @@ Feature: exclusion filters
     And  the output should not contain "group 1 example 1"
     And  the output should not contain "group 1 example 2"
 
-  Scenario: exclude multiple groups
+  Scenario: Exclude multiple groups
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -83,7 +83,7 @@ Feature: exclusion filters
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 
-  Scenario: before/after(:context) hooks in excluded example group are not run
+  Scenario: Before/after(:context) hooks in excluded example group are not run
     Given a file named "spec/before_after_context_exclusion_filter_spec.rb" with:
       """ruby
       RSpec.configure do |c|

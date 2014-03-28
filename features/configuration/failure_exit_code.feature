@@ -10,7 +10,7 @@ Feature: failure exit code
       RSpec.configure { |c| c.failure_exit_code = 42 }
       """
 
-  Scenario: a failing spec with the default exit code
+  Scenario: A failing spec with the default exit code
     Given a file named "spec/example_spec.rb" with:
       """ruby
       describe "something" do
@@ -22,7 +22,7 @@ Feature: failure exit code
     When I run `rspec spec/example_spec.rb`
     Then the exit status should be 1
 
-  Scenario: a failing spec with a custom exit code
+  Scenario: A failing spec with a custom exit code
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require 'spec_helper'

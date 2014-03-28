@@ -19,7 +19,7 @@ Feature: shared context
       end
       """
 
-  Scenario: declare shared context and include it with include_context
+  Scenario: Declare shared context and include it with include_context
     Given a file named "shared_context_example.rb" with:
       """ruby
       require "./shared_stuff.rb"
@@ -47,7 +47,7 @@ Feature: shared context
     When I run `rspec shared_context_example.rb`
     Then the examples should all pass
 
-  Scenario: declare shared context and include it with metadata
+  Scenario: Declare shared context and include it with metadata
     Given a file named "shared_context_example.rb" with:
       """ruby
       require "./shared_stuff.rb"

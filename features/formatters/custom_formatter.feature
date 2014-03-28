@@ -9,7 +9,7 @@ Feature: custom formatters
   one instead.  The simplest way is to subclass RSpec's `BaseTextFormatter`,
   and then override just the methods that you want to modify.
 
-  Scenario: custom formatter
+  Scenario: Custom formatter
     Given a file named "custom_formatter.rb" with:
       """ruby
       require "rspec/core/formatters/base_text_formatter"
@@ -40,7 +40,7 @@ Feature: custom formatters
     Then the output should contain "example: my example"
     And  the exit status should be 0
 
-  Scenario: a legacy custom formatter
+  Scenario: A legacy custom formatter
     Given a file named "custom_formatter.rb" with:
       """ruby
       require "rspec/core/formatters/base_text_formatter"

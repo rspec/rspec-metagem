@@ -7,7 +7,7 @@ Feature: implicitly defined subject
   user-facing concept, we recommend that you reserve it for support of custom
   matchers and/or extension libraries that hide its use from examples.
 
-  Scenario: subject exposed in top level group
+  Scenario: Subject exposed in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """ruby
       describe Array do
@@ -19,7 +19,7 @@ Feature: implicitly defined subject
     When I run `rspec ./top_level_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: subject in a nested group
+  Scenario: Subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
       """ruby
       describe Array do
@@ -33,7 +33,7 @@ Feature: implicitly defined subject
     When I run `rspec nested_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: subject in a nested group with a different class (innermost wins)
+  Scenario: Subject in a nested group with a different class (innermost wins)
     Given a file named "nested_subject_spec.rb" with:
       """ruby
       class ArrayWithOneElement < Array

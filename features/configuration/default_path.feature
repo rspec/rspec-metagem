@@ -11,7 +11,7 @@ Feature: default-path
   NOTE: this option is not supported on `RSpec.configuration`, as it needs to
   be set before spec files are loaded.
 
-  Scenario: run `rspec` with default default-path (`spec` directory)
+  Scenario: Run `rspec` with default default-path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
       """ruby
       describe "an example" do
@@ -22,7 +22,7 @@ Feature: default-path
     When I run `rspec`
     Then the output should contain "1 example, 0 failures"
 
-  Scenario: run `rspec` with customized default-path
+  Scenario: Run `rspec` with customized default-path
     Given a file named ".rspec" with:
       """
       --default-path behavior

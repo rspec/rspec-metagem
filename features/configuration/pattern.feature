@@ -21,18 +21,18 @@ Feature: pattern
       end
       """
 
-  Scenario: by default, RSpec runs files that match "**/*_spec.rb"
+  Scenario: By default, RSpec runs files that match "**/*_spec.rb"
    When I run `rspec`
    Then the output should contain "2 examples, 0 failures"
 
-  Scenario: the --pattern flag makes RSpec run files matching the specified pattern and ignore the default pattern
+  Scenario: The --pattern flag makes RSpec run files matching the specified pattern and ignore the default pattern
    When I run `rspec -P "**/*_test.rb"`
    Then the output should contain "1 example, 0 failures"
 
-  Scenario: the --pattern flag can be used to pass in multiple patterns, separated by comma
+  Scenario: The --pattern flag can be used to pass in multiple patterns, separated by comma
    When I run `rspec -P "**/*_test.rb,**/*_spec.rb"`
    Then the output should contain "3 examples, 0 failures"
 
-  Scenario: the --pattern flag accepts shell style glob unions
+  Scenario: The --pattern flag accepts shell style glob unions
    When I run `rspec -P "**/*_{test,spec}.rb"`
    Then the output should contain "3 examples, 0 failures"

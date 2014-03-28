@@ -20,7 +20,7 @@ Feature: deprecation_stream
       end
       """
 
-  Scenario: default - print deprecations to $stderr
+  Scenario: Default - print deprecations to $stderr
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
@@ -31,7 +31,7 @@ Feature: deprecation_stream
     When I run `rspec spec/example_spec.rb`
     Then the output should contain "Deprecation Warnings:\n\nFoo#bar is deprecated"
 
-  Scenario: configure using the path to a file
+  Scenario: Configure using the path to a file
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
@@ -45,7 +45,7 @@ Feature: deprecation_stream
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
-  Scenario: configure using a File object
+  Scenario: Configure using a File object
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
