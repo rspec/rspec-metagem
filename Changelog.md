@@ -15,6 +15,9 @@ Bug Fixes:
 * Fix `NoMethodError` triggered by beta2 when `YARD` was loaded in
   the test environment. (Myron Marston)
 * Fix `be_xyz` matcher to accept a `do...end` block. (Myron Marston)
+* Fix composable matcher failure message generation logic
+  so that it does not blow up when given `$stdout` or `$stderr`.
+  (Myron Marston)
 
 Enhancements:
 

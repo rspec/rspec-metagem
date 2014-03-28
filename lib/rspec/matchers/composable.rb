@@ -97,7 +97,11 @@ module RSpec
         elsif Hash === item
           Hash[ surface_descriptions_in(item.to_a) ]
         elsif enumerable?(item)
-          item.map { |subitem| surface_descriptions_in(subitem) }
+          begin
+            item.map { |subitem| surface_descriptions_in(subitem) }
+          rescue IOError # STDOUT is enumerable but `map` raises an error
+            item.inspect
+          end
         else
           item
         end
