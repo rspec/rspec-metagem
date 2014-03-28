@@ -18,6 +18,8 @@ Bug Fixes:
 * Fix composable matcher failure message generation logic
   so that it does not blow up when given `$stdout` or `$stderr`.
   (Myron Marston)
+* Fix `change` matcher to work properly with `IO` objects.
+  (Myron Marston)
 
 Enhancements:
 

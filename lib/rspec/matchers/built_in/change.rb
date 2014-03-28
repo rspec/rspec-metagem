@@ -267,6 +267,8 @@ module RSpec
 
         def evaluate_value_proc
           case val = @value_proc.call
+          when IO # enumerable, but we don't want to dup it.
+            val
           when Enumerable, String
             val.dup
           else
