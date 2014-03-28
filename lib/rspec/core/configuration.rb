@@ -183,7 +183,7 @@ module RSpec
 
       # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
-      add_setting :pattern, :alias_with => :filename_pattern
+      add_setting :pattern
 
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
@@ -193,7 +193,6 @@ module RSpec
         end
         @pattern = value
       end
-      alias :filename_pattern= :pattern=
 
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
