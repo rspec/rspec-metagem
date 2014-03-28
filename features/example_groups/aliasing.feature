@@ -6,7 +6,7 @@ Feature: aliasing
 
   RSpec provides a few built-in aliases:
 
-    * `xdescribe` and `xcontext` add `:pending` metadata to the
+    * `xdescribe` and `xcontext` add `:skip` metadata to the
       example group in order to temporarily disable the examples.
     * `fdescribe` and `fcontext` add `:focus` metadata to the
       example group in order to make it easy to temporarily
