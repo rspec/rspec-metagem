@@ -554,14 +554,23 @@ module RSpec
         @backtrace_formatter.full_backtrace = true_or_false
       end
 
-      # Check if color is enabled.
+      # Returns the configuration option for color, but should not
+      # be used to check if color is supported.
+      #
+      # @see color_enabled?
       # @return [Boolean]
-      def color(output=output_stream)
+      def color
+        value_for(:color, @color)
+      end
+
+      # Check if color is enabled for a particular output
+      # @param output [IO] an output stream to use
+      # @return [Boolean]
+      def color_enabled?(output=output_stream)
         # rspec's built-in formatters all call this with the output argument,
         # but defaulting to output_stream for backward compatibility with
         # formatters in extension libs
-        return false unless output_to_tty?(output)
-        value_for(:color, @color)
+        output_to_tty?(output) && color
       end
 
       # Toggle output color
@@ -576,12 +585,6 @@ module RSpec
           end
         end
       end
-
-      # TODO - deprecate color_enabled - probably not until the last 2.x
-      # release before 3.0
-      alias_method :color_enabled, :color
-      alias_method :color_enabled=, :color=
-      define_predicate_for :color_enabled, :color
 
       # @private
       def libs=(libs)

@@ -721,111 +721,108 @@ module RSpec::Core
       end
     end
 
-    %w[color color_enabled].each do |color_option|
-      describe "##{color_option}=" do
-        context "given true" do
-          before { config.send "#{color_option}=", true }
+    describe "#color=" do
+      context "given true" do
+        before { config.color = true }
 
-          context "with config.tty? and output.tty?" do
-            it "does not set color_enabled" do
-              output = StringIO.new
-              config.output_stream = output
+        context "with config.tty? and output.tty?" do
+          it "sets color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
 
-              config.tty = true
+            config.tty = true
+            allow(config.output_stream).to receive_messages :tty? => true
+
+            expect(config.color_enabled?).to be_truthy
+            expect(config.color_enabled?(output)).to be_truthy
+          end
+        end
+
+        context "with config.tty? and !output.tty?" do
+          it "sets color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = true
+            allow(config.output_stream).to receive_messages :tty? => false
+
+            expect(config.color_enabled?).to be_truthy
+            expect(config.color_enabled?(output)).to be_truthy
+          end
+        end
+
+        context "with config.tty? and !output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = false
+            allow(config.output_stream).to receive_messages :tty? => true
+
+            expect(config.color_enabled?).to be_truthy
+            expect(config.color_enabled?(output)).to be_truthy
+          end
+        end
+
+        context "with !config.tty? and !output.tty?" do
+          it "does not set color_enabled?" do
+            output = StringIO.new
+            config.output_stream = output
+
+            config.tty = false
+            allow(config.output_stream).to receive_messages :tty? => false
+
+            expect(config.color_enabled?).to be_falsey
+            expect(config.color_enabled?(output)).to be_falsey
+          end
+        end
+
+        context "on windows" do
+          before do
+            @original_host  = RbConfig::CONFIG['host_os']
+            RbConfig::CONFIG['host_os'] = 'mingw'
+            allow(config).to receive(:require)
+          end
+
+          after do
+            RbConfig::CONFIG['host_os'] = @original_host
+          end
+
+          context "with ANSICON available" do
+            around(:each) { |e| with_env_vars('ANSICON' => 'ANSICON', &e) }
+
+            it "enables colors" do
+              config.output_stream = StringIO.new
               allow(config.output_stream).to receive_messages :tty? => true
+              config.color = true
+              expect(config.color).to be_truthy
+            end
 
-              expect(config.send(color_option)).to be_truthy
-              expect(config.send(color_option, output)).to be_truthy
+            it "leaves output stream intact" do
+              config.output_stream = $stdout
+              allow(config).to receive(:require) do |what|
+                config.output_stream = 'foo' if what =~ /Win32/
+              end
+              config.color = true
+              expect(config.output_stream).to eq($stdout)
             end
           end
 
-          context "with config.tty? and !output.tty?" do
-            it "sets color_enabled" do
-              output = StringIO.new
-              config.output_stream = output
-
-              config.tty = true
-              allow(config.output_stream).to receive_messages :tty? => false
-
-              expect(config.send(color_option)).to be_truthy
-              expect(config.send(color_option, output)).to be_truthy
-            end
-          end
-
-          context "with config.tty? and !output.tty?" do
-            it "does not set color_enabled" do
-              output = StringIO.new
-              config.output_stream = output
-
-              config.tty = false
-              allow(config.output_stream).to receive_messages :tty? => true
-
-              expect(config.send(color_option)).to be_truthy
-              expect(config.send(color_option, output)).to be_truthy
-            end
-          end
-
-          context "with !config.tty? and !output.tty?" do
-            it "does not set color_enabled" do
-              output = StringIO.new
-              config.output_stream = output
-
-              config.tty = false
-              allow(config.output_stream).to receive_messages :tty? => false
-
-              expect(config.send(color_option)).to be_falsey
-              expect(config.send(color_option, output)).to be_falsey
-            end
-          end
-
-          context "on windows" do
+          context "with ANSICON NOT available" do
             before do
-              @original_host  = RbConfig::CONFIG['host_os']
-              RbConfig::CONFIG['host_os'] = 'mingw'
-              allow(config).to receive(:require)
+              allow_warning
             end
 
-            after do
-              RbConfig::CONFIG['host_os'] = @original_host
+            it "warns to install ANSICON" do
+              allow(config).to receive(:require) { raise LoadError }
+              expect_warning_with_call_site(__FILE__, __LINE__ + 1, /You must use ANSICON/)
+              config.color = true
             end
 
-            context "with ANSICON available" do
-              around(:each) { |e| with_env_vars('ANSICON' => 'ANSICON', &e) }
-
-              it "enables colors" do
-                config.output_stream = StringIO.new
-                allow(config.output_stream).to receive_messages :tty? => true
-                config.send "#{color_option}=", true
-                expect(config.send(color_option)).to be_truthy
-              end
-
-              it "leaves output stream intact" do
-                config.output_stream = $stdout
-                allow(config).to receive(:require) do |what|
-                  config.output_stream = 'foo' if what =~ /Win32/
-                end
-                config.send "#{color_option}=", true
-                expect(config.output_stream).to eq($stdout)
-              end
-            end
-
-            context "with ANSICON NOT available" do
-              before do
-                allow_warning
-              end
-
-              it "warns to install ANSICON" do
-                allow(config).to receive(:require) { raise LoadError }
-                expect_warning_with_call_site(__FILE__, __LINE__ + 1, /You must use ANSICON/)
-                config.send "#{color_option}=", true
-              end
-
-              it "sets color_enabled to false" do
-                allow(config).to receive(:require) { raise LoadError }
-                config.send "#{color_option}=", true
-                config.color_enabled = true
-                expect(config.send(color_option)).to be_falsey
-              end
+            it "sets color to false" do
+              allow(config).to receive(:require) { raise LoadError }
+              config.color = true
+              expect(config.color).to be_falsey
             end
           end
         end

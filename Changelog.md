@@ -60,6 +60,7 @@ Breaking Changes for 3.0.0:
   the spec suite multiple times in the same process. (Sam Phippen)
 * Merge `RSpec::Core::CommandLine` (never formally declared public)
   into `RSpec::Core::Runner`. (Myron Marston)
+* Remove `color_enabled` as an alias of `color`. (Jon Rowe)
 
 Enhancements:
 
