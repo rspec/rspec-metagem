@@ -13,7 +13,7 @@ Feature: configure expectation framework
   provide a description to every example.  You cannot rely on the generated
   descriptions provided by rspec-expectations.
 
-  Scenario: Rspec-expectations can be used by default if nothing is configured
+  Scenario: Default configuration uses rspec-expectations
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec::Matchers.define :be_a_multiple_of do |factor|

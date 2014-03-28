@@ -1,10 +1,10 @@
-Feature: alias_example_to
+Feature: Create example aliases
 
   Use `config.alias_example_to` to create new example group methods
   that define examples with the configured metadata.  You can also
   specify metadata using only symbols.
 
-  Scenario: Use alias_example_to to define pending example
+  Scenario: Use alias_example_to to define a pending example
     Given a file named "alias_example_to_spec.rb" with:
       """ruby
       RSpec.configure do |c|

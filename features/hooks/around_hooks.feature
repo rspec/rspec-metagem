@@ -109,7 +109,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: Before/after(:example) hooks are wrapped by the around hook
+  Scenario: Per example hooks are wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
       describe "around filter" do
@@ -142,7 +142,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: Before/after(:context) hooks are NOT wrapped by the around hook
+  Scenario: Context hooks are NOT wrapped by the around hook
     Given a file named "example_spec.rb" with:
       """ruby
       describe "around filter" do

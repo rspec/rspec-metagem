@@ -79,7 +79,7 @@ Feature: --example option
     When I run `rspec . --example 'third group'`
     Then the examples should all pass
 
-  Scenario: Object#method
+  Scenario: Match using ClassName#method_name form
     When I run `rspec . --example 'Array#length'`
     Then the examples should all pass
 

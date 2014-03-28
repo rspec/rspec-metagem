@@ -43,7 +43,7 @@ Feature: rake task
     When I run `rake`
     Then the exit status should be 1
 
-  Scenario: Fail_on_error = false with failing spec (exit status is 0)
+  Scenario: Setting `fail_on_error = false` with failing spec (exit status is 0)
     Given a file named "Rakefile" with:
       """ruby
       require 'rspec/core/rake_task'
@@ -65,7 +65,7 @@ Feature: rake task
     When I run `rake`
     Then the exit status should be 0
 
-  Scenario: Rspec_opts is specified in order to pass args to the rspec command
+  Scenario: Passing arguments to the rspec command using rspec_opts
     Given a file named "Rakefile" with:
       """ruby
       require 'rspec/core/rake_task'
@@ -93,7 +93,7 @@ Feature: rake task
       (ruby|rbx) -S rspec ./spec/thing_spec.rb --tag fast
       """
 
-  Scenario: Rspec_opts is specified using arguments to the rake task
+  Scenario: Passing rake task arguments to the rspec command via rspec_opts
     Given a file named "Rakefile" with:
       """ruby
       require 'rspec/core/rake_task'
