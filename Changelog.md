@@ -20,6 +20,9 @@ Bug Fixes:
   (Myron Marston)
 * Fix `change` matcher to work properly with `IO` objects.
   (Myron Marston)
+* Fix `exist` matcher so that it can be used in composed matcher
+  expressions involving objects that do not implement `exist?` or
+  `exists?`. (Daniel Fone)
 
 Enhancements:
 
