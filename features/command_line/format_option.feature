@@ -36,12 +36,16 @@ Feature: --format option
         it "does something that is pending", :pending => true do
           expect(5).to be < 3
         end
+
+        it "does something that is skipped", :skip => true do
+          expect(5).to be < 3
+        end
       end
       """
 
   Scenario: Progress bar format (default)
     When I run `rspec --format progress example_spec.rb`
-    Then the output should contain ".F*"
+    Then the output should contain ".F**"
 
   Scenario: Documentation format
     When I run `rspec example_spec.rb --format documentation`
@@ -51,6 +55,7 @@ Feature: --format option
         does something that passes
         does something that fails (FAILED - 1)
         does something that is pending (PENDING: No reason given)
+        does something that is skipped (PENDING: No reason given)
       """
 
   Scenario: Documentation format saved to a file
@@ -61,15 +66,17 @@ Feature: --format option
         does something that passes
         does something that fails (FAILED - 1)
         does something that is pending (PENDING: No reason given)
+        does something that is skipped (PENDING: No reason given)
       """
 
   Scenario: Multiple formats and output targets
     When I run `rspec example_spec.rb --format progress --format documentation --out rspec.txt`
-    Then the output should contain ".F*"
+    Then the output should contain ".F**"
     And the file "rspec.txt" should contain:
       """
       something
         does something that passes
         does something that fails (FAILED - 1)
         does something that is pending (PENDING: No reason given)
+        does something that is skipped (PENDING: No reason given)
       """
