@@ -12,7 +12,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 
@@ -32,7 +32,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1", :broken => true do
+      RSpec.describe "group 1", :broken => true do
         it "group 1 example 1" do
         end
 
@@ -40,7 +40,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2" do
+      RSpec.describe "group 2" do
         it "group 2 example 1" do
         end
       end
@@ -57,7 +57,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1", :broken => true do
+      RSpec.describe "group 1", :broken => true do
         before(:context) do
           raise "you should not see me"
         end
@@ -69,7 +69,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2", :broken => true do
+      RSpec.describe "group 2", :broken => true do
         before(:example) do
           raise "you should not see me"
         end
@@ -90,7 +90,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1" do
+      RSpec.describe "group 1" do
         before(:context) { puts "before context in included group" }
         after(:context)  { puts "after context in included group"  }
 
@@ -98,7 +98,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2", :broken => true do
+      RSpec.describe "group 2", :broken => true do
         before(:context) { puts "before context in excluded group" }
         after(:context)  { puts "after context in excluded group"  }
 
@@ -121,7 +121,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 

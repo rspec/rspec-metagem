@@ -9,7 +9,7 @@ Feature: filters
         end
       end
 
-      describe "something", :type => :model do
+      RSpec.describe "something", :type => :model do
       end
 
   You can also specify metadata using only symbols.
@@ -23,7 +23,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered before :example hook" do
+      RSpec.describe "a filtered before :example hook" do
         let(:invoked_hooks) { [] }
 
         describe "group without matching metadata" do
@@ -55,7 +55,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered after :example hook" do
+      RSpec.describe "a filtered after :example hook" do
         describe "group without matching metadata" do
           it "does not run the hook" do
             # should pass
@@ -87,7 +87,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered around(:example) hook" do
+      RSpec.describe "a filtered around(:example) hook" do
         let(:order) { [] }
 
         describe "a group without matching metadata" do
@@ -119,7 +119,7 @@ Feature: filters
         config.before(:context, :foo => :bar) { @hook = :before_context_foo_bar }
       end
 
-      describe "a filtered before(:context) hook" do
+      RSpec.describe "a filtered before(:context) hook" do
         describe "a group without matching metadata" do
           it "does not run the hook" do
             expect(@hook).to be_nil
@@ -159,7 +159,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered after(:context) hook" do
+      RSpec.describe "a filtered after(:context) hook" do
         describe "a group without matching metadata" do
           it "does not run the hook" do
             puts "unfiltered"
@@ -207,7 +207,7 @@ Feature: filters
         c.after(:context,  :after_context) { puts "after context" }
       end
 
-      describe "group 1", :before_context, :after_context do
+      RSpec.describe "group 1", :before_context, :after_context do
         it("") { puts "example 1" }
         it("", :before_example) { puts "example 2" }
         it("", :after_example) { puts "example 3" }

@@ -31,7 +31,7 @@ Feature: custom formatters
       """
     And a file named "example_spec.rb" with:
       """ruby
-      describe "my group" do
+      RSpec.describe "my group" do
         specify "my example" do
         end
       end
@@ -57,7 +57,7 @@ Feature: custom formatters
       """
     And a file named "example_spec.rb" with:
       """ruby
-      describe "my group" do
+      RSpec.describe "my group" do
         specify "my example" do
         end
       end

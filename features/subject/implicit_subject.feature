@@ -10,7 +10,7 @@ Feature: implicitly defined subject
   Scenario: Subject exposed in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         it "should be empty when first created" do
           expect(subject).to be_empty
         end
@@ -22,7 +22,7 @@ Feature: implicitly defined subject
   Scenario: Subject in a nested group
     Given a file named "nested_subject_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         describe "when first created" do
           it "should be empty" do
             expect(subject).to be_empty
@@ -43,7 +43,7 @@ Feature: implicitly defined subject
         end
       end
 
-      describe Array do
+      RSpec.describe Array do
         describe ArrayWithOneElement do
           context "referenced as subject" do
             it "contains one element" do

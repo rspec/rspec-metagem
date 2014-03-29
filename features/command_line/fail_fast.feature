@@ -7,7 +7,7 @@ Feature: --fail-fast
   Background:
     Given a file named "fail_fast_spec.rb" with:
       """ruby
-      describe "fail fast" do
+      RSpec.describe "fail fast" do
         it "passing test" do; end
         it "failing test" do
           fail

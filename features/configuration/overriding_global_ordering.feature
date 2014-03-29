@@ -16,7 +16,7 @@ Feature: Overriding global ordering
   Scenario: Running a specific examples group in order
     Given a file named "order_dependent_spec.rb" with:
       """ruby
-      describe "examples only pass when they are run in order", :order => :defined do
+      RSpec.describe "examples only pass when they are run in order", :order => :defined do
         before(:context) { @list = [] }
 
         it "passes when run first" do
@@ -48,7 +48,7 @@ Feature: Overriding global ordering
         end
       end
 
-      describe "A group that must run in reverse order", :order => :reverse do
+      RSpec.describe "A group that must run in reverse order", :order => :reverse do
         before(:context) { @list = [] }
 
         it "passes when run second" do
@@ -74,7 +74,7 @@ Feature: Overriding global ordering
         end
       end
 
-      describe "A group without :order metadata" do
+      RSpec.describe "A group without :order metadata" do
         before(:context) { @list = [] }
 
         it "passes when run second" do

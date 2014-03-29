@@ -10,7 +10,7 @@ Feature: mock with rspec
         config.mock_framework = :rspec
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "passes when it should" do
           receiver = double('receiver')
           expect(receiver).to receive(:message)
@@ -28,7 +28,7 @@ Feature: mock with rspec
         config.mock_framework = :rspec
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "fails when it should" do
           receiver = double('receiver')
           expect(receiver).to receive(:message)
@@ -45,7 +45,7 @@ Feature: mock with rspec
         config.mock_framework = :rspec
       end
 
-      describe "failed message expectation in a pending example" do
+      RSpec.describe "failed message expectation in a pending example" do
         it "is listed as pending" do
           pending
           receiver = double('receiver')
@@ -64,7 +64,7 @@ Feature: mock with rspec
         config.mock_framework = :rspec
       end
 
-      describe "passing message expectation in a pending example" do
+      RSpec.describe "passing message expectation in a pending example" do
         it "fails with FIXED" do
           pending
           receiver = double('receiver')
@@ -85,7 +85,7 @@ Feature: mock with rspec
         config.mock_framework = :rspec
       end
 
-      describe "RSpec.configuration.mock_framework.framework_name" do
+      RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :rspec" do
           expect(RSpec.configuration.mock_framework.framework_name).to eq(:rspec)
         end

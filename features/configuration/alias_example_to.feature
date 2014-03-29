@@ -11,7 +11,7 @@ Feature: Create example aliases
         c.alias_example_to :pit, :pending => "Pit alias used"
       end
 
-      describe "an example group" do
+      RSpec.describe "an example group" do
         pit "does something later on" do
           fail "not implemented yet"
         end
@@ -28,7 +28,7 @@ Feature: Create example aliases
         c.alias_example_to :pit, :pending
       end
 
-      describe "an example group" do
+      RSpec.describe "an example group" do
         pit "does something later on" do
           fail "not implemented yet"
         end

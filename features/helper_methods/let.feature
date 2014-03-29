@@ -11,7 +11,7 @@ Feature: let and let!
     Given a file named "let_spec.rb" with:
       """ruby
       $count = 0
-      describe "let" do
+      RSpec.describe "let" do
         let(:count) { $count += 1 }
 
         it "memoizes the value" do
@@ -31,7 +31,7 @@ Feature: let and let!
     Given a file named "let_bang_spec.rb" with:
       """ruby
       $count = 0
-      describe "let!" do
+      RSpec.describe "let!" do
         invocation_order = []
 
         let!(:count) do

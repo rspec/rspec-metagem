@@ -3,7 +3,7 @@ Feature: arbitrary file suffix
   Scenario: .spec
     Given a file named "a.spec" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "does something" do
           expect(3).to eq(3)
         end

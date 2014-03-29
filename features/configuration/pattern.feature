@@ -5,7 +5,7 @@ Feature: pattern
   Background:
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "two specs here" do
+      RSpec.describe "two specs here" do
         it "passes" do
         end
 
@@ -15,7 +15,7 @@ Feature: pattern
       """
     And a file named "spec/example_test.rb" with:
       """ruby
-      describe "only one spec" do
+      RSpec.describe "only one spec" do
         it "passes" do
         end
       end

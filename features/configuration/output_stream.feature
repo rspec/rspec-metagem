@@ -14,7 +14,7 @@ Feature: Custom output stream
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require 'spec_helper'
-      describe "an example" do
+      RSpec.describe "an example" do
         it "passes" do
           true
         end

@@ -9,7 +9,7 @@ Feature: mock with rr
         config.mock_framework = :rr
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "passes when it should" do
           receiver = Object.new
           mock(receiver).message
@@ -27,7 +27,7 @@ Feature: mock with rr
         config.mock_framework = :rr
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "fails when it should" do
           receiver = Object.new
           mock(receiver).message
@@ -44,7 +44,7 @@ Feature: mock with rr
         config.mock_framework = :rr
       end
 
-      describe "failed message expectation in a pending example" do
+      RSpec.describe "failed message expectation in a pending example" do
         it "is listed as pending" do
           pending
           receiver = Object.new
@@ -63,7 +63,7 @@ Feature: mock with rr
         config.mock_framework = :rr
       end
 
-      describe "passing message expectation in a pending example" do
+      RSpec.describe "passing message expectation in a pending example" do
         it "fails with FIXED" do
           pending
           receiver = Object.new
@@ -84,7 +84,7 @@ Feature: mock with rr
         config.mock_framework = :rr
       end
 
-      describe "RSpec.configuration.mock_framework.framework_name" do
+      RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :rr" do
           expect(RSpec.configuration.mock_framework.framework_name).to eq(:rr)
         end

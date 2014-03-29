@@ -25,7 +25,7 @@ Feature: One-liner syntax
   Scenario: Implicit subject
     Given a file named "example_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         describe "when first created" do
           # Rather than:
           # it "should be empty" do
@@ -51,7 +51,7 @@ Feature: One-liner syntax
   Scenario: Explicit subject
     Given a file named "example_spec.rb" with:
       """ruby
-      describe Array do
+      RSpec.describe Array do
         describe "with 3 items" do
           subject { [1,2,3] }
           it { should_not be_empty }

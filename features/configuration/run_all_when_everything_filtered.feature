@@ -17,7 +17,7 @@ Feature: run all when everything filtered
   Scenario: By default, no specs are run if they are all filtered out by an inclusion tag
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "examples" do
+      RSpec.describe "examples" do
         it "with no tag" do
         end
 
@@ -31,7 +31,7 @@ Feature: run all when everything filtered
   Scenario: Specs are still run if they are filtered out by an exclusion tag
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "examples" do
+      RSpec.describe "examples" do
         it "with no tag" do
         end
 
@@ -62,7 +62,7 @@ Feature: run all when everything filtered
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "examples" do
+      RSpec.describe "examples" do
         it "with no tag" do
         end
 

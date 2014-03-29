@@ -17,7 +17,7 @@ Feature: inclusion filters
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 
@@ -34,7 +34,7 @@ Feature: inclusion filters
       """ruby
       require "spec_helper"
 
-      describe "group 1", :focus => true do
+      RSpec.describe "group 1", :focus => true do
         it "group 1 example 1" do
         end
 
@@ -42,7 +42,7 @@ Feature: inclusion filters
         end
       end
 
-      describe "group 2" do
+      RSpec.describe "group 2" do
         it "group 2 example 1" do
         end
       end
@@ -57,7 +57,7 @@ Feature: inclusion filters
       """ruby
       require "spec_helper"
 
-      describe "group 1", :focus => true do
+      RSpec.describe "group 1", :focus => true do
         before(:context) { puts "before all in focused group" }
         after(:context)  { puts "after all in focused group"  }
 
@@ -65,7 +65,7 @@ Feature: inclusion filters
         end
       end
 
-      describe "group 2" do
+      RSpec.describe "group 2" do
         before(:context) { puts "before all in unfocused group" }
         after(:context)  { puts "after all in unfocused group"  }
 
@@ -88,7 +88,7 @@ Feature: inclusion filters
         c.filter_run :current_example
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 

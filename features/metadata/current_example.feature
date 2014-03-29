@@ -6,7 +6,7 @@ Feature: current example
   Scenario: Access the example object from within an example
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "example as block arg to it, before, and after" do
+      RSpec.describe "example as block arg to it, before, and after" do
         before do |example|
           expect(example.description).to eq("is the example object")
         end
@@ -20,7 +20,7 @@ Feature: current example
         end
       end
 
-      describe "example as block arg to let" do
+      RSpec.describe "example as block arg to let" do
         let(:the_description) do |example|
           example.description
         end
@@ -30,7 +30,7 @@ Feature: current example
         end
       end
 
-      describe "example as block arg to subject" do
+      RSpec.describe "example as block arg to subject" do
         subject do |example|
           example.description
         end
@@ -40,7 +40,7 @@ Feature: current example
         end
       end
 
-      describe "example as block arg to subject with a name" do
+      RSpec.describe "example as block arg to subject with a name" do
         subject(:the_subject) do |example|
           example.description
         end

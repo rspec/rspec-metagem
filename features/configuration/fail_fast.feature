@@ -13,7 +13,7 @@ Feature: fail fast
   Scenario: Fail_fast with no failures (runs all examples)
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
 
@@ -28,7 +28,7 @@ Feature: fail fast
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "fails" do
           fail
         end
@@ -44,7 +44,7 @@ Feature: fail fast
     Given a file named "spec/example_1_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
 
@@ -53,7 +53,7 @@ Feature: fail fast
         end
       end
 
-      describe "something else" do
+      RSpec.describe "something else" do
         it "fails" do
           fail
         end
@@ -62,12 +62,12 @@ Feature: fail fast
     And a file named "spec/example_2_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
       end
 
-      describe "something else" do
+      RSpec.describe "something else" do
         it "fails" do
           fail
         end

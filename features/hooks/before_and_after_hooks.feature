@@ -39,7 +39,7 @@ Feature: before and after hooks
         end
       end
 
-      describe Thing do
+      RSpec.describe Thing do
         before(:example) do
           @thing = Thing.new
         end
@@ -73,7 +73,7 @@ Feature: before and after hooks
         end
       end
 
-      describe Thing do
+      RSpec.describe Thing do
         before(:context) do
           @thing = Thing.new
         end
@@ -102,7 +102,7 @@ Feature: before and after hooks
   Scenario: Failure in before(:context) block
     Given a file named "before_context_spec.rb" with:
       """ruby
-      describe "an error in before(:context)" do
+      RSpec.describe "an error in before(:context)" do
         before(:context) do
           raise "oops"
         end
@@ -157,7 +157,7 @@ Feature: before and after hooks
   Scenario: Failure in after(:context) block
     Given a file named "after_context_spec.rb" with:
       """ruby
-      describe "an error in after(:context)" do
+      RSpec.describe "an error in after(:context)" do
         after(:context) do
           raise StandardError.new("Boom!")
         end
@@ -191,7 +191,7 @@ Feature: before and after hooks
         end
       end
 
-      describe "stuff in before blocks" do
+      RSpec.describe "stuff in before blocks" do
         describe "with :context" do
           it "should be available in the example" do
             expect(@before_context).to eq("before context")
@@ -212,7 +212,7 @@ Feature: before and after hooks
       """ruby
       require "rspec/expectations"
 
-      describe "before and after callbacks" do
+      RSpec.describe "before and after callbacks" do
         before(:context) do
           puts "before context"
         end
@@ -274,7 +274,7 @@ Feature: before and after hooks
         end
       end
 
-      describe "ignore" do
+      RSpec.describe "ignore" do
         example "ignore" do
         end
       end
@@ -293,7 +293,7 @@ Feature: before and after hooks
   Scenario: Before/after context blocks are run once
     Given a file named "before_and_after_context_spec.rb" with:
       """ruby
-      describe "before and after callbacks" do
+      RSpec.describe "before and after callbacks" do
         before(:context) do
           puts "outer before context"
         end
@@ -351,7 +351,7 @@ Feature: before and after hooks
   Scenario: Nested examples have access to state set in outer before(:context)
     Given a file named "before_context_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         before :context do
           @value = 123
         end
@@ -381,7 +381,7 @@ Feature: before and after hooks
   Scenario: Before/after context blocks have access to state
     Given a file named "before_and_after_context_spec.rb" with:
       """ruby
-      describe "before and after callbacks" do
+      RSpec.describe "before and after callbacks" do
         before(:context) do
           @outer_state = "set in outer before context"
         end
@@ -416,7 +416,7 @@ Feature: before and after hooks
   Scenario: Exception in before(:example) is captured and reported as failure
     Given a file named "error_in_before_example_spec.rb" with:
       """ruby
-      describe "error in before(:example)" do
+      RSpec.describe "error in before(:example)" do
         before(:example) do
           raise "this error"
         end

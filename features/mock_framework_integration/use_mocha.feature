@@ -9,7 +9,7 @@ Feature: mock with mocha
         config.mock_framework = :mocha
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "passes when it should" do
           receiver = mock('receiver')
           receiver.expects(:message).once
@@ -27,7 +27,7 @@ Feature: mock with mocha
         config.mock_framework = :mocha
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "fails when it should" do
           receiver = mock('receiver')
           receiver.expects(:message).once
@@ -44,7 +44,7 @@ Feature: mock with mocha
         config.mock_framework = :mocha
       end
 
-      describe "failed message expectation in a pending example" do
+      RSpec.describe "failed message expectation in a pending example" do
         it "is listed as pending" do
           pending
           receiver = mock('receiver')
@@ -63,7 +63,7 @@ Feature: mock with mocha
         config.mock_framework = :mocha
       end
 
-      describe "passing message expectation in a pending example" do
+      RSpec.describe "passing message expectation in a pending example" do
         it "fails with FIXED" do
           pending
           receiver = mock('receiver')
@@ -84,7 +84,7 @@ Feature: mock with mocha
         config.mock_framework = :mocha
       end
 
-      describe "RSpec.configuration.mock_framework.framework_name" do
+      RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :mocha" do
           expect(RSpec.configuration.mock_framework.framework_name).to eq(:mocha)
         end

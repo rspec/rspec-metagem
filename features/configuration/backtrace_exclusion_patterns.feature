@@ -17,7 +17,7 @@ Feature: Excluding lines from the backtrace
   Scenario: Using default backtrace_exclusion_patterns
     Given a file named "spec/failing_spec.rb" with:
     """ruby
-    describe "2 + 2" do
+    RSpec.describe "2 + 2" do
       it "is 5" do
         expect(2+2).to eq(5)
       end
@@ -43,7 +43,7 @@ Feature: Excluding lines from the backtrace
     And a file named "spec/example_spec.rb" with:
     """ruby
     require 'spec_helper'
-    describe "foo" do
+    RSpec.describe "foo" do
       it "returns baz" do
         expect(foo).to eq("baz")
       end
@@ -68,7 +68,7 @@ Feature: Excluding lines from the backtrace
       config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
-    describe "bar" do
+    RSpec.describe "bar" do
       it "is baz" do
         expect("bar").to be_baz
       end
@@ -94,7 +94,7 @@ Feature: Excluding lines from the backtrace
       config.backtrace_exclusion_patterns << /be_baz_matcher/
     end
 
-    describe "bar" do
+    RSpec.describe "bar" do
       it "is baz" do
         expect("bar").to be_baz
       end

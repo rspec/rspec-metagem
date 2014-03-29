@@ -14,7 +14,7 @@ Feature: Setting the default spec path
   Scenario: Run `rspec` with default default-path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "passes" do
         end
       end
@@ -29,7 +29,7 @@ Feature: Setting the default spec path
       """
     Given a file named "behavior/example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "passes" do
         end
       end

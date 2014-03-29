@@ -6,19 +6,19 @@ Feature: Conditional Filters
   Scenario: Implicit :if filter
     Given a file named "implicit_if_filter_spec.rb" with:
       """ruby
-      describe ":if => true group", :if => true do
+      RSpec.describe ":if => true group", :if => true do
         it(":if => true group :if => true example", :if => true) { }
         it(":if => true group :if => false example", :if => false) { }
         it(":if => true group no :if example") { }
       end
 
-      describe ":if => false group", :if => false do
+      RSpec.describe ":if => false group", :if => false do
         it(":if => false group :if => true example", :if => true) { }
         it(":if => false group :if => false example", :if => false) { }
         it(":if => false group no :if example") { }
       end
 
-      describe "no :if group" do
+      RSpec.describe "no :if group" do
         it("no :if group :if => true example", :if => true) { }
         it("no :if group :if => false example", :if => false) { }
         it("no :if group no :if example") { }
@@ -40,19 +40,19 @@ Feature: Conditional Filters
   Scenario: Implicit :unless filter
     Given a file named "implicit_unless_filter_spec.rb" with:
       """ruby
-      describe ":unless => true group", :unless => true do
+      RSpec.describe ":unless => true group", :unless => true do
         it(":unless => true group :unless => true example", :unless => true) { }
         it(":unless => true group :unless => false example", :unless => false) { }
         it(":unless => true group no :unless example") { }
       end
 
-      describe ":unless => false group", :unless => false do
+      RSpec.describe ":unless => false group", :unless => false do
         it(":unless => false group :unless => true example", :unless => true) { }
         it(":unless => false group :unless => false example", :unless => false) { }
         it(":unless => false group no :unless example") { }
       end
 
-      describe "no :unless group" do
+      RSpec.describe "no :unless group" do
         it("no :unless group :unless => true example", :unless => true) { }
         it("no :unless group :unless => false example", :unless => false) { }
         it("no :unless group no :unless example") { }
@@ -78,7 +78,7 @@ Feature: Conditional Filters
         c.filter_run :focus => true
       end
 
-      describe "group with :focus", :focus => true do
+      RSpec.describe "group with :focus", :focus => true do
         it("focused example") { }
         it("focused :if => true example", :if => true) { }
         it("focused :if => false example", :if => false) { }
@@ -86,7 +86,7 @@ Feature: Conditional Filters
         it("focused :unless => false example", :unless => false) { }
       end
 
-      describe "group without :focus" do
+      RSpec.describe "group without :focus" do
         it("unfocused example") { }
         it("unfocused :if => true example", :if => true) { }
         it("unfocused :if => false example", :if => false) { }
@@ -111,7 +111,7 @@ Feature: Conditional Filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "unbroken group" do
+      RSpec.describe "unbroken group" do
         it("included example") { }
         it("included :if => true example", :if => true) { }
         it("included :if => false example", :if => false) { }
@@ -119,7 +119,7 @@ Feature: Conditional Filters
         it("included :unless => false example", :unless => false) { }
       end
 
-      describe "broken group", :broken => true do
+      RSpec.describe "broken group", :broken => true do
         it("excluded example") { }
         it("excluded :if => true example", :if => true) { }
         it("excluded :if => false example", :if => false) { }

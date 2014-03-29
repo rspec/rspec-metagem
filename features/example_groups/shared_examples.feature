@@ -41,7 +41,7 @@ Feature: shared examples
       """ruby
       require "set"
 
-      shared_examples "a collection" do
+      RSpec.shared_examples "a collection" do
         let(:collection) { described_class.new([7, 2, 4]) }
 
         context "initialized with 3 items" do
@@ -65,11 +65,11 @@ Feature: shared examples
         end
       end
 
-      describe Array do
+      RSpec.describe Array do
         it_behaves_like "a collection"
       end
 
-      describe Set do
+      RSpec.describe Set do
         it_behaves_like "a collection"
       end
       """
@@ -103,7 +103,7 @@ Feature: shared examples
     """ruby
     require "set"
 
-    shared_examples "a collection object" do
+    RSpec.shared_examples "a collection object" do
       describe "<<" do
         it "adds objects to the end of the collection" do
           collection << 1
@@ -113,13 +113,13 @@ Feature: shared examples
       end
     end
 
-    describe Array do
+    RSpec.describe Array do
       it_behaves_like "a collection object" do
         let(:collection) { Array.new }
       end
     end
 
-    describe Set do
+    RSpec.describe Set do
       it_behaves_like "a collection object" do
         let(:collection) { Set.new }
       end
@@ -143,7 +143,7 @@ Feature: shared examples
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """ruby
-    shared_examples "a measurable object" do |measurement, measurement_methods|
+    RSpec.shared_examples "a measurable object" do |measurement, measurement_methods|
       measurement_methods.each do |measurement_method|
         it "should return #{measurement} from ##{measurement_method}" do
           expect(subject.send(measurement_method)).to eq(measurement)
@@ -151,12 +151,12 @@ Feature: shared examples
       end
     end
 
-    describe Array, "with 3 items" do
+    RSpec.describe Array, "with 3 items" do
       subject { [1, 2, 3] }
       it_should_behave_like "a measurable object", 3, [:size, :length]
     end
 
-    describe String, "of 6 characters" do
+    RSpec.describe String, "of 6 characters" do
       subject { "FooBar" }
       it_should_behave_like "a measurable object", 6, [:size, :length]
     end
@@ -183,13 +183,13 @@ Feature: shared examples
         c.alias_it_should_behave_like_to :it_has_behavior, 'has behavior:'
       end
 
-      shared_examples 'sortability' do
+      RSpec.shared_examples 'sortability' do
         it 'responds to <=>' do
           expect(sortable).to respond_to(:<=>)
         end
       end
 
-      describe String do
+      RSpec.describe String do
         it_has_behavior 'sortability' do
           let(:sortable) { 'sample string' }
         end
@@ -207,12 +207,12 @@ Feature: shared examples
   Scenario: Sharing metadata automatically includes shared example groups
     Given a file named "shared_example_metadata_spec.rb" with:
       """ruby
-      shared_examples "shared stuff", :a => :b do
+      RSpec.shared_examples "shared stuff", :a => :b do
         it 'runs wherever the metadata is shared' do
         end
       end
 
-      describe String, :a => :b do
+      RSpec.describe String, :a => :b do
       end
       """
       When I run `rspec shared_example_metadata_spec.rb`
@@ -224,7 +224,7 @@ Feature: shared examples
   Scenario: Shared examples are nestable by context
     Given a file named "context_specific_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         context "per context" do
 
           shared_examples "shared examples are nestable" do
@@ -244,7 +244,7 @@ Feature: shared examples
   Scenario: Shared examples are accessible from offspring contexts
     Given a file named "context_specific_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         shared_examples "shared examples are nestable" do
           specify { expect(true).to eq true }
         end
@@ -267,7 +267,7 @@ Feature: shared examples
   Scenario: Shared examples are isolated per context
     Given a file named "isolated_shared_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         context do
           shared_examples "shared examples are isolated" do
             specify { expect(true).to eq true }

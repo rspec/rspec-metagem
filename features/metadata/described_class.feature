@@ -6,7 +6,7 @@ Feature: described class
   Scenario: Access the described class from the example
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe Fixnum do
+      RSpec.describe Fixnum do
         it "is available as described_class" do
           expect(described_class).to eq(Fixnum)
         end

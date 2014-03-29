@@ -15,7 +15,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)
@@ -183,7 +183,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)
@@ -204,7 +204,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)

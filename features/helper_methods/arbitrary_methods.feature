@@ -8,7 +8,7 @@ Feature: arbitrary helper methods
   Scenario: Use a method defined in the same group
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         def help
           :available
         end
@@ -24,7 +24,7 @@ Feature: arbitrary helper methods
   Scenario: Use a method defined in a parent group
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         def help
           :available
         end

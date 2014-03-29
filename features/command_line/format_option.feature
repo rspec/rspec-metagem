@@ -24,7 +24,7 @@ Feature: --format option
   Background:
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "does something that passes" do
           expect(5).to eq(5)
         end

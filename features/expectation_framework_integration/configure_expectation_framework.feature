@@ -22,7 +22,7 @@ Feature: configure expectation framework
         end
       end
 
-      describe 6 do
+      RSpec.describe 6 do
         it { is_expected.to be_a_multiple_of 3 }
       end
       """
@@ -36,7 +36,7 @@ Feature: configure expectation framework
         config.expect_with :rspec
       end
 
-      describe 5 do
+      RSpec.describe 5 do
         it "is greater than 4" do
           expect(5).to be > 4
         end
@@ -52,7 +52,7 @@ Feature: configure expectation framework
         config.expect_with :stdlib
       end
 
-      describe 5 do
+      RSpec.describe 5 do
         it "is greater than 4" do
           assert 5 > 4, "expected 5 to be greater than 4"
         end
@@ -70,7 +70,7 @@ Feature: configure expectation framework
         config.expect_with :stdlib
       end
 
-      describe 5 do
+      RSpec.describe 5 do
         it "is greater than 6 (no it isn't!)" do
           assert 5 > 6, "errantly expected 5 to be greater than 5"
         end
@@ -88,7 +88,7 @@ Feature: configure expectation framework
         config.expect_with :rspec, :stdlib
       end
 
-      describe 5 do
+      RSpec.describe 5 do
         it "is greater than 4" do
           assert 5 > 4, "expected 5 to be greater than 4"
         end

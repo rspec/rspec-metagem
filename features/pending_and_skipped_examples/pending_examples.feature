@@ -6,7 +6,7 @@ Feature: pending examples
   Scenario: Pending any arbitrary reason with a failing example
     Given a file named "pending_without_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
           fail
@@ -26,7 +26,7 @@ Feature: pending examples
   Scenario: Pending any arbitrary reason with a passing example
     Given a file named "pending_with_passing_example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
           expect(1).to be(1)
@@ -43,7 +43,7 @@ Feature: pending examples
   Scenario: Pending for an example that is currently passing
     Given a file named "pending_with_passing_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         pending("something else getting finished") do
           expect(1).to eq(1)
         end
@@ -59,7 +59,7 @@ Feature: pending examples
   Scenario: Pending for an example that is currently passing with a reason
     Given a file named "pending_with_passing_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         example("something else getting finished", :pending => 'unimplemented') do
           expect(1).to eq(1)
         end
@@ -75,7 +75,7 @@ Feature: pending examples
   Scenario: Example with no docstring and pending method using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "checks something" do
           expect(1).to eq(1)
         end
@@ -98,7 +98,7 @@ Feature: pending examples
   Scenario: Pending with no docstring using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "checks something" do
           expect(1).to eq(1)
         end

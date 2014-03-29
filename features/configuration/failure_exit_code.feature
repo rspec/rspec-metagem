@@ -13,7 +13,7 @@ Feature: failure exit code
   Scenario: A failing spec with the default exit code
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "fails" do
           fail
         end
@@ -26,7 +26,7 @@ Feature: failure exit code
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require 'spec_helper'
-      describe "something" do
+      RSpec.describe "something" do
         it "fails" do
           fail
         end

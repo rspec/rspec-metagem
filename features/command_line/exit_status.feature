@@ -7,7 +7,7 @@ Feature: exit status
   Scenario: Exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:
       """ruby
-      describe "ok" do
+      RSpec.describe "ok" do
         it "passes" do
         end
       end
@@ -19,7 +19,7 @@ Feature: exit status
   Scenario: Exit with 1 when one example fails
     Given a file named "ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         it "fails" do
           raise "KO"
         end
@@ -32,7 +32,7 @@ Feature: exit status
   Scenario: Exit with 1 when a nested examples fails
     Given a file named "nested_ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         describe "nested" do
           it "fails" do
             raise "KO"
@@ -55,7 +55,7 @@ Feature: exit status
   Scenario: Exit with 2 when one example fails and --failure-exit-code is 2
     Given a file named "ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         it "fails" do
           raise "KO"
         end

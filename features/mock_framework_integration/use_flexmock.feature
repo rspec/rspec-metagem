@@ -9,7 +9,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "mocking with Flexmock" do
+      RSpec.describe "mocking with Flexmock" do
         it "passes when it should" do
           receiver = flexmock('receiver')
           receiver.should_receive(:message).once
@@ -27,7 +27,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "mocking with Flexmock" do
+      RSpec.describe "mocking with Flexmock" do
         it "fails when it should" do
           receiver = flexmock('receiver')
           receiver.should_receive(:message).once
@@ -44,7 +44,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "failed message expectation in a pending example" do
+      RSpec.describe "failed message expectation in a pending example" do
         it "is listed as pending" do
           pending
           receiver = flexmock('receiver')
@@ -63,7 +63,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "passing message expectation in a pending example" do
+      RSpec.describe "passing message expectation in a pending example" do
         it "fails with FIXED" do
           pending
           receiver = flexmock('receiver')
@@ -84,7 +84,7 @@ Feature: mock with flexmock
         config.mock_framework = :flexmock
       end
 
-      describe "RSpec.configuration.mock_framework.framework_name" do
+      RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :flexmock" do
           expect(RSpec.configuration.mock_framework.framework_name).to eq(:flexmock)
         end

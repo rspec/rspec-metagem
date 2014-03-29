@@ -11,7 +11,7 @@ Feature: --dry-run
         c.after(:suite)  { puts "after suite"  }
       end
 
-      describe "dry run" do
+      RSpec.describe "dry run" do
         before(:context) { fail }
         before(:example) { fail }
 
