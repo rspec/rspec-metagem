@@ -4,8 +4,26 @@ Feature: Create example aliases
   that define examples with the configured metadata.  You can also
   specify metadata using only symbols.
 
-  Scenario: Use alias_example_to to define a pending example
+  Scenario: Use alias_example_to to define a custom example name
     Given a file named "alias_example_to_spec.rb" with:
+      """ruby
+      RSpec.configure do |c|
+        c.alias_example_to :task
+      end
+
+      RSpec.describe "a task example group" do
+        task "does something" do
+          expect(5).to eq(5)
+        end
+      end
+      """
+    When I run `rspec alias_example_to_spec.rb --format doc`
+    Then the output should contain "does something"
+    And the examples should all pass
+
+
+  Scenario: Use alias_example_to to define a pending example
+    Given a file named "alias_example_to_pending_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.alias_example_to :pit, :pending => "Pit alias used"
@@ -17,7 +35,7 @@ Feature: Create example aliases
         end
       end
       """
-    When I run `rspec alias_example_to_spec.rb --format doc`
+    When I run `rspec alias_example_to_pending_spec.rb --format doc`
     Then the output should contain "does something later on (PENDING: Pit alias used)"
     And the output should contain "0 failures"
 
