@@ -1,4 +1,4 @@
-Feature: --dry-run
+Feature: --dry-run option
 
   Use the `--dry-run` option to have RSpec print your suite's formatter
   output without running any examples or hooks.

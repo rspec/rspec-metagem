@@ -1,4 +1,4 @@
-Feature: --order (new in rspec-core-2.8)
+Feature: --order option
 
   Use the `--order` option to tell RSpec how to order the files, groups, and
   examples. Options are `defined` and `rand`.

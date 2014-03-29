@@ -1,4 +1,4 @@
-Feature: run with warnings enabled
+Feature: --warnings option (run with warnings enabled)
 
   You can use the `--warnings` option to run specs with warnings enabled
 
