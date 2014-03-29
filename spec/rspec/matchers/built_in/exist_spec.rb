@@ -14,7 +14,7 @@ describe "exist matcher" do
         it "fails" do
           expect {
             expect(subject).send(expect_method, exist)
-          }.to fail_with(/it responds to neither #exist\? nor #exists\?/)
+          }.to fail_matching("it does not respond to either `exist?` or `exists?`")
         end
       end
     end
@@ -107,7 +107,7 @@ describe "exist matcher" do
           it "fails" do
             expect {
               expect(subject).send(expect_method, exist)
-            }.to fail_with(/#exist\? and #exists\? returned different values/)
+            }.to fail_matching("`exist?` and `exists?` returned different values")
           end
         end
       end

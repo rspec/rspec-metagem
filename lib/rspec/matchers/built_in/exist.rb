@@ -52,9 +52,9 @@ module RSpec
         def validity_message
           case uniq_truthy_values.size
           when 0
-            " but it responds to neither #exist? nor #exists?"
+            " but it does not respond to either `exist?` or `exists?`"
           when 2
-            " but #exist? and #exists? returned different values:\n\n"\
+            " but `exist?` and `exists?` returned different values:\n\n"\
             " exist?: #{existence_values.first}\n"\
             "exists?: #{existence_values.last}"
           end
