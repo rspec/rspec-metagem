@@ -9,9 +9,9 @@ Feature: configure expectation framework
     * minitest assertions in ruby 1.9
   * rspec/expectations _and_ stlib assertions
 
-  Note that when you do not use rspec-expectations, you must explicitly
-  provide a description to every example.  You cannot rely on the generated
-  descriptions provided by rspec-expectations.
+  Note that when you do not use rspec-expectations, you must explicitly provide
+  a description to every example. You cannot rely on the generated descriptions
+  provided by rspec-expectations.
 
   Scenario: Default configuration uses rspec-expectations
     Given a file named "example_spec.rb" with:

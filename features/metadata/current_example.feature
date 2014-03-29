@@ -1,7 +1,8 @@
 Feature: current example
 
-  You can reference the example object, and access its metadata, using
-  the block argument provided to: `it`, `subject`, `let`, and the `before`, `after`, and `around` hooks.
+  You can reference the example object, and access its metadata, using the block
+  argument provided to: `it`, `subject`, `let`, and the `before`, `after`, and
+  `around` hooks.
 
   Scenario: Access the example object from within an example
     Given a file named "spec/example_spec.rb" with:

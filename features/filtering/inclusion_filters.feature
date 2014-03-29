@@ -1,8 +1,8 @@
 Feature: inclusion filters
 
-  You can constrain which examples are run by declaring an inclusion filter. The
-  most common use case is to focus on a subset of examples as you're focused on
-  a particular problem.  You can also specify metadata using only symbols.
+  You can constrain which examples are run by declaring an inclusion filter.
+  The most common use case is to focus on a subset of examples as you're focused
+  on a particular problem. You can also specify metadata using only symbols.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:

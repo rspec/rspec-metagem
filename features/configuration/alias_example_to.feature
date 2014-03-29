@@ -1,8 +1,8 @@
 Feature: Create example aliases
 
-  Use `config.alias_example_to` to create new example group methods
-  that define examples with the configured metadata.  You can also
-  specify metadata using only symbols.
+  Use `config.alias_example_to` to create new example group methods that define
+  examples with the configured metadata. You can also specify metadata using
+  only symbols.
 
   Scenario: Use alias_example_to to define a custom example name
     Given a file named "alias_example_to_spec.rb" with:

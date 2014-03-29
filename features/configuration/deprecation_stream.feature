@@ -1,12 +1,15 @@
 Feature: Custom deprecation stream
 
-  Define a custom output stream for warning about deprecations (default `$stderr`).
+  Define a custom output stream for warning about deprecations (default
+  `$stderr`).
 
-    RSpec.configure {|c| c.deprecation_stream = File.open('deprecations.txt', 'w') }
+      RSpec.configure do |c|
+        c.deprecation_stream = File.open('deprecations.txt', 'w')
+      end
 
   or
 
-    RSpec.configure {|c| c.deprecation_stream = 'deprecations.txt' }
+      RSpec.configure { |c| c.deprecation_stream = 'deprecations.txt' }
 
   or pass `--deprecation-out`
 
@@ -24,6 +27,7 @@ Feature: Custom deprecation stream
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
+
       RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
@@ -35,7 +39,9 @@ Feature: Custom deprecation stream
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
+
       RSpec.configure {|c| c.deprecation_stream = 'deprecations.txt' }
+
       RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
@@ -49,7 +55,11 @@ Feature: Custom deprecation stream
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
-      RSpec.configure {|c| c.deprecation_stream = File.open('deprecations.txt', 'w') }
+
+      RSpec.configure do |c|
+        c.deprecation_stream = File.open('deprecations.txt', 'w')
+      end
+
       RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end

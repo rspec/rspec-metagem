@@ -4,15 +4,15 @@ Feature: --tag option
 
   The tag can be a simple `name` or a `name:value` pair. In the first case,
   examples with `:name => true` will be filtered. In the second case, examples
-  with `:name => value` will be filtered, where `value` is always a string.  In
+  with `:name => value` will be filtered, where `value` is always a string. In
   both cases, `name` is converted to a symbol.
 
-  Tags can also be used to exclude examples by adding a `~` before the tag.  For
+  Tags can also be used to exclude examples by adding a `~` before the tag. For
   example `~tag` will exclude all examples marked with `:tag => true` and
   `~tag:value` will exclude all examples marked with `:tag => value`.
 
-  To be compatible with the Cucumber syntax, tags can optionally start with
-  an `@` symbol, which will be ignored.
+  To be compatible with the Cucumber syntax, tags can optionally start with an
+  `@` symbol, which will be ignored.
 
   Background:
     Given a file named "tagged_spec.rb" with:

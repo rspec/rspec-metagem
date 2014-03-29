@@ -4,8 +4,12 @@ Feature: Global namespace DSL
   behaviour:
 
   * `RSpec.describe`: Define a named context for a group of examples.
-  * `RSpec.shared_examples`: Define a set of shared examples that can later be included in an example group.
-  * `RSpec.shared_context`: define some common context (using `before`, `let`, helper methods, etc) that can later be included in an example group.
+
+  * `RSpec.shared_examples`: Define a set of shared examples that can later be
+    included in an example group.
+
+  * `RSpec.shared_context`: define some common context (using `before`, `let`,
+    helper methods, etc) that can later be included in an example group.
 
   Historically, these constructs have been available directly off of the main
   object, so that you could use these at the start of a file without the
@@ -14,7 +18,7 @@ Feature: Global namespace DSL
 
   RSpec 3 now provides an option to disable this global monkey patching:
 
-  `config.expose_dsl_globally = false`.
+      config.expose_dsl_globally = false
 
   For backwards compatibility it defaults to `true`.
 

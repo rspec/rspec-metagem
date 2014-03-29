@@ -1,12 +1,12 @@
 Feature: --init option
 
-  Use the `--init` option on the command line to generate conventional
-  files for an RSpec project. It generates a `.rspec` and
-  `spec/spec_helper.rb` with some example settings to get you started.
+  Use the `--init` option on the command line to generate conventional files for
+  an RSpec project. It generates a `.rspec` and `spec/spec_helper.rb` with some
+  example settings to get you started.
 
   These settings treat the case where you run an individual spec file
-  differently, using the documentation formatter if no formatter has
-  been explicitly set.
+  differently, using the documentation formatter if no formatter has been
+  explicitly set.
 
   Scenario: Generate .rspec
     When I run `rspec --init`
@@ -22,7 +22,7 @@ Feature: --init option
     When I run `rspec --init`
     Then the output should contain "exist   .rspec"
 
-  Scenario: Accept and use the recommended settings in spec_helper (which are initially commented out).
+  Scenario: Accept and use the recommended settings in spec_helper (which are initially commented out)
     Given I have a brand new project with no files
       And I have run `rspec --init`
      When I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`
@@ -42,7 +42,6 @@ Feature: --init option
           end
         end
         """
-
      Then the output from `rspec` should not be in documentation format
       But the output from `rspec spec/addition_spec.rb` should be in documentation format
       But the output from `rspec spec/addition_spec.rb --format progress` should not be in documentation format

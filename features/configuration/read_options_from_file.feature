@@ -3,14 +3,18 @@ Feature: read command line configuration options from files
   RSpec reads command line configuration options from files in three different
   locations:
 
-    Local: `./.rspec-local` (i.e. in the project's root directory, can be gitignored)
-    Project:  `./.rspec` (i.e. in the project's root directory, usually checked into the project)
-    Global: `~/.rspec` (i.e. in the user's home directory)
+    * Local: `./.rspec-local` (i.e. in the project's root directory, can be
+      gitignored)
 
-  Configuration options are loaded from `~/.rspec`, `.rspec`,
-  `.rspec-local`, command line switches, and the `SPEC_OPTS` environment
-  variable (listed in lowest to highest precedence; for example, an option
-  in `~/.rspec` can be overridden by an option in `.rspec-local`).
+    * Project:  `./.rspec` (i.e. in the project's root directory, usually
+      checked into the project)
+
+    * Global: `~/.rspec` (i.e. in the user's home directory)
+
+  Configuration options are loaded from `~/.rspec`, `.rspec`, `.rspec-local`,
+  command line switches, and the `SPEC_OPTS` environment variable (listed in
+  lowest to highest precedence; for example, an option in `~/.rspec` can be
+  overridden by an option in `.rspec-local`).
 
   Scenario: Color set in .rspec
     Given a file named ".rspec" with:
@@ -82,7 +86,8 @@ Feature: read command line configuration options from files
       """ruby
       RSpec.describe "formatter" do
         it "is set to documentation" do
-          expect(RSpec.configuration.formatters.first).to be_an(RSpec::Core::Formatters::DocumentationFormatter)
+          expect(RSpec.configuration.formatters.first).
+            to be_an(RSpec::Core::Formatters::DocumentationFormatter)
         end
       end
       """

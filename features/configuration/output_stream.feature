@@ -1,13 +1,14 @@
 Feature: Custom output stream
 
-  Define a custom output stream (default `$stdout`).  Aliases: `:output`, `:out`.
+  Define a custom output stream (default `$stdout`).  Aliases: `:output`,
+  `:out`.
 
-    RSpec.configure { |c| c.output_stream = File.open('saved_output', 'w') }
+      RSpec.configure { |c| c.output_stream = File.open('saved_output', 'w') }
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
       """ruby
-      RSpec.configure {|c| c.output_stream = File.open('saved_output', 'w') }
+      RSpec.configure { |c| c.output_stream = File.open('saved_output', 'w') }
       """
 
   Scenario: Redirecting output

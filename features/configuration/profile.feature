@@ -1,11 +1,11 @@
 Feature: Profile examples
 
   The `--profile` command line option (available from `RSpec.configure` as
-  `#profile_examples`), when set, will cause RSpec to dump out a list of
-  your slowest examples. By default, it prints the 10 slowest examples,
-  but you can set it to a different value to have it print more or fewer
-  slow examples. If `--fail-fast` option is used together with `--profile`
-  and there is a failure, slow examples are not shown.
+  `#profile_examples`), when set, will cause RSpec to dump out a list of your
+  slowest examples. By default, it prints the 10 slowest examples, but you can
+  set it to a different value to have it print more or fewer slow examples. If
+  `--fail-fast` option is used together with `--profile` and there is a failure,
+  slow examples are not shown.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:

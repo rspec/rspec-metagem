@@ -1,6 +1,7 @@
 Feature: --fail-fast option
 
-  Use the `--fail-fast` option to tell RSpec to stop running the test suite on the first failed test.
+  Use the `--fail-fast` option to tell RSpec to stop running the test suite on
+  the first failed test.
 
   You may also specify `--no-fail-fast` to turn it off (default behaviour).
 

@@ -1,9 +1,9 @@
 Feature: shared examples
 
-  Shared examples let you describe behaviour of types or modules. When
-  declared, a shared group's content is stored. It is only realized in the
-  context of another example group, which provides any context the shared group
-  needs to run.
+  Shared examples let you describe behaviour of types or modules. When declared,
+  a shared group's content is stored. It is only realized in the context of
+  another example group, which provides any context the shared group needs to
+  run.
 
   A shared group is included in another group using any of:
 
@@ -33,8 +33,8 @@ Feature: shared examples
       This is included in the generated `spec/spec_helper.rb` file in
       `rspec-rails`
 
-  3. When all of the groups that include the shared group, just declare
-     the shared group in the same file.
+  3. When all of the groups that include the shared group, just declare the
+     shared group in the same file.
 
   Scenario: Shared examples group included in two groups in one file
     Given a file named "collection_spec.rb" with:

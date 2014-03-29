@@ -1,13 +1,12 @@
 Feature: custom formatters
 
   RSpec ships with general purpose output formatters. You can tell RSpec which
-  one to use using the [`--format` command line
-  option]('../command_line/format_option').
+  one to use using the [`--format` command line option]('../command_line/format_option').
 
   When RSpec's built-in output formatters don't, however, give you everything
   you need, you can write your own custom formatter and tell RSpec to use that
-  one instead.  The simplest way is to subclass RSpec's `BaseTextFormatter`,
-  and then override just the methods that you want to modify.
+  one instead. The simplest way is to subclass RSpec's `BaseTextFormatter`, and
+  then override just the methods that you want to modify.
 
   Scenario: Custom formatter
     Given a file named "custom_formatter.rb" with:

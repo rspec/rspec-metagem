@@ -2,14 +2,15 @@ Feature: --example option
 
   Use the `--example` (or `-e`) option to filter examples by name.
 
-  The argument is matched against the full description of the example,
-  which is the concatenation of descriptions of the group (including
-  any nested groups) and the example.
+  The argument is matched against the full description of the example, which is
+  the concatenation of descriptions of the group (including any nested groups)
+  and the example.
 
   This allows you to run a single uniquely named example, all examples with
   similar names, all the examples in a uniquely named group, etc, etc.
 
-  You can also use the option more than once to specify multiple example matches.
+  You can also use the option more than once to specify multiple example
+  matches.
 
   Background:
     Given a file named "first_spec.rb" with:

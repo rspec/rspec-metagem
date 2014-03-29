@@ -1,8 +1,8 @@
 Feature: exclusion filters
 
-  You can exclude examples from a run by declaring an exclusion filter and
-  then tagging examples, or entire groups, with that filter.  You can also
-  specify metadata using only symbols.
+  You can exclude examples from a run by declaring an exclusion filter and then
+  tagging examples, or entire groups, with that filter. You can also specify
+  metadata using only symbols.
 
   Scenario: Exclude an example
     Given a file named "spec/sample_spec.rb" with:

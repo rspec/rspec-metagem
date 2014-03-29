@@ -1,13 +1,13 @@
 Feature: before and after hooks
 
-  Use `before` and `after` hooks to execute arbitrary code before and/or
-  after the body of an example is run:
+  Use `before` and `after` hooks to execute arbitrary code before and/or after
+  the body of an example is run:
 
       before(:example) # run before each example
-      before(:context)  # run one time only, before all of the examples in a group
+      before(:context) # run one time only, before all of the examples in a group
 
       after(:example) # run after each example
-      after(:context)  # run one time only, after all of the examples in a group
+      after(:context) # run one time only, after all of the examples in a group
 
   `before` and `after` blocks are called in the following order:
 
@@ -25,8 +25,8 @@ Feature: before and after hooks
 
   **WARNING:** Mocks are only supported in `before(:example)`.
 
-  Note: the `:example` and `:context` scopes are also available as
-  `:each` and `:all`, respectively. Use whichever you prefer.
+  Note: the `:example` and `:context` scopes are also available as `:each` and
+  `:all`, respectively. Use whichever you prefer.
 
   Scenario: Define before(:example) block
     Given a file named "before_example_spec.rb" with:

@@ -1,15 +1,15 @@
 Feature: Define helper methods in a module
 
-  You can define helper methods in a module and include it in
-  your example groups using the `config.include` configuration
-  option.  `config.extend` can be used to extend the module onto
-  your example groups so that the methods in the module are available
-  in the example groups themselves (but not in the actual examples).
+  You can define helper methods in a module and include it in your example
+  groups using the `config.include` configuration option. `config.extend` can be
+  used to extend the module onto your example groups so that the methods in the
+  module are available in the example groups themselves (but not in the actual
+  examples).
 
-  You can also `include` or `extend` the module onto only certain example
-  groups by passing a metadata hash as the last argument.  Only groups
-  that match the given metadata will `include` or `extend` the module. You
-  can also specify metadata using only symbols.
+  You can also `include` or `extend` the module onto only certain example groups
+  by passing a metadata hash as the last argument. Only groups that match the
+  given metadata will `include` or `extend` the module. You can also specify
+  metadata using only symbols.
 
   Background:
     Given a file named "helpers.rb" with:

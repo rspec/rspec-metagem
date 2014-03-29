@@ -1,7 +1,7 @@
 Feature: --require option
 
-  Use the `--require` (or `-r`) option to specify a file to require
-  before running specs.
+  Use the `--require` (or `-r`) option to specify a file to require before
+  running specs.
 
   Scenario: Using the --require option
     Given a file named "logging_formatter.rb" with:

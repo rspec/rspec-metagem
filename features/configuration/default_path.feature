@@ -1,15 +1,14 @@
 Feature: Setting the default spec path
 
-  You can just type `rspec` to run all specs that live
-  in the `spec` directory.
+  You can just type `rspec` to run all specs that live in the `spec` directory.
 
   This is supported by a `--default-path` option, which is set to `spec` by
   default. If you prefer to keep your specs in a different directory, or assign
   an individual file to `--default-path`, you can do so on the command line or
   in a configuration file (`.rspec`, `~/.rspec`, or a custom file).
 
-  NOTE: this option is not supported on `RSpec.configuration`, as it needs to
-  be set before spec files are loaded.
+  NOTE: this option is not supported on `RSpec.configuration`, as it needs to be
+  set before spec files are loaded.
 
   Scenario: Run `rspec` with default default-path (`spec` directory)
     Given a file named "spec/example_spec.rb" with:
