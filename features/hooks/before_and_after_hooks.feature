@@ -21,9 +21,9 @@ Feature: before and after hooks
   `before` and `after` hooks can be defined directly in the example groups they
   should run in, or in a global `RSpec.configure` block.
 
-  Setting instance variables are not supported in `before(:suite)`.
+  **WARNING:** Setting instance variables are not supported in `before(:suite)`.
 
-  Mocks are only supported in `before(:example)`.
+  **WARNING:** Mocks are only supported in `before(:example)`.
 
   Note: the `:example` and `:context` scopes are also available as
   `:each` and `:all`, respectively. Use whichever you prefer.

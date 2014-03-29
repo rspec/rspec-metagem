@@ -1,6 +1,6 @@
 Feature: read command line configuration options from files
 
-  RSpec reads command line configuration options from files in two different
+  RSpec reads command line configuration options from files in three different
   locations:
 
     Local: `./.rspec-local` (i.e. in the project's root directory, can be gitignored)

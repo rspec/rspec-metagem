@@ -1,6 +1,6 @@
 Feature: Excluding lines from the backtrace
 
-  To reduce the noise when diagnosing , RSpec excludes matching lines from
+  To reduce the noise when diagnosing failures, RSpec excludes matching lines from
   backtraces. The default exclusion patterns are:
 
     /\/lib\d*\/ruby\//,

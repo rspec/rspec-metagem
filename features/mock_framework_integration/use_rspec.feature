@@ -1,7 +1,7 @@
 Feature: mock with rspec
 
-  RSpec uses its own mocking framework by default, or you can configure it
-  explicitly.
+  RSpec uses its own mocking framework by default. You can also configure it
+  explicitly if you wish.
 
   Scenario: Passing message expectation
     Given a file named "example_spec.rb" with:
