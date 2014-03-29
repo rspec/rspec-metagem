@@ -522,8 +522,13 @@ module RSpec
             self.expecting_with_rspec = true
             ::RSpec::Matchers
           when :stdlib
+            # This require is kept here rather than in
+            # stdlib_assertions_adapter so that we can stub it out sanely in
+            # tests.
             require 'test/unit/assertions'
-            ::Test::Unit::Assertions
+
+            require 'rspec/core/stdlib_assertions_adapter'
+            ::RSpec::Core::StdlibAssertionsAdapter
           else
             raise ArgumentError, "#{framework.inspect} is not supported"
           end

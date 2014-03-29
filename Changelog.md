@@ -86,6 +86,7 @@ Enhancements:
   supported public API. (Myron Marston)
 * Add `--deprecation-out` CLI option which directs deprecation warnings
   to the named file. (Myron Marston)
+* Minitest 5 compatability for `expect_with :stdlib`. (Xavier Shay)
 
 Bug Fixes:
 
