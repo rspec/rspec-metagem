@@ -1,4 +1,4 @@
-Feature: output_stream
+Feature: Custom output stream
 
   Define a custom output stream (default `$stdout`).  Aliases: `:output`, `:out`.
 

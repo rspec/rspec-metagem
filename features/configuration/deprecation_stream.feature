@@ -1,4 +1,4 @@
-Feature: deprecation_stream
+Feature: Custom deprecation stream
 
   Define a custom output stream for warning about deprecations (default `$stderr`).
 

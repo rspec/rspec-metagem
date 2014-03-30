@@ -1,4 +1,4 @@
-Feature: default-path
+Feature: Setting the default spec path
 
   As of rspec-2.7, you can just type `rspec` to run all specs that live
   in the `spec` directory.
