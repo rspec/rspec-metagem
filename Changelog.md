@@ -29,6 +29,8 @@ Enhancements:
 * Document the remaining public APIs. rspec-expectations now has 100% of
   the public API documented and will remain that way (as new undocumented
   methods will fail the build). (Myron Marston)
+* Improve the formatting of BigDecimal objects in `eq` matcher failure
+  messages. (Daniel Fone)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
