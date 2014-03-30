@@ -19,6 +19,11 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       send_notification :dump_summary, summary_notification(2, 2, 2, 2)
       expect(output.string).to match("2 examples, 2 failures, 2 pending")
     end
+
+    it "handles no load time in the summary" do
+      send_notification :dump_summary, summary_notification(2, 2, 2, 2, nil)
+      expect(output.string).to match("2 examples, 2 failures, 2 pending")
+    end
   end
 
   describe "#dump_commands_to_rerun_failed_examples" do
