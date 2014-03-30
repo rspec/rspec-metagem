@@ -1,4 +1,4 @@
-# This file was generated on 2014-03-29T16:39:08-07:00 from the rspec-dev repo.
+# This file was generated on 2014-03-30T13:16:22-07:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
@@ -48,12 +48,6 @@ function is_mri_192 {
     fi
   else
     return 1
-  fi
-}
-
-function set_rails_version_for_rspec_rails {
-  if ruby -e "exit(RUBY_VERSION < '1.9.3')"; then
-    export RAILS_VERSION=3.2.17
   fi
 }
 
