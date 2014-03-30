@@ -558,12 +558,10 @@ module RSpec
       end
 
       # Check if color is enabled for a particular output
-      # @param output [IO] an output stream to use
+      # @param output [IO] an output stream to use, defaults to the current
+      #        `output_stream`
       # @return [Boolean]
-      def color_enabled?(output=output_stream)
-        # rspec's built-in formatters all call this with the output argument,
-        # but defaulting to output_stream for backward compatibility with
-        # formatters in extension libs
+      def color_enabled?(output = output_stream)
         output_to_tty?(output) && color
       end
 
