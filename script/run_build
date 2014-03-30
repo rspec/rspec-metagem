@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file was generated on 2014-03-14T11:33:06+13:00 from the rspec-dev repo.
+# This file was generated on 2014-03-29T16:39:08-07:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
@@ -17,6 +17,9 @@ if is_mri; then
   run_spec_suite_for "rspec-core"
   run_spec_suite_for "rspec-expectations"
   run_spec_suite_for "rspec-mocks"
+
+  set_rails_version_for_rspec_rails
+  run_spec_suite_for "rspec-rails"
 
   if rspec_support_compatible; then
     run_spec_suite_for "rspec-support"
