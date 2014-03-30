@@ -1,5 +1,6 @@
 require 'date'
 require 'complex'
+require 'bigdecimal'
 
 module RSpec
   module Matchers
@@ -148,6 +149,24 @@ module RSpec
               }.to fail_with(a_string_with_differing_output)
             end
           end
+        end
+      end
+
+      context 'with BigDecimal objects' do
+        let(:float)   { 1.1 }
+        let(:decimal) { BigDecimal("3.3") }
+
+        it 'fails with a conventional representation of the decimal' do
+          expect {
+            expect(float).to eq(decimal)
+          }.to fail_matching "expected: 3.3 (#<BigDecimal"
+        end
+
+        it 'does not not assume BigDecimal is defined since you need to require `bigdecimal` to make it available' do
+          hide_const('BigDecimal')
+          expect {
+            expect(5).to eq(4)
+          }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
       end
     end
