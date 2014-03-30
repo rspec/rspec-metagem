@@ -25,7 +25,7 @@ RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
   end
 
   it "produces standard summary without pending when pending has a 0 count" do
-    send_notification :dump_summary, summary_notification(0.00001, 2, 0, 0)
+    send_notification :dump_summary, summary_notification(0.00001, 2, 0, 0, 0)
     expect(output.string).to match(/^\n/)
     expect(output.string).to match(/2 examples, 0 failures/i)
     expect(output.string).not_to match(/0 pending/i)

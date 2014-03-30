@@ -76,7 +76,7 @@ module FormatterSupport
     ::RSpec::Core::Notifications::SeedNotification.new seed, used
   end
 
-  def summary_notification(duration, examples, failed, pending, time = nil)
+  def summary_notification(duration, examples, failed, pending, time)
     ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending, time
   end
 

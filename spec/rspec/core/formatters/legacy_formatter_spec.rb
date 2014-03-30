@@ -105,7 +105,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
       describe "#dump_summary" do
         it "notifies formatter of dump_summary" do
           duration, count, failures, pending = 3.5, 10, 3, 2
-          send_notification :dump_summary, summary_notification(duration, count, failures, pending)
+          send_notification :dump_summary, summary_notification(duration, count, failures, pending, 0)
           expect(output.string).to(
                 match("Finished in 3.5").
             and match("3/10 failed.").
