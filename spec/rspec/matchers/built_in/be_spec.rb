@@ -21,16 +21,32 @@ describe "expect(...).to be_predicate" do
     expect(an_animal_that_is_a_canine.description).to eq("an animal that is a canine")
   end
 
+  it 'composes gracefully' do
+    RSpec::Matchers.alias_matcher :a_happy_object, :be_happy
+    expect([
+      double,
+      double(:happy? => false),
+      double(:happy? => true),
+    ]).to include a_happy_object
+  end
+
   it "passes when actual returns true for :predicates? (present tense)" do
     actual = double("actual", :exists? => true, :exist? => true)
     expect(actual).to be_exist
   end
 
-  it "fails when actual returns false for :predicate?" do
-    actual = double("actual", :happy? => false)
-    expect {
-      expect(actual).to be_happy
-    }.to fail_with("expected happy? to return true, got false")
+  context "when actual returns false for :predicate?" do
+    let(:actual) { double "actual", :happy? => false }
+    let(:expectation) { expect(actual).to be_happy }
+
+    it "fails" do
+      expect { expectation }.to fail_with("expected happy? to return true, got false")
+    end
+
+    it "only calls :predicate? once" do
+      expect(actual).to receive(:happy?).once
+      expect { expectation }.to fail
+    end
   end
 
   it "fails when actual returns nil for :predicate?" do
@@ -43,7 +59,7 @@ describe "expect(...).to be_predicate" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).to be_happy
-    }.to raise_error(NameError, /happy\?/)
+    }.to fail_matching("to respond to `happy?`")
   end
 
   it 'falls back to a present-tense form of the predicate when needed' do
@@ -73,6 +89,17 @@ describe "expect(...).to be_predicate" do
     expect {
       expect(actual).to be_foo
     }.to raise_error(/aaaah/)
+  end
+
+  it 'raises an error when :predicate? exists but raises NameError' do
+    actual_class = Class.new do
+      def foo?
+        raise NameError, "aaaah"
+      end
+    end
+    expect {
+      expect(actual_class.new).to be_foo
+    }.to raise_error(NameError, /aaaah/)
   end
 
   it "fails on error other than NameError (with the present tense predicate)" do
@@ -111,7 +138,7 @@ describe "expect(...).not_to be_predicate" do
   it "fails when actual does not respond to :sym?" do
     expect {
       expect(Object.new).not_to be_happy
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `happy?`")
   end
 end
 
@@ -133,7 +160,7 @@ describe "expect(...).to be_predicate(*args)" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).to be_older_than(3)
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `older_than?`")
   end
 end
 
@@ -155,7 +182,7 @@ describe "expect(...).not_to be_predicate(*args)" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).not_to be_older_than(3)
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `older_than?`")
   end
 end
 
@@ -182,7 +209,7 @@ describe "expect(...).to be_predicate(&block)" do
     delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).to be_happy { delegate.check_happy }
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `happy?`")
   end
 
   it 'passes the block on to the present-tense predicate form' do
@@ -263,7 +290,7 @@ describe "expect(...).not_to be_predicate(&block)" do
     delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).not_to be_happy { delegate.check_happy }
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `happy?`")
   end
 end
 
@@ -290,7 +317,7 @@ describe "expect(...).to be_predicate(*args, &block)" do
     delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `older_than?`")
   end
 end
 
@@ -317,7 +344,7 @@ describe "expect(...).not_to be_predicate(*args, &block)" do
     delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to raise_error(NameError)
+    }.to fail_matching("to respond to `older_than?`")
   end
 end
 
