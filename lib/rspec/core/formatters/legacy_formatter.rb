@@ -52,12 +52,13 @@ module RSpec
           end
 
           attr_reader :duration, :example_count, :failure_count, :pending_count
+          attr_accessor :load_time
           def dump_summary(duration, examples, failures, pending)
             @duration      = duration
             @example_count = examples
             @failure_count = failures
             @pending_count = pending
-            super Notifications::SummaryNotification.new(duration, examples, failures, pending) if defined?(super)
+            super Notifications::SummaryNotification.new(duration, examples, failures, pending, self.load_time) if defined?(super)
           end
 
           def seed(seed)
@@ -272,6 +273,7 @@ module RSpec
         #
         # @param summary [Notifications::SummaryNotification]
         def dump_summary(summary)
+          @formatter.load_time = summary.load_time if @formatter.respond_to? :load_time
           @formatter.dump_summary summary.duration, summary.example_count, summary.failure_count, summary.pending_count
         end
 
