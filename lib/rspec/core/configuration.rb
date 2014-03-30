@@ -183,7 +183,7 @@ module RSpec
 
       # @macro add_setting
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
-      add_setting :pattern, :alias_with => :filename_pattern
+      add_setting :pattern
 
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
@@ -193,7 +193,6 @@ module RSpec
         end
         @pattern = value
       end
-      alias :filename_pattern= :pattern=
 
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
@@ -267,11 +266,6 @@ module RSpec
       attr_accessor :filter_manager
       # @private
       attr_reader :backtrace_formatter, :ordering_manager
-
-      # Alias for rspec-2.x's backtrace_cleaner (now backtrace_formatter)
-      #
-      # TODO: consider deprecating and removing this rather than aliasing in rspec-3?
-      alias backtrace_cleaner backtrace_formatter
 
       def initialize
         @expectation_frameworks = []
@@ -554,14 +548,21 @@ module RSpec
         @backtrace_formatter.full_backtrace = true_or_false
       end
 
-      # Check if color is enabled.
+      # Returns the configuration option for color, but should not
+      # be used to check if color is supported.
+      #
+      # @see color_enabled?
       # @return [Boolean]
-      def color(output=output_stream)
-        # rspec's built-in formatters all call this with the output argument,
-        # but defaulting to output_stream for backward compatibility with
-        # formatters in extension libs
-        return false unless output_to_tty?(output)
+      def color
         value_for(:color, @color)
+      end
+
+      # Check if color is enabled for a particular output
+      # @param output [IO] an output stream to use, defaults to the current
+      #        `output_stream`
+      # @return [Boolean]
+      def color_enabled?(output = output_stream)
+        output_to_tty?(output) && color
       end
 
       # Toggle output color
@@ -576,12 +577,6 @@ module RSpec
           end
         end
       end
-
-      # TODO - deprecate color_enabled - probably not until the last 2.x
-      # release before 3.0
-      alias_method :color_enabled, :color
-      alias_method :color_enabled=, :color=
-      define_predicate_for :color_enabled, :color
 
       # @private
       def libs=(libs)

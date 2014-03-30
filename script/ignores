@@ -5,8 +5,6 @@
 lib/rspec/core/configuration.rb:        alias_method alias_name, name
 lib/rspec/core/configuration.rb:        alias_method "#{alias_name}=", "#{name}="
 lib/rspec/core/configuration.rb:        names.each {|name| alias_method "#{name}?", name}
-lib/rspec/core/configuration.rb:      alias_method :color_enabled, :color
-lib/rspec/core/configuration.rb:      alias_method :color_enabled=, :color=
 lib/rspec/core/configuration.rb:      alias_method :formatter=, :add_formatter
 lib/rspec/core/configuration.rb:      alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
 lib/rspec/core/configuration.rb:      alias_method :filter_run, :filter_run_including
