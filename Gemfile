@@ -22,12 +22,6 @@ platforms :jruby do
   gem "jruby-openssl"
 end
 
-platforms :rbx do
-  gem 'rubysl'
-  gem 'rubysl-test-unit'
-  gem 'racc'
-end
-
 gem 'simplecov', '~> 0.8'
 
 eval File.read('Gemfile-custom') if File.exist?('Gemfile-custom')
