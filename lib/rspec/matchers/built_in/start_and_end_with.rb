@@ -10,6 +10,8 @@ module RSpec
           @expected = expected.length == 1 ? expected.first : expected
         end
 
+        # @api private
+        # @return [String]
         def failure_message
           super.tap do |msg|
             if @actual_does_not_have_ordered_elements
@@ -20,6 +22,8 @@ module RSpec
           end
         end
 
+        # @api private
+        # @return [String]
         def description
           return super unless Hash === expected
           "#{name_to_sentence} #{surface_descriptions_in(expected).inspect}"

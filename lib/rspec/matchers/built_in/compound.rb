@@ -4,6 +4,7 @@ module RSpec
       # @api private
       # Base class for `and` and `or` compound matchers.
       class Compound < BaseMatcher
+        # @private
         attr_reader :matcher_1, :matcher_2
 
         def initialize(matcher_1, matcher_2)
@@ -11,11 +12,14 @@ module RSpec
           @matcher_2 = matcher_2
         end
 
+        # @private
         def does_not_match?(actual)
           raise NotImplementedError,
             "`expect(...).not_to matcher.#{conjunction} matcher` is not supported"
         end
 
+        # @api private
+        # @return [String]
         def description
           singleline_message(matcher_1.description, matcher_2.description)
         end
@@ -58,6 +62,9 @@ module RSpec
         # @api public
         # Matcher used to represent a compound `and` expectation.
         class And < self
+
+          # @api private
+          # @return [String]
           def failure_message
             if @matcher_1_matches
               matcher_2.failure_message
@@ -85,6 +92,9 @@ module RSpec
         # @api public
         # Matcher used to represent a compound `or` expectation.
         class Or < self
+
+          # @api private
+          # @return [String]
           def failure_message
             compound_failure_message
           end

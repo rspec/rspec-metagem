@@ -37,17 +37,20 @@ module RSpec
           numeric? && (@actual - @expected).abs <= @tolerance
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message
           "expected #{@actual.inspect} to #{description}#{not_numeric_clause}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected #{@actual.inspect} not to #{description}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def description
           "be within #{@delta}#{@unit} of #{@expected}"
         end

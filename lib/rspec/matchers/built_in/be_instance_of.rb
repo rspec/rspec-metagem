@@ -5,6 +5,9 @@ module RSpec
       # Provides the implementation for `be_an_instance_of`.
       # Not intended to be instantiated directly.
       class BeAnInstanceOf < BaseMatcher
+
+        # @api private
+        # @return [String]
         def description
           "be an instance of #{expected}"
         end

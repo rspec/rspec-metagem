@@ -18,17 +18,20 @@ module RSpec
           @block.call(actual)
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message
           "expected #{@actual} to satisfy block"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected #{@actual} not to satisfy block"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def description
           "satisfy block"
         end

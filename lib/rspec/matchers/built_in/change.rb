@@ -50,17 +50,20 @@ module RSpec
           @change_details.changed?
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message
           "expected #{@change_details.message} to have changed, but is still #{description_of @change_details.actual_before}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def description
           "change #{@change_details.message}"
         end

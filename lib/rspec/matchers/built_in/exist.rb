@@ -9,6 +9,8 @@ module RSpec
           @expected = expected
         end
 
+        # @api private
+        # @return [Boolean]
         def matches?(actual)
           @actual = actual
           valid_test? && actual_exists?

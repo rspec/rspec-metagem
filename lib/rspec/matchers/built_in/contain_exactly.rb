@@ -5,6 +5,9 @@ module RSpec
       # Provides the implementation for `contain_exactly` and `match_array`.
       # Not intended to be instantiated directly.
       class ContainExactly < BaseMatcher
+
+        # @api private
+        # @return [String]
         def failure_message
           if Array === actual
             message  = "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
@@ -18,10 +21,14 @@ module RSpec
           end
         end
 
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "`contain_exactly` does not support negation"
         end
 
+        # @api private
+        # @return [String]
         def description
           "contain exactly#{to_sentence(surface_descriptions_in expected)}"
         end

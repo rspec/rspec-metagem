@@ -42,17 +42,20 @@ module RSpec
           find_failing_method_names(actual, :select).empty?
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message
           "expected #{@actual.inspect} to respond to #{@failing_method_names.collect {|name| name.inspect }.join(', ')}#{with_arity}"
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           failure_message.sub(/to respond to/, 'not to respond to')
         end
 
-        # @private
+        # @api private
+        # @return [String]
         def description
           "respond to #{pp_names}#{with_arity}"
         end
