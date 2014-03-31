@@ -261,10 +261,17 @@ module RSpec::Core
       end
     end
 
+    def stub_stdlib_adapter
+      stub_const("Test::Unit::Assertions", Module.new)
+      allow(config).to receive(:require).with("test/unit/assertions")
+      allow(config).to receive(:require).with("rspec/expectations")
+      allow(config).to receive(:require).
+        with("rspec/core/stdlib_assertions_adapter").and_call_original
+    end
+
     describe "#expect_with" do
       before do
-        stub_const("Test::Unit::Assertions", Module.new)
-        allow(config).to receive(:require)
+        stub_stdlib_adapter
       end
 
       it_behaves_like "a configurable framework adapter", :expect_with
@@ -284,7 +291,7 @@ module RSpec::Core
       it "supports multiple calls" do
         config.expect_with :rspec
         config.expect_with :stdlib
-        expect(config.expectation_frameworks).to eq [RSpec::Matchers, Test::Unit::Assertions]
+        expect(config.expectation_frameworks).to eq [RSpec::Matchers, RSpec::Core::StdlibAssertionsAdapter]
       end
 
       it "raises if block given with multiple args" do
@@ -326,8 +333,7 @@ module RSpec::Core
 
     describe "#expecting_with_rspec?" do
       before do
-        stub_const("Test::Unit::Assertions", Module.new)
-        allow(config).to receive(:require)
+        stub_stdlib_adapter
       end
 
       it "returns false by default" do

@@ -18,6 +18,10 @@ platforms :ruby do
   gem 'github-markup', '0.7.2'
 end
 
+platforms :ruby_18, :jruby do
+  gem 'json'
+end
+
 platforms :jruby do
   gem "jruby-openssl"
 end
