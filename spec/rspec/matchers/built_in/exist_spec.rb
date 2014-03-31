@@ -20,6 +20,14 @@ describe "exist matcher" do
     end
   end
 
+  it 'composes gracefully' do
+    expect([
+      double,
+      double(:exists? => false),
+      double(:exists? => true),
+    ]).to include existing
+  end
+
   [:exist?, :exists?].each do |predicate|
     context "when the object responds to ##{predicate}" do
       describe "expect(...).to exist" do
