@@ -33,7 +33,7 @@ describe "expect(...).to be_predicate" do
     }.to fail_with("expected happy? to return true, got false")
   end
 
-  it "fails when actual returns false for :predicate?" do
+  it "fails when actual returns nil for :predicate?" do
     actual = double("actual", :happy? => nil)
     expect {
       expect(actual).to be_happy
