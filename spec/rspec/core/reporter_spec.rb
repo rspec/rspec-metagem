@@ -4,6 +4,7 @@ module RSpec::Core
   RSpec.describe Reporter do
     let(:config)   { Configuration.new }
     let(:reporter) { Reporter.new config }
+    let(:start_time) { Time.now }
 
     describe "finish" do
       let(:formatter) { double("formatter") }
@@ -29,6 +30,22 @@ module RSpec::Core
         expect(formatter).to receive(:dump_summary).ordered
 
         reporter.finish
+      end
+    end
+
+    describe 'start' do
+      before { config.start_time = start_time }
+
+      it 'notifies the formatter of start with example count' do
+        formatter = double("formatter")
+        reporter.register_listener formatter, :start
+
+        expect(formatter).to receive(:start) do |notification|
+          expect(notification.count).to eq 3
+          expect(notification.load_time).to eq 5
+        end
+
+        reporter.start 3, (start_time + 5)
       end
     end
 
@@ -146,6 +163,10 @@ module RSpec::Core
     end
 
     describe "timing" do
+      before do
+        config.start_time = start_time
+      end
+
       it "uses RSpec::Core::Time as to not be affected by changes to time in examples" do
         formatter = double(:formatter)
         reporter.register_listener formatter, :dump_summary
@@ -159,6 +180,18 @@ module RSpec::Core
 
         reporter.finish
         expect(duration).to be < 0.2
+      end
+
+      it "captures the load time so it can report it later" do
+        formatter = instance_double("ProgressFormatter")
+        reporter.register_listener formatter, :dump_summary
+        reporter.start 3, (start_time + 5)
+
+        expect(formatter).to receive(:dump_summary) do |notification|
+          expect(notification.load_time).to eq(5)
+        end
+
+        reporter.finish
       end
     end
   end

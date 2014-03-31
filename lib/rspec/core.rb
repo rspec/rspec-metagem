@@ -1,4 +1,4 @@
-require 'time'
+$_rspec_core_load_started_at = Time.now
 require 'rbconfig'
 
 require "rspec/support"

@@ -6,7 +6,7 @@ module RSpec::Core::Formatters
     include FormatterSupport
 
     before do
-      send_notification :start, count_notification(2)
+      send_notification :start, start_notification(2)
       allow(formatter).to receive(:color_enabled?).and_return(false)
     end
 

@@ -90,6 +90,8 @@ Enhancements:
 * Add `--deprecation-out` CLI option which directs deprecation warnings
   to the named file. (Myron Marston)
 * Minitest 5 compatability for `expect_with :stdlib`. (Xavier Shay)
+* Reporter now notifies formatters of the load time of RSpec and your
+  specs via `StartNotification` and `SummaryNotification`. (Jon Rowe)
 
 Bug Fixes:
 

@@ -103,7 +103,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#dump_summary" do
     it "adds summary info to the output hash" do
-      send_notification :dump_summary, summary_notification(1.0, 10, 3, 4)
+      send_notification :dump_summary, summary_notification(1.0, 10, 3, 4, 0)
       expect(formatter.output_hash[:summary]).to include(
         :duration => 1.0, :example_count => 10, :failure_count => 3,
         :pending_count => 4

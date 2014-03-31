@@ -27,7 +27,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
 
       describe "#start" do
         it "notifies formatter of start" do
-          send_notification :start, count_notification(5)
+          send_notification :start, start_notification(5)
           expect(output.string).to include "Started 5 examples"
         end
       end
@@ -105,7 +105,7 @@ RSpec.describe RSpec::Core::Formatters::LegacyFormatter do
       describe "#dump_summary" do
         it "notifies formatter of dump_summary" do
           duration, count, failures, pending = 3.5, 10, 3, 2
-          send_notification :dump_summary, summary_notification(duration, count, failures, pending)
+          send_notification :dump_summary, summary_notification(duration, count, failures, pending, 0)
           expect(output.string).to(
                 match("Finished in 3.5").
             and match("3/10 failed.").
