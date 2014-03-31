@@ -30,6 +30,10 @@ describe Object, "#should" do
           true
         end
 
+        def respond_to?(method, *args)
+          method.to_sym == :proxied? || @target.respond_to?(symbol, *args)
+        end
+
         def method_missing(name, *args)
           @target.send(name, *args)
         end
