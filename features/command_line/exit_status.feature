@@ -1,8 +1,8 @@
 Feature: exit status
 
-  The rspec command exits with an exit status of 0 if all examples pass,
+  The `rspec` command exits with an exit status of 0 if all examples pass,
   and 1 if any examples fail. The failure exit code can be overridden
-  using the --failure-exit-code option.
+  using the `--failure-exit-code` option.
 
   Scenario: Exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:

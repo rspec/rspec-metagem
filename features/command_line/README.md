@@ -8,7 +8,7 @@ For a full list of options, run the `rspec` command with the `--help` flag:
 ### Run with `ruby`
 
 Generally, life is simpler if you just use the `rspec` command. If you must use the `ruby`
-command, however, you'll need to require `"rspec/autorun"`. You can
+command, however, you'll need to `require "rspec/autorun"`. You can
 either pass a `-rrspec/autorun` CLI option when invoking `ruby`, or add
 a `require 'rspec/autorun'` to one or more of your spec files.
 

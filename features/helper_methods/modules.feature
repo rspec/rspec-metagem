@@ -6,9 +6,9 @@ Feature: Define helper methods in a module
   your example groups so that the methods in the module are available
   in the example groups themselves (but not in the actual examples).
 
-  You can also include or extend the module onto only certain example
+  You can also `include` or `extend` the module onto only certain example
   groups by passing a metadata hash as the last argument.  Only groups
-  that match the given metadata will include or extend the module. You
+  that match the given metadata will `include` or `extend` the module. You
   can also specify metadata using only symbols.
 
   Background:

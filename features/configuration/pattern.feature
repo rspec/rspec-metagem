@@ -1,6 +1,6 @@
 Feature: pattern
 
-  Use the pattern option to tell RSpec to look for specs in files that match a pattern other than "**/*_spec.rb".
+  Use the `--pattern` option to tell RSpec to look for specs in files that match a pattern other than "**/*_spec.rb".
 
   Background:
     Given a file named "spec/example_spec.rb" with:

@@ -1,7 +1,7 @@
 Feature: --init option
 
-  Use the --init option on the command line to generate conventional
-  files for an rspec project. It generates a `.rspec` and
+  Use the `--init` option on the command line to generate conventional
+  files for an RSpec project. It generates a `.rspec` and
   `spec/spec_helper.rb` with some example settings to get you started.
 
   These settings treat the case where you run an individual spec file

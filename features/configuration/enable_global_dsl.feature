@@ -16,7 +16,7 @@ Feature: Global namespace DSL
 
   `config.expose_dsl_globally = false`.
 
-  For backwards compatibility it defaults to true.
+  For backwards compatibility it defaults to `true`.
 
   Scenario: By default RSpec allows the DSL to be used globally
     Given a file named "spec/example_spec.rb" with:

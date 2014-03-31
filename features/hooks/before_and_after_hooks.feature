@@ -9,7 +9,7 @@ Feature: before and after hooks
       after(:example) # run after each example
       after(:context)  # run one time only, after all of the examples in a group
 
-  Before and after blocks are called in the following order:
+  `before` and `after` blocks are called in the following order:
 
       before suite
       before context
@@ -19,7 +19,7 @@ Feature: before and after hooks
       after  suite
 
   `before` and `after` hooks can be defined directly in the example groups they
-  should run in, or in a global RSpec.configure block.
+  should run in, or in a global `RSpec.configure` block.
 
   Setting instance variables are not supported in `before(:suite)`.
 

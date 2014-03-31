@@ -11,7 +11,7 @@ Feature: Excluding lines from the backtrace
     /lib\/rspec\/(core|expectations|matchers|mocks)/
 
   This list can be modified or replaced with the `backtrace_exclusion_patterns`
-  option. Additionally, rspec can be run with the `--backtrace` option to skip
+  option. Additionally, `rspec` can be run with the `--backtrace` option to skip
   backtrace cleaning entirely.
 
   Scenario: Using default backtrace_exclusion_patterns

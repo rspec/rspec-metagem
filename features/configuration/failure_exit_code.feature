@@ -1,6 +1,6 @@
 Feature: failure exit code
 
-  Use the feature_exit_code option to set a custom exit code when RSpec fails.
+  Use the `feature_exit_code` option to set a custom exit code when RSpec fails.
 
     RSpec.configure { |c| c.failure_exit_code = 42 }
 

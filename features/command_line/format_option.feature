@@ -1,6 +1,6 @@
 Feature: --format option
 
-  Use the --format option to tell RSpec how to format the output.
+  Use the `--format` option to tell RSpec how to format the output.
 
   RSpec ships with several formatters built in. By default, it uses the progress
   formatter, which generates output like this:
@@ -14,8 +14,8 @@ Feature: --format option
 
       $ rspec spec --format documentation
 
-  You can also specify an output target ($stdout by default) with an --out
-  option immediately following the --format option:
+  You can also specify an output target (`$stdout` by default) with an `--out`
+  option immediately following the `--format` option:
 
       $ rspec spec --format documentation --out rspec.txt
 

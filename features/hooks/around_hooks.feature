@@ -1,20 +1,20 @@
 Feature: around hooks
 
-  Around hooks receive the example as a block argument, extended to behave like
+  `around` hooks receive the example as a block argument, extended to behave like
   a proc.  This lets you define code that should be executed before and after
-  the example. Of course, you can do the same thing with before and after hooks,
+  the example. Of course, you can do the same thing with `before` and `after` hooks,
   and it's often cleaner to do so.
 
-  Where around hooks shine is when you want to run an example in a block. For
+  Where `around` hooks shine is when you want to run an example in a block. For
   example, if your database library offers a transaction method that receives
-  a block, you can use an around hook as described in the first scenario:
+  a block, you can use an `around` hook as described in the first scenario:
 
-  WARNING: around hooks do not share state with the example the way before and
-  after hooks do. This means that you can not share instance variables between
-  around hooks and examples.
+  WARNING: `around` hooks do not share state with the example the way `before` and
+  `after` hooks do. This means that you can not share instance variables between
+  `around` hooks and examples.
 
   Also, mock frameworks are set up and torn down within the context of running
-  the example, so you can not interact with them directly in around hooks.
+  the example, so you can not interact with them directly in `around` hooks.
 
   Scenario: Use the example as a proc within the block passed to around()
     Given a file named "example_spec.rb" with:

@@ -1,6 +1,6 @@
 Feature: --example option
 
-  Use the --example (or -e) option to filter examples by name.
+  Use the `--example` (or `-e`) option to filter examples by name.
 
   The argument is matched against the full description of the example,
   which is the concatenation of descriptions of the group (including
