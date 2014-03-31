@@ -21,10 +21,14 @@ module RSpec
           valid_test? && !actual_exists?
         end
 
+        # @api private
+        # @return [String]
         def failure_message
           "expected #{@actual.inspect} to exist#{validity_message}"
         end
 
+        # @api private
+        # @return [String]
         def failure_message_when_negated
           "expected #{@actual.inspect} not to exist#{validity_message}"
         end
