@@ -231,6 +231,7 @@ module RSpec
       RESERVED_KEYS = [
         :description,
         :example_group,
+        :parent_example_group,
         :execution_result,
         :file_path,
         :full_description,
