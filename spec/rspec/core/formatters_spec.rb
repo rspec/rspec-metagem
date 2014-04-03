@@ -38,32 +38,37 @@ module RSpec::Core::Formatters
         expect(loader.formatters.first).to be_an_instance_of(CustomFormatter)
       end
 
-      it "handles formatters that dont implement notifications" do
+      context "when a legacy formatter is added with RSpec::LegacyFormatters" do
         formatter_class = Struct.new(:output)
-        loader.add formatter_class, output
-        expect(loader.formatters.first).to be_an_instance_of(RSpec::Core::Formatters::LegacyFormatter)
+        let(:formatter) { double "formatter", :notifications => notifications }
+        let(:notifications) { [:a, :b, :c] }
+
+        before do
+          class_double("RSpec::LegacyFormatters", :load_formatter => formatter).as_stubbed_const
+        end
+
+        it "loads formatters from the external gem" do
+          loader.add formatter_class, output
+          expect(loader.formatters).to eq [formatter]
+        end
+
+        it "subscribes the formatter to the notifications the adaptor implements" do
+          expect(reporter).to receive(:register_listener).with(formatter, *notifications)
+          loader.add formatter_class, output
+        end
       end
 
-      context "when a legacy formatter is added" do
+      context "when a legacy formatter is added without RSpec::LegacyFormatters" do
         formatter_class = Struct.new(:output)
+
+        before do
+          allow_deprecation
+        end
 
         it "issues a deprecation" do
           expect_warn_deprecation_with_call_site(__FILE__, __LINE__ + 2,
             /The #{formatter_class} formatter uses the deprecated formatter interface/)
           loader.add formatter_class, output
-        end
-
-        it "does not mistakenly add in the progress formatter" do
-          # When we issue a deprecation warning it triggers `setup_defaults`,
-          # which adds the progress formatter if it thinks no formatter has been
-          # added yet.
-          allow(RSpec).to receive(:warn_deprecation) do
-            loader.setup_default(StringIO.new, StringIO.new)
-          end
-
-          loader.add formatter_class, output
-
-          expect(loader.formatters.grep(RSpec::Core::Formatters::ProgressFormatter)).to eq([])
         end
       end
 

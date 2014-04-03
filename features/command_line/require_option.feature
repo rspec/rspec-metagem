@@ -10,6 +10,8 @@ Feature: `--require` option
       require 'delegate'
 
       class LoggingFormatter < RSpec::Core::Formatters::BaseTextFormatter
+        RSpec::Core::Formatters.register self, :dump_summary
+
         def initialize(output)
           super LoggingIO.new(output)
         end
