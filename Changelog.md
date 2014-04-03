@@ -92,6 +92,8 @@ Enhancements:
 * Minitest 5 compatability for `expect_with :stdlib`. (Xavier Shay)
 * Reporter now notifies formatters of the load time of RSpec and your
   specs via `StartNotification` and `SummaryNotification`. (Jon Rowe)
+* Add `disable_monkey_patching!` config option that disables all monkey
+  patching from whatever pieces of RSpec you use. (Alexey Fedorov)
 
 Bug Fixes:
 
