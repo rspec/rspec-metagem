@@ -1001,6 +1001,7 @@ module RSpec
       # @private
       def configure_mock_framework
         RSpec::Core::ExampleGroup.__send__(:include, mock_framework)
+        conditionally_disable_mocks_monkey_patching
       end
 
       # @private
@@ -1008,6 +1009,7 @@ module RSpec
         expectation_frameworks.each do |framework|
           RSpec::Core::ExampleGroup.__send__(:include, framework)
         end
+        conditionally_disable_expectations_monkey_patching
       end
 
       # @private
@@ -1155,6 +1157,52 @@ module RSpec
         self.deprecation_stream = Formatters::DeprecationFormatter::RaiseErrorStream.new
       end
 
+      # Enables zero monkey patching mode for RSpec. It removes monkey
+      # patching of the top-level DSL methods (`describe`,
+      # `shared_examples_for`, etc) onto `main` and `Module`, instead
+      # requiring you to prefix these methods with `RSpec.`. It enables
+      # expect-only syntax for rspec-mocks and rspec-expectations. It
+      # simply disables monkey patching on whatever pieces of rspec
+      # the user is using.
+      #
+      # @note It configures rspec-mocks and rspec-expectations only
+      #   if the user is using those (either explicitly or implicitly
+      #   by not setting `mock_with` or `expect_with` to anything else).
+      #
+      # @note If the user uses this options with `mock_with :mocha`
+      #   (or similiar) they will still have monkey patching active
+      #   in their test environment from mocha.
+      #
+      # @example
+      #
+      #   # It disables all monkey patching
+      #   RSpec.configure do |config|
+      #     config.disable_monkey_patching!
+      #   end
+      #
+      #   # Is an equivalent to
+      #   RSpec.configure do |config|
+      #     config.expose_dsl_globally = false
+      #
+      #     config.mock_with :rspec do |mocks|
+      #       mocks.syntax = :expect
+      #       mocks.patch_marshal_to_support_partial_doubles = false
+      #     end
+      #
+      #     config.mock_with :rspec do |expectations|
+      #       expectations.syntax = :expect
+      #     end
+      #   end
+      def disable_monkey_patching!
+        self.expose_dsl_globally = false
+        self.disable_monkey_patching = true
+        conditionally_disable_mocks_monkey_patching
+        conditionally_disable_expectations_monkey_patching
+      end
+
+      # @private
+      attr_accessor :disable_monkey_patching
+
     private
 
       def get_files_to_run(paths)
@@ -1197,6 +1245,29 @@ module RSpec
 
       def output_to_tty?(output=output_stream)
         tty? || (output.respond_to?(:tty?) && output.tty?)
+      end
+
+      def conditionally_disable_mocks_monkey_patching
+        return unless disable_monkey_patching && rspec_mocks_loaded?
+
+        RSpec::Mocks.configuration.tap do |config|
+          config.syntax = :expect
+          config.patch_marshal_to_support_partial_doubles = false
+        end
+      end
+
+      def conditionally_disable_expectations_monkey_patching
+        return unless disable_monkey_patching && rspec_expectations_loaded?
+
+        RSpec::Expectations.configuration.syntax = :expect
+      end
+
+      def rspec_mocks_loaded?
+        defined?(RSpec::Mocks.configuration)
+      end
+
+      def rspec_expectations_loaded?
+        defined?(RSpec::Expectations.configuration)
       end
     end
   end
