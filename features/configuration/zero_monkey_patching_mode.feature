@@ -65,7 +65,7 @@ Feature: Zero monkey patching mode
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       """
-    When I run `rspec spec/example_should_spec.rb`
+    When I run `rspec`
     Then the examples should all pass
 
   Scenario: In zero monkey patching mode, the monkey patched methods are undefined
