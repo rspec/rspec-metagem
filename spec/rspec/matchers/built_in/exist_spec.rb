@@ -124,8 +124,16 @@ describe "exist matcher" do
 
   it 'passes any provided arguments to the call to #exist?' do
     object = double
-    expect(object).to receive(:exist?).with(:foo, :bar) { true }
+    expect(object).to receive(:exist?).with(:foo, :bar) { true }.at_least(:once)
 
     expect(object).to exist(:foo, :bar)
+  end
+
+  it 'memoizes the call to `exist?` because it can be expensive (such as doing a DB query)' do
+    object = double
+    allow(object).to receive(:exist?) { false }
+    expect { expect(object).to exist }.to fail
+
+    expect(object).to have_received(:exist?).once
   end
 end
