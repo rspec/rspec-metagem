@@ -1,4 +1,4 @@
-Feature: --example option
+Feature: `--example` option
 
   Use the `--example` (or `-e`) option to filter examples by name.
 
@@ -80,7 +80,7 @@ Feature: --example option
     When I run `rspec . --example 'third group'`
     Then the examples should all pass
 
-  Scenario: Match using ClassName#method_name form
+  Scenario: Match using `ClassName#method_name` form
     When I run `rspec . --example 'Array#length'`
     Then the examples should all pass
 

@@ -1,4 +1,4 @@
-Feature: --failure-exit-code option (exit status)
+Feature: `--failure-exit-code` option (exit status)
 
   The `rspec` command exits with an exit status of 0 if all examples pass, and 1
   if any examples fail. The failure exit code can be overridden using the
@@ -52,7 +52,7 @@ Feature: --failure-exit-code option (exit status)
     Then the exit status should be 0
     And the output should contain "0 examples"
 
-  Scenario: Exit with 2 when one example fails and --failure-exit-code is 2
+  Scenario: Exit with 2 when one example fails and `--failure-exit-code` is 2
     Given a file named "ko_spec.rb" with:
       """ruby
       RSpec.describe "KO" do
@@ -65,7 +65,7 @@ Feature: --failure-exit-code option (exit status)
     Then the exit status should be 2
     And the output should contain "1 example, 1 failure"
 
-  Scenario: Exit with rspec's exit code when an at_exit hook is added upstream
+  Scenario: Exit with RSpec's exit code when an `at_exit` hook is added upstream
     Given a file named "exit_at_spec.rb" with:
       """ruby
       require 'rspec/autorun'

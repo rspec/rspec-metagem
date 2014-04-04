@@ -4,7 +4,7 @@ Feature: Create example aliases
   examples with the configured metadata. You can also specify metadata using
   only symbols.
 
-  Scenario: Use alias_example_to to define a custom example name
+  Scenario: Use `alias_example_to` to define a custom example name
     Given a file named "alias_example_to_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -22,7 +22,7 @@ Feature: Create example aliases
     And the examples should all pass
 
 
-  Scenario: Use alias_example_to to define a pending example
+  Scenario: Use `alias_example_to` to define a pending example
     Given a file named "alias_example_to_pending_spec.rb" with:
       """ruby
       RSpec.configure do |c|

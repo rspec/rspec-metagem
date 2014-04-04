@@ -52,7 +52,7 @@ Feature: inclusion filters
     And  the output should contain "group 1 example 2"
     And  the output should not contain "group 2 example 1"
 
-  Scenario: Before/after(:context) hooks in unmatched example group are not run
+  Scenario: `before`/`after(:context)` hooks in unmatched example group are not run
     Given a file named "spec/before_after_all_inclusion_filter_spec.rb" with:
       """ruby
       require "spec_helper"

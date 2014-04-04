@@ -1,4 +1,4 @@
-Feature: around hooks
+Feature: `around` hooks
 
   `around` hooks receive the example as a block argument, extended to behave as
   a proc. This lets you define code that should be executed before and after the
@@ -17,7 +17,7 @@ Feature: around hooks
   **WARNING**: Mock frameworks are set up and torn down within the context of
   running the example. You cannot interact with them directly in `around` hooks.
 
-  Scenario: Use the example as a proc within the block passed to around()
+  Scenario: Use the example as a proc within the block passed to `around()`
     Given a file named "example_spec.rb" with:
       """ruby
       class Database
@@ -46,7 +46,7 @@ Feature: around hooks
       close transaction
       """
 
-  Scenario: Invoke the example using run()
+  Scenario: Invoke the example using `run()`
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "around hook" do
@@ -85,7 +85,7 @@ Feature: around hooks
     When I run `rspec example_spec.rb`
     Then the output should contain "this should show up in the output"
 
-  Scenario: Define a global around hook
+  Scenario: Define a global `around` hook
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -110,7 +110,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: Per example hooks are wrapped by the around hook
+  Scenario: Per example hooks are wrapped by the `around` hook
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "around filter" do
@@ -143,7 +143,7 @@ Feature: around hooks
       around example after
       """
 
-  Scenario: Context hooks are NOT wrapped by the around hook
+  Scenario: Context hooks are NOT wrapped by the `around` hook
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "around filter" do
@@ -176,7 +176,7 @@ Feature: around hooks
       .after context
       """
 
-  Scenario: Examples run by an around block are run in the configured context
+  Scenario: Examples run by an `around` block are run in the configured context
     Given a file named "example_spec.rb" with:
       """ruby
       module IncludedInConfigureBlock
@@ -243,7 +243,7 @@ Feature: around hooks
           # No reason given
       """
 
-  Scenario: Multiple around hooks in the same scope
+  Scenario: Multiple `around` hooks in the same scope
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "if there are multiple around hooks in the same scope" do
@@ -276,7 +276,7 @@ Feature: around hooks
       first around hook after
       """
 
-  Scenario: Around hooks in multiple scopes
+  Scenario: `around` hooks in multiple scopes
     Given a file named "example_spec.rb" with:
     """ruby
     RSpec.describe "if there are around hooks in an outer scope" do

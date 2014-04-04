@@ -1,4 +1,4 @@
-Feature: --tag option
+Feature: `--tag` option
 
   Use the `--tag` (or `-t`) option to filter the examples by tags.
 
@@ -41,7 +41,7 @@ Feature: --tag option
     Then the output should contain "include {:focus=>true}"
     Then the examples should all pass
 
-  Scenario: Filter examples with a name:value tag
+  Scenario: Filter examples with a `name:value` tag
     When I run `rspec . --tag type:special`
     Then the output should contain:
       """
@@ -50,7 +50,7 @@ Feature: --tag option
     And the output should contain "2 examples"
     And the examples should all pass
 
-  Scenario: Filter examples with a name:value tag and @
+  Scenario: Filter examples with a `name:value` tag and @
     When I run `rspec . --tag @type:special`
     Then the output should contain:
       """
@@ -68,7 +68,7 @@ Feature: --tag option
     Then the output should contain "exclude {:skip=>true}"
     Then the examples should all pass
 
-  Scenario: Exclude examples with a name:value tag
+  Scenario: Exclude examples with a `name:value` tag
     When I run `rspec . --tag ~speed:slow`
     Then the output should contain:
       """
@@ -76,7 +76,7 @@ Feature: --tag option
       """
     Then the examples should all pass
 
-  Scenario: Exclude examples with a name:value tag and @
+  Scenario: Exclude examples with a `name:value` tag and @
     When I run `rspec . --tag ~@speed:slow`
     Then the output should contain:
       """

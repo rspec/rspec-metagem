@@ -1,6 +1,6 @@
 Feature: arbitrary file suffix
 
-  Scenario: .spec
+  Scenario: `.spec`
     Given a file named "a.spec" with:
       """ruby
       RSpec.describe "something" do

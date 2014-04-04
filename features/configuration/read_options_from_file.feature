@@ -16,7 +16,7 @@ Feature: read command line configuration options from files
   lowest to highest precedence; for example, an option in `~/.rspec` can be
   overridden by an option in `.rspec-local`).
 
-  Scenario: Color set in .rspec
+  Scenario: Color set in `.rspec`
     Given a file named ".rspec" with:
       """
       --color
@@ -57,7 +57,7 @@ Feature: read command line configuration options from files
     When I run `rspec spec/example_spec.rb --options my.options`
     Then the examples should all pass
 
-  Scenario: RSpec ignores ./.rspec when custom options file is used
+  Scenario: RSpec ignores `./.rspec` when custom options file is used
     Given a file named "my.options" with:
       """
       --format documentation
@@ -77,7 +77,7 @@ Feature: read command line configuration options from files
     When I run `rspec spec/example_spec.rb --options my.options`
     Then the examples should all pass
 
-  Scenario: Using ERB in .rspec
+  Scenario: Using ERB in `.rspec`
     Given a file named ".rspec" with:
       """
       --format <%= true ? 'documentation' : 'progress' %>

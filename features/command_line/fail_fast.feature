@@ -1,4 +1,4 @@
-Feature: --fail-fast option
+Feature: `--fail-fast` option
 
   Use the `--fail-fast` option to tell RSpec to stop running the test suite on
   the first failed test.
@@ -17,11 +17,11 @@ Feature: --fail-fast option
       end
       """
 
-  Scenario: Using --fail-fast
+  Scenario: Using `--fail-fast`
     When I run `rspec . --fail-fast`
     Then the output should contain ".F"
     Then the output should not contain ".F."
 
-  Scenario: Using --no-fail-fast
+  Scenario: Using `--no-fail-fast`
     When I run `rspec . --no-fail-fast`
     Then the output should contain ".F."

@@ -1,4 +1,4 @@
-Feature: skipped examples
+Feature: `skip` examples
 
   RSpec offers a number of ways to indicate that an example should be skipped
   and not executed.

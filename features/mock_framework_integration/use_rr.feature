@@ -20,7 +20,7 @@ Feature: mock with rr
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: Failing message expecation
+  Scenario: Failing message expectation
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -77,7 +77,7 @@ Feature: mock with rr
     Then the output should contain "1 example, 1 failure"
     And the exit status should be 1
 
-  Scenario: Accessing RSpec.configuration.mock_framework.framework_name
+  Scenario: Accessing `RSpec.configuration.mock_framework.framework_name`
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|

@@ -32,7 +32,7 @@ Feature: custom settings
     When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
-  Scenario: Default to true
+  Scenario: Default to `true`
     Given a file named "additional_setting_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -58,7 +58,7 @@ Feature: custom settings
     When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
-  Scenario: Overridden in a subsequent RSpec.configure block
+  Scenario: Overridden in a subsequent `RSpec.configure` block
     Given a file named "additional_setting_spec.rb" with:
       """ruby
       RSpec.configure do |c|

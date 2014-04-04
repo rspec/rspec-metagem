@@ -127,7 +127,7 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
-  Scenario: Setting profile examples through CLI
+  Scenario: Setting profile examples through CLI using `--profile`
     When I run `rspec spec --profile 2`
     Then the examples should all pass
     And the output should contain "Top 2 slowest examples"

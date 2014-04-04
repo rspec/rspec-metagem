@@ -1,4 +1,4 @@
-Feature: before and after hooks
+Feature: `before` and `after` hooks
 
   Use `before` and `after` hooks to execute arbitrary code before and/or after
   the body of an example is run:
@@ -28,7 +28,7 @@ Feature: before and after hooks
   Note: the `:example` and `:context` scopes are also available as `:each` and
   `:all`, respectively. Use whichever you prefer.
 
-  Scenario: Define before(:example) block
+  Scenario: Define `before(:example)` block
     Given a file named "before_example_spec.rb" with:
       """ruby
       require "rspec/expectations"
@@ -62,7 +62,7 @@ Feature: before and after hooks
     When I run `rspec before_example_spec.rb`
     Then the examples should all pass
 
-  Scenario: Define before(:context) block in example group
+  Scenario: Define `before(:context)` block in example group
     Given a file named "before_context_spec.rb" with:
       """ruby
       require "rspec/expectations"
@@ -99,7 +99,7 @@ Feature: before and after hooks
     When I run `rspec before_context_spec.rb:15`
     Then the examples should all pass
 
-  Scenario: Failure in before(:context) block
+  Scenario: Failure in `before(:context)` block
     Given a file named "before_context_spec.rb" with:
       """ruby
       RSpec.describe "an error in before(:context)" do
@@ -154,7 +154,7 @@ Feature: before and after hooks
         fails this example, too (FAILED - 1)
       """
 
-  Scenario: Failure in after(:context) block
+  Scenario: Failure in `after(:context)` block
     Given a file named "after_context_spec.rb" with:
       """ruby
       RSpec.describe "an error in after(:context)" do
@@ -177,7 +177,7 @@ Feature: before and after hooks
         StandardError: Boom!
       """
 
-  Scenario: Define before and after blocks in configuration
+  Scenario: Define `before` and `after` blocks in configuration
     Given a file named "befores_in_configuration_spec.rb" with:
       """ruby
       require "rspec/expectations"
@@ -207,7 +207,7 @@ Feature: before and after hooks
     When I run `rspec befores_in_configuration_spec.rb`
     Then the examples should all pass
 
-  Scenario: Before/after blocks are run in order
+  Scenario: `before`/`after` blocks are run in order
     Given a file named "ensure_block_order_spec.rb" with:
       """ruby
       require "rspec/expectations"
@@ -243,7 +243,7 @@ Feature: before and after hooks
       .after context
       """
 
-  Scenario: Before/after blocks defined in config are run in order
+  Scenario: `before`/after` blocks defined in configuration are run in order
     Given a file named "configuration_spec.rb" with:
       """ruby
       require "rspec/expectations"
@@ -290,7 +290,7 @@ Feature: before and after hooks
       after suite
       """
 
-  Scenario: Before/after context blocks are run once
+  Scenario: `before`/`after` context blocks are run once
     Given a file named "before_and_after_context_spec.rb" with:
       """ruby
       RSpec.describe "before and after callbacks" do
@@ -348,7 +348,7 @@ Feature: before and after hooks
       .outer after context
       """
 
-  Scenario: Nested examples have access to state set in outer before(:context)
+  Scenario: Nested examples have access to state set in outer `before(:context)`
     Given a file named "before_context_spec.rb" with:
       """ruby
       RSpec.describe "something" do
@@ -378,7 +378,7 @@ Feature: before and after hooks
     When I run `rspec before_context_spec.rb`
     Then the examples should all pass
 
-  Scenario: Before/after context blocks have access to state
+  Scenario: `before`/`after` context blocks have access to state
     Given a file named "before_and_after_context_spec.rb" with:
       """ruby
       RSpec.describe "before and after callbacks" do
@@ -413,7 +413,7 @@ Feature: before and after hooks
     When I run `rspec before_and_after_context_spec.rb`
     Then the examples should all pass
 
-  Scenario: Exception in before(:example) is captured and reported as failure
+  Scenario: Exception in `before(:example)` is captured and reported as failure
     Given a file named "error_in_before_example_spec.rb" with:
       """ruby
       RSpec.describe "error in before(:example)" do

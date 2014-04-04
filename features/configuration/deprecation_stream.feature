@@ -23,7 +23,7 @@ Feature: Custom deprecation stream
       end
       """
 
-  Scenario: Default - print deprecations to $stderr
+  Scenario: Default - print deprecations to `$stderr`
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
@@ -51,7 +51,7 @@ Feature: Custom deprecation stream
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
-  Scenario: Configure using a File object
+  Scenario: Configure using a `File` object
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
@@ -69,7 +69,7 @@ Feature: Custom deprecation stream
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
-  Scenario: configure using the CLI option
+  Scenario: configure using the CLI `--deprecation-out` option
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"

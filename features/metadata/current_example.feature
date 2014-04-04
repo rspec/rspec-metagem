@@ -4,7 +4,7 @@ Feature: current example
   argument provided to: `it`, `subject`, `let`, and the `before`, `after`, and
   `around` hooks.
 
-  Scenario: Access the example object from within an example
+  Scenario: Access the `example` object from within an example
     Given a file named "spec/example_spec.rb" with:
       """ruby
       RSpec.describe "example as block arg to it, before, and after" do

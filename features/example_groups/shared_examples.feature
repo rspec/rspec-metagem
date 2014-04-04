@@ -176,7 +176,7 @@ Feature: shared examples
           should return 6 from #length
       """
 
-  Scenario: Aliasing "it_should_behave_like" to "it_has_behavior"
+  Scenario: Aliasing `it_should_behave_like` to `it_has_behavior`
     Given a file named "shared_example_group_spec.rb" with:
       """ruby
       RSpec.configure do |c|

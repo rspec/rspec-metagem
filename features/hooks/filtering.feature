@@ -76,7 +76,7 @@ Feature: filters
     When I run `rspec filter_after_example_hooks_spec.rb`
     Then the output should contain "3 examples, 2 failures"
 
-  Scenario: Filter around(:example) hooks using arbitrary metadata
+  Scenario: Filter `around(:example)` hooks using arbitrary metadata
     Given a file named "filter_around_example_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -112,7 +112,7 @@ Feature: filters
     When I run `rspec filter_around_example_hooks_spec.rb`
     Then the examples should all pass
 
-  Scenario: Filter before(:context) hooks using arbitrary metadata
+  Scenario: Filter `before(:context)` hooks using arbitrary metadata
     Given a file named "filter_before_context_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -148,7 +148,7 @@ Feature: filters
     When I run `rspec filter_before_context_hooks_spec.rb`
     Then the examples should all pass
 
-  Scenario: Filter after(:context) hooks using arbitrary metadata
+  Scenario: Filter `after(:context)` hooks using arbitrary metadata
     Given a file named "filter_after_context_hooks_spec.rb" with:
       """ruby
       example_msgs = []

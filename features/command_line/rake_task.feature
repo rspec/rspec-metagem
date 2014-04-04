@@ -65,7 +65,7 @@ Feature: rake task
     When I run `rake`
     Then the exit status should be 0
 
-  Scenario: Passing arguments to the rspec command using rspec_opts
+  Scenario: Passing arguments to the `rspec` command using `rspec_opts`
     Given a file named "Rakefile" with:
       """ruby
       require 'rspec/core/rake_task'
@@ -93,7 +93,7 @@ Feature: rake task
       (ruby|rbx) -S rspec ./spec/thing_spec.rb --tag fast
       """
 
-  Scenario: Passing rake task arguments to the rspec command via rspec_opts
+  Scenario: Passing rake task arguments to the `rspec` command via `rspec_opts`
     Given a file named "Rakefile" with:
       """ruby
       require 'rspec/core/rake_task'

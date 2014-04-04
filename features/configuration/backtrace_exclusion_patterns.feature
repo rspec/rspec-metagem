@@ -14,7 +14,7 @@ Feature: Excluding lines from the backtrace
   option. Additionally, `rspec` can be run with the `--backtrace` option to skip
   backtrace cleaning entirely.
 
-  Scenario: Using default backtrace_exclusion_patterns
+  Scenario: Using default `backtrace_exclusion_patterns`
     Given a file named "spec/failing_spec.rb" with:
     """ruby
     RSpec.describe "2 + 2" do
@@ -27,7 +27,7 @@ Feature: Excluding lines from the backtrace
     Then the output should contain "1 example, 1 failure"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: Replacing backtrace_exclusion_patterns
+  Scenario: Replacing `backtrace_exclusion_patterns`
     Given a file named "spec/spec_helper.rb" with:
     """ruby
     RSpec.configure do |config|
@@ -53,7 +53,7 @@ Feature: Excluding lines from the backtrace
     Then the output should contain "1 example, 1 failure"
     And the output should contain "lib/rspec/expectations"
 
-  Scenario: Appending to backtrace_exclusion_patterns
+  Scenario: Appending to `backtrace_exclusion_patterns`
     Given a file named "spec/matchers/be_baz_matcher.rb" with:
     """ruby
     RSpec::Matchers.define :be_baz do |_|
@@ -79,7 +79,7 @@ Feature: Excluding lines from the backtrace
     But the output should not contain "be_baz_matcher"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: Running rspec with the --backtrace option
+  Scenario: Running `rspec` with the `--backtrace` option
     Given a file named "spec/matchers/be_baz_matcher.rb" with:
     """ruby
     RSpec::Matchers.define :be_baz do |_|

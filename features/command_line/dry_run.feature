@@ -1,9 +1,9 @@
-Feature: --dry-run option
+Feature: `--dry-run` option
 
   Use the `--dry-run` option to have RSpec print your suite's formatter output
   without running any examples or hooks.
 
-  Scenario: Using --dry-run
+  Scenario: Using `--dry-run`
     Given a file named "spec/dry_run_spec.rb" with:
       """ruby
       RSpec.configure do |c|

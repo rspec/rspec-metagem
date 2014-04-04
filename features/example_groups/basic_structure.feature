@@ -1,4 +1,4 @@
-Feature: basic structure (describe/it)
+Feature: basic structure (`describe`/`it`)
 
   RSpec is a DSL for creating executable examples of how code is expected to
   behave, organized in groups. It uses the words "describe" and "it" so we can
@@ -30,7 +30,7 @@ Feature: basic structure (describe/it)
         does something
       """
 
-  Scenario: Nested example groups (using context)
+  Scenario: Nested example groups (using `context`)
     Given a file named "nested_example_groups_spec.rb" with:
     """ruby
     RSpec.describe "something" do

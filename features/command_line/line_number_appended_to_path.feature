@@ -3,7 +3,7 @@ Feature: line number appended to file path
   To run one or more examples or groups, you can append the line number to the
   path, e.g.
 
-      rspec path/to/example_spec.rb:37
+      $ rspec path/to/example_spec.rb:37
 
   Background:
     Given a file named "example_spec.rb" with:

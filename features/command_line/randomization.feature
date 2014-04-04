@@ -45,7 +45,7 @@ Feature: Randomization can be reproduced across test runs
       end
       """
 
-  Scenario: Specifying a seed using srand provides predictable randomization
+  Scenario: Specifying a seed using `srand` provides predictable randomization
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       srand 123
@@ -53,7 +53,7 @@ Feature: Randomization can be reproduced across test runs
     When I run `rspec`
     Then the output should contain "66-92-98-17-83"
 
-  Scenario: Passing the RSpec seed to srand provides predictable randomization
+  Scenario: Passing the RSpec seed to `srand` provides predictable randomization
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       srand RSpec.configuration.seed

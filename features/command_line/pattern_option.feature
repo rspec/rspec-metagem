@@ -1,4 +1,4 @@
-Feature: --pattern option
+Feature: `--pattern` option
 
   By default, RSpec loads files matching the pattern:
 

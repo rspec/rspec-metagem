@@ -1,4 +1,4 @@
-Feature: run with ruby command
+Feature: run with `ruby` command
 
   You can use the `ruby` command to run specs. You just need to require
   `rspec/autorun`.

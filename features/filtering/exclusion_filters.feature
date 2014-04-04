@@ -83,7 +83,7 @@ Feature: exclusion filters
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 
-  Scenario: Before/after(:context) hooks in excluded example group are not run
+  Scenario: `before`/`after(:context)` hooks in excluded example group are not run
     Given a file named "spec/before_after_context_exclusion_filter_spec.rb" with:
       """ruby
       RSpec.configure do |c|

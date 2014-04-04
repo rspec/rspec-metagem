@@ -3,7 +3,7 @@ Feature: Conditional Filters
   The `:if` and `:unless` metadata keys can be used to filter examples without
   needing to configure an exclusion filter.
 
-  Scenario: Implicit :if filter
+  Scenario: Implicit `:if` filter
     Given a file named "implicit_if_filter_spec.rb" with:
       """ruby
       RSpec.describe ":if => true group", :if => true do
@@ -37,7 +37,7 @@ Feature: Conditional Filters
       | :if => false group no :if example       |
       | no :if group :if => false example       |
 
-  Scenario: Implicit :unless filter
+  Scenario: Implicit `:unless` filter
     Given a file named "implicit_unless_filter_spec.rb" with:
       """ruby
       RSpec.describe ":unless => true group", :unless => true do

@@ -7,7 +7,7 @@ Feature: explicit subject
   user-facing concept, we recommend that you reserve it for support of custom
   matchers and/or extension libraries that hide its use from examples.
 
-  Scenario: Subject in top level group
+  Scenario: `subject` in top level group
     Given a file named "top_level_subject_spec.rb" with:
       """ruby
       RSpec.describe Array, "with some elements" do
@@ -20,7 +20,7 @@ Feature: explicit subject
     When I run `rspec top_level_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: Subject in a nested group
+  Scenario: `subject` in a nested group
     Given a file named "nested_subject_spec.rb" with:
       """ruby
       RSpec.describe Array do
@@ -35,7 +35,7 @@ Feature: explicit subject
     When I run `rspec nested_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: Access subject from before block
+  Scenario: Access `subject` from `before` block
     Given a file named "top_level_subject_spec.rb" with:
       """ruby
       RSpec.describe Array, "with some elements" do
@@ -49,7 +49,7 @@ Feature: explicit subject
     When I run `rspec top_level_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: Invoke helper method from subject block
+  Scenario: Invoke helper method from `subject` block
     Given a file named "helper_subject_spec.rb" with:
       """ruby
       RSpec.describe Array do
@@ -65,7 +65,7 @@ Feature: explicit subject
     When I run `rspec helper_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: Subject block is invoked at most once per example
+  Scenario: `subject` block is invoked at most once per example
     Given a file named "nil_subject_spec.rb" with:
       """ruby
       RSpec.describe Array do
@@ -81,7 +81,7 @@ Feature: explicit subject
     When I run `rspec nil_subject_spec.rb`
     Then the examples should all pass
 
-  Scenario: Subject bang method
+  Scenario: `subject!` bang method
     Given a file named "subject_bang_spec.rb" with:
       """ruby
       RSpec.describe Array do

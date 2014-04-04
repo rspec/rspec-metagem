@@ -12,7 +12,7 @@
   - tag.feature
   - line_number_appended_to_path.feature
   - exit_status.feature
-  - order.md (--order option)
+  - order.md (`--order` option)
   - rake_task.feature
 - pending:
   - pending_examples.feature

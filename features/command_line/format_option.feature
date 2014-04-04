@@ -1,4 +1,4 @@
-Feature: --format option
+Feature: `--format` option
 
   Use the `--format` option to tell RSpec how to format the output.
 
