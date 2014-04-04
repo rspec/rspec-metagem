@@ -27,6 +27,9 @@ Bug Fixes:
   before using them in order to work properly with matchers
   that use internal memoization based on a given `actual` value.
   (Myron Marston)
+* Fix `be_xyz` predicate matcher so that it can be used in composed
+  matcher expressions involving objects that do not implement the
+  predicate method. (Daniel Fone)
 
 Enhancements:
 
