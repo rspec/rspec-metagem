@@ -188,33 +188,25 @@ module RSpec
         def matches?(actual, &block)
           @actual  = actual
           @block ||= block
+          valid_test? && predicate_matches?
+        end
 
-          if is_private_on?( @actual )
-            raise Expectations::ExpectationNotMetError.new("expectation set on private method `#{predicate}`")
-          end
-
-          begin
-            return @result = actual.__send__(predicate, *@args, &@block)
-          rescue NameError => predicate_missing_error
-          end
-
-          begin
-            return @result = actual.__send__(present_tense_predicate, *@args, &@block)
-          rescue NameError
-            raise predicate_missing_error
-          end
+        def does_not_match?(actual, &block)
+          @actual  = actual
+          @block ||= block
+          valid_test? && !predicate_matches?
         end
 
         # @api private
         # @return [String]
         def failure_message
-          "expected #{predicate}#{args_to_s} to return true, got #{@result.inspect}"
+          failure_message_expecting(true)
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{predicate}#{args_to_s} to return false, got #{@result.inspect}"
+          failure_message_expecting(false)
         end
 
         # @api private
@@ -225,15 +217,28 @@ module RSpec
 
       private
 
-        # support 1.8.7
+        def valid_test?
+          !private_predicate? && predicate_exists?
+        end
+
+        # support 1.8.7, evaluate once at load time for performance
         if methods.first.is_a? String
-          def is_private_on? actual
-            actual.private_methods.include? predicate.to_s
+          def private_predicate?
+            @actual.private_methods.include? predicate.to_s
           end
         else
-          def is_private_on? actual
-            actual.private_methods.include? predicate
+          def private_predicate?
+            @actual.private_methods.include? predicate
           end
+        end
+
+        def predicate_exists?
+          actual.respond_to?(predicate) || actual.respond_to?(present_tense_predicate)
+        end
+
+        def predicate_matches?
+          method_name = actual.respond_to?(predicate) ? predicate : present_tense_predicate
+          @predicate_matches = actual.__send__(method_name, *@args, &@block)
         end
 
         def predicate
@@ -255,6 +260,18 @@ module RSpec
 
         def prefix_to_sentence
           split_words(@prefix)
+        end
+
+        def failure_message_expecting(value)
+          validity_message || "expected #{predicate}#{args_to_s} to return #{value}, got #{@predicate_matches.inspect}"
+        end
+
+        def validity_message
+          if private_predicate?
+            "expectation set on private method `#{predicate}`"
+          elsif !predicate_exists?
+            "expected #{@actual} to respond to `#{predicate}`"
+          end
         end
       end
     end
