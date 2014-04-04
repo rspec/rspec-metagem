@@ -2,7 +2,9 @@ Feature: fail fast
 
   Use the `fail_fast` option to tell RSpec to abort the run on first failure:
 
-      RSpec.configure {|c| c.fail_fast = true}
+  ```ruby
+  RSpec.configure { |c| c.fail_fast = true }
+  ```
 
   Background:
     Given a file named "spec/spec_helper.rb" with:

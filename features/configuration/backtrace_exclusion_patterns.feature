@@ -3,12 +3,14 @@ Feature: Excluding lines from the backtrace
   To reduce the noise when diagnosing failures, RSpec excludes matching lines
   from backtraces. The default exclusion patterns are:
 
-      /\/lib\d*\/ruby\//,
-      /org\/jruby\//,
-      /bin\//,
-      /gems/,
-      /spec\/spec_helper\.rb/,
-      /lib\/rspec\/(core|expectations|matchers|mocks)/
+  ```ruby
+  /\/lib\d*\/ruby\//,
+  /org\/jruby\//,
+  /bin\//,
+  /gems/,
+  /spec\/spec_helper\.rb/,
+  /lib\/rspec\/(core|expectations|matchers|mocks)/
+  ```
 
   This list can be modified or replaced with the `backtrace_exclusion_patterns`
   option. Additionally, `rspec` can be run with the `--backtrace` option to skip

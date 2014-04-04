@@ -3,13 +3,17 @@ Feature: Custom deprecation stream
   Define a custom output stream for warning about deprecations (default
   `$stderr`).
 
-      RSpec.configure do |c|
-        c.deprecation_stream = File.open('deprecations.txt', 'w')
-      end
+  ```ruby
+  RSpec.configure do |c|
+    c.deprecation_stream = File.open('deprecations.txt', 'w')
+  end
+  ```
 
   or
 
-      RSpec.configure { |c| c.deprecation_stream = 'deprecations.txt' }
+  ```ruby
+  RSpec.configure { |c| c.deprecation_stream = 'deprecations.txt' }
+  ```
 
   or pass `--deprecation-out`
 

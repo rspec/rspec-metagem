@@ -18,7 +18,9 @@ Feature: Global namespace DSL
 
   RSpec 3 now provides an option to disable this global monkey patching:
 
-      config.expose_dsl_globally = false
+  ```ruby
+  config.expose_dsl_globally = false
+  ```
 
   For backwards compatibility it defaults to `true`.
 

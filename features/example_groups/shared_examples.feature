@@ -7,10 +7,12 @@ Feature: shared examples
 
   A shared group is included in another group using any of:
 
-      include_examples "name"      # include the examples in the current context
-      it_behaves_like "name"       # include the examples in a nested context
-      it_should_behave_like "name" # include the examples in a nested context
-      matching metadata            # include the examples in the current context
+  ```ruby
+  include_examples "name"      # include the examples in the current context
+  it_behaves_like "name"       # include the examples in a nested context
+  it_should_behave_like "name" # include the examples in a nested context
+  matching metadata            # include the examples in the current context
+  ```
 
   WARNING: Files containing shared groups must be loaded before the files that
   use them.  While there are conventions to handle this, RSpec does _not_ do
@@ -28,7 +30,9 @@ Feature: shared examples
   2.  Put files containing shared examples in `spec/support/` and require files
       in that directory from `spec/spec_helper.rb`:
 
-          Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
+      ```ruby
+      Dir["./spec/support/**/*.rb"].sort.each { |f| require f}
+      ```
 
       This is included in the generated `spec/spec_helper.rb` file in
       `rspec-rails`

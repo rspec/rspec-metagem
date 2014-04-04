@@ -3,20 +3,24 @@ Feature: `before` and `after` hooks
   Use `before` and `after` hooks to execute arbitrary code before and/or after
   the body of an example is run:
 
-      before(:example) # run before each example
-      before(:context) # run one time only, before all of the examples in a group
+  ```ruby
+  before(:example) # run before each example
+  before(:context) # run one time only, before all of the examples in a group
 
-      after(:example) # run after each example
-      after(:context) # run one time only, after all of the examples in a group
+  after(:example) # run after each example
+  after(:context) # run one time only, after all of the examples in a group
+  ```
 
   `before` and `after` blocks are called in the following order:
 
-      before suite
-      before context
-      before example
-      after  example
-      after  context
-      after  suite
+  ```ruby
+  before suite
+  before context
+  before example
+  after  example
+  after  context
+  after  suite
+  ```
 
   `before` and `after` hooks can be defined directly in the example groups they
   should run in, or in a global `RSpec.configure` block.

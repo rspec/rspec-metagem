@@ -4,13 +4,15 @@ Feature: filters
   `RSpec.configure` can be constrained to specific examples and/or groups using
   metadata as a filter.
 
-      RSpec.configure do |c|
-        c.before(:example, :type => :model) do
-        end
-      end
+  ```ruby
+  RSpec.configure do |c|
+    c.before(:example, :type => :model) do
+    end
+  end
 
-      RSpec.describe "something", :type => :model do
-      end
+  RSpec.describe "something", :type => :model do
+  end
+  ```
 
   You can also specify metadata using only symbols.
 

@@ -3,7 +3,9 @@ behavior, including output formats, filtering examples, etc.
 
 For a full list of options, run the `rspec` command with the `--help` flag:
 
-    $ rspec --help
+```ruby
+$ rspec --help
+```
 
 ### Run with `ruby`
 
@@ -21,4 +23,6 @@ your implementation files will be on the `LOAD_PATH` as well.
 If you're using the `ruby` command, you'll need to do this yourself (with the
 `-I` option). Putting these together, your command might be something like this:
 
-    $ ruby -Ilib -Ispec -rrspec/autorun path/to/spec.rb
+```ruby
+$ ruby -Ilib -Ispec -rrspec/autorun path/to/spec.rb
+```

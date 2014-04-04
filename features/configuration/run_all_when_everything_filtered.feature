@@ -6,7 +6,9 @@ Feature: run all when everything filtered
   `:focus => true`, as it will run all the examples when none match the
   inclusion filter.
 
-      RSpec.configure { |c| c.run_all_when_everything_filtered = true }
+  ```ruby
+  RSpec.configure { |c| c.run_all_when_everything_filtered = true }
+  ```
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
