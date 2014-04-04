@@ -60,6 +60,7 @@ module RSpec
       #
       # @!visibility public
       def values_match?(expected, actual)
+        expected = with_matchers_cloned(expected)
         Support::FuzzyMatcher.values_match?(expected, actual)
       end
 
@@ -104,6 +105,38 @@ module RSpec
           end
         else
           item
+        end
+      end
+
+      # @private
+      # Historically, a single matcher instance was only checked
+      # against a single value. Given that the matcher was only
+      # used once, it's been common to memoize some intermediate
+      # calculation that is derived from the `actual` value in
+      # order to reuse that intermediate result in the failure
+      # message.
+      #
+      # This can cause a problem when using such a matcher as an
+      # argument to another matcher in a composed matcher expression,
+      # since the matcher instance may be checked against multiple
+      # values and produce invalid results due to the memoization.
+      #
+      # To deal with this, we clone any matchers in `expected` via
+      # this method when using `values_match?`, so that any memoization
+      # does not "leak" between checks.
+      def with_matchers_cloned(object)
+        if Matchers.is_a_matcher?(object)
+          object.clone
+        elsif Hash === object
+          Hash[ with_matchers_cloned(object.to_a) ]
+        elsif enumerable?(object)
+          begin
+            object.map { |subobject| with_matchers_cloned(subobject) }
+          rescue IOError # STDOUT is enumerable but `map` raises an error
+            object
+          end
+        else
+          object
         end
       end
 

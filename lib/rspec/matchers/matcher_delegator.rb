@@ -23,6 +23,11 @@ module RSpec
         end
       end
 
+      def initialize_copy(other)
+        @base_matcher = @base_matcher.clone
+        super
+      end
+
       # So `===` is delegated via `method_missing`.
       undef ===
       undef ==
