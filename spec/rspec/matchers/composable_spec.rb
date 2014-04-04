@@ -34,6 +34,14 @@ module RSpec
         it "works properly in spite of the memoization" do
           expect(["foo", "bar", "a"]).to all_but_one(have_string_length(3))
         end
+
+        context "when passing a compound expression" do
+          it "works properly in spite of the memoization" do
+            expect(["A", "AB", "ABC"]).to all_but_one(
+                have_string_length(1).or have_string_length(2)
+            )
+          end
+        end
       end
 
       describe "cloning data structures containing matchers" do

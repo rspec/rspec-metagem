@@ -1,5 +1,44 @@
 module RSpec::Matchers::BuiltIn
   describe Compound do
+    RSpec::Matchers.define :custom_include do |*args|
+      match { |actual| expect(actual).to include(*args) }
+    end
+
+    shared_examples "making a copy" do |compound_method, copy_method|
+      context "when making a copy via `#{copy_method}`" do
+        it "uses a copy of the base matchers" do
+          matcher_1 = include(3)
+          matcher_2 = include(4)
+          compound  = matcher_1.__send__(compound_method, matcher_2)
+          copy = compound.__send__(copy_method)
+
+          expect(copy).not_to equal(compound)
+          expect(copy.matcher_1).not_to equal(matcher_1)
+          expect(copy.matcher_1).to be_a(RSpec::Matchers::BuiltIn::Include)
+          expect(copy.matcher_1.expected).to eq([3])
+
+          expect(copy.matcher_2).not_to equal(matcher_2)
+          expect(copy.matcher_2).to be_a(RSpec::Matchers::BuiltIn::Include)
+          expect(copy.matcher_2.expected).to eq([4])
+        end
+
+        it "copies custom matchers properly so they can work even though they have singleton behavior" do
+          matcher_1 = custom_include(3)
+          matcher_2 = custom_include(3)
+          compound  = matcher_1.__send__(compound_method, matcher_2)
+          copy = compound.__send__(copy_method)
+
+          expect(copy).not_to equal(compound)
+          expect(copy.matcher_1).not_to equal(matcher_1)
+          expect(copy.matcher_2).not_to equal(matcher_2)
+
+          expect([3]).to copy
+
+          expect { expect([4]).to copy }.to fail_matching("expected [4]")
+        end
+      end
+    end
+
     context "when used as a composable matcher" do
       it 'can pass' do
         expect(["food", "barn"]).to include(
@@ -32,6 +71,9 @@ module RSpec::Matchers::BuiltIn
       it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4 do
         let(:matcher) { eq(3).and be <= 3 }
       end
+
+      include_examples "making a copy", :and, :dup
+      include_examples "making a copy", :and, :clone
 
       context 'when both matchers pass' do
         it 'passes' do
@@ -153,6 +195,9 @@ module RSpec::Matchers::BuiltIn
       it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5 do
         let(:matcher) { eq(3).or eq(4) }
       end
+
+      include_examples "making a copy", :or, :dup
+      include_examples "making a copy", :or, :clone
 
       it 'has a description composed of both matcher descriptions' do
         matcher = eq(3).or eq(4)

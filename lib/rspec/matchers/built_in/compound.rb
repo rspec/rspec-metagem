@@ -26,6 +26,12 @@ module RSpec
 
       private
 
+        def initialize_copy(other)
+          @matcher_1 = @matcher_1.clone
+          @matcher_2 = @matcher_2.clone
+          super
+        end
+
         def indent_multiline_message(message)
           message.lines.map do |line|
             line =~ /\S/ ? '   ' + line : line
