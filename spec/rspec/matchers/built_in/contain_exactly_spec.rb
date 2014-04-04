@@ -232,6 +232,14 @@ describe "matching against things that aren't arrays" do
 end
 
 describe "Composing `contain_exactly` with other matchers" do
+  context "when it is compared to multiple possible matches" do
+    it 'works properly when passed as an argument in its aliased form' do
+      expect([[1, 3], ["food", "barn"]]).to include(
+        a_collection_containing_exactly(/foo/, /bar/)
+      )
+    end
+  end
+
   describe "expect(...).to contain_exactly(matcher, matcher])" do
     it 'passes when the array matches the matchers in the same order' do
       expect(["food", "barn"]).to contain_exactly(

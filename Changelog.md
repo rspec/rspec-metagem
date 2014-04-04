@@ -23,6 +23,10 @@ Bug Fixes:
 * Fix `exist` matcher so that it can be used in composed matcher
   expressions involving objects that do not implement `exist?` or
   `exists?`. (Daniel Fone)
+* Fix composable matcher match logic so that it clones matchers
+  before using them in order to work properly with matchers
+  that use internal memoization based on a given `actual` value.
+  (Myron Marston)
 
 Enhancements:
 
