@@ -239,7 +239,7 @@ passed to `it_should_behave_like`.
 
 See [features/example\_groups/shared\_example\_group.feature](http://github.com/rspec/rspec-core/blob/master/features/example_groups/shared_example_group.feature) for more information.
 
-NOTICE: The including example groups no longer have access to any of the
+**NOTICE:** The including example groups no longer have access to any of the
 methods, hooks, or state defined inside a shared group. This will break rspec-1
 specs that were using shared example groups to extend the behavior of including
 groups.

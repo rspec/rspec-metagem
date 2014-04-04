@@ -10,11 +10,11 @@ Feature: `around` hooks
   receives a block, you can use an `around` to cleanly open and close the
   transaction around the example.
 
-  **WARNING**: `around` hooks do not share state with the example the way
+  **WARNING:** `around` hooks do not share state with the example the way
   `before` and `after` hooks do. This means that you cannot share instance
   variables between `around` hooks and examples.
 
-  **WARNING**: Mock frameworks are set up and torn down within the context of
+  **WARNING:** Mock frameworks are set up and torn down within the context of
   running the example. You cannot interact with them directly in `around` hooks.
 
   Scenario: Use the example as a proc within the block passed to `around()`

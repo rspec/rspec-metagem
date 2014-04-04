@@ -14,12 +14,13 @@ Feature: shared examples
   matching metadata            # include the examples in the current context
   ```
 
-  WARNING: Files containing shared groups must be loaded before the files that
+  **WARNING:** Files containing shared groups must be loaded before the files that
   use them.  While there are conventions to handle this, RSpec does _not_ do
   anything special (like autoload). Doing so would require a strict naming
   convention for files that would break existing suites.
 
-  CONVENTIONS:
+  Conventions:
+  ------------
 
   1.  The simplest approach is to require files with shared examples explicitly
       from the files that use them. Keep in mind that RSpec adds the `spec`
