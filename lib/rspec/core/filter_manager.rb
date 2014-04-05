@@ -91,7 +91,11 @@ module RSpec
       end
 
       def prune(examples)
-        examples.select {|e| !exclude?(e) && include?(e)}
+        if inclusions.standalone?
+          examples.select {|e| include?(e) }
+        else
+          examples.select {|e| !exclude?(e) && include?(e)}
+        end
       end
 
       def exclude(*args)
@@ -214,6 +218,10 @@ module RSpec
 
       def include_example?(example)
         @rules.empty? ? true : example.any_apply?(@rules)
+      end
+
+      def standalone?
+        is_standalone_filter?(@rules)
       end
 
     private
