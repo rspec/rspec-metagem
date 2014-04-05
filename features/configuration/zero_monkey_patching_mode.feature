@@ -1,4 +1,4 @@
-@allow-disabled-should-syntax
+@allow-should-syntax
 Feature: Zero monkey patching mode
 
   Use the `disable_monkey_patching!` configuration option to

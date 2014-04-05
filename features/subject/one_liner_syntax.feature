@@ -1,3 +1,4 @@
+@oneliner-should
 Feature: One-liner syntax
 
   RSpec supports a one-liner syntax for setting an expectation on the `subject`.
