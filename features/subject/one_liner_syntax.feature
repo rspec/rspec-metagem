@@ -1,13 +1,13 @@
 @oneliner-should
 Feature: One-liner syntax
 
-  RSpec supports a one-liner syntax for setting an expectation on the `subject`.
-  RSpec will give the examples a doc string that is auto-generated from the
-  matcher used in the example. This is designed specifically to help avoid
-  duplication in situations where the doc string and the matcher used in the
-  example mirror each other exactly. When used excessively, it can produce
-  documentation output that does not read well or contribute to understanding
-  the object you are describing.
+  RSpec supports a one-liner syntax for setting an expectation on the
+  `subject`.  RSpec will give the examples a doc string that is auto-
+  generated from the matcher used in the example. This is designed specifically
+  to help avoid duplication in situations where the doc string and the matcher
+  used in the example mirror each other exactly. When used excessively, it can
+  produce documentation output that does not read well or contribute to
+  understanding the object you are describing.
 
   This comes in two flavors:
 
