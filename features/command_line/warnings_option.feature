@@ -6,7 +6,7 @@ Feature: `--warnings` option (run with warnings enabled)
   Scenario:
     Given a file named "example_spec.rb" with:
       """ruby
-      describe do
+      RSpec.describe do
         it 'generates warning' do
           @undefined
         end
@@ -19,7 +19,7 @@ Feature: `--warnings` option (run with warnings enabled)
   Scenario:
     Given a file named "example_spec.rb" with:
       """ruby
-      describe do
+      RSpec.describe do
         it 'generates warning' do
           @undefined
         end

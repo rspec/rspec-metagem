@@ -9,7 +9,7 @@ Feature: `--pattern` option
   Scenario: Default pattern
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end
@@ -21,7 +21,7 @@ Feature: `--pattern` option
   Scenario: Override the default pattern on the command line
     Given a file named "spec/example.spec" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end
@@ -39,7 +39,7 @@ Feature: `--pattern` option
       """
     And a file named "spec/example.spec" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end

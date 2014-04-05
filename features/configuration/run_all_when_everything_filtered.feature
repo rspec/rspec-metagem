@@ -48,7 +48,7 @@ Feature: run all when everything filtered
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "examples" do
+      RSpec.describe "examples" do
         it "with no tag", :some_tag => true do
         end
 

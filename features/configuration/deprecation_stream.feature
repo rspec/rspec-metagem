@@ -77,7 +77,7 @@ Feature: Custom deprecation stream
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
-      describe "calling a deprecated method" do
+      RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
       """

@@ -13,7 +13,7 @@ Feature: rake task
       """
     And a file named "spec/thing_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "does something" do
           # pass
         end
@@ -34,7 +34,7 @@ Feature: rake task
       """
     And a file named "spec/thing_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "does something" do
           fail
         end
@@ -56,7 +56,7 @@ Feature: rake task
       """
     And a file named "spec/thing_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "does something" do
           fail
         end
@@ -76,7 +76,7 @@ Feature: rake task
       """
     And a file named "spec/thing_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "has a tag", :fast => true do
           # pass
         end
@@ -104,7 +104,7 @@ Feature: rake task
       """
     And a file named "spec/thing_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "has a tag", :fast => true do
           # pass
         end

@@ -27,7 +27,7 @@ Feature: Global namespace DSL
   Scenario: By default RSpec allows the DSL to be used globally
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "specs here" do
+      RSpec.describe "specs here" do
         it "passes" do
         end
       end
