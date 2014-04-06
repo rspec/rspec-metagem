@@ -43,7 +43,7 @@ describe "expect(...).to be_predicate" do
       actual = double("actual", :happy? => false)
       expect {
         expect(actual).to be_happy
-      }.to fail_with("expected (\"happy\").happy? to return true, got false")
+      }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.happy\?` to return true, got false/)
     end
 
     it "only calls :predicate? once" do
@@ -56,7 +56,7 @@ describe "expect(...).to be_predicate" do
     actual = double("actual", :happy? => nil)
     expect {
       expect(actual).to be_happy
-    }.to fail_with("expected (\"happy\").happy? to return true, got nil")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.happy\?` to return true, got nil/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -135,7 +135,7 @@ describe "expect(...).not_to be_predicate" do
     actual = double("actual", :happy? => true)
     expect {
       expect(actual).not_to be_happy
-    }.to fail_with("expected (\"happy\").happy? to return false, got true")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.happy\?` to return false, got true/)
   end
 
   it "fails when actual does not respond to :sym?" do
@@ -157,7 +157,7 @@ describe "expect(...).to be_predicate(*args)" do
     expect(actual).to receive(:older_than?).with(3).and_return(false)
     expect {
       expect(actual).to be_older_than(3)
-    }.to fail_with("expected (\"older_than\").older_than?(3) to return true, got false")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name="actual">.older_than\?\(3\)` to return true, got false/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -179,7 +179,7 @@ describe "expect(...).not_to be_predicate(*args)" do
     expect(actual).to receive(:older_than?).with(3).and_return(true)
     expect {
       expect(actual).not_to be_older_than(3)
-    }.to fail_with("expected (\"older_than\").older_than?(3) to return false, got true")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name="actual">.older_than\?\(3\)` to return false, got true/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -205,7 +205,7 @@ describe "expect(...).to be_predicate(&block)" do
     expect(delegate).to receive(:check_happy).and_return(false)
     expect {
       expect(actual).to be_happy { delegate.check_happy }
-    }.to fail_with("expected (\"happy\").happy? to return true, got false")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.happy\?` to return true, got false/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -286,7 +286,7 @@ describe "expect(...).not_to be_predicate(&block)" do
     expect(delegate).to receive(:check_happy).and_return(true)
     expect {
       expect(actual).not_to be_happy { delegate.check_happy }
-    }.to fail_with("expected (\"happy\").happy? to return false, got true")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.happy\?` to return false, got true/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -313,7 +313,7 @@ describe "expect(...).to be_predicate(*args, &block)" do
     expect(delegate).to receive(:check_older_than).with(3).and_return(false)
     expect {
       expect(actual).to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to fail_with("expected (\"older_than\").older_than?(3) to return true, got false")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name=\"actual\">\.older_than\?\(3\)` to return true, got false/)
   end
 
   it "fails when actual does not respond to :predicate?" do
@@ -340,7 +340,7 @@ describe "expect(...).not_to be_predicate(*args, &block)" do
     expect(delegate).to receive(:check_older_than).with(3).and_return(true)
     expect {
       expect(actual).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to fail_with("expected (\"older_than\").older_than?(3) to return false, got true")
+    }.to fail_with(/expected `#<RSpec::Mocks::Double:0x[0-9a-f]+ @name="actual">.older_than\?\(3\)` to return false, got true/)
   end
 
   it "fails when actual does not respond to :predicate?" do
