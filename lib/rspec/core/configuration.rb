@@ -79,10 +79,11 @@ module RSpec
       end
 
       # @macro [attach] add_setting
-      #   @attribute $1
+      #   @!attribute [rw] $1
+      #   @!method $1=(value)
       #
       # @macro [attach] define_reader
-      #   @attribute $1
+      #   @!attribute [r] $1
 
       # @macro add_setting
       # Path to use if no path is provided to the `rspec` command (default:

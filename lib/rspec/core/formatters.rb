@@ -87,7 +87,14 @@ module RSpec::Core::Formatters
       @reporter = reporter
       self.default_formatter = 'progress'
     end
-    attr_reader :formatters, :reporter
+
+    # @return [Array] the loaded formatters
+    attr_reader :formatters
+
+    # @return [Reporter] the reporter
+    attr_reader :reporter
+
+    # @return [String] the default formatter to setup, defaults to `progress`
     attr_accessor :default_formatter
 
     # @private

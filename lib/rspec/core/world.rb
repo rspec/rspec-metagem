@@ -7,6 +7,7 @@ module RSpec
 
       include RSpec::Core::Hooks
 
+      # @private
       attr_reader :example_groups, :filtered_examples
 
       # Used internally to determine what to do when a SIGINT is received
