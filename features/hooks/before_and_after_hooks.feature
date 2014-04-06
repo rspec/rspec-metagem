@@ -14,12 +14,12 @@ Feature: `before` and `after` hooks
   `before` and `after` blocks are called in the following order:
 
   ```ruby
-  before suite
-  before context
-  before example
-  after  example
-  after  context
-  after  suite
+  before :suite
+  before :context
+  before :example
+  after  :example
+  after  :context
+  after  :suite
   ```
 
   `before` and `after` hooks can be defined directly in the example groups they
