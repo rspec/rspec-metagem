@@ -13,19 +13,28 @@ module RSpec
 
         # @private
         def matches?(actual, &block)
-          actual.__send__(predicate, *@args, &(@block || block))
+          @actual = actual
+          @block ||= block
+          predicate_exists? && predicate_matches?
+        end
+
+        # @private
+        def does_not_match?(actual, &block)
+          @actual = actual
+          @block ||= block
+          predicate_exists? && !predicate_matches?
         end
 
         # @api private
         # @return [String]
         def failure_message
-          "expected ##{predicate}#{failure_message_args_description} to return true, got false"
+          validity_message || "expected ##{predicate}#{failure_message_args_description} to return true, got false"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected ##{predicate}#{failure_message_args_description} to return false, got true"
+          validity_message || "expected ##{predicate}#{failure_message_args_description} to return false, got true"
         end
 
         # @api private
@@ -35,6 +44,14 @@ module RSpec
         end
 
       private
+
+        def predicate_exists?
+          @actual.respond_to? predicate
+        end
+
+        def predicate_matches?
+          @actual.__send__(predicate, *@args, &@block)
+        end
 
         def predicate
           @predicate ||= :"has_#{@method_name.to_s.match(Matchers::HAS_REGEX).captures.first}?"
@@ -52,6 +69,10 @@ module RSpec
         def failure_message_args_description
           desc = args_description
           "(#{desc})" if desc
+        end
+
+        def validity_message
+          "expected #{@actual} to respond to `#{predicate}`" unless predicate_exists?
         end
       end
     end

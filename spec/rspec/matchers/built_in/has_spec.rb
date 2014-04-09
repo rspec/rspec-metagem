@@ -71,7 +71,7 @@ describe "expect(...).to have_sym(*args)" do
   it "fails if target does not respond to #has_sym?" do
     expect {
       expect(Object.new).to have_key(:a)
-    }.to raise_error(NoMethodError)
+    }.to fail_matching('to respond to `has_key?`')
   end
 
   it "reraises an exception thrown in #has_sym?(*args)" do
@@ -93,6 +93,16 @@ describe "expect(...).to have_sym(*args)" do
     expect(o).not_to an_object_having_sym(:bar)
 
     expect(an_object_having_sym(:foo).description).to eq("an object having sym :foo")
+  end
+
+  it 'composes gracefully' do
+    RSpec::Matchers.alias_matcher :an_object_having_foo, :have_foo
+
+    expect([
+      double,
+      double(:has_foo? => false),
+      double(:has_foo? => true),
+    ]).to include an_object_having_foo
   end
 end
 
@@ -117,8 +127,8 @@ describe "expect(...).not_to have_sym(*args)" do
 
   it "fails if target does not respond to #has_sym?" do
     expect {
-      expect(Object.new).to have_key(:a)
-    }.to raise_error(NoMethodError)
+      expect(Object.new).not_to have_key(:a)
+    }.to fail_matching('to respond to `has_key?`')
   end
 
   it "reraises an exception thrown in #has_sym?(*args)" do
