@@ -1,10 +1,10 @@
 Feature: exclusion filters
 
-  You can exclude examples from a run by declaring an exclusion filter and
-  then tagging examples, or entire groups, with that filter.  You can also
-  specify metadata using only symbols.
+  You can exclude examples from a run by declaring an exclusion filter and then
+  tagging examples, or entire groups, with that filter. You can also specify
+  metadata using only symbols.
 
-  Scenario: exclude an example
+  Scenario: Exclude an example
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -12,7 +12,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken => true
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 
@@ -25,14 +25,14 @@ Feature: exclusion filters
     Then the output should contain "does one thing"
     And the output should not contain "does another thing"
 
-  Scenario: exclude a group
+  Scenario: Exclude a group
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1", :broken => true do
+      RSpec.describe "group 1", :broken => true do
         it "group 1 example 1" do
         end
 
@@ -40,7 +40,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2" do
+      RSpec.describe "group 2" do
         it "group 2 example 1" do
         end
       end
@@ -50,14 +50,14 @@ Feature: exclusion filters
     And  the output should not contain "group 1 example 1"
     And  the output should not contain "group 1 example 2"
 
-  Scenario: exclude multiple groups
+  Scenario: Exclude multiple groups
     Given a file named "spec/sample_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1", :broken => true do
+      RSpec.describe "group 1", :broken => true do
         before(:context) do
           raise "you should not see me"
         end
@@ -69,7 +69,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2", :broken => true do
+      RSpec.describe "group 2", :broken => true do
         before(:example) do
           raise "you should not see me"
         end
@@ -83,14 +83,14 @@ Feature: exclusion filters
     And  the output should not contain "group 1"
     And  the output should not contain "group 2"
 
-  Scenario: before/after(:context) hooks in excluded example group are not run
+  Scenario: `before`/`after(:context)` hooks in excluded example group are not run
     Given a file named "spec/before_after_context_exclusion_filter_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.filter_run_excluding :broken => true
       end
 
-      describe "group 1" do
+      RSpec.describe "group 1" do
         before(:context) { puts "before context in included group" }
         after(:context)  { puts "after context in included group"  }
 
@@ -98,7 +98,7 @@ Feature: exclusion filters
         end
       end
 
-      describe "group 2", :broken => true do
+      RSpec.describe "group 2", :broken => true do
         before(:context) { puts "before context in excluded group" }
         after(:context)  { puts "after context in excluded group"  }
 
@@ -121,7 +121,7 @@ Feature: exclusion filters
         c.filter_run_excluding :broken
       end
 
-      describe "something" do
+      RSpec.describe "something" do
         it "does one thing" do
         end
 

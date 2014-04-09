@@ -1,4 +1,4 @@
-Feature: pattern option
+Feature: `--pattern` option
 
   By default, RSpec loads files matching the pattern:
 
@@ -6,10 +6,10 @@ Feature: pattern option
 
   Use the `--pattern` option to declare a different pattern.
 
-  Scenario: default pattern
+  Scenario: Default pattern
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end
@@ -18,10 +18,10 @@ Feature: pattern option
     When I run `rspec`
     Then the output should contain "1 example, 0 failures"
 
-  Scenario: override the default pattern on the command line
+  Scenario: Override the default pattern on the command line
     Given a file named "spec/example.spec" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end
@@ -30,7 +30,7 @@ Feature: pattern option
     When I run `rspec --pattern "spec/**/*.spec"`
     Then the output should contain "1 example, 0 failures"
 
-  Scenario: override the default pattern in configuration
+  Scenario: Override the default pattern in configuration
     Given a file named "spec/spec_helper.rb" with:
       """ruby
         RSpec.configure do |config|
@@ -39,7 +39,7 @@ Feature: pattern option
       """
     And a file named "spec/example.spec" with:
       """ruby
-      describe "addition" do
+      RSpec.describe "addition" do
         it "adds things" do
           expect(1 + 2).to eq(3)
         end

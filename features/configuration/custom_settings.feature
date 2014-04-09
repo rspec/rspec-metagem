@@ -2,14 +2,14 @@ Feature: custom settings
 
   Extensions like rspec-rails can add their own configuration settings.
 
-  Scenario: simple setting (with defaults)
+  Scenario: Simple setting (with defaults)
     Given a file named "additional_setting_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.add_setting :custom_setting
       end
 
-      describe "custom setting" do
+      RSpec.describe "custom setting" do
         it "is nil by default" do
           expect(RSpec.configuration.custom_setting).to be_nil
         end
@@ -32,14 +32,14 @@ Feature: custom settings
     When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
-  Scenario: default to true
+  Scenario: Default to `true`
     Given a file named "additional_setting_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.add_setting :custom_setting, :default => true
       end
 
-      describe "custom setting" do
+      RSpec.describe "custom setting" do
         it "is true by default" do
           expect(RSpec.configuration.custom_setting).to be_truthy
         end
@@ -58,7 +58,7 @@ Feature: custom settings
     When I run `rspec ./additional_setting_spec.rb`
     Then the examples should all pass
 
-  Scenario: overridden in a subsequent RSpec.configure block
+  Scenario: Overridden in a subsequent `RSpec.configure` block
     Given a file named "additional_setting_spec.rb" with:
       """ruby
       RSpec.configure do |c|
@@ -69,7 +69,7 @@ Feature: custom settings
         c.custom_setting = true
       end
 
-      describe "custom setting" do
+      RSpec.describe "custom setting" do
         it "returns the value set in the last cofigure block to get eval'd" do
           expect(RSpec.configuration.custom_setting).to be_truthy
         end

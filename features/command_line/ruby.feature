@@ -1,11 +1,11 @@
-Feature: run with ruby command
+Feature: run with `ruby` command
 
   You can use the `ruby` command to run specs. You just need to require
   `rspec/autorun`.
 
-  Generally speaking, you're better off using the `rspec` command, which
-  avoids the complexity of `rspec/autorun` (e.g. no `at_exit` hook needed!),
-  but some tools only work with the `ruby` command.
+  Generally speaking, you're better off using the `rspec` command, which avoids
+  the complexity of `rspec/autorun` (e.g. no `at_exit` hook needed!), but some
+  tools only work with the `ruby` command.
 
   Scenario: Require `rspec/autorun` from a spec file
     Given a file named "example_spec.rb" with:

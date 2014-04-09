@@ -7,7 +7,7 @@ Feature: shared context
   Background:
     Given a file named "shared_stuff.rb" with:
       """ruby
-      shared_context "shared stuff", :a => :b do
+      RSpec.shared_context "shared stuff", :a => :b do
         before { @some_var = :some_value }
         def shared_method
           "it works"
@@ -19,12 +19,12 @@ Feature: shared context
       end
       """
 
-  Scenario: declare shared context and include it with include_context
+  Scenario: Declare a shared context and include it with `include_context`
     Given a file named "shared_context_example.rb" with:
       """ruby
       require "./shared_stuff.rb"
 
-      describe "group that includes a shared context using 'include_context'" do
+      RSpec.describe "group that includes a shared context using 'include_context'" do
         include_context "shared stuff"
 
         it "has access to methods defined in shared context" do
@@ -47,12 +47,12 @@ Feature: shared context
     When I run `rspec shared_context_example.rb`
     Then the examples should all pass
 
-  Scenario: declare shared context and include it with metadata
+  Scenario: Declare a shared context and include it with metadata
     Given a file named "shared_context_example.rb" with:
       """ruby
       require "./shared_stuff.rb"
 
-      describe "group that includes a shared context using metadata", :a => :b do
+      RSpec.describe "group that includes a shared context using metadata", :a => :b do
         it "has access to methods defined in shared context" do
           expect(shared_method).to eq("it works")
         end

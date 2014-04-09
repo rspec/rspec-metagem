@@ -5,10 +5,10 @@ Feature: arbitrary helper methods
   group in which they are defined and groups nested within that group, but not
   parent or sibling groups.
 
-  Scenario: use a method defined in the same group
+  Scenario: Use a method defined in the same group
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         def help
           :available
         end
@@ -21,10 +21,10 @@ Feature: arbitrary helper methods
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: use a method defined in a parent group
+  Scenario: Use a method defined in a parent group
     Given a file named "example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         def help
           :available
         end

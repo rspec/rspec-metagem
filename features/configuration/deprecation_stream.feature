@@ -1,12 +1,19 @@
-Feature: deprecation_stream
+Feature: Custom deprecation stream
 
-  Define a custom output stream for warning about deprecations (default `$stderr`).
+  Define a custom output stream for warning about deprecations (default
+  `$stderr`).
 
-    RSpec.configure {|c| c.deprecation_stream = File.open('deprecations.txt', 'w') }
+  ```ruby
+  RSpec.configure do |c|
+    c.deprecation_stream = File.open('deprecations.txt', 'w')
+  end
+  ```
 
   or
 
-    RSpec.configure {|c| c.deprecation_stream = 'deprecations.txt' }
+  ```ruby
+  RSpec.configure { |c| c.deprecation_stream = 'deprecations.txt' }
+  ```
 
   or pass `--deprecation-out`
 
@@ -20,23 +27,26 @@ Feature: deprecation_stream
       end
       """
 
-  Scenario: default - print deprecations to $stderr
+  Scenario: Default - print deprecations to `$stderr`
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
-      describe "calling a deprecated method" do
+
+      RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
       """
     When I run `rspec spec/example_spec.rb`
     Then the output should contain "Deprecation Warnings:\n\nFoo#bar is deprecated"
 
-  Scenario: configure using the path to a file
+  Scenario: Configure using the path to a file
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
+
       RSpec.configure {|c| c.deprecation_stream = 'deprecations.txt' }
-      describe "calling a deprecated method" do
+
+      RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
       """
@@ -45,12 +55,16 @@ Feature: deprecation_stream
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
-  Scenario: configure using a File object
+  Scenario: Configure using a `File` object
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
-      RSpec.configure {|c| c.deprecation_stream = File.open('deprecations.txt', 'w') }
-      describe "calling a deprecated method" do
+
+      RSpec.configure do |c|
+        c.deprecation_stream = File.open('deprecations.txt', 'w')
+      end
+
+      RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
       """
@@ -59,11 +73,11 @@ Feature: deprecation_stream
     But the output should contain "1 deprecation logged to deprecations.txt"
     And the file "deprecations.txt" should contain "Foo#bar is deprecated"
 
-  Scenario: configure using the CLI option
+  Scenario: configure using the CLI `--deprecation-out` option
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "foo"
-      describe "calling a deprecated method" do
+      RSpec.describe "calling a deprecated method" do
         example { Foo.new.bar }
       end
       """

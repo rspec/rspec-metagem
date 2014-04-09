@@ -1,21 +1,21 @@
 Feature: User-defined metadata
 
-  You can attach user-defined metadata to any example group or example.
-  Pass a hash as the last argument (before the block) to `describe`,
-  `context` or `it`.  RSpec supports many configuration options that apply
-  only to certain examples or groups based on the metadata.
+  You can attach user-defined metadata to any example group or example. Pass a
+  hash as the last argument (before the block) to `describe`, `context` or `it`.
+  RSpec supports many configuration options that apply only to certain examples
+  or groups based on the metadata.
 
-  Metadata defined on an example group is available (and can be overridden)
-  by any sub-group or from any example in that group or a sub-group.
+  Metadata defined on an example group is available (and can be overridden) by
+  any sub-group or from any example in that group or a sub-group.
 
-  In addition, you can specify metdata using just symbols.
-  Each symbol passed as an argument to `describe`, `context` or `it` will
-  be a key in the metadata hash, with a corresponding value of `true`.
+  In addition, you can specify metdata using just symbols. Each symbol passed
+  as an argument to `describe`, `context` or `it` will be a key in the metadata
+  hash, with a corresponding value of `true`.
 
-  Scenario: define group metadata using a hash
+  Scenario: Define group metadata using a hash
     Given a file named "define_group_metadata_with_hash_spec.rb" with:
       """ruby
-      describe "a group with user-defined metadata", :foo => 17 do
+      RSpec.describe "a group with user-defined metadata", :foo => 17 do
         it 'has access to the metadata in the example' do |example|
           expect(example.metadata[:foo]).to eq(17)
         end
@@ -38,10 +38,10 @@ Feature: User-defined metadata
     When I run `rspec define_group_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
-  Scenario: define example metadata using a hash
+  Scenario: Define example metadata using a hash
     Given a file named "define_example_metadata_with_hash_spec.rb" with:
       """ruby
-      describe "a group with no user-defined metadata" do
+      RSpec.describe "a group with no user-defined metadata" do
         it 'has an example with metadata', :foo => 17 do |example|
           expect(example.metadata[:foo]).to eq(17)
           expect(example.metadata).not_to include(:bar)
@@ -57,10 +57,10 @@ Feature: User-defined metadata
     When I run `rspec define_example_metadata_with_hash_spec.rb`
     Then the examples should all pass
 
-  Scenario: override user-defined metadata
+  Scenario: Override user-defined metadata
     Given a file named "override_metadata_spec.rb" with:
       """ruby
-      describe "a group with user-defined metadata", :foo => 'bar' do
+      RSpec.describe "a group with user-defined metadata", :foo => 'bar' do
         it 'can be overridden by an example', :foo => 'bazz' do |example|
           expect(example.metadata[:foo]).to eq('bazz')
         end
@@ -75,10 +75,10 @@ Feature: User-defined metadata
     When I run `rspec override_metadata_spec.rb`
     Then the examples should all pass
 
-  Scenario: less verbose metadata
+  Scenario: Less verbose metadata
     Given a file named "less_verbose_metadata_spec.rb" with:
       """ruby
-      describe "a group with simple metadata", :fast, :simple, :bug => 73 do
+      RSpec.describe "a group with simple metadata", :fast, :simple, :bug => 73 do
         it 'has `:fast => true` metadata' do |example|
           expect(example.metadata[:fast]).to eq(true)
         end

@@ -1,22 +1,20 @@
 Feature: Overriding global ordering
 
-  You can customize how RSpec orders examples and example groups.
-  For an individual group, you can control it by tagging it with
-  `:order` metadata:
+  You can customize how RSpec orders examples and example groups. For an
+  individual group, you can control it by tagging it with `:order` metadata:
 
-    * `:defined` runs the examples (and sub groups) in defined order.
-    * `:random` runs them in random order.
+    * `:defined` runs the examples (and sub groups) in defined order
+    * `:random` runs them in random order
 
-  If you have more specialized needs, you can register your own ordering
-  using the `register_ordering` configuration option. If you register
-  an ordering as `:global`, it will be the global default, used by all
-  groups that do not have `:order` metadata (and by RSpec to order the
-  top-level groups).
+  If you have more specialized needs, you can register your own ordering using
+  the `register_ordering` configuration option. If you register an ordering as
+  `:global`, it will be the global default, used by all groups that do not have
+  `:order` metadata (and by RSpec to order the top-level groups).
 
-  Scenario: running a specific examples group in order
+  Scenario: Running a specific examples group in order
     Given a file named "order_dependent_spec.rb" with:
       """ruby
-      describe "examples only pass when they are run in order", :order => :defined do
+      RSpec.describe "examples only pass when they are run in order", :order => :defined do
         before(:context) { @list = [] }
 
         it "passes when run first" do
@@ -35,7 +33,6 @@ Feature: Overriding global ordering
         end
       end
       """
-
     When I run `rspec order_dependent_spec.rb --order random:1`
     Then the examples should all pass
 
@@ -48,7 +45,7 @@ Feature: Overriding global ordering
         end
       end
 
-      describe "A group that must run in reverse order", :order => :reverse do
+      RSpec.describe "A group that must run in reverse order", :order => :reverse do
         before(:context) { @list = [] }
 
         it "passes when run second" do
@@ -74,7 +71,7 @@ Feature: Overriding global ordering
         end
       end
 
-      describe "A group without :order metadata" do
+      RSpec.describe "A group without :order metadata" do
         before(:context) { @list = [] }
 
         it "passes when run second" do

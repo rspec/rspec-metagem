@@ -87,7 +87,7 @@ Feature: mock with an alternative framework
         config.mock_framework = Expector::RSpecAdapter
       end
 
-      describe Expector do
+      RSpec.describe Expector do
         it "passes when message is received" do
           expector = Expector.new
           expector.expect(:foo)

@@ -1,12 +1,12 @@
-Feature: skipped examples
+Feature: `skip` examples
 
   RSpec offers a number of ways to indicate that an example should be skipped
   and not executed.
 
-  Scenario: no implementation provided
+  Scenario: No implementation provided
     Given a file named "example_without_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is a skipped example"
       end
       """
@@ -16,10 +16,10 @@ Feature: skipped examples
     And the output should contain "Not yet implemented"
     And the output should contain "example_without_block_spec.rb:2"
 
-  Scenario: skipping using `skip`
+  Scenario: Skipping using `skip`
     Given a file named "skipped_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         skip "is skipped" do
         end
       end
@@ -35,10 +35,10 @@ Feature: skipped examples
           # ./skipped_spec.rb:2
       """
 
-  Scenario: skipping using `skip` inside an example
+  Scenario: Skipping using `skip` inside an example
     Given a file named "skipped_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is skipped" do
           skip
         end
@@ -55,10 +55,10 @@ Feature: skipped examples
           # ./skipped_spec.rb:2
       """
 
-  Scenario: temporarily skipping by prefixing `it`, `specify`, or `example` with an x
+  Scenario: Temporarily skipping by prefixing `it`, `specify`, or `example` with an x
     Given a file named "temporarily_skipped_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         xit "is skipped using xit" do
         end
 
@@ -86,10 +86,10 @@ Feature: skipped examples
           # ./temporarily_skipped_spec.rb:8
       """
 
-  Scenario: skipping using metadata
+  Scenario: Skipping using metadata
     Given a file named "skipped_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         example "is skipped", :skip => true do
         end
       end

@@ -1,11 +1,11 @@
 Feature: Profile examples
 
   The `--profile` command line option (available from `RSpec.configure` as
-  `#profile_examples`), when set, will cause RSpec to dump out a list of
-  your slowest examples. By default, it prints the 10 slowest examples,
-  but you can set it to a different value to have it print more or fewer
-  slow examples. If `--fail-fast` option is used together with `--profile`
-  and there is a failure, slow examples are not shown.
+  `#profile_examples`), when set, will cause RSpec to dump out a list of your
+  slowest examples. By default, it prints the 10 slowest examples, but you can
+  set it to a different value to have it print more or fewer slow examples. If
+  `--fail-fast` option is used together with `--profile` and there is a failure,
+  slow examples are not shown.
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
@@ -15,7 +15,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)
@@ -72,7 +72,7 @@ Feature: Profile examples
       end
       """
 
-  Scenario: by default does not show profile
+  Scenario: By default does not show profile
     When I run `rspec spec`
     Then the examples should all pass
     And the output should not contain "example 1"
@@ -87,7 +87,7 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
-  Scenario: setting `profile_examples` to true shows 10 examples
+  Scenario: Setting `profile_examples` to true shows 10 examples
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure { |c| c.profile_examples = true }
@@ -107,7 +107,7 @@ Feature: Profile examples
     And the output should contain "example 10"
     And the output should contain "example 11"
 
-  Scenario: setting `profile_examples` to 2 shows 2 examples
+  Scenario: Setting `profile_examples` to 2 shows 2 examples
     Given a file named "spec/spec_helper.rb" with:
       """ruby
       RSpec.configure { |c| c.profile_examples = 2 }
@@ -127,7 +127,7 @@ Feature: Profile examples
     And the output should not contain "example 10"
     And the output should not contain "example 11"
 
-  Scenario: setting profile examples through CLI
+  Scenario: Setting profile examples through CLI using `--profile`
     When I run `rspec spec --profile 2`
     Then the examples should all pass
     And the output should contain "Top 2 slowest examples"
@@ -183,7 +183,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)
@@ -204,7 +204,7 @@ Feature: Profile examples
       """ruby
       require "spec_helper"
 
-      describe "something" do
+      RSpec.describe "something" do
         it "sleeps for 0.1 seconds (example 1)" do
           sleep 0.1
           expect(1).to eq(1)

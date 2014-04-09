@@ -5,11 +5,12 @@ Feature: Configurable colors
   * `failure_color`: Color used when tests fail (default: `:red`)
   * `success_color`: Color used when tests pass (default: `:green`)
   * `pending_color`: Color used when tests are pending (default: `:yellow`)
-  * `fixed_color`: Color used when a pending block inside an example passes, but was expected to fail (default: `:blue`)
+  * `fixed_color`: Color used when a pending block inside an example passes, but
+    was expected to fail (default: `:blue`)
   * `detail_color`: Color used for miscellaneous test details (default: `:cyan`)
 
-  Colors are normally specified as symbols. Options are `:black`, `:red`,
-  `:green`, `:yellow`, `:blue`, `:magenta`, `:cyan`, and `:white`.
+  Colors are specified as symbols. Options are `:black`, `:red`, `:green`,
+  `:yellow`, `:blue`, `:magenta`, `:cyan`, and `:white`.
 
   @ansi
   Scenario: Customizing the failure color
@@ -21,7 +22,7 @@ Feature: Configurable colors
         config.color = true
       end
 
-      describe "failure" do
+      RSpec.describe "failure" do
         it "fails and uses the custom color" do
           expect(2).to eq(4)
         end

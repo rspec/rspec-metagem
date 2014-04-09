@@ -1,8 +1,10 @@
 Feature: fail fast
 
-  Use the fail_fast option to tell RSpec to abort the run on first failure:
+  Use the `fail_fast` option to tell RSpec to abort the run on first failure:
 
-      RSpec.configure {|c| c.fail_fast = true}
+  ```ruby
+  RSpec.configure { |c| c.fail_fast = true }
+  ```
 
   Background:
     Given a file named "spec/spec_helper.rb" with:
@@ -10,10 +12,10 @@ Feature: fail fast
       RSpec.configure {|c| c.fail_fast = true}
       """
 
-  Scenario: fail_fast with no failures (runs all examples)
+  Scenario: `fail_fast` with no failures (runs all examples)
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
 
@@ -24,11 +26,11 @@ Feature: fail fast
     When I run `rspec spec/example_spec.rb`
     Then the examples should all pass
 
-  Scenario: fail_fast with first example failing (only runs the one example)
+  Scenario: `fail_fast` with first example failing (only runs the one example)
     Given a file named "spec/example_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "fails" do
           fail
         end
@@ -40,11 +42,11 @@ Feature: fail fast
     When I run `rspec spec/example_spec.rb -fd`
     Then the output should contain "1 example, 1 failure"
 
-  Scenario: fail_fast with multiple files, second example failing (only runs the first two examples)
+  Scenario: `fail_fast` with multiple files, second example failing (only runs the first two examples)
     Given a file named "spec/example_1_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
 
@@ -53,7 +55,7 @@ Feature: fail fast
         end
       end
 
-      describe "something else" do
+      RSpec.describe "something else" do
         it "fails" do
           fail
         end
@@ -62,12 +64,12 @@ Feature: fail fast
     And a file named "spec/example_2_spec.rb" with:
       """ruby
       require "spec_helper"
-      describe "something" do
+      RSpec.describe "something" do
         it "passes" do
         end
       end
 
-      describe "something else" do
+      RSpec.describe "something else" do
         it "fails" do
           fail
         end

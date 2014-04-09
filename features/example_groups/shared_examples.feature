@@ -1,23 +1,26 @@
 Feature: shared examples
 
-  Shared examples let you describe behaviour of types or modules. When
-  declared, a shared group's content is stored. It is only realized in the
-  context of another example group, which provides any context the shared group
-  needs to run.
+  Shared examples let you describe behaviour of types or modules. When declared,
+  a shared group's content is stored. It is only realized in the context of
+  another example group, which provides any context the shared group needs to
+  run.
 
   A shared group is included in another group using any of:
 
-      include_examples "name"      # include the examples in the current context
-      it_behaves_like "name"       # include the examples in a nested context
-      it_should_behave_like "name" # include the examples in a nested context
-      matching metadata            # include the examples in the current context
+  ```ruby
+  include_examples "name"      # include the examples in the current context
+  it_behaves_like "name"       # include the examples in a nested context
+  it_should_behave_like "name" # include the examples in a nested context
+  matching metadata            # include the examples in the current context
+  ```
 
-  WARNING: Files containing shared groups must be loaded before the files that
+  **WARNING:** Files containing shared groups must be loaded before the files that
   use them.  While there are conventions to handle this, RSpec does _not_ do
   anything special (like autoload). Doing so would require a strict naming
   convention for files that would break existing suites.
 
-  CONVENTIONS:
+  Conventions:
+  ------------
 
   1.  The simplest approach is to require files with shared examples explicitly
       from the files that use them. Keep in mind that RSpec adds the `spec`
@@ -28,20 +31,22 @@ Feature: shared examples
   2.  Put files containing shared examples in `spec/support/` and require files
       in that directory from `spec/spec_helper.rb`:
 
-          Dir["./spec/support/**/*.rb"].sort.each {|f| require f}
+      ```ruby
+      Dir["./spec/support/**/*.rb"].sort.each { |f| require f}
+      ```
 
       This is included in the generated `spec/spec_helper.rb` file in
       `rspec-rails`
 
-  3. When all of the groups that include the shared group, just declare
-     the shared group in the same file.
+  3. When all of the groups that include the shared group, just declare the
+     shared group in the same file.
 
-  Scenario: shared examples group included in two groups in one file
+  Scenario: Shared examples group included in two groups in one file
     Given a file named "collection_spec.rb" with:
       """ruby
       require "set"
 
-      shared_examples "a collection" do
+      RSpec.shared_examples "a collection" do
         let(:collection) { described_class.new([7, 2, 4]) }
 
         context "initialized with 3 items" do
@@ -65,11 +70,11 @@ Feature: shared examples
         end
       end
 
-      describe Array do
+      RSpec.describe Array do
         it_behaves_like "a collection"
       end
 
-      describe Set do
+      RSpec.describe Set do
         it_behaves_like "a collection"
       end
       """
@@ -103,7 +108,7 @@ Feature: shared examples
     """ruby
     require "set"
 
-    shared_examples "a collection object" do
+    RSpec.shared_examples "a collection object" do
       describe "<<" do
         it "adds objects to the end of the collection" do
           collection << 1
@@ -113,13 +118,13 @@ Feature: shared examples
       end
     end
 
-    describe Array do
+    RSpec.describe Array do
       it_behaves_like "a collection object" do
         let(:collection) { Array.new }
       end
     end
 
-    describe Set do
+    RSpec.describe Set do
       it_behaves_like "a collection object" do
         let(:collection) { Set.new }
       end
@@ -143,7 +148,7 @@ Feature: shared examples
   Scenario: Passing parameters to a shared example group
     Given a file named "shared_example_group_params_spec.rb" with:
     """ruby
-    shared_examples "a measurable object" do |measurement, measurement_methods|
+    RSpec.shared_examples "a measurable object" do |measurement, measurement_methods|
       measurement_methods.each do |measurement_method|
         it "should return #{measurement} from ##{measurement_method}" do
           expect(subject.send(measurement_method)).to eq(measurement)
@@ -151,12 +156,12 @@ Feature: shared examples
       end
     end
 
-    describe Array, "with 3 items" do
+    RSpec.describe Array, "with 3 items" do
       subject { [1, 2, 3] }
       it_should_behave_like "a measurable object", 3, [:size, :length]
     end
 
-    describe String, "of 6 characters" do
+    RSpec.describe String, "of 6 characters" do
       subject { "FooBar" }
       it_should_behave_like "a measurable object", 6, [:size, :length]
     end
@@ -176,20 +181,20 @@ Feature: shared examples
           should return 6 from #length
       """
 
-  Scenario: Aliasing "it_should_behave_like" to "it_has_behavior"
+  Scenario: Aliasing `it_should_behave_like` to `it_has_behavior`
     Given a file named "shared_example_group_spec.rb" with:
       """ruby
       RSpec.configure do |c|
         c.alias_it_should_behave_like_to :it_has_behavior, 'has behavior:'
       end
 
-      shared_examples 'sortability' do
+      RSpec.shared_examples 'sortability' do
         it 'responds to <=>' do
           expect(sortable).to respond_to(:<=>)
         end
       end
 
-      describe String do
+      RSpec.describe String do
         it_has_behavior 'sortability' do
           let(:sortable) { 'sample string' }
         end
@@ -207,12 +212,12 @@ Feature: shared examples
   Scenario: Sharing metadata automatically includes shared example groups
     Given a file named "shared_example_metadata_spec.rb" with:
       """ruby
-      shared_examples "shared stuff", :a => :b do
+      RSpec.shared_examples "shared stuff", :a => :b do
         it 'runs wherever the metadata is shared' do
         end
       end
 
-      describe String, :a => :b do
+      RSpec.describe String, :a => :b do
       end
       """
       When I run `rspec shared_example_metadata_spec.rb`
@@ -224,7 +229,7 @@ Feature: shared examples
   Scenario: Shared examples are nestable by context
     Given a file named "context_specific_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         context "per context" do
 
           shared_examples "shared examples are nestable" do
@@ -244,7 +249,7 @@ Feature: shared examples
   Scenario: Shared examples are accessible from offspring contexts
     Given a file named "context_specific_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         shared_examples "shared examples are nestable" do
           specify { expect(true).to eq true }
         end
@@ -267,7 +272,7 @@ Feature: shared examples
   Scenario: Shared examples are isolated per context
     Given a file named "isolated_shared_examples_spec.rb" with:
       """Ruby
-      describe "shared examples" do
+      RSpec.describe "shared examples" do
         context do
           shared_examples "shared examples are isolated" do
             specify { expect(true).to eq true }

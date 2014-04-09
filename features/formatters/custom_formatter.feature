@@ -1,15 +1,14 @@
 Feature: custom formatters
 
   RSpec ships with general purpose output formatters. You can tell RSpec which
-  one to use using the [`--format` command line
-  option]('../command_line/format_option').
+  one to use using the [`--format` command line option]('../command_line/format_option').
 
   When RSpec's built-in output formatters don't, however, give you everything
   you need, you can write your own custom formatter and tell RSpec to use that
-  one instead.  The simplest way is to subclass RSpec's `BaseTextFormatter`,
-  and then override just the methods that you want to modify.
+  one instead. The simplest way is to subclass RSpec's `BaseTextFormatter`, and
+  then override just the methods that you want to modify.
 
-  Scenario: custom formatter
+  Scenario: Custom formatter
     Given a file named "custom_formatter.rb" with:
       """ruby
       require "rspec/core/formatters/base_text_formatter"
@@ -31,7 +30,7 @@ Feature: custom formatters
       """
     And a file named "example_spec.rb" with:
       """ruby
-      describe "my group" do
+      RSpec.describe "my group" do
         specify "my example" do
         end
       end
@@ -40,7 +39,7 @@ Feature: custom formatters
     Then the output should contain "example: my example"
     And  the exit status should be 0
 
-  Scenario: a legacy custom formatter
+  Scenario: A legacy custom formatter
     Given a file named "custom_formatter.rb" with:
       """ruby
       require "rspec/core/formatters/base_text_formatter"
@@ -57,7 +56,7 @@ Feature: custom formatters
       """
     And a file named "example_spec.rb" with:
       """ruby
-      describe "my group" do
+      RSpec.describe "my group" do
         specify "my example" do
         end
       end

@@ -4,17 +4,19 @@ Feature: filters
   `RSpec.configure` can be constrained to specific examples and/or groups using
   metadata as a filter.
 
-      RSpec.configure do |c|
-        c.before(:example, :type => :model) do
-        end
-      end
+  ```ruby
+  RSpec.configure do |c|
+    c.before(:example, :type => :model) do
+    end
+  end
 
-      describe "something", :type => :model do
-      end
+  RSpec.describe "something", :type => :model do
+  end
+  ```
 
   You can also specify metadata using only symbols.
 
-  Scenario: filter `before(:example)` hooks using arbitrary metadata
+  Scenario: Filter `before(:example)` hooks using arbitrary metadata
     Given a file named "filter_before_example_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -23,7 +25,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered before :example hook" do
+      RSpec.describe "a filtered before :example hook" do
         let(:invoked_hooks) { [] }
 
         describe "group without matching metadata" do
@@ -46,7 +48,7 @@ Feature: filters
     When I run `rspec filter_before_example_hooks_spec.rb`
     Then the examples should all pass
 
-  Scenario: filter `after(:example)` hooks using arbitrary metadata
+  Scenario: Filter `after(:example)` hooks using arbitrary metadata
     Given a file named "filter_after_example_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -55,7 +57,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered after :example hook" do
+      RSpec.describe "a filtered after :example hook" do
         describe "group without matching metadata" do
           it "does not run the hook" do
             # should pass
@@ -76,7 +78,7 @@ Feature: filters
     When I run `rspec filter_after_example_hooks_spec.rb`
     Then the output should contain "3 examples, 2 failures"
 
-  Scenario: filter around(:example) hooks using arbitrary metadata
+  Scenario: Filter `around(:example)` hooks using arbitrary metadata
     Given a file named "filter_around_example_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
@@ -87,7 +89,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered around(:example) hook" do
+      RSpec.describe "a filtered around(:example) hook" do
         let(:order) { [] }
 
         describe "a group without matching metadata" do
@@ -112,14 +114,14 @@ Feature: filters
     When I run `rspec filter_around_example_hooks_spec.rb`
     Then the examples should all pass
 
-  Scenario: filter before(:context) hooks using arbitrary metadata
+  Scenario: Filter `before(:context)` hooks using arbitrary metadata
     Given a file named "filter_before_context_hooks_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.before(:context, :foo => :bar) { @hook = :before_context_foo_bar }
       end
 
-      describe "a filtered before(:context) hook" do
+      RSpec.describe "a filtered before(:context) hook" do
         describe "a group without matching metadata" do
           it "does not run the hook" do
             expect(@hook).to be_nil
@@ -148,7 +150,7 @@ Feature: filters
     When I run `rspec filter_before_context_hooks_spec.rb`
     Then the examples should all pass
 
-  Scenario: filter after(:context) hooks using arbitrary metadata
+  Scenario: Filter `after(:context)` hooks using arbitrary metadata
     Given a file named "filter_after_context_hooks_spec.rb" with:
       """ruby
       example_msgs = []
@@ -159,7 +161,7 @@ Feature: filters
         end
       end
 
-      describe "a filtered after(:context) hook" do
+      RSpec.describe "a filtered after(:context) hook" do
         describe "a group without matching metadata" do
           it "does not run the hook" do
             puts "unfiltered"
@@ -207,7 +209,7 @@ Feature: filters
         c.after(:context,  :after_context) { puts "after context" }
       end
 
-      describe "group 1", :before_context, :after_context do
+      RSpec.describe "group 1", :before_context, :after_context do
         it("") { puts "example 1" }
         it("", :before_example) { puts "example 2" }
         it("", :after_example) { puts "example 3" }

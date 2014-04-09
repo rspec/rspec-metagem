@@ -1,12 +1,12 @@
-Feature: pending examples
+Feature: `pending` examples
 
   RSpec offers a number of different ways to indicate that an example is
   disabled pending some action.
 
-  Scenario: pending any arbitrary reason with a failing example
+  Scenario: `pending` any arbitrary reason with a failing example
     Given a file named "pending_without_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
           fail
@@ -23,10 +23,10 @@ Feature: pending examples
           # something else getting finished
           # ./pending_without_block_spec.rb:2
       """
-  Scenario: pending any arbitrary reason with a passing example
+  Scenario: `pending` any arbitrary reason with a passing example
     Given a file named "pending_with_passing_example_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "is implemented but waiting" do
           pending("something else getting finished")
           expect(1).to be(1)
@@ -40,10 +40,10 @@ Feature: pending examples
     And the output should contain "Expected pending 'something else getting finished' to fail. No Error was raised."
     And the output should contain "pending_with_passing_example_spec.rb:2"
 
-  Scenario: pending for an example that is currently passing
+  Scenario: `pending` for an example that is currently passing
     Given a file named "pending_with_passing_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         pending("something else getting finished") do
           expect(1).to eq(1)
         end
@@ -56,10 +56,10 @@ Feature: pending examples
     And the output should contain "Expected pending 'No reason given' to fail. No Error was raised."
     And the output should contain "pending_with_passing_block_spec.rb:2"
 
-  Scenario: pending for an example that is currently passing with a reason
+  Scenario: `pending` for an example that is currently passing with a reason
     Given a file named "pending_with_passing_block_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         example("something else getting finished", :pending => 'unimplemented') do
           expect(1).to eq(1)
         end
@@ -72,10 +72,10 @@ Feature: pending examples
     And the output should contain "Expected pending 'unimplemented' to fail. No Error was raised."
     And the output should contain "pending_with_passing_block_spec.rb:2"
 
-  Scenario: example with no docstring and pending method using documentation formatter
+  Scenario: Example with no docstring and `pending` method using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "checks something" do
           expect(1).to eq(1)
         end
@@ -95,10 +95,10 @@ Feature: pending examples
         example at ./pending_with_no_docstring_spec.rb:5 (PENDING: No reason given)
       """
 
-  Scenario: pending with no docstring using documentation formatter
+  Scenario: `pending` with no docstring using documentation formatter
     Given a file named "pending_with_no_docstring_spec.rb" with:
       """ruby
-      describe "an example" do
+      RSpec.describe "an example" do
         it "checks something" do
           expect(1).to eq(1)
         end

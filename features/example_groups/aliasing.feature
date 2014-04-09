@@ -1,18 +1,18 @@
 Feature: aliasing
 
-  `describe` and `context` are the default aliases for `example_group`.
-  You can define your own aliases for `example_group` and give those
-  custom aliases default metadata.
+  `describe` and `context` are the default aliases for `example_group`. You can
+  define your own aliases for `example_group` and give those custom aliases
+  default metadata.
 
   RSpec provides a few built-in aliases:
 
-    * `xdescribe` and `xcontext` add `:pending` metadata to the
-      example group in order to temporarily disable the examples.
-    * `fdescribe` and `fcontext` add `:focus` metadata to the
-      example group in order to make it easy to temporarily
-      focus the example group (when combined with `config.filter_run :focus`.)
+    * `xdescribe` and `xcontext` add `:skip` metadata to the example group in
+      order to temporarily disable the examples.
+    * `fdescribe` and `fcontext` add `:focus` metadata to the example group in
+      order to make it easy to temporarily focus the example group (when
+      combined with `config.filter_run :focus`.)
 
-  Scenario: custom example group aliases with metadata
+  Scenario: Custom example group aliases with metadata
     Given a file named "nested_example_group_aliases_spec.rb" with:
     """ruby
     RSpec.configure do |c|

@@ -1,13 +1,13 @@
-Feature: exit status
+Feature: `--failure-exit-code` option (exit status)
 
-  The rspec command exits with an exit status of 0 if all examples pass,
-  and 1 if any examples fail. The failure exit code can be overridden
-  using the --failure-exit-code option.
+  The `rspec` command exits with an exit status of 0 if all examples pass, and 1
+  if any examples fail. The failure exit code can be overridden using the
+  `--failure-exit-code` option.
 
-  Scenario: exit with 0 when all examples pass
+  Scenario: Exit with 0 when all examples pass
     Given a file named "ok_spec.rb" with:
       """ruby
-      describe "ok" do
+      RSpec.describe "ok" do
         it "passes" do
         end
       end
@@ -16,10 +16,10 @@ Feature: exit status
     Then the exit status should be 0
     And the examples should all pass
 
-  Scenario: exit with 1 when one example fails
+  Scenario: Exit with 1 when one example fails
     Given a file named "ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         it "fails" do
           raise "KO"
         end
@@ -29,10 +29,10 @@ Feature: exit status
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
 
-  Scenario: exit with 1 when a nested examples fails
+  Scenario: Exit with 1 when a nested examples fails
     Given a file named "nested_ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         describe "nested" do
           it "fails" do
             raise "KO"
@@ -44,7 +44,7 @@ Feature: exit status
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
 
-  Scenario: exit with 0 when no examples are run
+  Scenario: Exit with 0 when no examples are run
     Given a file named "a_no_examples_spec.rb" with:
       """ruby
       """
@@ -52,10 +52,10 @@ Feature: exit status
     Then the exit status should be 0
     And the output should contain "0 examples"
 
-  Scenario: exit with 2 when one example fails and --failure-exit-code is 2
+  Scenario: Exit with 2 when one example fails and `--failure-exit-code` is 2
     Given a file named "ko_spec.rb" with:
       """ruby
-      describe "KO" do
+      RSpec.describe "KO" do
         it "fails" do
           raise "KO"
         end
@@ -65,7 +65,7 @@ Feature: exit status
     Then the exit status should be 2
     And the output should contain "1 example, 1 failure"
 
-  Scenario: exit with rspec's exit code when an at_exit hook is added upstream
+  Scenario: Exit with RSpec's exit code when an `at_exit` hook is added upstream
     Given a file named "exit_at_spec.rb" with:
       """ruby
       require 'rspec/autorun'

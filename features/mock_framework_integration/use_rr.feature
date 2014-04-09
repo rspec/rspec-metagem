@@ -2,14 +2,14 @@ Feature: mock with rr
 
   Configure RSpec to use rr as shown in the scenarios below.
 
-  Scenario: passing message expectation
+  Scenario: Passing message expectation
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.mock_framework = :rr
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "passes when it should" do
           receiver = Object.new
           mock(receiver).message
@@ -20,14 +20,14 @@ Feature: mock with rr
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: failing message expecation
+  Scenario: Failing message expectation
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.mock_framework = :rr
       end
 
-      describe "mocking with RSpec" do
+      RSpec.describe "mocking with RSpec" do
         it "fails when it should" do
           receiver = Object.new
           mock(receiver).message
@@ -37,14 +37,14 @@ Feature: mock with rr
     When I run `rspec example_spec.rb`
     Then the output should contain "1 example, 1 failure"
 
-  Scenario: failing message expectation in pending example (remains pending)
+  Scenario: Failing message expectation in pending example (remains pending)
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.mock_framework = :rr
       end
 
-      describe "failed message expectation in a pending example" do
+      RSpec.describe "failed message expectation in a pending example" do
         it "is listed as pending" do
           pending
           receiver = Object.new
@@ -56,14 +56,14 @@ Feature: mock with rr
     Then the output should contain "1 example, 0 failures, 1 pending"
     And the exit status should be 0
 
-  Scenario: passing message expectation in pending example (fails)
+  Scenario: Passing message expectation in pending example (fails)
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.mock_framework = :rr
       end
 
-      describe "passing message expectation in a pending example" do
+      RSpec.describe "passing message expectation in a pending example" do
         it "fails with FIXED" do
           pending
           receiver = Object.new
@@ -77,14 +77,14 @@ Feature: mock with rr
     Then the output should contain "1 example, 1 failure"
     And the exit status should be 1
 
-  Scenario: accessing RSpec.configuration.mock_framework.framework_name
+  Scenario: Accessing `RSpec.configuration.mock_framework.framework_name`
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.mock_framework = :rr
       end
 
-      describe "RSpec.configuration.mock_framework.framework_name" do
+      RSpec.describe "RSpec.configuration.mock_framework.framework_name" do
         it "returns :rr" do
           expect(RSpec.configuration.mock_framework.framework_name).to eq(:rr)
         end

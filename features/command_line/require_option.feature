@@ -1,9 +1,9 @@
-Feature: --require option
+Feature: `--require` option
 
-  Use the `--require` (or `-r`) option to specify a file to require
-  before running specs.
+  Use the `--require` (or `-r`) option to specify a file to require before
+  running specs.
 
-  Scenario: using the --require option
+  Scenario: Using the `--require` option
     Given a file named "logging_formatter.rb" with:
       """ruby
       require "rspec/core/formatters/base_text_formatter"
@@ -32,7 +32,7 @@ Feature: --require option
       """
     And a file named "spec/example_spec.rb" with:
       """ruby
-      describe "an embarassing situation" do
+      RSpec.describe "an embarassing situation" do
         it "happens to everyone" do
         end
       end
