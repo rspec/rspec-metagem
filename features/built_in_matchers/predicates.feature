@@ -61,7 +61,7 @@ Feature: predicate matchers
       """
     When I run `rspec should_be_zero_spec.rb`
     Then the output should contain "2 examples, 1 failure"
-     And the output should contain "expected zero? to return true, got false"
+     And the output should contain "expected `7.zero?` to return true, got false"
 
   Scenario: should_not be_empty (based on Array#empty?)
     Given a file named "should_not_be_empty_spec.rb" with:
@@ -76,7 +76,7 @@ Feature: predicate matchers
       """
     When I run `rspec should_not_be_empty_spec.rb`
     Then the output should contain "2 examples, 1 failure"
-     And the output should contain "expected empty? to return false, got true"
+     And the output should contain "expected `[].empty?` to return false, got true"
 
    Scenario: should have_key (based on Hash#has_key?)
     Given a file named "should_have_key_spec.rb" with:
@@ -136,8 +136,8 @@ Feature: predicate matchers
        """
      When I run `rspec predicate_matcher_argument_spec.rb`
      Then the output should contain "4 examples, 2 failures"
-      And the output should contain "expected multiple_of?(4) to return false, got true"
-      And the output should contain "expected multiple_of?(5) to return true, got false"
+      And the output should contain "expected `12.multiple_of?(4)` to return false, got true"
+      And the output should contain "expected `12.multiple_of?(5)` to return true, got false"
 
     Scenario: calling private method causes error
       Given a file named "attempting_to_match_private_method_spec.rb" with:

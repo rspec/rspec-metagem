@@ -40,5 +40,5 @@ Feature: Minitest integration
       """
      When I run `ruby rspec_expectations_test.rb`
      Then the output should contain "3 runs, 3 assertions, 1 failures, 0 errors"
-      And the output should contain "expected empty? to return true, got false"
+      And the output should contain "expected `[1, 2].empty?` to return true, got false"
       And the output should contain "be_an_int is deprecated"

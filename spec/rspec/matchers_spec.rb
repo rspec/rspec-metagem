@@ -18,7 +18,7 @@ describe RSpec::Matchers do
 
         expect {
           expect(4).to be_zero
-        }.to fail_with("expected zero? to return true, got false")
+        }.to fail_with("expected `4.zero?` to return true, got false")
       end
     end
   end
