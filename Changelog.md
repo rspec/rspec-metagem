@@ -38,6 +38,9 @@ Enhancements:
   methods will fail the build). (Myron Marston)
 * Improve the formatting of BigDecimal objects in `eq` matcher failure
   messages. (Daniel Fone)
+* Improve the failure message for `be_xyz` predicate matchers so
+  that it includes the `inspect` output of the receiver.
+  (Erik Michaels-Ober, Sam Phippen)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
