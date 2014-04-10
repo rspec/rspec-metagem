@@ -179,22 +179,26 @@ module RSpec
       #       end
       #     end
       class Procsy
-        # The `metadata` of the {Example} instance.
-        attr_reader :metadata
+        # The {Example} instance.
+        attr_reader :example
+
+        Example.public_instance_methods(false).each do |name|
+          define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
+        end
 
         Proc.public_instance_methods(false).each do |name|
           define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
         end
         alias run call
 
-        def initialize(metadata, &block)
-          @metadata = metadata
-          @proc = block
+        def initialize(example, &block)
+          @example = example
+          @proc    = block
         end
 
         # @private
         def wrap(&block)
-          self.class.new(metadata, &block)
+          self.class.new(example, &block)
         end
       end
 
@@ -276,7 +280,7 @@ module RSpec
         if around_example_hooks.empty?
           yield
         else
-          @example_group_class.hooks.run(:around, :example, self, Procsy.new(metadata, &block))
+          @example_group_class.hooks.run(:around, :example, self, Procsy.new(self, &block))
         end
       rescue Exception => e
         set_exception(e, "in an `around(:example)` hook")
