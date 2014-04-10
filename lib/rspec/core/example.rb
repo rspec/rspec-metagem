@@ -1,9 +1,11 @@
 module RSpec
   module Core
     # Wrapper for an instance of a subclass of {ExampleGroup}. An instance of
-    # `RSpec::Core::Example` is returned by the {ExampleGroup#example example}
-    # method exposed to examples, {Hooks#before before} and {Hooks#after after}
-    # hooks, and yielded to {Hooks#around around} hooks.
+    # `RSpec::Core::Example` is returned by example definition methods
+    # such as {ExampleGroup.it it} and is yielded to the {ExampleGroup.it it},
+    # {Hooks#before before}, {Hooks#after after}, {Hooks#around around},
+    # {MemoizedHelpers::ClassMethods#let let} and
+    # {MemoizedHelpers::ClassMethods#subject subject} blocks.
     #
     # This allows us to provide rich metadata about each individual
     # example without adding tons of methods directly to the ExampleGroup
@@ -15,17 +17,17 @@ module RSpec
     # @example
     #
     #     RSpec.configure do |config|
-    #       config.before do
+    #       config.before do |example|
     #         log example.description
     #       end
     #
-    #       config.after do
+    #       config.after do |example|
     #         log example.description
     #       end
     #
-    #       config.around do |ex|
+    #       config.around do |example|
     #         log example.description
-    #         ex.run
+    #         example.run
     #       end
     #     end
     #
@@ -38,17 +40,32 @@ module RSpec
     #
     # @see ExampleGroup
     # @note Example blocks are evaluated in the context of an instance
-    # of an `ExampleGroup`, not in the context of an instance of `Example`.
+    #   of an `ExampleGroup`, not in the context of an instance of `Example`.
     class Example
       # @private
       #
       # Used to define methods that delegate to this example's metadata
-      def self.delegate_to_metadata(*keys)
-        keys.each { |key| define_method(key) { @metadata[key] } }
+      def self.delegate_to_metadata(key)
+        define_method(key) { @metadata[key] }
       end
 
-      delegate_to_metadata :execution_result, :file_path, :full_description,
-                           :location, :pending, :skip
+      # @return [ExecutionResult] represents the result of running this example.
+      delegate_to_metadata :execution_result
+      # @return [String] the relative path to the file where this example was defined.
+      delegate_to_metadata :file_path
+      # @return [String] the full description (including the docstrings of
+      #   all parent example groups).
+      delegate_to_metadata :full_description
+      # @return [String] the exact source location of this example in a form
+      #   like `./path/to/spec.rb:17`
+      delegate_to_metadata :location
+      # @return [Boolean] flag that indicates that the example is not expected to pass.
+      #   It will be run and will either have a pending result (if a failure occurs)
+      #   or a failed result (if no failure occurs).
+      delegate_to_metadata :pending
+      # @return [Boolean] flag that will cause the example to not run.
+      #   The {ExecutionResult} status will be `:pending`.
+      delegate_to_metadata :skip
 
       # Returns the string submitted to `example` or its aliases (e.g.
       # `specify`, `it`, etc).  If no string is submitted (e.g. `it { is_expected.to
@@ -161,12 +178,10 @@ module RSpec
         RSpec.current_example = nil
       end
 
-      # Wraps a `Proc` and exposes a `run` method for use in {Hooks#around
-      # around} hooks.
-      #
-      # @note Procsy, itself, is not a public API, but we're documenting it
-      #   here to document how to interact with the object yielded to an
-      #   `around` hook.
+      # Wraps both a `Proc` and an {Example} for use in {Hooks#around
+      # around} hooks. In around hooks we need to yield this special
+      # kind of object (rather than the raw {Example}) because when
+      # there are multiple `around` hooks we have to wrap them recursively.
       #
       # @example
       #
@@ -178,6 +193,9 @@ module RSpec
       #         ex.run         # run delegates to ex.call
       #       end
       #     end
+      #
+      # @note This class also exposes the instance methods of {Example},
+      #   proxying them through to the wrapped {Example} instance.
       class Procsy
         # The {Example} instance.
         attr_reader :example
