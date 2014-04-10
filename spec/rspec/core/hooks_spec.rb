@@ -145,6 +145,42 @@ module RSpec::Core
           group.run
           expect(foos).to eq({:first => :bar, :second => :bar})
         end
+
+        it "exposes the full example interface to each around hook" do
+          data_1 = {}
+          data_2 = {}
+          ex     = nil
+
+          group = ExampleGroup.describe do
+            def self.data_from(ex)
+              {
+                :description => ex.description,
+                :full_description => ex.full_description,
+                :example_group => ex.example_group,
+                :file_path => ex.file_path,
+                :location => ex.location
+              }
+            end
+
+            around do |example|
+              data_1.update(self.class.data_from example)
+              example.run
+            end
+
+            around do |example|
+              data_2.update(self.class.data_from example)
+              example.run
+            end
+
+            ex = example("the example") { }
+          end
+
+          group.run
+
+          expected_data = group.data_from(ex)
+          expect(data_1).to eq(expected_data)
+          expect(data_2).to eq(expected_data)
+        end
       end
 
       context "when running the example within a block passed to a method" do
