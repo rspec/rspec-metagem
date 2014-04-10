@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency "rake",     "~> 10.0.0"
   s.add_development_dependency "cucumber", "~> 1.3"
-  s.add_development_dependency "minitest", "~> 5"
+  s.add_development_dependency "minitest", "~> 5.3"
   s.add_development_dependency "aruba",    "~> 0.5"
 
   s.add_development_dependency "nokogiri", "1.5.2"
