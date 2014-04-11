@@ -111,7 +111,7 @@ module RSpec::Core::Formatters
     def add(formatter_to_use, *paths)
       formatter_class = find_formatter(formatter_to_use)
 
-      args = paths.map { |p| String === p ? file_at(p) : p }
+      args = paths.map { |p| p.respond_to?(:puts) ? p : file_at(p) }
 
       if !Loader.formatters[formatter_class].nil?
         formatter = formatter_class.new(*args)
