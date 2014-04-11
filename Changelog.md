@@ -94,6 +94,7 @@ Enhancements:
   specs via `StartNotification` and `SummaryNotification`. (Jon Rowe)
 * Add `disable_monkey_patching!` config option that disables all monkey
   patching from whatever pieces of RSpec you use. (Alexey Fedorov)
+* Add `Pathname` support for setting all output streams. (Aaron Kromer)
 
 Bug Fixes:
 
