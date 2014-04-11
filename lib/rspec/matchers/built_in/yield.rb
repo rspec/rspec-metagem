@@ -124,7 +124,7 @@ module RSpec
           probe = YieldProbe.probe(block)
 
           if @expectation_type
-            probe.num_yields.send(@expectation_type, @expected_yields_count)
+            probe.num_yields.__send__(@expectation_type, @expected_yields_count)
           else
             probe.yielded_once?(:yield_control)
           end
