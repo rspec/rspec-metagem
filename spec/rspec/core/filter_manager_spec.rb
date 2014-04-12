@@ -129,6 +129,15 @@ module RSpec::Core
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
 
+      it "prefers description to exclusion filter" do
+        group = RSpec.describe("group")
+        included = group.example("include", :slow => true) {}
+        excluded = group.example("exclude") {}
+        filter_manager.include(:full_description => /include/)
+        filter_manager.exclude_with_low_priority :slow => true
+        expect(filter_manager.prune([included, excluded])).to eq([included])
+      end
+
       it "includes objects with tags matching inclusions" do
         included = example_with({:foo => :bar})
         excluded = example_with
