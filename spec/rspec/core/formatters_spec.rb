@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'pathname'
 
 module RSpec::Core::Formatters
   describe Loader do
@@ -95,6 +96,13 @@ module RSpec::Core::Formatters
       context "with a 2nd arg defining the output" do
         it "creates a file at that path and sets it as the output" do
           loader.add('doc', path)
+          expect(loader.formatters.first.output).to be_a(File)
+          expect(loader.formatters.first.output.path).to eq(path)
+        end
+
+        it "accepts Pathname objects for file paths" do
+          pathname = Pathname.new(path)
+          loader.add('doc', pathname)
           expect(loader.formatters.first.output).to be_a(File)
           expect(loader.formatters.first.output.path).to eq(path)
         end

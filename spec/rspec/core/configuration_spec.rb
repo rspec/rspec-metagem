@@ -33,7 +33,7 @@ module RSpec::Core
           expect(config).to have_received(:warn).with(/deprecation_stream.*#{__FILE__}:#{__LINE__ - 1}/)
         end
 
-        it 'does not change the value of `output_stream`' do
+        it 'does not change the value of `deprecation_stream`' do
           value = config.deprecation_stream
           config.deprecation_stream = double("IO")
           expect(config.deprecation_stream).to equal(value)
