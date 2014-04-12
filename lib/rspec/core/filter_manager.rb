@@ -227,7 +227,7 @@ module RSpec
     private
 
       def set_standalone_filter(updated)
-        return true if already_set_standalone_filter?
+        return true if standalone?
 
         if is_standalone_filter?(updated)
           replace_filters(updated)
@@ -238,10 +238,6 @@ module RSpec
       def replace_filters(new_rules)
         @rules.replace(new_rules)
         opposite.clear
-      end
-
-      def already_set_standalone_filter?
-        is_standalone_filter?(@rules)
       end
 
       def is_standalone_filter?(rules)
