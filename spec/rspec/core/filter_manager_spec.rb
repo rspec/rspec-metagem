@@ -109,6 +109,35 @@ module RSpec::Core
         RSpec.describe("group", *args).example("example")
       end
 
+      it "prefers location to exclusion filter" do
+        group = RSpec.describe("group")
+        included = group.example("include", :slow => true) {}
+        excluded = group.example("exclude") {}
+        filter_manager.add_location(__FILE__, [__LINE__ - 2])
+        filter_manager.exclude_with_low_priority :slow => true
+        expect(filter_manager.prune([included, excluded])).to eq([included])
+      end
+
+      it "prefers location to exclusion filter on entire group" do
+        # We way want to change this behaviour in future, see:
+        # https://github.com/rspec/rspec-core/issues/779
+        group = RSpec.describe("group")
+        included = group.example("include", :slow => true) {}
+        excluded = example_with
+        filter_manager.add_location(__FILE__, [__LINE__ - 3])
+        filter_manager.exclude_with_low_priority :slow => true
+        expect(filter_manager.prune([included, excluded])).to eq([included])
+      end
+
+      it "prefers description to exclusion filter" do
+        group = RSpec.describe("group")
+        included = group.example("include", :slow => true) {}
+        excluded = group.example("exclude") {}
+        filter_manager.include(:full_description => /include/)
+        filter_manager.exclude_with_low_priority :slow => true
+        expect(filter_manager.prune([included, excluded])).to eq([included])
+      end
+
       it "includes objects with tags matching inclusions" do
         included = example_with({:foo => :bar})
         excluded = example_with
