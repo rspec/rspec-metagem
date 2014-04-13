@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_core 'formatters/legacy_formatter'
-
 # ## Built-in Formatters
 #
 # * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
@@ -116,16 +114,32 @@ module RSpec::Core::Formatters
       if !Loader.formatters[formatter_class].nil?
         formatter = formatter_class.new(*args)
         @reporter.register_listener formatter, *notifications_for(formatter_class)
-      else
-        formatter = LegacyFormatter.new(formatter_class, *args)
+      elsif defined?(RSpec::LegacyFormatters)
+        formatter = RSpec::LegacyFormatters.load_formatter formatter_class, *args
         @reporter.register_listener formatter, *formatter.notifications
-      end
+      else
+        line = ::RSpec::CallerFilter.first_non_rspec_line
+        if line
+          call_site = "Formatter added at: #{line}"
+        else
+          call_site = "The formatter was added via command line flag or your "+
+                      "`.rspec` file."
+        end
 
+        RSpec.warn_deprecation <<-WARNING.gsub(/\s*\|/,' ')
+          |The #{formatter_class} formatter uses the deprecated formatter
+          |interface not supported directly by RSpec 3.
+          |
+          |To continue to use this formatter you must install the
+          |`rspec-legacy_formatters` gem, which provides support
+          |for legacy formatters or upgrade the formatter to a
+          |compatible version.
+          |
+          |#{call_site}
+        WARNING
+        return
+      end
       @formatters << formatter unless duplicate_formatter_exists?(formatter)
-      if formatter.is_a?(LegacyFormatter)
-        RSpec.warn_deprecation "The #{formatter_class} formatter uses the deprecated formatter interface.\n Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
-      end
-
       formatter
     end
 
