@@ -641,8 +641,6 @@ module RSpec
         formatter_loader.default_formatter = value
       end
 
-      # @api public
-      #
       # Returns a duplicate of the formatters currently loaded in
       # the `FormatterLoader` for introspection.
       #
