@@ -641,9 +641,16 @@ module RSpec
         formatter_loader.default_formatter = value
       end
 
-      # @private
+      # @api public
+      #
+      # Returns a duplicate of the formatters currently loaded in
+      # the `FormatterLoader` for introspection.
+      #
+      # Note as this is a duplicate, any mutations will be disregarded.
+      #
+      # @return [Array] the formatters currently loaded
       def formatters
-        formatter_loader.formatters
+        formatter_loader.formatters.dup
       end
 
       # @private
