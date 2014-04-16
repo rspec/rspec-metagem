@@ -853,6 +853,14 @@ module RSpec::Core
       end
     end
 
+    describe "#formatters" do
+      it "returns a dup of the formatter_loader formatters" do
+        config.add_formatter 'doc'
+        config.formatters.clear
+        expect(config.formatters).to_not eq []
+      end
+    end
+
     describe "#default_formatter" do
       it 'defaults to `progress`' do
         expect(config.default_formatter).to eq('progress')

@@ -64,6 +64,7 @@ Breaking Changes for 3.0.0:
 * Remove `backtrace_cleaner` as an alias of `backtrace_formatter`. (Jon Rowe)
 * Remove `filename_pattern` as an alias of `pattern`. (Jon Rowe)
 * Extract support for legacy formatters to `rspec-legacy_formatters`. (Jon Rowe)
+* `RSpec::Configuration#formatters` now returns a dup to prevent mutation. (Jon Rowe)
 
 Enhancements:
 
