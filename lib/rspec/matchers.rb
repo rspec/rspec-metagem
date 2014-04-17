@@ -581,18 +581,20 @@ module RSpec
     alias_matcher :including,              :include
 
     # Passes if actual all expected objects pass. This works for
-    # collections and Strings.
+    # any enumerable object.
     #
     # @example
     #
-    #   expect([1, 3, 5]).to      all be_odd
-    #   expect([1, 3, 6]).to      all be_odd # fails
-    #   expect([1, 3, 5]).not_to  all be_even
+    #   expect([1, 3, 5]).to all be_odd
+    #   expect([1, 3, 6]).to all be_odd # fails
     #
-    # You can also use this with compound matchers
+    # @note The negative form `not_to all` is not supported. Instead
+    #   use `not_to include` or pass a negative form of a matcher
+    #   as the argument (e.g. `all exclude(:foo)`).
+    #
+    # @note You can also use this with compound matchers as well.
     #
     # @example
-    #
     #   expect([1, 3, 5]).to all( be_odd.and be_an(Integer) )
     def all(expected)
       BuiltIn::All.new(expected)
