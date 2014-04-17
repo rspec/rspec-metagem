@@ -139,7 +139,7 @@ Feature: predicate matchers
       And the output should contain "expected `12.multiple_of?(4)` to return false, got true"
       And the output should contain "expected `12.multiple_of?(5)` to return true, got false"
 
-    Scenario: calling private method causes error
+    Scenario: calling private method with be_predicate causes error
       Given a file named "attempting_to_match_private_method_spec.rb" with:
        """ruby
        class WithPrivateMethods
@@ -159,3 +159,24 @@ Feature: predicate matchers
      When I run `rspec attempting_to_match_private_method_spec.rb`
      Then the output should contain "1 example, 1 failure"
      And the output should contain "expectation set on private method `secret?`"
+
+    Scenario: calling private method with have_predicate causes error
+      Given a file named "attempting_to_match_private_method_spec.rb" with:
+       """ruby
+       class WithPrivateMethods
+         def has_secret?
+           true
+         end
+         private :has_secret?
+       end
+
+       RSpec.describe 'private methods' do
+         subject { WithPrivateMethods.new }
+
+         # deliberate failure
+         it { is_expected.to have_secret }
+       end
+       """
+     When I run `rspec attempting_to_match_private_method_spec.rb`
+     Then the output should contain "1 example, 1 failure"
+     And the output should contain "expectation set on private method `has_secret?`"
