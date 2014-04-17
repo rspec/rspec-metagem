@@ -35,6 +35,11 @@ module RSpec
         def description
           "satisfy block"
         end
+
+        # @private
+        def supports_block_expectations?
+          false
+        end
       end
     end
   end

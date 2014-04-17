@@ -576,6 +576,27 @@ module RSpec::Matchers::DSL
       end
     end
 
+    context "matching blocks" do
+      it 'cannot match blocks by default' do
+        matcher = new_matcher(:foo) { match { true } }
+        expect(3).to matcher
+
+        expect {
+          expect { 3 }.to matcher
+        }.to fail_with(/must pass an argument/)
+      end
+
+      it 'can match blocks if it declares `supports_block_expectations`' do
+        matcher = new_matcher(:foo) do
+          match { true }
+          supports_block_expectations
+        end
+
+        expect(3).to matcher
+        expect { 3 }.to matcher
+      end
+    end
+
     context "#new" do
       it "passes matches? arg to match block" do
         matcher = new_matcher(:ignore) do

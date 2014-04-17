@@ -68,6 +68,11 @@ module RSpec
           "change #{@change_details.message}"
         end
 
+        # @private
+        def supports_block_expectations?
+          true
+        end
+
       private
 
         def initialize(receiver=nil, message=nil, &block)
@@ -113,6 +118,11 @@ module RSpec
         def description
           "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}"
         end
+
+        # @private
+        def supports_block_expectations?
+          true
+        end
       end
 
       # @api private
@@ -144,6 +154,11 @@ module RSpec
           return before_value_failure   unless matches_before?
           return did_not_change_failure unless @change_details.changed?
           after_value_failure
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
       private

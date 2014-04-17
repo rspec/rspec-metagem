@@ -25,6 +25,7 @@ module RSpec
   #     does_not_match?(actual)
   #     failure_message_when_negated
   #     description
+  #     supports_block_expectations?
   #
   # ## Predicates
   #

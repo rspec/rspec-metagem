@@ -146,6 +146,11 @@ module RSpec
           end
         end
 
+        # @private
+        def supports_block_expectations?
+          true
+        end
+
       private
 
         def set_expected_yields_count(relativity, n)
@@ -199,6 +204,11 @@ module RSpec
           "expected given block not to yield with no arguments, but did"
         end
 
+        # @private
+        def supports_block_expectations?
+          true
+        end
+
       private
 
         def failure_reason
@@ -242,6 +252,11 @@ module RSpec
           desc = "yield with args"
           desc << "(#{expected_arg_description})" unless @expected.empty?
           desc
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
       private
@@ -324,6 +339,11 @@ module RSpec
           desc = "yield successive args"
           desc << "(#{expected_arg_description})"
           desc
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
       private

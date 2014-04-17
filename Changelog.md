@@ -11,6 +11,8 @@ Breaking Changes for 3.0.0:
   `RSpec::Expectations::Configuration`. (Myron Marston)
 * Prevent `have_xyz` predicate matchers using private methods.
   (Adrian Gonzalez)
+* Block matchers must now implement `supports_block_expectations?`.
+  (Myron Marston)
 
 Bug Fixes:
 
@@ -46,6 +48,9 @@ Enhancements:
 * Add `all` matcher, to allow you to specify that a given matcher
   matches all elements in a collection:
   `expect([1, 3, 5]).to all( be_odd )`. (Adam Farhi)
+* Give users a clear error when they wrongly use a value matcher
+  in a block expectation expression (e.g. `expect { 3 }.to eq(3)`).
+  (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)

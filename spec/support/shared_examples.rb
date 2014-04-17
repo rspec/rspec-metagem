@@ -31,5 +31,17 @@ shared_examples "an RSpec matcher" do |options|
   it 'supports compound expectations by chaining `or`' do
     expect(valid_value).to matcher.or always_fails
   end
+
+  it 'implements the full matcher protocol' do
+    expect(matcher).to respond_to(
+      :matches?,
+      :failure_message,
+      :description,
+      :supports_block_expectations?
+    )
+
+    # We do not require failure_message_when_negated and does_not_match?
+    # Because some matchers purposefully do not support negation.
+  end
 end
 

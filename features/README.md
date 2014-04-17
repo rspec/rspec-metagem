@@ -23,7 +23,7 @@ Note: You can also use `expect(..).to_not` instead of `expect(..).not_to`.
 
 ## What is a matcher?
 
-A Matcher is any object that responds to the following methods:
+A matcher is any object that responds to the following methods:
 
     matches?(actual)
     failure_message
@@ -33,6 +33,7 @@ These methods are also part of the matcher protocol, but are optional:
     does_not_match?(actual)
     failure_message_when_negated
     description
+    supports_block_expectations?
 
 RSpec ships with a number of built-in matchers and a DSL for writing custom
 matchers.
