@@ -370,7 +370,7 @@ module RSpec
 
       def initialize(metadata)
         @metadata = metadata
-        self[:example_group] = metadata[:parent_example_group]
+        self[:example_group] = metadata[:parent_example_group][:example_group]
       end
 
       def to_h
