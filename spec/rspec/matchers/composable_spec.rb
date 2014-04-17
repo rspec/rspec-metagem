@@ -19,17 +19,6 @@ module RSpec
         end
       end
 
-      RSpec::Matchers.define :have_string_length do |expected|
-        match do |actual|
-          @actual = actual
-          string_length == expected
-        end
-
-        def string_length
-          @string_length ||= @actual.length
-        end
-      end
-
       context "when using a matcher instance that memoizes state multiple times in a composed expression" do
         it "works properly in spite of the memoization" do
           expect(["foo", "bar", "a"]).to all_but_one(have_string_length(3))
@@ -46,19 +35,6 @@ module RSpec
 
       describe "cloning data structures containing matchers" do
         include Composable
-
-        RSpec::Matchers.define :be_a_clone_of do |expected|
-          match do |actual|
-            !actual.equal?(expected) &&
-             actual.class.equal?(expected.class) &&
-             state_of(actual) == state_of(expected)
-          end
-
-          def state_of(object)
-            ivar_names = object.instance_variables
-            Hash[ ivar_names.map { |n| [n, object.instance_variable_get(n)] } ]
-          end
-        end
 
         it "clones only the contained matchers" do
           matcher_1   = eq(1)
