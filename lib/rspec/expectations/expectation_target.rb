@@ -25,7 +25,7 @@ module RSpec
       # @return [Boolean] true if the expectation succeeds (else raises)
       # @see RSpec::Matchers
       def to(matcher=nil, message=nil, &block)
-        prevent_operator_matchers(:to, matcher)
+        prevent_operator_matchers(:to) unless matcher
         RSpec::Expectations::PositiveExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
 
@@ -38,16 +38,14 @@ module RSpec
       # @return [Boolean] false if the negative expectation succeeds (else raises)
       # @see RSpec::Matchers
       def not_to(matcher=nil, message=nil, &block)
-        prevent_operator_matchers(:not_to, matcher)
+        prevent_operator_matchers(:not_to) unless matcher
         RSpec::Expectations::NegativeExpectationHandler.handle_matcher(@target, matcher, message, &block)
       end
       alias to_not not_to
 
     private
 
-      def prevent_operator_matchers(verb, matcher)
-        return if matcher
-
+      def prevent_operator_matchers(verb)
         raise ArgumentError, "The expect syntax does not support operator matchers, " +
                              "so you must pass a matcher to `##{verb}`."
       end
