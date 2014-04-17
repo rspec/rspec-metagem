@@ -65,6 +65,8 @@ Breaking Changes for 3.0.0:
 * Remove `filename_pattern` as an alias of `pattern`. (Jon Rowe)
 * Extract support for legacy formatters to `rspec-legacy_formatters`. (Jon Rowe)
 * `RSpec::Configuration#formatters` now returns a dup to prevent mutation. (Jon Rowe)
+* Replace `stdlib` as an available expectation framework with `test_unit` and
+  `minitest`. (Aaron Kromer)
 
 Enhancements:
 
