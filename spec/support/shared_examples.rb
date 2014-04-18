@@ -43,5 +43,13 @@ shared_examples "an RSpec matcher" do |options|
     # We do not require failure_message_when_negated and does_not_match?
     # Because some matchers purposefully do not support negation.
   end
+
+  it 'can be used in a composed matcher expression' do
+    expect([valid_value, invalid_value]).to include(matcher)
+
+    expect {
+      expect([invalid_value]).to include(matcher)
+    }.to fail_matching("include (#{matcher.description})")
+  end
 end
 
