@@ -60,7 +60,13 @@ module RSpec
       attr_accessor :rspec_opts
 
       def initialize(*args, &task_block)
-        setup_ivars(args)
+        @name          = args.shift || :spec
+        @ruby_opts     = nil
+        @rspec_opts    = nil
+        @verbose       = true
+        @fail_on_error = true
+        @rspec_path    = 'rspec'
+        @pattern       = './spec{,/*/**}/*_spec.rb'
 
         define(args, &task_block)
       end
@@ -82,17 +88,6 @@ module RSpec
       end
 
     private
-
-      # @private
-      def setup_ivars(args)
-        @name          = args.shift || :spec
-        @ruby_opts     = nil
-        @rspec_opts    = nil
-        @verbose       = true
-        @fail_on_error = true
-        @rspec_path    = 'rspec'
-        @pattern       = './spec{,/*/**}/*_spec.rb'
-      end
 
       # @private
       def define(args, &task_block)
