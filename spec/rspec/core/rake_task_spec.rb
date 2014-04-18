@@ -35,21 +35,21 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        expect(spec_command).to match(/^#{ruby} -S rspec/)
+        expect(spec_command).to match(/^#{ruby} -S #{task.rspec_path}/)
       end
     end
 
     context "with ruby options" do
       it "renders them before -S" do
           task.ruby_opts = "-w"
-          expect(spec_command).to match(/^#{ruby} -w -S rspec/)
+          expect(spec_command).to match(/^#{ruby} -w -S #{task.rspec_path}/)
       end
     end
 
     context "with rspec_opts" do
       it "adds the rspec_opts" do
         task.rspec_opts = "-Ifoo"
-        expect(spec_command).to match(/rspec.*-Ifoo/)
+        expect(spec_command).to match(/#{task.rspec_path}.*-Ifoo/)
       end
     end
 
