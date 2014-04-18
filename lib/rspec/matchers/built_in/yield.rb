@@ -7,8 +7,9 @@ module RSpec
       # the yield behavior of the object-under-test.
       class YieldProbe
         def self.probe(block)
-          probe = new
-          assert_valid_expect_block!(block)
+          probe = new(block)
+          return probe unless probe.has_block?
+          probe.assert_valid_expect_block!
           block.call(probe)
           probe.assert_used!
           probe
@@ -16,9 +17,14 @@ module RSpec
 
         attr_accessor :num_yields, :yielded_args
 
-        def initialize
+        def initialize(block)
+          @block = block
           @used = false
           self.num_yields, self.yielded_args = 0, []
+        end
+
+        def has_block?
+          Proc === @block
         end
 
         def to_proc
@@ -62,8 +68,8 @@ module RSpec
                 "are."
         end
 
-        def self.assert_valid_expect_block!(block)
-          return if block.arity == 1
+        def assert_valid_expect_block!
+          return if @block.arity == 1
           raise "Your expect block must accept an argument to be used with this " +
                 "matcher. Pass the argument as a block on to the method you are testing."
         end
@@ -121,29 +127,31 @@ module RSpec
 
         # @private
         def matches?(block)
-          probe = YieldProbe.probe(block)
+          @probe = YieldProbe.probe(block)
+          return false unless @probe.has_block?
 
           if @expectation_type
-            probe.num_yields.__send__(@expectation_type, @expected_yields_count)
+            @probe.num_yields.__send__(@expectation_type, @expected_yields_count)
           else
-            probe.yielded_once?(:yield_control)
+            @probe.yielded_once?(:yield_control)
           end
+        end
+
+        # @private
+        def does_not_match?(block)
+          !matches?(block) && @probe.has_block?
         end
 
         # @api private
         # @return [String]
         def failure_message
-          'expected given block to yield control'.tap do |failure_message|
-            failure_message << relativity_failure_message
-          end
+          'expected given block to yield control' + failure_reason
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          'expected given block not to yield control'.tap do |failure_message|
-            failure_message << relativity_failure_message
-          end
+          'expected given block not to yield control' + failure_reason
         end
 
         # @private
@@ -162,7 +170,8 @@ module RSpec
                                    end
         end
 
-        def relativity_failure_message
+        def failure_reason
+          return " but was not a block" unless @probe.has_block?
           return '' unless @expected_yields_count
           " #{human_readable_expecation_type}#{human_readable_count}"
         end
@@ -191,17 +200,23 @@ module RSpec
         # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
+          return false unless @probe.has_block?
           @probe.yielded_once?(:yield_with_no_args) && @probe.single_yield_args.empty?
         end
 
         # @private
+        def does_not_match?(block)
+          !matches?(block) && @probe.has_block?
+        end
+
+        # @private
         def failure_message
-          "expected given block to yield with no arguments, but #{failure_reason}"
+          "expected given block to yield with no arguments, but #{positive_failure_reason}"
         end
 
         # @private
         def failure_message_when_negated
-          "expected given block not to yield with no arguments, but did"
+          "expected given block not to yield with no arguments, but #{negative_failure_reason}"
         end
 
         # @private
@@ -211,12 +226,15 @@ module RSpec
 
       private
 
-        def failure_reason
-          if @probe.num_yields.zero?
-            "did not yield"
-          else
-            "yielded with arguments: #{@probe.single_yield_args.inspect}"
-          end
+        def positive_failure_reason
+          return "was not a block" unless @probe.has_block?
+          return "did not yield" if @probe.num_yields.zero?
+          "yielded with arguments: #{@probe.single_yield_args.inspect}"
+        end
+
+        def negative_failure_reason
+          return "was not a block" unless @probe.has_block?
+          "did"
         end
       end
 
@@ -233,8 +251,14 @@ module RSpec
         # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
+          return false unless @probe.has_block?
           @actual = @probe.single_yield_args
           @probe.yielded_once?(:yield_with_args) && args_match?
+        end
+
+        # @private
+        def does_not_match?(block)
+          !matches?(block) && @probe.has_block?
         end
 
         # @private
@@ -262,11 +286,9 @@ module RSpec
       private
 
         def positive_failure_reason
-          if @probe.num_yields.zero?
-            "did not yield"
-          else
-            @positive_args_failure
-          end
+          return "was not a block" unless @probe.has_block?
+          return "did not yield" if @probe.num_yields.zero?
+          @positive_args_failure
         end
 
         def expected_arg_description
@@ -274,7 +296,9 @@ module RSpec
         end
 
         def negative_failure_reason
-          if all_args_match?
+          if !@probe.has_block?
+            "was not a block"
+          elsif all_args_match?
             "yielded with expected arguments" +
               "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
               "\n         got: #{@actual.inspect}"
@@ -316,22 +340,23 @@ module RSpec
         # @private
         def matches?(block)
           @probe = YieldProbe.probe(block)
+          return false unless @probe.has_block?
           @actual = @probe.successive_yield_args
           args_match?
         end
 
+        def does_not_match?(block)
+          !matches?(block) && @probe.has_block?
+        end
+
         # @private
         def failure_message
-          "expected given block to yield successively with arguments, but yielded with unexpected arguments" +
-            "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
-            "\n     got: #{@actual.inspect}"
+          "expected given block to yield successively with arguments, but #{positive_failure_reason}"
         end
 
         # @private
         def failure_message_when_negated
-          "expected given block not to yield successively with arguments, but yielded with expected arguments" +
-              "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
-              "\n         got: #{@actual.inspect}"
+          "expected given block not to yield successively with arguments, but #{negative_failure_reason}"
         end
 
         # @private
@@ -354,6 +379,22 @@ module RSpec
 
         def expected_arg_description
           @expected.map { |e| description_of e }.join(", ")
+        end
+
+        def positive_failure_reason
+          return "was not a block" unless @probe.has_block?
+
+          "yielded with unexpected arguments" +
+          "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+          "\n     got: #{@actual.inspect}"
+        end
+
+        def negative_failure_reason
+          return "was not a block" unless @probe.has_block?
+
+          "yielded with expected arguments" +
+          "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+          "\n         got: #{@actual.inspect}"
         end
       end
     end

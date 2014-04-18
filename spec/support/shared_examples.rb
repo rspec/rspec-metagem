@@ -44,6 +44,20 @@ shared_examples "an RSpec matcher" do |options|
     # Because some matchers purposefully do not support negation.
   end
 
+  it 'fails gracefully when given a value if it is a block matcher' do
+    if matcher.supports_block_expectations?
+      expect {
+        expect(3).to matcher
+      }.to fail_with(/was not( given)? a block/)
+
+      unless options[:disallows_negation]
+        expect {
+          expect(3).not_to matcher
+        }.to fail_with(/was not( given)? a block/)
+      end
+    end
+  end
+
   it 'can be used in a composed matcher expression' do
     expect([valid_value, invalid_value]).to include(matcher)
 

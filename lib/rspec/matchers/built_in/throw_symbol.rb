@@ -15,6 +15,9 @@ module RSpec
 
         # @private
         def matches?(given_proc)
+          @block = given_proc
+          return false unless Proc === given_proc
+
           begin
             if @expected_symbol.nil?
               given_proc.call
@@ -58,16 +61,20 @@ module RSpec
           end
         end
 
+        def does_not_match?(given_proc)
+          !matches?(given_proc) && Proc === given_proc
+        end
+
         # @api private
         # @return [String]
         def failure_message
-          "expected #{expected} to be thrown, got #{caught}"
+          "expected #{expected} to be thrown, #{actual_result}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{expected('no Symbol')}#{' not' if @expected_symbol} to be thrown, got #{caught}"
+          "expected #{expected('no Symbol')}#{' not' if @expected_symbol} to be thrown, #{actual_result}"
         end
 
         # @api private
@@ -84,6 +91,11 @@ module RSpec
         end
 
       private
+
+        def actual_result
+          return "but was not a block" unless Proc === @block
+          "got #{caught}"
+        end
 
         def expected(symbol_desc = 'a Symbol')
           throw_description(@expected_symbol || symbol_desc, @expected_arg)

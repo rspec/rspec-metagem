@@ -1,7 +1,7 @@
 describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
                                       :invalid_value => lambda { }) do
-    let(:matcher) { raise_error(/boom/) }
+    let(:matcher) { raise_error }
   end
 
   it "passes if anything is raised" do
@@ -375,15 +375,6 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| .
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message") { |err| }
     }.to raise_error(/`expect \{ \}\.not_to raise_error\(SpecificErrorClass, message\)` is not valid/)
-  end
-end
-
-describe "misuse of raise_error, with (), not {}" do
-  it "fails with warning" do
-    expect(::Kernel).to receive(:warn).with(/`raise_error` was called with non-proc object 1\.7/)
-    expect {
-      expect(Math.sqrt(3)).to raise_error
-    }.to fail_with(/nothing was raised/)
   end
 end
 

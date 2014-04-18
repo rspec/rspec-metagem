@@ -13,9 +13,14 @@ module RSpec
         end
 
         def matches?(block)
+          @block = block
+          return false unless Proc === block
           @actual = @stream_capturer.capture(block)
-
           @expected ? values_match?(@expected, @actual) : captured?
+        end
+
+        def does_not_match?(block)
+          !matches?(block) && Proc === block
         end
 
         # @api public
@@ -35,13 +40,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected block to #{description}, #{actual_description}"
+          "expected block to #{description}, but #{positive_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected block to not #{description}, but did"
+          "expected block to not #{description}, but #{negative_failure_reason}"
         end
 
         # @api private
@@ -73,8 +78,15 @@ module RSpec
           @actual.length > 0
         end
 
-        def actual_description
-          @expected ? "but output #{captured? ? @actual.inspect : 'nothing'}" : "but did not"
+        def positive_failure_reason
+          return "was not a block" unless Proc === @block
+          return "output #{captured? ? @actual.inspect : 'nothing'}" if @expected
+          "did not"
+        end
+
+        def negative_failure_reason
+          return "was not a block" unless Proc === @block
+          "did"
         end
       end
 

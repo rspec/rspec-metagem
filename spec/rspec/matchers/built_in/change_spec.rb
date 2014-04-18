@@ -796,7 +796,8 @@ describe RSpec::Matchers::BuiltIn::ChangeRelatively do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
-                                      :invalid_value => lambda { k += 2 } do
+                                      :invalid_value => lambda { k += 2 },
+                                      :disallows_negation => true do
     let(:matcher) { change { k }.by(1) }
   end
 end
@@ -814,7 +815,8 @@ describe RSpec::Matchers::BuiltIn::ChangeToValue do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k = 2 },
-                                      :invalid_value => lambda { k = 3 } do
+                                      :invalid_value => lambda { k = 3 },
+                                      :disallows_negation => true do
     let(:matcher) { change { k }.to(2) }
   end
 end

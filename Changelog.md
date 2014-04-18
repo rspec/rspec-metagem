@@ -49,8 +49,8 @@ Enhancements:
   matches all elements in a collection:
   `expect([1, 3, 5]).to all( be_odd )`. (Adam Farhi)
 * Give users a clear error when they wrongly use a value matcher
-  in a block expectation expression (e.g. `expect { 3 }.to eq(3)`).
-  (Myron Marston)
+  in a block expectation expression (e.g. `expect { 3 }.to eq(3)`)
+  or vice versa.  (Myron Marston)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.beta1...v3.0.0.beta2)
