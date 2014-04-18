@@ -158,7 +158,7 @@ Feature: predicate matchers
        """
      When I run `rspec attempting_to_match_private_method_spec.rb`
      Then the output should contain "1 example, 1 failure"
-     And the output should contain "expectation set on private method `secret?`"
+     And the output should contain "`secret?` is a private method"
 
     Scenario: calling private method with have_predicate causes error
       Given a file named "attempting_to_match_private_method_spec.rb" with:
@@ -179,4 +179,4 @@ Feature: predicate matchers
        """
      When I run `rspec attempting_to_match_private_method_spec.rb`
      Then the output should contain "1 example, 1 failure"
-     And the output should contain "expectation set on private method `has_secret?`"
+     And the output should contain "`has_secret?` is a private method"

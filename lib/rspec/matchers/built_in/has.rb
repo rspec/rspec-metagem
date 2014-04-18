@@ -88,7 +88,7 @@ module RSpec
 
         def validity_message
           if private_predicate?
-            "expectation set on private method `#{predicate}`"
+            "expected #{@actual} to respond to `#{predicate}` but `#{predicate}` is a private method"
           elsif !predicate_exists?
             "expected #{@actual} to respond to `#{predicate}`"
           end
