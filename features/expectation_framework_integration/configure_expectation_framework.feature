@@ -1,4 +1,3 @@
-@wip
 Feature: configure expectation framework
 
   By default, RSpec is configured to include rspec-expectations for expressing
