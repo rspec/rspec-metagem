@@ -15,14 +15,14 @@ module RSpec
         def matches?(actual, &block)
           @actual = actual
           @block ||= block
-          valid_test? && predicate_matches?
+          predicate_accessible? && predicate_matches?
         end
 
         # @private
         def does_not_match?(actual, &block)
           @actual = actual
           @block ||= block
-          valid_test? && !predicate_matches?
+          predicate_accessible? && !predicate_matches?
         end
 
         # @api private
@@ -45,7 +45,7 @@ module RSpec
 
       private
 
-        def valid_test?
+        def predicate_accessible?
           !private_predicate? && predicate_exists?
         end
        
