@@ -1,8 +1,8 @@
 module RSpec
   module Core
     # @private
-    module StdlibAssertionsAdapter
-      include ::Test::Unit::Assertions
+    module MinitestAssertionsAdapter
+      include ::Minitest::Assertions
 
       # Minitest requires this accessor to be available. See
       # https://github.com/seattlerb/minitest/blob/38f0a5fcbd9c37c3f80a3eaad4ba84d3fc9947a0/lib/minitest/assertions.rb#L8

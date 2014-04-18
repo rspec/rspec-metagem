@@ -263,42 +263,72 @@ module RSpec::Core
       end
     end
 
-    def stub_stdlib_adapter
+    def stub_expectation_adapters
       stub_const("Test::Unit::Assertions", Module.new)
-      allow(config).to receive(:require).with("test/unit/assertions")
-      allow(config).to receive(:require).with("rspec/expectations")
+      stub_const("Minitest::Assertions", Module.new)
+      allow(config).to receive(:require)
       allow(config).to receive(:require).
-        with("rspec/core/stdlib_assertions_adapter").and_call_original
+        with("rspec/core/minitest_assertions_adapter").and_call_original
     end
 
     describe "#expect_with" do
       before do
-        stub_stdlib_adapter
+        stub_expectation_adapters
       end
 
       it_behaves_like "a configurable framework adapter", :expect_with
 
-      [
-        [:rspec,  'rspec/expectations'],
-        [:stdlib, 'test/unit/assertions']
-      ].each do |framework, required_file|
-        context "with #{framework}" do
-          it "requires #{required_file}" do
-            expect(config).to receive(:require).with(required_file)
-            config.expect_with framework
-          end
+      context "with :rspec" do
+        it "requires rspec/expectations" do
+          expect(config).to receive(:require).with('rspec/expectations')
+          config.expect_with :rspec
+        end
+
+        it "sets the expectation framework to ::RSpec::Matchers" do
+          config.expect_with :rspec
+          expect(config.expectation_frameworks).to eq [::RSpec::Matchers]
+        end
+      end
+
+      context "with :test_unit" do
+        it "requires test/unit/assertions" do
+          expect(config).to receive(:require).with('test/unit/assertions')
+          config.expect_with :test_unit
+        end
+
+        it "sets the expectation framework to ::Test::Unit::Assertions" do
+          test_unit_module = stub_const("Test::Unit::Assertions", Module.new)
+          config.expect_with :test_unit
+          expect(config.expectation_frameworks).to eq [test_unit_module]
+        end
+      end
+
+      context "with :minitest" do
+        it "requires minitest/assertions" do
+          expect(config).to receive(:require).with('minitest/assertions')
+          config.expect_with :minitest
+        end
+
+        it "sets the expectation framework to ::Minitest::Assertions" do
+          config.expect_with :minitest
+          expect(config.expectation_frameworks).to eq [
+            ::RSpec::Core::MinitestAssertionsAdapter
+          ]
         end
       end
 
       it "supports multiple calls" do
         config.expect_with :rspec
-        config.expect_with :stdlib
-        expect(config.expectation_frameworks).to eq [RSpec::Matchers, RSpec::Core::StdlibAssertionsAdapter]
+        config.expect_with :minitest
+        expect(config.expectation_frameworks).to eq [
+          RSpec::Matchers,
+          RSpec::Core::MinitestAssertionsAdapter
+        ]
       end
 
       it "raises if block given with multiple args" do
         expect {
-          config.expect_with :rspec, :stdlib do |mod_config|
+          config.expect_with :rspec, :minitest do |mod_config|
           end
         }.to raise_error(/expect_with only accepts/)
       end
@@ -326,16 +356,16 @@ module RSpec::Core
         it 'does not raise an error if re-setting the same config' do
           groups = []
           allow(RSpec.world).to receive_messages(:example_groups => groups)
-          config.expect_with :stdlib
+          config.expect_with :minitest
           groups << double.as_null_object
-          config.expect_with :stdlib
+          config.expect_with :minitest
         end
       end
     end
 
     describe "#expecting_with_rspec?" do
       before do
-        stub_stdlib_adapter
+        stub_expectation_adapters
       end
 
       it "returns false by default" do
@@ -347,18 +377,18 @@ module RSpec::Core
         expect(config).to be_expecting_with_rspec
       end
 
-      it "returns true when `expect_with :rspec, :stdlib` has been configured" do
-        config.expect_with :rspec, :stdlib
+      it "returns true when `expect_with :rspec, :minitest` has been configured" do
+        config.expect_with :rspec, :minitest
         expect(config).to be_expecting_with_rspec
       end
 
-      it "returns true when `expect_with :stdlib, :rspec` has been configured" do
-        config.expect_with :stdlib, :rspec
+      it "returns true when `expect_with :minitest, :rspec` has been configured" do
+        config.expect_with :minitest, :rspec
         expect(config).to be_expecting_with_rspec
       end
 
-      it "returns false when `expect_with :stdlib` has been configured" do
-        config.expect_with :stdlib
+      it "returns false when `expect_with :minitest` has been configured" do
+        config.expect_with :minitest
         expect(config).not_to be_expecting_with_rspec
       end
     end
