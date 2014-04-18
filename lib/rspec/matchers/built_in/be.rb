@@ -188,13 +188,13 @@ module RSpec
         def matches?(actual, &block)
           @actual  = actual
           @block ||= block
-          valid_test? && predicate_matches?
+          predicate_accessible? && predicate_matches?
         end
 
         def does_not_match?(actual, &block)
           @actual  = actual
           @block ||= block
-          valid_test? && !predicate_matches?
+          predicate_accessible? && !predicate_matches?
         end
 
         # @api private
@@ -217,12 +217,12 @@ module RSpec
 
       private
 
-        def valid_test?
+        def predicate_accessible?
           !private_predicate? && predicate_exists?
         end
 
         # support 1.8.7, evaluate once at load time for performance
-        if methods.first.is_a? String
+        if String === methods.first
           def private_predicate?
             @actual.private_methods.include? predicate.to_s
           end
@@ -269,7 +269,7 @@ module RSpec
 
         def validity_message
           if private_predicate?
-            "expectation set on private method `#{predicate}`"
+            "expected #{@actual} to respond to `#{predicate}` but `#{predicate}` is a private method"
           elsif !predicate_exists?
             "expected #{@actual} to respond to `#{predicate}`"
           end

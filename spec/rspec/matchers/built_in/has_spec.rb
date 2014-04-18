@@ -68,6 +68,16 @@ describe "expect(...).to have_sym(*args)" do
     }.to fail_with(/expected #has_foo.* to return true, got false/)
   end
 
+  it 'fails if #has_sym?(*args) is private' do
+    klass = Class.new do
+      private
+      def has_foo?
+        true
+      end
+    end
+    expect { expect(klass.new).to have_foo }.to fail_with(/private/)
+  end
+
   it "fails if target does not respond to #has_sym?" do
     expect {
       expect(Object.new).to have_key(:a)
