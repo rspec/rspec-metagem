@@ -50,7 +50,7 @@ module RSpec
         end
        
         # support 1.8.7, evaluate once at load time for performance
-        if methods.first.is_a? String
+        if String === methods.first
           def private_predicate?
             @actual.private_methods.include? predicate.to_s
           end
