@@ -117,6 +117,8 @@ module RSpec
           end
 
           a[:description] = "new description"
+
+          pending "Cannot maintain this and provide full `:example_group` backwards compatibility (see GH #1490):("
           expect(b[:description]).to eq("new description")
         end
 
@@ -460,11 +462,28 @@ module RSpec
               describe("nested") { child = metadata }
             end
 
-            expect(child[:example_group][:example_group]).to include(
+            expect(child[:example_group][:example_group].to_h).to include(
               :foo => 3,
               :description => "Object group",
               :line_number => parent_line
             )
+          end
+
+          it "works properly with deep nesting" do
+            inner_metadata = nil
+
+            RSpec.describe "Level 1" do
+              describe "Level 2" do
+                describe "Level 3" do
+                  inner_metadata = example("Level 4").metadata
+                end
+              end
+            end
+
+            expect(inner_metadata[:description]).to eq("Level 4")
+            expect(inner_metadata[:example_group][:description]).to eq("Level 3")
+            expect(inner_metadata[:example_group][:example_group][:description]).to eq("Level 2")
+            expect(inner_metadata[:example_group][:example_group][:example_group][:description]).to eq("Level 1")
           end
 
           it 'can mutate attributes when accessing them via [:example_group]' do

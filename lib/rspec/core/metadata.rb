@@ -149,6 +149,11 @@ module RSpec
       class ExampleHash < HashPopulator
         def self.create(group_metadata, user_metadata, description, block)
           example_metadata = group_metadata.dup
+          group_metadata = Hash.new(&ExampleGroupHash.backwards_compatibility_default_proc do |hash|
+            hash[:parent_example_group]
+          end)
+          group_metadata.update(example_metadata)
+
           example_metadata[:example_group] = group_metadata
           example_metadata.delete(:parent_example_group)
 
@@ -184,14 +189,18 @@ module RSpec
         end
 
         def self.hash_with_backwards_compatibility_default_proc
-          Hash.new do |hash, key|
+          Hash.new(&backwards_compatibility_default_proc { |hash| hash })
+        end
+
+        def self.backwards_compatibility_default_proc(&example_group_selector)
+          Proc.new do |hash, key|
             case key
             when :example_group
               RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
                               :replacement => "the example group's hash directly for the " +
                               "computed keys and `:parent_example_group` to access the parent " +
                               "example group metadata")
-              LegacyExampleGroupHash.new(hash)
+              LegacyExampleGroupHash.new(example_group_selector.call(hash))
             when :example_group_block
               RSpec.deprecate("`metadata[:example_group_block]`",
                               :replacement => "`metadata[:block]`")
@@ -370,7 +379,7 @@ module RSpec
 
       def initialize(metadata)
         @metadata = metadata
-        self[:example_group] = metadata[:parent_example_group]
+        self[:example_group] = metadata[:parent_example_group][:example_group]
       end
 
       def to_h
