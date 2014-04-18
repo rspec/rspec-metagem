@@ -9,6 +9,8 @@ Breaking Changes for 3.0.0:
 * Remove `RSpec::Matchers::Pretty#expected_to_sentence`. (Myron Marston)
 * Rename `RSpec::Matchers::Configuration` constant to
   `RSpec::Expectations::Configuration`. (Myron Marston)
+* Prevent `have_xyz` predicate matchers using private methods.
+  (Adrian Gonzalez)
 
 Bug Fixes:
 
