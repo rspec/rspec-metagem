@@ -151,6 +151,14 @@ module RSpec
           define_method(:diffable?) { true }
         end
 
+        # Declares that the matcher can be used in a block expectation.
+        # Users will not be able to use your matcher in a block
+        # expectation without declaring this.
+        # (e.g. `expect { do_something }.to matcher`).
+        def supports_block_expectations
+          define_method(:supports_block_expectations?) { true }
+        end
+
         # Convenience for defining methods on this matcher to create a fluent
         # interface. The trick about fluent interfaces is that each method must
         # return self in order to chain methods together. `chain` handles that
@@ -254,6 +262,12 @@ module RSpec
         # The default failure message for negative expectations.
         def failure_message_when_negated
           "expected #{actual.inspect} not to #{name_to_sentence}#{to_sentence expected}"
+        end
+
+        # Matchers do not support block expectations by default. You
+        # must opt-in.
+        def supports_block_expectations?
+          false
         end
       end
 

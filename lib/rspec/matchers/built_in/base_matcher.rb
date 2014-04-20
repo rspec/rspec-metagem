@@ -87,6 +87,14 @@ module RSpec
           false
         end
 
+        # @api private
+        # Most matchers are value matchers (i.e. meant to work with `expect(value)`)
+        # rather than block matchers (i.e. meant to work with `expect { }`), so
+        # this defaults to false. Block matchers must override this to return true.
+        def supports_block_expectations?
+          false
+        end
+
       private
 
         def assert_ivars(*expected_ivars)

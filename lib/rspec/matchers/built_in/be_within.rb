@@ -55,6 +55,11 @@ module RSpec
           "be within #{@delta}#{@unit} of #{@expected}"
         end
 
+        # @private
+        def supports_block_expectations?
+          false
+        end
+
       private
 
         def numeric?

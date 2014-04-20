@@ -65,7 +65,7 @@ module RSpec::Matchers::BuiltIn
 
     describe "expect(...).to matcher.and(other_matcher)" do
 
-      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4 do
+      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 4, :disallows_negation => true do
         let(:matcher) { eq(3).and be <= 3 }
       end
 
@@ -189,7 +189,7 @@ module RSpec::Matchers::BuiltIn
     end
 
     describe "expect(...).to matcher.or(other_matcher)" do
-      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5 do
+      it_behaves_like "an RSpec matcher", :valid_value => 3, :invalid_value => 5, :disallows_negation => true do
         let(:matcher) { eq(3).or eq(4) }
       end
 

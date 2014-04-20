@@ -45,27 +45,39 @@ module RSpec
 
         # @private
         def matches?(event_proc)
+          @event_proc = event_proc
+          return false unless Proc === event_proc
           raise_block_syntax_error if block_given?
           @change_details.perform_change(event_proc)
           @change_details.changed?
         end
 
+        def does_not_match?(event_proc)
+          raise_block_syntax_error if block_given?
+          !matches?(event_proc) && Proc === event_proc
+        end
+
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@change_details.message} to have changed, but is still #{description_of @change_details.actual_before}"
+          "expected #{@change_details.message} to have changed, but #{positive_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
+          "expected #{@change_details.message} not to have changed, but #{negative_failure_reason}"
         end
 
         # @api private
         # @return [String]
         def description
           "change #{@change_details.message}"
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
       private
@@ -77,6 +89,16 @@ module RSpec
         def raise_block_syntax_error
           raise SyntaxError,
             "The block passed to the `change` matcher must use `{ ... }` instead of do/end"
+        end
+
+        def positive_failure_reason
+          return "was not given a block" unless Proc === @event_proc
+          "is still #{description_of @change_details.actual_before}"
+        end
+
+        def negative_failure_reason
+          return "was not given a block" unless Proc === @event_proc
+          "did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
         end
       end
 
@@ -94,12 +116,13 @@ module RSpec
 
         # @private
         def failure_message
-          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}, " +
-          "but was changed by #{description_of @change_details.actual_delta}"
+          "expected #{@change_details.message} to have changed #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}, but #{failure_reason}"
         end
 
         # @private
         def matches?(event_proc)
+          @event_proc = event_proc
+          return false unless Proc === event_proc
           @change_details.perform_change(event_proc)
           @comparer.call(@change_details.actual_delta)
         end
@@ -112,6 +135,18 @@ module RSpec
         # @private
         def description
           "change #{@change_details.message} #{@relativity.to_s.gsub("_", " ")} #{description_of @expected_delta}"
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
+        end
+
+      private
+
+        def failure_reason
+          return "was not given a block" unless Proc === @event_proc
+          "was changed by #{description_of @change_details.actual_delta}"
         end
       end
 
@@ -130,6 +165,8 @@ module RSpec
 
         # @private
         def matches?(event_proc)
+          @event_proc = event_proc
+          return false unless Proc === event_proc
           @change_details.perform_change(event_proc)
           @change_details.changed? && matches_before? && matches_after?
         end
@@ -141,9 +178,15 @@ module RSpec
 
         # @private
         def failure_message
-          return before_value_failure   unless matches_before?
-          return did_not_change_failure unless @change_details.changed?
+          return not_given_a_block_failure unless Proc === @event_proc
+          return before_value_failure      unless matches_before?
+          return did_not_change_failure    unless @change_details.changed?
           after_value_failure
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
       private
@@ -171,6 +214,10 @@ module RSpec
         def did_change_failure
           "expected #{@change_details.message} not to have changed, but did change from #{description_of @change_details.actual_before} to #{description_of @change_details.actual_after}"
         end
+
+        def not_given_a_block_failure
+          "expected #{@change_details.message} to have changed #{change_description}, but was not given a block"
+        end
       end
 
       # @api private
@@ -196,12 +243,15 @@ module RSpec
             raise NotImplementedError, "`expect { }.not_to change { }.to()` is not supported"
           end
 
+          @event_proc = event_proc
+          return false unless Proc === event_proc
           @change_details.perform_change(event_proc)
           !@change_details.changed? && matches_before?
         end
 
         # @private
         def failure_message_when_negated
+          return not_given_a_block_failure unless Proc === @event_proc
           return before_value_failure unless matches_before?
           did_change_failure
         end

@@ -60,6 +60,11 @@ module RSpec
           "respond to #{pp_names}#{with_arity}"
         end
 
+        # @private
+        def supports_block_expectations?
+          false
+        end
+
       private
 
         def find_failing_method_names(actual, filter_method)

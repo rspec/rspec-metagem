@@ -28,16 +28,14 @@ module RSpec
 
         # @private
         def matches?(given_proc, negative_expectation = false, &block)
+          @given_proc = given_proc
           @block ||= block
           @raised_expected_error = false
           @with_expected_message = false
           @eval_block = false
           @eval_block_passed = false
 
-          unless given_proc.respond_to?(:call)
-            ::Kernel.warn "`raise_error` was called with non-proc object #{given_proc.inspect}"
-            return false
-          end
+          return false unless Proc === given_proc
 
           begin
             given_proc.call
@@ -58,7 +56,12 @@ module RSpec
         # @private
         def does_not_match?(given_proc)
           prevent_invalid_expectations
-          !matches?(given_proc, :negative_expectation)
+          !matches?(given_proc, :negative_expectation) && Proc === given_proc
+        end
+
+        # @private
+        def supports_block_expectations?
+          true
         end
 
         # @api private
@@ -139,6 +142,7 @@ module RSpec
         end
 
         def given_error
+          return " but was not given a block" unless Proc === @given_proc
           return " but nothing was raised" unless @actual_error
 
           backtrace = format_backtrace(@actual_error.backtrace)

@@ -43,12 +43,17 @@ module RSpec
           [method_description, args_description].compact.join(' ')
         end
 
+        # @private
+        def supports_block_expectations?
+          false
+        end
+
       private
 
         def predicate_accessible?
           !private_predicate? && predicate_exists?
         end
-       
+
         # support 1.8.7, evaluate once at load time for performance
         if String === methods.first
           def private_predicate?
