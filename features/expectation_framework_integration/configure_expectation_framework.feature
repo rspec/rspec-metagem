@@ -131,3 +131,28 @@ Feature: configure expectation framework
       """
     When I run `rspec example_spec.rb`
     Then the examples should all pass
+
+  Scenario: Configure test/unit and minitest assertions
+    Given a file named "example_spec.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.expect_with :test_unit, :minitest
+      end
+
+      RSpec.describe [1] do
+        it "is equal to [1]" do
+          assert_equal [1], [1], "expected [1] to equal [1]"
+        end
+
+        specify { assert_not_equal [1], [] }
+
+        it "the an object is the same as itself" do
+          x = [1]
+          assert_same x, x, "expected x to be the same x"
+        end
+
+        specify { refute_same [1], [1] }
+      end
+      """
+    When I run `rspec example_spec.rb`
+    Then the examples should all pass
