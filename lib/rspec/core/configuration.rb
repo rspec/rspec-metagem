@@ -523,19 +523,9 @@ module RSpec
             self.expecting_with_rspec = true
             ::RSpec::Matchers
           when :test_unit
-            require 'test/unit/assertions'
-            ::Test::Unit::Assertions
+            require 'rspec/core/test_unit_assertions_adapter'
+            ::RSpec::Core::TestUnitAssertionsAdapter
           when :minitest
-            begin
-              gem 'minitest'
-            rescue Gem::LoadError
-              # No-op
-              # Allows support for 1.8 and Minitest 5.x
-            end
-            # This require is kept here rather than in
-            # stdlib_assertions_adapter so that we can stub it out sanely in
-            # tests.
-            require 'minitest/assertions'
             require 'rspec/core/minitest_assertions_adapter'
             ::RSpec::Core::MinitestAssertionsAdapter
           else

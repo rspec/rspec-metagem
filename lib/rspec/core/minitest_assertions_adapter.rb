@@ -1,3 +1,5 @@
+require 'minitest/assertions'
+
 module RSpec
   module Core
     # @private

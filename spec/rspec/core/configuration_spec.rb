@@ -266,9 +266,9 @@ module RSpec::Core
     def stub_expectation_adapters
       stub_const("Test::Unit::Assertions", Module.new)
       stub_const("Minitest::Assertions", Module.new)
+      stub_const("RSpec::Core::TestUnitAssertionsAdapter", Module.new)
+      stub_const("RSpec::Core::MinitestAssertionsAdapter", Module.new)
       allow(config).to receive(:require)
-      allow(config).to receive(:require).
-        with("rspec/core/minitest_assertions_adapter").and_call_original
     end
 
     describe "#expect_with" do
@@ -291,21 +291,24 @@ module RSpec::Core
       end
 
       context "with :test_unit" do
-        it "requires test/unit/assertions" do
-          expect(config).to receive(:require).with('test/unit/assertions')
+        it "requires rspec/core/test_unit_assertions_adapter" do
+          expect(config).to receive(:require).
+            with('rspec/core/test_unit_assertions_adapter')
           config.expect_with :test_unit
         end
 
         it "sets the expectation framework to ::Test::Unit::Assertions" do
-          test_unit_module = stub_const("Test::Unit::Assertions", Module.new)
           config.expect_with :test_unit
-          expect(config.expectation_frameworks).to eq [test_unit_module]
+          expect(config.expectation_frameworks).to eq [
+            ::RSpec::Core::TestUnitAssertionsAdapter
+          ]
         end
       end
 
       context "with :minitest" do
-        it "requires minitest/assertions" do
-          expect(config).to receive(:require).with('minitest/assertions')
+        it "requires rspec/core/minitest_assertions_adapter" do
+          expect(config).to receive(:require).
+            with('rspec/core/minitest_assertions_adapter')
           config.expect_with :minitest
         end
 
