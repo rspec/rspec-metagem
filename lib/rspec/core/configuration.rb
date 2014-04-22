@@ -300,6 +300,7 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
+        @derived_metadata_blocks = []
       end
 
       # @private
@@ -1208,6 +1209,32 @@ module RSpec
 
       # @private
       attr_accessor :disable_monkey_patching
+
+      # Defines a callback that can assign derived metadata values.
+      #
+      # @param filters [Array<Symbol>, Hash] metadata filters that determine which example
+      #   or group metadata hashes the callback will be triggered for. If none are given,
+      #   the callback will be run against the metadata hashes of all groups and examples.
+      # @yieldparam metadata [Hash] original metadata hash from an example or group. Mutate this in
+      #   your block as needed.
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     # Tag all groups and examples in the spec/unit directory with :type => :unit
+      #     config.define_derived_metadata(:file_path => %r{/spec/unit/}) do |metadata|
+      #       metadata[:type] = :unit
+      #     end
+      #   end
+      def define_derived_metadata(*filters, &block)
+        @derived_metadata_blocks << [Metadata.build_hash_from(filters), block]
+      end
+
+      # @private
+      def apply_derived_metadata_to(metadata)
+        @derived_metadata_blocks.each do |filter, block|
+          block.call(metadata) if filter.empty? || MetadataFilter.any_apply?(filter, metadata)
+        end
+      end
 
     private
 

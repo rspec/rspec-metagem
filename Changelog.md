@@ -97,6 +97,9 @@ Enhancements:
 * Add `disable_monkey_patching!` config option that disables all monkey
   patching from whatever pieces of RSpec you use. (Alexey Fedorov)
 * Add `Pathname` support for setting all output streams. (Aaron Kromer)
+* Add `config.define_derived_metadata`, which can be used to apply
+  additional metadata to all groups or examples that match a given
+  filter. (Myron Marston)
 
 Bug Fixes:
 

@@ -1077,6 +1077,107 @@ module RSpec::Core
       end
     end
 
+    describe "#define_derived_metadata" do
+      it 'allows the provided block to mutate example group metadata' do
+        RSpec.configuration.define_derived_metadata do |metadata|
+          metadata[:reverse_description] = metadata[:description].reverse
+        end
+
+        group = RSpec.describe("My group")
+        expect(group.metadata).to include(:description => "My group", :reverse_description => "puorg yM")
+      end
+
+      it 'allows the provided block to mutate example metadata' do
+        RSpec.configuration.define_derived_metadata do |metadata|
+          metadata[:reverse_description] = metadata[:description].reverse
+        end
+
+        ex = RSpec.describe("My group").example("foo")
+        expect(ex.metadata).to include(:description => "foo", :reverse_description => "oof")
+      end
+
+      it 'allows multiple configured blocks to be applied, in order of definition' do
+        RSpec.configure do |c|
+          c.define_derived_metadata { |m| m[:b1_desc] = m[:description] + " (block 1)" }
+          c.define_derived_metadata { |m| m[:b2_desc] = m[:b1_desc]     + " (block 2)" }
+        end
+
+        group = RSpec.describe("bar")
+        expect(group.metadata).to include(:b1_desc => "bar (block 1)", :b2_desc => "bar (block 1) (block 2)")
+      end
+
+      it "derives metadata before the group or example blocks are eval'd so their logic can depend on the derived metadata" do
+        RSpec.configure do |c|
+          c.define_derived_metadata(:foo) do |metadata|
+            metadata[:bar] = "bar"
+          end
+        end
+
+        group_bar_value = example_bar_value = nil
+
+        RSpec.describe "Group", :foo do
+          group_bar_value = metadata[:bar]
+          example_bar_value = example("ex", :foo).metadata[:bar]
+        end
+
+        expect(group_bar_value).to eq("bar")
+        expect(example_bar_value).to eq("bar")
+      end
+
+      context "when passed a metadata filter" do
+        it 'only applies to the groups and examples that match that filter' do
+          RSpec.configure do |c|
+            c.define_derived_metadata(:apply => true) do |metadata|
+              metadata[:reverse_description] = metadata[:description].reverse
+            end
+          end
+
+          g1 = RSpec.describe("G1", :apply)
+          g2 = RSpec.describe("G2")
+          e1 = g1.example("E1")
+          e2 = g2.example("E2", :apply)
+          e3 = g2.example("E3")
+
+          expect(g1.metadata).to include(:reverse_description => "1G")
+          expect(g2.metadata).not_to include(:reverse_description)
+
+          expect(e1.metadata).to include(:reverse_description => "1E")
+          expect(e2.metadata).to include(:reverse_description => "2E")
+          expect(e3.metadata).not_to include(:reverse_description)
+        end
+
+        it 'applies if any of multiple filters apply (to align with module inclusion semantics)' do
+          RSpec.configure do |c|
+            c.define_derived_metadata(:a => 1, :b => 2) do |metadata|
+              metadata[:reverse_description] = metadata[:description].reverse
+            end
+          end
+
+          g1 = RSpec.describe("G1", :a => 1)
+          g2 = RSpec.describe("G2", :b => 2)
+          g3 = RSpec.describe("G3", :c => 3)
+
+          expect(g1.metadata).to include(:reverse_description => "1G")
+          expect(g2.metadata).to include(:reverse_description => "2G")
+          expect(g3.metadata).not_to include(:reverse_description)
+        end
+
+        it 'allows a metadata filter to be passed as a raw symbol' do
+          RSpec.configure do |c|
+            c.define_derived_metadata(:apply) do |metadata|
+              metadata[:reverse_description] = metadata[:description].reverse
+            end
+          end
+
+          g1 = RSpec.describe("G1", :apply)
+          g2 = RSpec.describe("G2")
+
+          expect(g1.metadata).to include(:reverse_description => "1G")
+          expect(g2.metadata).not_to include(:reverse_description)
+        end
+      end
+    end
+
     describe "#add_setting" do
       describe "with no modifiers" do
         context "with no additional options" do
