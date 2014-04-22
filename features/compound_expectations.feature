@@ -12,6 +12,10 @@ Feature: Compound Expectations
           expect(string).to start_with("foo").and end_with("bazz")
         end
 
+        it "passes when using boolean AND `&` alias" do
+          expect(string).to start_with("foo") & end_with("bazz")
+        end
+
         it "fails when the first matcher fails" do
           expect(string).to start_with("bar").and end_with("bazz")
         end
@@ -22,7 +26,7 @@ Feature: Compound Expectations
       end
       """
     When I run `rspec compound_and_matcher_spec.rb`
-    Then the output should contain "3 examples, 2 failures"
+    Then the output should contain "4 examples, 2 failures"
 
   Scenario: Use `or` to chain expectations
     Given a file named "stoplight_spec.rb" with:
@@ -34,12 +38,15 @@ Feature: Compound Expectations
       end
 
       RSpec.describe StopLight, "#color" do
+        let(:light) { StopLight.new }
         it "is green, yellow or red" do
-          light = StopLight.new
           expect(light.color).to eq("green").or eq("yellow").or eq("red")
+        end
+
+        it "passes when using boolean OR `|` alias" do
+          expect(light.color).to eq("green") | eq("yellow") | eq("red")
         end
       end
       """
     When I run `rspec stoplight_spec.rb`
     Then the example should pass
-

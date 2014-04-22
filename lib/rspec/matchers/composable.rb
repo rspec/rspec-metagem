@@ -15,12 +15,14 @@ module RSpec
       #
       # @example
       #   expect(alphabet).to start_with("a").and end_with("z")
+      #   expect(alphabet).to start_with("a") & end_with("z")
       #
       # @note The negative form (`expect(...).not_to matcher.and other`)
       #   is not supported at this time.
       def and(matcher)
         BuiltIn::Compound::And.new self, matcher
       end
+      alias & and
 
       # Creates a compound `or` expectation. The matcher will
       # pass if either sub-matcher passes.
@@ -29,12 +31,14 @@ module RSpec
       #
       # @example
       #   expect(stoplight.color).to eq("red").or eq("green").or eq("yellow")
+      #   expect(stoplight.color).to eq("red") | eq("green") | eq("yellow")
       #
       # @note The negative form (`expect(...).not_to matcher.or other`)
       #   is not supported at this time.
       def or(matcher)
         BuiltIn::Compound::Or.new self, matcher
       end
+      alias | or
 
       # Delegates to `#matches?`. Allows matchers to be used in composable
       # fashion and also supports using matchers in case statements.

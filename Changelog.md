@@ -48,6 +48,9 @@ Enhancements:
 * Add `all` matcher, to allow you to specify that a given matcher
   matches all elements in a collection:
   `expect([1, 3, 5]).to all( be_odd )`. (Adam Farhi)
+* Add boolean AND/OR operators - `&`,`|` which alias compound `and`, `or` matchers:
+  `expect(alphabet).to start_with("a") & end_with("z")`.
+  `expect(stoplight.color).to eq("red") | eq("green") | eq("yellow")`. (Adam Farhi)
 * Give users a clear error when they wrongly use a value matcher
   in a block expectation expression (e.g. `expect { 3 }.to eq(3)`)
   or vice versa.  (Myron Marston)
