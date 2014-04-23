@@ -230,7 +230,7 @@ module RSpec
         return true if standalone?
 
         if is_standalone_filter?(updated)
-          replace_filters(updated)
+          @rules.replace(updated)
           true
         end
       end

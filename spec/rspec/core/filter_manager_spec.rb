@@ -44,10 +44,10 @@ module RSpec::Core
                 expect(rules).to eq({filter => "value"})
               end
 
-              it "clears previous exclusion" do
-                filter_manager.include :foo => :bar
+              it "does not clear previous exclusions" do
+                filter_manager.exclude :foo => :bar
                 filter_manager.include filter => "value"
-                expect(opposite_rules).to be_empty
+                expect(exclusions.rules).to eq(:foo => :bar)
               end
 
               it "does nothing when :#{filter} previously set" do
