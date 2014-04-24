@@ -41,8 +41,8 @@ module RSpec::Core
 
     context "with ruby options" do
       it "renders them before -S" do
-          task.ruby_opts = "-w"
-          expect(spec_command).to match(/^#{ruby} -w -S #{task.rspec_path}/)
+        task.ruby_opts = "-w"
+        expect(spec_command).to match(/^#{ruby} -w -S #{task.rspec_path}/)
       end
     end
 
