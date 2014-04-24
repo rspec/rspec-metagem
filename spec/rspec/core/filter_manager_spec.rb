@@ -44,10 +44,10 @@ module RSpec::Core
                 expect(rules).to eq({filter => "value"})
               end
 
-              it "does not clear previous exclusions" do
-                filter_manager.exclude :foo => :bar
+              it "clears previous exclusion" do
+                filter_manager.include :foo => :bar
                 filter_manager.include filter => "value"
-                expect(exclusions.rules).to eq(:foo => :bar)
+                expect(opposite_rules).to be_empty
               end
 
               it "does nothing when :#{filter} previously set" do
@@ -264,6 +264,12 @@ module RSpec::Core
           example = example_with_metadata(:if => nil)
           expect(filter_manager.exclude?(example)).to be_truthy
         end
+
+        it "continues to be an exclusion even if exclusions are cleared" do
+          example = example_with_metadata(:if => false)
+          filter_manager.exclusions.clear
+          expect(filter_manager.exclude?(example)).to be_truthy
+        end
       end
 
       describe "the default :unless filter" do
@@ -280,6 +286,12 @@ module RSpec::Core
         it "does not exclude a spec with { :unless => nil } metadata" do
           example = example_with_metadata(:unless => nil)
           expect(filter_manager.exclude?(example)).to be_falsey
+        end
+
+        it "continues to be an exclusion even if exclusions are cleared" do
+          example = example_with_metadata(:unless => true)
+          filter_manager.exclusions.clear
+          expect(filter_manager.exclude?(example)).to be_truthy
         end
       end
     end
