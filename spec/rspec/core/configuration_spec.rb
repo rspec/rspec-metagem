@@ -1004,34 +1004,6 @@ module RSpec::Core
         config.exclusion_filter = nil
         expect(exclusion_filter).to eq( {} )
       end
-
-      describe "the default :if filter" do
-        it "does not exclude a spec with  { :if => true } metadata" do
-          expect(config.exclusion_filter[:if].call(true)).to be_falsey
-        end
-
-        it "excludes a spec with  { :if => false } metadata" do
-          expect(config.exclusion_filter[:if].call(false)).to be_truthy
-        end
-
-        it "excludes a spec with  { :if => nil } metadata" do
-          expect(config.exclusion_filter[:if].call(nil)).to be_truthy
-        end
-      end
-
-      describe "the default :unless filter" do
-        it "excludes a spec with  { :unless => true } metadata" do
-          expect(config.exclusion_filter[:unless].call(true)).to be_truthy
-        end
-
-        it "does not exclude a spec with { :unless => false } metadata" do
-          expect(config.exclusion_filter[:unless].call(false)).to be_falsey
-        end
-
-        it "does not exclude a spec with { :unless => nil } metadata" do
-          expect(config.exclusion_filter[:unless].call(nil)).to be_falsey
-        end
-      end
     end
 
     describe "#treat_symbols_as_metadata_keys_with_true_values=" do
