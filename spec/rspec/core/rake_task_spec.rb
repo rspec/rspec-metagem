@@ -108,7 +108,7 @@ module RSpec::Core
 
       def self.it_configures_rspec_load_path(description, path_template)
         context "when rspec is installed as #{description}" do
-          it "adds the current rspec-core and rspec-support dirs to the load path to ensure version is used" do
+          it "adds the current rspec-core and rspec-support dirs to the load path to ensure the current version is used" do
             $LOAD_PATH.replace([
               path_template % "rspec-core",
               path_template % "rspec-support",
