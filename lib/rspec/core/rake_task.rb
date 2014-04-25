@@ -1,4 +1,5 @@
 require 'rspec/support'
+require 'rspec/core/version'
 RSpec::Support.require_rspec_support "warnings"
 
 require 'rake'
@@ -12,6 +13,12 @@ module RSpec
     # @see Rakefile
     class RakeTask < ::Rake::TaskLib
       include ::Rake::DSL if defined?(::Rake::DSL)
+
+      # Default path to the rspec executable
+      DEFAULT_RSPEC_PATH = File.expand_path('../../../../exe/rspec', __FILE__)
+
+      # Default pattern for spec files.
+      DEFAULT_PATTERN = './spec{,/*/**}/*_spec.rb'
 
       # Name of task.
       #
@@ -65,8 +72,8 @@ module RSpec
         @rspec_opts    = nil
         @verbose       = true
         @fail_on_error = true
-        @rspec_path    = 'rspec'
-        @pattern       = './spec{,/*/**}/*_spec.rb'
+        @rspec_path    = DEFAULT_RSPEC_PATH
+        @pattern       = DEFAULT_PATTERN
 
         define(args, &task_block)
       end
@@ -113,6 +120,7 @@ module RSpec
         cmd_parts = []
         cmd_parts << RUBY
         cmd_parts << ruby_opts
+        cmd_parts << rspec_load_path
         cmd_parts << "-S" << rspec_path
         cmd_parts << files_to_run
         cmd_parts << rspec_opts
@@ -121,6 +129,15 @@ module RSpec
 
       def blank
         lambda {|s| s.nil? || s == ""}
+      end
+
+      def rspec_load_path
+        @rspec_load_path ||= begin
+          core_and_support = $LOAD_PATH.grep \
+            %r{#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib}
+
+          "-I#{core_and_support.map(&:shellescape).join(File::PATH_SEPARATOR)}"
+        end
       end
     end
   end
