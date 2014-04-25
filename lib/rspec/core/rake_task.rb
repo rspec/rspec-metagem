@@ -132,10 +132,12 @@ module RSpec
       end
 
       def rspec_load_path
-        core_and_support = $LOAD_PATH.grep \
-          %r{#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib}
+        @rspec_load_path ||= begin
+          core_and_support = $LOAD_PATH.grep \
+            %r{#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib}
 
-        "-I#{core_and_support.map(&:shellescape).join(File::PATH_SEPARATOR)}"
+          "-I#{core_and_support.map(&:shellescape).join(File::PATH_SEPARATOR)}"
+        end
       end
     end
   end
