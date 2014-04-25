@@ -92,7 +92,8 @@ module RSpec
 
       def prune(examples)
         if inclusions.standalone?
-          examples.select {|e| include?(e) }
+          base_exclusions = ExclusionRules.new
+          examples.select {|e| !base_exclusions.include_example?(e) && include?(e) }
         else
           examples.select {|e| !exclude?(e) && include?(e)}
         end
@@ -137,6 +138,7 @@ module RSpec
       PROJECT_DIR = File.expand_path('.')
 
       attr_accessor :opposite
+      attr_reader :rules
 
       def self.build
         exclusions = ExclusionRules.new
@@ -198,8 +200,6 @@ module RSpec
     class InclusionRules < FilterRules
       STANDALONE_FILTERS = [:locations, :full_description]
 
-      attr_reader :rules
-
       def add_location(locations)
         replace_filters({ :locations => locations })
       end
@@ -250,19 +250,10 @@ module RSpec
       CONDITIONAL_FILTERS = {
         :if     => lambda { |value| !value },
         :unless => lambda { |value| value }
-      }
-
-      def initialize(*)
-        super
-        CONDITIONAL_FILTERS.each { |k,v| @rules.store(k, v) }
-      end
+      }.freeze
 
       def include_example?(example)
-        @rules.empty? ? false : example.any_apply?(@rules)
-      end
-
-      def rules
-        @rules.reject { |k,v| CONDITIONAL_FILTERS[k] == v }
+        example.any_apply?(@rules) || example.any_apply?(CONDITIONAL_FILTERS)
       end
     end
   end

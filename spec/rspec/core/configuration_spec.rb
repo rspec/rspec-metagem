@@ -979,78 +979,34 @@ module RSpec::Core
       end
     end
 
-    describe "#inclusion_filter" do
-      it "returns {} even if set to nil" do
-        config.inclusion_filter = nil
-        expect(inclusion_filter).to eq({})
-      end
-    end
-
-    describe "#inclusion_filter=" do
-      it "treats symbols as hash keys with true values when told to" do
-        config.inclusion_filter = :foo
-        expect(inclusion_filter).to eq( {:foo => true} )
-      end
-
-      it "overrides any inclusion filters set on the command line or in configuration files" do
-        config.force(:inclusion_filter => { :foo => :bar })
-        config.inclusion_filter = {:want => :this}
-        expect(inclusion_filter).to eq( {:want => :this} )
-      end
-    end
-
-    describe "#exclusion_filter" do
-      it "returns {} even if set to nil" do
-        config.exclusion_filter = nil
-        expect(exclusion_filter).to eq( {} )
-      end
-
-      describe "the default :if filter" do
-        it "does not exclude a spec with  { :if => true } metadata" do
-          expect(config.exclusion_filter[:if].call(true)).to be_falsey
-        end
-
-        it "excludes a spec with  { :if => false } metadata" do
-          expect(config.exclusion_filter[:if].call(false)).to be_truthy
-        end
-
-        it "excludes a spec with  { :if => nil } metadata" do
-          expect(config.exclusion_filter[:if].call(nil)).to be_truthy
+    shared_examples_for "a spec filter" do |type|
+      describe "##{type}" do
+        it "returns {} even if set to nil" do
+          config.send("#{type}=", nil)
+          expect(send(type)).to eq({})
         end
       end
 
-      describe "the default :unless filter" do
-        it "excludes a spec with  { :unless => true } metadata" do
-          expect(config.exclusion_filter[:unless].call(true)).to be_truthy
+      describe "##{type}=" do
+        it "treats symbols as hash keys with true values when told to" do
+          config.send("#{type}=", :foo)
+          expect(send(type)).to eq( {:foo => true} )
         end
 
-        it "does not exclude a spec with { :unless => false } metadata" do
-          expect(config.exclusion_filter[:unless].call(false)).to be_falsey
-        end
-
-        it "does not exclude a spec with { :unless => nil } metadata" do
-          expect(config.exclusion_filter[:unless].call(nil)).to be_falsey
+        it "overrides any #{type} set on the command line or in configuration files" do
+          config.force(type => { :foo => :bar })
+          config.send("#{type}=", {:want => :this})
+          expect(send(type)).to eq( {:want => :this} )
         end
       end
     end
+    it_behaves_like "a spec filter", :inclusion_filter
+    it_behaves_like "a spec filter", :exclusion_filter
 
     describe "#treat_symbols_as_metadata_keys_with_true_values=" do
       it 'is deprecated' do
         expect_deprecation_with_call_site(__FILE__, __LINE__ + 1)
         config.treat_symbols_as_metadata_keys_with_true_values = true
-      end
-    end
-
-    describe "#exclusion_filter=" do
-      it "treats symbols as hash keys with true values when told to" do
-        config.exclusion_filter = :foo
-        expect(exclusion_filter).to eq({:foo => true})
-      end
-
-      it "overrides any exclusion filters set on the command line or in configuration files" do
-        config.force(:exclusion_filter => { :foo => :bar })
-        config.exclusion_filter = {:want => :this}
-        expect(exclusion_filter).to eq({:want => :this})
       end
     end
 

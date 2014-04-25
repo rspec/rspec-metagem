@@ -127,6 +127,8 @@ Bug Fixes:
   to `around` hooks. (Myron Marston)
 * Line number always takes precendence when running specs with filters.
   (Xavier Shay)
+* Ensure :if and :unless metadata filters are treated as a special case
+  and are always in-effect (Bradley Schaefer)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)
