@@ -484,6 +484,48 @@ module RSpec
             expect(inner_metadata[:example_group][:description]).to eq("Level 3")
             expect(inner_metadata[:example_group][:example_group][:description]).to eq("Level 2")
             expect(inner_metadata[:example_group][:example_group][:example_group][:description]).to eq("Level 1")
+            expect(inner_metadata[:example_group][:example_group][:example_group][:example_group]).to be_nil
+          end
+
+          it "works properly with shallow nesting" do
+            inner_metadata = nil
+
+            RSpec.describe "Level 1" do
+              inner_metadata = example("Level 2").metadata
+            end
+
+            expect(inner_metadata[:description]).to eq("Level 2")
+            expect(inner_metadata[:example_group][:description]).to eq("Level 1")
+
+            # On 2.99 this was nil, but I haven't found a way to achieve that behavior, so this is close enough...
+            expect(inner_metadata[:example_group][:example_group].to_h).to eq({})
+          end
+
+          it 'allows integration libraries like VCR to infer a fixture name from the example description by walking up nesting structure' do
+            fixture_name_for = lambda do |metadata|
+              description = metadata[:description]
+
+              if example_group = metadata[:example_group]
+                [fixture_name_for[example_group], description].join('/')
+              else
+                description
+              end
+            end
+
+            ex = inferred_fixture_name = nil
+
+            RSpec.configure do |config|
+              config.before(:example, :infer_fixture) { |e| inferred_fixture_name = fixture_name_for[e.metadata] }
+            end
+
+            RSpec.describe "Group", :infer_fixture do
+              ex = example("ex") { }
+            end.run
+
+            raise ex.execution_result.exception if ex.execution_result.exception
+
+            # On 2.x this returns "Group/ex", no leading slash, but this is close enough...
+            expect(inferred_fixture_name).to eq("/Group/ex")
           end
 
           it 'can mutate attributes when accessing them via [:example_group]' do
