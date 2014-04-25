@@ -92,7 +92,8 @@ module RSpec
 
       def prune(examples)
         if inclusions.standalone?
-          examples.select {|e| include?(e) }
+          base_exclusions = ExclusionRules.new
+          examples.select {|e| !base_exclusions.include_example?(e) && include?(e) }
         else
           examples.select {|e| !exclude?(e) && include?(e)}
         end

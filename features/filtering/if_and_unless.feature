@@ -136,3 +136,30 @@ Feature: Conditional Filters
       | included :if => false example     |
       | included :unless => true example  |
       | excluded                          |
+
+  Scenario: The :if and :unless exclusions stay in effect when there are explicit inclusions
+    Given a file named "if_and_unless_spec.rb" with:
+      """ruby
+      RSpec.describe "Using inclusions" do
+        context "inclusion target" do
+          it "is filtered out by :if", :if => false do
+          end
+
+          it 'is filtered out by :unless', :unless => true do
+          end
+
+          it 'is still run according to :if', :if => true do
+          end
+
+          it 'is still run according to :unless', :unless => false do
+          end
+        end
+      end
+      """
+    When I run `rspec if_and_unless_spec.rb --format doc -e 'inclusion target'`
+    Then the output should contain all of these:
+      | is still run according to :if     |
+      | is still run according to :unless |
+    And the output should not contain any of these:
+      | is filtered out by :if         |
+      | is filtered out by :unless     |
