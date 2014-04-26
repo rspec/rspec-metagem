@@ -29,7 +29,7 @@ shared_examples "output_to_stream" do |stream_name|
     it "fails if the block outputs to #{stream_name}" do
       expect {
         expect { stream.print 'foo' }.not_to matcher
-      }.to fail_with("expected block to not output to #{stream_name}, but did")
+      }.to fail_with("expected block to not output to #{stream_name}, but output \"foo\"")
     end
   end
 
@@ -63,7 +63,7 @@ shared_examples "output_to_stream" do |stream_name|
     it "fails if the block outputs the same string to #{stream_name}" do
       expect {
         expect { stream.print 'foo' }.to_not matcher('foo')
-      }.to fail_with("expected block to not output \"foo\" to #{stream_name}, but did")
+      }.to fail_with("expected block to not output \"foo\" to #{stream_name}, but output \"foo\"")
     end
   end
 
@@ -97,7 +97,7 @@ shared_examples "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that matches the regex" do
       expect {
         expect { stream.print 'foo' }.to_not matcher(/foo/)
-      }.to fail_matching("expected block to not output /foo/ to #{stream_name}, but did\nDiff")
+      }.to fail_matching("expected block to not output /foo/ to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -121,7 +121,7 @@ shared_examples "output_to_stream" do |stream_name|
     it "fails if the block outputs a string to #{stream_name} that passes the given matcher" do
       expect {
         expect { stream.print 'foo' }.to_not matcher(a_string_starting_with("f"))
-      }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but did\nDiff")
+      }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 end

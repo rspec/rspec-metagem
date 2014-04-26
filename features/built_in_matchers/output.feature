@@ -36,7 +36,7 @@ Feature: output matcher
     Then the output should contain all of these:
       | 11 examples, 5 failures                                      |
       | expected block to output to stdout, but did not              |
-      | expected block to not output to stdout, but did              |
+      | expected block to not output to stdout, but output "foo"     |
       | expected block to output "bar" to stdout, but output "foo"   |
       | expected block to output "foo" to stdout, but output nothing |
       | expected block to output /bar/ to stdout, but output "foo"   |
@@ -64,7 +64,7 @@ Feature: output matcher
     Then the output should contain all of these:
       | 11 examples, 5 failures                                      |
       | expected block to output to stderr, but did not              |
-      | expected block to not output to stderr, but did              |
+      | expected block to not output to stderr, but output "foo      |
       | expected block to output "bar" to stderr, but output "foo\n" |
       | expected block to output "foo" to stderr, but output nothing |
       | expected block to output /bar/ to stderr, but output "foo\n" |
