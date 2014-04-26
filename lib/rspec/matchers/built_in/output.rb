@@ -80,13 +80,18 @@ module RSpec
 
         def positive_failure_reason
           return "was not a block" unless Proc === @block
-          return "output #{captured? ? @actual.inspect : 'nothing'}" if @expected
+          return "output #{actual_output_description}" if @expected
           "did not"
         end
 
         def negative_failure_reason
           return "was not a block" unless Proc === @block
-          "did"
+          "output #{actual_output_description}"
+        end
+
+        def actual_output_description
+          return "nothing" unless captured?
+          @actual.inspect
         end
       end
 
