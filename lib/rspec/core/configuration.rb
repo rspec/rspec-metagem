@@ -288,6 +288,7 @@ module RSpec
         @deprecation_stream = $stderr
         @output_stream = $stdout
         @reporter = nil
+        @reporter_buffer = nil
         @filter_manager = FilterManager.new
         @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
@@ -657,10 +658,37 @@ module RSpec
       end
 
       # @private
+      #
+      # This buffer is used to capture all messages sent to the reporter during
+      # reporter initialization. It can then replay those messages after the
+      # formatter is correctly initialized. Otherwise, deprecation warnings
+      # during formatter initialization can cause an infinite loop.
+      class DeprecationReporterBuffer
+        def initialize
+          @calls = []
+        end
+
+        def deprecation(*args)
+          @calls << args
+        end
+
+        def play_onto(reporter)
+          @calls.each do |args|
+            reporter.deprecation(*args)
+          end
+        end
+      end
+
+      # @private
       def reporter
-        @reporter ||=
+        # @reporter_buffer should only ever be set in this method to cover
+        # initialization of @reporter.
+        @reporter_buffer || @reporter ||=
           begin
+            @reporter_buffer = DeprecationReporterBuffer.new
             formatter_loader.setup_default output_stream, deprecation_stream
+            @reporter_buffer.play_onto(formatter_loader.reporter)
+            @reporter_buffer = nil
             formatter_loader.reporter
           end
       end
