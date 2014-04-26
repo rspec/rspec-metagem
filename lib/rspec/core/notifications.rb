@@ -89,7 +89,7 @@ module RSpec::Core
     # @attr pending_count [Fixnum] the number of pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    class SummaryNotification < Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time)
+    SummaryNotification = Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time) do
       include Formatters::Helpers
 
       # @api
