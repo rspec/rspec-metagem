@@ -380,7 +380,8 @@ module RSpec
 
       def initialize(metadata)
         @metadata = metadata
-        self[:example_group] = metadata[:parent_example_group][:example_group]
+        parent_group_metadata = metadata.fetch(:parent_example_group) { {} }[:example_group]
+        self[:example_group] = parent_group_metadata if parent_group_metadata
       end
 
       def to_h
