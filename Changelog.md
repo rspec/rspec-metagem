@@ -132,6 +132,8 @@ Bug Fixes:
 * Ensure the currently running installation of RSpec is used when
   the rake task shells out to `rspec`, even if a newer version is also
   installed. (Postmodern)
+* Using a legacy formatter as default no longer causes an infinite loop.
+  (Xavier Shay)
 
 ### 3.0.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta1...v3.0.0.beta2)

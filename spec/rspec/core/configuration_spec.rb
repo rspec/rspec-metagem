@@ -923,6 +923,19 @@ module RSpec::Core
         end
       end
 
+      context 'using a legacy formatter as default' do
+        # Generating warnings during formatter initialisation triggers the
+        # ProxyReporter code path.
+        it 'remembers changes' do
+          legacy_formatter = Class.new
+
+          config = RSpec.configuration
+          config.default_formatter = legacy_formatter
+          config.reporter
+          expect(config.default_formatter).to eq(legacy_formatter)
+        end
+      end
+
       def used_formatters
         config.reporter # to force freezing of formatters
         config.formatters
