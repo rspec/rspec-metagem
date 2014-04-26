@@ -20,7 +20,7 @@ module RSpec
         # @example
         #    format_duration(1) #=>  "1 minute 1 second"
         #    format_duration(135.14) #=> "2 minutes 15.14 seconds"
-        def format_duration(duration)
+        def self.format_duration(duration)
           precision = case
                       when duration < 1;    SUB_SECOND_PRECISION
                       when duration < 120;  DEFAULT_PRECISION
@@ -54,7 +54,7 @@ module RSpec
         # The precision used is set in {Helpers::SUB_SECOND_PRECISION} and {Helpers::DEFAULT_PRECISION}.
         #
         # @see #strip_trailing_zeroes
-        def format_seconds(float, precision = nil)
+        def self.format_seconds(float, precision = nil)
           precision ||= (float < 1) ? SUB_SECOND_PRECISION : DEFAULT_PRECISION
           formatted = sprintf("%.#{precision}f", float)
           strip_trailing_zeroes(formatted)
@@ -66,10 +66,11 @@ module RSpec
         #
         # @param string [String] string with trailing zeros
         # @return [String] string with trailing zeros removed
-        def strip_trailing_zeroes(string)
+        def self.strip_trailing_zeroes(string)
           stripped = string.sub(/[^1-9]+$/, '')
           stripped.empty? ? "0" : stripped
         end
+        private_class_method :strip_trailing_zeroes
 
         # @api private
         #
@@ -78,7 +79,7 @@ module RSpec
         # @param count [Fixnum] number of objects
         # @param string [String] word to be pluralized
         # @return [String] pluralized word
-        def pluralize(count, string)
+        def self.pluralize(count, string)
           "#{count} #{string}#{'s' unless count.to_f == 1}"
         end
       end

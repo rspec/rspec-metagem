@@ -135,8 +135,6 @@ module RSpec
         class DelayedPrinter
           TOO_MANY_USES_LIMIT = 4
 
-          include ::RSpec::Core::Formatters::Helpers
-
           attr_reader :deprecation_stream, :summary_stream, :deprecation_formatter
 
           def initialize(deprecation_stream, summary_stream, deprecation_formatter)
@@ -168,7 +166,7 @@ module RSpec
             print_deferred_deprecation_warnings
             deprecation_stream.puts RAISE_ERROR_CONFIG_NOTICE
 
-            summary_stream.puts "\n#{pluralize(deprecation_formatter.count, 'deprecation warning')} total"
+            summary_stream.puts "\n#{Helpers.pluralize(deprecation_formatter.count, 'deprecation warning')} total"
           end
 
           def print_deferred_deprecation_warnings
@@ -184,22 +182,18 @@ module RSpec
         # @private
         # Not really a stream, but is usable in place of one.
         class RaiseErrorStream
-          include ::RSpec::Core::Formatters::Helpers
-
           def puts(message)
             raise DeprecationError, message
           end
 
           def summarize(summary_stream, deprecation_count)
-            summary_stream.puts "\n#{pluralize(deprecation_count, 'deprecation')} found."
+            summary_stream.puts "\n#{Helpers.pluralize(deprecation_count, 'deprecation')} found."
           end
         end
 
         # @private
         # Wraps a File object and provides file-specific operations.
         class FileStream
-          include ::RSpec::Core::Formatters::Helpers
-
           def initialize(file)
             @file = file
 
@@ -215,7 +209,7 @@ module RSpec
           end
 
           def summarize(summary_stream, deprecation_count)
-            summary_stream.puts "\n#{pluralize(deprecation_count, 'deprecation')} logged to #{@file.path}"
+            summary_stream.puts "\n#{Helpers.pluralize(deprecation_count, 'deprecation')} logged to #{@file.path}"
             puts RAISE_ERROR_CONFIG_NOTICE
           end
         end

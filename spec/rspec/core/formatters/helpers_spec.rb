@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'rspec/core/formatters/helpers'
 
 RSpec.describe RSpec::Core::Formatters::Helpers do
-  let(:helper) { Object.new.extend(RSpec::Core::Formatters::Helpers) }
+  helper = described_class
 
   describe "format duration" do
     context '< 1' do

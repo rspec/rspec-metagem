@@ -90,13 +90,11 @@ module RSpec::Core
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
     SummaryNotification = Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time) do
-      include Formatters::Helpers
-
       # @api
       # @return [String] A line summarising the results of the spec run.
       def summary_line
-        summary = pluralize(example_count, "example")
-        summary << ", " << pluralize(failure_count, "failure")
+        summary = Formatters::Helpers.pluralize(example_count, "example")
+        summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
         summary
       end
