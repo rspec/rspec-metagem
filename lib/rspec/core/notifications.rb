@@ -117,6 +117,17 @@ module RSpec::Core
           colorizer.wrap(summary_line, RSpec.configuration.success_color)
         end
       end
+
+      # @return [String] a formatted version of the time it took to run the suite
+      def formatted_duration
+        Formatters::Helpers.format_duration(duration)
+      end
+
+      # @return [String] a formatted version of the time it took to boot RSpec and
+      #   load the spec files
+      def formatted_load_time
+        Formatters::Helpers.format_duration(load_time)
+      end
     end
 
     # The `DeprecationNotification` is issued by the reporter when a deprecated
