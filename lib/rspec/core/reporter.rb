@@ -88,7 +88,11 @@ module RSpec::Core
     # @private
     def example_failed(example)
       @failure_count += 1
-      notify :example_failed, Notifications::FailedExampleNotification.new(example)
+      if example.execution_result.pending_fixed?
+        notify :example_failed, Notifications::PendingExampleFixedNotification.new(example)
+      else
+        notify :example_failed, Notifications::FailedExampleNotification.new(example)
+      end
     end
 
     # @private

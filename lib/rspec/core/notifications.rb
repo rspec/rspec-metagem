@@ -46,6 +46,17 @@ module RSpec::Core
       def exception
         example.execution_result.exception
       end
+
+      def failure_message
+        example.full_description
+      end
+
+    end
+
+    class PendingExampleFixedNotification < FailedExampleNotification
+      def failure_message
+        "#{example.full_description} FIXED"
+      end
     end
 
     # The `GroupNotification` represents notifications sent by the reporter which
