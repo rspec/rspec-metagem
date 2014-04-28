@@ -37,10 +37,12 @@ module RSpec
           failed_example_notifications.each_with_index do |failure, index|
             output.puts
             output.puts "#{short_padding}#{index.next}) #{failure.description}"
-            failure.colorize_message_lines_with(ConsoleCodes).each do |line|
+            failure.colorized_message_lines(ConsoleCodes).each do |line|
               output.puts "#{long_padding}#{line}"
             end
-            dump_backtrace(example)
+            failure.colorized_formatted_backtrace(ConsoleCodes).each do |line|
+              output.puts "#{long_padding}#{line}"
+            end
           end
         end
 
@@ -192,12 +194,6 @@ module RSpec
 
         def format_caller(caller_info)
           configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
-        end
-
-        def dump_backtrace(example)
-          format_backtrace(example.execution_result.exception.backtrace, example).each do |backtrace_info|
-            output.puts detail_color("#{long_padding}# #{backtrace_info}")
-          end
         end
 
       end
