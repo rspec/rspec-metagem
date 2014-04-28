@@ -34,9 +34,12 @@ module RSpec
           return if failed_example_notifications.empty?
           output.puts
           output.puts "Failures:"
-          failed_example_notifications.each_with_index do |notification, index|
+          failed_example_notifications.each_with_index do |failure, index|
             output.puts
-            pending_fixed?(example) ? dump_pending_fixed(example, index) : dump_failure(example, index)
+            output.puts "#{short_padding}#{index.next}) #{failure.description}"
+            failure.colorize_message_lines_with(ConsoleCodes).each do |line|
+              output.puts "#{long_padding}#{line}"
+            end
             dump_backtrace(example)
           end
         end
@@ -197,50 +200,6 @@ module RSpec
           end
         end
 
-        def dump_pending_fixed(example, index)
-          output.puts "#{short_padding}#{index.next}) #{example.full_description} FIXED"
-          output.puts fixed_color("#{long_padding}Expected pending '#{example.metadata[:execution_result].pending_message}' to fail. No Error was raised.")
-        end
-
-        def pending_fixed?(example)
-          example.execution_result.pending_fixed
-        end
-
-        def dump_failure(example, index)
-          output.puts "#{short_padding}#{index.next}) #{example.full_description}"
-          dump_failure_info(example)
-        end
-
-        def dump_failure_info(example)
-          exception = example.execution_result.exception
-          exception_class_name = exception_class_name_for(exception)
-          output.puts "#{long_padding}#{failure_color("Failure/Error:")} #{failure_color(read_failed_line(exception, example).strip)}"
-          output.puts "#{long_padding}#{failure_color(exception_class_name)}:" unless exception_class_name =~ /RSpec/
-          exception.message.to_s.split("\n").each { |line| output.puts "#{long_padding}  #{failure_color(line)}" } if exception.message
-
-          if shared_group = find_shared_group(example)
-            dump_shared_failure_info(shared_group)
-          end
-        end
-
-        def exception_class_name_for(exception)
-          name = exception.class.name.to_s
-          name ="(anonymous error class)" if name == ''
-          name
-        end
-
-        def dump_shared_failure_info(group)
-          output.puts "#{long_padding}Shared Example Group: \"#{group.metadata[:shared_group_name]}\" called from " +
-            "#{configuration.backtrace_formatter.backtrace_line(group.location)}"
-        end
-
-        def find_shared_group(example)
-          group_and_parent_groups(example).find {|group| group.metadata[:shared_group_name]}
-        end
-
-        def group_and_parent_groups(example)
-          example.example_group.parent_groups + [example.example_group]
-        end
       end
     end
   end

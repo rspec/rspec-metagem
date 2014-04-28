@@ -47,15 +47,90 @@ module RSpec::Core
         example.execution_result.exception
       end
 
-      def failure_message
+      def description
         example.full_description
+      end
+
+      def message_lines
+        @lines ||=
+          begin
+            lines = ["Failure/Error: #{read_failed_line.strip}"]
+            lines << exception_class_name unless exception_class_name =~ /RSpec/
+            exception.message.to_s.split("\n").each do |line|
+              lines << line if exception.message
+            end
+            if shared_group
+              lines << "Shared Example Group: \"#{shared_group.metadata[:shared_group_name]}\"" +
+                " called from #{backtrace_formatter.backtrace_line(shared_group.location)}"
+            end
+            lines
+          end
+      end
+
+      def colorize_message_lines_with colorizer
+        message_lines.map do |line|
+          colorizer.wrap line, RSpec.configuration.failure_color
+        end
+      end
+
+    private
+
+      def backtrace_formatter
+        RSpec.configuration.backtrace_formatter
+      end
+
+      def exception_class_name
+        name = exception.class.name.to_s
+        name ="(anonymous error class)" if name == ''
+        name
+      end
+
+      def shared_group
+        @shared_group ||= group_and_parent_groups.find { |group| group.metadata[:shared_group_name] }
+      end
+
+      def group_and_parent_groups
+        example.example_group.parent_groups + [example.example_group]
+      end
+
+      def read_failed_line
+        unless matching_line = find_failed_line
+          return "Unable to find matching line from backtrace"
+        end
+
+        file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
+
+        if File.exist?(file_path)
+          File.readlines(file_path)[line_number.to_i - 1] ||
+            "Unable to find matching line in #{file_path}"
+        else
+          "Unable to find #{file_path} to read failed line"
+        end
+      rescue SecurityError
+        "Unable to read failed line"
+      end
+
+      def find_failed_line
+        path = File.expand_path(example.file_path)
+        exception.backtrace.detect do |line|
+          match = line.match(/(.+?):(\d+)(|:\d+)/)
+          match && match[1].downcase == path.downcase
+        end
       end
 
     end
 
     class PendingExampleFixedNotification < FailedExampleNotification
-      def failure_message
+      def description
         "#{example.full_description} FIXED"
+      end
+
+      def message_lines
+        ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
+      end
+
+      def colorize_with colorizer
+        message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
     end
 

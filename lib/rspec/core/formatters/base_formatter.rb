@@ -173,31 +173,6 @@ module RSpec
           RSpec.configuration
         end
 
-        def read_failed_line(exception, example)
-          unless matching_line = find_failed_line(exception.backtrace, example.file_path)
-            return "Unable to find matching line from backtrace"
-          end
-
-          file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-          if File.exist?(file_path)
-            File.readlines(file_path)[line_number.to_i - 1] ||
-              "Unable to find matching line in #{file_path}"
-          else
-            "Unable to find #{file_path} to read failed line"
-          end
-        rescue SecurityError
-          "Unable to read failed line"
-        end
-
-        def find_failed_line(backtrace, path)
-          path = File.expand_path(path)
-          backtrace.detect { |line|
-            match = line.match(/(.+?):(\d+)(|:\d+)/)
-            match && match[1].downcase == path.downcase
-          }
-        end
-
         def start_sync_output
           @old_sync, output.sync = output.sync, true if output_supports_sync
         end
