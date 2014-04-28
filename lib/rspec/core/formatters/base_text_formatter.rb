@@ -31,10 +31,10 @@ module RSpec
         #
         # @param notification [NullNotification]
         def dump_failures(notification)
-          return if failed_examples.empty?
+          return if failed_example_notifications.empty?
           output.puts
           output.puts "Failures:"
-          failed_examples.each_with_index do |example, index|
+          failed_example_notifications.each_with_index do |notification, index|
             output.puts
             pending_fixed?(example) ? dump_pending_fixed(example, index) : dump_failure(example, index)
             dump_backtrace(example)

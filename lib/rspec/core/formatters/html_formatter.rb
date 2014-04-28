@@ -83,7 +83,7 @@ module RSpec
             example.execution_result.pending_fixed,
             example.description,
             example.execution_result.run_time,
-            @failed_examples.size,
+            failed_examples.size,
             exception_details,
             (extra == "") ? false : extra,
             true

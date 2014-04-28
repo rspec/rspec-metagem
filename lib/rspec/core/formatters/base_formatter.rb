@@ -18,7 +18,11 @@ module RSpec
                                   :example_pending, :example_failed, :close
         attr_accessor :example_group
         attr_reader :examples, :output
-        attr_reader :failed_examples, :pending_examples
+        attr_reader :failed_example_notifications, :pending_examples
+
+        def failed_examples
+          failed_example_notifications.map(&:example)
+        end
 
         # @api public
         #
@@ -27,7 +31,7 @@ module RSpec
           @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
           @examples = []
-          @failed_examples = []
+          @failed_example_notifications = []
           @pending_examples = []
           @example_group = nil
         end
@@ -95,7 +99,7 @@ module RSpec
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_failed(notification)
-          @failed_examples << notification.example
+          @failed_example_notifications << notification
         end
 
         # @method message
