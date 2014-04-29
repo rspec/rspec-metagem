@@ -51,8 +51,8 @@ module RSpec
         #                                      failure_count and pending_count
         def dump_summary(summary)
           dump_profile unless mute_profile_output?(summary.failure_count)
-          output.puts "\nFinished in #{format_duration(summary.duration)}" +
-                      " (files took #{format_duration(summary.load_time)} to load)\n"
+          output.puts "\nFinished in #{summary.formatted_duration}" +
+                      " (files took #{summary.formatted_load_time} to load)\n"
           output.puts summary.colorize_with ConsoleCodes
           dump_commands_to_rerun_failed_examples
         end
@@ -88,11 +88,11 @@ module RSpec
           time_taken = sorted_examples[:slows] / sorted_examples[:total]
           percentage = '%.1f' % ((time_taken.nan? ? 0.0 : time_taken) * 100)
 
-          output.puts "\nTop #{sorted_examples[:examples].size} slowest examples (#{format_seconds(sorted_examples[:slows])} seconds, #{percentage}% of total time):\n"
+          output.puts "\nTop #{sorted_examples[:examples].size} slowest examples (#{Helpers.format_seconds(sorted_examples[:slows])} seconds, #{percentage}% of total time):\n"
 
           sorted_examples[:examples].each do |example|
             output.puts "  #{example.full_description}"
-            output.puts "    #{bold(format_seconds(example.execution_result.run_time))} #{bold("seconds")} #{format_caller(example.location)}"
+            output.puts "    #{bold(Helpers.format_seconds(example.execution_result.run_time))} #{bold("seconds")} #{format_caller(example.location)}"
           end
         end
 
@@ -104,9 +104,9 @@ module RSpec
 
           output.puts "\nTop #{sorted_groups.size} slowest example groups:"
           slowest_groups.each do |loc, hash|
-            average = "#{bold(format_seconds(hash[:average]))} #{bold("seconds")} average"
-            total   = "#{format_seconds(hash[:total_time])} seconds"
-            count   = pluralize(hash[:count], "example")
+            average = "#{bold(Helpers.format_seconds(hash[:average]))} #{bold("seconds")} average"
+            total   = "#{Helpers.format_seconds(hash[:total_time])} seconds"
+            count   = Helpers.pluralize(hash[:count], "example")
             output.puts "  #{hash[:description]}"
             output.puts "    #{average} (#{total} / #{count}) #{loc}"
           end

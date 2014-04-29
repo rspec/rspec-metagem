@@ -16,7 +16,6 @@ module RSpec
         # all formatters inheriting from this formatter will receive these notifications
         Formatters.register self, :start, :example_group_started, :example_started,
                                   :example_pending, :example_failed, :close
-        include Helpers
         attr_accessor :example_group
         attr_reader :examples, :output
         attr_reader :failed_examples, :pending_examples

@@ -89,14 +89,12 @@ module RSpec::Core
     # @attr pending_count [Fixnum] the number of pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    class SummaryNotification < Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time)
-      include Formatters::Helpers
-
+    SummaryNotification = Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time) do
       # @api
       # @return [String] A line summarising the results of the spec run.
       def summary_line
-        summary = pluralize(example_count, "example")
-        summary << ", " << pluralize(failure_count, "failure")
+        summary = Formatters::Helpers.pluralize(example_count, "example")
+        summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
         summary
       end
@@ -118,6 +116,17 @@ module RSpec::Core
         else
           colorizer.wrap(summary_line, RSpec.configuration.success_color)
         end
+      end
+
+      # @return [String] a formatted version of the time it took to run the suite
+      def formatted_duration
+        Formatters::Helpers.format_duration(duration)
+      end
+
+      # @return [String] a formatted version of the time it took to boot RSpec and
+      #   load the spec files
+      def formatted_load_time
+        Formatters::Helpers.format_duration(load_time)
       end
     end
 
