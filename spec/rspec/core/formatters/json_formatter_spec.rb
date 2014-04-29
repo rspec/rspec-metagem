@@ -81,7 +81,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
   describe "#stop" do
     it "adds all examples to the output hash" do
-      send_notification :stop, null_notification
+      send_notification :stop, stop_notification
       expect(formatter.output_hash[:examples]).not_to be_nil
     end
   end

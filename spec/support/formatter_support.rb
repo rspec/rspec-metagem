@@ -44,6 +44,7 @@ module FormatterSupport
                     :description      => "Example",
                     :full_description => "Example",
                     :execution_result => { :exception => Exception.new },
+                    :location         => "",
                     :metadata         => {}
                    )
   end
@@ -58,6 +59,10 @@ module FormatterSupport
 
   def start_notification(count)
    ::RSpec::Core::Notifications::StartNotification.new count
+  end
+
+  def stop_notification
+   ::RSpec::Core::Notifications::ExamplesNotification.new reporter.instance_variable_get('@examples')
   end
 
   def example_notification(specific_example = example)
@@ -78,6 +83,10 @@ module FormatterSupport
 
   def seed_notification(seed, used = true)
     ::RSpec::Core::Notifications::SeedNotification.new seed, used
+  end
+
+  def failed_examples_notification
+    ::RSpec::Core::Notifications::FailedExamplesNotification.new reporter.instance_variable_get('@failed_examples')
   end
 
   def summary_notification(duration, examples, failed, pending, time)

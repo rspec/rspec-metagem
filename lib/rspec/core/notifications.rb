@@ -26,6 +26,17 @@ module RSpec::Core
     # @attr example [RSpec::Core::Example] the current example
     ExampleNotification = Struct.new(:example)
 
+    # The `ExamplesNotification` represents notifications sent by the reporter
+    # which contain information about the suites examples.
+    #
+    # @example
+    #   def stop(notification)
+    #     puts "Hey I ran #{notification.examples.size}"
+    #   end
+    #
+    # @attr examples [Array(RSpec::Core::Example)] list of examples
+    ExamplesNotification = Struct.new(:examples)
+
     # The `FailedExampleNotification` extends `ExampleNotification` with
     # things useful for failed specs.
     #
@@ -203,6 +214,46 @@ module RSpec::Core
       private :used
     end
 
+    # The `PendingExamplesNotification` represents notifications sent by the
+    # reporter which contain information about the pending examples encountered
+    # by the reporter. It is used by formatters to access information about
+    # those examples.
+    #
+    # @example
+    #   def dump_pending(notification)
+    #     notification.pending_examples.each do |example|
+    #       puts "Hey I need finishing! #{example.description}"
+    #     end
+    #   end
+    #
+    # @attr pending_examples [Array(RSpec::Core::Example)] the pending examples
+    PendingExamplesNotification = Struct.new(:pending_examples)
+
+    # The `FailedExamplesNotification` represents notifications sent by the
+    # reporter which contain information about the failed examples encountered
+    # by the reporter. It is used by formatters to access information about
+    # those examples.
+    #
+    # @example
+    #   def dump_failures(notification)
+    #     notification.failed_examples.each do |example|
+    #       puts "Bad times, #{example.description} failed."
+    #     end
+    #   end
+    #
+    # @attr failed_examples [Array(RSpec::Core::Example)] the failed examples
+    FailedExamplesNotification  = Struct.new(:failed_examples) do
+
+      # @return [Array(Rspec::Core::Notifications::FailedExampleNotification]
+      #         returns failures as notifications
+      def failure_notifications
+        @failure_notifications ||=
+          failed_examples.map do |failure|
+            FailedExampleNotification.new(failure)
+          end
+      end
+    end
+
     # The `SummaryNotification` holds information about the results of running
     # a test suite. It is used by formatters to provide information at the end
     # of the test run.
@@ -258,6 +309,25 @@ module RSpec::Core
           colorizer.wrap(summary_line, RSpec.configuration.pending_color)
         else
           colorizer.wrap(summary_line, RSpec.configuration.success_color)
+        end
+      end
+
+      # @api public
+      #
+      # Formats failures into a rerunable command format.
+      #
+      # @param colorizer [#wrap] An object which supports wrapping text with
+      #                          specific colors.
+      # @return [String] A colorized summary line.
+      def colorized_rerun_commands(colorizer)
+        failed_examples.map do |example|
+          colorizer.wrap(
+            "rspec #{RSpec::Core::Metadata::relative_path(example.location)}",
+            RSpec.configuration.failure_color
+          ) + " " +
+          colorizer.wrap(
+            "# #{example.full_description}", RSpec.configuration.detail_color
+          )
         end
       end
 

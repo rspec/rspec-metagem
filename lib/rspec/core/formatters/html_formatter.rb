@@ -12,6 +12,7 @@ module RSpec
 
         def initialize(output)
           super(output)
+          @failed_examples = []
           @example_group_number = 0
           @example_number = 0
           @header_red = nil
@@ -52,8 +53,7 @@ module RSpec
         end
 
         def example_failed(failure)
-          super
-
+          @failed_examples << failure.example
           unless @header_red
             @header_red = true
             @printer.make_header_red
@@ -83,7 +83,7 @@ module RSpec
             example.execution_result.pending_fixed,
             example.description,
             example.execution_result.run_time,
-            failed_examples.size,
+            @failed_examples.size,
             exception_details,
             (extra == "") ? false : extra,
             true

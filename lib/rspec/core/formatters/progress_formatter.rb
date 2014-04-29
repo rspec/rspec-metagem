@@ -12,12 +12,10 @@ module RSpec
         end
 
         def example_pending(notification)
-          super
           output.print pending_color('*')
         end
 
         def example_failed(notification)
-          super
           output.print failure_color('F')
         end
 

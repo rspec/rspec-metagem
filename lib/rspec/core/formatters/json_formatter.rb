@@ -30,7 +30,7 @@ module RSpec
         end
 
         def stop(notification)
-          @output_hash[:examples] = examples.map do |example|
+          @output_hash[:examples] = notification.examples.map do |example|
             format_example(example).tap do |hash|
               if e=example.exception
                 hash[:exception] =  {
