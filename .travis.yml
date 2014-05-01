@@ -1,7 +1,11 @@
-# This file was generated on 2014-03-30T13:16:22-07:00 from the rspec-dev repo.
+# This file was generated on 2014-04-30T21:34:22-07:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
-before_install: "script/clone_all_rspec_repos"
+before_install:
+  - "script/clone_all_rspec_repos"
+  # Downgrade bundler to work around https://github.com/bundler/bundler/issues/3004
+  - gem install bundler -v=1.5.3
+  - alias bundle="bundle _1.5.3_"
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "script/run_build"
 rvm:
@@ -22,4 +26,6 @@ matrix:
     - rvm: jruby-head
     - rvm: ruby-head
     - rvm: rbx
+    # Until https://github.com/travis-ci/travis-ci/issues/2220 is fixed
+    - rvm: 2.1.0
   fast_finish: true
