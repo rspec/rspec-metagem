@@ -208,12 +208,31 @@ module RSpec::Core
     # of the test run.
     #
     # @attr duration [Float] the time taken (in seconds) to run the suite
-    # @attr example_count [Fixnum] the number of examples run
-    # @attr failure_count [Fixnum] the number of failed examples
-    # @attr pending_count [Fixnum] the number of pending examples
+    # @attr examples [Array(RSpec::Core::Example)] the examples run
+    # @attr failed_examples [Array(RSpec::Core::Example)] the failed examples
+    # @attr pending_examples [Array(RSpec::Core::Example)] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    SummaryNotification = Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time) do
+    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples, :load_time) do
+
+      # @api
+      # @return [Fixnum] the number of examples run
+      def example_count
+        @example_count ||= examples.size
+      end
+
+      # @api
+      # @return [Fixnum] the number of failed examples
+      def failure_count
+        @failure_count ||= failed_examples.size
+      end
+
+      # @api
+      # @return [Fixnum] the number of pending examples
+      def pending_count
+        @pending_count ||= pending_examples.size
+      end
+
       # @api
       # @return [String] A line summarising the results of the spec run.
       def summary_line

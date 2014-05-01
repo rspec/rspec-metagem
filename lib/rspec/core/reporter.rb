@@ -6,7 +6,9 @@ module RSpec::Core
     def initialize(configuration)
       @configuration = configuration
       @listeners = Hash.new { |h,k| h[k] = Set.new }
-      @example_count = @failure_count = @pending_count = 0
+      @examples = []
+      @failed_examples = []
+      @pending_examples = []
       @duration = @start = @load_time = nil
     end
 
@@ -76,7 +78,7 @@ module RSpec::Core
 
     # @private
     def example_started(example)
-      @example_count += 1
+      @examples << example
       notify :example_started, Notifications::ExampleNotification.new(example)
     end
 
@@ -87,7 +89,7 @@ module RSpec::Core
 
     # @private
     def example_failed(example)
-      @failure_count += 1
+      @failed_examples << example
       if example.execution_result.pending_fixed?
         notify :example_failed, Notifications::PendingExampleFixedNotification.new(example)
       else
@@ -97,7 +99,7 @@ module RSpec::Core
 
     # @private
     def example_pending(example)
-      @pending_count += 1
+      @pending_examples << example
       notify :example_pending, Notifications::ExampleNotification.new(example)
     end
 
@@ -114,7 +116,7 @@ module RSpec::Core
         notify :dump_pending,  Notifications::NullNotification
         notify :dump_failures, Notifications::NullNotification
         notify :deprecation_summary, Notifications::NullNotification
-        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @example_count, @failure_count, @pending_count, @load_time)
+        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
         notify :close, Notifications::NullNotification

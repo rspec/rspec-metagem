@@ -48,6 +48,10 @@ module FormatterSupport
                    )
   end
 
+  def examples(n)
+    (1..n).map { example }
+  end
+
   def group
     class_double "RSpec::Core::ExampleGroup", :description => "Group"
   end
