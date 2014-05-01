@@ -117,6 +117,9 @@ module RSpec::Core
         notify :dump_failures, Notifications::NullNotification
         notify :deprecation_summary, Notifications::NullNotification
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
+        unless mute_profile_output?
+          notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples, @configuration.profile_examples)
+        end
         notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
       ensure
         notify :close, Notifications::NullNotification
@@ -137,6 +140,11 @@ module RSpec::Core
     end
 
   private
+
+    def mute_profile_output?
+      # Don't print out profiled info if there are failures and `--fail-fast` is used, it just clutters the output
+      !@configuration.profile_examples? || (@configuration.fail_fast? && @failed_examples.size > 0)
+    end
 
     def seed_used?
       @configuration.seed && @configuration.seed_used?

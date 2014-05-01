@@ -54,6 +54,7 @@ module RSpec::Core::Formatters
   autoload :DocumentationFormatter, 'rspec/core/formatters/documentation_formatter'
   autoload :HtmlFormatter,          'rspec/core/formatters/html_formatter'
   autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
+  autoload :ProfileFormatter,       'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
 
   # Register the formatter class

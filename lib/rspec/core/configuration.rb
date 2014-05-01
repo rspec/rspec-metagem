@@ -188,17 +188,27 @@ module RSpec
 
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
-      def pattern= value
+      def pattern=(value)
         if @spec_files_loaded
           RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
         end
         @pattern = value
       end
 
+      # Report the times for the slowest examples (default: `false`).
+      # Use this to specify the number of examples to include in the profile.
+      # @attr value [Boolean] indictes wether to run profiling or not
+      def profile_examples=(value)
+        if !profile_examples && value
+          add_formatter RSpec::Core::Formatters::ProfileFormatter
+        end
+        @profile_examples = value
+      end
+
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
-      add_setting :profile_examples
+      add_read_only_setting :profile_examples
 
       # @macro add_setting
       # Run all examples if none match the configured filters (default: `false`).
