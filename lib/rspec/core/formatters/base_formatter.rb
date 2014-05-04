@@ -20,6 +20,8 @@ module RSpec
         attr_reader :examples, :output
         attr_reader :failed_example_notifications, :pending_examples
 
+        # @private
+        # transitionary attr until reporter holds state
         def failed_examples
           failed_example_notifications.map(&:example)
         end

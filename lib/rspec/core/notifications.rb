@@ -40,17 +40,19 @@ module RSpec::Core
     # @see ExampleNotification
     class FailedExampleNotification < ExampleNotification
 
-      # Returns the examples failure
-      #
       # @return [Exception] The example failure
       def exception
         example.execution_result.exception
       end
 
+      # @return [String] The example description
       def description
         example.full_description
       end
 
+      # Returns the message generated for this failure line by line.
+      #
+      # @return [Array(String)] The example failure message
       def message_lines
         @lines ||=
           begin
@@ -67,16 +69,27 @@ module RSpec::Core
           end
       end
 
+      # Returns the message generated for this failure colorized line by line.
+      #
+      # @param colorizer [#wrap] An object to colorize the message_lines by
+      # @return [Array(String)] The example failure message colorized
       def colorized_message_lines(colorizer)
         message_lines.map do |line|
           colorizer.wrap line, RSpec.configuration.failure_color
         end
       end
 
+      # Returns the failures formatted backtrace.
+      #
+      # @return [Array(String)] the examples backtrace lines
       def formatted_backtrace
         backtrace_formatter.format_backtrace(exception.backtrace, example.metadata)
       end
 
+      # Returns the failures colorized formatted backtrace.
+      #
+      # @param colorizer [#wrap] An object to colorize the message_lines by
+      # @return [Array(String)] the examples colorized backtrace lines
       def colorized_formatted_backtrace(colorizer)
         formatted_backtrace.map do |backtrace_info|
           colorizer.wrap backtrace_info, RSpec.configuration.detail_color
@@ -127,18 +140,33 @@ module RSpec::Core
           match && match[1].downcase == path.downcase
         end
       end
-
     end
 
+    # The `PendingExampleFixedNotification` extends `ExampleNotification` with
+    # things useful for specs that pass when they are expected to fail.
+    #
+    # @attr [RSpec::Core::Example] example the current example
+    # @see ExampleNotification
     class PendingExampleFixedNotification < FailedExampleNotification
+
+      # Returns the examples description
+      #
+      # @return [String] The example description
       def description
         "#{example.full_description} FIXED"
       end
 
+      # Returns the message generated for this failure line by line.
+      #
+      # @return [Array(String)] The example failure message
       def message_lines
         ["Expected pending '#{example.execution_result.pending_message}' to fail. No Error was raised."]
       end
 
+      # Returns the message generated for this failure colorized line by line.
+      #
+      # @param colorizer [#wrap] An object to colorize the message_lines by
+      # @return [Array(String)] The example failure message colorized
       def colorized_message_lines(colorizer)
         message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
