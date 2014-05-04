@@ -117,8 +117,8 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
     def profile *groups
       groups.each { |group| group.run(reporter) }
-      reporter.start 1, Time.now - 0.5
-      reporter.finish
+      examples = groups.map(&:examples).flatten
+      send_notification :dump_profile, profile_notification(0.5, examples, 10)
     end
 
     before do

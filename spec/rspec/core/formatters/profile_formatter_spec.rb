@@ -4,14 +4,11 @@ require 'rspec/core/formatters/profile_formatter'
 RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
   include FormatterSupport
 
-  before do
-    config.profile_examples = 10
-  end
-
   def profile *groups
     groups.each { |group| group.run(reporter) }
-    reporter.start 1, Time.now - 0.5
-    reporter.finish
+    examples = groups.map(&:examples).flatten
+    total_time = examples.map { |e| e.execution_result.run_time }.inject(&:+)
+    send_notification :dump_profile, profile_notification(total_time, examples, 10)
   end
 
   describe "#dump_profile", :slow do

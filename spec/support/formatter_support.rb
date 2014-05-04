@@ -84,4 +84,8 @@ module FormatterSupport
     ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending, time
   end
 
+  def profile_notification(duration, examples, number)
+    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number
+  end
+
 end
