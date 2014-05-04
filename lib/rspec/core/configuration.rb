@@ -195,20 +195,10 @@ module RSpec
         @pattern = value
       end
 
-      # Report the times for the slowest examples (default: `false`).
-      # Use this to specify the number of examples to include in the profile.
-      # @attr value [Boolean] indictes wether to run profiling or not
-      def profile_examples=(value)
-        if !profile_examples && value
-          add_formatter RSpec::Core::Formatters::ProfileFormatter
-        end
-        @profile_examples = value
-      end
-
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
-      add_read_only_setting :profile_examples
+      add_setting :profile_examples
 
       # @macro add_setting
       # Run all examples if none match the configured filters (default: `false`).

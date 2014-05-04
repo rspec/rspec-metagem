@@ -104,6 +104,9 @@ module RSpec::Core::Formatters
       unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
         add DeprecationFormatter, deprecation_stream, output_stream
       end
+      if RSpec.configuration.profile_examples?
+        add RSpec::Core::Formatters::ProfileFormatter, output_stream
+      end
     end
 
     # @private
