@@ -104,7 +104,7 @@ module RSpec::Core::Formatters
       unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
         add DeprecationFormatter, deprecation_stream, output_stream
       end
-      if RSpec.configuration.profile_examples?
+      if RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
         add RSpec::Core::Formatters::ProfileFormatter, output_stream
       end
     end
@@ -159,6 +159,10 @@ module RSpec::Core::Formatters
       @formatters.any? do |formatter|
         formatter.class === new_formatter && formatter.output == new_formatter.output
       end
+    end
+
+    def existing_formatter_implements?(notification)
+      @reporter.registered_listeners(notification).any?
     end
 
     def built_in_formatter(key)

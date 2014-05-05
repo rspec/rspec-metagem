@@ -4,11 +4,12 @@ require 'pathname'
 module RSpec::Core::Formatters
   describe Loader do
 
+    let(:output)   { StringIO.new }
+    let(:reporter) { instance_double "Reporter", :register_listener => nil }
+    let(:loader)   { Loader.new reporter }
+
     describe "#add(formatter)" do
-      let(:loader) { Loader.new reporter }
-      let(:output)     { StringIO.new }
-      let(:path)       { File.join(Dir.tmpdir, 'output.txt') }
-      let(:reporter)   { double "reporter", :register_listener => nil }
+      let(:path) { File.join(Dir.tmpdir, 'output.txt') }
 
       it "adds to the list of formatters" do
         loader.add :documentation, output
@@ -126,6 +127,32 @@ module RSpec::Core::Formatters
           expect {
             loader.add :documentation, path
           }.to change { loader.formatters.length }
+        end
+      end
+    end
+
+    describe "#setup_default", "with profiling enabled" do
+      let(:setup_default) { loader.setup_default output, output }
+
+      before do
+        allow(RSpec.configuration).to receive(:profile_examples?) { true }
+      end
+
+      context "without an existing profile formatter" do
+        it "will add the profile formatter" do
+          allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [] }
+          setup_default
+          expect(loader.formatters.last).to be_a ::RSpec::Core::Formatters::ProfileFormatter
+        end
+      end
+
+      context "when a formatter that implement #dump_profile is added" do
+        it "wont add the profile formatter" do
+          allow(reporter).to receive(:registered_listeners).with(:dump_profile) { [:json] }
+          setup_default
+          expect(
+            loader.formatters.map(&:class)
+          ).to_not include ::RSpec::Core::Formatters::ProfileFormatter
         end
       end
     end
