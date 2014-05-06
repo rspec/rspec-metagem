@@ -93,7 +93,8 @@ Enhancements:
   supported public API. (Myron Marston)
 * Add `--deprecation-out` CLI option which directs deprecation warnings
   to the named file. (Myron Marston)
-* Minitest 5 compatability for `expect_with :stdlib`. (Xavier Shay)
+* Minitest 5 compatability for `expect_with :stdlib` (now available as
+  `expect_with :minitest`). (Xavier Shay)
 * Reporter now notifies formatters of the load time of RSpec and your
   specs via `StartNotification` and `SummaryNotification`. (Jon Rowe)
 * Add `disable_monkey_patching!` config option that disables all monkey
