@@ -18,7 +18,13 @@ module RSpec
                                   :example_pending, :example_failed, :close
         attr_accessor :example_group
         attr_reader :examples, :output
-        attr_reader :failed_examples, :pending_examples
+        attr_reader :failed_example_notifications, :pending_examples
+
+        # @private
+        # transitionary attr until reporter holds state
+        def failed_examples
+          failed_example_notifications.map(&:example)
+        end
 
         # @api public
         #
@@ -27,7 +33,7 @@ module RSpec
           @output = output || StringIO.new
           @example_count = @pending_count = @failure_count = 0
           @examples = []
-          @failed_examples = []
+          @failed_example_notifications = []
           @pending_examples = []
           @example_group = nil
         end
@@ -95,7 +101,7 @@ module RSpec
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
         def example_failed(notification)
-          @failed_examples << notification.example
+          @failed_example_notifications << notification
         end
 
         # @method message
@@ -155,43 +161,10 @@ module RSpec
           restore_sync_output
         end
 
-        # @api private
-        #
-        # Formats the given backtrace based on configuration and
-        # the metadata of the given example.
-        def format_backtrace(backtrace, example)
-          configuration.backtrace_formatter.format_backtrace(backtrace, example.metadata)
-        end
-
       protected
 
         def configuration
           RSpec.configuration
-        end
-
-        def read_failed_line(exception, example)
-          unless matching_line = find_failed_line(exception.backtrace, example.file_path)
-            return "Unable to find matching line from backtrace"
-          end
-
-          file_path, line_number = matching_line.match(/(.+?):(\d+)(|:\d+)/)[1..2]
-
-          if File.exist?(file_path)
-            File.readlines(file_path)[line_number.to_i - 1] ||
-              "Unable to find matching line in #{file_path}"
-          else
-            "Unable to find #{file_path} to read failed line"
-          end
-        rescue SecurityError
-          "Unable to read failed line"
-        end
-
-        def find_failed_line(backtrace, path)
-          path = File.expand_path(path)
-          backtrace.detect { |line|
-            match = line.match(/(.+?):(\d+)(|:\d+)/)
-            match && match[1].downcase == path.downcase
-          }
         end
 
         def start_sync_output

@@ -66,8 +66,8 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the output should match:
       """
-           (Test::Unit::AssertionFailedError|Mini(T|t)est::Assertion):
-             errantly expected \[2\] to equal \[1\]
+           (Test::Unit::AssertionFailedError|Mini(T|t)est::Assertion)
+           errantly expected \[2\] to equal \[1\]
       """
     And  the output should contain "3 examples, 1 failure"
 
@@ -94,8 +94,8 @@ Feature: configure expectation framework
     When I run `rspec -b example_spec.rb`
     Then the output should match:
       """
-           MiniT|test::Assertion:
-             errantly expected \[1\] to be empty
+           MiniT|test::Assertion
+           errantly expected \[1\] to be empty
       """
     And  the output should contain "3 examples, 1 failure"
     And  the output should not contain "Warning: you should require 'minitest/autorun' instead."
