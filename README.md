@@ -18,7 +18,7 @@ RSpec uses the words "describe" and "it" so we can express concepts like a conve
     "It sums the prices of its line items."
 
 ```ruby
-describe Order do
+RSpec.describe Order do
   it "sums the prices of its line items" do
     order = Order.new
     order.add_entry(LineItem.new(:item => Item.new(
@@ -46,7 +46,7 @@ You can also declare nested nested groups using the `describe` or `context`
 methods:
 
 ```ruby
-describe Order do
+RSpec.describe Order do
   context "with no items" do
     it "behaves one way" do
       # ...
@@ -63,8 +63,11 @@ end
 
 ## aliases
 
-You can declare example groups using either `describe` or `context`, though
-only `describe` is available at the top level.
+You can declare example groups using either `describe` or `context`.
+For a top level example group, `describe` and `context` are available
+off of `RSpec`. For backwards compatibility, they are also available
+off of the `main` object and `Module` unless you disable monkey
+patching.
 
 You can declare examples within a group using any of `it`, `specify`, or
 `example`.
@@ -75,17 +78,17 @@ Declare a shared example group using `shared_examples`, and then include it
 in any group using `include_examples`.
 
 ```ruby
-shared_examples "collections" do |collection_class|
+RSpec.shared_examples "collections" do |collection_class|
   it "is empty when first created" do
     expect(collection_class.new).to be_empty
   end
 end
 
-describe Array do
+RSpec.describe Array do
   include_examples "collections", Array
 end
 
-describe Hash do
+RSpec.describe Hash do
   include_examples "collections", Hash
 end
 ```
@@ -123,7 +126,7 @@ using the `described_class` method, which is a wrapper for
 `example.metadata[:described_class]`.
 
 ```ruby
-describe Widget do
+RSpec.describe Widget do
   example do
     expect(described_class).to equal(Widget)
   end
@@ -135,17 +138,17 @@ class is unknown. Taking the collections shared example group from above, we can
 clean it up a bit using `described_class`:
 
 ```ruby
-shared_examples "collections" do
+RSpec.shared_examples "collections" do
   it "is empty when first created" do
     expect(described_class.new).to be_empty
   end
 end
 
-describe Array do
+RSpec.describe Array do
   include_examples "collections"
 end
 
-describe Hash do
+RSpec.describe Hash do
   include_examples "collections"
 end
 ```
@@ -176,7 +179,7 @@ this before you write any implementation code:
 
 ```ruby
 # in spec/calculator_spec.rb
-describe Calculator do
+RSpec.describe Calculator do
   describe '#add' do
     it 'returns the sum of its arguments' do
       expect(Calculator.new.add(1, 2)).to eq(3)
