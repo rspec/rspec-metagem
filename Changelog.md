@@ -67,6 +67,7 @@ Breaking Changes for 3.0.0:
 * `RSpec::Configuration#formatters` now returns a dup to prevent mutation. (Jon Rowe)
 * Replace `stdlib` as an available expectation framework with `test_unit` and
   `minitest`. (Aaron Kromer)
+* Remove backtrace formatting helpers from `BaseTextFormatter`. (Jon Rowe)
 
 Enhancements:
 
@@ -102,6 +103,9 @@ Enhancements:
 * Add `config.define_derived_metadata`, which can be used to apply
   additional metadata to all groups or examples that match a given
   filter. (Myron Marston)
+* Provide formatted and colorized backtraces via `FailedExampleNotification`
+  and send `PendingExampleFixedNotifications` when the error is due to a
+  passing spec you expect to fail. (Jon Rowe)
 
 Bug Fixes:
 
