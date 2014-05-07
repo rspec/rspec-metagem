@@ -188,7 +188,7 @@ module RSpec
 
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
-      def pattern= value
+      def pattern=(value)
         if @spec_files_loaded
           RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
         end

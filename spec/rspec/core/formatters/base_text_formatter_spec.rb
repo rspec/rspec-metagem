@@ -6,17 +6,17 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
   describe "#dump_summary" do
     it "with 0s outputs pluralized (excluding pending)" do
-      send_notification :dump_summary, summary_notification(0, 0, 0, 0, 0)
+      send_notification :dump_summary, summary_notification(0, [], [], [], 0)
       expect(output.string).to match("0 examples, 0 failures")
     end
 
     it "with 1s outputs singular (including pending)" do
-      send_notification :dump_summary, summary_notification(1, 1, 1, 1, 0)
+      send_notification :dump_summary, summary_notification(0, examples(1), examples(1), examples(1), 0)
       expect(output.string).to match("1 example, 1 failure, 1 pending")
     end
 
     it "with 2s outputs pluralized (including pending)" do
-      send_notification :dump_summary, summary_notification(2, 2, 2, 2, 0)
+      send_notification :dump_summary, summary_notification(2, examples(2), examples(2), examples(2), 0)
       expect(output.string).to match("2 examples, 2 failures, 2 pending")
     end
   end
@@ -148,109 +148,6 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
   end
 
-  describe "#dump_profile_slowest_examples", :slow do
-    example_line_number = nil
-
-    before do
-      group = RSpec::Core::ExampleGroup.describe("group") do
-        example("example") do |example|
-          # make it look slow without actually taking up precious time
-          example.clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
-        end
-        example_line_number = __LINE__ - 4
-      end
-      group.run(reporter)
-
-      allow(formatter).to receive(:examples) { group.examples }
-      allow(RSpec.configuration).to receive(:profile_examples) { 10 }
-    end
-
-    it "names the example" do
-      formatter.dump_profile_slowest_examples
-      expect(output.string).to match(/group example/m)
-    end
-
-    it "prints the time" do
-      formatter.dump_profile_slowest_examples
-      expect(output.string).to match(/0(\.\d+)? seconds/)
-    end
-
-    it "prints the path" do
-      formatter.dump_profile_slowest_examples
-      filename = __FILE__.split(File::SEPARATOR).last
-
-      expect(output.string).to match(/#{filename}\:#{example_line_number}/)
-    end
-
-    it "prints the percentage taken from the total runtime" do
-      formatter.dump_profile_slowest_examples
-      expect(output.string).to match(/, 100.0% of total time\):/)
-    end
-  end
-
-  describe "#dump_profile_slowest_example_groups", :slow do
-    let(:group) do
-      RSpec::Core::ExampleGroup.describe("slow group") do
-        example("example") do |example|
-          # make it look slow without actually taking up precious time
-          example.clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
-        end
-      end
-    end
-
-    before do
-      group.run(reporter)
-      allow(RSpec.configuration).to receive(:profile_examples) { 10 }
-    end
-
-    context "with one example group" do
-      before { allow(formatter).to receive(:examples) { group.examples } }
-
-      it "doesn't profile a single example group" do
-        formatter.dump_profile_slowest_example_groups
-        expect(output.string).not_to match(/slowest example groups/)
-      end
-    end
-
-    context "with multiple example groups" do
-      before do
-        group2 = RSpec::Core::ExampleGroup.describe("fast group") do
-          example("example 1") { }
-          example("example 2") { }
-        end
-        group2.run(reporter)
-
-        allow(formatter).to receive(:examples) { group.examples + group2.examples }
-      end
-
-      it "prints the slowest example groups" do
-        formatter.dump_profile_slowest_example_groups
-        expect(output.string).to match(/slowest example groups/)
-      end
-
-      it "prints the time" do
-        formatter.dump_profile_slowest_example_groups
-        expect(output.string).to match(/0(\.\d+)? seconds/)
-      end
-
-      it "ranks the example groups by average time" do
-        formatter.dump_profile_slowest_example_groups
-        expect(output.string).to match(/slow group(.*)fast group/m)
-      end
-    end
-
-    it "depends on parent_groups to get the top level example group" do
-      ex = ""
-      group.describe("group 2") do
-        describe "group 3" do
-          ex = example("nested example 1")
-        end
-      end
-
-      expect(ex.example_group.parent_groups.last).to eq(group)
-    end
-  end
-
   describe "custom_colors" do
     it "uses the custom success color" do
       RSpec.configure do |config|
@@ -258,9 +155,8 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         config.tty = true
         config.success_color = :cyan
       end
-      send_notification :dump_summary, summary_notification(0, 1, 0, 0, 0)
+      send_notification :dump_summary, summary_notification(0, examples(1), [], [], 0)
       expect(output.string).to include("\e[36m")
     end
   end
-
 end

@@ -54,6 +54,7 @@ module RSpec::Core::Formatters
   autoload :DocumentationFormatter, 'rspec/core/formatters/documentation_formatter'
   autoload :HtmlFormatter,          'rspec/core/formatters/html_formatter'
   autoload :ProgressFormatter,      'rspec/core/formatters/progress_formatter'
+  autoload :ProfileFormatter,       'rspec/core/formatters/profile_formatter'
   autoload :JsonFormatter,          'rspec/core/formatters/json_formatter'
 
   # Register the formatter class
@@ -102,6 +103,9 @@ module RSpec::Core::Formatters
       end
       unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
         add DeprecationFormatter, deprecation_stream, output_stream
+      end
+      if RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
+        add RSpec::Core::Formatters::ProfileFormatter, output_stream
       end
     end
 
@@ -155,6 +159,10 @@ module RSpec::Core::Formatters
       @formatters.any? do |formatter|
         formatter.class === new_formatter && formatter.output == new_formatter.output
       end
+    end
+
+    def existing_formatter_implements?(notification)
+      @reporter.registered_listeners(notification).any?
     end
 
     def built_in_formatter(key)

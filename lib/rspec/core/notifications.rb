@@ -208,12 +208,31 @@ module RSpec::Core
     # of the test run.
     #
     # @attr duration [Float] the time taken (in seconds) to run the suite
-    # @attr example_count [Fixnum] the number of examples run
-    # @attr failure_count [Fixnum] the number of failed examples
-    # @attr pending_count [Fixnum] the number of pending examples
+    # @attr examples [Array(RSpec::Core::Example)] the examples run
+    # @attr failed_examples [Array(RSpec::Core::Example)] the failed examples
+    # @attr pending_examples [Array(RSpec::Core::Example)] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    SummaryNotification = Struct.new(:duration, :example_count, :failure_count, :pending_count, :load_time) do
+    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples, :load_time) do
+
+      # @api
+      # @return [Fixnum] the number of examples run
+      def example_count
+        @example_count ||= examples.size
+      end
+
+      # @api
+      # @return [Fixnum] the number of failed examples
+      def failure_count
+        @failure_count ||= failed_examples.size
+      end
+
+      # @api
+      # @return [Fixnum] the number of pending examples
+      def pending_count
+        @pending_count ||= pending_examples.size
+      end
+
       # @api
       # @return [String] A line summarising the results of the spec run.
       def summary_line
@@ -251,6 +270,72 @@ module RSpec::Core
       #   load the spec files
       def formatted_load_time
         Formatters::Helpers.format_duration(load_time)
+      end
+    end
+
+    # The `ProfileNotification` holds information about the results of running
+    # a test suite when profiling is enabled. It is used by formatters to provide
+    # information at the end of the test run for profiling information.
+    #
+    # @attr duration [Float] the time taken (in seconds) to run the suite
+    # @attr examples [Array(RSpec::Core::Example)] the examples run
+    # @attr number_of_examples [Fixnum] the number of examples to profile
+    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples) do
+
+      # @return [Array(RSpec::Core::Example)] the slowest examples
+      def slowest_examples
+        @slowest_examples ||=
+          examples.sort_by do |example|
+            -example.execution_result.run_time
+          end.first(number_of_examples)
+      end
+
+      # @return [Float] the time taken (in seconds) to run the slowest examples
+      def slow_duration
+        @slow_duration ||=
+          slowest_examples.inject(0.0) do |i, e|
+            i + e.execution_result.run_time
+          end
+      end
+
+      # @return [String] the percentage of total time taken
+      def percentage
+        @percentage ||=
+          begin
+            time_taken = slow_duration / duration
+            '%.1f' % ((time_taken.nan? ? 0.0 : time_taken) * 100)
+          end
+      end
+
+      # @return [Array(RSpec::Core::Example)] the slowest example groups
+      def slowest_groups
+        @slowest_groups ||= calculate_slowest_groups
+      end
+
+    private
+
+      def calculate_slowest_groups
+        example_groups = {}
+
+        examples.each do |example|
+          location = example.example_group.parent_groups.last.metadata[:location]
+
+          location_hash = example_groups[location] ||= Hash.new(0)
+          location_hash[:total_time]  += example.execution_result.run_time
+          location_hash[:count]       += 1
+          unless location_hash.has_key?(:description)
+            location_hash[:description] = example.example_group.top_level_description
+          end
+        end
+
+        # stop if we've only one example group
+        return {} if example_groups.keys.length <= 1
+
+        example_groups.each_value do |hash|
+          hash[:average] = hash[:total_time].to_f / hash[:count]
+        end
+
+        example_groups.sort_by { |_, hash| -hash[:average] }.first(number_of_examples)
       end
     end
 

@@ -68,6 +68,9 @@ Breaking Changes for 3.0.0:
 * Replace `stdlib` as an available expectation framework with `test_unit` and
   `minitest`. (Aaron Kromer)
 * Remove backtrace formatting helpers from `BaseTextFormatter`. (Jon Rowe)
+* Extract profiler support to `ProfileFormatter` and `ProfileNotification`.
+  Formatters should implement `dump_profile` if they wish to respond to `--profile`.
+  (Jon Rowe)
 
 Enhancements:
 
@@ -107,6 +110,8 @@ Enhancements:
 * Provide formatted and colorized backtraces via `FailedExampleNotification`
   and send `PendingExampleFixedNotifications` when the error is due to a
   passing spec you expect to fail. (Jon Rowe)
+* Add `dump_profile` to formatter API to allow formatters to implement
+  support for `--profile`. (Jon Rowe)
 
 Bug Fixes:
 

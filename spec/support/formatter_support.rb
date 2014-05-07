@@ -48,6 +48,10 @@ module FormatterSupport
                    )
   end
 
+  def examples(n)
+    (1..n).map { example }
+  end
+
   def group
     class_double "RSpec::Core::ExampleGroup", :description => "Group"
   end
@@ -78,6 +82,10 @@ module FormatterSupport
 
   def summary_notification(duration, examples, failed, pending, time)
     ::RSpec::Core::Notifications::SummaryNotification.new duration, examples, failed, pending, time
+  end
+
+  def profile_notification(duration, examples, number)
+    ::RSpec::Core::Notifications::ProfileNotification.new duration, examples, number
   end
 
 end

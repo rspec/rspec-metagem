@@ -6,7 +6,7 @@ module RSpec
     module Formatters
       # @private
       class JsonFormatter < BaseFormatter
-        Formatters.register self, :message, :dump_summary, :stop, :close
+        Formatters.register self, :message, :dump_summary, :dump_profile, :stop, :close
 
         attr_reader :output_hash
 
@@ -27,8 +27,6 @@ module RSpec
             :pending_count => summary.pending_count
           }
           @output_hash[:summary_line] = summary.summary_line
-
-          dump_profile unless mute_profile_output?(summary.failure_count)
         end
 
         def stop(notification)
@@ -50,29 +48,29 @@ module RSpec
           output.close if IO === output && output != $stdout
         end
 
-        def dump_profile
+        def dump_profile(profile)
           @output_hash[:profile] = {}
-          dump_profile_slowest_examples
-          dump_profile_slowest_example_groups
+          dump_profile_slowest_examples(profile)
+          dump_profile_slowest_example_groups(profile)
         end
 
         # @api private
-        def dump_profile_slowest_examples
+        def dump_profile_slowest_examples(profile)
           @output_hash[:profile] = {}
-          sorted_examples = slowest_examples
-          @output_hash[:profile][:examples] = sorted_examples[:examples].map do |example|
+          sorted_examples = profile.slowest_examples
+          @output_hash[:profile][:examples] = sorted_examples.map do |example|
             format_example(example).tap do |hash|
               hash[:run_time] = example.execution_result.run_time
             end
           end
-          @output_hash[:profile][:slowest] = sorted_examples[:slows]
-          @output_hash[:profile][:total] = sorted_examples[:total]
+          @output_hash[:profile][:slowest] = profile.slow_duration
+          @output_hash[:profile][:total] = profile.duration
         end
 
         # @api private
-        def dump_profile_slowest_example_groups
+        def dump_profile_slowest_example_groups(profile)
           @output_hash[:profile] ||= {}
-          @output_hash[:profile][:groups] = slowest_groups.map do |loc, hash|
+          @output_hash[:profile][:groups] = profile.slowest_groups.map do |loc, hash|
             hash.update(:location => loc)
           end
         end
