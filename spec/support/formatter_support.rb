@@ -40,12 +40,15 @@ module FormatterSupport
   end
 
   def example
-    instance_double("RSpec::Core::Example",
-                    :description      => "Example",
-                    :full_description => "Example",
-                    :execution_result => { :exception => Exception.new },
-                    :location         => "",
-                    :metadata         => {}
+    result = { :exception => Exception.new }
+    allow(result).to receive(:pending_fixed?) { false }
+    allow(result).to receive(:status) { :passed }
+    instance_double(RSpec::Core::Example,
+                    :description       => "Example",
+                    :full_description  => "Example",
+                    :execution_result  => result,
+                    :location          => "",
+                    :metadata          => {}
                    )
   end
 
@@ -66,7 +69,7 @@ module FormatterSupport
   end
 
   def example_notification(specific_example = example)
-   ::RSpec::Core::Notifications::ExampleNotification.new specific_example
+   ::RSpec::Core::Notifications::ExampleNotification.for specific_example
   end
 
   def group_notification

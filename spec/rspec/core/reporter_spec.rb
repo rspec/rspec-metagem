@@ -2,13 +2,15 @@ require "spec_helper"
 
 module RSpec::Core
   RSpec.describe Reporter do
+    include FormatterSupport
+
     let(:config)   { Configuration.new }
     let(:reporter) { Reporter.new config }
     let(:start_time) { Time.now }
+    let(:example) { super() }
 
     describe "finish" do
       let(:formatter) { double("formatter") }
-      let(:example)   { double("example") }
 
       %w[start_dump dump_pending dump_failures dump_summary close].map(&:to_sym).each do |message|
         it "sends #{message} to the formatter(s) that respond to message" do
@@ -52,7 +54,6 @@ module RSpec::Core
     context "given one formatter" do
       it "passes messages to that formatter" do
         formatter = double("formatter", :example_started => nil)
-        example = double("example")
         reporter.register_listener formatter, :example_started
 
         expect(formatter).to receive(:example_started) do |notification|
@@ -109,7 +110,6 @@ module RSpec::Core
     context "given multiple formatters" do
       it "passes messages to all formatters" do
         formatters = (1..2).map { double("formatter", :example_started => nil) }
-        example = double("example")
 
         formatters.each do |formatter|
           expect(formatter).to receive(:example_started) do |notification|
