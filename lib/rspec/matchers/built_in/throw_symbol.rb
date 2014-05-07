@@ -7,12 +7,13 @@ module RSpec
       class ThrowSymbol
         include Composable
 
-        def initialize(expected_symbol = nil, expected_arg=nil)
+        def initialize(expected_symbol=nil, expected_arg=nil)
           @expected_symbol = expected_symbol
           @expected_arg = expected_arg
           @caught_symbol = @caught_arg = nil
         end
 
+        # rubocop:disable MethodLength
         # @private
         def matches?(given_proc)
           @block = given_proc
@@ -39,17 +40,18 @@ module RSpec
             # Ruby 1.8 uses NameError with `symbol'
             # Ruby 1.9 uses ArgumentError with :symbol
           rescue NameError, ArgumentError => e
-            unless e.message =~ /uncaught throw (`|\:)([a-zA-Z0-9_]*)(')?/
+            unless (match_data = e.message.match(/uncaught throw (`|\:)([a-zA-Z0-9_]*)(')?/))
               other_exception = e
               raise
             end
-            @caught_symbol = $2.to_sym
+            @caught_symbol = match_data.captures[1].to_sym
           rescue => other_exception
             raise
           ensure
+            # rubocop:disable EnsureReturn
             unless other_exception
               if @expected_symbol.nil?
-                return !@caught_symbol.nil?
+                return !!@caught_symbol
               else
                 if @expected_arg.nil?
                   return @caught_symbol == @expected_symbol
@@ -58,8 +60,10 @@ module RSpec
                 end
               end
             end
+            # rubocop:enable EnsureReturn
           end
         end
+        # rubocop:enable MethodLength
 
         def does_not_match?(given_proc)
           !matches?(given_proc) && Proc === given_proc
@@ -97,7 +101,7 @@ module RSpec
           "got #{caught}"
         end
 
-        def expected(symbol_desc = 'a Symbol')
+        def expected(symbol_desc='a Symbol')
           throw_description(@expected_symbol || symbol_desc, @expected_arg)
         end
 

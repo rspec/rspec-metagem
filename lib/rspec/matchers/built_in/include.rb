@@ -78,9 +78,9 @@ module RSpec
         end
 
         def actual_hash_has_key?(expected_key)
-          # We check `has_key?` first for perf:
-          # has_key? is O(1), but `any?` is O(N).
-          actual.has_key?(expected_key) ||
+          # We check `key?` first for perf:
+          # `key?` is O(1), but `any?` is O(N).
+          actual.key?(expected_key) ||
           actual.keys.any? { |key| values_match?(expected_key, key) }
         end
 

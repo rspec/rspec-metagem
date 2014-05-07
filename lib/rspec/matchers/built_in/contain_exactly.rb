@@ -5,7 +5,6 @@ module RSpec
       # Provides the implementation for `contain_exactly` and `match_array`.
       # Not intended to be instantiated directly.
       class ContainExactly < BaseMatcher
-
         # @api private
         # @return [String]
         def failure_message
@@ -16,7 +15,7 @@ module RSpec
             message += "the extra elements were:        #{safe_sort(extra_items).inspect}\n" unless extra_items.empty?
             message
           else
-            "expected a collection that can be converted to an array with " +
+            "expected a collection that can be converted to an array with " \
             "`#to_ary` or `#to_a`, but got #{actual.inspect}"
           end
         end
@@ -35,8 +34,8 @@ module RSpec
 
       private
 
-        def match(expected, actual)
-          convert_actual_to_an_array or return false
+        def match(_expected, _actual)
+          return false unless convert_actual_to_an_array
           match_when_sorted? || (extra_items.empty? && missing_items.empty?)
         end
 
@@ -93,10 +92,10 @@ module RSpec
                 # some extra checks we don't need (e.g. to support nested data
                 # structures), and given that it's called N*M times here, it helps
                 # perf significantly to implement the matching bit ourselves.
-                if (e === a || a == e)
-                  expected_matches[ei] << ai
-                  actual_matches[ai] << ei
-                end
+                next unless e === a || a == e
+
+                expected_matches[ei] << ai
+                actual_matches[ai] << ei
               end
             end
 
@@ -204,7 +203,9 @@ module RSpec
           # @private
           # Starting solution that is worse than any other real solution.
           NullSolution = Class.new do
-            def self.worse_than?(other); true; end
+            def self.worse_than?(_other)
+              true
+            end
           end
 
           def categorize_indexes(indexes_to_categorize, other_indexes)

@@ -65,9 +65,7 @@ module RSpec
         # Indicates whether or not diffs should be colored.
         # Delegates to rspec-core's color option if rspec-core
         # is loaded; otherwise you can set it here.
-        def color=(value)
-          @color = value
-        end
+        attr_writer :color
 
         # Indicates whether or not diffs should be colored.
         # Delegates to rspec-core's color option if rspec-core
@@ -103,10 +101,10 @@ module RSpec
       attr_writer :backtrace_formatter
       def backtrace_formatter
         @backtrace_formatter ||= if defined?(::RSpec.configuration.backtrace_formatter)
-         ::RSpec.configuration.backtrace_formatter
-        else
-          NullBacktraceFormatter
-        end
+                                   ::RSpec.configuration.backtrace_formatter
+                                 else
+                                   NullBacktraceFormatter
+                                 end
       end
 
       # @private
@@ -135,4 +133,3 @@ module RSpec
     configuration.reset_syntaxes_to_default
   end
 end
-

@@ -23,19 +23,19 @@ module RSpec
       # Generates a deprecation warning for the given method if no warning
       # has already been issued.
       def warn_about_should_unless_configured(method_name)
-        if @warn_about_should
-          RSpec.deprecate(
-            "Using `#{method_name}` from rspec-expectations' old `:should` syntax without explicitly enabling the syntax",
-            :replacement => "the new `:expect` syntax or explicitly enable `:should`"
-          )
+        return unless @warn_about_should
 
-          @warn_about_should = false
-        end
+        RSpec.deprecate(
+          "Using `#{method_name}` from rspec-expectations' old `:should` syntax without explicitly enabling the syntax",
+          :replacement => "the new `:expect` syntax or explicitly enable `:should`"
+        )
+
+        @warn_about_should = false
       end
 
       # @api private
       # Enables the `should` syntax.
-      def enable_should(syntax_host = default_should_host)
+      def enable_should(syntax_host=default_should_host)
         @warn_about_should = false if syntax_host == default_should_host
         return if should_enabled?(syntax_host)
 
@@ -54,7 +54,7 @@ module RSpec
 
       # @api private
       # Disables the `should` syntax.
-      def disable_should(syntax_host = default_should_host)
+      def disable_should(syntax_host=default_should_host)
         return unless should_enabled?(syntax_host)
 
         syntax_host.module_exec do
@@ -65,7 +65,7 @@ module RSpec
 
       # @api private
       # Enables the `expect` syntax.
-      def enable_expect(syntax_host = ::RSpec::Matchers)
+      def enable_expect(syntax_host=::RSpec::Matchers)
         return if expect_enabled?(syntax_host)
 
         syntax_host.module_exec do
@@ -77,7 +77,7 @@ module RSpec
 
       # @api private
       # Disables the `expect` syntax.
-      def disable_expect(syntax_host = ::RSpec::Matchers)
+      def disable_expect(syntax_host=::RSpec::Matchers)
         return unless expect_enabled?(syntax_host)
 
         syntax_host.module_exec do
@@ -87,13 +87,13 @@ module RSpec
 
       # @api private
       # Indicates whether or not the `should` syntax is enabled.
-      def should_enabled?(syntax_host = default_should_host)
+      def should_enabled?(syntax_host=default_should_host)
         syntax_host.method_defined?(:should)
       end
 
       # @api private
       # Indicates whether or not the `expect` syntax is enabled.
-      def expect_enabled?(syntax_host = ::RSpec::Matchers)
+      def expect_enabled?(syntax_host=::RSpec::Matchers)
         syntax_host.method_defined?(:expect)
       end
     end

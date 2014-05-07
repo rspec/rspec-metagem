@@ -47,8 +47,8 @@ module RSpec
           when 1 then true
           when 0 then false
           else
-            raise "The #{matcher_name} matcher is not designed to be used with a " +
-                  "method that yields multiple times. Use the yield_successive_args " +
+            raise "The #{matcher_name} matcher is not designed to be used with a " \
+                  "method that yields multiple times. Use the yield_successive_args " \
                   "matcher for that case."
           end
         end
@@ -61,16 +61,16 @@ module RSpec
 
         def assert_used!
           return if @used
-          raise "You must pass the argument yielded to your expect block on " +
-                "to the method-under-test as a block. It acts as a probe that " +
-                "allows the matcher to detect whether or not the method-under-test " +
-                "yields, and, if so, how many times, and what the yielded arguments " +
+          raise "You must pass the argument yielded to your expect block on " \
+                "to the method-under-test as a block. It acts as a probe that " \
+                "allows the matcher to detect whether or not the method-under-test " \
+                "yields, and, if so, how many times, and what the yielded arguments " \
                 "are."
         end
 
         def assert_valid_expect_block!
           return if @block.arity == 1
-          raise "Your expect block must accept an argument to be used with this " +
+          raise "Your expect block must accept an argument to be used with this " \
                 "matcher. Pass the argument as a block on to the method you are testing."
         end
       end
@@ -299,7 +299,7 @@ module RSpec
           if !@probe.has_block?
             "was not a block"
           elsif all_args_match?
-            "yielded with expected arguments" +
+            "yielded with expected arguments" \
               "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
               "\n         got: #{@actual.inspect}"
           else
@@ -313,8 +313,8 @@ module RSpec
             return !@actual.empty?
           end
 
-          unless match = all_args_match?
-            @positive_args_failure = "yielded with unexpected arguments" +
+          unless (match = all_args_match?)
+            @positive_args_failure = "yielded with unexpected arguments" \
               "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
               "\n     got: #{@actual.inspect}"
           end
@@ -384,20 +384,19 @@ module RSpec
         def positive_failure_reason
           return "was not a block" unless @probe.has_block?
 
-          "yielded with unexpected arguments" +
-          "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
+          "yielded with unexpected arguments" \
+          "\nexpected: #{surface_descriptions_in(@expected).inspect}" \
           "\n     got: #{@actual.inspect}"
         end
 
         def negative_failure_reason
           return "was not a block" unless @probe.has_block?
 
-          "yielded with expected arguments" +
-          "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
+          "yielded with expected arguments" \
+          "\nexpected not: #{surface_descriptions_in(@expected).inspect}" \
           "\n         got: #{@actual.inspect}"
         end
       end
     end
   end
 end
-

@@ -66,4 +66,3 @@ module RSpec
     ExpectationNotMetError = Class.new(::Exception)
   end
 end
-

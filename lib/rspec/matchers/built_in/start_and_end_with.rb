@@ -52,7 +52,6 @@ module RSpec
       # Provides the implementation for `start_with`.
       # Not intended to be instantiated directly.
       class StartWith < StartAndEndWith
-
       private
 
         def subset_matches?
@@ -68,7 +67,6 @@ module RSpec
       # Provides the implementation for `end_with`.
       # Not intended to be instantiated directly.
       class EndWith < StartAndEndWith
-
       private
 
         def subset_matches?

@@ -23,7 +23,7 @@ module RSpec
         # @private
         attr_reader :actual, :expected, :rescued_exception
 
-        def initialize(expected = UNDEFINED)
+        def initialize(expected=UNDEFINED)
           @expected = expected unless UNDEFINED.equal?(expected)
         end
 
@@ -98,9 +98,8 @@ module RSpec
       private
 
         def assert_ivars(*expected_ivars)
-          if (expected_ivars - present_ivars).any?
-            raise "#{self.class.name} needs to supply#{to_sentence expected_ivars}"
-          end
+          return unless (expected_ivars - present_ivars).any?
+          raise "#{self.class.name} needs to supply#{to_sentence expected_ivars}"
         end
 
         if RUBY_VERSION.to_f < 1.9

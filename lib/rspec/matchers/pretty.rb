@@ -7,7 +7,7 @@ module RSpec
       # @api private
       # Converts a symbol into an english expression.
       def split_words(sym)
-        sym.to_s.gsub(/_/,' ')
+        sym.to_s.gsub(/_/, ' ')
       end
       module_function :split_words
 
@@ -17,14 +17,14 @@ module RSpec
         return " #{words.inspect}" unless words
         words = Array(words).map { |w| to_word(w) }
         case words.length
-          when 0
-            ""
-          when 1
-            " #{words[0]}"
-          when 2
-            " #{words[0]} and #{words[1]}"
-          else
-            " #{words[0...-1].join(', ')}, and #{words[-1]}"
+        when 0
+          ""
+        when 1
+          " #{words[0]}"
+        when 2
+          " #{words[0]} and #{words[1]}"
+        else
+          " #{words[0...-1].join(', ')}, and #{words[-1]}"
         end
       end
 
@@ -50,8 +50,8 @@ module RSpec
       # Borrowed from ActiveSupport
       def underscore(camel_cased_word)
         word = camel_cased_word.to_s.dup
-        word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-        word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+        word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+        word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
         word.tr!("-", "_")
         word.downcase!
         word

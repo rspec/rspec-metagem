@@ -5,7 +5,6 @@ module RSpec
       # Provides the implementation for `all`.
       # Not intended to be instantiated directly.
       class All < BaseMatcher
-
         # @private
         attr_reader :matcher, :failed_objects
 
@@ -15,7 +14,7 @@ module RSpec
         end
 
         # @private
-        def does_not_match?(actual)
+        def does_not_match?(_actual)
           raise NotImplementedError, '`expect().not_to all( matcher )` is not supported.'
         end
 
@@ -38,7 +37,7 @@ module RSpec
 
       private
 
-        def match(_, actual)
+        def match(_expected, _actual)
           index_failed_objects
           failed_objects.empty?
         end
@@ -52,7 +51,7 @@ module RSpec
         end
 
         def failure_message_for_item(index, failure_message)
-          failure_message = indent_multiline_message( add_new_line_if_needed(failure_message) )
+          failure_message = indent_multiline_message(add_new_line_if_needed(failure_message))
           indent_multiline_message("object at index #{index} failed to match:#{failure_message}")
         end
 
@@ -71,7 +70,6 @@ module RSpec
           @matcher = @matcher.clone
           super
         end
-
       end
     end
   end

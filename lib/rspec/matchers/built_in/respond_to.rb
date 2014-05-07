@@ -45,7 +45,7 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@actual.inspect} to respond to #{@failing_method_names.collect {|name| name.inspect }.join(', ')}#{with_arity}"
+          "expected #{@actual.inspect} to respond to #{@failing_method_names.map { |name| name.inspect }.join(', ')}#{with_arity}"
         end
 
         # @api private
@@ -82,8 +82,8 @@ module RSpec
         end
 
         def with_arity
-          @expected_arity.nil?? "" :
-            " with #{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
+          return "" unless @expected_arity
+          " with #{@expected_arity} argument#{@expected_arity == 1 ? '' : 's'}"
         end
 
         def pp_names
