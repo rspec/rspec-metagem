@@ -334,15 +334,11 @@ module RSpec::Core
       #                          specific colors.
       # @return [String] A colorized summary line.
       def colorized_rerun_commands(colorizer)
+        "\nFailed Examples:\n\n" +
         failed_examples.map do |example|
-          colorizer.wrap(
-            "rspec #{RSpec::Core::Metadata::relative_path(example.location)}",
-            RSpec.configuration.failure_color
-          ) + " " +
-          colorizer.wrap(
-            "# #{example.full_description}", RSpec.configuration.detail_color
-          )
-        end
+          colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
+          colorizer.wrap("# #{example.full_description}", RSpec.configuration.detail_color)
+        end.join("\n")
       end
 
       # @return [String] a formatted version of the time it took to run the suite

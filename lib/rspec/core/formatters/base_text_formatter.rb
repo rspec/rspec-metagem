@@ -59,10 +59,7 @@ module RSpec
                       " (files took #{summary.formatted_load_time} to load)\n"
           output.puts summary.colorize_with ConsoleCodes
           unless summary.failed_examples.empty?
-            output.puts
-            output.puts("Failed examples:")
-            output.puts
-            output.puts summary.colorized_rerun_commands(ConsoleCodes).join("\n")
+            output.puts summary.colorized_rerun_commands ConsoleCodes
           end
         end
 
