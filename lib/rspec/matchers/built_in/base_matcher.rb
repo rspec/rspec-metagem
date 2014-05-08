@@ -54,7 +54,7 @@ module RSpec
 
         # @api private
         # Provides a good generic failure message. Based on `description`.
-        # When subclassing, if you are not satisifed with this failure message
+        # When subclassing, if you are not satisfied with this failure message
         # you often only need to override `description`.
         # @return [String]
         def failure_message
@@ -64,7 +64,7 @@ module RSpec
 
         # @api private
         # Provides a good generic negative failure message. Based on `description`.
-        # When subclassing, if you are not satisifed with this failure message
+        # When subclassing, if you are not satisfied with this failure message
         # you often only need to override `description`.
         # @return [String]
         def failure_message_when_negated
