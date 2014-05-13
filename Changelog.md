@@ -13,6 +13,8 @@ Breaking Changes for 3.0.0:
   (Adrian Gonzalez)
 * Block matchers must now implement `supports_block_expectations?`.
   (Myron Marston)
+* Stop supporting `require 'rspec-expectations'`.
+  Use `require 'rspec/expectations'` instead. (Myron Marston)
 
 Bug Fixes:
 
