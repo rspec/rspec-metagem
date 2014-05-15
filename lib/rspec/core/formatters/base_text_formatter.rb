@@ -37,10 +37,10 @@ module RSpec
           notification.failure_notifications.each_with_index do |failure, index|
             output.puts
             output.puts "#{short_padding}#{index.next}) #{failure.description}"
-            failure.colorized_message_lines(ConsoleCodes).each do |line|
+            failure.colorized_message_lines.each do |line|
               output.puts "#{long_padding}#{line}"
             end
-            failure.colorized_formatted_backtrace(ConsoleCodes).each do |line|
+            failure.colorized_formatted_backtrace.each do |line|
               output.puts "#{long_padding}#{line}"
             end
           end
@@ -57,9 +57,9 @@ module RSpec
         def dump_summary(summary)
           output.puts "\nFinished in #{summary.formatted_duration}" +
                       " (files took #{summary.formatted_load_time} to load)\n"
-          output.puts summary.colorize_with ConsoleCodes
+          output.puts summary.colorized
           unless summary.failed_examples.empty?
-            output.puts summary.colorized_rerun_commands ConsoleCodes
+            output.puts summary.colorized_rerun_commands
           end
         end
 

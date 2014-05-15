@@ -137,7 +137,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer)
+      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map do |line|
           colorizer.wrap line, RSpec.configuration.failure_color
         end
@@ -154,7 +154,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] the examples colorized backtrace lines
-      def colorized_formatted_backtrace(colorizer)
+      def colorized_formatted_backtrace(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         formatted_backtrace.map do |backtrace_info|
           colorizer.wrap backtrace_info, RSpec.configuration.detail_color
         end
@@ -232,7 +232,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer)
+      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
     end
@@ -316,7 +316,7 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized summary line.
-      def colorize_with(colorizer)
+      def colorized(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         if failure_count > 0
           colorizer.wrap(summary_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
@@ -333,7 +333,7 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized summary line.
-      def colorized_rerun_commands(colorizer)
+      def colorized_rerun_commands(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         "\nFailed Examples:\n\n" +
         failed_examples.map do |example|
           colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
