@@ -65,7 +65,7 @@ module FormatterSupport
   end
 
   def stop_notification
-   ::RSpec::Core::Notifications::ExamplesNotification.new reporter.examples
+   ::RSpec::Core::Notifications::ExamplesNotification.new reporter
   end
 
   def example_notification(specific_example = example)
@@ -89,7 +89,7 @@ module FormatterSupport
   end
 
   def failed_examples_notification
-    ::RSpec::Core::Notifications::FailedExamplesNotification.new reporter.failed_examples
+    ::RSpec::Core::Notifications::ExamplesNotification.new reporter
   end
 
   def summary_notification(duration, examples, failed, pending, time)
