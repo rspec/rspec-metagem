@@ -57,7 +57,7 @@ module RSpec
         def dump_summary(summary)
           output.puts "\nFinished in #{summary.formatted_duration}" +
                       " (files took #{summary.formatted_load_time} to load)\n"
-          output.puts summary.colorized
+          output.puts summary.colorized_results_line
           unless summary.failed_examples.empty?
             output.puts summary.colorized_rerun_commands
           end

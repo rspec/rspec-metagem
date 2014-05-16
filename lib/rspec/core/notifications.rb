@@ -300,7 +300,7 @@ module RSpec::Core
 
       # @api
       # @return [String] A line summarising the results of the spec run.
-      def summary_line
+      def results_line
         summary = Formatters::Helpers.pluralize(example_count, "example")
         summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
@@ -309,20 +309,20 @@ module RSpec::Core
 
       # @api public
       #
-      # Wraps the summary line with colors based on the configured
+      # Wraps the results line with colors based on the configured
       # colors for failure, pending, and success. Defaults to red,
       # yellow, green accordingly.
       #
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
-      # @return [String] A colorized summary line.
-      def colorized(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      # @return [String] A colorized results line.
+      def colorized_results_line(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         if failure_count > 0
-          colorizer.wrap(summary_line, RSpec.configuration.failure_color)
+          colorizer.wrap(results_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
-          colorizer.wrap(summary_line, RSpec.configuration.pending_color)
+          colorizer.wrap(results_line, RSpec.configuration.pending_color)
         else
-          colorizer.wrap(summary_line, RSpec.configuration.success_color)
+          colorizer.wrap(results_line, RSpec.configuration.success_color)
         end
       end
 

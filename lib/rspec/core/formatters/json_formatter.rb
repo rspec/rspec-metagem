@@ -26,7 +26,7 @@ module RSpec
             :failure_count => summary.failure_count,
             :pending_count => summary.pending_count
           }
-          @output_hash[:summary_line] = summary.summary_line
+          @output_hash[:summary_line] = summary.results_line
         end
 
         def stop(notification)
