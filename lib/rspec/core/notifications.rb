@@ -79,6 +79,35 @@ module RSpec::Core
         @failed_notifications ||= format(failed_examples)
       end
 
+      # @return [String] The list of failed examples, fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted_failed_examples(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+        formatted = "\nFailures:\n"
+
+        failure_notifications.each_with_index do |failure, index|
+          formatted << failure.fully_formatted(index.next, colorizer)
+        end
+
+        formatted
+      end
+
+      # @return [String] The list of pending examples, fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted_pending_examples(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+        formatted = "\nPending:\n"
+
+        pending_examples.each do |example|
+          formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
+
+          formatted <<
+            "  #{colorizer.wrap(example.full_description, :pending)}\n" <<
+            "    # #{colorizer.wrap(example.execution_result.pending_message, :detail)}\n" <<
+            "    # #{colorizer.wrap(formatted_caller, :detail)}\n"
+        end
+
+        formatted
+      end
+
     private
 
       def format(examples)
@@ -158,6 +187,22 @@ module RSpec::Core
         formatted_backtrace.map do |backtrace_info|
           colorizer.wrap "# #{backtrace_info}", RSpec.configuration.detail_color
         end
+      end
+
+      # @return [String] The failure information fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted(failure_number, colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+        formatted = "\n  #{failure_number}) #{description}\n"
+
+        colorized_message_lines(colorizer).each do |line|
+          formatted << "     #{line}\n"
+        end
+
+        colorized_formatted_backtrace(colorizer).each do |line|
+          formatted << "     #{line}\n"
+        end
+
+        formatted
       end
 
     private
@@ -266,6 +311,12 @@ module RSpec::Core
         !!used
       end
       private :used
+
+      # @return [String] The seed information fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted
+        "\nRandomized with seed #{seed}\n\n"
+      end
     end
 
     # The `SummaryNotification` holds information about the results of running
@@ -350,6 +401,20 @@ module RSpec::Core
       #   load the spec files
       def formatted_load_time
         Formatters::Helpers.format_duration(load_time)
+      end
+
+      # @return [String] The summary information fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+        formatted = "\nFinished in #{formatted_duration} " \
+                    "(files took #{formatted_load_time} to load)\n" \
+                    "#{colorized_results_line(colorizer)}\n"
+
+        unless failed_examples.empty?
+          formatted << colorized_rerun_commands(colorizer) << "\n"
+        end
+
+        formatted
       end
     end
 

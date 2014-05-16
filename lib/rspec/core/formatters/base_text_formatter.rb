@@ -32,18 +32,7 @@ module RSpec
         # @param notification [NullNotification]
         def dump_failures(notification)
           return if notification.failure_notifications.empty?
-          output.puts
-          output.puts "Failures:"
-          notification.failure_notifications.each_with_index do |failure, index|
-            output.puts
-            output.puts "  #{index.next}) #{failure.description}"
-            failure.colorized_message_lines.each do |line|
-              output.puts "     #{line}"
-            end
-            failure.colorized_formatted_backtrace.each do |line|
-              output.puts "     #{line}"
-            end
-          end
+          output.puts notification.fully_formatted_failed_examples
         end
 
         # @method dump_summary
@@ -55,33 +44,19 @@ module RSpec
         # @param summary [SummaryNotification] containing duration, example_count,
         #                                      failure_count and pending_count
         def dump_summary(summary)
-          output.puts "\nFinished in #{summary.formatted_duration}" +
-                      " (files took #{summary.formatted_load_time} to load)\n"
-          output.puts summary.colorized_results_line
-          unless summary.failed_examples.empty?
-            output.puts summary.colorized_rerun_commands
-          end
+          output.puts summary.fully_formatted
         end
 
         # @private
         def dump_pending(notification)
-          unless notification.pending_examples.empty?
-            output.puts
-            output.puts "Pending:"
-            notification.pending_examples.each do |pending_example|
-              output.puts color("  #{pending_example.full_description}", :pending)
-              output.puts color("    # #{pending_example.execution_result.pending_message}", :detail)
-              output.puts color("    # #{format_caller(pending_example.location)}", :detail)
-            end
-          end
+          return if notification.pending_examples.empty?
+          output.puts notification.fully_formatted_pending_examples
         end
 
         # @private
         def seed(notification)
           return unless notification.seed_used?
-          output.puts
-          output.puts "Randomized with seed #{notification.seed}"
-          output.puts
+          output.puts notification.fully_formatted
         end
 
         # @api public
@@ -94,14 +69,8 @@ module RSpec
           output.close if IO === output && output != $stdout
         end
 
-      private
-
         def color(text, color_code)
           ConsoleCodes.wrap(text, color_code)
-        end
-
-        def format_caller(caller_info)
-          RSpec.configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
       end
