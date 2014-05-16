@@ -69,9 +69,9 @@ module RSpec
             output.puts
             output.puts "Pending:"
             notification.pending_examples.each do |pending_example|
-              output.puts pending_color("  #{pending_example.full_description}")
-              output.puts detail_color("    # #{pending_example.execution_result.pending_message}")
-              output.puts detail_color("    # #{format_caller(pending_example.location)}")
+              output.puts color("  #{pending_example.full_description}", :pending)
+              output.puts color("    # #{pending_example.execution_result.pending_message}", :detail)
+              output.puts color("    # #{format_caller(pending_example.location)}", :detail)
             end
           end
         end
@@ -96,38 +96,6 @@ module RSpec
 
       protected
 
-        def bold(text)
-          ConsoleCodes.wrap(text, :bold)
-        end
-
-        def color(text, color_code)
-          ConsoleCodes.wrap(text, color_code)
-        end
-
-        def failure_color(text)
-          color(text, RSpec.configuration.failure_color)
-        end
-
-        def success_color(text)
-          color(text, RSpec.configuration.success_color)
-        end
-
-        def pending_color(text)
-          color(text, RSpec.configuration.pending_color)
-        end
-
-        def fixed_color(text)
-          color(text, RSpec.configuration.fixed_color)
-        end
-
-        def detail_color(text)
-          color(text, RSpec.configuration.detail_color)
-        end
-
-        def default_color(text)
-          color(text, RSpec.configuration.default_color)
-        end
-
         def short_padding
           '  '
         end
@@ -137,6 +105,10 @@ module RSpec
         end
 
       private
+
+        def color(text, color_code)
+          ConsoleCodes.wrap(text, color_code)
+        end
 
         def format_caller(caller_info)
           configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
