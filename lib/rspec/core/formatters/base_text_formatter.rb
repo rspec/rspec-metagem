@@ -111,7 +111,7 @@ module RSpec
         end
 
         def format_caller(caller_info)
-          configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
+          RSpec.configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
         end
 
       end
