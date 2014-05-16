@@ -12,6 +12,9 @@ module RSpec::Core
       @duration = @start = @load_time = nil
     end
 
+    # @private
+    attr_reader :examples, :failed_examples, :pending_examples
+
     # Registers a listener to a list of notifications. The reporter will send notification of
     # events to all registered listeners
     #
@@ -79,28 +82,24 @@ module RSpec::Core
     # @private
     def example_started(example)
       @examples << example
-      notify :example_started, Notifications::ExampleNotification.new(example)
+      notify :example_started, Notifications::ExampleNotification.for(example)
     end
 
     # @private
     def example_passed(example)
-      notify :example_passed, Notifications::ExampleNotification.new(example)
+      notify :example_passed, Notifications::ExampleNotification.for(example)
     end
 
     # @private
     def example_failed(example)
       @failed_examples << example
-      if example.execution_result.pending_fixed?
-        notify :example_failed, Notifications::PendingExampleFixedNotification.new(example)
-      else
-        notify :example_failed, Notifications::FailedExampleNotification.new(example)
-      end
+      notify :example_failed, Notifications::ExampleNotification.for(example)
     end
 
     # @private
     def example_pending(example)
       @pending_examples << example
-      notify :example_pending, Notifications::ExampleNotification.new(example)
+      notify :example_pending, Notifications::ExampleNotification.for(example)
     end
 
     # @private
@@ -113,8 +112,8 @@ module RSpec::Core
       begin
         stop
         notify :start_dump,    Notifications::NullNotification
-        notify :dump_pending,  Notifications::NullNotification
-        notify :dump_failures, Notifications::NullNotification
+        notify :dump_pending,  Notifications::ExamplesNotification.new(self)
+        notify :dump_failures, Notifications::ExamplesNotification.new(self)
         notify :deprecation_summary, Notifications::NullNotification
         notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
         unless mute_profile_output?
@@ -129,7 +128,7 @@ module RSpec::Core
     # @private
     def stop
       @duration = (RSpec::Core::Time.now - @start).to_f if @start
-      notify :stop, Notifications::NullNotification
+      notify :stop, Notifications::ExamplesNotification.new(self)
     end
 
     # @private

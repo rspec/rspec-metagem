@@ -14,27 +14,15 @@ module RSpec
       class BaseFormatter
 
         # all formatters inheriting from this formatter will receive these notifications
-        Formatters.register self, :start, :example_group_started, :example_started,
-                                  :example_pending, :example_failed, :close
+        Formatters.register self, :start, :example_group_started, :close
         attr_accessor :example_group
-        attr_reader :examples, :output
-        attr_reader :failed_example_notifications, :pending_examples
-
-        # @private
-        # transitionary attr until reporter holds state
-        def failed_examples
-          failed_example_notifications.map(&:example)
-        end
+        attr_reader :output
 
         # @api public
         #
         # @param output [IO] the formatter output
         def initialize(output)
           @output = output || StringIO.new
-          @example_count = @pending_count = @failure_count = 0
-          @examples = []
-          @failed_example_notifications = []
-          @pending_examples = []
           @example_group = nil
         end
 
@@ -72,14 +60,12 @@ module RSpec
         #
         # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
 
+        # @method example_started
         # @api public
         #
         # Invoked at the beginning of the execution of each example.
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
-        def example_started(notification)
-          examples << notification.example
-        end
 
         # @method example_passed
         # @api public
@@ -88,21 +74,17 @@ module RSpec
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
 
+        # @method example_pending
         # Invoked when an example is pending.
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
-        def example_pending(notification)
-          @pending_examples << notification.example
-        end
 
+        # @method example_failed
         # @api public
         #
         # Invoked when an example fails.
         #
         # @param notification [ExampleNotification] containing example subclass of `RSpec::Core::Example`
-        def example_failed(notification)
-          @failed_example_notifications << notification
-        end
 
         # @method message
         # @api public

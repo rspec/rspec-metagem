@@ -71,6 +71,9 @@ Breaking Changes for 3.0.0:
 * Extract profiler support to `ProfileFormatter` and `ProfileNotification`.
   Formatters should implement `dump_profile` if they wish to respond to `--profile`.
   (Jon Rowe)
+* Extract remaining formatter state to reporter and notifications. Introduce
+  `ExamplesNotification` to share information about examples that was previously
+  held in `BaseFormatter`. (Jon Rowe)
 
 Enhancements:
 

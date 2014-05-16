@@ -24,7 +24,70 @@ module RSpec::Core
     #   end
     #
     # @attr example [RSpec::Core::Example] the current example
-    ExampleNotification = Struct.new(:example)
+    ExampleNotification = Struct.new(:example) do
+      # @private
+      def self.for(example)
+        if example.execution_result.pending_fixed?
+          PendingExampleFixedNotification.new(example)
+        elsif example.execution_result.status == :failed
+          FailedExampleNotification.new(example)
+        else
+          new(example)
+        end
+      end
+      private_class_method :new
+    end
+
+    # The `ExamplesNotification` represents notifications sent by the reporter
+    # which contain information about the suites examples.
+    #
+    # @example
+    #   def stop(notification)
+    #     puts "Hey I ran #{notification.examples.size}"
+    #   end
+    #
+    class ExamplesNotification
+
+      def initialize(reporter)
+        @reporter = reporter
+      end
+
+      # @return [Array(RSpec::Core::Example)] list of examples
+      def examples
+        @reporter.examples
+      end
+
+      # @return [Array(RSpec::Core::Example)] list of failed examples
+      def failed_examples
+        @reporter.failed_examples
+      end
+
+      # @return [Array(RSpec::Core::Example)] list of pending examples
+      def pending_examples
+        @reporter.pending_examples
+      end
+
+      # @return [Array(Rspec::Core::Notifications::ExampleNotification]
+      #         returns examples as notifications
+      def notifications
+        @notifications ||= format(examples)
+      end
+
+      # @return [Array(Rspec::Core::Notifications::FailedExampleNotification]
+      #         returns failed examples as notifications
+      def failure_notifications
+        @failed_notifications ||= format(failed_examples)
+      end
+
+    private
+
+      def format(examples)
+        examples.map do |example|
+          ExampleNotification.for(example)
+        end
+      end
+
+    end
 
     # The `FailedExampleNotification` extends `ExampleNotification` with
     # things useful for failed specs.
@@ -39,6 +102,7 @@ module RSpec::Core
     # @attr [RSpec::Core::Example] example the current example
     # @see ExampleNotification
     class FailedExampleNotification < ExampleNotification
+      public_class_method :new
 
       # @return [Exception] The example failure
       def exception
@@ -73,7 +137,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer)
+      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map do |line|
           colorizer.wrap line, RSpec.configuration.failure_color
         end
@@ -90,7 +154,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] the examples colorized backtrace lines
-      def colorized_formatted_backtrace(colorizer)
+      def colorized_formatted_backtrace(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         formatted_backtrace.map do |backtrace_info|
           colorizer.wrap backtrace_info, RSpec.configuration.detail_color
         end
@@ -148,6 +212,7 @@ module RSpec::Core
     # @attr [RSpec::Core::Example] example the current example
     # @see ExampleNotification
     class PendingExampleFixedNotification < FailedExampleNotification
+      public_class_method :new
 
       # Returns the examples description
       #
@@ -167,7 +232,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer)
+      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
     end
@@ -251,7 +316,7 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized summary line.
-      def colorize_with(colorizer)
+      def colorized(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         if failure_count > 0
           colorizer.wrap(summary_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
@@ -259,6 +324,21 @@ module RSpec::Core
         else
           colorizer.wrap(summary_line, RSpec.configuration.success_color)
         end
+      end
+
+      # @api public
+      #
+      # Formats failures into a rerunable command format.
+      #
+      # @param colorizer [#wrap] An object which supports wrapping text with
+      #                          specific colors.
+      # @return [String] A colorized summary line.
+      def colorized_rerun_commands(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+        "\nFailed Examples:\n\n" +
+        failed_examples.map do |example|
+          colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
+          colorizer.wrap("# #{example.full_description}", RSpec.configuration.detail_color)
+        end.join("\n")
       end
 
       # @return [String] a formatted version of the time it took to run the suite
