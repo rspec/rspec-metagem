@@ -36,12 +36,12 @@ module RSpec
           output.puts "Failures:"
           notification.failure_notifications.each_with_index do |failure, index|
             output.puts
-            output.puts "#{short_padding}#{index.next}) #{failure.description}"
+            output.puts "  #{index.next}) #{failure.description}"
             failure.colorized_message_lines.each do |line|
-              output.puts "#{long_padding}#{line}"
+              output.puts "     #{line}"
             end
             failure.colorized_formatted_backtrace.each do |line|
-              output.puts "#{long_padding}#{line}"
+              output.puts "     #{line}"
             end
           end
         end
@@ -92,16 +92,6 @@ module RSpec
         # @param notification [NullNotification]
         def close(notification)
           output.close if IO === output && output != $stdout
-        end
-
-      protected
-
-        def short_padding
-          '  '
-        end
-
-        def long_padding
-          '     '
         end
 
       private
