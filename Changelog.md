@@ -112,6 +112,8 @@ Enhancements:
   passing spec you expect to fail. (Jon Rowe)
 * Add `dump_profile` to formatter API to allow formatters to implement
   support for `--profile`. (Jon Rowe)
+* Allow colourising text via `ConsoleCodes` with RSpec 'states'
+  (e.g. `:success`, `:failure`) rather than direct colour codes. (Jon Rowe)
 
 Bug Fixes:
 
