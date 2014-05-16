@@ -40,4 +40,16 @@ RSpec.describe RSpec::Core::Formatters::ProgressFormatter do
     send_notification :start_dump, null_notification
     expect(output.string).to eq("\n")
   end
+
+  # The backrace is slightly different on JRuby so we skip there.
+  it 'produces the expected full output', :unless => RUBY_PLATFORM == 'java' do
+    output = run_example_specs_with_formatter("progress")
+    output.gsub!(/ +$/, '') # strip trailing whitespace
+
+    expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+      |**F.FFF
+      |
+      |#{expected_summary_output_for_example_specs}
+    EOS
+  end
 end

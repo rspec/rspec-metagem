@@ -156,7 +156,7 @@ module RSpec::Core
       # @return [Array(String)] the examples colorized backtrace lines
       def colorized_formatted_backtrace(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         formatted_backtrace.map do |backtrace_info|
-          colorizer.wrap backtrace_info, RSpec.configuration.detail_color
+          colorizer.wrap "# #{backtrace_info}", RSpec.configuration.detail_color
         end
       end
 
@@ -334,7 +334,7 @@ module RSpec::Core
       #                          specific colors.
       # @return [String] A colorized summary line.
       def colorized_rerun_commands(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
-        "\nFailed Examples:\n\n" +
+        "\nFailed examples:\n\n" +
         failed_examples.map do |example|
           colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
           colorizer.wrap("# #{example.full_description}", RSpec.configuration.detail_color)

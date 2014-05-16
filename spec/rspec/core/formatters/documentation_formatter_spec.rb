@@ -77,5 +77,35 @@ root
     example 3 (FAILED - 1)
 ")
     end
+
+    # The backrace is slightly different on JRuby so we skip there.
+    it 'produces the expected full output', :unless => RUBY_PLATFORM == 'java' do
+      output = run_example_specs_with_formatter("doc")
+      output.gsub!(/ +$/, '') # strip trailing whitespace
+
+      expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
+        |
+        |pending spec with no implementation
+        |  is pending (PENDING: Not yet implemented)
+        |
+        |pending command with block format
+        |  with content that would fail
+        |    is pending (PENDING: No reason given)
+        |  with content that would pass
+        |    fails (FAILED - 1)
+        |
+        |passing spec
+        |  passes
+        |
+        |failing spec
+        |  fails (FAILED - 2)
+        |
+        |a failing spec with odd backtraces
+        |  fails with a backtrace that has no file (FAILED - 3)
+        |  fails with a backtrace containing an erb file (FAILED - 4)
+        |
+        |#{expected_summary_output_for_example_specs}
+      EOS
+    end
   end
 end
