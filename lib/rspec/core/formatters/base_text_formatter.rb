@@ -69,10 +69,6 @@ module RSpec
           output.close if IO === output && output != $stdout
         end
 
-        def color(text, color_code)
-          ConsoleCodes.wrap(text, color_code)
-        end
-
       end
     end
   end
