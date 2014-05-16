@@ -7,6 +7,7 @@ module RSpec
   module Core
     module Formatters
       RSpec.describe HtmlFormatter do
+        include FormatterSupport
 
         let(:root) { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }
         let(:expected_file) do
@@ -14,15 +15,7 @@ module RSpec
         end
 
         let(:generated_html) do
-          options = ConfigurationOptions.new(%w[spec/rspec/core/resources/formatter_specs.rb --format html --order defined])
-
-          err, out = StringIO.new, StringIO.new
-          err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
-
-          runner = RSpec::Core::Runner.new(options)
-          runner.instance_variable_get("@configuration").backtrace_formatter.inclusion_patterns = []
-          runner.run(err, out)
-          html = out.string.gsub(/\d+\.\d+(s| seconds)/, "n.nnnn\\1")
+          html = run_example_specs_with_formatter('html')
 
           actual_doc = Nokogiri::HTML(html, &:noblanks)
           actual_doc.css("div.backtrace pre").each do |elem|
