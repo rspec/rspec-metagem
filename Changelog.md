@@ -117,6 +117,9 @@ Enhancements:
   support for `--profile`. (Jon Rowe)
 * Allow colourising text via `ConsoleCodes` with RSpec 'states'
   (e.g. `:success`, `:failure`) rather than direct colour codes. (Jon Rowe)
+* Expose `fully_formatted` methods off the formatter notification objects
+  that make it easy for a custom formatter to produce formatted output
+  like rspec-core's. (Myron Marston)
 
 Bug Fixes:
 

@@ -8,21 +8,20 @@ module RSpec
         Formatters.register self, :example_passed, :example_pending, :example_failed, :start_dump
 
         def example_passed(notification)
-          output.print success_color('.')
+          output.print ConsoleCodes.wrap('.', :success)
         end
 
         def example_pending(notification)
-          output.print pending_color('*')
+          output.print ConsoleCodes.wrap('*', :pending)
         end
 
         def example_failed(notification)
-          output.print failure_color('F')
+          output.print ConsoleCodes.wrap('F', :failure)
         end
 
         def start_dump(notification)
           output.puts
         end
-
       end
     end
   end

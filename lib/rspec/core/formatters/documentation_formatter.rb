@@ -39,15 +39,15 @@ module RSpec
       private
 
         def passed_output(example)
-          success_color("#{current_indentation}#{example.description.strip}")
+          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip}", :success)
         end
 
         def pending_output(example, message)
-          pending_color("#{current_indentation}#{example.description.strip} (PENDING: #{message})")
+          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (PENDING: #{message})", :pending)
         end
 
         def failure_output(example, exception)
-          failure_color("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})")
+          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})", :failure)
         end
 
         def next_failure_index

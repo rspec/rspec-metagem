@@ -152,11 +152,7 @@ module RSpec
           restore_sync_output
         end
 
-      protected
-
-        def configuration
-          RSpec.configuration
-        end
+      private
 
         def start_sync_output
           @old_sync, output.sync = output.sync, true if output_supports_sync
@@ -168,10 +164,6 @@ module RSpec
 
         def output_supports_sync
           output.respond_to?(:sync=)
-        end
-
-        def color_enabled?
-          configuration.color_enabled?(output)
         end
 
       end
