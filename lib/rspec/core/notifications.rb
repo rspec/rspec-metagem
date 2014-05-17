@@ -350,8 +350,8 @@ module RSpec::Core
       end
 
       # @api
-      # @return [String] A line summarising the results of the spec run.
-      def results_line
+      # @return [String] A line summarising the result totals of the spec run.
+      def totals_line
         summary = Formatters::Helpers.pluralize(example_count, "example")
         summary << ", " << Formatters::Helpers.pluralize(failure_count, "failure")
         summary << ", #{pending_count} pending" if pending_count > 0
@@ -367,13 +367,13 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized results line.
-      def colorized_results_line(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_totals_line(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         if failure_count > 0
-          colorizer.wrap(results_line, RSpec.configuration.failure_color)
+          colorizer.wrap(totals_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
-          colorizer.wrap(results_line, RSpec.configuration.pending_color)
+          colorizer.wrap(totals_line, RSpec.configuration.pending_color)
         else
-          colorizer.wrap(results_line, RSpec.configuration.success_color)
+          colorizer.wrap(totals_line, RSpec.configuration.success_color)
         end
       end
 
@@ -408,7 +408,7 @@ module RSpec::Core
       def fully_formatted(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nFinished in #{formatted_duration} " \
                     "(files took #{formatted_load_time} to load)\n" \
-                    "#{colorized_results_line(colorizer)}\n"
+                    "#{colorized_totals_line(colorizer)}\n"
 
         unless failed_examples.empty?
           formatted << colorized_rerun_commands(colorizer) << "\n"
