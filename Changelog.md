@@ -249,7 +249,7 @@ Bug Fixes:
   or `default_path`. (Matijs van Zuijlen)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.rc1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -319,6 +319,77 @@ Deprecations:
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
   longer has an affect now that the behavior it enabled is always
   enabled. (Myron Marston)
+
+### 2.99.0.rc1 / 2014-05-18
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta2...v2.99.0.rc1)
+
+Enhancements:
+
+* Add `--deprecation-out` CLI option which directs deprecation warnings
+  to the named file. (Myron Marston)
+* Backport support for `skip` in metadata to skip execution of an example.
+  (Xavier Shay, #1472)
+* Add `Pathname` support for setting all output streams. (Aaron Kromer)
+* Add `test_unit` and `minitest` expectation frameworks. (Aaron Kromer)
+
+Deprecations:
+
+* Deprecate `RSpec::Core::Pending::PendingDeclaredInExample`, use
+  `SkipDeclaredInExample` instead. (Xavier Shay)
+* Issue a deprecation when `described_class` is accessed from within
+  a nested `describe <SomeClass>` example group, since `described_class`
+  will return the innermost described class in RSpec 3 rather than the
+  outermost described class, as it behaved in RSpec 2. (Myron Marston)
+* Deprecate `RSpec::Core::FilterManager::DEFAULT_EXCLUSIONS`,
+  `RSpec::Core::FilterManager::STANDALONE_FILTERS` and use of
+  `#empty_without_conditional_filters?` on those filters. (Sergey Pchelincev)
+* Deprecate `RSpec::Core::Example#options` in favor of
+  `RSpec::Core::Example#metadata`. (Myron Marston)
+* Issue warning when passing a symbol or hash to `describe` or `context`
+  as the first argument. In RSpec 2.x this would be treated as metadata
+  but in RSpec 3 it'll be treated as the described object. To continue
+  having it treated as metadata, pass a description before the symbol or
+  hash. (Myron Marston)
+* Deprecate `RSpec::Core::BaseTextFormatter::VT100_COLORS` and
+  `RSpec::Core::BaseTextFormatter::VT100_COLOR_CODES` in favour
+  of `RSpec::Core::BaseTextFormatter::ConsoleCodes::VT100_CODES` and
+  `RSpec::Core::BaseTextFormatter::ConsoleCodes::VT100_CODE_VALUES`.
+  (Jon Rowe)
+* Deprecate `RSpec::Core::ExampleGroup.display_name` in favor of
+  `RSpec::Core::ExampleGroup.description`. (Myron Marston)
+* Deprecate `RSpec::Core::ExampleGroup.describes` in favor of
+  `RSpec::Core::ExampleGroup.described_class`. (Myron Marston)
+* Deprecate `RSpec::Core::ExampleGroup.alias_example_to` in favor of
+  `RSpec::Core::Configuration#alias_example_to`. (Myron Marston)
+* Deprecate `RSpec::Core::ExampleGroup.alias_it_behaves_like_to` in favor
+  of `RSpec::Core::Configuration#alias_it_behaves_like_to`. (Myron Marston)
+* Deprecate `RSpec::Core::ExampleGroup.focused` in favor of
+  `RSpec::Core::ExampleGroup.focus`. (Myron Marston)
+* Add deprecation warning for `config.filter_run :focused` since
+  example aliases `fit` and `focus` will no longer include
+  `:focused` metadata but will continue to include `:focus`. (Myron Marston)
+* Deprecate filtering by `:line_number` (e.g. `--line-number` from the
+  CLI). Use location filtering instead. (Myron Marston)
+* Deprecate `--default_path` as an alternative to `--default-path`. (Jon Rowe)
+* Deprecate `RSpec::Core::Configuration#warnings` in favor of
+  `RSpec::Core::Configuration#warnings?`. (Myron Marston)
+* Deprecate `share_examples_for` in favor of `shared_examples_for` or
+  just `shared_examples`. (Myron Marston)
+* Deprecate `RSpec::Core::CommandLine` in favor of
+  `RSpec::Core::Runner`. (Myron Marston)
+* Deprecate `#color_enabled`, `#color_enabled=` and `#color?` in favour of
+  `#color`, `#color=` and `#color_enabled? output`. (Jon Rowe)
+* Deprecate `#filename_pattern` in favour of `#pattern`. (Jon Rowe)
+* Deprecate `#backtrace_cleaner` in favour of `#backtrace_formatter`. (Jon Rowe)
+* Deprecate mutating `RSpec::Configuration#formatters`. (Jon Rowe)
+* Deprecate `stdlib` as an available expectation framework in favour of
+  `test_unit` and `minitest`. (Aaron Kromer)
+
+Bug Fixes:
+
+* Issue a warning when you set `config.deprecation_stream` too late for
+  it to take effect because the reporter has already been setup. (Myron Marston)
+* `skip` with a block should not execute the block. (Xavier Shay)
 
 ### 2.99.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta1...v2.99.0.beta2)
@@ -414,7 +485,7 @@ Deprecations
   (Myron Marston)
 
 ### 2.14.8 / 2014-02-27
-[full changelog](http://github.com/rspec/rspec-core/compare/v2.14.7...v2.14.8)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.14.7...v2.14.8)
 
 Bug fixes:
 
