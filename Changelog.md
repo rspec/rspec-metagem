@@ -154,7 +154,7 @@ Deprecations:
   a deprecation warning. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.rc1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -201,6 +201,29 @@ Deprecations:
  * Using the old `:should` syntax without explicitly configuring it is deprecated.
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
+
+### 2.99.0.rc1 / 2014-05-18
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta2...2.99.0.rc1)
+
+Deprecations:
+
+* Deprecate `matcher_execution_context` attribute on DSL-defined
+  custom matchers. (Myron Marston)
+* Deprecate `RSpec::Matchers::Pretty#_pretty_print`. (Myron Marston)
+* Deprecate `RSpec::Matchers::Pretty#expected_to_sentence`. (Myron Marston)
+* Deprecate `RSpec::Matchers::Configuration` in favor of
+  `RSpec::Expectations::Configuration`. (Myron Marston)
+* Deprecate `be_xyz` predicate matcher on an object that doesn't respond to
+  `xyz?` or `xyzs?`. (Daniel Fone)
+* Deprecate `have_xyz` matcher on an object that doesn't respond to `has_xyz?`.
+  (Daniel Fone)
+* Deprecate `have_xyz` matcher on an object that has a private method `has_xyz?`.
+  (Jon Rowe)
+* Issue a deprecation warning when a block expectation expression is
+  used with a matcher that doesn't explicitly support block expectations
+  via `supports_block_expectations?`. (Myron Marston)
+* Deprecate `require 'rspec-expectations'`. Use
+  `require 'rspec/expectations'` instead. (Myron Marston)
 
 ### 2.99.0.beta2 / 2014-02-17
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.beta1...v2.99.0.beta2)
