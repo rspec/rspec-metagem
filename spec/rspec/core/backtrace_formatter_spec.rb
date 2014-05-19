@@ -11,11 +11,12 @@ module RSpec::Core
 
     describe "defaults" do
       it "excludes rspec files" do
-        expect(make_backtrace_formatter.exclude?("lib/rspec/core.rb")).to be true
-        expect(make_backtrace_formatter.exclude?("lib/rspec/core/foo.rb")).to be true
-        expect(make_backtrace_formatter.exclude?("lib/rspec/expectations/foo.rb")).to be true
-        expect(make_backtrace_formatter.exclude?("lib/rspec/matchers/foo.rb")).to be true
-        expect(make_backtrace_formatter.exclude?("lib/rspec/mocks/foo.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/core.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/core/foo.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/expectations/foo.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/matchers/foo.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/mocks/foo.rb")).to be true
+        expect(make_backtrace_formatter.exclude?("/lib/rspec/support/foo.rb")).to be true
       end
 
       it "excludes java files (for JRuby)" do

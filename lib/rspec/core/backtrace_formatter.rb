@@ -7,13 +7,15 @@ module RSpec
 
       def initialize
         @full_backtrace = false
-        @system_exclusion_patterns = [] << Regexp.union(
-          *["/lib\d*/ruby/",
-            "org/jruby/",
-            "bin/",
-            "/gems/",
-            "lib/rspec/(core|expectations|matchers|mocks)"].
-          map {|s| Regexp.new(s.gsub("/", File::SEPARATOR))})
+
+        patterns = [
+          "/lib\d*/ruby/",
+          "org/jruby/",
+          "bin/",
+          "/gems/",
+        ].map { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
+
+        @system_exclusion_patterns = [Regexp.union(RSpec::CallerFilter::IGNORE_REGEX, *patterns)]
         @exclusion_patterns = [] + @system_exclusion_patterns
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
