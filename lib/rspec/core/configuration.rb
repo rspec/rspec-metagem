@@ -1072,6 +1072,8 @@ module RSpec
       end
 
       # @private
+      # @macro [attach] delegate_to_ordering_manager
+      #   @!method $1
       def self.delegate_to_ordering_manager(*methods)
         methods.each do |method|
           define_method method do |*args, &block|
