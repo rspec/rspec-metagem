@@ -1,7 +1,7 @@
 Feature: custom formatters
 
   RSpec ships with general purpose output formatters. You can tell RSpec which
-  one to use using the [`--format` command line option]('../command_line/format_option').
+  one to use using the [`--format` command line option](../command-line/format-option).
 
   When RSpec's built-in output formatters don't, however, give you everything
   you need, you can write your own custom formatter and tell RSpec to use that
@@ -11,20 +11,17 @@ Feature: custom formatters
   Scenario: Custom formatter
     Given a file named "custom_formatter.rb" with:
       """ruby
-      require "rspec/core/formatters/base_text_formatter"
-
-      class CustomFormatter < RSpec::Core::Formatters::BaseTextFormatter
-
+      class CustomFormatter
         # This registers the notifications this formatter supports, and tells
         # us that this was written against the RSpec 3.x formatter API.
         RSpec::Core::Formatters.register self, :example_started
 
         def initialize(output)
-          super(output)
+          @output = output
         end
 
         def example_started(notification)
-          output << "example: " << notification.example.description
+          @output << "example: " << notification.example.description
         end
       end
       """
