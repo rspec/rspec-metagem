@@ -1,8 +1,8 @@
-# This file was generated on 2014-05-09T09:46:37-07:00 from the rspec-dev repo.
+# This file was generated on 2014-05-20T15:40:07+10:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
-export JRUBY_OPTS='-X-C' # disable JIT since these processes are so short lived
+export JRUBY_OPTS="${JRUBY_OPTS} -X-C" # disable JIT since these processes are so short lived
 SPECS_HAVE_RUN_FILE=specs.out
 MAINTENANCE_BRANCH=`cat maintenance-branch`
 

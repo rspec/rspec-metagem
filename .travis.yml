@@ -1,11 +1,11 @@
-# This file was generated on 2014-05-09T09:46:37-07:00 from the rspec-dev repo.
+# This file was generated on 2014-05-20T15:40:07+10:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 before_install:
   - "script/clone_all_rspec_repos"
   # Downgrade bundler to work around https://github.com/bundler/bundler/issues/3004
-  - gem install bundler -v=1.5.3
-  - alias bundle="bundle _1.5.3_"
+  # Note this doesn't work on JRUBY 2.0.0 mode so we don't do it
+  - if [ -z "$JRUBY_OPTS" ]; then gem install bundler -v=1.5.3 && alias bundle="bundle _1.5.3_"; fi
 bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
 script: "script/run_build"
 rvm:
@@ -23,6 +23,9 @@ rvm:
   - jruby-head
   - rbx
 matrix:
+  include:
+    - rvm: jruby
+      env: JRUBY_OPTS='--2.0'
   allow_failures:
     - rvm: jruby-head
     - rvm: ruby-head
