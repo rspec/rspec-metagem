@@ -676,9 +676,9 @@ module RSpec
     #   expect { do_something }.to_not output.to_stderr
     #
     # @note This matcher works by temporarily replacing `$stdout` or `$stderr`,
-    # so it's not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
-    # or that uses a reference to `$stdout`/`$stderr` that was stored before the
-    # matcher is used.
+    #   so it's not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
+    #   or that uses a reference to `$stdout`/`$stderr` that was stored before the
+    #   matcher is used.
     def output(expected=nil)
       BuiltIn::Output.new(expected)
     end
