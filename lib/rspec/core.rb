@@ -34,6 +34,7 @@ RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative 
   example_group
 ].each { |name| RSpec::Support.require_rspec_core name }
 
+# Namespace for all core RSpec code.
 module RSpec
   autoload :SharedContext, 'rspec/core/shared_context'
 
