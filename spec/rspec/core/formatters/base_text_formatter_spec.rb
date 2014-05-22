@@ -4,6 +4,16 @@ require 'rspec/core/formatters/base_text_formatter'
 RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   include FormatterSupport
 
+  context "when closing the formatter", :isolated_directory => true do
+    it 'does not close an already closed output stream' do
+      output = File.new("./output_to_close", "w")
+      formatter = described_class.new(output)
+      output.close
+
+      expect { formatter.close(RSpec::Core::Notifications::NullNotification) }.not_to raise_error
+    end
+  end
+
   describe "#dump_summary" do
     it "with 0s outputs pluralized (excluding pending)" do
       send_notification :dump_summary, summary_notification(0, [], [], [], 0)

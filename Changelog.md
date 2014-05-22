@@ -1,3 +1,11 @@
+### 3.0.0 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.rc1...master)
+
+Bug Fixes:
+
+* Fix `BaseTextFormatter` so that it does not re-close a closed output
+  stream. (Myron Marston)
+
 ### 3.0.0.rc1 / 2014-05-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.beta2...v3.0.0.rc1)
 
