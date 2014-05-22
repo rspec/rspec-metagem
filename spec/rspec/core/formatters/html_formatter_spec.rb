@@ -93,14 +93,14 @@ module RSpec
             end
           end
 
-          it "is identical to the one we designed manually" do
+          it "is identical to the one we designed manually", :pending => (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby') do
             build_and_verify_formatter_output
           end
 
           context 'with mathn loaded' do
             include MathnIntegrationSupport
 
-            it "is identical to the one we designed manually", :slow do
+            it "is identical to the one we designed manually", :slow, :pending => (defined?(RUBY_ENGINE) && RUBY_ENGINE == 'jruby') do
               with_mathn_loaded { build_and_verify_formatter_output }
             end
           end
