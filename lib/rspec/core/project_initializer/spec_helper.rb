@@ -29,11 +29,6 @@ RSpec.configure do |config|
   # file, and it's useful to allow more verbose output when running an
   # individual spec file.
   if config.files_to_run.one?
-    # RSpec filters the backtrace by default so as not to be so noisy.
-    # This causes the full backtrace to be printed when running a single
-    # spec file (e.g. to troubleshoot a particular spec failure).
-    config.full_backtrace = true
-
     # Use the documentation formatter for detailed output,
     # unless a formatter has already been configured
     # (e.g. via a command-line flag).
