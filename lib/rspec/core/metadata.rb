@@ -181,8 +181,11 @@ module RSpec
       class ExampleGroupHash < HashPopulator
         def self.create(parent_group_metadata, user_metadata, *args, &block)
           group_metadata = hash_with_backwards_compatibility_default_proc
-          group_metadata.update(parent_group_metadata)
-          group_metadata[:parent_example_group] = parent_group_metadata
+
+          if parent_group_metadata
+            group_metadata.update(parent_group_metadata)
+            group_metadata[:parent_example_group] = parent_group_metadata
+          end
 
           hash = new(group_metadata, user_metadata, args, block)
           hash.populate
@@ -201,7 +204,8 @@ module RSpec
                               :replacement => "the example group's hash directly for the " +
                               "computed keys and `:parent_example_group` to access the parent " +
                               "example group metadata")
-              LegacyExampleGroupHash.new(example_group_selector.call(hash))
+              group_hash = example_group_selector.call(hash)
+              LegacyExampleGroupHash.new(group_hash) if group_hash
             when :example_group_block
               RSpec.deprecate("`metadata[:example_group_block]`",
                               :replacement => "`metadata[:block]`")
@@ -226,10 +230,9 @@ module RSpec
         def full_description
           description          = metadata[:description]
           parent_example_group = metadata[:parent_example_group]
+          return description unless parent_example_group
+
           parent_description   = parent_example_group[:full_description]
-
-          return description unless parent_description
-
           separator = description_separator(parent_example_group[:description_args].last,
                                             metadata[:description_args].first)
 

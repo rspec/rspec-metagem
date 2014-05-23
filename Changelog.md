@@ -5,6 +5,9 @@ Bug Fixes:
 
 * Fix `BaseTextFormatter` so that it does not re-close a closed output
   stream. (Myron Marston)
+* Fix regression in metadata that caused the metadata hash of a top-level
+  example group to have a `:parent_example_group` key even though it has
+  no parent example group. (Myron Marston)
 
 Enhancements:
 

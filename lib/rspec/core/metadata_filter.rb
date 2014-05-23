@@ -75,10 +75,10 @@ module RSpec
       end
 
       def parent_of(metadata)
-        if metadata.has_key?(:parent_example_group)
-          metadata[:parent_example_group]
-        else
+        if metadata.key?(:example_group)
           metadata[:example_group]
+        else
+          metadata[:parent_example_group]
         end
       end
     end
