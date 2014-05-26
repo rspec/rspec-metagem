@@ -435,6 +435,11 @@ module RSpec
         end
       end
 
+      it 'does not have a `:parent_example_group` key for a top level group' do
+        meta = RSpec.describe(Object).metadata
+        expect(meta).not_to include(:parent_example_group)
+      end
+
       describe "backwards compatibility" do
         before { allow_deprecation }
 
@@ -496,9 +501,7 @@ module RSpec
 
             expect(inner_metadata[:description]).to eq("Level 2")
             expect(inner_metadata[:example_group][:description]).to eq("Level 1")
-
-            # On 2.99 this was nil, but I haven't found a way to achieve that behavior, so this is close enough...
-            expect(inner_metadata[:example_group][:example_group].to_h).to eq({})
+            expect(inner_metadata[:example_group][:example_group]).to be_nil
           end
 
           it 'allows integration libraries like VCR to infer a fixture name from the example description by walking up nesting structure' do
@@ -524,8 +527,7 @@ module RSpec
 
             raise ex.execution_result.exception if ex.execution_result.exception
 
-            # On 2.x this returns "Group/ex", no leading slash, but this is close enough...
-            expect(inferred_fixture_name).to eq("/Group/ex")
+            expect(inferred_fixture_name).to eq("Group/ex")
           end
 
           it 'can mutate attributes when accessing them via [:example_group]' do

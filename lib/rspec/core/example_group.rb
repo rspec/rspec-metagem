@@ -355,7 +355,7 @@ module RSpec
         args.unshift(description)
 
         @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata || {}, user_metadata, *args, &example_group_block
+          superclass_metadata, user_metadata, *args, &example_group_block
         )
 
         hooks.register_globals(self, RSpec.configuration.hooks)
