@@ -28,25 +28,37 @@
 #
 # The reporter calls every formatter with this protocol:
 #
-# * `start(expected_example_count)`
-# * zero or more of the following
-#   * `example_group_started(group)`
-#   * `example_started(example)`
-#   * `example_passed(example)`
-#   * `example_failed(example)`
-#   * `example_pending(example)`
-#   * `message(string)`
-# * `stop`
-# * `start_dump`
-# * `dump_pending`
-# * `dump_failures`
-# * `dump_summary(duration, example_count, failure_count, pending_count)`
-# * `seed(value)`
-# * `close`
+# * To start
+#   * `start(StartNotification)`
+# * Once per example group
+#   * `example_group_started(GroupNotification)`
+# * Once per example
+#   * `example_started(ExampleNotification)`
+# * One of these per example, depending on outcome
+#   * `example_passed(ExampleNotification)`
+#   * `example_failed(FailedExampleNotification)`
+#   * `example_pending(ExampleNotification)`
+# * Optionally at any time
+#   * `message(MessageNotification)`
+# * At the end of the suite
+#   * `stop(ExamplesNotification)`
+#   * `start_dump(NullNotification)`
+#   * `dump_pending(ExamplesNotification)`
+#   * `dump_failures(ExamplesNotification)`
+#   * `dump_summary(SummaryNotification)`
+#   * `seed(SeedNotification)`
+#   * `close(NullNotification)`
 #
-# You can either implement all of those methods or subclass
-# `RSpec::Core::Formatters::BaseTextFormatter` and override the methods you want
-# to enhance.
+# Only the notifications to which you subscribe your formatter will be called
+# on your formatter. To subscribe your formatter use:
+# `RSpec::Core::Formatters#register` e.g.
+#
+# `RSpec::Core::Formatters.register FormatterClassName, :example_passed, :example_failed`
+#
+# We recommend you implement the methods yourself; for simplicity we provide the
+# default formatter output via our notification objects but if you prefer you
+# can subclass `RSpec::Core::Formatters::BaseTextFormatter` and override the
+# methods you wish to enhance.
 #
 # @see RSpec::Core::Formatters::BaseTextFormatter
 # @see RSpec::Core::Reporter
