@@ -3,40 +3,43 @@ module RSpec
     # @private
     # Generates conventional files for an rspec project
     class ProjectInitializer
-      def run
-        create_spec_helper_file
-        create_dot_rspec_file
-      end
+      attr_reader :destination, :stream, :template_path
 
-      def create_dot_rspec_file
-        if File.exist?('.rspec')
-          report_exists('.rspec')
-        else
-          report_creating('.rspec')
-          File.open('.rspec','w') do |f|
-            f.write File.read(File.expand_path("../project_initializer/dot_rspec", __FILE__))
-          end
+      DOT_RSPEC_FILE = '.rspec'
+      SPEC_HELPER_FILE =  'spec/spec_helper.rb'
+
+      def initialize(opts = {})
+        @destination = opts.fetch(:destination, Dir.getwd)
+        @stream = opts.fetch(:report_stream, $stdout)
+        @template_path = opts.fetch(:template_path) do
+          File.expand_path("../project_initializer", __FILE__)
         end
       end
 
-      def create_spec_helper_file
-        if File.exist?('spec/spec_helper.rb')
-          report_exists('spec/spec_helper.rb')
-        else
-          report_creating('spec/spec_helper.rb')
-          FileUtils.mkdir_p('spec')
-          File.open('spec/spec_helper.rb','w') do |f|
-            f.write File.read(File.expand_path("../project_initializer/spec_helper.rb", __FILE__))
-          end
+      def run
+        copy_template DOT_RSPEC_FILE
+        copy_template SPEC_HELPER_FILE
+      end
+
+    private
+
+      def copy_template(file)
+        destination_file = File.join(destination, file)
+        return report_exists(file) if File.exist?(destination_file)
+
+        report_creating(file)
+        FileUtils.mkdir_p(File.dirname(destination_file))
+        File.open(destination_file, 'w') do |f|
+          f.write File.read(File.join(template_path, file))
         end
       end
 
       def report_exists(file)
-        puts "   exist   #{file}"
+        stream.puts "   exist   #{file}"
       end
 
       def report_creating(file)
-        puts "  create   #{file}"
+        stream.puts "  create   #{file}"
       end
     end
   end
