@@ -265,7 +265,7 @@ Bug Fixes:
   or `default_path`. (Matijs van Zuijlen)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.rc1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -335,6 +335,17 @@ Deprecations:
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
   longer has an affect now that the behavior it enabled is always
   enabled. (Myron Marston)
+
+### 2.99.0 / 2014-06-01
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.rc1...v2.99.0)
+
+Bug Fixes:
+
+* Fix `BaseTextFormatter` so that it does not re-close a closed output
+  stream. (Myron Marston)
+* Use `RSpec::Configuration#backtrace_exclusion_patterns` rather than the
+  deprecated `RSpec::Configuration#backtrace_clean_patterns` when mocking
+  with rr. (David Dollar)
 
 ### 2.99.0.rc1 / 2014-05-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.beta2...v2.99.0.rc1)
