@@ -242,6 +242,58 @@ module RSpec::Matchers::DSL
       end
     end
 
+    context 'without overrides with chained matchers' do
+      let(:matcher) do
+        new_matcher(:be_bigger_than, 5) do |first|
+          match do |actual|
+            (actual > first) &&
+            (!defined? @ceiling || actual < @second) &&
+            (!defined? @divisor || @divisor % actual == 0)
+          end
+
+         chain :but_smaller_than do |ceiling|
+            @ceiling = ceiling
+          end
+
+          chain :but_divisible_by do |divisor|
+            @divisor = divisor
+          end
+        end
+      end
+
+      context "when the matchers are chained" do
+        it "provides a default description that includes the chained matchers' descriptions" do
+          expect(matcher.but_smaller_than(10).but_divisible_by(3).description).to eq "be bigger than 5 but smaller than 10 but divisible by 3"
+        end
+
+        it "provides a default positive expectation failure message that includes the chained matchers' failures" do
+          matcher.but_smaller_than(10).but_divisible_by(3).matches?(8)
+          expect(matcher.failure_message).to eq "expected 8 to be bigger than 5 but smaller than 10 but divisible by 3"
+        end
+
+        it "provides a default negative expectation failure message that includes the chained matchers' failures" do
+          matcher.but_smaller_than(10).but_divisible_by(3).matches?(9)
+          expect(matcher.failure_message_when_negated).to eq "expected 9 not to be bigger than 5 but smaller than 10 but divisible by 3"
+        end
+      end
+
+      context "when none of the matchers are chained" do
+        it "provides a default description that does not include any of the chained matchers' descriptions" do
+          expect(matcher.description).to eq "be bigger than 5"
+        end
+
+        it "provides a default positive expectation failure message that does not include any of the chained matchers' descriptions" do
+          matcher.matches?(2)
+          expect(matcher.failure_message).to eq "expected 2 to be bigger than 5"
+        end
+
+        it "provides a default negative expectation failure message that does not include the any of the chained matchers's descriptions" do
+          matcher.matches?(10)
+          expect(matcher.failure_message_when_negated).to eq "expected 10 not to be bigger than 5"
+        end
+      end
+    end
+
     context "with separate match logic for positive and negative expectations" do
       let(:matcher) do
         new_matcher(:to_be_composed_of, 7, 11) do |a, b|

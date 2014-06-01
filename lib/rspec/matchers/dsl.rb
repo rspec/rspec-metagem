@@ -160,7 +160,8 @@ module RSpec
         # Convenience for defining methods on this matcher to create a fluent
         # interface. The trick about fluent interfaces is that each method must
         # return self in order to chain methods together. `chain` handles that
-        # for you.
+        # for you.  It also adds the chained expectation's description to the
+        # default description, if the expectation is used.
         #
         # @example
         #
@@ -178,6 +179,8 @@ module RSpec
         def chain(name, &definition)
           define_user_override(name, definition) do |*args, &block|
             super(*args, &block)
+            @chained_method_invokations ||= []
+            @chained_method_invokations.push([name.to_s, args])
             self
           end
         end
@@ -249,17 +252,17 @@ module RSpec
 
         # The default description.
         def description
-          "#{name_to_sentence}#{to_sentence expected}"
+          "#{name_to_sentence}#{to_sentence expected}#{chained_method_invokation_sentences}"
         end
 
         # The default failure message for positive expectations.
         def failure_message
-          "expected #{actual.inspect} to #{name_to_sentence}#{to_sentence expected}"
+          "expected #{actual.inspect} to #{description}"
         end
 
         # The default failure message for negative expectations.
         def failure_message_when_negated
-          "expected #{actual.inspect} not to #{name_to_sentence}#{to_sentence expected}"
+          "expected #{actual.inspect} not to #{description}"
         end
 
         # Matchers do not support block expectations by default. You
@@ -272,6 +275,15 @@ module RSpec
         def expects_call_stack_jump?
           false
         end
+
+        private
+          # gets chained method invokations, combined into a sentance
+          def chained_method_invokation_sentences
+            defined? @chained_method_invokations and
+              @chained_method_invokations.map { |chained_method_invokation|
+                "#{split_words chained_method_invokation[0]}#{to_sentence chained_method_invokation[1]}"
+              }.join(' ').insert(0, ' ')
+          end
       end
 
       # The class used for custom matchers. The block passed to

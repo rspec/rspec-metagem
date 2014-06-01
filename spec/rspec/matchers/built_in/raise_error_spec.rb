@@ -387,10 +387,6 @@ RSpec.describe "Composing matchers with `raise_error`" do
     match do |error|
       error.__send__(attr) == @expected_value
     end
-
-    description do
-      super() + " equal to #{@expected_value}"
-    end
   end
 
   class FooError < StandardError
