@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support "directory_maker"
+
 module RSpec
   module Core
     # @private
@@ -28,7 +30,7 @@ module RSpec
         return report_exists(file) if File.exist?(destination_file)
 
         report_creating(file)
-        FileUtils.mkdir_p(File.dirname(destination_file))
+        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(destination_file))
         File.open(destination_file, 'w') do |f|
           f.write File.read(File.join(template_path, file))
         end
