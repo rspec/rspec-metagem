@@ -80,6 +80,18 @@ module RSpec::Core
         expect(example_yielded_to_subject).to eq example_yielded_to_example
       end
 
+      context "doesn't issue a deprecation when used with doubles" do
+        subject do
+          Struct.new(:value) do
+            def working_with?(double)
+              double.value >= value
+            end
+          end.new 1
+        end
+
+        it { should be_working_with double(:value => 10) }
+      end
+
       [false, nil].each do |falsy_value|
         context "with a value of #{falsy_value.inspect}" do
           it "is evaluated once per example" do
