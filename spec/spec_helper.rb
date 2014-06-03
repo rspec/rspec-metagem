@@ -134,6 +134,7 @@ Spork.prefork do
     end
 
     # runtime options
+    c.raise_errors_for_deprecations!
     c.color = true
     c.include EnvHelpers
     c.filter_run_excluding :ruby => lambda {|version|
