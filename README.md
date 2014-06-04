@@ -249,6 +249,27 @@ expect { |probe|
 }.to yield_successive_args( a_value < 2, 2, a_value > 2 )
 ```
 
+## Usage outside rspec-core
+
+You always need to load `rspec/expectations` even if you only want to use one part of the library:
+
+```ruby
+require 'rspec/expectations'
+```
+
+Then simply include `RSpec::Matchers` in any class:
+
+```ruby
+class MyClass
+  include RSpec::Matchers
+
+  def do_something(arg)
+    expect(arg).to be > 0
+    # do other stuff
+  end
+end
+```
+
 ## Also see
 
 * [http://github.com/rspec/rspec](http://github.com/rspec/rspec)
