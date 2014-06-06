@@ -7,6 +7,14 @@ Enhancements:
   in commented out section of `spec_helper` rather than `.rspec` so users
   have to consciously opt-in to the setting. (Andrew Hooker, #1572)
 
+### 3.0.1 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...3-0-maintenance)
+
+Bug Fixes:
+
+* Fix a couple ruby warnings caused by rspec-core when loaded.
+  (Prem Sichanugrist, #1584)
+
 ### 3.0.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0.rc1...v3.0.0)
 
