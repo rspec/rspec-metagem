@@ -182,9 +182,9 @@ module RSpec
         end
       end
 
-      # @macro add_setting
+      # @macro define_reader
       # Load files matching this pattern (default: `'**/*_spec.rb'`)
-      add_setting :pattern
+      define_reader :pattern
 
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
