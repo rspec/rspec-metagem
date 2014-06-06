@@ -101,7 +101,7 @@ module RSpec
           "some stream"
         end
 
-        def self.capture(block)
+        def self.capture(_block)
           raise "You must chain `to_stdout` or `to_stderr` off of the `output(...)` matcher."
         end
       end

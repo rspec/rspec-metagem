@@ -6,7 +6,7 @@ module RSpec
       # @private
       def differ
         RSpec::Support::Differ.new(
-          :object_preparer => lambda {|object| RSpec::Matchers::Composable.surface_descriptions_in(object) },
+          :object_preparer => lambda { |object| RSpec::Matchers::Composable.surface_descriptions_in(object) },
           :color => RSpec::Matchers.configuration.color?
         )
       end
@@ -19,18 +19,15 @@ module RSpec
       # Adds a diff to the failure message when `expected` and `actual` are
       # both present.
       def fail_with(message, expected=nil, actual=nil)
-        if !message
-          raise ArgumentError, "Failure message is nil. Does your matcher define the " +
+        unless message
+          raise ArgumentError, "Failure message is nil. Does your matcher define the " \
                                "appropriate failure_message[_when_negated] method to return a string?"
         end
 
         diff = differ.diff(actual, expected)
+        message = "#{message}\nDiff:#{diff}" unless diff.empty?
 
-        unless diff.empty?
-          message = "#{message}\nDiff:#{diff}"
-        end
-
-        raise RSpec::Expectations::ExpectationNotMetError.new(message)
+        raise RSpec::Expectations::ExpectationNotMetError, message
       end
     end
   end

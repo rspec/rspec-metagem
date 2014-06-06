@@ -100,7 +100,7 @@ module RSpec
         if Matchers.is_a_describable_matcher?(item)
           DescribableItem.new(item)
         elsif Hash === item
-          Hash[ surface_descriptions_in(item.to_a) ]
+          Hash[surface_descriptions_in(item.to_a)]
         elsif enumerable?(item)
           begin
             item.map { |subitem| surface_descriptions_in(subitem) }
@@ -132,7 +132,7 @@ module RSpec
         if Matchers.is_a_matcher?(object)
           object.clone
         elsif Hash === object
-          Hash[ with_matchers_cloned(object.to_a) ]
+          Hash[with_matchers_cloned(object.to_a)]
         elsif enumerable?(object)
           begin
             object.map { |subobject| with_matchers_cloned(subobject) }

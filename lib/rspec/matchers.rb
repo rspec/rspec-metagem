@@ -301,8 +301,7 @@ module RSpec
     # (e.g. be_empty), letting you choose the prefix that best suits the
     # predicate.
     def be(*args)
-      args.empty? ?
-        Matchers::BuiltIn::Be.new : equal(*args)
+      args.empty? ? Matchers::BuiltIn::Be.new : equal(*args)
     end
     alias_matcher :a_value, :be
 
@@ -322,7 +321,7 @@ module RSpec
     def be_an_instance_of(expected)
       BuiltIn::BeAnInstanceOf.new(expected)
     end
-    alias_method  :be_instance_of, :be_an_instance_of
+    alias_method :be_instance_of, :be_an_instance_of
     alias_matcher :an_instance_of, :be_an_instance_of
 
     # Passes if actual.kind_of?(expected)
@@ -335,7 +334,7 @@ module RSpec
     def be_a_kind_of(expected)
       BuiltIn::BeAKindOf.new(expected)
     end
-    alias_method  :be_kind_of, :be_a_kind_of
+    alias_method :be_kind_of, :be_a_kind_of
     alias_matcher :a_kind_of,  :be_a_kind_of
 
     # Passes if actual.between?(min, max). Works with any Comparable object,
@@ -702,7 +701,7 @@ module RSpec
     def raise_error(error=Exception, message=nil, &block)
       BuiltIn::RaiseError.new(error, message, &block)
     end
-    alias_method  :raise_exception,  :raise_error
+    alias_method :raise_exception,  :raise_error
 
     alias_matcher :a_block_raising,  :raise_error do |desc|
       desc.sub("raise", "a block raising")
@@ -895,12 +894,12 @@ module RSpec
 
     def method_missing(method, *args, &block)
       case method.to_s
-        when BE_PREDICATE_REGEX
-          BuiltIn::BePredicate.new(method, *args, &block)
-        when HAS_REGEX
-          BuiltIn::Has.new(method, *args, &block)
-        else
-          super
+      when BE_PREDICATE_REGEX
+        BuiltIn::BePredicate.new(method, *args, &block)
+      when HAS_REGEX
+        BuiltIn::Has.new(method, *args, &block)
+      else
+        super
       end
     end
 

@@ -67,6 +67,14 @@ function documentation_enforced {
   fi
 }
 
+function style_and_lint_enforced {
+ if [ -x ./bin/rubocop ]; then
+   return 0
+ else
+   return 1
+ fi
+}
+
 function clone_repo {
   if [ ! -d $1 ]; then # don't clone if the dir is already there
     travis_retry git clone git://github.com/rspec/$1 --depth 1 --branch $MAINTENANCE_BRANCH
@@ -141,4 +149,8 @@ function check_documentation_coverage {
       exit(1)
     end
   "
+}
+
+function check_style_and_lint {
+  bin/rubocop lib
 }

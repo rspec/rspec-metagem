@@ -9,8 +9,9 @@ Minitest::Test.class_eval do
   end
 end
 
-module RSpec::Expectations
-  remove_const :ExpectationNotMetError
-  ExpectationNotMetError = ::Minitest::Assertion
+module RSpec
+  module Expectations
+    remove_const :ExpectationNotMetError
+    ExpectationNotMetError = ::Minitest::Assertion
+  end
 end
-

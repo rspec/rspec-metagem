@@ -26,8 +26,9 @@ module RSpec
           self
         end
 
+        # rubocop:disable MethodLength
         # @private
-        def matches?(given_proc, negative_expectation = false, &block)
+        def matches?(given_proc, negative_expectation=false, &block)
           @given_proc = given_proc
           @block ||= block
           @raised_expected_error = false
@@ -52,6 +53,7 @@ module RSpec
 
           expectation_matched?
         end
+        # rubocop:enable MethodLength
 
         # @private
         def does_not_match?(given_proc)
@@ -112,17 +114,18 @@ module RSpec
         end
 
         def prevent_invalid_expectations
-          if (expecting_specific_exception? || @expected_message)
-            what_to_raise = if expecting_specific_exception? && @expected_message
-                                  "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
-                                elsif expecting_specific_exception?
-                                  "`expect { }.not_to raise_error(SpecificErrorClass)`"
-                                elsif @expected_message
-                                  "`expect { }.not_to raise_error(message)`"
-                                end
-            specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error` (with no args) instead")
-            raise specific_class_error
-          end
+          what_to_raise = if expecting_specific_exception? && @expected_message
+                            "`expect { }.not_to raise_error(SpecificErrorClass, message)`"
+                          elsif expecting_specific_exception?
+                            "`expect { }.not_to raise_error(SpecificErrorClass)`"
+                          elsif @expected_message
+                            "`expect { }.not_to raise_error(message)`"
+                          end
+
+          return unless what_to_raise
+
+          specific_class_error = ArgumentError.new("#{what_to_raise} is not valid, use `expect { }.not_to raise_error` (with no args) instead")
+          raise specific_class_error
         end
 
         def expected_error

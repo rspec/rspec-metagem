@@ -13,9 +13,9 @@ module RSpec
         end
 
         # @private
-        def does_not_match?(actual)
-          raise NotImplementedError,
-            "`expect(...).not_to matcher.#{conjunction} matcher` is not supported"
+        def does_not_match?(_actual)
+          raise NotImplementedError, "`expect(...).not_to " \
+            "matcher.#{conjunction} matcher` is not supported"
         end
 
         # @api private
@@ -68,7 +68,6 @@ module RSpec
         # @api public
         # Matcher used to represent a compound `and` expectation.
         class And < self
-
           # @api private
           # @return [String]
           def failure_message
@@ -83,7 +82,7 @@ module RSpec
 
         private
 
-          def match(expected, actual)
+          def match(_expected, actual)
             @matcher_1_matches = matcher_1.matches?(actual)
             @matcher_2_matches = matcher_2.matches?(actual)
 
@@ -98,7 +97,6 @@ module RSpec
         # @api public
         # Matcher used to represent a compound `or` expectation.
         class Or < self
-
           # @api private
           # @return [String]
           def failure_message
@@ -107,7 +105,7 @@ module RSpec
 
         private
 
-          def match(expected, actual)
+          def match(_expected, actual)
             matcher_1.matches?(actual) || matcher_2.matches?(actual)
           end
 
@@ -119,4 +117,3 @@ module RSpec
     end
   end
 end
-

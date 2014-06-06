@@ -5,7 +5,6 @@ module RSpec
       # Provides the implementation for `eql`.
       # Not intended to be instantiated directly.
       class Eql < BaseMatcher
-
         # @api private
         # @return [String]
         def failure_message

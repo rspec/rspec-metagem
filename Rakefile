@@ -54,3 +54,8 @@ end
 
 task :build => :verify_private_key_present
 
+require 'rubocop/rake_task'
+desc 'Run RuboCop on the lib directory'
+Rubocop::RakeTask.new(:rubocop) do |task|
+  task.patterns = ['lib/**/*.rb']
+end

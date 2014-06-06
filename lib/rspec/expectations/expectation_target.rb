@@ -71,7 +71,7 @@ module RSpec
     private
 
       def prevent_operator_matchers(verb)
-        raise ArgumentError, "The expect syntax does not support operator matchers, " +
+        raise ArgumentError, "The expect syntax does not support operator matchers, " \
                              "so you must pass a matcher to `##{verb}`."
       end
     end
@@ -98,10 +98,9 @@ module RSpec
       def enforce_block_expectation(matcher)
         return if supports_block_expectations?(matcher)
 
-        raise ExpectationNotMetError,
-          "You must pass an argument rather than a block to use the provided " +
-          "matcher (#{description_of matcher}), or the matcher must implement " +
-          "`supports_block_expectations?`."
+        raise ExpectationNotMetError, "You must pass an argument rather than " \
+          "a block to use the provided matcher (#{description_of matcher}), or " \
+          "the matcher must implement `supports_block_expectations?`."
       end
 
       def supports_block_expectations?(matcher)
@@ -118,4 +117,3 @@ module RSpec
     end
   end
 end
-

@@ -5,7 +5,6 @@ module RSpec
       # Provides the implementation for `eq`.
       # Not intended to be instantiated directly.
       class Eq < BaseMatcher
-
         # @api private
         # @return [String]
         def failure_message
