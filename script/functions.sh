@@ -1,4 +1,4 @@
-# This file was generated on 2014-05-20T15:40:07+10:00 from the rspec-dev repo.
+# This file was generated on 2014-06-06T11:34:33-07:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 # idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
@@ -65,6 +65,14 @@ function documentation_enforced {
   else
     return 1
   fi
+}
+
+function style_and_lint_enforced {
+ if [ -x ./bin/rubocop ]; then
+   return 0
+ else
+   return 1
+ fi
 }
 
 function clone_repo {
@@ -141,4 +149,8 @@ function check_documentation_coverage {
       exit(1)
     end
   "
+}
+
+function check_style_and_lint {
+  bin/rubocop lib
 }
