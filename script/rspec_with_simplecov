@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
 
+# Turn on verbose to make sure we not generating any ruby warning
+$VERBOSE = true
+
 # This is necessary for when `--standalone` is being used.
 $:.unshift File.expand_path '../../bundle', __FILE__
 
