@@ -18,8 +18,8 @@ module RSpec
       #
       # @private
       def self.modern_matcher_from(matcher)
-        LegacyMacherAdapter::RSpec2.wrap(matcher) ||
-        LegacyMacherAdapter::RSpec1.wrap(matcher) || matcher
+        LegacyMatcherAdapter::RSpec2.wrap(matcher) ||
+        LegacyMatcherAdapter::RSpec1.wrap(matcher) || matcher
       end
 
       def self.setup(handler, matcher, message)
@@ -96,7 +96,7 @@ module RSpec
     # order to present the current protocol.
     #
     # @private
-    class LegacyMacherAdapter < Matchers::MatcherDelegator
+    class LegacyMatcherAdapter < Matchers::MatcherDelegator
       def initialize(matcher)
         super
         ::RSpec.warn_deprecation(<<-EOS.gsub(/^\s+\|/, ''), :type => "legacy_matcher")
