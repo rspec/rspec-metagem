@@ -2,6 +2,11 @@ RSpec.shared_examples "an RSpec matcher" do |options|
   let(:valid_value)   { options.fetch(:valid_value) }
   let(:invalid_value) { options.fetch(:invalid_value) }
 
+  # Note: do not use `matcher` in 2 expectation expressions in a single
+  # example here. In some cases (such as `change { }.to(2)`), it'll fail
+  # because using it a second time will apply `x += 2` twice, changing
+  # the value to 4.
+
   it 'preserves the symmetric property of `==`' do
     expect(matcher).to eq(matcher)
     expect(matcher).not_to eq(valid_value)
@@ -17,11 +22,19 @@ RSpec.shared_examples "an RSpec matcher" do |options|
   end
 
   matcher :always_passes do
-    match { true }
+    supports_block_expectations
+    match do |actual|
+      actual.call if Proc === actual
+      true
+    end
   end
 
   matcher :always_fails do
-    match { false }
+    supports_block_expectations
+    match do |actual|
+      actual.call if Proc === actual
+      false
+    end
   end
 
   it 'allows additional matchers to be chained off it using `and`' do

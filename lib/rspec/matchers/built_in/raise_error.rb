@@ -67,6 +67,10 @@ module RSpec
           true
         end
 
+        def block_can_be_wrapped_for_compound_expression?
+          false
+        end
+
         # @api private
         # @return [String]
         def failure_message
