@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support "method_signature_verifier"
+
 module RSpec
   module Matchers
     module BuiltIn
@@ -68,10 +70,22 @@ module RSpec
                 "are."
         end
 
-        def assert_valid_expect_block!
-          return if @block.arity == 1
-          raise "Your expect block must accept an argument to be used with this " \
-                "matcher. Pass the argument as a block on to the method you are testing."
+        if RUBY_VERSION.to_f > 1.8
+          def assert_valid_expect_block!
+            block_signature = RSpec::Support::BlockSignature.new(@block)
+            return if RSpec::Support::MethodSignatureVerifier.new(block_signature, [self]).valid?
+            raise "Your expect block must accept an argument to be used with this " \
+                  "matcher. Pass the argument as a block on to the method you are testing."
+          end
+        else
+          # On 1.8.7, `lambda { }.arity` and `lambda { |*a| }.arity` both return -1,
+          # so we can't distinguish between accepting no args and an arg splat.
+          # It's OK to skip, this, though; it just provides a nice error message
+          # when the user forgets to accept an arg in their block. They'll still get
+          # the `assert_used!` error message from above, which is sufficient.
+          def assert_valid_expect_block!
+            # nothing to do
+          end
         end
       end
 
