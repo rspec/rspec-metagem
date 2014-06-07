@@ -14,7 +14,7 @@ module RSpec
       DEFAULT_RSPEC_PATH = File.expand_path('../../../../exe/rspec', __FILE__)
 
       # Default pattern for spec files.
-      DEFAULT_PATTERN = './spec{,/*/**}/*_spec.rb'
+      DEFAULT_PATTERN = 'spec{,/*/**}/*_spec.rb'
 
       # Name of task.
       #
@@ -108,7 +108,7 @@ module RSpec
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
-          FileList[ pattern ].sort.map(&:shellescape)
+          "--pattern '#{pattern}'"
         end
       end
 

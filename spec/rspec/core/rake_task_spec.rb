@@ -55,6 +55,13 @@ module RSpec::Core
       end
     end
 
+    context "with pattern" do
+      it "adds the pattern" do
+        task.pattern = "complex_pattern"
+        expect(spec_command).to include(" --pattern 'complex_pattern'")
+      end
+    end
+
     context 'with custom exit status' do
       it 'returns the correct status on exit', :slow do
         with_isolated_stderr do
@@ -81,7 +88,7 @@ module RSpec::Core
         %w[ a/2.rb a/1.rb a/3.rb ],
         %w[ a/3.rb a/2.rb a/1.rb ]
       ].map do |files|
-        expect(file_searcher).to receive(:[]).with(pattern) { files }
+        expect(file_searcher).to receive(:[]).with(a_string_including pattern) { files }
         loaded_files
       end
 
@@ -162,7 +169,14 @@ module RSpec::Core
 
     it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
       task.pattern = 'a/*.rb'
-      specify_consistent_ordering_of_files_to_run('a/*.rb', FileList)
+      specify_consistent_ordering_of_files_to_run('a/*.rb', Dir)
+    end
+
+    context "with a pattern that matches no files" do
+      it "runs nothing" do
+        task.pattern = 'a/*.no_match'
+        expect(loaded_files).to eq([])
+      end
     end
 
     context "with paths with quotes or spaces" do
@@ -199,8 +213,8 @@ module RSpec::Core
 
         FileUtils.cd(project_dir) do
           expect(loaded_files).to contain_exactly(
-            "./spec/bars/bar_spec.rb",
-            "./spec/foos/foo_spec.rb"
+            "spec/bars/bar_spec.rb",
+            "spec/foos/foo_spec.rb"
           )
         end
       end
