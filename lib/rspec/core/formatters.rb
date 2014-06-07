@@ -1,3 +1,4 @@
+RSpec::Support.require_rspec_support "directory_maker"
 # ## Built-in Formatters
 #
 # * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
@@ -232,7 +233,7 @@ module RSpec::Core::Formatters
     end
 
     def file_at(path)
-      FileUtils.mkdir_p(File.dirname(path))
+      RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(path))
       File.new(path, 'w')
     end
   end

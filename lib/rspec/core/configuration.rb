@@ -1,5 +1,3 @@
-require 'fileutils'
-
 RSpec::Support.require_rspec_core "backtrace_formatter"
 RSpec::Support.require_rspec_core "ruby_project"
 RSpec::Support.require_rspec_core "formatters/deprecation_formatter"
