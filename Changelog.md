@@ -7,6 +7,12 @@ Enhancements:
   in commented out section of `spec_helper` rather than `.rspec` so users
   have to consciously opt-in to the setting. (Andrew Hooker, #1572)
 
+Bug Fixes:
+
+* Remove dependency on `FileUtils` from the standard library so that users do
+  not get false positives where their code relies on it but they are not
+  requiring it. (Sam Phippen, #1565)
+
 ### 3.0.1 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...3-0-maintenance)
 
