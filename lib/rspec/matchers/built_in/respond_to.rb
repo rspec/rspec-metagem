@@ -1,3 +1,5 @@
+RSpec::Support.require_rspec_support "method_signature_verifier"
+
 module RSpec
   module Matchers
     module BuiltIn
