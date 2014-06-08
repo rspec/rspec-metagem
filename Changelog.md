@@ -25,6 +25,9 @@ Bug Fixes:
   issued at the call site of the configuration that specified it as
   a filter rather than later when an example group is defined.
   (Myron Marston, #1562)
+* Make the line that is printed when a shared example group fails indicating
+  where the concrete example group is white, separating it from the stack trace
+  that is produced for the failure. (Sam Phippen, Jon Rowe, #1606)
 
 ### 3.0.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...v3.0.1)
