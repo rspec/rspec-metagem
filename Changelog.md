@@ -12,6 +12,8 @@ Bug Fixes:
 * Remove dependency on `FileUtils` from the standard library so that users do
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
+* Example groups named `Config` will no longer cause a Ruby warning to be
+  issued. (Jimmy Cuadra, #1580)
 
 ### 3.0.1 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...3-0-maintenance)
