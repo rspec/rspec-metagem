@@ -77,6 +77,10 @@ module RSpec::Core
         expect(group).to have_class_const("Nested1B")
       end
 
+      it 'does not warn when defining a Config example group (since RbConfig triggers warnings when Config is referenced)' do
+        expect { ExampleGroup.describe("Config") }.not_to output.to_stderr
+      end
+
       it 'disambiguates name collisions by appending a number' do
         groups = 10.times.map { ExampleGroup.describe("Collision") }
         expect(groups[0]).to have_class_const("Collision")
