@@ -81,6 +81,13 @@ module RSpec::Core
         expect { ExampleGroup.describe("Config") }.not_to output.to_stderr
       end
 
+      it 'ignores top level constants that have the same name' do
+        parent = RSpec.describe("Some Parent Group")
+        child  = parent.describe("Hash")
+        # This would be `SomeParentGroup::Hash_2` if we didn't ignore the top level `Hash`
+        expect(child).to have_class_const("SomeParentGroup::Hash")
+      end
+
       it 'disambiguates name collisions by appending a number' do
         groups = 10.times.map { ExampleGroup.describe("Collision") }
         expect(groups[0]).to have_class_const("Collision")
