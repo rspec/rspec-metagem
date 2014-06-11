@@ -20,23 +20,25 @@ module RSpec
 
       # @private
       def filter_applies?(key, value, metadata)
-        return filter_applies_to_any_value?(key, value, metadata) if Array === metadata[key] && !(Proc === value)
-        return location_filter_applies?(value, metadata)          if key == :locations
-        return filters_apply?(key, value, metadata)               if Hash === value
+        silence_metadata_example_group_deprecations do
+          return filter_applies_to_any_value?(key, value, metadata) if Array === metadata[key] && !(Proc === value)
+          return location_filter_applies?(value, metadata)          if key == :locations
+          return filters_apply?(key, value, metadata)               if Hash === value
 
-        return false unless metadata.has_key?(key)
+          return false unless metadata.has_key?(key)
 
-        case value
-        when Regexp
-          metadata[key] =~ value
-        when Proc
-          case value.arity
-          when 0 then value.call
-          when 2 then value.call(metadata[key], metadata)
-          else value.call(metadata[key])
+          case value
+          when Regexp
+            metadata[key] =~ value
+          when Proc
+            case value.arity
+            when 0 then value.call
+            when 2 then value.call(metadata[key], metadata)
+            else value.call(metadata[key])
+            end
+          else
+            metadata[key].to_s == value.to_s
           end
-        else
-          metadata[key].to_s == value.to_s
         end
       end
 
@@ -80,6 +82,13 @@ module RSpec
         else
           metadata[:parent_example_group]
         end
+      end
+
+      def silence_metadata_example_group_deprecations
+        RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations] = true
+        yield
+      ensure
+        RSpec.thread_local_metadata.delete(:silence_metadata_example_group_deprecations)
       end
     end
   end

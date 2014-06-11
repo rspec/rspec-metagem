@@ -11,6 +11,14 @@ module RSpec::Core
     let(:exclusion_filter) { config.exclusion_filter.rules }
     let(:inclusion_filter) { config.inclusion_filter.rules }
 
+    shared_examples_for "warning of deprecated `:example_group` during filtering configuration" do |method, *args|
+      it "issues a deprecation warning when filtering by `:example_group`" do
+        args << { :example_group => { :file_location => /spec\/unit/ } }
+        expect_deprecation_with_call_site(__FILE__, __LINE__ + 1, /:example_group/)
+        config.__send__(method, *args)
+      end
+    end
+
     describe '#deprecation_stream' do
       it 'defaults to standard error' do
         expect($rspec_core_without_stderr_monkey_patch.deprecation_stream).to eq STDERR
@@ -684,6 +692,7 @@ module RSpec::Core
     end
 
     describe "#include" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :include, Enumerable
 
       module InstanceLevelMethods
         def you_call_this_a_blt?
@@ -725,6 +734,7 @@ module RSpec::Core
     end
 
     describe "#extend" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :extend, Enumerable
 
       module ThatThingISentYou
         def that_thing
@@ -950,6 +960,8 @@ module RSpec::Core
         end
       end
 
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :filter_run_including
+
       it "sets the filter with a hash" do
         config.filter_run_including :foo => true
         expect(inclusion_filter).to eq( {:foo => true} )
@@ -974,6 +986,8 @@ module RSpec::Core
           config.exclusion_filter.rules
         end
       end
+
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :filter_run_excluding
 
       it "sets the filter" do
         config.filter_run_excluding :foo => true
@@ -1011,6 +1025,8 @@ module RSpec::Core
           config.send("#{type}=", {:want => :this})
           expect(send(type)).to eq( {:want => :this} )
         end
+
+        include_examples "warning of deprecated `:example_group` during filtering configuration", :"#{type}="
       end
     end
     it_behaves_like "a spec filter", :inclusion_filter
@@ -1080,6 +1096,8 @@ module RSpec::Core
     end
 
     describe "#define_derived_metadata" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :define_derived_metadata
+
       it 'allows the provided block to mutate example group metadata' do
         RSpec.configuration.define_derived_metadata do |metadata|
           metadata[:reverse_description] = metadata[:description].reverse
@@ -1740,6 +1758,10 @@ module RSpec::Core
         config.start_time = 42
         expect(config.start_time).to eq 42
       end
+    end
+
+    describe "hooks" do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :before, :each
     end
 
     # assigns files_or_directories_to_run and triggers post-processing

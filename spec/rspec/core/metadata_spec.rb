@@ -451,6 +451,12 @@ module RSpec
             end
           end
 
+          it 'does not issue a deprecation warning when :example_group is accessed while applying configured filterings' do
+            RSpec.configuration.include Module.new, :example_group => { :file_path => /.*/ }
+            expect_no_deprecation
+            RSpec.describe(Object, "group")
+          end
+
           it 'can still access the example group attributes via [:example_group]' do
             meta = nil
             RSpec.describe(Object, "group") { meta = metadata }
