@@ -373,6 +373,15 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       expect(parse_options("--format", "cli")[:formatters]).to eq([['cli']])
     end
 
+    it "prefers CLI over file options for filter inclusion" do
+      File.open("./.rspec", "w") {|f| f << "--tag ~slow"}
+      opts = config_options_object("--tag", "slow")
+      config = RSpec::Core::Configuration.new
+      opts.configure(config)
+      expect(config.inclusion_filter.rules).to have_key(:slow)
+      expect(config.exclusion_filter.rules).not_to have_key(:slow)
+    end
+
     it "prefers project file options over global file options" do
       File.open("./.rspec", "w") {|f| f << "--format project"}
       File.open(File.expand_path("~/.rspec"), "w") {|f| f << "--format global"}
