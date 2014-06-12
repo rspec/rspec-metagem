@@ -6,6 +6,7 @@ Bug Fixes:
 * Add a missing `require` that would cause the `respond_to` matcher to
   fail when used in a project where the rest of RSpec (e.g. core and
   expecatations) weren't being used. (Myron Marston, #566)
+* Structs are no longer treated as arrays when diffed. (Jon Rowe, #576)
 
 ### 3.0.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.rc1...v3.0.0)
