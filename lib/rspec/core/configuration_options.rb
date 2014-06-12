@@ -28,8 +28,13 @@ module RSpec
       # Updates the provided {FilterManager} based on the filter options.
       # @param filter_manager [FilterManager] instance to update
       def configure_filter_manager(filter_manager)
-        @filter_manager_inclusions.each { |val| filter_manager.include(val) }
-        @filter_manager_exclusions.each { |val| filter_manager.exclude(val) }
+        @filter_manager_options.each do |option|
+          if option.key?(:inclusion)
+            filter_manager.include(option.fetch(:inclusion))
+          elsif option.key?(:exclusion)
+            filter_manager.exclude(option.fetch(:exclusion))
+          end
+        end
       end
 
       # @return [Hash] the final merged options, drawn from all external sources
@@ -38,12 +43,11 @@ module RSpec
     private
 
       def organize_options
-        @filter_manager_inclusions = []
-        @filter_manager_exclusions = []
+        @filter_manager_options = []
 
         @options = (file_options << command_line_options << env_options).each { |opts|
-          @filter_manager_inclusions << opts.delete(:inclusion_filter) if opts.key?(:inclusion_filter)
-          @filter_manager_exclusions << opts.delete(:exclusion_filter) if opts.key?(:exclusion_filter)
+          @filter_manager_options << {:inclusion => opts.delete(:inclusion_filter)} if opts.key?(:inclusion_filter)
+          @filter_manager_options << {:exclusion => opts.delete(:exclusion_filter)} if opts.key?(:exclusion_filter)
         }.inject(:libs => [], :requires => []) { |hash, opts|
           hash.merge(opts) { |key, oldval, newval|
             [:libs, :requires].include?(key) ? oldval + newval : newval
