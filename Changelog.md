@@ -13,6 +13,15 @@ Bug Fixes:
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
 
+### 3.0.2 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.1...3-0-maintenance)
+
+Bug Fixes:
+
+* Fix regression in CLI option handling that prevented `--tag slow`
+  passed at the command line from overriding `--tag ~slow` in `.rspec`.
+  (Colin Jones, #1602)
+
 ### 3.0.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...v3.0.1)
 
