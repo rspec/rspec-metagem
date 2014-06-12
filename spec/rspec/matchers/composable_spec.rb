@@ -6,10 +6,17 @@ module RSpec
         failure_message { surface_descriptions_in(expected) }
       end
 
-      it 'does not blow up when surfacing descriptions from an unreadable IO object' do
+      it "does not blow up when surfacing descriptions from an unreadable IO object" do
         expect {
           expect(3).to matcher_using_surface_descriptions_in(STDOUT)
         }.to fail_with(STDOUT.inspect)
+      end
+
+      it "doesn't mangle struct descriptions" do
+        model = Struct.new(:a).new(1)
+        expect {
+          expect(1).to matcher_using_surface_descriptions_in(model)
+        }.to fail_with(model.inspect)
       end
 
       RSpec::Matchers.define :all_but_one do |matcher|
