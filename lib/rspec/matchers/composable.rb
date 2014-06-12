@@ -101,6 +101,8 @@ module RSpec
           DescribableItem.new(item)
         elsif Hash === item
           Hash[surface_descriptions_in(item.to_a)]
+        elsif Struct === item
+          item.inspect
         elsif enumerable?(item)
           begin
             item.map { |subitem| surface_descriptions_in(subitem) }
