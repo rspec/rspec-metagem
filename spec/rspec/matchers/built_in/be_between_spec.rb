@@ -1,5 +1,5 @@
 module RSpec::Matchers::BuiltIn
-  describe BeBetween do
+  RSpec.describe BeBetween do
     class SizeMatters
       include Comparable
       attr :str

@@ -1,6 +1,6 @@
 require 'uri'
 
-describe "#include matcher" do
+RSpec.describe "#include matcher" do
   it "is diffable" do
     expect(include("a")).to be_diffable
   end

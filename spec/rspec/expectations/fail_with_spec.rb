@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-describe RSpec::Expectations, "#fail_with" do
+RSpec.describe RSpec::Expectations, "#fail_with" do
   let(:differ) { double("differ") }
 
-  before(:each) do
+  before(:example) do
     allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
     allow(RSpec::Expectations).to receive(:differ) { differ }
   end
@@ -33,7 +33,7 @@ describe RSpec::Expectations, "#fail_with" do
   end
 end
 
-describe RSpec::Expectations, "#fail_with with matchers" do
+RSpec.describe RSpec::Expectations, "#fail_with with matchers" do
   before do
     allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
   end
@@ -56,7 +56,7 @@ describe RSpec::Expectations, "#fail_with with matchers" do
   end
 end
 
-describe RSpec::Expectations, "#fail_with with --color" do
+RSpec.describe RSpec::Expectations, "#fail_with with --color" do
   before do
     allow(RSpec::Matchers.configuration).to receive_messages(:color? => true)
   end

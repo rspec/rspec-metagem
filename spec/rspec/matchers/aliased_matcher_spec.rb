@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    describe AliasedMatcher do
+    RSpec.describe AliasedMatcher do
       RSpec::Matchers.define :my_base_matcher do
         match { |actual| actual == foo }
 

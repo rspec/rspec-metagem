@@ -1,4 +1,4 @@
-describe "expect(...).to be_predicate" do
+RSpec.describe "expect(...).to be_predicate" do
   it "passes when actual returns true for :predicate?" do
     actual = double("actual", :happy? => true)
     expect(actual).to be_happy
@@ -120,7 +120,7 @@ describe "expect(...).to be_predicate" do
   end
 end
 
-describe "expect(...).not_to be_predicate" do
+RSpec.describe "expect(...).not_to be_predicate" do
   it "passes when actual returns false for :sym?" do
     actual = double("actual", :happy? => false)
     expect(actual).not_to be_happy
@@ -145,7 +145,7 @@ describe "expect(...).not_to be_predicate" do
   end
 end
 
-describe "expect(...).to be_predicate(*args)" do
+RSpec.describe "expect(...).to be_predicate(*args)" do
   it "passes when actual returns true for :predicate?(*args)" do
     actual = double("actual")
     expect(actual).to receive(:older_than?).with(3).and_return(true)
@@ -167,7 +167,7 @@ describe "expect(...).to be_predicate(*args)" do
   end
 end
 
-describe "expect(...).not_to be_predicate(*args)" do
+RSpec.describe "expect(...).not_to be_predicate(*args)" do
   it "passes when actual returns false for :predicate?(*args)" do
     actual = double("actual")
     expect(actual).to receive(:older_than?).with(3).and_return(false)
@@ -189,7 +189,7 @@ describe "expect(...).not_to be_predicate(*args)" do
   end
 end
 
-describe "expect(...).to be_predicate(&block)" do
+RSpec.describe "expect(...).to be_predicate(&block)" do
   it "passes when actual returns true for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
@@ -270,7 +270,7 @@ describe "expect(...).to be_predicate(&block)" do
   end
 end
 
-describe "expect(...).not_to be_predicate(&block)" do
+RSpec.describe "expect(...).not_to be_predicate(&block)" do
   it "passes when actual returns false for :predicate?(&block)" do
     actual = double("actual")
     delegate = double("delegate")
@@ -297,7 +297,7 @@ describe "expect(...).not_to be_predicate(&block)" do
   end
 end
 
-describe "expect(...).to be_predicate(*args, &block)" do
+RSpec.describe "expect(...).to be_predicate(*args, &block)" do
   it "passes when actual returns true for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
@@ -324,7 +324,7 @@ describe "expect(...).to be_predicate(*args, &block)" do
   end
 end
 
-describe "expect(...).not_to be_predicate(*args, &block)" do
+RSpec.describe "expect(...).not_to be_predicate(*args, &block)" do
   it "passes when actual returns false for :predicate?(*args, &block)" do
     actual = double("actual")
     delegate = double("delegate")
@@ -351,7 +351,7 @@ describe "expect(...).not_to be_predicate(*args, &block)" do
   end
 end
 
-describe "expect(...).to be_truthy" do
+RSpec.describe "expect(...).to be_truthy" do
   it "passes when actual equal?(true)" do
     expect(true).to be_truthy
   end
@@ -367,7 +367,7 @@ describe "expect(...).to be_truthy" do
   end
 end
 
-describe "expect(...).to be_falsey" do
+RSpec.describe "expect(...).to be_falsey" do
   it "passes when actual equal?(false)" do
     expect(false).to be_falsey
   end
@@ -383,7 +383,7 @@ describe "expect(...).to be_falsey" do
   end
 end
 
-describe "expect(...).to be_falsy" do
+RSpec.describe "expect(...).to be_falsy" do
   it "passes when actual equal?(false)" do
     expect(false).to be_falsy
   end
@@ -399,7 +399,7 @@ describe "expect(...).to be_falsy" do
   end
 end
 
-describe "expect(...).to be_nil" do
+RSpec.describe "expect(...).to be_nil" do
   it "passes when actual is nil" do
     expect(nil).to be_nil
   end
@@ -411,7 +411,7 @@ describe "expect(...).to be_nil" do
   end
 end
 
-describe "expect(...).not_to be_nil" do
+RSpec.describe "expect(...).not_to be_nil" do
   it "passes when actual is not nil" do
     expect(:not_nil).not_to be_nil
   end
@@ -423,7 +423,7 @@ describe "expect(...).not_to be_nil" do
   end
 end
 
-describe "expect(...).to be <" do
+RSpec.describe "expect(...).to be <" do
   it "passes when < operator returns true" do
     expect(3).to be < 4
   end
@@ -444,7 +444,7 @@ describe "expect(...).to be <" do
   end
 end
 
-describe "expect(...).to be <=" do
+RSpec.describe "expect(...).to be <=" do
   it "passes when <= operator returns true" do
     expect(3).to be <= 4
     expect(4).to be <= 4
@@ -457,7 +457,7 @@ describe "expect(...).to be <=" do
   end
 end
 
-describe "expect(...).to be >=" do
+RSpec.describe "expect(...).to be >=" do
   it "passes when >= operator returns true" do
     expect(4).to be >= 4
     expect(5).to be >= 4
@@ -470,7 +470,7 @@ describe "expect(...).to be >=" do
   end
 end
 
-describe "expect(...).to be >" do
+RSpec.describe "expect(...).to be >" do
   it "passes when > operator returns true" do
     expect(5).to be > 4
   end
@@ -482,7 +482,7 @@ describe "expect(...).to be >" do
   end
 end
 
-describe "expect(...).to be ==" do
+RSpec.describe "expect(...).to be ==" do
   it "passes when == operator returns true" do
     expect(5).to be == 5
   end
@@ -506,7 +506,7 @@ describe "expect(...).to be ==" do
   end
 end
 
-describe "expect(...).to be =~" do
+RSpec.describe "expect(...).to be =~" do
   it "passes when =~ operator returns true" do
     expect("a string").to be =~ /str/
   end
@@ -518,7 +518,7 @@ describe "expect(...).to be =~" do
   end
 end
 
-describe "should be =~", :uses_should do
+RSpec.describe "should be =~", :uses_should do
   it "passes when =~ operator returns true" do
     "a string".should be =~ /str/
   end
@@ -530,7 +530,7 @@ describe "should be =~", :uses_should do
   end
 end
 
-describe "expect(...).to be ===" do
+RSpec.describe "expect(...).to be ===" do
   it "passes when === operator returns true" do
     expect(Hash).to be === Hash.new
   end
@@ -542,7 +542,7 @@ describe "expect(...).to be ===" do
   end
 end
 
-describe "expect(...).not_to with comparison operators" do
+RSpec.describe "expect(...).not_to with comparison operators" do
   it "coaches user to stop using operators with expect().not_to with numerical comparison operators" do
     expect {
       expect(5).not_to be < 6
@@ -568,7 +568,7 @@ describe "expect(...).not_to with comparison operators" do
   end
 end
 
-describe "expect(...).not_to with equality operators" do
+RSpec.describe "expect(...).not_to with equality operators" do
   it "raises normal error with expect().not_to with equality operators" do
     expect {
       expect(6).not_to be == 6
@@ -580,7 +580,7 @@ describe "expect(...).not_to with equality operators" do
   end
 end
 
-describe "expect(...).to be" do
+RSpec.describe "expect(...).to be" do
   it "passes if actual is truthy" do
     expect(true).to be
     expect(1).to be
@@ -603,7 +603,7 @@ describe "expect(...).to be" do
   end
 end
 
-describe "expect(...).not_to be" do
+RSpec.describe "expect(...).not_to be" do
   it "passes if actual is falsy" do
     expect(false).not_to be
     expect(nil).not_to be
@@ -616,7 +616,7 @@ describe "expect(...).not_to be" do
   end
 end
 
-describe "expect(...).to be(value)" do
+RSpec.describe "expect(...).to be(value)" do
   it "delegates to equal" do
     matcher = equal(5)
     expect(self).to receive(:equal).with(5).and_return(matcher)
@@ -624,7 +624,7 @@ describe "expect(...).to be(value)" do
   end
 end
 
-describe "expect(...).not_to be(value)" do
+RSpec.describe "expect(...).not_to be(value)" do
   it "delegates to equal" do
     matcher = equal(4)
     expect(self).to receive(:equal).with(4).and_return(matcher)
@@ -632,7 +632,7 @@ describe "expect(...).not_to be(value)" do
   end
 end
 
-describe "'expect(...).to be' with operator" do
+RSpec.describe "'expect(...).to be' with operator" do
   it "includes 'be' in the description" do
     expect((be > 6).description).to match(/be > 6/)
     expect((be >= 6).description).to match(/be >= 6/)
@@ -642,7 +642,7 @@ describe "'expect(...).to be' with operator" do
 end
 
 
-describe "arbitrary predicate with DelegateClass" do
+RSpec.describe "arbitrary predicate with DelegateClass" do
   it "accesses methods defined in the delegating class (LH[#48])" do
     require 'delegate'
     class ArrayDelegate < DelegateClass(Array)
@@ -661,7 +661,7 @@ describe "arbitrary predicate with DelegateClass" do
   end
 end
 
-describe "be_a, be_an" do
+RSpec.describe "be_a, be_an" do
   it "passes when class matches" do
     expect("foobar").to be_a(String)
     expect([1,2,3]).to be_an(Array)
@@ -673,7 +673,7 @@ describe "be_a, be_an" do
   end
 end
 
-describe "be_an_instance_of" do
+RSpec.describe "be_an_instance_of" do
   it "passes when direct class matches" do
     expect(5).to be_an_instance_of(Fixnum)
   end

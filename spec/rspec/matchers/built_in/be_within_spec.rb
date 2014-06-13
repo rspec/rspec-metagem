@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    describe "expect(actual).to be_within(delta).of(expected)" do
+    RSpec.describe "expect(actual).to be_within(delta).of(expected)" do
       it_behaves_like "an RSpec matcher", :valid_value => 5, :invalid_value => -5 do
         let(:matcher) { be_within(2).of(4.0) }
       end
@@ -68,7 +68,7 @@ module RSpec
       end
     end
 
-    describe "expect(actual).to be_within(delta).percent_of(expected)" do
+    RSpec.describe "expect(actual).to be_within(delta).percent_of(expected)" do
       it "passes when actual is within the given percent variance" do
         expect(9.0).to be_within(10).percent_of(10.0)
         expect(10.0).to be_within(10).percent_of(10.0)
@@ -92,7 +92,7 @@ module RSpec
       end
     end
 
-    describe "expect(actual).not_to be_within(delta).of(expected)" do
+    RSpec.describe "expect(actual).not_to be_within(delta).of(expected)" do
       it "passes when actual < (expected - delta)" do
         expect(4.49).not_to be_within(0.5).of(5.0)
       end

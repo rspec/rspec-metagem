@@ -4,7 +4,7 @@ require 'bigdecimal'
 
 module RSpec
   module Matchers
-    describe "eq" do
+    RSpec.describe "eq" do
       it_behaves_like "an RSpec matcher", :valid_value => 1, :invalid_value => 2 do
         let(:matcher) { eq(1) }
       end

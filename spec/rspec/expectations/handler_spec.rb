@@ -44,7 +44,7 @@ end
 
 module RSpec
   module Expectations
-    describe PositiveExpectationHandler do
+    RSpec.describe PositiveExpectationHandler do
       describe "#handle_matcher" do
         it "asks the matcher if it matches" do
           matcher = double("matcher")
@@ -116,7 +116,7 @@ module RSpec
       end
     end
 
-    describe NegativeExpectationHandler do
+    RSpec.describe NegativeExpectationHandler do
       describe "#handle_matcher" do
         it "asks the matcher if it doesn't match when the matcher responds to #does_not_match?" do
           matcher = double("matcher", :does_not_match? => true, :failure_message_when_negated => nil)
@@ -178,7 +178,7 @@ module RSpec
       end
     end
 
-    describe PositiveExpectationHandler do
+    RSpec.describe PositiveExpectationHandler do
       include ExampleExpectations
 
       it "handles submitted args" do

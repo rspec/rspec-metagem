@@ -1,4 +1,4 @@
-describe "expect(...).to have_sym(*args)" do
+RSpec.describe "expect(...).to have_sym(*args)" do
   it_behaves_like "an RSpec matcher", :valid_value => { :a => 1 },
                                       :invalid_value => {} do
     let(:matcher) { have_key(:a) }
@@ -116,7 +116,7 @@ describe "expect(...).to have_sym(*args)" do
   end
 end
 
-describe "expect(...).not_to have_sym(*args)" do
+RSpec.describe "expect(...).not_to have_sym(*args)" do
   it "passes if #has_sym?(*args) returns false" do
     expect({:a => "A"}).not_to have_key(:b)
   end
@@ -168,7 +168,7 @@ describe "expect(...).not_to have_sym(*args)" do
   end
 end
 
-describe "has" do
+RSpec.describe "has" do
   it "works when the target implements #send" do
     o = {:a => "A"}
     def o.send(*args); raise "DOH! Library developers shouldn't use #send!" end

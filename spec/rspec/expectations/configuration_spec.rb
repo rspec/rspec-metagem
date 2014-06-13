@@ -2,7 +2,7 @@ require 'delegate'
 
 module RSpec
   module Expectations
-    describe Configuration do
+    RSpec.describe Configuration do
       let(:config) { Configuration.new }
 
       describe "#backtrace_formatter" do

@@ -1,4 +1,4 @@
-shared_examples "output_to_stream" do |stream_name|
+RSpec.shared_examples "output_to_stream" do |stream_name|
   matcher_method = :"to_#{stream_name}"
 
   define_method :matcher do |*args|
@@ -128,7 +128,7 @@ end
 
 module RSpec
   module Matchers
-    describe "output.to_stderr matcher" do
+    RSpec.describe "output.to_stderr matcher" do
       it_behaves_like("an RSpec matcher", :valid_value => lambda { warn('foo') }, :invalid_value => lambda {}) do
         let(:matcher) { output.to_stderr }
       end
@@ -138,7 +138,7 @@ module RSpec
       end
     end
 
-    describe "output.to_stdout matcher" do
+    RSpec.describe "output.to_stdout matcher" do
       it_behaves_like("an RSpec matcher", :valid_value => lambda { print 'foo' }, :invalid_value => lambda {}) do
         let(:matcher) { output.to_stdout }
       end
@@ -148,7 +148,7 @@ module RSpec
       end
     end
 
-    describe "output (without `to_stdout` or `to_stderr`)" do
+    RSpec.describe "output (without `to_stdout` or `to_stderr`)" do
       it 'raises an error explaining the use is invalid' do
         expect {
           expect { stream.print 'foo' }.to output

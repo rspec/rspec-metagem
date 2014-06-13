@@ -1,5 +1,5 @@
-describe "Matchers should be able to generate their own descriptions" do
-  after(:each) do
+RSpec.describe "Matchers should be able to generate their own descriptions" do
+  after(:example) do
     RSpec::Matchers.clear_generated_description
   end
 
@@ -174,7 +174,7 @@ describe "Matchers should be able to generate their own descriptions" do
   end
 end
 
-describe "a Matcher with no description" do
+RSpec.describe "a Matcher with no description" do
   def matcher
      Class.new do
        def matches?(ignore); true; end

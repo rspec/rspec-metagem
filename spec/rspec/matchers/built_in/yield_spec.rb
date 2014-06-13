@@ -30,7 +30,7 @@ class InstanceEvaler
   end
 end
 
-describe "yield_control matcher" do
+RSpec.describe "yield_control matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
@@ -175,7 +175,7 @@ describe "yield_control matcher" do
   end
 end
 
-describe "yield_with_no_args matcher" do
+RSpec.describe "yield_with_no_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
@@ -258,7 +258,7 @@ describe "yield_with_no_args matcher" do
   end
 end
 
-describe "yield_with_args matcher" do
+RSpec.describe "yield_with_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 
@@ -474,7 +474,7 @@ describe "yield_with_args matcher" do
   end
 end
 
-describe "yield_successive_args matcher" do
+RSpec.describe "yield_successive_args matcher" do
   include YieldHelpers
   extend  YieldHelpers
 

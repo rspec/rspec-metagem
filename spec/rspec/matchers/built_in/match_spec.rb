@@ -1,4 +1,4 @@
-describe "expect(...).to match(expected)" do
+RSpec.describe "expect(...).to match(expected)" do
   it_behaves_like "an RSpec matcher", :valid_value => 'ab', :invalid_value => 'bc' do
     let(:matcher) { match(/a/) }
   end
@@ -59,7 +59,7 @@ describe "expect(...).to match(expected)" do
   end
 end
 
-describe "expect(...).not_to match(expected)" do
+RSpec.describe "expect(...).not_to match(expected)" do
   it "passes when target (String) matches does not match (Regexp)" do
     expect("string").not_to match(/rings/)
   end

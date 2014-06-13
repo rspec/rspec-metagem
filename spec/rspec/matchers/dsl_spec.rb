@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-describe "a matcher defined using the matcher DSL" do
+RSpec.describe "a matcher defined using the matcher DSL" do
   def question?
     :answer
   end
@@ -76,7 +76,7 @@ module MatcherHelperModule
 end
 
 module RSpec::Matchers::DSL
-  describe Matcher do
+  RSpec.describe Matcher do
     def new_matcher(name, *expected, &block)
       RSpec::Matchers::DSL::Matcher.new(name, block, self, *expected)
     end

@@ -1,4 +1,4 @@
-describe "expect(...).to start_with" do
+RSpec.describe "expect(...).to start_with" do
   it_behaves_like "an RSpec matcher", :valid_value => "ab", :invalid_value => "bc" do
     let(:matcher) { start_with("a") }
   end
@@ -78,7 +78,7 @@ describe "expect(...).to start_with" do
   end
 end
 
-describe "expect(...).not_to start_with" do
+RSpec.describe "expect(...).not_to start_with" do
   context "with a string" do
     it "passes if it does not match the start of the actual string" do
       expect("this string").not_to start_with "that str"
@@ -124,7 +124,7 @@ describe "expect(...).not_to start_with" do
   end
 end
 
-describe "expect(...).to end_with" do
+RSpec.describe "expect(...).to end_with" do
   it_behaves_like "an RSpec matcher", :valid_value => "ab", :invalid_value => "bc" do
     let(:matcher) { end_with("b") }
   end
@@ -204,7 +204,7 @@ describe "expect(...).to end_with" do
   end
 end
 
-describe "expect(...).not_to end_with" do
+RSpec.describe "expect(...).not_to end_with" do
   context "with a sting" do
     it "passes if it does not match the end of the actual string" do
       expect("this string").not_to end_with "stringy"

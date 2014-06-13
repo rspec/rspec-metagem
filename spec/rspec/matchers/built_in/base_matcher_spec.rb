@@ -1,5 +1,5 @@
 module RSpec::Matchers::BuiltIn
-  describe BaseMatcher do
+  RSpec.describe BaseMatcher do
     describe "#match_unless_raises" do
       let(:matcher) do
         Class.new(BaseMatcher).new

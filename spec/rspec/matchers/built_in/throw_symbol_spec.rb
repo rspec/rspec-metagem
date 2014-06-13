@@ -1,12 +1,12 @@
 module RSpec::Matchers::BuiltIn
-  describe ThrowSymbol do
+  RSpec.describe ThrowSymbol do
     it_behaves_like("an RSpec matcher", :valid_value => lambda { throw :foo },
                                         :invalid_value => lambda { }) do
       let(:matcher) { throw_symbol(:foo) }
     end
 
     describe "with no args" do
-      before(:each) { @matcher = throw_symbol }
+      before(:example) { @matcher = throw_symbol }
 
       it "matches if any Symbol is thrown" do
         expect(@matcher.matches?(lambda{ throw :sym })).to be_truthy
@@ -28,7 +28,7 @@ module RSpec::Matchers::BuiltIn
     end
 
     describe "with a symbol" do
-      before(:each) { @matcher = throw_symbol(:sym) }
+      before(:example) { @matcher = throw_symbol(:sym) }
 
       it "matches if correct Symbol is thrown" do
         expect(@matcher.matches?(lambda{ throw :sym })).to be_truthy
@@ -62,7 +62,7 @@ module RSpec::Matchers::BuiltIn
     end
 
     describe "with a symbol and an arg" do
-      before(:each) { @matcher = throw_symbol(:sym, "a") }
+      before(:example) { @matcher = throw_symbol(:sym, "a") }
 
       it "matches if correct Symbol and args are thrown" do
         expect(@matcher.matches?(lambda{ throw :sym, "a" })).to be_truthy

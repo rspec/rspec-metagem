@@ -1,6 +1,6 @@
 require 'ostruct'
 
-describe "exist matcher" do
+RSpec.describe "exist matcher" do
   it_behaves_like "an RSpec matcher", :valid_value => OpenStruct.new(:exist? => true),
                                       :invalid_value => OpenStruct.new(:exist? => false) do
     let(:matcher) { exist }

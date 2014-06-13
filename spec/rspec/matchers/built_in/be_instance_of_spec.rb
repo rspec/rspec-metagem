@@ -1,7 +1,7 @@
 module RSpec
   module Matchers
     [:be_an_instance_of, :be_instance_of].each do |method|
-      describe "expect(actual).to #{method}(expected)" do
+      RSpec.describe "expect(actual).to #{method}(expected)" do
         it_behaves_like "an RSpec matcher", :valid_value => 5, :invalid_value => "a" do
           let(:matcher) { send(method, Fixnum) }
         end
@@ -46,7 +46,7 @@ module RSpec
         end
       end
 
-      describe "expect(actual).not_to #{method}(expected)" do
+      RSpec.describe "expect(actual).not_to #{method}(expected)" do
 
         it "fails with failure message for should_not if actual is instance of expected class" do
           expect {

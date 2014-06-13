@@ -26,7 +26,7 @@ class FakeActiveRecordRelation
   end
 end
 
-describe "should =~ array", :uses_should do
+RSpec.describe "should =~ array", :uses_should do
   it "passes a valid positive expectation" do
     [1, 2].should =~ [2, 1]
   end
@@ -61,7 +61,7 @@ describe "should =~ array", :uses_should do
   end
 end
 
-describe "should_not =~ [:with, :multiple, :args]", :uses_should do
+RSpec.describe "should_not =~ [:with, :multiple, :args]", :uses_should do
   it "is not supported" do
     expect {
       [1,2,3].should_not =~ [1,2,3]
@@ -69,7 +69,7 @@ describe "should_not =~ [:with, :multiple, :args]", :uses_should do
   end
 end
 
-describe "using contain_exactly with expect" do
+RSpec.describe "using contain_exactly with expect" do
   it "passes a valid positive expectation" do
     expect([1, 2]).to contain_exactly(2, 1)
   end
@@ -81,7 +81,7 @@ describe "using contain_exactly with expect" do
   end
 end
 
-describe "expect(array).to contain_exactly(*other_array)" do
+RSpec.describe "expect(array).to contain_exactly(*other_array)" do
   it_behaves_like "an RSpec matcher", :valid_value => [1, 2], :invalid_value => [1] do
     let(:matcher) { contain_exactly(2, 1) }
   end
@@ -188,7 +188,7 @@ MESSAGE
   end
 end
 
-describe "expect(...).not_to contain_exactly(:with, :multiple, :args]" do
+RSpec.describe "expect(...).not_to contain_exactly(:with, :multiple, :args]" do
   it "is not supported" do
     expect {
       expect([1,2,3]).not_to contain_exactly(1,2,3)
@@ -196,7 +196,7 @@ describe "expect(...).not_to contain_exactly(:with, :multiple, :args]" do
   end
 end
 
-describe "matching against things that aren't arrays" do
+RSpec.describe "matching against things that aren't arrays" do
   it "fails with nil and the expected error message is given" do
     expect {
       expect(nil).to contain_exactly(1, 2, 3)
@@ -231,7 +231,7 @@ describe "matching against things that aren't arrays" do
   end
 end
 
-describe "Composing `contain_exactly` with other matchers" do
+RSpec.describe "Composing `contain_exactly` with other matchers" do
   context "when it is compared to multiple possible matches" do
     it 'works properly when passed as an argument in its aliased form' do
       expect([[1, 3], ["food", "barn"]]).to include(
@@ -343,7 +343,7 @@ module RSpec
   module Matchers
     module BuiltIn
       class ContainExactly
-        describe PairingsMaximizer do
+        RSpec.describe PairingsMaximizer do
           it 'finds unmatched expected indexes' do
             maximizer = PairingsMaximizer.new({ 0 => [], 1 => [0] }, { 0 => [1] })
             expect(maximizer.solution.unmatched_expected_indexes).to eq([0])

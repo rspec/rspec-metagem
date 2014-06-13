@@ -1,4 +1,4 @@
-shared_examples "an RSpec matcher" do |options|
+RSpec.shared_examples "an RSpec matcher" do |options|
   let(:valid_value)   { options.fetch(:valid_value) }
   let(:invalid_value) { options.fetch(:invalid_value) }
 
