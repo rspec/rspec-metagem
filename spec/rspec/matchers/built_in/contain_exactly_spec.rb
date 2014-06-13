@@ -79,6 +79,16 @@ RSpec.describe "using contain_exactly with expect" do
       expect([1, 2, 3]).to contain_exactly(2, 1)
     }.to fail_with(/expected collection contained/)
   end
+
+  it "passes for a valid positive expectation with hashes" do
+    expect([
+      {:a => 10},
+      {:a => -10},
+    ]).to contain_exactly(
+      {:a => (a_value < 0)},
+      {:a => (a_value > 0)}
+    )
+  end
 end
 
 RSpec.describe "expect(array).to contain_exactly(*other_array)" do
