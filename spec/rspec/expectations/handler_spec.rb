@@ -45,6 +45,25 @@ end
 module RSpec
   module Expectations
     RSpec.describe PositiveExpectationHandler do
+      include ExampleExpectations
+
+      it "handles submitted args" do
+        expect(5).to arbitrary_matcher(:expected => 5)
+        expect(5).to arbitrary_matcher(:expected => "wrong").with(5)
+        expect { expect(5).to arbitrary_matcher(:expected => 4) }.to fail_with("expected 4, got 5")
+        expect { expect(5).to arbitrary_matcher(:expected => 5).with(4) }.to fail_with("expected 4, got 5")
+        expect(5).not_to arbitrary_matcher(:expected => 4)
+        expect(5).not_to arbitrary_matcher(:expected => 5).with(4)
+        expect { expect(5).not_to arbitrary_matcher(:expected => 5) }.to fail_with("expected not 5, got 5")
+        expect { expect(5).not_to arbitrary_matcher(:expected => 4).with(5) }.to fail_with("expected not 5, got 5")
+      end
+
+      it "handles the submitted block" do
+        expect(5).to arbitrary_matcher { 5 }
+        expect(5).to arbitrary_matcher(:expected => 4) { 5 }
+        expect(5).to arbitrary_matcher(:expected => 4).with(5) { 3 }
+      end
+
       describe "#handle_matcher" do
         it "asks the matcher if it matches" do
           matcher = double("matcher")
@@ -176,28 +195,6 @@ module RSpec
           RSpec::Expectations::NegativeExpectationHandler.handle_matcher(actual, matcher, failure_message)
         end
       end
-    end
-
-    RSpec.describe PositiveExpectationHandler do
-      include ExampleExpectations
-
-      it "handles submitted args" do
-        expect(5).to arbitrary_matcher(:expected => 5)
-        expect(5).to arbitrary_matcher(:expected => "wrong").with(5)
-        expect { expect(5).to arbitrary_matcher(:expected => 4) }.to fail_with("expected 4, got 5")
-        expect { expect(5).to arbitrary_matcher(:expected => 5).with(4) }.to fail_with("expected 4, got 5")
-        expect(5).not_to arbitrary_matcher(:expected => 4)
-        expect(5).not_to arbitrary_matcher(:expected => 5).with(4)
-        expect { expect(5).not_to arbitrary_matcher(:expected => 5) }.to fail_with("expected not 5, got 5")
-        expect { expect(5).not_to arbitrary_matcher(:expected => 4).with(5) }.to fail_with("expected not 5, got 5")
-      end
-
-      it "handles the submitted block" do
-        expect(5).to arbitrary_matcher { 5 }
-        expect(5).to arbitrary_matcher(:expected => 4) { 5 }
-        expect(5).to arbitrary_matcher(:expected => 4).with(5) { 3 }
-      end
-
     end
   end
 end
