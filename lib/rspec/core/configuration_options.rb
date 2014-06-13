@@ -28,12 +28,8 @@ module RSpec
       # Updates the provided {FilterManager} based on the filter options.
       # @param filter_manager [FilterManager] instance to update
       def configure_filter_manager(filter_manager)
-        @filter_manager_options.each do |option|
-          if option.key?(:inclusion)
-            filter_manager.include(option.fetch(:inclusion))
-          elsif option.key?(:exclusion)
-            filter_manager.exclude(option.fetch(:exclusion))
-          end
+        @filter_manager_options.each do |command, value|
+          filter_manager.__send__ command, value
         end
       end
 
@@ -46,8 +42,8 @@ module RSpec
         @filter_manager_options = []
 
         @options = (file_options << command_line_options << env_options).each { |opts|
-          @filter_manager_options << {:inclusion => opts.delete(:inclusion_filter)} if opts.key?(:inclusion_filter)
-          @filter_manager_options << {:exclusion => opts.delete(:exclusion_filter)} if opts.key?(:exclusion_filter)
+          @filter_manager_options << [:include, opts.delete(:inclusion_filter)] if opts.key?(:inclusion_filter)
+          @filter_manager_options << [:exclude, opts.delete(:exclusion_filter)] if opts.key?(:exclusion_filter)
         }.inject(:libs => [], :requires => []) { |hash, opts|
           hash.merge(opts) { |key, oldval, newval|
             [:libs, :requires].include?(key) ? oldval + newval : newval
