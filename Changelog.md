@@ -16,6 +16,8 @@ Bug Fixes:
 * Provide a better error message when you use the `change(obj, :msg)`
   form of the change matcher but forget the message argument. (Alex
   Sunderland, #585)
+* Make the `contain_exactly` matcher work with arrays that contain hashes in
+  arbitrary ordering. (Sam Phippen, #578)
 
 ### 3.0.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0...v3.0.1)
