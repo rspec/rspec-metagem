@@ -848,7 +848,8 @@ module RSpec
       #
       #     filter_run_including :foo # same as filter_run_including :foo => true
       def filter_run_including(*args)
-        filter_manager.include_with_low_priority Metadata.build_hash_from(args)
+        meta = Metadata.build_hash_from(args, :warn_about_example_group_filtering)
+        filter_manager.include_with_low_priority meta
       end
 
       alias_method :filter_run, :filter_run_including
@@ -861,7 +862,8 @@ module RSpec
       # This overrides any inclusion filters/tags set on the command line or in
       # configuration files.
       def inclusion_filter=(filter)
-        filter_manager.include_only Metadata.build_hash_from([filter])
+        meta = Metadata.build_hash_from([filter], :warn_about_example_group_filtering)
+        filter_manager.include_only meta
       end
 
       alias_method :filter=, :inclusion_filter=
@@ -904,7 +906,8 @@ module RSpec
       #
       #     filter_run_excluding :foo # same as filter_run_excluding :foo => true
       def filter_run_excluding(*args)
-        filter_manager.exclude_with_low_priority Metadata.build_hash_from(args)
+        meta = Metadata.build_hash_from(args, :warn_about_example_group_filtering)
+        filter_manager.exclude_with_low_priority meta
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
@@ -915,7 +918,8 @@ module RSpec
       # This overrides any exclusion filters/tags set on the command line or in
       # configuration files.
       def exclusion_filter=(filter)
-        filter_manager.exclude_only Metadata.build_hash_from([filter])
+        meta = Metadata.build_hash_from([filter], :warn_about_example_group_filtering)
+        filter_manager.exclude_only meta
       end
 
       # Returns the `exclusion_filter`. If none has been set, returns an empty
@@ -957,7 +961,8 @@ module RSpec
       #
       # @see #extend
       def include(mod, *filters)
-        include_or_extend_modules << [:include, mod, Metadata.build_hash_from(filters)]
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        include_or_extend_modules << [:include, mod, meta]
       end
 
       # Tells RSpec to extend example groups with `mod`.  Methods defined in
@@ -990,7 +995,8 @@ module RSpec
       #
       # @see #include
       def extend(mod, *filters)
-        include_or_extend_modules << [:extend, mod, Metadata.build_hash_from(filters)]
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        include_or_extend_modules << [:extend, mod, meta]
       end
 
       # @private
@@ -1253,7 +1259,8 @@ module RSpec
       #     end
       #   end
       def define_derived_metadata(*filters, &block)
-        @derived_metadata_blocks << [Metadata.build_hash_from(filters), block]
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        @derived_metadata_blocks << [meta, block]
       end
 
       # @private

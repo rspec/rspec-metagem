@@ -43,11 +43,16 @@ module RSpec
       # Symbols are converted into hash keys with a value of `true`.
       # This is done to support simple tagging using a symbol, rather
       # than needing to do `:symbol => true`.
-      def self.build_hash_from(args)
+      def self.build_hash_from(args, warn_about_example_group_filtering=false)
         hash = args.last.is_a?(Hash) ? args.pop : {}
 
         while args.last.is_a?(Symbol)
           hash[args.pop] = true
+        end
+
+        if warn_about_example_group_filtering && hash.key?(:example_group)
+          RSpec.deprecate("Filtering by an `:example_group` subhash",
+                          :replacement => "the subhash to filter directly")
         end
 
         hash
@@ -200,10 +205,23 @@ module RSpec
           Proc.new do |hash, key|
             case key
             when :example_group
-              RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
-                              :replacement => "the example group's hash directly for the " +
-                              "computed keys and `:parent_example_group` to access the parent " +
-                              "example group metadata")
+              # We commonly get here when rspec-core is applying a previously configured
+              # filter rule, such as when a gem configures:
+              #
+              #   RSpec.configure do |c|
+              #     c.include MyGemHelpers, :example_group => { :file_path => /spec\/my_gem_specs/ }
+              #   end
+              #
+              # It's confusing for a user to get a deprecation at this point in the code, so instead
+              # we issue a deprecation from the config APIs that take a metadata hash, and MetadataFilter
+              # sets this thread local to silence the warning here since it would be so confusing.
+              unless RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations]
+                RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
+                                :replacement => "the example group's hash directly for the " +
+                                "computed keys and `:parent_example_group` to access the parent " +
+                                "example group metadata")
+              end
+
               group_hash = example_group_selector.call(hash)
               LegacyExampleGroupHash.new(group_hash) if group_hash
             when :example_group_block

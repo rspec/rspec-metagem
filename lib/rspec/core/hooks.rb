@@ -508,7 +508,9 @@ EOS
         end
 
         def scope_and_options_from(*args)
-          return extract_scope_from(args), Metadata.build_hash_from(args)
+          scope = extract_scope_from(args)
+          meta  = Metadata.build_hash_from(args, :warn_about_example_group_filtering)
+          return scope, meta
         end
 
         def extract_scope_from(args)

@@ -21,6 +21,10 @@ Bug Fixes:
 * Fix regression in CLI option handling that prevented `--tag slow`
   passed at the command line from overriding `--tag ~slow` in `.rspec`.
   (Colin Jones, #1602)
+* Fix metadata `:example_group` deprecation warning so that it gets
+  issued at the call site of the configuration that specified it as
+  a filter rather than later when an example group is defined.
+  (Myron Marston, #1562)
 
 ### 3.0.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...v3.0.1)
