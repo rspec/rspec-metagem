@@ -24,12 +24,20 @@ RSpec.shared_examples "an RSpec matcher" do |options|
     match { false }
   end
 
-  it 'supports compound expectations by chaining `and`' do
+  it 'allows additional matchers to be chained off it using `and`' do
     expect(valid_value).to matcher.and always_passes
   end
 
-  it 'supports compound expectations by chaining `or`' do
+  it 'can be chained off of an existing matcher using `and`' do
+    expect(valid_value).to always_passes.and matcher
+  end
+
+  it 'allows additional matchers to be chained off it using `or`' do
     expect(valid_value).to matcher.or always_fails
+  end
+
+  it 'can be chained off of an existing matcher using `or`' do
+    expect(valid_value).to always_fails.or matcher
   end
 
   it 'implements the full matcher protocol' do
