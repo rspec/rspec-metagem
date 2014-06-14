@@ -1,6 +1,6 @@
 module RSpec
   module Expectations
-    describe Syntax do
+    RSpec.describe Syntax do
       context "when passing a message to an expectation" do
         let(:warner) { ::Kernel }
 

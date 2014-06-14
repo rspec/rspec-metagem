@@ -1,5 +1,5 @@
 module RSpec
-  describe Matchers, "aliases", :order => :defined do
+  RSpec.describe Matchers, "aliases", :order => :defined do
     matcher :be_aliased_to do |old_matcher|
       chain :with_description do |desc|
         @expected_desc = desc

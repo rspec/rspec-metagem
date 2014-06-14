@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    describe "eql" do
+    RSpec.describe "eql" do
       it_behaves_like "an RSpec matcher", :valid_value => 1, :invalid_value => 2 do
         let(:matcher) { eql(1) }
       end

@@ -1,5 +1,5 @@
 module RSpec::Matchers::BuiltIn
-  describe Compound do
+  RSpec.describe Compound do
 
     shared_examples "making a copy" do |compound_method, copy_method|
       context "when making a copy via `#{copy_method}`" do

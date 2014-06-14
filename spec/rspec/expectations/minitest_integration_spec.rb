@@ -1,5 +1,5 @@
 module RSpec
-  describe Matchers do
+  RSpec.describe Matchers do
 
     let(:sample_matchers) do
       [:be,

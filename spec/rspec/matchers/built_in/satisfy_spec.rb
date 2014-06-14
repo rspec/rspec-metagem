@@ -1,4 +1,4 @@
-describe "expect(...).to satisfy { block }" do
+RSpec.describe "expect(...).to satisfy { block }" do
   it_behaves_like "an RSpec matcher", :valid_value => true, :invalid_value => false do
     let(:matcher) { satisfy { |v| v } }
   end
@@ -26,7 +26,7 @@ describe "expect(...).to satisfy { block }" do
   end
 end
 
-describe "expect(...).not_to satisfy { block }" do
+RSpec.describe "expect(...).not_to satisfy { block }" do
   it "passes if block returns false" do
     expect(false).not_to satisfy { |val| val }
     expect(false).not_to satisfy do |val|

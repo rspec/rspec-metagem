@@ -1,6 +1,6 @@
 module RSpec
   module Matchers
-    describe "Legacy matchers" do
+    RSpec.describe "Legacy matchers" do
       shared_examples "a matcher written against a legacy protocol" do |matcher_class|
         matcher = matcher_class.new
         before { allow_deprecation }

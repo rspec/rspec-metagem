@@ -1,5 +1,5 @@
 if (1..2).respond_to?(:cover?)
-  describe "expect(...).to cover(expected)" do
+  RSpec.describe "expect(...).to cover(expected)" do
     it_behaves_like "an RSpec matcher", :valid_value => (1..10), :invalid_value => (20..30) do
       let(:matcher) { cover(5) }
     end
@@ -17,7 +17,7 @@ if (1..2).respond_to?(:cover?)
     end
   end
 
-  describe "expect(...).to cover(with, multiple, args)" do
+  RSpec.describe "expect(...).to cover(with, multiple, args)" do
     context "for a range target" do
       it "passes if target covers all items" do
         expect((1..10)).to cover(4, 6)
@@ -31,7 +31,7 @@ if (1..2).respond_to?(:cover?)
     end
   end
 
-  describe "expect(...).not_to cover(expected)" do
+  RSpec.describe "expect(...).not_to cover(expected)" do
     context "for a range target" do
       it "passes if target does not cover expected" do
         expect((1..10)).not_to cover(11)
@@ -45,7 +45,7 @@ if (1..2).respond_to?(:cover?)
     end
   end
 
-  describe "expect(...).not_to cover(with, multiple, args)" do
+  RSpec.describe "expect(...).not_to cover(with, multiple, args)" do
     context "for a range target" do
       it "passes if the target does not cover any of the expected" do
         expect((1..10)).not_to cover(11, 12, 13)

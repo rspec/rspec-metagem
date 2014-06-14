@@ -1,5 +1,5 @@
 module RSpec::Matchers::BuiltIn
-  describe All do
+  RSpec.describe All do
 
     it_behaves_like 'an RSpec matcher', :valid_value => ['A', 'A', 'A'], :invalid_value => ['A', 'A', 'B'], :disallows_negation => true do
       let(:matcher) { all( eq('A') ) }

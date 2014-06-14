@@ -1,4 +1,4 @@
-describe "expect { ... }.to raise_error" do
+RSpec.describe "expect { ... }.to raise_error" do
   it_behaves_like("an RSpec matcher", :valid_value => lambda { raise "boom" },
                                       :invalid_value => lambda { }) do
     let(:matcher) { raise_error }
@@ -34,13 +34,13 @@ describe "expect { ... }.to raise_error" do
   end
 end
 
-describe "raise_exception aliased to raise_error" do
+RSpec.describe "raise_exception aliased to raise_error" do
   it "passes if anything is raised" do
     expect {raise}.to raise_exception
   end
 end
 
-describe "expect { ... }.to raise_error {|err| ... }" do
+RSpec.describe "expect { ... }.to raise_error {|err| ... }" do
   it "passes if there is an error" do
     ran = false
     expect { non_existent_method }.to raise_error {|e|
@@ -58,7 +58,7 @@ describe "expect { ... }.to raise_error {|err| ... }" do
   end
 end
 
-describe "expect { ... }.to raise_error do |err| ... end" do
+RSpec.describe "expect { ... }.to raise_error do |err| ... end" do
   it "passes the error to the block" do
     error = nil
     expect { non_existent_method }.to raise_error do |e|
@@ -68,7 +68,7 @@ describe "expect { ... }.to raise_error do |err| ... end" do
   end
 end
 
-describe "expect { ... }.to(raise_error { |err| ... }) do |err| ... end" do
+RSpec.describe "expect { ... }.to(raise_error { |err| ... }) do |err| ... end" do
   it "passes the error only to the block taken directly by #raise_error" do
     error_passed_to_curly = nil
     error_passed_to_do_end = nil
@@ -82,7 +82,7 @@ describe "expect { ... }.to(raise_error { |err| ... }) do |err| ... end" do
   end
 end
 
-describe "expect { ... }.not_to raise_error" do
+RSpec.describe "expect { ... }.not_to raise_error" do
 
   context "with a specific error class" do
     it "is invalid" do
@@ -126,7 +126,7 @@ describe "expect { ... }.not_to raise_error" do
   end
 end
 
-describe "expect { ... }.to raise_error(message)" do
+RSpec.describe "expect { ... }.to raise_error(message)" do
   it "passes if RuntimeError is raised with the right message" do
     expect {raise 'blah'}.to raise_error('blah')
   end
@@ -161,7 +161,7 @@ describe "expect { ... }.to raise_error(message)" do
   end
 end
 
-describe "expect { ... }.to raise_error.with_message(message)" do
+RSpec.describe "expect { ... }.to raise_error.with_message(message)" do
   it "raises an argument error if raise_error itself expects a message" do
     expect {
       expect { }.to raise_error("bees").with_message("sup")
@@ -193,7 +193,7 @@ describe "expect { ... }.to raise_error.with_message(message)" do
   end
 end
 
-describe "expect { ... }.not_to raise_error(message)" do
+RSpec.describe "expect { ... }.not_to raise_error(message)" do
   it "is invalid" do
     expect {
       expect {raise 'blarg'}.not_to raise_error(/blah/)
@@ -201,7 +201,7 @@ describe "expect { ... }.not_to raise_error(message)" do
   end
 end
 
-describe "expect { ... }.to raise_error(NamedError)" do
+RSpec.describe "expect { ... }.to raise_error(NamedError)" do
   it "passes if named error is raised" do
     expect { non_existent_method }.to raise_error(NameError)
   end
@@ -225,7 +225,7 @@ describe "expect { ... }.to raise_error(NamedError)" do
   end
 end
 
-describe "expect { ... }.not_to raise_error(NamedError)" do
+RSpec.describe "expect { ... }.not_to raise_error(NamedError)" do
   it "is invalid" do
     expect {
       expect { }.not_to raise_error(NameError)
@@ -233,7 +233,7 @@ describe "expect { ... }.not_to raise_error(NamedError)" do
   end
 end
 
-describe "expect { ... }.to raise_error(NamedError, error_message) with String" do
+RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) with String" do
   it "passes if named error is raised with same message" do
     expect { raise "example message" }.to raise_error(RuntimeError, "example message")
   end
@@ -257,7 +257,7 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with String" 
   end
 end
 
-describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
+RSpec.describe "expect { ... }.not_to raise_error(NamedError, error_message) with String" do
   it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message")
@@ -265,7 +265,7 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) with Stri
   end
 end
 
-describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" do
+RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" do
   it "passes if named error is raised with matching message" do
     expect { raise "example message" }.to raise_error(RuntimeError, /ample mess/)
   end
@@ -289,7 +289,7 @@ describe "expect { ... }.to raise_error(NamedError, error_message) with Regexp" 
   end
 end
 
-describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
+RSpec.describe "expect { ... }.not_to raise_error(NamedError, error_message) with Regexp" do
   it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, /ample mess/)
@@ -297,7 +297,7 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) with Rege
   end
 end
 
-describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }" do
+RSpec.describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }" do
   it "yields exception if named error is raised with same message" do
     ran = false
 
@@ -370,7 +370,7 @@ describe "expect { ... }.to raise_error(NamedError, error_message) { |err| ... }
   end
 end
 
-describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| ... }" do
+RSpec.describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| ... }" do
   it "is invalid" do
     expect {
       expect {}.not_to raise_error(RuntimeError, "example message") { |err| }
@@ -378,7 +378,7 @@ describe "expect { ... }.not_to raise_error(NamedError, error_message) { |err| .
   end
 end
 
-describe "Composing matchers with `raise_error`" do
+RSpec.describe "Composing matchers with `raise_error`" do
   matcher :an_error_with_attribute do |attr|
     chain :equal_to do |value|
       @expected_value = value

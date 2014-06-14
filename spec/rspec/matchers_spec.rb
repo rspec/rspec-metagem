@@ -1,5 +1,5 @@
 main = self
-describe RSpec::Matchers do
+RSpec.describe RSpec::Matchers do
   include ::RSpec::Support::InSubProcess
 
   describe ".configuration" do
@@ -26,7 +26,7 @@ end
 
 module RSpec
   module Matchers
-    describe "built in matchers" do
+    RSpec.describe "built in matchers" do
       let(:matchers) do
         BuiltIn.constants.map { |n| BuiltIn.const_get(n) }.select do |m|
           m.method_defined?(:matches?) && m.method_defined?(:failure_message)

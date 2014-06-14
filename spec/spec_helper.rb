@@ -23,12 +23,10 @@ RSpec::configure do |config|
     expectations.syntax = :expect
   end
 
-  config.mock_with :rspec do |mocks|
-    mocks.syntax = :expect
-  end
+  config.disable_monkey_patching!
 end
 
-shared_context "with #should enabled", :uses_should do
+RSpec.shared_context "with #should enabled", :uses_should do
   orig_syntax = nil
 
   before(:all) do
@@ -36,34 +34,34 @@ shared_context "with #should enabled", :uses_should do
     RSpec::Matchers.configuration.syntax = [:expect, :should]
   end
 
-  after(:all) do
+  after(:context) do
     RSpec::Matchers.configuration.syntax = orig_syntax
   end
 end
 
-shared_context "with the default expectation syntax" do
+RSpec.shared_context "with the default expectation syntax" do
   orig_syntax = nil
 
-  before(:all) do
+  before(:context) do
     orig_syntax = RSpec::Matchers.configuration.syntax
     RSpec::Matchers.configuration.reset_syntaxes_to_default
   end
 
-  after(:all) do
+  after(:context) do
     RSpec::Matchers.configuration.syntax = orig_syntax
   end
 
 end
 
-shared_context "with #should exclusively enabled", :uses_only_should do
+RSpec.shared_context "with #should exclusively enabled", :uses_only_should do
   orig_syntax = nil
 
-  before(:all) do
+  before(:context) do
     orig_syntax = RSpec::Matchers.configuration.syntax
     RSpec::Matchers.configuration.syntax = :should
   end
 
-  after(:all) do
+  after(:context) do
     RSpec::Matchers.configuration.syntax = orig_syntax
   end
 end

@@ -1,5 +1,5 @@
 module RSpec
-  describe Expectations do
+  RSpec.describe Expectations do
     it 'does not allow expectation failures to be caught by a bare rescue' do
       expect {
         expect(2).to eq(3) rescue nil

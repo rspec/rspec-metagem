@@ -12,7 +12,7 @@ class MethodMissingObject < Struct.new(:original)
   end
 end
 
-describe "operator matchers", :uses_should do
+RSpec.describe "operator matchers", :uses_should do
   describe "should ==" do
     it "delegates message to target" do
       subject = "apple"

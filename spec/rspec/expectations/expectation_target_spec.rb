@@ -3,7 +3,7 @@ module RSpec
     # so our examples below can set expectations about the target
     ExpectationTarget.send(:attr_reader, :target)
 
-    describe ExpectationTarget do
+    RSpec.describe ExpectationTarget do
       context 'when constructed via #expect' do
         it 'constructs a new instance targetting the given argument' do
           expect(expect(7).target).to eq(7)

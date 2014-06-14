@@ -2,9 +2,9 @@ class SomethingExpected
   attr_accessor :some_value
 end
 
-describe "expect { ... }.to change(actual, message)" do
+RSpec.describe "expect { ... }.to change(actual, message)" do
   context "with a numeric value" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = 5
     end
@@ -39,7 +39,7 @@ describe "expect { ... }.to change(actual, message)" do
   end
 
   context "with boolean values" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = true
     end
@@ -65,7 +65,7 @@ describe "expect { ... }.to change(actual, message)" do
   end
 
   context "with nil value" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = nil
     end
@@ -82,7 +82,7 @@ describe "expect { ... }.to change(actual, message)" do
   end
 
   context "with an array" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = []
     end
@@ -110,7 +110,7 @@ describe "expect { ... }.to change(actual, message)" do
   end
 
   context "with a hash" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = {:a => 'a'}
     end
@@ -141,7 +141,7 @@ describe "expect { ... }.to change(actual, message)" do
   end
 
   context "with an arbitrary enumerable" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = Class.new do
         include Enumerable
@@ -179,8 +179,8 @@ describe "expect { ... }.to change(actual, message)" do
   end
 end
 
-describe "expect { ... }.not_to change(actual, message)" do
-  before(:each) do
+RSpec.describe "expect { ... }.not_to change(actual, message)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -196,9 +196,9 @@ describe "expect { ... }.not_to change(actual, message)" do
   end
 end
 
-describe "expect { ... }.to change { block }" do
+RSpec.describe "expect { ... }.to change { block }" do
 
-  before(:each) do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -231,8 +231,8 @@ describe "expect { ... }.to change { block }" do
   end
 end
 
-describe "expect { ... }.not_to change { block }" do
-  before(:each) do
+RSpec.describe "expect { ... }.not_to change { block }" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -255,7 +255,7 @@ describe "expect { ... }.not_to change { block }" do
 end
 
 
-describe "expect { ... }.not_to change { }.from" do
+RSpec.describe "expect { ... }.not_to change { }.from" do
   context 'when the value starts at the from value' do
     it 'passes when the value does not change' do
       k = 5
@@ -287,7 +287,7 @@ describe "expect { ... }.not_to change { }.from" do
   end
 end
 
-describe "expect { ... }.not_to change { }.to" do
+RSpec.describe "expect { ... }.not_to change { }.to" do
   it 'is not supported' do
     expect {
       expect { }.not_to change { }.to(3)
@@ -301,7 +301,7 @@ describe "expect { ... }.not_to change { }.to" do
   end
 end
 
-describe "expect { ... }.not_to change { }.by" do
+RSpec.describe "expect { ... }.not_to change { }.by" do
   it 'is not supported' do
     expect {
       expect { }.not_to change { }.by(3)
@@ -309,7 +309,7 @@ describe "expect { ... }.not_to change { }.by" do
   end
 end
 
-describe "expect { ... }.not_to change { }.by_at_least" do
+RSpec.describe "expect { ... }.not_to change { }.by_at_least" do
   it 'is not supported' do
     expect {
       expect { }.not_to change { }.by_at_least(3)
@@ -317,7 +317,7 @@ describe "expect { ... }.not_to change { }.by_at_least" do
   end
 end
 
-describe "expect { ... }.not_to change { }.by_at_most" do
+RSpec.describe "expect { ... }.not_to change { }.by_at_most" do
   it 'is not supported' do
     expect {
       expect { }.not_to change { }.by_at_most(3)
@@ -325,8 +325,8 @@ describe "expect { ... }.not_to change { }.by_at_most" do
   end
 end
 
-describe "expect { ... }.to change(actual, message).by(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change(actual, message).by(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -356,8 +356,8 @@ describe "expect { ... }.to change(actual, message).by(expected)" do
   end
 end
 
-describe "expect { ... }.to change { block }.by(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.by(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -383,8 +383,8 @@ describe "expect { ... }.to change { block }.by(expected)" do
   end
 end
 
-describe "expect { ... }.to change(actual, message).by_at_least(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change(actual, message).by_at_least(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -408,8 +408,8 @@ describe "expect { ... }.to change(actual, message).by_at_least(expected)" do
   end
 end
 
-describe "expect { ... }.to change { block }.by_at_least(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.by_at_least(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -434,8 +434,8 @@ describe "expect { ... }.to change { block }.by_at_least(expected)" do
 end
 
 
-describe "expect { ... }.to change(actual, message).by_at_most(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change(actual, message).by_at_most(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -459,8 +459,8 @@ describe "expect { ... }.to change(actual, message).by_at_most(expected)" do
   end
 end
 
-describe "expect { ... }.to change { block }.by_at_most(expected)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.by_at_most(expected)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 5
   end
@@ -484,9 +484,9 @@ describe "expect { ... }.to change { block }.by_at_most(expected)" do
   end
 end
 
-describe "expect { ... }.to change(actual, message).from(old)" do
+RSpec.describe "expect { ... }.to change(actual, message).from(old)" do
   context "with boolean values" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = true
     end
@@ -502,7 +502,7 @@ describe "expect { ... }.to change(actual, message).from(old)" do
     end
   end
   context "with non-boolean values" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = 'string'
     end
@@ -523,8 +523,8 @@ describe "expect { ... }.to change(actual, message).from(old)" do
   end
 end
 
-describe "expect { ... }.to change { block }.from(old)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.from(old)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 'string'
   end
@@ -550,9 +550,9 @@ describe "expect { ... }.to change { block }.from(old)" do
   end
 end
 
-describe "expect { ... }.to change(actual, message).to(new)" do
+RSpec.describe "expect { ... }.to change(actual, message).to(new)" do
   context "with boolean values" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = true
     end
@@ -569,7 +569,7 @@ describe "expect { ... }.to change(actual, message).to(new)" do
   end
 
   context "with non-boolean values" do
-    before(:each) do
+    before(:example) do
       @instance = SomethingExpected.new
       @instance.some_value = 'string'
     end
@@ -592,8 +592,8 @@ describe "expect { ... }.to change(actual, message).to(new)" do
   end
 end
 
-describe "expect { ... }.to change { block }.to(new)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.to(new)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 'string'
   end
@@ -613,8 +613,8 @@ describe "expect { ... }.to change { block }.to(new)" do
   end
 end
 
-describe "expect { ... }.to change(actual, message).from(old).to(new)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change(actual, message).from(old).to(new)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 'string'
   end
@@ -640,8 +640,8 @@ describe "expect { ... }.to change(actual, message).from(old).to(new)" do
   end
 end
 
-describe "expect { ... }.to change { block }.from(old).to(new)" do
-  before(:each) do
+RSpec.describe "expect { ... }.to change { block }.from(old).to(new)" do
+  before(:example) do
     @instance = SomethingExpected.new
     @instance.some_value = 'string'
   end
@@ -667,7 +667,7 @@ describe "expect { ... }.to change { block }.from(old).to(new)" do
   end
 end
 
-describe "Composing a matcher with `change`" do
+RSpec.describe "Composing a matcher with `change`" do
   describe "expect { ... }.to change { ... }" do
     context ".from(matcher).to(matcher)" do
       it 'passes when the matchers match the from and to values' do
@@ -773,7 +773,7 @@ describe "Composing a matcher with `change`" do
   end
 end
 
-describe RSpec::Matchers::BuiltIn::Change do
+RSpec.describe RSpec::Matchers::BuiltIn::Change do
   it "works when the receiver has implemented #send" do
     @instance = SomethingExpected.new
     @instance.some_value = "string"
@@ -792,7 +792,7 @@ describe RSpec::Matchers::BuiltIn::Change do
   end
 end
 
-describe RSpec::Matchers::BuiltIn::ChangeRelatively do
+RSpec.describe RSpec::Matchers::BuiltIn::ChangeRelatively do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
@@ -802,7 +802,7 @@ describe RSpec::Matchers::BuiltIn::ChangeRelatively do
   end
 end
 
-describe RSpec::Matchers::BuiltIn::ChangeFromValue do
+RSpec.describe RSpec::Matchers::BuiltIn::ChangeFromValue do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k += 1 },
@@ -811,7 +811,7 @@ describe RSpec::Matchers::BuiltIn::ChangeFromValue do
   end
 end
 
-describe RSpec::Matchers::BuiltIn::ChangeToValue do
+RSpec.describe RSpec::Matchers::BuiltIn::ChangeToValue do
   k = 0
   before { k = 0 }
   it_behaves_like "an RSpec matcher", :valid_value => lambda { k = 2 },

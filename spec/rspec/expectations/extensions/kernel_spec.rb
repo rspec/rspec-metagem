@@ -1,5 +1,5 @@
-describe Object, "#should" do
-  before(:each) do
+RSpec.describe Object, "#should" do
+  before(:example) do
     @target = "target"
     @matcher = double("matcher")
     allow(@matcher).to receive(:matches?).and_return(true)
@@ -46,8 +46,8 @@ describe Object, "#should" do
   end
 end
 
-describe Object, "#should_not" do
-  before(:each) do
+RSpec.describe Object, "#should_not" do
+  before(:example) do
     @target = "target"
     @matcher = double("matcher")
   end
