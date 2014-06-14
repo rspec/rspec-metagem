@@ -4,6 +4,7 @@ module RSpec
       # @api private
       # Provides the implementation for `raise_error`.
       # Not intended to be instantiated directly.
+      # rubocop:disable ClassLength
       class RaiseError
         include Composable
 
@@ -163,6 +164,7 @@ module RSpec
           raise "`expect { }.to raise_error(message).with_message(message)` is not valid. The matcher only allows the expected message to be specified once"
         end
       end
+      # rubocop:enable ClassLength
     end
   end
 end
