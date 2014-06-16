@@ -42,6 +42,14 @@ module RSpec
           super
         end
 
+        def match(_expected, actual)
+          @match_results = Hash.new do |hash, matcher|
+            hash[matcher] = matcher.matches?(actual)
+          end
+
+          perform_block_matching_if_necessary
+        end
+
         def indent_multiline_message(message)
           message.lines.map do |line|
             line =~ /\S/ ? '   ' + line : line
@@ -75,43 +83,89 @@ module RSpec
           [message_1, conjunction, message_2].join(' ')
         end
 
-        def perform_block_matches_while_only_calling_block_once(actual)
-          if matcher_supports_block_wrapping?(matcher_1)
-            perform_block_matches_while_only_calling_block_once_against(
-              actual, matcher_2, matcher_1
-            ).reverse
-          elsif matcher_supports_block_wrapping?(matcher_2)
-            perform_block_matches_while_only_calling_block_once_against(
-              actual, matcher_1, matcher_2
-            )
-          else
-            raise ArgumentError, "(#{matcher_1.description}) and " \
-              "(#{matcher_2.description}) cannot be combined in a compound expectation"
+        def matcher_1_matches?
+          @match_results[matcher_1]
+        end
+
+        def matcher_2_matches?
+          @match_results[matcher_2]
+        end
+
+        # Normally, we execute the maching sequentially. For an expression like
+        # `expect(x).to foo.and bar`, this becomes:
+        #
+        #   expect(x).to foo
+        #   expect(x).to bar
+        #
+        # For block expectations, we need to nest them instead, so that
+        # `expect { x }.to foo.and bar` becomes:
+        #
+        #   expect {
+        #     expect { x }.to foo
+        #   }.to bar
+        #
+        # This is necessary so that the `expect` block is only executed once.
+        #
+        # This helper method takes care of that nesting.
+        def perform_block_matching_if_necessary
+          return unless supports_block_expectations? && Proc === actual
+
+          inner, outer = order_block_matchers
+
+          @match_results[outer] = outer.matches?(Proc.new do |*args|
+            @match_results[inner] = inner.matches?(inner_matcher_block(args))
+          end)
+        end
+
+        # Some block matchers (such as `yield_xyz`) pass args to the `expect` block.
+        # When such a matcher is used as the outer matcher, we need to forward the
+        # the args on to the `expect` block.
+        def inner_matcher_block(outer_args)
+          return actual if outer_args.empty?
+
+          Proc.new do |*inner_args|
+            unless inner_args.empty?
+              raise ArgumentError, "(#{matcher_1.description}) and " \
+                "(#{matcher_2.description}) cannot be combined in a compound expectation " \
+                "since both matchers pass arguments to the block."
+            end
+
+            actual.call(*outer_args)
           end
         end
 
-        def perform_block_matches_while_only_calling_block_once_against(actual, inner, outer)
-          inner_matches = nil
+        # For a matcher like `raise_error` or `throw_symbol`, where the block will jump
+        # up the call stack, we need to order things so that it is the inner matcher.
+        # For example, we need it to be this:
+        #
+        #   expect {
+        #     expect {
+        #       x += 1
+        #       raise "boom"
+        #     }.to raise_error("boom")
+        #   }.to change { x }.by(1)
+        #
+        # ...rather than:
+        #
+        #   expect {
+        #     expect {
+        #       x += 1
+        #       raise "boom"
+        #     }.to change { x }.by(1)
+        #   }.to raise_error("boom")
+        #
+        # In the latter case, the after-block logic in the `change` matcher would never
+        # get executed because the `raise "boom"` line would jump to the `rescue` in the
+        # `raise_error` logic, so only the former case will work properly.
+        #
+        # This method figures out which matcher should be the inner matcher and which
+        # should be the outer matcher.
+        def order_block_matchers
+          return matcher_2, matcher_1 if matcher_supports_block_wrapping?(matcher_1)
+          return matcher_1, matcher_2 if matcher_supports_block_wrapping?(matcher_2)
 
-          outer_matches = outer.matches?(Proc.new do |*args|
-            # Forward any args (such as for yield matchers)
-            unless args.empty?
-              old_actual = actual
-              actual     = Proc.new do |*inner_args|
-                unless inner_args.empty?
-                  raise ArgumentError, "(#{matcher_1.description}) and " \
-                    "(#{matcher_2.description}) cannot be combined in a compound expectation " \
-                    "since both matchers pass arguments to the block."
-                end
-
-                old_actual.call(*args)
-              end
-            end
-
-            inner_matches = inner.matches?(actual)
-          end)
-
-          return inner_matches, outer_matches
+          raise ArgumentError, "(#{matcher_1.description}) and " \
+            "(#{matcher_2.description}) cannot be combined in a compound expectation"
         end
 
         def matcher_supports_block_wrapping?(matcher)
@@ -128,9 +182,9 @@ module RSpec
           # @api private
           # @return [String]
           def failure_message
-            if @matcher_1_matches
+            if matcher_1_matches?
               matcher_2.failure_message
-            elsif @matcher_2_matches
+            elsif matcher_2_matches?
               matcher_1.failure_message
             else
               compound_failure_message
@@ -139,16 +193,9 @@ module RSpec
 
         private
 
-          def match(_expected, actual)
-            if supports_block_expectations? && Proc === actual
-              @matcher_1_matches, @matcher_2_matches =
-                perform_block_matches_while_only_calling_block_once(actual)
-            else
-              @matcher_1_matches = matcher_1.matches?(actual)
-              @matcher_2_matches = matcher_2.matches?(actual)
-            end
-
-            @matcher_1_matches && @matcher_2_matches
+          def match(*)
+            super
+            matcher_1_matches? && matcher_2_matches?
           end
 
           def conjunction
@@ -167,12 +214,9 @@ module RSpec
 
         private
 
-          def match(_expected, actual)
-            if supports_block_expectations? && Proc === actual
-              perform_block_matches_while_only_calling_block_once(actual).any?
-            else
-              matcher_1.matches?(actual) || matcher_2.matches?(actual)
-            end
+          def match(*)
+            super
+            matcher_1_matches? || matcher_2_matches?
           end
 
           def conjunction
