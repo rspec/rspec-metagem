@@ -98,6 +98,26 @@ RSpec.describe "expect(array).to contain_exactly(*other_array)" do
     expect([1,3,2]).to contain_exactly(1,2,3)
   end
 
+  it 'fails if the expected array is empty and the actual array is non-empty' do
+    expect {
+      expect([1]).to contain_exactly()
+    }.to fail_with(<<-MESSAGE)
+expected collection contained:  []
+actual collection contained:    [1]
+the extra elements were:        [1]
+MESSAGE
+  end
+
+  it 'fails if the actual array is empty and the expected array is non-empty' do
+    expect {
+      expect([]).to contain_exactly(1)
+    }.to fail_with(<<-MESSAGE)
+expected collection contained:  [1]
+actual collection contained:    []
+the missing elements were:      [1]
+MESSAGE
+  end
+
   def timeout_if_not_debugging(time)
     return yield if defined?(::Debugger)
     Timeout.timeout(time) { yield }
