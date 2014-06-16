@@ -6,7 +6,6 @@ require "rake"
 require "yaml"
 
 require "rspec/core/rake_task"
-require "rspec/core/version"
 
 require "cucumber/rake/task"
 Cucumber::Rake::Task.new(:cucumber)
@@ -62,4 +61,3 @@ task :verify_private_key_present do
 end
 
 task :build => :verify_private_key_present
-
