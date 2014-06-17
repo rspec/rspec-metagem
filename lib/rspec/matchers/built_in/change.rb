@@ -298,6 +298,14 @@ module RSpec
         attr_reader :message, :actual_before, :actual_after
 
         def initialize(receiver=nil, message=nil, &block)
+          if receiver && !message
+            raise(
+              ArgumentError,
+              "`change` requires either an object and message " \
+              "(`change(obj, :msg)`) or a block (`change { }`). " \
+              "You passed an object but no message."
+            )
+          end
           @message    = message ? "##{message}" : "result"
           @value_proc = block || lambda { receiver.__send__(message) }
         end
