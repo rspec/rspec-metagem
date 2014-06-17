@@ -79,15 +79,11 @@ module RSpec
 
         def pairings_maximizer
           @pairings_maximizer ||= begin
-            expected_matches = {}
-            actual_matches   = {}
+            expected_matches = Hash[Array.new(expected.size) { |i| [i, []] }]
+            actual_matches   = Hash[Array.new(actual.size)   { |i| [i, []] }]
 
             expected.each_with_index do |e, ei|
-              expected_matches[ei] ||= []
-
               actual.each_with_index do |a, ai|
-                actual_matches[ai] ||= []
-
                 # Normally we'd call `values_match?(e, a)` here but that contains
                 # some extra checks we don't need (e.g. to support nested data
                 # structures), and given that it's called N*M times here, it helps
