@@ -13,6 +13,9 @@ Bug Fixes:
 
 * Fix regression in `contain_exactly` (AKA `match_array`) that caused it
   to wrongly pass when the expected array was empty. (Myron Marston, #581)
+* Provide a better error message when you use the `change(obj, :msg)`
+  form of the change matcher but forget the message argument. (Alex
+  Sunderland, #585)
 
 ### 3.0.1 / 2014-06-12
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0...v3.0.1)
