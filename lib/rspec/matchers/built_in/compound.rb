@@ -29,9 +29,9 @@ module RSpec
           matcher_1.supports_block_expectations?
         end
 
-        def block_can_be_wrapped_for_compound_expression?
-          matcher_supports_block_wrapping?(matcher_1) &&
-          matcher_supports_block_wrapping?(matcher_2)
+        def expects_call_stack_jump?
+          matcher_expects_call_stack_jump?(matcher_1) ||
+          matcher_expects_call_stack_jump?(matcher_2)
         end
 
       private
@@ -161,19 +161,17 @@ module RSpec
         # This method figures out which matcher should be the inner matcher and which
         # should be the outer matcher.
         def order_block_matchers
-          return matcher_2, matcher_1 if matcher_supports_block_wrapping?(matcher_1)
-          return matcher_1, matcher_2 if matcher_supports_block_wrapping?(matcher_2)
+          return matcher_1, matcher_2 unless matcher_expects_call_stack_jump?(matcher_2)
+          return matcher_2, matcher_1 unless matcher_expects_call_stack_jump?(matcher_1)
 
           raise ArgumentError, "(#{matcher_1.description}) and " \
             "(#{matcher_2.description}) cannot be combined in a compound expectation"
         end
 
-        def matcher_supports_block_wrapping?(matcher)
-          matcher.block_can_be_wrapped_for_compound_expression?
+        def matcher_expects_call_stack_jump?(matcher)
+          matcher.expects_call_stack_jump?
         rescue NoMethodError
-          # TODO: it's odd that the default is true when not
-          # defined. We should come up with a better method name for it.
-          true
+          false
         end
 
         # @api public

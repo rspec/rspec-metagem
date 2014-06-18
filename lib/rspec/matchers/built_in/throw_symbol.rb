@@ -94,8 +94,8 @@ module RSpec
           true
         end
 
-        def block_can_be_wrapped_for_compound_expression?
-          false
+        def expects_call_stack_jump?
+          true
         end
 
       private
