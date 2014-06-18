@@ -175,7 +175,14 @@ RSpec.describe "expect { ... }.to change(actual, message)" do
         expect {}.to change(@instance, :some_value)
       end.to fail_with(/^expected #some_value to have changed, but is still/)
     end
+  end
 
+  context "with a missing message" do
+    it "fails with an ArgumentError" do
+      expect do
+        expect {}.to change(:receiver)
+      end.to raise_error(ArgumentError, /^`change` requires either an object and message/)
+    end
   end
 end
 
