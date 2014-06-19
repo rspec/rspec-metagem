@@ -86,7 +86,7 @@ module RSpec
               actual.each_with_index do |a, ai|
                 actual_matches[ai] ||= []
 
-                next unless optimized_match?(e, a)
+                next unless values_match?(e, a)
 
                 expected_matches[ei] << ai
                 actual_matches[ai] << ei
@@ -95,16 +95,6 @@ module RSpec
 
             PairingsMaximizer.new(expected_matches, actual_matches)
           end
-        end
-
-        # @private
-        # Attempts to match values using === and == before using values_match?
-        def optimized_match?(e, a)
-          [
-            e === a,
-            a == e,
-            values_match?(e, a)
-          ].any?
         end
 
         # Once we started supporting composing matchers, the algorithm for this matcher got
