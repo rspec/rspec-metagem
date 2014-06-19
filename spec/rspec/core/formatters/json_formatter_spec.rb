@@ -152,10 +152,12 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
     context "with multiple example groups", :slow do
       before do
+        example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
+
         group1 = RSpec::Core::ExampleGroup.describe("slow group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
-            example.clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
+            example.clock = example_clock
           end
         end
         group2 = RSpec::Core::ExampleGroup.describe("fast group") do
