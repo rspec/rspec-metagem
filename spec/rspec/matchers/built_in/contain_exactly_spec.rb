@@ -83,20 +83,20 @@ RSpec.describe "using contain_exactly with expect" do
   it "passes for an out of order valid positive expectation with hashes" do
     expect([
       {:a => 10},
-      {:a => -10},
+      {:a => -10}
     ]).to contain_exactly(
       {:a => (a_value < 0)},
-      {:a => (a_value > 0)},
+      {:a => (a_value > 0)}
     )
   end
 
   it "passes for an in order valid positive expectation with hashes" do
     expect([
       {:a => 10},
-      {:a => -10},
+      {:a => -10}
     ]).to contain_exactly(
       {:a => (a_value > 0)},
-      {:a => (a_value < 0)},
+      {:a => (a_value < 0)}
     )
   end
 end

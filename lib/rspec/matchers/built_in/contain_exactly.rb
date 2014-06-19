@@ -84,8 +84,6 @@ module RSpec
 
             expected.each_with_index do |e, ei|
               actual.each_with_index do |a, ai|
-                actual_matches[ai] ||= []
-
                 next unless values_match?(e, a)
 
                 expected_matches[ei] << ai
