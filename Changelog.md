@@ -190,7 +190,7 @@ Deprecations:
   a deprecation warning. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -237,6 +237,14 @@ Deprecations:
  * Using the old `:should` syntax without explicitly configuring it is deprecated.
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
+
+### 2.99.1 / 2014-06-19
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0...v2.99.1)
+
+Bug Fixes:
+
+* Fix typo in custom matcher `expected` deprecation warning -- it's
+  `expected_as_array`, not `expected_array`. (Frederick Cheung, #562)
 
 ### 2.99.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0.rc1...v2.99.0)
