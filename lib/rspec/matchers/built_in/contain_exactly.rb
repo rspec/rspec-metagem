@@ -84,11 +84,7 @@ module RSpec
 
             expected.each_with_index do |e, ei|
               actual.each_with_index do |a, ai|
-                # Normally we'd call `values_match?(e, a)` here but that contains
-                # some extra checks we don't need (e.g. to support nested data
-                # structures), and given that it's called N*M times here, it helps
-                # perf significantly to implement the matching bit ourselves.
-                next unless e === a || a == e
+                next unless values_match?(e, a)
 
                 expected_matches[ei] << ai
                 actual_matches[ai] << ei
