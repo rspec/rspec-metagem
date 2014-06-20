@@ -2,8 +2,8 @@
 Feature: cover matcher
 
   Use the cover matcher to specify that a range covers one or more
-  expected objects.  This works on any object that responds to #cover?  (such
-  as a Range):
+  expected objects. This works on any object that responds to #cover?
+  (such as a Range):
 
     ```ruby
     expect(1..10).to cover(5)

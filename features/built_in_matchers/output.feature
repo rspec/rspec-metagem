@@ -1,17 +1,15 @@
 Feature: output matcher
 
-  The `output` matcher provides a way to assert that the
-  has emitted content to either `$stdout` or `$stderr`.
+  The `output` matcher provides a way to assert that the has emitted content to either
+  `$stdout` or `$stderr`.
 
-  With no arg, passes if the block outputs `to_stdout` or `to_stderr`.
-  With a string, passes if the blocks outputs that specific string
-  `to_stdout` or `to_stderr`. With a regexp or matcher, passes if the
-  blocks outputs a string `to_stdout` or `to_stderr` that matches.
+  With no arg, passes if the block outputs `to_stdout` or `to_stderr`. With a string, passes
+  if the blocks outputs that specific string `to_stdout` or `to_stderr`. With a regexp or
+  matcher, passes if the blocks outputs a string `to_stdout` or `to_stderr` that matches.
 
-  Note: This matcher works by temporarily replacing `$stdout` or `$stderr`,
-  so it's not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
-  or that uses a reference to `$stdout`/`$stderr` that was stored before the
-  matcher is used.
+  Note: This matcher works by temporarily replacing `$stdout` or `$stderr`, so it's not able
+  to intercept stream output that explicitly uses `STDOUT`/`STDERR` or that uses a reference
+  to `$stdout`/`$stderr` that was stored before the matcher is used.
 
   Scenario: output_to_stdout matcher
     Given a file named "output_to_stdout_spec.rb" with:
