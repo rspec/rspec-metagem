@@ -1,5 +1,5 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.0...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.2...master)
 
 Enhancements:
 
@@ -13,8 +13,8 @@ Bug Fixes:
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
 
-### 3.0.2 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.1...3-0-maintenance)
+### 3.0.2 / 2014-06-19
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.1...v3.0.2)
 
 Bug Fixes:
 
