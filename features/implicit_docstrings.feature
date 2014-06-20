@@ -1,16 +1,16 @@
 Feature: implicit docstrings
 
   When you use rspec-expectations with rspec-core, RSpec is able to auto-generate the
-  docstrings for examples for you based on the last expectation in the example. This
-  can be handy when the matcher expresses exactly what you would write in your
-  example docstring, but it can also be easily abused. We find that the freeform nature of the
+  docstrings for examples for you based on the last expectation in the example.This
+  can be handy when the matcher expresses exactly what you would write in your example
+  docstring, but it can also be easily abused. We find that the freeform nature of the
   docstring provides a lot of value when used well (e.g. to document the "why" of a
-  particular behavior), and you lose that kind of flexibility when you rely on the matcher
-  to generate the docstring for you.
+  particular behavior), and you lose that kind of flexibility when you rely on the
+  matcher to generate the docstring for you.
 
-  In general, we recommend only using this feature when the matcher aligns _exactly_ with
-  the docstring you would write. Even then, many users prefer the explicitness of the full
-  docstring, so use this feature with care (if at all).
+  In general, we recommend only using this feature when the matcher aligns _exactly_
+  with the docstring you would write. Even then, many users prefer the explicitness of
+  the full docstring, so use this feature with care (if at all).
 
   Scenario: run passing examples
     Given a file named "implicit_docstrings_spec.rb" with:
