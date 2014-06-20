@@ -306,7 +306,7 @@ Bug Fixes:
   or `default_path`. (Matijs van Zuijlen)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.1...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -376,6 +376,20 @@ Deprecations:
 * `treat_symbols_as_metadata_keys_with_true_values` is deprecated and no
   longer has an affect now that the behavior it enabled is always
   enabled. (Myron Marston)
+
+### 2.99.1 / 2014-06-19
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0...v2.99.1)
+
+Bug Fixes:
+
+* Add missing deprecation warning for when `RSpec::Core::Runner` is used
+  multiple times in the same process. In 2.x RSpec's global state was
+  automatically cleared between runs but in 3.0 you need to call `RSpec.reset`
+  manually in these situations. (Sam Phippen, #1587)
+* Prevent deprecation being accidentally issues when doubles used with `be_`
+  matchers due to automatically generated descriptions. (Jon Rowe, #1573)
+* Load `rspec/core` when loading `rspec/core/rake_task` to ensure we can
+  issue deprecations correctly. (Jon Rowe, #1612)
 
 ### 2.99.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.0.rc1...v2.99.0)
