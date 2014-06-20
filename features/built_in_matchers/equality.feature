@@ -6,9 +6,8 @@ Feature: equality matchers
       a.eql?(b)   # object equivalence - a and b have the same value
       a == b      # object equivalence - a and b have the same value with type conversions
 
-  Note that these descriptions are guidelines but are not forced by the
-  language. Any object can implement any of these methods with its own
-  semantics.
+  Note that these descriptions are guidelines but are not forced by the language. Any object
+  can implement any of these methods with its own semantics.
 
   rspec-expectations ships with matchers that align with each of these methods:
 
