@@ -1,8 +1,7 @@
 Feature: define diffable matcher
 
-  When a matcher is defined as diffable, the output will
-  include a diff of the submitted objects when the objects
-  are more than simple primitives.
+  When a matcher is defined as diffable, the output will include a diff of the submitted
+  objects when the objects are more than simple primitives.
 
   Scenario: define a diffable matcher
     Given a file named "diffable_matcher_spec.rb" with:

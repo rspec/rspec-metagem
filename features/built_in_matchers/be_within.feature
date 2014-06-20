@@ -10,15 +10,15 @@ Feature: be_within matcher
       > area_of_circle == 28.2743338823081
         => false
 
-  Instead, you should use the be_within matcher to check that the value
-  is within a delta of your expected value:
+  Instead, you should use the be_within matcher to check that the value is within a delta of
+  your expected value:
 
     ```ruby
     expect(area_of_circle).to be_within(0.1).of(28.3)
     ```
 
-  Note that the difference between the actual and expected values must be
-  smaller than your delta; if it is equal, the matcher will fail.
+  Note that the difference between the actual and expected values must be smaller than your
+  delta; if it is equal, the matcher will fail.
 
   Scenario: basic usage
     Given a file named "be_within_matcher_spec.rb" with:

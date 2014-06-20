@@ -1,8 +1,7 @@
 Feature: define matcher
 
-  rspec-expectations provides a DSL for defining custom matchers.
-  These are often useful for expressing expectations in the domain
-  of your application.
+  rspec-expectations provides a DSL for defining custom matchers. These are often useful for
+  expressing expectations in the domain of your application.
 
   Scenario: define a matcher with default messages
     Given a file named "matcher_with_default_message_spec.rb" with:

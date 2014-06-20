@@ -1,7 +1,7 @@
 Feature: implicit docstrings
 
   When you use rspec-expectations with rspec-core, RSpec is able to auto-generate the
-  docstrings for examples for you based on the last expectation in the example.This can be
+  docstrings for examples for you based on the last expectation in the example. This can be
   handy when the matcher expresses exactly what you would write in your example docstring,
   but it can also be easily abused. We find that the freeform nature of the docstring provides
   a lot of value when used well (e.g. to document the "why" of a particular behavior), and you

@@ -1,10 +1,9 @@
 Feature: Composing Matchers
 
-  RSpec's matchers are designed to be composable so that you can
-  combine them to express the exact details of what you expect
-  but nothing more. This can help you avoid writing over-specified
-  brittle specs, by using a matcher in place of an exact value to
-  specify only the essential aspects of what you expect.
+  RSpec's matchers are designed to be composable so that you can combine them to express
+  the exact details of what you expect but nothing more. This can help you avoid writing
+  over-specified brittle specs, by using a matcher in place of an exact value to specify only
+  the essential aspects of what you expect.
 
   The following matchers accept matchers as arguments:
 
@@ -23,19 +22,16 @@ Feature: Composing Matchers
     * `yield_with_args(matcher, matcher)`
     * `yield_successive_args(matcher, matcher)`
 
-  Note that many built-in matchers do not accept matcher arguments
-  because they have precise semantics that do not allow for a matcher
-  argument. For example, `equal(some_object)` is designed to pass only
-  if the actual and expected arguments are references to the same object.
-  It would not make sense to support a matcher argument here.
+  Note that many built-in matchers do not accept matcher arguments because they have precise
+  semantics that do not allow for a matcher argument. For example, `equal(some_object)` is
+  designed to pass only if the actual and expected arguments are references to the same
+  object. It would not make sense to support a matcher argument here.
 
-  All of RSpec's built-in matchers have one or more aliases that allow
-  you to use a noun-phrase rather than verb form since they read better
-  as composed arguments. They also provide customized failure output so
-  that the failure message reads better as well.
+  All of RSpec's built-in matchers have one or more aliases that allow you to use a noun-phrase
+  rather than verb form since they read better as composed arguments. They also provide
+  customized failure output so that the failure message reads better as well.
 
-  A full list of these aliases is out of scope here, but here are some
-  of the aliases used below:
+  A full list of these aliases is out of scope here, but here are some of the aliases used below:
 
     * `be < 2` => `a_value < 2`
     * `be > 2` => `a_value > 2`
