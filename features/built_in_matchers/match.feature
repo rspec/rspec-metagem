@@ -1,8 +1,7 @@
 Feature: match matcher
 
-  The match matcher calls `#match` on the object, passing if `#match` returns a
-  truthy (not `false` or `nil`) value.  Regexp and String both provide a `#match`
-  method.
+  The match matcher calls `#match` on the object, passing if `#match` returns a truthy (not
+  `false` or `nil`) value.  Regexp and String both provide a `#match` method.
 
     ```ruby
     expect("a string").to match(/str/) # passes
@@ -11,8 +10,7 @@ Feature: match matcher
     expect(/foo/).to match("drinks")   # fails
     ```
 
-  You can also use this matcher to match nested data structures when
-  composing matchers.
+  You can also use this matcher to match nested data structures when composing matchers.
 
   Scenario: string usage
     Given a file named "string_match_spec.rb" with:

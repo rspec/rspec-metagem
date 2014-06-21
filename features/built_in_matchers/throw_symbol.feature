@@ -1,7 +1,7 @@
 Feature: throw_symbol matcher
 
-  The throw_symbol matcher is used to specify that a block of code
-  throws a symbol.  The most basic form passes if any symbol is thrown:
+  The throw_symbol matcher is used to specify that a block of code throws a symbol. The most
+  basic form passes if any symbol is thrown:
 
     ```ruby
     expect { throw :foo }.to throw_symbol
@@ -13,8 +13,7 @@ Feature: throw_symbol matcher
     expect { throw :foo }.to throw_symbol(:foo)
     ```
 
-  If you care about the additional argument given to throw, you can
-  specify that as well:
+  If you care about the additional argument given to throw, you can specify that as well:
 
     ```ruby
     expect { throw :foo, 7 }.to throw_symbol(:foo, 7)

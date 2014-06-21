@@ -1,7 +1,7 @@
 Feature: comparison matchers
 
-  RSpec provides a number of matchers that are based on Ruby's built-in
-  operators. These can be used for generalized comparison of values. E.g.
+  RSpec provides a number of matchers that are based on Ruby's built-in operators. These
+  can be used for generalized comparison of values. E.g.
 
     ```ruby
     expect(9).to be > 6

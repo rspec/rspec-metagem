@@ -1,7 +1,7 @@
 Feature: raise_error matcher
 
-  Use the `raise_error` matcher to specify that a block of code raises an
-  error. The most basic form passes if any error is thrown:
+  Use the `raise_error` matcher to specify that a block of code raises an error. The most
+  basic form passes if any error is thrown:
 
     ```ruby
     expect { raise StandardError }.to raise_error
@@ -13,11 +13,11 @@ Feature: raise_error matcher
     expect { 3 / 0 }.to raise_exception
     ```
 
-  `raise_error` and `raise_exception` are functionally interchangeable, so use
-  the one that makes the most sense to you in any given context.
+  `raise_error` and `raise_exception` are functionally interchangeable, so use the one that
+  makes the most sense to you in any given context.
 
-  In addition to the basic form, above, there are a number of ways to specify
-  details of an error/exception:
+  In addition to the basic form, above, there are a number of ways to specify details of an
+  error/exception:
 
     ```ruby
     expect { raise "oops" }.to raise_error

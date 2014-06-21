@@ -1,8 +1,8 @@
 Feature: Minitest integration
 
-  rspec-expectations is a stand-alone gem that can be used without the rest of
-  RSpec. If you like minitest as your test runner, but prefer RSpec's
-  approach to expressing expectations, you can have both.
+  rspec-expectations is a stand-alone gem that can be used without the rest of RSpec. If you
+  like minitest as your test runner, but prefer RSpec's approach to expressing expectations,
+  you can have both.
 
   To integrate rspec-expectations with minitest, require `rspec/expectations/minitest_integration`.
 

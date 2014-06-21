@@ -17,11 +17,11 @@ Feature: predicate matchers
     expect(7.zero?).to eq true # fails with "expected true, got false (using ==)"
     ```
 
-  ...but RSpec provides dynamic predicate matchers that are more readable and
-  provide better failure output.
+  ...but RSpec provides dynamic predicate matchers that are more readable and provide
+  better failure output.
 
-  For any predicate method, RSpec gives you a corresponding matcher.  Simply
-  prefix the method with `be_` and remove the question mark.  Examples:
+  For any predicate method, RSpec gives you a corresponding matcher. Simply prefix the
+  method with `be_` and remove the question mark. Examples:
 
     ```ruby
     expect(7).not_to be_zero       # calls 7.zero?
@@ -29,9 +29,8 @@ Feature: predicate matchers
     expect(x).to be_multiple_of(3) # calls x.multiple_of?(3)
     ```
 
-  Alternately, for a predicate method that begins with `has_` like
-  `Hash#has_key?`, RSpec allows you to use an alternate form since `be_has_key`
-  makes no sense.
+  Alternately, for a predicate method that begins with `has_` like `Hash#has_key?`, RSpec allows
+  you to use an alternate form since `be_has_key` makes no sense.
 
     ```ruby
     expect(hash).to have_key(:foo)       # calls hash.has_key?(:foo)
