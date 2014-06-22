@@ -35,11 +35,14 @@ module RSpec
       # @method failure_message_when_negated
       # This will only be called when a negative match fails.
       # @return [String] Explanation for the failure.
+      # @note This method is listed as optional because matchers do not have to
+      #   support negation. But if your matcher does support negation, this is a
+      #   required method -- otherwise, you'll get a `NoMethodError`.
 
       # @method description
       # The description is used for two things:
       #
-      #   * When using rspec-core's one-liner syntax
+      #   * When using RSpec's one-liner syntax
       #     (e.g. `it { is_expected.to matcher }`), the description
       #     is used to generate the example's doc string since you
       #     have not provided one.
@@ -55,6 +58,7 @@ module RSpec
       # only needed for matchers which operate on a side effect of a block, rather
       # than on a particular object.
       # @return [Boolean] true if this matcher can be used in block expressions.
+      # @note If not defined, RSpec assumes a value of `false` for this method.
 
       # @method expects_call_stack_jump?
       # Indicates that when this matcher is used in a block expectation
@@ -67,6 +71,7 @@ module RSpec
       # @return [Boolean] true if the matcher expects a call stack jump
       #
       # @note This method is very rarely used or needed.
+      # @note If not defined, RSpec assumes a value of `false` for this method.
 
       # @!endgroup
     end

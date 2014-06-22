@@ -91,7 +91,7 @@ module RSpec
           @match_results[matcher_2]
         end
 
-        # Normally, we execute the maching sequentially. For an expression like
+        # Normally, we execute the matching sequentially. For an expression like
         # `expect(x).to foo.and bar`, this becomes:
         #
         #   expect(x).to foo

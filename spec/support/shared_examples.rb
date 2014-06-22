@@ -3,7 +3,7 @@ RSpec.shared_examples "an RSpec matcher" do |options|
   let(:invalid_value) { options.fetch(:invalid_value) }
 
   # Note: do not use `matcher` in 2 expectation expressions in a single
-  # example here. In some cases (such as `change { }.to(2)`), it'll fail
+  # example here. In some cases (such as `change { }.to(2)`), it will fail
   # because using it a second time will apply `x += 2` twice, changing
   # the value to 4.
 
