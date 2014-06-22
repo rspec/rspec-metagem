@@ -14,17 +14,34 @@ RSpec::Core::RakeTask.new(:spec) do |t|
   t.ruby_opts = %w[-w]
 end
 
+with_changelog_in_features = lambda do |&block|
+  begin
+    sh "cp Changelog.md features/"
+    block.call
+  ensure
+    sh "rm features/Changelog.md"
+  end
+end
+
 desc "Push docs/cukes to relishapp using the relish-client-gem"
 task :relish, :version do |t, args|
   raise "rake relish[VERSION]" unless args[:version]
-  sh "cp Changelog.md features/"
-  if `relish versions rspec/rspec-expectations`.split.map(&:strip).include? args[:version]
-    puts "Version #{args[:version]} already exists"
-  else
-    sh "relish versions:add rspec/rspec-expectations:#{args[:version]}"
+
+  with_changelog_in_features.call do
+    if `relish versions rspec/rspec-expectations`.split.map(&:strip).include? args[:version]
+      puts "Version #{args[:version]} already exists"
+    else
+      sh "relish versions:add rspec/rspec-expectations:#{args[:version]}"
+    end
+    sh "relish push rspec/rspec-expectations:#{args[:version]}"
   end
-  sh "relish push rspec/rspec-expectations:#{args[:version]}"
-  sh "rm features/Changelog.md"
+end
+
+desc "Push to relish staging environment"
+task :relish_staging do
+  with_changelog_in_features.call do
+    sh "relish push rspec-staging/rspec-expectations"
+  end
 end
 
 namespace :clobber do
