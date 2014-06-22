@@ -165,7 +165,8 @@ module RSpec
           return matcher_2, matcher_1 unless matcher_expects_call_stack_jump?(matcher_1)
 
           raise ArgumentError, "(#{matcher_1.description}) and " \
-            "(#{matcher_2.description}) cannot be combined in a compound expectation"
+            "(#{matcher_2.description}) cannot be combined in a compound expectation " \
+            "because they both expect a call stack jump."
         end
 
         def matcher_expects_call_stack_jump?(matcher)
