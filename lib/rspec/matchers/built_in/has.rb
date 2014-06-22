@@ -4,9 +4,7 @@ module RSpec
       # @api private
       # Provides the implementation for `has_<predicate>`.
       # Not intended to be instantiated directly.
-      class Has
-        include Composable
-
+      class Has < BaseMatcher
         def initialize(method_name, *args, &block)
           @method_name, @args, @block = method_name, args, block
         end
@@ -43,11 +41,6 @@ module RSpec
           [method_description, args_description].compact.join(' ')
         end
 
-        # @private
-        def supports_block_expectations?
-          false
-        end
-
       private
 
         def predicate_accessible?
@@ -74,7 +67,11 @@ module RSpec
         end
 
         def predicate
-          @predicate ||= :"has_#{@method_name.to_s.match(Matchers::HAS_REGEX).captures.first}?"
+          # On 1.9, there appears to be a bug where String#match can return `false`
+          # rather than the match data object. Changing to Regex#match appears to
+          # work around this bug. For an example of this bug, see:
+          # https://travis-ci.org/rspec/rspec-expectations/jobs/27549635
+          @predicate ||= :"has_#{Matchers::HAS_REGEX.match(@method_name.to_s).captures.first}?"
         end
 
         def method_description

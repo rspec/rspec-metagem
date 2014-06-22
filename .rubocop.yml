@@ -11,7 +11,7 @@ AlignParameters:
 
 # Warns when the class is excessively long.
 ClassLength:
-  Max: 118 # RaiseError matcher.
+  Max: 90
 
 # Over time we'd like to get this down, but this is what we're at now.
 CyclomaticComplexity:

@@ -2,6 +2,11 @@ RSpec.shared_examples "an RSpec matcher" do |options|
   let(:valid_value)   { options.fetch(:valid_value) }
   let(:invalid_value) { options.fetch(:invalid_value) }
 
+  # Note: do not use `matcher` in 2 expectation expressions in a single
+  # example here. In some cases (such as `change { }.to(2)`), it will fail
+  # because using it a second time will apply `x += 2` twice, changing
+  # the value to 4.
+
   it 'preserves the symmetric property of `==`' do
     expect(matcher).to eq(matcher)
     expect(matcher).not_to eq(valid_value)
@@ -17,19 +22,35 @@ RSpec.shared_examples "an RSpec matcher" do |options|
   end
 
   matcher :always_passes do
-    match { true }
+    supports_block_expectations
+    match do |actual|
+      actual.call if Proc === actual
+      true
+    end
   end
 
   matcher :always_fails do
-    match { false }
+    supports_block_expectations
+    match do |actual|
+      actual.call if Proc === actual
+      false
+    end
   end
 
-  it 'supports compound expectations by chaining `and`' do
+  it 'allows additional matchers to be chained off it using `and`' do
     expect(valid_value).to matcher.and always_passes
   end
 
-  it 'supports compound expectations by chaining `or`' do
+  it 'can be chained off of an existing matcher using `and`' do
+    expect(valid_value).to always_passes.and matcher
+  end
+
+  it 'allows additional matchers to be chained off it using `or`' do
     expect(valid_value).to matcher.or always_fails
+  end
+
+  it 'can be chained off of an existing matcher using `or`' do
+    expect(valid_value).to always_fails.or matcher
   end
 
   it 'implements the full matcher protocol' do
@@ -37,7 +58,8 @@ RSpec.shared_examples "an RSpec matcher" do |options|
       :matches?,
       :failure_message,
       :description,
-      :supports_block_expectations?
+      :supports_block_expectations?,
+      :expects_call_stack_jump?
     )
 
     # We do not require failure_message_when_negated and does_not_match?

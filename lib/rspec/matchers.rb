@@ -15,17 +15,8 @@ RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relat
 # in the `RSpec::Expectations` and `RSpec::Matchers` namespaces.
 module RSpec
   # RSpec::Matchers provides a number of useful matchers we use to define
-  # expectations. A matcher is any object that responds to the following:
-  #
-  #     matches?(actual)
-  #     failure_message
-  #
-  # These methods are also part of the matcher protocol, but are optional:
-  #
-  #     does_not_match?(actual)
-  #     failure_message_when_negated
-  #     description
-  #     supports_block_expectations?
+  # expectations. Any object that implements the [matcher protocol](Matchers/MatcherProtocol)
+  # can be used as a matcher.
   #
   # ## Predicates
   #

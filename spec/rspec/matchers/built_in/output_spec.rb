@@ -9,6 +9,11 @@ RSpec.shared_examples "output_to_stream" do |stream_name|
     expect(matcher).to be_diffable
   end
 
+  it 'does not produce warnings when the failure message is accessed first' do
+    expect($VERBOSE).to be_truthy
+    expect { matcher.failure_message }.not_to output.to_stderr
+  end
+
   context "expect { ... }.to output.#{matcher_method}" do
     it "passes if the block outputs to #{stream_name}" do
       expect { stream.print 'foo' }.to matcher

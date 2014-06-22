@@ -4,9 +4,7 @@ module RSpec
       # @api private
       # Provides the implementation for `be_within`.
       # Not intended to be instantiated directly.
-      class BeWithin
-        include Composable
-
+      class BeWithin < BaseMatcher
         def initialize(delta)
           @delta = delta
         end
@@ -53,11 +51,6 @@ module RSpec
         # @return [String]
         def description
           "be within #{@delta}#{@unit} of #{@expected}"
-        end
-
-        # @private
-        def supports_block_expectations?
-          false
         end
 
       private
