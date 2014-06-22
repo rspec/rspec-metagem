@@ -73,6 +73,26 @@ module RSpec
       # @note This method is very rarely used or needed.
       # @note If not defined, RSpec assumes a value of `false` for this method.
 
+      # @method diffable?
+      # @return [Boolean] true if `actual` and `expected` can be diffed.
+      # Indicates that this matcher provides `actual` and `expected` attributes,
+      # and that the values returned by these can be usefully diffed, which can
+      # be included in the output.
+
+      # @method actual
+      # @return [String, Object] If an object (rather than a string) is provided,
+      #   RSpec will use the `pp` library to convert it to multi-line output in
+      #   order to diff.
+      # The actual value for the purposes of a diff.
+      # @note This method is required if `diffable?` returns true.
+
+      # @method expected
+      # @return [String, Object] If an object (rather than a string) is provided,
+      #   RSpec will use the `pp` library to convert it to multi-line output in
+      #   order to diff.
+      # The expected value for the purposes of a diff.
+      # @note This method is required if `diffable?` returns true.
+
       # @!endgroup
     end
   end
