@@ -255,9 +255,7 @@ module RSpec
       # @api private
       # Provides the implementation for `yield_with_args`.
       # Not intended to be instantiated directly.
-      class YieldWithArgs
-        include Composable
-
+      class YieldWithArgs < BaseMatcher
         def initialize(*args)
           @expected = args
         end
@@ -344,9 +342,7 @@ module RSpec
       # @api private
       # Provides the implementation for `yield_successive_args`.
       # Not intended to be instantiated directly.
-      class YieldSuccessiveArgs
-        include Composable
-
+      class YieldSuccessiveArgs < BaseMatcher
         def initialize(*args)
           @expected = args
         end

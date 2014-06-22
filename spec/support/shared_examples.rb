@@ -58,7 +58,8 @@ RSpec.shared_examples "an RSpec matcher" do |options|
       :matches?,
       :failure_message,
       :description,
-      :supports_block_expectations?
+      :supports_block_expectations?,
+      :expects_call_stack_jump?
     )
 
     # We do not require failure_message_when_negated and does_not_match?

@@ -267,6 +267,11 @@ module RSpec
         def supports_block_expectations?
           false
         end
+
+        # Most matchers do not expect call stack jumps.
+        def expects_call_stack_jump?
+          false
+        end
       end
 
       # The class used for custom matchers. The block passed to

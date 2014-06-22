@@ -4,9 +4,7 @@ module RSpec
       # @api private
       # Provides the implementation for `satisfy`.
       # Not intended to be instantiated directly.
-      class Satisfy
-        include Composable
-
+      class Satisfy < BaseMatcher
         def initialize(&block)
           @block = block
         end
@@ -34,11 +32,6 @@ module RSpec
         # @return [String]
         def description
           "satisfy block"
-        end
-
-        # @private
-        def supports_block_expectations?
-          false
         end
       end
     end

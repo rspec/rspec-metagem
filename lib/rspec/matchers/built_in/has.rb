@@ -4,9 +4,7 @@ module RSpec
       # @api private
       # Provides the implementation for `has_<predicate>`.
       # Not intended to be instantiated directly.
-      class Has
-        include Composable
-
+      class Has < BaseMatcher
         def initialize(method_name, *args, &block)
           @method_name, @args, @block = method_name, args, block
         end
@@ -41,11 +39,6 @@ module RSpec
         # @return [String]
         def description
           [method_description, args_description].compact.join(' ')
-        end
-
-        # @private
-        def supports_block_expectations?
-          false
         end
 
       private
