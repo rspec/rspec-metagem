@@ -25,8 +25,8 @@ module RSpec
         end
 
         def supports_block_expectations?
-          matcher_2.supports_block_expectations? &&
-          matcher_1.supports_block_expectations?
+          matcher_supports_block_expectations?(matcher_1) &&
+          matcher_supports_block_expectations?(matcher_2)
         end
 
         def expects_call_stack_jump?
@@ -171,6 +171,12 @@ module RSpec
 
         def matcher_expects_call_stack_jump?(matcher)
           matcher.expects_call_stack_jump?
+        rescue NoMethodError
+          false
+        end
+
+        def matcher_supports_block_expectations?(matcher)
+          matcher.supports_block_expectations?
         rescue NoMethodError
           false
         end

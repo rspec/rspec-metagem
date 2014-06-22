@@ -70,6 +70,25 @@ module RSpec::Matchers::BuiltIn
           end
         end
 
+        context "indicates block expectations are not supported when combined with a custom matcher that does not define `supports_block_expectations?" do
+          let(:non_block_matcher) do
+            Class.new do
+              include ::RSpec::Matchers::Composable
+              def matches?(*); true; end
+            end.new
+          end
+
+          example "with the block matcher first" do
+            compound = combine(change { x }.to(2), non_block_matcher)
+            expect(compound.supports_block_expectations?).to be false
+          end
+
+          example "with the block matcher last" do
+            compound = combine(non_block_matcher, change { x }.to(2))
+            expect(compound.supports_block_expectations?).to be false
+          end
+        end
+
         context "forwards on any matcher block arguments as needed (such as for `yield_with_args`)" do
           obj = Object.new
           def obj.foo(print_bar=true)
