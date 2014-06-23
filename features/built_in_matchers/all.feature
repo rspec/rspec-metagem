@@ -1,4 +1,4 @@
-Feature: all matcher
+Feature: `all` matcher
 
   Use the `all` matcher to specify that a collection's objects all pass an expected matcher.
   This works on any enumerable object.

@@ -1,4 +1,4 @@
-Feature: be_within matcher
+Feature: `be_within` matcher
 
   Normal equality expectations do not work well for floating point values.
   Consider this irb session:

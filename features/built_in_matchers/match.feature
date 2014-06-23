@@ -1,4 +1,4 @@
-Feature: match matcher
+Feature: `match` matcher
 
   The match matcher calls `#match` on the object, passing if `#match` returns a truthy (not
   `false` or `nil`) value.  Regexp and String both provide a `#match` method.

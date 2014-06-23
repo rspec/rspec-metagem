@@ -1,5 +1,5 @@
 @ruby-1.9
-Feature: cover matcher
+Feature: `cover` matcher
 
   Use the cover matcher to specify that a range covers one or more
   expected objects. This works on any object that responds to #cover?

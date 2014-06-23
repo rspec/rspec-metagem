@@ -1,4 +1,4 @@
-Feature: comparison matchers
+Feature: Comparison matchers
 
   RSpec provides a number of matchers that are based on Ruby's built-in operators. These
   can be used for generalized comparison of values. E.g.

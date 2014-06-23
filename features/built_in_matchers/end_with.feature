@@ -1,4 +1,4 @@
-Feature: end_with matcher
+Feature: `end_with` matcher
 
   Use the `end_with` matcher to specify that a string or array ends with the expected
   characters or elements.
