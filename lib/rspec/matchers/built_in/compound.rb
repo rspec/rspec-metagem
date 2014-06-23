@@ -49,7 +49,7 @@ module RSpec
                               SequentialEvaluator
                             end
 
-          @evaluator = evaluator_klass.new(matcher_1, matcher_2, actual)
+          @evaluator = evaluator_klass.new(actual, matcher_1, matcher_2)
         end
 
         def indent_multiline_message(message)
@@ -86,11 +86,11 @@ module RSpec
         end
 
         def matcher_1_matches?
-          @evaluator.matcher_1_matches?
+          @evaluator.matcher_matches?(matcher_1)
         end
 
         def matcher_2_matches?
-          @evaluator.matcher_2_matches?
+          @evaluator.matcher_matches?(matcher_2)
         end
 
         def matcher_supports_block_expectations?(matcher)
@@ -101,18 +101,12 @@ module RSpec
 
         # For value expectations, we can evaluate the matchers sequentially.
         class SequentialEvaluator
-          def initialize(matcher_1, matcher_2, actual)
-            @matcher_1 = matcher_1
-            @matcher_2 = matcher_2
-            @actual    = actual
+          def initialize(actual, *)
+            @actual = actual
           end
 
-          def matcher_1_matches?
-            @matcher_1.matches?(@actual)
-          end
-
-          def matcher_2_matches?
-            @matcher_2.matches?(@actual)
+          def matcher_matches?(matcher)
+            matcher.matches?(@actual)
           end
         end
 
@@ -131,10 +125,10 @@ module RSpec
         #
         # This is necessary so that the `expect` block is only executed once.
         class NestedEvaluator
-          def initialize(matcher_1, matcher_2, actual)
+          def initialize(actual, matcher_1, matcher_2)
+            @actual        = actual
             @matcher_1     = matcher_1
             @matcher_2     = matcher_2
-            @actual        = actual
             @match_results = {}
 
             inner, outer = order_block_matchers
@@ -144,12 +138,8 @@ module RSpec
             end)
           end
 
-          def matcher_1_matches?
-            @match_results[@matcher_1]
-          end
-
-          def matcher_2_matches?
-            @match_results[@matcher_2]
+          def matcher_matches?(matcher)
+            @match_results.fetch(matcher)
           end
 
         private
