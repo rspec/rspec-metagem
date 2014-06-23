@@ -1,4 +1,4 @@
-Feature: contain_exactly matcher
+Feature: `contain_exactly` matcher
 
   The `contain_exactly` matcher provides a way to test arrays against each other in a way
   that disregards differences in the ordering between the actual and expected array.

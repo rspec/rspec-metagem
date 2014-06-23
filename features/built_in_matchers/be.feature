@@ -1,4 +1,4 @@
-Feature: "be" matchers
+Feature: `be` matchers
 
   There are several related "be" matchers:
 

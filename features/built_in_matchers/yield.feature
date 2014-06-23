@@ -1,4 +1,4 @@
-Feature: yield matchers
+Feature: `yield` matchers
 
   There are four related matchers that allow you to specify whether or not a method yields,
   how many times it yields, whether or not it yields with arguments, and what those

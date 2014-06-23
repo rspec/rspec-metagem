@@ -1,4 +1,4 @@
-Feature: change matcher
+Feature: `change` matcher
 
   The `change` matcher is used to specify that a block of code changes some mutable state.
   You can specify what will change using either of two forms:

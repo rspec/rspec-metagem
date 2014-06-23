@@ -1,25 +1,26 @@
-- Upgrade.md
-- Changelog.md
-- customized_message.feature
-- diffing.feature
-- implicit_docstrings.feature
-- syntax_configuration.feature
 - built_in_matchers:
+  - equality.feature
+  - comparisons.feature
+  - types.feature
+  - all.feature
   - be.feature
   - be_within.feature
-  - equality.feature
   - exist.feature
   - change.feature
-  - raise_error.feature
+  - contain_exactly.feature
+  - cover.feature
+  - end_with.feature
+  - exist.feature
   - have.feature
   - include.feature
   - match.feature
   - operators.feature
   - predicates.feature
+  - raise_error.feature
   - respond_to.feature
   - satisfy.feature
+  - start_with.feature
   - throw_symbol.feature
-  - types.feature
   - yield.feature
 - custom_matchers:
   - define_matcher.feature
@@ -27,5 +28,12 @@
   - define_matcher_with_fluent_interface.feature
   - access_running_example.feature
   - define_matcher_outside_rspec.feature
+- composing_matchers.feature
+- compound_expectations.feature
+- customized_message.feature
+- diffing.feature
+- implicit_docstrings.feature
+- syntax_configuration.feature
 - test_frameworks:
   - test_unit.feature
+- Changelog.md

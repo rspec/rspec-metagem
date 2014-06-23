@@ -1,4 +1,4 @@
-Feature: output matcher
+Feature: `output` matcher
 
   The `output` matcher provides a way to assert that the has emitted content to either
   `$stdout` or `$stderr`.

@@ -1,4 +1,4 @@
-Feature: raise_error matcher
+Feature: `raise_error` matcher
 
   Use the `raise_error` matcher to specify that a block of code raises an error. The most
   basic form passes if any error is thrown:

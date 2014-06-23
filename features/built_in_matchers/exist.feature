@@ -1,4 +1,4 @@
-Feature: exist matcher
+Feature: `exist` matcher
 
   The exist matcher is used to specify that something exists (as indicated by #exist? or #exists?):
 
