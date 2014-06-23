@@ -145,7 +145,16 @@ module RSpec::Core
     describe "#mock_framework" do
       it "defaults to :rspec" do
         expect(RSpec::Support).to receive(:require_rspec_core).with('mocking_adapters/rspec')
-        config.mock_framework
+        expect(config.mock_framework).to eq(MockingAdapters::RSpec)
+      end
+
+      context "when rspec-mocks is not installed" do
+        it 'gracefully falls back to :nothing' do
+          allow(RSpec::Support).to receive(:require_rspec_core).and_call_original
+          allow(RSpec::Support).to receive(:require_rspec_core).with('mocking_adapters/rspec').and_raise(LoadError)
+
+          expect(config.mock_framework).to eq(MockingAdapters::Null)
+        end
       end
     end
 
@@ -257,15 +266,27 @@ module RSpec::Core
       end
     end
 
-    describe "#expectation_framework" do
+    describe "#expectation_frameworks" do
       it "defaults to :rspec" do
         expect(config).to receive(:require).with('rspec/expectations')
-        config.expectation_frameworks
+        expect(config.expectation_frameworks).to eq([RSpec::Matchers])
+      end
+
+      context "when rspec-expectations is not installed" do
+        def an_anonymous_module
+          name = RUBY_VERSION.to_f < 1.9 ? '' : nil
+          an_object_having_attributes(:class => Module, :name => name)
+        end
+
+        it 'gracefully falls back to an anonymous module' do
+          allow(config).to receive(:require).with('rspec/expectations').and_raise(LoadError)
+          expect(config.expectation_frameworks).to match([an_anonymous_module])
+        end
       end
     end
 
     describe "#expectation_framework=" do
-      it "delegates to expect_with=" do
+      it "delegates to expect_with" do
         expect(config).to receive(:expect_with).with(:rspec)
         config.expectation_framework = :rspec
       end
