@@ -7,6 +7,10 @@ Feature: `--tag` option
   with `:name => value` will be filtered, where `value` is always a string. In
   both cases, `name` is converted to a symbol.
 
+  Filters are represented internally as a hash, which means that you can't
+  specify multiple filters for the same key. If you try to exclude `:name => 'foo'`
+  and `:name => 'bar'`, you will only end up excluding `:name => 'bar'`.
+
   Tags can also be used to exclude examples by adding a `~` before the tag. For
   example `~tag` will exclude all examples marked with `:tag => true` and
   `~tag:value` will exclude all examples marked with `:tag => value`.
