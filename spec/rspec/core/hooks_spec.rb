@@ -181,6 +181,21 @@ module RSpec::Core
           expect(data_1).to eq(expected_data)
           expect(data_2).to eq(expected_data)
         end
+
+        it "exposes a sensible inspect value" do
+          inspect_value = nil
+          group = ExampleGroup.describe do
+            around do |ex|
+              inspect_value = ex.inspect
+            end
+
+            it "does something" do
+            end
+          end
+
+          group.run
+          expect(inspect_value).to match /ExampleProcsy/
+        end
       end
 
       context "when running the example within a block passed to a method" do
