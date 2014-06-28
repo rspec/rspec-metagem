@@ -220,6 +220,11 @@ module RSpec
         def wrap(&block)
           self.class.new(example, &block)
         end
+
+        # @private
+        def inspect
+          @example.inspect.gsub('Example', 'ExampleProcsy')
+        end
       end
 
       # @private
