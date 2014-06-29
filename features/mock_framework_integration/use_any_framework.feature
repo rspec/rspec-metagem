@@ -69,7 +69,7 @@ Feature: mock with an alternative framework
           end
 
           def verify_mocks_for_rspec
-            Expector.verify_expectors.each {|d| d.verify}
+            Expector.verify_expectors
           end
 
           def teardown_mocks_for_rspec
