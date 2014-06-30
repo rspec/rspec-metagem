@@ -72,3 +72,21 @@ Feature: shared context
       """
     When I run `rspec shared_context_example.rb`
     Then the examples should all pass
+
+  Scenario: Declare a shared context and include it with a block
+    Given a file named "shared_context_example.rb" with:
+      """ruby
+      require "./shared_stuff.rb"
+
+      RSpec.describe "including shared context using 'include_context' and a block" do
+        include_context "shared stuff" do
+          let(:shared_let) { {'in_a' => 'block'} }
+        end
+
+        it "evaluates the block in the shared context" do
+          expect(shared_let['in_a']).to eq('block')
+        end
+      end
+      """
+    When I run `rspec shared_context_example.rb`
+    Then the examples should all pass
