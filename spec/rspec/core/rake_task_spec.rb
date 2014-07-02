@@ -88,6 +88,7 @@ module RSpec::Core
         %w[ a/2.rb a/1.rb a/3.rb ],
         %w[ a/3.rb a/2.rb a/1.rb ]
       ].map do |files|
+        allow(file_searcher).to receive(:[]).with(anything).and_call_original
         expect(file_searcher).to receive(:[]).with(a_string_including pattern) { files }
         loaded_files
       end

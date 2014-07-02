@@ -197,6 +197,19 @@ module RSpec
         @files_to_run = nil
       end
 
+      # @macro define_reader
+      # Exclude files matching this pattern
+      define_reader :exclude_pattern
+
+      # Set pattern to match files to exclude
+      # @attr value [String] the filename pattern to exclude spec files by
+      def exclude_pattern=(value)
+        if @spec_files_loaded
+          RSpec.warning "Configuring `exclude_pattern` to #{value} has no effect since RSpec has already loaded the spec files."
+        end
+        @exclude_pattern = value
+      end
+
       # @macro add_setting
       # Report the times for the slowest examples (default: `false`).
       # Use this to specify the number of examples to include in the profile.
@@ -281,6 +294,7 @@ module RSpec
         @files_or_directories_to_run = []
         @color = false
         @pattern = '**/*_spec.rb'
+        @exclude_pattern = ''
         @failure_exit_code = 1
         @spec_files_loaded = false
 
@@ -1296,9 +1310,14 @@ module RSpec
       end
 
       def gather_directories(path)
+        include_files = get_matching_files(path, pattern)
+        exclude_files = get_matching_files(path, exclude_pattern)
+        (include_files - exclude_files).sort
+      end
+
+      def get_matching_files(path, pattern)
         stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
-        files    = pattern =~ /^#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
-        files.sort
+        pattern =~ /^#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
       end
 
       def extract_location(path)
