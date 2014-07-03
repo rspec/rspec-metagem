@@ -1,6 +1,7 @@
 - built_in_matchers:
   - equality.feature
   - comparisons.feature
+  - predicates.feature
   - types.feature
   - all.feature
   - be.feature
@@ -15,7 +16,6 @@
   - include.feature
   - match.feature
   - operators.feature
-  - predicates.feature
   - raise_error.feature
   - respond_to.feature
   - satisfy.feature
