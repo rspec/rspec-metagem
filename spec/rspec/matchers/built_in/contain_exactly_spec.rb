@@ -59,6 +59,19 @@ RSpec.describe "should =~ array", :uses_should do
       array.should =~ array
     end
   end
+
+  context "when the array undefines `=~`" do
+    it 'still works' do
+      array_klass = Class.new(Array) { undef =~ }
+      array = array_klass.new([1, 2])
+
+      array.should =~ [1, 2]
+
+      expect {
+        array.should =~ [0, 1, 2]
+      }.to fail_with(/expected collection contained/)
+    end
+  end
 end
 
 RSpec.describe "should_not =~ [:with, :multiple, :args]", :uses_should do

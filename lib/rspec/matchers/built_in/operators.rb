@@ -45,7 +45,7 @@ module RSpec
         # @private
         def self.use_custom_matcher_or_delegate(operator)
           define_method(operator) do |expected|
-            if uses_generic_implementation_of?(operator) && (matcher = OperatorMatcher.get(@actual.class, operator))
+            if !has_non_generic_implementation_of?(operator) && (matcher = OperatorMatcher.get(@actual.class, operator))
               @actual.__send__(::RSpec::Matchers.last_expectation_handler.should_method, matcher.new(expected))
             else
               eval_match(@actual, operator, expected)
@@ -79,8 +79,8 @@ module RSpec
 
       private
 
-        def uses_generic_implementation_of?(op)
-          Support.method_handle_for(@actual, op).owner == ::Kernel
+        def has_non_generic_implementation_of?(op)
+          Support.method_handle_for(@actual, op).owner != ::Kernel
         rescue NameError
           false
         end
