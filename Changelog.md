@@ -5,6 +5,8 @@ Bug Fixes:
 
 * Rename private `LegacyMacherAdapter` constant to `LegacyMatcherAdapter`
   to fix typo. (Abdelkader Boudih, #563)
+* Fix issue with detection of generic operator matchers so they work
+  correctly when undefined. (Myron Marston, #597)
 
 Enhancements:
 
