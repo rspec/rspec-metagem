@@ -25,6 +25,7 @@ module RSpec
 
         # @method start
         # @api public
+        # @group Suite Notifications
         #
         # This method is invoked before any examples are run, right after
         # they have all been collected. This can be useful for special
@@ -37,6 +38,7 @@ module RSpec
 
         # @method example_group_started
         # @api public
+        # @group Group Notifications
         #
         # This method is invoked at the beginning of the execution of each example group.
         #
@@ -47,6 +49,7 @@ module RSpec
 
         # @method example_group_finished
         # @api public
+        # @group Group Notifications
         #
         # Invoked at the end of the execution of each example group.
         #
@@ -54,6 +57,7 @@ module RSpec
 
         # @method example_started
         # @api public
+        # @group Example Notifications
         #
         # Invoked at the beginning of the execution of each example.
         #
@@ -61,6 +65,7 @@ module RSpec
 
         # @method example_passed
         # @api public
+        # @group Example Notifications
         #
         # Invoked when an example passes.
         #
@@ -68,6 +73,7 @@ module RSpec
 
         # @method example_pending
         # @api public
+        # @group Example Notifications
         #
         # Invoked when an example is pending.
         #
@@ -75,6 +81,7 @@ module RSpec
 
         # @method example_failed
         # @api public
+        # @group Example Notifications
         #
         # Invoked when an example fails.
         #
@@ -82,6 +89,7 @@ module RSpec
 
         # @method message
         # @api public
+        # @group Suite Notifications
         #
         # Used by the reporter to send messages to the output stream.
         #
@@ -89,6 +97,7 @@ module RSpec
 
         # @method stop
         # @api public
+        # @group Suite Notifications
         #
         # Invoked after all examples have executed, before dumping post-run reports.
         #
@@ -96,6 +105,7 @@ module RSpec
 
         # @method start_dump
         # @api public
+        # @group Suite Notifications
         #
         # This method is invoked after all of the examples have executed. The next method
         # to be invoked after this one is {#dump_failures}
@@ -105,6 +115,7 @@ module RSpec
 
         # @method dump_failures
         # @api public
+        # @group Suite Notifications
         #
         # Dumps detailed information about each example failure.
         #
@@ -112,6 +123,7 @@ module RSpec
 
         # @method dump_summary
         # @api public
+        # @group Suite Notifications
         #
         # This method is invoked after the dumping of examples and failures. Each parameter
         # is assigned to a corresponding attribute.
@@ -121,6 +133,7 @@ module RSpec
 
         # @method dump_profile
         # @api public
+        # @group Suite Notifications
         #
         # This method is invoked after the dumping the summary if profiling is
         # enabled.
@@ -130,6 +143,7 @@ module RSpec
 
         # @method dump_pending
         # @api public
+        # @group Suite Notifications
         #
         # Outputs a report of pending examples.  This gets invoked
         # after the summary if option is set to do so.
@@ -138,6 +152,7 @@ module RSpec
 
         # @method close
         # @api public
+        # @group Suite Notifications
         #
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
