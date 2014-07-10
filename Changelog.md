@@ -8,8 +8,6 @@ Enhancements:
   have to consciously opt-in to the setting. (Andrew Hooker, #1572)
 * Provide an `inspect` output for example procsy objects (used in around
   hooks) that doesn't make them look like procs. (Jon Rowe, #1620)
-* Improve documentation for `include_context` to clarify behaviour with
-  a block. (Mark Lorenz, #1624)
 
 Bug Fixes:
 
