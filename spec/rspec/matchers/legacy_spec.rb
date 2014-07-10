@@ -1,6 +1,11 @@
 module RSpec
   module Matchers
     RSpec.describe "Legacy matchers" do
+      it 'still provides a `LegacyMacherAdapter` constant because 3.0 was released with ' +
+         'it and it would be a SemVer violation to remove it before 4.0' do
+        expect(Expectations::LegacyMacherAdapter).to be(Expectations::LegacyMatcherAdapter)
+      end
+
       shared_examples "a matcher written against a legacy protocol" do |matcher_class|
         matcher = matcher_class.new
         before { allow_deprecation }
