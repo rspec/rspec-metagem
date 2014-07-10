@@ -157,5 +157,11 @@ module RSpec
         end
       end
     end
+
+    # RSpec 3.0 was released with the class name misspelled. For SemVer compatibility,
+    # we will provide this misspelled alias until 4.0.
+    # @deprecated Use LegacyMatcherAdapter instead.
+    # @private
+    LegacyMacherAdapter = LegacyMatcherAdapter
   end
 end
