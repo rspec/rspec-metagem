@@ -7,6 +7,7 @@ Bug Fixes:
   to fix typo. (Abdelkader Boudih, #563)
 * Fix issue with detection of generic operator matchers so they work
   correctly when undefined. (Myron Marston, #597)
+* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #603)
 
 Enhancements:
 
