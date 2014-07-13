@@ -921,7 +921,13 @@ module RSpec
     # @api private
     def self.is_a_matcher?(obj)
       return true  if ::RSpec::Matchers::BuiltIn::BaseMatcher === obj
-      return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+      begin
+        return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+      rescue NoMethodError
+        # Some objects, like BasicObject, don't implemented standard
+        # reflection methods.
+        return false
+      end
       return false unless obj.respond_to?(:matches?)
 
       obj.respond_to?(:failure_message) ||
