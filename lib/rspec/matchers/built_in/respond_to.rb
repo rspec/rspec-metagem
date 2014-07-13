@@ -73,7 +73,7 @@ module RSpec
           return true unless @expected_arity
 
           signature = Support::MethodSignature.new(actual.method(name))
-          Support::MethodSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
+          Support::StrictSignatureVerifier.new(signature, Array.new(@expected_arity)).valid?
         end
 
         def with_arity

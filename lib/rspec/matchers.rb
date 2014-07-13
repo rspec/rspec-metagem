@@ -1,5 +1,5 @@
 require 'rspec/support'
-require 'rspec/support/matcher_definition'
+RSpec::Support.require_rspec_support 'matcher_definition'
 RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relative(f) }
 
 %w[
@@ -935,9 +935,7 @@ module RSpec
       obj.respond_to?(:failure_message_for_should) # support legacy matchers
     end
 
-    ::RSpec::Support.register_matcher_definition do |object|
-      ::RSpec::Matchers.is_a_matcher?(object)
-    end
+    ::RSpec::Support.register_matcher_definition(&method(:is_a_matcher?))
 
     # @api private
     def self.is_a_describable_matcher?(obj)
