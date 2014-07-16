@@ -282,6 +282,11 @@ module RSpec
           context "with a non-string and a string" do
             it "concats the args" do
               expect(group_value_for Object, 'group').to eq("Object group")
+            end
+          end
+
+          context "with a string and a non-string" do
+            it "concats the args" do
               expect(group_value_for 'group', Object).to eq("group Object")
             end
           end
