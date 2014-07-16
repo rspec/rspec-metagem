@@ -194,7 +194,7 @@ module RSpec::Core
           end
 
           group.run
-          expect(inspect_value).to match /ExampleProcsy/
+          expect(inspect_value).to match(/ExampleProcsy/)
         end
       end
 
