@@ -14,6 +14,8 @@ Bug Fixes:
 * Remove dependency on `FileUtils` from the standard library so that users do
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
+* Properly convert both parts of a description into strings before
+  concatenation.  (@nicklink483, #1636)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.1...v3.0.2)
