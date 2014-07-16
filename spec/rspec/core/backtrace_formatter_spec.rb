@@ -39,6 +39,29 @@ module RSpec::Core
         formatter = make_backtrace_formatter([/foo/])
         expect(formatter.exclude? "#{Dir.getwd}/foo").to be false
       end
+
+      context "when the exclusion list has been replaced" do
+        it "includes a line that the default patterns exclude" do
+          formatter = make_backtrace_formatter
+          expect {
+            formatter = make_backtrace_formatter([/spec_helper/])
+          }.to change { formatter.exclude? "/path/to/lib/rspec/expectations/foo.rb" }.from(true).to(false)
+        end
+      end
+
+      context "when the current working directory includes `gems` in the name" do
+        around(:example) do |ex|
+          Dir.mktmpdir do |tmp_dir|
+            dir = File.join(tmp_dir, "gems")
+            Dir.mkdir(dir)
+            Dir.chdir(dir, &ex)
+          end
+        end
+
+        it "includes something in the current working directory" do
+          expect(make_backtrace_formatter.exclude?("#{Dir.getwd}/arbitrary")).to be false
+        end
+      end
     end
 
     describe "#format_backtrace" do
