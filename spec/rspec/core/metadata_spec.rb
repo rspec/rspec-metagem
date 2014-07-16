@@ -285,6 +285,12 @@ module RSpec
             end
           end
 
+          context "with a string and a non-string" do
+            it "concats the args" do
+              expect(group_value_for 'group', Object).to eq("group Object")
+            end
+          end
+
           context "with empty args" do
             it "returns empty string for [:description]" do
               expect(group_value_for()).to eq("")
