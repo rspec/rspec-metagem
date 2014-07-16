@@ -23,10 +23,6 @@ module RSpec::Core
         expect(make_backtrace_formatter.exclude?("org/jruby/RubyArray.java:2336")).to be true
       end
 
-      it "excludes files within installed gems" do
-        expect(make_backtrace_formatter.exclude?('ruby-1.8.7-p334/gems/mygem-2.3.0/lib/mygem.rb')).to be true
-      end
-
       it "includes files in projects containing 'gems' in the name" do
         expect(make_backtrace_formatter.exclude?('code/my-gems-plugin/lib/plugin.rb')).to be false
       end

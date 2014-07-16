@@ -12,7 +12,6 @@ module RSpec
           "/lib\d*/ruby/",
           "org/jruby/",
           "bin/",
-          "/gems/",
         ].map { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
 
         @system_exclusion_patterns = [Regexp.union(RSpec::CallerFilter::IGNORE_REGEX, *patterns)]
