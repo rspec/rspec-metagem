@@ -64,6 +64,27 @@ module RSpec
         end
       end
 
+      describe "#include_chain_clauses_in_custom_matcher_descriptions?" do
+        after do
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = nil
+        end
+
+        it "is false by default" do
+          expect(RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?).to be false
+        end
+
+        it "can be set to true" do
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+          expect(RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?).to be true
+        end
+
+        it "can be set back to false" do
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = false
+          expect(RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?).to be false
+        end
+      end
+
       shared_examples "configuring the expectation syntax" do
         before do
           @orig_syntax = RSpec::Matchers.configuration.syntax
@@ -207,4 +228,3 @@ module RSpec
     end
   end
 end
-

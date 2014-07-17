@@ -160,8 +160,10 @@ module RSpec
         # Convenience for defining methods on this matcher to create a fluent
         # interface. The trick about fluent interfaces is that each method must
         # return self in order to chain methods together. `chain` handles that
-        # for you.  It also adds the chained expectation's description to the
-        # default description, if the expectation is used.
+        # for you. If the expectation is used, and
+        # RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions
+        # is true, it also adds the chained expectation's clause to the
+        # default description.
         #
         # @example
         #
@@ -179,8 +181,7 @@ module RSpec
         def chain(name, &definition)
           define_user_override(name, definition) do |*args, &block|
             super(*args, &block)
-            @chained_method_invokations ||= []
-            @chained_method_invokations.push([name.to_s, args])
+            @chained_method_clauses.push([name, args])
             self
           end
         end
@@ -252,7 +253,7 @@ module RSpec
 
         # The default description.
         def description
-          "#{name_to_sentence}#{to_sentence expected}#{chained_method_invokation_sentences}"
+          "#{name_to_sentence}#{to_sentence expected}#{chained_method_clause_sentences}"
         end
 
         # The default failure message for positive expectations.
@@ -276,14 +277,15 @@ module RSpec
           false
         end
 
-        private
-          # gets chained method invokations, combined into a sentance
-          def chained_method_invokation_sentences
-            defined? @chained_method_invokations and
-              @chained_method_invokations.map { |chained_method_invokation|
-                "#{split_words chained_method_invokation[0]}#{to_sentence chained_method_invokation[1]}"
-              }.join(' ').insert(0, ' ')
-          end
+      private
+
+        def chained_method_clause_sentences
+          return '' unless Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?
+
+          @chained_method_clauses.map do |(method_name, method_args)|
+            " #{split_words(method_name)}#{to_sentence(method_args)}"
+          end.join
+        end
       end
 
       # The class used for custom matchers. The block passed to
@@ -321,6 +323,7 @@ module RSpec
           @actual   = nil
           @expected_as_array = expected
           @matcher_execution_context = matcher_execution_context
+          @chained_method_clauses = []
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
