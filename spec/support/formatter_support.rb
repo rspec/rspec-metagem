@@ -189,16 +189,25 @@ module FormatterSupport
   end
 
   def example
-    result = { :exception => Exception.new }
-    allow(result).to receive(:pending_fixed?) { false }
-    allow(result).to receive(:status) { :passed }
-    instance_double(RSpec::Core::Example,
-                    :description       => "Example",
-                    :full_description  => "Example",
-                    :execution_result  => result,
-                    :location          => "",
-                    :metadata          => {}
-                   )
+    @example ||=
+      begin
+        result = instance_double(RSpec::Core::Example::ExecutionResult,
+                                 :pending_fixed? => false,
+                                 :status         => :passed
+                                )
+        allow(result).to receive(:exception) { exception }
+        instance_double(RSpec::Core::Example,
+                        :description       => "Example",
+                        :full_description  => "Example",
+                        :execution_result  => result,
+                        :location          => "",
+                        :metadata          => {}
+                       )
+      end
+  end
+
+  def exception
+    Exception.new
   end
 
   def examples(n)
