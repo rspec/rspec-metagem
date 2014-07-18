@@ -1,7 +1,3 @@
-require 'rspec/support'
-require 'rspec/core/version'
-RSpec::Support.require_rspec_support "warnings"
-
 require 'rake'
 require 'rake/tasklib'
 require 'shellwords'
