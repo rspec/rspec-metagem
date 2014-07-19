@@ -10,6 +10,9 @@ Enhancements:
   hooks) that doesn't make them look like procs. (Jon Rowe, #1620)
 * Remove a few unneeded `require` statements from
   `rspec/core/rake_task.rb`, making it even lighterweight. (Myron Marston, #1640)
+* Allow rspec-core to be used when neither rspec-mocks or
+  rspec-expectations are installed, without requiring any
+  user configuration. (Sam Phippen, Myron Marston, #1615)
 
 Bug Fixes:
 
