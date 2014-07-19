@@ -7,8 +7,6 @@ Feature: Excluding lines from the backtrace
   /\/lib\d*\/ruby\//,
   /org\/jruby\//,
   /bin\//,
-  /gems/,
-  /spec\/spec_helper\.rb/,
   /lib\/rspec\/(core|expectations|matchers|mocks)/
   ```
 
