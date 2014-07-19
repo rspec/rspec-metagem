@@ -33,13 +33,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          improve_hash_formatting(super)
+          improve_hash_formatting(super) + invalid_type_message
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          improve_hash_formatting(super)
+          improve_hash_formatting(super) + invalid_type_message
         end
 
         # @api private
@@ -50,7 +50,14 @@ module RSpec
 
       private
 
+        def invalid_type_message
+          return '' if actual.respond_to?(:include?)
+          ", but it does not respond to `include?`"
+        end
+
         def perform_match(predicate, hash_subset_predicate)
+          return false unless actual.respond_to?(:include?)
+
           expected.__send__(predicate) do |expected_item|
             if comparing_hash_to_a_subset?(expected_item)
               expected_item.__send__(hash_subset_predicate) do |(key, value)|

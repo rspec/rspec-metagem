@@ -8,6 +8,8 @@ Bug Fixes:
 * Fix issue with detection of generic operator matchers so they work
   correctly when undefined. (Myron Marston, #597)
 * Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #603)
+* Fix `include` matcher so that it fails gracefully when matched against
+  an object that does not respond to `include?`. (Myron Marston)
 
 Enhancements:
 

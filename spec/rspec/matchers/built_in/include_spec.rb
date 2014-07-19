@@ -10,6 +10,27 @@ RSpec.describe "#include matcher" do
       let(:matcher) { include(2) }
     end
 
+    context "for an object that does not respond to `include?`" do
+      it 'fails gracefully' do
+        expect {
+          expect(5).to include(1)
+        }.to fail_matching("expected 5 to include 1, but it does not respond to `include?`")
+      end
+    end
+
+    context "for an arbitrary object that responds to `include?`" do
+      it 'delegates to `include?`' do
+        container = double("Container")
+        allow(container).to receive(:include?) { |arg| arg == :stuff }
+
+        expect(container).to include(:stuff)
+
+        expect {
+          expect(container).to include(:space)
+        }.to fail_matching("to include :space")
+      end
+    end
+
     context "for a string target" do
       it "passes if target includes expected" do
         expect("abc").to include("a")
@@ -137,6 +158,27 @@ RSpec.describe "#include matcher" do
   end
 
   describe "expect(...).not_to include(expected)" do
+    context "for an object that does not respond to `include?`" do
+      it 'fails gracefully' do
+        expect {
+          expect(5).not_to include(1)
+        }.to fail_matching("expected 5 not to include 1, but it does not respond to `include?`")
+      end
+    end
+
+    context "for an arbitrary object that responds to `include?`" do
+      it 'delegates to `include?`' do
+        container = double("Container")
+        allow(container).to receive(:include?) { |arg| arg == :stuff }
+
+        expect(container).not_to include(:space)
+
+        expect {
+          expect(container).not_to include(:stuff)
+        }.to fail_matching("not to include :stuff")
+      end
+    end
+
     context "for a string target" do
       it "passes if target does not include expected" do
         expect("abc").not_to include("d")
