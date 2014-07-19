@@ -59,3 +59,4 @@
   - custom_formatter.feature
 - spec_files:
   - arbitrary_file_suffix.feature
+- core_standalone.feature
