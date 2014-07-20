@@ -8,6 +8,10 @@ if defined?(Cucumber)
     set_env('ALLOW_ONELINER_SHOULD', 'true')
   end
 else
+  if ENV['REMOVE_OTHER_RSPEC_LIBS_FROM_LOAD_PATH']
+    $LOAD_PATH.reject! { |x| /rspec-mocks/ === x || /rspec-expectations/ === x }
+  end
+
   module DisallowOneLinerShould
     def should(*)
       raise "one-liner should is not allowed"
@@ -19,16 +23,7 @@ else
   end
 
   RSpec.configure do |rspec|
-    rspec.mock_with :rspec do |mocks|
-      mocks.syntax = :expect
-    end
-
-    rspec.expect_with :rspec do |expectations|
-      expectations.syntax = :expect
-    end
-
-    rspec.expose_dsl_globally = false
-
+    rspec.disable_monkey_patching!
     rspec.include DisallowOneLinerShould unless ENV['ALLOW_ONELINER_SHOULD']
   end
 end
