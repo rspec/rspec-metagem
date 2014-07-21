@@ -265,7 +265,7 @@ Deprecations:
    you do not explicitly enable it. (Sam Phippen)
 
 ### 2.99.2 / 2014-07-21
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.1...2-99-maintenance)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.1...v2.99.2)
 
 Bug Fixes:
 
