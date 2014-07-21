@@ -8,6 +8,12 @@ Bug Fixes:
 
 Enhancements:
 
+* Add `have_attributes` matcher, that passes if actual's attribute
+  values match the expected attributes hash:
+  `Person = Struct.new(:name, :age)`
+  `person = Person.new("Bob", 32)`
+  `expect(person).to have_attributes(:name => "Bob", :age => 32)`.
+  (Adam Farhi, #571)
 * Extended compound matcher support to block matchers, for cases like:
   `expect { ... }.to change { x }.to(3).and change { y }.to(4)`. (Myron
   Marston, #567)
@@ -45,15 +51,6 @@ Bug Fixes:
   fail when used in a project where the rest of RSpec (e.g. core and
   expecatations) weren't being used. (Myron Marston, #566)
 * Structs are no longer treated as arrays when diffed. (Jon Rowe, #576)
-
-Enhancements:
-
-* Add `have_attributes` matcher, that passes if actual's attribute
-  values match the expected attributes hash:
-  `Person = Struct.new(:name, :age)`
-  `person = Person.new("Bob", 32)`
-  `expect(person).to have_attributes(:name => "Bob", :age => 32)`.
-  (Adam Farhi)
 
 ### 3.0.0 / 2014-06-01
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.0.rc1...v3.0.0)
