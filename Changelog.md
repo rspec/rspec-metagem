@@ -210,7 +210,7 @@ Deprecations:
   a deprecation warning. (Myron Marston)
 
 ### 3.0.0.beta1 / 2013-11-07
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.1...v3.0.0.beta1)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.2...v3.0.0.beta1)
 
 Breaking Changes for 3.0.0:
 
@@ -257,6 +257,17 @@ Deprecations:
  * Using the old `:should` syntax without explicitly configuring it is deprecated.
    It will continue to work but will emit a deprecation warning in RSpec 3 if
    you do not explicitly enable it. (Sam Phippen)
+
+### 2.99.2 / 2014-07-21
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.1...2-99-maintenance)
+
+Bug Fixes:
+
+* Fix regression in `Expectations#method_handle_for` where proxy objects
+  with method delegated would wrongly not return a method handle.
+  (Jon Rowe, #594)
+* Fix issue with detection of generic operator matchers so they work
+  correctly when undefined. (Myron Marston, #597)
 
 ### 2.99.1 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v2.99.0...v2.99.1)
