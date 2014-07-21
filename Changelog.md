@@ -1,21 +1,27 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...master)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.3...master)
 
 Bug Fixes:
 
 * Rename private `LegacyMacherAdapter` constant to `LegacyMatcherAdapter`
   to fix typo. (Abdelkader Boudih, #563)
-* Fix issue with detection of generic operator matchers so they work
-  correctly when undefined. (Myron Marston, #597)
-* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #603)
-* Fix `include` matcher so that it fails gracefully when matched against
-  an object that does not respond to `include?`. (Myron Marston)
 
 Enhancements:
 
 * Extended compound matcher support to block matchers, for cases like:
   `expect { ... }.to change { x }.to(3).and change { y }.to(4)`. (Myron
   Marston, #567)
+
+### 3.0.3 / 2014-07-21
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...v3.0.3)
+
+Bug Fixes:
+
+* Fix issue with detection of generic operator matchers so they work
+  correctly when undefined. (Myron Marston, #597)
+* Don't inadvertently define `BasicObject` in 1.8.7. (Chris Griego, #603)
+* Fix `include` matcher so that it fails gracefully when matched against
+  an object that does not respond to `include?`. (Myron Marston, #607)
 
 ### 3.0.2 / 2014-06-19
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.1...v3.0.2)
