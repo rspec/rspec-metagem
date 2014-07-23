@@ -23,7 +23,7 @@ module RSpec::Core
         expect(make_backtrace_formatter.exclude?("exe/rspec")).to be true
       end
 
-      it "excludes java files (for JRuby)" do
+      it "excludes java files (for JRuby)", :if => (RUBY_PLATFORM == 'java')  do
         expect(make_backtrace_formatter.exclude?("org/jruby/RubyArray.java:2336")).to be true
       end
 
