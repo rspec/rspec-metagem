@@ -21,6 +21,7 @@ RSpec::configure do |config|
   config.expect_with :rspec do |expectations|
     $default_expectation_syntax = expectations.syntax
     expectations.syntax = :expect
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
   config.disable_monkey_patching!
@@ -63,6 +64,14 @@ RSpec.shared_context "with #should exclusively enabled", :uses_only_should do
 
   after(:context) do
     RSpec::Matchers.configuration.syntax = orig_syntax
+  end
+end
+
+RSpec.shared_context "isolate include_chain_clauses_in_custom_matcher_descriptions" do
+  around do |ex|
+    orig = RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?
+    ex.run
+    RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = orig
   end
 end
 
