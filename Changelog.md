@@ -17,6 +17,9 @@ Enhancements:
 * Extended compound matcher support to block matchers, for cases like:
   `expect { ... }.to change { x }.to(3).and change { y }.to(4)`. (Myron
   Marston, #567)
+* Include chained methods in custom matcher description and failure message
+  when new `include_chain_clauses_in_custom_matcher_descriptions` config
+  option is enabled. (Dan Oved, #600)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...v3.0.3)
