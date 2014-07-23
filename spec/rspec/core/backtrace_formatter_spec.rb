@@ -19,6 +19,10 @@ module RSpec::Core
         expect(make_backtrace_formatter.exclude?("/lib/rspec/support/foo.rb")).to be true
       end
 
+      it "excludes the rspec binary, even when rspec-core has installed as a bundler :git dependency" do
+        expect(make_backtrace_formatter.exclude?("exe/rspec")).to be true
+      end
+
       it "excludes java files (for JRuby)" do
         expect(make_backtrace_formatter.exclude?("org/jruby/RubyArray.java:2336")).to be true
       end

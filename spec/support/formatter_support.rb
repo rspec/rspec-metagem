@@ -6,7 +6,10 @@ module FormatterSupport
     err.set_encoding("utf-8") if err.respond_to?(:set_encoding)
 
     runner = RSpec::Core::Runner.new(options)
-    runner.instance_variable_get("@configuration").backtrace_formatter.inclusion_patterns = []
+    configuration = runner.instance_variable_get("@configuration")
+    configuration.backtrace_formatter.exclusion_patterns << /rspec_with_simplecov/
+    configuration.backtrace_formatter.inclusion_patterns = []
+
     runner.run(err, out)
 
     output = out.string
@@ -52,7 +55,7 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:31
         |     # ./spec/spec_helper.rb:77:in `run'
-        |     # ./spec/support/formatter_support.rb:10:in `run_example_specs_with_formatter'
+        |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/spec_helper.rb:124:in `run'
         |     # ./spec/spec_helper.rb:124
         |     # ./spec/spec_helper.rb:82:in `instance_exec'
@@ -109,7 +112,7 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:31:in `block (2 levels) in <top (required)>'
         |     # ./spec/spec_helper.rb:77:in `run'
-        |     # ./spec/support/formatter_support.rb:10:in `run_example_specs_with_formatter'
+        |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/spec_helper.rb:124:in `block (4 levels) in <top (required)>'
         |     # ./spec/spec_helper.rb:82:in `instance_exec'
         |     # ./spec/spec_helper.rb:82:in `block in sandboxed'
@@ -123,7 +126,7 @@ module FormatterSupport
         |     # (erb):1:in `<main>'
         |     # ./spec/rspec/core/resources/formatter_specs.rb:39:in `block (2 levels) in <top (required)>'
         |     # ./spec/spec_helper.rb:77:in `run'
-        |     # ./spec/support/formatter_support.rb:10:in `run_example_specs_with_formatter'
+        |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
         |     # ./spec/spec_helper.rb:124:in `block (4 levels) in <top (required)>'
         |     # ./spec/spec_helper.rb:82:in `instance_exec'
         |     # ./spec/spec_helper.rb:82:in `block in sandboxed'
