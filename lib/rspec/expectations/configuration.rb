@@ -107,6 +107,17 @@ module RSpec
                                  end
       end
 
+      # Sets if custom matcher descriptions and failure messages
+      # should include clauses from methods defined using `chain`.
+      attr_writer :include_chain_clauses_in_custom_matcher_descriptions
+
+      # Indicates whether or not custom matcher descriptions and failure messages
+      # should include clauses from methods defined using `chain`. It is
+      # false by default for backwards compatibility.
+      def include_chain_clauses_in_custom_matcher_descriptions?
+        @include_chain_clauses_in_custom_matcher_descriptions ||= false
+      end
+
       # @private
       def reset_syntaxes_to_default
         self.syntax = [:should, :expect]

@@ -387,10 +387,6 @@ RSpec.describe "Composing matchers with `raise_error`" do
     match do |error|
       error.__send__(attr) == @expected_value
     end
-
-    description do
-      super() + " equal to #{@expected_value}"
-    end
   end
 
   class FooError < StandardError
@@ -398,6 +394,13 @@ RSpec.describe "Composing matchers with `raise_error`" do
   end
 
   describe "expect { }.to raise_error(matcher)" do
+    before do
+      RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+    end
+    after do
+      RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = nil
+    end
+
     it 'passes when the matcher matches the raised error' do
       expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(:bar))
     end

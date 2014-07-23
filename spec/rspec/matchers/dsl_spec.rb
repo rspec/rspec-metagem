@@ -232,13 +232,102 @@ module RSpec::Matchers::DSL
       end
 
       it "provides a default positive expectation failure message" do
-        matcher.matches?(8)
-        expect(matcher.failure_message).to eq "expected 8 to be a multiple of 3"
+        expect { expect(8).to matcher }.to fail_with 'expected 8 to be a multiple of 3'
       end
 
       it "provides a default negative expectation failure message" do
-        matcher.matches?(9)
-        expect(matcher.failure_message_when_negated).to eq "expected 9 not to be a multiple of 3"
+        expect { expect(9).to_not matcher }.to fail_with 'expected 9 not to be a multiple of 3'
+      end
+    end
+
+    context "without overrides with chained matchers" do
+      let(:matcher) do
+        new_matcher(:be_bigger_than, 5) do |five|
+          match do |to_match|
+            (to_match > five) && smaller_than_ceiling?(to_match) && divisible_by_divisor?(to_match)
+          end
+
+          match_when_negated do |to_match|
+            (to_match <= five) || greater_than_ceiling(to_match) && not_divisible_by_divisor?(to_match)
+          end
+
+          chain :and_smaller_than do |ceiling|
+            @ceiling = ceiling
+          end
+
+          chain :and_divisible_by do |divisor|
+            @divisor = divisor
+          end
+
+          private
+
+          def smaller_than_ceiling?(to_match)
+            to_match < @ceiling
+          end
+
+          def greater_than_ceiling(to_match)
+            to_match >= @ceiling
+          end
+
+          def divisible_by_divisor?(to_match)
+            @divisor % to_match == 0
+          end
+
+          def not_divisible_by_divisor?(to_match)
+            @divisor % to_match != 0
+          end
+        end
+      end
+
+      context "when the matchers are chained" do
+        context "without include_chain_clauses_in_custom_matcher_descriptions configured (by default)" do
+          let(:match) { matcher.and_smaller_than(10).and_divisible_by(3) }
+
+          it "provides a default description that does not include any of the chained matchers' descriptions" do
+            expect(match.description).to eq 'be bigger than 5'
+          end
+
+          it "provides a default positive expectation failure message that does not include any of the chained matchers' descriptions" do
+            expect { expect(8).to match }.to fail_with 'expected 8 to be bigger than 5'
+          end
+
+          it "provides a default negative expectation failure message that does not include the any of the chained matchers's descriptions" do
+            expect { expect(9).to_not match }.to fail_with 'expected 9 not to be bigger than 5'
+          end
+        end
+
+        context "with include_chain_clauses_in_custom_matcher_descriptions configured to be true" do
+          before do
+            RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+          end
+          after do
+            RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = nil
+          end
+
+          it "provides a default description that includes the chained matchers' descriptions in they were used" do
+            expect(matcher.and_divisible_by(3).and_smaller_than(29).and_smaller_than(20).and_divisible_by(5).description).to \
+              eq 'be bigger than 5 and divisible by 3 and smaller than 29 and smaller than 20 and divisible by 5'
+          end
+
+          it "provides a default positive expectation failure message that includes the chained matchers' failures" do
+            expect { expect(30).to matcher.and_smaller_than(29).and_divisible_by(3) }.to \
+              fail_with 'expected 30 to be bigger than 5 and smaller than 29 and divisible by 3'
+          end
+
+          it "provides a default negative expectation failure message that includes the chained matchers' failures" do
+            expect { expect(21).to_not matcher.and_smaller_than(29).and_divisible_by(3) }.to \
+              fail_with 'expected 21 not to be bigger than 5 and smaller than 29 and divisible by 3'
+          end
+        end
+
+        it 'only decides if to include the chained clauses at the time description is invoked' do
+          matcher.and_divisible_by(3)
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+
+          expect(matcher.description).to eq 'be bigger than 5 and divisible by 3'
+          # cleanup
+          RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = nil
+        end
       end
     end
 
@@ -573,6 +662,46 @@ module RSpec::Matchers::DSL
         end
 
         expect(matcher.failure_message_when_negated).to eq("msg")
+      end
+    end
+
+    context "with description override and chained matcher" do
+      context "by default" do
+
+        let(:matcher) do
+          new_matcher(:be_even) do
+            match do |to_match|
+              (to_match % 2 == 0) && (to_match % @divisible_by == 0)
+            end
+
+            chain :and_divisible_by do |divisible_by|
+              @divisible_by = divisible_by
+            end
+
+            description { super() + " and divisible by #{@divisible_by}" }
+          end
+        end
+
+        context "without include_chain_clauses_in_custom_matcher_descriptions configured (by default)" do
+          it "provides a default description that does not include any of the chained matchers' descriptions" do
+            expect(matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10'
+          end
+        end
+
+        context "with include_chain_clauses_in_custom_matcher_descriptions configured to true" do
+          before do
+            RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = true
+          end
+
+          after do
+            RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions = nil
+          end
+
+          it "provides a default description that does includes the chained matchers' descriptions" do
+
+            expect(matcher.and_divisible_by(10).description).to eq 'be even and divisible by 10 and divisible by 10'
+          end
+        end
       end
     end
 

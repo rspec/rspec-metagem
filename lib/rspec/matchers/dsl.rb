@@ -160,7 +160,10 @@ module RSpec
         # Convenience for defining methods on this matcher to create a fluent
         # interface. The trick about fluent interfaces is that each method must
         # return self in order to chain methods together. `chain` handles that
-        # for you.
+        # for you. If the expectation is used, and
+        # RSpec::Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions
+        # is true, it also adds the chained expectation's clause to the
+        # default description.
         #
         # @example
         #
@@ -178,6 +181,7 @@ module RSpec
         def chain(name, &definition)
           define_user_override(name, definition) do |*args, &block|
             super(*args, &block)
+            @chained_method_clauses.push([name, args])
             self
           end
         end
@@ -249,17 +253,17 @@ module RSpec
 
         # The default description.
         def description
-          "#{name_to_sentence}#{to_sentence expected}"
+          "#{name_to_sentence}#{to_sentence expected}#{chained_method_clause_sentences}"
         end
 
         # The default failure message for positive expectations.
         def failure_message
-          "expected #{actual.inspect} to #{name_to_sentence}#{to_sentence expected}"
+          "expected #{actual.inspect} to #{description}"
         end
 
         # The default failure message for negative expectations.
         def failure_message_when_negated
-          "expected #{actual.inspect} not to #{name_to_sentence}#{to_sentence expected}"
+          "expected #{actual.inspect} not to #{description}"
         end
 
         # Matchers do not support block expectations by default. You
@@ -271,6 +275,16 @@ module RSpec
         # Most matchers do not expect call stack jumps.
         def expects_call_stack_jump?
           false
+        end
+
+      private
+
+        def chained_method_clause_sentences
+          return '' unless Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?
+
+          @chained_method_clauses.map do |(method_name, method_args)|
+            " #{split_words(method_name)}#{to_sentence(method_args)}"
+          end.join
         end
       end
 
@@ -309,6 +323,7 @@ module RSpec
           @actual   = nil
           @expected_as_array = expected
           @matcher_execution_context = matcher_execution_context
+          @chained_method_clauses = []
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.
