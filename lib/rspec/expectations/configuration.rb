@@ -109,6 +109,7 @@ module RSpec
 
       # Sets if custom matcher descriptions and failure messages
       # should include clauses from methods defined using `chain`.
+      # @param value [Boolean]
       attr_writer :include_chain_clauses_in_custom_matcher_descriptions
 
       # Indicates whether or not custom matcher descriptions and failure messages
