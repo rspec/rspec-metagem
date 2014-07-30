@@ -24,6 +24,9 @@ Bug Fixes:
 * Remove dependency on `FileUtils` from the standard library so that users do
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
+* Fix processing order of CLI options so that if `config.files_to_run`
+  is accessed from a file loaded by `--require`, `--pattern` is still
+  applied. (Myron Marston, #1652)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.2...v3.0.3)
