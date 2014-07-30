@@ -27,6 +27,8 @@ Bug Fixes:
 * Fix processing order of CLI options so that if `config.files_to_run`
   is accessed from a file loaded by `--require`, `--pattern` is still
   applied. (Myron Marston, #1652)
+* Fix `config.pattern=` so that it still takes affect even if
+  `config.files_to_run` has already been accessed. (Myron Marston, #1652)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.2...v3.0.3)
