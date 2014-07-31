@@ -117,7 +117,7 @@ module RSpec
         cmd_parts << RUBY
         cmd_parts << ruby_opts
         cmd_parts << rspec_load_path
-        cmd_parts << "-S" << rspec_path
+        cmd_parts << rspec_path
         cmd_parts << files_to_run
         cmd_parts << rspec_opts
         cmd_parts.flatten.reject(&blank).join(" ")

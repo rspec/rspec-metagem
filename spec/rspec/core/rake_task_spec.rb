@@ -37,14 +37,14 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} -S #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} #{task.rspec_path}/)
       end
     end
 
     context "with ruby options" do
-      it "renders them before -S" do
+      it "renders them before the rspec path" do
         task.ruby_opts = "-w"
-        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} -S #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} #{task.rspec_path}/)
       end
     end
 

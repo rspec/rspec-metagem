@@ -39,7 +39,7 @@ Feature: rake task
     When I run `rake`
     Then the output should match:
       """
-      (ruby|rbx) -I\S+ -S [\/\S]+\/exe\/rspec
+      (ruby|rbx) -I\S+ [\/\S]+\/exe\/rspec
       """
     Then the exit status should be 0
 
@@ -122,7 +122,7 @@ Feature: rake task
     Then the exit status should be 0
     Then the output should match:
       """
-      (ruby|rbx) -I\S+ -S [\/\S]+\/exe\/rspec --pattern 'spec{,\/\*\/\*\*}\/\*_spec.rb' --tag fast
+      (ruby|rbx) -I\S+ [\/\S]+\/exe\/rspec --pattern 'spec{,\/\*\/\*\*}\/\*_spec.rb' --tag fast
       """
 
   Scenario: Passing rake task arguments to the `rspec` command via `rspec_opts`
@@ -154,5 +154,5 @@ Feature: rake task
     Then the exit status should be 0
     Then the output should match:
       """
-      (ruby|rbx) -I\S+ -S [\/\S]+\/exe\/rspec --pattern 'spec{,\/\*\/\*\*}\/\*_spec.rb' --tag fast
+      (ruby|rbx) -I\S+ [\/\S]+\/exe\/rspec --pattern 'spec{,\/\*\/\*\*}\/\*_spec.rb' --tag fast
       """
