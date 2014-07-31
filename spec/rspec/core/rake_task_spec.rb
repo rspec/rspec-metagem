@@ -37,14 +37,14 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} -S #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} #{task.rspec_path}/)
       end
     end
 
     context "with ruby options" do
-      it "renders them before -S" do
+      it "renders them before the rspec path" do
         task.ruby_opts = "-w"
-        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} -S #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} #{task.rspec_path}/)
       end
     end
 
@@ -52,6 +52,13 @@ module RSpec::Core
       it "adds the rspec_opts" do
         task.rspec_opts = "-Ifoo"
         expect(spec_command).to match(/#{task.rspec_path}.*-Ifoo/)
+      end
+    end
+
+    context "with pattern" do
+      it "adds the pattern" do
+        task.pattern = "complex_pattern"
+        expect(spec_command).to include(" --pattern 'complex_pattern'")
       end
     end
 
@@ -66,14 +73,23 @@ module RSpec::Core
       end
     end
 
-    def specify_consistent_ordering_of_files_to_run(pattern, task)
+    def loaded_files
+      args = Shellwords.split(spec_command)
+      args -= [task.class::RUBY, "-S", task.rspec_path]
+      config = Configuration.new
+      config_options = ConfigurationOptions.new(args)
+      config_options.configure(config)
+      config.files_to_run
+    end
+
+    def specify_consistent_ordering_of_files_to_run(pattern, file_searcher)
       orderings = [
         %w[ a/1.rb a/2.rb a/3.rb ],
         %w[ a/2.rb a/1.rb a/3.rb ],
         %w[ a/3.rb a/2.rb a/1.rb ]
       ].map do |files|
-        expect(FileList).to receive(:[]).with(pattern) { files }
-        task.__send__(:files_to_run)
+        expect(file_searcher).to receive(:[]).with(a_string_including pattern) { files }
+        loaded_files
       end
 
       expect(orderings.uniq.size).to eq(1)
@@ -82,13 +98,13 @@ module RSpec::Core
     context "with SPEC env var set" do
       it "sets files to run" do
         with_env_vars 'SPEC' => 'path/to/file' do
-          expect(task.__send__(:files_to_run)).to eq(["path/to/file"])
+          expect(loaded_files).to eq(["path/to/file"])
         end
       end
 
       it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
         with_env_vars 'SPEC' => 'a/*.rb' do
-          specify_consistent_ordering_of_files_to_run('a/*.rb', task)
+          specify_consistent_ordering_of_files_to_run('a/*.rb', FileList)
         end
       end
     end
@@ -152,37 +168,38 @@ module RSpec::Core
     end
 
     it "sets the files to run in a consistent order, regardless of the underlying FileList ordering" do
-      task = RakeTask.new(:consistent_file_order) do |t|
-        t.pattern = 'a/*.rb'
+      task.pattern = 'a/*.rb'
+      specify_consistent_ordering_of_files_to_run('a/*.rb', Dir)
+    end
+
+    context "with a pattern that matches no files" do
+      it "runs nothing" do
+        task.pattern = 'a/*.no_match'
+        expect(loaded_files).to eq([])
       end
-
-      # since the config block is deferred til task invocation, must fake
-      # calling the task so the expected pattern is picked up
-      expect(task).to receive(:run_task) { true }
-      expect(Rake.application.invoke_task(task.name)).to be_truthy
-
-      specify_consistent_ordering_of_files_to_run('a/*.rb', task)
     end
 
     context "with paths with quotes or spaces" do
-      it "escapes the quotes and spaces" do
-        task.pattern = File.join(Dir.tmpdir, "*spec.rb")
-        ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb", "fourth spec.rb"].each do |file_name|
-          FileUtils.touch(File.join(Dir.tmpdir, file_name))
+      include_context "isolated directory"
+
+      it "matches files with quotes and spaces" do
+        spec_dir = File.join(Dir.getwd, "spec")
+        task.pattern = "spec/*spec.rb"
+        FileUtils.mkdir_p(spec_dir)
+
+        files = ["first_spec.rb", "second_\"spec.rb", "third_\'spec.rb", "fourth spec.rb"].map do |file_name|
+          File.join("spec", file_name).tap { |f| FileUtils.touch(f) }
         end
-        expect(task.__send__(:files_to_run).sort).to eq([
-          File.join(Dir.tmpdir, "first_spec.rb"),
-          File.join(Dir.tmpdir, "fourth\\ spec.rb"),
-          File.join(Dir.tmpdir, "second_\\\"spec.rb"),
-          File.join(Dir.tmpdir, "third_\\\'spec.rb")
-        ])
+
+        expect(loaded_files).to match_array(files)
       end
     end
 
     context "with paths including symlinked directories" do
+      include_context "isolated directory"
+
       it "finds the files" do
-        project_dir = File.join(Dir.tmpdir, "project")
-        FileUtils.rm_rf project_dir
+        project_dir = Dir.getwd
 
         foos_dir = File.join(project_dir, "spec/foos")
         FileUtils.mkdir_p foos_dir
@@ -195,10 +212,10 @@ module RSpec::Core
         FileUtils.ln_s bars_dir, File.join(project_dir, "spec/bars")
 
         FileUtils.cd(project_dir) do
-          expect(RakeTask.new.__send__(:files_to_run).sort).to eq([
-            "./spec/bars/bar_spec.rb",
-            "./spec/foos/foo_spec.rb"
-          ])
+          expect(loaded_files).to contain_exactly(
+            "spec/bars/bar_spec.rb",
+            "spec/foos/foo_spec.rb"
+          )
         end
       end
     end
