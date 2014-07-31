@@ -104,7 +104,7 @@ module RSpec
         end
       end
 
-      def files_to_run
+      def file_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
@@ -118,7 +118,7 @@ module RSpec
         cmd_parts << ruby_opts
         cmd_parts << rspec_load_path
         cmd_parts << rspec_path
-        cmd_parts << files_to_run
+        cmd_parts << file_specification
         cmd_parts << rspec_opts
         cmd_parts.flatten.reject(&blank).join(" ")
       end
