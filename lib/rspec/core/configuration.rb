@@ -191,6 +191,7 @@ module RSpec
           RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
         end
         @pattern = value
+        @files_to_run = nil
       end
 
       # @macro add_setting

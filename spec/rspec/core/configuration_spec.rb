@@ -638,6 +638,16 @@ module RSpec::Core
           config.pattern = "rspec/**/*.spec"
         end
       end
+
+      context "after `files_to_run` has been accessed but before files have been loaded" do
+        it 'still takes affect' do
+          file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+          assign_files_or_directories_to_run File.dirname(file)
+          expect(config.files_to_run).not_to include(file)
+          config.pattern = "**/*_foo.rb"
+          expect(config.files_to_run).to include(file)
+        end
+      end
     end
 
     describe "path with line number" do

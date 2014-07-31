@@ -82,9 +82,9 @@ module RSpec
         # set before it.
         :default_path,
 
-        # must be set before `requires` to support checking `config.files_to_run`
+        # These must be set before `requires` to support checking `config.files_to_run`
         # from within `spec_helper.rb` when a `-rspec_helper` option is used.
-        :files_or_directories_to_run,
+        :files_or_directories_to_run, :pattern,
 
         # In general, we want to require the specified files as early as possible.
         # The `--require` option is specifically intended to allow early requires.

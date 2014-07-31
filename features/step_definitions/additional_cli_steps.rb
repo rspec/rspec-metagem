@@ -42,6 +42,14 @@ Then /^the output from `([^`]+)` (should(?: not)?) be in documentation format$/ 
   step %Q{the output from "#{cmd}" #{should_or_not} contain "#{addition_example_formatter_output}"}
 end
 
+Then(/^the output from `([^`]+)` should indicate it ran only the subtraction file$/) do |cmd|
+  step %Q{I run `#{cmd}`}
+  step %q{the examples should all pass}
+  step %Q{the output from "#{cmd}" should contain "1 example, 0 failures"}
+  step %Q{the output from "#{cmd}" should contain "Subtraction"}
+  step %Q{the output from "#{cmd}" should not contain "Addition"}
+end
+
 Then /^the backtrace\-normalized output should contain:$/ do |partial_output|
   # ruby 1.9 includes additional stuff in the backtrace,
   # so we need to normalize it to compare it with our expected output.
@@ -91,4 +99,3 @@ end
 When /^I create "([^"]*)" with the following content:$/ do |file_name, content|
   write_file(file_name, content)
 end
-
