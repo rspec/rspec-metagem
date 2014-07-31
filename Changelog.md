@@ -38,6 +38,10 @@ Bug Fixes:
   applied. (Myron Marston, #1652)
 * Fix `config.pattern=` so that it still takes affect even if
   `config.files_to_run` has already been accessed. (Myron Marston, #1652)
+* Fix rake task `t.pattern =` option so that it does not run all specs
+  when it matches no files, by passing along a `--pattern` option to
+  the `rspec` command, rather than resolving the file list and passing
+  along the files individually. (Evgeny Zislis, #1653)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.2...v3.0.3)
