@@ -80,7 +80,7 @@ RSpec.describe "yield_control matcher" do
       it 'passes if the block yields the specified number of times' do
         expect { |b| [1].each(&b) }.to yield_control.once
         expect { |b| [1, 2].each(&b) }.to yield_control.twice
-        expect { |b| [1, 2, 3].each(&b) }.to yield_control.exactly(3).times
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.thrice
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe "yield_control matcher" do
         expect { |b| [1, 2, 3, 4].each(&b) }.to yield_control.at_least(3).times
       end
 
-      it 'allows :once and :twice to be passed as counts' do
+      it 'allows :once, :twice, and :thrice to be passed as counts' do
         expect { |b| [1].each(&b) }.to yield_control.at_least(:once)
         expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:once)
 
@@ -109,6 +109,13 @@ RSpec.describe "yield_control matcher" do
         expect {
           expect { |b| [1].each(&b) }.to yield_control.at_least(:twice)
         }.to fail_with(/at least twice/)
+
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_least(:thrice)
+        expect { |b| [1, 2, 3, 4].each(&b) }.to yield_control.at_least(:thrice)
+
+        expect {
+          expect { |b| [1, 2].each(&b) }.to yield_control.at_least(:thrice)
+        }.to fail_with(/at least 3 times/)
       end
 
       it 'fails if the block yields too few times' do
@@ -128,7 +135,7 @@ RSpec.describe "yield_control matcher" do
         expect { |b| [1, 2].each(&b) }.to yield_control.at_most(3).times
       end
 
-      it 'allows :once and :twice to be passed as counts' do
+      it 'allows :once, :twice, and :thrice to be passed as counts' do
         expect { |b| [1].each(&b) }.to yield_control.at_most(:once)
 
         expect {
@@ -140,6 +147,12 @@ RSpec.describe "yield_control matcher" do
         expect {
           expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(:twice)
         }.to fail_with(/expected given block to yield control at most twice/)
+
+        expect { |b| [1, 2, 3].each(&b) }.to yield_control.at_most(:thrice)
+
+        expect {
+          expect { |b| [1, 2, 3, 4].each(&b) }.to yield_control.at_most(:thrice)
+        }.to fail_with(/expected given block to yield control at most 3 times/)
       end
 
       it 'fails if the block yields too many times' do
