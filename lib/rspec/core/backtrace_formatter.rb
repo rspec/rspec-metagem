@@ -8,11 +8,9 @@ module RSpec
       def initialize
         @full_backtrace = false
 
-        patterns = [
-          "/lib\d*/ruby/",
-          "org/jruby/",
-          "bin/",
-        ].map { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
+        patterns = %w[ /lib\d*/ruby/ bin/ exe/rspec ]
+        patterns << "org/jruby/" if RUBY_PLATFORM == 'java'
+        patterns.map! { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
 
         @system_exclusion_patterns = [Regexp.union(RSpec::CallerFilter::IGNORE_REGEX, *patterns)]
         @exclusion_patterns = [] + @system_exclusion_patterns

@@ -18,6 +18,13 @@ Enhancements:
 * Allow rspec-core to be used when neither rspec-mocks or
   rspec-expectations are installed, without requiring any
   user configuration. (Sam Phippen, Myron Marston, #1615)
+* Don't filter out gems from backtraces by default. (The RSpec
+  gems will still be filtered). User feedback has indicated
+  that including gems in default backtraces will be useful.
+  (Myron Marston, #1641)
+* Fix default backtrace filters so that the RSpec binary is
+  excluded when installing RSpec as a bundler `:git` dependency.
+  (Myron Marston, #1648)
 
 Bug Fixes:
 
