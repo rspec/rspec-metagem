@@ -1,6 +1,10 @@
 require 'spec_helper'
+require 'rspec/support/spec/prevent_load_time_warnings'
 
 RSpec.describe RSpec do
+  it_behaves_like 'a library that issues no warnings when loaded',
+    'rspec-core', 'require "rspec/core"', 'RSpec::Core::Runner.disable_autorun!'
+
   describe "::configuration" do
     it "returns the same object every time" do
       expect(RSpec.configuration).to equal(RSpec.configuration)
