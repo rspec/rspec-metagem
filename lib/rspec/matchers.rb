@@ -1,4 +1,5 @@
 require 'rspec/support'
+RSpec::Support.require_rspec_support 'matcher_definition'
 RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relative(f) }
 
 %w[
@@ -921,12 +922,20 @@ module RSpec
     # @api private
     def self.is_a_matcher?(obj)
       return true  if ::RSpec::Matchers::BuiltIn::BaseMatcher === obj
-      return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+      begin
+        return false if obj.respond_to?(:i_respond_to_everything_so_im_not_really_a_matcher)
+      rescue NoMethodError
+        # Some objects, like BasicObject, don't implemented standard
+        # reflection methods.
+        return false
+      end
       return false unless obj.respond_to?(:matches?)
 
       obj.respond_to?(:failure_message) ||
       obj.respond_to?(:failure_message_for_should) # support legacy matchers
     end
+
+    ::RSpec::Support.register_matcher_definition(&method(:is_a_matcher?))
 
     # @api private
     def self.is_a_describable_matcher?(obj)

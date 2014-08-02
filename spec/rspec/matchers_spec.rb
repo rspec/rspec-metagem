@@ -26,6 +26,16 @@ end
 
 module RSpec
   module Matchers
+    RSpec.describe ".is_a_matcher?" do
+      it 'does not match BasicObject', :if => RUBY_VERSION.to_f > 1.8 do
+        expect(RSpec::Matchers.is_a_matcher?(BasicObject.new)).to eq(false)
+      end
+
+      it 'is registered with RSpec::Support' do
+        expect(RSpec::Support.is_a_matcher?(be_even)).to eq(true)
+      end
+    end
+
     RSpec.describe "built in matchers" do
       let(:matchers) do
         BuiltIn.constants.map { |n| BuiltIn.const_get(n) }.select do |m|

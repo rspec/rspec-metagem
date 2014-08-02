@@ -73,7 +73,7 @@ module RSpec
         if RUBY_VERSION.to_f > 1.8
           def assert_valid_expect_block!
             block_signature = RSpec::Support::BlockSignature.new(@block)
-            return if RSpec::Support::MethodSignatureVerifier.new(block_signature, [self]).valid?
+            return if RSpec::Support::StrictSignatureVerifier.new(block_signature, [self]).valid?
             raise "Your expect block must accept an argument to be used with this " \
                   "matcher. Pass the argument as a block on to the method you are testing."
           end
