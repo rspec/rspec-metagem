@@ -16,8 +16,8 @@ gem 'yard', '~> 0.8.7', :require => false
 
 ### deps for rdoc.info
 group :documentation do
-  gem 'redcarpet',     '2.1.1'
-  gem 'github-markup', '0.7.2'
+  gem 'redcarpet',     '2.1.1', :platform => :mri
+  gem 'github-markup', '0.7.2', :platform => :mri
 end
 
 platforms :ruby_18, :jruby do
