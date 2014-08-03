@@ -110,18 +110,6 @@ module RSpec::Core
     end
 
     describe "load path manipulation" do
-      around(:example) do |ex|
-        # use the `include` matcher to ensure it's already loaded; otherwise,
-        # it could be used for the first time below after the load path has
-        # been changed, which would trigger an attempted autoload of the `Include`
-        # matcher that would fail.
-        expect([1]).to include(1)
-
-        orig_load_path = $LOAD_PATH.dup
-        ex.run
-        $LOAD_PATH.replace(orig_load_path)
-      end
-
       def self.it_configures_rspec_load_path(description, path_template)
         context "when rspec is installed as #{description}" do
           it "adds the current rspec-core and rspec-support dirs to the load path to ensure the current version is used" do

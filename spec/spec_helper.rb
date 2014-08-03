@@ -122,6 +122,12 @@ Spork.prefork do
     # structural
     c.alias_it_behaves_like_to 'it_has_behavior'
     c.around {|example| Sandboxing.sandboxed { example.run }}
+    c.around do |ex|
+      orig_load_path = $LOAD_PATH.dup
+      ex.run
+      $LOAD_PATH.replace(orig_load_path)
+    end
+
     c.include(RSpecHelpers)
     c.include Aruba::Api, :file_path => /spec\/command_line/
 

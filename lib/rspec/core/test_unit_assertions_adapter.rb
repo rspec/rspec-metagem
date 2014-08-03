@@ -22,7 +22,7 @@ module RSpec
           require 'rspec/core/minitest_assertions_adapter'
           include ::RSpec::Core::MinitestAssertionsAdapter
         end
-      rescue NameError => _ignored
+      rescue NameError
         # No-op. Minitest 5.x was not loaded
       end
     end

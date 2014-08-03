@@ -201,13 +201,15 @@ module RSpec
         attr_reader :example
 
         Example.public_instance_methods(false).each do |name|
-          unless name.to_sym == :run
+          unless name.to_sym == :run || name.to_sym == :inspect
             define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
           end
         end
 
         Proc.public_instance_methods(false).each do |name|
-          define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
+          unless name.to_sym == :inspect
+            define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
+          end
         end
         alias run call
 

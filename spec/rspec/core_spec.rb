@@ -1,6 +1,17 @@
 require 'spec_helper'
+require 'rspec/support/spec/prevent_load_time_warnings'
 
 RSpec.describe RSpec do
+  fake_minitest = File.expand_path('../../support/fake_minitest', __FILE__)
+  it_behaves_like 'a library that issues no warnings when loaded', 'rspec-core',
+    # Loading minitest issues warnings, so we put our fake minitest on the load
+    # path to prevent the real minitest from being loaded.
+    "$LOAD_PATH.unshift '#{fake_minitest}'", 'require "rspec/core"', 'RSpec::Core::Runner.disable_autorun!' do
+    if RUBY_VERSION == '1.9.2' || (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
+      before { pending "Not working on #{RUBY_DESCRIPTION}" }
+    end
+  end
+
   describe "::configuration" do
     it "returns the same object every time" do
       expect(RSpec.configuration).to equal(RSpec.configuration)
@@ -70,16 +81,17 @@ RSpec.describe RSpec do
     end
   end
 
+  include RSpec::Support::ShellOut
+
   # This is hard to test :(. Best way I could come up with was starting
   # fresh ruby process w/o this stuff already loaded.
   it "loads mocks and expectations when the constants are referenced", :slow do
-    code = "$LOAD_PATH.replace(#{$LOAD_PATH.inspect}); " +
-           'require "rspec"; ' +
-           "puts RSpec::Mocks.name; " +
-           "puts RSpec::Expectations.name"
+    code = 'require "rspec"; puts RSpec::Mocks.name; puts RSpec::Expectations.name'
+    out, err, status = run_ruby_with_current_load_path(code)
 
-    result = `ruby -e '#{code}'`.chomp
-    expect(result.split("\n")).to eq(%w[ RSpec::Mocks RSpec::Expectations ])
+    expect(err).to eq("")
+    expect(out.split("\n")).to eq(%w[ RSpec::Mocks RSpec::Expectations ])
+    expect(status.exitstatus).to eq(0)
   end
 
   it 'correctly raises an error when an invalid const is referenced' do
