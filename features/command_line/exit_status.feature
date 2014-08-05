@@ -29,6 +29,21 @@ Feature: `--failure-exit-code` option (exit status)
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
 
+  Scenario: A nested failing spec with the default exit code
+    Given a file named "nested_ko_spec.rb" with:
+      """ruby
+      RSpec.describe "KO" do
+        describe "nested" do
+          it "fails" do
+            raise "KO"
+          end
+        end
+      end
+      """
+    When I run `rspec nested_ko_spec.rb`
+    Then the exit status should be 1
+    And the output should contain "1 example, 1 failure"
+
   Scenario: Exit with 0 when no examples are run
     Given a file named "a_no_examples_spec.rb" with:
       """ruby
