@@ -20,6 +20,8 @@ Enhancements:
 * Include chained methods in custom matcher description and failure message
   when new `include_chain_clauses_in_custom_matcher_descriptions` config
   option is enabled. (Dan Oved, #600)
+* Include `thrice` matcher as a synonym for `exactly(3).times`. (Dennis
+  Taylor, #615)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...v3.0.3)
