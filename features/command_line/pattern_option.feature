@@ -49,11 +49,11 @@ Feature: `--pattern` option
       """
     And a file named "spec/two_examples.spec" with:
       """ruby
-      require 'spec_helper'
       RSpec.describe "something" do
         it "passes" do
         end
-        it "passes" do
+
+        it "passes again" do
         end
       end
       """
