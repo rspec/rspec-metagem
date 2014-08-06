@@ -106,14 +106,14 @@ module RSpec
         end
 
         # @api public
-        # Specifies that the method is expected to yield once.
+        # Specifies that the method is expected to yield twice.
         def twice
           exactly(2)
           self
         end
 
         # @api public
-        # Specifies that the method is expected to yield once.
+        # Specifies that the method is expected to yield thrice.
         def thrice
           exactly(3)
           self
