@@ -73,7 +73,7 @@ RSpec.describe "yield_control matcher" do
         }.to fail_with(/expected given block to yield control twice/)
 
         expect {
-          expect { |b| [1, 2].each(&b) }.to yield_control.exactly(3).times
+          expect { |b| [1, 2].each(&b) }.to yield_control.thrice
         }.to fail_with(/expected given block to yield control 3 times/)
       end
 
@@ -81,6 +81,7 @@ RSpec.describe "yield_control matcher" do
         expect { |b| [1].each(&b) }.to yield_control.once
         expect { |b| [1, 2].each(&b) }.to yield_control.twice
         expect { |b| [1, 2, 3].each(&b) }.to yield_control.thrice
+        expect { |b| [1, 2, 3, 4].each(&b) }.to yield_control.exactly(4).times
       end
     end
 
