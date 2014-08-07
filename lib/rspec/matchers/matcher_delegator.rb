@@ -3,6 +3,7 @@ module RSpec
     # Provides the necessary plumbing to wrap a matcher with a decorator.
     # @private
     class MatcherDelegator
+      include Composable
       attr_reader :base_matcher
 
       def initialize(base_matcher)
@@ -27,10 +28,6 @@ module RSpec
         @base_matcher = @base_matcher.clone
         super
       end
-
-      # So `===` is delegated via `method_missing`.
-      undef ===
-      undef ==
     end
   end
 end
