@@ -37,5 +37,14 @@ module RSpec
         @description_block.call(super)
       end
     end
+
+    # Decorator used for matchers that have special implementations of
+    # operators like `==` and `===`.
+    # @private
+    class AliasedMatcherWithOperatorSupport < AliasedMatcher
+      # We undef these so that they get delegated via `method_missing`.
+      undef ==
+      undef ===
+    end
   end
 end

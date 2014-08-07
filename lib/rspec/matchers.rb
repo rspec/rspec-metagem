@@ -218,6 +218,8 @@ module RSpec
     #
     # @param new_name [Symbol] the new name for the matcher
     # @param old_name [Symbol] the original name for the matcher
+    # @param options  [Hash] options for the aliased matcher
+    # @option options [Class] :klass the ruby class to use as the decorator. (Not normally used).
     # @yield [String] optional block that, when given is used to define the overriden
     #   description. The yielded arg is the original description. If no block is
     #   provided, a default description override is used based on the old and
@@ -241,14 +243,16 @@ module RSpec
     # @!macro [attach] alias_matcher
     #   @!parse
     #     alias $1 $2
-    def self.alias_matcher(new_name, old_name, &description_override)
+    def self.alias_matcher(new_name, old_name, options = {}, &description_override)
+
       description_override ||= lambda do |old_desc|
         old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
       end
+      klass = options.fetch(:klass) { AliasedMatcher }
 
       define_method(new_name) do |*args, &block|
         matcher = __send__(old_name, *args, &block)
-        AliasedMatcher.new(matcher, description_override)
+        klass.new(matcher, description_override)
       end
     end
 
@@ -295,7 +299,7 @@ module RSpec
     def be(*args)
       args.empty? ? Matchers::BuiltIn::Be.new : equal(*args)
     end
-    alias_matcher :a_value, :be
+    alias_matcher :a_value, :be, :klass => AliasedMatcherWithOperatorSupport
 
     # passes if target.kind_of?(klass)
     def be_a(klass)

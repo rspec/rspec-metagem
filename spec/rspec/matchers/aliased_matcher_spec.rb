@@ -12,6 +12,11 @@ module RSpec
           "my base matcher description"
         end
       end
+      RSpec::Matchers.alias_matcher :alias_of_my_base_matcher, :my_base_matcher
+
+      it_behaves_like "an RSpec matcher", :valid_value => 13, :invalid_value => nil do
+        let(:matcher) { alias_of_my_base_matcher }
+      end
 
       shared_examples "making a copy" do |copy_method|
         context "when making a copy via `#{copy_method}`" do
