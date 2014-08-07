@@ -29,11 +29,31 @@ module RSpec
 
       # Provides the description of the aliased matcher. Aliased matchers
       # are designed to behave identically to the original matcher except
-      # for this method. The description is different to reflect the aliased
-      # name.
+      # for the description and failure messages. The description is different
+      # to reflect the aliased name.
       #
       # @api private
       def description
+        @description_block.call(super)
+      end
+
+      # Provides the failure_message of the aliased matcher. Aliased matchers
+      # are designed to behave identically to the original matcher except
+      # for the description and failure messages. The failure_message is different
+      # to reflect the aliased name.
+      #
+      # @api private
+      def failure_message
+        @description_block.call(super)
+      end
+
+      # Provides the failure_message_when_negated of the aliased matcher. Aliased matchers
+      # are designed to behave identically to the original matcher except
+      # for the description and failure messages. The failure_message_when_negated is different
+      # to reflect the aliased name.
+      #
+      # @api private
+      def failure_message_when_negated
         @description_block.call(super)
       end
     end
@@ -45,6 +65,21 @@ module RSpec
       # We undef these so that they get delegated via `method_missing`.
       undef ==
       undef ===
+    end
+
+    # @private
+    class AliasedNegatedMatcher < AliasedMatcher
+      def matches?(*args, &block)
+        if @base_matcher.respond_to?(:does_not_match?)
+          @base_matcher.does_not_match?(*args, &block)
+        else
+          !super
+        end
+      end
+
+      def does_not_match?(*args, &block)
+        @base_matcher.matches?(*args, &block)
+      end
     end
   end
 end

@@ -22,6 +22,8 @@ Enhancements:
   option is enabled. (Dan Oved, #600)
 * Add `thrice` modifier to `yield_control` matcher as a synonym for
   `exactly(3).times`. (Dennis Taylor, #615)
+* Add `RSpec::Matchers.define_negated_matcher`, which defines a negated
+  version of the named matcher. (Adam Farhi, Myron Marston, #618)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...v3.0.3)

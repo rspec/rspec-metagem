@@ -30,6 +30,7 @@
   - define_matcher_outside_rspec.feature
 - composing_matchers.feature
 - compound_expectations.feature
+- define_negated_matcher.feature
 - customized_message.feature
 - diffing.feature
 - implicit_docstrings.feature

@@ -243,8 +243,7 @@ module RSpec
     # @!macro [attach] alias_matcher
     #   @!parse
     #     alias $1 $2
-    def self.alias_matcher(new_name, old_name, options = {}, &description_override)
-
+    def self.alias_matcher(new_name, old_name, options={}, &description_override)
       description_override ||= lambda do |old_desc|
         old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
       end
@@ -254,6 +253,26 @@ module RSpec
         matcher = __send__(old_name, *args, &block)
         klass.new(matcher, description_override)
       end
+    end
+
+    # Defines a negated matcher. The returned matcher's `description` and `failure_message`
+    # will be overriden to reflect the phrasing of the new name, and the match logic will
+    # be based on the original matcher but negated.
+    #
+    # @param negated_name [Symbol] the name for the negated matcher
+    # @param base_name [Symbol] the name of the original matcher that will be negated
+    # @yield [String] optional block that, when given is used to define the overriden
+    #   description. The yielded arg is the original description. If no block is
+    #   provided, a default description override is used based on the old and
+    #   new names.
+    #
+    # @example
+    #
+    #   RSpec::Matchers.define_negated_matcher :a_value_not_between, :a_value_between
+    #   a_value_between(3, 5).description # => "a value between 3 and 5"
+    #   a_value_not_between(3, 5).description # => "a value not between 3 and 5"
+    def self.define_negated_matcher(negated_name, base_name, &description_override)
+      alias_matcher(negated_name, base_name, :klass => AliasedNegatedMatcher, &description_override)
     end
 
     # Passes if actual is truthy (anything but false or nil)

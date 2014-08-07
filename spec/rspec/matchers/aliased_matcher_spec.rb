@@ -33,7 +33,7 @@ module RSpec
 
           it "copies custom matchers properly so they can work even though they have singleton behavior" do
             base_matcher = my_base_matcher
-            aliased = AliasedMatcher.new(base_matcher, Proc.new {})
+            aliased = AliasedMatcher.new(base_matcher, Proc.new { |a| a })
             copy = aliased.__send__(copy_method)
 
             expect(copy).not_to equal(aliased)
