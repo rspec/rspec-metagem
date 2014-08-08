@@ -8,7 +8,7 @@ module RSpec::Matchers::BuiltIn
     describe 'description' do
       it 'provides a description' do
         matcher = all( eq('A') )
-        expect(matcher.description).to eq 'all eq "A"'
+        expect(matcher.description).to eq 'all (eq "A")'
       end
     end
 
@@ -27,7 +27,7 @@ module RSpec::Matchers::BuiltIn
               expect {
                 expect(['A', 'A', 'A', 5, 'A']).to all( be_a(String) )
               }.to fail_with(dedent <<-EOS)
-              |expected ["A", "A", "A", 5, "A"] to all be a kind of String
+              |expected ["A", "A", "A", 5, "A"] to all (be a kind of String)
               |
               |   object at index 3 failed to match:
               |      expected 5 to be a kind of String
@@ -38,7 +38,7 @@ module RSpec::Matchers::BuiltIn
               expect {
                 expect(['A', 'A', 'A', 5, 6]).to all( be_a(String) )
               }.to fail_with(dedent <<-EOS)
-              |expected ["A", "A", "A", 5, 6] to all be a kind of String
+              |expected ["A", "A", "A", 5, 6] to all (be a kind of String)
               |
               |   object at index 3 failed to match:
               |      expected 5 to be a kind of String
@@ -55,7 +55,7 @@ module RSpec::Matchers::BuiltIn
               expect {
                 expect(['A', 'A', 'A', 'C', 'A']).to all( eq('A') )
               }.to fail_with(dedent <<-EOS)
-              |expected ["A", "A", "A", "C", "A"] to all eq "A"
+              |expected ["A", "A", "A", "C", "A"] to all (eq "A")
               |
               |   object at index 3 failed to match:
               |      expected: "A"
@@ -69,7 +69,7 @@ module RSpec::Matchers::BuiltIn
               expect {
                 expect(['A', 'B', 'A', 'C', 'A']).to all( eq('A') )
               }.to fail_with(dedent <<-EOS)
-              |expected ["A", "B", "A", "C", "A"] to all eq "A"
+              |expected ["A", "B", "A", "C", "A"] to all (eq "A")
               |
               |   object at index 1 failed to match:
               |      expected: "A"
@@ -105,7 +105,7 @@ module RSpec::Matchers::BuiltIn
             expect {
               expect([3, 4, 7, 28]).to all( be_between(2, 5).or be_between(6, 9) )
             }.to fail_with(dedent <<-EOS)
-              |expected [3, 4, 7, 28] to all be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive)
+              |expected [3, 4, 7, 28] to all (be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive))
               |
               |   object at index 3 failed to match:
               |      expected 28 to be between 2 and 5 (inclusive) or expected 28 to be between 6 and 9 (inclusive)
@@ -118,7 +118,7 @@ module RSpec::Matchers::BuiltIn
             expect {
               expect([3, 4, 27, 22]).to all( be_between(2, 5).or be_between(6, 9) )
             }.to fail_with(dedent <<-EOS)
-              |expected [3, 4, 27, 22] to all be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive)
+              |expected [3, 4, 27, 22] to all (be between 2 and 5 (inclusive) or be between 6 and 9 (inclusive))
               |
               |   object at index 2 failed to match:
               |      expected 27 to be between 2 and 5 (inclusive) or expected 27 to be between 6 and 9 (inclusive)

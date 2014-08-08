@@ -5,6 +5,11 @@ Bug Fixes:
 
 * Rename private `LegacyMacherAdapter` constant to `LegacyMatcherAdapter`
   to fix typo. (Abdelkader Boudih, #563)
+* Fix failure message generation so that structs are printed properly
+  in failures. Previously failure messages would represent them as
+  an array. (Myron Marston, #620)
+* Fix composable matcher support so that it does not wrongly treat
+  structs as arrays. (Myron Marston, #620)
 
 Enhancements:
 

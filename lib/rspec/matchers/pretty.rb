@@ -14,7 +14,7 @@ module RSpec
       # @api private
       # Converts a collection of objects into an english expression.
       def to_sentence(words)
-        return " #{words.inspect}" unless words
+        return " #{words.inspect}" if !words || Struct === words
         words = Array(words).map { |w| to_word(w) }
         case words.length
         when 0
