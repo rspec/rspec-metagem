@@ -33,10 +33,10 @@ Feature: `all` matcher
       """
     When I run `rspec array_all_matcher_spec.rb`
     Then the output should contain all of these:
-      | 6 examples, 3 failures                          |
-      | expected [1, 3, 5] to all (be even)             |
-      | expected [1, 3, 5] to all (be a kind of String) |
-      | expected [1, 3, 5] to all (be > 2)              |
+      | 6 examples, 3 failures                        |
+      | expected [1, 3, 5] to all be even             |
+      | expected [1, 3, 5] to all be a kind of String |
+      | expected [1, 3, 5] to all be > 2              |
 
   Scenario: compound matcher usage
     Given a file named "compound_all_matcher_spec.rb" with:
@@ -54,7 +54,7 @@ Feature: `all` matcher
       """
     When I run `rspec compound_all_matcher_spec.rb`
     Then the output should contain all of these:
-      | 6 examples, 3 failures                                                                           |
-      | expected ["anything", "everything", "something"] to all (include "foo" and include "bar")        |
-      | expected ["anything", "everything", "something"] to all (be a kind of String and start with "a") |
-      | expected ["anything", "everything", "something"] to all (start with "a" or include "z")          |
+      | 6 examples, 3 failures                                                                         |
+      | expected ["anything", "everything", "something"] to all include "foo" and include "bar"        |
+      | expected ["anything", "everything", "something"] to all be a kind of String and start with "a" |
+      | expected ["anything", "everything", "something"] to all start with "a" or include "z"          |
