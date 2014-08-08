@@ -35,7 +35,7 @@ module RSpec
           return false unless actual.respond_to?(:[])
 
           begin
-            return subset_matches? if expected.respond_to?(:length)
+            return subset_matches? if !(Struct === expected) && expected.respond_to?(:length)
             element_matches?
           rescue ArgumentError
             @actual_does_not_have_ordered_elements = true

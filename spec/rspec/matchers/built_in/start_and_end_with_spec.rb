@@ -37,6 +37,28 @@ RSpec.describe "expect(...).to start_with" do
     end
   end
 
+  context "with an array of uncustomized structs" do
+    struct = Struct.new(:foo)
+
+    it 'passes if the array ends with a struct equal to the provided struct' do
+      s1 = struct.new(5)
+      s2 = struct.new(5)
+      expect(s1).to eq(s2)
+
+      expect([s1, 10]).to start_with(s2)
+    end
+
+    it 'fails if the array ends with a struct not equal to the provided struct' do
+      s1 = struct.new(5)
+      s2 = struct.new(6)
+      expect(s1).not_to eq(s2)
+
+      expect {
+        expect([s1, 10]).to start_with(s2)
+      }.to fail_matching("expected [#{s1.inspect}, 10] to start with #{s2.inspect}")
+    end
+  end
+
   context "with an object that does not respond to :[]" do
     it "fails with a useful message" do
       actual = Object.new
@@ -160,6 +182,28 @@ RSpec.describe "expect(...).to end_with" do
       expect {
         expect([0, 1, 2]).to end_with [0, 1]
       }.to fail_with("expected [0, 1, 2] to end with 0 and 1")
+    end
+  end
+
+  context "with an array of uncustomized structs" do
+    struct = Struct.new(:foo)
+
+    it 'passes if the array ends with a struct equal to the provided struct' do
+      s1 = struct.new(5)
+      s2 = struct.new(5)
+      expect(s1).to eq(s2)
+
+      expect([10, s1]).to end_with(s2)
+    end
+
+    it 'fails if the array ends with a struct not equal to the provided struct' do
+      s1 = struct.new(5)
+      s2 = struct.new(6)
+      expect(s1).not_to eq(s2)
+
+      expect {
+        expect([10, s1]).to end_with(s2)
+      }.to fail_matching("expected [10, #{s1.inspect}] to end with #{s2.inspect}")
     end
   end
 
