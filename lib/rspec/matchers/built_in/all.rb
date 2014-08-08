@@ -31,8 +31,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          described_items = surface_descriptions_in(matcher)
-          improve_hash_formatting "all#{to_sentence(described_items)}"
+          improve_hash_formatting "all #{description_of matcher}"
         end
 
       private
