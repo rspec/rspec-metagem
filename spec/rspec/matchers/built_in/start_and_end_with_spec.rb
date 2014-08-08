@@ -59,6 +59,32 @@ RSpec.describe "expect(...).to start_with" do
     end
   end
 
+  context "with an array of structs that have a custom `==` definition" do
+    my_struct = Struct.new(:id, :fluff) do
+      def ==(other)
+        other.is_a?(self.class) && other.id == id
+      end
+    end
+
+    it 'passes if the array ends with a struct equal to the provided struct' do
+      s1 = my_struct.new(1, "foo")
+      s2 = my_struct.new(1, "bar")
+      expect(s1).to eq(s2)
+
+      expect([s1, 10]).to start_with(s2)
+    end
+
+    it 'fails if the array ends with a struct not equal to the provided struct' do
+      s1 = my_struct.new(1, "foo")
+      s2 = my_struct.new(2, "bar")
+      expect(s1).not_to eq(s2)
+
+      expect {
+        expect([s1, 10]).to start_with(s2)
+      }.to fail_matching(%Q{expected [#{s1.inspect}, 10] to start with #{s2.inspect}})
+    end
+  end
+
   context "with an object that does not respond to :[]" do
     it "fails with a useful message" do
       actual = Object.new
@@ -204,6 +230,32 @@ RSpec.describe "expect(...).to end_with" do
       expect {
         expect([10, s1]).to end_with(s2)
       }.to fail_matching("expected [10, #{s1.inspect}] to end with #{s2.inspect}")
+    end
+  end
+
+  context "with an array of structs that have a custom `==` definition" do
+    my_struct = Struct.new(:id, :fluff) do
+      def ==(other)
+        other.is_a?(self.class) && other.id == id
+      end
+    end
+
+    it 'passes if the array ends with a struct equal to the provided struct' do
+      s1 = my_struct.new(1, "foo")
+      s2 = my_struct.new(1, "bar")
+      expect(s1).to eq(s2)
+
+      expect([10, s1]).to end_with(s2)
+    end
+
+    it 'fails if the array ends with a struct not equal to the provided struct' do
+      s1 = my_struct.new(1, "foo")
+      s2 = my_struct.new(2, "bar")
+      expect(s1).not_to eq(s2)
+
+      expect {
+        expect([10, s1]).to end_with(s2)
+      }.to fail_matching(%Q{expected [10, #{s1.inspect}] to end with #{s2.inspect}})
     end
   end
 

@@ -135,6 +135,8 @@ module RSpec
           object.clone
         elsif Hash === object
           Hash[with_matchers_cloned(object.to_a)]
+        elsif Struct === object
+          object
         elsif enumerable?(object)
           begin
             object.map { |subobject| with_matchers_cloned(subobject) }
