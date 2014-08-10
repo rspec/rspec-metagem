@@ -39,23 +39,3 @@ Feature: `--pattern` option
   Scenario: The `--pattern` flag accepts shell style glob unions
    When I run `rspec -P "**/*_{test,spec}.rb"`
    Then the output should contain "3 examples, 0 failures"
-
-  Scenario: Override the default pattern in configuration
-    Given a file named "spec/spec_helper.rb" with:
-      """ruby
-      RSpec.configure do |config|
-        config.pattern << ',**/*.spec'
-      end
-      """
-    And a file named "spec/two_examples.spec" with:
-      """ruby
-      RSpec.describe "something" do
-        it "passes" do
-        end
-
-        it "passes again" do
-        end
-      end
-      """
-    When I run `rspec -rspec_helper`
-    Then the output should contain "4 examples, 0 failures"
