@@ -12,6 +12,8 @@ Bug Fixes:
   an array. (Myron Marston, #620)
 * Fix composable matcher support so that it does not wrongly treat
   structs as arrays. (Myron Marston, #620)
+* Fix `all` matcher so that it fails properly (rather than raising a
+  `NoMethodError`) when matched against a non-enumerable. (Hao Su, #622)
 
 Enhancements:
 

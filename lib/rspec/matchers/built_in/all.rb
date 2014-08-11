@@ -22,7 +22,7 @@ module RSpec
         # @return [String]
         def failure_message
           unless enumerable?
-            return "#{improve_hash_formatting(super)}, #{not_enumerable_clause}"
+            return "#{improve_hash_formatting(super)}, but was not enumerable"
           end
 
           all_messages = [improve_hash_formatting(super)]
@@ -58,10 +58,6 @@ module RSpec
         def failure_message_for_item(index, failure_message)
           failure_message = indent_multiline_message(add_new_line_if_needed(failure_message))
           indent_multiline_message("object at index #{index} failed to match:#{failure_message}")
-        end
-
-        def not_enumerable_clause
-          'but was not enumerable'
         end
 
         def add_new_line_if_needed(message)
