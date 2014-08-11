@@ -1,6 +1,7 @@
 Feature: `--pattern` option
 
   By default, RSpec loads files matching the pattern:
+
       "spec/**/*_spec.rb"
 
   Use the `--pattern` option to declare a different pattern.
