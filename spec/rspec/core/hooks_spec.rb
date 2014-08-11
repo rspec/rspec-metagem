@@ -97,6 +97,88 @@ module RSpec::Core
     end
 
     describe "#around" do
+      context "when it does not run the example" do
+        context "for a hook declared in the group" do
+          it 'converts the example to a skipped example so the user is made aware of it' do
+            ex = nil
+            group = RSpec.describe do
+              around { }
+              ex = example("not run") { }
+            end
+
+            group.run
+            expect(ex.execution_result.status).to eq(:pending)
+          end
+        end
+
+        context "for a hook declared in config" do
+          it 'converts the example to a skipped example so the user is made aware of it' do
+            RSpec.configuration.around { }
+
+            ex = nil
+            group = RSpec.describe do
+              ex = example("not run") { }
+            end
+
+            group.run
+            expect(ex.execution_result.status).to eq(:pending)
+          end
+        end
+
+        if RUBY_VERSION.to_f < 1.9
+          def hook_desc(_)
+            "around hook"
+          end
+        else
+          def hook_desc(line)
+            "around hook at #{Metadata.relative_path(__FILE__)}:#{line}"
+          end
+        end
+
+        it 'indicates which around hook did not run the example in the pending message' do
+          ex = nil
+          line = __LINE__ + 3
+          group = RSpec.describe do
+            around { |e| e.run }
+            around { }
+            around { |e| e.run }
+
+            ex = example("not run") { }
+          end
+
+          group.run
+          expect(ex.execution_result.pending_message).to eq("#{hook_desc(line)} did not execute the example")
+        end
+      end
+
+      it 'considers the hook to have run when passed as a block to a method that yields' do
+        ex = nil
+        group = RSpec.describe do
+          def transactionally
+            yield
+          end
+
+          around { |e| transactionally(&e) }
+          ex = example("run") { }
+        end
+
+        group.run
+        expect(ex.execution_result.status).to eq(:passed)
+      end
+
+      it 'does not consider the hook to have run when passed as a block to a method that does not yield' do
+        ex = nil
+        group = RSpec.describe do
+          def transactionally; end
+
+          around { |e| transactionally(&e) }
+          ex = example("not run") { }
+        end
+
+        group.run
+        expect(ex.execution_result.status).to eq(:pending)
+      end
+
       context "when not running the example within the around block" do
         it "does not run the example" do
           examples = []

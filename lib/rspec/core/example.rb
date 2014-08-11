@@ -207,20 +207,37 @@ module RSpec
         end
 
         Proc.public_instance_methods(false).each do |name|
-          unless name.to_sym == :inspect
+          unless name.to_sym == :call || name.to_sym == :to_proc || name.to_sym == :inspect
             define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
           end
         end
+
+        # Calls the proc and notes that the example has been executed.
+        def call(*args, &block)
+          @executed = true
+          @proc.call(*args, &block)
+        end
         alias run call
 
+        # Provides a wrapped proc that will update our `executed?` state when executed.
+        def to_proc
+          method(:call).to_proc
+        end
+
         def initialize(example, &block)
-          @example = example
-          @proc    = block
+          @example  = example
+          @proc     = block
+          @executed = false
         end
 
         # @private
         def wrap(&block)
           self.class.new(example, &block)
+        end
+
+        # Indicates whether or not the around hook has executed the example.
+        def executed?
+          @executed
         end
 
         # @private
