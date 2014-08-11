@@ -180,5 +180,15 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
+    context 'when the actual data is not enumerable' do
+      let(:actual) { 5 }
+
+      it 'returns a failure message' do
+        expect {
+          expect(actual).to all(be_a(String))
+        }.to fail_with("expected #{actual.inspect} to all be a kind of String, but was not enumerable")
+      end
+    end
+
   end
 end
