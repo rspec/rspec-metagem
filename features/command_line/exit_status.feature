@@ -4,7 +4,7 @@ Feature: `--failure-exit-code` option (exit status)
   if any examples fail. The failure exit code can be overridden using the
   `--failure-exit-code` option.
 
-  Scenario: Exit with 0 when all examples pass
+  Scenario: A passing spec with the default exit code
     Given a file named "ok_spec.rb" with:
       """ruby
       RSpec.describe "ok" do
@@ -16,7 +16,7 @@ Feature: `--failure-exit-code` option (exit status)
     Then the exit status should be 0
     And the examples should all pass
 
-  Scenario: Exit with 1 when one example fails
+  Scenario: A failing spec with the default exit code
     Given a file named "ko_spec.rb" with:
       """ruby
       RSpec.describe "KO" do
@@ -29,7 +29,7 @@ Feature: `--failure-exit-code` option (exit status)
     Then the exit status should be 1
     And the output should contain "1 example, 1 failure"
 
-  Scenario: Exit with 1 when a nested examples fails
+  Scenario: A nested failing spec with the default exit code
     Given a file named "nested_ko_spec.rb" with:
       """ruby
       RSpec.describe "KO" do
@@ -52,7 +52,7 @@ Feature: `--failure-exit-code` option (exit status)
     Then the exit status should be 0
     And the output should contain "0 examples"
 
-  Scenario: Exit with 2 when one example fails and `--failure-exit-code` is 2
+  Scenario: A failing spec and `--failure-exit-code` is 42
     Given a file named "ko_spec.rb" with:
       """ruby
       RSpec.describe "KO" do
@@ -61,22 +61,6 @@ Feature: `--failure-exit-code` option (exit status)
         end
       end
       """
-    When I run `rspec --failure-exit-code 2 ko_spec.rb`
-    Then the exit status should be 2
-    And the output should contain "1 example, 1 failure"
-
-  Scenario: Exit with RSpec's exit code when an `at_exit` hook is added upstream
-    Given a file named "exit_at_spec.rb" with:
-      """ruby
-      require 'rspec/autorun'
-      at_exit { exit(0) }
-
-      RSpec.describe "exit 0 at_exit" do
-        it "does not interfere with rspec's exit code" do
-          fail
-        end
-      end
-      """
-    When I run `ruby exit_at_spec.rb`
-    Then the exit status should be 1
+    When I run `rspec --failure-exit-code 42 ko_spec.rb`
+    Then the exit status should be 42
     And the output should contain "1 example, 1 failure"

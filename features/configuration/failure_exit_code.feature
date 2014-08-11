@@ -1,6 +1,6 @@
 Feature: failure exit code
 
-  Use the `feature_exit_code` option to set a custom exit code when RSpec fails.
+  Use the `failure_exit_code` option to set a custom exit code when RSpec fails.
 
   ```ruby
   RSpec.configure { |c| c.failure_exit_code = 42 }
@@ -36,3 +36,18 @@ Feature: failure exit code
       """
     When I run `rspec spec/example_spec.rb`
     Then the exit status should be 42
+
+  Scenario: Exit with the default exit code when an `at_exit` hook is added upstream
+    Given a file named "exit_at_spec.rb" with:
+      """ruby
+      require 'rspec/autorun'
+      at_exit { exit(0) }
+
+      RSpec.describe "exit 0 at_exit ignored" do
+        it "does not interfere with the default exit code" do
+          fail
+        end
+      end
+      """
+    When I run `ruby exit_at_spec.rb`
+    Then the exit status should be 1

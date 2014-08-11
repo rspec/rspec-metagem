@@ -1,12 +1,21 @@
 Feature: pattern
 
-  Use the `--pattern` option to tell RSpec to look for specs in files that match
-  a pattern other than `"**/*_spec.rb"`.
+  Use the `pattern` option to configure RSpec to look for specs in files
+  that match a pattern other than `"**/*_spec.rb"`.
+
+  ```ruby
+  RSpec.configure { |c| c.pattern = '**/*.spec' }
+  ```
+
+  Rather than using `require 'spec_helper'` at the top of each spec file,
+  ensure that you have `--require spec_helper` in `.rspec`. That will always
+  load before the pattern is resolved. With the pattern thus configured,
+  only those spec files that match the pattern will then be loaded.
 
   Background:
     Given a file named "spec/example_spec.rb" with:
       """ruby
-      RSpec.describe "two specs here" do
+      RSpec.describe "two specs" do
         it "passes" do
         end
 
@@ -14,26 +23,40 @@ Feature: pattern
         end
       end
       """
-    And a file named "spec/example_test.rb" with:
+
+  Scenario: Override the default pattern in configuration
+    Given a file named "spec/spec_helper.rb" with:
       """ruby
-      RSpec.describe "only one spec" do
+      RSpec.configure do |config|
+        config.pattern = '**/*.spec'
+      end
+      """
+    And a file named "spec/one_example.spec" with:
+      """ruby
+      RSpec.describe "something" do
         it "passes" do
         end
       end
       """
+    When I run `rspec -rspec_helper`
+    Then the output should contain "1 example, 0 failures"
 
-  Scenario: By default, RSpec runs files that match `"**/*_spec.rb"`
-   When I run `rspec`
-   Then the output should contain "2 examples, 0 failures"
+  Scenario: Append to the default pattern in configuration
+    Given a file named "spec/spec_helper.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.pattern << ',**/*.spec'
+      end
+      """
+    And a file named "spec/two_examples.spec" with:
+      """ruby
+      RSpec.describe "something" do
+        it "passes" do
+        end
 
-  Scenario: The `--pattern` flag makes RSpec run files matching the specified pattern and ignore the default pattern
-   When I run `rspec -P "**/*_test.rb"`
-   Then the output should contain "1 example, 0 failures"
-
-  Scenario: The `--pattern` flag can be used to pass in multiple patterns, separated by comma
-   When I run `rspec -P "**/*_test.rb,**/*_spec.rb"`
-   Then the output should contain "3 examples, 0 failures"
-
-  Scenario: The `--pattern` flag accepts shell style glob unions
-   When I run `rspec -P "**/*_{test,spec}.rb"`
-   Then the output should contain "3 examples, 0 failures"
+        it "passes again" do
+        end
+      end
+      """
+    When I run `rspec -rspec_helper`
+    Then the output should contain "4 examples, 0 failures"
