@@ -10,7 +10,9 @@ module RSpec
       module Flexmock
         include ::FlexMock::MockContainer
 
-        def self.framework_name; :flexmock end
+        def self.framework_name
+          :flexmock
+        end
 
         def setup_mocks_for_rspec
           # No setup required

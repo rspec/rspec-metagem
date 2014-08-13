@@ -50,8 +50,8 @@ module RSpec
       def shared_examples(name, *args, &block)
         top_level = self == ExampleGroup
         if top_level && RSpec.thread_local_metadata[:in_example_group]
-          raise "Creating isolated shared examples from within a context is " +
-                "not allowed. Remove `RSpec.` prefix or move this to a " +
+          raise "Creating isolated shared examples from within a context is " \
+                "not allowed. Remove `RSpec.` prefix or move this to a " \
                 "top-level scope."
         end
 
@@ -103,7 +103,6 @@ module RSpec
 
           @exposed_globally = false
         end
-
       end
 
       # @private
@@ -118,13 +117,13 @@ module RSpec
             metadata_args.unshift name
           end
 
-          unless metadata_args.empty?
-            mod = Module.new
-            (class << mod; self; end).__send__(:define_method, :included) do |host|
-              host.class_exec(&block)
-            end
-            RSpec.configuration.include mod, *metadata_args
+          return if metadata_args.empty?
+
+          mod = Module.new
+          (class << mod; self; end).__send__(:define_method, :included) do |host|
+            host.class_exec(&block)
           end
+          RSpec.configuration.include mod, *metadata_args
         end
 
         def find(lookup_contexts, name)
@@ -144,13 +143,15 @@ module RSpec
 
         def valid_name?(candidate)
           case candidate
-            when String, Symbol, Module then true
-            else false
+          when String, Symbol, Module then true
+          else false
           end
         end
 
         def warn_if_key_taken(context, key, new_block)
-          return unless existing_block = shared_example_groups[context][key]
+          existing_block = shared_example_groups[context][key]
+
+          return unless existing_block
 
           RSpec.warn_with <<-WARNING.gsub(/^ +\|/, ''), :call_site => nil
             |WARNING: Shared example group '#{key}' has been previously defined at:
@@ -166,7 +167,7 @@ module RSpec
         end
 
         if Proc.method_defined?(:source_location)
-          def ensure_block_has_source_location(block); end
+          def ensure_block_has_source_location(_block); end
         else # for 1.8.7
           def ensure_block_has_source_location(block)
             source_location = yield.split(':')

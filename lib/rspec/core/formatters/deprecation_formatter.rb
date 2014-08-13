@@ -37,7 +37,7 @@ module RSpec
           @seen_deprecations << notification
         end
 
-        def deprecation_summary(notification)
+        def deprecation_summary(_notification)
           printer.deprecation_summary
         end
 
@@ -57,7 +57,7 @@ module RSpec
           |deprecation warnings into errors, giving you the full backtrace.
         EOS
 
-        DEPRECATION_STREAM_NOTICE = "Pass `--deprecation-out` or set " +
+        DEPRECATION_STREAM_NOTICE = "Pass `--deprecation-out` or set " \
           "`config.deprecation_stream` to a file for full output."
 
         SpecifiedDeprecationMessage = Struct.new(:type) do
@@ -213,7 +213,6 @@ module RSpec
             puts RAISE_ERROR_CONFIG_NOTICE
           end
         end
-
       end
     end
 

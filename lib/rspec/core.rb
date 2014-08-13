@@ -1,4 +1,7 @@
+# rubocop:disable Style/GlobalVars
 $_rspec_core_load_started_at = Time.now
+# rubocop:enable Style/GlobalVars
+
 require 'rbconfig'
 
 require "rspec/support"
@@ -64,7 +67,6 @@ module RSpec
                          config.expose_dsl_globally = true
                          config
                        end
-
   end
 
   # Yields the global configuration to a block.

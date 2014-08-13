@@ -10,7 +10,6 @@ module RSpec
       # @see RSpec::Core::Reporter
       # @see RSpec::Core::Formatters::Protocol
       class BaseFormatter
-
         # all formatters inheriting from this formatter will receive these notifications
         Formatters.register self, :start, :example_group_started, :close
         attr_accessor :example_group
@@ -45,7 +44,7 @@ module RSpec
         #
         # @param notification [NullNotification]
         # @see RSpec::Core::Formatters::Protocol#close
-        def close(notification)
+        def close(_notification)
           restore_sync_output
         end
 
@@ -56,13 +55,12 @@ module RSpec
         end
 
         def restore_sync_output
-          output.sync = @old_sync if output_supports_sync and !output.closed?
+          output.sync = @old_sync if output_supports_sync && !output.closed?
         end
 
         def output_supports_sync
           output.respond_to?(:sync=)
         end
-
       end
     end
   end

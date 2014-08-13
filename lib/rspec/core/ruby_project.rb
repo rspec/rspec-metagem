@@ -9,7 +9,7 @@ module RSpec
     # @private
     module RubyProject
       def add_to_load_path(*dirs)
-        dirs.map {|dir| add_dir_to_load_path(File.join(root, dir))}
+        dirs.map { |dir| add_dir_to_load_path(File.join(root, dir)) }
       end
 
       def add_dir_to_load_path(dir)
@@ -25,7 +25,7 @@ module RSpec
       end
 
       def find_first_parent_containing(dir)
-        ascend_until {|path| File.exist?(File.join(path, dir))}
+        ascend_until { |path| File.exist?(File.join(path, dir)) }
       end
 
       def ascend_until

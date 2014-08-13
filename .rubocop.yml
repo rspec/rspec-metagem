@@ -1,0 +1,53 @@
+inherit_from: .rubocop_rspec_base.yml
+
+AllCops:
+  Exclude:
+    # This code was taken from the backports gem. We don't want to mess with it.
+    - lib/rspec/core/backport_random.rb
+
+# This should go down over time.
+ClassLength:
+  Max: 330
+
+# This should go down over time.
+LineLength:
+  Max: 180
+
+Lint/HandleExceptions:
+  Exclude:
+    - lib/rspec/core/example.rb
+    - lib/rspec/core/mocking_adapters/mocha.rb
+    - lib/rspec/core/runner.rb
+    - lib/rspec/core/test_unit_assertions_adapter.rb
+
+Lint/LiteralInInterpolation:
+  Enabled: false
+
+# This should go down over time.
+MethodLength:
+  Max: 152
+
+# Exclude the default spec_helper to make it easier to uncomment out
+# default settings (for both users and the Cucumber suite).
+Style/BlockComments:
+  Exclude:
+    - lib/rspec/core/project_initializer/spec/spec_helper.rb
+
+# Not sure what to do with this rule yet.
+Style/ClassAndModuleChildren:
+  Exclude:
+    - lib/rspec/core/formatters.rb
+    - lib/rspec/core/notifications.rb
+    - lib/rspec/core/option_parser.rb
+    - lib/rspec/core/reporter.rb
+
+# This should go down over time.
+Style/CyclomaticComplexity:
+  Max: 12
+
+Style/RaiseArgs:
+  Exclude:
+    - lib/rspec/core/configuration.rb
+    - lib/rspec/core/hooks.rb
+    - lib/rspec/core/option_parser.rb
+    - lib/rspec/core/pending.rb

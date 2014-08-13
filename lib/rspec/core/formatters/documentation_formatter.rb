@@ -6,7 +6,7 @@ module RSpec
       # @private
       class DocumentationFormatter < BaseTextFormatter
         Formatters.register self, :example_group_started, :example_group_finished,
-                                  :example_passed, :example_pending, :example_failed
+                            :example_passed, :example_pending, :example_failed
 
         def initialize(output)
           super
@@ -20,7 +20,7 @@ module RSpec
           @group_level += 1
         end
 
-        def example_group_finished(notification)
+        def example_group_finished(_notification)
           @group_level -= 1
         end
 
@@ -46,7 +46,7 @@ module RSpec
           ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (PENDING: #{message})", :pending)
         end
 
-        def failure_output(example, exception)
+        def failure_output(example, _exception)
           ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})", :failure)
         end
 
@@ -62,7 +62,6 @@ module RSpec
         def example_group_chain
           example_group.parent_groups.reverse
         end
-
       end
     end
   end

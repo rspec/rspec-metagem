@@ -5,7 +5,6 @@ module RSpec::Core
   # Notifications are value objects passed to formatters to provide them
   # with information about a particular event of interest.
   module Notifications
-
     # @private
     class NullColorizer
       def wrap(line, _code_or_symbol)
@@ -55,7 +54,6 @@ module RSpec::Core
     #   end
     #
     class ExamplesNotification
-
       def initialize(reporter)
         @reporter = reporter
       end
@@ -78,18 +76,18 @@ module RSpec::Core
       # @return [Array(Rspec::Core::Notifications::ExampleNotification]
       #         returns examples as notifications
       def notifications
-        @notifications ||= format(examples)
+        @notifications ||= format_examples(examples)
       end
 
       # @return [Array(Rspec::Core::Notifications::FailedExampleNotification]
       #         returns failed examples as notifications
       def failure_notifications
-        @failed_notifications ||= format(failed_examples)
+        @failed_notifications ||= format_examples(failed_examples)
       end
 
       # @return [String] The list of failed examples, fully formatted in the way that
       #   RSpec's built-in formatters emit.
-      def fully_formatted_failed_examples(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def fully_formatted_failed_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nFailures:\n"
 
         failure_notifications.each_with_index do |failure, index|
@@ -101,15 +99,15 @@ module RSpec::Core
 
       # @return [String] The list of pending examples, fully formatted in the way that
       #   RSpec's built-in formatters emit.
-      def fully_formatted_pending_examples(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def fully_formatted_pending_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nPending:\n"
 
         pending_examples.each do |example|
           formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
 
           formatted <<
-            "  #{colorizer.wrap(example.full_description, :pending)}\n" <<
-            "    # #{colorizer.wrap(example.execution_result.pending_message, :detail)}\n" <<
+            "  #{colorizer.wrap(example.full_description, :pending)}\n" \
+            "    # #{colorizer.wrap(example.execution_result.pending_message, :detail)}\n" \
             "    # #{colorizer.wrap(formatted_caller, :detail)}\n"
         end
 
@@ -118,12 +116,11 @@ module RSpec::Core
 
     private
 
-      def format(examples)
+      def format_examples(examples)
         examples.map do |example|
           ExampleNotification.for(example)
         end
       end
-
     end
 
     # The `FailedExampleNotification` extends `ExampleNotification` with
@@ -162,7 +159,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         add_shared_group_line(failure_lines, colorizer).map do |line|
           colorizer.wrap line, RSpec.configuration.failure_color
         end
@@ -179,7 +176,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] the examples colorized backtrace lines
-      def colorized_formatted_backtrace(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_formatted_backtrace(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted_backtrace.map do |backtrace_info|
           colorizer.wrap "# #{backtrace_info}", RSpec.configuration.detail_color
         end
@@ -187,7 +184,7 @@ module RSpec::Core
 
       # @return [String] The failure information fully formatted in the way that
       #   RSpec's built-in formatters emit.
-      def fully_formatted(failure_number, colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\n  #{failure_number}) #{description}\n"
 
         colorized_message_lines(colorizer).each do |line|
@@ -218,7 +215,7 @@ module RSpec::Core
 
       def exception_class_name
         name = exception.class.name.to_s
-        name ="(anonymous error class)" if name == ''
+        name = "(anonymous error class)" if name == ''
         name
       end
 
@@ -248,8 +245,8 @@ module RSpec::Core
       def shared_group_line
         @shared_group_line ||=
           if shared_group
-             "Shared Example Group: \"#{shared_group.metadata[:shared_group_name]}\"" +
-              " called from #{backtrace_formatter.backtrace_line(shared_group.location)}"
+            "Shared Example Group: \"#{shared_group.metadata[:shared_group_name]}\"" \
+             " called from #{backtrace_formatter.backtrace_line(shared_group.location)}"
           else
             ""
           end
@@ -260,7 +257,8 @@ module RSpec::Core
       end
 
       def read_failed_line
-        unless matching_line = find_failed_line
+        matching_line = find_failed_line
+        unless matching_line
           return "Unable to find matching line from backtrace"
         end
 
@@ -278,7 +276,7 @@ module RSpec::Core
 
       def find_failed_line
         path = File.expand_path(example.file_path)
-        exception.backtrace.detect do |line|
+        exception.backtrace.find do |line|
           match = line.match(/(.+?):(\d+)(|:\d+)/)
           match && match[1].downcase == path.downcase
         end
@@ -311,7 +309,7 @@ module RSpec::Core
       #
       # @param colorizer [#wrap] An object to colorize the message_lines by
       # @return [Array(String)] The example failure message colorized
-      def colorized_message_lines(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
     end
@@ -401,7 +399,7 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized results line.
-      def colorized_totals_line(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_totals_line(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         if failure_count > 0
           colorizer.wrap(totals_line, RSpec.configuration.failure_color)
         elsif pending_count > 0
@@ -418,7 +416,7 @@ module RSpec::Core
       # @param colorizer [#wrap] An object which supports wrapping text with
       #                          specific colors.
       # @return [String] A colorized summary line.
-      def colorized_rerun_commands(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def colorized_rerun_commands(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         "\nFailed examples:\n\n" +
         failed_examples.map do |example|
           colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
@@ -439,7 +437,7 @@ module RSpec::Core
 
       # @return [String] The summary information fully formatted in the way that
       #   RSpec's built-in formatters emit.
-      def fully_formatted(colorizer = ::RSpec::Core::Formatters::ConsoleCodes)
+      def fully_formatted(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nFinished in #{formatted_duration} " \
                     "(files took #{formatted_load_time} to load)\n" \
                     "#{colorized_totals_line(colorizer)}\n"
@@ -502,9 +500,8 @@ module RSpec::Core
           location_hash = example_groups[location] ||= Hash.new(0)
           location_hash[:total_time]  += example.execution_result.run_time
           location_hash[:count]       += 1
-          unless location_hash.has_key?(:description)
-            location_hash[:description] = example.example_group.top_level_description
-          end
+          next if location_hash.key?(:description)
+          location_hash[:description] = example.example_group.top_level_description
         end
 
         # stop if we've only one example group
@@ -540,6 +537,5 @@ module RSpec::Core
     # currently require no information, but we may wish to extend in future.
     class NullNotification
     end
-
   end
 end

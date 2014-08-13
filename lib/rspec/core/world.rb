@@ -4,7 +4,6 @@ module RSpec
     #
     # Internal container for global non-configuration data
     class World
-
       include RSpec::Core::Hooks
 
       # @private
@@ -16,14 +15,14 @@ module RSpec
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         @example_groups = []
-        @filtered_examples = Hash.new { |hash,group|
+        @filtered_examples = Hash.new do |hash, group|
           hash[group] = begin
             examples = group.examples.dup
             examples = filter_manager.prune(examples)
             examples.uniq!
             examples
           end
-        }
+        end
       end
 
       # @private
@@ -90,8 +89,8 @@ module RSpec
       #
       # Get count of examples to be run
       def example_count(groups=example_groups)
-        FlatMap.flat_map(groups) {|g| g.descendants}.
-          inject(0) {|sum, g| sum + g.filtered_examples.size}
+        FlatMap.flat_map(groups) { |g| g.descendants }.
+          inject(0) { |a, e| a + e.filtered_examples.size }
       end
 
       # @api private
@@ -131,19 +130,19 @@ module RSpec
           inclusion_filter.clear
         end
 
-        if example_count.zero?
-          example_groups.clear
-          if filter_manager.empty?
-            reporter.message("No examples found.")
-          elsif exclusion_filter.empty?
-            message = everything_filtered_message
-            if @configuration.run_all_when_everything_filtered?
-              message << "; ignoring #{inclusion_filter.description}"
-            end
-            reporter.message(message)
-          elsif inclusion_filter.empty?
-            reporter.message(everything_filtered_message)
+        return unless example_count.zero?
+
+        example_groups.clear
+        if filter_manager.empty?
+          reporter.message("No examples found.")
+        elsif exclusion_filter.empty?
+          message = everything_filtered_message
+          if @configuration.run_all_when_everything_filtered?
+            message << "; ignoring #{inclusion_filter.description}"
           end
+          reporter.message(message)
+        elsif inclusion_filter.empty?
+          reporter.message(everything_filtered_message)
         end
       end
 
@@ -156,18 +155,18 @@ module RSpec
       #
       # Add inclusion filters to announcement message
       def announce_inclusion_filter(announcements)
-        unless inclusion_filter.empty?
-          announcements << "include #{inclusion_filter.description}"
-        end
+        return if inclusion_filter.empty?
+
+        announcements << "include #{inclusion_filter.description}"
       end
 
       # @api private
       #
       # Add exclusion filters to announcement message
       def announce_exclusion_filter(announcements)
-        unless exclusion_filter.empty?
-          announcements << "exclude #{exclusion_filter.description}"
-        end
+        return if exclusion_filter.empty?
+
+        announcements << "exclude #{exclusion_filter.description}"
       end
 
     private
@@ -177,7 +176,6 @@ module RSpec
           lines + g.declaration_line_numbers
         end
       end
-
     end
   end
 end

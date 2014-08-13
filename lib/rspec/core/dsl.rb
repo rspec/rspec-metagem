@@ -85,7 +85,6 @@ module RSpec
         (class << top_level; self; end).class_exec(&changes)
         Module.class_exec(&changes)
       end
-
     end
   end
 end

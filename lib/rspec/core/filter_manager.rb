@@ -81,7 +81,7 @@ module RSpec
         # locations is a hash of expanded paths to arrays of line
         # numbers to match against. e.g.
         #   { "path/to/file.rb" => [37, 42] }
-        locations = inclusions.delete(:locations) || Hash.new { |h,k| h[k] = [] }
+        locations = inclusions.delete(:locations) || Hash.new { |h, k| h[k] = [] }
         locations[File.expand_path(file_path)].push(*line_numbers)
         inclusions.add_location(locations)
       end
@@ -93,9 +93,9 @@ module RSpec
       def prune(examples)
         if inclusions.standalone?
           base_exclusions = ExclusionRules.new
-          examples.select {|e| !base_exclusions.include_example?(e) && include?(e) }
+          examples.select { |e| !base_exclusions.include_example?(e) && include?(e) }
         else
-          examples.select {|e| !exclude?(e) && include?(e)}
+          examples.select { |e| !exclude?(e) && include?(e) }
         end
       end
 
@@ -156,9 +156,9 @@ module RSpec
         @rules.merge!(updated).each_key { |k| opposite.delete(k) }
       end
 
-      def add_with_low_priority(_updated)
-        updated = _updated.merge(@rules)
-        opposite.each_pair { |k,v| updated.delete(k) if updated[k] == v }
+      def add_with_low_priority(updated)
+        updated = updated.merge(@rules)
+        opposite.each_pair { |k, v| updated.delete(k) if updated[k] == v }
         @rules.replace(updated)
       end
 
@@ -192,7 +192,7 @@ module RSpec
       end
 
       def description
-        rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)','')
+        rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)', '')
       end
     end
 
@@ -201,19 +201,19 @@ module RSpec
       STANDALONE_FILTERS = [:locations, :full_description]
 
       def add_location(locations)
-        replace_filters({ :locations => locations })
+        replace_filters(:locations => locations)
       end
 
       def add(*args)
-        set_standalone_filter(*args) || super
+        apply_standalone_filter(*args) || super
       end
 
       def add_with_low_priority(*args)
-        set_standalone_filter(*args) || super
+        apply_standalone_filter(*args) || super
       end
 
       def use(*args)
-        set_standalone_filter(*args) || super
+        apply_standalone_filter(*args) || super
       end
 
       def include_example?(example)
@@ -226,13 +226,12 @@ module RSpec
 
     private
 
-      def set_standalone_filter(updated)
+      def apply_standalone_filter(updated)
         return true if standalone?
+        return nil unless is_standalone_filter?(updated)
 
-        if is_standalone_filter?(updated)
-          replace_filters(updated)
-          true
-        end
+        replace_filters(updated)
+        true
       end
 
       def replace_filters(new_rules)
@@ -241,7 +240,7 @@ module RSpec
       end
 
       def is_standalone_filter?(rules)
-        STANDALONE_FILTERS.any? { |key| rules.has_key?(key) }
+        STANDALONE_FILTERS.any? { |key| rules.key?(key) }
       end
     end
 

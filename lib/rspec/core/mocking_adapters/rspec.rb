@@ -7,7 +7,9 @@ module RSpec
       module RSpec
         include ::RSpec::Mocks::ExampleMethods
 
-        def self.framework_name; :rspec end
+        def self.framework_name
+          :rspec
+        end
 
         def self.configuration
           ::RSpec::Mocks.configuration

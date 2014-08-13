@@ -60,20 +60,20 @@ module RSpec
       end
 
       def add_failure_exit_code(argv)
-        if @submitted_options[:failure_exit_code]
-          argv << "--failure-exit-code" << @submitted_options[:failure_exit_code].to_s
-        end
+        return unless @submitted_options[:failure_exit_code]
+
+        argv << "--failure-exit-code" << @submitted_options[:failure_exit_code].to_s
       end
 
       def add_full_description(argv)
-        if @submitted_options[:full_description]
-          # The argument to --example is regexp-escaped before being stuffed
-          # into a regexp when received for the first time (see OptionParser).
-          # Hence, merely grabbing the source of this regexp will retain the
-          # backslashes, so we must remove them.
-          @submitted_options[:full_description].each do |description|
-            argv << "--example" << description.source.delete('\\')
-          end
+        return unless @submitted_options[:full_description]
+
+        # The argument to --example is regexp-escaped before being stuffed
+        # into a regexp when received for the first time (see OptionParser).
+        # Hence, merely grabbing the source of this regexp will retain the
+        # backslashes, so we must remove them.
+        @submitted_options[:full_description].each do |description|
+          argv << "--example" << description.source.delete('\\')
         end
       end
 

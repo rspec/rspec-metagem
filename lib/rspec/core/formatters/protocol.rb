@@ -17,7 +17,6 @@ module RSpec
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       class Protocol
-
         # @method initialize
         # @api public
         #
@@ -158,7 +157,6 @@ module RSpec
         # up resources, e.g. open streams, etc.
         #
         # @param notification [NullNotification]
-
       end
     end
   end

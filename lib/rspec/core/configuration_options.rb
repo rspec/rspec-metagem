@@ -41,14 +41,16 @@ module RSpec
       def organize_options
         @filter_manager_options = []
 
-        @options = (file_options << command_line_options << env_options).each { |opts|
+        @options = (file_options << command_line_options << env_options).each do |opts|
           @filter_manager_options << [:include, opts.delete(:inclusion_filter)] if opts.key?(:inclusion_filter)
           @filter_manager_options << [:exclude, opts.delete(:exclusion_filter)] if opts.key?(:exclusion_filter)
-        }.inject(:libs => [], :requires => []) { |hash, opts|
-          hash.merge(opts) { |key, oldval, newval|
+        end
+
+        @options = @options.inject(:libs => [], :requires => []) do |hash, opts|
+          hash.merge(opts) do |key, oldval, newval|
             [:libs, :requires].include?(key) ? oldval + newval : newval
-          }
-        }
+          end
+        end
       end
 
       UNFORCED_OPTIONS = [
@@ -161,12 +163,10 @@ module RSpec
       end
 
       def global_options_file
-        begin
-          File.join(File.expand_path("~"), ".rspec")
-        rescue ArgumentError
-          RSpec.warning "Unable to find ~/.rspec because the HOME environment variable is not set"
-          nil
-        end
+        File.join(File.expand_path("~"), ".rspec")
+      rescue ArgumentError
+        RSpec.warning "Unable to find ~/.rspec because the HOME environment variable is not set"
+        nil
       end
     end
   end
