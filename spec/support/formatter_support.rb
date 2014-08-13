@@ -56,9 +56,7 @@ module FormatterSupport
         |     # ./spec/rspec/core/resources/formatter_specs.rb:31
         |     # ./spec/spec_helper.rb:77:in `run'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/spec_helper.rb:127:in `run'
         |     # ./spec/spec_helper.rb:127
-        |     # ./spec/spec_helper.rb:124:in `run'
         |     # ./spec/spec_helper.rb:124
         |     # ./spec/spec_helper.rb:82:in `instance_exec'
         |     # ./spec/spec_helper.rb:82:in `sandboxed'

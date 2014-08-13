@@ -374,7 +374,23 @@ EOS
       end
 
       # @private
-      AroundHook = Hook
+      class AroundHook < Hook
+        def execute_with(example, procsy)
+          example.instance_exec(procsy, &block)
+          return if procsy.executed?
+          Pending.mark_skipped!(example, "#{hook_description} did not execute the example")
+        end
+
+        if Proc.method_defined?(:source_location)
+          def hook_description
+            "around hook at #{Metadata.relative_path(block.source_location.join(':'))}"
+          end
+        else
+          def hook_description
+            "around hook"
+          end
+        end
+      end
 
       # @private
       class BaseHookCollection
@@ -426,9 +442,7 @@ EOS
 
         def run
           hooks.inject(@initial_procsy) do |procsy, around_hook|
-            procsy.wrap do
-              @example.instance_exec(procsy, &around_hook.block)
-            end
+            procsy.wrap { around_hook.execute_with(@example, procsy) }
           end.call
         end
       end
