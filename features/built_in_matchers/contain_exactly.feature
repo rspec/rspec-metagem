@@ -18,7 +18,7 @@ Feature: `contain_exactly` matcher
     expect([:a, :c, :b]).to match_array [:a, :c]  # fail
     ```
 
-  Scenario: array operator matchers
+  Scenario: Array is expected to contain every value
     Given a file named "contain_exactly_matcher_spec.rb" with:
       """ruby
       RSpec.describe [1, 2, 3] do
@@ -44,3 +44,21 @@ Feature: `contain_exactly` matcher
              the extra elements were:        [3]
       """
 
+  Scenario: Array is not expected to contain every value
+    Given a file named "contain_exactly_matcher_spec.rb" with:
+      """ruby
+      RSpec.describe [1, 2, 3] do
+        it { is_expected.to_not contain_exactly(1, 2, 3, 4) }
+        it { is_expected.to_not contain_exactly(1, 2) }
+
+        # deliberate failures
+        it { is_expected.to_not contain_exactly(1, 3, 2) }
+      end
+      """
+     When I run `rspec contain_exactly_matcher_spec.rb`
+     Then the output should contain "3 examples, 1 failure"
+      And the output should contain:
+      """
+           Failure/Error: it { is_expected.to_not contain_exactly(1, 3, 2) }
+             expected [1, 2, 3] not to contain exactly 1, 3, and 2
+      """
