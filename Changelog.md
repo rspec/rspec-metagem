@@ -1,5 +1,5 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.4...master)
 
 Enhancements:
 
@@ -36,15 +36,21 @@ Bug Fixes:
 * Remove dependency on `FileUtils` from the standard library so that users do
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
+* Fix rake task `t.pattern =` option so that it does not run all specs
+  when it matches no files, by passing along a `--pattern` option to
+  the `rspec` command, rather than resolving the file list and passing
+  along the files individually. (Evgeny Zislis, #1653)
+
+### 3.0.4 / 2014-08-14
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...v3.0.4)
+
+Bug Fixes:
+
 * Fix processing order of CLI options so that if `config.files_to_run`
   is accessed from a file loaded by `--require`, `--pattern` is still
   applied. (Myron Marston, #1652)
 * Fix `config.pattern=` so that it still takes affect even if
   `config.files_to_run` has already been accessed. (Myron Marston, #1652)
-* Fix rake task `t.pattern =` option so that it does not run all specs
-  when it matches no files, by passing along a `--pattern` option to
-  the `rspec` command, rather than resolving the file list and passing
-  along the files individually. (Evgeny Zislis, #1653)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.2...v3.0.3)
