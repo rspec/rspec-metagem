@@ -14,7 +14,8 @@ Enhancements:
 * Provide an `inspect` output for example procsy objects (used in around
   hooks) that doesn't make them look like procs. (Jon Rowe, #1620)
 * Remove a few unneeded `require` statements from
-  `rspec/core/rake_task.rb`, making it even lighterweight. (Myron Marston, #1640)
+  `rspec/core/rake_task.rb`, making it even more lighterweight.
+  (Myron Marston, #1640)
 * Allow rspec-core to be used when neither rspec-mocks or
   rspec-expectations are installed, without requiring any
   user configuration. (Sam Phippen, Myron Marston, #1615)
@@ -30,12 +31,12 @@ Enhancements:
 * When an around hook fails to execute the example, mark it as
   pending (rather than passing) so the user is made aware of the
   fact that the example did not actually run. (Myron Marston, #1660)
-
-Bug Fixes:
-
 * Remove dependency on `FileUtils` from the standard library so that users do
   not get false positives where their code relies on it but they are not
   requiring it. (Sam Phippen, #1565)
+
+Bug Fixes:
+
 * Fix rake task `t.pattern =` option so that it does not run all specs
   when it matches no files, by passing along a `--pattern` option to
   the `rspec` command, rather than resolving the file list and passing
