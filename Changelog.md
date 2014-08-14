@@ -1,19 +1,5 @@
 ### 3.1.0 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.3...master)
-
-Bug Fixes:
-
-* Rename private `LegacyMacherAdapter` constant to `LegacyMatcherAdapter`
-  to fix typo. (Abdelkader Boudih, #563)
-* Fix `start_with` and `end_with` so that they work properly with
-  structs. (Myron Marston, #620)
-* Fix failure message generation so that structs are printed properly
-  in failures. Previously failure messages would represent them as
-  an array. (Myron Marston, #620)
-* Fix composable matcher support so that it does not wrongly treat
-  structs as arrays. (Myron Marston, #620)
-* Fix `all` matcher so that it fails properly (rather than raising a
-  `NoMethodError`) when matched against a non-enumerable. (Hao Su, #622)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.4...master)
 
 Enhancements:
 
@@ -33,6 +19,26 @@ Enhancements:
   `exactly(3).times`. (Dennis Taylor, #615)
 * Add `RSpec::Matchers.define_negated_matcher`, which defines a negated
   version of the named matcher. (Adam Farhi, Myron Marston, #618)
+
+Bug Fixes:
+
+* Rename private `LegacyMacherAdapter` constant to `LegacyMatcherAdapter`
+  to fix typo. (Abdelkader Boudih, #563)
+* Fix `all` matcher so that it fails properly (rather than raising a
+  `NoMethodError`) when matched against a non-enumerable. (Hao Su, #622)
+
+### 3.0.4 / 2014-08-14
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.3...v3.0.4)
+
+Bug Fixes:
+
+* Fix `start_with` and `end_with` so that they work properly with
+  structs. (Myron Marston, #620)
+* Fix failure message generation so that structs are printed properly
+  in failures. Previously failure messages would represent them as
+  an array. (Myron Marston, #620)
+* Fix composable matcher support so that it does not wrongly treat
+  structs as arrays. (Myron Marston, #620)
 
 ### 3.0.3 / 2014-07-21
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.2...v3.0.3)
