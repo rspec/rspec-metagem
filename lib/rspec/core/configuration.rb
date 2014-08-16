@@ -87,6 +87,7 @@ module RSpec
       # Path to use if no path is provided to the `rspec` command (default:
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
       # run all the examples in the `spec` directory.
+      # Note: Other scripts invoking `rspec` indirectly will ignore this setting.
       add_setting :default_path
 
       # @macro add_setting
