@@ -397,11 +397,14 @@ module RSpec
     # You can chain any of the following off of the end to specify details
     # about the change:
     #
+    # * `from`
+    # * `to`
+    #
+    # or any one of:
+    #
     # * `by`
     # * `by_at_least`
     # * `by_at_most`
-    # * `from`
-    # * `to`
     #
     # @example
     #
