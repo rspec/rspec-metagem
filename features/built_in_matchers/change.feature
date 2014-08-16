@@ -6,8 +6,8 @@ Feature: `change` matcher
   * `expect { do_something }.to change(object, :attribute)`
   * `expect { do_something }.to change { object.attribute }`
 
-  You can further qualify the change by chaining `by`, `by_at_most`, `by_at_least`, `from`
-  and/or `to`.
+  You can further qualify the change by chaining `from` and/or `to` or one of `by`, `by_at_most`,
+  `by_at_least`.
 
   Background:
     Given a file named "lib/counter.rb" with:
