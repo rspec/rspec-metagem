@@ -473,9 +473,6 @@ module RSpec
     # @note This is also available using the `=~` operator with `should`,
     #       but `=~` is not supported with `expect`.
     #
-    # @note This matcher only supports positive expectations.
-    #       `expect(...).not_to contain_exactly(other_array)` is not supported.
-    #
     # @example
     #
     #   expect([1, 2, 3]).to contain_exactly(1, 2, 3)

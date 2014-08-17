@@ -19,6 +19,8 @@ Enhancements:
   `exactly(3).times`. (Dennis Taylor, #615)
 * Add `RSpec::Matchers.define_negated_matcher`, which defines a negated
   version of the named matcher. (Adam Farhi, Myron Marston, #618)
+* Document and support negation of `contain_exactly`/`match_array`.
+  (Jon Rowe, #626).
 
 Bug Fixes:
 

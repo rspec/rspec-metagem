@@ -75,10 +75,24 @@ RSpec.describe "should =~ array", :uses_should do
 end
 
 RSpec.describe "should_not =~ [:with, :multiple, :args]", :uses_should do
-  it "is not supported" do
+  it "fails when the arrays match" do
     expect {
       [1,2,3].should_not =~ [1,2,3]
-    }.to fail_with(/`contain_exactly` does not support negation/)
+    }.to fail_with "expected [1, 2, 3] not to contain exactly 1, 2, and 3"
+  end
+
+  it "fails when the arrays match in a different order" do
+    expect {
+      [1,3,2].should_not =~ [1,2,3]
+    }.to fail_with "expected [1, 3, 2] not to contain exactly 1, 2, and 3"
+  end
+
+  it "passes when there are extra elements in the array" do
+    [1,3].should_not =~ [1,2,3]
+  end
+
+  it "passes when there are elements missing from the array" do
+    [1,2,3,4].should_not =~ [1,2,3]
   end
 end
 
@@ -241,11 +255,25 @@ MESSAGE
   end
 end
 
-RSpec.describe "expect(...).not_to contain_exactly(:with, :multiple, :args]" do
-  it "is not supported" do
+RSpec.describe "expect(...).not_to contain_exactly(:with, :multiple, :args)" do
+  it "fails when the arrays match" do
     expect {
       expect([1,2,3]).not_to contain_exactly(1,2,3)
-    }.to fail_with(/`contain_exactly` does not support negation/)
+    }.to fail_with "expected [1, 2, 3] not to contain exactly 1, 2, and 3"
+  end
+
+  it "fails when the arrays match in a different order" do
+    expect {
+      expect([1,3,2]).not_to contain_exactly(1,2,3)
+    }.to fail_with "expected [1, 3, 2] not to contain exactly 1, 2, and 3"
+  end
+
+  it "passes when there are extra elements in the array" do
+    expect([1,3]).not_to contain_exactly(1,2,3)
+  end
+
+  it "passes when there are elements missing from the array" do
+    expect([1,2,3,4]).not_to contain_exactly(1,2,3)
   end
 end
 
@@ -293,7 +321,7 @@ RSpec.describe "Composing `contain_exactly` with other matchers" do
     end
   end
 
-  describe "expect(...).to contain_exactly(matcher, matcher])" do
+  describe "expect(...).to contain_exactly(matcher, matcher)" do
     it 'passes when the array matches the matchers in the same order' do
       expect(["food", "barn"]).to contain_exactly(
         a_string_matching(/foo/),
@@ -389,6 +417,34 @@ RSpec.describe "Composing `contain_exactly` with other matchers" do
         expect(["food", "fool"]).to contain_exactly(a_string_matching(/fool/), a_string_matching(/foo/))
       end
     end
+  end
+
+  describe "expect(...).to_not contain_exactly(matcher, matcher)" do
+    it 'fails when the array matches the matchers' do
+      expect {
+        expect(["food", "barn"]).to_not contain_exactly(
+          a_string_matching(/bar/),
+          a_string_matching(/foo/)
+        )
+      }.to fail_with %Q{expected ["food", "barn"] not to contain exactly }+
+                     %Q{(a string matching /bar/) and (a string matching /foo/)}
+    end
+
+    it 'passes when there is an extra element' do
+      expect(["food", "barn", "goo"]).to_not contain_exactly(
+        a_string_matching(/bar/),
+        a_string_matching(/foo/)
+      )
+    end
+
+    it 'passes when there is a missing element' do
+      expect(["food", "barn"]).to_not contain_exactly(
+        a_string_matching(/bar/),
+        a_string_matching(/foo/),
+        a_string_matching(/goo/)
+      )
+    end
+
   end
 end
 
@@ -498,4 +554,3 @@ module RSpec
     end
   end
 end
-
