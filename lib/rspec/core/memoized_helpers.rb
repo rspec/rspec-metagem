@@ -310,6 +310,8 @@ EOS
         # implicitly in one-liners and explicitly using an intention revealing
         # name.
         #
+        # When given a `name`, calling `super` in the block is not supported.
+        #
         # @param name [String,Symbol] used to define an accessor with an
         #   intention revealing name
         # @param block defines the value to be returned by `subject` in examples
