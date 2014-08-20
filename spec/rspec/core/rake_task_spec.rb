@@ -223,10 +223,9 @@ module RSpec::Core
 
     context "with paths including symlinked directories" do
       include_context "isolated directory"
+      let(:project_dir) { Dir.getwd }
 
       it "finds the files" do
-        project_dir = Dir.getwd
-
         foos_dir = File.join(project_dir, "spec/foos")
         FileUtils.mkdir_p foos_dir
         FileUtils.touch(File.join(foos_dir, "foo_spec.rb"))
@@ -243,6 +242,15 @@ module RSpec::Core
             "spec/foos/foo_spec.rb"
           )
         end
+      end
+
+      it "works on a more complicated example (issue 1113)" do
+        FileUtils.mkdir_p("subtrees/DD/spec")
+        FileUtils.mkdir_p("spec/lib")
+        FileUtils.touch("subtrees/DD/spec/dd_foo_spec.rb")
+        FileUtils.ln_s(File.join(project_dir, "subtrees/DD/spec"), "spec/lib/DD")
+
+        expect(loaded_files).to contain_exactly("spec/lib/DD/dd_foo_spec.rb")
       end
     end
   end

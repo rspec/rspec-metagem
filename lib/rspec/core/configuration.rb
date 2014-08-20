@@ -1305,7 +1305,7 @@ module RSpec
       def gather_directories(path)
         include_files = get_matching_files(path, pattern)
         exclude_files = get_matching_files(path, exclude_pattern)
-        (include_files - exclude_files).sort
+        (include_files - exclude_files).sort.uniq
       end
 
       def get_matching_files(path, pattern)

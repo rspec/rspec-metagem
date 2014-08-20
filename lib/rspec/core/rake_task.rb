@@ -14,7 +14,7 @@ module RSpec
       DEFAULT_RSPEC_PATH = File.expand_path('../../../../exe/rspec', __FILE__)
 
       # Default pattern for spec files.
-      DEFAULT_PATTERN = 'spec{,/*/**}/*_spec.rb'
+      DEFAULT_PATTERN = 'spec/**{,/*/**}/*_spec.rb'
 
       # Name of task.
       #
@@ -25,7 +25,7 @@ module RSpec
       # Files matching this pattern will be loaded.
       #
       # default:
-      #   'spec/**/*_spec.rb'
+      #   'spec/**{,/*/**}/*_spec.rb'
       attr_accessor :pattern
 
       # Files matching this pattern will be excluded.
