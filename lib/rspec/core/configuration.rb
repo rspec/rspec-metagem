@@ -190,11 +190,7 @@ module RSpec
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
       def pattern=(value)
-        if @spec_files_loaded
-          RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
-        end
-        @pattern = value
-        @files_to_run = nil
+        update_pattern_attr :pattern, value
       end
 
       # @macro define_reader
@@ -204,10 +200,7 @@ module RSpec
       # Set pattern to match files to exclude
       # @attr value [String] the filename pattern to exclude spec files by
       def exclude_pattern=(value)
-        if @spec_files_loaded
-          RSpec.warning "Configuring `exclude_pattern` to #{value} has no effect since RSpec has already loaded the spec files."
-        end
-        @exclude_pattern = value
+        update_pattern_attr :exclude_pattern, value
       end
 
       # @macro add_setting
@@ -1370,6 +1363,15 @@ module RSpec
 
       def rspec_expectations_loaded?
         defined?(RSpec::Expectations.configuration)
+      end
+
+      def update_pattern_attr(name, value)
+        if @spec_files_loaded
+          RSpec.warning "Configuring `#{name}` to #{value} has no effect since RSpec has already loaded the spec files."
+        end
+
+        instance_variable_set(:"@#{name}", value)
+        @files_to_run = nil
       end
     end
   end
