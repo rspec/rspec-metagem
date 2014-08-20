@@ -168,6 +168,43 @@ module RSpec::Core
       end
     end
 
+    context "without an exclude_pattern" do
+      it 'does not pass the --exclude-pattern option' do
+        expect(spec_command).not_to include("exclude")
+      end
+    end
+
+    context "with an exclude_pattern" do
+      include_context "isolated directory"
+
+      def make_file(dir, name)
+        File.join("spec", dir, name).tap { |f| FileUtils.touch(f) }
+      end
+
+      def make_files_in_dir(dir)
+        %w[ foo_spec.rb bar_spec.rb ].map do |file_name|
+          make_file(dir, file_name)
+        end
+      end
+
+      before do
+        spec_dir = File.join(Dir.getwd, "spec")
+        task.exclude_pattern = "spec/acceptance/*_spec.rb"
+
+        FileUtils.mkdir_p(File.join(spec_dir, "acceptance"))
+        FileUtils.mkdir_p(File.join(spec_dir, "unit"))
+
+        make_files_in_dir "acceptance"
+      end
+
+      it "it does not load matching files" do
+        task.pattern = "spec/**/*_spec.rb"
+        unit_files = make_files_in_dir "unit"
+
+        expect(loaded_files).to match_array(unit_files)
+      end
+    end
+
     context "with paths with quotes or spaces" do
       include_context "isolated directory"
 
