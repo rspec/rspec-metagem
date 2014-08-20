@@ -47,3 +47,4 @@ Feature: `--init` option
       But the output from `rspec spec/addition_spec.rb --format progress` should not be in documentation format
 
       And the output from `rspec --pattern 'spec/*ction_spec.rb'` should indicate it ran only the subtraction file
+      And the output from `rspec --exclude-pattern 'spec/*dition_spec.rb'` should indicate it ran only the subtraction file
