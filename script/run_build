@@ -1,9 +1,14 @@
 #!/bin/bash
-# This file was generated on 2014-08-12T10:42:08-07:00 from the rspec-dev repo.
+# This file was generated on 2014-08-19T19:39:53-04:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 set -e -x
 source script/functions.sh
+
+# Allow repos to override the default functions and add their own
+if [ -f script/custom_build_functions.sh ]; then
+  source script/custom_build_functions.sh
+fi
 
 run_specs_and_record_done
 run_cukes
@@ -17,15 +22,7 @@ if style_and_lint_enforced; then
 fi
 
 if is_mri; then
-  run_specs_one_by_one
-  run_spec_suite_for "rspec-core"
-  run_spec_suite_for "rspec-expectations"
-  run_spec_suite_for "rspec-mocks"
-  run_spec_suite_for "rspec-rails"
-
-  if rspec_support_compatible; then
-    run_spec_suite_for "rspec-support"
-  fi
+  run_all_spec_suites
 else
   echo "Skipping the rest of the build on non-MRI rubies"
 fi
