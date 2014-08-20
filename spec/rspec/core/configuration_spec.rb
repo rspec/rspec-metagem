@@ -712,13 +712,13 @@ module RSpec::Core
       end
 
       context "after files have already been loaded" do
-        it 'will warn that it will have no effect' do
+        it 'warns that it will have no effect' do
           expect_warning_with_call_site(__FILE__, __LINE__ + 2, /has no effect/)
           config.load_spec_files
           config.exclude_pattern = "rspec/**/*.spec"
         end
 
-        it 'will not warn if reset is called after load_spec_files' do
+        it 'does not warn if reset is called after load_spec_files' do
           config.load_spec_files
           config.reset
           expect(RSpec).to_not receive(:warning)
