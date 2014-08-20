@@ -26,7 +26,7 @@ Feature: exclude_pattern
    When I run `rspec`
    Then the output should contain "3 examples, 0 failures"
 
-  Scenario: The `--exclude-pattern` flag makes RSpec first match the default pattern, then skip files matching the specified exclude pattern
+  Scenario: The `--exclude-pattern` flag makes RSpec skip matching files
    When I run `rspec --exclude-pattern "**/models/*_spec.rb"`
    Then the output should contain "1 example, 0 failures"
 
