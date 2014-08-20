@@ -577,6 +577,14 @@ module RSpec::Core
       context "with single pattern" do
         before { config.pattern = "**/*_foo.rb" }
 
+        it "loads all explicitly specified files, even those that do not match the pattern" do
+          file_1 = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+          file_2 = File.expand_path(File.dirname(__FILE__) + "/resources/a_bar.rb")
+
+          assign_files_or_directories_to_run file_1, file_2
+          expect(config.files_to_run).to contain_exactly(file_1, file_2)
+        end
+
         it "loads files in directories following pattern" do
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           assign_files_or_directories_to_run dir
