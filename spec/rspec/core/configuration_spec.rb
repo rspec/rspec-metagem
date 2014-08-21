@@ -498,6 +498,13 @@ module RSpec::Core
           assign_files_or_directories_to_run "spec\\rspec\\core\\resources"
           expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
         end
+
+        it_behaves_like "handling symlinked directories when loading spec files" do
+          def loaded_files
+            assign_files_or_directories_to_run "spec"
+            config.files_to_run
+          end
+        end
       end
 
       context "with default default_path" do

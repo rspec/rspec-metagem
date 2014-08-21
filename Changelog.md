@@ -46,6 +46,8 @@ Bug Fixes:
   along the files individually. (Evgeny Zislis, #1653)
 * Fix rake task default pattern so that it follows symlinks properly.
   (Myron Marston, #1672)
+* Fix default pattern used with `rspec` command so that it follows
+  symlinks properly. (Myron Marston, #1672)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...v3.0.4)

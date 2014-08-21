@@ -184,7 +184,7 @@ module RSpec
       end
 
       # @macro define_reader
-      # Load files matching this pattern (default: `'**/*_spec.rb'`)
+      # Load files matching this pattern (default: `'**{,/*/**}/*_spec.rb'`)
       define_reader :pattern
 
       # Set pattern to match files to load
@@ -286,7 +286,7 @@ module RSpec
         @mock_framework = nil
         @files_or_directories_to_run = []
         @color = false
-        @pattern = '**/*_spec.rb'
+        @pattern = '**{,/*/**}/*_spec.rb'
         @exclude_pattern = ''
         @failure_exit_code = 1
         @spec_files_loaded = false
