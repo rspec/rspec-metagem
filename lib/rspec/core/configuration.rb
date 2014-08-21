@@ -190,11 +190,17 @@ module RSpec
       # Set pattern to match files to load
       # @attr value [String] the filename pattern to filter spec files by
       def pattern=(value)
-        if @spec_files_loaded
-          RSpec.warning "Configuring `pattern` to #{value} has no effect since RSpec has already loaded the spec files."
-        end
-        @pattern = value
-        @files_to_run = nil
+        update_pattern_attr :pattern, value
+      end
+
+      # @macro define_reader
+      # Exclude files matching this pattern
+      define_reader :exclude_pattern
+
+      # Set pattern to match files to exclude
+      # @attr value [String] the filename pattern to exclude spec files by
+      def exclude_pattern=(value)
+        update_pattern_attr :exclude_pattern, value
       end
 
       # @macro add_setting
@@ -281,6 +287,7 @@ module RSpec
         @files_or_directories_to_run = []
         @color = false
         @pattern = '**/*_spec.rb'
+        @exclude_pattern = ''
         @failure_exit_code = 1
         @spec_files_loaded = false
 
@@ -1296,9 +1303,14 @@ module RSpec
       end
 
       def gather_directories(path)
+        include_files = get_matching_files(path, pattern)
+        exclude_files = get_matching_files(path, exclude_pattern)
+        (include_files - exclude_files).sort
+      end
+
+      def get_matching_files(path, pattern)
         stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
-        files    = pattern =~ /^#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
-        files.sort
+        pattern =~ /^#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
       end
 
       def extract_location(path)
@@ -1351,6 +1363,15 @@ module RSpec
 
       def rspec_expectations_loaded?
         defined?(RSpec::Expectations.configuration)
+      end
+
+      def update_pattern_attr(name, value)
+        if @spec_files_loaded
+          RSpec.warning "Configuring `#{name}` to #{value} has no effect since RSpec has already loaded the spec files."
+        end
+
+        instance_variable_set(:"@#{name}", value)
+        @files_to_run = nil
       end
     end
   end

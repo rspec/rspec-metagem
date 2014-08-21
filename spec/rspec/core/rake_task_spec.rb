@@ -88,6 +88,7 @@ module RSpec::Core
         %w[ a/2.rb a/1.rb a/3.rb ],
         %w[ a/3.rb a/2.rb a/1.rb ]
       ].map do |files|
+        allow(file_searcher).to receive(:[]).with(anything).and_call_original
         expect(file_searcher).to receive(:[]).with(a_string_including pattern) { files }
         loaded_files
       end
@@ -164,6 +165,43 @@ module RSpec::Core
       it "runs nothing" do
         task.pattern = 'a/*.no_match'
         expect(loaded_files).to eq([])
+      end
+    end
+
+    context "without an exclude_pattern" do
+      it 'does not pass the --exclude-pattern option' do
+        expect(spec_command).not_to include("exclude")
+      end
+    end
+
+    context "with an exclude_pattern" do
+      include_context "isolated directory"
+
+      def make_file(dir, name)
+        File.join("spec", dir, name).tap { |f| FileUtils.touch(f) }
+      end
+
+      def make_files_in_dir(dir)
+        %w[ foo_spec.rb bar_spec.rb ].map do |file_name|
+          make_file(dir, file_name)
+        end
+      end
+
+      before do
+        spec_dir = File.join(Dir.getwd, "spec")
+        task.exclude_pattern = "spec/acceptance/*_spec.rb"
+
+        FileUtils.mkdir_p(File.join(spec_dir, "acceptance"))
+        FileUtils.mkdir_p(File.join(spec_dir, "unit"))
+
+        make_files_in_dir "acceptance"
+      end
+
+      it "it does not load matching files" do
+        task.pattern = "spec/**/*_spec.rb"
+        unit_files = make_files_in_dir "unit"
+
+        expect(loaded_files).to match_array(unit_files)
       end
     end
 

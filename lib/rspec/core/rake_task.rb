@@ -22,11 +22,17 @@ module RSpec
       #   :spec
       attr_accessor :name
 
-      # Glob pattern to match files.
+      # Files matching this pattern will be loaded.
       #
       # default:
       #   'spec/**/*_spec.rb'
       attr_accessor :pattern
+
+      # Files matching this pattern will be excluded.
+      #
+      # default:
+      #   'spec/**/*_spec.rb'
+      attr_accessor :exclude_pattern
 
       # Whether or not to fail Rake when an error occurs (typically when examples fail).
       #
@@ -104,12 +110,16 @@ module RSpec
         end
       end
 
-      def file_specification
+      def file_inclusion_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC'] ].sort
         else
           "--pattern '#{pattern}'"
         end
+      end
+
+      def file_exclusion_specification
+        " --exclude-pattern '#{exclude_pattern}'" if exclude_pattern
       end
 
       def spec_command
@@ -118,7 +128,8 @@ module RSpec
         cmd_parts << ruby_opts
         cmd_parts << rspec_load_path
         cmd_parts << rspec_path
-        cmd_parts << file_specification
+        cmd_parts << file_inclusion_specification
+        cmd_parts << file_exclusion_specification
         cmd_parts << rspec_opts
         cmd_parts.flatten.reject(&blank).join(" ")
       end

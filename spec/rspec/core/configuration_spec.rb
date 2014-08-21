@@ -577,10 +577,12 @@ module RSpec::Core
       context "with single pattern" do
         before { config.pattern = "**/*_foo.rb" }
 
-        it "loads files following pattern" do
-          file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
-          assign_files_or_directories_to_run file
-          expect(config.files_to_run).to include(file)
+        it "loads all explicitly specified files, even those that do not match the pattern" do
+          file_1 = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+          file_2 = File.expand_path(File.dirname(__FILE__) + "/resources/a_bar.rb")
+
+          assign_files_or_directories_to_run file_1, file_2
+          expect(config.files_to_run).to contain_exactly(file_1, file_2)
         end
 
         it "loads files in directories following pattern" do
@@ -593,6 +595,15 @@ module RSpec::Core
           dir = File.expand_path(File.dirname(__FILE__) + "/resources")
           assign_files_or_directories_to_run dir
           expect(config.files_to_run).not_to include("#{dir}/a_bar.rb")
+        end
+
+        it "ignores pattern if files are specified" do
+          files = [
+            File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb"),
+            File.expand_path(File.dirname(__FILE__) + "/resources/a_spec.rb")
+          ]
+          assign_files_or_directories_to_run(files)
+          expect(config.files_to_run).to match_array(files)
         end
       end
 
@@ -623,13 +634,13 @@ module RSpec::Core
       end
 
       context "after files have already been loaded" do
-        it 'will warn that it will have no effect' do
+        it 'warns that it will have no effect' do
           expect_warning_with_call_site(__FILE__, __LINE__ + 2, /has no effect/)
           config.load_spec_files
           config.pattern = "rspec/**/*.spec"
         end
 
-        it 'will not warn if reset is called after load_spec_files' do
+        it 'does not warn if reset is called after load_spec_files' do
           config.load_spec_files
           config.reset
           expect(RSpec).to_not receive(:warning)
@@ -644,6 +655,85 @@ module RSpec::Core
           expect(config.files_to_run).not_to include(file)
           config.pattern = "**/*_foo.rb"
           expect(config.files_to_run).to include(file)
+        end
+      end
+    end
+
+    describe "#exclude_pattern" do
+      context "with single pattern" do
+        before { config.exclude_pattern = "**/*_foo.rb" }
+
+        it "does not load files in directories following exclude pattern" do
+          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+          assign_files_or_directories_to_run dir
+          expect(config.files_to_run).not_to include("#{dir}/a_foo.rb")
+        end
+
+        it "loads files in directories not following exclude pattern" do
+          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+          assign_files_or_directories_to_run dir
+          expect(config.files_to_run).to include("#{dir}/a_spec.rb")
+        end
+
+        it "ignores exclude_pattern if files are specified" do
+          files = [
+            File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb"),
+            File.expand_path(File.dirname(__FILE__) + "/resources/a_spec.rb")
+          ]
+          assign_files_or_directories_to_run(files)
+          expect(config.files_to_run).to match_array(files)
+        end
+      end
+
+      context "with multiple patterns" do
+        it "supports comma separated values" do
+          config.exclude_pattern = "**/*_foo.rb,**/*_bar.rb"
+          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+          assign_files_or_directories_to_run dir
+          expect(config.files_to_run).not_to include("#{dir}/a_foo.rb")
+          expect(config.files_to_run).not_to include("#{dir}/a_bar.rb")
+        end
+
+        it "supports comma separated values with spaces" do
+          config.exclude_pattern = "**/*_foo.rb, **/*_bar.rb"
+          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+          assign_files_or_directories_to_run dir
+          expect(config.files_to_run).not_to include("#{dir}/a_foo.rb")
+          expect(config.files_to_run).not_to include("#{dir}/a_bar.rb")
+        end
+
+        it "supports curly braces glob syntax" do
+          config.exclude_pattern = "**/*_{foo,bar}.rb"
+          dir = File.expand_path(File.dirname(__FILE__) + "/resources")
+          assign_files_or_directories_to_run dir
+          expect(config.files_to_run).not_to include("#{dir}/a_foo.rb")
+          expect(config.files_to_run).not_to include("#{dir}/a_bar.rb")
+        end
+      end
+
+      context "after files have already been loaded" do
+        it 'warns that it will have no effect' do
+          expect_warning_with_call_site(__FILE__, __LINE__ + 2, /has no effect/)
+          config.load_spec_files
+          config.exclude_pattern = "rspec/**/*.spec"
+        end
+
+        it 'does not warn if reset is called after load_spec_files' do
+          config.load_spec_files
+          config.reset
+          expect(RSpec).to_not receive(:warning)
+          config.exclude_pattern = "rspec/**/*.spec"
+        end
+      end
+
+      context "after `files_to_run` has been accessed but before files have been loaded" do
+        it 'still takes affect' do
+          config.pattern = "**/*.rb"
+          file = File.expand_path(File.dirname(__FILE__) + "/resources/a_foo.rb")
+          assign_files_or_directories_to_run File.dirname(file)
+          expect(config.files_to_run).to include(file)
+          config.exclude_pattern = "**/*_foo.rb"
+          expect(config.files_to_run).not_to include(file)
         end
       end
     end
