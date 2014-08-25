@@ -115,6 +115,26 @@ module RSpec::Core
           ExampleGroup.describe("Calling an undefined method") { foo }
         }.to raise_error(/ExampleGroups::CallingAnUndefinedMethod/)
       end
+
+      it 'does not have problems with example groups named "Core"' do
+        ExampleGroup.describe("Core")
+        expect(defined?(::RSpec::ExampleGroups::Core)).to be_truthy
+
+        # The original bug was triggered when a group was defined AFTER one named `Core`,
+        # due to it not using the fully qualified `::RSpec::Core::ExampleGroup` constant.
+        group = ExampleGroup.describe("Another group")
+        expect(group).to have_class_const("AnotherGroup")
+      end
+
+      it 'does not have problems with example groups named "RSpec"' do
+        ExampleGroup.describe("RSpec")
+        expect(defined?(::RSpec::ExampleGroups::RSpec)).to be_truthy
+
+        # The original bug was triggered when a group was defined AFTER one named `RSpec`,
+        # due to it not using the fully qualified `::RSpec::Core::ExampleGroup` constant.
+        group = ExampleGroup.describe("Yet Another group")
+        expect(group).to have_class_const("YetAnotherGroup")
+      end
     end
 
     describe "ordering" do
