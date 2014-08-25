@@ -23,6 +23,8 @@ Enhancements:
   gems will still be filtered). User feedback has indicated
   that including gems in default backtraces will be useful.
   (Myron Marston, #1641)
+* Add new `config.filter_gems_from_backtrace "rack", "rake"` API
+  to easily filter the named gems from backtraces. (Myron Marston, #1682)
 * Fix default backtrace filters so that the RSpec binary is
   excluded when installing RSpec as a bundler `:git` dependency.
   (Myron Marston, #1648)

@@ -427,6 +427,28 @@ module RSpec
         @backtrace_formatter.inclusion_patterns = patterns
       end
 
+      # Adds {#backtrace_exclusion_patterns} that will filter lines from
+      # the named gems from backtraces.
+      #
+      # @param gem_names [Array<String>] Names of the gems to filter
+      #
+      # @example
+      #   RSpec.configure do |config|
+      #     config.filter_gems_from_backtrace "rack", "rake"
+      #   end
+      #
+      # @note The patterns this adds will match the named gems in their common
+      #   locations (e.g. system gems, vendored with bundler, installed as a
+      #   :git dependency with bundler, etc) but is not guaranteed to work for
+      #   all possible gem locations. For example, if you have the gem source
+      #   in a directory with a completely unrelated name, and use bundler's
+      #   :path option, this will not filter it.
+      def filter_gems_from_backtrace(*gem_names)
+        gem_names.each do |name|
+          @backtrace_formatter.filter_gem(name)
+        end
+      end
+
       # @private
       MOCKING_ADAPTERS = {
         :rspec    => :RSpec,

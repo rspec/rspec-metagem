@@ -1203,6 +1203,22 @@ module RSpec::Core
       end
     end
 
+    describe "#filter_gems_from_backtrace" do
+      def exclude?(line)
+        config.backtrace_formatter.exclude?(line)
+      end
+
+      it 'filters the named gems from the backtrace' do
+        line_1 = "/Users/myron/.gem/ruby/2.1.1/gems/foo-1.6.3.1/foo.rb:13"
+        line_2 = "/Users/myron/.gem/ruby/2.1.1/gems/bar-1.6.3.1/bar.rb:13"
+
+        expect {
+          config.filter_gems_from_backtrace "foo", "bar"
+        }.to change { exclude?(line_1) }.from(false).to(true).
+         and change { exclude?(line_2) }.from(false).to(true)
+      end
+    end
+
     describe "#libs=" do
       it "adds directories to the LOAD_PATH" do
         expect($LOAD_PATH).to receive(:unshift).with("a/dir")
