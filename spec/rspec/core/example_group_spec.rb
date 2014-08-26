@@ -39,6 +39,16 @@ module RSpec::Core
     end
 
     describe "constant naming" do
+      around do |ex|
+        before_constants = RSpec::ExampleGroups.constants
+        ex.run
+        after_constants = RSpec::ExampleGroups.constants
+
+        (after_constants - before_constants).each do |name|
+          RSpec::ExampleGroups.send(:remove_const, name)
+        end
+      end
+
       RSpec::Matchers.define :have_class_const do |class_name|
         match do |group|
           group.name == "RSpec::ExampleGroups::#{class_name}" &&
