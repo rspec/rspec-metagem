@@ -590,7 +590,7 @@ module RSpec
 
     def self.constant_scope_for(group)
       const_scope = group.superclass
-      const_scope = self if const_scope == Core::ExampleGroup
+      const_scope = self if const_scope == ::RSpec::Core::ExampleGroup
       const_scope
     end
 

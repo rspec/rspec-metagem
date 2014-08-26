@@ -48,6 +48,8 @@ Bug Fixes:
   (Myron Marston, #1672)
 * Fix default pattern used with `rspec` command so that it follows
   symlinks properly. (Myron Marston, #1672)
+* Change how we assign constant names to example group classes so that
+  it avoids a problem with `describe "Core"`. (Daniela Wellisz, #1679)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...v3.0.4)

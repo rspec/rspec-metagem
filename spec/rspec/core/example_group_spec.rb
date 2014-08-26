@@ -1,16 +1,6 @@
 # encoding: utf-8
 require 'spec_helper'
 
-class SelfObserver
-  def self.cache
-    @cache ||= []
-  end
-
-  def initialize
-    self.class.cache << self
-  end
-end
-
 module RSpec::Core
   RSpec.describe ExampleGroup do
     it_behaves_like "metadata hash builder" do
@@ -39,6 +29,16 @@ module RSpec::Core
     end
 
     describe "constant naming" do
+      around do |ex|
+        before_constants = RSpec::ExampleGroups.constants
+        ex.run
+        after_constants = RSpec::ExampleGroups.constants
+
+        (after_constants - before_constants).each do |name|
+          RSpec::ExampleGroups.send(:remove_const, name)
+        end
+      end
+
       RSpec::Matchers.define :have_class_const do |class_name|
         match do |group|
           group.name == "RSpec::ExampleGroups::#{class_name}" &&
@@ -114,6 +114,26 @@ module RSpec::Core
         expect {
           ExampleGroup.describe("Calling an undefined method") { foo }
         }.to raise_error(/ExampleGroups::CallingAnUndefinedMethod/)
+      end
+
+      it 'does not have problems with example groups named "Core"' do
+        ExampleGroup.describe("Core")
+        expect(defined?(::RSpec::ExampleGroups::Core)).to be_truthy
+
+        # The original bug was triggered when a group was defined AFTER one named `Core`,
+        # due to it not using the fully qualified `::RSpec::Core::ExampleGroup` constant.
+        group = ExampleGroup.describe("Another group")
+        expect(group).to have_class_const("AnotherGroup")
+      end
+
+      it 'does not have problems with example groups named "RSpec"' do
+        ExampleGroup.describe("RSpec")
+        expect(defined?(::RSpec::ExampleGroups::RSpec)).to be_truthy
+
+        # The original bug was triggered when a group was defined AFTER one named `RSpec`,
+        # due to it not using the fully qualified `::RSpec::Core::ExampleGroup` constant.
+        group = ExampleGroup.describe("Yet Another group")
+        expect(group).to have_class_const("YetAnotherGroup")
       end
     end
 
