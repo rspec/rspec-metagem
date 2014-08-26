@@ -1,16 +1,6 @@
 # encoding: utf-8
 require 'spec_helper'
 
-class SelfObserver
-  def self.cache
-    @cache ||= []
-  end
-
-  def initialize
-    self.class.cache << self
-  end
-end
-
 module RSpec::Core
   RSpec.describe ExampleGroup do
     it_behaves_like "metadata hash builder" do
