@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_core "formatters/helpers"
+RSpec::Support.require_rspec_support "encoded_string"
 
 module RSpec::Core
   # Notifications are value objects passed to formatters to provide them
@@ -190,11 +191,11 @@ module RSpec::Core
         formatted = "\n  #{failure_number}) #{description}\n"
 
         colorized_message_lines(colorizer).each do |line|
-          formatted << "     #{line}\n"
+          formatted << RSpec::Support::EncodedString.new("     #{line}\n", formatted.encoding)
         end
 
         colorized_formatted_backtrace(colorizer).each do |line|
-          formatted << "     #{line}\n"
+          formatted << RSpec::Support::EncodedString.new("     #{line}\n", formatted.encoding)
         end
 
         formatted
