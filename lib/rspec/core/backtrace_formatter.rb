@@ -25,6 +25,14 @@ module RSpec
         @full_backtrace || @exclusion_patterns.empty?
       end
 
+      def filter_gem(gem_name)
+        sep = File::SEPARATOR
+        pattern = %r{#{sep}#{gem_name}(-[^#{sep}]+)?#{sep}}
+
+        @exclusion_patterns        << pattern
+        @system_exclusion_patterns << pattern
+      end
+
       def format_backtrace(backtrace, options = {})
         return backtrace if options[:full_backtrace]
 
