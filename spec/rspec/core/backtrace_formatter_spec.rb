@@ -77,22 +77,27 @@ module RSpec::Core
       end
 
       context "for a gem installed globally as a system gem" do
-        it_behaves_like "filtering a gem", "foo",
+        include_examples "filtering a gem", "foo",
           "/Users/myron/.gem/ruby/2.1.1/gems/foo-1.6.3.1"
       end
 
       context "for a gem installed in a vendored bundler path" do
-        it_behaves_like "filtering a gem", "foo",
+        include_examples "filtering a gem", "foo",
           "/Users/myron/code/my_project/bundle/ruby/2.1.0/gems/foo-0.3.6"
       end
 
       context "for a gem installed by bundler as a :git dependency" do
-        it_behaves_like "filtering a gem", "foo",
+        include_examples "filtering a gem", "foo",
           "/Users/myron/code/my_project/bundle/ruby/2.1.0/bundler/gems/foo-2b826653e1f5"
       end
 
       context "for a gem sourced from a local path" do
-        it_behaves_like "filtering a gem", "foo", "/Users/myron/code/foo"
+        include_examples "filtering a gem", "foo", "/Users/myron/code/foo"
+      end
+
+      context "when vendored under the working directory" do
+        include_examples "filtering a gem", "foo",
+          File.join(Dir.getwd, "bundle/ruby/2.1.0/bundler/gems/foo-0.3.6")
       end
     end
 
