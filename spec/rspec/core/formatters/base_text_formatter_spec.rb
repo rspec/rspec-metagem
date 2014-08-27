@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'spec_helper'
 require 'rspec/core/formatters/base_text_formatter'
 
@@ -99,6 +100,16 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         group.example("example name") { raise NameError.new('foo') }
         run_all_and_dump_failures
         expect(output.string).to match(/NameError/m)
+      end
+    end
+
+    if String.method_defined?(:encoding)
+      context "with an exception that has a differently encoded message" do
+        it "runs without encountering an encoding exception" do
+          group.example("Mixing encodings, e.g. UTF-8: © and Binary") { raise "Error: \xC2\xA9".force_encoding("ASCII-8BIT") }
+          run_all_and_dump_failures
+          expect(output.string).to match(/RuntimeError:\n\s+Error: \?\?/m) # ?? because the characters dont encode properly
+        end
       end
     end
 
