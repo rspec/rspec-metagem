@@ -80,6 +80,16 @@ Then /^the failing example is printed in magenta$/ do
   expect(all_output).to include("\e[35m" + "F" + "\e[0m")
 end
 
+Then /^the output from `([^`]+)` should contain "(.*?)"$/  do |cmd, expected_output|
+  step %Q{I run `#{cmd}`}
+  step %Q{the output from "#{cmd}" should contain "#{expected_output}"}
+end
+
+Then /^the output from `([^`]+)` should not contain "(.*?)"$/  do |cmd, expected_output|
+  step %Q{I run `#{cmd}`}
+  step %Q{the output from "#{cmd}" should not contain "#{expected_output}"}
+end
+
 Given /^I have a brand new project with no files$/ do
   in_current_dir do
     expect(Dir["**/*"]).to eq([])
@@ -89,6 +99,12 @@ end
 Given /^I have run `([^`]*)`$/ do |cmd|
   fail_on_error = true
   run_simple(unescape(cmd), fail_on_error)
+end
+
+Given(/^a vendored gem named "(.*?)" containing a file named "(.*?)" with:$/) do |gem_name, file_name, file_contents|
+  gem_dir = "vendor/#{gem_name}-1.2.3"
+  step %Q{a file named "#{gem_dir}/#{file_name}" with:}, file_contents
+  set_env('RUBYOPT', ENV['RUBYOPT'] + " -I#{gem_dir}/lib")
 end
 
 When "I accept the recommended settings by removing `=begin` and `=end` from `spec/spec_helper.rb`" do

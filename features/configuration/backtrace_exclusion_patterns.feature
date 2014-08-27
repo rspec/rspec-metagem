@@ -14,6 +14,9 @@ Feature: Excluding lines from the backtrace
   option. Additionally, `rspec` can be run with the `--backtrace` option to skip
   backtrace cleaning entirely.
 
+  In addition, if you want to filter out backtrace lines from specific gems, you
+  can use `config.filter_gems_from_backtrace`.
+
   Scenario: Using default `backtrace_exclusion_patterns`
     Given a file named "spec/failing_spec.rb" with:
     """ruby
@@ -103,3 +106,33 @@ Feature: Excluding lines from the backtrace
     When I run `rspec --backtrace`
     Then the output should contain "1 example, 1 failure"
     And the output should not contain "be_baz_matcher"
+
+  Scenario: Using `filter_gems_from_backtrace` to filter the named gem
+    Given a vendored gem named "my_gem" containing a file named "lib/my_gem.rb" with:
+      """ruby
+      class MyGem
+        def self.do_amazing_things!
+          # intentional bug to trigger an exception
+          impossible_math = 10 / 0
+          "10 div 0 is: #{impossible_math}"
+        end
+      end
+      """
+    And a file named "spec/use_my_gem_spec.rb" with:
+      """ruby
+      require 'my_gem'
+
+      RSpec.describe "Using my_gem" do
+        it 'does amazing things' do
+          expect(MyGem.do_amazing_things!).to include("10 div 0 is")
+        end
+      end
+      """
+    And a file named "spec/spec_helper.rb" with:
+      """ruby
+      RSpec.configure do |config|
+        config.filter_gems_from_backtrace "my_gem"
+      end
+      """
+    Then the output from `rspec` should contain "# ./vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
+    But the output from `rspec --require spec_helper` should not contain "# ./vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
