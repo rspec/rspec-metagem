@@ -1,5 +1,7 @@
 require 'date'
-require 'complex'
+# complex is available w/o requiring on ruby 1.9+.
+# Loading it on 1.9+ issues a warning, so we only load it on 1.8.7.
+require 'complex' if RUBY_VERSION == '1.8.7'
 require 'bigdecimal'
 
 module RSpec

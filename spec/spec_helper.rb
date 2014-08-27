@@ -4,7 +4,9 @@ RSpec::Support::Spec.setup_simplecov do
   minimum_coverage 97
 end
 
-Dir['./spec/support/**/*'].each {|f| require f}
+Dir['./spec/support/**/*'].each do |f|
+  require f.sub(%r{\./spec/}, '')
+end
 
 module FormattingSupport
   def dedent(string)
