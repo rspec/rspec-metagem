@@ -89,7 +89,7 @@ module RSpec
         elsif current_example
           Pending.mark_pending! current_example, message
         else
-          raise "`pending` may not be used outside of examples, such as in " +
+          raise "`pending` may not be used outside of examples, such as in " \
                 "before(:context). Maybe you want `skip`?"
         end
       end
@@ -116,9 +116,7 @@ module RSpec
       def skip(message=nil)
         current_example = RSpec.current_example
 
-        if current_example
-          Pending.mark_skipped! current_example, message
-        end
+        Pending.mark_skipped!(current_example, message) if current_example
 
         raise SkipDeclaredInExample.new(message)
       end
@@ -142,10 +140,10 @@ module RSpec
       # @param message_or_bool [Boolean, String] the message to use, or true
       def self.mark_pending!(example, message_or_bool)
         message = if !message_or_bool || !(String === message_or_bool)
-          NO_REASON_GIVEN
-        else
-          message_or_bool
-        end
+                    NO_REASON_GIVEN
+                  else
+                    message_or_bool
+                  end
 
         example.metadata[:pending] = true
         example.execution_result.pending_message = message

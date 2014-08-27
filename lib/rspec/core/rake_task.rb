@@ -90,10 +90,11 @@ module RSpec
         rescue
           puts failure_message if failure_message
         end
-        if fail_on_error && !success
-          $stderr.puts "#{command} failed"
-          exit $?.exitstatus
-        end
+
+        return unless fail_on_error && !success
+
+        $stderr.puts "#{command} failed"
+        exit $?.exitstatus
       end
 
     private
@@ -112,7 +113,7 @@ module RSpec
 
       def file_inclusion_specification
         if ENV['SPEC']
-          FileList[ ENV['SPEC'] ].sort
+          FileList[ ENV['SPEC']].sort
         else
           "--pattern '#{pattern}'"
         end
@@ -135,13 +136,14 @@ module RSpec
       end
 
       def blank
-        lambda {|s| s.nil? || s == ""}
+        lambda { |s| s.nil? || s == "" }
       end
 
       def rspec_load_path
         @rspec_load_path ||= begin
-          core_and_support = $LOAD_PATH.grep \
-            %r{#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib}
+          core_and_support = $LOAD_PATH.grep(
+            /#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib/
+          )
 
           "-I#{core_and_support.map(&:shellescape).join(File::PATH_SEPARATOR)}"
         end

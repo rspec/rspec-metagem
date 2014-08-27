@@ -23,9 +23,16 @@ namespace :spec do
   end
 end
 
+require 'rubocop/rake_task'
+
+desc 'Run RuboCop on the lib directory'
+task :rubocop do
+  sh 'bundle exec rubocop lib'
+end
+
 desc "delete generated files"
 task :clobber do
-  sh %q{find . -name "*.rbc" | xargs rm}
+  sh 'find . -name "*.rbc" | xargs rm'
   sh 'rm -rf pkg'
   sh 'rm -rf tmp'
   sh 'rm -rf coverage'
@@ -39,7 +46,7 @@ task :rdoc do
 end
 
 desc "Push docs/cukes to relishapp using the relish-client-gem"
-task :relish, :version do |t, args|
+task :relish, :version do |_t, args|
   raise "rake relish[VERSION]" unless args[:version]
   sh "cp Changelog.md features/"
   if `relish versions rspec/rspec-core`.split.map(&:strip).include? args[:version]
@@ -51,7 +58,7 @@ task :relish, :version do |t, args|
   sh "rm features/Changelog.md"
 end
 
-task :default => [:spec, :cucumber]
+task :default => [:spec, :cucumber, :rubocop]
 
 task :verify_private_key_present do
   private_key = File.expand_path('~/.gem/rspec-gem-private_key.pem')

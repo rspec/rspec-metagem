@@ -145,12 +145,12 @@ module RSpec
           end
         end
 
-        def self.fetch(key, &block)
+        def self.fetch(key, &_block)
           description = if key == :subject
-            "subject"
-          else
-            "let declaration `#{key}`"
-          end
+                          "subject"
+                        else
+                          "let declaration `#{key}`"
+                        end
 
           raise <<-EOS
 #{description} accessed in #{article} #{hook_expression} hook at:

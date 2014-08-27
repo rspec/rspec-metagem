@@ -3,7 +3,6 @@ RSpec::Support.require_rspec_core "formatters/console_codes"
 module RSpec
   module Core
     module Formatters
-
       # @api private
       # Formatter for providing profile output
       class ProfileFormatter
@@ -60,7 +59,6 @@ module RSpec
         def bold(text)
           ConsoleCodes.wrap(text, :bold)
         end
-
       end
     end
   end

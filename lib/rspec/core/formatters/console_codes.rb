@@ -30,7 +30,7 @@ module RSpec
         def console_code_for(code_or_symbol)
           if RSpec.configuration.respond_to?(:"#{code_or_symbol}_color")
             console_code_for configuration_color(code_or_symbol)
-          elsif VT100_CODE_VALUES.has_key?(code_or_symbol)
+          elsif VT100_CODE_VALUES.key?(code_or_symbol)
             code_or_symbol
           else
             VT100_CODES.fetch(code_or_symbol) do
@@ -58,7 +58,6 @@ module RSpec
         def configuration_color(code)
           RSpec.configuration.__send__(:"#{code}_color")
         end
-
       end
     end
   end

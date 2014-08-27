@@ -320,7 +320,8 @@ module RSpec
       # @private
       # Holds the various registered hooks.
       def hooks
-        @hooks ||= HookCollections.new(self,
+        @hooks ||= HookCollections.new(
+          self,
           :around => { :example => AroundHookCollection.new },
           :before => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new },
           :after  => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new }
@@ -399,7 +400,7 @@ EOS
         end
 
         attr_reader :hooks
-        protected   :hooks
+        protected :hooks
 
         alias append push
         alias prepend unshift
@@ -413,7 +414,7 @@ EOS
       class HookCollection < BaseHookCollection
         def for(example_or_group)
           self.class.
-            new(hooks.select {|hook| hook.options_apply?(example_or_group)}).
+            new(hooks.select { |hook| hook.options_apply?(example_or_group) }).
             with(example_or_group)
         end
 
@@ -423,14 +424,14 @@ EOS
         end
 
         def run
-          hooks.each {|h| h.run(@example)}
+          hooks.each { |h| h.run(@example) }
         end
       end
 
       # @private
       class AroundHookCollection < BaseHookCollection
         def for(example, initial_procsy=nil)
-          self.class.new(hooks.select {|hook| hook.options_apply?(example)}).
+          self.class.new(hooks.select { |hook| hook.options_apply?(example) }).
             with(example, initial_procsy)
         end
 
@@ -516,7 +517,7 @@ EOS
         def process(host, globals, position, scope)
           globals[position][scope].each do |hook|
             next unless scope == :example || hook.options_apply?(host)
-            next if host.parent_groups.any? {|a| a.hooks[position][scope].include?(hook)}
+            next if host.parent_groups.any? { |a| a.hooks[position][scope].include?(hook) }
             self[position][scope] << hook
           end
         end

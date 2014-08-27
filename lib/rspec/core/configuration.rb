@@ -4,6 +4,8 @@ RSpec::Support.require_rspec_core "formatters/deprecation_formatter"
 
 module RSpec
   module Core
+    # rubocop:disable Style/ClassLength
+
     # Stores runtime configuration information.
     #
     # Configuration options are loaded from `~/.rspec`, `.rspec`,
@@ -50,7 +52,7 @@ module RSpec
 
       # @private
       def self.define_predicate_for(*names)
-        names.each {|name| alias_method "#{name}?", name}
+        names.each { |name| alias_method "#{name}?", name }
       end
 
       # @private
@@ -58,7 +60,7 @@ module RSpec
       # Invoked by the `add_setting` instance method. Use that method on a
       # `Configuration` instance rather than this class method.
       def self.add_setting(name, opts={})
-        raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
+        raise "Use the instance add_setting method if you want to set a default" if opts.key?(:default)
         attr_writer name
         add_read_only_setting name
 
@@ -71,7 +73,7 @@ module RSpec
       #
       # As `add_setting` but only add the reader
       def self.add_read_only_setting(name, opts={})
-        raise "Use the instance add_setting method if you want to set a default" if opts.has_key?(:default)
+        raise "Use the instance add_setting method if you want to set a default" if opts.key?(:default)
         define_reader name
         define_predicate_for name
       end
@@ -134,10 +136,10 @@ module RSpec
       # @param value [IO, String] IO to write to or filename to write to
       def deprecation_stream=(value)
         if @reporter && !value.equal?(@deprecation_stream)
-          warn "RSpec's reporter has already been initialized with " +
-            "#{deprecation_stream.inspect} as the deprecation stream, so your change to "+
-            "`deprecation_stream` will be ignored. You should configure it earlier for " +
-            "it to take effect, or use the `--deprecation-out` CLI option. " +
+          warn "RSpec's reporter has already been initialized with " \
+            "#{deprecation_stream.inspect} as the deprecation stream, so your change to "\
+            "`deprecation_stream` will be ignored. You should configure it earlier for " \
+            "it to take effect, or use the `--deprecation-out` CLI option. " \
             "(Called from #{CallerFilter.first_non_rspec_line})"
         else
           @deprecation_stream = value
@@ -174,9 +176,9 @@ module RSpec
       # @attr value [IO] value for output, defaults to $stdout
       def output_stream=(value)
         if @reporter && !value.equal?(@output_stream)
-          warn "RSpec's reporter has already been initialized with " +
-            "#{output_stream.inspect} as the output stream, so your change to "+
-            "`output_stream` will be ignored. You should configure it earlier for " +
+          warn "RSpec's reporter has already been initialized with " \
+            "#{output_stream.inspect} as the output stream, so your change to "\
+            "`output_stream` will be ignored. You should configure it earlier for " \
             "it to take effect. (Called from #{CallerFilter.first_non_rspec_line})"
         else
           @output_stream = value
@@ -257,9 +259,9 @@ module RSpec
       # Deprecated. This config option was added in RSpec 2 to pave the way
       # for this being the default behavior in RSpec 3. Now this option is
       # a no-op.
-      def treat_symbols_as_metadata_keys_with_true_values=(value)
+      def treat_symbols_as_metadata_keys_with_true_values=(_value)
         RSpec.deprecate("RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
-                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " +
+                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " \
                                     "is deprecated, it is now set to true as default and setting it to false has no effect.")
       end
 
@@ -280,7 +282,9 @@ module RSpec
       attr_reader :backtrace_formatter, :ordering_manager
 
       def initialize
+        # rubocop:disable Style/GlobalVars
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
+        # rubocop:enable Style/GlobalVars
         @expectation_frameworks = []
         @include_or_extend_modules = []
         @mock_framework = nil
@@ -488,18 +492,19 @@ module RSpec
       #       mod_config.custom_setting = true
       #     end
       def mock_with(framework)
-        framework_module = if framework.is_a?(Module)
-           framework
-        else
-          const_name = MOCKING_ADAPTERS.fetch(framework) do
-            raise ArgumentError,
-              "Unknown mocking framework: #{framework.inspect}. " +
-              "Pass a module or one of #{MOCKING_ADAPTERS.keys.inspect}"
-          end
+        framework_module =
+          if framework.is_a?(Module)
+            framework
+          else
+            const_name = MOCKING_ADAPTERS.fetch(framework) do
+              raise ArgumentError,
+                    "Unknown mocking framework: #{framework.inspect}. " \
+                    "Pass a module or one of #{MOCKING_ADAPTERS.keys.inspect}"
+            end
 
-          RSpec::Support.require_rspec_core "mocking_adapters/#{const_name.to_s.downcase}"
-          RSpec::Core::MockingAdapters.const_get(const_name)
-        end
+            RSpec::Support.require_rspec_core "mocking_adapters/#{const_name.to_s.downcase}"
+            RSpec::Core::MockingAdapters.const_get(const_name)
+          end
 
         new_name, old_name = [framework_module, @mock_framework].map do |mod|
           mod.respond_to?(:framework_name) ?  mod.framework_name : :unnamed
@@ -615,20 +620,20 @@ module RSpec
       # @param output [IO] an output stream to use, defaults to the current
       #        `output_stream`
       # @return [Boolean]
-      def color_enabled?(output = output_stream)
+      def color_enabled?(output=output_stream)
         output_to_tty?(output) && color
       end
 
       # Toggle output color
       # @attr true_or_false [Boolean] toggle color enabled
       def color=(true_or_false)
-        if true_or_false
-          if RSpec.world.windows_os? and not ENV['ANSICON']
-            RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
-            @color = false
-          else
-            @color = true
-          end
+        return unless true_or_false
+
+        if RSpec.world.windows_os? && !ENV['ANSICON']
+          RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
+          @color = false
+        else
+          @color = true
         end
       end
 
@@ -643,7 +648,7 @@ module RSpec
       # Run examples matching on `description` in all files to run.
       # @param description [String, Regexp] the pattern to filter on
       def full_description=(description)
-        filter_run :full_description => Regexp.union(*Array(description).map {|d| Regexp.new(d) })
+        filter_run :full_description => Regexp.union(*Array(description).map { |d| Regexp.new(d) })
       end
 
       # @return [Array] full description filter
@@ -858,7 +863,7 @@ module RSpec
       #   specs, but does not add any additional documentation.  We use this
       #   in rspec to define `it_should_behave_like` (for backward
       #   compatibility), but we also add docs for that method.
-      def alias_it_behaves_like_to(new_name, report_label = '')
+      def alias_it_behaves_like_to(new_name, report_label='')
         RSpec::Core::ExampleGroup.define_nested_shared_group_method(new_name, report_label)
       end
       alias_method :alias_it_should_behave_like_to, :alias_it_behaves_like_to
@@ -1064,7 +1069,7 @@ module RSpec
       def requires=(paths)
         directories = ['lib', default_path].select { |p| File.directory? p }
         RSpec::Core::RubyProject.add_to_load_path(*directories)
-        paths.each {|path| require path}
+        paths.each { |path| require path }
         @requires += paths
       end
 
@@ -1097,7 +1102,7 @@ module RSpec
 
       # @private
       def load_spec_files
-        files_to_run.uniq.each {|f| load File.expand_path(f) }
+        files_to_run.uniq.each { |f| load File.expand_path(f) }
         @spec_files_loaded = true
       end
 
@@ -1336,10 +1341,14 @@ module RSpec
       end
 
       def extract_location(path)
-        if path =~ /^(.*?)((?:\:\d+)+)$/
-          path, lines = $1, $2[1..-1].split(":").map{|n| n.to_i}
+        match = /^(.*?)((?:\:\d+)+)$/.match(path)
+
+        if match
+          captures = match.captures
+          path, lines = captures[0], captures[1][1..-1].split(":").map { |n| n.to_i }
           filter_manager.add_location path, lines
         end
+
         path
       end
 
@@ -1348,16 +1357,16 @@ module RSpec
       end
 
       def value_for(key, default=nil)
-        @preferred_options.has_key?(key) ? @preferred_options[key] : default
+        @preferred_options.key?(key) ? @preferred_options[key] : default
       end
 
       def assert_no_example_groups_defined(config_option)
-        if RSpec.world.example_groups.any?
-          raise MustBeConfiguredBeforeExampleGroupsError.new(
-            "RSpec's #{config_option} configuration option must be configured before " +
-            "any example groups are defined, but you have already defined a group."
-          )
-        end
+        return unless RSpec.world.example_groups.any?
+
+        raise MustBeConfiguredBeforeExampleGroupsError.new(
+          "RSpec's #{config_option} configuration option must be configured before " \
+          "any example groups are defined, but you have already defined a group."
+        )
       end
 
       def output_to_tty?(output=output_stream)
@@ -1396,5 +1405,6 @@ module RSpec
         @files_to_run = nil
       end
     end
+    # rubocop:enable Style/ClassLength
   end
 end

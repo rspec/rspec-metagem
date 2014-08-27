@@ -4,15 +4,14 @@ RSpec::Support.require_rspec_core "formatters/console_codes"
 module RSpec
   module Core
     module Formatters
-
       # Base for all of RSpec's built-in formatters. See RSpec::Core::Formatters::BaseFormatter
       # to learn more about all of the methods called by the reporter.
       #
       # @see RSpec::Core::Formatters::BaseFormatter
       # @see RSpec::Core::Reporter
       class BaseTextFormatter < BaseFormatter
-        Formatters.register self, :message, :dump_summary, :dump_failures,
-                                  :dump_pending, :seed
+        Formatters.register self,
+                            :message, :dump_summary, :dump_failures, :dump_pending, :seed
 
         # @method message
         # @api public
@@ -65,13 +64,12 @@ module RSpec
         # up resources, e.g. open streams, etc.
         #
         # @param notification [NullNotification]
-        def close(notification)
+        def close(_notification)
           return unless IO === output
           return if output.closed? || output == $stdout
 
           output.close
         end
-
       end
     end
   end

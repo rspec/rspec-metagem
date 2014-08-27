@@ -8,7 +8,9 @@ module RSpec
     module MockingAdapters
       # @private
       module RR
-        def self.framework_name; :rr end
+        def self.framework_name
+          :rr
+        end
 
         include ::RR::Extensions::InstanceMethods
 

@@ -17,9 +17,7 @@ module RSpec
         @inclusion_patterns = [Regexp.new(Dir.getwd)]
       end
 
-      def full_backtrace=(full_backtrace)
-        @full_backtrace = full_backtrace
-      end
+      attr_writer :full_backtrace
 
       def full_backtrace?
         @full_backtrace || @exclusion_patterns.empty?
@@ -27,13 +25,13 @@ module RSpec
 
       def filter_gem(gem_name)
         sep = File::SEPARATOR
-        pattern = %r{#{sep}#{gem_name}(-[^#{sep}]+)?#{sep}}
+        pattern = /#{sep}#{gem_name}(-[^#{sep}]+)?#{sep}/
 
         @exclusion_patterns        << pattern
         @system_exclusion_patterns << pattern
       end
 
-      def format_backtrace(backtrace, options = {})
+      def format_backtrace(backtrace, options={})
         return backtrace if options[:full_backtrace]
 
         backtrace.map { |l| backtrace_line(l) }.compact.

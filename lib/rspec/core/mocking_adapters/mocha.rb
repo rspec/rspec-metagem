@@ -29,7 +29,9 @@ module RSpec
     module MockingAdapters
       # @private
       module Mocha
-        def self.framework_name; :mocha end
+        def self.framework_name
+          :mocha
+        end
 
         # Mocha::Standalone was deprecated as of Mocha 0.9.7.
         begin

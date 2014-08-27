@@ -111,15 +111,15 @@ module RSpec::Core::Formatters
 
     # @private
     def setup_default(output_stream, deprecation_stream)
-      if @formatters.empty?
-        add default_formatter, output_stream
-      end
+      add default_formatter, output_stream if @formatters.empty?
+
       unless @formatters.any? { |formatter| DeprecationFormatter === formatter }
         add DeprecationFormatter, deprecation_stream, output_stream
       end
-      if RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
-        add RSpec::Core::Formatters::ProfileFormatter, output_stream
-      end
+
+      return unless RSpec.configuration.profile_examples? && !existing_formatter_implements?(:dump_profile)
+
+      add RSpec::Core::Formatters::ProfileFormatter, output_stream
     end
 
     # @private
@@ -139,11 +139,11 @@ module RSpec::Core::Formatters
         if line
           call_site = "Formatter added at: #{line}"
         else
-          call_site = "The formatter was added via command line flag or your "+
+          call_site = "The formatter was added via command line flag or your "\
                       "`.rspec` file."
         end
 
-        RSpec.warn_deprecation <<-WARNING.gsub(/\s*\|/,' ')
+        RSpec.warn_deprecation <<-WARNING.gsub(/\s*\|/, ' ')
           |The #{formatter_class} formatter uses the deprecated formatter
           |interface not supported directly by RSpec 3.
           |
@@ -202,9 +202,9 @@ module RSpec::Core::Formatters
         formatter_ref
       elsif string_const?(formatter_ref)
         begin
-          formatter_ref.gsub(/^::/,'').split('::').inject(Object) { |const,string| const.const_get string }
+          formatter_ref.gsub(/^::/, '').split('::').inject(Object) { |a, e| a.const_get e }
         rescue NameError
-          require( path_for(formatter_ref) ) ? retry : raise
+          require(path_for(formatter_ref)) ? retry : raise
         end
       end
     end
@@ -225,8 +225,8 @@ module RSpec::Core::Formatters
     def underscore(camel_cased_word)
       word = camel_cased_word.to_s.dup
       word.gsub!(/::/, '/')
-      word.gsub!(/([A-Z]+)([A-Z][a-z])/,'\1_\2')
-      word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+      word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+      word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
       word.tr!("-", "_")
       word.downcase!
       word

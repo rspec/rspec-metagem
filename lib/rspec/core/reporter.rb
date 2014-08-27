@@ -2,10 +2,9 @@ module RSpec::Core
   # A reporter will send notifications to listeners, usually formatters for the
   # spec suite run.
   class Reporter
-
     def initialize(configuration)
       @configuration = configuration
-      @listeners = Hash.new { |h,k| h[k] = Set.new }
+      @listeners = Hash.new { |h, k| h[k] = Set.new }
       @examples = []
       @failed_examples = []
       @pending_examples = []
@@ -58,7 +57,7 @@ module RSpec::Core
     end
 
     # @private
-    def start(expected_example_count, time = RSpec::Core::Time.now)
+    def start(expected_example_count, time=RSpec::Core::Time.now)
       @start = time
       @load_time = (@start - @configuration.start_time).to_f
       notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
@@ -109,20 +108,18 @@ module RSpec::Core
 
     # @private
     def finish
-      begin
-        stop
-        notify :start_dump,    Notifications::NullNotification
-        notify :dump_pending,  Notifications::ExamplesNotification.new(self)
-        notify :dump_failures, Notifications::ExamplesNotification.new(self)
-        notify :deprecation_summary, Notifications::NullNotification
-        notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
-        unless mute_profile_output?
-          notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples, @configuration.profile_examples)
-        end
-        notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
-      ensure
-        notify :close, Notifications::NullNotification
+      stop
+      notify :start_dump,    Notifications::NullNotification
+      notify :dump_pending,  Notifications::ExamplesNotification.new(self)
+      notify :dump_failures, Notifications::ExamplesNotification.new(self)
+      notify :deprecation_summary, Notifications::NullNotification
+      notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
+      unless mute_profile_output?
+        notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples, @configuration.profile_examples)
       end
+      notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
+    ensure
+      notify :close, Notifications::NullNotification
     end
 
     # @private

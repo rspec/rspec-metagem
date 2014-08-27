@@ -3,7 +3,6 @@ module RSpec
     module Formatters
       # Formatters helpers
       module Helpers
-
         # @private
         SUB_SECOND_PRECISION = 5
 
@@ -22,9 +21,9 @@ module RSpec
         #    format_duration(135.14) #=> "2 minutes 15.14 seconds"
         def self.format_duration(duration)
           precision = case
-                      when duration < 1;    SUB_SECOND_PRECISION
-                      when duration < 120;  DEFAULT_PRECISION
-                      when duration < 300;  1
+                      when duration < 1 then    SUB_SECOND_PRECISION
+                      when duration < 120 then  DEFAULT_PRECISION
+                      when duration < 300 then  1
                       else                  0
                       end
 
@@ -54,9 +53,9 @@ module RSpec
         # The precision used is set in {Helpers::SUB_SECOND_PRECISION} and {Helpers::DEFAULT_PRECISION}.
         #
         # @see #strip_trailing_zeroes
-        def self.format_seconds(float, precision = nil)
+        def self.format_seconds(float, precision=nil)
           precision ||= (float < 1) ? SUB_SECOND_PRECISION : DEFAULT_PRECISION
-          formatted = sprintf("%.#{precision}f", float)
+          formatted = "%.#{precision}f" % float
           strip_trailing_zeroes(formatted)
         end
 

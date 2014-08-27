@@ -27,12 +27,14 @@ module RSpec
         end
 
         def print_example_passed(description, run_time)
-          formatted_run_time = sprintf("%.5f", run_time)
+          formatted_run_time = "%.5f" % run_time
           @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
         end
 
-        def print_example_failed(pending_fixed, description, run_time, failure_id, exception, extra_content, escape_backtrace = false)
-          formatted_run_time = sprintf("%.5f", run_time)
+        # rubocop:disable Style/ParameterLists
+        def print_example_failed(pending_fixed, description, run_time, failure_id, exception, extra_content, escape_backtrace=false)
+          # rubocop:enable Style/ParameterLists
+          formatted_run_time = "%.5f" % run_time
 
           @output.puts "    <dd class=\"example #{pending_fixed ? 'pending_fixed' : 'failed'}\">"
           @output.puts "      <span class=\"failed_spec_name\">#{h(description)}</span>"
@@ -60,7 +62,7 @@ module RSpec
           totals << "#{failure_count} failure#{'s' unless failure_count == 1}"
           totals << ", #{pending_count} pending" if pending_count > 0
 
-          formatted_duration = sprintf("%.5f", duration)
+          formatted_duration = "%.5f" % duration
 
           @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{formatted_duration} seconds</strong>\";</script>"
           @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
@@ -395,7 +397,6 @@ EOF
 </head>
 <body>
 EOF
-
       end
     end
   end

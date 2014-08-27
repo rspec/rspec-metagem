@@ -32,7 +32,8 @@ module RSpec
         def stop(notification)
           @output_hash[:examples] = notification.examples.map do |example|
             format_example(example).tap do |hash|
-              if e=example.exception
+              e = example.exception
+              if e
                 hash[:exception] =  {
                   :class => e.class.name,
                   :message => e.message,
@@ -43,7 +44,7 @@ module RSpec
           end
         end
 
-        def close(notification)
+        def close(_notification)
           output.write @output_hash.to_json
           output.close if IO === output && output != $stdout
         end

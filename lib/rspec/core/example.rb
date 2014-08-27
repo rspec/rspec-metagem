@@ -73,9 +73,12 @@ module RSpec
       # there is one, otherwise returns a message including the location of the
       # example.
       def description
-        description = metadata[:description].to_s.empty? ?
-          "example at #{location}" :
-          metadata[:description]
+        description = if metadata[:description].to_s.empty?
+                        "example at #{location}"
+                      else
+                        metadata[:description]
+                      end
+
         RSpec.configuration.format_docstrings_block.call(description)
       end
 
@@ -151,8 +154,8 @@ module RSpec
                   Pending.mark_fixed! self
 
                   raise Pending::PendingExampleFixedError,
-                    'Expected example to fail since it is pending, but it passed.',
-                    [location]
+                        'Expected example to fail since it is pending, but it passed.',
+                        [location]
                 end
               rescue Pending::SkipDeclaredInExample
                 # no-op, required metadata has already been set by the `skip`
@@ -201,15 +204,15 @@ module RSpec
         attr_reader :example
 
         Example.public_instance_methods(false).each do |name|
-          unless name.to_sym == :run || name.to_sym == :inspect
-            define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
-          end
+          next if name.to_sym == :run || name.to_sym == :inspect
+
+          define_method(name) { |*a, &b| @example.__send__(name, *a, &b) }
         end
 
         Proc.public_instance_methods(false).each do |name|
-          unless name.to_sym == :call || name.to_sym == :to_proc || name.to_sym == :inspect
-            define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
-          end
+          next if name.to_sym == :call || name.to_sym == :inspect || name.to_sym == :to_proc
+
+          define_method(name) { |*a, &b| @proc.__send__(name, *a, &b) }
         end
 
         # Calls the proc and notes that the example has been executed.
@@ -475,7 +478,7 @@ module RSpec
           end
         end
 
-        def issue_deprecation(method_name, *args)
+        def issue_deprecation(_method_name, *_args)
           RSpec.deprecate("Treating `metadata[:execution_result]` as a hash",
                           :replacement => "the attributes methods to access the data")
         end
@@ -490,7 +493,7 @@ module RSpec
       end
 
       # To ensure we don't silence errors...
-      def set_exception(exception, context=nil)
+      def set_exception(exception, _context=nil)
         raise exception
       end
     end

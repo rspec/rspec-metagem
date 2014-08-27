@@ -2,7 +2,6 @@ module RSpec
   module Core
     # Provides the main entry point to run a suite of RSpec examples.
     class Runner
-
       # Register an `at_exit` hook that runs the suite when the process exits.
       #
       # @note This is not generally needed. The `rspec` command takes care
@@ -22,7 +21,7 @@ module RSpec
           # Don't bother running any specs and just let the program terminate
           # if we got here due to an unrescued exception (anything other than
           # SystemExit, which is raised when somebody calls Kernel#exit).
-          next unless $!.nil? || $!.kind_of?(SystemExit)
+          next unless $!.nil? || $!.is_a?(SystemExit)
 
           # We got here because either the end of the program was reached or
           # somebody called Kernel#exit.  Run the specs and then override any
@@ -132,21 +131,19 @@ module RSpec
       end
 
       # @private
+      # rubocop:disable Lint/EnsureReturn
       def self.running_in_drb?
-        begin
-          if defined?(DRb) && DRb.current_server
-            require 'socket'
-            require 'uri'
-
-            local_ipv4 = IPSocket.getaddress(Socket.gethostname)
-
-            local_drb = ["127.0.0.1", "localhost", local_ipv4].any? { |addr| addr == URI(DRb.current_server.uri).host }
-          end
-        rescue DRb::DRbServerNotFound
-        ensure
-          return local_drb || false
+        if defined?(DRb) && DRb.current_server
+          require 'socket'
+          require 'uri'
+          local_ipv4 = IPSocket.getaddress(Socket.gethostname)
+          local_drb = ["127.0.0.1", "localhost", local_ipv4].any? { |addr| addr == URI(DRb.current_server.uri).host }
         end
+      rescue DRb::DRbServerNotFound
+      ensure
+        return local_drb || false
       end
+      # rubocop:enable Lint/EnsureReturn
 
       # @private
       def self.trap_interrupt

@@ -46,9 +46,7 @@ module RSpec
       def self.build_hash_from(args, warn_about_example_group_filtering=false)
         hash = args.last.is_a?(Hash) ? args.pop : {}
 
-        while args.last.is_a?(Symbol)
-          hash[args.pop] = true
-        end
+        hash[args.pop] = true while args.last.is_a?(Symbol)
 
         if warn_about_example_group_filtering && hash.key?(:example_group)
           RSpec.deprecate("Filtering by an `:example_group` subhash",
@@ -95,13 +93,15 @@ module RSpec
       private
 
         def populate_location_attributes
-          file_path, line_number = if backtrace = user_metadata.delete(:caller)
-            file_path_and_line_number_from(backtrace)
-          elsif block.respond_to?(:source_location)
-            block.source_location
-          else
-            file_path_and_line_number_from(caller)
-          end
+          backtrace = user_metadata.delete(:caller)
+
+          file_path, line_number = if backtrace
+                                     file_path_and_line_number_from(backtrace)
+                                   elsif block.respond_to?(:source_location)
+                                     block.source_location
+                                   else
+                                     file_path_and_line_number_from(caller)
+                                   end
 
           file_path              = Metadata.relative_path(file_path)
           metadata[:file_path]   = file_path
@@ -110,7 +110,7 @@ module RSpec
         end
 
         def file_path_and_line_number_from(backtrace)
-          first_caller_from_outside_rspec = backtrace.detect { |l| l !~ CallerFilter::LIB_REGEX }
+          first_caller_from_outside_rspec = backtrace.find { |l| l !~ CallerFilter::LIB_REGEX }
           first_caller_from_outside_rspec ||= backtrace.first
           /(.+?):(\d+)(?:|:\d+)/.match(first_caller_from_outside_rspec).captures
         end
@@ -131,22 +131,21 @@ module RSpec
 
         def ensure_valid_user_keys
           RESERVED_KEYS.each do |key|
-            if user_metadata.has_key?(key)
-              raise <<-EOM.gsub(/^\s+\|/, '')
-                |#{"*"*50}
-                |:#{key} is not allowed
-                |
-                |RSpec reserves some hash keys for its own internal use,
-                |including :#{key}, which is used on:
-                |
-                |  #{CallerFilter.first_non_rspec_line}.
-                |
-                |Here are all of RSpec's reserved hash keys:
-                |
-                |  #{RESERVED_KEYS.join("\n  ")}
-                |#{"*"*50}
-              EOM
-            end
+            next unless user_metadata.key?(key)
+            raise <<-EOM.gsub(/^\s+\|/, '')
+              |#{"*" * 50}
+              |:#{key} is not allowed
+              |
+              |RSpec reserves some hash keys for its own internal use,
+              |including :#{key}, which is used on:
+              |
+              |  #{CallerFilter.first_non_rspec_line}.
+              |
+              |Here are all of RSpec's reserved hash keys:
+              |
+              |  #{RESERVED_KEYS.join("\n  ")}
+              |#{"*" * 50}
+            EOM
           end
         end
       end
@@ -217,8 +216,8 @@ module RSpec
               # sets this thread local to silence the warning here since it would be so confusing.
               unless RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations]
                 RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
-                                :replacement => "the example group's hash directly for the " +
-                                "computed keys and `:parent_example_group` to access the parent " +
+                                :replacement => "the example group's hash directly for the " \
+                                "computed keys and `:parent_example_group` to access the parent " \
                                 "example group metadata")
               end
 
@@ -357,7 +356,7 @@ module RSpec
         to_h
       end
 
-      def issue_deprecation(method_name, *args)
+      def issue_deprecation(_method_name, *_args)
         # no-op by default: subclasses can override
       end
 

@@ -123,29 +123,29 @@ module RSpec
 
         def order=(type)
           order, seed = type.to_s.split(':')
-          @seed = seed = seed.to_i if seed
+          @seed = seed.to_i if seed
 
           ordering_name = if order.include?('rand')
-            :random
-          elsif order == 'defined'
-            :defined
-          end
+                            :random
+                          elsif order == 'defined'
+                            :defined
+                          end
 
           register_ordering(:global, ordering_registry.fetch(ordering_name)) if ordering_name
         end
 
         def force(hash)
-          if hash.has_key?(:seed)
+          if hash.key?(:seed)
             self.seed = hash[:seed]
             @seed_forced  = true
             @order_forced = true
-          elsif hash.has_key?(:order)
+          elsif hash.key?(:order)
             self.order = hash[:order]
             @order_forced = true
           end
         end
 
-        def register_ordering(name, strategy = Custom.new(Proc.new { |l| yield l }))
+        def register_ordering(name, strategy=Custom.new(Proc.new { |l| yield l }))
           return if @order_forced && name == :global
           ordering_registry.register(name, strategy)
         end
@@ -153,4 +153,3 @@ module RSpec
     end
   end
 end
-

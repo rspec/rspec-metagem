@@ -7,8 +7,8 @@ module RSpec
       # @private
       class HtmlFormatter < BaseFormatter
         Formatters.register self, :start, :example_group_started, :start_dump,
-                                  :example_started, :example_passed, :example_failed,
-                                  :example_pending, :dump_summary
+                            :example_started, :example_passed, :example_failed,
+                            :example_pending, :dump_summary
 
         def initialize(output)
           super(output)
@@ -30,25 +30,23 @@ module RSpec
           @example_group_red = false
           @example_group_number += 1
 
-          unless example_group_number == 1
-            @printer.print_example_group_end
-          end
-          @printer.print_example_group_start( example_group_number, notification.group.description, notification.group.parent_groups.size )
+          @printer.print_example_group_end unless example_group_number == 1
+          @printer.print_example_group_start(example_group_number, notification.group.description, notification.group.parent_groups.size)
           @printer.flush
         end
 
-        def start_dump(notification)
+        def start_dump(_notification)
           @printer.print_example_group_end
           @printer.flush
         end
 
-        def example_started(notification)
+        def example_started(_notification)
           @example_number += 1
         end
 
         def example_passed(passed)
           @printer.move_progress(percent_done)
-          @printer.print_example_passed( passed.example.description, passed.example.execution_result.run_time )
+          @printer.print_example_passed(passed.example.description, passed.example.execution_result.run_time)
           @printer.flush
         end
 
@@ -70,13 +68,13 @@ module RSpec
 
           exception = failure.exception
           exception_details = if exception
-            {
-              :message => exception.message,
-              :backtrace => failure.formatted_backtrace.join("\n")
-            }
-          else
-            false
-          end
+                                {
+                                  :message => exception.message,
+                                  :backtrace => failure.formatted_backtrace.join("\n")
+                                }
+                              else
+                                false
+                              end
           extra = extra_failure_content(failure)
 
           @printer.print_example_failed(
@@ -97,7 +95,7 @@ module RSpec
           @printer.make_header_yellow unless @header_red
           @printer.make_example_group_header_yellow(example_group_number) unless @example_group_red
           @printer.move_progress(percent_done)
-          @printer.print_example_pending( example.description, example.execution_result.pending_message )
+          @printer.print_example_pending(example.description, example.execution_result.pending_message)
           @printer.flush
         end
 
@@ -113,6 +111,9 @@ module RSpec
 
       private
 
+        # If these methods are declared with attr_reader Ruby will issue a warning because they are private
+        # rubocop:disable Style/TrivialAccessors
+
         # The number of the currently running example_group
         def example_group_number
           @example_group_number
@@ -122,6 +123,7 @@ module RSpec
         def example_number
           @example_number
         end
+        # rubocop:enable Style/TrivialAccessors
 
         def percent_done
           result = 100.0
@@ -136,12 +138,11 @@ module RSpec
         #
         def extra_failure_content(failure)
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-          backtrace = failure.exception.backtrace.map {|line| RSpec.configuration.backtrace_formatter.backtrace_line(line)}
+          backtrace = failure.exception.backtrace.map { |line| RSpec.configuration.backtrace_formatter.backtrace_line(line) }
           backtrace.compact!
           @snippet_extractor ||= SnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"
         end
-
       end
     end
   end

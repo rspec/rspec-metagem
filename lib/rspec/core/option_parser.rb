@@ -11,7 +11,7 @@ module RSpec::Core
     def parse(args)
       return {} if args.empty?
 
-      options = args.delete('--tty') ? {:tty => true} : {}
+      options = args.delete('--tty') ? { :tty => true } : {}
       begin
         parser(options).parse!(args)
       rescue OptionParser::InvalidOption => e
@@ -51,11 +51,11 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('--fail-fast', 'Abort the run on first failure.') do |o|
+        parser.on('--fail-fast', 'Abort the run on first failure.') do |_o|
           options[:fail_fast] = true
         end
 
-        parser.on('--no-fail-fast', 'Do not abort the run on first failure.') do |o|
+        parser.on('--no-fail-fast', 'Do not abort the run on first failure.') do |_o|
           options[:fail_fast] = false
         end
 
@@ -64,7 +64,7 @@ module RSpec::Core
         end
 
         parser.on('--dry-run', 'Print the formatter output of your suite without',
-                  '  running any examples or hooks') do |o|
+                  '  running any examples or hooks') do |_o|
           options[:dry_run] = true
         end
 
@@ -76,7 +76,7 @@ module RSpec::Core
           options[:drb_port] = o.to_i
         end
 
-        parser.on('--init', 'Initialize your project with RSpec.') do |cmd|
+        parser.on('--init', 'Initialize your project with RSpec.') do |_cmd|
           RSpec::Support.require_rspec_core "project_initializer"
           ProjectInitializer.new.run
           exit
@@ -85,11 +85,11 @@ module RSpec::Core
         parser.separator("\n  **** Output ****\n\n")
 
         parser.on('-f', '--format FORMATTER', 'Choose a formatter.',
-                '  [p]rogress (default - dots)',
-                '  [d]ocumentation (group and example names)',
-                '  [h]tml',
-                '  [j]son',
-                '  custom formatter class name') do |o|
+                  '  [p]rogress (default - dots)',
+                  '  [d]ocumentation (group and example names)',
+                  '  [h]tml',
+                  '  [j]son',
+                  '  custom formatter class name') do |o|
           options[:formatters] ||= []
           options[:formatters] << [o]
         end
@@ -107,7 +107,7 @@ module RSpec::Core
           options[:deprecation_stream] = file
         end
 
-        parser.on('-b', '--backtrace', 'Enable full backtrace.') do |o|
+        parser.on('-b', '--backtrace', 'Enable full backtrace.') do |_o|
           options[:full_backtrace] = true
         end
 
@@ -124,10 +124,10 @@ module RSpec::Core
                                          begin
                                            Integer(argument)
                                          rescue ArgumentError
-                                           RSpec.warning "Non integer specified as profile count, seperate " +
-                                                       "your path from options with -- e.g. " +
+                                           RSpec.warning "Non integer specified as profile count, seperate " \
+                                                       "your path from options with -- e.g. " \
                                                        "`rspec --profile -- #{argument}`",
-                                                       :call_site => nil
+                                                         :call_site => nil
                                            true
                                          end
                                        end
@@ -158,7 +158,7 @@ FILTERING
         end
 
         parser.on('-e', '--example STRING', "Run examples whose full nested names include STRING (may be",
-                                            "  used more than once)") do |o|
+                  "  used more than once)") do |o|
           (options[:full_description] ||= []) << Regexp.compile(Regexp.escape(o))
         end
 
@@ -169,25 +169,25 @@ FILTERING
                   '  - TAG is always converted to a symbol') do |tag|
           filter_type = tag =~ /^~/ ? :exclusion_filter : :inclusion_filter
 
-          name,value = tag.gsub(/^(~@|~|@)/, '').split(':',2)
+          name, value = tag.gsub(/^(~@|~|@)/, '').split(':', 2)
           name = name.to_sym
 
           options[filter_type] ||= {}
           options[filter_type][name] = case value
-                                         when  nil        then true # The default value for tags is true
-                                         when 'true'      then true
-                                         when 'false'     then false
-                                         when 'nil'       then nil
-                                         when /^:/        then value[1..-1].to_sym
-                                         when /^\d+$/     then Integer(value)
-                                         when /^\d+.\d+$/ then Float(value)
+                                       when  nil        then true # The default value for tags is true
+                                       when 'true'      then true
+                                       when 'false'     then false
+                                       when 'nil'       then nil
+                                       when /^:/        then value[1..-1].to_sym
+                                       when /^\d+$/     then Integer(value)
+                                       when /^\d+.\d+$/ then Float(value)
                                        else
                                          value
                                        end
         end
 
         parser.on('--default-path PATH', 'Set the default path where RSpec looks for examples (can',
-                                         '  be a path to a file or a directory).') do |path|
+                  '  be a path to a file or a directory).') do |path|
           options[:default_path] = path
         end
 
@@ -205,7 +205,7 @@ FILTERING
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
           # removing the blank invalid options from the output
-          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/,'')
+          puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
           exit
         end
 

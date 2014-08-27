@@ -21,10 +21,12 @@ module RSpec
 
         begin
           require 'coderay'
+          # rubocop:disable Style/ClassVars
           @@converter = CoderayConverter.new
         rescue LoadError
           @@converter = NullConverter.new
         end
+        # rubocop:enable Style/ClassVars
 
         # @api private
         #
@@ -50,8 +52,8 @@ module RSpec
         # @see #lines_around
         def snippet_for(error_line)
           if error_line =~ /(.*):(\d+)/
-            file = $1
-            line = $2.to_i
+            file = Regexp.last_match[1]
+            line = Regexp.last_match[2].to_i
             [lines_around(file, line), line]
           else
             ["# Couldn't get snippet for #{error_line}", 1]
@@ -68,8 +70,8 @@ module RSpec
         def lines_around(file, line)
           if File.file?(file)
             lines = File.read(file).split("\n")
-            min = [0, line-3].max
-            max = [line+1, lines.length-1].min
+            min = [0, line - 3].max
+            max = [line + 1, lines.length - 1].min
             selected_lines = []
             selected_lines.join("\n")
             lines[min..max].join("\n")
@@ -90,13 +92,12 @@ module RSpec
         def post_process(highlighted, offending_line)
           new_lines = []
           highlighted.split("\n").each_with_index do |line, i|
-            new_line = "<span class=\"linenum\">#{offending_line+i-2}</span>#{line}"
+            new_line = "<span class=\"linenum\">#{offending_line + i - 2}</span>#{line}"
             new_line = "<span class=\"offending\">#{new_line}</span>" if i == 2
             new_lines << new_line
           end
           new_lines.join("\n")
         end
-
       end
     end
   end

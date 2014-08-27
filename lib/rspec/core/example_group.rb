@@ -25,12 +25,12 @@ module RSpec
     # There are additional instance methods available to your examples defined in
     # {MemoizedHelpers} and {Pending}.
     class ExampleGroup
-      extend  Hooks
+      extend Hooks
 
       include MemoizedHelpers
-      extend  MemoizedHelpers::ClassMethods
+      extend MemoizedHelpers::ClassMethods
       include Pending
-      extend  SharedExampleGroup
+      extend SharedExampleGroup
 
       unless respond_to?(:define_singleton_method)
         # @private
@@ -50,7 +50,7 @@ module RSpec
       # @private
       # @return [Metadata] belonging to the parent of a nested {ExampleGroup}
       def self.superclass_metadata
-        @superclass_metadata ||= self.superclass.respond_to?(:metadata) ? self.superclass.metadata : nil
+        @superclass_metadata ||= superclass.respond_to?(:metadata) ? superclass.metadata : nil
       end
 
       # @private
@@ -211,8 +211,8 @@ module RSpec
 
           if top_level
             if thread_data[:in_example_group]
-              raise "Creating an isolated context from within a context is " +
-                    "not allowed. Change `RSpec.#{name}` to `#{name}` or " +
+              raise "Creating an isolated context from within a context is " \
+                    "not allowed. Change `RSpec.#{name}` to `#{name}` or " \
                     "move this to a top-level scope."
             end
 
@@ -315,7 +315,9 @@ module RSpec
 
       # @private
       def self.find_and_eval_shared(label, name, *args, &customization_block)
-        unless shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
+        shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
+
+        unless shared_block
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
@@ -376,7 +378,7 @@ module RSpec
 
       # @private
       def self.descendant_filtered_examples
-        @descendant_filtered_examples ||= filtered_examples + children.inject([]){|l,c| l + c.descendant_filtered_examples}
+        @descendant_filtered_examples ||= filtered_examples + children.inject([]) { |a, e| a + e.descendant_filtered_examples }
       end
 
       # @private
@@ -386,12 +388,12 @@ module RSpec
 
       # @private
       def self.descendants
-        @_descendants ||= [self] + children.inject([]) {|list, c| list + c.descendants}
+        @_descendants ||= [self] + children.inject([]) { |a, e| a + e.descendants }
       end
 
       ## @private
       def self.parent_groups
-        @parent_groups ||= ancestors.select {|a| a < RSpec::Core::ExampleGroup}
+        @parent_groups ||= ancestors.select { |a| a < RSpec::Core::ExampleGroup }
       end
 
       # @private
@@ -404,7 +406,9 @@ module RSpec
         unless defined?(@@example_groups_configured)
           RSpec.configuration.configure_mock_framework
           RSpec.configuration.configure_expectation_framework
+          # rubocop:disable Style/ClassVars
           @@example_groups_configured = true
+          # rubocop:enable Style/ClassVars
         end
       end
 
@@ -417,9 +421,9 @@ module RSpec
       def self.store_before_context_ivars(example_group_instance)
         return if example_group_instance.instance_variables.empty?
 
-        example_group_instance.instance_variables.each { |ivar|
+        example_group_instance.instance_variables.each do |ivar|
           before_context_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
-        }
+        end
       end
 
       # @private
@@ -460,10 +464,10 @@ module RSpec
           results_for_descendants = ordering_strategy.order(children).map { |child| child.run(reporter) }.all?
           result_for_this_group && results_for_descendants
         rescue Pending::SkipDeclaredInExample => ex
-          for_filtered_examples(reporter) {|example| example.skip_with_exception(reporter, ex) }
+          for_filtered_examples(reporter) { |example| example.skip_with_exception(reporter, ex) }
         rescue Exception => ex
           RSpec.world.wants_to_quit = true if fail_fast?
-          for_filtered_examples(reporter) {|example| example.fail_with_exception(reporter, ex) }
+          for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
         ensure
           run_after_context_hooks(new)
           before_context_ivars.clear
@@ -529,8 +533,8 @@ module RSpec
       # @private
       def self.declaration_line_numbers
         @declaration_line_numbers ||= [metadata[:line_number]] +
-          examples.collect {|e| e.metadata[:line_number]} +
-          children.inject([]) {|l,c| l + c.declaration_line_numbers}
+          examples.map { |e| e.metadata[:line_number] } +
+          children.inject([]) { |a, e| a + e.declaration_line_numbers }
       end
 
       # @private
@@ -540,7 +544,7 @@ module RSpec
 
       # @private
       def self.set_ivars(instance, ivars)
-        ivars.each {|name, value| instance.instance_variable_set(name, value)}
+        ivars.each { |name, value| instance.instance_variable_set(name, value) }
       end
 
       # @private
@@ -559,7 +563,10 @@ module RSpec
         # This will fail if no block is provided, which is effectively the
         # same as failing the example so it will be marked correctly as
         # pending.
-        callback = Proc.new { pending(reason); instance_exec(&block) }
+        callback = Proc.new do
+          pending(reason)
+          instance_exec(&block)
+        end
 
         return options, callback
       end
@@ -599,7 +606,7 @@ module RSpec
 
       # convert to CamelCase
       name = ' ' + group.description
-      name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) { $1.upcase }
+      name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) { Regexp.last_match[1].upcase }
 
       name.lstrip!         # Remove leading whitespace
       name.gsub!(/\W/, '') # JRuby, RBX and others don't like non-ascii in const names
@@ -621,4 +628,3 @@ module RSpec
     end
   end
 end
-

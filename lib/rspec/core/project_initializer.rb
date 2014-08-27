@@ -10,7 +10,7 @@ module RSpec
       DOT_RSPEC_FILE = '.rspec'
       SPEC_HELPER_FILE =  'spec/spec_helper.rb'
 
-      def initialize(opts = {})
+      def initialize(opts={})
         @destination = opts.fetch(:destination, Dir.getwd)
         @stream = opts.fetch(:report_stream, $stdout)
         @template_path = opts.fetch(:template_path) do
