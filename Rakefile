@@ -23,8 +23,6 @@ namespace :spec do
   end
 end
 
-require 'rubocop/rake_task'
-
 desc 'Run RuboCop on the lib directory'
 task :rubocop do
   sh 'bundle exec rubocop lib'
