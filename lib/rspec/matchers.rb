@@ -958,7 +958,9 @@ module RSpec
       obj.respond_to?(:failure_message_for_should) # support legacy matchers
     end
 
-    ::RSpec::Support.register_matcher_definition(&method(:is_a_matcher?))
+    ::RSpec::Support.register_matcher_definition do |obj|
+      is_a_matcher?(obj)
+    end
 
     # @api private
     def self.is_a_describable_matcher?(obj)

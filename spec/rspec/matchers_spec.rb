@@ -34,6 +34,25 @@ module RSpec
       it 'is registered with RSpec::Support' do
         expect(RSpec::Support.is_a_matcher?(be_even)).to eq(true)
       end
+
+      it 'does not match a multi-element array' do
+        # our original implementation regsitered the matcher definition as
+        # `&RSpec::Matchers.method(:is_a_matcher?)`, which has a bug
+        # on 1.8.7:
+        #
+        # irb(main):001:0> def foo(x); end
+        # => nil
+        # irb(main):002:0> method(:foo).call([1, 2, 3])
+        # => nil
+        # irb(main):003:0> method(:foo).to_proc.call([1, 2, 3])
+        # ArgumentError: wrong number of arguments (3 for 1)
+        #   from (irb):1:in `foo'
+        #   from (irb):1:in `to_proc'
+        #   from (irb):3:in `call'
+        #
+        # This spec guards against a regression for that case.
+        expect(RSpec::Support.is_a_matcher?([1, 2, 3])).to eq(false)
+      end
     end
 
     RSpec.describe "built in matchers" do
