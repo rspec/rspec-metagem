@@ -52,8 +52,8 @@ Bug Fixes:
   symlinks properly. (Myron Marston, #1672)
 * Change how we assign constant names to example group classes so that
   it avoids a problem with `describe "Core"`. (Daniela Wellisz, #1679)
-* Handle rendering exceptions that are encoded differently to the original
-  spec file.  (Jon Rowe, #1681)
+* Handle rendering exceptions that have a different encoding than that
+  of their original source file. (Jon Rowe, #1681)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...v3.0.4)
