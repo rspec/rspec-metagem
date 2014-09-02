@@ -124,12 +124,12 @@ module RSpec
           # TODO: consider deprecating support for this and removing it in RSpec 4.
           pattern.shellescape
         else
-          "--pattern '#{pattern}'"
+          "--pattern #{pattern.shellescape}"
         end
       end
 
       def file_exclusion_specification
-        " --exclude-pattern '#{exclude_pattern}'" if exclude_pattern
+        " --exclude-pattern #{exclude_pattern.shellescape}" if exclude_pattern
       end
 
       def spec_command
