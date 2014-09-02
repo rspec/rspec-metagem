@@ -114,6 +114,15 @@ module RSpec
       def file_inclusion_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC']].sort
+        elsif File.directory?(pattern)
+          # The provided pattern is a directory, not a file glob. Historically, this
+          # worked because `FileList[some_dir]` would return `[some_dir]` which would
+          # get passed to `rspec` and cause it to load files under that dir that match
+          # the default pattern. To continue working, we need to pass it on to `rspec`
+          # directly rather than treating it as a `--pattern` option.
+          #
+          # TODO: consider deprecating support for this and removing it in RSpec 4.
+          pattern.shellescape
         else
           "--pattern '#{pattern}'"
         end
