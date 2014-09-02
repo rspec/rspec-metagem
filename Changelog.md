@@ -54,6 +54,8 @@ Bug Fixes:
   it avoids a problem with `describe "Core"`. (Daniela Wellisz, #1679)
 * Handle rendering exceptions that have a different encoding than that
   of their original source file. (Jon Rowe, #1681)
+* Allow access to message_lines without colour for failed examples even
+  when they're part of a shared example group. (tomykaira, #1689)
 
 ### 3.0.4 / 2014-08-14
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.3...v3.0.4)
