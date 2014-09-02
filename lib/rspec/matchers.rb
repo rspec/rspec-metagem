@@ -591,12 +591,9 @@ module RSpec
     # @example
     #
     #   expect(person).to have_attributes(:color => "red")
-    #
-    # rubocop:disable Style/PredicateName
     def have_attributes(expected)
       BuiltIn::HaveAttributes.new(expected)
     end
-    # rubocop:enable Style/PredicateName
     alias_matcher :an_object_having_attributes, :have_attributes
 
     # Passes if actual includes expected. This works for
