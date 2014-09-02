@@ -17,7 +17,7 @@ module RSpec
     #
     # Example group bodies (e.g. `describe` or `context` blocks) are evaluated
     # in the context of a new subclass of ExampleGroup. Individual examples are
-    # evalutaed in the context of an instance of the specific ExampleGroup subclass
+    # evaluated in the context of an instance of the specific ExampleGroup subclass
     # to which they belong.
     #
     # Besides the class methods defined here, there are other interesting macros
