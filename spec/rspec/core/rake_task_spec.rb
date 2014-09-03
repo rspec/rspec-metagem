@@ -180,6 +180,13 @@ module RSpec::Core
       end
     end
 
+    context "with a pattern value that is an existing file, not a file glob" do
+      it "loads the spec file" do
+        task.pattern = "./spec/rspec/core/resources/acceptance/foo_spec.rb"
+        expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+      end
+    end
+
     context "without an exclude_pattern" do
       it 'does not pass the --exclude-pattern option' do
         expect(spec_command).not_to include("exclude")

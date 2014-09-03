@@ -114,8 +114,8 @@ module RSpec
       def file_inclusion_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC']].sort
-        elsif File.directory?(pattern)
-          # The provided pattern is a directory, not a file glob. Historically, this
+        elsif File.exist?(pattern)
+          # The provided pattern is a directory or a file, not a file glob. Historically, this
           # worked because `FileList[some_dir]` would return `[some_dir]` which would
           # get passed to `rspec` and cause it to load files under that dir that match
           # the default pattern. To continue working, we need to pass it on to `rspec`
