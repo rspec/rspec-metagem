@@ -58,7 +58,12 @@ module RSpec::Core
     context "with pattern" do
       it "adds the pattern" do
         task.pattern = "complex_pattern"
-        expect(spec_command).to include(" --pattern 'complex_pattern'")
+        expect(spec_command).to include(" --pattern complex_pattern")
+      end
+
+      it "shellescapes the pattern as necessary" do
+        task.pattern = "foo'bar"
+        expect(spec_command).to include(" --pattern foo\\'bar")
       end
     end
 
@@ -168,6 +173,20 @@ module RSpec::Core
       end
     end
 
+    context "with a pattern value that is an existing directory, not a file glob" do
+      it "loads the spec files in that directory" do
+        task.pattern = "./spec/rspec/core/resources/acceptance"
+        expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+      end
+    end
+
+    context "with a pattern value that is an existing file, not a file glob" do
+      it "loads the spec file" do
+        task.pattern = "./spec/rspec/core/resources/acceptance/foo_spec.rb"
+        expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+      end
+    end
+
     context "without an exclude_pattern" do
       it 'does not pass the --exclude-pattern option' do
         expect(spec_command).not_to include("exclude")
@@ -195,6 +214,11 @@ module RSpec::Core
         FileUtils.mkdir_p(File.join(spec_dir, "unit"))
 
         make_files_in_dir "acceptance"
+      end
+
+      it "shellescapes the pattern as necessary" do
+        task.exclude_pattern = "foo'bar"
+        expect(spec_command).to include(" --exclude-pattern foo\\'bar")
       end
 
       it "it does not load matching files" do

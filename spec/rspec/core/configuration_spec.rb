@@ -486,7 +486,7 @@ module RSpec::Core
       context "with default pattern" do
         it "loads files named _spec.rb" do
           assign_files_or_directories_to_run "spec/rspec/core/resources"
-          expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
+          expect(config.files_to_run).to contain_exactly("spec/rspec/core/resources/a_spec.rb", "spec/rspec/core/resources/acceptance/foo_spec.rb")
         end
 
         it "loads files in Windows", :if => RSpec.world.windows_os? do
