@@ -13,6 +13,7 @@
   - end_with.feature
   - exist.feature
   - have.feature
+  - have_attributes.feature
   - include.feature
   - match.feature
   - operators.feature

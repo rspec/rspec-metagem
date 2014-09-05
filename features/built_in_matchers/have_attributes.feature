@@ -1,4 +1,4 @@
-Feature: have_attributes matcher
+Feature: `have_attributes` matcher
 
   Use the have_attributes matcher to specify that
   an object's attributes match the expected attributes:
