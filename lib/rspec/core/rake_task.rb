@@ -114,15 +114,25 @@ module RSpec
       def file_inclusion_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC']].sort
-        elsif File.exist?(pattern)
-          # The provided pattern is a directory or a file, not a file glob. Historically, this
-          # worked because `FileList[some_dir]` would return `[some_dir]` which would
-          # get passed to `rspec` and cause it to load files under that dir that match
-          # the default pattern. To continue working, we need to pass it on to `rspec`
-          # directly rather than treating it as a `--pattern` option.
+        elsif Array === pattern || File.exist?(pattern)
+          # Before RSpec 3.1, we used `FileList` to get the list of matched files, and
+          # then pass that along to the `rspec` command. Starting with 3.1, we prefer to
+          # pass along the pattern as-is to the `rspec` command, for 3 reasons:
+          #
+          #   * It's *much* less verbose to pass one `--pattern` option than a long list of files.
+          #   * It ensures `task.pattern` and `--pattern` have the same behavior.
+          #   * It fixes a bug, where `task.pattern = pattern_that_matches_no_files` would run
+          #     *all* files because it would cause no pattern or file args to get passed to `rspec`,
+          #     which causes all files to get run.
+          #
+          # However, `FileList` is *far* more flexible than the `--pattern` option. Specifically, it
+          # supports individual files and directories, as well as arrays of files, directories and globs.
+          #
+          # For backwards compatibility, we have to fall back to using FileList if the user has passed
+          # a `pattern` option that will not work with `--pattern`.
           #
           # TODO: consider deprecating support for this and removing it in RSpec 4.
-          pattern.shellescape
+          FileList[pattern].sort.map(&:shellescape)
         else
           "--pattern #{pattern.shellescape}"
         end

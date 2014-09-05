@@ -166,24 +166,60 @@ module RSpec::Core
       specify_consistent_ordering_of_files_to_run('a/*.rb', Dir)
     end
 
-    context "with a pattern that matches no files" do
-      it "runs nothing" do
-        task.pattern = 'a/*.no_match'
-        expect(loaded_files).to eq([])
+    context "with a pattern value" do
+      context "that matches no files" do
+        it "runs nothing" do
+          task.pattern = 'a/*.no_match'
+          expect(loaded_files).to eq([])
+        end
       end
-    end
 
-    context "with a pattern value that is an existing directory, not a file glob" do
-      it "loads the spec files in that directory" do
-        task.pattern = "./spec/rspec/core/resources/acceptance"
-        expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+      context "that is an existing directory, not a file glob" do
+        it "loads the spec files in that directory" do
+          task.pattern = "./spec/rspec/core/resources/acceptance"
+          expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+        end
       end
-    end
 
-    context "with a pattern value that is an existing file, not a file glob" do
-      it "loads the spec file" do
-        task.pattern = "./spec/rspec/core/resources/acceptance/foo_spec.rb"
-        expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+      context "that is an existing file, not a file glob" do
+        it "loads the spec file" do
+          task.pattern = "./spec/rspec/core/resources/acceptance/foo_spec.rb"
+          expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+        end
+      end
+
+      context "that is an array of existing files or directories, not a file glob" do
+        it "loads the specified spec files, and spec files from the specified directories" do
+          task.pattern = ["./spec/rspec/core/resources/acceptance", "./spec/rspec/core/resources/a_bar.rb"]
+
+          expect(loaded_files).to contain_exactly(
+            "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+            "./spec/rspec/core/resources/a_bar.rb"
+          )
+        end
+      end
+
+      context "that is an array of globs relative to the current working dir" do
+        it "loads spec files that match any of the globs" do
+          task.pattern = ["./spec/rspec/core/resources/acceptance/*_spec.rb",
+                          "./spec/rspec/core/resources/*_bar.rb"]
+
+          expect(loaded_files).to contain_exactly(
+            "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+            "./spec/rspec/core/resources/a_bar.rb"
+          )
+        end
+      end
+
+      context "that is a mixture of file globs and individual files or dirs" do
+        it "loads all specified or matching files" do
+          task.pattern = ["./spec/rspec/core/resources/acceptance/*_spec.rb", "./spec/rspec/core/resources/a_bar.rb"]
+
+          expect(loaded_files).to contain_exactly(
+            "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+            "./spec/rspec/core/resources/a_bar.rb"
+          )
+        end
       end
     end
 

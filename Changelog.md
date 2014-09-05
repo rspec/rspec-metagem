@@ -1,3 +1,13 @@
+### 3.1.1 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.0...3-1-maintenance)
+
+Bug Fixes:
+
+* Fix a regression in rake task pattern handling, so that `rake_task.pattern = array`
+  works again. While we never intended to support array values (or even knew that worked!),
+  the implementation from 3.0 and earlier used `FileList` internally, which allows arrays.
+  The fix restores the old behavior. (Myron Marston, #1694)
+
 ### 3.1.0 / 2014-09-04
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.0.4...v3.1.0)
 
