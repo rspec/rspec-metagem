@@ -190,7 +190,8 @@ module RSpec::Core
 
       context "that is an array of existing files or directories, not a file glob" do
         it "loads the specified spec files, and spec files from the specified directories" do
-          task.pattern = ["./spec/rspec/core/resources/acceptance", "./spec/rspec/core/resources/a_bar.rb"]
+          task.pattern = ["./spec/rspec/core/resources/acceptance",
+                          "./spec/rspec/core/resources/a_bar.rb"]
 
           expect(loaded_files).to contain_exactly(
             "./spec/rspec/core/resources/acceptance/foo_spec.rb",
@@ -221,7 +222,8 @@ module RSpec::Core
 
       context "that is a mixture of file globs and individual files or dirs" do
         it "loads all specified or matching files" do
-          task.pattern = ["./spec/rspec/core/resources/acceptance/*_spec.rb", "./spec/rspec/core/resources/a_bar.rb"]
+          task.pattern = ["./spec/rspec/core/resources/acceptance/*_spec.rb",
+                          "./spec/rspec/core/resources/a_bar.rb"]
 
           expect(loaded_files).to contain_exactly(
             "./spec/rspec/core/resources/acceptance/foo_spec.rb",
