@@ -441,6 +441,12 @@ module RSpec::Core
         expect(config.files_to_run).to eq(["spec/rspec/core/resources/a_spec.rb"])
       end
 
+      it "supports patterns starting with ./" do
+        config.pattern = "./spec/**/a_spec.rb"
+        assign_files_or_directories_to_run "spec"
+        expect(config.files_to_run).to eq(["./spec/rspec/core/resources/a_spec.rb"])
+      end
+
       it 'reloads when `files_or_directories_to_run` is reassigned' do
         config.pattern = "spec/**/a_spec.rb"
         config.files_or_directories_to_run = "empty_dir"

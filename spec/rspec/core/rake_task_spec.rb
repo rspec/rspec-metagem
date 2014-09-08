@@ -199,6 +199,14 @@ module RSpec::Core
         end
       end
 
+      # https://github.com/rspec/rspec-core/issues/1695
+      context "that is a single glob that starts with ./" do
+        it "loads the spec files that match the glob" do
+          task.pattern = "./spec/rspec/core/resources/acceptance/**/*_spec.rb"
+          expect(loaded_files).to eq(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+        end
+      end
+
       context "that is an array of globs relative to the current working dir" do
         it "loads spec files that match any of the globs" do
           task.pattern = ["./spec/rspec/core/resources/acceptance/*_spec.rb",
