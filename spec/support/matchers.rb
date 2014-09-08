@@ -87,3 +87,17 @@ RSpec::Matchers.define :be_skipped_with do |message|
     "expected: example skipped with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
   end
 end
+
+RSpec::Matchers.define :contain_files do |*expected_files|
+  contain_exactly_matcher = RSpec::Matchers::BuiltIn::ContainExactly.new(expected_files.flatten.map { |f| File.expand_path(f) })
+
+  match do |actual_files|
+    files = actual_files.map { |f| File.expand_path(f) }
+    contain_exactly_matcher.matches?(files)
+  end
+
+  failure_message { contain_exactly_matcher.failure_message }
+  failure_message_when_negated { contain_exactly_matcher.failure_message_when_negated }
+end
+
+RSpec::Matchers.alias_matcher :a_file_collection, :contain_files

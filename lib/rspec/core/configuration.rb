@@ -1337,7 +1337,8 @@ module RSpec
 
       def get_matching_files(path, pattern)
         stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
-        pattern =~ /^(\.\/)?#{Regexp.escape path}/ ? Dir[stripped] : Dir["#{path}/#{stripped}"]
+        files = (pattern =~ /^(\.\/)?#{Regexp.escape path}/) ? Dir[stripped] : Dir["#{path}/#{stripped}"]
+        files.map { |file| File.expand_path(file) }
       end
 
       def extract_location(path)

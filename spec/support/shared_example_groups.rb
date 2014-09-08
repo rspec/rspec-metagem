@@ -26,7 +26,7 @@ RSpec.shared_examples_for "handling symlinked directories when loading spec file
 
     FileUtils.ln_s bars_dir, File.join(project_dir, "spec/bars")
 
-    expect(loaded_files).to contain_exactly(
+    expect(loaded_files).to contain_files(
       "spec/bars/bar_spec.rb",
       "spec/foos/foo_spec.rb"
     )
@@ -38,6 +38,6 @@ RSpec.shared_examples_for "handling symlinked directories when loading spec file
     FileUtils.touch("subtrees/DD/spec/dd_foo_spec.rb")
     FileUtils.ln_s(File.join(project_dir, "subtrees/DD/spec"), "spec/lib/DD")
 
-    expect(loaded_files).to contain_exactly("spec/lib/DD/dd_foo_spec.rb")
+    expect(loaded_files).to contain_files("spec/lib/DD/dd_foo_spec.rb")
   end
 end
