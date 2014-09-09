@@ -43,6 +43,35 @@ RSpec.describe "a matcher defined using the matcher DSL" do
     expect(4).to be_just_like(4)
   end
 
+
+  describe '#block_param' do
+    before(:context) do
+      RSpec::Matchers.define :be_lazily_equal_to do
+        match { actual == block_param.call }
+
+        description do
+          "be lazily equal to #{block_param.call}"
+        end
+      end
+    end
+
+    it "it is used in a passing condition" do
+      expect(1).to be_lazily_equal_to { 1 }
+    end
+
+    it "it is used in a failing condition" do
+      expect { expect(1).to be_lazily_equal_to { 2 } }.to fail_with(/be lazily equal to 2/)
+    end
+  end
+
+  it "warns when passing block to the block of define", :if => (RUBY_VERSION.to_f > 1.8) do
+    expect(RSpec).to receive(:warning).with(/a_block.*be_warning.*block_param/)
+
+    RSpec::Matchers.define :be_warning do |&a_block|
+      match { a_block }
+    end
+  end
+
   describe "#respond_to?" do
     it "returns true for methods in example scope" do
       RSpec::Matchers::define(:matcher_c) {}
