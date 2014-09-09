@@ -65,7 +65,7 @@ RSpec.describe "a matcher defined using the matcher DSL" do
   end
 
   it "warns when passing block to the block of define", :if => (RUBY_VERSION.to_f > 1.8) do
-    expect(RSpec).to receive(:warning).with(/a_block.*be_warning.*block_arg/)
+    expect(RSpec).to receive(:warning).with(/be_warning.*a_block.*block_arg/)
 
     RSpec::Matchers.define :be_warning do |&a_block|
       match { a_block }

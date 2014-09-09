@@ -18,7 +18,9 @@ module RSpec
         def warn_about_block_args(name, declarations)
           declarations.parameters.each do |type, arg_name|
             next unless type == :block
-            RSpec.warning("#{arg_name} cannot be provided to #{name} that way. Please use the `block_arg` method.")
+            RSpec.warning("Your `#{name}` custom matcher receives a block argument (`#{arg_name}`), " \
+                          "but due to limitations in ruby, RSpec cannot provide the block. Instead, " \
+                          "use the `block_arg` method to access the block")
           end
         end
       else
