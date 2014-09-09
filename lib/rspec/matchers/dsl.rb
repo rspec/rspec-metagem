@@ -5,9 +5,9 @@ module RSpec
       # Defines a custom matcher.
       # @see RSpec::Matchers
       def define(name, &declarations)
-        warn_about_block_parameters(name, declarations)
-        define_method name do |*expected, &block_param|
-          RSpec::Matchers::DSL::Matcher.new(name, declarations, self, *expected, &block_param)
+        warn_about_block_args(name, declarations)
+        define_method name do |*expected, &block_arg|
+          RSpec::Matchers::DSL::Matcher.new(name, declarations, self, *expected, &block_arg)
         end
       end
       alias_method :matcher, :define
@@ -15,14 +15,16 @@ module RSpec
     private
 
       if Proc.method_defined?(:parameters)
-        def warn_about_block_parameters(name, declarations)
+        def warn_about_block_args(name, declarations)
           declarations.parameters.each do |type, arg_name|
             next unless type == :block
-            RSpec.warning("#{arg_name} cannot be provided to #{name} that way. Please use the `block_param` method.")
+            RSpec.warning("Your `#{name}` custom matcher receives a block argument (`#{arg_name}`), " \
+                          "but due to limitations in ruby, RSpec cannot provide the block. Instead, " \
+                          "use the `block_arg` method to access the block")
           end
         end
       else
-        def warn_about_block_parameters(*)
+        def warn_about_block_args(*)
           # There's no way to detect block params on 1.8 since the method reflection APIs don't expose it
         end
       end
@@ -334,16 +336,16 @@ module RSpec
         attr_reader :rescued_exception
 
         # The block parameter used in the expectation
-        attr_reader :block_param
+        attr_reader :block_arg
 
         # @api private
-        def initialize(name, declarations, matcher_execution_context, *expected, &block_param)
+        def initialize(name, declarations, matcher_execution_context, *expected, &block_arg)
           @name     = name
           @actual   = nil
           @expected_as_array = expected
           @matcher_execution_context = matcher_execution_context
           @chained_method_clauses = []
-          @block_param = block_param
+          @block_arg = block_arg
 
           class << self
             # See `Macros#define_user_override` above, for an explanation.

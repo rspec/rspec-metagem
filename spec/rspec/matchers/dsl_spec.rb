@@ -44,13 +44,13 @@ RSpec.describe "a matcher defined using the matcher DSL" do
   end
 
 
-  describe '#block_param' do
+  describe '#block_arg' do
     before(:context) do
       RSpec::Matchers.define :be_lazily_equal_to do
-        match { actual == block_param.call }
+        match { actual == block_arg.call }
 
         description do
-          "be lazily equal to #{block_param.call}"
+          "be lazily equal to #{block_arg.call}"
         end
       end
     end
@@ -65,7 +65,7 @@ RSpec.describe "a matcher defined using the matcher DSL" do
   end
 
   it "warns when passing block to the block of define", :if => (RUBY_VERSION.to_f > 1.8) do
-    expect(RSpec).to receive(:warning).with(/a_block.*be_warning.*block_param/)
+    expect(RSpec).to receive(:warning).with(/be_warning.*a_block.*block_arg/)
 
     RSpec::Matchers.define :be_warning do |&a_block|
       match { a_block }
