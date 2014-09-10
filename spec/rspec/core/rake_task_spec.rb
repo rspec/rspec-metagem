@@ -231,6 +231,17 @@ module RSpec::Core
           )
         end
       end
+
+      context "that is a FileList" do
+        it "loads the files from the FileList" do
+          task.pattern = FileList["spec/rspec/core/resources/**/*_spec.rb"]
+
+          expect(loaded_files).to contain_exactly(
+            "spec/rspec/core/resources/a_spec.rb",
+            "spec/rspec/core/resources/acceptance/foo_spec.rb"
+          )
+        end
+      end
     end
 
     context "without an exclude_pattern" do

@@ -114,7 +114,9 @@ module RSpec
       def file_inclusion_specification
         if ENV['SPEC']
           FileList[ ENV['SPEC']].sort
-        elsif Array === pattern || File.exist?(pattern)
+        elsif String === pattern && !File.exist?(pattern)
+          "--pattern #{pattern.shellescape}"
+        else
           # Before RSpec 3.1, we used `FileList` to get the list of matched files, and
           # then pass that along to the `rspec` command. Starting with 3.1, we prefer to
           # pass along the pattern as-is to the `rspec` command, for 3 reasons:
@@ -126,15 +128,14 @@ module RSpec
           #     which causes all files to get run.
           #
           # However, `FileList` is *far* more flexible than the `--pattern` option. Specifically, it
-          # supports individual files and directories, as well as arrays of files, directories and globs.
+          # supports individual files and directories, as well as arrays of files, directories and globs,
+          # as well as other `FileList` objects.
           #
           # For backwards compatibility, we have to fall back to using FileList if the user has passed
           # a `pattern` option that will not work with `--pattern`.
           #
           # TODO: consider deprecating support for this and removing it in RSpec 4.
           FileList[pattern].sort.map(&:shellescape)
-        else
-          "--pattern #{pattern.shellescape}"
         end
       end
 
