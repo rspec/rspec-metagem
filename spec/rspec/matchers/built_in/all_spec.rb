@@ -193,7 +193,7 @@ module RSpec::Matchers::BuiltIn
     context 'when the actual data does not include enumerable but defines #each_with_index' do
       it 'can pass' do
         obj = Object.new
-        def obj.each_with_index(&block); [5].each_with_index(block); end
+        def obj.each_with_index(&block); [5].each_with_index { |o,i| yield(o,i) }; end
         expect(obj).to all(be_a(Integer))
       end
     end
