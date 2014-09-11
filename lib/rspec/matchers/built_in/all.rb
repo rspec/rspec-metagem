@@ -21,8 +21,8 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          unless enumerable?
-            return "#{improve_hash_formatting(super)}, but was not enumerable"
+          unless iterable?
+            return "#{improve_hash_formatting(super)}, but was not iterable"
           end
 
           all_messages = [improve_hash_formatting(super)]
@@ -41,7 +41,7 @@ module RSpec
       private
 
         def match(_expected, _actual)
-          return false unless enumerable?
+          return false unless iterable?
 
           index_failed_objects
           failed_objects.empty?
@@ -76,7 +76,7 @@ module RSpec
           super
         end
 
-        def enumerable?
+        def iterable?
           @actual.respond_to?(:each_with_index)
         end
       end
