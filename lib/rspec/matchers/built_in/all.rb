@@ -77,7 +77,7 @@ module RSpec
         end
 
         def enumerable?
-          Enumerable === @actual
+          @actual.respond_to?(:each_with_index)
         end
       end
     end
