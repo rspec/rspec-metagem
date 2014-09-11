@@ -1,9 +1,6 @@
 # This is borrowed (slightly modified) from Scott Taylor's
 # project_path project:
 #   http://github.com/smtlaissezfaire/project_path
-
-require 'pathname'
-
 module RSpec
   module Core
     # @private
@@ -29,8 +26,19 @@ module RSpec
       end
 
       def ascend_until
-        Pathname(File.expand_path('.')).ascend do |path|
+        fs = File::SEPARATOR
+        escaped_slash = "\\#{fs}"
+        special = "_RSPEC_ESCAPED_SLASH_"
+        project_path = File.expand_path(".")
+        parts = project_path.gsub(escaped_slash, special).squeeze(fs).split(fs).map do |x|
+          x.gsub(special, escaped_slash)
+        end
+
+        until parts.empty?
+          path = parts.join(fs)
+          path = fs if path == ""
           return path if yield(path)
+          parts.pop
         end
       end
 
