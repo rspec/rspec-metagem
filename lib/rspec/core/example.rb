@@ -82,6 +82,15 @@ module RSpec
         RSpec.configuration.format_docstrings_block.call(description)
       end
 
+      # Returns a description of the example that always includes the location.
+      def inspect_output
+        inspect_output = "\"#{description}\""
+        unless metadata[:description].to_s.empty?
+          inspect_output << " (#{location})"
+        end
+        inspect_output
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this
@@ -170,7 +179,7 @@ module RSpec
         rescue Exception => e
           set_exception(e)
         ensure
-          @example_group_instance.instance_variables.each do |ivar|
+          ExampleGroup.instance_variables_for_example(@example_group_instance).each do |ivar|
             @example_group_instance.instance_variable_set(ivar, nil)
           end
           @example_group_instance = nil

@@ -1604,5 +1604,97 @@ module RSpec::Core
         end
       }.to raise_error(/not allowed/)
     end
+
+    describe 'inspect output' do
+      context 'when there is no inspect output provided' do
+        it "uses '(no description provided)' instead" do
+          expect(ExampleGroup.new.inspect).to eq('#<RSpec::Core::ExampleGroup (no description provided)>')
+        end
+      end
+
+      context 'when an example has a description' do
+        it 'includes description and location' do
+          an_example = nil
+
+          line = __LINE__ + 2
+          group = ExampleGroup.describe 'SomeClass1' do
+            example 'an example' do
+              an_example = self
+            end
+          end
+
+          group.run
+
+          path = RSpec::Core::Metadata.relative_path(__FILE__)
+          expect(an_example.inspect).to eq("#<RSpec::ExampleGroups::SomeClass1 \"an example\" (#{path}:#{line})>")
+        end
+      end
+
+      context 'when an example does not have a description' do
+        it 'includes fallback description' do
+          an_example = nil
+
+          line = __LINE__ + 2
+          group = ExampleGroup.describe 'SomeClass2' do
+            example do
+              an_example = self
+            end
+          end
+
+          group.run
+
+          path = RSpec::Core::Metadata.relative_path(__FILE__)
+          expect(an_example.inspect).to eq("#<RSpec::ExampleGroups::SomeClass2 \"example at #{path}:#{line}\">")
+        end
+      end
+
+      it 'handles before context hooks' do
+        a_before_hook = nil
+
+        group = ExampleGroup.describe 'SomeClass3' do
+          before(:context) do
+            a_before_hook = self
+          end
+
+          example {}
+        end
+
+        group.run
+        expect(a_before_hook.inspect).to eq("#<RSpec::ExampleGroups::SomeClass3 before(:context) hook>")
+      end
+
+      it 'handles after context hooks' do
+        an_after_hook = nil
+
+        group = ExampleGroup.describe 'SomeClass4' do
+          after(:context) do
+            an_after_hook = self
+          end
+
+          example {}
+        end
+
+        group.run
+        expect(an_after_hook.inspect).to eq("#<RSpec::ExampleGroups::SomeClass4 after(:context) hook>")
+      end
+
+      it "does not pollute an example's `inspect` output with the inspect ivar from `before(:context)`" do
+        inspect_output = nil
+
+        line = __LINE__ + 2
+        group = ExampleGroup.describe do
+          example do
+            inspect_output = inspect
+          end
+
+          before(:context) {}
+        end
+
+        group.run
+
+        path = RSpec::Core::Metadata.relative_path(__FILE__)
+        expect(inspect_output).to end_with("\"example at #{path}:#{line}\">")
+      end
+    end
   end
 end
