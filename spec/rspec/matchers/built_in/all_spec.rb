@@ -180,13 +180,31 @@ module RSpec::Matchers::BuiltIn
       end
     end
 
-    context 'when the actual data is not enumerable' do
+    context 'when the actual data does not define #each_with_index' do
       let(:actual) { 5 }
 
       it 'returns a failure message' do
         expect {
           expect(actual).to all(be_a(String))
-        }.to fail_with("expected #{actual.inspect} to all be a kind of String, but was not enumerable")
+        }.to fail_with("expected #{actual.inspect} to all be a kind of String, but was not iterable")
+      end
+    end
+
+    context 'when the actual data does not include enumerable but defines #each_with_index' do
+      let(:actual) do
+        obj = Object.new
+        def obj.each_with_index(&block); [5].each_with_index { |o,i| yield(o,i) }; end
+        obj
+      end
+
+      it 'passes properly' do
+        expect(actual).to all(be_a(Integer))
+      end
+
+      it 'fails properly' do
+        expect {
+          expect(actual).to all(be_even)
+        }.to fail_with(/to all be even/)
       end
     end
 
