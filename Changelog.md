@@ -1,9 +1,24 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.2...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.3...master)
 
 Enhancements:
 
 * Improve the `inspect` output of example groups. (Mike Dalton, #1687)
+
+### 3.1.3 / 2014-09-15
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.2...v3.1.3)
+
+Bug Fixes:
+
+* Fix yet another regression in rake task pattern handling, to allow
+  `task.pattern = FileList["..."]` to work. That was never intended
+  to be supported but accidentally worked in 3.0 and earlier.
+  (Myron Marston, #1701)
+* Fix pattern handling so that files are normalized to absolute paths
+  before subtracting the `--exclude-pattern` matched files from the
+  `--pattern` matched files so that it still works even if the patterns
+  are in slightly different forms (e.g. one starting with `./`).
+  (Christian Nelson, #1698)
 
 ### 3.1.2 / 2014-09-08
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.1...v3.1.2)
