@@ -195,10 +195,11 @@ module RSpec
         def failure_reason
           return " but was not a block" unless @probe.has_block?
           return '' unless @expected_yields_count
-          " #{human_readable_expecation_type}#{human_readable_count}"
+          " #{human_readable_expectation_type}#{human_readable_count(@expected_yields_count)}" \
+          " but yielded #{human_readable_count(@probe.num_yields)}"
         end
 
-        def human_readable_expecation_type
+        def human_readable_expectation_type
           case @expectation_type
           when :<= then 'at most '
           when :>= then 'at least '
@@ -206,11 +207,11 @@ module RSpec
           end
         end
 
-        def human_readable_count
-          case @expected_yields_count
+        def human_readable_count(count)
+          case count
           when 1 then "once"
           when 2 then "twice"
-          else "#{@expected_yields_count} times"
+          else "#{count} times"
           end
         end
       end

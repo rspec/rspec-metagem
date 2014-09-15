@@ -69,8 +69,12 @@ RSpec.describe "yield_control matcher" do
     context "with exact count" do
       it 'fails if the block yields wrong number of times' do
         expect {
+          expect { |b| [1, 2].each(&b) }.to yield_control.once
+        }.to fail_with(/expected given block to yield control once but yielded twice/)
+
+        expect {
           expect { |b| [1, 2, 3].each(&b) }.to yield_control.twice
-        }.to fail_with(/expected given block to yield control twice/)
+        }.to fail_with(/expected given block to yield control twice but yielded 3 times/)
 
         expect {
           expect { |b| [1, 2].each(&b) }.to yield_control.thrice

@@ -6,6 +6,8 @@ Enhancements:
 * Add `block_arg` method to custom matcher API, which allows you to
   access the block passed to a custom matcher, if there is one.
   (Mike Dalton, #645)
+* Provide more detail in failure message of `yield_control` matcher.
+  (Jon Rowe, #650)
 
 ### 3.1.1 / 2014-09-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.0...v3.1.1)
