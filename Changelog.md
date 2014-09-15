@@ -1,11 +1,20 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.0...master)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...master)
 
 Enhancements:
 
 * Add `block_arg` method to custom matcher API, which allows you to
   access the block passed to a custom matcher, if there is one.
   (Mike Dalton, #645)
+
+### 3.1.1 / 2014-09-15
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.0...v3.1.1)
+
+Bug Fixes:
+
+* Fix regression in `all` matcher in 3.1.0 that prevented it from
+  working on objects that are not `Enumerable` but do implement
+  `each_with_index` (such as an ActiveRecord proxy). (Jori Hardman, #647)
 
 ### 3.1.0 / 2014-09-04
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.0.4...v3.1.0)
