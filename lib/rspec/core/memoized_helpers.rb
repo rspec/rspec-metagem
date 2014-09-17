@@ -55,7 +55,7 @@ module RSpec
       def subject
         __memoized.fetch(:subject) do
           __memoized[:subject] = begin
-            described = described_class || self.class.description
+            described = described_class || self.class.metadata.fetch(:description_args).first
             Class === described ? described.new : described
           end
         end
