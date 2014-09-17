@@ -7,8 +7,17 @@ RSpec.describe RSpec do
     # Loading minitest issues warnings, so we put our fake minitest on the load
     # path to prevent the real minitest from being loaded.
     "$LOAD_PATH.unshift '#{fake_minitest}'", 'require "rspec/core"', 'RSpec::Core::Runner.disable_autorun!' do
-    if RUBY_VERSION == '1.9.2' || (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
-      before { pending "Not working on #{RUBY_DESCRIPTION}" }
+
+    pending_when = {
+      '1.9.2' => { :description => "issues no warnings when loaded" },
+      '1.8.7' => { :description => "issues no warnings when the spec files are loaded" },
+      '2.0.0' => { }
+    }
+
+    if RUBY_VERSION == '1.9.2' || RUBY_VERSION == '1.8.7' || (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
+      before(:example, pending_when.fetch(RUBY_VERSION)) do
+        pending "Not working on #{RUBY_DESCRIPTION}"
+      end
     end
   end
 
