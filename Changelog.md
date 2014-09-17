@@ -5,6 +5,12 @@ Enhancements:
 
 * Improve the `inspect` output of example groups. (Mike Dalton, #1687)
 
+Bugfixes:
+
+* Using `true`, `false` or `nil` with `describe` generated implicit subjects
+  now correctly returns the primitive rather than a string representation.
+  (Myron Marston, #1710)
+
 ### 3.1.3 / 2014-09-15
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.2...v3.1.3)
 
