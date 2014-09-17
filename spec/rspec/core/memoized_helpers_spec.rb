@@ -49,6 +49,24 @@ module RSpec::Core
         end
       end
 
+      describe "with true" do
+        it "returns `true`" do
+          expect(subject_value_for(true)).to eq(true)
+        end
+      end
+
+      describe "with false" do
+        it "returns `false`" do
+          expect(subject_value_for(false)).to eq(false)
+        end
+      end
+
+      describe "with nil" do
+        it "returns `nil`" do
+          expect(subject_value_for(nil)).to eq(nil)
+        end
+      end
+
       it "can be overriden and super'd to from a nested group" do
         outer_subject_value = inner_subject_value = nil
 
