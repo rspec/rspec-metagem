@@ -35,9 +35,10 @@ module RSpec::Core
         expect(make_backtrace_formatter.exclude?("#{Dir.getwd}/arbitrary")).to be false
       end
 
-      it "includes something in the current working directory even with a matching exclusion pattern" do
-        formatter = make_backtrace_formatter([/foo/])
-        expect(formatter.exclude? "#{Dir.getwd}/foo").to be false
+      it 'allows users to exclude their bundler vendor directory' do
+        formatter = make_backtrace_formatter([%r{/vendor/bundle/}])
+        vendored_gem_line = File.join(Dir.getwd, "vendor/bundle/gems/mygem-4.1.6/lib/my_gem:241")
+        expect(formatter.exclude? vendored_gem_line).to be true
       end
 
       context "when the exclusion list has been replaced" do
@@ -223,6 +224,30 @@ module RSpec::Core
           formatter.__send__(:backtrace_line, __FILE__)
           # on some rubies, this doesn't raise a SecurityError; this test just
           # assures that if it *does* raise an error, the error is caught inside
+        end
+      end
+    end
+
+    context "when the current directory matches one of the default exclusion patterns" do
+      include_context "isolated directory"
+
+      around do |ex|
+        FileUtils.mkdir_p("bin")
+        Dir.chdir("./bin", &ex)
+      end
+
+      let(:line) { File.join(Dir.getwd, "foo.rb:13") }
+
+      it 'does not exclude lines from files in the current directory' do
+        expect(make_backtrace_formatter.exclude? line).to be false
+      end
+
+      context "with inclusion_patterns cleared" do
+        it 'excludes lines from files in the current directory' do
+          formatter = make_backtrace_formatter
+          formatter.inclusion_patterns.clear
+
+          expect(formatter.exclude? line).to be true
         end
       end
     end

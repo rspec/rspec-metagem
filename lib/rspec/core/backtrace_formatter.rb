@@ -12,23 +12,22 @@ module RSpec
         patterns << "org/jruby/" if RUBY_PLATFORM == 'java'
         patterns.map! { |s| Regexp.new(s.gsub("/", File::SEPARATOR)) }
 
-        @system_exclusion_patterns = [Regexp.union(RSpec::CallerFilter::IGNORE_REGEX, *patterns)]
-        @exclusion_patterns = [] + @system_exclusion_patterns
-        @inclusion_patterns = [Regexp.new(Dir.getwd)]
+        @exclusion_patterns = [Regexp.union(RSpec::CallerFilter::IGNORE_REGEX, *patterns)]
+        @inclusion_patterns = []
+
+        return unless matches?(@exclusion_patterns, File.join(Dir.getwd, "lib", "foo.rb:13"))
+        inclusion_patterns << Regexp.new(Dir.getwd)
       end
 
       attr_writer :full_backtrace
 
       def full_backtrace?
-        @full_backtrace || @exclusion_patterns.empty?
+        @full_backtrace || exclusion_patterns.empty?
       end
 
       def filter_gem(gem_name)
         sep = File::SEPARATOR
-        pattern = /#{sep}#{gem_name}(-[^#{sep}]+)?#{sep}/
-
-        @exclusion_patterns        << pattern
-        @system_exclusion_patterns << pattern
+        exclusion_patterns << /#{sep}#{gem_name}(-[^#{sep}]+)?#{sep}/
       end
 
       def format_backtrace(backtrace, options={})
@@ -54,9 +53,7 @@ module RSpec
 
       def exclude?(line)
         return false if @full_backtrace
-        relative_line = Metadata.relative_path(line)
-        return false unless matches?(@exclusion_patterns, relative_line)
-        matches?(@system_exclusion_patterns, relative_line) || !matches?(@inclusion_patterns, line)
+        matches?(exclusion_patterns, line) && !matches?(inclusion_patterns, line)
       end
 
     private
