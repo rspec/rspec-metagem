@@ -629,7 +629,7 @@ module RSpec
       def color=(true_or_false)
         return unless true_or_false
 
-        if RSpec.world.windows_os? && !ENV['ANSICON']
+        if RSpec::Support::OS.windows? && !ENV['ANSICON']
           RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
           @color = false
         else

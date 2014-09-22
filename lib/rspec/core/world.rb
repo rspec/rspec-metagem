@@ -31,11 +31,6 @@ module RSpec
         example_groups.clear
       end
 
-      # @private
-      def windows_os?
-        RbConfig::CONFIG['host_os'] =~ /cygwin|mswin|mingw|bccwin|wince|emx/
-      end
-
       # @api private
       #
       # Apply ordering strategy from configuration to example groups
