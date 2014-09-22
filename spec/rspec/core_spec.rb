@@ -14,9 +14,14 @@ RSpec.describe RSpec do
       '2.0.0' => { }
     }
 
-    if RUBY_VERSION == '1.9.2' || RUBY_VERSION == '1.8.7' || (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
+    if RUBY_VERSION == '1.9.2' || RUBY_VERSION == '1.8.7'
       before(:example, pending_when.fetch(RUBY_VERSION)) do
         pending "Not working on #{RUBY_DESCRIPTION}"
+      end
+    end
+    if (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
+      before(:example, pending_when.fetch(RUBY_VERSION)) do
+        skip "Not reliably working on #{RUBY_DESCRIPTION}"
       end
     end
   end
