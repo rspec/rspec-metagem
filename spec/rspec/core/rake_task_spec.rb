@@ -69,12 +69,41 @@ module RSpec::Core
 
     context 'with custom exit status' do
       it 'returns the correct status on exit', :slow do
-        with_isolated_stderr do
-          expect($stderr).to receive(:puts) { |cmd| expect(cmd).to match(/-e "exit\(2\);".* failed/) }
-          expect(task).to receive(:exit).with(2)
+        expect(task).to receive(:exit).with(2)
+
+        expect {
           task.ruby_opts = '-e "exit(2);" ;#'
+          task.run_task true
+        }.to output(/-e "exit\(2\);" ;#/).to_stdout.and output(/-e "exit\(2\);".* failed/).to_stderr
+      end
+    end
+
+    context 'with verbose enabled' do
+      it 'prints the command only to stdout for passing specs', :slow do
+        expect {
+          task.ruby_opts = '-e ""'
+          task.run_task true
+        }.to output(/-e ""/).to_stdout.and avoid_outputting.to_stderr
+      end
+
+      it 'prints an additional message to stderr for failures', :slow do
+        expect(task).to receive(:exit)
+
+        expect {
+          task.ruby_opts = '-e "exit(1);" ;#'
+          task.run_task true
+        }.to output(/-e "exit\(1\);" ;#/).to_stdout.and output(/-e "exit\(1\);".* failed/).to_stderr
+      end
+    end
+
+    context 'with verbose disabled' do
+      it 'does not print to stdout or stderr', :slow do
+        expect(task).to receive(:exit)
+
+        expect {
+          task.ruby_opts = '-e "exit(1);" ;#'
           task.run_task false
-        end
+        }.to avoid_outputting.to_stdout.and avoid_outputting.to_stderr
       end
     end
 
