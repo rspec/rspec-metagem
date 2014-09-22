@@ -495,12 +495,12 @@ module RSpec::Core
           expect(config.files_to_run).to contain_files("spec/rspec/core/resources/a_spec.rb", "spec/rspec/core/resources/acceptance/foo_spec.rb")
         end
 
-        it "loads files in Windows", :if => RSpec.world.windows_os? do
+        it "loads files in Windows", :if => RSpec::Support::OS.windows? do
           assign_files_or_directories_to_run "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
           expect(config.files_to_run).to contain_files(["C:/path/to/project/spec/sub/foo_spec.rb"])
         end
 
-        it "loads files in Windows when directory is specified", :if => RSpec.world.windows_os? do
+        it "loads files in Windows when directory is specified", :if => RSpec::Support::OS.windows? do
           assign_files_or_directories_to_run "spec\\rspec\\core\\resources"
           expect(config.files_to_run).to contain_files(["spec/rspec/core/resources/a_spec.rb"])
         end
