@@ -1,6 +1,6 @@
 require 'rake'
 require 'rake/tasklib'
-require 'shellwords'
+require 'rspec/support/os'
 
 module RSpec
   module Core
@@ -115,7 +115,7 @@ module RSpec
         if ENV['SPEC']
           FileList[ ENV['SPEC']].sort
         elsif String === pattern && !File.exist?(pattern)
-          "--pattern #{pattern.shellescape}"
+          "--pattern #{escape pattern}"
         else
           # Before RSpec 3.1, we used `FileList` to get the list of matched files, and
           # then pass that along to the `rspec` command. Starting with 3.1, we prefer to
@@ -135,12 +135,24 @@ module RSpec
           # a `pattern` option that will not work with `--pattern`.
           #
           # TODO: consider deprecating support for this and removing it in RSpec 4.
-          FileList[pattern].sort.map(&:shellescape)
+          FileList[pattern].sort.map { |file| escape file }
+        end
+      end
+
+      if RSpec::Support::OS.windows?
+        def escape(shell_command)
+          "'#{shell_command.gsub("'", "\'")}'"
+        end
+      else
+        require 'shellwords'
+
+        def escape(shell_command)
+          shell_command.shellescape
         end
       end
 
       def file_exclusion_specification
-        " --exclude-pattern #{exclude_pattern.shellescape}" if exclude_pattern
+        " --exclude-pattern #{escape exclude_pattern}" if exclude_pattern
       end
 
       def spec_command
@@ -165,7 +177,7 @@ module RSpec
             /#{File::SEPARATOR}rspec-(core|support)[^#{File::SEPARATOR}]*#{File::SEPARATOR}lib/
           )
 
-          "-I#{core_and_support.map(&:shellescape).join(File::PATH_SEPARATOR)}"
+          "-I#{core_and_support.map { |file| escape file }.join(File::PATH_SEPARATOR)}"
         end
       end
     end
