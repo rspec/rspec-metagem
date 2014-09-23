@@ -87,7 +87,7 @@ module RSpec::Core
       end
 
       it 'prints an additional message to stderr for failures', :slow do
-        expect(task).to receive(:exit)
+        allow(task).to receive(:exit)
 
         expect {
           task.ruby_opts = '-e "exit(1);" ;#'
@@ -98,7 +98,7 @@ module RSpec::Core
 
     context 'with verbose disabled' do
       it 'does not print to stdout or stderr', :slow do
-        expect(task).to receive(:exit)
+        allow(task).to receive(:exit)
 
         expect {
           task.ruby_opts = '-e "exit(1);" ;#'
