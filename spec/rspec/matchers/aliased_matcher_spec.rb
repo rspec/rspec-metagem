@@ -78,6 +78,16 @@ module RSpec
         matcher = my_blockless_override
         expect(matcher.description).to eq("my blockless override description")
       end
+
+      RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
+
+      it 'works properly with a chained method off a negated matcher' do
+        expect { }.to avoid_outputting.to_stdout
+
+        expect {
+          expect { $stdout.puts "a" }.to avoid_outputting.to_stdout
+        }.to fail_with(/expected block to avoid outputting to stdout, but did not/)
+      end
     end
   end
 end
