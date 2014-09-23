@@ -93,7 +93,7 @@ module RSpec
 
         return unless fail_on_error && !success
 
-        $stderr.puts "#{command} failed"
+        $stderr.puts "#{command} failed" if verbose
         exit $?.exitstatus
       end
 
