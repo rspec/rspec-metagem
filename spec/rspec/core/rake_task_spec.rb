@@ -68,13 +68,17 @@ module RSpec::Core
     end
 
     context 'with custom exit status' do
+      def silence_output(&block)
+        expect(&block).to output(anything).to_stdout.and output(anything).to_stderr
+      end
+
       it 'returns the correct status on exit', :slow do
         expect(task).to receive(:exit).with(2)
 
-        expect {
+        silence_output do
           task.ruby_opts = '-e "exit(2);" ;#'
           task.run_task true
-        }.to output(/-e "exit\(2\);" ;#/).to_stdout.and output(/-e "exit\(2\);".* failed/).to_stderr
+        end
       end
     end
 
