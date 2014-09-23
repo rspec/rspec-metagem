@@ -9,6 +9,15 @@ Enhancements:
 * Provide more detail in failure message of `yield_control` matcher.
   (Jon Rowe, #650)
 
+### 3.1.2 Development
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...3-1-maintenance)
+
+Bug Fixes:
+
+* Fix `define_negated_matcher` so that matchers that support fluent
+  interfaces continue to be negated after you use the chained method.
+  (Myron Marston, #656)
+
 ### 3.1.1 / 2014-09-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.0...v3.1.1)
 

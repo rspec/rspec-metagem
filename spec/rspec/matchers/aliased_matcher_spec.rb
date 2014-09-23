@@ -78,6 +78,35 @@ module RSpec
         matcher = my_blockless_override
         expect(matcher.description).to eq("my blockless override description")
       end
+
+      RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
+
+      it 'works properly with a chained method off a negated matcher' do
+        expect { }.to avoid_outputting.to_stdout
+
+        expect {
+          expect { $stdout.puts "a" }.to avoid_outputting.to_stdout
+        }.to fail_with(/expected block to avoid outputting to stdout, but did not/)
+      end
+
+      context "when negating a matcher that does not define `description` (which is an optional part of the matcher protocol)" do
+        def matcher_without_description
+          matcher = Object.new
+          def matcher.matches?(v); v; end
+          def matcher.failure_message; "match failed"; end
+          def matcher.chained; self; end
+          expect(RSpec::Matchers.is_a_matcher?(matcher)).to be true
+
+          matcher
+        end
+
+        RSpec::Matchers.define_negated_matcher :negation_of_matcher_without_description, :matcher_without_description
+
+        it 'works properly' do
+          expect(true).to matcher_without_description.chained
+          expect(false).to negation_of_matcher_without_description.chained
+        end
+      end
     end
   end
 end

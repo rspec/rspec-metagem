@@ -23,8 +23,8 @@ module RSpec
       # used.
       def method_missing(*)
         return_val = super
-        return return_val unless return_val.respond_to?(:description)
-        AliasedMatcher.new(return_val, @description_block)
+        return return_val unless RSpec::Matchers.is_a_matcher?(return_val)
+        self.class.new(return_val, @description_block)
       end
 
       # Provides the description of the aliased matcher. Aliased matchers
