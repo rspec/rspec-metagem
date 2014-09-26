@@ -263,6 +263,8 @@ module RSpec
       # override any of these using the {RSpec::Matchers::DSL::Macros Macros} methods
       # from within an `RSpec::Matchers.define` block.
       module DefaultImplementations
+        include BuiltIn::BaseMatcher::DefaultFailureMessages
+
         # @api private
         # Used internally by objects returns by `should` and `should_not`.
         def diffable?
@@ -272,16 +274,6 @@ module RSpec
         # The default description.
         def description
           "#{name_to_sentence}#{to_sentence expected}#{chained_method_clause_sentences}"
-        end
-
-        # The default failure message for positive expectations.
-        def failure_message
-          "expected #{actual.inspect} to #{description}"
-        end
-
-        # The default failure message for negative expectations.
-        def failure_message_when_negated
-          "expected #{actual.inspect} not to #{description}"
         end
 
         # Matchers do not support block expectations by default. You

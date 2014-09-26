@@ -77,5 +77,64 @@ module RSpec::Matchers::BuiltIn
         expect(matcher.new(3)).not_to be === 4
       end
     end
+
+    describe "default failure message detection" do
+      def has_default_failure_messages?(matcher)
+        BaseMatcher::DefaultFailureMessages.has_default_failure_messages?(matcher)
+      end
+
+      shared_examples_for "detecting default failure message" do
+        context "that has no failure message overrides" do
+          it "indicates that it has default failure messages" do
+            matcher = build_matcher
+            expect(has_default_failure_messages?(matcher)).to be true
+          end
+        end
+
+        context "that overrides `failure_message`" do
+          it "indicates that it lacks default failure messages" do
+            matcher = build_matcher { def failure_message; end }
+            expect(has_default_failure_messages?(matcher)).to be false
+          end
+        end
+
+        context "that overrides `failure_message_when_negated`" do
+          it "indicates that it lacks default failure messages" do
+            matcher = build_matcher { def failure_message_when_negated; end }
+            expect(has_default_failure_messages?(matcher)).to be false
+          end
+        end
+      end
+
+      context "for a DSL-defined custom macher" do
+        include_examples "detecting default failure message" do
+          def build_matcher(&block)
+            definition = Proc.new do
+              match { }
+              module_exec(&block) if block
+            end
+
+            RSpec::Matchers::DSL::Matcher.new(:matcher_name, definition, self)
+          end
+        end
+      end
+
+      context "for a matcher that subclasses `BaseMatcher`" do
+        include_examples "detecting default failure message" do
+          def build_matcher(&block)
+            Class.new(RSpec::Matchers::BuiltIn::BaseMatcher, &block).new
+          end
+        end
+      end
+
+      context "for a custom matcher that lacks `failure_message_when_negated` (documented as an optional part of the matcher protocol" do
+        it "indicates that it lacks default failure messages" do
+          matcher = Class.new(RSpec::Matchers::BuiltIn::BaseMatcher) { undef failure_message_when_negated }.new
+
+          expect(RSpec::Support.is_a_matcher?(matcher)).to be true
+          expect(has_default_failure_messages?(matcher)).to be false
+        end
+      end
+    end
   end
 end

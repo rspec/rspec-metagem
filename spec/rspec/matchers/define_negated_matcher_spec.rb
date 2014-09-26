@@ -54,6 +54,76 @@ module RSpec
         expect { list.delete(5) }.to change { list }.to(an_array_excluding 5)
       end
 
+      describe "the failure message" do
+        context "for a matcher with default failure messages" do
+          RSpec::Matchers.define(:be_awesome) { match(&:awesome?) }
+          RSpec::Matchers.define_negated_matcher :be_lame, :be_awesome
+
+          context "when failing positively" do
+            it "uses the phrasing from the provided defined matcher alias" do
+              expect {
+                expect(double(:awesome? => true, :inspect => "<Object>")).to be_lame
+              }.to fail_with("expected <Object> to be lame")
+            end
+          end
+
+          context "when failing negatively" do
+            it "uses the phrasing from the provided defined matcher alias" do
+              expect {
+                expect(double(:awesome? => false, :inspect => "<Object>")).not_to be_lame
+              }.to fail_with("expected <Object> not to be lame")
+            end
+          end
+
+          context "when accessed via an alias that is not included in failure messages" do
+            alias_method :be_fantastic, :be_awesome
+            RSpec::Matchers.define_negated_matcher :be_terrible, :be_fantastic
+
+            context "when failing positively" do
+              it "uses the wrapped matcher's `failure_message_when_negated`" do
+                expect {
+                  expect(double(:awesome? => true, :inspect => "<Object>")).to be_terrible
+                }.to fail_with("expected <Object> not to be awesome")
+              end
+            end
+
+            context "when failing negatively" do
+              it "uses the wrapped matcher's `failure_message`" do
+                expect {
+                  expect(double(:awesome? => false, :inspect => "<Object>")).not_to be_terrible
+                }.to fail_with("expected <Object> to be awesome")
+              end
+            end
+          end
+        end
+
+        context "for a matcher with a customized `failure_message_when_negated`" do
+          RSpec::Matchers.define(:be_tall) do
+            match(&:tall?)
+            failure_message_when_negated do |actual|
+              "expected #{actual.inspect} not to be tall, but was tall"
+            end
+          end
+          RSpec::Matchers.define_negated_matcher :be_short, :be_tall
+
+          context "when failing positively" do
+            it "uses the wrapped matcher's `failure_message_when_negated` since it may include more detail" do
+              expect {
+                expect(double(:tall? => true, :inspect => "<Object>")).to be_short
+              }.to fail_with("expected <Object> not to be tall, but was tall")
+            end
+          end
+
+          context "when failing negatively" do
+            it "uses the wrapped matcher's `failure_message` since it may include more detail" do
+              expect {
+                expect(double(:tall? => false, :inspect => "<Object>")).not_to be_short
+              }.to fail_with("expected <Object> to be tall")
+            end
+          end
+        end
+      end
+
       context 'when no block is passed' do
         RSpec::Matchers.define :be_an_odd_number do
           match { |actual| actual.odd? }

@@ -17,6 +17,8 @@ Bug Fixes:
 * Fix `define_negated_matcher` so that matchers that support fluent
   interfaces continue to be negated after you use the chained method.
   (Myron Marston, #656)
+* Fix `define_negated_matcher` so that the matchers fail with an
+  appropriate failure message. (Myron Marston, #659)
 
 ### 3.1.1 / 2014-09-15
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.0...v3.1.1)
