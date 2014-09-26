@@ -8,6 +8,9 @@ Enhancements:
   (Mike Dalton, #645)
 * Provide more detail in failure message of `yield_control` matcher.
   (Jon Rowe, #650)
+* Add a shorthand syntax for `chain` in the matcher DSL which assigns values
+  for use elsewhere, for example `chain :and_smaller_than, :small_value`
+  creates an `attr_reader` for `small_value` (Tom Stuart, #644)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
