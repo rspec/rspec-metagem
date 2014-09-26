@@ -53,26 +53,6 @@ module RSpec
         end
 
         # @api private
-        # Provides a good generic failure message. Based on `description`.
-        # When subclassing, if you are not satisfied with this failure message
-        # you often only need to override `description`.
-        # @return [String]
-        def failure_message
-          assert_ivars :@actual
-          "expected #{@actual.inspect} to #{description}"
-        end
-
-        # @api private
-        # Provides a good generic negative failure message. Based on `description`.
-        # When subclassing, if you are not satisfied with this failure message
-        # you often only need to override `description`.
-        # @return [String]
-        def failure_message_when_negated
-          assert_ivars :@actual
-          "expected #{@actual.inspect} not to #{description}"
-        end
-
-        # @api private
         # Generates a "pretty" description using the logic in {Pretty}.
         # @return [String]
         def description
@@ -114,6 +94,38 @@ module RSpec
         else
           alias present_ivars instance_variables
         end
+
+        # @api private
+        # Provides default implementations of failure messages, based on the `description`.
+        module DefaultFailureMessages
+          # @api private
+          # Provides a good generic failure message. Based on `description`.
+          # When subclassing, if you are not satisfied with this failure message
+          # you often only need to override `description`.
+          # @return [String]
+          def failure_message
+            "expected #{actual.inspect} to #{description}"
+          end
+
+          # @api private
+          # Provides a good generic negative failure message. Based on `description`.
+          # When subclassing, if you are not satisfied with this failure message
+          # you often only need to override `description`.
+          # @return [String]
+          def failure_message_when_negated
+            "expected #{actual.inspect} not to #{description}"
+          end
+
+          # @private
+          def self.has_default_failure_messages?(matcher)
+            matcher.method(:failure_message).owner == self &&
+            matcher.method(:failure_message_when_negated).owner == self
+          rescue NameError
+            false
+          end
+        end
+
+        include DefaultFailureMessages
       end
     end
   end

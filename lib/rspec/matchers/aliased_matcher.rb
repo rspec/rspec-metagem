@@ -80,6 +80,37 @@ module RSpec
       def does_not_match?(*args, &block)
         @base_matcher.matches?(*args, &block)
       end
+
+      def failure_message
+        optimal_failure_message(__method__, :failure_message_when_negated)
+      end
+
+      def failure_message_when_negated
+        optimal_failure_message(__method__, :failure_message)
+      end
+
+    private
+
+      DefaultFailureMessages = BuiltIn::BaseMatcher::DefaultFailureMessages
+
+      # For a matcher that uses the default failure messages, we prefer to
+      # use the override provided by the `description_block`, because it
+      # includes the phrasing that the user has expressed a preference for
+      # by going through the effort of defining a negated matcher.
+      #
+      # However, if the override didn't actually change anything, then we
+      # should return the opposite failure message instead -- the overriden
+      # message is going to be confusing if we return it as-is, as it represents
+      # the non-negated failure message for a negated match (or vice versa).
+      def optimal_failure_message(same, inverted)
+        if DefaultFailureMessages.has_default_failure_messages?(@base_matcher)
+          base_message = @base_matcher.__send__(same)
+          overriden    = @description_block.call(base_message)
+          return overriden if overriden != base_message
+        end
+
+        @base_matcher.__send__(inverted)
+      end
     end
   end
 end

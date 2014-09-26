@@ -86,7 +86,7 @@ module RSpec
 
         expect {
           expect { $stdout.puts "a" }.to avoid_outputting.to_stdout
-        }.to fail_with(/expected block to avoid outputting to stdout, but did not/)
+        }.to fail
       end
 
       context "when negating a matcher that does not define `description` (which is an optional part of the matcher protocol)" do
