@@ -1,5 +1,5 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...master)
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...master)
 
 Enhancements:
 
@@ -9,8 +9,8 @@ Enhancements:
 * Provide more detail in failure message of `yield_control` matcher.
   (Jon Rowe, #650)
 
-### 3.1.2 Development
-[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...3-1-maintenance)
+### 3.1.2 / 2014-09-26
+[Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
 
 Bug Fixes:
 
