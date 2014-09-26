@@ -984,6 +984,45 @@ module RSpec::Matchers::DSL
       expect(matcher.expecting('value').matches?('other value')).to be_falsey
     end
 
+    it "can define chainable setters" do
+      matcher = new_matcher(:name) do
+        chain(:expecting, :expected_value)
+        match { |actual| actual == expected_value }
+      end
+
+      expect(matcher.expecting('value').matches?('value')).to be_truthy
+      expect(matcher.expecting('value').matches?('other value')).to be_falsey
+    end
+
+    it "can define chainable setters for several attributes" do
+      matcher = new_matcher(:name) do
+        chain(:expecting, :expected_value, :min_value, :max_value)
+        match { |actual| actual == expected_value && actual >= min_value && actual <= max_value }
+      end
+
+      expect(matcher.expecting('value', 'apple', 'zebra').matches?('value')).to be_truthy
+      expect(matcher.expecting('value', 'apple', 'zebra').matches?('other value')).to be_falsey
+      expect(matcher.expecting('other value', 'parrot', 'zebra').matches?('other value')).to be_falsey
+    end
+
+    it "raises when neither a `chain` block nor attribute name is provided" do
+      expect do
+        new_matcher(:name) do
+          chain(:expecting)
+        end
+      end.to raise_error(ArgumentError)
+    end
+
+    it "raises when both a `chain` block and attribute name are provided" do
+      expect do
+        new_matcher(:name) do
+          chain(:expecting, :expected_value) do |expected_value|
+            @expected_value = expected_value
+          end
+        end
+      end.to raise_error(ArgumentError)
+    end
+
     it 'can use an early return from a `chain` block' do
       matcher = new_matcher(:name) do
         chain(:expecting) do |expected_value|
