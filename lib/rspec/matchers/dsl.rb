@@ -183,6 +183,12 @@ module RSpec
         # hash been enabled, the chained method name and args will be added to the
         # default description and failure message.
         #
+        # In the common case where you just want the chained method to store some
+        # value(s) for later use (e.g. in `match`), you can provide one or more
+        # attribute names instead of a block; the chained method will store its
+        # arguments in instance variables with those names, and the values will
+        # be exposed via getters.
+        #
         # @example
         #
         #     RSpec::Matchers.define :have_errors_on do |key|
@@ -196,13 +202,34 @@ module RSpec
         #     end
         #
         #     expect(minor).to have_errors_on(:age).with("Not old enough to participate")
-        def chain(name, &definition)
-          define_user_override(name, definition) do |*args, &block|
+        def chain(method_name, *attr_names, &definition)
+          unless block_given? ^ attr_names.any?
+            raise ArgumentError, "You must pass either a block or some attribute names (but not both) to `chain`."
+          end
+
+          definition = assign_attributes(attr_names) if attr_names.any?
+
+          define_user_override(method_name, definition) do |*args, &block|
             super(*args, &block)
-            @chained_method_clauses.push([name, args])
+            @chained_method_clauses.push([method_name, args])
             self
           end
         end
+
+        def assign_attributes(attr_names)
+          attr_reader(*attr_names)
+          private(*attr_names)
+
+          lambda do |*attr_values|
+            attr_names.zip(attr_values) do |attr_name, attr_value|
+              instance_variable_set(:"@#{attr_name}", attr_value)
+            end
+          end
+        end
+
+        # assign_attributes isn't defined in the private section below because
+        # that makes MRI 1.9.2 emit a warning about private attributes.
+        private :assign_attributes
 
       private
 
