@@ -52,6 +52,7 @@ the example passes. If not, it fails with a message like:
 ```ruby
 expect(actual).to eq(expected)  # passes if actual == expected
 expect(actual).to eql(expected) # passes if actual.eql?(expected)
+expect(actual).not_to eql(not_expected) # passes if not(actual.eql?(expected))
 ```
 
 Note: The new `expect` syntax no longer supports the `==` matcher.
@@ -93,11 +94,12 @@ expect(actual).to be_a_kind_of(expected)      # another alias
 ### Truthiness
 
 ```ruby
-expect(actual).to be_truthy # passes if actual is truthy (not nil or false)
-expect(actual).to be true   # passes if actual == true
-expect(actual).to be_falsy  # passes if actual is falsy (nil or false)
-expect(actual).to be false  # passes if actual == false
-expect(actual).to be_nil    # passes if actual is nil
+expect(actual).to be_truthy   # passes if actual is truthy (not nil or false)
+expect(actual).to be true     # passes if actual == true
+expect(actual).to be_falsy    # passes if actual is falsy (nil or false)
+expect(actual).to be false    # passes if actual == false
+expect(actual).to be_nil      # passes if actual is nil
+expect(actual).to_not be_nil  # passes if actual is not nil
 ```
 
 ### Expecting errors
