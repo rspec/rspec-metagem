@@ -1336,9 +1336,28 @@ module RSpec
       end
 
       def get_matching_files(path, pattern)
+        Dir[file_glob_from(path, pattern)].map { |file| File.expand_path(file) }
+      end
+
+      def file_glob_from(path, pattern)
         stripped = "{#{pattern.gsub(/\s*,\s*/, ',')}}"
-        files = (pattern =~ /^(\.\/)?#{Regexp.escape path}/) ? Dir[stripped] : Dir["#{path}/#{stripped}"]
-        files.map { |file| File.expand_path(file) }
+        return stripped if pattern =~ /^(\.\/)?#{Regexp.escape path}/ || absolute_pattern?(pattern)
+        File.join(path, stripped)
+      end
+
+      if RSpec::Support::OS.windows?
+        def absolute_pattern?(pattern)
+          pattern =~ /\A[A-Z]:\\/ || windows_absolute_network_path?(pattern)
+        end
+
+        def windows_absolute_network_path?(pattern)
+          return false unless ::File::ALT_SEPARATOR
+          pattern.start_with?(::File::ALT_SEPARATOR + ::File::ALT_SEPARATOR)
+        end
+      else
+        def absolute_pattern?(pattern)
+          pattern.start_with?(File::Separator)
+        end
       end
 
       def extract_location(path)

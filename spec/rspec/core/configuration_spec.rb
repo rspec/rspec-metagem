@@ -447,6 +447,17 @@ module RSpec::Core
         expect(config.files_to_run).to contain_files(["./spec/rspec/core/resources/a_spec.rb"])
       end
 
+      it "supports absolute path patterns" do
+        dir = File.expand_path("../resources", __FILE__)
+        config.pattern = File.join(dir, "**/*_spec.rb")
+        assign_files_or_directories_to_run "spec"
+
+        expect(config.files_to_run).to contain_files(
+          "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+          "./spec/rspec/core/resources/a_spec.rb"
+        )
+      end
+
       it 'reloads when `files_or_directories_to_run` is reassigned' do
         config.pattern = "spec/**/a_spec.rb"
         config.files_or_directories_to_run = "empty_dir"

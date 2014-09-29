@@ -221,6 +221,18 @@ module RSpec::Core
         end
       end
 
+      context "that is an absolute path file glob" do
+        it "loads the matching spec files" do
+          dir = File.expand_path("../resources", __FILE__)
+          task.pattern = File.join(dir, "**/*_spec.rb")
+
+          expect(loaded_files).to contain_files(
+            "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+            "./spec/rspec/core/resources/a_spec.rb"
+          )
+        end
+      end
+
       context "that is an array of existing files or directories, not a file glob" do
         it "loads the specified spec files, and spec files from the specified directories" do
           task.pattern = ["./spec/rspec/core/resources/acceptance",

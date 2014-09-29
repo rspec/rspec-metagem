@@ -7,10 +7,17 @@ Enhancements:
 * When rake task fails, only output the command if `verbose` flag is
   set. (Ben Snape, #1704)
 
-Bugfixes:
+### 3.1.5 Development
+
+Bug Fixes:
 
 * Fix issue with the rake task incorrectly escaping strings on Windows.
   (Jon Rowe #1718)
+* Support absolute path patterns. While this wasn't officially supported
+  previously, setting `rake_task.pattern` to an absolute path pattern in
+  RSpec 3.0 and before worked since it delegated to `FileList` internally
+  (but now just forwards the pattern on to the `rspec` command).
+  (Myron Marston, #1726)
 
 ### 3.1.4 / 2014-09-18
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.3...v3.1.4)
