@@ -210,14 +210,14 @@ module RSpec::Core
       context "that is an existing directory, not a file glob" do
         it "loads the spec files in that directory" do
           task.pattern = "./spec/rspec/core/resources/acceptance"
-          expect(loaded_files).to contain_files(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+          expect(loaded_files).to contain_files("./spec/rspec/core/resources/acceptance/foo_spec.rb")
         end
       end
 
       context "that is an existing file, not a file glob" do
         it "loads the spec file" do
           task.pattern = "./spec/rspec/core/resources/acceptance/foo_spec.rb"
-          expect(loaded_files).to contain_files(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+          expect(loaded_files).to contain_files("./spec/rspec/core/resources/acceptance/foo_spec.rb")
         end
       end
 
@@ -249,7 +249,7 @@ module RSpec::Core
       context "that is a single glob that starts with ./" do
         it "loads the spec files that match the glob" do
           task.pattern = "./spec/rspec/core/resources/acceptance/**/*_spec.rb"
-          expect(loaded_files).to contain_files(["./spec/rspec/core/resources/acceptance/foo_spec.rb"])
+          expect(loaded_files).to contain_files("./spec/rspec/core/resources/acceptance/foo_spec.rb")
         end
       end
 
@@ -327,7 +327,7 @@ module RSpec::Core
         task.pattern = "spec/**/*_spec.rb"
         unit_files = make_files_in_dir "unit"
 
-        expect(loaded_files).to contain_files(unit_files)
+        expect(loaded_files).to contain_files(*unit_files)
       end
 
       it "excludes files when pattern and exclusion_pattern don't consistently start with ./" do
@@ -335,7 +335,7 @@ module RSpec::Core
         task.pattern = "spec/**/*_spec.rb"
         unit_files = make_files_in_dir "unit"
 
-        expect(loaded_files).to contain_files(unit_files)
+        expect(loaded_files).to contain_files(*unit_files)
       end
     end
 
@@ -351,7 +351,7 @@ module RSpec::Core
           File.join("spec", file_name).tap { |f| FileUtils.touch(f) }
         end
 
-        expect(loaded_files).to contain_files(files)
+        expect(loaded_files).to contain_files(*files)
       end
     end
 

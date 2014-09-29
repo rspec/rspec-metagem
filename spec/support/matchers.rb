@@ -89,7 +89,7 @@ RSpec::Matchers.define :be_skipped_with do |message|
 end
 
 RSpec::Matchers.define :contain_files do |*expected_files|
-  contain_exactly_matcher = RSpec::Matchers::BuiltIn::ContainExactly.new(expected_files.flatten.map { |f| File.expand_path(f) })
+  contain_exactly_matcher = RSpec::Matchers::BuiltIn::ContainExactly.new(expected_files.map { |f| File.expand_path(f) })
 
   match do |actual_files|
     files = actual_files.map { |f| File.expand_path(f) }
