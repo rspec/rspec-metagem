@@ -1,5 +1,5 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.4...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...master)
 
 Enhancements:
 
@@ -7,7 +7,8 @@ Enhancements:
 * When rake task fails, only output the command if `verbose` flag is
   set. (Ben Snape, #1704)
 
-### 3.1.5 Development
+### 3.1.5 / 2014-09-29
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.4...v3.1.5)
 
 Bug Fixes:
 
