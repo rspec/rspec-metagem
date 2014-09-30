@@ -426,25 +426,36 @@ module RSpec::Core
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
         assign_files_or_directories_to_run "spec/rspec/core/resources/a_bar.rb"
-        expect(config.files_to_run).to contain_files(["spec/rspec/core/resources/a_bar.rb"])
+        expect(config.files_to_run).to contain_files("spec/rspec/core/resources/a_bar.rb")
       end
 
       it "prevents repetition of dir when start of the pattern" do
         config.pattern = "spec/**/a_spec.rb"
         assign_files_or_directories_to_run "spec"
-        expect(config.files_to_run).to contain_files(["spec/rspec/core/resources/a_spec.rb"])
+        expect(config.files_to_run).to contain_files("spec/rspec/core/resources/a_spec.rb")
       end
 
       it "does not prevent repetition of dir when later of the pattern" do
         config.pattern = "rspec/**/a_spec.rb"
         assign_files_or_directories_to_run "spec"
-        expect(config.files_to_run).to contain_files(["spec/rspec/core/resources/a_spec.rb"])
+        expect(config.files_to_run).to contain_files("spec/rspec/core/resources/a_spec.rb")
       end
 
       it "supports patterns starting with ./" do
         config.pattern = "./spec/**/a_spec.rb"
         assign_files_or_directories_to_run "spec"
-        expect(config.files_to_run).to contain_files(["./spec/rspec/core/resources/a_spec.rb"])
+        expect(config.files_to_run).to contain_files("./spec/rspec/core/resources/a_spec.rb")
+      end
+
+      it "supports absolute path patterns" do
+        dir = File.expand_path("../resources", __FILE__)
+        config.pattern = File.join(dir, "**/*_spec.rb")
+        assign_files_or_directories_to_run "spec"
+
+        expect(config.files_to_run).to contain_files(
+          "./spec/rspec/core/resources/acceptance/foo_spec.rb",
+          "./spec/rspec/core/resources/a_spec.rb"
+        )
       end
 
       it 'reloads when `files_or_directories_to_run` is reassigned' do
@@ -497,12 +508,12 @@ module RSpec::Core
 
         it "loads files in Windows", :if => RSpec::Support::OS.windows? do
           assign_files_or_directories_to_run "C:\\path\\to\\project\\spec\\sub\\foo_spec.rb"
-          expect(config.files_to_run).to contain_files(["C:/path/to/project/spec/sub/foo_spec.rb"])
+          expect(config.files_to_run).to contain_files("C:/path/to/project/spec/sub/foo_spec.rb")
         end
 
         it "loads files in Windows when directory is specified", :if => RSpec::Support::OS.windows? do
           assign_files_or_directories_to_run "spec\\rspec\\core\\resources"
-          expect(config.files_to_run).to contain_files(["spec/rspec/core/resources/a_spec.rb"])
+          expect(config.files_to_run).to contain_files("spec/rspec/core/resources/a_spec.rb")
         end
 
         it_behaves_like "handling symlinked directories when loading spec files" do
