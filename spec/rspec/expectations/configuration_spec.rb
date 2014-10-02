@@ -130,7 +130,7 @@ module RSpec
           it "warns when the should syntax is called by default" do
             expected_arguments = [
               /Using.*without explicitly enabling/,
-              {:replacement=>"the new `:expect` syntax or explicitly enable `:should`"}
+              {:replacement=>"the new `:expect` syntax or explicitly enable `:should` with `config.expect_with(:rspec) { |c| c.syntax = :should }`"}
             ]
 
             expect(RSpec).to receive(:deprecate).with(*expected_arguments)

@@ -27,7 +27,7 @@ module RSpec
 
         RSpec.deprecate(
           "Using `#{method_name}` from rspec-expectations' old `:should` syntax without explicitly enabling the syntax",
-          :replacement => "the new `:expect` syntax or explicitly enable `:should`"
+          :replacement => "the new `:expect` syntax or explicitly enable `:should` with `config.expect_with(:rspec) { |c| c.syntax = :should }`"
         )
 
         @warn_about_should = false
