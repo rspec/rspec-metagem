@@ -458,6 +458,27 @@ module RSpec::Core
         )
       end
 
+      it "supports relative path patterns for an alternate directory from `spec`" do
+        Dir.chdir("./spec/rspec/core") do
+          config.pattern = "resources/**/*_spec.rb"
+          assign_files_or_directories_to_run "spec" # default dir
+
+          expect(config.files_to_run).to contain_files(
+            "resources/acceptance/foo_spec.rb",
+            "resources/a_spec.rb"
+          )
+        end
+      end
+
+      it "does not attempt to treat the pattern relative to `.` if it uses `**` in the first path segment as that would cause it load specs from vendored gems" do
+        Dir.chdir("./spec/rspec/core") do
+          config.pattern = "**/*_spec.rb"
+          assign_files_or_directories_to_run "spec" # default dir
+
+          expect(config.files_to_run).to contain_files()
+        end
+      end
+
       it 'reloads when `files_or_directories_to_run` is reassigned' do
         config.pattern = "spec/**/a_spec.rb"
         config.files_or_directories_to_run = "empty_dir"
@@ -466,6 +487,17 @@ module RSpec::Core
           config.files_or_directories_to_run = "spec"
         }.to change { config.files_to_run }.
           to(a_file_collection("spec/rspec/core/resources/a_spec.rb"))
+      end
+
+      it 'attempts to load the provided file names' do
+        assign_files_or_directories_to_run "path/to/some/file.rb"
+        expect(config.files_to_run).to eq(["path/to/some/file.rb"])
+      end
+
+      it 'does not attempt to load a file at the `default_path`' do
+        config.default_path = "path/to/dir"
+        assign_files_or_directories_to_run "path/to/dir"
+        expect(config.files_to_run).to eq([])
       end
 
       context "with <path>:<line_number>" do
@@ -547,8 +579,10 @@ module RSpec::Core
 
       def specify_consistent_ordering_of_files_to_run
         allow(File).to receive(:directory?).with('a') { true }
+        allow(File).to receive(:directory?).with('.') { true }
         globbed_files = nil
         allow(Dir).to receive(:[]).with(/^\{?a/) { globbed_files }
+        allow(Dir).to receive(:[]).with(/^\{?\./) { [] }
 
         orderings = [
           %w[ a/1.rb a/2.rb a/3.rb ],
