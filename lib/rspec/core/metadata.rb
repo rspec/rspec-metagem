@@ -30,7 +30,18 @@ module RSpec
       # @param line [String] current code line
       # @return [String] relative path to line
       def self.relative_path(line)
-        line = line.sub(File.expand_path("."), ".")
+        # Matches strings either at the beginning of the input or prefixed with a whitespace,
+        # containing the current path, either postfixed with the separator, or at the end of the string.
+        # Match groups are the character before and the character after the string if any.
+        #
+        # http://rubular.com/r/fT0gmX6VJX
+        # http://rubular.com/r/duOrD4i3wb
+        # http://rubular.com/r/sbAMHFrOx1
+        #
+
+        regex = /(\A|\s)#{File.expand_path('.')}(#{File::SEPARATOR}|\s|\Z)/
+
+        line = line.sub(regex, "\\1.\\2")
         line = line.sub(/\A([^:]+:\d+)$/, '\\1')
         return nil if line == '-e:1'
         line

@@ -24,6 +24,13 @@ module RSpec
           end
         end
 
+        it 'should not transform directories beginning with the same prefix' do
+          #E.g. /foo/bar_baz is not relative to /foo/bar !!
+
+          similar_directory = "#{File.expand_path(".")}_similar"
+          expect(Metadata.relative_path(similar_directory)).to eq similar_directory
+        end
+
       end
 
       context "when created" do
