@@ -134,33 +134,39 @@ RSpec.describe RSpec do
 
     it "restores inclusion rules set by configuration" do
       file_path = File.expand_path("foo_spec.rb")
-      RSpec.configure { |config| config.filter_run_including(locations: { file_path => [12] }) }
+      RSpec.configure {
+        |config| config.filter_run_including(:locations => { file_path => [12] })
+      }
       allow(RSpec.configuration).to receive(:load).with(file_path)
       allow(reporter).to receive(:report)
       RSpec::Core::Runner.run(["foo_spec.rb:14"])
 
-      expect(RSpec.configuration.filter_manager.inclusions[:locations])
-        .to eq(file_path => [12, 14])
+      expect(
+        RSpec.configuration.filter_manager.inclusions[:locations]
+      ).to eq(file_path => [12, 14])
 
       RSpec.clear_examples
 
-      expect(RSpec.configuration.filter_manager.inclusions[:locations])
-        .to eq(file_path => [12])
+      expect(
+        RSpec.configuration.filter_manager.inclusions[:locations]
+      ).to eq(file_path => [12])
     end
 
     it "restores exclusion rules set by configuration" do
-      RSpec.configure { |config| config.filter_run_excluding(slow: true) }
+      RSpec.configure { |config| config.filter_run_excluding(:slow => true) }
       allow(RSpec.configuration).to receive(:load)
       allow(reporter).to receive(:report)
       RSpec::Core::Runner.run(["--tag", "~fast"])
 
-      expect(RSpec.configuration.filter_manager.exclusions.rules)
-        .to eq(slow: true, fast: true)
+      expect(
+        RSpec.configuration.filter_manager.exclusions.rules
+      ).to eq(:slow => true, :fast => true)
 
       RSpec.clear_examples
 
-      expect(RSpec.configuration.filter_manager.exclusions.rules)
-        .to eq(slow: true)
+      expect(
+        RSpec.configuration.filter_manager.exclusions.rules
+      ).to eq(:slow => true)
     end
   end
 
