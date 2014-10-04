@@ -26,13 +26,13 @@ RSpec.describe RSpec do
     end
   end
 
-  describe "::configuration" do
+  describe ".configuration" do
     it "returns the same object every time" do
       expect(RSpec.configuration).to equal(RSpec.configuration)
     end
   end
 
-  describe "::configuration=" do
+  describe ".configuration=" do
     it "sets the configuration object" do
       configuration = RSpec::Core::Configuration.new
 
@@ -42,7 +42,7 @@ RSpec.describe RSpec do
     end
   end
 
-  describe "::configure" do
+  describe ".configure" do
     it "yields the current configuration" do
       RSpec.configure do |config|
         expect(config).to equal(RSpec::configuration)
@@ -50,13 +50,13 @@ RSpec.describe RSpec do
     end
   end
 
-  describe "::world" do
+  describe ".world" do
     it "returns the same object every time" do
       expect(RSpec.world).to equal(RSpec.world)
     end
   end
 
-  describe "::world=" do
+  describe ".world=" do
     it "sets the world object" do
       world = RSpec::Core::World.new
 
@@ -76,7 +76,7 @@ RSpec.describe RSpec do
     end
   end
 
-  describe "::reset" do
+  describe ".reset" do
     it "resets the configuration and world objects" do
       config_before_reset = RSpec.configuration
       world_before_reset  = RSpec.world
@@ -85,6 +85,82 @@ RSpec.describe RSpec do
 
       expect(RSpec.configuration).not_to equal(config_before_reset)
       expect(RSpec.world).not_to equal(world_before_reset)
+    end
+  end
+
+  describe ".clear_examples" do
+    let(:listener) { double("listener") }
+    let(:reporter) { RSpec.configuration.reporter }
+
+    def some_example
+      double("example").as_null_object
+    end
+
+    it "clears example groups" do
+      RSpec.world.example_groups << :example_group
+
+      RSpec.clear_examples
+
+      expect(RSpec.world.example_groups).to be_empty
+    end
+
+    it "resets start_time" do
+      start_time_before_clear = RSpec.configuration.start_time
+
+      RSpec.clear_examples
+
+      expect(RSpec.configuration.start_time).not_to eq(start_time_before_clear)
+    end
+
+    it "clears examples, failed_examples and pending_examples" do
+      reporter.start(3)
+      reporter.example_started(some_example)
+      reporter.example_failed(some_example)
+      reporter.example_pending(some_example)
+      reporter.finish
+
+      reporter.register_listener(listener, :dump_summary)
+
+      expect(listener).to receive(:dump_summary) do |notification|
+        expect(notification.examples).to be_empty
+        expect(notification.failed_examples).to be_empty
+        expect(notification.pending_examples).to be_empty
+      end
+
+      RSpec.clear_examples
+      reporter.start(0)
+      reporter.finish
+    end
+
+    it "restores inclusion rules set by configuration" do
+      file_path = File.expand_path("foo_spec.rb")
+      RSpec.configure { |config| config.filter_run_including(locations: { file_path => [12] }) }
+      allow(RSpec.configuration).to receive(:load).with(file_path)
+      allow(reporter).to receive(:report)
+      RSpec::Core::Runner.run(["foo_spec.rb:14"])
+
+      expect(RSpec.configuration.filter_manager.inclusions[:locations])
+        .to eq(file_path => [12, 14])
+
+      RSpec.clear_examples
+
+      expect(RSpec.configuration.filter_manager.inclusions[:locations])
+        .to eq(file_path => [12])
+    end
+
+    it "restores exclusion rules set by configuration" do
+      RSpec.configure { |config| config.filter_run_excluding(slow: true) }
+      allow(RSpec.configuration).to receive(:load)
+      allow(reporter).to receive(:report)
+      RSpec::Core::Runner.run(["--tag", "~fast"])
+
+      expect(RSpec.configuration.filter_manager.exclusions.rules)
+        .to eq(slow: true, fast: true)
+
+      RSpec.clear_examples
+
+      expect(RSpec.configuration.filter_manager.exclusions.rules)
+        .to eq(slow: true)
     end
   end
 
