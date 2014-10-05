@@ -57,10 +57,11 @@ module RSpec
       end
 
       # @private
-      def self.deep_hash_dup(hash)
-        return hash.dup if hash.is_a?(Array)
-        return hash unless hash.is_a?(Hash)
-        hash.inject(hash.dup) do |duplicate, (key, value)|
+      def self.deep_hash_dup(object)
+        return object.dup if Array === object
+        return object unless Hash  === object
+
+        object.inject(object.dup) do |duplicate, (key, value)|
           duplicate[key] = deep_hash_dup(value)
           duplicate
         end

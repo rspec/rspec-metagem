@@ -1,13 +1,11 @@
-Feature: Running specs multiple times with different runner options in the same
-  process
+Feature: Running specs multiple times with different runner options in the same process
 
   Use `clear_examples` command to clear all example groups between different
   runs in the same process. It:
 
   - clears all example groups
   - restores inclusion and exclusion filters set by configuration
-  - clears inclusion and exclusion filters set by previous spec run (via
-  runner)
+  - clears inclusion and exclusion filters set by previous spec run (via runner)
   - resets all time counters (start time, load time, duration, etc.)
   - resets different counts of examples (all examples, pending and failed)
 
@@ -60,7 +58,6 @@ Feature: Running specs multiple times with different runner options in the same
   Scenario: Running specs multiple times in the same process
     Given a file named "scripts/multiple_runs.rb" with:
       """ruby
-      require 'rspec'
       require 'rspec/core'
       require './spec/spec_helper'
 
@@ -91,7 +88,6 @@ Feature: Running specs multiple times with different runner options in the same
       """
     Given a file named "scripts/different_parameters.rb" with:
       """ruby
-      require 'rspec'
       require 'rspec/core'
       require './spec/spec_helper'
 
