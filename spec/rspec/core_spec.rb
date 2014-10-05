@@ -92,6 +92,11 @@ RSpec.describe RSpec do
     let(:listener) { double("listener") }
     let(:reporter) { RSpec.configuration.reporter }
 
+    before do
+      RSpec.configuration.output_stream = StringIO.new
+      RSpec.configuration.error_stream = StringIO.new
+    end
+
     def some_example
       double("example").as_null_object
     end
