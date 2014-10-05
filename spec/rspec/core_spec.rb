@@ -134,9 +134,9 @@ RSpec.describe RSpec do
 
     it "restores inclusion rules set by configuration" do
       file_path = File.expand_path("foo_spec.rb")
-      RSpec.configure {
-        |config| config.filter_run_including(:locations => { file_path => [12] })
-      }
+      RSpec.configure do |config|
+        config.filter_run_including(:locations => { file_path => [12] })
+      end
       allow(RSpec.configuration).to receive(:load).with(file_path)
       allow(reporter).to receive(:report)
       RSpec::Core::Runner.run(["foo_spec.rb:14"])
