@@ -134,5 +134,5 @@ Feature: Excluding lines from the backtrace
         config.filter_gems_from_backtrace "my_gem"
       end
       """
-    Then the output from `rspec` should contain "# ./vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
-    But the output from `rspec --require spec_helper` should not contain "# ./vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
+    Then the output from `rspec` should contain "vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
+    But the output from `rspec --require spec_helper` should not contain "vendor/my_gem-1.2.3/lib/my_gem.rb:4:in `do_amazing_things!'"
