@@ -59,7 +59,6 @@ Feature: Running specs multiple times with different runner options in the same 
     Given a file named "scripts/multiple_runs.rb" with:
       """ruby
       require 'rspec/core'
-      require './spec/spec_helper'
 
       RSpec::Core::Runner.run(['spec'])
       RSpec.clear_examples
@@ -89,7 +88,6 @@ Feature: Running specs multiple times with different runner options in the same 
     Given a file named "scripts/different_parameters.rb" with:
       """ruby
       require 'rspec/core'
-      require './spec/spec_helper'
 
       RSpec::Core::Runner.run(['spec'])
       RSpec.clear_examples

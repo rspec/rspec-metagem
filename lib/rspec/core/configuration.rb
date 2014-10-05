@@ -279,7 +279,7 @@ module RSpec
       # @private
       attr_accessor :filter_manager
       # @private
-      attr_accessor :original_filter_manager
+      attr_accessor :static_config_filter_manager
       # @private
       attr_reader :backtrace_formatter, :ordering_manager
 
@@ -305,7 +305,7 @@ module RSpec
         @reporter = nil
         @reporter_buffer = nil
         @filter_manager = FilterManager.new
-        @original_filter_manager = FilterManager.new
+        @static_config_filter_manager = FilterManager.new
         @ordering_manager = Ordering::ConfigurationManager.new
         @preferred_options = {}
         @failure_color = :red
@@ -339,10 +339,10 @@ module RSpec
       def reset_filters
         self.filter_manager = FilterManager.new
         filter_manager.include_only(
-          Metadata.deep_hash_dup(original_filter_manager.inclusions.rules)
+          Metadata.deep_hash_dup(static_config_filter_manager.inclusions.rules)
         )
         filter_manager.exclude_only(
-          Metadata.deep_hash_dup(original_filter_manager.exclusions.rules)
+          Metadata.deep_hash_dup(static_config_filter_manager.exclusions.rules)
         )
       end
 
@@ -914,7 +914,7 @@ module RSpec
       def filter_run_including(*args)
         meta = Metadata.build_hash_from(args, :warn_about_example_group_filtering)
         filter_manager.include_with_low_priority meta
-        original_filter_manager.include_with_low_priority Metadata.deep_hash_dup(meta)
+        static_config_filter_manager.include_with_low_priority Metadata.deep_hash_dup(meta)
       end
 
       alias_method :filter_run, :filter_run_including
@@ -973,7 +973,7 @@ module RSpec
       def filter_run_excluding(*args)
         meta = Metadata.build_hash_from(args, :warn_about_example_group_filtering)
         filter_manager.exclude_with_low_priority meta
-        original_filter_manager.exclude_with_low_priority Metadata.deep_hash_dup(meta)
+        static_config_filter_manager.exclude_with_low_priority Metadata.deep_hash_dup(meta)
       end
 
       # Clears and reassigns the `exclusion_filter`. Set to `nil` if you don't
