@@ -28,18 +28,22 @@ Feature: shared examples
       'shared_examples_for_widgets'` to require a file at
       `#{PROJECT_ROOT}/spec/shared_examples_for_widgets.rb`.
 
-  2.  Put files containing shared examples in `spec/support/` and require files
-      in that directory from `spec/spec_helper.rb`:
+  2.  One convention is to put files containing shared examples in `spec/support/`
+      and require files in that directory from `spec/spec_helper.rb`:
 
       ```ruby
       Dir["./spec/support/**/*.rb"].sort.each { |f| require f}
       ```
 
-      This is included in the generated `spec/spec_helper.rb` file in
-      `rspec-rails`
+      Historically, this was included in the generated `spec/spec_helper.rb` file in
+      `rspec-rails`. However, in order to keep your test suite boot time down,
+      it's a good idea to not autorequire all files in a directory like this.
+      When running only one spec file, loading unneeded dependencies or performing
+      unneeded setup can have a significant, noticable effect on how long it takes
+      before the first example runs.
 
-  3. When all of the groups that include the shared group, just declare the
-     shared group in the same file.
+  3. When all of the groups that include the shared group reside in the same file,
+     just declare the shared group in that file.
 
   Scenario: Shared examples group included in two groups in one file
     Given a file named "collection_spec.rb" with:
