@@ -47,7 +47,7 @@ module RSpec
   # defaults between multiple runs in the same process.
   #
   # Users must invoke this if they want to have the configuration reset when
-  # they use runner multiple times within the same process. Users must deal
+  # they use the runner multiple times within the same process. Users must deal
   # themselves with re-configuration of RSpec before run.
   def self.reset
     @world = nil
@@ -58,8 +58,8 @@ module RSpec
   # process and ensures user configuration is persisted.
   #
   # Users must invoke this if they want to clear all examples but preserve
-  # current configuration when they use runner multiple times within the same
-  # process.
+  # current configuration when they use the runner multiple times within the
+  # same process.
   def self.clear_examples
     world.reset
     configuration.reporter.reset
