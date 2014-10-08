@@ -9,8 +9,14 @@ Enhancements:
 * Add `RSpec.clear_examples` as a clear way to reset examples in between
   spec runs, whilst retaining user configuration.  (Alexey Fedorov, #1706)
 
+### 3.1.6 Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...3-1-maintenance)
+
 Bug Fixes:
 
+* Fix regression in rake task pattern handling, that prevented patterns
+  that were relative from the current directory rather than from `spec`
+  from working properly. (Myron Marston, #1734)
 * Prevent rake task from generating duplicate load path entries.
   (Myron Marston, #1735)
 

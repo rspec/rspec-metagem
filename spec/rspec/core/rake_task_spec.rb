@@ -244,6 +244,19 @@ module RSpec::Core
         end
       end
 
+      context "that is a relative file glob, for a path not under the default spec dir (`spec`)" do
+        it "loads the matching spec files" do
+          Dir.chdir("./spec/rspec/core") do
+            task.pattern = "resources/**/*_spec.rb"
+
+            expect(loaded_files).to contain_files(
+              "resources/acceptance/foo_spec.rb",
+              "resources/a_spec.rb"
+            )
+          end
+        end
+      end
+
       context "that is an array of existing files or directories, not a file glob" do
         it "loads the specified spec files, and spec files from the specified directories" do
           task.pattern = ["./spec/rspec/core/resources/acceptance",
