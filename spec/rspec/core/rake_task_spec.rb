@@ -162,6 +162,17 @@ module RSpec::Core
 
             expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
           end
+
+          it "avoids adding the same load path entries twice" do
+            $LOAD_PATH.replace([
+              path_template % "rspec-core",
+              path_template % "rspec-support",
+              path_template % "rspec-core",
+              path_template % "rspec-support"
+            ])
+
+            expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
+          end
         end
       end
 
