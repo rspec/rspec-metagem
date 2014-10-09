@@ -1,5 +1,5 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...master)
 
 Enhancements:
 
@@ -9,8 +9,8 @@ Enhancements:
 * Add `RSpec.clear_examples` as a clear way to reset examples in between
   spec runs, whilst retaining user configuration.  (Alexey Fedorov, #1706)
 
-### 3.1.6 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...3-1-maintenance)
+### 3.1.6 / 2014-10-08
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...v3.1.6)
 
 Bug Fixes:
 
