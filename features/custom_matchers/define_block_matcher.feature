@@ -5,7 +5,27 @@ Feature: define a matcher supporting block expectations
   based on some logic) by defining a `supports_block_expectation?` method or by using
   the DSL's `supports_block_expectations` shortcut method.
 
-  Scenario: define a block matcher
+  Scenario: define a block matcher manually
+    Given a file named "block_matcher_spec.rb" with:
+      """ruby
+      RSpec::Matchers.define :support_blocks do
+        match do |actual|
+          actual.is_a? Proc
+        end
+
+        def supports_block_expectations?
+          true # or some logic
+        end
+      end
+
+      RSpec.describe "a custom block matcher" do
+        specify { expect { }.to support_blocks }
+      end
+      """
+    When I run `rspec ./block_matcher_spec.rb`
+    Then the example should pass
+
+  Scenario: define a block matcher using shortcut
     Given a file named "block_matcher_spec.rb" with:
       """ruby
       RSpec::Matchers.define :support_blocks do
