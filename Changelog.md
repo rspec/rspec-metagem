@@ -8,6 +8,8 @@ Enhancements:
   set. (Ben Snape, #1704)
 * Add `RSpec.clear_examples` as a clear way to reset examples in between
   spec runs, whilst retaining user configuration.  (Alexey Fedorov, #1706)
+* Reduce string allocations when defining and running examples by 70%
+  and 50% respectively. (Myron Marston, #1738)
 
 ### 3.1.7 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...3-1-maintenance)
