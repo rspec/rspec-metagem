@@ -13,6 +13,8 @@ Enhancements:
   creates an `attr_reader` for `small_value` (Tom Stuart, #644)
 * Provide a more helpful deprecation message when using the `should` syntax.
   (Elia Schito, #663)
+* Provide more detail in the `have_attributes` matcher failure message.
+  (Jon Rowe,  #668)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
