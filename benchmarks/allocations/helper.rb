@@ -2,8 +2,8 @@ $LOAD_PATH.unshift File.expand_path("../../../lib", __FILE__)
 require 'rspec/core'
 require 'allocation_stats'
 
-def benchmark_allocations
-  stats = AllocationStats.new(burn: 1).trace do
+def benchmark_allocations(burn: 1)
+  stats = AllocationStats.new(burn: burn).trace do
     yield
   end
 
