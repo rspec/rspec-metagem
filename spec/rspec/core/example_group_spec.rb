@@ -39,11 +39,24 @@ module RSpec::Core
         end
       end
 
-      RSpec::Matchers.define :have_class_const do |class_name|
-        match do |group|
-          group.name == "RSpec::ExampleGroups::#{class_name}" &&
-          group == class_name.split('::').inject(RSpec::ExampleGroups) do |mod, name|
-            mod.const_get(name)
+      if RUBY_VERSION == "1.9.2"
+        RSpec::Matchers.define :have_class_const do |class_name|
+          match do |group|
+            class_name.gsub!('::','_::')
+            class_name << '_'
+            group.name == "RSpec::ExampleGroups::#{class_name}" &&
+            group == class_name.split('::').inject(RSpec::ExampleGroups) do |mod, name|
+              mod.const_get(name)
+            end
+          end
+        end
+      else
+        RSpec::Matchers.define :have_class_const do |class_name, _|
+          match do |group|
+            group.name == "RSpec::ExampleGroups::#{class_name}" &&
+            group == class_name.split('::').inject(RSpec::ExampleGroups) do |mod, name|
+              mod.const_get(name)
+            end
           end
         end
       end
@@ -88,7 +101,7 @@ module RSpec::Core
         expect(child).to have_class_const("SomeParentGroup::Hash")
       end
 
-      it 'disambiguates name collisions by appending a number' do
+      it 'disambiguates name collisions by appending a number', :unless => RUBY_VERSION == '1.9.2' do
         groups = 10.times.map { ExampleGroup.describe("Collision") }
         expect(groups[0]).to have_class_const("Collision")
         expect(groups[1]).to have_class_const("Collision_2")
@@ -116,7 +129,7 @@ module RSpec::Core
         }.to raise_error(/ExampleGroups::CallingAnUndefinedMethod/)
       end
 
-      it 'does not have problems with example groups named "Core"' do
+      it 'does not have problems with example groups named "Core"', :unless => RUBY_VERSION == '1.9.2' do
         ExampleGroup.describe("Core")
         expect(defined?(::RSpec::ExampleGroups::Core)).to be_truthy
 
@@ -126,7 +139,7 @@ module RSpec::Core
         expect(group).to have_class_const("AnotherGroup")
       end
 
-      it 'does not have problems with example groups named "RSpec"' do
+      it 'does not have problems with example groups named "RSpec"', :unless => RUBY_VERSION == '1.9.2' do
         ExampleGroup.describe("RSpec")
         expect(defined?(::RSpec::ExampleGroups::RSpec)).to be_truthy
 
@@ -1605,7 +1618,7 @@ module RSpec::Core
       }.to raise_error(/not allowed/)
     end
 
-    describe 'inspect output' do
+    describe 'inspect output', :unless => RUBY_VERSION == '1.9.2' do
       context 'when there is no inspect output provided' do
         it "uses '(no description provided)' instead" do
           expect(ExampleGroup.new.inspect).to eq('#<RSpec::Core::ExampleGroup (no description provided)>')

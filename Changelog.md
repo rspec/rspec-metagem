@@ -17,6 +17,9 @@ Bug Fixes:
 * Fix `Metadata.relative_path` so that for a current directory of
   `/foo/bar`, `/foo/bar_1` is not wrongly converted to `._1`.
   (Akos Vandra, #1730)
+* Prevent constant lookup mistakenly finding `RSpec::ExampleGroups` generated
+  constants on 1.9.2 by appending a trailing `_` to the generated names.
+  (Jon Rowe, #1737)
 
 ### 3.1.6 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...v3.1.6)

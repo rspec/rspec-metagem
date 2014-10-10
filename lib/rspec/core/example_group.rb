@@ -639,6 +639,16 @@ module RSpec
       name
     end
 
+    if RUBY_VERSION == '1.9.2'
+      class << self
+        alias _base_name_for base_name_for
+        def base_name_for(group)
+          _base_name_for(group) + '_'
+        end
+      end
+      private_class_method :_base_name_for
+    end
+
     def self.disambiguate(name, const_scope)
       return name unless const_defined_on?(const_scope, name)
 
