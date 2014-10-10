@@ -32,15 +32,23 @@ module RSpec
     class Configuration
       include RSpec::Core::Hooks
 
+      # Module that holds `attr_reader` declarations. It's in a separate
+      # module to allow us to override those methods and use `super`.
+      # @private
+      Readers = Module.new
+      include Readers
+
       # @private
       class MustBeConfiguredBeforeExampleGroupsError < StandardError; end
 
       # @private
       def self.define_reader(name)
-        define_method(name) do
-          variable = instance_variable_defined?("@#{name}") ? instance_variable_get("@#{name}") : nil
-          value_for(name, variable)
+        Readers.class_eval do
+          remove_method name if method_defined?(name)
+          attr_reader name
         end
+
+        define_method(name) { value_for(name) { super() } }
       end
 
       # @private
@@ -627,7 +635,7 @@ module RSpec
       # @see color_enabled?
       # @return [Boolean]
       def color
-        value_for(:color, @color)
+        value_for(:color) { @color }
       end
 
       # Check if color is enabled for a particular output
@@ -760,7 +768,7 @@ module RSpec
       # Defaults `profile_examples` to 10 examples when `@profile_examples` is `true`.
       #
       def profile_examples
-        profile = value_for(:profile_examples, @profile_examples)
+        profile = value_for(:profile_examples) { @profile_examples }
         if profile && !profile.is_a?(Integer)
           10
         else
@@ -1402,8 +1410,8 @@ module RSpec
         $0.split(File::SEPARATOR).last
       end
 
-      def value_for(key, default=nil)
-        @preferred_options.key?(key) ? @preferred_options[key] : default
+      def value_for(key)
+        @preferred_options.fetch(key) { yield }
       end
 
       def assert_no_example_groups_defined(config_option)
