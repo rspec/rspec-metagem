@@ -33,7 +33,19 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target does not have any of the expected attributes" do
       expect {
         expect(person).to have_attributes(:name => wrong_name)
-      }.to fail_matching(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => wrong_name}|)
+      }.to fail_matching(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => wrong_name} but had attributes #{hash_inspect :name => correct_name }|)
+    end
+
+    it "fails with correct message if object manipulates its data" do
+      counter = Class.new do
+        def initialize; @count = 1; end
+        def count
+          @count += 1
+        end
+      end.new
+      expect {
+        expect(counter).to have_attributes(:count => 1)
+      }.to fail_matching(%r|to have attributes #{hash_inspect :count => 1} but had attributes #{hash_inspect :count => 2 }|)
     end
 
     it "fails if target does not responds to any of the attributes" do
