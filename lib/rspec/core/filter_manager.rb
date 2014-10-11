@@ -31,7 +31,7 @@ module RSpec
     # ## Options files and command line overrides
     #
     # Tag declarations can be stored in `.rspec`, `~/.rspec`, or a custom
-    # options file.  This is useful for storing defaults. For example, let's
+    # options file. This is useful for storing defaults. For example, let's
     # say you've got some slow specs that you want to suppress most of the
     # time. You can tag them like this:
     #

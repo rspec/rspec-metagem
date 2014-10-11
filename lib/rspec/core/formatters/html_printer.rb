@@ -5,7 +5,7 @@ module RSpec
     module Formatters
       # @private
       class HtmlPrinter
-        include ERB::Util # for the #h method
+        include ERB::Util # For the #h method.
         def initialize(output)
           @output = output
         end

@@ -11,8 +11,8 @@ module RSpec
       # @see RSpec::Core::Reporter
       # @see RSpec::Core::Formatters::Protocol
       class BaseFormatter
-        # all formatters inheriting from this formatter will receive these
-        # notifications
+        # All formatters inheriting from this formatter will receive these
+        # notifications.
         Formatters.register self, :start, :example_group_started, :close
         attr_accessor :example_group
         attr_reader :output

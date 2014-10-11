@@ -1,12 +1,12 @@
 RSpec::Support.require_rspec_support "directory_maker"
 # ## Built-in Formatters
 #
-# * progress (default) - prints dots for passing examples, `F` for failures, `*`
-#                        for pending
-# * documentation - prints the docstrings passed to `describe` and `it` methods
-#                   (and their aliases)
+# * progress (default) - Prints dots for passing examples, `F` for failures, `*`
+#                        for pending.
+# * documentation - Prints the docstrings passed to `describe` and `it` methods
+#                   (and their aliases).
 # * html
-# * json - useful for archiving data for subsequent analysis
+# * json - Useful for archiving data for subsequent analysis.
 #
 # The progress formatter is the default, but you can choose any one or more of
 # the other formatters by passing with the `--format` (or `-f` for short)
@@ -91,7 +91,7 @@ module RSpec::Core::Formatters
   class Loader
     # @api private
     #
-    # Internal formatters are stored here when loaded
+    # Internal formatters are stored here when loaded.
     def self.formatters
       @formatters ||= {}
     end

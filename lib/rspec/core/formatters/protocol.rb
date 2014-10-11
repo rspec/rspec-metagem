@@ -117,7 +117,7 @@ module RSpec
         # This method is invoked after all of the examples have executed. The
         # next method to be invoked after this one is {#dump_failures}
         # (BaseTextFormatter then calls {#dump_failure} once for each failed
-        # example.)
+        # example).
         #
         # @param notification [NullNotification]
 
@@ -153,7 +153,7 @@ module RSpec
         # @api public
         # @group Suite Notifications
         #
-        # Outputs a report of pending examples.  This gets invoked
+        # Outputs a report of pending examples. This gets invoked
         # after the summary if option is set to do so.
         #
         # @param notification [NullNotification]

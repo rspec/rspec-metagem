@@ -15,7 +15,7 @@ module RSpec
         end
 
         def setup_mocks_for_rspec
-          # No setup required
+          # No setup required.
         end
 
         def verify_mocks_for_rspec

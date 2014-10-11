@@ -44,7 +44,7 @@ module RSpec
     class Example
       # @private
       #
-      # Used to define methods that delegate to this example's metadata
+      # Used to define methods that delegate to this example's metadata.
       def self.delegate_to_metadata(key)
         define_method(key) { @metadata[key] }
       end
@@ -95,7 +95,7 @@ module RSpec
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this
-      # example (nil if no exception is raised)
+      # example (nil if no exception is raised).
       attr_reader :exception
 
       # @attr_reader
@@ -207,7 +207,7 @@ module RSpec
       #         if ex.metadata[:key] == :some_value && some_global_condition
       #           raise "some message"
       #         end
-      #         ex.run         # run delegates to ex.call
+      #         ex.run         # run delegates to ex.call.
       #       end
       #     end
       #
@@ -317,7 +317,7 @@ module RSpec
       # @private
       #
       # Used internally to skip without actually executing the example when
-      # skip is used in before(:context)
+      # skip is used in before(:context).
       def skip_with_exception(reporter, exception)
         start(reporter)
         Pending.mark_skipped! self, exception.argument
@@ -507,7 +507,7 @@ module RSpec
         super(AnonymousExampleGroup, "", {})
       end
 
-      # To ensure we don't silence errors...
+      # To ensure we don't silence errors.
       def set_exception(exception, _context=nil)
         raise exception
       end

@@ -3,7 +3,7 @@ RSpec::Support.require_rspec_support 'recursive_const_methods'
 module RSpec
   module Core
     # ExampleGroup and {Example} are the main structural elements of
-    # rspec-core.  Consider this example:
+    # rspec-core. Consider this example:
     #
     #     describe Thing do
     #       it "does something" do
@@ -77,7 +77,6 @@ module RSpec
       #       end
       #     end
       #
-      #
       def described_class
         self.class.described_class
       end
@@ -144,25 +143,25 @@ module RSpec
       #  end
       define_example_method :specify
 
-      # Shortcut to define an example with `:focus => true`
+      # Shortcut to define an example with `:focus => true`.
       # @see example
       define_example_method :focus,    :focus => true
-      # Shortcut to define an example with `:focus => true`
+      # Shortcut to define an example with `:focus => true`.
       # @see example
       define_example_method :fexample, :focus => true
-      # Shortcut to define an example with `:focus => true`
+      # Shortcut to define an example with `:focus => true`.
       # @see example
       define_example_method :fit,      :focus => true
-      # Shortcut to define an example with `:focus => true`
+      # Shortcut to define an example with `:focus => true`.
       # @see example
       define_example_method :fspecify, :focus => true
-      # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xexample'`.
       # @see example
       define_example_method :xexample, :skip => 'Temporarily skipped with xexample'
-      # Shortcut to define an example with `:skip => 'Temporarily skipped with xit'`
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xit'`.
       # @see example
       define_example_method :xit,      :skip => 'Temporarily skipped with xit'
-      # Shortcut to define an example with `:skip => 'Temporarily skipped with xspecify'`
+      # Shortcut to define an example with `:skip => 'Temporarily skipped with xspecify'`.
       # @see example
       define_example_method :xspecify, :skip => 'Temporarily skipped with xspecify'
       # Shortcut to define an example with `:skip => true`
@@ -278,8 +277,8 @@ module RSpec
       #   @see SharedExampleGroup
       def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
         define_singleton_method(new_name) do |name, *args, &customization_block|
-          # Pass :caller so the :location metadata is set properly...
-          # otherwise, it'll be set to the next line because that's
+          # Pass :caller so the :location metadata is set properly.
+          # Otherwise, it'll be set to the next line because that's
           # the block's source_location.
           group = example_group("#{report_label} #{name}", :caller => caller) do
             find_and_eval_shared("examples", name, *args, &customization_block)
@@ -452,7 +451,7 @@ module RSpec
         end
       end
 
-      # Runs all the examples in this group
+      # Runs all the examples in this group.
       def self.run(reporter)
         if RSpec.world.wants_to_quit
           RSpec.world.clear_remaining_example_groups if top_level?
@@ -630,7 +629,7 @@ module RSpec
     def self.base_name_for(group)
       return "Anonymous" if group.description.empty?
 
-      # convert to CamelCase
+      # Convert to CamelCase.
       name = ' ' + group.description
       name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) { Regexp.last_match[1].upcase }
 

@@ -24,7 +24,7 @@ module RSpec
           next unless $!.nil? || $!.is_a?(SystemExit)
 
           # We got here because either the end of the program was reached or
-          # somebody called Kernel#exit.  Run the specs and then override any
+          # somebody called Kernel#exit. Run the specs and then override any
           # existing exit status with RSpec's exit status if any specs failed.
           invoke
         end

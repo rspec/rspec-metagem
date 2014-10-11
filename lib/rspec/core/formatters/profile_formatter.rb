@@ -4,7 +4,7 @@ module RSpec
   module Core
     module Formatters
       # @api private
-      # Formatter for providing profile output
+      # Formatter for providing profile output.
       class ProfileFormatter
         Formatters.register self, :dump_profile
 

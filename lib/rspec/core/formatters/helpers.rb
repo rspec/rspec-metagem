@@ -1,7 +1,7 @@
 module RSpec
   module Core
     module Formatters
-      # Formatters helpers
+      # Formatters helpers.
       module Helpers
         # @private
         SUB_SECOND_PRECISION = 5

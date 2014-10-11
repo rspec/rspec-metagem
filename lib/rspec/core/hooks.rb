@@ -39,7 +39,7 @@ module RSpec
       # can also be shared across multiple groups.
       #
       # You can also use `before(:suite)` to run a block of code before any
-      # example groups are run. This should be declared in {RSpec.configure}
+      # example groups are run. This should be declared in {RSpec.configure}.
       #
       # Instance variables declared in `before(:example)` or `before(:context)`
       # are accessible within each example.
@@ -51,13 +51,13 @@ module RSpec
       # several different places: `RSpec.configure`, a parent group, the current
       # group. They are run in the following order:
       #
-      #     before(:suite)    # declared in RSpec.configure
-      #     before(:context)  # declared in RSpec.configure
-      #     before(:context)  # declared in a parent group
-      #     before(:context)  # declared in the current group
-      #     before(:example)  # declared in RSpec.configure
-      #     before(:example)  # declared in a parent group
-      #     before(:example)  # declared in the current group
+      #     before(:suite)    # Declared in RSpec.configure.
+      #     before(:context)  # Declared in RSpec.configure.
+      #     before(:context)  # Declared in a parent group.
+      #     before(:context)  # Declared in the current group.
+      #     before(:example)  # Declared in RSpec.configure.
+      #     before(:example)  # Declared in a parent group.
+      #     before(:example)  # Declared in the current group.
       #
       # If more than one `before` is declared within any one scope, they are run
       # in the order in which they are declared.
@@ -75,16 +75,16 @@ module RSpec
       #     end
       #
       #     describe Something, :authorized => true do
-      #       # the before hook will run in before each example in this group
+      #       # The before hook will run in before each example in this group.
       #     end
       #
       #     describe SomethingElse do
       #       it "does something", :authorized => true do
-      #         # the before hook will run before this example
+      #         # The before hook will run before this example.
       #       end
       #
       #       it "does something else" do
-      #         # the hook will not run before this example
+      #         # The hook will not run before this example.
       #       end
       #     end
       #
@@ -115,19 +115,19 @@ module RSpec
       # recommend that you avoid this as there are a number of gotchas, as well
       # as things that simply don't work.
       #
-      # #### context
+      # #### Context
       #
       # `before(:context)` is run in an example that is generated to provide
       # group context for the block.
       #
-      # #### instance variables
+      # #### Instance variables
       #
       # Instance variables declared in `before(:context)` are shared across all
       # the examples in the group. This means that each example can change the
       # state of a shared object, resulting in an ordering dependency that can
       # make it difficult to reason about failures.
       #
-      # #### unsupported rspec constructs
+      # #### Unsupported RSpec constructs
       #
       # RSpec has several constructs that reset state between each example
       # automatically. These are not intended for use from within
@@ -158,7 +158,7 @@ module RSpec
       #       end
       #
       #       it "does something" do
-      #         # here you can access @thing
+      #         # Here you can access @thing.
       #       end
       #     end
       #
@@ -230,7 +230,7 @@ module RSpec
       # ### Exceptions
       #
       # `after` hooks are guaranteed to run even when there are exceptions in
-      # `before` hooks or examples.  When an exception is raised in an after
+      # `before` hooks or examples. When an exception is raised in an after
       # block, the exception is captured for later reporting, and subsequent
       # `after` blocks are run.
       #
@@ -241,13 +241,13 @@ module RSpec
       # several different places: `RSpec.configure`, a parent group, the current
       # group. They are run in the following order:
       #
-      #     after(:example) # declared in the current group
-      #     after(:example) # declared in a parent group
-      #     after(:example) # declared in RSpec.configure
-      #     after(:context) # declared in the current group
-      #     after(:context) # declared in a parent group
-      #     after(:context) # declared in RSpec.configure
-      #     after(:suite)   # declared in RSpec.configure
+      #     after(:example) # Declared in the current group.
+      #     after(:example) # Declared in a parent group.
+      #     after(:example) # Declared in RSpec.configure.
+      #     after(:context) # Declared in the current group.
+      #     after(:context) # Declared in a parent group.
+      #     after(:context) # Declared in RSpec.configure.
+      #     after(:suite)   # Declared in RSpec.configure.
       #
       # This is the reverse of the order in which `before` hooks are run.
       # Similarly, if more than one `after` is declared within any one scope,
@@ -303,13 +303,13 @@ module RSpec
       # after the example. It is your responsibility to run the example:
       #
       #     around(:example) do |ex|
-      #       # do some stuff before
+      #       # Do some stuff before.
       #       ex.run
-      #       # do some stuff after
+      #       # Do some stuff after.
       #     end
       #
       # The yielded example aliases `run` with `call`, which lets you treat it
-      # like a `Proc`.  This is especially handy when working with libaries
+      # like a `Proc`. This is especially handy when working with libaries
       # that manage their own setup and teardown using a block or proc syntax,
       # e.g.
       #
@@ -366,7 +366,7 @@ module RSpec
         def run(example)
           example.instance_exec(example, &block)
         rescue Exception => e
-          # TODO: come up with a better solution for this.
+          # TODO: Come up with a better solution for this.
           RSpec.configuration.reporter.message <<-EOS
 
 An error occurred in an `after(:context)` hook.

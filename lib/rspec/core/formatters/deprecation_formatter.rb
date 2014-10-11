@@ -216,7 +216,7 @@ module RSpec
       end
     end
 
-    # Deprecation Error
+    # Deprecation Error.
     DeprecationError = Class.new(StandardError)
   end
 end

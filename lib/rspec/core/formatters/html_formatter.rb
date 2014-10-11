@@ -112,15 +112,15 @@ module RSpec
       private
 
         # If these methods are declared with attr_reader Ruby will issue a
-        # warning because they are private
+        # warning because they are private.
         # rubocop:disable Style/TrivialAccessors
 
-        # The number of the currently running example_group
+        # The number of the currently running example_group.
         def example_group_number
           @example_group_number
         end
 
-        # The number of the currently running example (a global counter)
+        # The number of the currently running example (a global counter).
         def example_number
           @example_number
         end

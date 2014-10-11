@@ -73,7 +73,7 @@ module RSpec
         if block_given?
           raise ArgumentError, <<-EOS.gsub(/^\s+\|/, '')
             |The semantics of `RSpec::Core::Pending#pending` have changed in
-            |RSpec 3.  In RSpec 2.x, it caused the example to be skipped. In
+            |RSpec 3. In RSpec 2.x, it caused the example to be skipped. In
             |RSpec 3, the rest of the example is still run but is expected to
             |fail, and will be marked as a failure (rather than as pending) if
             |the example passes.
@@ -125,7 +125,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as skipped
+      # Mark example as skipped.
       #
       # @param example [RSpec::Core::Example] the example to mark as skipped
       # @param message_or_bool [Boolean, String] the message to use, or true
@@ -136,7 +136,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as pending
+      # Mark example as pending.
       #
       # @param example [RSpec::Core::Example] the example to mark as pending
       # @param message_or_bool [Boolean, String] the message to use, or true
@@ -154,7 +154,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as fixed
+      # Mark example as fixed.
       #
       # @param example [RSpec::Core::Example] the example to mark as fixed
       def self.mark_fixed!(example)

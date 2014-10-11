@@ -20,7 +20,7 @@ module RSpec
       #
       # @example
       #
-      #   # explicit declaration of subject
+      #   # Explicit declaration of subject.
       #   describe Person do
       #     subject { Person.new(:birthdate => 19.years.ago) }
       #     it "should be eligible to vote" do
@@ -29,7 +29,7 @@ module RSpec
       #     end
       #   end
       #
-      #   # implicit subject => { Person.new }
+      #   # Implicit subject => { Person.new }.
       #   describe Person do
       #     it "should be eligible to vote" do
       #       subject.should be_eligible_to_vote
@@ -37,7 +37,7 @@ module RSpec
       #     end
       #   end
       #
-      #   # one-liner syntax - expectation is set on the subject
+      #   # One-liner syntax - expectation is set on the subject.
       #   describe Person do
       #     it { is_expected.to be_eligible_to_vote }
       #     # or
@@ -221,10 +221,10 @@ EOS
         #     let(:thing) { Thing.new }
         #
         #     it "does something" do
-        #       # first invocation, executes block, memoizes and returns result
+        #       # First invocation, executes block, memoizes and returns result.
         #       thing.do_something
         #
-        #       # second invocation, returns the memoized value
+        #       # Second invocation, returns the memoized value.
         #       thing.should be_something
         #     end
         #   end

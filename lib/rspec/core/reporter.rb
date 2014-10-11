@@ -22,7 +22,7 @@ module RSpec::Core
     end
 
     # Registers a listener to a list of notifications. The reporter will send
-    # notification of events to all registered listeners
+    # notification of events to all registered listeners.
     #
     # @param listener [Object] An obect that wishes to be notified of reporter
     #   events
@@ -148,7 +148,7 @@ module RSpec::Core
 
     def mute_profile_output?
       # Don't print out profiled info if there are failures and `--fail-fast` is
-      # used, it just clutters the output
+      # used, it just clutters the output.
       !@configuration.profile_examples? || (@configuration.fail_fast? && @failed_examples.size > 0)
     end
 

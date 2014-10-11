@@ -2,14 +2,14 @@ module RSpec
   module Core
     # @api private
     #
-    # Internal container for global non-configuration data
+    # Internal container for global non-configuration data.
     class World
       include RSpec::Core::Hooks
 
       # @private
       attr_reader :example_groups, :filtered_examples
 
-      # Used internally to determine what to do when a SIGINT is received
+      # Used internally to determine what to do when a SIGINT is received.
       attr_accessor :wants_to_quit
 
       def initialize(configuration=RSpec.configuration)
@@ -26,14 +26,14 @@ module RSpec
       end
 
       # @private
-      # Used internally to clear remaining groups when fail_fast is set
+      # Used internally to clear remaining groups when fail_fast is set.
       def clear_remaining_example_groups
         example_groups.clear
       end
 
       # @api private
       #
-      # Apply ordering strategy from configuration to example groups
+      # Apply ordering strategy from configuration to example groups.
       def ordered_example_groups
         ordering_strategy = @configuration.ordering_registry.fetch(:global)
         ordering_strategy.order(@example_groups)
@@ -41,7 +41,7 @@ module RSpec
 
       # @api private
       #
-      # Reset world to 'scratch' before running suite
+      # Reset world to 'scratch' before running suite.
       def reset
         example_groups.clear
         @shared_example_group_registry = nil
@@ -54,7 +54,7 @@ module RSpec
 
       # @api private
       #
-      # Register an example group
+      # Register an example group.
       def register(example_group)
         example_groups << example_group
         example_group
@@ -82,7 +82,7 @@ module RSpec
 
       # @api private
       #
-      # Get count of examples to be run
+      # Get count of examples to be run.
       def example_count(groups=example_groups)
         FlatMap.flat_map(groups) { |g| g.descendants }.
           inject(0) { |a, e| a + e.filtered_examples.size }
@@ -90,7 +90,7 @@ module RSpec
 
       # @api private
       #
-      # Find line number of previous declaration
+      # Find line number of previous declaration.
       def preceding_declaration_line(filter_line)
         declaration_line_numbers.sort.inject(nil) do |highest_prior_declaration_line, line|
           line <= filter_line ? line : highest_prior_declaration_line
@@ -104,7 +104,7 @@ module RSpec
 
       # @api private
       #
-      # Notify reporter of filters
+      # Notify reporter of filters.
       def announce_filters
         filter_announcements = []
 
@@ -148,7 +148,7 @@ module RSpec
 
       # @api private
       #
-      # Add inclusion filters to announcement message
+      # Add inclusion filters to announcement message.
       def announce_inclusion_filter(announcements)
         return if inclusion_filter.empty?
 
@@ -157,7 +157,7 @@ module RSpec
 
       # @api private
       #
-      # Add exclusion filters to announcement message
+      # Add exclusion filters to announcement message.
       def announce_exclusion_filter(announcements)
         return if exclusion_filter.empty?
 

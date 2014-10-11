@@ -16,14 +16,14 @@ module RSpec
       # adding a shim for the new updates. Thus instead of checking on the
       # RUBY_VERSION we need to check ancestors.
       begin
-        # MiniTest is 4.x
-        # Minitest is 5.x
+        # MiniTest is 4.x.
+        # Minitest is 5.x.
         if ancestors.include?(::Minitest::Assertions)
           require 'rspec/core/minitest_assertions_adapter'
           include ::RSpec::Core::MinitestAssertionsAdapter
         end
       rescue NameError
-        # No-op. Minitest 5.x was not loaded
+        # No-op. Minitest 5.x was not loaded.
       end
     end
   end

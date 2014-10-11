@@ -292,7 +292,7 @@ module RSpec::Core
     class PendingExampleFixedNotification < FailedExampleNotification
       public_class_method :new
 
-      # Returns the examples description
+      # Returns the examples description.
       #
       # @return [String] The example description
       def description
@@ -334,10 +334,10 @@ module RSpec::Core
     MessageNotification = Struct.new(:message)
 
     # The `SeedNotification` holds the seed used to randomize examples and
-    # wether that seed has been used or not.
+    # whether that seed has been used or not.
     #
     # @attr seed [Fixnum] the seed used to randomize ordering
-    # @attr used [Boolean] wether the seed has been used or not
+    # @attr used [Boolean] whether the seed has been used or not
     SeedNotification = Struct.new(:seed, :used) do
       # @api
       # @return [Boolean] has the seed been used?

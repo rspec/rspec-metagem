@@ -66,7 +66,7 @@ module RSpec
 
       # @api private
       #
-      # Shared examples top level DSL
+      # Shared examples top level DSL.
       module TopLevelDSL
         # @private
         def self.definitions
@@ -86,7 +86,7 @@ module RSpec
 
         # @api private
         #
-        # Adds the top level DSL methods to Module and the top level binding
+        # Adds the top level DSL methods to Module and the top level binding.
         def self.expose_globally!
           return if exposed_globally?
           Core::DSL.change_global_dsl(&definitions)
@@ -95,7 +95,7 @@ module RSpec
 
         # @api private
         #
-        # Removes the top level DSL methods to Module and the top level binding
+        # Removes the top level DSL methods to Module and the top level binding.
         def self.remove_globally!
           return unless exposed_globally?
 

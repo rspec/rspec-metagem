@@ -134,7 +134,7 @@ module RSpec
   end
 
   # @private
-  # Internal container for global non-configuration data
+  # Internal container for global non-configuration data.
   def self.world
     @world ||= RSpec::Core::World.new
   end
@@ -151,7 +151,7 @@ module RSpec
       end
     end
 
-    # @private path to executable file
+    # @private path to executable file.
     def self.path_to_executable
       @path_to_executable ||= File.expand_path('../../../exe/rspec', __FILE__)
     end

@@ -60,14 +60,14 @@ module RSpec
         coerce_to(obj, Integer, :to_int)
       end
 
-      # Used internally to make it easy to deal with optional arguments
+      # Used internally to make it easy to deal with optional arguments.
       # (from Rubinius)
       Undefined = Object.new
 
       # @private
       class Random
         # @private
-        # An implementation of Mersenne Twister MT19937 in Ruby
+        # An implementation of Mersenne Twister MT19937 in Ruby.
         class MT19937
           STATE_SIZE = 624
           LAST_STATE = STATE_SIZE - 1
@@ -93,9 +93,9 @@ module RSpec
 
           # Seed must be either an Integer (only the first 32 bits will be used)
           # or an Array of Integers (of which only the first 32 bits will be
-          # used)
+          # used).
           #
-          # No conversion or type checking is done at this level
+          # No conversion or type checking is done at this level.
           def seed=(seed)
             case seed
             when Integer
@@ -130,7 +130,7 @@ module RSpec
             end
           end
 
-          # Returns a random Integer from the range 0 ... (1 << 32)
+          # Returns a random Integer from the range 0 ... (1 << 32).
           def random_32_bits
             next_state if @last_read >= LAST_STATE
             @last_read += 1
@@ -147,12 +147,12 @@ module RSpec
           # No argument checking is done here either.
 
           FLOAT_FACTOR = 1.0/9007199254740992.0
-          # generates a random number on [0,1) with 53-bit resolution
+          # Generates a random number on [0, 1) with 53-bit resolution.
           def random_float
             ((random_32_bits >> 5) * 67108864.0 + (random_32_bits >> 6)) * FLOAT_FACTOR;
           end
 
-          # Returns an integer within 0...upto
+          # Returns an integer within 0...upto.
           def random_integer(upto)
             n = upto - 1
             nb_full_32 = 0
@@ -204,7 +204,7 @@ module RSpec
           end
 
           # Convert an Integer seed of arbitrary size to either a single 32 bit
-          # integer, or an Array of 32 bit integers
+          # integer, or an Array of 32 bit integers.
           def self.convert_seed(seed)
             seed = seed.abs
             long_values = []
@@ -213,7 +213,7 @@ module RSpec
               seed >>= 32
             end until seed == 0
 
-            # Done to allow any kind of sequence of integers
+            # Done to allow any kind of sequence of integers.
             long_values.pop if long_values[-1] == 1 && long_values.size > 1
 
             long_values.size > 1 ? long_values : long_values.first

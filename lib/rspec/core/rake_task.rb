@@ -4,13 +4,13 @@ require 'rspec/support/os'
 
 module RSpec
   module Core
-    # Rspec rake task
+    # RSpec rake task
     #
     # @see Rakefile
     class RakeTask < ::Rake::TaskLib
       include ::Rake::DSL if defined?(::Rake::DSL)
 
-      # Default path to the rspec executable
+      # Default path to the RSpec executable.
       DEFAULT_RSPEC_PATH = File.expand_path('../../../../exe/rspec', __FILE__)
 
       # Default pattern for spec files.
@@ -57,13 +57,13 @@ module RSpec
       #   nil
       attr_accessor :ruby_opts
 
-      # Path to rspec
+      # Path to RSpec.
       #
       # default:
       #   'rspec'
       attr_accessor :rspec_path
 
-      # Command line options to pass to rspec.
+      # Command line options to pass to RSpec.
       #
       # default:
       #   nil
