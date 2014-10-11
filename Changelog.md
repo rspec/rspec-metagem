@@ -22,6 +22,10 @@ Bug Fixes:
 * Prevent constant lookup mistakenly finding `RSpec::ExampleGroups` generated
   constants on 1.9.2 by appending a trailing `_` to the generated names.
   (Jon Rowe, #1737)
+* Fix bug in `:pending` metadata. If it got set in any way besides passing
+  it as part of the metadata literal passed to `it` (such as by using
+  `define_derived_metadata`), it did not have the desired effect,
+  instead marking the example as `:passed`. (Myron Marston, #1739)
 
 ### 3.1.6 / 2014-10-08
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.5...v3.1.6)
