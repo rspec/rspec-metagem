@@ -109,20 +109,10 @@ module RSpec
       def self.define_example_method(name, extra_options={})
         define_singleton_method(name) do |*all_args, &block|
           desc, *args = *all_args
+
           options = Metadata.build_hash_from(args)
           options.update(:skip => RSpec::Core::Pending::NOT_YET_IMPLEMENTED) unless block
           options.update(extra_options)
-
-          # Metadata inheritance normally happens in `Example#initialize`,
-          # but for `:pending` specifically we need it earlier.
-          pending_metadata = options[:pending] || metadata[:pending]
-
-          if pending_metadata
-            options, block = ExampleGroup.pending_metadata_and_block_for(
-              options.merge(:pending => pending_metadata),
-              block
-            )
-          end
 
           examples << RSpec::Core::Example.new(self, desc, options, block)
           examples.last
@@ -545,30 +535,6 @@ module RSpec
       # @private
       def self.set_ivars(instance, ivars)
         ivars.each { |name, value| instance.instance_variable_set(name, value) }
-      end
-
-      # @private
-      def self.pending_metadata_and_block_for(options, block)
-        if String === options[:pending]
-          reason = options[:pending]
-        else
-          options[:pending] = true
-          reason = RSpec::Core::Pending::NO_REASON_GIVEN
-        end
-
-        # Assign :caller so that the callback's source_location isn't used
-        # as the example location.
-        options[:caller] ||= Metadata.backtrace_from(block)
-
-        # This will fail if no block is provided, which is effectively the
-        # same as failing the example so it will be marked correctly as
-        # pending.
-        callback = Proc.new do
-          pending(reason)
-          instance_exec(&block)
-        end
-
-        return options, callback
       end
 
       if RUBY_VERSION.to_f < 1.9

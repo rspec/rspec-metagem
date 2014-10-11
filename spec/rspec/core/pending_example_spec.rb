@@ -50,6 +50,40 @@ RSpec.describe "an example" do
     end
   end
 
+  context "made pending with `define_derived_metadata`" do
+    before do
+      RSpec.configure do |config|
+        config.define_derived_metadata(:not_ready) do |meta|
+          meta[:pending] ||= "Not ready"
+        end
+      end
+    end
+
+    it 'has a pending result if there is an error' do
+      group = RSpec.describe "group" do
+        example "something", :not_ready do
+          boom
+        end
+      end
+
+      group.run
+      example = group.examples.first
+      expect(example).to be_pending_with("Not ready")
+    end
+
+    it 'fails if there is no error' do
+      group = RSpec.describe "group" do
+        example "something", :not_ready do
+        end
+      end
+
+      group.run
+      example = group.examples.first
+      expect(example.execution_result.status).to be(:failed)
+      expect(example.execution_result.exception.message).to include("Expected example to fail")
+    end
+  end
+
   context "with no block" do
     it "is listed as pending with 'Not yet implemented'" do
       group = RSpec::Core::ExampleGroup.describe('group') do
