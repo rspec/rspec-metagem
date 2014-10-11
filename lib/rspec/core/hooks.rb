@@ -326,8 +326,12 @@ module RSpec
         @hooks ||= HookCollections.new(
           self,
           :around => { :example => AroundHookCollection.new },
-          :before => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new },
-          :after  => { :example => HookCollection.new, :context => HookCollection.new, :suite => HookCollection.new }
+          :before => { :example => HookCollection.new,
+                       :context => HookCollection.new,
+                       :suite => HookCollection.new },
+          :after  => { :example => HookCollection.new,
+                       :context => HookCollection.new,
+                       :suite => HookCollection.new }
         )
       end
 
@@ -382,7 +386,8 @@ EOS
         def execute_with(example, procsy)
           example.instance_exec(procsy, &block)
           return if procsy.executed?
-          Pending.mark_skipped!(example, "#{hook_description} did not execute the example")
+          Pending.mark_skipped!(example,
+                                "#{hook_description} did not execute the example")
         end
 
         if Proc.method_defined?(:source_location)
@@ -491,7 +496,8 @@ EOS
 
         def register(prepend_or_append, hook, *args, &block)
           scope, options = scope_and_options_from(*args)
-          self[hook][scope].__send__(prepend_or_append, HOOK_TYPES[hook][scope].new(block, options))
+          self[hook][scope].__send__(prepend_or_append,
+                                     HOOK_TYPES[hook][scope].new(block, options))
         end
 
         # @private
@@ -535,7 +541,10 @@ EOS
           if known_scope?(args.first)
             normalized_scope_for(args.shift)
           elsif args.any? { |a| a.is_a?(Symbol) }
-            error_message = "You must explicitly give a scope (#{SCOPES.join(", ")}) or scope alias (#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as metadata for a hook."
+            error_message = "You must explicitly give a scope " \
+              "(#{SCOPES.join(", ")}) or scope alias " \
+              "(#{SCOPE_ALIASES.keys.join(", ")}) when using symbols as " \
+              "metadata for a hook."
             raise ArgumentError.new error_message
           else
             :example

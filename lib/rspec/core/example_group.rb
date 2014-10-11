@@ -381,7 +381,8 @@ module RSpec
 
       # @private
       def self.descendant_filtered_examples
-        @descendant_filtered_examples ||= filtered_examples + children.inject([]) { |a, e| a + e.descendant_filtered_examples }
+        @descendant_filtered_examples ||= filtered_examples +
+          children.inject([]) { |a, e| a + e.descendant_filtered_examples }
       end
 
       # @private

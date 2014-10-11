@@ -31,7 +31,9 @@ module RSpec
           @example_group_number += 1
 
           @printer.print_example_group_end unless example_group_number == 1
-          @printer.print_example_group_start(example_group_number, notification.group.description, notification.group.parent_groups.size)
+          @printer.print_example_group_start(example_group_number,
+                                             notification.group.description,
+                                             notification.group.parent_groups.size)
           @printer.flush
         end
 
@@ -139,7 +141,9 @@ module RSpec
         # produced during the specs.
         def extra_failure_content(failure)
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
-          backtrace = failure.exception.backtrace.map { |line| RSpec.configuration.backtrace_formatter.backtrace_line(line) }
+          backtrace = failure.exception.backtrace.map do |line|
+            RSpec.configuration.backtrace_formatter.backtrace_line(line)
+          end
           backtrace.compact!
           @snippet_extractor ||= SnippetExtractor.new
           "    <pre class=\"ruby\"><code>#{@snippet_extractor.snippet(backtrace)}</code></pre>"

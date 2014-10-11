@@ -21,7 +21,8 @@ module RSpec
         def printer
           @printer ||= case deprecation_stream
                        when File
-                         ImmediatePrinter.new(FileStream.new(deprecation_stream), summary_stream, self)
+                         ImmediatePrinter.new(FileStream.new(deprecation_stream),
+                                              summary_stream, self)
                        when RaiseErrorStream
                          ImmediatePrinter.new(deprecation_stream, summary_stream, self)
                        else

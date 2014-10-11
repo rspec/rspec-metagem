@@ -122,9 +122,11 @@ module RSpec::Core
       notify :dump_pending,  Notifications::ExamplesNotification.new(self)
       notify :dump_failures, Notifications::ExamplesNotification.new(self)
       notify :deprecation_summary, Notifications::NullNotification
-      notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
+      notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
+                                                                   @pending_examples, @load_time)
       unless mute_profile_output?
-        notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples, @configuration.profile_examples)
+        notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples,
+                                                                     @configuration.profile_examples)
       end
       notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
     ensure

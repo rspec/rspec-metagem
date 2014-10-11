@@ -168,7 +168,8 @@ module RSpec::Core::Formatters
     def find_formatter(formatter_to_use)
       built_in_formatter(formatter_to_use) ||
       custom_formatter(formatter_to_use)   ||
-      (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+      (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - " \
+                            "maybe you meant 'documentation' or 'progress'?.")
     end
 
     def duplicate_formatter_exists?(new_formatter)

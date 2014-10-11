@@ -31,11 +31,14 @@ module RSpec
       private
 
         def dump_profile_slowest_examples(profile)
-          @output.puts "\nTop #{profile.slowest_examples.size} slowest examples (#{Helpers.format_seconds(profile.slow_duration)} seconds, #{profile.percentage}% of total time):\n"
+          @output.puts "\nTop #{profile.slowest_examples.size} slowest " \
+            "examples (#{Helpers.format_seconds(profile.slow_duration)} " \
+            "seconds, #{profile.percentage}% of total time):\n"
 
           profile.slowest_examples.each do |example|
             @output.puts "  #{example.full_description}"
-            @output.puts "    #{bold(Helpers.format_seconds(example.execution_result.run_time))} #{bold("seconds")} #{format_caller(example.location)}"
+            @output.puts "    #{bold(Helpers.format_seconds(example.execution_result.run_time))} " \
+                         "#{bold("seconds")} #{format_caller(example.location)}"
           end
         end
 
@@ -53,7 +56,8 @@ module RSpec
         end
 
         def format_caller(caller_info)
-          RSpec.configuration.backtrace_formatter.backtrace_line(caller_info.to_s.split(':in `block').first)
+          RSpec.configuration.backtrace_formatter.backtrace_line(
+            caller_info.to_s.split(':in `block').first)
         end
 
         def bold(text)

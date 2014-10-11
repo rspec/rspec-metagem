@@ -270,9 +270,12 @@ module RSpec
       # for this being the default behavior in RSpec 3. Now this option is
       # a no-op.
       def treat_symbols_as_metadata_keys_with_true_values=(_value)
-        RSpec.deprecate("RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
-                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " \
-                                    "is deprecated, it is now set to true as default and setting it to false has no effect.")
+        RSpec.deprecate(
+          "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
+          :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " \
+                      "is deprecated, it is now set to true as default and " \
+                      "setting it to false has no effect."
+        )
       end
 
       # Record the start time of the spec suite to measure load time.
@@ -539,7 +542,8 @@ module RSpec
         end
 
         if block_given?
-          raise "#{framework_module} must respond to `configuration` so that mock_with can yield it." unless framework_module.respond_to?(:configuration)
+          raise "#{framework_module} must respond to `configuration` so that " \
+                "mock_with can yield it." unless framework_module.respond_to?(:configuration)
           yield framework_module.configuration
         end
 
@@ -611,8 +615,11 @@ module RSpec
         end
 
         if block_given?
-          raise "expect_with only accepts a block with a single argument. Call expect_with #{modules.length} times, once with each argument, instead." if modules.length > 1
-          raise "#{modules.first} must respond to `configuration` so that expect_with can yield it." unless modules.first.respond_to?(:configuration)
+          raise "expect_with only accepts a block with a single argument. " \
+                "Call expect_with #{modules.length} times, " \
+                "once with each argument, instead." if modules.length > 1
+          raise "#{modules.first} must respond to `configuration` so that " \
+                "expect_with can yield it." unless modules.first.respond_to?(:configuration)
           yield modules.first.configuration
         end
 
@@ -654,7 +661,9 @@ module RSpec
         return unless true_or_false
 
         if RSpec::Support::OS.windows? && !ENV['ANSICON']
-          RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
+          RSpec.warning "You must use ANSICON 1.31 or later " \
+                        "(http://adoxa.3eeweb.com/ansicon/) to use colour " \
+                        "on Windows"
           @color = false
         else
           @color = true
@@ -1462,7 +1471,8 @@ module RSpec
 
       def update_pattern_attr(name, value)
         if @spec_files_loaded
-          RSpec.warning "Configuring `#{name}` to #{value} has no effect since RSpec has already loaded the spec files."
+          RSpec.warning "Configuring `#{name}` to #{value} has no effect since " \
+                        "RSpec has already loaded the spec files."
         end
 
         instance_variable_set(:"@#{name}", value)

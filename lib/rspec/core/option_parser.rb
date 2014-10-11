@@ -59,7 +59,8 @@ module RSpec::Core
           options[:fail_fast] = false
         end
 
-        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs.') do |code|
+        parser.on('--failure-exit-code CODE', Integer,
+                  'Override the exit code used when there are failing specs.') do |code|
           options[:failure_exit_code] = code
         end
 
@@ -115,7 +116,8 @@ module RSpec::Core
           options[:color] = o
         end
 
-        parser.on('-p', '--[no-]profile [COUNT]', 'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
+        parser.on('-p', '--[no-]profile [COUNT]',
+                  'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
           options[:profile_examples] = if argument.nil?
                                          true
                                        elsif argument == false
@@ -153,7 +155,8 @@ FILTERING
           options[:pattern] = o
         end
 
-        parser.on('--exclude-pattern PATTERN', 'Load files except those matching pattern. Opposite effect of --pattern.') do |o|
+        parser.on('--exclude-pattern PATTERN',
+                  'Load files except those matching pattern. Opposite effect of --pattern.') do |o|
           options[:exclude_pattern] = o
         end
 

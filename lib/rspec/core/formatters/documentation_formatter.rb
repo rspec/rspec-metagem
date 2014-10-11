@@ -29,11 +29,13 @@ module RSpec
         end
 
         def example_pending(pending)
-          output.puts pending_output(pending.example, pending.example.execution_result.pending_message)
+          output.puts pending_output(pending.example,
+                                     pending.example.execution_result.pending_message)
         end
 
         def example_failed(failure)
-          output.puts failure_output(failure.example, failure.example.execution_result.exception)
+          output.puts failure_output(failure.example,
+                                     failure.example.execution_result.exception)
         end
 
       private
@@ -43,11 +45,15 @@ module RSpec
         end
 
         def pending_output(example, message)
-          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (PENDING: #{message})", :pending)
+          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} " \
+                            "(PENDING: #{message})",
+                            :pending)
         end
 
         def failure_output(example, _exception)
-          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} (FAILED - #{next_failure_index})", :failure)
+          ConsoleCodes.wrap("#{current_indentation}#{example.description.strip} " \
+                            "(FAILED - #{next_failure_index})",
+                            :failure)
         end
 
         def next_failure_index

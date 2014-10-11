@@ -28,11 +28,14 @@ module RSpec
 
         def print_example_passed(description, run_time)
           formatted_run_time = "%.5f" % run_time
-          @output.puts "    <dd class=\"example passed\"><span class=\"passed_spec_name\">#{h(description)}</span><span class='duration'>#{formatted_run_time}s</span></dd>"
+          @output.puts "    <dd class=\"example passed\">" \
+            "<span class=\"passed_spec_name\">#{h(description)}</span>" \
+            "<span class='duration'>#{formatted_run_time}s</span></dd>"
         end
 
         # rubocop:disable Style/ParameterLists
-        def print_example_failed(pending_fixed, description, run_time, failure_id, exception, extra_content, escape_backtrace=false)
+        def print_example_failed(pending_fixed, description, run_time, failure_id,
+                                 exception, extra_content, escape_backtrace=false)
           # rubocop:enable Style/ParameterLists
           formatted_run_time = "%.5f" % run_time
 
@@ -54,7 +57,9 @@ module RSpec
         end
 
         def print_example_pending(description, pending_message)
-          @output.puts "    <dd class=\"example not_implemented\"><span class=\"not_implemented_spec_name\">#{h(description)} (PENDING: #{h(pending_message)})</span></dd>"
+          @output.puts "    <dd class=\"example not_implemented\">" \
+            "<span class=\"not_implemented_spec_name\">#{h(description)} " \
+            "(PENDING: #{h(pending_message)})</span></dd>"
         end
 
         def print_summary(duration, example_count, failure_count, pending_count)
@@ -64,8 +69,11 @@ module RSpec
 
           formatted_duration = "%.5f" % duration
 
-          @output.puts "<script type=\"text/javascript\">document.getElementById('duration').innerHTML = \"Finished in <strong>#{formatted_duration} seconds</strong>\";</script>"
-          @output.puts "<script type=\"text/javascript\">document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
+          @output.puts "<script type=\"text/javascript\">" \
+            "document.getElementById('duration').innerHTML = \"Finished in " \
+            "<strong>#{formatted_duration} seconds</strong>\";</script>"
+          @output.puts "<script type=\"text/javascript\">" \
+            "document.getElementById('totals').innerHTML = \"#{totals}\";</script>"
           @output.puts "</div>"
           @output.puts "</div>"
           @output.puts "</body>"
@@ -90,13 +98,17 @@ module RSpec
         end
 
         def make_example_group_header_red(group_id)
-          @output.puts "    <script type=\"text/javascript\">makeRed('div_group_#{group_id}');</script>"
-          @output.puts "    <script type=\"text/javascript\">makeRed('example_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">" \
+                       "makeRed('div_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">" \
+                       "makeRed('example_group_#{group_id}');</script>"
         end
 
         def make_example_group_header_yellow(group_id)
-          @output.puts "    <script type=\"text/javascript\">makeYellow('div_group_#{group_id}');</script>"
-          @output.puts "    <script type=\"text/javascript\">makeYellow('example_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">" \
+                       "makeYellow('div_group_#{group_id}');</script>"
+          @output.puts "    <script type=\"text/javascript\">" \
+                       "makeYellow('example_group_#{group_id}');</script>"
         end
 
       private
@@ -105,6 +117,7 @@ module RSpec
           "style=\"margin-left: #{(number_of_parents - 1) * 15}px;\""
         end
 
+        # rubocop:disable LineLength
         REPORT_HEADER = <<-EOF
 <div class="rspec-report">
 
@@ -128,7 +141,9 @@ module RSpec
 
 <div class="results">
 EOF
+        # rubocop:enable LineLength
 
+        # rubocop:disable LineLength
         GLOBAL_SCRIPTS = <<-EOF
 
 function addClass(element_id, classname) {
@@ -205,6 +220,7 @@ function assign_display_style_for_group(classname, display_flag, subgroup_flag) 
   }
 }
 EOF
+        # rubocop:enable LineLength
 
         GLOBAL_STYLES = <<-EOF
 #rspec-header {
