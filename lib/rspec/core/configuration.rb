@@ -79,7 +79,7 @@ module RSpec
 
       # @private
       #
-      # As `add_setting` but only add the reader
+      # As `add_setting` but only add the reader.
       def self.add_read_only_setting(name, opts={})
         raise "Use the instance add_setting method if you want to set a default" if opts.key?(:default)
         define_reader name
@@ -98,8 +98,8 @@ module RSpec
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
       # run all the examples in the `spec` directory.
       #
-      # Note: Other scripts invoking `rspec` indirectly will ignore this
-      # setting.
+      # @note Other scripts invoking `rspec` indirectly will ignore this
+      #   setting.
       add_setting :default_path
 
       # @macro add_setting
@@ -168,11 +168,12 @@ module RSpec
       add_setting :failure_exit_code
 
       # @macro define_reader
-      # Indicates files configured to be required
+      # Indicates files configured to be required.
       define_reader :requires
 
       # @macro define_reader
-      # Returns dirs that have been prepended to the load path by the `-I` command line option
+      # Returns dirs that have been prepended to the load path by the `-I`
+      # command line option.
       define_reader :libs
 
       # @macro add_setting
@@ -180,7 +181,7 @@ module RSpec
       # Default: `$stdout`.
       define_reader :output_stream
 
-      # Set the output stream for reporter
+      # Set the output stream for reporter.
       # @attr value [IO] value for output, defaults to $stdout
       def output_stream=(value)
         if @reporter && !value.equal?(@output_stream)
@@ -194,20 +195,20 @@ module RSpec
       end
 
       # @macro define_reader
-      # Load files matching this pattern (default: `'**{,/*/**}/*_spec.rb'`)
+      # Load files matching this pattern (default: `'**{,/*/**}/*_spec.rb'`).
       define_reader :pattern
 
-      # Set pattern to match files to load
+      # Set pattern to match files to load.
       # @attr value [String] the filename pattern to filter spec files by
       def pattern=(value)
         update_pattern_attr :pattern, value
       end
 
       # @macro define_reader
-      # Exclude files matching this pattern
+      # Exclude files matching this pattern.
       define_reader :exclude_pattern
 
-      # Set pattern to match files to exclude
+      # Set pattern to match files to exclude.
       # @attr value [String] the filename pattern to exclude spec files by
       def exclude_pattern=(value)
         update_pattern_attr :exclude_pattern, value
@@ -219,61 +220,65 @@ module RSpec
       add_setting :profile_examples
 
       # @macro add_setting
-      # Run all examples if none match the configured filters (default: `false`).
+      # Run all examples if none match the configured filters
+      # (default: `false`).
       add_setting :run_all_when_everything_filtered
 
       # @macro add_setting
       # Color to use to indicate success.
       # @param color [Symbol] defaults to `:green` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :success_color
 
       # @macro add_setting
       # Color to use to print pending examples.
       # @param color [Symbol] defaults to `:yellow` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :pending_color
 
       # @macro add_setting
       # Color to use to indicate failure.
       # @param color [Symbol] defaults to `:red` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :failure_color
 
       # @macro add_setting
       # The default output color.
       # @param color [Symbol] defaults to `:white` but can be set to one of the
-      #                       following:`[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :default_color
 
       # @macro add_setting
       # Color used when a pending example is fixed.
       # @param color [Symbol] defaults to `:blue` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :fixed_color
 
       # @macro add_setting
       # Color used to print details.
       # @param color [Symbol] defaults to `:cyan` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :detail_color
 
       # Deprecated. This config option was added in RSpec 2 to pave the way
       # for this being the default behavior in RSpec 3. Now this option is
       # a no-op.
       def treat_symbols_as_metadata_keys_with_true_values=(_value)
-        RSpec.deprecate("RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
-                        :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " \
-                                    "is deprecated, it is now set to true as default and setting it to false has no effect.")
+        RSpec.deprecate(
+          "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values=",
+          :message => "RSpec::Core::Configuration#treat_symbols_as_metadata_keys_with_true_values= " \
+                      "is deprecated, it is now set to true as default and " \
+                      "setting it to false has no effect."
+        )
       end
 
-      # Record the start time of the spec suite to measure load time
+      # Record the start time of the spec suite to measure load time.
       add_setting :start_time
 
       # @private
@@ -358,14 +363,14 @@ module RSpec
       # @overload add_setting(name, opts)
       # @option opts [Symbol] :default
       #
-      #   set a default value for the generated getter and predicate methods:
+      #   Set a default value for the generated getter and predicate methods:
       #
       #       add_setting(:foo, :default => "default value")
       #
       # @option opts [Symbol] :alias_with
       #
-      #   Use `:alias_with` to alias the setter, getter, and predicate to another
-      #   name, or names:
+      #   Use `:alias_with` to alias the setter, getter, and predicate to
+      #   another name, or names:
       #
       #       add_setting(:foo, :alias_with => :bar)
       #       add_setting(:foo, :alias_with => [:bar, :baz])
@@ -388,7 +393,7 @@ module RSpec
       #
       #     RSpec.configuration.foo=(value)
       #     RSpec.configuration.foo
-      #     RSpec.configuration.foo? # returns true if foo returns anything but nil or false
+      #     RSpec.configuration.foo? # Returns true if foo returns anything but nil or false.
       def add_setting(name, opts={})
         default = opts.delete(:default)
         (class << self; self; end).class_exec do
@@ -397,7 +402,7 @@ module RSpec
         __send__("#{name}=", default) if default
       end
 
-      # Returns the configured mock framework adapter module
+      # Returns the configured mock framework adapter module.
       def mock_framework
         if @mock_framework.nil?
           begin
@@ -409,7 +414,7 @@ module RSpec
         @mock_framework
       end
 
-      # Delegates to mock_framework=(framework)
+      # Delegates to mock_framework=(framework).
       def mock_framework=(framework)
         mock_with framework
       end
@@ -417,19 +422,19 @@ module RSpec
       # Regexps used to exclude lines from backtraces.
       #
       # Excludes lines from ruby (and jruby) source, installed gems, anything
-      # in any "bin" directory, and any of the rspec libs (outside gem
+      # in any "bin" directory, and any of the RSpec libs (outside gem
       # installs) by default.
       #
       # You can modify the list via the getter, or replace it with the setter.
       #
       # To override this behaviour and display a full backtrace, use
-      # `--backtrace`on the command line, in a `.rspec` file, or in the
+      # `--backtrace` on the command line, in a `.rspec` file, or in the
       # `rspec_options` attribute of RSpec's rake task.
       def backtrace_exclusion_patterns
         @backtrace_formatter.exclusion_patterns
       end
 
-      # Set regular expressions used to exclude lines in backtrace
+      # Set regular expressions used to exclude lines in backtrace.
       # @param patterns [Regexp] set the backtrace exlusion pattern
       def backtrace_exclusion_patterns=(patterns)
         @backtrace_formatter.exclusion_patterns = patterns
@@ -447,7 +452,7 @@ module RSpec
         @backtrace_formatter.inclusion_patterns
       end
 
-      # Set regular expressions used to include lines in backtrace
+      # Set regular expressions used to include lines in backtrace.
       # @attr patterns [Regexp] set backtrace_formatter inclusion_patterns
       def backtrace_inclusion_patterns=(patterns)
         @backtrace_formatter.inclusion_patterns = patterns
@@ -507,8 +512,8 @@ module RSpec
       #     teardown_mocks_for_rspec
       #       - called after verify_mocks_for_rspec (even if there are errors)
       #
-      # If the module responds to `configuration` and `mock_with` receives a block,
-      # it will yield the configuration object to the block e.g.
+      # If the module responds to `configuration` and `mock_with` receives a
+      # block, it will yield the configuration object to the block e.g.
       #
       #     config.mock_with OtherMockFrameworkAdapter do |mod_config|
       #       mod_config.custom_setting = true
@@ -537,7 +542,8 @@ module RSpec
         end
 
         if block_given?
-          raise "#{framework_module} must respond to `configuration` so that mock_with can yield it." unless framework_module.respond_to?(:configuration)
+          raise "#{framework_module} must respond to `configuration` so that " \
+                "mock_with can yield it." unless framework_module.respond_to?(:configuration)
           yield framework_module.configuration
         end
 
@@ -556,7 +562,7 @@ module RSpec
         @expectation_frameworks
       end
 
-      # Delegates to expect_with(framework)
+      # Delegates to expect_with(framework).
       def expectation_framework=(framework)
         expect_with(framework)
       end
@@ -609,21 +615,24 @@ module RSpec
         end
 
         if block_given?
-          raise "expect_with only accepts a block with a single argument. Call expect_with #{modules.length} times, once with each argument, instead." if modules.length > 1
-          raise "#{modules.first} must respond to `configuration` so that expect_with can yield it." unless modules.first.respond_to?(:configuration)
+          raise "expect_with only accepts a block with a single argument. " \
+                "Call expect_with #{modules.length} times, " \
+                "once with each argument, instead." if modules.length > 1
+          raise "#{modules.first} must respond to `configuration` so that " \
+                "expect_with can yield it." unless modules.first.respond_to?(:configuration)
           yield modules.first.configuration
         end
 
         @expectation_frameworks.push(*modules)
       end
 
-      # Check if full backtrace is enabled
+      # Check if full backtrace is enabled.
       # @return [Boolean] is full backtrace enabled
       def full_backtrace?
         @backtrace_formatter.full_backtrace?
       end
 
-      # Toggle full backtrace
+      # Toggle full backtrace.
       # @attr true_or_false [Boolean] toggle full backtrace display
       def full_backtrace=(true_or_false)
         @backtrace_formatter.full_backtrace = true_or_false
@@ -638,7 +647,7 @@ module RSpec
         value_for(:color) { @color }
       end
 
-      # Check if color is enabled for a particular output
+      # Check if color is enabled for a particular output.
       # @param output [IO] an output stream to use, defaults to the current
       #        `output_stream`
       # @return [Boolean]
@@ -646,13 +655,15 @@ module RSpec
         output_to_tty?(output) && color
       end
 
-      # Toggle output color
+      # Toggle output color.
       # @attr true_or_false [Boolean] toggle color enabled
       def color=(true_or_false)
         return unless true_or_false
 
         if RSpec::Support::OS.windows? && !ENV['ANSICON']
-          RSpec.warning "You must use ANSICON 1.31 or later (http://adoxa.3eeweb.com/ansicon/) to use colour on Windows"
+          RSpec.warning "You must use ANSICON 1.31 or later " \
+                        "(http://adoxa.3eeweb.com/ansicon/) to use colour " \
+                        "on Windows"
           @color = false
         else
           @color = true
@@ -765,8 +776,8 @@ module RSpec
 
       # @api private
       #
-      # Defaults `profile_examples` to 10 examples when `@profile_examples` is `true`.
-      #
+      # Defaults `profile_examples` to 10 examples when `@profile_examples` is
+      # `true`.
       def profile_examples
         profile = value_for(:profile_examples) { @profile_examples }
         if profile && !profile.is_a?(Integer)
@@ -784,7 +795,7 @@ module RSpec
         @files_to_run = nil
       end
 
-      # The spec files RSpec will run
+      # The spec files RSpec will run.
       # @return [Array] specified files about to run
       def files_to_run
         @files_to_run ||= get_files_to_run(@files_or_directories_to_run)
@@ -798,8 +809,8 @@ module RSpec
       # @note The specific example alias below (`pending`) is already
       #   defined for you.
       # @note Use with caution. This extends the language used in your
-      #   specs, but does not add any additional documentation.  We use this
-      #   in rspec to define methods like `focus` and `xit`, but we also add
+      #   specs, but does not add any additional documentation. We use this
+      #   in RSpec to define methods like `focus` and `xit`, but we also add
       #   docs for those methods.
       #
       # @example
@@ -882,8 +893,8 @@ module RSpec
       #   #     ...sortability examples here
       #
       # @note Use with caution. This extends the language used in your
-      #   specs, but does not add any additional documentation.  We use this
-      #   in rspec to define `it_should_behave_like` (for backward
+      #   specs, but does not add any additional documentation. We use this
+      #   in RSpec to define `it_should_behave_like` (for backward
       #   compatibility), but we also add docs for that method.
       def alias_it_behaves_like_to(new_name, report_label='')
         RSpec::Core::ExampleGroup.define_nested_shared_group_method(new_name, report_label)
@@ -900,22 +911,23 @@ module RSpec
       # or config files (e.g. `.rspec`).
       #
       # @example
-      #     # given this declaration
+      #     # Given this declaration.
       #     describe "something", :foo => 'bar' do
       #       # ...
       #     end
       #
-      #     # any of the following will include that group
+      #     # Any of the following will include that group.
       #     config.filter_run_including :foo => 'bar'
       #     config.filter_run_including :foo => /^ba/
       #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
       #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     # Given a proc with an arity of 1, the lambda is passed the value
+      #     # related to the key, e.g.
       #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
       #
-      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
-      #     # and the metadata itself e.g.
+      #     # Given a proc with an arity of 2, the lambda is passed the value
+      #     # related to the key, and the metadata itself e.g.
       #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     filter_run_including :foo # same as filter_run_including :foo => true
@@ -959,22 +971,23 @@ module RSpec
       # or config files (e.g. `.rspec`).
       #
       # @example
-      #     # given this declaration
+      #     # Given this declaration.
       #     describe "something", :foo => 'bar' do
       #       # ...
       #     end
       #
-      #     # any of the following will exclude that group
+      #     # Any of the following will exclude that group.
       #     config.filter_run_excluding :foo => 'bar'
       #     config.filter_run_excluding :foo => /^ba/
       #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
       #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     # Given a proc with an arity of 1, the lambda is passed the value
+      #     # related to the key, e.g.
       #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
       #
-      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
-      #     # and the metadata itself e.g.
+      #     # Given a proc with an arity of 2, the lambda is passed the value
+      #     # related to the key, and the metadata itself e.g.
       #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     filter_run_excluding :foo # same as filter_run_excluding :foo => true
@@ -1003,7 +1016,7 @@ module RSpec
       end
 
       # Tells RSpec to include `mod` in example groups. Methods defined in
-      # `mod` are exposed to examples (not example groups).  Use `filters` to
+      # `mod` are exposed to examples (not example groups). Use `filters` to
       # constrain the groups in which to include the module.
       #
       # @example
@@ -1039,8 +1052,8 @@ module RSpec
         include_or_extend_modules << [:include, mod, meta]
       end
 
-      # Tells RSpec to extend example groups with `mod`.  Methods defined in
-      # `mod` are exposed to example groups (not examples).  Use `filters` to
+      # Tells RSpec to extend example groups with `mod`. Methods defined in
+      # `mod` are exposed to example groups (not examples). Use `filters` to
       # constrain the groups to extend.
       #
       # Similar to `include`, but behavior is added to example groups, which
@@ -1136,7 +1149,8 @@ module RSpec
       # Formats the docstring output using the block provided.
       #
       # @example
-      #   # This will strip the descriptions of both examples and example groups.
+      #   # This will strip the descriptions of both examples and example
+      #   # groups.
       #   RSpec.configure do |config|
       #     config.format_docstrings { |s| s.strip }
       #   end
@@ -1181,7 +1195,8 @@ module RSpec
 
       # @macro delegate_to_ordering_manager
       #
-      # Sets the default global order and, if order is `'rand:<seed>'`, also sets the seed.
+      # Sets the default global order and, if order is `'rand:<seed>'`, also
+      # sets the seed.
       delegate_to_ordering_manager :order=
 
       # @macro delegate_to_ordering_manager
@@ -1191,8 +1206,10 @@ module RSpec
       #
       # @param name [Symbol] The name of the ordering.
       # @yield Block that will order the given examples or example groups
-      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The examples or groups to order
-      # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
+      # @yieldparam list [Array<RSpec::Core::Example>,
+      #   Array<RSpec::Core::ExampleGroup>] The examples or groups to order
+      # @yieldreturn [Array<RSpec::Core::Example>,
+      #   Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
       #   RSpec.configure do |rspec|
@@ -1213,7 +1230,7 @@ module RSpec
       # @private
       delegate_to_ordering_manager :seed_used?, :ordering_registry
 
-      # Set Ruby warnings on or off
+      # Set Ruby warnings on or off.
       def warnings=(value)
         $VERBOSE = !!value
       end
@@ -1276,7 +1293,7 @@ module RSpec
       # `shared_examples_for`, etc) onto `main` and `Module`, instead
       # requiring you to prefix these methods with `RSpec.`. It enables
       # expect-only syntax for rspec-mocks and rspec-expectations. It
-      # simply disables monkey patching on whatever pieces of rspec
+      # simply disables monkey patching on whatever pieces of RSpec
       # the user is using.
       #
       # @note It configures rspec-mocks and rspec-expectations only
@@ -1289,7 +1306,7 @@ module RSpec
       #
       # @example
       #
-      #   # It disables all monkey patching
+      #   # It disables all monkey patching.
       #   RSpec.configure do |config|
       #     config.disable_monkey_patching!
       #   end
@@ -1319,15 +1336,17 @@ module RSpec
 
       # Defines a callback that can assign derived metadata values.
       #
-      # @param filters [Array<Symbol>, Hash] metadata filters that determine which example
-      #   or group metadata hashes the callback will be triggered for. If none are given,
-      #   the callback will be run against the metadata hashes of all groups and examples.
-      # @yieldparam metadata [Hash] original metadata hash from an example or group. Mutate this in
-      #   your block as needed.
+      # @param filters [Array<Symbol>, Hash] metadata filters that determine
+      #   which example or group metadata hashes the callback will be triggered
+      #   for. If none are given, the callback will be run against the metadata
+      #   hashes of all groups and examples.
+      # @yieldparam metadata [Hash] original metadata hash from an example or
+      #   group. Mutate this in your block as needed.
       #
       # @example
       #   RSpec.configure do |config|
-      #     # Tag all groups and examples in the spec/unit directory with :type => :unit
+      #     # Tag all groups and examples in the spec/unit directory with
+      #     # :type => :unit
       #     config.define_derived_metadata(:file_path => %r{/spec/unit/}) do |metadata|
       #       metadata[:type] = :unit
       #     end
@@ -1452,7 +1471,8 @@ module RSpec
 
       def update_pattern_attr(name, value)
         if @spec_files_loaded
-          RSpec.warning "Configuring `#{name}` to #{value} has no effect since RSpec has already loaded the spec files."
+          RSpec.warning "Configuring `#{name}` to #{value} has no effect since " \
+                        "RSpec has already loaded the spec files."
         end
 
         instance_variable_set(:"@#{name}", value)

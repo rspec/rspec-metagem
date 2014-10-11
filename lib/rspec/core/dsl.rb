@@ -8,7 +8,7 @@ module RSpec
     # By default the methods `describe`, `context` and `example_group`
     # are exposed. These methods define a named context for one or
     # more examples. The given block is evaluated in the context of
-    # a generated subclass of {RSpec::Core::ExampleGroup}
+    # a generated subclass of {RSpec::Core::ExampleGroup}.
     #
     # ## Examples:
     #
@@ -49,7 +49,7 @@ module RSpec
         attr_accessor :top_level
       end
 
-      # Adds the describe method to Module and the top level binding
+      # Adds the describe method to Module and the top level binding.
       # @api private
       def self.expose_globally!
         return if exposed_globally?
@@ -61,7 +61,7 @@ module RSpec
         @exposed_globally = true
       end
 
-      # Removes the describe method from Module and the top level binding
+      # Removes the describe method from Module and the top level binding.
       # @api private
       def self.remove_globally!
         return unless exposed_globally?
@@ -89,5 +89,5 @@ module RSpec
   end
 end
 
-# capture main without an eval
+# Capture main without an eval.
 ::RSpec::Core::DSL.top_level = self

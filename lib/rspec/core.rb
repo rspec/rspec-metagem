@@ -67,8 +67,8 @@ module RSpec
     configuration.reset_filters
   end
 
-  # Returns the global [Configuration](RSpec/Core/Configuration) object. While you
-  # _can_ use this method to access the configuration, the more common
+  # Returns the global [Configuration](RSpec/Core/Configuration) object. While
+  # you _can_ use this method to access the configuration, the more common
   # convention is to use [RSpec.configure](RSpec#configure-class_method).
   #
   # @example
@@ -134,7 +134,7 @@ module RSpec
   end
 
   # @private
-  # Internal container for global non-configuration data
+  # Internal container for global non-configuration data.
   def self.world
     @world ||= RSpec::Core::World.new
   end
@@ -151,7 +151,7 @@ module RSpec
       end
     end
 
-    # @private path to executable file
+    # @private path to executable file.
     def self.path_to_executable
       @path_to_executable ||= File.expand_path('../../../exe/rspec', __FILE__)
     end

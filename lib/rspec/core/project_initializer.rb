@@ -3,7 +3,7 @@ RSpec::Support.require_rspec_support "directory_maker"
 module RSpec
   module Core
     # @private
-    # Generates conventional files for an rspec project
+    # Generates conventional files for an RSpec project.
     class ProjectInitializer
       attr_reader :destination, :stream, :template_path
 

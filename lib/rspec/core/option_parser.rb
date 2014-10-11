@@ -59,7 +59,8 @@ module RSpec::Core
           options[:fail_fast] = false
         end
 
-        parser.on('--failure-exit-code CODE', Integer, 'Override the exit code used when there are failing specs.') do |code|
+        parser.on('--failure-exit-code CODE', Integer,
+                  'Override the exit code used when there are failing specs.') do |code|
           options[:failure_exit_code] = code
         end
 
@@ -115,7 +116,8 @@ module RSpec::Core
           options[:color] = o
         end
 
-        parser.on('-p', '--[no-]profile [COUNT]', 'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
+        parser.on('-p', '--[no-]profile [COUNT]',
+                  'Enable profiling of examples and list the slowest examples (default: 10).') do |argument|
           options[:profile_examples] = if argument.nil?
                                          true
                                        elsif argument == false
@@ -153,7 +155,8 @@ FILTERING
           options[:pattern] = o
         end
 
-        parser.on('--exclude-pattern PATTERN', 'Load files except those matching pattern. Opposite effect of --pattern.') do |o|
+        parser.on('--exclude-pattern PATTERN',
+                  'Load files except those matching pattern. Opposite effect of --pattern.') do |o|
           options[:exclude_pattern] = o
         end
 
@@ -198,18 +201,21 @@ FILTERING
           exit
         end
 
-        # these options would otherwise be confusing to users, so we forcibly prevent them from executing
-        # --I is too similar to -I
-        # -d was a shorthand for --debugger, which is removed, but now would trigger --default-path
+        # These options would otherwise be confusing to users, so we forcibly
+        # prevent them from executing.
+        #
+        #   * --I is too similar to -I.
+        #   * -d was a shorthand for --debugger, which is removed, but now would
+        #     trigger --default-path.
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do
-          # removing the blank invalid options from the output
+          # Removing the blank invalid options from the output.
           puts parser.to_s.gsub(/^\s+(#{invalid_options.join('|')})\s*$\n/, '')
           exit
         end
 
-        # this prevents usage of the invalid_options
+        # This prevents usage of the invalid_options.
         invalid_options.each do |option|
           parser.on(option) do
             raise OptionParser::InvalidOption.new

@@ -24,14 +24,15 @@ module RSpec
           next unless $!.nil? || $!.is_a?(SystemExit)
 
           # We got here because either the end of the program was reached or
-          # somebody called Kernel#exit.  Run the specs and then override any
+          # somebody called Kernel#exit. Run the specs and then override any
           # existing exit status with RSpec's exit status if any specs failed.
           invoke
         end
         @installed_at_exit = true
       end
 
-      # Runs the suite of specs and exits the process with an appropriate exit code.
+      # Runs the suite of specs and exits the process with an appropriate exit
+      # code.
       def self.invoke
         disable_autorun!
         status = run(ARGV, $stderr, $stdout).to_i

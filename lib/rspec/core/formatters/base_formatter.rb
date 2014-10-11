@@ -4,13 +4,15 @@ require 'stringio'
 module RSpec
   module Core
     module Formatters
-      # RSpec's built-in formatters are all subclasses of RSpec::Core::Formatters::BaseTextFormatter.
+      # RSpec's built-in formatters are all subclasses of
+      # RSpec::Core::Formatters::BaseTextFormatter.
       #
       # @see RSpec::Core::Formatters::BaseTextFormatter
       # @see RSpec::Core::Reporter
       # @see RSpec::Core::Formatters::Protocol
       class BaseFormatter
-        # all formatters inheriting from this formatter will receive these notifications
+        # All formatters inheriting from this formatter will receive these
+        # notifications.
         Formatters.register self, :start, :example_group_started, :close
         attr_accessor :example_group
         attr_reader :output
@@ -34,7 +36,8 @@ module RSpec
 
         # @api public
         #
-        # @param notification [GroupNotification] containing example_group subclass of `RSpec::Core::ExampleGroup`
+        # @param notification [GroupNotification] containing example_group
+        #   subclass of `RSpec::Core::ExampleGroup`
         # @see RSpec::Core::Formatters::Protocol#example_group_started
         def example_group_started(notification)
           @example_group = notification.group

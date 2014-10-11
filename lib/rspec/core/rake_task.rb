@@ -4,13 +4,13 @@ require 'rspec/support/os'
 
 module RSpec
   module Core
-    # Rspec rake task
+    # RSpec rake task
     #
     # @see Rakefile
     class RakeTask < ::Rake::TaskLib
       include ::Rake::DSL if defined?(::Rake::DSL)
 
-      # Default path to the rspec executable
+      # Default path to the RSpec executable.
       DEFAULT_RSPEC_PATH = File.expand_path('../../../../exe/rspec', __FILE__)
 
       # Default pattern for spec files.
@@ -34,7 +34,8 @@ module RSpec
       #   'spec/**/*_spec.rb'
       attr_accessor :exclude_pattern
 
-      # Whether or not to fail Rake when an error occurs (typically when examples fail).
+      # Whether or not to fail Rake when an error occurs (typically when
+      # examples fail).
       #
       # default:
       #   true
@@ -56,13 +57,13 @@ module RSpec
       #   nil
       attr_accessor :ruby_opts
 
-      # Path to rspec
+      # Path to RSpec.
       #
       # default:
       #   'rspec'
       attr_accessor :rspec_path
 
-      # Command line options to pass to rspec.
+      # Command line options to pass to RSpec.
       #
       # default:
       #   nil
@@ -117,24 +118,31 @@ module RSpec
         elsif String === pattern && !File.exist?(pattern)
           "--pattern #{escape pattern}"
         else
-          # Before RSpec 3.1, we used `FileList` to get the list of matched files, and
-          # then pass that along to the `rspec` command. Starting with 3.1, we prefer to
-          # pass along the pattern as-is to the `rspec` command, for 3 reasons:
+          # Before RSpec 3.1, we used `FileList` to get the list of matched
+          # files, and then pass that along to the `rspec` command. Starting
+          # with 3.1, we prefer to pass along the pattern as-is to the `rspec`
+          # command, for 3 reasons:
           #
-          #   * It's *much* less verbose to pass one `--pattern` option than a long list of files.
-          #   * It ensures `task.pattern` and `--pattern` have the same behavior.
-          #   * It fixes a bug, where `task.pattern = pattern_that_matches_no_files` would run
-          #     *all* files because it would cause no pattern or file args to get passed to `rspec`,
-          #     which causes all files to get run.
+          #   * It's *much* less verbose to pass one `--pattern` option than a
+          #     long list of files.
+          #   * It ensures `task.pattern` and `--pattern` have the same
+          #     behavior.
+          #   * It fixes a bug, where
+          #     `task.pattern = pattern_that_matches_no_files` would run *all*
+          #     files because it would cause no pattern or file args to get
+          #     passed to `rspec`, which causes all files to get run.
           #
-          # However, `FileList` is *far* more flexible than the `--pattern` option. Specifically, it
-          # supports individual files and directories, as well as arrays of files, directories and globs,
-          # as well as other `FileList` objects.
+          # However, `FileList` is *far* more flexible than the `--pattern`
+          # option. Specifically, it supports individual files and directories,
+          # as well as arrays of files, directories and globs, as well as other
+          # `FileList` objects.
           #
-          # For backwards compatibility, we have to fall back to using FileList if the user has passed
-          # a `pattern` option that will not work with `--pattern`.
+          # For backwards compatibility, we have to fall back to using FileList
+          # if the user has passed a `pattern` option that will not work with
+          # `--pattern`.
           #
-          # TODO: consider deprecating support for this and removing it in RSpec 4.
+          # TODO: consider deprecating support for this and removing it in
+          #   RSpec 4.
           FileList[pattern].sort.map { |file| escape file }
         end
       end

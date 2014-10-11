@@ -11,7 +11,7 @@ ClassLength:
 
 # This should go down over time.
 LineLength:
-  Max: 180
+  Max: 130
 
 Lint/HandleExceptions:
   Exclude:
@@ -25,7 +25,7 @@ Lint/LiteralInInterpolation:
 
 # This should go down over time.
 MethodLength:
-  Max: 152
+  Max: 155
 
 # Exclude the default spec_helper to make it easier to uncomment out
 # default settings (for both users and the Cucumber suite).

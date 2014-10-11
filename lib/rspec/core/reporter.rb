@@ -21,11 +21,13 @@ module RSpec::Core
       @pending_examples = []
     end
 
-    # Registers a listener to a list of notifications. The reporter will send notification of
-    # events to all registered listeners
+    # Registers a listener to a list of notifications. The reporter will send
+    # notification of events to all registered listeners.
     #
-    # @param listener [Object] An obect that wishes to be notified of reporter events
-    # @param notifications [Array] Array of symbols represents the events a listener wishes to subscribe too
+    # @param listener [Object] An obect that wishes to be notified of reporter
+    #   events
+    # @param notifications [Array] Array of symbols represents the events a
+    #   listener wishes to subscribe too
     def register_listener(listener, *notifications)
       notifications.each do |notification|
         @listeners[notification.to_sym] << listener
@@ -120,9 +122,11 @@ module RSpec::Core
       notify :dump_pending,  Notifications::ExamplesNotification.new(self)
       notify :dump_failures, Notifications::ExamplesNotification.new(self)
       notify :deprecation_summary, Notifications::NullNotification
-      notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples, @pending_examples, @load_time)
+      notify :dump_summary, Notifications::SummaryNotification.new(@duration, @examples, @failed_examples,
+                                                                   @pending_examples, @load_time)
       unless mute_profile_output?
-        notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples, @configuration.profile_examples)
+        notify :dump_profile, Notifications::ProfileNotification.new(@duration, @examples,
+                                                                     @configuration.profile_examples)
       end
       notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
     ensure
@@ -145,7 +149,8 @@ module RSpec::Core
   private
 
     def mute_profile_output?
-      # Don't print out profiled info if there are failures and `--fail-fast` is used, it just clutters the output
+      # Don't print out profiled info if there are failures and `--fail-fast` is
+      # used, it just clutters the output.
       !@configuration.profile_examples? || (@configuration.fail_fast? && @failed_examples.size > 0)
     end
 

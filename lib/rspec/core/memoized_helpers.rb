@@ -20,7 +20,7 @@ module RSpec
       #
       # @example
       #
-      #   # explicit declaration of subject
+      #   # Explicit declaration of subject.
       #   describe Person do
       #     subject { Person.new(:birthdate => 19.years.ago) }
       #     it "should be eligible to vote" do
@@ -29,7 +29,7 @@ module RSpec
       #     end
       #   end
       #
-      #   # implicit subject => { Person.new }
+      #   # Implicit subject => { Person.new }.
       #   describe Person do
       #     it "should be eligible to vote" do
       #       subject.should be_eligible_to_vote
@@ -37,17 +37,17 @@ module RSpec
       #     end
       #   end
       #
-      #   # one-liner syntax - expectation is set on the subject
+      #   # One-liner syntax - expectation is set on the subject.
       #   describe Person do
       #     it { is_expected.to be_eligible_to_vote }
       #     # or
       #     it { should be_eligible_to_vote }
       #   end
       #
-      # @note Because `subject` is designed to create state that is reset between
-      #   each example, and `before(:context)` is designed to setup state that is
-      #   shared across _all_ examples in an example group, `subject` is _not_
-      #   intended to be used in a `before(:context)` hook.
+      # @note Because `subject` is designed to create state that is reset
+      #   between each example, and `before(:context)` is designed to setup
+      #   state that is shared across _all_ examples in an example group,
+      #   `subject` is _not_ intended to be used in a `before(:context)` hook.
       #
       # @see #should
       # @see #should_not
@@ -211,8 +211,8 @@ EOS
         #   though we have yet to see this in practice. You've been warned.
         #
         # @note Because `let` is designed to create state that is reset between
-        #   each example, and `before(:context)` is designed to setup state that is
-        #   shared across _all_ examples in an example group, `let` is _not_
+        #   each example, and `before(:context)` is designed to setup state that
+        #   is shared across _all_ examples in an example group, `let` is _not_
         #   intended to be used in a `before(:context)` hook.
         #
         # @example
@@ -221,10 +221,10 @@ EOS
         #     let(:thing) { Thing.new }
         #
         #     it "does something" do
-        #       # first invocation, executes block, memoizes and returns result
+        #       # First invocation, executes block, memoizes and returns result.
         #       thing.do_something
         #
-        #       # second invocation, returns the memoized value
+        #       # Second invocation, returns the memoized value.
         #       thing.should be_something
         #     end
         #   end
@@ -302,8 +302,8 @@ EOS
         end
 
         # Declares a `subject` for an example group which can then be wrapped
-        # with `expect` using `is_expected` to make it the target of an expectation
-        # in a concise, one-line example.
+        # with `expect` using `is_expected` to make it the target of an
+        # expectation in a concise, one-line example.
         #
         # Given a `name`, defines a method with that name which returns the
         # `subject`. This lets you declare the subject once and access it
@@ -348,9 +348,9 @@ EOS
           end
         end
 
-        # Just like `subject`, except the block is invoked by an implicit `before`
-        # hook. This serves a dual purpose of setting up state and providing a
-        # memoized reference to that state.
+        # Just like `subject`, except the block is invoked by an implicit
+        # `before` hook. This serves a dual purpose of setting up state and
+        # providing a memoized reference to that state.
         #
         # @example
         #

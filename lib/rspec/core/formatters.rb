@@ -1,10 +1,12 @@
 RSpec::Support.require_rspec_support "directory_maker"
 # ## Built-in Formatters
 #
-# * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
-# * documentation - prints the docstrings passed to `describe` and `it` methods (and their aliases)
+# * progress (default) - Prints dots for passing examples, `F` for failures, `*`
+#                        for pending.
+# * documentation - Prints the docstrings passed to `describe` and `it` methods
+#                   (and their aliases).
 # * html
-# * json - useful for archiving data for subsequent analysis
+# * json - Useful for archiving data for subsequent analysis.
 #
 # The progress formatter is the default, but you can choose any one or more of
 # the other formatters by passing with the `--format` (or `-f` for short)
@@ -72,7 +74,8 @@ module RSpec::Core::Formatters
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register
-  # @param notifications [Symbol, ...] one or more notifications to be registered to the specified formatter
+  # @param notifications [Symbol, ...] one or more notifications to be
+  #   registered to the specified formatter
   #
   # @see RSpec::Core::Formatters::BaseFormatter
   def self.register(formatter_class, *notifications)
@@ -88,7 +91,7 @@ module RSpec::Core::Formatters
   class Loader
     # @api private
     #
-    # Internal formatters are stored here when loaded
+    # Internal formatters are stored here when loaded.
     def self.formatters
       @formatters ||= {}
     end
@@ -165,7 +168,8 @@ module RSpec::Core::Formatters
     def find_formatter(formatter_to_use)
       built_in_formatter(formatter_to_use) ||
       custom_formatter(formatter_to_use)   ||
-      (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - maybe you meant 'documentation' or 'progress'?.")
+      (raise ArgumentError, "Formatter '#{formatter_to_use}' unknown - " \
+                            "maybe you meant 'documentation' or 'progress'?.")
     end
 
     def duplicate_formatter_exists?(new_formatter)

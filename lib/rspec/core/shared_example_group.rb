@@ -15,16 +15,20 @@ module RSpec
     # groups defined at the top level can be included from any example group.
     module SharedExampleGroup
       # @overload shared_examples(name, &block)
-      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
       #   @param block The block to be eval'd
       # @overload shared_examples(name, metadata, &block)
-      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
-      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
-      #     with matching metadata will automatically include this shared example group.
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
       #   @param block The block to be eval'd
       # @overload shared_examples(metadata, &block)
-      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
-      #     with matching metadata will automatically include this shared example group.
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
       #   @param block The block to be eval'd
       #
       # Stores the block for later use. The block will be evaluated
@@ -62,7 +66,7 @@ module RSpec
 
       # @api private
       #
-      # Shared examples top level DSL
+      # Shared examples top level DSL.
       module TopLevelDSL
         # @private
         def self.definitions
@@ -82,7 +86,7 @@ module RSpec
 
         # @api private
         #
-        # Adds the top level DSL methods to Module and the top level binding
+        # Adds the top level DSL methods to Module and the top level binding.
         def self.expose_globally!
           return if exposed_globally?
           Core::DSL.change_global_dsl(&definitions)
@@ -91,7 +95,7 @@ module RSpec
 
         # @api private
         #
-        # Removes the top level DSL methods to Module and the top level binding
+        # Removes the top level DSL methods to Module and the top level binding.
         def self.remove_globally!
           return unless exposed_globally?
 

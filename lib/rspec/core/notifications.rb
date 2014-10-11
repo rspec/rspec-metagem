@@ -86,8 +86,8 @@ module RSpec::Core
         @failed_notifications ||= format_examples(failed_examples)
       end
 
-      # @return [String] The list of failed examples, fully formatted in the way that
-      #   RSpec's built-in formatters emit.
+      # @return [String] The list of failed examples, fully formatted in the way
+      #   that RSpec's built-in formatters emit.
       def fully_formatted_failed_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nFailures:\n"
 
@@ -98,8 +98,8 @@ module RSpec::Core
         formatted
       end
 
-      # @return [String] The list of pending examples, fully formatted in the way that
-      #   RSpec's built-in formatters emit.
+      # @return [String] The list of pending examples, fully formatted in the
+      #   way that RSpec's built-in formatters emit.
       def fully_formatted_pending_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         formatted = "\nPending:\n"
 
@@ -292,7 +292,7 @@ module RSpec::Core
     class PendingExampleFixedNotification < FailedExampleNotification
       public_class_method :new
 
-      # Returns the examples description
+      # Returns the examples description.
       #
       # @return [String] The example description
       def description
@@ -315,9 +315,10 @@ module RSpec::Core
       end
     end
 
-    # The `GroupNotification` represents notifications sent by the reporter which
-    # contain information about the currently running (or soon to be) example group
-    # It is used by formatters to access information about that group.
+    # The `GroupNotification` represents notifications sent by the reporter
+    # which contain information about the currently running (or soon to be)
+    # example group. It is used by formatters to access information about that
+    # group.
     #
     # @example
     #   def example_group_started(notification)
@@ -333,10 +334,10 @@ module RSpec::Core
     MessageNotification = Struct.new(:message)
 
     # The `SeedNotification` holds the seed used to randomize examples and
-    # wether that seed has been used or not.
+    # whether that seed has been used or not.
     #
     # @attr seed [Fixnum] the seed used to randomize ordering
-    # @attr used [Boolean] wether the seed has been used or not
+    # @attr used [Boolean] whether the seed has been used or not
     SeedNotification = Struct.new(:seed, :used) do
       # @api
       # @return [Boolean] has the seed been used?
@@ -425,13 +426,14 @@ module RSpec::Core
         end.join("\n")
       end
 
-      # @return [String] a formatted version of the time it took to run the suite
+      # @return [String] a formatted version of the time it took to run the
+      #   suite
       def formatted_duration
         Formatters::Helpers.format_duration(duration)
       end
 
-      # @return [String] a formatted version of the time it took to boot RSpec and
-      #   load the spec files
+      # @return [String] a formatted version of the time it took to boot RSpec
+      #   and load the spec files
       def formatted_load_time
         Formatters::Helpers.format_duration(load_time)
       end
@@ -451,8 +453,8 @@ module RSpec::Core
       end
     end
 
-    # The `ProfileNotification` holds information about the results of running
-    # a test suite when profiling is enabled. It is used by formatters to provide
+    # The `ProfileNotification` holds information about the results of running a
+    # test suite when profiling is enabled. It is used by formatters to provide
     # information at the end of the test run for profiling information.
     #
     # @attr duration [Float] the time taken (in seconds) to run the suite
@@ -517,13 +519,15 @@ module RSpec::Core
     end
 
     # The `DeprecationNotification` is issued by the reporter when a deprecated
-    # part of RSpec is encountered. It represents information about the deprecated
-    # call site.
+    # part of RSpec is encountered. It represents information about the
+    # deprecated call site.
     #
     # @attr message [String] A custom message about the deprecation
-    # @attr deprecated [String] A custom message about the deprecation (alias of message)
+    # @attr deprecated [String] A custom message about the deprecation (alias of
+    #   message)
     # @attr replacement [String] An optional replacement for the deprecation
-    # @attr call_site [String] An optional call site from which the deprecation was issued
+    # @attr call_site [String] An optional call site from which the deprecation
+    #   was issued
     DeprecationNotification = Struct.new(:deprecated, :message, :replacement, :call_site) do
       private_class_method :new
 

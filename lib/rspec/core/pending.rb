@@ -1,9 +1,10 @@
 module RSpec
   module Core
-    # Provides methods to mark examples as pending. These methods are available to be
-    # called from within any example or hook.
+    # Provides methods to mark examples as pending. These methods are available
+    # to be called from within any example or hook.
     module Pending
-      # Raised in the middle of an example to indicate that it should be marked as skipped.
+      # Raised in the middle of an example to indicate that it should be marked
+      # as skipped.
       class SkipDeclaredInExample < StandardError
         attr_reader :argument
 
@@ -12,8 +13,9 @@ module RSpec
         end
       end
 
-      # If Test::Unit is loaded, we'll use its error as baseclass, so that Test::Unit
-      # will report unmet RSpec expectations as failures rather than errors.
+      # If Test::Unit is loaded, we'll use its error as baseclass, so that
+      # Test::Unit will report unmet RSpec expectations as failures rather than
+      # errors.
       begin
         class PendingExampleFixedError < Test::Unit::AssertionFailedError; end
       rescue
@@ -71,7 +73,7 @@ module RSpec
         if block_given?
           raise ArgumentError, <<-EOS.gsub(/^\s+\|/, '')
             |The semantics of `RSpec::Core::Pending#pending` have changed in
-            |RSpec 3.  In RSpec 2.x, it caused the example to be skipped. In
+            |RSpec 3. In RSpec 2.x, it caused the example to be skipped. In
             |RSpec 3, the rest of the example is still run but is expected to
             |fail, and will be marked as a failure (rather than as pending) if
             |the example passes.
@@ -123,7 +125,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as skipped
+      # Mark example as skipped.
       #
       # @param example [RSpec::Core::Example] the example to mark as skipped
       # @param message_or_bool [Boolean, String] the message to use, or true
@@ -134,7 +136,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as pending
+      # Mark example as pending.
       #
       # @param example [RSpec::Core::Example] the example to mark as pending
       # @param message_or_bool [Boolean, String] the message to use, or true
@@ -152,7 +154,7 @@ module RSpec
 
       # @private
       #
-      # Mark example as fixed
+      # Mark example as fixed.
       #
       # @param example [RSpec::Core::Example] the example to mark as fixed
       def self.mark_fixed!(example)
