@@ -15,16 +15,20 @@ module RSpec
     # groups defined at the top level can be included from any example group.
     module SharedExampleGroup
       # @overload shared_examples(name, &block)
-      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
       #   @param block The block to be eval'd
       # @overload shared_examples(name, metadata, &block)
-      #   @param name [String, Symbol, Module] identifer to use when looking up this shared group
-      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
-      #     with matching metadata will automatically include this shared example group.
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
       #   @param block The block to be eval'd
       # @overload shared_examples(metadata, &block)
-      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this group; any example group
-      #     with matching metadata will automatically include this shared example group.
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
       #   @param block The block to be eval'd
       #
       # Stores the block for later use. The block will be evaluated

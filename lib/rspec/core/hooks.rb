@@ -11,18 +11,20 @@ module RSpec
       #
       # @overload before(&block)
       # @overload before(scope, &block)
-      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to `:example`)
+      #   @param scope [Symbol] `:example`, `:context`, or `:suite`
+      #     (defaults to `:example`)
       # @overload before(scope, conditions, &block)
-      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to `:example`)
+      #   @param scope [Symbol] `:example`, `:context`, or `:suite`
+      #     (defaults to `:example`)
       #   @param conditions [Hash]
       #     constrains this hook to examples matching these conditions e.g.
-      #     `before(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #     `before(:example, :ui => true) { ... }` will only run with examples
+      #     or groups declared with `:ui => true`.
       # @overload before(conditions, &block)
       #   @param conditions [Hash]
       #     constrains this hook to examples matching these conditions e.g.
-      #     `before(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #     `before(:example, :ui => true) { ... }` will only run with examples
+      #     or groups declared with `:ui => true`.
       #
       # @see #after
       # @see #around
@@ -32,22 +34,22 @@ module RSpec
       # @see Configuration
       #
       # Declare a block of code to be run before each example (using `:example`)
-      # or once before any example (using `:context`). These are usually declared
-      # directly in the {ExampleGroup} to which they apply, but they can also
-      # be shared across multiple groups.
+      # or once before any example (using `:context`). These are usually
+      # declared directly in the {ExampleGroup} to which they apply, but they
+      # can also be shared across multiple groups.
       #
       # You can also use `before(:suite)` to run a block of code before any
       # example groups are run. This should be declared in {RSpec.configure}
       #
-      # Instance variables declared in `before(:example)` or `before(:context)` are
-      # accessible within each example.
+      # Instance variables declared in `before(:example)` or `before(:context)`
+      # are accessible within each example.
       #
       # ### Order
       #
       # `before` hooks are stored in three scopes, which are run in order:
-      # `:suite`, `:context`, and `:example`. They can also be declared in several
-      # different places: `RSpec.configure`, a parent group, the current group.
-      # They are run in the following order:
+      # `:suite`, `:context`, and `:example`. They can also be declared in
+      # several different places: `RSpec.configure`, a parent group, the current
+      # group. They are run in the following order:
       #
       #     before(:suite)    # declared in RSpec.configure
       #     before(:context)  # declared in RSpec.configure
@@ -62,9 +64,9 @@ module RSpec
       #
       # ### Conditions
       #
-      # When you add a conditions hash to `before(:example)` or `before(:context)`,
-      # RSpec will only apply that hook to groups or examples that match the
-      # conditions. e.g.
+      # When you add a conditions hash to `before(:example)` or
+      # `before(:context)`, RSpec will only apply that hook to groups or
+      # examples that match the conditions. e.g.
       #
       #     RSpec.configure do |config|
       #       config.before(:example, :authorized => true) do
@@ -115,20 +117,21 @@ module RSpec
       #
       # #### context
       #
-      # `before(:context)` is run in an example that is generated to provide group
-      # context for the block.
+      # `before(:context)` is run in an example that is generated to provide
+      # group context for the block.
       #
       # #### instance variables
       #
-      # Instance variables declared in `before(:context)` are shared across all the
-      # examples in the group.  This means that each example can change the
+      # Instance variables declared in `before(:context)` are shared across all
+      # the examples in the group. This means that each example can change the
       # state of a shared object, resulting in an ordering dependency that can
       # make it difficult to reason about failures.
       #
       # #### unsupported rspec constructs
       #
       # RSpec has several constructs that reset state between each example
-      # automatically. These are not intended for use from within `before(:context)`:
+      # automatically. These are not intended for use from within
+      # `before(:context)`:
       #
       #   * `let` declarations
       #   * `subject` declarations
@@ -138,13 +141,13 @@ module RSpec
       #
       # Mock object frameworks and database transaction managers (like
       # ActiveRecord) are typically designed around the idea of setting up
-      # before an example, running that one example, and then tearing down.
-      # This means that mocks and stubs can (sometimes) be declared in
-      # `before(:context)`, but get torn down before the first real example is ever
-      # run.
+      # before an example, running that one example, and then tearing down. This
+      # means that mocks and stubs can (sometimes) be declared in
+      # `before(:context)`, but get torn down before the first real example is
+      # ever run.
       #
-      # You _can_ create database-backed model objects in a `before(:context)` in
-      # rspec-rails, but it will not be wrapped in a transaction for you, so
+      # You _can_ create database-backed model objects in a `before(:context)`
+      # in rspec-rails, but it will not be wrapped in a transaction for you, so
       # you are on your own to clean up in an `after(:context)` block.
       #
       # @example before(:example) declared in an {ExampleGroup}
@@ -198,18 +201,20 @@ module RSpec
       # @api public
       # @overload after(&block)
       # @overload after(scope, &block)
-      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to `:example`)
+      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to
+      #     `:example`)
       # @overload after(scope, conditions, &block)
-      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to `:example`)
+      #   @param scope [Symbol] `:example`, `:context`, or `:suite` (defaults to
+      #     `:example`)
       #   @param conditions [Hash]
       #     constrains this hook to examples matching these conditions e.g.
-      #     `after(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #     `after(:example, :ui => true) { ... }` will only run with examples
+      #     or groups declared with `:ui => true`.
       # @overload after(conditions, &block)
       #   @param conditions [Hash]
       #     constrains this hook to examples matching these conditions e.g.
-      #     `after(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #     `after(:example, :ui => true) { ... }` will only run with examples
+      #     or groups declared with `:ui => true`.
       #
       # @see #before
       # @see #around
@@ -218,9 +223,9 @@ module RSpec
       # @see SharedExampleGroup
       # @see Configuration
       #
-      # Declare a block of code to be run after each example (using `:example`) or
-      # once after all examples n the context (using `:context`). See {#before} for
-      # more information about ordering.
+      # Declare a block of code to be run after each example (using `:example`)
+      # or once after all examples n the context (using `:context`). See
+      # {#before} for more information about ordering.
       #
       # ### Exceptions
       #
@@ -232,9 +237,9 @@ module RSpec
       # ### Order
       #
       # `after` hooks are stored in three scopes, which are run in order:
-      # `:example`, `:context`, and `:suite`. They can also be declared in several
-      # different places: `RSpec.configure`, a parent group, the current group.
-      # They are run in the following order:
+      # `:example`, `:context`, and `:suite`. They can also be declared in
+      # several different places: `RSpec.configure`, a parent group, the current
+      # group. They are run in the following order:
       #
       #     after(:example) # declared in the current group
       #     after(:example) # declared in a parent group
@@ -274,15 +279,13 @@ module RSpec
       #   @param scope [Symbol] `:example` (defaults to `:example`)
       #     present for syntax parity with `before` and `after`, but
       #     `:example`/`:each` is the only supported value.
-      #   @param conditions [Hash]
-      #     constrains this hook to examples matching these conditions e.g.
-      #     `around(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #   @param conditions [Hash] constrains this hook to examples matching
+      #     these conditions e.g. `around(:example, :ui => true) { ... }` will
+      #     only run with examples or groups declared with `:ui => true`.
       # @overload around(conditions, &block)
-      #   @param conditions [Hash]
-      #     constrains this hook to examples matching these conditions e.g.
-      #     `around(:example, :ui => true) { ... }` will only run with examples or
-      #     groups declared with `:ui => true`.
+      #   @param conditions [Hash] constrains this hook to examples matching
+      #     these conditions e.g. `around(:example, :ui => true) { ... }` will
+      #     only run with examples or groups declared with `:ui => true`.
       #
       # @yield [Example] the example to run
       #

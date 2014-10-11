@@ -4,8 +4,9 @@ RSpec::Support.require_rspec_core "formatters/console_codes"
 module RSpec
   module Core
     module Formatters
-      # Base for all of RSpec's built-in formatters. See RSpec::Core::Formatters::BaseFormatter
-      # to learn more about all of the methods called by the reporter.
+      # Base for all of RSpec's built-in formatters. See
+      # RSpec::Core::Formatters::BaseFormatter to learn more about all of the
+      # methods called by the reporter.
       #
       # @see RSpec::Core::Formatters::BaseFormatter
       # @see RSpec::Core::Reporter
@@ -37,11 +38,11 @@ module RSpec
         # @method dump_summary
         # @api public
         #
-        # This method is invoked after the dumping of examples and failures. Each parameter
-        # is assigned to a corresponding attribute.
+        # This method is invoked after the dumping of examples and failures.
+        # Each parameter is assigned to a corresponding attribute.
         #
-        # @param summary [SummaryNotification] containing duration, example_count,
-        #                                      failure_count and pending_count
+        # @param summary [SummaryNotification] containing duration,
+        #   example_count, failure_count and pending_count
         def dump_summary(summary)
           output.puts summary.fully_formatted
         end

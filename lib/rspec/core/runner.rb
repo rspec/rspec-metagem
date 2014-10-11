@@ -31,7 +31,8 @@ module RSpec
         @installed_at_exit = true
       end
 
-      # Runs the suite of specs and exits the process with an appropriate exit code.
+      # Runs the suite of specs and exits the process with an appropriate exit
+      # code.
       def self.invoke
         disable_autorun!
         status = run(ARGV, $stderr, $stdout).to_i

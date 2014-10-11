@@ -1,8 +1,10 @@
 RSpec::Support.require_rspec_support "directory_maker"
 # ## Built-in Formatters
 #
-# * progress (default) - prints dots for passing examples, `F` for failures, `*` for pending
-# * documentation - prints the docstrings passed to `describe` and `it` methods (and their aliases)
+# * progress (default) - prints dots for passing examples, `F` for failures, `*`
+#                        for pending
+# * documentation - prints the docstrings passed to `describe` and `it` methods
+#                   (and their aliases)
 # * html
 # * json - useful for archiving data for subsequent analysis
 #
@@ -72,7 +74,8 @@ module RSpec::Core::Formatters
 
   # Register the formatter class
   # @param formatter_class [Class] formatter class to register
-  # @param notifications [Symbol, ...] one or more notifications to be registered to the specified formatter
+  # @param notifications [Symbol, ...] one or more notifications to be
+  #   registered to the specified formatter
   #
   # @see RSpec::Core::Formatters::BaseFormatter
   def self.register(formatter_class, *notifications)

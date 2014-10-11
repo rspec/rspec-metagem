@@ -67,8 +67,8 @@ module RSpec
     configuration.reset_filters
   end
 
-  # Returns the global [Configuration](RSpec/Core/Configuration) object. While you
-  # _can_ use this method to access the configuration, the more common
+  # Returns the global [Configuration](RSpec/Core/Configuration) object. While
+  # you _can_ use this method to access the configuration, the more common
   # convention is to use [RSpec.configure](RSpec#configure-class_method).
   #
   # @example

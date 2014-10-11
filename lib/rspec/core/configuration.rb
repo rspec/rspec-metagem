@@ -98,8 +98,8 @@ module RSpec
       # `"spec"`). Allows you to just type `rspec` instead of `rspec spec` to
       # run all the examples in the `spec` directory.
       #
-      # Note: Other scripts invoking `rspec` indirectly will ignore this
-      # setting.
+      # @note Other scripts invoking `rspec` indirectly will ignore this
+      #   setting.
       add_setting :default_path
 
       # @macro add_setting
@@ -172,7 +172,8 @@ module RSpec
       define_reader :requires
 
       # @macro define_reader
-      # Returns dirs that have been prepended to the load path by the `-I` command line option
+      # Returns dirs that have been prepended to the load path by the `-I`
+      # command line option.
       define_reader :libs
 
       # @macro add_setting
@@ -219,49 +220,50 @@ module RSpec
       add_setting :profile_examples
 
       # @macro add_setting
-      # Run all examples if none match the configured filters (default: `false`).
+      # Run all examples if none match the configured filters
+      # (default: `false`).
       add_setting :run_all_when_everything_filtered
 
       # @macro add_setting
       # Color to use to indicate success.
       # @param color [Symbol] defaults to `:green` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :success_color
 
       # @macro add_setting
       # Color to use to print pending examples.
       # @param color [Symbol] defaults to `:yellow` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :pending_color
 
       # @macro add_setting
       # Color to use to indicate failure.
       # @param color [Symbol] defaults to `:red` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :failure_color
 
       # @macro add_setting
       # The default output color.
       # @param color [Symbol] defaults to `:white` but can be set to one of the
-      #                       following:`[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :default_color
 
       # @macro add_setting
       # Color used when a pending example is fixed.
       # @param color [Symbol] defaults to `:blue` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :fixed_color
 
       # @macro add_setting
       # Color used to print details.
       # @param color [Symbol] defaults to `:cyan` but can be set to one of the
-      #                       following: `[:black, :white, :red, :green, :yellow,
-      #                       :blue, :magenta, :cyan]`
+      #   following: `[:black, :white, :red, :green, :yellow, :blue, :magenta,
+      #   :cyan]`
       add_setting :detail_color
 
       # Deprecated. This config option was added in RSpec 2 to pave the way
@@ -364,8 +366,8 @@ module RSpec
       #
       # @option opts [Symbol] :alias_with
       #
-      #   Use `:alias_with` to alias the setter, getter, and predicate to another
-      #   name, or names:
+      #   Use `:alias_with` to alias the setter, getter, and predicate to
+      #   another name, or names:
       #
       #       add_setting(:foo, :alias_with => :bar)
       #       add_setting(:foo, :alias_with => [:bar, :baz])
@@ -507,8 +509,8 @@ module RSpec
       #     teardown_mocks_for_rspec
       #       - called after verify_mocks_for_rspec (even if there are errors)
       #
-      # If the module responds to `configuration` and `mock_with` receives a block,
-      # it will yield the configuration object to the block e.g.
+      # If the module responds to `configuration` and `mock_with` receives a
+      # block, it will yield the configuration object to the block e.g.
       #
       #     config.mock_with OtherMockFrameworkAdapter do |mod_config|
       #       mod_config.custom_setting = true
@@ -765,8 +767,8 @@ module RSpec
 
       # @api private
       #
-      # Defaults `profile_examples` to 10 examples when `@profile_examples` is `true`.
-      #
+      # Defaults `profile_examples` to 10 examples when `@profile_examples` is
+      # `true`.
       def profile_examples
         profile = value_for(:profile_examples) { @profile_examples }
         if profile && !profile.is_a?(Integer)
@@ -911,11 +913,12 @@ module RSpec
       #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
       #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     # given a proc with an arity of 1, the lambda is passed the value
+      #     # related to the key, e.g.
       #     config.filter_run_including :foo => lambda {|v| v == 'bar'}
       #
-      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
-      #     # and the metadata itself e.g.
+      #     # given a proc with an arity of 2, the lambda is passed the value
+      #     # related to the key, and the metadata itself e.g.
       #     config.filter_run_including :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     filter_run_including :foo # same as filter_run_including :foo => true
@@ -970,11 +973,12 @@ module RSpec
       #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
       #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
-      #     # given a proc with an arity of 1, the lambda is passed the value related to the key, e.g.
+      #     # given a proc with an arity of 1, the lambda is passed the value
+      #     # related to the key, e.g.
       #     config.filter_run_excluding :foo => lambda {|v| v == 'bar'}
       #
-      #     # given a proc with an arity of 2, the lambda is passed the value related to the key,
-      #     # and the metadata itself e.g.
+      #     # given a proc with an arity of 2, the lambda is passed the value
+      #     # related to the key, and the metadata itself e.g.
       #     config.filter_run_excluding :foo => lambda {|v,m| m[:foo] == 'bar'}
       #
       #     filter_run_excluding :foo # same as filter_run_excluding :foo => true
@@ -1136,7 +1140,8 @@ module RSpec
       # Formats the docstring output using the block provided.
       #
       # @example
-      #   # This will strip the descriptions of both examples and example groups.
+      #   # This will strip the descriptions of both examples and example
+      #   # groups.
       #   RSpec.configure do |config|
       #     config.format_docstrings { |s| s.strip }
       #   end
@@ -1181,7 +1186,8 @@ module RSpec
 
       # @macro delegate_to_ordering_manager
       #
-      # Sets the default global order and, if order is `'rand:<seed>'`, also sets the seed.
+      # Sets the default global order and, if order is `'rand:<seed>'`, also
+      # sets the seed.
       delegate_to_ordering_manager :order=
 
       # @macro delegate_to_ordering_manager
@@ -1191,8 +1197,10 @@ module RSpec
       #
       # @param name [Symbol] The name of the ordering.
       # @yield Block that will order the given examples or example groups
-      # @yieldparam list [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The examples or groups to order
-      # @yieldreturn [Array<RSpec::Core::Example>, Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
+      # @yieldparam list [Array<RSpec::Core::Example>,
+      #   Array<RSpec::Core::ExampleGroup>] The examples or groups to order
+      # @yieldreturn [Array<RSpec::Core::Example>,
+      #   Array<RSpec::Core::ExampleGroup>] The re-ordered examples or groups
       #
       # @example
       #   RSpec.configure do |rspec|
@@ -1319,15 +1327,17 @@ module RSpec
 
       # Defines a callback that can assign derived metadata values.
       #
-      # @param filters [Array<Symbol>, Hash] metadata filters that determine which example
-      #   or group metadata hashes the callback will be triggered for. If none are given,
-      #   the callback will be run against the metadata hashes of all groups and examples.
-      # @yieldparam metadata [Hash] original metadata hash from an example or group. Mutate this in
-      #   your block as needed.
+      # @param filters [Array<Symbol>, Hash] metadata filters that determine
+      #   which example or group metadata hashes the callback will be triggered
+      #   for. If none are given, the callback will be run against the metadata
+      #   hashes of all groups and examples.
+      # @yieldparam metadata [Hash] original metadata hash from an example or
+      #   group. Mutate this in your block as needed.
       #
       # @example
       #   RSpec.configure do |config|
-      #     # Tag all groups and examples in the spec/unit directory with :type => :unit
+      #     # Tag all groups and examples in the spec/unit directory with
+      #     # :type => :unit
       #     config.define_derived_metadata(:file_path => %r{/spec/unit/}) do |metadata|
       #       metadata[:type] = :unit
       #     end

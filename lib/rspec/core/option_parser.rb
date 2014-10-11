@@ -198,9 +198,12 @@ FILTERING
           exit
         end
 
-        # these options would otherwise be confusing to users, so we forcibly prevent them from executing
-        # --I is too similar to -I
-        # -d was a shorthand for --debugger, which is removed, but now would trigger --default-path
+        # these options would otherwise be confusing to users, so we forcibly
+        # prevent them from executing
+        #
+        #   * --I is too similar to -I
+        #   * -d was a shorthand for --debugger, which is removed, but now would
+        #     trigger --default-path
         invalid_options = %w[-d --I]
 
         parser.on_tail('-h', '--help', "You're looking at it.") do

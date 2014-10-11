@@ -20,8 +20,8 @@ module RSpec
     #     rspec -t awesome:true
     #     rspec -t awesome
     #
-    # Prefixing the tag names with `~` negates the tags, thus excluding this group with
-    # any of:
+    # Prefixing the tag names with `~` negates the tags, thus excluding this
+    # group with any of:
     #
     #     rspec --tag ~awesome:true
     #     rspec --tag ~awesome

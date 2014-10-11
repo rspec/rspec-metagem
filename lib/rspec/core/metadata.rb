@@ -25,9 +25,10 @@ module RSpec
     # @see Configuration#filter_run_including
     # @see Configuration#filter_run_excluding
     module Metadata
-      # Matches strings either at the beginning of the input or prefixed with a whitespace,
-      # containing the current path, either postfixed with the separator, or at the end of the string.
-      # Match groups are the character before and the character after the string if any.
+      # Matches strings either at the beginning of the input or prefixed with a
+      # whitespace, containing the current path, either postfixed with the
+      # separator, or at the end of the string. Match groups are the character
+      # before and the character after the string if any.
       #
       # http://rubular.com/r/fT0gmX6VJX
       # http://rubular.com/r/duOrD4i3wb
@@ -224,16 +225,18 @@ module RSpec
           Proc.new do |hash, key|
             case key
             when :example_group
-              # We commonly get here when rspec-core is applying a previously configured
-              # filter rule, such as when a gem configures:
+              # We commonly get here when rspec-core is applying a previously
+              # configured filter rule, such as when a gem configures:
               #
               #   RSpec.configure do |c|
               #     c.include MyGemHelpers, :example_group => { :file_path => /spec\/my_gem_specs/ }
               #   end
               #
-              # It's confusing for a user to get a deprecation at this point in the code, so instead
-              # we issue a deprecation from the config APIs that take a metadata hash, and MetadataFilter
-              # sets this thread local to silence the warning here since it would be so confusing.
+              # It's confusing for a user to get a deprecation at this point in
+              # the code, so instead we issue a deprecation from the config APIs
+              # that take a metadata hash, and MetadataFilter sets this thread
+              # local to silence the warning here since it would be so
+              # confusing.
               unless RSpec.thread_local_metadata[:silence_metadata_example_group_deprecations]
                 RSpec.deprecate("The `:example_group` key in an example group's metadata hash",
                                 :replacement => "the example group's hash directly for the " \
@@ -414,7 +417,8 @@ module RSpec
     #     `metadata[:example_group][:described_class]` when you use
     #     anonymous controller specs) such that changes are written
     #     back to the top-level metadata hash.
-    #   * Exposes the parent group metadata as `[:example_group][:example_group]`.
+    #   * Exposes the parent group metadata as
+    #     `[:example_group][:example_group]`.
     class LegacyExampleGroupHash
       include HashImitatable
 

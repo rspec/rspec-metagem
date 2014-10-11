@@ -21,8 +21,8 @@ module RSpec
         # This method is invoked after the dumping the summary if profiling is
         # enabled.
         #
-        # @param profile [ProfileNotification] containing duration, slowest_examples
-        #                                      and slowest_example_groups
+        # @param profile [ProfileNotification] containing duration,
+        #   slowest_examples and slowest_example_groups
         def dump_profile(profile)
           dump_profile_slowest_examples(profile)
           dump_profile_slowest_example_groups(profile)

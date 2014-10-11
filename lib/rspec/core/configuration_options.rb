@@ -84,15 +84,17 @@ module RSpec
         # set before it.
         :default_path,
 
-        # These must be set before `requires` to support checking `config.files_to_run`
-        # from within `spec_helper.rb` when a `-rspec_helper` option is used.
+        # These must be set before `requires` to support checking
+        # `config.files_to_run` from within `spec_helper.rb` when a
+        # `-rspec_helper` option is used.
         :files_or_directories_to_run, :pattern, :exclude_pattern,
 
-        # In general, we want to require the specified files as early as possible.
-        # The `--require` option is specifically intended to allow early requires.
-        # For later requires, they can just put the require in their spec files, but
-        # `--require` provides a unique opportunity for users to instruct RSpec to
-        # load an extension file early for maximum flexibility.
+        # In general, we want to require the specified files as early as
+        # possible. The `--require` option is specifically intended to allow
+        # early requires. For later requires, they can just put the require in
+        # their spec files, but `--require` provides a unique opportunity for
+        # users to instruct RSpec to load an extension file early for maximum
+        # flexibility.
         :requires
       ]
 

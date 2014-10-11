@@ -92,7 +92,8 @@ module RSpec
           end
 
           # Seed must be either an Integer (only the first 32 bits will be used)
-          # or an Array of Integers (of which only the first 32 bits will be used)
+          # or an Array of Integers (of which only the first 32 bits will be
+          # used)
           #
           # No conversion or type checking is done at this level
           def seed=(seed)
@@ -202,7 +203,8 @@ module RSpec
             end
           end
 
-          # Convert an Integer seed of arbitrary size to either a single 32 bit integer, or an Array of 32 bit integers
+          # Convert an Integer seed of arbitrary size to either a single 32 bit
+          # integer, or an Array of 32 bit integers
           def self.convert_seed(seed)
             seed = seed.abs
             long_values = []
@@ -211,7 +213,8 @@ module RSpec
               seed >>= 32
             end until seed == 0
 
-            long_values.pop if long_values[-1] == 1 && long_values.size > 1 # Done to allow any kind of sequence of integers
+            # Done to allow any kind of sequence of integers
+            long_values.pop if long_values[-1] == 1 && long_values.size > 1
 
             long_values.size > 1 ? long_values : long_values.first
           end

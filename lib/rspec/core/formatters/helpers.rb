@@ -39,8 +39,9 @@ module RSpec
 
         # @api private
         #
-        # Formats seconds to have 5 digits of precision with trailing zeros removed if the number
-        # is less than 1 or with 2 digits of precision if the number is greater than zero.
+        # Formats seconds to have 5 digits of precision with trailing zeros
+        # removed if the number is less than 1 or with 2 digits of precision if
+        # the number is greater than zero.
         #
         # @param float [Float]
         # @return [String] formatted float
@@ -50,7 +51,8 @@ module RSpec
         #    format_seconds(0.020000) #=> "0.02"
         #    format_seconds(1.00000000001) #=> "1"
         #
-        # The precision used is set in {Helpers::SUB_SECOND_PRECISION} and {Helpers::DEFAULT_PRECISION}.
+        # The precision used is set in {Helpers::SUB_SECOND_PRECISION} and
+        # {Helpers::DEFAULT_PRECISION}.
         #
         # @see #strip_trailing_zeroes
         def self.format_seconds(float, precision=nil)

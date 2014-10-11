@@ -111,7 +111,8 @@ module RSpec
 
       private
 
-        # If these methods are declared with attr_reader Ruby will issue a warning because they are private
+        # If these methods are declared with attr_reader Ruby will issue a
+        # warning because they are private
         # rubocop:disable Style/TrivialAccessors
 
         # The number of the currently running example_group
@@ -133,9 +134,9 @@ module RSpec
           result
         end
 
-        # Override this method if you wish to output extra HTML for a failed spec. For example, you
-        # could output links to images or other files produced during the specs.
-        #
+        # Override this method if you wish to output extra HTML for a failed
+        # spec. For example, you could output links to images or other files
+        # produced during the specs.
         def extra_failure_content(failure)
           RSpec::Support.require_rspec_core "formatters/snippet_extractor"
           backtrace = failure.exception.backtrace.map { |line| RSpec.configuration.backtrace_formatter.backtrace_line(line) }

@@ -1,9 +1,10 @@
 module RSpec
   module Core
-    # Provides methods to mark examples as pending. These methods are available to be
-    # called from within any example or hook.
+    # Provides methods to mark examples as pending. These methods are available
+    # to be called from within any example or hook.
     module Pending
-      # Raised in the middle of an example to indicate that it should be marked as skipped.
+      # Raised in the middle of an example to indicate that it should be marked
+      # as skipped.
       class SkipDeclaredInExample < StandardError
         attr_reader :argument
 
@@ -12,8 +13,9 @@ module RSpec
         end
       end
 
-      # If Test::Unit is loaded, we'll use its error as baseclass, so that Test::Unit
-      # will report unmet RSpec expectations as failures rather than errors.
+      # If Test::Unit is loaded, we'll use its error as baseclass, so that
+      # Test::Unit will report unmet RSpec expectations as failures rather than
+      # errors.
       begin
         class PendingExampleFixedError < Test::Unit::AssertionFailedError; end
       rescue
