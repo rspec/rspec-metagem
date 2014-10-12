@@ -15,6 +15,8 @@ Enhancements:
   (Elia Schito, #663)
 * Provide more detail in the `have_attributes` matcher failure message.
   (Jon Rowe,  #668)
+* Make the `have_attributes` matcher diffable.
+  (Jon Rowe, Alexey Fedorov, #668)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
