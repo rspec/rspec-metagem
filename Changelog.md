@@ -10,6 +10,7 @@ Enhancements:
   spec runs, whilst retaining user configuration.  (Alexey Fedorov, #1706)
 * Reduce string allocations when defining and running examples by 70%
   and 50% respectively. (Myron Marston, #1738)
+* Removed dependency on pathname from stdlib. (Sam Phippen, #1703)
 
 ### 3.1.7 Development
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...3-1-maintenance)
