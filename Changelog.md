@@ -1,5 +1,5 @@
 ### 3.2.0 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...master)
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.7...master)
 
 Enhancements:
 
@@ -11,8 +11,8 @@ Enhancements:
 * Reduce string allocations when defining and running examples by 70%
   and 50% respectively. (Myron Marston, #1738)
 
-### 3.1.7 Development
-[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...3-1-maintenance)
+### 3.1.7 / 2014-10-11
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...v3.1.7)
 
 Bug Fixes:
 
