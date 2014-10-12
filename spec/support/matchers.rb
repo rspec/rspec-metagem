@@ -52,3 +52,4 @@ module RSpec
     end
   end
 end
+RSpec::Matchers.define_negated_matcher :a_string_excluding, :a_string_including

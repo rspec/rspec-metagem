@@ -16,8 +16,8 @@ RSpec.describe "#have_attributes matcher" do
 
   let(:person) { Person.new(correct_name, correct_age) }
 
-  it "is not diffable" do
-    expect(have_attributes(:age => correct_age)).to_not be_diffable
+  it "is diffable" do
+    expect(have_attributes(:age => correct_age)).to be_diffable
   end
 
   describe "expect(...).to have_attributes(with_one_attribute)" do
@@ -48,10 +48,30 @@ RSpec.describe "#have_attributes matcher" do
       }.to fail_matching(%r|to have attributes #{hash_inspect :count => 1} but had attributes #{hash_inspect :count => 2 }|)
     end
 
+    it 'diffs the attributes received with those expected' do
+      allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
+
+      expected_diff = dedent(<<-EOS)
+        |@@ -1,2 +1,2 @@
+        |-:name => "Wrong Name",
+        |+:name => "Correct name",
+      EOS
+
+      expect {
+        expect(person).to have_attributes(:name => wrong_name)
+      }.to fail_matching(expected_diff)
+    end
+
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to have_attributes(:color => 'red')
       }.to fail_matching("expected #{object_inspect person} to respond to :color")
+    end
+
+    it "doesn't produce a diff if the target fails the respond to check" do
+      expect {
+        expect(person).to have_attributes(:color => 'red')
+      }.to fail_with(a_string_excluding "Diff")
     end
 
     it "fails if target responds to the attribute but requires arguments" do
@@ -91,6 +111,12 @@ RSpec.describe "#have_attributes matcher" do
       }.to fail_matching(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :age => correct_age}|)
     end
 
+    it "doesn't produce a diff" do
+      expect {
+        expect(person).to_not have_attributes(:age => correct_age)
+      }.to fail_with(a_string_excluding "Diff")
+    end
+
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to_not have_attributes(:color => 'red')
@@ -118,6 +144,21 @@ RSpec.describe "#have_attributes matcher" do
       expect {
         expect(person).to have_attributes(:name => correct_name, :age => wrong_age)
       }.to fail_matching(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => correct_name, :age => wrong_age}|)
+    end
+
+    it 'diffs the attributes received with those expected' do
+      allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
+
+      expected_diff = dedent(<<-EOS)
+        |@@ -1,3 +1,3 @@
+        |-:age => 11,
+        |+:age => 33,
+        | :name => "Correct name",
+      EOS
+
+      expect {
+        expect(person).to have_attributes(:name => correct_name, :age => wrong_age)
+      }.to fail_matching(expected_diff)
     end
 
     it "fails if target does not responds to any of the attributes" do

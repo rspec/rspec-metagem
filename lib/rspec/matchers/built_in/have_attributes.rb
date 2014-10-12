@@ -12,6 +12,12 @@ module RSpec
           @expected = expected
           @values = {}
           @respond_to_failed = false
+          @negated = false
+        end
+
+        # @private
+        def actual
+          @values
         end
 
         # @api private
@@ -27,6 +33,7 @@ module RSpec
         # @return [Boolean]
         def does_not_match?(actual)
           @actual = actual
+          @negated = true
           return false unless respond_to_attributes?
           perform_match(:none?)
         end
@@ -39,17 +46,23 @@ module RSpec
         end
 
         # @api private
+        # @return [Boolean]
+        def diffable?
+          !@respond_to_failed && !@negated
+        end
+
+        # @api private
         # @return [String]
         def failure_message
           respond_to_failure_message_or do
-            "expected #{actual.inspect} to #{description} but had attributes #{ formatted_values }"
+            "expected #{@actual.inspect} to #{description} but had attributes #{ formatted_values }"
           end
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          respond_to_failure_message_or { super }
+          respond_to_failure_message_or { "expected #{@actual.inspect} not to #{description}" }
         end
 
       private
@@ -74,7 +87,7 @@ module RSpec
         end
 
         def respond_to_attributes?
-          matches = respond_to_matcher.matches?(actual)
+          matches = respond_to_matcher.matches?(@actual)
           @respond_to_failed = !matches
           matches
         end
