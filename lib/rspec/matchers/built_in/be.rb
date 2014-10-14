@@ -215,7 +215,7 @@ module RSpec
       private
 
         def predicate_accessible?
-          !private_predicate? && predicate_exists?
+          actual.respond_to?(predicate) || actual.respond_to?(present_tense_predicate)
         end
 
         # support 1.8.7, evaluate once at load time for performance
@@ -227,10 +227,6 @@ module RSpec
           def private_predicate?
             @actual.private_methods.include? predicate
           end
-        end
-
-        def predicate_exists?
-          actual.respond_to?(predicate) || actual.respond_to?(present_tense_predicate)
         end
 
         def predicate_matches?
@@ -265,11 +261,11 @@ module RSpec
         end
 
         def validity_message
-          if private_predicate?
-            "expected #{@actual} to respond to `#{predicate}` but `#{predicate}` is a private method"
-          elsif !predicate_exists?
-            "expected #{@actual} to respond to `#{predicate}`"
-          end
+          return nil if predicate_accessible?
+
+          msg = "expected #{@actual} to respond to `#{predicate}`"
+          msg << " but `#{predicate}` is a private method" if private_predicate?
+          msg
         end
       end
     end

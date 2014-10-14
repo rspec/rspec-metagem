@@ -86,6 +86,13 @@ RSpec.describe "expect(...).to be_predicate" do
     expect { expect(privately_happy.new).to be_happy }.to fail_with(/private/)
   end
 
+  it 'does not call :private_methods when the object publicly responds to the message' do
+    publicly_happy = double('happy')
+    expect(publicly_happy).to receive(:happy?) { true }
+    expect(publicly_happy).not_to receive(:private_methods)
+    expect(publicly_happy).to be_happy
+  end
+
   it "fails on error other than NameError" do
     actual = double("actual")
     expect(actual).to receive(:foo?).and_raise("aaaah")
