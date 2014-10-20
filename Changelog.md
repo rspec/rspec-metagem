@@ -11,6 +11,8 @@ Enhancements:
 * Reduce string allocations when defining and running examples by 70%
   and 50% respectively. (Myron Marston, #1738)
 * Removed dependency on pathname from stdlib. (Sam Phippen, #1703)
+* Improve the message presented when a user hits Ctrl-C.
+  (Alex Chaffee #1717, #1742)
 
 ### 3.1.7 / 2014-10-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...v3.1.7)
