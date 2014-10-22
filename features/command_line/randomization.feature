@@ -34,10 +34,13 @@ Feature: Randomization can be reproduced across test runs
       is necessary to replicate a given test run's randomness.
 
   Background:
+    Given a file named ".rspec" with:
+      """
+      --require spec_helper
+      """
+
     Given a file named "spec/random_spec.rb" with:
       """ruby
-      require 'spec_helper'
-
       RSpec.describe 'randomized example' do
         it 'prints random numbers' do
           puts 5.times.map { rand(99) }.join("-")
