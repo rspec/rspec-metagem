@@ -18,6 +18,14 @@ Enhancements:
 * Make the `have_attributes` matcher diffable.
   (Jon Rowe, Alexey Fedorov, #668)
 
+Bug Fixes:
+
+* Avoid calling `private_methods` from the `be` predicate matcher on
+  the target object if the object publicly responds to the predicate
+  method. This avoids a possible error that can occur if the object
+  raises errors from `private_methods` (which can happen with celluloid
+  objects). (@chapmajs, #670)
+
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
 
