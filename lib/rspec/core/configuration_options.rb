@@ -89,6 +89,11 @@ module RSpec
         # `-rspec_helper` option is used.
         :files_or_directories_to_run, :pattern, :exclude_pattern,
 
+        # Necessary so that the `--seed` option is applied before requires,
+        # in case required files do something with the provided seed.
+        # (such as seed global randomization with it).
+        :order,
+
         # In general, we want to require the specified files as early as
         # possible. The `--require` option is specifically intended to allow
         # early requires. For later requires, they can just put the require in

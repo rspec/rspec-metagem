@@ -102,6 +102,16 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       opts.configure(config)
     end
 
+    it 'configures the seed (via `order`) before requires so that required files can use the configured seed' do
+      opts = config_options_object(*%w[ --seed 1234 --require spec_helper ])
+
+      config = RSpec::Core::Configuration.new
+      expect(config).to receive(:force).with(:order => "rand:1234").ordered
+      expect(config).to receive(:requires=).ordered
+
+      opts.configure(config)
+    end
+
     { "pattern" => :pattern, "exclude-pattern" => :exclude_pattern }.each do |flag, attr|
       it "sets #{attr} before `requires` so users can check `files_to_run` in a `spec_helper` loaded by `--require`" do
         opts = config_options_object(*%W[--require spec_helpe --#{flag} **/*.spec])
