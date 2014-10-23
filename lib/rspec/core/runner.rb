@@ -151,7 +151,7 @@ module RSpec
         trap('INT') do
           exit!(1) if RSpec.world.wants_to_quit
           RSpec.world.wants_to_quit = true
-          STDERR.puts "\nRSpec is shutting down... Interrupt again to force quit."
+          STDERR.puts "\nRSpec is shutting down and will print the summary report... Interrupt again to force quit."
         end
       end
     end
