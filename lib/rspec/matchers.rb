@@ -616,8 +616,8 @@ module RSpec
     alias_matcher :a_hash_including,       :include
     alias_matcher :including,              :include
 
-    # Passes if actual all expected objects pass. This works for
-    # any enumerable object.
+    # Passes if the provided matcher passes when checked against all
+    # elements of the collection.
     #
     # @example
     #
