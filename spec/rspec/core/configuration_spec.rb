@@ -862,6 +862,69 @@ module RSpec::Core
           expect(group).not_to respond_to(:you_call_this_a_blt?)
           expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
         end
+
+        it "includes the given module into the singleton class of matching examples" do
+          RSpec.configure do |c|
+            c.include(InstanceLevelMethods, :magic_key => :include)
+          end
+
+          value = ex1 = ex2 = nil
+
+          RSpec.describe("Group") do
+            ex1 = example("ex", :magic_key => :include) do
+              value = you_call_this_a_blt?
+            end
+
+            ex2 = example("ex") { you_call_this_a_blt? }
+          end.run
+
+          expect(ex1.execution_result.exception).to be_nil
+          expect(value).to match(/egad/)
+          expect(ex2.execution_result.exception).to be_a(NameError)
+        end
+
+        it "ensures that `before` hooks have access to the module methods, even when only included in the singleton class of one example" do
+          RSpec.configure do |c|
+            c.include(Module.new { def which_mod; :mod_1; end }, :mod_1)
+            c.include(Module.new { def which_mod; :mod_2; end }, :mod_2)
+          end
+
+          ex1_value = ex2_value = ex3 = nil
+
+          RSpec.describe("group") do
+            before { @value = which_mod }
+            example("ex", :mod_1) { ex1_value = @value }
+            example("ex", :mod_2) { ex2_value = @value }
+            ex3 = example("ex") { }
+          end.run
+
+          expect(ex1_value).to eq(:mod_1)
+          expect(ex2_value).to eq(:mod_2)
+          expect(ex3.execution_result.exception).to be_a(NameError)
+        end
+
+        it "does not include the module in an example's singleton class when it has already been included in the group" do
+          mod = Module.new do
+            def self.inclusions
+              @inclusions ||= []
+            end
+
+            def self.included(klass)
+              inclusions << klass
+            end
+          end
+
+          RSpec.configure do |c|
+            c.include mod, :magic_key
+          end
+
+          group = RSpec.describe("Group", :magic_key) do
+            example("ex", :magic_key) { }
+          end
+
+          group.run
+          expect(mod.inclusions).to eq([group])
+        end
       end
     end
 
