@@ -75,11 +75,6 @@ module RSpec
         @configuration.exclusion_filter
       end
 
-      # @private
-      def configure_group(group)
-        @configuration.configure_group(group)
-      end
-
       # @api private
       #
       # Get count of examples to be run.
