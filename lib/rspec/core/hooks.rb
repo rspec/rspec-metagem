@@ -582,13 +582,13 @@ EOS
         end
 
         def run_example_hooks_for(example, position, each_method)
-          @owner.parent_groups.__send__(each_method) do |group|
+          owner_parent_groups.__send__(each_method) do |group|
             group.hooks.run_owned_hooks_for(position, :example, example)
           end
         end
 
         def run_around_example_hooks_for(example)
-          hooks = FlatMap.flat_map(@owner.parent_groups) do |group|
+          hooks = FlatMap.flat_map(owner_parent_groups) do |group|
             group.hooks.matching_hooks_for(:around, :example, example)
           end
 
@@ -598,6 +598,16 @@ EOS
           hooks.inject(initial_procsy) do |procsy, around_hook|
             procsy.wrap { around_hook.execute_with(example, procsy) }
           end.call
+        end
+
+        if respond_to?(:singleton_class) && singleton_class.ancestors.include?(singleton_class)
+          def owner_parent_groups
+            @owner.parent_groups
+          end
+        else # Ruby < 2.1 (see https://bugs.ruby-lang.org/issues/8035)
+          def owner_parent_groups
+            @owner_parent_groups ||= [@owner] + @owner.parent_groups
+          end
         end
       end
     end
