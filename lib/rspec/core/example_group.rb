@@ -88,15 +88,29 @@ module RSpec
       # @private
       # @macro [attach] define_example_method
       #   @!scope class
-      #   @param name [String]
-      #   @param extra_options [Hash]
-      #   @param implementation [Block]
+      #   @overload $1
+      #   @overload $1(&example_implementation)
+      #     @param example_implementation [Block] The implementation of the example.
+      #   @overload $1(doc_string, *metadata_keys, metadata={})
+      #     @param doc_string [String] The example's doc string.
+      #     @param metadata [Hash] Metadata for the example.
+      #     @param metadata_keys [Array<Symbol>] Metadata tags for the example.
+      #       Will be transformed into hash entries with `true` values.
+      #   @overload $1(doc_string, *metadata_keys, metadata={}, &example_implementation)
+      #     @param doc_string [String] The example's doc string.
+      #     @param metadata [Hash] Metadata for the example.
+      #     @param metadata_keys [Array<Symbol>] Metadata tags for the example.
+      #       Will be transformed into hash entries with `true` values.
+      #     @param example_implementation [Block] The implementation of the example.
       #   @yield [Example] the example object
       #   @example
       #     $1 do
       #     end
       #
       #     $1 "does something" do
+      #     end
+      #
+      #     $1 "does something", :slow, :uses_js do
       #     end
       #
       #     $1 "does something", :with => 'additional metadata' do
@@ -166,12 +180,17 @@ module RSpec
       # @!group Defining Example Groups
 
       # @private
-      # @macro [attach] alias_example_group_to
+      # @macro [attach] define_example_group_method
       #   @!scope class
-      #   @param name [String] The example group doc string
-      #   @param metadata [Hash] Additional metadata to attach to the example
-      #     group
-      #   @yield The example group definition
+      #   @overload $1
+      #   @overload $1(&example_group_definition)
+      #     @param example_group_definition [Block] The definition of the example group.
+      #   @overload $1(doc_string, *metadata_keys, metadata={}, &example_implementation)
+      #     @param doc_string [String] The group's doc string.
+      #     @param metadata [Hash] Metadata for the group.
+      #     @param metadata_keys [Array<Symbol>] Metadata tags for the group.
+      #       Will be transformed into hash entries with `true` values.
+      #     @param example_group_definition [Block] The definition of the example group.
       #
       #   Generates a subclass of this example group which inherits
       #   everything except the examples themselves.
