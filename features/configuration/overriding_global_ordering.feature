@@ -11,7 +11,7 @@ Feature: Overriding global ordering
   `:global`, it will be the global default, used by all groups that do not have
   `:order` metadata (and by RSpec to order the top-level groups).
 
-  Scenario: Running a specific examples group in order
+  Scenario: Running a specific example group in order
     Given a file named "order_dependent_spec.rb" with:
       """ruby
       RSpec.describe "examples only pass when they are run in order", :order => :defined do
