@@ -14,7 +14,6 @@ module RSpec
         Formatters.register self,
                             :message, :dump_summary, :dump_failures, :dump_pending, :seed
 
-        # @method message
         # @api public
         #
         # Used by the reporter to send messages to the output stream.
@@ -24,7 +23,6 @@ module RSpec
           output.puts notification.message
         end
 
-        # @method dump_failures
         # @api public
         #
         # Dumps detailed information about each example failure.
@@ -35,7 +33,6 @@ module RSpec
           output.puts notification.fully_formatted_failed_examples
         end
 
-        # @method dump_summary
         # @api public
         #
         # This method is invoked after the dumping of examples and failures.
@@ -64,7 +61,7 @@ module RSpec
         # Invoked at the very end, `close` allows the formatter to clean
         # up resources, e.g. open streams, etc.
         #
-        # @param notification [NullNotification]
+        # @param _notification [NullNotification] (Ignored)
         def close(_notification)
           return unless IO === output
           return if output.closed? || output == $stdout

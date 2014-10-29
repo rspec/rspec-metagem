@@ -15,7 +15,6 @@ module RSpec
         # @private
         attr_reader :output
 
-        # @method dump_profile
         # @api public
         #
         # This method is invoked after the dumping the summary if profiling is

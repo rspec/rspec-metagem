@@ -45,7 +45,7 @@ module RSpec
 
         # @api public
         #
-        # @param notification [NullNotification]
+        # @param _notification [NullNotification] (Ignored)
         # @see RSpec::Core::Formatters::Protocol#close
         def close(_notification)
           restore_sync_output
