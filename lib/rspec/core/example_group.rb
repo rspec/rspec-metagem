@@ -573,6 +573,13 @@ module RSpec
         "#<#{self.class} #{@__inspect_output}>"
       end
 
+      unless method_defined?(:singleton_class) # for 1.8.7
+        # @private
+        def singleton_class
+          class << self; self; end
+        end
+      end
+
       # Raised when an RSpec API is called in the wrong scope, such as `before`
       # being called from within an example rather than from within an example
       # group block.

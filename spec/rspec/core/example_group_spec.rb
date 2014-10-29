@@ -1662,7 +1662,8 @@ module RSpec::Core
       rspec_core_methods = ExampleGroup.instance_methods -
         RSpec::Matchers.instance_methods -
         RSpec::Mocks::ExampleMethods.instance_methods -
-        Object.instance_methods
+        Object.instance_methods -
+        ["singleton_class"]
 
       # Feel free to expand this list if you intend to add another public API
       # for users. RSpec internals should not add methods here, though.
