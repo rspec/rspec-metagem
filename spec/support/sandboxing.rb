@@ -22,7 +22,7 @@ module Sandboxing
     RSpec.configuration = new_config
     RSpec.world = new_world
     object = Object.new
-    object.extend(RSpec::Core::SharedExampleGroup)
+    object.extend(RSpec::Core::SharedExampleGroup::DefinitionAPI)
 
     (class << RSpec::Core::ExampleGroup; self; end).class_exec do
       alias_method :orig_run, :run
