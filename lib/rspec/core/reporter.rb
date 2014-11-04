@@ -70,6 +70,7 @@ module RSpec::Core
       @start = time
       @load_time = (@start - @configuration.start_time).to_f
       notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
+      notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
     end
 
     # @private
