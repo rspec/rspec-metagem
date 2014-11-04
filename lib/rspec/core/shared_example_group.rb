@@ -20,7 +20,9 @@ module RSpec
       # Our definition evaluates the shared group block in the context of the
       # including example group.
       def included(klass)
-        klass.class_exec(&@definition)
+        SharedExampleGroupInclusionStackFrame.with_frame(@description, RSpec::CallerFilter.first_non_rspec_line) do
+          klass.class_exec(&@definition)
+        end
       end
 
       # Shared example groups let you define common context and/or common

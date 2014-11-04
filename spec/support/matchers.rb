@@ -104,3 +104,4 @@ RSpec::Matchers.alias_matcher :a_file_collection, :contain_files
 
 RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
 RSpec::Matchers.define_negated_matcher :exclude, :include
+RSpec::Matchers.define_negated_matcher :avoid_changing,   :change
