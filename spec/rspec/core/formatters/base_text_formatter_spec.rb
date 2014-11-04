@@ -129,40 +129,71 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       end
     end
 
-    context 'for #shared_examples' do
-      it 'outputs the name and location' do
-        group.shared_examples 'foo bar' do
-          it("example name") { expect("this").to eq("that") }
-        end
-
-        line = __LINE__.next
-        group.it_should_behave_like('foo bar')
-
-        run_all_and_dump_failures
-
-        expect(output.string).to include(
-          'Shared Example Group: "foo bar" called from ' +
-            "#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}"
-        )
-      end
-
-      context 'that contains nested example groups' do
+    %w[ include_examples it_should_behave_like ].each do |inclusion_method|
+      context "for #shared_examples included using #{inclusion_method}" do
         it 'outputs the name and location' do
           group.shared_examples 'foo bar' do
-            describe 'nested group' do
-              it("example name") { expect("this").to eq("that") }
-            end
+            it("example name") { expect("this").to eq("that") }
           end
 
           line = __LINE__.next
-          group.it_should_behave_like('foo bar')
+          group.__send__(inclusion_method, 'foo bar')
 
           run_all_and_dump_failures
 
-          expect(output.string).to include(
+          expect(output.string.lines).to include(a_string_ending_with(
             'Shared Example Group: "foo bar" called from ' +
-              "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}"
-          )
+              "#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}\n"
+          ))
+        end
+
+        context 'that contains nested example groups' do
+          it 'outputs the name and location' do
+            group.shared_examples 'foo bar' do
+              describe 'nested group' do
+                it("example name") { expect("this").to eq("that") }
+              end
+            end
+
+            line = __LINE__.next
+            group.__send__(inclusion_method, 'foo bar')
+
+            run_all_and_dump_failures
+
+            expect(output.string.lines).to include(a_string_ending_with(
+              'Shared Example Group: "foo bar" called from ' +
+                "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}\n"
+            ))
+          end
+        end
+
+        context "that contains shared group nesting" do
+          it 'includes each inclusion location in the output' do
+            group.shared_examples "inner" do
+              example { expect(1).to eq(2) }
+            end
+
+            inner_line = __LINE__ + 2
+            group.shared_examples "outer" do
+              __send__(inclusion_method, "inner")
+            end
+
+            outer_line = __LINE__ + 1
+            group.__send__(inclusion_method, 'outer')
+
+            run_all_and_dump_failures
+
+            expect(output.string.lines.grep(/Shared Example Group/)).to match [
+              a_string_ending_with(
+                'Shared Example Group: "inner" called from ' +
+                  "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{inner_line}\n"
+              ),
+              a_string_ending_with(
+                'Shared Example Group: "outer" called from ' +
+                  "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{outer_line}\n"
+              ),
+            ]
+          end
         end
       end
     end

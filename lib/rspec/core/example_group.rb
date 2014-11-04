@@ -594,9 +594,33 @@ module RSpec
     end
 
     # Contains information about the inclusion site of a shared example group.
-    # @attr shared_group_name [String] the name of the shared example group
-    # @attr inclusion_location [String] the location where the shared example was included
-    SharedExampleGroupInclusionStackFrame = Struct.new(:shared_group_name, :inclusion_location) do
+    class SharedExampleGroupInclusionStackFrame
+      # @return [String] the name of the shared example group
+      attr_reader :shared_group_name
+      # @return [String] the location where the shared example was included
+      attr_reader :inclusion_location
+
+      def initialize(shared_group_name, inclusion_location)
+        @shared_group_name  = shared_group_name
+        @inclusion_location = inclusion_location
+      end
+
+      # @return [String] The {#inclusion_location}, formatted for display by a formatter.
+      def formatted_inclusion_location
+        @formatted_inclusion_location ||= begin
+          RSpec.configuration.backtrace_formatter.backtrace_line(
+            inclusion_location.sub(/(:\d+):in .+$/, '\1')
+          )
+        end
+      end
+
+      # @return [String] Description of this stack frame, in the form used by
+      #   RSpec's built-in formatters.
+      def description
+        @description ||= "Shared Example Group: #{shared_group_name.inspect} " \
+          "called from #{formatted_inclusion_location}"
+      end
+
       # @private
       def self.current_backtrace
         RSpec.thread_local_metadata[:shared_example_group_inclusions].reverse

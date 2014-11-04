@@ -13,6 +13,10 @@ Enhancements:
 * Removed dependency on pathname from stdlib. (Sam Phippen, #1703)
 * Improve the message presented when a user hits Ctrl-C.
   (Alex Chaffee #1717, #1742)
+* Improve shared example group inclusion backtrace displayed
+  in failed example output so that it works for all methods
+  of including shared example groups and shows all inclusion
+  locations. (Myron Marston, #1763)
 
 ### 3.1.8 Development
 
