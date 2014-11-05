@@ -17,7 +17,7 @@ module RSpec
       ExampleClass  = Class.new
 
       it 'does not add a bunch of private methods to Module' do
-        seg_methods = RSpec::Core::SharedExampleGroup::DefinitionAPI.private_instance_methods
+        seg_methods = RSpec::Core::SharedExampleGroup.private_instance_methods
         expect(Module.private_methods & seg_methods).to eq([])
       end
 
@@ -72,23 +72,6 @@ module RSpec
           it 'works with top level defined examples in modules' do
             expect(RSpec::configuration.reporter).to_not receive(:deprecation)
             ExampleGroup.describe('example group') { include_context 'top level in module' }
-          end
-
-          it 'generates a named (rather than anonymous) module' do
-            define_shared_group("shared behaviors", :include_it) { }
-            group = RSpec.describe("Group", :include_it) { }
-
-            anonymous_module_regex = /#<Module:0x[0-9a-f]+>/
-            expect(Module.new.inspect).to match(anonymous_module_regex)
-
-            include_a_named_rather_than_anonymous_module = (
-              include(a_string_including(
-                "#<RSpec::Core::SharedExampleGroup", "shared behaviors"
-              )).and exclude(a_string_matching(anonymous_module_regex))
-            )
-
-            expect(group.ancestors.map(&:inspect)).to include_a_named_rather_than_anonymous_module
-            expect(group.ancestors.map(&:to_s)).to include_a_named_rather_than_anonymous_module
           end
 
           ["name", :name, ExampleModule, ExampleClass].each do |object|

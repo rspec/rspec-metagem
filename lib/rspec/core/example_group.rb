@@ -22,16 +22,15 @@ module RSpec
     #
     # Besides the class methods defined here, there are other interesting macros
     # defined in {Hooks}, {MemoizedHelpers::ClassMethods} and
-    # {SharedExampleGroup::DefinitionAPI}. There are additional instance
-    # methods available to your examples defined in {MemoizedHelpers} and
-    # {Pending}.
+    # {SharedExampleGroup}. There are additional instance methods available to
+    # your examples defined in {MemoizedHelpers} and {Pending}.
     class ExampleGroup
       extend Hooks
 
       include MemoizedHelpers
       extend MemoizedHelpers::ClassMethods
       include Pending
-      extend SharedExampleGroup::DefinitionAPI
+      extend SharedExampleGroup
 
       unless respond_to?(:define_singleton_method)
         # @private
@@ -284,7 +283,7 @@ module RSpec
       # @macro [attach] define_nested_shared_group_method
       #   @!scope class
       #
-      #   @see SharedExampleGroup::DefinitionAPI
+      #   @see SharedExampleGroup
       def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
         define_singleton_method(new_name) do |name, *args, &customization_block|
           # Pass :caller so the :location metadata is set properly.
@@ -310,7 +309,7 @@ module RSpec
       # group. If given a block, that block is also eval'd in the current
       # context.
       #
-      # @see SharedExampleGroup::DefinitionAPI
+      # @see SharedExampleGroup
       def self.include_context(name, *args, &block)
         find_and_eval_shared("context", name, *args, &block)
       end
@@ -320,7 +319,7 @@ module RSpec
       # group. If given a block, that block is also eval'd in the current
       # context.
       #
-      # @see SharedExampleGroup::DefinitionAPI
+      # @see SharedExampleGroup
       def self.include_examples(name, *args, &block)
         find_and_eval_shared("examples", name, *args, &block)
       end

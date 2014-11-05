@@ -1,92 +1,68 @@
 module RSpec
   module Core
-    # Represents some functionality that is shared with multiple example groups.
-    # The functionality is defined by the provided block, which is lazily
-    # eval'd when the `SharedExampleGroup` instance is included in an example
-    # group.
-    class SharedExampleGroup < Module
-      def initialize(description, definition)
-        @description = description
-        @definition  = definition
-      end
-
-      # Provides a human-readable representation of this module.
-      def inspect
-        "#<#{self.class.name} #{@description.inspect}>"
-      end
-      alias to_s inspect
-
-      # Ruby callback for when a module is included in another module is class.
-      # Our definition evaluates the shared group block in the context of the
-      # including example group.
-      def included(klass)
-        klass.class_exec(&@definition)
-      end
-
-      # Shared example groups let you define common context and/or common
-      # examples that you wish to use in multiple example groups.
+    # Shared example groups let you define common context and/or common
+    # examples that you wish to use in multiple example groups.
+    #
+    # When defined, the shared group block is stored for later evaluation.
+    # It can later be included in an example group either explicitly
+    # (using `include_examples`, `include_context` or `it_behaves_like`)
+    # or implicitly (via matching metadata).
+    #
+    # Named shared example groups are scoped based on where they are
+    # defined. Shared groups defined in an example group are available
+    # for inclusion in that example group or any child example groups,
+    # but not in any parent or sibling example groups. Shared example
+    # groups defined at the top level can be included from any example group.
+    module SharedExampleGroup
+      # @overload shared_examples(name, &block)
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
+      #   @param block The block to be eval'd
+      # @overload shared_examples(name, metadata, &block)
+      #   @param name [String, Symbol, Module] identifer to use when looking up
+      #     this shared group
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
+      #   @param block The block to be eval'd
+      # @overload shared_examples(metadata, &block)
+      #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
+      #     group; any example group with matching metadata will automatically
+      #     include this shared example group.
+      #   @param block The block to be eval'd
       #
-      # When defined, the shared group block is stored for later evaluation.
-      # It can later be included in an example group either explicitly
-      # (using `include_examples`, `include_context` or `it_behaves_like`)
-      # or implicitly (via matching metadata).
+      # Stores the block for later use. The block will be evaluated
+      # in the context of an example group via `include_examples`,
+      # `include_context`, or `it_behaves_like`.
       #
-      # Named shared example groups are scoped based on where they are
-      # defined. Shared groups defined in an example group are available
-      # for inclusion in that example group or any child example groups,
-      # but not in any parent or sibling example groups. Shared example
-      # groups defined at the top level can be included from any example group.
-      module DefinitionAPI
-        # @overload shared_examples(name, &block)
-        #   @param name [String, Symbol, Module] identifer to use when looking up
-        #     this shared group
-        #   @param block The block to be eval'd
-        # @overload shared_examples(name, metadata, &block)
-        #   @param name [String, Symbol, Module] identifer to use when looking up
-        #     this shared group
-        #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-        #     group; any example group with matching metadata will automatically
-        #     include this shared example group.
-        #   @param block The block to be eval'd
-        # @overload shared_examples(metadata, &block)
-        #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-        #     group; any example group with matching metadata will automatically
-        #     include this shared example group.
-        #   @param block The block to be eval'd
-        #
-        # Stores the block for later use. The block will be evaluated
-        # in the context of an example group via `include_examples`,
-        # `include_context`, or `it_behaves_like`.
-        #
-        # @example
-        #   shared_examples "auditable" do
-        #     it "stores an audit record on save!" do
-        #       expect { auditable.save! }.to change(Audit, :count).by(1)
-        #     end
-        #   end
-        #
-        #   describe Account do
-        #     it_behaves_like "auditable" do
-        #       let(:auditable) { Account.new }
-        #     end
-        #   end
-        #
-        # @see ExampleGroup.it_behaves_like
-        # @see ExampleGroup.include_examples
-        # @see ExampleGroup.include_context
-        def shared_examples(name, *args, &block)
-          top_level = self == ExampleGroup
-          if top_level && RSpec.thread_local_metadata[:in_example_group]
-            raise "Creating isolated shared examples from within a context is " \
-                  "not allowed. Remove `RSpec.` prefix or move this to a " \
-                  "top-level scope."
-          end
-
-          RSpec.world.shared_example_group_registry.add(self, name, *args, &block)
+      # @example
+      #   shared_examples "auditable" do
+      #     it "stores an audit record on save!" do
+      #       expect { auditable.save! }.to change(Audit, :count).by(1)
+      #     end
+      #   end
+      #
+      #   describe Account do
+      #     it_behaves_like "auditable" do
+      #       let(:auditable) { Account.new }
+      #     end
+      #   end
+      #
+      # @see ExampleGroup.it_behaves_like
+      # @see ExampleGroup.include_examples
+      # @see ExampleGroup.include_context
+      def shared_examples(name, *args, &block)
+        top_level = self == ExampleGroup
+        if top_level && RSpec.thread_local_metadata[:in_example_group]
+          raise "Creating isolated shared examples from within a context is " \
+                "not allowed. Remove `RSpec.` prefix or move this to a " \
+                "top-level scope."
         end
-        alias shared_context      shared_examples
-        alias shared_examples_for shared_examples
+
+        RSpec.world.shared_example_group_registry.add(self, name, *args, &block)
       end
+      alias shared_context      shared_examples
+      alias shared_examples_for shared_examples
 
       # @api private
       #
@@ -146,7 +122,12 @@ module RSpec
           end
 
           return if metadata_args.empty?
-          RSpec.configuration.include SharedExampleGroup.new(name, block), *metadata_args
+
+          mod = Module.new
+          (class << mod; self; end).__send__(:define_method, :included) do |host|
+            host.class_exec(&block)
+          end
+          RSpec.configuration.include mod, *metadata_args
         end
 
         def find(lookup_contexts, name)
