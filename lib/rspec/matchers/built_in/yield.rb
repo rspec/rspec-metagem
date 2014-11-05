@@ -94,8 +94,7 @@ module RSpec
       # Not intended to be instantiated directly.
       class YieldControl < BaseMatcher
         def initialize
-          @expectation_type = nil
-          @expected_yields_count = nil
+          at_least(:once)
         end
 
         # @api public
@@ -151,11 +150,7 @@ module RSpec
           @probe = YieldProbe.probe(block)
           return false unless @probe.has_block?
 
-          if @expectation_type
-            @probe.num_yields.__send__(@expectation_type, @expected_yields_count)
-          else
-            @probe.yielded_once?(:yield_control)
-          end
+          @probe.num_yields.__send__(@expectation_type, @expected_yields_count)
         end
 
         # @private

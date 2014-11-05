@@ -25,6 +25,10 @@ Bug Fixes:
   method. This avoids a possible error that can occur if the object
   raises errors from `private_methods` (which can happen with celluloid
   objects). (@chapmajs, #670)
+* Make `yield_control` (with no modifier) default to
+  `at_least(:once)` rather than raising a confusing error
+  when multiple yields are encountered.
+  (Myron Marston, #675)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
