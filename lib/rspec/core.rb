@@ -130,7 +130,7 @@ module RSpec
   # A single thread local variable so we don't excessively pollute that
   # namespace.
   def self.thread_local_metadata
-    Thread.current[:_rspec] ||= {}
+    Thread.current[:_rspec] ||= { :shared_example_group_inclusions => [] }
   end
 
   # @private

@@ -181,6 +181,7 @@ module RSpec
           group_metadata.update(example_metadata)
 
           example_metadata[:example_group] = group_metadata
+          example_metadata[:shared_group_inclusion_backtrace] = SharedExampleGroupInclusionStackFrame.current_backtrace
           example_metadata.delete(:parent_example_group)
 
           hash = new(example_metadata, user_metadata, [description].compact, block)

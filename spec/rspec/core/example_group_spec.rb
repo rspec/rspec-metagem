@@ -1424,6 +1424,20 @@ module RSpec::Core
           end.to raise_error(ArgumentError, /Could not find .* "shared stuff"/)
         end
 
+        it "leaves RSpec's thread metadata unchanged" do
+          expect {
+            group.send(name, "named this")
+          }.to avoid_changing(RSpec, :thread_local_metadata)
+        end
+
+        it "leaves RSpec's thread metadata unchanged, even when an error occurs during evaluation" do
+          expect {
+            group.send(name, "named this") do
+              raise "boom"
+            end
+          }.to raise_error("boom").and avoid_changing(RSpec, :thread_local_metadata)
+        end
+
         it "passes parameters to the shared content" do
           passed_params = {}
           group = ExampleGroup.describe
@@ -1582,6 +1596,26 @@ module RSpec::Core
             it_should_behave_like "shared stuff"
           end
         end.to raise_error(ArgumentError,%q|Could not find shared examples "shared stuff"|)
+      end
+
+      it "leaves RSpec's thread metadata unchanged" do
+        expect {
+          RSpec.describe do
+            shared_examples_for("stuff") { }
+            it_should_behave_like "stuff"
+          end
+        }.to avoid_changing(RSpec, :thread_local_metadata)
+      end
+
+      it "leaves RSpec's thread metadata unchanged, even when an error occurs during evaluation" do
+        expect {
+          RSpec.describe do
+            shared_examples_for("stuff") { }
+            it_should_behave_like "stuff" do
+              raise "boom"
+            end
+          end
+        }.to raise_error("boom").and avoid_changing(RSpec, :thread_local_metadata)
       end
     end
 

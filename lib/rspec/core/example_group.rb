@@ -289,8 +289,8 @@ module RSpec
           # Pass :caller so the :location metadata is set properly.
           # Otherwise, it'll be set to the next line because that's
           # the block's source_location.
-          group = example_group("#{report_label} #{name}", :caller => caller) do
-            find_and_eval_shared("examples", name, *args, &customization_block)
+          group = example_group("#{report_label} #{name}", :caller => (the_caller = caller)) do
+            find_and_eval_shared("examples", name, the_caller.first, *args, &customization_block)
           end
           group.metadata[:shared_group_name] = name
           group
@@ -311,7 +311,7 @@ module RSpec
       #
       # @see SharedExampleGroup
       def self.include_context(name, *args, &block)
-        find_and_eval_shared("context", name, *args, &block)
+        find_and_eval_shared("context", name, caller.first, *args, &block)
       end
 
       # Includes shared content mapped to `name` directly in the group in which
@@ -321,19 +321,21 @@ module RSpec
       #
       # @see SharedExampleGroup
       def self.include_examples(name, *args, &block)
-        find_and_eval_shared("examples", name, *args, &block)
+        find_and_eval_shared("examples", name, caller.first, *args, &block)
       end
 
       # @private
-      def self.find_and_eval_shared(label, name, *args, &customization_block)
+      def self.find_and_eval_shared(label, name, inclusion_location, *args, &customization_block)
         shared_block = RSpec.world.shared_example_group_registry.find(parent_groups, name)
 
         unless shared_block
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
-        module_exec(*args, &shared_block)
-        module_exec(&customization_block) if customization_block
+        SharedExampleGroupInclusionStackFrame.with_frame(name, inclusion_location) do
+          module_exec(*args, &shared_block)
+          module_exec(&customization_block) if customization_block
+        end
       end
 
       # @!endgroup
@@ -587,6 +589,49 @@ module RSpec
     class AnonymousExampleGroup < ExampleGroup
       def self.metadata
         {}
+      end
+    end
+
+    # Contains information about the inclusion site of a shared example group.
+    class SharedExampleGroupInclusionStackFrame
+      # @return [String] the name of the shared example group
+      attr_reader :shared_group_name
+      # @return [String] the location where the shared example was included
+      attr_reader :inclusion_location
+
+      def initialize(shared_group_name, inclusion_location)
+        @shared_group_name  = shared_group_name
+        @inclusion_location = inclusion_location
+      end
+
+      # @return [String] The {#inclusion_location}, formatted for display by a formatter.
+      def formatted_inclusion_location
+        @formatted_inclusion_location ||= begin
+          RSpec.configuration.backtrace_formatter.backtrace_line(
+            inclusion_location.sub(/(:\d+):in .+$/, '\1')
+          )
+        end
+      end
+
+      # @return [String] Description of this stack frame, in the form used by
+      #   RSpec's built-in formatters.
+      def description
+        @description ||= "Shared Example Group: #{shared_group_name.inspect} " \
+          "called from #{formatted_inclusion_location}"
+      end
+
+      # @private
+      def self.current_backtrace
+        RSpec.thread_local_metadata[:shared_example_group_inclusions].reverse
+      end
+
+      # @private
+      def self.with_frame(name, location)
+        current_stack = RSpec.thread_local_metadata[:shared_example_group_inclusions]
+        current_stack << new(name, location)
+        yield
+      ensure
+        current_stack.pop
       end
     end
   end
