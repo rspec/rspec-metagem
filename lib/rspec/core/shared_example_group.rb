@@ -1,5 +1,29 @@
 module RSpec
   module Core
+    # Represents some functionality that is shared with multiple example groups.
+    # The functionality is defined by the provided block, which is lazily
+    # eval'd when the `SharedExampleGroupModule` instance is included in an example
+    # group.
+    class SharedExampleGroupModule < Module
+      def initialize(description, definition)
+        @description = description
+        @definition  = definition
+      end
+
+      # Provides a human-readable representation of this module.
+      def inspect
+        "#<#{self.class.name} #{@description.inspect}>"
+      end
+      alias to_s inspect
+
+      # Ruby callback for when a module is included in another module is class.
+      # Our definition evaluates the shared group block in the context of the
+      # including example group.
+      def included(klass)
+        klass.class_exec(&@definition)
+      end
+    end
+
     # Shared example groups let you define common context and/or common
     # examples that you wish to use in multiple example groups.
     #
@@ -122,12 +146,7 @@ module RSpec
           end
 
           return if metadata_args.empty?
-
-          mod = Module.new
-          (class << mod; self; end).__send__(:define_method, :included) do |host|
-            host.class_exec(&block)
-          end
-          RSpec.configuration.include mod, *metadata_args
+          RSpec.configuration.include SharedExampleGroupModule.new(name, block), *metadata_args
         end
 
         def find(lookup_contexts, name)
