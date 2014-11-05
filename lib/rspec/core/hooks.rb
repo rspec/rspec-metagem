@@ -30,7 +30,7 @@ module RSpec
       # @see #around
       # @see ExampleGroup
       # @see SharedContext
-      # @see SharedExampleGroup::DefinitionAPI
+      # @see SharedExampleGroup
       # @see Configuration
       #
       # Declare a block of code to be run before each example (using `:example`)
@@ -220,7 +220,7 @@ module RSpec
       # @see #around
       # @see ExampleGroup
       # @see SharedContext
-      # @see SharedExampleGroup::DefinitionAPI
+      # @see SharedExampleGroup
       # @see Configuration
       #
       # Declare a block of code to be run after each example (using `:example`)

@@ -17,7 +17,7 @@ module RSpec
       ExampleClass  = Class.new
 
       it 'does not add a bunch of private methods to Module' do
-        seg_methods = RSpec::Core::SharedExampleGroup::DefinitionAPI.private_instance_methods
+        seg_methods = RSpec::Core::SharedExampleGroup.private_instance_methods
         expect(Module.private_methods & seg_methods).to eq([])
       end
 
@@ -83,7 +83,7 @@ module RSpec
 
             include_a_named_rather_than_anonymous_module = (
               include(a_string_including(
-                "#<RSpec::Core::SharedExampleGroup", "shared behaviors"
+                "#<RSpec::Core::SharedExampleGroupModule", "shared behaviors"
               )).and exclude(a_string_matching(anonymous_module_regex))
             )
 
