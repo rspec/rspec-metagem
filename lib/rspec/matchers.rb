@@ -834,8 +834,6 @@ module RSpec
     #
     # @note Your expect block must accept a parameter and pass it on to
     #   the method-under-test as a block.
-    # @note This matcher is not designed for use with methods that yield
-    #   multiple times.
     def yield_control
       BuiltIn::YieldControl.new
     end
