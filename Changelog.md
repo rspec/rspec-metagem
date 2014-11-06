@@ -17,6 +17,8 @@ Enhancements:
   in failed example output so that it works for all methods
   of including shared example groups and shows all inclusion
   locations. (Myron Marston, #1763)
+* Issue seed notification at start (as well as the end) of the reporter
+  run. (Arlandis Word, #1761)
 
 ### 3.1.8 Development
 
