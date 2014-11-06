@@ -49,6 +49,16 @@ module RSpec::Core
 
         reporter.start 3, (start_time + 5)
       end
+
+      it 'notifies formatters of the seed used' do
+        formatter = double("formatter")
+        reporter.register_listener formatter, :seed
+
+        expect(formatter).to receive(:seed).with(
+          an_object_having_attributes(:seed => config.seed, :seed_used? => config.seed_used?)
+        )
+        reporter.start 1
+      end
     end
 
     context "given one formatter" do
