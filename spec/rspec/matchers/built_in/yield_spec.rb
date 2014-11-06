@@ -45,9 +45,10 @@ RSpec.describe "yield_control matcher" do
   end
 
   describe "expect {...}.to yield_control" do
-    it 'passes if the block yields, regardless of the number of yielded arguments' do
+    it 'passes if the block yields, regardless of the number of yielded arguments or the number of yields' do
       expect { |b| _yield_with_no_args(&b) }.to yield_control
       expect { |b| _yield_with_args(1, 2, &b) }.to yield_control
+      expect { |b| 1.upto(10, &b) }.to yield_control
     end
 
     it 'passes if the block yields using instance_exec' do
