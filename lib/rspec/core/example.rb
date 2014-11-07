@@ -170,7 +170,7 @@ module RSpec
           if skipped?
             Pending.mark_pending! self, skip
           elsif !RSpec.configuration.dry_run?
-            with_around_example_hooks do
+            with_around_and_singleton_context_hooks do
               begin
                 run_before_example
                 @example_group_instance.instance_exec(self, &@example_block)
@@ -376,6 +376,14 @@ module RSpec
       def run_before_example
         @example_group_instance.setup_mocks_for_rspec
         hooks.run(:before, :example, self)
+      end
+
+      def with_around_and_singleton_context_hooks
+        singleton_context_hooks_host = example_group_instance.singleton_class
+        singleton_context_hooks_host.run_before_context_hooks(example_group_instance)
+        with_around_example_hooks { yield }
+      ensure
+        singleton_context_hooks_host.run_after_context_hooks(example_group_instance)
       end
 
       def run_after_example

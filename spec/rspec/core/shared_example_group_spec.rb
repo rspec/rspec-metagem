@@ -133,39 +133,60 @@ module RSpec
               expect(non_matching_group).not_to respond_to(:bar)
             end
 
-            it 'runs hooks for individual examples that have matching metadata' do
-              sequence = []
+            describe "hooks for individual examples that have matching metadata" do
+              it 'runs them' do
+                sequence = []
 
-              define_shared_group("name", :include_it) do
-                # These two should not be run for individual examples...
-                before(:context) { sequence << :before_context }
-                after(:context)  { sequence << :after_context }
+                define_shared_group("name", :include_it) do
+                  before(:context) { sequence << :before_context }
+                  after(:context)  { sequence << :after_context }
 
-                before(:example) { sequence << :before_example }
-                after(:example)  { sequence << :after_example  }
+                  before(:example) { sequence << :before_example }
+                  after(:example)  { sequence << :after_example  }
 
-                around(:example) do |ex|
-                  sequence << :around_example_before
-                  ex.run
-                  sequence << :around_example_after
+                  around(:example) do |ex|
+                    sequence << :around_example_before
+                    ex.run
+                    sequence << :around_example_after
+                  end
                 end
+
+                RSpec.describe "group" do
+                  example("ex1") { sequence << :unmatched_example_1 }
+                  example("ex2", :include_it) { sequence << :matched_example }
+                  example("ex3") { sequence << :unmatched_example_2 }
+                end.run
+
+                expect(sequence).to eq([
+                  :unmatched_example_1,
+                  :before_context,
+                  :around_example_before,
+                  :before_example,
+                  :matched_example,
+                  :after_example,
+                  :around_example_after,
+                  :after_context,
+                  :unmatched_example_2
+                ])
               end
 
-              RSpec.describe "group" do
-                example("ex1") { sequence << :unmatched_example_1 }
-                example("ex2", :include_it) { sequence << :matched_example }
-                example("ex3") { sequence << :unmatched_example_2 }
-              end.run
+              it 'runs the `after(:context)` hooks even if the `before(:context)` hook raises an error' do
+                sequence = []
 
-              expect(sequence).to eq([
-                :unmatched_example_1,
-                :around_example_before,
-                :before_example,
-                :matched_example,
-                :after_example,
-                :around_example_after,
-                :unmatched_example_2
-              ])
+                define_shared_group("name", :include_it) do
+                  before(:context) do
+                    sequence << :before_context
+                    raise "boom"
+                  end
+                  after(:context) { sequence << :after_context }
+                end
+
+                RSpec.describe "group" do
+                  example("ex", :include_it) { sequence << :example }
+                end.run
+
+                expect(sequence).to eq([ :before_context, :after_context ])
+              end
             end
           end
 

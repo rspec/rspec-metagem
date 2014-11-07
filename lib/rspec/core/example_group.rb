@@ -442,13 +442,35 @@ module RSpec
 
       # @private
       def self.run_before_context_hooks(example_group_instance)
-        set_ivars(example_group_instance, superclass.before_context_ivars)
+        set_ivars(example_group_instance, superclass_before_context_ivars)
 
         ContextHookMemoizedHash::Before.isolate_for_context_hook(example_group_instance) do
           hooks.run(:before, :context, example_group_instance)
         end
       ensure
         store_before_context_ivars(example_group_instance)
+      end
+
+      if RUBY_VERSION.to_f >= 1.9
+        # @private
+        def self.superclass_before_context_ivars
+          superclass.before_context_ivars
+        end
+      else # 1.8.7
+        # @private
+        def self.superclass_before_context_ivars
+          if superclass.respond_to?(:before_context_ivars)
+            superclass.before_context_ivars
+          else
+            # `self` must be the singleton class of an ExampleGroup instance.
+            # On 1.8.7, the superclass of a singleton class of an instance of A
+            # is A's singleton class. On 1.9+, it's A. On 1.8.7, the first ancestor
+            # is A, so we can mirror 1.8.7's behavior here. Note that we have to
+            # search for the first that responds to `before_context_ivars`
+            # in case a module has been included in the singleton class.
+            ancestors.find { |a| a.respond_to?(:before_context_ivars) }.before_context_ivars
+          end
+        end
       end
 
       # @private
