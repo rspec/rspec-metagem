@@ -32,7 +32,11 @@ class RSpec::Core::Configuration
   end
 end
 
-Dir['./spec/support/**/*.rb'].map {|f| require f}
+Dir['./spec/support/**/*.rb'].map do |file|
+  # Ensure requires are relative to `spec`, which is on the
+  # load path. This helps prevent double requires on 1.8.7.
+  require file.gsub("./spec/support", "support")
+end
 
 module EnvHelpers
   def with_env_vars(vars)

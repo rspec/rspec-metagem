@@ -48,7 +48,7 @@ module RSpec::Core
     end
 
     [:before, :after].each do |type|
-      [:example, :context, :suite].each do |scope|
+      [:example, :context].each do |scope|
         describe "##{type}(#{scope.inspect})" do
           let(:instance) { HooksHost.new }
           let!(:hook) do
@@ -73,26 +73,6 @@ module RSpec::Core
             }.not_to yield_control
           end
         end
-      end
-    end
-
-    context "when an error happens in `after(:suite)`" do
-      it 'allows the error to propagate to the user' do
-        RSpec.configuration.after(:suite) { 1 / 0 }
-
-        expect {
-          RSpec.configuration.with_suite_hooks { }
-        }.to raise_error(ZeroDivisionError)
-      end
-    end
-
-    context "when an error happens in `before(:suite)`" do
-      it 'allows the error to propagate to the user' do
-        RSpec.configuration.before(:suite) { 1 / 0 }
-
-        expect {
-          RSpec.configuration.with_suite_hooks { }
-        }.to raise_error(ZeroDivisionError)
       end
     end
 
