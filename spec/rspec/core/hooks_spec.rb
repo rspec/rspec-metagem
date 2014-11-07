@@ -81,7 +81,7 @@ module RSpec::Core
         RSpec.configuration.after(:suite) { 1 / 0 }
 
         expect {
-          RSpec.configuration.hooks.run(:after, :suite, SuiteHookContext.new)
+          RSpec.configuration.with_suite_hooks { }
         }.to raise_error(ZeroDivisionError)
       end
     end
@@ -91,7 +91,7 @@ module RSpec::Core
         RSpec.configuration.before(:suite) { 1 / 0 }
 
         expect {
-          RSpec.configuration.hooks.run(:before, :suite, SuiteHookContext.new)
+          RSpec.configuration.with_suite_hooks { }
         }.to raise_error(ZeroDivisionError)
       end
     end

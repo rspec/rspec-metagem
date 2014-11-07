@@ -1411,6 +1411,15 @@ module RSpec
         end
       end
 
+      # @private
+      def with_suite_hooks
+        hook_context = SuiteHookContext.new
+        hooks.run(:before, :suite, hook_context)
+        yield
+      ensure
+        hooks.run(:after, :suite, hook_context)
+      end
+
     private
 
       def get_files_to_run(paths)
