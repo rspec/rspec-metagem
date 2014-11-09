@@ -128,6 +128,29 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           expect(ex.description).to eq("should eq 2")
         end
       end
+
+      context "when the matcher's `description` method raises an error" do
+        description_line = __LINE__ + 3
+        RSpec::Matchers.define :matcher_with_failing_description do
+          match { true }
+          description { raise ArgumentError, "boom" }
+        end
+
+        it 'allows the example to pass and surfaces the failing description in the example description' do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(2).to matcher_with_failing_description }
+          end.run
+
+          expect(ex).to pass.and have_attributes(description: a_string_including(
+            "example at #{ex.location}",
+            "ArgumentError",
+            "boom",
+            "#{__FILE__}:#{description_line}"
+          ))
+        end
+      end
     end
 
     context "when `expect_with :rspec, :stdlib` is configured" do

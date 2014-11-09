@@ -75,7 +75,7 @@ module RSpec
       # the location of the example.
       def description
         description = if metadata[:description].to_s.empty?
-                        "example at #{location}"
+                        location_description
                       else
                         metadata[:description]
                       end
@@ -407,14 +407,22 @@ module RSpec
       end
 
       def assign_generated_description
-        if metadata[:description].empty? && (description = RSpec::Matchers.generated_description)
+        if metadata[:description].empty? && (description = get_generated_description)
           metadata[:description] = description
           metadata[:full_description] << description
         end
-      rescue Exception => e
-        set_exception(e, "while assigning the example description")
       ensure
         RSpec::Matchers.clear_generated_description
+      end
+
+      def get_generated_description
+        RSpec::Matchers.generated_description
+      rescue Exception => e
+        location_description + " (Got an error when generating description from matcher: #{e.class}: #{e.message} -- #{e.backtrace.first})"
+      end
+
+      def location_description
+        "example at #{location}"
       end
 
       def skip_message
