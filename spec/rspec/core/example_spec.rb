@@ -151,6 +151,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           ))
         end
       end
+
+      context "when an `after(:example)` hook has an expectation" do
+        it "assigns the description based on the example's last expectation, ignoring the `after` expectation since it can apply to many examples" do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(nil).to be_nil }
+            after { expect(true).to eq(true) }
+          end.run
+
+          expect(ex).to pass.and have_attributes(description: "should be nil")
+        end
+      end
     end
 
     context "when `expect_with :rspec, :stdlib` is configured" do

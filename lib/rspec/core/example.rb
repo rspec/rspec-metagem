@@ -384,9 +384,9 @@ module RSpec
       end
 
       def run_after_example
+        assign_generated_description if RSpec.configuration.expecting_with_rspec?
         @example_group_class.hooks.run(:after, :example, self)
         verify_mocks
-        assign_generated_description if RSpec.configuration.expecting_with_rspec?
       ensure
         @example_group_instance.teardown_mocks_for_rspec
       end
