@@ -659,4 +659,35 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(current_examples).to eq([example1, example2])
     end
   end
+
+  describe "mock framework integration" do
+    it 'verifies mock expectations after each example' do
+      ex = nil
+
+      RSpec.describe do
+        ex = example do
+          dbl = double
+          expect(dbl).to receive(:foo)
+        end
+      end.run
+
+      expect(ex).to fail_with(RSpec::Mocks::MockExpectationError)
+    end
+
+    it 'allows `after(:example)` hooks to satisfy mock expectations, since examples are not complete until their `after` hooks run' do
+      ex = nil
+
+      RSpec.describe do
+        let(:dbl) { double }
+
+        ex = example do
+          expect(dbl).to receive(:foo)
+        end
+
+        after { dbl.foo }
+      end.run
+
+      expect(ex).to pass
+    end
+  end
 end
