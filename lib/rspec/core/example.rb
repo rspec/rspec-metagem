@@ -387,8 +387,6 @@ module RSpec
         @example_group_class.hooks.run(:after, :example, self)
         verify_mocks
         assign_generated_description if RSpec.configuration.expecting_with_rspec?
-      rescue Exception => e
-        set_exception(e, "in an `after(:example)` hook")
       ensure
         @example_group_instance.teardown_mocks_for_rspec
       end

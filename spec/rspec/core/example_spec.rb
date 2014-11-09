@@ -115,6 +115,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
         end
       end
+
+      context "when an `after(:example)` hook raises an error" do
+        it 'still assigns the description' do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(2).to eq(2) }
+            after { raise "boom" }
+          end.run
+
+          expect(ex.description).to eq("should eq 2")
+        end
+      end
     end
 
     context "when `expect_with :rspec, :stdlib` is configured" do
