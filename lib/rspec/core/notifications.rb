@@ -332,7 +332,7 @@ module RSpec::Core
       # @return [String] The seed information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted
-        "\nRandomized with seed #{seed}\n\n"
+        "\nRandomized with seed #{seed}\n"
       end
     end
 
