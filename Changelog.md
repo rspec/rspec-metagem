@@ -20,6 +20,14 @@ Enhancements:
 * Issue seed notification at start (as well as the end) of the reporter
   run. (Arlandis Word, #1761)
 
+Bug Fixes:
+
+* When assigning generated example descriptions, surface errors
+  raised by `matcher.description` in the example description.
+  (Myron Marston, #1771)
+* Don't consider expectations from `after` hooks when generating
+  example descriptions. (Myron Marston, #1771)
+
 ### 3.1.8 Development
 
 Bug Fixes:

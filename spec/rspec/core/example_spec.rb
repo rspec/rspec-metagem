@@ -115,6 +115,55 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
         end
       end
+
+      context "when an `after(:example)` hook raises an error" do
+        it 'still assigns the description' do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(2).to eq(2) }
+            after { raise "boom" }
+          end.run
+
+          expect(ex.description).to eq("should eq 2")
+        end
+      end
+
+      context "when the matcher's `description` method raises an error" do
+        description_line = __LINE__ + 3
+        RSpec::Matchers.define :matcher_with_failing_description do
+          match { true }
+          description { raise ArgumentError, "boom" }
+        end
+
+        it 'allows the example to pass and surfaces the failing description in the example description' do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(2).to matcher_with_failing_description }
+          end.run
+
+          expect(ex).to pass.and have_attributes(description: a_string_including(
+            "example at #{ex.location}",
+            "ArgumentError",
+            "boom",
+            "#{__FILE__}:#{description_line}"
+          ))
+        end
+      end
+
+      context "when an `after(:example)` hook has an expectation" do
+        it "assigns the description based on the example's last expectation, ignoring the `after` expectation since it can apply to many examples" do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { expect(nil).to be_nil }
+            after { expect(true).to eq(true) }
+          end.run
+
+          expect(ex).to pass.and have_attributes(description: "should be nil")
+        end
+      end
     end
 
     context "when `expect_with :rspec, :stdlib` is configured" do
@@ -657,6 +706,37 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       group.run
       expect(current_examples).to eq([example1, example2])
+    end
+  end
+
+  describe "mock framework integration" do
+    it 'verifies mock expectations after each example' do
+      ex = nil
+
+      RSpec.describe do
+        ex = example do
+          dbl = double
+          expect(dbl).to receive(:foo)
+        end
+      end.run
+
+      expect(ex).to fail_with(RSpec::Mocks::MockExpectationError)
+    end
+
+    it 'allows `after(:example)` hooks to satisfy mock expectations, since examples are not complete until their `after` hooks run' do
+      ex = nil
+
+      RSpec.describe do
+        let(:dbl) { double }
+
+        ex = example do
+          expect(dbl).to receive(:foo)
+        end
+
+        after { dbl.foo }
+      end.run
+
+      expect(ex).to pass
     end
   end
 end
