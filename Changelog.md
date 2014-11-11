@@ -19,6 +19,7 @@ Enhancements:
   locations. (Myron Marston, #1763)
 * Issue seed notification at start (as well as the end) of the reporter
   run. (Arlandis Word, #1761)
+* Improve the documentation of around hooks. (Jim Kingdon, #1772)
 
 Bug Fixes:
 
