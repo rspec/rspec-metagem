@@ -34,6 +34,9 @@ Bug Fixes:
 
 * Apply `--seed` before loading `--require` files so that required files
   can access the provided seed. (Myron Marston, #1745)
+* Handle `RSpec::Core::Formatters::DeprecationFormatter::FileStream` being
+  reopened with an IO stream, which sometimes happens with spring.
+  (Kevin Mook, #1757)
 
 ### 3.1.7 / 2014-10-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.6...v3.1.7)
