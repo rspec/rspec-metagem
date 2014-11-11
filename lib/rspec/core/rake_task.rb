@@ -16,57 +16,36 @@ module RSpec
       # Default pattern for spec files.
       DEFAULT_PATTERN = 'spec/**{,/*/**}/*_spec.rb'
 
-      # Name of task.
-      #
-      # default:
-      #   :spec
+      # Name of task. Defaults to `:spec`.
       attr_accessor :name
 
       # Files matching this pattern will be loaded.
-      #
-      # default:
-      #   'spec/**{,/*/**}/*_spec.rb'
+      # Defaults to `'spec/**{,/*/**}/*_spec.rb'`.
       attr_accessor :pattern
 
       # Files matching this pattern will be excluded.
-      #
-      # default:
-      #   'spec/**/*_spec.rb'
+      # Defaults to `nil`.
       attr_accessor :exclude_pattern
 
       # Whether or not to fail Rake when an error occurs (typically when
-      # examples fail).
-      #
-      # default:
-      #   true
+      # examples fail). Defaults to `true`.
       attr_accessor :fail_on_error
 
       # A message to print to stderr when there are failures.
       attr_accessor :failure_message
 
       # Use verbose output. If this is set to true, the task will print the
-      # executed spec command to stdout.
-      #
-      # default:
-      #   true
+      # executed spec command to stdout. Defaults to `true`.
       attr_accessor :verbose
 
-      # Command line options to pass to ruby.
-      #
-      # default:
-      #   nil
+      # Command line options to pass to ruby. Defaults to `nil`.
       attr_accessor :ruby_opts
 
-      # Path to RSpec.
-      #
-      # default:
-      #   'rspec'
+      # Path to RSpec. Defaults to the absolute path to the
+      # rspec binary from the loaded rspec-core gem.
       attr_accessor :rspec_path
 
-      # Command line options to pass to RSpec.
-      #
-      # default:
-      #   nil
+      # Command line options to pass to RSpec. Defaults to `nil`.
       attr_accessor :rspec_opts
 
       def initialize(*args, &task_block)
