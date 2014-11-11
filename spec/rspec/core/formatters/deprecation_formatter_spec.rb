@@ -111,6 +111,12 @@ module RSpec::Core::Formatters
           expect(summary_stream.string).to match(/1 deprecation/)
           expect(File.read(deprecation_stream.path)).to eq("foo is deprecated.\n#{DeprecationFormatter::RAISE_ERROR_CONFIG_NOTICE}")
         end
+
+        it "can handle when the stream is reopened to a system stream" do
+          send_notification :deprecation, notification(:deprecated => 'foo')
+          deprecation_stream.reopen(IO.for_fd(IO.sysopen('/dev/null', "w+")))
+          send_notification :deprecation_summary, null_notification
+        end
       end
 
       context "with an Error deprecation_stream" do
