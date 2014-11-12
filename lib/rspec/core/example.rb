@@ -407,7 +407,7 @@ module RSpec
       end
 
       def assign_generated_description
-        if metadata[:description].empty? && (description = get_generated_description)
+        if metadata[:description].empty? && (description = generate_description)
           metadata[:description] = description
           metadata[:full_description] << description
         end
@@ -415,10 +415,11 @@ module RSpec
         RSpec::Matchers.clear_generated_description
       end
 
-      def get_generated_description
+      def generate_description
         RSpec::Matchers.generated_description
       rescue Exception => e
-        location_description + " (Got an error when generating description from matcher: #{e.class}: #{e.message} -- #{e.backtrace.first})"
+        location_description + " (Got an error when generating description " \
+          "from matcher: #{e.class}: #{e.message} -- #{e.backtrace.first})"
       end
 
       def location_description

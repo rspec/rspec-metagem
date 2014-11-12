@@ -143,7 +143,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
             ex = example { expect(2).to matcher_with_failing_description }
           end.run
 
-          expect(ex).to pass.and have_attributes(description: a_string_including(
+          expect(ex).to pass.and have_attributes(:description => a_string_including(
             "example at #{ex.location}",
             "ArgumentError",
             "boom",
@@ -161,7 +161,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
             after { expect(true).to eq(true) }
           end.run
 
-          expect(ex).to pass.and have_attributes(description: "should be nil")
+          expect(ex).to pass.and have_attributes(:description => "should be nil")
         end
       end
     end

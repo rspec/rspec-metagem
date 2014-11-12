@@ -116,7 +116,7 @@ module RSpec
         #
         # This method is invoked after all of the examples have executed. The
         # next method to be invoked after this one is {#dump_failures}
-        # (BaseTextFormatter then calls {#dump_failure} once for each failed
+        # (BaseTextFormatter then calls {#dump_failures} once for each failed
         # example).
         #
         # @param notification [NullNotification]
