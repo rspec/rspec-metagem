@@ -58,10 +58,10 @@ module RSpec::Core
     context "with pattern" do
       it "adds the pattern" do
         task.pattern = "complex_pattern"
-        expect(spec_command).to include(" --pattern complex_pattern")
+        expect(spec_command).to match(/ --pattern '?complex_pattern'?/)
       end
 
-      it "shellescapes the pattern as necessary" do
+      it "shellescapes the pattern as necessary", :unless => RSpec::Support::OS.windows? do
         task.pattern = "foo'bar"
         expect(spec_command).to include(" --pattern foo\\'bar")
       end
@@ -160,7 +160,7 @@ module RSpec::Core
               path_template % "rake"
             ])
 
-            expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?:'?#{path_template % "rspec-support"}'? /)
           end
 
           it "avoids adding the same load path entries twice" do
@@ -171,7 +171,7 @@ module RSpec::Core
               path_template % "rspec-support"
             ])
 
-            expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?:'?#{path_template % "rspec-support"}'? /)
           end
         end
       end
@@ -342,7 +342,7 @@ module RSpec::Core
         make_files_in_dir "acceptance"
       end
 
-      it "shellescapes the pattern as necessary" do
+      it "shellescapes the pattern as necessary", :unless => RSpec::Support::OS.windows? do
         task.exclude_pattern = "foo'bar"
         expect(spec_command).to include(" --exclude-pattern foo\\'bar")
       end
