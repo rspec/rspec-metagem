@@ -1374,7 +1374,7 @@ module RSpec
 
       def paths_to_check(paths)
         return paths if pattern_might_load_specs_from_vendored_dirs?
-        paths + ['.']
+        paths + [Dir.getwd]
       end
 
       def pattern_might_load_specs_from_vendored_dirs?

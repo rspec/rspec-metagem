@@ -578,11 +578,11 @@ module RSpec::Core
       end
 
       def specify_consistent_ordering_of_files_to_run
+        allow(File).to receive(:directory?).and_call_original
         allow(File).to receive(:directory?).with('a') { true }
-        allow(File).to receive(:directory?).with('.') { true }
         globbed_files = nil
         allow(Dir).to receive(:[]).with(/^\{?a/) { globbed_files }
-        allow(Dir).to receive(:[]).with(/^\{?\./) { [] }
+        allow(Dir).to receive(:[]).with(a_string_starting_with(Dir.getwd)) { [] }
 
         orderings = [
           %w[ a/1.rb a/2.rb a/3.rb ],
