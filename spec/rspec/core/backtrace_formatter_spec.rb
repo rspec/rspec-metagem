@@ -115,7 +115,7 @@ module RSpec::Core
         expect(BacktraceFormatter.new.format_backtrace(backtrace)).to eq(["./my_spec.rb:5"])
       end
 
-      it "excludes lines from rspec libs by default", :if => RSpec::Support::OS.windows? do
+      it "excludes lines from rspec libs by default", :failing_on_appveyor, :if => RSpec::Support::OS.windows? do
         backtrace = [
           "\\path\\to\\rspec-expectations\\lib\\rspec\\expectations\\foo.rb:37",
           "\\path\\to\\rspec-expectations\\lib\\rspec\\matchers\\foo.rb:37",

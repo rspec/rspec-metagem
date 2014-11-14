@@ -1,12 +1,15 @@
 # encoding: utf-8
 require 'spec_helper'
 require 'rspec/core/formatters/html_formatter'
-require 'nokogiri'
+
+# For some reason we get load errors when loading nokogiri on AppVeyor
+# on Ruby 2.1.  On 1.9.3 it works just fine. No idea why.
+require 'nokogiri' unless ENV['APPVEYOR'] && RUBY_VERSION.to_f >= 2.1
 
 module RSpec
   module Core
     module Formatters
-      RSpec.describe HtmlFormatter do
+      RSpec.describe HtmlFormatter, :failing_on_appveyor => (RUBY_VERSION.to_f >= 2.1) do
         include FormatterSupport
 
         let(:root) { File.expand_path("#{File.dirname(__FILE__)}/../../../..") }

@@ -176,7 +176,7 @@ RSpec.describe RSpec do
   end
 
   describe "::Core.path_to_executable" do
-    it 'returns the absolute location of the exe/rspec file' do
+    it 'returns the absolute location of the exe/rspec file', :failing_on_appveyor do
       expect(File.exist? RSpec::Core.path_to_executable).to be_truthy
       expect(File.executable? RSpec::Core.path_to_executable).to be_truthy
     end
