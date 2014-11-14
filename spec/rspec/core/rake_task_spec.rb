@@ -160,7 +160,7 @@ module RSpec::Core
               path_template % "rake"
             ])
 
-            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?:'?#{path_template % "rspec-support"}'? /)
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
           end
 
           it "avoids adding the same load path entries twice" do
@@ -171,7 +171,7 @@ module RSpec::Core
               path_template % "rspec-support"
             ])
 
-            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?:'?#{path_template % "rspec-support"}'? /)
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
           end
         end
       end
