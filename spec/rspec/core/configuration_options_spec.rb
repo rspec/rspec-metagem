@@ -5,7 +5,7 @@ require 'rspec/core/drb'
 RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :isolated_home => true do
   include ConfigOptionsHelper
 
-  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java') do
+  it "warns when HOME env var is not set", :unless => (RUBY_PLATFORM == 'java' || RSpec::Support::OS.windows?) do
     without_env_vars 'HOME' do
       expect_warning_with_call_site(__FILE__, __LINE__ + 1)
       RSpec::Core::ConfigurationOptions.new([]).options

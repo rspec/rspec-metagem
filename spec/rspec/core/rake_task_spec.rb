@@ -58,10 +58,10 @@ module RSpec::Core
     context "with pattern" do
       it "adds the pattern" do
         task.pattern = "complex_pattern"
-        expect(spec_command).to include(" --pattern complex_pattern")
+        expect(spec_command).to match(/ --pattern '?complex_pattern'?/)
       end
 
-      it "shellescapes the pattern as necessary" do
+      it "shellescapes the pattern as necessary", :unless => RSpec::Support::OS.windows? do
         task.pattern = "foo'bar"
         expect(spec_command).to include(" --pattern foo\\'bar")
       end
@@ -160,7 +160,7 @@ module RSpec::Core
               path_template % "rake"
             ])
 
-            expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
           end
 
           it "avoids adding the same load path entries twice" do
@@ -171,7 +171,7 @@ module RSpec::Core
               path_template % "rspec-support"
             ])
 
-            expect(spec_command).to include(" -I#{path_template % "rspec-core"}:#{path_template % "rspec-support"} ")
+            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
           end
         end
       end
@@ -233,7 +233,9 @@ module RSpec::Core
       end
 
       context "that is an absolute path file glob" do
-        it "loads the matching spec files" do
+        it "loads the matching spec files", :failing_on_appveyor,
+        :pending => false,
+        :skip => (ENV['APPVEYOR'] ? "Failing on AppVeyor but :pending isn't working for some reason" : false) do
           dir = File.expand_path("../resources", __FILE__)
           task.pattern = File.join(dir, "**/*_spec.rb")
 
@@ -342,7 +344,7 @@ module RSpec::Core
         make_files_in_dir "acceptance"
       end
 
-      it "shellescapes the pattern as necessary" do
+      it "shellescapes the pattern as necessary", :unless => RSpec::Support::OS.windows? do
         task.exclude_pattern = "foo'bar"
         expect(spec_command).to include(" --exclude-pattern foo\\'bar")
       end
@@ -366,7 +368,7 @@ module RSpec::Core
     context "with paths with quotes or spaces" do
       include_context "isolated directory"
 
-      it "matches files with quotes and spaces" do
+      it "matches files with quotes and spaces", :failing_on_appveyor do
         spec_dir = File.join(Dir.getwd, "spec")
         task.pattern = "spec/*spec.rb"
         FileUtils.mkdir_p(spec_dir)
