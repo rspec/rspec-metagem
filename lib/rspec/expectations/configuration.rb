@@ -71,7 +71,7 @@ module RSpec
         # Delegates to rspec-core's color option if rspec-core
         # is loaded; otherwise you can set it here.
         def color?
-          @color
+          defined?(@color) && @color
         end
       end
 
