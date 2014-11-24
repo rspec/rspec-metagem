@@ -29,6 +29,8 @@ Bug Fixes:
   `at_least(:once)` rather than raising a confusing error
   when multiple yields are encountered.
   (Myron Marston, #675)
+* Fix "instance variable @color not initialized" warning when using
+  rspec-expectations outside of an rspec-core context. (Myron Marston, #689)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
