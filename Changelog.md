@@ -31,6 +31,8 @@ Bug Fixes:
   (Myron Marston, #675)
 * Fix "instance variable @color not initialized" warning when using
   rspec-expectations outside of an rspec-core context. (Myron Marston, #689)
+* Fix `start_with` and `end_with` to work properly when checking a
+  string against an array of strings. (Myron Marston, #690)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)

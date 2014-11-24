@@ -37,6 +37,22 @@ RSpec.describe "expect(...).to start_with" do
     end
   end
 
+  context "with an array of strings" do
+    it "passes if given the first element of the array" do
+      expect(%w[ a b c ]).to start_with 'a'
+    end
+
+    it "passes if given the first n of the array" do
+      expect(%w[ a b c ]).to start_with('a', 'b')
+    end
+
+    it 'fails if given the wrong first element of the array' do
+      expect {
+        expect(%w[ a b c ]).to start_with 'z'
+      }.to fail_with('expected ["a", "b", "c"] to start with "z"')
+    end
+  end
+
   context "with an array of uncustomized structs" do
     struct = Struct.new(:foo)
 
@@ -161,6 +177,24 @@ RSpec.describe "expect(...).not_to start_with" do
     end
   end
 
+  context "with an array of strings" do
+    it "fails if given the first element of the array" do
+      expect {
+        expect(%w[ a b c ]).not_to start_with 'a'
+      }.to fail_with('expected ["a", "b", "c"] not to start with "a"')
+    end
+
+    it "fails if given the first n of the array" do
+      expect {
+        expect(%w[ a b c ]).not_to start_with('a', 'b')
+      }.to fail_with('expected ["a", "b", "c"] not to start with "a" and "b"')
+    end
+
+    it 'passes if given the wrong first element of the array' do
+      expect(%w[ a b c ]).not_to start_with 'z'
+    end
+  end
+
   it 'can pass when composed with another matcher' do
     expect(["a"]).not_to start_with(a_string_matching(/bar/))
   end
@@ -208,6 +242,22 @@ RSpec.describe "expect(...).to end_with" do
       expect {
         expect([0, 1, 2]).to end_with [0, 1]
       }.to fail_with("expected [0, 1, 2] to end with 0 and 1")
+    end
+  end
+
+  context "with an array of strings" do
+    it "passes if given the last element of the array" do
+      expect(%w[ a b c ]).to end_with 'c'
+    end
+
+    it "passes if given the last n of the array" do
+      expect(%w[ a b c ]).to end_with('b', 'c')
+    end
+
+    it 'fails if given the wrong last element of the array' do
+      expect {
+        expect(%w[ a b c ]).to end_with 'z'
+      }.to fail_with('expected ["a", "b", "c"] to end with "z"')
     end
   end
 
@@ -332,6 +382,24 @@ RSpec.describe "expect(...).not_to end_with" do
       expect {
         expect([0, 1, 2]).not_to end_with [1, 2]
       }.to fail_with("expected [0, 1, 2] not to end with 1 and 2")
+    end
+  end
+
+  context "with an array of strings" do
+    it "fails if given the last element of the array" do
+      expect {
+        expect(%w[ a b c ]).not_to end_with 'c'
+      }.to fail_with('expected ["a", "b", "c"] not to end with "c"')
+    end
+
+    it "fails if given the last n of the array" do
+      expect {
+        expect(%w[ a b c ]).not_to end_with('b', 'c')
+      }.to fail_with('expected ["a", "b", "c"] not to end with "b" and "c"')
+    end
+
+    it 'passes if given the wrong last element of the array' do
+      expect(%w[ a b c ]).not_to end_with 'z'
     end
   end
 
