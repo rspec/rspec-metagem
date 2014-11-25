@@ -31,11 +31,11 @@ module RSpec
 
       private
 
-        def match(expected, actual)
+        def match(_expected, actual)
           return false unless actual.respond_to?(:[])
 
           begin
-            return subset_matches? if !(Struct === expected) && expected.respond_to?(:length)
+            return true if subsets_comparable? && subset_matches?
             element_matches?
           rescue ArgumentError
             @actual_does_not_have_ordered_elements = true
@@ -45,6 +45,14 @@ module RSpec
 
         def actual_is_unordered
           ArgumentError.new("#{actual.inspect} does not have ordered elements")
+        end
+
+        def subsets_comparable?
+          # Structs support the Enumerable interface but don't really have
+          # the semantics of a subset of a larger set...
+          return false if Struct === expected
+
+          expected.respond_to?(:length)
         end
       end
 
