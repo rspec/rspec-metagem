@@ -21,10 +21,13 @@ module RSpec
         LegacyMatcherAdapter::RSpec1.wrap(matcher) || matcher
       end
 
-      def self.setup(handler, matcher, message)
+      def self.with_matcher(handler, matcher, message)
         check_message(message)
+        matcher = modern_matcher_from(matcher)
+        yield matcher
+      ensure
         ::RSpec::Matchers.last_expectation_handler = handler
-        ::RSpec::Matchers.last_matcher = modern_matcher_from(matcher)
+        ::RSpec::Matchers.last_matcher = matcher
       end
 
       def self.handle_failure(matcher, message, failure_message_method)
@@ -42,10 +45,10 @@ module RSpec
     # @private
     class PositiveExpectationHandler
       def self.handle_matcher(actual, initial_matcher, message=nil, &block)
-        matcher = ExpectationHelper.setup(self, initial_matcher, message)
-
-        return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) unless initial_matcher
-        matcher.matches?(actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message)
+        ExpectationHelper.with_matcher(self, initial_matcher, message) do |matcher|
+          return ::RSpec::Matchers::BuiltIn::PositiveOperatorMatcher.new(actual) unless initial_matcher
+          matcher.matches?(actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message)
+        end
       end
 
       def self.verb
@@ -64,10 +67,10 @@ module RSpec
     # @private
     class NegativeExpectationHandler
       def self.handle_matcher(actual, initial_matcher, message=nil, &block)
-        matcher = ExpectationHelper.setup(self, initial_matcher, message)
-
-        return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) unless initial_matcher
-        !(does_not_match?(matcher, actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message_when_negated))
+        ExpectationHelper.with_matcher(self, initial_matcher, message) do |matcher|
+          return ::RSpec::Matchers::BuiltIn::NegativeOperatorMatcher.new(actual) unless initial_matcher
+          !(does_not_match?(matcher, actual, &block) || ExpectationHelper.handle_failure(matcher, message, :failure_message_when_negated))
+        end
       end
 
       def self.does_not_match?(matcher, actual, &block)

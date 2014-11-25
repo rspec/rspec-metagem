@@ -33,6 +33,8 @@ Bug Fixes:
   rspec-expectations outside of an rspec-core context. (Myron Marston, #689)
 * Fix `start_with` and `end_with` to work properly when checking a
   string against an array of strings. (Myron Marston, #690)
+* Don't use internally delegated matchers when generating descriptions
+  for examples without doc strings. (Myron Marston, #692)
 
 ### 3.1.2 / 2014-09-26
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.1...v3.1.2)
