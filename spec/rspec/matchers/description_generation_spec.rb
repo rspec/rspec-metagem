@@ -165,6 +165,21 @@ RSpec.describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq "should throw :what_a_mess"
   end
 
+  example "expect(...).to matcher_that_delegates_to_an_internal_expectation" do
+    expect(1).to matcher_that_delegates_to_an_internal_expectation
+    expect(RSpec::Matchers.generated_description).to eq "should matcher that delegates to an internal expectation"
+  end
+
+  example "expect(...).not_to matcher_that_delegates_to_an_internal_expectation" do
+    expect(1).not_to matcher_that_delegates_to_an_internal_expectation
+    expect(RSpec::Matchers.generated_description).to eq "should not matcher that delegates to an internal expectation"
+  end
+
+  RSpec::Matchers.define :matcher_that_delegates_to_an_internal_expectation do
+    match { expect(1).to eq(1) }
+    match_when_negated { expect(1).to eq(1) }
+  end
+
   def team
     Class.new do
       def players
