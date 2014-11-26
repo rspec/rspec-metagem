@@ -106,7 +106,7 @@ module RSpec
             it "delegates include on configuration" do
               implementation = Proc.new { def bar; 'bar'; end }
               define_shared_group(:foo => :bar, &implementation)
-              a = RSpec.configuration.include_or_extend_modules.first
+              a = RSpec.configuration.include_extend_or_prepend_modules.first
               expect(a[0]).to eq(:include)
               expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
               expect(a[2]).to eq(:foo => :bar)
@@ -123,7 +123,7 @@ module RSpec
             it "delegates include on configuration" do
               implementation = Proc.new { def bar; 'bar'; end }
               define_shared_group("name", :foo => :bar, &implementation)
-              a = RSpec.configuration.include_or_extend_modules.first
+              a = RSpec.configuration.include_extend_or_prepend_modules.first
               expect(a[0]).to eq(:include)
               expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
               expect(a[2]).to eq(:foo => :bar)

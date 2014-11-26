@@ -882,7 +882,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.include(InstanceLevelMethods, *args)
-          config.include_or_extend_modules.last.last
+          config.include_extend_or_prepend_modules.last.last
         end
       end
 
@@ -909,7 +909,6 @@ module RSpec::Core
           expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
         end
       end
-
     end
 
     describe "#extend" do
@@ -923,7 +922,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.extend(ThatThingISentYou, *args)
-          config.include_or_extend_modules.last.last
+          config.include_extend_or_prepend_modules.last.last
         end
       end
 
@@ -934,6 +933,46 @@ module RSpec::Core
 
         group = ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
         expect(group).to respond_to(:that_thing)
+      end
+
+    end
+
+    describe "#prepend", :if => Module.respond_to?(:prepend) do
+      include_examples "warning of deprecated `:example_group` during filtering configuration", :prepend, Enumerable
+
+      module SomeRandomMod
+        def foo
+          "foobar"
+        end
+      end
+
+      it_behaves_like "metadata hash builder" do
+        def metadata_hash(*args)
+          config.prepend(SomeRandomMod, *args)
+          config.include_extend_or_prepend_modules.last.last
+        end
+      end
+
+      context "with no filter" do
+        it "prepends the given module into each example group" do
+          RSpec.configure do |c|
+            c.prepend(SomeRandomMod)
+          end
+
+          group = ExampleGroup.describe('yo') { }
+          expect(group.new.foo).to eq("foobar")
+        end
+      end
+
+      context "with a filter" do
+        it "prepends the given module into each matching example group" do
+          RSpec.configure do |c|
+            c.prepend(SomeRandomMod, :magic_key => :include)
+          end
+
+          group = ExampleGroup.describe('yo', :magic_key => :include) { }
+          expect(group.new.foo).to eq("foobar")
+        end
       end
 
     end
@@ -1509,7 +1548,7 @@ module RSpec::Core
         expect(group.included_modules).to include(mod2)
       end
 
-      module IncludeOrExtendMeOnce
+      module IncludeExtendOrPrependMeOnce
         def self.included(host)
           raise "included again" if host.instance_methods.include?(:foobar)
           host.class_exec { def foobar; end }
@@ -1519,10 +1558,15 @@ module RSpec::Core
           raise "extended again" if host.respond_to?(:foobar)
           def host.foobar; end
         end
+
+        def self.prepended(host)
+          raise "prepended again" if host.instance_methods.include?(:barbaz)
+          host.class_exec { def barbaz; end }
+        end
       end
 
       it "doesn't include a module when already included in ancestor" do
-        config.include(IncludeOrExtendMeOnce, :foo => :bar)
+        config.include(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
         group = ExampleGroup.describe("group", :foo => :bar)
         child = group.describe("child")
@@ -1532,7 +1576,17 @@ module RSpec::Core
       end
 
       it "doesn't extend when ancestor is already extended with same module" do
-        config.extend(IncludeOrExtendMeOnce, :foo => :bar)
+        config.extend(IncludeExtendOrPrependMeOnce, :foo => :bar)
+
+        group = ExampleGroup.describe("group", :foo => :bar)
+        child = group.describe("child")
+
+        config.configure_group(group)
+        config.configure_group(child)
+      end
+
+      it "doesn't prepend a module when already present in ancestor chain", :if => Module.respond_to?(:prepend) do
+        config.prepend(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
         group = ExampleGroup.describe("group", :foo => :bar)
         child = group.describe("child")

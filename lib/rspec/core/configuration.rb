@@ -284,7 +284,7 @@ module RSpec
       # @private
       add_setting :tty
       # @private
-      add_setting :include_or_extend_modules
+      add_setting :include_extend_or_prepend_modules
       # @private
       attr_writer :files_to_run
       # @private
@@ -301,7 +301,7 @@ module RSpec
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
         # rubocop:enable Style/GlobalVars
         @expectation_frameworks = []
-        @include_or_extend_modules = []
+        @include_extend_or_prepend_modules = []
         @mock_framework = nil
         @files_or_directories_to_run = []
         @color = false
@@ -1047,9 +1047,10 @@ module RSpec
       #     end
       #
       # @see #extend
+      # @see #prepend
       def include(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        include_or_extend_modules << [:include, mod, meta]
+        include_extend_or_prepend_modules << [:include, mod, meta]
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1081,25 +1082,72 @@ module RSpec
       #     end
       #
       # @see #include
+      # @see #prepend
       def extend(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        include_or_extend_modules << [:extend, mod, meta]
+        include_extend_or_prepend_modules << [:extend, mod, meta]
+      end
+
+      # Tells RSpec to prepend example groups with `mod`. Methods defined in
+      # `mod` are exposed to examples (not example groups). Use `filters` to
+      # constrain the groups in which to prepend the module.
+      #
+      # Similar to `include`, but module is included before the example group's class
+      # in the ancestor chain.
+      #
+      # @example
+      #
+      #     module OverrideMod
+      #       def override_me
+      #         "overridden"
+      #       end
+      #     end
+      #
+      #     RSpec.configure do |config|
+      #       config.prepend(OverrideMod, :method => :prepend)
+      #     end
+      #
+      #     describe "overriding example's class", :method => :prepend do
+      #       it "finds the user" do
+      #         self.class.class_eval do
+      #           def override_me
+      #           end
+      #         end
+      #         override_me # => "overridden"
+      #         # ...
+      #       end
+      #     end
+      #
+      # @see #include
+      # @see #extend
+      def prepend(mod, *filters)
+        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+        include_extend_or_prepend_modules << [:prepend, mod, meta]
       end
 
       # @private
       #
-      # Used internally to extend a group with modules using `include` and/or
+      # Used internally to extend a group with modules using `include`, `prepend` and/or
       # `extend`.
       def configure_group(group)
-        include_or_extend_modules.each do |include_or_extend, mod, filters|
+        include_extend_or_prepend_modules.each do |include_extend_or_prepend, mod, filters|
           next unless filters.empty? || group.apply?(:any?, filters)
-          __send__("safe_#{include_or_extend}", mod, group)
+          __send__("safe_#{include_extend_or_prepend}", mod, group)
         end
       end
 
       # @private
       def safe_include(mod, host)
         host.__send__(:include, mod) unless host < mod
+      end
+
+      # @private
+      def safe_prepend(mod, host)
+        if Module.respond_to?(:prepend)
+          host.__send__(:prepend, mod) unless host < mod
+        else
+          raise NotImplementedError, "'prepend' not supported in this version of Ruby"
+        end
       end
 
       # @private
