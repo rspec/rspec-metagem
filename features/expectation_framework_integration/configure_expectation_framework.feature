@@ -120,7 +120,7 @@ Feature: configure expectation framework
     When I run `rspec example_spec.rb`
     Then the examples should all pass
 
-  Scenario: Configure rspec/expecations AND minitest assertions
+  Scenario: Configure rspec/expectations AND minitest assertions
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
