@@ -222,6 +222,21 @@ module RSpec::Core
         group.run
         expect(filters).to eq([])
       end
+
+      it "does not run for examples that do not match, even if their group matches" do
+        filters = []
+
+        RSpec.configure do |c|
+          c.before(:each, :apply_it) { filters << :before_each }
+        end
+
+        RSpec.describe "Group", :apply_it do
+          example("ex1") { filters << :matching_example }
+          example("ex2", :apply_it => false) { filters << :nonmatching_example }
+        end.run
+
+        expect(filters).to eq([:before_each, :matching_example, :nonmatching_example])
+      end
     end
   end
 end
