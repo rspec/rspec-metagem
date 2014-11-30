@@ -347,7 +347,7 @@ module RSpec
         end
 
         def options_apply?(example_or_group)
-          example_or_group.all_apply?(options)
+          example_or_group.apply?(:all?, options)
         end
       end
 
