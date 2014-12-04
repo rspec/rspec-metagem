@@ -63,6 +63,7 @@ module RSpec
     # the user sets an expectation, it can't be caught in their
     # code by a bare `rescue`.
     # @api public
-    ExpectationNotMetError = Class.new(::Exception)
+    class ExpectationNotMetError < ::Exception
+    end
   end
 end
