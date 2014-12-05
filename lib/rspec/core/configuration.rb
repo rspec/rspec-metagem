@@ -1092,7 +1092,7 @@ module RSpec
       # `extend`.
       def configure_group(group)
         include_or_extend_modules.each do |include_or_extend, mod, filters|
-          next unless filters.empty? || group.any_apply?(filters)
+          next unless filters.empty? || group.apply?(:any?, filters)
           __send__("safe_#{include_or_extend}", mod, group)
         end
       end
@@ -1359,7 +1359,7 @@ module RSpec
       # @private
       def apply_derived_metadata_to(metadata)
         @derived_metadata_blocks.each do |filter, block|
-          block.call(metadata) if filter.empty? || MetadataFilter.any_apply?(filter, metadata)
+          block.call(metadata) if filter.empty? || MetadataFilter.apply?(:any?, filter, metadata)
         end
       end
 

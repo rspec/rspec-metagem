@@ -662,7 +662,8 @@ module RSpec
             line = __LINE__ + 1
             RSpec.describe("group") { meta = metadata }
 
-            applies = MetadataFilter.any_apply?(
+            applies = MetadataFilter.apply?(
+              :any?,
               { :example_group => { :line_number => line } },
               meta
             )

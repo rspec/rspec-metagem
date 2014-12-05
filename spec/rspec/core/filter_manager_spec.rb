@@ -183,6 +183,19 @@ module RSpec::Core
         filter_manager.include_with_low_priority :foo => :bar
         expect(filter_manager.prune([included, excluded])).to eq([included])
       end
+
+      context "with multiple inclusion filters" do
+        it 'includes objects that match any of them' do
+          examples = [
+            included_1 = example_with(:foo => true),
+            included_2 = example_with(:bar => true),
+                         example_with(:bazz => true)
+          ]
+
+          filter_manager.include :foo => true, :bar => true
+          expect(filter_manager.prune(examples)).to contain_exactly(included_1, included_2)
+        end
+      end
     end
 
     describe "#inclusions#description" do

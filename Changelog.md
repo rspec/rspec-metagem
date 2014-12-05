@@ -28,6 +28,9 @@ Bug Fixes:
   (Myron Marston, #1771)
 * Don't consider expectations from `after` hooks when generating
   example descriptions. (Myron Marston, #1771)
+* Don't apply metadata-filtered config hooks to examples in groups
+  with matching metadata when those example override the parent
+  metadata value to not match. (Myron Marston, #1796)
 
 ### 3.1.8 Development
 

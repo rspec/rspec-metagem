@@ -209,18 +209,43 @@ module RSpec::Core
       end
 
       it "does not run if some hook filters don't match the group's filters" do
-        filters = []
+        sequence = []
+
         RSpec.configure do |c|
-          c.before(:all,  :one => 1, :four => 4)                         { filters << "before all in config"}
-          c.around(:each, :two => 2, :four => 4)                         {|example| filters << "around each in config"; example.run}
-          c.before(:each, :one => 1, :two => 2, :four => 4)              { filters << "before each in config"}
-          c.after(:each,  :one => 1, :two => 2, :three => 3, :four => 4) { filters << "after each in config"}
-          c.after(:all,   :one => 1, :three => 3, :four => 4)            { filters << "after all in config"}
+          c.before(:all,  :one => 1, :four => 4)                         { sequence << "before all in config"}
+          c.around(:each, :two => 2, :four => 4)                         {|example| sequence << "around each in config"; example.run}
+          c.before(:each, :one => 1, :two => 2, :four => 4)              { sequence << "before each in config"}
+          c.after(:each,  :one => 1, :two => 2, :three => 3, :four => 4) { sequence << "after each in config"}
+          c.after(:all,   :one => 1, :three => 3, :four => 4)            { sequence << "after all in config"}
         end
-        group = ExampleGroup.describe(:one => 1, :two => 2, :three => 3)
-        group.example("example") {}
-        group.run
-        expect(filters).to eq([])
+
+        RSpec.describe "group", :one => 1, :two => 2, :three => 3 do
+          example("ex1") { sequence << "ex1" }
+          example("ex2", :four => 4) { sequence << "ex2" }
+        end.run
+
+        expect(sequence).to eq([
+          "ex1",
+          "around each in config",
+          "before each in config",
+          "ex2",
+          "after each in config",
+        ])
+      end
+
+      it "does not run for examples that do not match, even if their group matches" do
+        filters = []
+
+        RSpec.configure do |c|
+          c.before(:each, :apply_it) { filters << :before_each }
+        end
+
+        RSpec.describe "Group", :apply_it do
+          example("ex1") { filters << :matching_example }
+          example("ex2", :apply_it => false) { filters << :nonmatching_example }
+        end.run
+
+        expect(filters).to eq([:before_each, :matching_example, :nonmatching_example])
       end
     end
   end
