@@ -134,6 +134,14 @@ module RSpec
             end
 
             describe "hooks for individual examples that have matching metadata" do
+              before do
+                skip "These specs pass in 2.0 mode on JRuby 1.7.8 but fail on " \
+                     "1.7.15 when the entire spec suite runs. They pass on " \
+                     "1.7.15 when this one spec file is run or if we filter to " \
+                     "just them. Given that 2.0 support on JRuby 1.7 is " \
+                     "experimental, we're just skipping these specs."
+              end if RUBY_VERSION == "2.0.0" && RSpec::Support::Ruby.jruby?
+
               it 'runs them' do
                 sequence = []
 
