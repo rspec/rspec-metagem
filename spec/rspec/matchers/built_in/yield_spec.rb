@@ -481,15 +481,15 @@ RSpec.describe "yield_with_args matcher" do
   end
 
   describe "expect {...}.to yield_with_args(String, Fixnum)" do
-    it "passes if the block yields objects of the given types" do
+    it "passes if the block yields objects of the given classes" do
       expect { |b| _yield_with_args("string", 15, &b) }.to yield_with_args(String, Fixnum)
     end
 
-    it "passes if the block yields the given types" do
+    it "passes if the block yields the given classes" do
       expect { |b| _yield_with_args(String, Fixnum, &b) }.to yield_with_args(String, Fixnum)
     end
 
-    it "fails if the block yields objects of different types" do
+    it "fails if the block yields objects of different classes" do
       expect {
         expect { |b| _yield_with_args(15, "string", &b) }.to yield_with_args(String, Fixnum)
       }.to fail_with(/expected given block to yield with arguments, but yielded with unexpected arguments/)
@@ -630,15 +630,15 @@ RSpec.describe "yield_successive_args matcher" do
   end
 
   describe "expect {...}.to yield_successive_args(String, Fixnum)" do
-    it "passes if the block successively yields objects of the given types" do
+    it "passes if the block successively yields objects of the given classes" do
       expect { |b| ["string", 15].each(&b) }.to yield_successive_args(String, Fixnum)
     end
 
-    it "passes if the block yields the given types" do
+    it "passes if the block yields the given classes" do
       expect { |b| [String, Fixnum].each(&b) }.to yield_successive_args(String, Fixnum)
     end
 
-    it "fails if the block yields objects of different types" do
+    it "fails if the block yields objects of different classes" do
       expect {
         expect { |b| [15, "string"].each(&b) }.to yield_successive_args(String, Fixnum)
       }.to fail_with(/expected given block to yield successively with arguments/)

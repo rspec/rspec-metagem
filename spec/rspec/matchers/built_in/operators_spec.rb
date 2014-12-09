@@ -212,7 +212,7 @@ RSpec.describe "operator matchers", :uses_should do
       RSpec::Matchers::BuiltIn::OperatorMatcher.unregister(custom_klass, "=~")
     }
 
-    it "allows operator matchers to be registered for types" do
+    it "allows operator matchers to be registered for classes" do
       RSpec::Matchers::BuiltIn::OperatorMatcher.register(custom_klass, "=~", RSpec::Matchers::BuiltIn::Match)
       expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_klass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
     end
@@ -222,7 +222,7 @@ RSpec.describe "operator matchers", :uses_should do
       expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_subklass, "=~")).to eq(RSpec::Matchers::BuiltIn::Match)
     end
 
-    it "returns nil if there is no matcher registered for a type" do
+    it "returns nil if there is no matcher registered for a class" do
       expect(RSpec::Matchers::BuiltIn::OperatorMatcher.get(custom_klass, "=~")).to be_nil
     end
   end

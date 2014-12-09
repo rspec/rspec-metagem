@@ -91,7 +91,7 @@ Feature: `raise_error` matcher
     When I run `rspec example_spec.rb`
     Then the example should pass
 
-  Scenario: match type + message with string
+  Scenario: match class + message with string
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "matching error message with string" do
@@ -104,7 +104,7 @@ Feature: `raise_error` matcher
     When I run `rspec example_spec.rb`
     Then the example should pass
 
-  Scenario: match type + message with regexp
+  Scenario: match class + message with regexp
     Given a file named "example_spec.rb" with:
       """ruby
       RSpec.describe "matching error message with regex" do
