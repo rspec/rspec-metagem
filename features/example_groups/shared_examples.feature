@@ -1,6 +1,6 @@
 Feature: shared examples
 
-  Shared examples let you describe behaviour of types or modules. When declared,
+  Shared examples let you describe behaviour of classes or modules. When declared,
   a shared group's content is stored. It is only realized in the context of
   another example group, which provides any context the shared group needs to
   run.
