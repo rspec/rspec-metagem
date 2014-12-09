@@ -296,7 +296,7 @@ RSpec.describe "matching against things that aren't arrays" do
     }.to fail_with(/expected a collection/)
   end
 
-  it 'works with other collection types' do
+  it 'works with other collection objects' do
     expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
     expect {
       expect(Set.new([3, 2, 1])).to contain_exactly(1, 2)

@@ -140,12 +140,12 @@ RSpec.describe "Matchers should be able to generate their own descriptions" do
     expect(RSpec::Matchers.generated_description).to eq "should raise Exception"
   end
 
-  example "expect(...).to raise_error with type" do
+  example "expect(...).to raise_error with class" do
     expect { raise }.to raise_error(RuntimeError)
     expect(RSpec::Matchers.generated_description).to eq "should raise RuntimeError"
   end
 
-  example "expect(...).to raise_error with type and message" do
+  example "expect(...).to raise_error with class and message" do
     expect { raise "there was an error" }.to raise_error(RuntimeError, "there was an error")
     expect(RSpec::Matchers.generated_description).to eq "should raise RuntimeError with \"there was an error\""
   end

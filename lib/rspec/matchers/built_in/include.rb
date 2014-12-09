@@ -33,13 +33,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          improve_hash_formatting(super) + invalid_type_message
+          improve_hash_formatting(super) + invalid_object_message
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          improve_hash_formatting(super) + invalid_type_message
+          improve_hash_formatting(super) + invalid_object_message
         end
 
         # @api private
@@ -50,7 +50,7 @@ module RSpec
 
       private
 
-        def invalid_type_message
+        def invalid_object_message
           return '' if actual.respond_to?(:include?)
           ", but it does not respond to `include?`"
         end
