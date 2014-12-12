@@ -3,19 +3,21 @@ require "support/runner_support"
 
 module RSpec::Core
   RSpec.describe "Configuration :suite hooks" do
-    [:before, :after, :prepend_before, :append_before, :prepend_after, :append_after].each do |type|
-      describe "a(n) #{type} hook" do
+    [:before, :after, :prepend_before, :append_before, :prepend_after, :append_after].each do |registration_method|
+      type = registration_method.to_s.split('_').last
+
+      describe "a `:suite` hook registered with `#{registration_method}" do
         it 'is skipped when in dry run mode' do
           RSpec.configuration.dry_run = true
 
           expect { |b|
-            RSpec.configuration.__send__(type, :suite, &b)
+            RSpec.configuration.__send__(registration_method, :suite, &b)
             RSpec.configuration.with_suite_hooks { }
           }.not_to yield_control
         end
 
         it 'allows errors in the hook to propagate to the user' do
-          RSpec.configuration.__send__(type, :suite) { 1 / 0 }
+          RSpec.configuration.__send__(registration_method, :suite) { 1 / 0 }
 
           expect {
             RSpec.configuration.with_suite_hooks { }
@@ -28,11 +30,11 @@ module RSpec::Core
 
             expect {
               RSpec.describe "Group" do
-                __send__(type, :suite) { sequence << :suite_hook }
+                __send__(registration_method, :suite) { sequence << :suite_hook }
                 example { sequence << :example }
               end.run
             }.to change { sequence }.to([:example]).
-              and output(a_string_including("#{type.to_s.split('_').last}(:suite)")).to_stderr
+              and output(a_string_including("#{type}(:suite)")).to_stderr
           end
         end
 
@@ -40,7 +42,7 @@ module RSpec::Core
           it "explicitly warns that the metadata is ignored" do
             expect {
               RSpec.configure do |c|
-                c.__send__(type, :suite, :some => :metadata)
+                c.__send__(registration_method, :suite, :some => :metadata)
               end
             }.to output(a_string_including(":suite", "metadata")).to_stderr
           end
