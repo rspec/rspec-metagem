@@ -35,6 +35,16 @@ module RSpec::Core
               and output(a_string_including("#{type.to_s.split('_').last}(:suite)")).to_stderr
           end
         end
+
+        context "registered with metadata" do
+          it "explicitly warns that the metadata is ignored" do
+            expect {
+              RSpec.configure do |c|
+                c.__send__(type, :suite, :some => :metadata)
+              end
+            }.to output(a_string_including(":suite", "metadata")).to_stderr
+          end
+        end
       end
     end
 
@@ -48,6 +58,28 @@ module RSpec::Core
     describe "the runner" do
       include_context "Runner support"
 
+      def define_and_run_example_group(&block)
+        example_group = class_double(ExampleGroup, :descendants => [])
+
+        allow(example_group).to receive(:run, &block)
+        allow(world).to receive_messages(:ordered_example_groups => [example_group])
+        allow(config).to receive :load_spec_files
+
+        runner = build_runner
+        runner.run err, out
+      end
+
+      it "still runs :suite hooks with metadata even though the metadata is ignored" do
+        sequence = []
+        allow(RSpec).to receive(:warn_with)
+
+        config.before(:suite, :foo)  { sequence << :before_suite   }
+        config.after(:suite, :foo)   { sequence << :after_suite    }
+        define_and_run_example_group { sequence << :example_groups }
+
+        expect(sequence).to eq([ :before_suite, :example_groups, :after_suite ])
+      end
+
       it "runs :suite hooks before and after example groups in the correct order" do
         sequence = []
 
@@ -60,15 +92,7 @@ module RSpec::Core
         config.prepend_after(:suite)  { sequence << :after_suite_1  }
         config.append_after(:suite)   { sequence << :after_suite_4  }
 
-
-        example_group = class_double(ExampleGroup, :descendants => [])
-
-        allow(example_group).to receive(:run) { sequence << :example_groups }
-        allow(world).to receive_messages(:ordered_example_groups => [example_group])
-        allow(config).to receive :load_spec_files
-
-        runner = build_runner
-        runner.run err, out
+        define_and_run_example_group { sequence << :example_groups }
 
         expect(sequence).to eq([
           :before_suite_1,

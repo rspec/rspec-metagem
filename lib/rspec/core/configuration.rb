@@ -1421,7 +1421,7 @@ module RSpec
       # @see #after
       # @see #append_after
       def before(*args, &block)
-        handle_suite_hook(args.first, before_suite_hooks, :append,
+        handle_suite_hook(args, before_suite_hooks, :append,
                           Hooks::BeforeHook, block) || super(*args, &block)
       end
       alias_method :append_before, :before
@@ -1440,7 +1440,7 @@ module RSpec
       # @see #after
       # @see #append_after
       def prepend_before(*args, &block)
-        handle_suite_hook(args.first, before_suite_hooks, :prepend,
+        handle_suite_hook(args, before_suite_hooks, :prepend,
                           Hooks::BeforeHook, block) || super(*args, &block)
       end
 
@@ -1454,7 +1454,7 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def after(*args, &block)
-        handle_suite_hook(args.first, after_suite_hooks, :prepend,
+        handle_suite_hook(args, after_suite_hooks, :prepend,
                           Hooks::AfterHook, block) || super(*args, &block)
       end
       alias_method :prepend_after, :after
@@ -1473,7 +1473,7 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def append_after(*args, &block)
-        handle_suite_hook(args.first, after_suite_hooks, :append,
+        handle_suite_hook(args, after_suite_hooks, :append,
                           Hooks::AfterHook, block) || super(*args, &block)
       end
 
@@ -1492,8 +1492,19 @@ module RSpec
 
     private
 
-      def handle_suite_hook(scope, collection, append_or_prepend, hook_type, block)
+      def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)
+        scope, meta = *args
         return nil unless scope == :suite
+
+        if meta
+          # TODO: in RSpec 4, consider raising an error here.
+          # We warn only for backwards compatibility.
+          RSpec.warn_with "WARNING: `:suite` hooks do not support metadata since " \
+                          "they apply to the suite as a whole rather than " \
+                          "any individual example or example group that has metadata. " \
+                          "The metadata you have provided (#{meta.inspect}) will be ignored."
+        end
+
         collection.__send__(append_or_prepend, hook_type.new(block, {}))
       end
 
