@@ -1,5 +1,5 @@
 module RSpec::Core::Notifications
-  describe FailedExampleNotification do
+  RSpec.describe FailedExampleNotification do
     before do
       allow(RSpec.configuration).to receive(:color_enabled?).and_return(true)
     end
