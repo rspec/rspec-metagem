@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'rspec/core/drb'
+require 'support/runner_support'
 
 module RSpec::Core
   RSpec.describe Runner do
@@ -142,10 +143,7 @@ module RSpec::Core
     end
 
     context "when run" do
-      let(:out)    { StringIO.new         }
-      let(:err)    { StringIO.new         }
-      let(:config) { RSpec.configuration  }
-      let(:world)  { RSpec.world          }
+      include_context "Runner support"
 
       before do
         allow(config.hooks).to receive(:run)
@@ -257,31 +255,6 @@ module RSpec::Core
             expect(runner.run(err, out)).to eq 2
           end
         end
-
-        context "running hooks" do
-          before { allow(config).to receive :load_spec_files }
-
-          it "runs before suite hooks" do
-            expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext))
-            runner = build_runner
-            runner.run err, out
-          end
-
-          it "runs after suite hooks" do
-            expect(config.hooks).to receive(:run).with(:after, :suite, instance_of(SuiteHookContext))
-            runner = build_runner
-            runner.run err, out
-          end
-
-          it "runs after suite hooks even after an error" do
-            expect(config.hooks).to receive(:run).with(:before, :suite, instance_of(SuiteHookContext)).and_raise "this error"
-            expect(config.hooks).to receive(:run).with(:after , :suite, instance_of(SuiteHookContext))
-            expect do
-              runner = build_runner
-              runner.run err, out
-            end.to raise_error("this error")
-          end
-        end
       end
 
       describe "#run with custom output" do
@@ -295,14 +268,6 @@ module RSpec::Core
           runner.run err, nil
           expect(runner.instance_exec { @configuration.output_stream }).to eq output_file
         end
-      end
-
-      def build_runner *args
-        Runner.new build_config_options(*args)
-      end
-
-      def build_config_options *args
-        ConfigurationOptions.new args
       end
     end
   end

@@ -441,26 +441,24 @@ module RSpec
 
       # @private
       def self.run_before_context_hooks(example_group_instance)
-        return if descendant_filtered_examples.empty?
-        begin
-          set_ivars(example_group_instance, superclass.before_context_ivars)
+        set_ivars(example_group_instance, superclass.before_context_ivars)
 
-          ContextHookMemoizedHash::Before.isolate_for_context_hook(example_group_instance) do
-            hooks.run(:before, :context, example_group_instance)
-          end
-        ensure
-          store_before_context_ivars(example_group_instance)
+        ContextHookMemoizedHash::Before.isolate_for_context_hook(example_group_instance) do
+          hooks.run(:before, :context, example_group_instance)
         end
+      ensure
+        store_before_context_ivars(example_group_instance)
       end
 
       # @private
       def self.run_after_context_hooks(example_group_instance)
-        return if descendant_filtered_examples.empty?
         set_ivars(example_group_instance, before_context_ivars)
 
         ContextHookMemoizedHash::After.isolate_for_context_hook(example_group_instance) do
           hooks.run(:after, :context, example_group_instance)
         end
+      ensure
+        before_context_ivars.clear
       end
 
       # Runs all the examples in this group.
@@ -471,9 +469,9 @@ module RSpec
         end
         reporter.example_group_started(self)
 
+        should_run_context_hooks = descendant_filtered_examples.any?
         begin
-          instance = new('before(:context) hook')
-          run_before_context_hooks(instance)
+          run_before_context_hooks(new('before(:context) hook')) if should_run_context_hooks
           result_for_this_group = run_examples(reporter)
           results_for_descendants = ordering_strategy.order(children).map { |child| child.run(reporter) }.all?
           result_for_this_group && results_for_descendants
@@ -483,9 +481,7 @@ module RSpec
           RSpec.world.wants_to_quit = true if fail_fast?
           for_filtered_examples(reporter) { |example| example.fail_with_exception(reporter, ex) }
         ensure
-          instance = new('after(:context) hook')
-          run_after_context_hooks(instance)
-          before_context_ivars.clear
+          run_after_context_hooks(new('after(:context) hook')) if should_run_context_hooks
           reporter.example_group_finished(self)
         end
       end

@@ -22,6 +22,9 @@ Enhancements:
 * Improve the documentation of around hooks. (Jim Kingdon, #1772)
 * Support prepending of modules into example groups from config and allow
   filtering based on metadata. (Arlandis Word, #1806)
+* Emit warnings when `:suite` hooks are registered on an example group
+  (where it has always been ignored) or are registered with metadata
+  (which has always been ignored). (Myron Marston, #1805)
 
 Bug Fixes:
 

@@ -106,12 +106,8 @@ module RSpec
       #   failed.
       def run_specs(example_groups)
         @configuration.reporter.report(@world.example_count(example_groups)) do |reporter|
-          begin
-            hook_context = SuiteHookContext.new
-            @configuration.hooks.run(:before, :suite, hook_context)
+          @configuration.with_suite_hooks do
             example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
-          ensure
-            @configuration.hooks.run(:after, :suite, hook_context)
           end
         end
       end

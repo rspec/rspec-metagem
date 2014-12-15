@@ -1411,7 +1411,110 @@ module RSpec
         end
       end
 
+      # Defines a `before` hook. See {Hooks#before} for full docs.
+      #
+      # This method differs from {Hooks#before} in only one way: it supports
+      # the `:suite` scope. Hooks with the `:suite` scope will be run once before
+      # the first example of the entire suite is executed.
+      #
+      # @see #prepend_before
+      # @see #after
+      # @see #append_after
+      def before(*args, &block)
+        handle_suite_hook(args, before_suite_hooks, :append,
+                          Hooks::BeforeHook, block) || super(*args, &block)
+      end
+      alias_method :append_before, :before
+
+      # Adds `block` to the start of the list of `before` blocks in the same
+      # scope (`:example`, `:context`, or `:suite`), in contrast to {#before},
+      # which adds the hook to the end of the list.
+      #
+      # See {Hooks#before} for full `before` hook docs.
+      #
+      # This method differs from {Hooks#prepend_before} in only one way: it supports
+      # the `:suite` scope. Hooks with the `:suite` scope will be run once before
+      # the first example of the entire suite is executed.
+      #
+      # @see #before
+      # @see #after
+      # @see #append_after
+      def prepend_before(*args, &block)
+        handle_suite_hook(args, before_suite_hooks, :prepend,
+                          Hooks::BeforeHook, block) || super(*args, &block)
+      end
+
+      # Defines a `after` hook. See {Hooks#after} for full docs.
+      #
+      # This method differs from {Hooks#after} in only one way: it supports
+      # the `:suite` scope. Hooks with the `:suite` scope will be run once after
+      # the last example of the entire suite is executed.
+      #
+      # @see #append_after
+      # @see #before
+      # @see #prepend_before
+      def after(*args, &block)
+        handle_suite_hook(args, after_suite_hooks, :prepend,
+                          Hooks::AfterHook, block) || super(*args, &block)
+      end
+      alias_method :prepend_after, :after
+
+      # Adds `block` to the end of the list of `after` blocks in the same
+      # scope (`:example`, `:context`, or `:suite`), in contrast to {#after},
+      # which adds the hook to the start of the list.
+      #
+      # See {Hooks#after} for full `after` hook docs.
+      #
+      # This method differs from {Hooks#append_after} in only one way: it supports
+      # the `:suite` scope. Hooks with the `:suite` scope will be run once after
+      # the last example of the entire suite is executed.
+      #
+      # @see #append_after
+      # @see #before
+      # @see #prepend_before
+      def append_after(*args, &block)
+        handle_suite_hook(args, after_suite_hooks, :append,
+                          Hooks::AfterHook, block) || super(*args, &block)
+      end
+
+      # @private
+      def with_suite_hooks
+        return yield if dry_run?
+
+        hook_context = SuiteHookContext.new
+        begin
+          before_suite_hooks.with(hook_context).run
+          yield
+        ensure
+          after_suite_hooks.with(hook_context).run
+        end
+      end
+
     private
+
+      def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)
+        scope, meta = *args
+        return nil unless scope == :suite
+
+        if meta
+          # TODO: in RSpec 4, consider raising an error here.
+          # We warn only for backwards compatibility.
+          RSpec.warn_with "WARNING: `:suite` hooks do not support metadata since " \
+                          "they apply to the suite as a whole rather than " \
+                          "any individual example or example group that has metadata. " \
+                          "The metadata you have provided (#{meta.inspect}) will be ignored."
+        end
+
+        collection.__send__(append_or_prepend, hook_type.new(block, {}))
+      end
+
+      def before_suite_hooks
+        @before_suite_hooks ||= Hooks::HookCollection.new
+      end
+
+      def after_suite_hooks
+        @after_suite_hooks ||= Hooks::HookCollection.new
+      end
 
       def get_files_to_run(paths)
         FlatMap.flat_map(paths_to_check(paths)) do |path|
