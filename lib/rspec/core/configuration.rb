@@ -1120,9 +1120,11 @@ module RSpec
       #
       # @see #include
       # @see #extend
-      def prepend(mod, *filters)
-        meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        include_extend_or_prepend_modules << [:prepend, mod, meta]
+      if RSpec::Support::RubyFeatures.module_prepends_supported?
+        def prepend(mod, *filters)
+          meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
+          include_extend_or_prepend_modules << [:prepend, mod, meta]
+        end
       end
 
       # @private
@@ -1146,8 +1148,6 @@ module RSpec
         def safe_prepend(mod, host)
           host.__send__(:prepend, mod) unless host < mod
         end
-      else
-        def safe_prepend(mod, host); end
       end
 
       # @private
