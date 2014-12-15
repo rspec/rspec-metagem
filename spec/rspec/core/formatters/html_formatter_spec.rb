@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 require 'rspec/core/formatters/html_formatter'
 
 # For some reason we get load errors when loading nokogiri on AppVeyor

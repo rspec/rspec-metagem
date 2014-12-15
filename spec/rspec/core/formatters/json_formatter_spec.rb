@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/json_formatter'
 require 'json'
 require 'rspec/core/reporter'

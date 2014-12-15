@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 
 RSpec.describe "::RSpec::Core::ExampleGroup" do
   context "does not cause problems when users reference a top level constant of the same name" do

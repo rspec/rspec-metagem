@@ -1,4 +1,3 @@
-require "spec_helper"
 require 'rspec/core/project_initializer'
 
 module RSpec::Core

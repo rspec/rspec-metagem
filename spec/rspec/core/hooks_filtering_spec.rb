@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core
   RSpec.describe "config block hook filtering" do
     describe "unfiltered hooks" do

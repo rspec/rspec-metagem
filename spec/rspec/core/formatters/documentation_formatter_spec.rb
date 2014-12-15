@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/documentation_formatter'
 
 module RSpec::Core::Formatters

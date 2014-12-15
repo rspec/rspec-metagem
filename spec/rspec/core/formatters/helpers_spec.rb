@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/helpers'
 
 RSpec.describe RSpec::Core::Formatters::Helpers do

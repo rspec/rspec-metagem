@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec
   module Core
     RSpec.describe Metadata do

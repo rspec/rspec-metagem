@@ -1,5 +1,3 @@
-require "spec_helper"
-
 RSpec.describe RSpec::SharedContext do
   it "is accessible as RSpec::Core::SharedContext" do
     RSpec::Core::SharedContext

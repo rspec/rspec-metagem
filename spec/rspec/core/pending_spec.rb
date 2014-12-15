@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe RSpec::Core::Pending do
   it 'only defines methods that are part of the DSL' do
     expect(RSpec::Core::Pending.instance_methods(false).map(&:to_sym)).to \

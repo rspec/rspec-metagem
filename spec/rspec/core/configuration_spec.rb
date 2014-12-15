@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'tmpdir'
 require 'rspec/support/spec/in_sub_process'
 

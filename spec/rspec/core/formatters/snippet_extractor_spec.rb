@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/snippet_extractor'
 
 module RSpec

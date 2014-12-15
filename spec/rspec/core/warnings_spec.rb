@@ -1,5 +1,3 @@
-require "spec_helper"
-
 RSpec.describe "rspec warnings and deprecations" do
 
   describe "#deprecate" do

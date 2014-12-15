@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/reporter'
 require 'rspec/core/formatters/deprecation_formatter'
 require 'tempfile'

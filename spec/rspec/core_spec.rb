@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/support/spec/prevent_load_time_warnings'
 
 RSpec.describe RSpec do

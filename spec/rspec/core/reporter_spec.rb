@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core
   RSpec.describe Reporter do
     include FormatterSupport

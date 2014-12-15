@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe "an example" do
   context "declared pending with metadata" do
     it "uses the value assigned to :pending as the message" do

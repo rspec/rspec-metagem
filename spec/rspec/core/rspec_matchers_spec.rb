@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Matchers
   def __method_with_super
     super

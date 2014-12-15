@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 require 'rspec/core/formatters/base_text_formatter'
 
 RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do

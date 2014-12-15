@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 
 module RSpec::Core
   RSpec.describe ExampleGroup do

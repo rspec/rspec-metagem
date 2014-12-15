@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/notifications'
 
 RSpec.describe "FailedExampleNotification" do

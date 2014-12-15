@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core::Notifications
   describe FailedExampleNotification do
     before do

@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 class Bar; end
 class Foo; end
 

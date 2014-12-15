@@ -1,4 +1,3 @@
-require "spec_helper"
 require "support/runner_support"
 
 module RSpec::Core
