@@ -8,7 +8,7 @@ module RSpec::Core::Notifications
 
     it "uses the default color for the shared example backtrace line" do
       example = nil
-      group = RSpec::Core::ExampleGroup.describe "testing" do
+      group = RSpec.describe "testing" do
         shared_examples_for "a" do
           example = it "fails" do
             expect(1).to eq(2)

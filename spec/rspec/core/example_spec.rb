@@ -5,7 +5,7 @@ require 'stringio'
 RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   let(:example_group) do
-    RSpec::Core::ExampleGroup.describe('group description')
+    RSpec.describe('group description')
   end
 
   let(:example_instance) do
@@ -235,7 +235,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "#run" do
     it "sets its reference to the example group instance to nil" do
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         example('example') { expect(1).to eq(1) }
       end
       group.run
@@ -243,7 +243,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     it "generates a description before tearing down mocks in case a mock object is used in the description" do
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         example { test = double('Test'); expect(test).to eq test }
       end
 
@@ -255,7 +255,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     it "runs after(:each) when the example passes" do
       after_run = false
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         after(:each) { after_run = true }
         example('example') { expect(1).to eq(1) }
       end
@@ -265,7 +265,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     it "runs after(:each) when the example fails" do
       after_run = false
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         after(:each) { after_run = true }
         example('example') { expect(1).to eq(2) }
       end
@@ -275,7 +275,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     it "runs after(:each) when the example raises an Exception" do
       after_run = false
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         after(:each) { after_run = true }
         example('example') { raise "this error" }
       end
@@ -286,7 +286,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     context "with an after(:each) that raises" do
       it "runs subsequent after(:each)'s" do
         after_run = false
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           after(:each) { after_run = true }
           after(:each) { raise "FOO" }
           example('example') { expect(1).to eq(1) }
@@ -296,7 +296,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "stores the exception" do
-        group = RSpec::Core::ExampleGroup.describe
+        group = RSpec.describe
         group.after(:each) { raise "FOO" }
         example = group.example('example') { expect(1).to eq(1) }
 
@@ -308,7 +308,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     it "wraps before/after(:each) inside around" do
       results = []
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         around(:each) do |e|
           results << "around (before)"
           e.run
@@ -331,7 +331,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "clearing ivars" do
       it "sets ivars to nil to prep them for GC" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:all)  { @before_all  = :before_all }
           before(:each) { @before_each = :before_each }
           after(:each)  { @after_each = :after_each }
@@ -350,7 +350,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "does not impact the before_all_ivars which are copied to each example" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:all) { @before_all = "abc" }
           example("first") { expect(@before_all).not_to be_nil }
           example("second") { expect(@before_all).not_to be_nil }
@@ -371,7 +371,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "prints any around hook errors rather than silencing them" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around(:each) { |e| e.run; raise "around" }
           example("e") { raise "example" }
         end
@@ -381,7 +381,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "prints any after hook errors rather than silencing them" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           after(:each) { raise "after" }
           example("e") { raise "example" }
         end
@@ -391,7 +391,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "does not print mock expectation errors" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           example do
             foo = double
             expect(foo).to receive(:bar)
@@ -410,7 +410,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         exception = StandardError.new
         exception.set_backtrace([])
 
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           example { raise exception.freeze }
         end
         group.run
@@ -434,7 +434,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
           c.around(:each) { |ex| executed << :around_each_config; ex.run }
         end
 
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:all)  { executed << :before_all }
           before(:each) { executed << :before_each }
           after(:all)   { executed << :after_all }
@@ -469,7 +469,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in the example" do
       it "sets the example to pending" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           example { pending; fail }
         end
         group.run
@@ -478,7 +478,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
         blah = nil
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around do |example|
             example.run
             blah = :success
@@ -492,7 +492,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       it 'sets the backtrace to the example definition so it can be located by the user' do
         file = RSpec::Core::Metadata.relative_path(__FILE__)
         expected = [file, __LINE__ + 2].map(&:to_s)
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           example {
             pending
           }
@@ -506,7 +506,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:each)" do
       it "sets each example to pending" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:each) { pending }
           example { fail }
           example { fail }
@@ -517,7 +517,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it 'sets example to pending when failure occurs in before(:each)' do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:each) { pending; fail }
           example {}
         end
@@ -528,7 +528,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:all)" do
       it "is forbidden" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:all) { pending }
           example { fail }
           example { fail }
@@ -540,7 +540,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it "fails with an ArgumentError if a block is provided" do
-        group = RSpec::Core::ExampleGroup.describe('group') do
+        group = RSpec.describe('group') do
           before(:all) do
             pending { :no_op }
           end
@@ -557,7 +557,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in around(:each)" do
       it "sets the example to pending" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around(:each) { pending }
           example { fail }
         end
@@ -566,7 +566,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       end
 
       it 'sets example to pending when failure occurs in around(:each)' do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around(:each) { pending; fail }
           example {}
         end
@@ -577,7 +577,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in after(:each)" do
       it "sets each example to pending" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           after(:each) { pending; fail }
           example { }
           example { }
@@ -593,7 +593,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   describe "#skip" do
     context "in the example" do
       it "sets the example to skipped" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           example { skip }
         end
         group.run
@@ -602,7 +602,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       it "allows post-example processing in around hooks (see https://github.com/rspec/rspec-core/issues/322)" do
         blah = nil
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around do |example|
             example.run
             blah = :success
@@ -615,7 +615,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
       context "with a message" do
         it "sets the example to skipped with the provided message" do
-          group = RSpec::Core::ExampleGroup.describe do
+          group = RSpec.describe do
             example { skip "lorem ipsum" }
           end
           group.run
@@ -626,7 +626,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:each)" do
       it "sets each example to skipped" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:each) { skip }
           example {}
           example {}
@@ -639,7 +639,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in before(:all)" do
       it "sets each example to pending" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           before(:all) { skip("not done"); fail }
           example {}
           example {}
@@ -652,7 +652,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     context "in around(:each)" do
       it "sets the example to skipped" do
-        group = RSpec::Core::ExampleGroup.describe do
+        group = RSpec.describe do
           around(:each) { skip }
           example {}
         end
@@ -665,7 +665,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   describe "timing" do
     it "uses RSpec::Core::Time as to not be affected by changes to time in examples" do
       reporter = double(:reporter).as_null_object
-      group = RSpec::Core::ExampleGroup.describe
+      group = RSpec.describe
       example = group.example
       example.__send__ :start, reporter
       allow(Time).to receive_messages(:now => Time.utc(2012, 10, 1))
@@ -679,7 +679,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
     RSpec.configuration.order = :random
 
-    RSpec::Core::ExampleGroup.describe do
+    RSpec.describe do
       # The bug was only triggered when the examples
       # were in nested contexts; see https://github.com/rspec/rspec-core/pull/837
       context { example { values << rand } }
@@ -698,7 +698,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "setting the current example" do
     it "sets RSpec.current_example to the example that is currently running" do
-      group = RSpec::Core::ExampleGroup.describe("an example group")
+      group = RSpec.describe("an example group")
 
       current_examples = []
       example1 = group.example("example 1") { current_examples << RSpec.current_example }

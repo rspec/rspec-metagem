@@ -892,7 +892,7 @@ module RSpec::Core
             c.include(InstanceLevelMethods)
           end
 
-          group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
+          group = RSpec.describe('does like, stuff and junk', :magic_key => :include) { }
           expect(group).not_to respond_to(:you_call_this_a_blt?)
           expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
         end
@@ -904,7 +904,7 @@ module RSpec::Core
             c.include(InstanceLevelMethods, :magic_key => :include)
           end
 
-          group = ExampleGroup.describe('does like, stuff and junk', :magic_key => :include) { }
+          group = RSpec.describe('does like, stuff and junk', :magic_key => :include) { }
           expect(group).not_to respond_to(:you_call_this_a_blt?)
           expect(group.new.you_call_this_a_blt?).to eq("egad man, where's the mayo?!?!?")
         end
@@ -931,7 +931,7 @@ module RSpec::Core
           c.extend(ThatThingISentYou, :magic_key => :extend)
         end
 
-        group = ExampleGroup.describe(ThatThingISentYou, :magic_key => :extend) { }
+        group = RSpec.describe(ThatThingISentYou, :magic_key => :extend) { }
         expect(group).to respond_to(:that_thing)
       end
 
@@ -959,7 +959,7 @@ module RSpec::Core
             c.prepend(SomeRandomMod)
           end
 
-          group = ExampleGroup.describe('yo') { }
+          group = RSpec.describe('yo') { }
           expect(group.new.foo).to eq("foobar")
         end
       end
@@ -970,7 +970,7 @@ module RSpec::Core
             c.prepend(SomeRandomMod, :magic_key => :include)
           end
 
-          group = ExampleGroup.describe('yo', :magic_key => :include) { }
+          group = RSpec.describe('yo', :magic_key => :include) { }
           expect(group.new.foo).to eq("foobar")
         end
       end
@@ -1506,7 +1506,7 @@ module RSpec::Core
     describe "#configure_group" do
       it "extends with 'extend'" do
         mod = Module.new
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
 
         config.extend(mod, :foo => :bar)
         config.configure_group(group)
@@ -1515,7 +1515,7 @@ module RSpec::Core
 
       it "extends with 'module'" do
         mod = Module.new
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
 
         config.include(mod, :foo => :bar)
         config.configure_group(group)
@@ -1524,7 +1524,7 @@ module RSpec::Core
 
       it "requires only one matching filter" do
         mod = Module.new
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
 
         config.include(mod, :foo => :bar, :baz => :bam)
         config.configure_group(group)
@@ -1539,7 +1539,7 @@ module RSpec::Core
         end
         mod2 = Module.new
 
-        group = ExampleGroup.describe("group")
+        group = RSpec.describe("group")
 
         config.include(mod1)
         config.include(mod2, :foo => :bar)
@@ -1568,7 +1568,7 @@ module RSpec::Core
       it "doesn't include a module when already included in ancestor" do
         config.include(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
         child = group.describe("child")
 
         config.configure_group(group)
@@ -1578,7 +1578,7 @@ module RSpec::Core
       it "doesn't extend when ancestor is already extended with same module" do
         config.extend(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
         child = group.describe("child")
 
         config.configure_group(group)
@@ -1589,7 +1589,7 @@ module RSpec::Core
         :if => RSpec::Support::RubyFeatures.module_prepends_supported? do
         config.prepend(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
-        group = ExampleGroup.describe("group", :foo => :bar)
+        group = RSpec.describe("group", :foo => :bar)
         child = group.describe("child")
 
         config.configure_group(group)
@@ -1661,7 +1661,7 @@ module RSpec::Core
         end
         def metadata_hash(*args)
           config.alias_example_to :my_example_method, *args
-          group = ExampleGroup.describe("group")
+          group = RSpec.describe("group")
           example = group.my_example_method("description")
           example.metadata
         end
@@ -1884,7 +1884,7 @@ module RSpec::Core
 
         value_1 = value_2 = nil
 
-        ExampleGroup.describe "Group" do
+        RSpec.describe "Group" do
           it "works" do
             value_1 = the_example
             value_2 = another_example_helper

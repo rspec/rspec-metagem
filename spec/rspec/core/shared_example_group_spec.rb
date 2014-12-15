@@ -39,7 +39,7 @@ module RSpec
 
       %w[shared_examples shared_examples_for shared_context].each do |shared_method_name|
         describe shared_method_name do
-          let(:group) { ExampleGroup.describe('example group') }
+          let(:group) { RSpec.describe('example group') }
 
           define_method :define_shared_group do |*args, &block|
             group.send(shared_method_name, *args, &block)
@@ -71,7 +71,7 @@ module RSpec
 
           it 'works with top level defined examples in modules' do
             expect(RSpec::configuration.reporter).to_not receive(:deprecation)
-            ExampleGroup.describe('example group') { include_context 'top level in module' }
+            RSpec.describe('example group') { include_context 'top level in module' }
           end
 
           it 'generates a named (rather than anonymous) module' do

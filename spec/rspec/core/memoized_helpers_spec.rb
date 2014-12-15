@@ -5,7 +5,7 @@ module RSpec::Core
     before(:each) { RSpec.configuration.configure_expectation_framework }
 
     def subject_value_for(describe_arg, &block)
-      group = ExampleGroup.describe(describe_arg, &block)
+      group = RSpec.describe(describe_arg, &block)
       subject_value = nil
       group.example { subject_value = subject }
       group.run
@@ -70,7 +70,7 @@ module RSpec::Core
       it "can be overriden and super'd to from a nested group" do
         outer_subject_value = inner_subject_value = nil
 
-        ExampleGroup.describe(Array) do
+        RSpec.describe(Array) do
           subject { super() << :parent_group }
           example { outer_subject_value = subject }
 
@@ -90,7 +90,7 @@ module RSpec::Core
         example_yielded_to_subject = nil
         example_yielded_to_example = nil
 
-        group = ExampleGroup.describe
+        group = RSpec.describe
         group.subject { |e| example_yielded_to_subject = e }
         group.example { |e| subject; example_yielded_to_example = e }
         group.run
@@ -113,7 +113,7 @@ module RSpec::Core
       [false, nil].each do |falsy_value|
         context "with a value of #{falsy_value.inspect}" do
           it "is evaluated once per example" do
-            group = ExampleGroup.describe(Array)
+            group = RSpec.describe(Array)
             group.before do
               expect(Object).to receive(:this_question?).once.and_return(falsy_value)
             end
@@ -140,7 +140,7 @@ module RSpec::Core
 
       describe "defined in a top level group" do
         let(:group) do
-          ExampleGroup.describe do
+          RSpec.describe do
             subject{ [4, 5, 6] }
           end
         end
@@ -180,7 +180,7 @@ module RSpec::Core
             result = nil
             line   = nil
 
-            ExampleGroup.describe do
+            RSpec.describe do
               subject { nil }
               send(hook, :all) { result = (subject rescue $!) }; line = __LINE__
               example { }
@@ -197,7 +197,7 @@ module RSpec::Core
           example_yielded_to_subject = nil
           example_yielded_to_example = nil
 
-          group = ExampleGroup.describe
+          group = RSpec.describe
           group.subject(:foo) { |e| example_yielded_to_subject = e }
           group.example       { |e| foo; example_yielded_to_example = e }
           group.run
@@ -208,7 +208,7 @@ module RSpec::Core
         it "defines a method that returns the memoized subject" do
           list_value_1 = list_value_2 = subject_value_1 = subject_value_2 = nil
 
-          ExampleGroup.describe do
+          RSpec.describe do
             subject(:list) { [1, 2, 3] }
             example do
               list_value_1 = list
@@ -228,7 +228,7 @@ module RSpec::Core
         it "is referred from inside subject by the name" do
           inner_subject_value = nil
 
-          ExampleGroup.describe do
+          RSpec.describe do
             subject(:list) { [1, 2, 3] }
             describe 'first' do
               subject(:first_element) { list.first }
@@ -242,7 +242,7 @@ module RSpec::Core
         it 'can continue to be referenced by the name even when an inner group redefines the subject' do
           named_value = nil
 
-          ExampleGroup.describe do
+          RSpec.describe do
             subject(:named) { :outer }
 
             describe "inner" do
@@ -260,7 +260,7 @@ module RSpec::Core
         it 'can continue to reference an inner subject after the outer subject name is referenced' do
           subject_value = nil
 
-          ExampleGroup.describe do
+          RSpec.describe do
             subject(:named) { :outer }
 
             describe "inner" do
@@ -278,7 +278,7 @@ module RSpec::Core
         it 'is not overriden when an inner group defines a new method with the same name' do
           subject_value = nil
 
-          ExampleGroup.describe do
+          RSpec.describe do
             subject(:named) { :outer_subject }
 
             describe "inner" do
@@ -294,7 +294,7 @@ module RSpec::Core
           def should_raise_not_supported_error(&block)
             ex = nil
 
-            ExampleGroup.describe do
+            RSpec.describe do
               let(:list) { ["a", "b", "c"] }
               subject { [1, 2, 3] }
 
@@ -330,7 +330,7 @@ module RSpec::Core
 
     context "using 'self' as an explicit subject" do
       it "delegates matcher to the ExampleGroup" do
-        group = ExampleGroup.describe("group") do
+        group = RSpec.describe("group") do
           subject { self }
           def ok?; true; end
           def not_ok?; false; end
@@ -344,7 +344,7 @@ module RSpec::Core
       end
 
       it 'supports a new expect-based syntax' do
-        group = ExampleGroup.describe([1, 2, 3]) do
+        group = RSpec.describe([1, 2, 3]) do
           it { is_expected.to be_an Array }
           it { is_expected.not_to include 4 }
         end
@@ -419,7 +419,7 @@ module RSpec::Core
 
     it 'raises a useful error when called without a block' do
       expect do
-        ExampleGroup.describe { let(:list) }
+        RSpec.describe { let(:list) }
       end.to raise_error(/#let or #subject called without a block/)
     end
 
@@ -455,7 +455,7 @@ module RSpec::Core
         result = nil
         line   = nil
 
-        ExampleGroup.describe do
+        RSpec.describe do
           let(:foo) { nil }
           send(hook, :all) { result = (foo rescue $!) }; line = __LINE__
           example { }
@@ -468,7 +468,7 @@ module RSpec::Core
 
     context "when included modules have hooks that define memoized helpers" do
       it "allows memoized helpers to override methods in previously included modules" do
-        group = ExampleGroup.describe do
+        group = RSpec.describe do
           include Module.new {
             def self.included(m); m.let(:unrelated) { :unrelated }; end
           }

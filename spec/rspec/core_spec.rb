@@ -68,7 +68,7 @@ RSpec.describe RSpec do
 
   describe ".current_example" do
     it "sets the example being executed" do
-      group = RSpec::Core::ExampleGroup.describe("an example group")
+      group = RSpec.describe("an example group")
       example = group.example("an example")
 
       RSpec.current_example = example

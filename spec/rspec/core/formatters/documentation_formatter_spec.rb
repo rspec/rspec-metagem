@@ -31,7 +31,7 @@ module RSpec::Core::Formatters
     end
 
     it "represents nested group using hierarchy tree" do
-      group = RSpec::Core::ExampleGroup.describe("root")
+      group = RSpec.describe("root")
       context1 = group.describe("context 1")
       context1.example("nested example 1.1"){}
       context1.example("nested example 1.2"){}
@@ -61,7 +61,7 @@ root
     end
 
     it "strips whitespace for each row" do
-      group = RSpec::Core::ExampleGroup.describe(" root ")
+      group = RSpec.describe(" root ")
       context1 = group.describe(" nested ")
       context1.example(" example 1 ") {}
       context1.example(" example 2 ", :pending => true){ fail }

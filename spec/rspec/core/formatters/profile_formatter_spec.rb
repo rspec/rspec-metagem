@@ -41,7 +41,7 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       before do
         example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
 
-        profile(RSpec::Core::ExampleGroup.describe("group") do
+        profile(RSpec.describe("group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
             example.clock = example_clock
@@ -57,14 +57,14 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
       before do
         example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
 
-        group1 = RSpec::Core::ExampleGroup.describe("slow group") do
+        group1 = RSpec.describe("slow group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
             example.clock = example_clock
           end
             example_line_number = __LINE__ - 4
         end
-        group2 = RSpec::Core::ExampleGroup.describe("fast group") do
+        group2 = RSpec.describe("fast group") do
           example("example 1") { }
           example("example 2") { }
         end
@@ -86,7 +86,7 @@ RSpec.describe RSpec::Core::Formatters::ProfileFormatter do
 
     it "depends on parent_groups to get the top level example group" do
       ex = nil
-      group = RSpec::Core::ExampleGroup.describe
+      group = RSpec.describe
       group.describe("group 2") do
         describe "group 3" do
           ex = example("nested example 1")

@@ -12,7 +12,7 @@ module RSpec::Core
           c.after(:each) { filters << "after each in config"}
           c.after(:all) { filters << "after all in config"}
         end
-        group = ExampleGroup.describe
+        group = RSpec.describe
         group.example("example") {}
         group.run
         expect(filters).to eq([
@@ -35,7 +35,7 @@ module RSpec::Core
             c.before(:match => true) { filters << "before each in config"}
             c.after(:match => true)  { filters << "after each in config"}
           end
-          group = ExampleGroup.describe("group", :match => true)
+          group = RSpec.describe("group", :match => true)
           group.example("example") {}
           group.run
           expect(filters).to eq([
@@ -55,7 +55,7 @@ module RSpec::Core
           c.after(:each,  :match => true) { filters << "after each in config"}
           c.after(:all,   :match => true) { filters << "after all in config"}
         end
-        group = ExampleGroup.describe("group", :match => true)
+        group = RSpec.describe("group", :match => true)
         group.example("example") {}
         group.run
         expect(filters).to eq([
@@ -76,7 +76,7 @@ module RSpec::Core
 
         example_1_filters = example_2_filters = nil
 
-        group = ExampleGroup.describe "group" do
+        group = RSpec.describe "group" do
           it("example 1") { example_1_filters = filters.dup }
           describe "subgroup", :match => true do
             it("example 2") { example_2_filters = filters.dup }
@@ -98,7 +98,7 @@ module RSpec::Core
 
         example_1_filters = example_2_filters = example_3_filters = nil
 
-        group = ExampleGroup.describe "group", :match => true do
+        group = RSpec.describe "group", :match => true do
           it("example 1") { example_1_filters = filters.dup }
           describe "subgroup", :match => true do
             it("example 2") { example_2_filters = filters.dup }
@@ -125,7 +125,7 @@ module RSpec::Core
           c.after(:each,  :match => false) { filters << "after each in config"}
           c.after(:all,   :match => false) { filters << "after all in config"}
         end
-        group = ExampleGroup.describe(:match => true)
+        group = RSpec.describe(:match => true)
         group.example("example") {}
         group.run
         expect(filters).to eq([])
@@ -137,7 +137,7 @@ module RSpec::Core
 
         let(:group) do
           md = example_metadata
-          ExampleGroup.describe do
+          RSpec.describe do
             it("example", md) { }
           end
         end
@@ -196,7 +196,7 @@ module RSpec::Core
           c.after(:each,  :one => 1, :two => 2, :three => 3) { filters << "after each in config"}
           c.after(:all,   :one => 1, :three => 3)            { filters << "after all in config"}
         end
-        group = ExampleGroup.describe("group", :one => 1, :two => 2, :three => 3)
+        group = RSpec.describe("group", :one => 1, :two => 2, :three => 3)
         group.example("example") {}
         group.run
         expect(filters).to eq([
