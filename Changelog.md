@@ -20,6 +20,8 @@ Enhancements:
 * Issue seed notification at start (as well as the end) of the reporter
   run. (Arlandis Word, #1761)
 * Improve the documentation of around hooks. (Jim Kingdon, #1772)
+* Support prepending of modules into example groups from config and allow
+  filtering based on metadata. (Arlandis Word, #1806)
 
 Bug Fixes:
 
