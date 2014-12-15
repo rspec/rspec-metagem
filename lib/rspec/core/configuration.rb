@@ -1142,12 +1142,12 @@ module RSpec
       end
 
       # @private
-      def safe_prepend(mod, host)
-        if Module.respond_to?(:prepend)
+      if RSpec::Support::RubyFeatures.module_prepends_supported?
+        def safe_prepend(mod, host)
           host.__send__(:prepend, mod) unless host < mod
-        else
-          raise NotImplementedError, "'prepend' not supported in this version of Ruby"
         end
+      else
+        def safe_prepend(mod, host); end
       end
 
       # @private

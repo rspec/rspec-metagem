@@ -937,7 +937,7 @@ module RSpec::Core
 
     end
 
-    describe "#prepend", :if => Module.respond_to?(:prepend) do
+    describe "#prepend", :if => RSpec::Support::RubyFeatures.module_prepends_supported? do
       include_examples "warning of deprecated `:example_group` during filtering configuration", :prepend, Enumerable
 
       module SomeRandomMod
@@ -1585,7 +1585,8 @@ module RSpec::Core
         config.configure_group(child)
       end
 
-      it "doesn't prepend a module when already present in ancestor chain", :if => Module.respond_to?(:prepend) do
+      it "doesn't prepend a module when already present in ancestor chain",
+        :if => RSpec::Support::RubyFeatures.module_prepends_supported? do
         config.prepend(IncludeExtendOrPrependMeOnce, :foo => :bar)
 
         group = ExampleGroup.describe("group", :foo => :bar)
