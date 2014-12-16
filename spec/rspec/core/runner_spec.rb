@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/drb'
 require 'support/runner_support'
 

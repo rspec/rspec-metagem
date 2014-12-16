@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/progress_formatter'
 
 RSpec.describe RSpec::Core::Formatters::ProgressFormatter do

@@ -67,14 +67,7 @@ RSpec.configure do |c|
   c.alias_it_behaves_like_to 'it_has_behavior'
   c.include(RSpecHelpers)
   c.include Aruba::Api, :file_path => /spec\/command_line/
-
-  c.expect_with :rspec do |expectations|
-    expectations.syntax = :expect
-  end
-
-  c.mock_with :rspec do |mocks|
-    mocks.syntax = :expect
-  end
+  c.disable_monkey_patching!
 
   # runtime options
   c.raise_errors_for_deprecations!

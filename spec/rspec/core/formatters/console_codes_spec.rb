@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/console_codes'
 
 RSpec.describe "RSpec::Core::Formatters::ConsoleCodes" do

@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core
   RSpec.describe Reporter do
     include FormatterSupport
@@ -82,7 +80,7 @@ module RSpec::Core
 
         reporter.register_listener formatter, :example_group_started, :example_group_finished
 
-        group = ExampleGroup.describe("root")
+        group = RSpec.describe("root")
         group.describe("context 1") do
           example("ignore") {}
         end
@@ -111,7 +109,7 @@ module RSpec::Core
 
         reporter.register_listener formatter, :example_group_started, :example_group_finished
 
-        group = ExampleGroup.describe("root")
+        group = RSpec.describe("root")
 
         group.run(reporter)
       end

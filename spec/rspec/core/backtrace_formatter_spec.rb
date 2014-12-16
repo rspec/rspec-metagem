@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core
   RSpec.describe BacktraceFormatter do
     def make_backtrace_formatter(exclusion_patterns=nil, inclusion_patterns=nil)

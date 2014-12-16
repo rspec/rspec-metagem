@@ -1,4 +1,3 @@
-require 'spec_helper'
 require 'rspec/core/formatters/json_formatter'
 require 'json'
 require 'rspec/core/reporter'
@@ -15,7 +14,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
 
   it "outputs json (brittle high level functional test)" do
-    group = RSpec::Core::ExampleGroup.describe("one apiece") do
+    group = RSpec.describe("one apiece") do
       it("succeeds") { expect(1).to eq 1 }
       it("fails") { fail "eek" }
       it("pends") { pending "world peace"; fail "eek" }
@@ -128,7 +127,7 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
 
     context "with one example group" do
       before do
-        profile( RSpec::Core::ExampleGroup.describe("group") do
+        profile( RSpec.describe("group") do
           example("example") { }
         end)
       end
@@ -154,13 +153,13 @@ RSpec.describe RSpec::Core::Formatters::JsonFormatter do
       before do
         example_clock = class_double(RSpec::Core::Time, :now => RSpec::Core::Time.now + 0.5)
 
-        group1 = RSpec::Core::ExampleGroup.describe("slow group") do
+        group1 = RSpec.describe("slow group") do
           example("example") do |example|
             # make it look slow without actually taking up precious time
             example.clock = example_clock
           end
         end
-        group2 = RSpec::Core::ExampleGroup.describe("fast group") do
+        group2 = RSpec.describe("fast group") do
           example("example 1") { }
           example("example 2") { }
         end

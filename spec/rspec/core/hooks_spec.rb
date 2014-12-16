@@ -1,5 +1,3 @@
-require "spec_helper"
-
 module RSpec::Core
   RSpec.describe Hooks do
     class HooksHost
@@ -162,7 +160,7 @@ module RSpec::Core
       context "when not running the example within the around block" do
         it "does not run the example" do
           examples = []
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             around do
             end
             it "foo" do
@@ -177,7 +175,7 @@ module RSpec::Core
       context "when running the example within the around block" do
         it "runs the example" do
           examples = []
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             around do |example|
               example.run
             end
@@ -191,7 +189,7 @@ module RSpec::Core
 
         it "exposes example metadata to each around hook" do
           foos = {}
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             around do |ex|
               foos[:first] = ex.metadata[:foo]
               ex.run
@@ -213,7 +211,7 @@ module RSpec::Core
           data_2 = {}
           ex     = nil
 
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             def self.data_from(ex)
               {
                 :description => ex.description,
@@ -246,7 +244,7 @@ module RSpec::Core
 
         it "exposes a sensible inspect value" do
           inspect_value = nil
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             around do |ex|
               inspect_value = ex.inspect
             end
@@ -263,7 +261,7 @@ module RSpec::Core
       context "when running the example within a block passed to a method" do
         it "runs the example" do
           examples = []
-          group = ExampleGroup.describe do
+          group = RSpec.describe do
             def yielder
               yield
             end
@@ -292,7 +290,7 @@ module RSpec::Core
           RSpec.configure { |config| config.before(scope)         { messages << "config 4" } }
           RSpec.configure { |config| config.prepend_before(scope) { messages << "config 1" } }
 
-          group = ExampleGroup.describe { example {} }
+          group = RSpec.describe { example {} }
           group.before(scope)         { messages << "group 3" }
           group.prepend_before(scope) { messages << "group 2" }
           group.before(scope)         { messages << "group 4" }
@@ -321,7 +319,7 @@ module RSpec::Core
           RSpec.configure { |config| config.append_before(scope) { messages << "config 2" } }
           RSpec.configure { |config| config.before(scope)        { messages << "config 3" } }
 
-          group = ExampleGroup.describe { example {} }
+          group = RSpec.describe { example {} }
           group.before(scope)        { messages << "group 1" }
           group.append_before(scope) { messages << "group 2" }
           group.before(scope)        { messages << "group 3" }
@@ -347,7 +345,7 @@ module RSpec::Core
           RSpec.configure { |config| config.prepend_after(scope) { messages << "config 2" } }
           RSpec.configure { |config| config.after(scope)         { messages << "config 1" } }
 
-          group = ExampleGroup.describe { example {} }
+          group = RSpec.describe { example {} }
           group.after(scope)         { messages << "group 3" }
           group.prepend_after(scope) { messages << "group 2" }
           group.after(scope)         { messages << "group 1" }
@@ -374,7 +372,7 @@ module RSpec::Core
           RSpec.configure { |config| config.after(scope)        { messages << "config 1" } }
           RSpec.configure { |config| config.append_after(scope) { messages << "config 4" } }
 
-          group = ExampleGroup.describe { example {} }
+          group = RSpec.describe { example {} }
           group.after(scope)        { messages << "group 2" }
           group.append_after(scope) { messages << "group 3" }
           group.after(scope)        { messages << "group 1" }
@@ -407,7 +405,7 @@ module RSpec::Core
           c.around(:each, &hook)
         end
 
-        group = ExampleGroup.describe { example { messages << "example" } }
+        group = RSpec.describe { example { messages << "example" } }
         group.run
         expect(messages).to eq ["hook 1", "hook 2", "example"]
       end

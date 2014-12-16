@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 module RSpec::Core
   RSpec.describe FilterManager do
     def opposite(name)

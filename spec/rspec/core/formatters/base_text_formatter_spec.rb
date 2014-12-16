@@ -1,5 +1,4 @@
 # encoding: utf-8
-require 'spec_helper'
 require 'rspec/core/formatters/base_text_formatter'
 
 RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
@@ -32,7 +31,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     it "includes command to re-run each failed example" do
-      group = RSpec::Core::ExampleGroup.describe("example group") do
+      group = RSpec.describe("example group") do
         it("fails") { fail }
       end
       line = __LINE__ - 2
@@ -44,7 +43,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   end
 
   describe "#dump_failures" do
-    let(:group) { RSpec::Core::ExampleGroup.describe("group name") }
+    let(:group) { RSpec.describe("group name") }
 
     before { allow(RSpec.configuration).to receive(:color_enabled?) { false } }
 

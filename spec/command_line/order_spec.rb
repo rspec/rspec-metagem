@@ -1,5 +1,3 @@
-require 'spec_helper'
-
 RSpec.describe 'command line', :ui, :slow do
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }

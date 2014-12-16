@@ -1,8 +1,7 @@
-require 'spec_helper'
 require 'pathname'
 
 module RSpec::Core::Formatters
-  describe Loader do
+  RSpec.describe Loader do
 
     let(:output)   { StringIO.new }
     let(:reporter) { instance_double "Reporter", :register_listener => nil }

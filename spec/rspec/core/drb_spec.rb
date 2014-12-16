@@ -1,4 +1,3 @@
-require "spec_helper"
 require 'rspec/core/drb'
 
 RSpec.describe RSpec::Core::DRbRunner, :isolated_directory => true, :isolated_home => true, :type => :drb, :unless => RUBY_PLATFORM == 'java' do

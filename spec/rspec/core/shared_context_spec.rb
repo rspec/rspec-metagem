@@ -1,5 +1,3 @@
-require "spec_helper"
-
 RSpec.describe RSpec::SharedContext do
   it "is accessible as RSpec::Core::SharedContext" do
     RSpec::Core::SharedContext
@@ -21,7 +19,7 @@ RSpec.describe RSpec::SharedContext do
       after(:each)  { after_each_hook = true }
       after(:all)  { after_all_hook = true }
     end
-    group = RSpec::Core::ExampleGroup.describe do
+    group = RSpec.describe do
       include shared
       example { }
     end
@@ -74,7 +72,7 @@ RSpec.describe RSpec::SharedContext do
       subject { 17 }
     end
 
-    group = RSpec::Core::ExampleGroup.describe do
+    group = RSpec.describe do
       include shared
     end
 
@@ -89,7 +87,7 @@ RSpec.describe RSpec::SharedContext do
           example {}
         end
       end
-      group = RSpec::Core::ExampleGroup.describe do
+      group = RSpec.describe do
         include shared
       end
 
