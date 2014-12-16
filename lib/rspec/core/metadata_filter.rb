@@ -86,5 +86,99 @@ module RSpec
         end
       end
     end
+
+    # Tracks a collection of filterable items (e.g. modules, hooks, etc)
+    # and provides an optimized API to get the applicable items for the
+    # metadata of an example or example group.
+    # @private
+    class FilterableItemRepository
+      def initialize(applies_predicate)
+        @applies_predicate = applies_predicate
+        @items             = []
+        @applicable_keys   = Set.new
+        @proc_keys         = Set.new
+        @memoized_lookups  = Hash.new do |hash, applicable_metadata|
+          hash[applicable_metadata] = find_items_for(applicable_metadata)
+        end
+      end
+
+      def add(item, metadata)
+        @items << [item, metadata]
+        @applicable_keys.merge(metadata.keys)
+        @proc_keys.merge(proc_keys_from metadata)
+        @memoized_lookups.clear
+      end
+
+      def items_for(metadata)
+        # The filtering of `metadata` to `applicable_metadata` is the key thing
+        # that makes the memoization actually useful in practice, since each
+        # example and example group have different metadata (e.g. location and
+        # description). By filtering to the metadata keys our items care about,
+        # we can ignore extra metadata keys that differ for each example/group.
+        # For example, given `config.include DBHelpers, :db`, example groups
+        # can be split into those two sets: those that are tagged with `:db` and those
+        # that are not. For each set, this method for the first group in the set is
+        # still an `O(N)` calculation, but all subsequent groups in the set will be
+        # constant time lookups when they call this method.
+        applicable_metadata = applicable_metadata_from(metadata)
+
+        if applicable_metadata.keys.any? { |k| @proc_keys.include?(k) }
+          # It's unsafe to memoize lookups involving procs (since they can
+          # be non-deterministic), so we skip the memoization in this case.
+          find_items_for(applicable_metadata)
+        else
+          @memoized_lookups[applicable_metadata]
+        end
+      end
+
+    private
+
+      def applicable_metadata_from(metadata)
+        metadata.select do |key, _value|
+          @applicable_keys.include?(key)
+        end
+      end
+
+      def find_items_for(request_meta)
+        @items.each_with_object([]) do |(item, item_meta), to_return|
+          to_return << item if item_meta.empty? ||
+                               MetadataFilter.apply?(@applies_predicate, item_meta, request_meta)
+        end
+      end
+
+      def proc_keys_from(metadata)
+        metadata.each_with_object([]) do |(key, value), to_return|
+          to_return << key if Proc === value
+        end
+      end
+
+      if {}.select {} == [] # For 1.8.7
+        undef applicable_metadata_from
+        def applicable_metadata_from(metadata)
+          Hash[metadata.select do |key, _value|
+            @applicable_keys.include?(key)
+          end]
+        end
+      end
+
+      unless [].respond_to?(:each_with_object) # For 1.8.7
+        undef find_items_for
+        def find_items_for(request_meta)
+          @items.inject([]) do |to_return, (item, item_meta)|
+            to_return << item if item_meta.empty? ||
+                                 MetadataFilter.apply?(@applies_predicate, item_meta, request_meta)
+            to_return
+          end
+        end
+
+        undef proc_keys_from
+        def proc_keys_from(metadata)
+          metadata.inject([]) do |to_return, (key, value)|
+            to_return << key if Proc === value
+            to_return
+          end
+        end
+      end
+    end
   end
 end
