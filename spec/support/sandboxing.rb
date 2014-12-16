@@ -1,50 +1,25 @@
+require 'rspec/core/sandbox'
+require 'rspec/mocks'
+
+# Because testing RSpec with RSpec tries to modify the same global
+# objects, we sandbox every test.
 RSpec.configure do |c|
-  c.around { |ex| Sandboxing.sandboxed { ex.run } }
-end
+  c.around do |ex|
 
-class NullObject
-  private
-  def method_missing(method, *args, &block)
-    # ignore
-  end
-end
-
-module Sandboxing
-  def self.sandboxed(&block)
-    orig_load_path = $LOAD_PATH.dup
-    orig_config = RSpec.configuration
-    orig_world  = RSpec.world
-    orig_example = RSpec.current_example
-    new_config = RSpec::Core::Configuration.new
-    new_config.expose_dsl_globally = false
-    new_config.expecting_with_rspec = true
-    new_world  = RSpec::Core::World.new(new_config)
-    RSpec.configuration = new_config
-    RSpec.world = new_world
-    object = Object.new
-    object.extend(RSpec::Core::SharedExampleGroup)
-
-    (class << RSpec::Core::ExampleGroup; self; end).class_exec do
-      alias_method :orig_run, :run
-      def run(reporter=nil)
-        RSpec.current_example = nil
-        orig_run(reporter || NullObject.new)
+    RSpec::Core::Sandbox.sandboxed do |config|
+      config.expose_dsl_globally = false
+      config.expecting_with_rspec = true
+      # If there is an example-within-an-example, we want to make sure the inner example
+      # does not get a reference to the outer example (the real spec) if it calls
+      # something like `pending`
+      config.before(:context) { RSpec.current_example = nil }
+      begin
+        orig_load_path = $LOAD_PATH.dup
+        RSpec::Mocks.with_temporary_scope { ex.run }
+      ensure
+        $LOAD_PATH.replace(orig_load_path)
       end
     end
 
-    RSpec::Mocks.with_temporary_scope do
-      object.instance_exec(&block)
-    end
-  ensure
-    (class << RSpec::Core::ExampleGroup; self; end).class_exec do
-      remove_method :run
-      alias_method :run, :orig_run
-      remove_method :orig_run
-    end
-
-    RSpec.configuration = orig_config
-    RSpec.world = orig_world
-    RSpec.current_example = orig_example
-    $LOAD_PATH.replace(orig_load_path)
   end
 end

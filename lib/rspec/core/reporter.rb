@@ -159,4 +159,14 @@ module RSpec::Core
       @configuration.seed && @configuration.seed_used?
     end
   end
+
+  # @private
+  # # Used in place of a {Reporter} for situations where we don't want reporting output.
+  class NullReporter
+  private
+
+    def method_missing(_method, *_args, &_block)
+      # ignore
+    end
+  end
 end

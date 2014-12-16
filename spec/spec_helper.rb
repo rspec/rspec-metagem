@@ -9,10 +9,6 @@ module ArubaLoader
   end
 end
 
-class << RSpec
-  attr_writer :configuration, :world
-end
-
 if RUBY_PLATFORM == 'java'
   # Works around https://jira.codehaus.org/browse/JRUBY-5678
   require 'fileutils'
