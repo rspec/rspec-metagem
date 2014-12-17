@@ -1530,23 +1530,6 @@ module RSpec::Core
         expect(group.included_modules).to include(mod)
       end
 
-      it "includes each one before deciding whether to include the next" do
-        mod1 = Module.new do
-          def self.included(host)
-            host.metadata[:foo] = :bar
-          end
-        end
-        mod2 = Module.new
-
-        group = RSpec.describe("group")
-
-        config.include(mod1)
-        config.include(mod2, :foo => :bar)
-        config.configure_group(group)
-        expect(group.included_modules).to include(mod1)
-        expect(group.included_modules).to include(mod2)
-      end
-
       module IncludeExtendOrPrependMeOnce
         def self.included(host)
           raise "included again" if host.instance_methods.include?(:foobar)
