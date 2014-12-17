@@ -92,6 +92,8 @@ module RSpec
     # metadata of an example or example group.
     # @private
     class FilterableItemRepository
+      attr_reader :items
+
       def initialize(applies_predicate)
         @applies_predicate = applies_predicate
         @items             = []

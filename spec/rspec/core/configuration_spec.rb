@@ -881,7 +881,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.include(InstanceLevelMethods, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@include_modules).items.last.last
         end
       end
 
@@ -921,7 +921,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.extend(ThatThingISentYou, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@extend_modules).items.last.last
         end
       end
 
@@ -948,7 +948,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.prepend(SomeRandomMod, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@prepend_modules).items.last.last
         end
       end
 

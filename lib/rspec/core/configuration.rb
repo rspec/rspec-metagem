@@ -284,8 +284,6 @@ module RSpec
       # @private
       add_setting :tty
       # @private
-      add_setting :include_extend_or_prepend_modules
-      # @private
       attr_writer :files_to_run
       # @private
       add_setting :expecting_with_rspec
@@ -301,7 +299,9 @@ module RSpec
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
         # rubocop:enable Style/GlobalVars
         @expectation_frameworks = []
-        @include_extend_or_prepend_modules = []
+        @include_modules = FilterableItemRepository.new(:any?)
+        @extend_modules  = FilterableItemRepository.new(:any?)
+        @prepend_modules = FilterableItemRepository.new(:any?)
         @mock_framework = nil
         @files_or_directories_to_run = []
         @color = false
@@ -330,7 +330,7 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
-        @derived_metadata_blocks = []
+        @derived_metadata_blocks = FilterableItemRepository.new(:any?)
       end
 
       # @private
@@ -1050,7 +1050,7 @@ module RSpec
       # @see #prepend
       def include(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        include_extend_or_prepend_modules << [:include, mod, meta]
+        @include_modules.add(mod, meta)
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1085,7 +1085,7 @@ module RSpec
       # @see #prepend
       def extend(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        include_extend_or_prepend_modules << [:extend, mod, meta]
+        @extend_modules.add(mod, meta)
       end
 
       # Tells RSpec to prepend example groups with `mod`. Methods defined in
@@ -1123,7 +1123,7 @@ module RSpec
       if RSpec::Support::RubyFeatures.module_prepends_supported?
         def prepend(mod, *filters)
           meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-          include_extend_or_prepend_modules << [:prepend, mod, meta]
+          @prepend_modules.add(mod, meta)
         end
       end
 
@@ -1132,9 +1132,15 @@ module RSpec
       # Used internally to extend a group with modules using `include`, `prepend` and/or
       # `extend`.
       def configure_group(group)
-        include_extend_or_prepend_modules.each do |include_extend_or_prepend, mod, filters|
-          next unless filters.empty? || group.apply?(:any?, filters)
-          __send__("safe_#{include_extend_or_prepend}", mod, group)
+        configure_group_with group, @include_modules, :safe_include
+        configure_group_with group, @extend_modules,  :safe_extend
+        configure_group_with group, @prepend_modules, :safe_prepend
+      end
+
+      # @private
+      def configure_group_with(group, module_list, application_method)
+        module_list.items_for(group.metadata).each do |mod|
+          __send__(application_method, mod, group)
         end
       end
 
@@ -1401,13 +1407,13 @@ module RSpec
       #   end
       def define_derived_metadata(*filters, &block)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @derived_metadata_blocks << [meta, block]
+        @derived_metadata_blocks.add(block, meta)
       end
 
       # @private
       def apply_derived_metadata_to(metadata)
-        @derived_metadata_blocks.each do |filter, block|
-          block.call(metadata) if filter.empty? || MetadataFilter.apply?(:any?, filter, metadata)
+        @derived_metadata_blocks.items_for(metadata).each do |block|
+          block.call(metadata)
         end
       end
 
