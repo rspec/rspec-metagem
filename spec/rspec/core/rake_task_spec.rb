@@ -150,6 +150,12 @@ module RSpec::Core
     describe "load path manipulation" do
       def self.it_configures_rspec_load_path(description, path_template)
         context "when rspec is installed as #{description}" do
+          # Matchers are lazily loaded via `autoload`, so we need to get the matcher before
+          # the load path is manipulated, so we're using `let!` here to do that.
+          let!(:include_expected_load_path_option) do
+            match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
+          end
+
           it "adds the current rspec-core and rspec-support dirs to the load path to ensure the current version is used" do
             $LOAD_PATH.replace([
               path_template % "rspec-core",
@@ -159,7 +165,7 @@ module RSpec::Core
               path_template % "rake"
             ])
 
-            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
+            expect(spec_command).to include_expected_load_path_option
           end
 
           it "avoids adding the same load path entries twice" do
@@ -170,7 +176,7 @@ module RSpec::Core
               path_template % "rspec-support"
             ])
 
-            expect(spec_command).to match(/ -I'?#{path_template % "rspec-core"}'?#{File::PATH_SEPARATOR}'?#{path_template % "rspec-support"}'? /)
+            expect(spec_command).to include_expected_load_path_option
           end
         end
       end
@@ -185,22 +191,25 @@ module RSpec::Core
         "/Users/myron/.gem/ruby/1.9.3/gems/%s-3.1.0.beta1/lib"
 
       it "does not include extra load path entries for other gems that have `rspec-core` in its path" do
+        # matchers are lazily loaded with autoload, so we need to get the matcher before manipulating the load path.
+        include_extra_load_path_entries = include("simplecov", "minitest", "rspec-core/spec")
+
         # these are items on my load path due to `bundle install --standalone`,
         # and my initial logic caused all these to be included in the `-I` option.
         $LOAD_PATH.replace([
-           "/Users/myron/code/rspec-dev/repos/rspec-core/spec",
-           "/Users/myron/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/simplecov-0.8.2/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/simplecov-html-0.8.0/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/minitest-5.3.3/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-mocks/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-core/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-expectations/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-support/lib",
-           "/Users/myron/code/rspec-dev/repos/rspec-core/bundle",
+           "/Users/user/code/rspec-dev/repos/rspec-core/spec",
+           "/Users/user/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/simplecov-0.8.2/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/simplecov-html-0.8.0/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-core/bundle/ruby/1.9.1/gems/minitest-5.3.3/lib",
+           "/Users/user/code/rspec-dev/repos/rspec/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-mocks/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-core/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-expectations/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-support/lib",
+           "/Users/user/code/rspec-dev/repos/rspec-core/bundle",
         ])
 
-        expect(spec_command).not_to include("simplecov", "minitest", "rspec-core/spec")
+        expect(spec_command).not_to include_extra_load_path_entries
       end
     end
 
