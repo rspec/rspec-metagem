@@ -271,11 +271,6 @@ module RSpec
       end
 
       # @private
-      def around_example_hooks
-        @around_example_hooks ||= example_group.hooks.around_example_hooks_for(self)
-      end
-
-      # @private
       #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
@@ -335,11 +330,7 @@ module RSpec
     private
 
       def with_around_example_hooks(&block)
-        if around_example_hooks.empty?
-          yield
-        else
-          @example_group_class.hooks.run(:around, :example, self, Procsy.new(self, &block))
-        end
+        @example_group_class.hooks.run(:around, :example, self, Procsy.new(self, &block))
       rescue Exception => e
         set_exception(e, "in an `around(:example)` hook")
       end

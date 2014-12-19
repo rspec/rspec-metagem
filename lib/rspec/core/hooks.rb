@@ -405,13 +405,12 @@ EOS
 
       # @private
       class HookCollection
-        def initialize(hooks=[], example_or_group=nil)
-          @hooks            = hooks
-          @example_or_group = example_or_group
+        def initialize(hooks=[])
+          @hooks = hooks
         end
 
-        attr_reader :hooks, :example_or_group
-        protected   :hooks, :example_or_group
+        attr_reader :hooks
+        protected :hooks
 
         def to_ary
           @hooks
@@ -433,46 +432,30 @@ EOS
           @hooks.include?(hook)
         end
 
-        def for(example_or_group)
-          self.class.new(@hooks.select { |hook| hook.options_apply?(example_or_group) }, example_or_group)
-        end
-
         def each
           @hooks.each { |h| yield h }
         end
 
-        def run
-          hooks.each { |h| h.run(example_or_group) }
+        def run_with(example_or_group)
+          @hooks.each do |hook|
+            hook.run(example_or_group) if hook.options_apply?(example_or_group)
+          end
         end
       end
 
       # @private
       class AroundHookCollection < HookCollection
-        def for(example, initial_procsy=nil)
-          super(example).with(initial_procsy)
-        end
-
-        def with(initial_procsy)
-          @initial_procsy = initial_procsy
-          self
-        end
-
-        def run
-          hooks.inject(@initial_procsy) do |procsy, around_hook|
-            procsy.wrap { around_hook.execute_with(example_or_group, procsy) }
+        def run_with(example, initial_procsy)
+          hooks.select { |hook| hook.options_apply?(example) }.inject(initial_procsy) do |procsy, around_hook|
+            procsy.wrap { around_hook.execute_with(example, procsy) }
           end.call
         end
       end
 
       # @private
       class GroupHookCollection < HookCollection
-        def for(group)
-          @group = group
-          self
-        end
-
-        def run
-          hooks.each { |h| h.run(@group) }
+        def run_with(group)
+          hooks.each { |h| h.run(group) }
         end
       end
 
@@ -496,10 +479,10 @@ EOS
           process(host, globals, :after,  :context)
         end
 
-        def around_example_hooks_for(example, initial_procsy=nil)
+        def run_around_example_hooks_for(example, initial_procsy=nil)
           AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
             a.hooks[:around][:example]
-          end).for(example, initial_procsy)
+          end).run_with(example, initial_procsy)
         end
 
         def register(prepend_or_append, hook, *args, &block)
@@ -525,7 +508,19 @@ EOS
         # example. If no example is provided, just calls the hook directly.
         def run(hook, scope, example_or_group, initial_procsy=nil)
           return if RSpec.configuration.dry_run?
-          find_hook(hook, scope, example_or_group, initial_procsy).run
+
+          case [hook, scope]
+          when [:before, :context]
+            run_before_context_hooks_for(example_or_group)
+          when [:after, :context]
+            run_after_context_hooks_for(example_or_group)
+          when [:around, :example]
+            run_around_example_hooks_for(example_or_group, initial_procsy)
+          when [:before, :example]
+            run_before_example_hooks_for(example_or_group)
+          when [:after, :example]
+            run_after_example_hooks_for(example_or_group)
+          end
         end
 
         SCOPES = [:example, :context]
@@ -581,39 +576,24 @@ EOS
           SCOPE_ALIASES[scope] || scope
         end
 
-        def find_hook(hook, scope, example_or_group, initial_procsy)
-          case [hook, scope]
-          when [:before, :context]
-            before_context_hooks_for(example_or_group)
-          when [:after, :context]
-            after_context_hooks_for(example_or_group)
-          when [:around, :example]
-            around_example_hooks_for(example_or_group, initial_procsy)
-          when [:before, :example]
-            before_example_hooks_for(example_or_group)
-          when [:after, :example]
-            after_example_hooks_for(example_or_group)
-          end
+        def run_before_context_hooks_for(group)
+          GroupHookCollection.new(self[:before][:context]).run_with(group)
         end
 
-        def before_context_hooks_for(group)
-          GroupHookCollection.new(self[:before][:context]).for(group)
+        def run_after_context_hooks_for(group)
+          GroupHookCollection.new(self[:after][:context]).run_with(group)
         end
 
-        def after_context_hooks_for(group)
-          GroupHookCollection.new(self[:after][:context]).for(group)
-        end
-
-        def before_example_hooks_for(example)
+        def run_before_example_hooks_for(example)
           HookCollection.new(FlatMap.flat_map(@owner.parent_groups.reverse) do |a|
             a.hooks[:before][:example]
-          end).for(example)
+          end).run_with(example)
         end
 
-        def after_example_hooks_for(example)
+        def run_after_example_hooks_for(example)
           HookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
             a.hooks[:after][:example]
-          end).for(example)
+          end).run_with(example)
         end
       end
     end
