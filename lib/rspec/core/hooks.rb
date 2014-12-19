@@ -396,27 +396,25 @@ EOS
 
       # @private
       class HookCollection
+        attr_reader :all
+
         def initialize
           @repository = FilterableItemRepository.new(:all?)
-          @hooks      = []
-        end
-
-        def to_ary
-          @hooks
+          @all        = []
         end
 
         def append(hook)
-          @hooks << hook
+          @all << hook
           @repository.append hook, hook.options
         end
 
         def prepend(hook)
-          @hooks.unshift hook
+          @all.unshift hook
           @repository.prepend hook, hook.options
         end
 
         def include?(hook)
-          @hooks.include?(hook)
+          @all.include?(hook)
         end
 
         def hooks_for(example_or_group)
@@ -516,7 +514,7 @@ EOS
         def process(host, globals, position, scope)
           hooks = globals.hooks_for(position, scope)
           hooks = if scope == :example
-                    hooks.to_ary
+                    hooks.all
                   else
                     hooks.hooks_for(host)
                   end
