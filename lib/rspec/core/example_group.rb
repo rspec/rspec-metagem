@@ -532,11 +532,6 @@ module RSpec
       end
 
       # @private
-      def self.apply?(predicate, filters)
-        MetadataFilter.apply?(predicate, filters, metadata)
-      end
-
-      # @private
       def self.declaration_line_numbers
         @declaration_line_numbers ||= [metadata[:line_number]] +
           examples.map { |e| e.metadata[:line_number] } +

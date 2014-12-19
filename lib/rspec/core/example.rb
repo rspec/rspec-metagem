@@ -266,11 +266,6 @@ module RSpec
       end
 
       # @private
-      def apply?(predicate, filters)
-        MetadataFilter.apply?(predicate, filters, metadata)
-      end
-
-      # @private
       #
       # Used internally to set an exception in an after hook, which
       # captures the exception but doesn't raise it.
