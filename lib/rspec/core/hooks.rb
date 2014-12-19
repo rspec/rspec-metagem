@@ -404,13 +404,14 @@ EOS
       end
 
       # @private
-      class BaseHookCollection
-        def initialize(hooks=[])
-          @hooks = hooks
+      class HookCollection
+        def initialize(hooks=[], example_or_group=nil)
+          @hooks            = hooks
+          @example_or_group = example_or_group
         end
 
-        attr_reader :hooks
-        protected :hooks
+        attr_reader :hooks, :example_or_group
+        protected   :hooks, :example_or_group
 
         def to_ary
           @hooks
@@ -432,51 +433,39 @@ EOS
           @hooks.include?(hook)
         end
 
+        def for(example_or_group)
+          self.class.new(@hooks.select { |hook| hook.options_apply?(example_or_group) }, example_or_group)
+        end
+
         def each
           @hooks.each { |h| yield h }
         end
-      end
-
-      # @private
-      class HookCollection < BaseHookCollection
-        def for(example_or_group)
-          self.class.
-            new(hooks.select { |hook| hook.options_apply?(example_or_group) }).
-            with(example_or_group)
-        end
-
-        def with(example)
-          @example = example
-          self
-        end
 
         def run
-          hooks.each { |h| h.run(@example) }
+          hooks.each { |h| h.run(example_or_group) }
         end
       end
 
       # @private
-      class AroundHookCollection < BaseHookCollection
+      class AroundHookCollection < HookCollection
         def for(example, initial_procsy=nil)
-          self.class.new(hooks.select { |hook| hook.options_apply?(example) }).
-            with(example, initial_procsy)
+          super(example).with(initial_procsy)
         end
 
-        def with(example, initial_procsy)
-          @example = example
+        def with(initial_procsy)
           @initial_procsy = initial_procsy
           self
         end
 
         def run
           hooks.inject(@initial_procsy) do |procsy, around_hook|
-            procsy.wrap { around_hook.execute_with(@example, procsy) }
+            procsy.wrap { around_hook.execute_with(example_or_group, procsy) }
           end.call
         end
       end
 
       # @private
-      class GroupHookCollection < BaseHookCollection
+      class GroupHookCollection < HookCollection
         def for(group)
           @group = group
           self

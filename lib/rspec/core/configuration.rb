@@ -1489,10 +1489,10 @@ module RSpec
 
         hook_context = SuiteHookContext.new
         begin
-          before_suite_hooks.with(hook_context).run
+          before_suite_hooks.for(hook_context).run
           yield
         ensure
-          after_suite_hooks.with(hook_context).run
+          after_suite_hooks.for(hook_context).run
         end
       end
 
