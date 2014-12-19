@@ -405,18 +405,35 @@ EOS
 
       # @private
       class BaseHookCollection
-        Array.public_instance_methods(false).each do |name|
-          define_method(name) { |*a, &b| hooks.__send__(name, *a, &b) }
+        def initialize(hooks=[])
+          @hooks = hooks
         end
 
         attr_reader :hooks
         protected :hooks
 
-        alias append push
-        alias prepend unshift
+        def to_ary
+          @hooks
+        end
 
-        def initialize(hooks=[])
-          @hooks = hooks
+        def empty?
+          @hooks.empty?
+        end
+
+        def append(hook)
+          @hooks.push hook
+        end
+
+        def prepend(hook)
+          @hooks.unshift hook
+        end
+
+        def include?(hook)
+          @hooks.include?(hook)
+        end
+
+        def each
+          @hooks.each { |h| yield h }
         end
       end
 
@@ -466,7 +483,7 @@ EOS
         end
 
         def run
-          hooks.shift.run(@group) until hooks.empty?
+          hooks.each { |h| h.run(@group) }
         end
       end
 
@@ -540,7 +557,7 @@ EOS
           globals[position][scope].each do |hook|
             next unless scope == :example || hook.options_apply?(host)
             next if host.parent_groups.any? { |a| a.hooks[position][scope].include?(hook) }
-            self[position][scope] << hook
+            self[position][scope].append hook
           end
         end
 
