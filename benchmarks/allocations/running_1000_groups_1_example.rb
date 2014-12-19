@@ -72,3 +72,30 @@ RubyVM::InstructionSequence                                                     
 Array<Fixnum,FalseClass>                                                                           391
 Array<Array>                                                                                       205
 Array<String>                                                                                       52
+
+After yet further optimization (where HookCollection instances are only created when hooks are added),
+we've reduced allocations significantly further:
+
+                                          class_plus                                             count
+-----------------------------------------------------------------------------------------------  -----
+String                                                                                           21332
+Array                                                                                            13412
+Array<Symbol>                                                                                     6021
+Array<Symbol,Proc>                                                                                6001
+Array<RSpec::Core::Example>                                                                       6001
+Hash                                                                                              3105
+Array<Class>                                                                                      3004
+Proc                                                                                              2101
+RubyVM::Env                                                                                       2061
+Time                                                                                              2002
+Random                                                                                            2001
+RSpec::Core::Notifications::GroupNotification                                                     2000
+RSpec::Core::Notifications::ExampleNotification                                                   2000
+Array<Symbol,TrueClass>                                                                           1003
+Array<Class,Module>                                                                               1002
+Array<TrueClass>                                                                                  1002
+RubyVM::InstructionSequence                                                                        506
+Array<Fixnum,FalseClass>                                                                           391
+Array<Array>                                                                                       208
+Array<String>                                                                                       52
+

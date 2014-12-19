@@ -14,7 +14,7 @@ module RSpec::Core
       end
 
       def hook_collection_for(position, scope)
-        hooks.hooks_for(position, scope).all
+        hooks.send(:all_hooks_for, position, scope)
       end
     end
 
