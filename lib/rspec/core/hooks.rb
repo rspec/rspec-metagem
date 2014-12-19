@@ -329,12 +329,7 @@ module RSpec
       # @private
       # Holds the various registered hooks.
       def hooks
-        @hooks ||= HookCollections.new(
-          self,
-          :around => { :example => HookCollection.new },
-          :before => { :example => HookCollection.new, :context => HookCollection.new },
-          :after  => { :example => HookCollection.new, :context => HookCollection.new }
-        )
+        @hooks ||= HookCollections.new(self)
       end
 
     private
@@ -463,9 +458,13 @@ EOS
 
       # @private
       class HookCollections
-        def initialize(owner, data)
+        def initialize(owner)
           @owner = owner
-          @data  = data
+          @data  = Hash.new do |type_hash, type|
+            type_hash[type] = Hash.new do |scope_hash, scope|
+              scope_hash[scope] = HookCollection.new
+            end
+          end
         end
 
         def [](key)

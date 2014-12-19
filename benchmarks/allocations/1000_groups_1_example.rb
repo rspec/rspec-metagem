@@ -63,3 +63,63 @@ RSpec::Core::Hooks::AroundHookCollection   1000
 RSpec::Core::Metadata::ExampleGroupHash    1000
 Class                                      1000
 Array<Hash>                                1000
+
+....
+
+Later, our allocations were:
+
+              class_plus                 count
+---------------------------------------  -----
+String                                   26000
+Hash                                     19000
+Array                                    18000
+Set                                      10000
+Proc                                      9000
+RubyVM::Env                               9000
+RSpec::Core::Hooks::HookCollection        5000
+RSpec::Core::FilterableItemRepository     5000
+Array<String>                             5000
+MatchData                                 3000
+RSpec::Core::Example::ExecutionResult     2000
+Array<String,Fixnum>                      2000
+Module                                    2000
+Array<Module>                             2000
+RSpec::Core::Metadata::ExampleGroupHash   1000
+Class                                     1000
+RSpec::Core::Metadata::ExampleHash        1000
+RSpec::Core::Example                      1000
+Array<RSpec::Core::Example>               1000
+Array<Hash>                               1000
+RSpec::Core::Hooks::HookCollections       1000
+
+
+After changing the hooks implementation to lazily
+instantiate `HookCollection` instances, it dropped
+our allocations by:
+  - 8K hashes
+  - 10K arrays
+  - 10K sets
+  - 5K FilterableItemRepository
+  - 5K HookCollecion
+
+              class_plus                 count
+---------------------------------------  -----
+String                                   26000
+Hash                                     11000
+Array                                     8000
+Proc                                      5000
+RubyVM::Env                               5000
+Array<String>                             5000
+MatchData                                 3000
+Array<Module>                             2000
+Array<String,Fixnum>                      2000
+RSpec::Core::Example::ExecutionResult     2000
+Module                                    2000
+Array<Hash>                               1000
+RSpec::Core::Metadata::ExampleGroupHash   1000
+Class                                     1000
+RSpec::Core::Metadata::ExampleHash        1000
+RSpec::Core::Example                      1000
+Array<RSpec::Core::Example>               1000
+RSpec::Core::Hooks::HookCollections       1000
+
