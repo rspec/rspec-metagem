@@ -479,12 +479,6 @@ EOS
           process(host, globals, :after,  :context)
         end
 
-        def run_around_example_hooks_for(example, initial_procsy=nil)
-          AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:around][:example]
-          end).run_with(example, initial_procsy)
-        end
-
         def register(prepend_or_append, hook, *args, &block)
           scope, options = scope_and_options_from(*args)
 
@@ -566,12 +560,10 @@ EOS
           end
         end
 
-        # @api private
         def known_scope?(scope)
           SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
         end
 
-        # @api private
         def normalized_scope_for(scope)
           SCOPE_ALIASES[scope] || scope
         end
@@ -594,6 +586,12 @@ EOS
           HookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
             a.hooks[:after][:example]
           end).run_with(example)
+        end
+
+        def run_around_example_hooks_for(example, initial_procsy=nil)
+          AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
+            a.hooks[:around][:example]
+          end).run_with(example, initial_procsy)
         end
       end
     end
