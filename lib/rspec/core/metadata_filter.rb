@@ -92,11 +92,11 @@ module RSpec
     # metadata of an example or example group.
     # @private
     class FilterableItemRepository
-      attr_reader :items
+      attr_reader :items_and_filters
 
       def initialize(applies_predicate)
         @applies_predicate = applies_predicate
-        @items             = []
+        @items_and_filters = []
         @applicable_keys   = Set.new
         @proc_keys         = Set.new
         @memoized_lookups  = Hash.new do |hash, applicable_metadata|
@@ -105,12 +105,12 @@ module RSpec
       end
 
       def append(item, metadata)
-        @items << [item, metadata]
+        @items_and_filters << [item, metadata]
         handle_mutation(metadata)
       end
 
       def prepend(item, metadata)
-        @items.unshift [item, metadata]
+        @items_and_filters.unshift [item, metadata]
         handle_mutation(metadata)
       end
 
@@ -121,7 +121,7 @@ module RSpec
         # description). By filtering to the metadata keys our items care about,
         # we can ignore extra metadata keys that differ for each example/group.
         # For example, given `config.include DBHelpers, :db`, example groups
-        # can be split into those two sets: those that are tagged with `:db` and those
+        # can be split into these two sets: those that are tagged with `:db` and those
         # that are not. For each set, this method for the first group in the set is
         # still an `O(N)` calculation, but all subsequent groups in the set will be
         # constant time lookups when they call this method.
@@ -151,7 +151,7 @@ module RSpec
       end
 
       def find_items_for(request_meta)
-        @items.each_with_object([]) do |(item, item_meta), to_return|
+        @items_and_filters.each_with_object([]) do |(item, item_meta), to_return|
           to_return << item if item_meta.empty? ||
                                MetadataFilter.apply?(@applies_predicate, item_meta, request_meta)
         end
@@ -175,7 +175,7 @@ module RSpec
       unless [].respond_to?(:each_with_object) # For 1.8.7
         undef find_items_for
         def find_items_for(request_meta)
-          @items.inject([]) do |to_return, (item, item_meta)|
+          @items_and_filters.inject([]) do |to_return, (item, item_meta)|
             to_return << item if item_meta.empty? ||
                                  MetadataFilter.apply?(@applies_predicate, item_meta, request_meta)
             to_return
