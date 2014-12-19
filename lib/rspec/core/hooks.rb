@@ -451,8 +451,8 @@ EOS
           end
         end
 
-        def [](key)
-          @data[key]
+        def hooks_for(position, scope)
+          @data[position][scope]
         end
 
         def register_globals(host, globals)
@@ -464,21 +464,21 @@ EOS
           process(host, globals, :after,  :context)
         end
 
-        def register(prepend_or_append, hook, *args, &block)
+        def register(prepend_or_append, position, *args, &block)
           scope, options = scope_and_options_from(*args)
 
           if scope == :suite
             # TODO: consider making this an error in RSpec 4. For SemVer reasons,
             # we are only warning in RSpec 3.
-            RSpec.warn_with "WARNING: `#{hook}(:suite)` hooks are only supported on " \
+            RSpec.warn_with "WARNING: `#{position}(:suite)` hooks are only supported on " \
                             "the RSpec configuration object. This " \
-                            "`#{hook}(:suite)` hook, registered on an example " \
+                            "`#{position}(:suite)` hook, registered on an example " \
                             "group, will be ignored."
             return
           end
 
-          self[hook][scope].__send__(prepend_or_append,
-                                     HOOK_TYPES[hook][scope].new(block, options))
+          hook = HOOK_TYPES[position][scope].new(block, options)
+          hooks_for(position, scope).__send__(prepend_or_append, hook)
         end
 
         # @private
@@ -514,7 +514,7 @@ EOS
       private
 
         def process(host, globals, position, scope)
-          hooks = globals[position][scope]
+          hooks = globals.hooks_for(position, scope)
           hooks = if scope == :example
                     hooks.to_ary
                   else
@@ -522,8 +522,8 @@ EOS
                   end
 
           hooks.each do |hook|
-            next if host.parent_groups.any? { |a| a.hooks[position][scope].include?(hook) }
-            self[position][scope].append hook
+            next if host.parent_groups.any? { |a| a.hooks.hooks_for(position, scope).include?(hook) }
+            hooks_for(position, scope).append hook
           end
         end
 
@@ -556,19 +556,19 @@ EOS
           SCOPE_ALIASES[scope] || scope
         end
 
-        def run_context_hooks_for(group, type)
-          self[type][:context].run_with(group)
+        def run_context_hooks_for(group, position)
+          hooks_for(position, :context).run_with(group)
         end
 
-        def run_example_hooks_for(example, type, each_method)
+        def run_example_hooks_for(example, position, each_method)
           @owner.parent_groups.__send__(each_method) do |group|
-            group.hooks[type][:example].run_with(example)
+            group.hooks.hooks_for(position, :example).run_with(example)
           end
         end
 
         def run_around_example_hooks_for(example)
           hooks = FlatMap.flat_map(@owner.parent_groups) do |group|
-            group.hooks[:around][:example].hooks_for(example)
+            group.hooks.hooks_for(:around, :example).hooks_for(example)
           end
 
           return yield if hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
