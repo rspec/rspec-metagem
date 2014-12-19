@@ -1050,7 +1050,7 @@ module RSpec
       # @see #prepend
       def include(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @include_modules.add(mod, meta)
+        @include_modules.append(mod, meta)
       end
 
       # Tells RSpec to extend example groups with `mod`. Methods defined in
@@ -1085,7 +1085,7 @@ module RSpec
       # @see #prepend
       def extend(mod, *filters)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @extend_modules.add(mod, meta)
+        @extend_modules.append(mod, meta)
       end
 
       # Tells RSpec to prepend example groups with `mod`. Methods defined in
@@ -1123,7 +1123,7 @@ module RSpec
       if RSpec::Support::RubyFeatures.module_prepends_supported?
         def prepend(mod, *filters)
           meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-          @prepend_modules.add(mod, meta)
+          @prepend_modules.append(mod, meta)
         end
       end
 
@@ -1407,7 +1407,7 @@ module RSpec
       #   end
       def define_derived_metadata(*filters, &block)
         meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
-        @derived_metadata_blocks.add(block, meta)
+        @derived_metadata_blocks.append(block, meta)
       end
 
       # @private

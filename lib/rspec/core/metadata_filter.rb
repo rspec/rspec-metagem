@@ -104,11 +104,14 @@ module RSpec
         end
       end
 
-      def add(item, metadata)
+      def append(item, metadata)
         @items << [item, metadata]
-        @applicable_keys.merge(metadata.keys)
-        @proc_keys.merge(proc_keys_from metadata)
-        @memoized_lookups.clear
+        handle_mutation(metadata)
+      end
+
+      def prepend(item, metadata)
+        @items.unshift [item, metadata]
+        handle_mutation(metadata)
       end
 
       def items_for(metadata)
@@ -134,6 +137,12 @@ module RSpec
       end
 
     private
+
+      def handle_mutation(metadata)
+        @applicable_keys.merge(metadata.keys)
+        @proc_keys.merge(proc_keys_from metadata)
+        @memoized_lookups.clear
+      end
 
       def applicable_metadata_from(metadata)
         metadata.select do |key, _value|
