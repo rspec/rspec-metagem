@@ -332,8 +332,8 @@ module RSpec
         @hooks ||= HookCollections.new(
           self,
           :around => { :example => AroundHookCollection.new },
-          :before => { :example => HookCollection.new, :context => HookCollection.new },
-          :after  => { :example => HookCollection.new, :context => HookCollection.new }
+          :before => { :example => HookCollection.new, :context => GroupHookCollection.new },
+          :after  => { :example => HookCollection.new, :context => GroupHookCollection.new }
         )
       end
 
@@ -568,23 +568,23 @@ EOS
         end
 
         def run_before_context_hooks_for(group)
-          GroupHookCollection.new(self[:before][:context]).run_with(group)
+          self[:before][:context].run_with(group)
         end
 
         def run_after_context_hooks_for(group)
-          GroupHookCollection.new(self[:after][:context]).run_with(group)
+          self[:after][:context].run_with(group)
         end
 
         def run_before_example_hooks_for(example)
-          HookCollection.new(FlatMap.flat_map(@owner.parent_groups.reverse) do |a|
-            a.hooks[:before][:example]
-          end).run_with(example)
+          @owner.parent_groups.reverse.each do |group|
+            group.hooks[:before][:example].run_with(example)
+          end
         end
 
         def run_after_example_hooks_for(example)
-          HookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:after][:example]
-          end).run_with(example)
+          @owner.parent_groups.each do |group|
+            group.hooks[:after][:example].run_with(example)
+          end
         end
 
         def run_around_example_hooks_for(example)
