@@ -331,7 +331,7 @@ module RSpec
       def hooks
         @hooks ||= HookCollections.new(
           self,
-          :around => { :example => AroundHookCollection.new },
+          :around => { :example => HookCollection.new },
           :before => { :example => HookCollection.new, :context => GroupHookCollection.new },
           :after  => { :example => HookCollection.new, :context => GroupHookCollection.new }
         )
@@ -405,8 +405,8 @@ EOS
 
       # @private
       class HookCollection
-        def initialize(hooks=[])
-          @hooks = hooks
+        def initialize
+          @hooks = []
         end
 
         attr_reader :hooks
@@ -440,12 +440,16 @@ EOS
       end
 
       # @private
-      class AroundHookCollection < HookCollection
+      class AroundHookCollection
+        def initialize(hooks)
+          @hooks = hooks
+        end
+
         def run_with(example)
-          return yield if hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
+          return yield if @hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
 
           initial_procsy = Example::Procsy.new(example) { yield }
-          hooks.select { |hook| hook.options_apply?(example) }.inject(initial_procsy) do |procsy, around_hook|
+          @hooks.select { |hook| hook.options_apply?(example) }.inject(initial_procsy) do |procsy, around_hook|
             procsy.wrap { around_hook.execute_with(example, procsy) }
           end.call
         end
