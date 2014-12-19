@@ -329,8 +329,8 @@ module RSpec
 
     private
 
-      def with_around_example_hooks(&block)
-        @example_group_class.hooks.run(:around, :example, self, Procsy.new(self, &block))
+      def with_around_example_hooks
+        @example_group_class.hooks.run(:around, :example, self) { yield }
       rescue Exception => e
         set_exception(e, "in an `around(:example)` hook")
       end

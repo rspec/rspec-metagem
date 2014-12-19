@@ -416,10 +416,6 @@ EOS
           @hooks
         end
 
-        def empty?
-          @hooks.empty?
-        end
-
         def append(hook)
           @hooks.push hook
         end
@@ -445,7 +441,10 @@ EOS
 
       # @private
       class AroundHookCollection < HookCollection
-        def run_with(example, initial_procsy)
+        def run_with(example)
+          return yield if hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
+
+          initial_procsy = Example::Procsy.new(example) { yield }
           hooks.select { |hook| hook.options_apply?(example) }.inject(initial_procsy) do |procsy, around_hook|
             procsy.wrap { around_hook.execute_with(example, procsy) }
           end.call
@@ -500,7 +499,7 @@ EOS
         #
         # Runs all of the blocks stored with the hook in the context of the
         # example. If no example is provided, just calls the hook directly.
-        def run(hook, scope, example_or_group, initial_procsy=nil)
+        def run(hook, scope, example_or_group)
           return if RSpec.configuration.dry_run?
 
           case [hook, scope]
@@ -509,7 +508,7 @@ EOS
           when [:after, :context]
             run_after_context_hooks_for(example_or_group)
           when [:around, :example]
-            run_around_example_hooks_for(example_or_group, initial_procsy)
+            run_around_example_hooks_for(example_or_group) { yield }
           when [:before, :example]
             run_before_example_hooks_for(example_or_group)
           when [:after, :example]
@@ -588,10 +587,10 @@ EOS
           end).run_with(example)
         end
 
-        def run_around_example_hooks_for(example, initial_procsy=nil)
+        def run_around_example_hooks_for(example)
           AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
             a.hooks[:around][:example]
-          end).run_with(example, initial_procsy)
+          end).run_with(example) { yield }
         end
       end
     end
