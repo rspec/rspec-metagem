@@ -332,8 +332,8 @@ module RSpec
         @hooks ||= HookCollections.new(
           self,
           :around => { :example => HookCollection.new },
-          :before => { :example => HookCollection.new, :context => GroupHookCollection.new },
-          :after  => { :example => HookCollection.new, :context => GroupHookCollection.new }
+          :before => { :example => HookCollection.new, :context => HookCollection.new },
+          :after  => { :example => HookCollection.new, :context => HookCollection.new }
         )
       end
 
@@ -346,10 +346,6 @@ module RSpec
         def initialize(block, options)
           @block = block
           @options = options
-        end
-
-        def options_apply?(example_or_group)
-          example_or_group.apply?(:all?, options)
         end
       end
 
@@ -406,35 +402,45 @@ EOS
       # @private
       class HookCollection
         def initialize
-          @hooks = []
+          @repository = FilterableItemRepository.new(:all?)
+          @hooks      = []
         end
-
-        attr_reader :hooks
-        protected :hooks
 
         def to_ary
           @hooks
         end
 
         def append(hook)
-          @hooks.push hook
+          @hooks << hook
+          @repository.append hook, hook.options
         end
 
         def prepend(hook)
           @hooks.unshift hook
+          @repository.prepend hook, hook.options
         end
 
         def include?(hook)
           @hooks.include?(hook)
         end
 
-        def each
-          @hooks.each { |h| yield h }
+        def hooks_for(example_or_group)
+          # It would be nice to not have to switch on type here, but
+          # we don't want to define `ExampleGroup#metadata` because then
+          # `metadata` from within an individual example would return the
+          # group's metadata but the user would probably expect it to be
+          # the example's metadata.
+          metadata = case example_or_group
+                     when ExampleGroup then example_or_group.class.metadata
+                     else example_or_group.metadata
+                     end
+
+          @repository.items_for(metadata)
         end
 
         def run_with(example_or_group)
-          @hooks.each do |hook|
-            hook.run(example_or_group) if hook.options_apply?(example_or_group)
+          hooks_for(example_or_group).each do |hook|
+            hook.run(example_or_group)
           end
         end
       end
@@ -449,16 +455,9 @@ EOS
           return yield if @hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
 
           initial_procsy = Example::Procsy.new(example) { yield }
-          @hooks.select { |hook| hook.options_apply?(example) }.inject(initial_procsy) do |procsy, around_hook|
+          @hooks.inject(initial_procsy) do |procsy, around_hook|
             procsy.wrap { around_hook.execute_with(example, procsy) }
           end.call
-        end
-      end
-
-      # @private
-      class GroupHookCollection < HookCollection
-        def run_with(group)
-          hooks.each { |h| h.run(group) }
         end
       end
 
@@ -532,8 +531,14 @@ EOS
       private
 
         def process(host, globals, position, scope)
-          globals[position][scope].each do |hook|
-            next unless scope == :example || hook.options_apply?(host)
+          hooks = globals[position][scope]
+          hooks = if scope == :example
+                    hooks.to_ary
+                  else
+                    hooks.hooks_for(host)
+                  end
+
+          hooks.each do |hook|
             next if host.parent_groups.any? { |a| a.hooks[position][scope].include?(hook) }
             self[position][scope].append hook
           end
@@ -580,7 +585,7 @@ EOS
 
         def run_around_example_hooks_for(example)
           AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:around][:example]
+            a.hooks[:around][:example].hooks_for(example)
           end).run_with(example) { yield }
         end
       end
