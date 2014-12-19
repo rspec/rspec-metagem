@@ -502,17 +502,14 @@ EOS
         def run(hook, scope, example_or_group)
           return if RSpec.configuration.dry_run?
 
-          case [hook, scope]
-          when [:before, :context]
-            run_before_context_hooks_for(example_or_group)
-          when [:after, :context]
-            run_after_context_hooks_for(example_or_group)
-          when [:around, :example]
-            run_around_example_hooks_for(example_or_group) { yield }
-          when [:before, :example]
-            run_before_example_hooks_for(example_or_group)
-          when [:after, :example]
-            run_after_example_hooks_for(example_or_group)
+          if scope == :context
+            run_context_hooks_for(example_or_group, hook)
+          else
+            case hook
+            when :before then run_example_hooks_for(example_or_group, :before, :reverse_each)
+            when :after  then run_example_hooks_for(example_or_group, :after,  :each)
+            when :around then run_around_example_hooks_for(example_or_group) { yield }
+            end
           end
         end
 
@@ -567,23 +564,13 @@ EOS
           SCOPE_ALIASES[scope] || scope
         end
 
-        def run_before_context_hooks_for(group)
-          self[:before][:context].run_with(group)
+        def run_context_hooks_for(group, type)
+          self[type][:context].run_with(group)
         end
 
-        def run_after_context_hooks_for(group)
-          self[:after][:context].run_with(group)
-        end
-
-        def run_before_example_hooks_for(example)
-          @owner.parent_groups.reverse.each do |group|
-            group.hooks[:before][:example].run_with(example)
-          end
-        end
-
-        def run_after_example_hooks_for(example)
-          @owner.parent_groups.each do |group|
-            group.hooks[:after][:example].run_with(example)
+        def run_example_hooks_for(example, type, each_method)
+          @owner.parent_groups.__send__(each_method) do |group|
+            group.hooks[type][:example].run_with(example)
           end
         end
 
