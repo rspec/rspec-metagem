@@ -441,22 +441,6 @@ EOS
       end
 
       # @private
-      class AroundHookCollection
-        def initialize(hooks)
-          @hooks = hooks
-        end
-
-        def run_with(example)
-          return yield if @hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
-
-          initial_procsy = Example::Procsy.new(example) { yield }
-          @hooks.inject(initial_procsy) do |procsy, around_hook|
-            procsy.wrap { around_hook.execute_with(example, procsy) }
-          end.call
-        end
-      end
-
-      # @private
       class HookCollections
         def initialize(owner)
           @owner = owner
@@ -583,9 +567,16 @@ EOS
         end
 
         def run_around_example_hooks_for(example)
-          AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:around][:example].hooks_for(example)
-          end).run_with(example) { yield }
+          hooks = FlatMap.flat_map(@owner.parent_groups) do |group|
+            group.hooks[:around][:example].hooks_for(example)
+          end
+
+          return yield if hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
+
+          initial_procsy = Example::Procsy.new(example) { yield }
+          hooks.inject(initial_procsy) do |procsy, around_hook|
+            procsy.wrap { around_hook.execute_with(example, procsy) }
+          end.call
         end
       end
     end
