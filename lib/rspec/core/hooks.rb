@@ -540,16 +540,16 @@ EOS
         end
 
         def process(host, globals, position, scope)
-          host_hooks = globals.processable_hooks_for(position, scope, host)
-          return if host_hooks.empty?
+          hooks_to_process = globals.processable_hooks_for(position, scope, host)
+          return if hooks_to_process.empty?
 
-          parent_group_hooks = FlatMap.flat_map(host.parent_groups) do |group|
+          hooks_to_process -= FlatMap.flat_map(host.parent_groups) do |group|
             group.hooks.all_hooks_for(position, scope)
           end
+          return if hooks_to_process.empty?
 
-          (host_hooks - parent_group_hooks).each do |hook|
-            ensure_hooks_initialized_for(position, scope).append hook, hook.options
-          end
+          repository = ensure_hooks_initialized_for(position, scope)
+          hooks_to_process.each { |hook| repository.append hook, hook.options }
         end
 
         def scope_and_options_from(*args)
