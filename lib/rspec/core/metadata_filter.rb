@@ -127,7 +127,7 @@ module RSpec
         # constant time lookups when they call this method.
         applicable_metadata = applicable_metadata_from(metadata)
 
-        if applicable_metadata.keys.any? { |k| @proc_keys.include?(k) }
+        if applicable_metadata.any? { |k, _| @proc_keys.include?(k) }
           # It's unsafe to memoize lookups involving procs (since they can
           # be non-deterministic), so we skip the memoization in this case.
           find_items_for(applicable_metadata)
