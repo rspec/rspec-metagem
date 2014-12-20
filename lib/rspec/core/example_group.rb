@@ -647,15 +647,19 @@ module RSpec
       return "Anonymous" if group.description.empty?
 
       # Convert to CamelCase.
-      name = ' ' + group.description
-      name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) { Regexp.last_match[1].upcase }
+      name = ' ' << group.description
+      name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) do
+        match = Regexp.last_match[1]
+        match.upcase!
+        match
+      end
 
       name.lstrip!         # Remove leading whitespace
-      name.gsub!(/\W/, '') # JRuby, RBX and others don't like non-ascii in const names
+      name.gsub!(/\W/, ''.freeze) # JRuby, RBX and others don't like non-ascii in const names
 
       # Ruby requires first const letter to be A-Z. Use `Nested`
       # as necessary to enforce that.
-      name.gsub!(/\A([^A-Z]|\z)/, 'Nested\1')
+      name.gsub!(/\A([^A-Z]|\z)/, 'Nested\1'.freeze)
 
       name
     end
