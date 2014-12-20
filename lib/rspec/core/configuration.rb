@@ -302,6 +302,10 @@ module RSpec
         @include_modules = FilterableItemRepository.new(:any?)
         @extend_modules  = FilterableItemRepository.new(:any?)
         @prepend_modules = FilterableItemRepository.new(:any?)
+
+        @before_suite_hooks = []
+        @after_suite_hooks  = []
+
         @mock_framework = nil
         @files_or_directories_to_run = []
         @color = false
@@ -1427,7 +1431,7 @@ module RSpec
       # @see #after
       # @see #append_after
       def before(*args, &block)
-        handle_suite_hook(args, before_suite_hooks, :append,
+        handle_suite_hook(args, @before_suite_hooks, :push,
                           Hooks::BeforeHook, block) || super(*args, &block)
       end
       alias_method :append_before, :before
@@ -1446,7 +1450,7 @@ module RSpec
       # @see #after
       # @see #append_after
       def prepend_before(*args, &block)
-        handle_suite_hook(args, before_suite_hooks, :prepend,
+        handle_suite_hook(args, @before_suite_hooks, :unshift,
                           Hooks::BeforeHook, block) || super(*args, &block)
       end
 
@@ -1460,7 +1464,7 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def after(*args, &block)
-        handle_suite_hook(args, after_suite_hooks, :prepend,
+        handle_suite_hook(args, @after_suite_hooks, :unshift,
                           Hooks::AfterHook, block) || super(*args, &block)
       end
       alias_method :prepend_after, :after
@@ -1479,7 +1483,7 @@ module RSpec
       # @see #before
       # @see #prepend_before
       def append_after(*args, &block)
-        handle_suite_hook(args, after_suite_hooks, :append,
+        handle_suite_hook(args, @after_suite_hooks, :push,
                           Hooks::AfterHook, block) || super(*args, &block)
       end
 
@@ -1489,10 +1493,10 @@ module RSpec
 
         hook_context = SuiteHookContext.new
         begin
-          before_suite_hooks.run_with(hook_context)
+          run_hooks_with(@before_suite_hooks, hook_context)
           yield
         ensure
-          after_suite_hooks.run_with(hook_context)
+          run_hooks_with(@after_suite_hooks, hook_context)
         end
       end
 
@@ -1514,12 +1518,8 @@ module RSpec
         collection.__send__(append_or_prepend, hook_type.new(block, {}))
       end
 
-      def before_suite_hooks
-        @before_suite_hooks ||= Hooks::HookCollection.new
-      end
-
-      def after_suite_hooks
-        @after_suite_hooks ||= Hooks::HookCollection.new
+      def run_hooks_with(hooks, hook_context)
+        hooks.each { |h| h.run(hook_context) }
       end
 
       def get_files_to_run(paths)
