@@ -416,12 +416,21 @@ EOS
         end
 
         def register_globals(host, globals)
-          process(host, globals, :before, :example)
-          process(host, globals, :after,  :example)
-          process(host, globals, :around, :example)
+          parent_groups = host.parent_groups
 
-          process(host, globals, :before, :context)
-          process(host, globals, :after,  :context)
+          process(host, parent_groups, globals, :before, :example, &:options)
+          process(host, parent_groups, globals, :after,  :example, &:options)
+          process(host, parent_groups, globals, :around, :example, &:options)
+
+          process(host, parent_groups, globals, :before, :context, &:options)
+          process(host, parent_groups, globals, :after,  :context, &:options)
+        end
+
+        def register_global_singleton_context_hooks(example, globals)
+          parent_groups = example.example_group.parent_groups
+
+          process(example, parent_groups, globals, :before, :context) { {} }
+          process(example, parent_groups, globals, :after,  :context) { {} }
         end
 
         def register(prepend_or_append, position, *args, &block)
@@ -539,17 +548,17 @@ EOS
           end
         end
 
-        def process(host, globals, position, scope)
+        def process(host, parent_groups, globals, position, scope)
           hooks_to_process = globals.processable_hooks_for(position, scope, host)
           return if hooks_to_process.empty?
 
-          hooks_to_process -= FlatMap.flat_map(host.parent_groups) do |group|
+          hooks_to_process -= FlatMap.flat_map(parent_groups) do |group|
             group.hooks.all_hooks_for(position, scope)
           end
           return if hooks_to_process.empty?
 
           repository = ensure_hooks_initialized_for(position, scope)
-          hooks_to_process.each { |hook| repository.append hook, hook.options }
+          hooks_to_process.each { |hook| repository.append hook, (yield hook) }
         end
 
         def scope_and_options_from(*args)
