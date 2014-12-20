@@ -413,10 +413,6 @@ EOS
           @repository.prepend hook, hook.options
         end
 
-        def include?(hook)
-          @all.include?(hook)
-        end
-
         def hooks_for(example_or_group)
           # It would be nice to not have to switch on type here, but
           # we don't want to define `ExampleGroup#metadata` because then
@@ -531,8 +527,12 @@ EOS
           hooks_for(position, scope) { return nil }.run_with(example_or_group)
         end
 
-        def hook_included?(position, scope, hook)
-          hooks_for(position, scope) { return false }.include?(hook)
+        def processable_hooks_for(position, scope, host)
+          if scope == :example
+            all_hooks_for(position, scope)
+          else
+            matching_hooks_for(position, scope, host)
+          end
         end
 
       private
@@ -566,15 +566,14 @@ EOS
         end
 
         def process(host, globals, position, scope)
-          hooks = if scope == :example
-                    globals.all_hooks_for(position, scope)
-                  else
-                    globals.matching_hooks_for(position, scope, host)
-                  end
+          host_hooks = globals.processable_hooks_for(position, scope, host)
+          return if host_hooks.empty?
 
-          hooks.each do |hook|
-            # TODO: find a way to avoid this nested linear search. that should allow us to remove `include?`.
-            next if host.parent_groups.any? { |a| a.hooks.hook_included?(position, scope, hook) }
+          parent_group_hooks = FlatMap.flat_map(host.parent_groups) do |group|
+            group.hooks.all_hooks_for(position, scope)
+          end
+
+          (host_hooks - parent_group_hooks).each do |hook|
             ensure_hooks_initialized_for(position, scope).append hook
           end
         end
