@@ -185,7 +185,7 @@ module RSpec
         rescue Exception => e
           set_exception(e)
         ensure
-          ExampleGroup.instance_variables_for_example(@example_group_instance).each do |ivar|
+          ExampleGroup.each_instance_variable_for_example(@example_group_instance) do |ivar|
             @example_group_instance.instance_variable_set(ivar, nil)
           end
           @example_group_instance = nil

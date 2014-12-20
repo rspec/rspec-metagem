@@ -434,7 +434,7 @@ module RSpec
 
       # @private
       def self.store_before_context_ivars(example_group_instance)
-        instance_variables_for_example(example_group_instance).each do |ivar|
+        each_instance_variable_for_example(example_group_instance) do |ivar|
           before_context_ivars[ivar] = example_group_instance.instance_variable_get(ivar)
         end
       end
@@ -549,14 +549,15 @@ module RSpec
       end
 
       if RUBY_VERSION.to_f < 1.9
-        # @private
-        def self.instance_variables_for_example(group)
-          group.instance_variables - ['@__inspect_output']
-        end
+        INSTANCE_VARIABLE_TO_IGNORE = '@__inspect_output'.freeze
       else
-        # @private
-        def self.instance_variables_for_example(group)
-          group.instance_variables - [:@__inspect_output]
+        INSTANCE_VARIABLE_TO_IGNORE = :@__inspect_output
+      end
+
+      # @private
+      def self.each_instance_variable_for_example(group)
+        group.instance_variables.each do |ivar|
+          yield ivar unless ivar == INSTANCE_VARIABLE_TO_IGNORE
         end
       end
 
