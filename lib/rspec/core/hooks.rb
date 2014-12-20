@@ -395,46 +395,6 @@ EOS
       end
 
       # @private
-      class HookCollection
-        attr_reader :all
-
-        def initialize
-          @repository = FilterableItemRepository.new(:all?)
-          @all        = []
-        end
-
-        def append(hook)
-          @all << hook
-          @repository.append hook, hook.options
-        end
-
-        def prepend(hook)
-          @all.unshift hook
-          @repository.prepend hook, hook.options
-        end
-
-        def hooks_for(example_or_group)
-          # It would be nice to not have to switch on type here, but
-          # we don't want to define `ExampleGroup#metadata` because then
-          # `metadata` from within an individual example would return the
-          # group's metadata but the user would probably expect it to be
-          # the example's metadata.
-          metadata = case example_or_group
-                     when ExampleGroup then example_or_group.class.metadata
-                     else example_or_group.metadata
-                     end
-
-          @repository.items_for(metadata)
-        end
-
-        def run_with(example_or_group)
-          hooks_for(example_or_group).each do |hook|
-            hook.run(example_or_group)
-          end
-        end
-      end
-
-      # @private
       #
       # This provides the primary API used by other parts of rspec-core. By hiding all
       # implementation details behind this facade, it's allowed us to heavily optimize
@@ -478,7 +438,7 @@ EOS
           end
 
           hook = HOOK_TYPES[position][scope].new(block, options)
-          ensure_hooks_initialized_for(position, scope).__send__(prepend_or_append, hook)
+          ensure_hooks_initialized_for(position, scope).__send__(prepend_or_append, hook, options)
         end
 
         # @private
@@ -516,15 +476,29 @@ EOS
         EMPTY_HOOK_ARRAY = [].freeze
 
         def matching_hooks_for(position, scope, example_or_group)
-          hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }.hooks_for(example_or_group)
+          repository = hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }
+
+          # It would be nice to not have to switch on type here, but
+          # we don't want to define `ExampleGroup#metadata` because then
+          # `metadata` from within an individual example would return the
+          # group's metadata but the user would probably expect it to be
+          # the example's metadata.
+          metadata = case example_or_group
+                     when ExampleGroup then example_or_group.class.metadata
+                     else example_or_group.metadata
+                     end
+
+          repository.items_for(metadata)
         end
 
         def all_hooks_for(position, scope)
-          hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }.all
+          hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }.items_and_filters.map(&:first)
         end
 
         def run_owned_hooks_for(position, scope, example_or_group)
-          hooks_for(position, scope) { return nil }.run_with(example_or_group)
+          matching_hooks_for(position, scope, example_or_group).each do |hook|
+            hook.run(example_or_group)
+          end
         end
 
         def processable_hooks_for(position, scope, host)
@@ -550,18 +524,18 @@ EOS
         def ensure_hooks_initialized_for(position, scope)
           if position == :before
             if scope == :example
-              @before_example_hooks ||= HookCollection.new
+              @before_example_hooks ||= FilterableItemRepository.new(:all?)
             else
-              @before_context_hooks ||= HookCollection.new
+              @before_context_hooks ||= FilterableItemRepository.new(:all?)
             end
           elsif position == :after
             if scope == :example
-              @after_example_hooks ||= HookCollection.new
+              @after_example_hooks ||= FilterableItemRepository.new(:all?)
             else
-              @after_context_hooks ||= HookCollection.new
+              @after_context_hooks ||= FilterableItemRepository.new(:all?)
             end
           else # around
-            @around_example_hooks ||= HookCollection.new
+            @around_example_hooks ||= FilterableItemRepository.new(:all?)
           end
         end
 
@@ -574,7 +548,7 @@ EOS
           end
 
           (host_hooks - parent_group_hooks).each do |hook|
-            ensure_hooks_initialized_for(position, scope).append hook
+            ensure_hooks_initialized_for(position, scope).append hook, hook.options
           end
         end
 
