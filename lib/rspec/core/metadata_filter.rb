@@ -145,8 +145,9 @@ module RSpec
       end
 
       def applicable_metadata_from(metadata)
-        metadata.select do |key, _value|
-          @applicable_keys.include?(key)
+        @applicable_keys.inject({}) do |hash, key|
+          hash[key] = metadata[key] if metadata.key?(key)
+          hash
         end
       end
 
@@ -160,15 +161,6 @@ module RSpec
       def proc_keys_from(metadata)
         metadata.each_with_object([]) do |(key, value), to_return|
           to_return << key if Proc === value
-        end
-      end
-
-      if {}.select {} == [] # For 1.8.7
-        undef applicable_metadata_from
-        def applicable_metadata_from(metadata)
-          Hash[metadata.select do |key, _value|
-            @applicable_keys.include?(key)
-          end]
         end
       end
 
