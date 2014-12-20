@@ -22,14 +22,19 @@ module RSpec
 
         module_function
 
+        CONFIG_COLORS_TO_METHODS = Configuration.instance_methods.grep(/_color\z/).inject({}) do |hash, method|
+          hash[method.to_s.sub(/_color\z/, '').to_sym] = method
+          hash
+        end
+
         # Fetches the correct code for the supplied symbol, or checks
         # that a code is valid. Defaults to white (37).
         #
         # @param code_or_symbol [Symbol, Fixnum] Symbol or code to check
         # @return [Fixnum] a console code
         def console_code_for(code_or_symbol)
-          if RSpec.configuration.respond_to?(:"#{code_or_symbol}_color")
-            console_code_for configuration_color(code_or_symbol)
+          if (config_method = CONFIG_COLORS_TO_METHODS[code_or_symbol])
+            console_code_for RSpec.configuration.__send__(config_method)
           elsif VT100_CODE_VALUES.key?(code_or_symbol)
             code_or_symbol
           else
@@ -52,11 +57,6 @@ module RSpec
           else
             text
           end
-        end
-
-        # @private
-        def configuration_color(code)
-          RSpec.configuration.__send__(:"#{code}_color")
         end
       end
     end
