@@ -21,7 +21,7 @@ module RSpecConfigurationOverrides
 
   def old_configure_group(group)
     @include_extend_or_prepend_modules.each do |include_extend_or_prepend, mod, filters|
-      next unless filters.empty? || group.apply?(:any?, filters)
+      next unless filters.empty? || RSpec::Core::MetadataFilter.apply?(:any?, filters, group.metadata)
       __send__("safe_#{include_extend_or_prepend}", mod, group)
     end
   end
