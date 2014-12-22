@@ -87,4 +87,3 @@ Old linear search: matching metadata
                         822.348  (±57.5%) i/s -      3.081k
 New memoized search: matching metadata
                           1.116k (±76.6%) i/s -      3.510k
-

@@ -98,4 +98,3 @@ RubyVM::InstructionSequence                                                     
 Array<Fixnum,FalseClass>                                                                           391
 Array<Array>                                                                                       208
 Array<String>                                                                                       52
-

@@ -122,4 +122,3 @@ RSpec::Core::Metadata::ExampleHash        1000
 RSpec::Core::Example                      1000
 Array<RSpec::Core::Example>               1000
 RSpec::Core::Hooks::HookCollections       1000
-

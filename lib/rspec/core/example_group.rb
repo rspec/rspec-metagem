@@ -655,7 +655,7 @@ module RSpec
         match
       end
 
-      name.lstrip!         # Remove leading whitespace
+      name.lstrip!                # Remove leading whitespace
       name.gsub!(/\W/, ''.freeze) # JRuby, RBX and others don't like non-ascii in const names
 
       # Ruby requires first const letter to be A-Z. Use `Nested`
