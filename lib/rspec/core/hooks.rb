@@ -329,12 +329,7 @@ module RSpec
       # @private
       # Holds the various registered hooks.
       def hooks
-        @hooks ||= HookCollections.new(
-          self,
-          :around => { :example => AroundHookCollection.new },
-          :before => { :example => HookCollection.new, :context => HookCollection.new },
-          :after  => { :example => HookCollection.new, :context => HookCollection.new }
-        )
+        @hooks ||= HookCollections.new(self)
       end
 
     private
@@ -346,10 +341,6 @@ module RSpec
         def initialize(block, options)
           @block = block
           @options = options
-        end
-
-        def options_apply?(example_or_group)
-          example_or_group.apply?(:all?, options)
         end
       end
 
@@ -404,81 +395,24 @@ EOS
       end
 
       # @private
-      class BaseHookCollection
-        Array.public_instance_methods(false).each do |name|
-          define_method(name) { |*a, &b| hooks.__send__(name, *a, &b) }
-        end
-
-        attr_reader :hooks
-        protected :hooks
-
-        alias append push
-        alias prepend unshift
-
-        def initialize(hooks=[])
-          @hooks = hooks
-        end
-      end
-
-      # @private
-      class HookCollection < BaseHookCollection
-        def for(example_or_group)
-          self.class.
-            new(hooks.select { |hook| hook.options_apply?(example_or_group) }).
-            with(example_or_group)
-        end
-
-        def with(example)
-          @example = example
-          self
-        end
-
-        def run
-          hooks.each { |h| h.run(@example) }
-        end
-      end
-
-      # @private
-      class AroundHookCollection < BaseHookCollection
-        def for(example, initial_procsy=nil)
-          self.class.new(hooks.select { |hook| hook.options_apply?(example) }).
-            with(example, initial_procsy)
-        end
-
-        def with(example, initial_procsy)
-          @example = example
-          @initial_procsy = initial_procsy
-          self
-        end
-
-        def run
-          hooks.inject(@initial_procsy) do |procsy, around_hook|
-            procsy.wrap { around_hook.execute_with(@example, procsy) }
-          end.call
-        end
-      end
-
-      # @private
-      class GroupHookCollection < BaseHookCollection
-        def for(group)
-          @group = group
-          self
-        end
-
-        def run
-          hooks.shift.run(@group) until hooks.empty?
-        end
-      end
-
-      # @private
+      #
+      # This provides the primary API used by other parts of rspec-core. By hiding all
+      # implementation details behind this facade, it's allowed us to heavily optimize
+      # this, so that, for example, hook collection objects are only instantiated when
+      # a hook is added. This allows us to avoid many object allocations for the common
+      # case of a group having no hooks.
+      #
+      # This is only possible because this interface provides a "tell, don't ask"-style
+      # API, so that callers _tell_ this class what to do with the hooks, rather than
+      # asking this class for a list of hooks, and then doing something with them.
       class HookCollections
-        def initialize(owner, data)
+        def initialize(owner)
           @owner = owner
-          @data  = data
-        end
-
-        def [](key)
-          @data[key]
+          @before_example_hooks = nil
+          @after_example_hooks  = nil
+          @before_context_hooks = nil
+          @after_context_hooks  = nil
+          @around_example_hooks = nil
         end
 
         def register_globals(host, globals)
@@ -490,36 +424,39 @@ EOS
           process(host, globals, :after,  :context)
         end
 
-        def around_example_hooks_for(example, initial_procsy=nil)
-          AroundHookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:around][:example]
-          end).for(example, initial_procsy)
-        end
-
-        def register(prepend_or_append, hook, *args, &block)
+        def register(prepend_or_append, position, *args, &block)
           scope, options = scope_and_options_from(*args)
 
           if scope == :suite
             # TODO: consider making this an error in RSpec 4. For SemVer reasons,
             # we are only warning in RSpec 3.
-            RSpec.warn_with "WARNING: `#{hook}(:suite)` hooks are only supported on " \
+            RSpec.warn_with "WARNING: `#{position}(:suite)` hooks are only supported on " \
                             "the RSpec configuration object. This " \
-                            "`#{hook}(:suite)` hook, registered on an example " \
+                            "`#{position}(:suite)` hook, registered on an example " \
                             "group, will be ignored."
             return
           end
 
-          self[hook][scope].__send__(prepend_or_append,
-                                     HOOK_TYPES[hook][scope].new(block, options))
+          hook = HOOK_TYPES[position][scope].new(block, options)
+          ensure_hooks_initialized_for(position, scope).__send__(prepend_or_append, hook, options)
         end
 
         # @private
         #
         # Runs all of the blocks stored with the hook in the context of the
         # example. If no example is provided, just calls the hook directly.
-        def run(hook, scope, example_or_group, initial_procsy=nil)
+        def run(position, scope, example_or_group)
           return if RSpec.configuration.dry_run?
-          find_hook(hook, scope, example_or_group, initial_procsy).run
+
+          if scope == :context
+            run_owned_hooks_for(position, :context, example_or_group)
+          else
+            case position
+            when :before then run_example_hooks_for(example_or_group, :before, :reverse_each)
+            when :after  then run_example_hooks_for(example_or_group, :after,  :each)
+            when :around then run_around_example_hooks_for(example_or_group) { yield }
+            end
+          end
         end
 
         SCOPES = [:example, :context]
@@ -534,14 +471,85 @@ EOS
 
         HOOK_TYPES[:after][:context] = AfterContextHook
 
+      protected
+
+        EMPTY_HOOK_ARRAY = [].freeze
+
+        def matching_hooks_for(position, scope, example_or_group)
+          repository = hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }
+
+          # It would be nice to not have to switch on type here, but
+          # we don't want to define `ExampleGroup#metadata` because then
+          # `metadata` from within an individual example would return the
+          # group's metadata but the user would probably expect it to be
+          # the example's metadata.
+          metadata = case example_or_group
+                     when ExampleGroup then example_or_group.class.metadata
+                     else example_or_group.metadata
+                     end
+
+          repository.items_for(metadata)
+        end
+
+        def all_hooks_for(position, scope)
+          hooks_for(position, scope) { return EMPTY_HOOK_ARRAY }.items_and_filters.map(&:first)
+        end
+
+        def run_owned_hooks_for(position, scope, example_or_group)
+          matching_hooks_for(position, scope, example_or_group).each do |hook|
+            hook.run(example_or_group)
+          end
+        end
+
+        def processable_hooks_for(position, scope, host)
+          if scope == :example
+            all_hooks_for(position, scope)
+          else
+            matching_hooks_for(position, scope, host)
+          end
+        end
+
       private
 
-        def process(host, globals, position, scope)
-          globals[position][scope].each do |hook|
-            next unless scope == :example || hook.options_apply?(host)
-            next if host.parent_groups.any? { |a| a.hooks[position][scope].include?(hook) }
-            self[position][scope] << hook
+        def hooks_for(position, scope)
+          if position == :before
+            scope == :example ? @before_example_hooks : @before_context_hooks
+          elsif position == :after
+            scope == :example ? @after_example_hooks : @after_context_hooks
+          else # around
+            @around_example_hooks
+          end || yield
+        end
+
+        def ensure_hooks_initialized_for(position, scope)
+          if position == :before
+            if scope == :example
+              @before_example_hooks ||= FilterableItemRepository.new(:all?)
+            else
+              @before_context_hooks ||= FilterableItemRepository.new(:all?)
+            end
+          elsif position == :after
+            if scope == :example
+              @after_example_hooks ||= FilterableItemRepository.new(:all?)
+            else
+              @after_context_hooks ||= FilterableItemRepository.new(:all?)
+            end
+          else # around
+            @around_example_hooks ||= FilterableItemRepository.new(:all?)
           end
+        end
+
+        def process(host, globals, position, scope)
+          hooks_to_process = globals.processable_hooks_for(position, scope, host)
+          return if hooks_to_process.empty?
+
+          hooks_to_process -= FlatMap.flat_map(host.parent_groups) do |group|
+            group.hooks.all_hooks_for(position, scope)
+          end
+          return if hooks_to_process.empty?
+
+          repository = ensure_hooks_initialized_for(position, scope)
+          hooks_to_process.each { |hook| repository.append hook, hook.options }
         end
 
         def scope_and_options_from(*args)
@@ -565,49 +573,31 @@ EOS
           end
         end
 
-        # @api private
         def known_scope?(scope)
           SCOPES.include?(scope) || SCOPE_ALIASES.keys.include?(scope)
         end
 
-        # @api private
         def normalized_scope_for(scope)
           SCOPE_ALIASES[scope] || scope
         end
 
-        def find_hook(hook, scope, example_or_group, initial_procsy)
-          case [hook, scope]
-          when [:before, :context]
-            before_context_hooks_for(example_or_group)
-          when [:after, :context]
-            after_context_hooks_for(example_or_group)
-          when [:around, :example]
-            around_example_hooks_for(example_or_group, initial_procsy)
-          when [:before, :example]
-            before_example_hooks_for(example_or_group)
-          when [:after, :example]
-            after_example_hooks_for(example_or_group)
+        def run_example_hooks_for(example, position, each_method)
+          @owner.parent_groups.__send__(each_method) do |group|
+            group.hooks.run_owned_hooks_for(position, :example, example)
           end
         end
 
-        def before_context_hooks_for(group)
-          GroupHookCollection.new(self[:before][:context]).for(group)
-        end
+        def run_around_example_hooks_for(example)
+          hooks = FlatMap.flat_map(@owner.parent_groups) do |group|
+            group.hooks.matching_hooks_for(:around, :example, example)
+          end
 
-        def after_context_hooks_for(group)
-          GroupHookCollection.new(self[:after][:context]).for(group)
-        end
+          return yield if hooks.empty? # exit early to avoid the extra allocation cost of `Example::Procsy`
 
-        def before_example_hooks_for(example)
-          HookCollection.new(FlatMap.flat_map(@owner.parent_groups.reverse) do |a|
-            a.hooks[:before][:example]
-          end).for(example)
-        end
-
-        def after_example_hooks_for(example)
-          HookCollection.new(FlatMap.flat_map(@owner.parent_groups) do |a|
-            a.hooks[:after][:example]
-          end).for(example)
+          initial_procsy = Example::Procsy.new(example) { yield }
+          hooks.inject(initial_procsy) do |procsy, around_hook|
+            procsy.wrap { around_hook.execute_with(example, procsy) }
+          end.call
         end
       end
     end

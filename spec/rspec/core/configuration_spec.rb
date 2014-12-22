@@ -881,7 +881,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.include(InstanceLevelMethods, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@include_modules).items_and_filters.last.last
         end
       end
 
@@ -921,7 +921,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.extend(ThatThingISentYou, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@extend_modules).items_and_filters.last.last
         end
       end
 
@@ -948,7 +948,7 @@ module RSpec::Core
       it_behaves_like "metadata hash builder" do
         def metadata_hash(*args)
           config.prepend(SomeRandomMod, *args)
-          config.include_extend_or_prepend_modules.last.last
+          config.instance_variable_get(:@prepend_modules).items_and_filters.last.last
         end
       end
 
@@ -1528,23 +1528,6 @@ module RSpec::Core
         config.include(mod, :foo => :bar, :baz => :bam)
         config.configure_group(group)
         expect(group.included_modules).to include(mod)
-      end
-
-      it "includes each one before deciding whether to include the next" do
-        mod1 = Module.new do
-          def self.included(host)
-            host.metadata[:foo] = :bar
-          end
-        end
-        mod2 = Module.new
-
-        group = RSpec.describe("group")
-
-        config.include(mod1)
-        config.include(mod2, :foo => :bar)
-        config.configure_group(group)
-        expect(group.included_modules).to include(mod1)
-        expect(group.included_modules).to include(mod2)
       end
 
       module IncludeExtendOrPrependMeOnce

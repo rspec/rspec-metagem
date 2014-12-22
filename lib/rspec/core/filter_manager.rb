@@ -217,7 +217,8 @@ module RSpec
       end
 
       def include_example?(example)
-        @rules.empty? ? true : example.apply?(:any?, @rules)
+        return true if @rules.empty?
+        MetadataFilter.apply?(:any?, @rules, example.metadata)
       end
 
       def standalone?
@@ -252,7 +253,9 @@ module RSpec
       }.freeze
 
       def include_example?(example)
-        example.apply?(:any?, @rules) || example.apply?(:any?, CONDITIONAL_FILTERS)
+        example_meta = example.metadata
+        return true if MetadataFilter.apply?(:any?, @rules, example_meta)
+        MetadataFilter.apply?(:any?, CONDITIONAL_FILTERS, example_meta)
       end
     end
   end

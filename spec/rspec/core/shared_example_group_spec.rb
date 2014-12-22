@@ -102,13 +102,15 @@ module RSpec
           end
 
           context "given a hash" do
-            it "delegates include on configuration" do
-              implementation = Proc.new { def bar; 'bar'; end }
+            it "includes itself in matching example groups" do
+              implementation = Proc.new { def self.bar; 'bar'; end }
               define_shared_group(:foo => :bar, &implementation)
-              a = RSpec.configuration.include_extend_or_prepend_modules.first
-              expect(a[0]).to eq(:include)
-              expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
-              expect(a[2]).to eq(:foo => :bar)
+
+              matching_group = RSpec.describe "Group", :foo => :bar
+              non_matching_group = RSpec.describe "Group"
+
+              expect(matching_group.bar).to eq("bar")
+              expect(non_matching_group).not_to respond_to(:bar)
             end
           end
 
@@ -120,12 +122,14 @@ module RSpec
             end
 
             it "delegates include on configuration" do
-              implementation = Proc.new { def bar; 'bar'; end }
+              implementation = Proc.new { def self.bar; 'bar'; end }
               define_shared_group("name", :foo => :bar, &implementation)
-              a = RSpec.configuration.include_extend_or_prepend_modules.first
-              expect(a[0]).to eq(:include)
-              expect(Class.new.send(:include, a[1]).new.bar).to eq('bar')
-              expect(a[2]).to eq(:foo => :bar)
+
+              matching_group = RSpec.describe "Group", :foo => :bar
+              non_matching_group = RSpec.describe "Group"
+
+              expect(matching_group.bar).to eq("bar")
+              expect(non_matching_group).not_to respond_to(:bar)
             end
           end
 

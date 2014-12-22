@@ -147,7 +147,7 @@ module RSpec
         def build_description_from(parent_description=nil, my_description=nil)
           return parent_description.to_s unless my_description
           separator = description_separator(parent_description, my_description)
-          parent_description.to_s + separator + my_description.to_s
+          (parent_description.to_s + separator) << my_description.to_s
         end
 
         def ensure_valid_user_keys
@@ -184,7 +184,8 @@ module RSpec
           example_metadata[:shared_group_inclusion_backtrace] = SharedExampleGroupInclusionStackFrame.current_backtrace
           example_metadata.delete(:parent_example_group)
 
-          hash = new(example_metadata, user_metadata, [description].compact, block)
+          description_args = description.nil? ? [] : [description]
+          hash = new(example_metadata, user_metadata, description_args, block)
           hash.populate
           hash.metadata
         end

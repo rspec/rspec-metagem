@@ -6,6 +6,16 @@ module RSpec::Core
       def parent_groups
         []
       end
+
+      def register_hook(position, scope, *args, &block)
+        block ||= Proc.new { }
+        __send__(position, scope, *args, &block)
+        hook_collection_for(position, scope).first
+      end
+
+      def hook_collection_for(position, scope)
+        hooks.send(:all_hooks_for, position, scope)
+      end
     end
 
     [:before, :after, :around].each do |type|
@@ -15,10 +25,7 @@ module RSpec::Core
         describe "##{type}(#{scope})" do
           it_behaves_like "metadata hash builder" do
             define_method :metadata_hash do |*args|
-              instance = HooksHost.new
-              args.unshift scope if scope
-              hooks = instance.send(type, *args) {}
-              hooks.first.options
+              HooksHost.new.register_hook(type, scope, *args).options
             end
           end
         end
@@ -28,19 +35,19 @@ module RSpec::Core
         let(:instance) { HooksHost.new }
 
         it "defaults to :example scope if no arguments are given" do
-          hooks = instance.send(type) {}
-          hook = hooks.first
-          expect(instance.hooks[type][:example]).to include(hook)
+          expect {
+            instance.__send__(type) {}
+          }.to change { instance.hook_collection_for(type, :example).count }.by(1)
         end
 
         it "defaults to :example scope if the only argument is a metadata hash" do
-          hooks = instance.send(type, :foo => :bar) {}
-          hook = hooks.first
-          expect(instance.hooks[type][:example]).to include(hook)
+          expect {
+            instance.__send__(type, :foo => :bar) {}
+          }.to change { instance.hook_collection_for(type, :example).count }.by(1)
         end
 
         it "raises an error if only metadata symbols are given as arguments" do
-          expect { instance.send(type, :foo, :bar) {} }.to raise_error(ArgumentError)
+          expect { instance.__send__(type, :foo, :bar) {} }.to raise_error(ArgumentError)
         end
       end
     end
@@ -49,17 +56,14 @@ module RSpec::Core
       [:example, :context].each do |scope|
         describe "##{type}(#{scope.inspect})" do
           let(:instance) { HooksHost.new }
-          let!(:hook) do
-            hooks = instance.send(type, scope) {}
-            hooks.first
-          end
+          let!(:hook)    { instance.register_hook(type, scope) }
 
           it "does not make #{scope.inspect} a metadata key" do
             expect(hook.options).to be_empty
           end
 
           it "is scoped to #{scope.inspect}" do
-            expect(instance.hooks[type][scope]).to include(hook)
+            expect(instance.hook_collection_for(type, scope)).to include(hook)
           end
 
           it 'does not run when in dry run mode' do
