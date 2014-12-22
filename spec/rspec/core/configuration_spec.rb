@@ -1512,7 +1512,7 @@ module RSpec::Core
         expect(group).to be_a(mod)
       end
 
-      it "extends with 'module'" do
+      it "includes with 'include'" do
         mod = Module.new
         group = RSpec.describe("group", :foo => :bar)
 
