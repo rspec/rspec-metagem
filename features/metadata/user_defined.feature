@@ -26,11 +26,11 @@ Feature: User-defined metadata
 
         describe 'a sub-group with user-defined metadata', :bar => 12 do
           it 'has access to the sub-group metadata' do |example|
-            expect(example.metadata[:foo]).to eq(17)
+            expect(example.metadata[:bar]).to eq(12)
           end
 
           it 'also has access to metadata defined on parent groups' do |example|
-            expect(example.metadata[:bar]).to eq(12)
+            expect(example.metadata[:foo]).to eq(17)
           end
         end
       end
