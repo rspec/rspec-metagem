@@ -693,8 +693,12 @@ module RSpec
     end
 
     # With no arg, passes if the block outputs `to_stdout` or `to_stderr`.
-    # With a string, passes if the blocks outputs that specific string `to_stdout` or `to_stderr`.
-    # With a regexp or matcher, passes if the blocks outputs a string `to_stdout` or `to_stderr` that matches.
+    # With a string, passes if the block outputs that specific string `to_stdout` or `to_stderr`.
+    # With a regexp or matcher, passes if the block outputs a string `to_stdout` or `to_stderr` that matches.
+    #
+    # To capture output from any spawned subprocess as well, use `to_stdout_from_any_process` or
+    # `to_stderr_from_any_process`. Output from any process that inherits the main process's corresponding
+    # standard stream will be captured.
     #
     # @example
     #
@@ -710,10 +714,15 @@ module RSpec
     #
     #   expect { do_something }.to_not output.to_stderr
     #
-    # @note This matcher works by temporarily replacing `$stdout` or `$stderr`,
-    #   so it's not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
+    #   expect { system('echo foo') }.to output("foo\n").to_stdout_from_any_process
+    #   expect { system('echo foo', out: :err) }.to output("foo\n").to_stderr_from_any_process
+    #
+    # @note `to_stdout` and `to_stderr` work by temporarily replacing `$stdout` or `$stderr`,
+    #   so they're not able to intercept stream output that explicitly uses `STDOUT`/`STDERR`
     #   or that uses a reference to `$stdout`/`$stderr` that was stored before the
-    #   matcher is used.
+    #   matcher was used.
+    # @note `to_stdout_from_any_process` and `to_stderr_from_any_process` use Tempfiles, and
+    #   are thus significantly (~30x) slower than `to_stdout` and `to_stderr`.
     def output(expected=nil)
       BuiltIn::Output.new(expected)
     end
