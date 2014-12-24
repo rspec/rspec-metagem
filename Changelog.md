@@ -17,6 +17,10 @@ Enhancements:
   (Jon Rowe,  #668)
 * Make the `have_attributes` matcher diffable.
   (Jon Rowe, Alexey Fedorov, #668)
+* Add `output(...).to_std(out|err)_from_any_process` as alternatives
+  to `output(...).to_std(out|err)`. The latter doesn't work when a sub
+  process writes to the named stream but is much faster.
+  (Alex Genco, #700)
 
 Bug Fixes:
 
