@@ -1019,7 +1019,7 @@ module RSpec
 
       # Tells RSpec to include `mod` in example groups. Methods defined in
       # `mod` are exposed to examples (not example groups). Use `filters` to
-      # constrain the groups in which to include the module.
+      # constrain the groups or examples in which to include the module.
       #
       # @example
       #
@@ -1047,6 +1047,13 @@ module RSpec
       #         assert_select ".username", :text => 'jdoe'
       #       end
       #     end
+      #
+      # @note Filtered module inclusions can also be applied to
+      #   individual examples that have matching metadata. Just like
+      #   Ruby's object model is that every object has a singleton class
+      #   which has only a single instance, RSpec's model is that every
+      #   example has a singleton example group containing just the one
+      #   example.
       #
       # @see #extend
       # @see #prepend

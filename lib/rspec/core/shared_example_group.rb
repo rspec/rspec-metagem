@@ -48,13 +48,13 @@ module RSpec
       #   @param name [String, Symbol, Module] identifer to use when looking up
       #     this shared group
       #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-      #     group; any example group with matching metadata will automatically
-      #     include this shared example group.
+      #     group; any example group or example with matching metadata will
+      #     automatically include this shared example group.
       #   @param block The block to be eval'd
       # @overload shared_examples(metadata, &block)
       #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-      #     group; any example group with matching metadata will automatically
-      #     include this shared example group.
+      #     group; any example group or example with matching metadata will
+      #     automatically include this shared example group.
       #   @param block The block to be eval'd
       #
       # Stores the block for later use. The block will be evaluated

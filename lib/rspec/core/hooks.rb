@@ -88,6 +88,13 @@ module RSpec
       #       end
       #     end
       #
+      # Note that filtered config `:context` hooks can still be applied
+      # to individual examples that have matching metadata. Just like
+      # Ruby's object model is that every object has a singleton class
+      # which has only a single instance, RSpec's model is that every
+      # example has a singleton example group containing just the one
+      # example.
+      #
       # ### Warning: `before(:suite, :with => :conditions)`
       #
       # The conditions hash is used to match against specific examples. Since
