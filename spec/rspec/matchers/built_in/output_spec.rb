@@ -157,7 +157,11 @@ module RSpec
     RSpec.describe "output.to_stderr_from_any_process matcher" do
       include_examples "output_to_stream", :stderr, :to_stderr_from_any_process, Module.new {
         def print_to_stream(msg)
-          system("printf #{msg} 1>&2")
+          if RSpec::Support::OS.windows?
+            system("<nul set /p msg=\"#{msg}\" 1>&2")
+          else
+            system("printf #{msg} 1>&2")
+          end
         end
       }
     end
@@ -165,7 +169,11 @@ module RSpec
     RSpec.describe "output.to_stdout_from_any_process matcher" do
       include_examples "output_to_stream", :stdout, :to_stdout_from_any_process, Module.new {
         def print_to_stream(msg)
-          system("printf #{msg}")
+          if RSpec::Support::OS.windows?
+            system("<nul set /p msg=#{msg}")
+          else
+            system("printf #{msg}")
+          end
         end
       }
     end
