@@ -6,6 +6,7 @@ require_relative "helper"
 end
 
 BenchmarkHelpers.run_benchmarks
+# BenchmarkHelpers.profile(1000)
 
 __END__
 

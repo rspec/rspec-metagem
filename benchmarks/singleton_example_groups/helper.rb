@@ -1,5 +1,6 @@
 require_relative "../../bundle/bundler/setup" # configures load paths
 require 'rspec/core'
+require 'stackprof'
 
 class << RSpec
   attr_writer :world
@@ -47,6 +48,32 @@ class BenchmarkHelpers
     end
 
     @@runner.run_specs(groups)
+  end
+
+  def self.profile(count, meta = { example_meta: { apply_it: true } })
+    [:new, :old].map do |prefix|
+      prepare_implementation(prefix)
+
+      results = StackProf.run(mode: :cpu) do
+        define_and_run_examples("No match/#{prefix}", count, meta)
+      end
+
+      format_profile_results(results, prefix)
+    end
+  end
+
+  def self.format_profile_results(results, prefix)
+    File.open("tmp/#{prefix}_stack_prof_results.txt", "w") do |f|
+      StackProf::Report.new(results).print_text(false, nil, f)
+    end
+    system "open tmp/#{prefix}_stack_prof_results.txt"
+
+    File.open("tmp/#{prefix}_stack_prof_results.graphviz", "w") do |f|
+      StackProf::Report.new(results).print_graphviz(nil, f)
+    end
+
+    system "dot tmp/#{prefix}_stack_prof_results.graphviz -Tpdf > tmp/#{prefix}_stack_prof_results.pdf"
+    system "open tmp/#{prefix}_stack_prof_results.pdf"
   end
 
   def self.run_benchmarks
