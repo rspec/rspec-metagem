@@ -1,4 +1,5 @@
 require 'stringio'
+require 'tempfile'
 
 module RSpec
   module Matchers
@@ -27,6 +28,7 @@ module RSpec
 
         # @api public
         # Tells the matcher to match against stdout.
+        # Works only when the main Ruby process prints to stdout
         def to_stdout
           @stream_capturer = CaptureStdout
           self
@@ -34,8 +36,27 @@ module RSpec
 
         # @api public
         # Tells the matcher to match against stderr.
+        # Works only when the main Ruby process prints to stderr
         def to_stderr
           @stream_capturer = CaptureStderr
+          self
+        end
+
+        # @api public
+        # Tells the matcher to match against stdout.
+        # Works when subprocesses print to stdout as well.
+        # This is significantly (~30x) slower than `to_stdout`
+        def to_stdout_from_any_process
+          @stream_capturer = CaptureStreamToTempfile.new("stdout", $stdout)
+          self
+        end
+
+        # @api public
+        # Tells the matcher to match against stderr.
+        # Works when subprocesses print to stderr as well.
+        # This is significantly (~30x) slower than `to_stderr`
+        def to_stderr_from_any_process
+          @stream_capturer = CaptureStreamToTempfile.new("stderr", $stderr)
           self
         end
 
@@ -145,6 +166,26 @@ module RSpec
           captured_stream.string
         ensure
           $stderr = original_stream
+        end
+      end
+
+      # @private
+      class CaptureStreamToTempfile < Struct.new(:name, :stream)
+        def capture(block)
+          original_stream = stream.clone
+          captured_stream = Tempfile.new(name)
+
+          begin
+            captured_stream.sync = true
+            stream.reopen(captured_stream)
+            block.call
+            captured_stream.rewind
+            captured_stream.read
+          ensure
+            stream.reopen(original_stream)
+            captured_stream.close
+            captured_stream.unlink
+          end
         end
       end
     end
