@@ -44,7 +44,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "minitest", "~> 5.3"
   s.add_development_dependency "aruba",    "~> 0.5"
 
-  s.add_development_dependency "nokogiri", "1.5.2"
+  s.add_development_dependency "nokogiri", "~> 1.5"
   s.add_development_dependency "coderay",  "~> 1.0.9"
 
   s.add_development_dependency "mocha",    "~> 0.13.0"
