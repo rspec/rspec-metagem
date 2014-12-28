@@ -1092,39 +1092,39 @@ module RSpec
         @extend_modules.append(mod, meta)
       end
 
-      # Tells RSpec to prepend example groups with `mod`. Methods defined in
-      # `mod` are exposed to examples (not example groups). Use `filters` to
-      # constrain the groups in which to prepend the module.
-      #
-      # Similar to `include`, but module is included before the example group's class
-      # in the ancestor chain.
-      #
-      # @example
-      #
-      #     module OverrideMod
-      #       def override_me
-      #         "overridden"
-      #       end
-      #     end
-      #
-      #     RSpec.configure do |config|
-      #       config.prepend(OverrideMod, :method => :prepend)
-      #     end
-      #
-      #     describe "overriding example's class", :method => :prepend do
-      #       it "finds the user" do
-      #         self.class.class_eval do
-      #           def override_me
-      #           end
-      #         end
-      #         override_me # => "overridden"
-      #         # ...
-      #       end
-      #     end
-      #
-      # @see #include
-      # @see #extend
       if RSpec::Support::RubyFeatures.module_prepends_supported?
+        # Tells RSpec to prepend example groups with `mod`. Methods defined in
+        # `mod` are exposed to examples (not example groups). Use `filters` to
+        # constrain the groups in which to prepend the module.
+        #
+        # Similar to `include`, but module is included before the example group's class
+        # in the ancestor chain.
+        #
+        # @example
+        #
+        #     module OverrideMod
+        #       def override_me
+        #         "overridden"
+        #       end
+        #     end
+        #
+        #     RSpec.configure do |config|
+        #       config.prepend(OverrideMod, :method => :prepend)
+        #     end
+        #
+        #     describe "overriding example's class", :method => :prepend do
+        #       it "finds the user" do
+        #         self.class.class_eval do
+        #           def override_me
+        #           end
+        #         end
+        #         override_me # => "overridden"
+        #         # ...
+        #       end
+        #     end
+        #
+        # @see #include
+        # @see #extend
         def prepend(mod, *filters)
           meta = Metadata.build_hash_from(filters, :warn_about_example_group_filtering)
           @prepend_modules.append(mod, meta)
@@ -1153,8 +1153,8 @@ module RSpec
         host.__send__(:include, mod) unless host < mod
       end
 
-      # @private
       if RSpec::Support::RubyFeatures.module_prepends_supported?
+        # @private
         def safe_prepend(mod, host)
           host.__send__(:prepend, mod) unless host < mod
         end
