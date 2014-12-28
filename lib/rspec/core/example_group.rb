@@ -549,8 +549,10 @@ module RSpec
       end
 
       if RUBY_VERSION.to_f < 1.9
+        # @private
         INSTANCE_VARIABLE_TO_IGNORE = '@__inspect_output'.freeze
       else
+        # @private
         INSTANCE_VARIABLE_TO_IGNORE = :@__inspect_output
       end
 

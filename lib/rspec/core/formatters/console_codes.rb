@@ -22,6 +22,7 @@ module RSpec
 
         module_function
 
+        # @private
         CONFIG_COLORS_TO_METHODS = Configuration.instance_methods.grep(/_color\z/).inject({}) do |hash, method|
           hash[method.to_s.sub(/_color\z/, '').to_sym] = method
           hash
