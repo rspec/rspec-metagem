@@ -12,6 +12,7 @@ end
 module RSpec
   module Expectations
     remove_const :ExpectationNotMetError
+    # Exception raised when an expectation fails.
     ExpectationNotMetError = ::Minitest::Assertion
   end
 end
