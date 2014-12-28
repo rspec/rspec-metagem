@@ -38,17 +38,13 @@ Feature: Excluding lines from the backtrace
         /spec_helper/
       ]
     end
-
-    def foo
-      "bar"
-    end
     """
     And a file named "spec/example_spec.rb" with:
     """ruby
     require 'spec_helper'
     RSpec.describe "foo" do
       it "returns baz" do
-        expect(foo).to eq("baz")
+        expect("foo").to eq("baz")
       end
     end
     """
@@ -57,55 +53,65 @@ Feature: Excluding lines from the backtrace
     And the output should contain "lib/rspec/expectations"
 
   Scenario: Appending to `backtrace_exclusion_patterns`
-    Given a file named "spec/matchers/be_baz_matcher.rb" with:
+    Given a file named "spec/support/assert_baz.rb" with:
     """ruby
-    RSpec::Matchers.define :be_baz do |_|
-      match do |actual|
-        actual == "baz"
-      end
+    require "support/really_assert_baz"
+
+    def assert_baz(arg)
+      really_assert_baz(arg)
+    end
+    """
+    And a file named "spec/support/really_assert_baz.rb" with:
+    """ruby
+    def really_assert_baz(arg)
+      expect(arg).to eq("baz")
     end
     """
     And a file named "spec/example_spec.rb" with:
     """ruby
+    require "support/assert_baz"
     RSpec.configure do |config|
-      config.backtrace_exclusion_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /really/
     end
 
     RSpec.describe "bar" do
       it "is baz" do
-        expect("bar").to be_baz
+        assert_baz("bar")
       end
     end
     """
     When I run `rspec`
     Then the output should contain "1 example, 1 failure"
-    But the output should not contain "be_baz_matcher"
+    And the output should contain "assert_baz"
+    But the output should not contain "really_assert_baz"
     And the output should not contain "lib/rspec/expectations"
 
-  Scenario: Running `rspec` with the `--backtrace` option
-    Given a file named "spec/matchers/be_baz_matcher.rb" with:
+  Scenario: Running `rspec` with `--backtrace` prints unfiltered backtraces
+    Given a file named "spec/support/custom_helper.rb" with:
     """ruby
-    RSpec::Matchers.define :be_baz do |_|
-      match do |actual|
-        actual == "baz"
-      end
+    def assert_baz(arg)
+      expect(arg).to eq("baz")
     end
     """
     And a file named "spec/example_spec.rb" with:
     """ruby
+    require "support/custom_helper"
+
     RSpec.configure do |config|
-      config.backtrace_exclusion_patterns << /be_baz_matcher/
+      config.backtrace_exclusion_patterns << /custom_helper/
     end
 
     RSpec.describe "bar" do
       it "is baz" do
-        expect("bar").to be_baz
+        assert_baz("bar")
       end
     end
     """
     When I run `rspec --backtrace`
     Then the output should contain "1 example, 1 failure"
-    And the output should not contain "be_baz_matcher"
+    And the output should contain "spec/support/custom_helper.rb:2:in `assert_baz'"
+    And the output should contain "lib/rspec/expectations"
+    And the output should contain "lib/rspec/core"
 
   Scenario: Using `filter_gems_from_backtrace` to filter the named gem
     Given a vendored gem named "my_gem" containing a file named "lib/my_gem.rb" with:
