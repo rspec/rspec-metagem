@@ -89,6 +89,10 @@ Feature: configure expectation framework
         it "is empty (intentional failure)" do
           assert_empty [1], "errantly expected [1] to be empty"
         end
+
+        it "marks pending for skip method" do
+          skip "intentionally"
+        end
       end
       """
     When I run `rspec -b example_spec.rb`
@@ -97,7 +101,7 @@ Feature: configure expectation framework
            MiniT|test::Assertion:
              errantly expected \[1\] to be empty
       """
-    And  the output should contain "3 examples, 1 failure"
+    And  the output should contain "4 examples, 1 failure, 1 pending"
     And  the output should not contain "Warning: you should require 'minitest/autorun' instead."
 
   Scenario: Configure rspec/expectations AND test/unit assertions

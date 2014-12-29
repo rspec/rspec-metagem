@@ -23,6 +23,13 @@ module RSpec
       def assertions
         @assertions ||= 0
       end
+
+      RSPEC_SKIP_IMPLEMENTATION = ::RSpec::Core::Pending.instance_method(:skip)
+      # Minitest::Assertions has it's own `skip`, we need to make sure
+      # RSpec::Core::Pending#skip is used instead.
+      def skip(*args)
+        RSPEC_SKIP_IMPLEMENTATION.bind(self).call(*args)
+      end
     end
   end
 end
