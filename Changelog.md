@@ -25,6 +25,13 @@ Enhancements:
 * Emit warnings when `:suite` hooks are registered on an example group
   (where it has always been ignored) or are registered with metadata
   (which has always been ignored). (Myron Marston, #1805)
+* Provide a friendly error message when users call RSpec example group
+  APIs (e.g. `context`, `describe`, `it`, `let`, `before`, etc) from
+  within an example where those APIs are unavailable. (Myron Marston, #1819)
+* Provide a friendly error message when users call RSpec example
+  APIs (e.g. `expect`, `double`, `stub_const`, etc) from
+  within an example group where those APIs are unavailable.
+  (Myron Marston, #1819)
 
 Bug Fixes:
 
