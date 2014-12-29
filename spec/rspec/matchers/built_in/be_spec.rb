@@ -36,9 +36,6 @@ RSpec.describe "expect(...).to be_predicate" do
   end
 
   context "when actual returns false for :predicate?" do
-    let(:actual) { double "actual", :happy? => false }
-    let(:expectation) { expect(actual).to be_happy }
-
     it "fails when actual returns false for :predicate?" do
       actual = double("actual", :happy? => false)
       expect {
@@ -47,8 +44,10 @@ RSpec.describe "expect(...).to be_predicate" do
     end
 
     it "only calls :predicate? once" do
+      actual = double "actual", :happy? => false
+
       expect(actual).to receive(:happy?).once
-      expect { expectation }.to fail
+      expect { expect(actual).to be_happy }.to fail
     end
   end
 
