@@ -190,14 +190,12 @@ RSpec.describe "Matchers should be able to generate their own descriptions" do
 end
 
 RSpec.describe "a Matcher with no description" do
-  def matcher
-     Class.new do
-       def matches?(ignore); true; end
-       def failure_message; ""; end
-     end.new
-  end
-
   it "provides a helpful message when used in a string-less example block" do
+    matcher = Class.new do
+      def matches?(ignore); true; end
+      def failure_message; ""; end
+    end.new
+
     expect(5).to matcher
     expect(RSpec::Matchers.generated_description).to match(/When you call.*description method/m)
   end

@@ -79,12 +79,12 @@ module RSpec::Matchers::BuiltIn
           end
 
           example "with the block matcher first" do
-            compound = combine(change { x }.to(2), non_block_matcher)
+            compound = combine(change { }.to(2), non_block_matcher)
             expect(compound.supports_block_expectations?).to be false
           end
 
           example "with the block matcher last" do
-            compound = combine(non_block_matcher, change { x }.to(2))
+            compound = combine(non_block_matcher, change { }.to(2))
             expect(compound.supports_block_expectations?).to be false
           end
         end
