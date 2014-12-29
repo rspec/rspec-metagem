@@ -133,7 +133,7 @@ module RSpec::Core
         let(:each_filters) { [] }
         let(:all_filters) { [] }
 
-        let(:group) do
+        let(:example_group) do
           md = example_metadata
           RSpec.describe do
             it("example", md) { }
@@ -155,7 +155,7 @@ module RSpec::Core
             c.after(:all,   :foo => :bar) { af << "after all in config"}
           end
 
-          group.run
+          example_group.run
         end
 
         describe 'an example with matching metadata' do
@@ -178,7 +178,7 @@ module RSpec::Core
           let(:example_metadata) { { :foo => :bazz } }
 
           it "does not run any of the hooks" do
-            expect(filters).to be_empty
+            expect(self.filters).to be_empty
           end
         end
       end

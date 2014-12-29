@@ -136,11 +136,11 @@ module RSpec::Core
         end
 
         it "includes full backtrace" do
-          expect(BacktraceFormatter.new.format_backtrace(backtrace).take(4)).to eq backtrace
+          expect(BacktraceFormatter.new.format_backtrace(self.backtrace).take(4)).to eq self.backtrace
         end
 
         it "adds a message explaining everything was filtered" do
-          expect(BacktraceFormatter.new.format_backtrace(backtrace).drop(4).join).to match(/Showing full backtrace/)
+          expect(BacktraceFormatter.new.format_backtrace(self.backtrace).drop(4).join).to match(/Showing full backtrace/)
         end
       end
 
@@ -208,18 +208,18 @@ module RSpec::Core
       let(:formatter) { BacktraceFormatter.new }
 
       it "trims current working directory" do
-        expect(formatter.__send__(:backtrace_line, File.expand_path(__FILE__))).to eq("./spec/rspec/core/backtrace_formatter_spec.rb")
+        expect(self.formatter.__send__(:backtrace_line, File.expand_path(__FILE__))).to eq("./spec/rspec/core/backtrace_formatter_spec.rb")
       end
 
       it "preserves the original line" do
         original_line = File.expand_path(__FILE__)
-        formatter.__send__(:backtrace_line, original_line)
+        self.formatter.__send__(:backtrace_line, original_line)
         expect(original_line).to eq(File.expand_path(__FILE__))
       end
 
       it "deals gracefully with a security error" do
         safely do
-          formatter.__send__(:backtrace_line, __FILE__)
+          self.formatter.__send__(:backtrace_line, __FILE__)
           # on some rubies, this doesn't raise a SecurityError; this test just
           # assures that if it *does* raise an error, the error is caught inside
         end
@@ -237,7 +237,7 @@ module RSpec::Core
       let(:line) { File.join(Dir.getwd, "foo.rb:13") }
 
       it 'does not exclude lines from files in the current directory' do
-        expect(make_backtrace_formatter.exclude? line).to be false
+        expect(make_backtrace_formatter.exclude? self.line).to be false
       end
 
       context "with inclusion_patterns cleared" do
@@ -245,7 +245,7 @@ module RSpec::Core
           formatter = make_backtrace_formatter
           formatter.inclusion_patterns.clear
 
-          expect(formatter.exclude? line).to be true
+          expect(formatter.exclude? self.line).to be true
         end
       end
     end

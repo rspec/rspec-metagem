@@ -3,10 +3,10 @@ module RSpec::Core
     before(:each) { RSpec.configuration.configure_expectation_framework }
 
     def subject_value_for(describe_arg, &block)
-      group = RSpec.describe(describe_arg, &block)
+      example_group = RSpec.describe(describe_arg, &block)
       subject_value = nil
-      group.example { subject_value = subject }
-      group.run
+      example_group.example { subject_value = subject }
+      example_group.run
       subject_value
     end
 
@@ -88,10 +88,10 @@ module RSpec::Core
         example_yielded_to_subject = nil
         example_yielded_to_example = nil
 
-        group = RSpec.describe
-        group.subject { |e| example_yielded_to_subject = e }
-        group.example { |e| subject; example_yielded_to_example = e }
-        group.run
+        example_group = RSpec.describe
+        example_group.subject { |e| example_yielded_to_subject = e }
+        example_group.example { |e| subject; example_yielded_to_example = e }
+        example_group.run
 
         expect(example_yielded_to_subject).to eq example_yielded_to_example
       end
@@ -111,18 +111,18 @@ module RSpec::Core
       [false, nil].each do |falsy_value|
         context "with a value of #{falsy_value.inspect}" do
           it "is evaluated once per example" do
-            group = RSpec.describe(Array)
-            group.before do
+            example_group = RSpec.describe(Array)
+            example_group.before do
               expect(Object).to receive(:this_question?).once.and_return(falsy_value)
             end
-            group.subject do
+            example_group.subject do
               Object.this_question?
             end
-            group.example do
+            example_group.example do
               subject
               subject
             end
-            expect(group.run).to be_truthy, "expected subject block to be evaluated only once"
+            expect(example_group.run).to be_truthy, "expected subject block to be evaluated only once"
           end
         end
       end

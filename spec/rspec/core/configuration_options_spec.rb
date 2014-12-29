@@ -22,46 +22,45 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     it "configures deprecation_stream before loading requires (since required files may issue deprecations)" do
       opts = config_options_object(*%w[--deprecation-out path/to/log --require foo])
-      config = instance_double(RSpec::Core::Configuration).as_null_object
+      configuration = instance_double(RSpec::Core::Configuration).as_null_object
 
-      opts.configure(config)
+      opts.configure(configuration)
 
-      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
-      expect(config).to have_received(:requires=).ordered
+      expect(configuration).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(configuration).to have_received(:requires=).ordered
     end
 
     it "configures deprecation_stream before configuring filter_manager" do
       opts = config_options_object(*%w[--deprecation-out path/to/log --tag foo])
       filter_manager = instance_double(RSpec::Core::FilterManager).as_null_object
-      config = instance_double(RSpec::Core::Configuration, :filter_manager => filter_manager).as_null_object
+      configuration = instance_double(RSpec::Core::Configuration, :filter_manager => filter_manager).as_null_object
 
-      opts.configure(config)
+      opts.configure(configuration)
 
-      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(configuration).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
       expect(filter_manager).to have_received(:include).with(:foo => true).ordered
     end
 
     it "configures deprecation_stream before configuring formatters" do
       opts = config_options_object(*%w[--deprecation-out path/to/log --format doc])
-      config = instance_double(RSpec::Core::Configuration).as_null_object
+      configuration = instance_double(RSpec::Core::Configuration).as_null_object
 
-      opts.configure(config)
+      opts.configure(configuration)
 
-      expect(config).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
-      expect(config).to have_received(:add_formatter).ordered
+      expect(configuration).to have_received(:force).with(:deprecation_stream => "path/to/log").ordered
+      expect(configuration).to have_received(:add_formatter).ordered
     end
 
     it "sends libs before requires" do
       opts = config_options_object(*%w[--require a/path -I a/lib])
-      config = double("config").as_null_object
-      expect(config).to receive(:libs=).ordered
-      expect(config).to receive(:requires=).ordered
-      opts.configure(config)
+      configuration = double("config").as_null_object
+      expect(configuration).to receive(:libs=).ordered
+      expect(configuration).to receive(:requires=).ordered
+      opts.configure(configuration)
     end
 
     it "loads requires before loading specs" do
       opts = config_options_object(*%w[-rspec_helper])
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:requires=).ordered
       expect(config).to receive(:get_files_to_run).ordered
       opts.configure(config)
@@ -70,15 +69,14 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     it "sets up load path and requires before formatter" do
       opts = config_options_object(*%w[--require a/path -f a/formatter])
-      config = double("config").as_null_object
-      expect(config).to receive(:requires=).ordered
-      expect(config).to receive(:add_formatter).ordered
-      opts.configure(config)
+      configuration = double("config").as_null_object
+      expect(configuration).to receive(:requires=).ordered
+      expect(configuration).to receive(:add_formatter).ordered
+      opts.configure(configuration)
     end
 
     it "sets default_path before loading specs" do
       opts = config_options_object(*%w[--default-path spec])
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'spec').ordered
       expect(config).to receive(:get_files_to_run).ordered
       opts.configure(config)
@@ -87,7 +85,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     it "sets `files_or_directories_to_run` before `requires` so users can check `files_to_run` in a spec_helper loaded by `--require`" do
       opts = config_options_object(*%w[--require spec_helper])
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:files_or_directories_to_run=).ordered
       expect(config).to receive(:requires=).ordered
       opts.configure(config)
@@ -95,7 +92,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     it "sets default_path before `files_or_directories_to_run` since it relies on it" do
       opts = config_options_object(*%w[--default-path spec])
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:default_path => 'spec').ordered
       expect(config).to receive(:files_or_directories_to_run=).ordered
       opts.configure(config)
@@ -104,7 +100,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     it 'configures the seed (via `order`) before requires so that required files can use the configured seed' do
       opts = config_options_object(*%w[ --seed 1234 --require spec_helper ])
 
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:order => "rand:1234").ordered
       expect(config).to receive(:requires=).ordered
 
@@ -114,7 +109,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     { "pattern" => :pattern, "exclude-pattern" => :exclude_pattern }.each do |flag, attr|
       it "sets #{attr} before `requires` so users can check `files_to_run` in a `spec_helper` loaded by `--require`" do
         opts = config_options_object(*%W[--require spec_helpe --#{flag} **/*.spec])
-        config = RSpec::Core::Configuration.new
         expect(config).to receive(:force).with(attr => '**/*.spec').ordered
         expect(config).to receive(:requires=).ordered
         opts.configure(config)
@@ -135,7 +129,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
 
     it "forces color" do
       opts = config_options_object(*%w[--color])
-      config = RSpec::Core::Configuration.new
       expect(config).to receive(:force).with(:color => true)
       opts.configure(config)
     end
@@ -151,7 +144,6 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
     ].each do |cli_option, cli_value, config_key, config_value|
       it "forces #{config_key}" do
         opts = config_options_object(cli_option, cli_value)
-        config = RSpec::Core::Configuration.new
         expect(config).to receive(:force) do |pair|
           expect(pair.keys.first).to eq(config_key)
           expect(pair.values.first).to eq(config_value)

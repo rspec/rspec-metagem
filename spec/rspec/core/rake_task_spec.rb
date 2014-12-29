@@ -23,11 +23,11 @@ module RSpec::Core
 
     context "with args passed to the rake task" do
       it "correctly passes along task arguments" do
-        task = RakeTask.new(:rake_task_args, :files) do |t, args|
+        the_task = RakeTask.new(:rake_task_args, :files) do |t, args|
           expect(args[:files]).to eq "first_spec.rb"
         end
 
-        expect(task).to receive(:run_task) { true }
+        expect(the_task).to receive(:run_task) { true }
         expect(Rake.application.invoke_task("rake_task_args[first_spec.rb]")).to be_truthy
       end
     end
