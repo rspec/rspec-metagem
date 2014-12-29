@@ -571,6 +571,39 @@ module RSpec
       def inspect
         "#<#{self.class} #{@__inspect_output}>"
       end
+
+      # Raised when an RSpec API is called in the wrong scope, such as `before`
+      # being called from within an example rather than from within an example
+      # group block.
+      WrongScopeError = Class.new(NoMethodError)
+
+      def self.method_missing(name, *args)
+        if method_defined?(name)
+          raise WrongScopeError,
+                "`#{name}` is not available on an example group (e.g. a " \
+                "`describe` or `context` block). It is only available from " \
+                "within individual examples (e.g. `it` blocks) or from " \
+                "constructs that run in the scope of an example (e.g. " \
+                "`before`, `let`, etc)."
+        end
+
+        super
+      end
+      private_class_method :method_missing
+
+    private
+
+      def method_missing(name, *args)
+        if self.class.respond_to?(name)
+          raise WrongScopeError,
+                "`#{name}` is not available from within an example (e.g. an " \
+                "`it` block) or from constructs that run in the scope of an " \
+                "example (e.g. `before`, `let`, etc). It is only available " \
+                "on an example group (e.g. a `describe` or `context` block)."
+        end
+
+        super
+      end
     end
 
     # @private

@@ -9,6 +9,46 @@ module RSpec::Core
       end
     end
 
+    %w[ expect double spy ].each do |method|
+      context "when calling `#{method}`, an example API, on an example group" do
+        it "tells the user they are in the wrong scope for that API" do
+          expect {
+            RSpec.describe { __send__(method, "foo") }
+          }.to raise_error(ExampleGroup::WrongScopeError)
+        end
+      end
+    end
+
+    %w[ describe context let before it it_behaves_like ].each do |method|
+      context "when calling `#{method}`, an example group API, from within an example" do
+        it "tells the user they are in the wrong scope for that API" do
+          ex = nil
+
+          RSpec.describe do
+            ex = example { __send__(method, "foo") }
+          end.run
+
+          expect(ex).to fail_with(ExampleGroup::WrongScopeError)
+        end
+      end
+    end
+
+    it "surfaces NameError from an example group for other missing APIs, like normal" do
+      expect {
+        RSpec.describe { foobar }
+      }.to raise_error(NameError, /foobar/)
+    end
+
+    it "surfaces NameError from an example for other missing APIs, like normal" do
+      ex = nil
+
+      RSpec.describe do
+        ex = example { foobar }
+      end.run
+
+      expect(ex).to fail_with(NameError)
+    end
+
     context "when RSpec.configuration.format_docstrings is set to a block" do
       it "formats the description with that block" do
         RSpec.configuration.format_docstrings { |s| s.upcase }
