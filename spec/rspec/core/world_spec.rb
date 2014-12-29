@@ -17,9 +17,9 @@ module RSpec::Core
 
     describe "#example_groups" do
       it "contains all registered example groups" do
-        group = RSpec.describe("group"){}
-        world.register(group)
-        expect(world.example_groups).to include(group)
+        example_group = RSpec.describe("group") {}
+        world.register(example_group)
+        expect(world.example_groups).to include(example_group)
       end
     end
 

@@ -77,9 +77,8 @@ module RSpec::Core
 
     %w[--out -o].each do |option|
       describe option do
-        let(:options) { Parser.parse([option, 'out.txt']) }
-
         it "sets the output stream for the formatter" do
+          options = Parser.parse([option, 'out.txt'])
           expect(options[:formatters].last).to eq(['progress', 'out.txt'])
         end
 

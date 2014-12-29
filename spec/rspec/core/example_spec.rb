@@ -713,8 +713,8 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       ex = nil
 
       RSpec.describe do
+        let(:dbl) { double }
         ex = example do
-          dbl = double
           expect(dbl).to receive(:foo)
         end
       end.run

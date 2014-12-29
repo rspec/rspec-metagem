@@ -26,13 +26,13 @@ module RSpec
       end
 
       RSpec::Matchers.define :have_example_descriptions do |*descriptions|
-        match do |group|
-          group.examples.map(&:description) == descriptions
+        match do |example_group|
+          example_group.examples.map(&:description) == descriptions
         end
 
-        failure_message do |group|
-          actual = group.examples.map(&:description)
-          "expected #{group.name} to have descriptions: #{descriptions.inspect} but had #{actual.inspect}"
+        failure_message do |example_group|
+          actual = example_group.examples.map(&:description)
+          "expected #{example_group.name} to have descriptions: #{descriptions.inspect} but had #{actual.inspect}"
         end
       end
 
@@ -75,7 +75,7 @@ module RSpec
 
           it 'generates a named (rather than anonymous) module' do
             define_shared_group("shared behaviors", :include_it) { }
-            group = RSpec.describe("Group", :include_it) { }
+            example_group = RSpec.describe("Group", :include_it) { }
 
             anonymous_module_regex = /#<Module:0x[0-9a-f]+>/
             expect(Module.new.inspect).to match(anonymous_module_regex)
@@ -86,8 +86,8 @@ module RSpec
               )).and exclude(a_string_matching(anonymous_module_regex))
             )
 
-            expect(group.ancestors.map(&:inspect)).to include_a_named_rather_than_anonymous_module
-            expect(group.ancestors.map(&:to_s)).to include_a_named_rather_than_anonymous_module
+            expect(example_group.ancestors.map(&:inspect)).to include_a_named_rather_than_anonymous_module
+            expect(example_group.ancestors.map(&:to_s)).to include_a_named_rather_than_anonymous_module
           end
 
           ["name", :name, ExampleModule, ExampleClass].each do |object|

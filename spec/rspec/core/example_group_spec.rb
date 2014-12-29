@@ -226,19 +226,19 @@ module RSpec::Core
 
         before do
           RSpec.configuration.register_ordering(:global, &:reverse)
-          allow(group).to receive(:warn)
+          allow(self.group).to receive(:warn)
         end
 
         it 'falls back to the global ordering' do
-          group.run
-          expect(run_order).to eq([:ex_2, :ex_1])
+          self.group.run
+          expect(self.run_order).to eq([:ex_2, :ex_1])
         end
 
         it 'prints a warning so users are notified of their mistake' do
           warning = nil
-          allow(group).to receive(:warn) { |msg| warning = msg }
+          allow(self.group).to receive(:warn) { |msg| warning = msg }
 
-          group.run
+          self.group.run
 
           expect(warning).to match(/unrecognized/)
           expect(warning).to match(/#{File.basename __FILE__}:#{definition_line}/)
@@ -359,14 +359,14 @@ module RSpec::Core
 
     describe "filtering" do
       let(:world) { World.new }
-      before { allow(RSpec).to receive_messages(:world => world) }
+      before { allow(RSpec).to receive_messages(:world => self.world) }
 
       shared_examples "matching filters" do
         context "inclusion" do
           before do
             filter_manager = FilterManager.new
             filter_manager.include filter_metadata
-            allow(world).to receive_messages(:filter_manager => filter_manager)
+            allow(self.world).to receive_messages(:filter_manager => filter_manager)
           end
 
           it "includes examples in groups matching filter" do
@@ -392,7 +392,7 @@ module RSpec::Core
           before do
             filter_manager = FilterManager.new
             filter_manager.exclude filter_metadata
-            allow(world).to receive_messages(:filter_manager => filter_manager)
+            allow(self.world).to receive_messages(:filter_manager => filter_manager)
           end
 
           it "excludes examples in groups matching filter" do
@@ -484,7 +484,7 @@ module RSpec::Core
       context "with no filters" do
         it "returns all" do
           group = RSpec.describe
-          allow(group).to receive(:world) { world }
+          allow(group).to receive(:world) { self.world }
           example = group.example("does something")
           expect(group.filtered_examples).to eq([example])
         end
@@ -494,9 +494,9 @@ module RSpec::Core
         it "returns none" do
           filter_manager = FilterManager.new
           filter_manager.include :awesome => false
-          allow(world).to receive_messages(:filter_manager => filter_manager)
+          allow(self.world).to receive_messages(:filter_manager => filter_manager)
           group = RSpec.describe
-          allow(group).to receive(:world) { world }
+          allow(group).to receive(:world) { self.world }
           group.example("does something")
           expect(group.filtered_examples).to eq([])
         end
@@ -947,19 +947,19 @@ module RSpec::Core
         end
 
         it "allows the example to pass" do
-          group.run
-          example = group.examples.first
+          self.group.run
+          example = self.group.examples.first
           expect(example.execution_result.status).to eq(:passed)
         end
 
         it "rescues any error(s) and prints them out" do
           expect(RSpec.configuration.reporter).to receive(:message).with(/An error in an after\(:all\) hook/)
           expect(RSpec.configuration.reporter).to receive(:message).with(/A different hook raising an error/)
-          group.run
+          self.group.run
         end
 
         it "still runs both after blocks" do
-          group.run
+          self.group.run
           expect(hooks_run).to eq [:two,:one]
         end
       end
@@ -969,13 +969,13 @@ module RSpec::Core
       let(:group) { RSpec.describe { pending { fail } } }
 
       it "generates a pending example" do
-        group.run
-        expect(group.examples.first).to be_pending
+        self.group.run
+        expect(self.group.examples.first).to be_pending
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
 
       it 'sets the backtrace to the example definition so it can be located by the user' do
@@ -1004,13 +1004,13 @@ module RSpec::Core
       } }
 
       it "generates a pending example" do
-        group.run
-        expect(group.examples.first).to be_pending
+        self.group.run
+        expect(self.group.examples.first).to be_pending
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -1020,13 +1020,13 @@ module RSpec::Core
       } }
 
       it "generates a pending example" do
-        group.run
-        expect(group.examples.first).to be_pending
+        self.group.run
+        expect(self.group.examples.first).to be_pending
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq("not done")
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq("not done")
       end
     end
 
@@ -1034,13 +1034,13 @@ module RSpec::Core
       let(:group) { RSpec.describe { skip("skip this") { } } }
 
       it "generates a skipped example" do
-        group.run
-        expect(group.examples.first).to be_skipped
+        self.group.run
+        expect(self.group.examples.first).to be_skipped
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -1050,13 +1050,13 @@ module RSpec::Core
       } }
 
       it "generates a skipped example" do
-        group.run
-        expect(group.examples.first).to be_skipped
+        self.group.run
+        expect(self.group.examples.first).to be_skipped
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq(RSpec::Core::Pending::NO_REASON_GIVEN)
       end
     end
 
@@ -1066,13 +1066,13 @@ module RSpec::Core
       } }
 
       it "generates a skipped example" do
-        group.run
-        expect(group.examples.first).to be_skipped
+        self.group.run
+        expect(self.group.examples.first).to be_skipped
       end
 
       it "sets the pending message" do
-        group.run
-        expect(group.examples.first.execution_result.pending_message).to eq('not done')
+        self.group.run
+        expect(self.group.examples.first.execution_result.pending_message).to eq('not done')
       end
     end
 
@@ -1083,13 +1083,13 @@ module RSpec::Core
         }}
 
         it "generates a skipped example" do
-          group.run
-          expect(group.examples.first).to be_skipped
+          self.group.run
+          expect(self.group.examples.first).to be_skipped
         end
 
         it "sets the pending message" do
-          group.run
-          expect(group.examples.first.execution_result.pending_message).to eq("Temporarily skipped with #{method_name}")
+          self.group.run
+          expect(self.group.examples.first.execution_result.pending_message).to eq("Temporarily skipped with #{method_name}")
         end
       end
     end
@@ -1345,19 +1345,19 @@ module RSpec::Core
 
         it "does not run examples after the failed example" do
           examples_run = []
-          group.example('example 1') { examples_run << self }
-          group.example('example 2') { examples_run << self; fail; }
-          group.example('example 3') { examples_run << self }
+          self.group.example('example 1') { examples_run << self }
+          self.group.example('example 2') { examples_run << self; fail; }
+          self.group.example('example 3') { examples_run << self }
 
-          group.run
+          self.group.run
 
           expect(examples_run.length).to eq(2)
         end
 
         it "sets RSpec.world.wants_to_quit flag if encountering an exception in before(:all)" do
-          group.before(:all) { raise "error in before all" }
-          group.example("equality") { expect(1).to eq(2) }
-          expect(group.run).to be_falsey
+          self.group.before(:all) { raise "error in before all" }
+          self.group.example("equality") { expect(1).to eq(2) }
+          expect(self.group.run).to be_falsey
           expect(RSpec.world.wants_to_quit).to be_truthy
         end
       end
@@ -1372,19 +1372,19 @@ module RSpec::Core
 
         it "returns without starting the group" do
           expect(reporter).not_to receive(:example_group_started)
-          group.run(reporter)
+          self.group.run(reporter)
         end
 
         context "at top level" do
           it "purges remaining groups" do
             expect(RSpec.world).to receive(:clear_remaining_example_groups)
-            group.run(reporter)
+            self.group.run(reporter)
           end
         end
 
         context "in a nested group" do
           it "does not purge remaining groups" do
-            nested_group = group.describe
+            nested_group = self.group.describe
             expect(RSpec.world).not_to receive(:clear_remaining_example_groups)
             nested_group.run(reporter)
           end
@@ -1447,31 +1447,31 @@ module RSpec::Core
       describe "##{name}" do
         let(:group) { RSpec.describe }
         before do
-          group.shared_examples "named this" do
+          self.group.shared_examples "named this" do
             example("does something") {}
           end
         end
 
         it "includes the named examples" do
-          group.send(name, "named this")
-          expect(group.examples.first.description).to eq("does something")
+          self.group.send(name, "named this")
+          expect(self.group.examples.first.description).to eq("does something")
         end
 
         it "raises a helpful error message when shared content is not found" do
           expect do
-            group.send(name, "shared stuff")
+            self.group.send(name, "shared stuff")
           end.to raise_error(ArgumentError, /Could not find .* "shared stuff"/)
         end
 
         it "leaves RSpec's thread metadata unchanged" do
           expect {
-            group.send(name, "named this")
+            self.group.send(name, "named this")
           }.to avoid_changing(RSpec, :thread_local_metadata)
         end
 
         it "leaves RSpec's thread metadata unchanged, even when an error occurs during evaluation" do
           expect {
-            group.send(name, "named this") do
+            self.group.send(name, "named this") do
               raise "boom"
             end
           }.to raise_error("boom").and avoid_changing(RSpec, :thread_local_metadata)

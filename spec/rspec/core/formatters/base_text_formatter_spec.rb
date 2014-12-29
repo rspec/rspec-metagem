@@ -6,9 +6,9 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
   context "when closing the formatter", :isolated_directory => true do
     it 'does not close an already closed output stream' do
-      output = File.new("./output_to_close", "w")
-      formatter = described_class.new(output)
-      output.close
+      output_to_close = File.new("./output_to_close", "w")
+      formatter = described_class.new(output_to_close)
+      output_to_close.close
 
       expect { formatter.close(RSpec::Core::Notifications::NullNotification) }.not_to raise_error
     end
@@ -31,12 +31,12 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     it "includes command to re-run each failed example" do
-      group = RSpec.describe("example group") do
+      example_group = RSpec.describe("example group") do
         it("fails") { fail }
       end
       line = __LINE__ - 2
-      group.run(reporter)
-      examples = group.examples
+      example_group.run(reporter)
+      examples = example_group.examples
       send_notification :dump_summary, summary_notification(1, examples, examples, [], 0)
       expect(output.string).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
     end

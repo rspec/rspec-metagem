@@ -70,9 +70,9 @@ module RSpec
         RSpec::Matchers.define :have_value do |value|
           chain(:for) { |key| @key = key }
 
-          match do |metadata|
-            expect(metadata.fetch(@key)).to eq(value)
-            expect(metadata[@key]).to eq(value)
+          match do |meta|
+            expect(meta.fetch(@key)).to eq(value)
+            expect(meta[@key]).to eq(value)
           end
         end
 
@@ -128,15 +128,15 @@ module RSpec
         end
 
         it 'does not include example-group specific keys' do
-          metadata = nil
+          meta = nil
 
           RSpec.describe "group" do
             context "nested" do
-              metadata = example("foo").metadata
+              meta = example("foo").metadata
             end
           end
 
-          expect(metadata.keys).not_to include(:parent_example_group)
+          expect(meta.keys).not_to include(:parent_example_group)
         end
       end
 
@@ -615,10 +615,10 @@ module RSpec
           end
 
           it 'allows integration libraries like VCR to infer a fixture name from the example description by walking up nesting structure' do
-            fixture_name_for = lambda do |metadata|
-              description = metadata[:description]
+            fixture_name_for = lambda do |meta|
+              description = meta[:description]
 
-              if example_group = metadata[:example_group]
+              if example_group = meta[:example_group]
                 [fixture_name_for[example_group], description].join('/')
               else
                 description

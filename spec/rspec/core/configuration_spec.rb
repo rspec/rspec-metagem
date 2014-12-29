@@ -1158,10 +1158,10 @@ module RSpec::Core
         it 'remembers changes' do
           legacy_formatter = Class.new
 
-          config = RSpec.configuration
-          config.default_formatter = legacy_formatter
-          config.reporter
-          expect(config.default_formatter).to eq(legacy_formatter)
+          configuration = RSpec.configuration
+          configuration.default_formatter = legacy_formatter
+          configuration.reporter
+          expect(configuration.default_formatter).to eq(legacy_formatter)
         end
       end
 
@@ -1270,7 +1270,6 @@ module RSpec::Core
 
     describe "#backtrace_exclusion_patterns=" do
       it "actually receives the new filter values" do
-        config = Configuration.new
         config.backtrace_exclusion_patterns = [/.*/]
         expect(config.backtrace_formatter.exclude? "this").to be_truthy
       end
@@ -1290,7 +1289,6 @@ module RSpec::Core
 
     describe "#backtrace_exclusion_patterns" do
       it "can be appended to" do
-        config = Configuration.new
         config.backtrace_exclusion_patterns << /.*/
         expect(config.backtrace_formatter.exclude? "this").to be_truthy
       end
@@ -1367,7 +1365,7 @@ module RSpec::Core
         group_bar_value = example_bar_value = nil
 
         RSpec.describe "Group", :foo do
-          group_bar_value = metadata[:bar]
+          group_bar_value = self.metadata[:bar]
           example_bar_value = example("ex", :foo).metadata[:bar]
         end
 
