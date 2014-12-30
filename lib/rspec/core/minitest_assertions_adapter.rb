@@ -13,6 +13,9 @@ module RSpec
     # @private
     module MinitestAssertionsAdapter
       include ::Minitest::Assertions
+      # Need to forcefully include Pending after Minitest::Assertions
+      # to make sure our own #skip method beats Minitest's.
+      include ::RSpec::Core::Pending
 
       # Minitest 5.x requires this accessor to be available. See
       # https://github.com/seattlerb/minitest/blob/38f0a5fcbd9c37c3f80a3eaad4ba84d3fc9947a0/lib/minitest/assertions.rb#L8
@@ -22,13 +25,6 @@ module RSpec
       attr_writer :assertions
       def assertions
         @assertions ||= 0
-      end
-
-      RSPEC_SKIP_IMPLEMENTATION = ::RSpec::Core::Pending.instance_method(:skip)
-      # Minitest::Assertions has it's own `skip`, we need to make sure
-      # RSpec::Core::Pending#skip is used instead.
-      def skip(*args)
-        RSPEC_SKIP_IMPLEMENTATION.bind(self).call(*args)
       end
     end
   end
