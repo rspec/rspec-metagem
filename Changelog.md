@@ -45,6 +45,8 @@ Bug Fixes:
   metadata value to not match. (Myron Marston, #1796)
 * Fix `config.expect_with :minitest` so that `skip` uses RSpec's
   implementation rather than Minitest's. (Jonathan Rochkind, #1822)
+* Fix `NameError` caused when duplicate example group aliases are defined and
+  the DSL is not globally exposed. (Aaron Kromer, #1825)
 
 ### 3.1.8 Development
 

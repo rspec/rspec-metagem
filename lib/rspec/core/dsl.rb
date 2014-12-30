@@ -35,6 +35,8 @@ module RSpec
 
       # @private
       def self.expose_example_group_alias(name)
+        return if example_group_aliases.include?(name)
+
         example_group_aliases << name
 
         (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
