@@ -79,6 +79,27 @@ RSpec.describe "The RSpec DSL" do
         end
       end
     end
+
+    context "when adding duplicate aliases" do
+      it "only a single alias is created" do
+        in_sub_process do
+          RSpec.configuration.alias_example_group_to(:detail)
+          RSpec.configuration.alias_example_group_to(:detail)
+          expect(RSpec::Core::DSL.example_group_aliases.count(:detail)).to eq(1)
+        end
+      end
+
+      it "does not undefine the alias multiple times", :issue => 1824 do
+        in_sub_process do
+          RSpec.configuration.expose_dsl_globally = true
+          RSpec.configuration.alias_example_group_to(:detail)
+          RSpec.configuration.alias_example_group_to(:detail)
+
+          expect {
+            RSpec.configuration.expose_dsl_globally = false
+          }.not_to raise_error
+        end
+      end
+    end
   end
 end
-
