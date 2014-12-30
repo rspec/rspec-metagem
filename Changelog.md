@@ -43,6 +43,8 @@ Bug Fixes:
 * Don't apply metadata-filtered config hooks to examples in groups
   with matching metadata when those examples override the parent
   metadata value to not match. (Myron Marston, #1796)
+* Fix `config.expect_with :minitest` so that `skip` uses RSpec's
+  implementation rather than Minitest's. (Jonathan Rochkind, #1822)
 
 ### 3.1.8 Development
 
