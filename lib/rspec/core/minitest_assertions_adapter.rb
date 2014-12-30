@@ -13,6 +13,9 @@ module RSpec
     # @private
     module MinitestAssertionsAdapter
       include ::Minitest::Assertions
+      # Need to forcefully include Pending after Minitest::Assertions
+      # to make sure our own #skip method beats Minitest's.
+      include ::RSpec::Core::Pending
 
       # Minitest 5.x requires this accessor to be available. See
       # https://github.com/seattlerb/minitest/blob/38f0a5fcbd9c37c3f80a3eaad4ba84d3fc9947a0/lib/minitest/assertions.rb#L8
