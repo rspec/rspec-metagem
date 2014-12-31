@@ -3,6 +3,9 @@ module RSpec
     # A sandbox isolates the enclosed code into an environment that looks 'new'
     # meaning globally accessed objects are reset for the duration of the
     # sandbox.
+    #
+    # @note This module is not normally available. You must require
+    #   `rspec/core/sandbox` to load it.
     module Sandbox
       # Execute a provided block with RSpec global objects (configuration,
       # world) reset.  This is used to test RSpec with RSpec.
