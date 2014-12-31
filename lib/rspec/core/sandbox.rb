@@ -16,20 +16,17 @@ module RSpec
       # end
       # ```
       def self.sandboxed
-        orig_config = RSpec.configuration
-        orig_world  = RSpec.world
+        orig_config  = RSpec.configuration
+        orig_world   = RSpec.world
         orig_example = RSpec.current_example
 
-        new_config = RSpec::Core::Configuration.new
-        new_world  = RSpec::Core::World.new(new_config)
+        RSpec.configuration = RSpec::Core::Configuration.new
+        RSpec.world         = RSpec::Core::World.new(RSpec.configuration)
 
-        RSpec.configuration = new_config
-        RSpec.world = new_world
-
-        yield new_config
+        yield RSpec.configuration
       ensure
-        RSpec.configuration = orig_config
-        RSpec.world = orig_world
+        RSpec.configuration   = orig_config
+        RSpec.world           = orig_world
         RSpec.current_example = orig_example
       end
     end
