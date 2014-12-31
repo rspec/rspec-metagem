@@ -32,6 +32,10 @@ Enhancements:
   APIs (e.g. `expect`, `double`, `stub_const`, etc) from
   within an example group where those APIs are unavailable.
   (Myron Marston, #1819)
+* Add new `RSpec::Core::Sandbox.sandboxed { }` API that facilitates
+  testing RSpec with RSpec, allowing you to define example groups
+  and example from within an example without affecting the global
+  `RSpec.world` state. (Tyler Ball, 1808)
 
 Bug Fixes:
 
