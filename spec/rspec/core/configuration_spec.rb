@@ -392,36 +392,6 @@ module RSpec::Core
       end
     end
 
-    describe "#expecting_with_rspec?" do
-      before do
-        stub_expectation_adapters
-      end
-
-      it "returns false by default" do
-        expect(config).not_to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :rspec` has been configured" do
-        config.expect_with :rspec
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :rspec, :minitest` has been configured" do
-        config.expect_with :rspec, :minitest
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :minitest, :rspec` has been configured" do
-        config.expect_with :minitest, :rspec
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns false when `expect_with :minitest` has been configured" do
-        config.expect_with :minitest
-        expect(config).not_to be_expecting_with_rspec
-      end
-    end
-
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
         assign_files_or_directories_to_run "spec/rspec/core/resources/a_bar.rb"
@@ -1592,6 +1562,10 @@ module RSpec::Core
             undef :my_group_method if method_defined? :my_group_method
           end
         end
+
+        Module.class_exec do
+          undef :my_group_method if method_defined? :my_group_method
+        end
       end
 
       it_behaves_like "metadata hash builder" do
@@ -1600,6 +1574,28 @@ module RSpec::Core
           group = ExampleGroup.my_group_method("a group")
           group.metadata
         end
+      end
+
+      it 'overrides existing definitions of the aliased method name without issueing warnings' do
+        config.expose_dsl_globally = true
+
+        class << ExampleGroup
+          def my_group_method; :original; end
+        end
+
+        class << RSpec
+          def my_group_method; :original; end
+        end
+
+        Module.class_exec do
+          def my_group_method; :original; end
+        end
+
+        config.alias_example_group_to :my_group_method
+
+        expect(ExampleGroup.my_group_method).to be < ExampleGroup
+        expect(RSpec.my_group_method).to be < ExampleGroup
+        expect(Module.new.my_group_method).to be < ExampleGroup
       end
 
       it "allows adding additional metadata" do

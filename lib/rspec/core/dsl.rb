@@ -39,8 +39,12 @@ module RSpec
 
         example_group_aliases << name
 
-        (class << RSpec; self; end).__send__(:define_method, name) do |*args, &example_group_block|
-          RSpec.world.register RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block)
+        (class << RSpec; self; end).instance_exec do
+          remove_method(name) if method_defined?(name)
+
+          define_method(name) do |*args, &example_group_block|
+            RSpec.world.register RSpec::Core::ExampleGroup.__send__(name, *args, &example_group_block)
+          end
         end
 
         expose_example_group_alias_globally(name) if exposed_globally?
@@ -78,6 +82,7 @@ module RSpec
       # @private
       def self.expose_example_group_alias_globally(method_name)
         change_global_dsl do
+          remove_method(method_name) if method_defined?(method_name)
           define_method(method_name) { |*a, &b| ::RSpec.__send__(method_name, *a, &b) }
         end
       end

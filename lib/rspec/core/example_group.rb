@@ -32,10 +32,11 @@ module RSpec
       include Pending
       extend SharedExampleGroup
 
-      unless respond_to?(:define_singleton_method)
-        # @private
-        def self.define_singleton_method(*a, &b)
-          (class << self; self; end).__send__(:define_method, *a, &b)
+      # @private
+      def self.idempotently_define_singleton_method(name, &definition)
+        (class << self; self; end).module_exec do
+          remove_method(name) if method_defined?(name)
+          define_method(name, &definition)
         end
       end
 
@@ -56,7 +57,7 @@ module RSpec
       # @private
       def self.delegate_to_metadata(*names)
         names.each do |name|
-          define_singleton_method(name) { metadata.fetch(name) }
+          idempotently_define_singleton_method(name) { metadata.fetch(name) }
         end
       end
 
@@ -120,7 +121,7 @@ module RSpec
       #       # ex is the Example object that contains metadata about the example
       #     end
       def self.define_example_method(name, extra_options={})
-        define_singleton_method(name) do |*all_args, &block|
+        idempotently_define_singleton_method(name) do |*all_args, &block|
           desc, *args = *all_args
 
           options = Metadata.build_hash_from(args)
@@ -214,7 +215,7 @@ module RSpec
       #
       # @see DSL#describe
       def self.define_example_group_method(name, metadata={})
-        define_singleton_method(name) do |*args, &example_group_block|
+        idempotently_define_singleton_method(name) do |*args, &example_group_block|
           thread_data = RSpec.thread_local_metadata
           top_level   = self == ExampleGroup
 
@@ -285,7 +286,7 @@ module RSpec
       #
       #   @see SharedExampleGroup
       def self.define_nested_shared_group_method(new_name, report_label="it should behave like")
-        define_singleton_method(new_name) do |name, *args, &customization_block|
+        idempotently_define_singleton_method(new_name) do |name, *args, &customization_block|
           # Pass :caller so the :location metadata is set properly.
           # Otherwise, it'll be set to the next line because that's
           # the block's source_location.

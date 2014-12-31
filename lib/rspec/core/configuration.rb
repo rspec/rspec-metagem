@@ -286,8 +286,6 @@ module RSpec
       # @private
       attr_writer :files_to_run
       # @private
-      add_setting :expecting_with_rspec
-      # @private
       attr_accessor :filter_manager
       # @private
       attr_accessor :static_config_filter_manager
@@ -601,7 +599,6 @@ module RSpec
             framework
           when :rspec
             require 'rspec/expectations'
-            self.expecting_with_rspec = true
             ::RSpec::Matchers
           when :test_unit
             require 'rspec/core/test_unit_assertions_adapter'

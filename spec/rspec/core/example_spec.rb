@@ -52,8 +52,6 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "when there is no explicit description" do
     def expect_with(*frameworks)
-      RSpec.configuration.expecting_with_rspec = frameworks.include?(:rspec)
-
       if frameworks.include?(:stdlib)
         example_group.class_exec do
           def assert(val)
@@ -202,10 +200,6 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
         example_group.run
         expect(example.description).to match(/example at #{relative_path(__FILE__)}:#{__LINE__ - 2}/)
       end
-
-      # Needed since `expecting_with_rspec?` in this context returns false
-      # so it won't automatically clear it for us.
-      after { RSpec::Matchers.clear_generated_description }
     end
   end
 
