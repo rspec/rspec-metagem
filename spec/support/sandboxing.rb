@@ -7,7 +7,7 @@ RSpec.configure do |c|
   c.around do |ex|
 
     RSpec::Core::Sandbox.sandboxed do |config|
-      config.expose_dsl_globally = false
+
 
       # If there is an example-within-an-example, we want to make sure the inner example
       # does not get a reference to the outer example (the real spec) if it calls
