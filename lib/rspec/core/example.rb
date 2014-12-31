@@ -365,7 +365,7 @@ module RSpec
       end
 
       def run_after_example
-        assign_generated_description if RSpec.configuration.expecting_with_rspec?
+        assign_generated_description if defined?(::RSpec::Matchers)
         @example_group_class.hooks.run(:after, :example, self)
         verify_mocks
       ensure
