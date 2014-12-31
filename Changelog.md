@@ -520,6 +520,9 @@ Bug Fixes:
   directory (was broken in beta1). (Jon Rowe)
 * Prevent RSpec mangling file names that have substrings containing `line_number`
   or `default_path`. (Matijs van Zuijlen)
+* Fix failure line detection so that it handles relative file paths
+  (which can happen when running specs through `ruby` using `rspec/autorun`).
+  (Myron Marston, #1829)
 
 ### 3.0.0.beta1 / 2013-11-07
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v2.99.1...v3.0.0.beta1)
