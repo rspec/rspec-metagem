@@ -637,7 +637,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     context "in before(:all)" do
-      it "sets each example to pending" do
+      it "sets each example to skipped" do
         group = RSpec.describe do
           before(:all) { skip("not done"); fail }
           example {}

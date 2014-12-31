@@ -462,7 +462,7 @@ module RSpec
       end
 
       # Runs all the examples in this group.
-      def self.run(reporter)
+      def self.run(reporter=RSpec::Core::NullReporter.new)
         if RSpec.world.wants_to_quit
           RSpec.world.clear_remaining_example_groups if top_level?
           return

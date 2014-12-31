@@ -43,6 +43,12 @@ module RSpec
 
   extend RSpec::Core::Warnings
 
+  class << self
+    # Setters for shared global objects
+    # @api private
+    attr_writer :configuration, :world
+  end
+
   # Used to ensure examples get reloaded and user configuration gets reset to
   # defaults between multiple runs in the same process.
   #
