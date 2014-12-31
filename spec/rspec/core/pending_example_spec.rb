@@ -138,34 +138,36 @@ RSpec.describe "an example" do
 
   context "with no docstring" do
     context "declared with the pending method" do
-      it "has an auto-generated description" do
-        group = RSpec.describe('group') do
+      it "has an auto-generated description if it has an expectation" do
+        ex = nil
+
+        RSpec.describe('group') do
           it "checks something" do
             expect((3+4)).to eq(7)
           end
-          pending do
+          ex = pending do
             expect("string".reverse).to eq("gnirts")
           end
-        end
-        example = group.examples.last
-        example.run(group.new, double.as_null_object)
-        expect(example.description).to eq('should eq "gnirts"')
+        end.run
+
+        expect(ex.description).to eq('should eq "gnirts"')
       end
     end
 
     context "after another example with some assertion" do
       it "does not show any message" do
-        group = RSpec.describe('group') do
+        ex = nil
+
+        RSpec.describe('group') do
           it "checks something" do
             expect((3+4)).to eq(7)
           end
-          specify do
+          ex = specify do
             pending
           end
-        end
-        example = group.examples.last
-        example.run(group.new, double.as_null_object)
-        expect(example.description).to match(/example at/)
+        end.run
+
+        expect(ex.description).to match(/example at/)
       end
     end
   end
