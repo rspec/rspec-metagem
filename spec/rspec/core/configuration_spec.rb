@@ -1562,6 +1562,10 @@ module RSpec::Core
             undef :my_group_method if method_defined? :my_group_method
           end
         end
+
+        Module.class_exec do
+          undef :my_group_method if method_defined? :my_group_method
+        end
       end
 
       it_behaves_like "metadata hash builder" do
@@ -1570,6 +1574,28 @@ module RSpec::Core
           group = ExampleGroup.my_group_method("a group")
           group.metadata
         end
+      end
+
+      it 'overrides existing definitions of the aliased method name without issueing warnings' do
+        config.expose_dsl_globally = true
+
+        class << ExampleGroup
+          def my_group_method; :original; end
+        end
+
+        class << RSpec
+          def my_group_method; :original; end
+        end
+
+        Module.class_exec do
+          def my_group_method; :original; end
+        end
+
+        config.alias_example_group_to :my_group_method
+
+        expect(ExampleGroup.my_group_method).to be < ExampleGroup
+        expect(RSpec.my_group_method).to be < ExampleGroup
+        expect(Module.new.my_group_method).to be < ExampleGroup
       end
 
       it "allows adding additional metadata" do
