@@ -1583,10 +1583,6 @@ module RSpec::Core
           def my_group_method; :original; end
         end
 
-        class << RSpec
-          def my_group_method; :original; end
-        end
-
         Module.class_exec do
           def my_group_method; :original; end
         end
@@ -1594,7 +1590,6 @@ module RSpec::Core
         config.alias_example_group_to :my_group_method
 
         expect(ExampleGroup.my_group_method).to be < ExampleGroup
-        expect(RSpec.my_group_method).to be < ExampleGroup
         expect(Module.new.my_group_method).to be < ExampleGroup
       end
 
