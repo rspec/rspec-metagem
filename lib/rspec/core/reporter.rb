@@ -165,7 +165,7 @@ module RSpec::Core
   class NullReporter
   private
 
-    def method_missing(_method, *_args, &_block)
+    def method_missing(*)
       # ignore
     end
   end
