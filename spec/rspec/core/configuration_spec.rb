@@ -392,36 +392,6 @@ module RSpec::Core
       end
     end
 
-    describe "#expecting_with_rspec?" do
-      before do
-        stub_expectation_adapters
-      end
-
-      it "returns false by default" do
-        expect(config).not_to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :rspec` has been configured" do
-        config.expect_with :rspec
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :rspec, :minitest` has been configured" do
-        config.expect_with :rspec, :minitest
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns true when `expect_with :minitest, :rspec` has been configured" do
-        config.expect_with :minitest, :rspec
-        expect(config).to be_expecting_with_rspec
-      end
-
-      it "returns false when `expect_with :minitest` has been configured" do
-        config.expect_with :minitest
-        expect(config).not_to be_expecting_with_rspec
-      end
-    end
-
     describe "#files_to_run" do
       it "loads files not following pattern if named explicitly" do
         assign_files_or_directories_to_run "spec/rspec/core/resources/a_bar.rb"

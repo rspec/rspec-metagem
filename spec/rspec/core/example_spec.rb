@@ -52,8 +52,6 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
 
   describe "when there is no explicit description" do
     def expect_with(*frameworks)
-      RSpec.configuration.expecting_with_rspec = frameworks.include?(:rspec)
-
       if frameworks.include?(:stdlib)
         example_group.class_exec do
           def assert(val)
