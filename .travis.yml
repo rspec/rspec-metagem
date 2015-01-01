@@ -1,27 +1,28 @@
-# This file was generated on 2014-12-29T15:16:37-08:00 from the rspec-dev repo.
+# This file was generated on 2014-12-31T23:38:56-08:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 language: ruby
 sudo: false
-cache: bundler
+cache:
+  directories:
+    - ../rspec-core/bundle
+    - ../rspec-expectations/bundle
+    - ../rspec-mocks/bundle
+    - ../rspec-rails/bundle
+    - ../rspec-support/bundle
 before_install:
   - "script/clone_all_rspec_repos"
   # Downgrade bundler to work around https://github.com/bundler/bundler/issues/3004
   # Note this doesn't work on JRUBY 2.0.0 mode so we don't do it
   - if [ -z "$JRUBY_OPTS" ]; then gem install bundler -v=1.5.3 && alias bundle="bundle _1.5.3_"; fi
-bundler_args: "--binstubs --standalone --without documentation --path ../bundle"
+bundler_args: "--binstubs --standalone --without documentation --path bundle"
 script: "script/run_build"
 rvm:
   - 1.8.7
   - 1.9.2
   - 1.9.3
   - 2.0.0
-  - 2.1.0
-  - 2.1.1
-  - 2.1.2
-  - 2.1.3
-  - 2.1.4
-  - 2.1.5
+  - 2.1
   - 2.2
   - ruby-head
   - ree
