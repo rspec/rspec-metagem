@@ -10,6 +10,15 @@ examples get run and tailor the output.
     gem install rspec-core # for rspec-core only
     rspec --help
 
+Want to run against the `master` branch? You'll need to include the dependent
+RSpec repos as well. Add the following to your `Gemfile`:
+
+```ruby
+%w[rspec-core rspec-expectations rspec-mocks rspec-support].each do |lib|
+  gem lib, :git => "git://github.com/rspec/#{lib}.git", :branch => 'master'
+end
+```
+
 ## basic structure
 
 RSpec uses the words "describe" and "it" so we can express concepts like a conversation:
