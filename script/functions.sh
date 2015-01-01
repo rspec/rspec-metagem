@@ -1,4 +1,4 @@
-# This file was generated on 2014-12-31T23:38:56-08:00 from the rspec-dev repo.
+# This file was generated on 2015-01-01T12:50:25-08:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -11,15 +11,8 @@ SPECS_HAVE_RUN_FILE=specs.out
 MAINTENANCE_BRANCH=`cat maintenance-branch`
 
 function clone_repo {
-  if [ ! -e $1/Gemfile ]; then # don't reclone
-    # deal with our bundler cache directory.
-    # Git won't clone into a non-empty dir so we have to move it aside and move it back.
-    mkdir -p $1/bundle
-    pushd $1
-    mv bundle ../$1-bundle
-    travis_retry eval "git clone git://github.com/rspec/$1 --depth 1 --branch $MAINTENANCE_BRANCH ."
-    mv ../$1-bundle bundle
-    popd
+  if [ ! -d $1 ]; then # don't clone if the dir is already there
+    travis_retry eval "git clone git://github.com/rspec/$1 --depth 1 --branch $MAINTENANCE_BRANCH"
   fi;
 }
 
@@ -55,7 +48,7 @@ function run_cukes {
     else
       # Prepare RUBYOPT for scenarios that are shelling out to ruby,
       # and PATH for those that are using `rspec` or `rake`.
-      RUBYOPT="-I${PWD}/bundle -rbundler/setup" \
+      RUBYOPT="-I${PWD}/../bundle -rbundler/setup" \
          PATH="${PWD}/bin:$PATH" \
          bin/cucumber --strict
     fi
@@ -75,10 +68,18 @@ function run_spec_suite_for {
     echo "Running specs for $1"
     pushd ../$1
     unset BUNDLE_GEMFILE
-    bundle_install_flags=`cat .travis.yml | grep bundler_args | tr -d '"' | grep -o " .*"`
+
+    if [ $1 == "rspec-rails" ]; then
+      bundle_install_flags=`cat .travis.yml | grep bundler_args | tr -d '"' | grep -o " .*"`
+    else
+      # The other repos' master branch have `./bundle` as the bundler path, but we need them to all
+      # go into `../bundle`, so we are forcing it here rather than reading from `.travis.yml`.
+      # Once all the PRs are merged we can revert this.
+      bundle_install_flags="--binstubs --standalone --without documentation --path ../bundle"
+    fi
+
     travis_retry eval "bundle install $bundle_install_flags"
     run_specs_and_record_done
-    bundle clean # prep for travis caching
     popd
   fi;
 }
