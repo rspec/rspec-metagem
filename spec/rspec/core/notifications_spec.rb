@@ -1,4 +1,5 @@
 require 'rspec/core/notifications'
+require 'pathname'
 
 RSpec.describe "FailedExampleNotification" do
   include FormatterSupport
@@ -41,6 +42,16 @@ RSpec.describe "FailedExampleNotification" do
 
       it "reports the filename and that it was unable to find the matching line" do
         expect(notification.send(:read_failed_line)).to include("Unable to find matching line")
+      end
+    end
+
+    context "when the stacktrace includes relative paths (which can happen when using `rspec/autorun` and running files through `ruby`)" do
+      let(:relative_file) { Pathname(__FILE__).relative_path_from(Pathname(Dir.pwd)) }
+      line = __LINE__
+      let(:exception) { instance_double(Exception, :backtrace => ["#{relative_file}:#{line}"]) }
+
+      it 'still finds the backtrace line' do
+        expect(notification.send(:read_failed_line)).to include("line = __LINE__")
       end
     end
 
