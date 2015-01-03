@@ -33,14 +33,16 @@ module RSpec
       # http://rubular.com/r/fT0gmX6VJX
       # http://rubular.com/r/duOrD4i3wb
       # http://rubular.com/r/sbAMHFrOx1
-      RELATIVE_PATH_REGEX = /(\A|\s)#{File.expand_path('.')}(#{File::SEPARATOR}|\s|\Z)/
+      def self.relative_path_regex
+        @relative_path_regex ||= /(\A|\s)#{File.expand_path('.')}(#{File::SEPARATOR}|\s|\Z)/
+      end
 
       # @api private
       #
       # @param line [String] current code line
       # @return [String] relative path to line
       def self.relative_path(line)
-        line = line.sub(RELATIVE_PATH_REGEX, "\\1.\\2".freeze)
+        line = line.sub(relative_path_regex, "\\1.\\2".freeze)
         line = line.sub(/\A([^:]+:\d+)$/, '\\1'.freeze)
         return nil if line == '-e:1'.freeze
         line

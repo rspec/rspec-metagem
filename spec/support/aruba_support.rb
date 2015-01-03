@@ -17,6 +17,13 @@ RSpec.shared_context "aruba support" do
   ensure
     RSpec.reset
   end
+
+  def in_current_dir
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
+    super { yield }
+  ensure
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
+  end
 end
 
 RSpec.configure do |c|
