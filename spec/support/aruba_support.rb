@@ -15,24 +15,19 @@ RSpec.shared_context "aruba support" do
   def run_command(cmd)
     temp_stdout = StringIO.new
     temp_stderr = StringIO.new
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
     in_current_dir do
       RSpec::Core::Runner.run(cmd.split, temp_stderr, temp_stdout)
     end
   ensure
     RSpec.reset
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
     @last_cmd_stdout = temp_stdout.string
     @last_cmd_stderr = temp_stderr.string
     stdout.write(@last_cmd_stdout)
     stderr.write(@last_cmd_stderr)
-  end
-
-  def in_current_dir
-    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
-    super { yield }
-  ensure
-    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
   end
 end
 
