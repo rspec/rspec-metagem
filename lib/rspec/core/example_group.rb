@@ -394,7 +394,7 @@ module RSpec
       # @private
       def self.descendant_filtered_examples
         @descendant_filtered_examples ||= filtered_examples +
-          children.inject([]) { |a, e| a + e.descendant_filtered_examples }
+          FlatMap.flat_map(children, &:descendant_filtered_examples)
       end
 
       # @private
@@ -404,7 +404,7 @@ module RSpec
 
       # @private
       def self.descendants
-        @_descendants ||= [self] + children.inject([]) { |a, e| a + e.descendants }
+        @_descendants ||= [self] + FlatMap.flat_map(children, &:descendants)
       end
 
       ## @private
@@ -536,7 +536,7 @@ module RSpec
       def self.declaration_line_numbers
         @declaration_line_numbers ||= [metadata[:line_number]] +
           examples.map { |e| e.metadata[:line_number] } +
-          children.inject([]) { |a, e| a + e.declaration_line_numbers }
+          FlatMap.flat_map(children, &:declaration_line_numbers)
       end
 
       # @private
