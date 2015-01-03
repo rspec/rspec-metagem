@@ -2,13 +2,6 @@ require 'rubygems' if RUBY_VERSION.to_f < 1.9
 
 require 'rspec/support/spec'
 
-module ArubaLoader
-  extend RSpec::Support::WithIsolatedStdErr
-  with_isolated_stderr do
-    require 'aruba/api'
-  end
-end
-
 if RUBY_PLATFORM == 'java'
   # Works around https://jira.codehaus.org/browse/JRUBY-5678
   require 'fileutils'
@@ -62,7 +55,6 @@ RSpec.configure do |c|
   # structural
   c.alias_it_behaves_like_to 'it_has_behavior'
   c.include(RSpecHelpers)
-  c.include Aruba::Api, :file_path => /spec\/command_line/
   c.disable_monkey_patching!
 
   # runtime options
