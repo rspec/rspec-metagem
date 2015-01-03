@@ -92,6 +92,15 @@ module RSpec
         inspect_output
       end
 
+      # Returns the argument that can be passed to the `rspec` command to rerun this example.
+      def rerun_argument
+        loaded_spec_files = RSpec.configuration.loaded_spec_files
+
+        Metadata.ascend(metadata) do |meta|
+          return meta[:location] if loaded_spec_files.include?(File.expand_path meta[:file_path])
+        end
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this

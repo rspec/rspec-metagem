@@ -51,6 +51,9 @@ Bug Fixes:
   implementation rather than Minitest's. (Jonathan Rochkind, #1822)
 * Fix `NameError` caused when duplicate example group aliases are defined and
   the DSL is not globally exposed. (Aaron Kromer, #1825)
+* When a shared example defined in an external file fails, use the host
+  example group (from a loaded spec file) for the re-run command to
+  ensure the command will actually work. (Myron Marston, #1835)
 
 ### 3.1.8 Development
 

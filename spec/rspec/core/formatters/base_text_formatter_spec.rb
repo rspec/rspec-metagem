@@ -35,10 +35,28 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         it("fails") { fail }
       end
       line = __LINE__ - 2
+
+      expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
+    end
+
+    context "for an example defined in an file required by the user rather than loaded by rspec" do
+      it "looks through ancestor metadata to find a workable re-run command" do
+        line = __LINE__ + 1
+        example_group = RSpec.describe("example group") do
+          # Using eval in order to make it think this got defined in an external file.
+          instance_eval "it('fails') { fail }", "some/external/file.rb", 1
+        end
+
+        expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
+      end
+    end
+
+    def output_from_running(example_group)
+      allow(RSpec.configuration).to receive(:loaded_spec_files) { [File.expand_path(__FILE__)].to_set }
       example_group.run(reporter)
       examples = example_group.examples
       send_notification :dump_summary, summary_notification(1, examples, examples, [], 0)
-      expect(output.string).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
+      output.string
     end
   end
 

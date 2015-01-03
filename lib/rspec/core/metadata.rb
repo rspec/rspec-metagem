@@ -51,6 +51,19 @@ module RSpec
       end
 
       # @private
+      # Iteratively walks up from the given example metadata through all
+      # example group ancestors, yielding each metadata hash along the way.
+      def self.ascend(example_metadata)
+        yield example_metadata
+        group_metadata = example_metadata.fetch(:example_group)
+
+        loop do
+          yield group_metadata
+          break unless (group_metadata = group_metadata[:parent_example_group])
+        end
+      end
+
+      # @private
       # Used internally to build a hash from an args array.
       # Symbols are converted into hash keys with a value of `true`.
       # This is done to support simple tagging using a symbol, rather

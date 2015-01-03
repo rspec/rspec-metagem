@@ -10,12 +10,22 @@ RSpec.shared_context "aruba support" do
   let(:stderr) { StringIO.new }
   let(:stdout) { StringIO.new }
 
+  attr_reader :last_cmd_stdout, :last_cmd_stderr
+
   def run_command(cmd)
+    temp_stdout = StringIO.new
+    temp_stderr = StringIO.new
+
     in_current_dir do
-      RSpec::Core::Runner.run(cmd.split, stderr, stdout)
+      RSpec::Core::Runner.run(cmd.split, temp_stderr, temp_stdout)
     end
   ensure
     RSpec.reset
+
+    @last_cmd_stdout = temp_stdout.string
+    @last_cmd_stderr = temp_stderr.string
+    stdout.write(@last_cmd_stdout)
+    stderr.write(@last_cmd_stderr)
   end
 
   def in_current_dir
