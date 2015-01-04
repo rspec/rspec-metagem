@@ -8,7 +8,7 @@ module RSpec
         end
       else # for 1.8.7
         def flat_map(array)
-          array.map { |item| yield item }.flatten
+          array.map { |item| yield item }.flatten(1)
         end
       end
 
