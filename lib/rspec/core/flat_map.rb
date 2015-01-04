@@ -3,12 +3,12 @@ module RSpec
     # @private
     module FlatMap
       if [].respond_to?(:flat_map)
-        def flat_map(array)
-          array.flat_map { |item| yield item }
+        def flat_map(array, &block)
+          array.flat_map(&block)
         end
       else # for 1.8.7
-        def flat_map(array)
-          array.map { |item| yield item }.flatten
+        def flat_map(array, &block)
+          array.map(&block).flatten(2)
         end
       end
 

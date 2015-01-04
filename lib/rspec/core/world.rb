@@ -162,9 +162,7 @@ module RSpec
     private
 
       def declaration_line_numbers
-        @line_numbers ||= example_groups.inject([]) do |lines, g|
-          lines + g.declaration_line_numbers
-        end
+        @declaration_line_numbers ||= FlatMap.flat_map(example_groups, &:declaration_line_numbers)
       end
     end
   end
