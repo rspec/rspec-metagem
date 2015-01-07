@@ -404,8 +404,8 @@ module RSpec::Core
       def colorized_rerun_commands(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         "\nFailed examples:\n\n" +
         failed_examples.map do |example|
-          colorizer.wrap("rspec #{example.location}",     RSpec.configuration.failure_color) + " " +
-          colorizer.wrap("# #{example.full_description}", RSpec.configuration.detail_color)
+          colorizer.wrap("rspec #{example.rerun_argument}", RSpec.configuration.failure_color) + " " +
+          colorizer.wrap("# #{example.full_description}",   RSpec.configuration.detail_color)
         end.join("\n")
       end
 

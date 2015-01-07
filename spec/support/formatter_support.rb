@@ -194,6 +194,7 @@ module FormatterSupport
                         :full_description  => "Example",
                         :execution_result  => result,
                         :location          => "",
+                        :rerun_argument    => "",
                         :metadata          => {
                           :shared_group_inclusion_backtrace => []
                         }

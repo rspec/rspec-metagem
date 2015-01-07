@@ -224,11 +224,11 @@ Feature: shared examples
       RSpec.describe String, :a => :b do
       end
       """
-      When I run `rspec shared_example_metadata_spec.rb`
-      Then the output should contain:
-        """
-        1 example, 0 failures
-        """
+    When I run `rspec shared_example_metadata_spec.rb`
+    Then the output should contain:
+      """
+      1 example, 0 failures
+      """
 
   Scenario: Shared examples are nestable by context
     Given a file named "context_specific_examples_spec.rb" with:

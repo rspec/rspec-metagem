@@ -290,7 +290,7 @@ module RSpec
       # @private
       attr_accessor :static_config_filter_manager
       # @private
-      attr_reader :backtrace_formatter, :ordering_manager
+      attr_reader :backtrace_formatter, :ordering_manager, :loaded_spec_files
 
       def initialize
         # rubocop:disable Style/GlobalVars
@@ -306,6 +306,7 @@ module RSpec
 
         @mock_framework = nil
         @files_or_directories_to_run = []
+        @loaded_spec_files = Set.new
         @color = false
         @pattern = '**{,/*/**}/*_spec.rb'
         @exclude_pattern = ''
@@ -1194,7 +1195,12 @@ module RSpec
 
       # @private
       def load_spec_files
-        files_to_run.uniq.each { |f| load File.expand_path(f) }
+        files_to_run.uniq.each do |f|
+          file = File.expand_path(f)
+          load file
+          loaded_spec_files << file
+        end
+
         @spec_files_loaded = true
       end
 
