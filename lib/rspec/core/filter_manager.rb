@@ -83,7 +83,7 @@ module RSpec
         #   { "path/to/file.rb" => [37, 42] }
         locations = inclusions.delete(:locations) || Hash.new { |h, k| h[k] = [] }
         locations[File.expand_path(file_path)].push(*line_numbers)
-        inclusions.add_location(locations)
+        inclusions.add(:locations => locations)
       end
 
       def empty?
@@ -96,7 +96,8 @@ module RSpec
         if inclusions.standalone?
           examples.select { |e| include?(e) }
         else
-          examples.select { |e| !exclude?(e) && include?(e) }
+          locations = inclusions.fetch(:locations) { Hash.new([]) }
+          examples.select { |e| priority_include?(e, locations) || (!exclude?(e) && include?(e)) }
         end
       end
 
@@ -139,6 +140,16 @@ module RSpec
           meta = ex.metadata
           !meta.fetch(:if, true) || meta[:unless]
         end
+      end
+
+      # When a user specifies a particular spec location, that takes priority
+      # over any exclusion filters (such as if the spec is tagged with `:slow`
+      # and there is a `:slow => true` exclusion filter), but only for specs
+      # defined in the same file as the location filters. Excluded specs in
+      # other files should still be excluded.
+      def priority_include?(example, locations)
+        return false if locations[File.expand_path(example.metadata[:file_path])].empty?
+        MetadataFilter.filter_applies?(:locations, locations, example.metadata)
       end
     end
 
@@ -215,12 +226,6 @@ module RSpec
 
     # @private
     class InclusionRules < FilterRules
-      STANDALONE_FILTERS = [:locations, :full_description]
-
-      def add_location(locations)
-        replace_filters(:locations => locations)
-      end
-
       def add(*args)
         apply_standalone_filter(*args) || super
       end
@@ -257,7 +262,7 @@ module RSpec
       end
 
       def is_standalone_filter?(rules)
-        STANDALONE_FILTERS.any? { |key| rules.key?(key) }
+        rules.key?(:full_description)
       end
     end
   end

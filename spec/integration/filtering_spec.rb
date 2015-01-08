@@ -98,7 +98,7 @@ RSpec.describe 'Shared Example Rerun Commands' do
   end
 
   context "passing a line-number-filtered file and a non-filtered file" do
-    it "applies the line number filtering only to the filtered file, running all specs in the non-filtered file" do
+    it "applies the line number filtering only to the filtered file, running all specs in the non-filtered file except excluded ones" do
       write_file_formatted "spec/file_1_spec.rb", """
         RSpec.describe 'File 1' do
           it('passes') {      }
@@ -107,9 +107,14 @@ RSpec.describe 'Shared Example Rerun Commands' do
       """
 
       write_file_formatted "spec/file_2_spec.rb", """
+        RSpec.configure do |c|
+          c.filter_run_excluding :exclude_me
+        end
+
         RSpec.describe 'File 2' do
           it('passes') { }
           it('passes') { }
+          it('fails', :exclude_me) { fail }
         end
       """
 
