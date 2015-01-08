@@ -36,6 +36,8 @@ Enhancements:
   testing RSpec with RSpec, allowing you to define example groups
   and example from within an example without affecting the global
   `RSpec.world` state. (Tyler Ball, 1808)
+* Apply line-number filters only to the files they are scoped to,
+  allowing you to mix filtered and unfiltered files. (Myron Marston, #1839)
 
 Bug Fixes:
 
