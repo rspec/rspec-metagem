@@ -54,13 +54,11 @@ module RSpec
         end
 
         def relevant_line_numbers(metadata)
-          return [] unless metadata
-          [metadata[:line_number]].compact + (relevant_line_numbers(parent_of metadata))
+          Metadata.ascend(metadata).map { |meta| meta[:line_number] }
         end
 
         def example_group_declaration_line(locations, metadata)
-          parent = parent_of(metadata)
-          return nil unless parent
+          return nil unless (parent = metadata.fetch(:example_group) { metadata[:parent_example_group] })
           locations[File.expand_path(parent[:file_path])]
         end
 
@@ -68,14 +66,6 @@ module RSpec
           subhash = metadata[key]
           return false unless Hash === subhash || HashImitatable === subhash
           value.all? { |k, v| filter_applies?(k, v, subhash) }
-        end
-
-        def parent_of(metadata)
-          if metadata.key?(:example_group)
-            metadata[:example_group]
-          else
-            metadata[:parent_example_group]
-          end
         end
 
         def silence_metadata_example_group_deprecations
