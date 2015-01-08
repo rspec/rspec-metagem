@@ -51,16 +51,23 @@ module RSpec
       end
 
       # @private
-      # Iteratively walks up from the given example metadata through all
+      # Iteratively walks up from the given metadata through all
       # example group ancestors, yielding each metadata hash along the way.
-      def self.ascend(example_metadata)
-        yield example_metadata
-        group_metadata = example_metadata.fetch(:example_group)
+      def self.ascending(metadata)
+        yield metadata
+        return unless (group_metadata = metadata.fetch(:example_group) { metadata[:parent_example_group] })
 
         loop do
           yield group_metadata
           break unless (group_metadata = group_metadata[:parent_example_group])
         end
+      end
+
+      # @private
+      # Returns an enumerator that iteratively walks up the given metadata through all
+      # example group ancestors, yielding each metadata hash along the way.
+      def self.ascend(metadata)
+        enum_for(:ascending, metadata)
       end
 
       # @private

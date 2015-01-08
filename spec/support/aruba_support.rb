@@ -24,10 +24,29 @@ RSpec.shared_context "aruba support" do
     RSpec.reset
     RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
+    # Ensure it gets cached with a proper value -- if we leave it set to nil,
+    # and the next spec operates in a different dir, it could get set to an
+    # invalid value.
+    RSpec::Core::Metadata.relative_path_regex
+
     @last_cmd_stdout = temp_stdout.string
     @last_cmd_stderr = temp_stderr.string
     stdout.write(@last_cmd_stdout)
     stderr.write(@last_cmd_stderr)
+  end
+
+  def write_file_formatted(file_name, contents)
+    # remove blank line at the start of the string and
+    # strip extra indentation.
+    formatted_contents = unindent(contents.sub(/\A\n/, ""))
+    write_file file_name, formatted_contents
+  end
+
+  # Intended for use with indented heredocs.
+  # taken from Ruby Tapas:
+  # https://rubytapas.dpdcart.com/subscriber/post?id=616#files
+  def unindent(s)
+    s.gsub(/^#{s.scan(/^[ \t]+(?=\S)/).min}/, "")
   end
 end
 

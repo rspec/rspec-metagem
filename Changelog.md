@@ -54,6 +54,9 @@ Bug Fixes:
 * When a shared example defined in an external file fails, use the host
   example group (from a loaded spec file) for the re-run command to
   ensure the command will actually work. (Myron Marston, #1835)
+* Fix location filtering to work properly for examples defined in
+  a nested example group within a shared example group defined in
+  an external file. (Bradley Schaefer, Xavier Shay, Myron Marston, #1837)
 
 ### 3.1.8 Development
 
