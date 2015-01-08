@@ -44,7 +44,7 @@ module RSpec
 
         def location_filter_applies?(locations, metadata)
           line_numbers = example_group_declaration_lines(locations, metadata)
-          line_numbers ? line_number_filter_applies?(line_numbers, metadata) : true
+          line_numbers.empty? || line_number_filter_applies?(line_numbers, metadata)
         end
 
         def line_number_filter_applies?(line_numbers, metadata)
