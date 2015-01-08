@@ -24,6 +24,11 @@ RSpec.shared_context "aruba support" do
     RSpec.reset
     RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
+    # Ensure it gets cached with a proper value -- if we leave it set to nil,
+    # and the next spec operates in a different dir, it could get set to an
+    # invalid value.
+    RSpec::Core::Metadata.relative_path_regex
+
     @last_cmd_stdout = temp_stdout.string
     @last_cmd_stderr = temp_stderr.string
     stdout.write(@last_cmd_stdout)
