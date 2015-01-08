@@ -34,6 +34,20 @@ RSpec.shared_context "aruba support" do
     stdout.write(@last_cmd_stdout)
     stderr.write(@last_cmd_stderr)
   end
+
+  def write_file_formatted(file_name, contents)
+    # remove blank line at the start of the string and
+    # strip extra indentation.
+    formatted_contents = unindent(contents.sub(/\A\n/, ""))
+    write_file file_name, formatted_contents
+  end
+
+  # Intended for use with indented heredocs.
+  # taken from Ruby Tapas:
+  # https://rubytapas.dpdcart.com/subscriber/post?id=616#files
+  def unindent(s)
+    s.gsub(/^#{s.scan(/^[ \t]+(?=\S)/).min}/, "")
+  end
 end
 
 RSpec.configure do |c|

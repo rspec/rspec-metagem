@@ -36,4 +36,31 @@ RSpec.describe 'Shared Example Rerun Commands' do
     command = last_cmd_stdout[/Failed examples:\s+rspec (\S+) #/, 1]
     run_command command
   end
+
+  context "with a shared example containing a context in a separate file" do
+    it "runs the example nested inside the shared" do
+      write_file_formatted 'spec/shared_example.rb', """
+        RSpec.shared_examples_for 'a shared example' do
+          it 'succeeds' do
+          end
+
+          context 'with a nested context' do
+            it 'succeeds (nested)' do
+            end
+          end
+        end
+      """
+
+      write_file_formatted 'spec/simple_spec.rb', """
+        require File.join(File.dirname(__FILE__), 'shared_example.rb')
+
+        RSpec.describe 'top level' do
+          it_behaves_like 'a shared example'
+        end
+      """
+
+      run_command 'spec/simple_spec.rb:3 -fd'
+      expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
+    end
+  end
 end

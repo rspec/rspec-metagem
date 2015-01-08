@@ -84,10 +84,6 @@ module RSpec
           end
         end
 
-        it "ignores location filters for other files" do
-          expect(filter_applies?(:locations, {"/path/to/other_spec.rb" => [3,5,7]}, example_metadata)).to be_truthy
-        end
-
         it "matches a proc with no arguments that evaluates to true" do
           expect(filter_applies?(:if, lambda { true }, example_metadata)).to be_truthy
         end

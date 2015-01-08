@@ -43,9 +43,8 @@ module RSpec
         end
 
         def location_filter_applies?(locations, metadata)
-          # it ignores location filters for other files
-          line_number = example_group_declaration_line(locations, metadata)
-          line_number ? line_number_filter_applies?(line_number, metadata) : true
+          line_numbers = example_group_declaration_lines(locations, metadata)
+          line_numbers ? line_number_filter_applies?(line_numbers, metadata) : true
         end
 
         def line_number_filter_applies?(line_numbers, metadata)
@@ -57,9 +56,10 @@ module RSpec
           Metadata.ascend(metadata).map { |meta| meta[:line_number] }
         end
 
-        def example_group_declaration_line(locations, metadata)
-          return nil unless (parent = metadata.fetch(:example_group) { metadata[:parent_example_group] })
-          locations[File.expand_path(parent[:file_path])]
+        def example_group_declaration_lines(locations, metadata)
+          FlatMap.flat_map(Metadata.ascend(metadata)) do |meta|
+            locations[File.expand_path(meta[:file_path])]
+          end.uniq
         end
 
         def filters_apply?(key, value, metadata)
