@@ -91,9 +91,10 @@ module RSpec
       end
 
       def prune(examples)
+        examples = prune_conditionally_filtered_examples(examples)
+
         if inclusions.standalone?
-          base_exclusions = ExclusionRules.new
-          examples.select { |e| !base_exclusions.include_example?(e) && include?(e) }
+          examples.select { |e| include?(e) }
         else
           examples.select { |e| !exclude?(e) && include?(e) }
         end
@@ -131,6 +132,13 @@ module RSpec
 
       def include?(example)
         inclusions.include_example?(example)
+      end
+
+      def prune_conditionally_filtered_examples(examples)
+        examples.reject do |ex|
+          meta = ex.metadata
+          !meta.fetch(:if, true) || meta[:unless]
+        end
       end
     end
 
@@ -196,7 +204,14 @@ module RSpec
       def description
         rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)', '')
       end
+
+      def include_example?(example)
+        MetadataFilter.apply?(:any?, @rules, example.metadata)
+      end
     end
+
+    # @private
+    ExclusionRules = FilterRules
 
     # @private
     class InclusionRules < FilterRules
@@ -219,8 +234,7 @@ module RSpec
       end
 
       def include_example?(example)
-        return true if @rules.empty?
-        MetadataFilter.apply?(:any?, @rules, example.metadata)
+        @rules.empty? || super
       end
 
       def standalone?
@@ -244,20 +258,6 @@ module RSpec
 
       def is_standalone_filter?(rules)
         STANDALONE_FILTERS.any? { |key| rules.key?(key) }
-      end
-    end
-
-    # @private
-    class ExclusionRules < FilterRules
-      CONDITIONAL_FILTERS = {
-        :if     => lambda { |value| !value },
-        :unless => lambda { |value| value }
-      }.freeze
-
-      def include_example?(example)
-        example_meta = example.metadata
-        return true if MetadataFilter.apply?(:any?, @rules, example_meta)
-        MetadataFilter.apply?(:any?, CONDITIONAL_FILTERS, example_meta)
       end
     end
   end
