@@ -111,10 +111,6 @@ module RSpec
         exclusions.add_with_low_priority(args.last)
       end
 
-      def exclude?(example)
-        exclusions.include_example?(example)
-      end
-
       def include(*args)
         inclusions.add(args.last)
       end
@@ -125,6 +121,12 @@ module RSpec
 
       def include_with_low_priority(*args)
         inclusions.add_with_low_priority(args.last)
+      end
+
+    private
+
+      def exclude?(example)
+        exclusions.include_example?(example)
       end
 
       def include?(example)

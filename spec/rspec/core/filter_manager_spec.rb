@@ -260,49 +260,53 @@ module RSpec::Core
         value
       end
 
+      def exclude?(example)
+        filter_manager.prune([example]).empty?
+      end
+
       describe "the default :if filter" do
         it "does not exclude a spec with  { :if => true } metadata" do
           example = example_with_metadata(:if => true)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "excludes a spec with  { :if => false } metadata" do
           example = example_with_metadata(:if => false)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "excludes a spec with  { :if => nil } metadata" do
           example = example_with_metadata(:if => nil)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "continues to be an exclusion even if exclusions are cleared" do
           example = example_with_metadata(:if => false)
           filter_manager.exclusions.clear
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
       end
 
       describe "the default :unless filter" do
         it "excludes a spec with  { :unless => true } metadata" do
           example = example_with_metadata(:unless => true)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "does not exclude a spec with { :unless => false } metadata" do
           example = example_with_metadata(:unless => false)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "does not exclude a spec with { :unless => nil } metadata" do
           example = example_with_metadata(:unless => nil)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "continues to be an exclusion even if exclusions are cleared" do
           example = example_with_metadata(:unless => true)
           filter_manager.exclusions.clear
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
       end
     end
