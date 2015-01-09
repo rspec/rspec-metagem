@@ -1,6 +1,6 @@
 require 'support/aruba_support'
 
-RSpec.describe 'Shared Example Rerun Commands' do
+RSpec.describe 'Filtering' do
   include_context "aruba support"
   before { clean_current_dir }
 
