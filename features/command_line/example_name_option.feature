@@ -12,6 +12,8 @@ Feature: `--example` option
   You can also use the option more than once to specify multiple example
   matches.
 
+  Note: description-less examples that have generated descriptions (typical when using the [one-liner syntax](../subject/one-liner-syntax)) cannot be directly filtered with this option, because it is necessary to execute the example to generate the description, so RSpec is unable to use the not-yet-generated description to decide whether or not to execute an example. You can, of course, pass part of a group's description to select all examples defined in the group (including those that have no description).
+
   Background:
     Given a file named "first_spec.rb" with:
       """ruby
