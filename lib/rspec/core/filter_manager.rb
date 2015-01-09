@@ -148,7 +148,7 @@ module RSpec
       # defined in the same file as the location filters. Excluded specs in
       # other files should still be excluded.
       def priority_include?(example, locations)
-        return false if locations[File.expand_path(example.metadata[:file_path])].empty?
+        return false if locations[example.metadata[:absolute_file_path]].empty?
         MetadataFilter.filter_applies?(:locations, locations, example.metadata)
       end
     end
