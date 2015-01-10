@@ -259,7 +259,7 @@ module RSpec::Core
       end
 
       def find_failed_line
-        example_path = File.expand_path(example.file_path).downcase
+        example_path = example.metadata[:absolute_file_path].downcase
         exception.backtrace.find do |line|
           next unless (line_path = line[/(.+?):(\d+)(|:\d+)/, 1])
           File.expand_path(line_path).downcase == example_path

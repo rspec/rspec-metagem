@@ -7,7 +7,7 @@ RSpec.describe "FailedExampleNotification" do
   let(:notification) { ::RSpec::Core::Notifications::FailedExampleNotification.new(example) }
 
   before do
-    allow(example).to receive(:file_path) { __FILE__ }
+    example.metadata[:absolute_file_path] = __FILE__
   end
 
   # ported from `base_formatter_spec` should be refactored by final

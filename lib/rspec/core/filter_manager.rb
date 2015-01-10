@@ -83,7 +83,7 @@ module RSpec
         #   { "path/to/file.rb" => [37, 42] }
         locations = inclusions.delete(:locations) || Hash.new { |h, k| h[k] = [] }
         locations[File.expand_path(file_path)].push(*line_numbers)
-        inclusions.add_location(locations)
+        inclusions.add(:locations => locations)
       end
 
       def empty?
@@ -91,11 +91,13 @@ module RSpec
       end
 
       def prune(examples)
+        examples = prune_conditionally_filtered_examples(examples)
+
         if inclusions.standalone?
-          base_exclusions = ExclusionRules.new
-          examples.select { |e| !base_exclusions.include_example?(e) && include?(e) }
+          examples.select { |e| include?(e) }
         else
-          examples.select { |e| !exclude?(e) && include?(e) }
+          locations = inclusions.fetch(:locations) { Hash.new([]) }
+          examples.select { |e| priority_include?(e, locations) || (!exclude?(e) && include?(e)) }
         end
       end
 
@@ -111,10 +113,6 @@ module RSpec
         exclusions.add_with_low_priority(args.last)
       end
 
-      def exclude?(example)
-        exclusions.include_example?(example)
-      end
-
       def include(*args)
         inclusions.add(args.last)
       end
@@ -127,8 +125,31 @@ module RSpec
         inclusions.add_with_low_priority(args.last)
       end
 
+    private
+
+      def exclude?(example)
+        exclusions.include_example?(example)
+      end
+
       def include?(example)
         inclusions.include_example?(example)
+      end
+
+      def prune_conditionally_filtered_examples(examples)
+        examples.reject do |ex|
+          meta = ex.metadata
+          !meta.fetch(:if, true) || meta[:unless]
+        end
+      end
+
+      # When a user specifies a particular spec location, that takes priority
+      # over any exclusion filters (such as if the spec is tagged with `:slow`
+      # and there is a `:slow => true` exclusion filter), but only for specs
+      # defined in the same file as the location filters. Excluded specs in
+      # other files should still be excluded.
+      def priority_include?(example, locations)
+        return false if locations[example.metadata[:absolute_file_path]].empty?
+        MetadataFilter.filter_applies?(:locations, locations, example.metadata)
       end
     end
 
@@ -194,16 +215,17 @@ module RSpec
       def description
         rules.inspect.gsub(PROC_HEX_NUMBER, '').gsub(PROJECT_DIR, '.').gsub(' (lambda)', '')
       end
+
+      def include_example?(example)
+        MetadataFilter.apply?(:any?, @rules, example.metadata)
+      end
     end
 
     # @private
+    ExclusionRules = FilterRules
+
+    # @private
     class InclusionRules < FilterRules
-      STANDALONE_FILTERS = [:locations, :full_description]
-
-      def add_location(locations)
-        replace_filters(:locations => locations)
-      end
-
       def add(*args)
         apply_standalone_filter(*args) || super
       end
@@ -217,8 +239,7 @@ module RSpec
       end
 
       def include_example?(example)
-        return true if @rules.empty?
-        MetadataFilter.apply?(:any?, @rules, example.metadata)
+        @rules.empty? || super
       end
 
       def standalone?
@@ -241,21 +262,7 @@ module RSpec
       end
 
       def is_standalone_filter?(rules)
-        STANDALONE_FILTERS.any? { |key| rules.key?(key) }
-      end
-    end
-
-    # @private
-    class ExclusionRules < FilterRules
-      CONDITIONAL_FILTERS = {
-        :if     => lambda { |value| !value },
-        :unless => lambda { |value| value }
-      }.freeze
-
-      def include_example?(example)
-        example_meta = example.metadata
-        return true if MetadataFilter.apply?(:any?, @rules, example_meta)
-        MetadataFilter.apply?(:any?, CONDITIONAL_FILTERS, example_meta)
+        rules.key?(:full_description)
       end
     end
   end

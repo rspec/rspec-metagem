@@ -34,25 +34,23 @@ module RSpec::Core
         end
 
         if name == "include"
-          [:locations, :full_description].each do |filter|
-            context "with :#{filter}" do
-              it "clears previous inclusions" do
-                filter_manager.include :foo => :bar
-                filter_manager.include filter => "value"
-                expect(rules).to eq({filter => "value"})
-              end
+          context "with :full_description" do
+            it "clears previous inclusions" do
+              filter_manager.include :foo => :bar
+              filter_manager.include :full_description => "value"
+              expect(rules).to eq(:full_description => "value")
+            end
 
-              it "clears previous exclusion" do
-                filter_manager.include :foo => :bar
-                filter_manager.include filter => "value"
-                expect(opposite_rules).to be_empty
-              end
+            it "clears previous exclusion" do
+              filter_manager.include :foo => :bar
+              filter_manager.include :full_description => "value"
+              expect(opposite_rules).to be_empty
+            end
 
-              it "does nothing when :#{filter} previously set" do
-                filter_manager.include filter => "a_value"
-                filter_manager.include :foo => :bar
-                expect(rules).to eq(filter => "a_value")
-              end
+            it "does nothing when :full_description previously set" do
+              filter_manager.include :full_description => "a_value"
+              filter_manager.include :foo => :bar
+              expect(rules).to eq(:full_description => "a_value")
             end
           end
         end
@@ -125,6 +123,25 @@ module RSpec::Core
         filter_manager.add_location(__FILE__, [__LINE__ - 3])
         filter_manager.exclude_with_low_priority :slow => true
         expect(filter_manager.prune([included, excluded])).to eq([included])
+      end
+
+      context "with examples from multiple spec source files" do
+        it "applies exclusions only to examples defined in files with no location filters" do
+          group = RSpec.describe("group")
+          line = __LINE__ + 1
+          this_file_example = group.example("ex 1", :slow) { }
+
+          # Using eval in order to make ruby think this got defined in another file.
+          other_file_example = instance_eval "ex = nil; RSpec.describe('group') { ex = it('ex 2', :slow) { } }; ex", "some/external/file.rb", 1
+
+          filter_manager.exclude_with_low_priority :slow => true
+
+          expect {
+            filter_manager.add_location(__FILE__, [line])
+          }.to change {
+            filter_manager.prune([this_file_example, other_file_example]).map(&:description)
+          }.from([]).to([this_file_example.description])
+        end
       end
 
       it "prefers description to exclusion filter" do
@@ -260,49 +277,53 @@ module RSpec::Core
         value
       end
 
+      def exclude?(example)
+        filter_manager.prune([example]).empty?
+      end
+
       describe "the default :if filter" do
         it "does not exclude a spec with  { :if => true } metadata" do
           example = example_with_metadata(:if => true)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "excludes a spec with  { :if => false } metadata" do
           example = example_with_metadata(:if => false)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "excludes a spec with  { :if => nil } metadata" do
           example = example_with_metadata(:if => nil)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "continues to be an exclusion even if exclusions are cleared" do
           example = example_with_metadata(:if => false)
           filter_manager.exclusions.clear
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
       end
 
       describe "the default :unless filter" do
         it "excludes a spec with  { :unless => true } metadata" do
           example = example_with_metadata(:unless => true)
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
 
         it "does not exclude a spec with { :unless => false } metadata" do
           example = example_with_metadata(:unless => false)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "does not exclude a spec with { :unless => nil } metadata" do
           example = example_with_metadata(:unless => nil)
-          expect(filter_manager.exclude?(example)).to be_falsey
+          expect(exclude?(example)).to be_falsey
         end
 
         it "continues to be an exclusion even if exclusions are cleared" do
           example = example_with_metadata(:unless => true)
           filter_manager.exclusions.clear
-          expect(filter_manager.exclude?(example)).to be_truthy
+          expect(exclude?(example)).to be_truthy
         end
       end
     end

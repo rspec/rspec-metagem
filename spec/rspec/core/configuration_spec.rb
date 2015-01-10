@@ -472,27 +472,12 @@ module RSpec::Core
       end
 
       context "with <path>:<line_number>" do
-        it "overrides inclusion filters set on config" do
-          config.filter_run_including :foo => :bar
-          assign_files_or_directories_to_run "path/to/file.rb:37"
-          expect(inclusion_filter.size).to eq(1)
-          expect(inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
-          expect(inclusion_filter[:locations].values.first).to eq([37])
-        end
-
         it "overrides inclusion filters set before config" do
           config.force(:inclusion_filter => {:foo => :bar})
           assign_files_or_directories_to_run "path/to/file.rb:37"
           expect(inclusion_filter.size).to eq(1)
           expect(inclusion_filter[:locations].keys.first).to match(/path\/to\/file\.rb$/)
           expect(inclusion_filter[:locations].values.first).to eq([37])
-        end
-
-        it "clears exclusion filters set on config" do
-          config.exclusion_filter = { :foo => :bar }
-          assign_files_or_directories_to_run "path/to/file.rb:37"
-          expect(exclusion_filter).to be_empty,
-            "expected exclusion filter to be empty:\n#{exclusion_filter}"
         end
 
         it "clears exclusion filters set before config" do
