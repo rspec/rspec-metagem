@@ -67,12 +67,15 @@ end
 RSpec::Matchers.define :be_pending_with do |message|
   match do |example|
     example.pending? &&
+    example.execution_result.pending_exception &&
     example.execution_result.status == :pending &&
     example.execution_result.pending_message == message
   end
 
   failure_message do |example|
-    "expected: example pending with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
+    "expected: example pending with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}".tap do |msg|
+      msg << " (but had no pending exception)" unless example.execution_result.pending_exception
+    end
   end
 end
 

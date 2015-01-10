@@ -59,6 +59,9 @@ Bug Fixes:
 * Fix location filtering to work properly for examples defined in
   a nested example group within a shared example group defined in
   an external file. (Bradley Schaefer, Xavier Shay, Myron Marston, #1837)
+* When a pending example fails (as expected) due to a mock expectation,
+  set `RSpec::Core::Example::ExecutionResult#pending_exception` --
+  previously it was not being set but should have been. (Myron Marston, #1844)
 
 ### 3.1.8 Development
 

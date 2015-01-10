@@ -386,6 +386,7 @@ module RSpec
       rescue Exception => e
         if pending?
           execution_result.pending_fixed = false
+          execution_result.pending_exception = e
           @exception = nil
         else
           set_exception(e)
