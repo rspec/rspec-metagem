@@ -461,6 +461,15 @@ module RSpec
 
         alias pending_fixed? pending_fixed
 
+        # @return [Boolean] Indicates if the example was completely skipped
+        #   (typically done via `:skip` metadata or the `skip` method). Skipped examples
+        #   will have a `:pending` result. A `:pending` result can also come from examples
+        #   that were marked as `:pending`, which causes them to be run, and produces a
+        #   `:failed` result if the example passes.
+        def example_skipped?
+          status == :pending && !pending_exception
+        end
+
         # @api private
         # Records the finished status of the example.
         def record_finished(status, finished_at)

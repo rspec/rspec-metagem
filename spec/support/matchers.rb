@@ -22,6 +22,7 @@ end
 
 RSpec::Matchers.define :fail_with do |exception_klass|
   match do |example|
+    !example.execution_result.example_skipped? &&
     failure_reason(example, exception_klass).nil?
   end
 
@@ -42,6 +43,7 @@ end
 
 RSpec::Matchers.define :pass do
   match do |example|
+    !example.execution_result.example_skipped? &&
     failure_reason(example).nil?
   end
 
@@ -67,6 +69,7 @@ end
 RSpec::Matchers.define :be_pending_with do |message|
   match do |example|
     example.pending? &&
+    !example.execution_result.example_skipped? &&
     example.execution_result.pending_exception &&
     example.execution_result.status == :pending &&
     example.execution_result.pending_message == message
@@ -83,6 +86,7 @@ RSpec::Matchers.define :be_skipped_with do |message|
   match do |example|
     example.skipped? &&
     example.pending? &&
+    example.execution_result.example_skipped? &&
     example.execution_result.pending_message == message
   end
 
