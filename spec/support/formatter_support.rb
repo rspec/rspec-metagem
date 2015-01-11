@@ -185,8 +185,9 @@ module FormatterSupport
     @example ||=
       begin
         result = instance_double(RSpec::Core::Example::ExecutionResult,
-                                 :pending_fixed? => false,
-                                 :status         => :passed
+                                 :pending_fixed?   => false,
+                                 :example_skipped? => false,
+                                 :status           => :passed
                                 )
         allow(result).to receive(:exception) { exception }
         instance_double(RSpec::Core::Example,

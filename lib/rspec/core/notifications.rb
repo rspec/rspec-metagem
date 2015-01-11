@@ -36,14 +36,21 @@ module RSpec::Core
     class ExampleNotification
       # @private
       def self.for(example)
-        if example.execution_result.pending_fixed?
+        execution_result = example.execution_result
+
+        if execution_result.pending_fixed?
           PendingExampleFixedNotification.new(example)
-        elsif example.execution_result.status == :failed
+        elsif execution_result.example_skipped?
+          SkippedExampleNotification.new(example)
+        elsif execution_result.status == :pending
+          PendingExampleFailedAsExpectedNotification.new(example)
+        elsif execution_result.status == :failed
           FailedExampleNotification.new(example)
         else
           new(example)
         end
       end
+
       private_class_method :new
     end
 
@@ -297,6 +304,14 @@ module RSpec::Core
       def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         message_lines.map { |line| colorizer.wrap(line, RSpec.configuration.fixed_color) }
       end
+    end
+
+    class PendingExampleFailedAsExpectedNotification < ExampleNotification
+      public_class_method :new
+    end
+
+    class SkippedExampleNotification < ExampleNotification
+      public_class_method :new
     end
 
     # The `GroupNotification` represents notifications sent by the reporter
