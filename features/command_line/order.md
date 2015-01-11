@@ -2,7 +2,9 @@ Use the `--order` option to tell RSpec how to order the files, groups, and
 examples. The available ordering schemes are `defined` and `rand`.
 
 `defined` is the default, which executes groups and examples in the order they
-are defined as the spec files are loaded.
+are defined as the spec files are loaded, with the caveat that each group
+runs its examples before running its nested example groups, even if the
+nested groups are defined before the examples.
 
 Use `rand` to randomize the order of groups and examples within the groups.
 Nested groups are always run from top-level to bottom-level in order to avoid

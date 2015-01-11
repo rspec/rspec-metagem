@@ -32,7 +32,8 @@ module RSpec::Core
     #   end
     #
     # @attr example [RSpec::Core::Example] the current example
-    ExampleNotification = Struct.new(:example) do
+    ExampleNotification = Struct.new(:example)
+    class ExampleNotification
       # @private
       def self.for(example)
         if example.execution_result.pending_fixed?
@@ -321,7 +322,8 @@ module RSpec::Core
     #
     # @attr seed [Fixnum] the seed used to randomize ordering
     # @attr used [Boolean] whether the seed has been used or not
-    SeedNotification = Struct.new(:seed, :used) do
+    SeedNotification = Struct.new(:seed, :used)
+    class SeedNotification
       # @api
       # @return [Boolean] has the seed been used?
       def seed_used?
@@ -346,8 +348,8 @@ module RSpec::Core
     # @attr pending_examples [Array(RSpec::Core::Example)] the pending examples
     # @attr load_time [Float] the number of seconds taken to boot RSpec
     #                         and load the spec files
-    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples, :load_time) do
-
+    SummaryNotification = Struct.new(:duration, :examples, :failed_examples, :pending_examples, :load_time)
+    class SummaryNotification
       # @api
       # @return [Fixnum] the number of examples run
       def example_count
@@ -443,8 +445,8 @@ module RSpec::Core
     # @attr duration [Float] the time taken (in seconds) to run the suite
     # @attr examples [Array(RSpec::Core::Example)] the examples run
     # @attr number_of_examples [Fixnum] the number of examples to profile
-    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples) do
-
+    ProfileNotification = Struct.new(:duration, :examples, :number_of_examples)
+    class ProfileNotification
       # @return [Array(RSpec::Core::Example)] the slowest examples
       def slowest_examples
         @slowest_examples ||=
@@ -511,7 +513,8 @@ module RSpec::Core
     # @attr replacement [String] An optional replacement for the deprecation
     # @attr call_site [String] An optional call site from which the deprecation
     #   was issued
-    DeprecationNotification = Struct.new(:deprecated, :message, :replacement, :call_site) do
+    DeprecationNotification = Struct.new(:deprecated, :message, :replacement, :call_site)
+    class DeprecationNotification
       private_class_method :new
 
       # @api
