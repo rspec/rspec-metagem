@@ -9,7 +9,7 @@ RSpec::Matchers.define :map_specs do |specs|
     @file = file
   end
 
-  failure_message_for_should do
+  failure_message do
     "expected #{@autotest.class} to map #{@specs.inspect} to #{@file.inspect}\ngot #{@actual.inspect}"
   end
 
@@ -25,7 +25,7 @@ RSpec::Matchers.define :fail_with do |exception_klass|
     failure_reason(example, exception_klass).nil?
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected example to fail with a #{exception_klass} exception, but #{failure_reason(example, exception_klass)}"
   end
 
@@ -45,7 +45,7 @@ RSpec::Matchers.define :pass do
     failure_reason(example).nil?
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected example to pass, but #{failure_reason(example)}"
   end
 
@@ -71,7 +71,7 @@ RSpec::Matchers.define :be_pending_with do |message|
     example.execution_result.pending_message == message
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected: example pending with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
   end
 end
@@ -83,7 +83,7 @@ RSpec::Matchers.define :be_skipped_with do |message|
     example.execution_result.pending_message == message
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected: example skipped with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
   end
 end
