@@ -11,11 +11,13 @@ the command line or options files, or filters declared via
 `RSpec.configure`, with hash key/values submitted within example group
 and/or example declarations. For example, given this declaration:
 
-    describe Thing, :awesome => true do
-      it "does something" do
-        # ...
-      end
-    end
+``` ruby
+RSpec.describe Thing, :awesome => true do
+  it "does something" do
+    # ...
+  end
+end
+```
 
 That group (or any other with `:awesome => true`) would be filtered in
 with any of the following commands:
@@ -86,19 +88,23 @@ RSpec supports configuration options that make it easy to select
 examples by temporarily tweaking them. In your `spec_helper.rb` (or
 a similar file), put this configuration:
 
-    RSpec.configure do |config|
-      config.filter_run :focus
-      config.run_all_when_everything_filtered = true
-    end
+``` ruby
+RSpec.configure do |config|
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
+end
+```
 
 This configuration is generated for you by `rspec --init` in the
 commented-out section of recommendations. With that in place, you
 can tag any example group or example with `:focus` metadata to
 select it:
 
-    it "does something" do
-    # becomes...
-    it "does something", :focus do
+``` ruby
+it "does something" do
+# becomes...
+it "does something", :focus do
+```
 
 RSpec also ships with aliases of the common example group definition
 methods (`describe`, `context`) and example methods (`it`, `specify`,
@@ -114,7 +120,9 @@ options file. This is useful for storing defaults. For example, let's
 say you've got some slow specs that you want to suppress most of the
 time. You can tag them like this:
 
-    describe Something, :slow => true do
+``` ruby
+RSpec.describe Something, :slow => true do
+```
 
 And then store this in `.rspec`:
 
@@ -141,11 +149,13 @@ example or example group that would normally be excluded due to a
 
 You can also store default tags with `RSpec.configure`. We use `tag` on
 the command line (and in options files like `.rspec`), but for historical
-reasons we use the term `filter` in `RSpec.configure:
+reasons we use the term `filter` in `RSpec.configure`:
 
-    RSpec.configure do |c|
-      c.filter_run_including :foo => :bar
-      c.filter_run_excluding :foo => :bar
-    end
+``` ruby
+RSpec.configure do |c|
+  c.filter_run_including :foo => :bar
+  c.filter_run_excluding :foo => :bar
+end
+```
 
 These declarations can also be overridden from the command line.
