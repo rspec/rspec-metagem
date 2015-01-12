@@ -94,6 +94,13 @@ module RSpec::Core
         @failed_notifications ||= format_examples(failed_examples)
       end
 
+      # @return [Array<RSpec::Core::Notifications::SkippedExampleNotification,
+      #                 RSpec::Core::Notifications::PendingExampleFailedAsExpectedNotification>]
+      #         returns pending examples as notifications
+      def pending_notifications
+        @pending_notifications ||= format_examples(pending_examples)
+      end
+
       # @return [String] The list of failed examples, fully formatted in the way
       #   that RSpec's built-in formatters emit.
       def fully_formatted_failed_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
@@ -109,15 +116,10 @@ module RSpec::Core
       # @return [String] The list of pending examples, fully formatted in the
       #   way that RSpec's built-in formatters emit.
       def fully_formatted_pending_examples(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted = "\nPending:\n"
+        formatted = "\nPending: (Failures listed here are expected and do not affect your suite's status)\n"
 
-        pending_examples.each do |example|
-          formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
-
-          formatted <<
-            "  #{colorizer.wrap(example.full_description, :pending)}\n" \
-            "    # #{colorizer.wrap(example.execution_result.pending_message, :detail)}\n" \
-            "    # #{colorizer.wrap(formatted_caller, :detail)}\n"
+        pending_notifications.each_with_index do |notification, index|
+          formatted << notification.fully_formatted(index.next, colorizer)
         end
 
         formatted
@@ -170,7 +172,7 @@ module RSpec::Core
       # @return [Array<String>] The example failure message colorized
       def colorized_message_lines(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         add_shared_group_lines(failure_lines, colorizer).map do |line|
-          colorizer.wrap line, RSpec.configuration.failure_color
+          colorizer.wrap line, message_color
         end
       end
 
@@ -194,17 +196,7 @@ module RSpec::Core
       # @return [String] The failure information fully formatted in the way that
       #   RSpec's built-in formatters emit.
       def fully_formatted(failure_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
-        formatted = "\n  #{failure_number}) #{description}\n"
-
-        colorized_message_lines(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        colorized_formatted_backtrace(colorizer).each do |line|
-          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
-        end
-
-        formatted
+        "\n  #{failure_number}) #{description}\n#{formatted_message_and_backtrace(colorizer)}"
       end
 
     private
@@ -273,6 +265,24 @@ module RSpec::Core
           File.expand_path(line_path).downcase == example_path
         end
       end
+
+      def formatted_message_and_backtrace(colorizer)
+        formatted = ""
+
+        colorized_message_lines(colorizer).each do |line|
+          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
+        end
+
+        colorized_formatted_backtrace(colorizer).each do |line|
+          formatted << RSpec::Support::EncodedString.new("     #{line}\n", encoding_of(formatted))
+        end
+
+        formatted
+      end
+
+      def message_color
+        RSpec.configuration.failure_color
+      end
     end
 
     # The `PendingExampleFixedNotification` extends `ExampleNotification` with
@@ -306,12 +316,58 @@ module RSpec::Core
       end
     end
 
-    class PendingExampleFailedAsExpectedNotification < ExampleNotification
-      public_class_method :new
+    # @private
+    module PendingExampleNotificationMethods
+    private
+
+      def fully_formatted_header(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
+        colorizer.wrap("\n  #{pending_number}) #{example.full_description}\n", :pending) <<
+        colorizer.wrap("     # #{example.execution_result.pending_message}\n", :detail)
+      end
     end
 
-    class SkippedExampleNotification < ExampleNotification
+    # The `PendingExampleFailedAsExpectedNotification` extends `FailedExampleNotification` with
+    # things useful for pending specs that fail as expected.
+    #
+    # @attr [RSpec::Core::Example] example the current example
+    # @see ExampleNotification
+    class PendingExampleFailedAsExpectedNotification < FailedExampleNotification
+      include PendingExampleNotificationMethods
       public_class_method :new
+
+      # @return [Exception] The exception that occurred while the pending example was executed
+      def exception
+        example.execution_result.pending_exception
+      end
+
+      # @return [String] The pending detail fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
+        fully_formatted_header(pending_number, colorizer) << formatted_message_and_backtrace(colorizer)
+      end
+
+    private
+
+      def message_color
+        RSpec.configuration.pending_color
+      end
+    end
+
+    # The `SkippedExampleNotification` extends `ExampleNotification` with
+    # things useful for specs that are skipped.
+    #
+    # @attr [RSpec::Core::Example] example the current example
+    # @see ExampleNotification
+    class SkippedExampleNotification < ExampleNotification
+      include PendingExampleNotificationMethods
+      public_class_method :new
+
+      # @return [String] The pending detail fully formatted in the way that
+      #   RSpec's built-in formatters emit.
+      def fully_formatted(pending_number, colorizer=::RSpec::Core::Formatters::ConsoleCodes)
+        formatted_caller = RSpec.configuration.backtrace_formatter.backtrace_line(example.location)
+        fully_formatted_header(pending_number, colorizer) << colorizer.wrap("     # #{formatted_caller}\n", :detail)
+      end
     end
 
     # The `GroupNotification` represents notifications sent by the reporter
