@@ -38,6 +38,8 @@ Enhancements:
   `RSpec.world` state. (Tyler Ball, 1808)
 * Apply line-number filters only to the files they are scoped to,
   allowing you to mix filtered and unfiltered files. (Myron Marston, #1839)
+* When dumping pending examples, include the failure details so that you
+  don't have to un-pend the example to see it. (Myron Marston, #1844)
 
 Bug Fixes:
 
@@ -59,6 +61,9 @@ Bug Fixes:
 * Fix location filtering to work properly for examples defined in
   a nested example group within a shared example group defined in
   an external file. (Bradley Schaefer, Xavier Shay, Myron Marston, #1837)
+* When a pending example fails (as expected) due to a mock expectation,
+  set `RSpec::Core::Example::ExecutionResult#pending_exception` --
+  previously it was not being set but should have been. (Myron Marston, #1844)
 
 ### 3.1.8 Development
 

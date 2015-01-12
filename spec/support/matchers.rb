@@ -9,7 +9,7 @@ RSpec::Matchers.define :map_specs do |specs|
     @file = file
   end
 
-  failure_message_for_should do
+  failure_message do
     "expected #{@autotest.class} to map #{@specs.inspect} to #{@file.inspect}\ngot #{@actual.inspect}"
   end
 
@@ -22,10 +22,11 @@ end
 
 RSpec::Matchers.define :fail_with do |exception_klass|
   match do |example|
+    !example.execution_result.example_skipped? &&
     failure_reason(example, exception_klass).nil?
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected example to fail with a #{exception_klass} exception, but #{failure_reason(example, exception_klass)}"
   end
 
@@ -42,10 +43,11 @@ end
 
 RSpec::Matchers.define :pass do
   match do |example|
+    !example.execution_result.example_skipped? &&
     failure_reason(example).nil?
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected example to pass, but #{failure_reason(example)}"
   end
 
@@ -67,12 +69,16 @@ end
 RSpec::Matchers.define :be_pending_with do |message|
   match do |example|
     example.pending? &&
+    !example.execution_result.example_skipped? &&
+    example.execution_result.pending_exception &&
     example.execution_result.status == :pending &&
     example.execution_result.pending_message == message
   end
 
-  failure_message_for_should do |example|
-    "expected: example pending with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
+  failure_message do |example|
+    "expected: example pending with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}".tap do |msg|
+      msg << " (but had no pending exception)" unless example.execution_result.pending_exception
+    end
   end
 end
 
@@ -80,10 +86,11 @@ RSpec::Matchers.define :be_skipped_with do |message|
   match do |example|
     example.skipped? &&
     example.pending? &&
+    example.execution_result.example_skipped? &&
     example.execution_result.pending_message == message
   end
 
-  failure_message_for_should do |example|
+  failure_message do |example|
     "expected: example skipped with #{message.inspect}\n     got: #{example.execution_result.pending_message.inspect}"
   end
 end

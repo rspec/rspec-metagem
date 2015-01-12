@@ -386,6 +386,7 @@ module RSpec
       rescue Exception => e
         if pending?
           execution_result.pending_fixed = false
+          execution_result.pending_exception = e
           @exception = nil
         else
           set_exception(e)
@@ -459,6 +460,15 @@ module RSpec
         attr_accessor :pending_fixed
 
         alias pending_fixed? pending_fixed
+
+        # @return [Boolean] Indicates if the example was completely skipped
+        #   (typically done via `:skip` metadata or the `skip` method). Skipped examples
+        #   will have a `:pending` result. A `:pending` result can also come from examples
+        #   that were marked as `:pending`, which causes them to be run, and produces a
+        #   `:failed` result if the example passes.
+        def example_skipped?
+          status == :pending && !pending_exception
+        end
 
         # @api private
         # Records the finished status of the example.

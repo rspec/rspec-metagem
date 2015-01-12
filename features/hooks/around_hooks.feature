@@ -238,9 +238,11 @@ Feature: `around` hooks
     Then the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
-      Pending:
-        implicit pending example should be detected as Not yet implemented
-          # Not yet implemented
+      Pending: (Failures listed here are expected and do not affect your suite's status)
+
+        1) implicit pending example should be detected as Not yet implemented
+           # Not yet implemented
+           # ./example_spec.rb:6
       """
 
 
@@ -262,8 +264,10 @@ Feature: `around` hooks
     Then the output should contain "1 example, 0 failures, 1 pending"
     And the output should contain:
       """
-        explicit pending example should be detected as pending
-          # No reason given
+      Pending: (Failures listed here are expected and do not affect your suite's status)
+
+        1) explicit pending example should be detected as pending
+           # No reason given
       """
 
   Scenario: Multiple `around` hooks in the same scope
