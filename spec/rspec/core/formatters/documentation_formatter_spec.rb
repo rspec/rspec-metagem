@@ -18,11 +18,11 @@ module RSpec::Core::Formatters
     it "numbers the failures" do
       send_notification :example_failed, example_notification( double("example 1",
                :description => "first example",
-               :execution_result => execution_result(:status => 'failed', :exception => Exception.new)
+               :execution_result => execution_result(:status => :failed, :exception => Exception.new)
               ))
       send_notification :example_failed, example_notification( double("example 2",
                :description => "second example",
-               :execution_result => execution_result(:status => 'failed', :exception => Exception.new)
+               :execution_result => execution_result(:status => :failed, :exception => Exception.new)
               ))
 
       expect(output.string).to match(/first example \(FAILED - 1\)/m)
