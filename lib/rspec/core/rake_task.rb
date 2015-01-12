@@ -147,7 +147,7 @@ module RSpec
         cmd_parts << RUBY
         cmd_parts << ruby_opts
         cmd_parts << rspec_load_path
-        cmd_parts << rspec_path
+        cmd_parts << escape(rspec_path)
         cmd_parts << file_inclusion_specification
         cmd_parts << file_exclusion_specification
         cmd_parts << rspec_opts
