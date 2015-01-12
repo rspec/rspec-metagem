@@ -82,13 +82,13 @@ module RSpec::Core
         @reporter.pending_examples
       end
 
-      # @return [Array(Rspec::Core::Notifications::ExampleNotification]
+      # @return [Array(RSpec::Core::Notifications::ExampleNotification]
       #         returns examples as notifications
       def notifications
         @notifications ||= format_examples(examples)
       end
 
-      # @return [Array(Rspec::Core::Notifications::FailedExampleNotification]
+      # @return [Array(RSpec::Core::Notifications::FailedExampleNotification]
       #         returns failed examples as notifications
       def failure_notifications
         @failed_notifications ||= format_examples(failed_examples)
