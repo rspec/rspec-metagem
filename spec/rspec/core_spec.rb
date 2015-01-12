@@ -96,10 +96,6 @@ RSpec.describe RSpec do
       RSpec.configuration.error_stream = StringIO.new
     end
 
-    def some_example
-      double("example").as_null_object
-    end
-
     it "clears example groups" do
       RSpec.world.example_groups << :example_group
 
@@ -118,9 +114,18 @@ RSpec.describe RSpec do
 
     it "clears examples, failed_examples and pending_examples" do
       reporter.start(3)
-      reporter.example_started(some_example)
-      reporter.example_failed(some_example)
-      reporter.example_pending(some_example)
+      pending_ex = failing_ex = nil
+
+      RSpec.describe do
+        pending_ex = pending { fail }
+        failing_ex = example { fail }
+      end.run
+
+      reporter.example_started(failing_ex)
+      reporter.example_failed(failing_ex)
+
+      reporter.example_started(pending_ex)
+      reporter.example_pending(pending_ex)
       reporter.finish
 
       reporter.register_listener(listener, :dump_summary)
