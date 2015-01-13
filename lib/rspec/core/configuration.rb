@@ -297,9 +297,9 @@ module RSpec
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
         # rubocop:enable Style/GlobalVars
         @expectation_frameworks = []
-        @include_modules = FilterableItemRepository.new(:any?)
-        @extend_modules  = FilterableItemRepository.new(:any?)
-        @prepend_modules = FilterableItemRepository.new(:any?)
+        @include_modules = FilterableItemRepository::QueryOptimized.new(:any?)
+        @extend_modules  = FilterableItemRepository::QueryOptimized.new(:any?)
+        @prepend_modules = FilterableItemRepository::QueryOptimized.new(:any?)
 
         @before_suite_hooks = []
         @after_suite_hooks  = []
@@ -333,7 +333,7 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
-        @derived_metadata_blocks = FilterableItemRepository.new(:any?)
+        @derived_metadata_blocks = FilterableItemRepository::QueryOptimized.new(:any?)
       end
 
       # @private
