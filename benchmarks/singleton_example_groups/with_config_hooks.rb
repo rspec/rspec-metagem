@@ -12,18 +12,18 @@ BenchmarkHelpers.run_benchmarks
 __END__
 
 No match -- without singleton group support
-                        489.165  (±33.3%) i/s -      2.080k
+                        614.535  (±33.8%) i/s -      2.520k
 No match -- with singleton group support
-                        451.019  (±29.3%) i/s -      1.890k
+                        555.190  (±21.1%) i/s -      2.496k
 Example match -- without singleton group support
-                        465.178  (±35.3%) i/s -      1.820k
+                        574.821  (±31.5%) i/s -      2.491k
 Example match -- with singleton group support
-                        244.273  (±23.3%) i/s -      1.064k
+                        436.391  (±25.2%) i/s -      1.872k
 Group match -- without singleton group support
-                        406.979  (±27.0%) i/s -      1.700k
+                        544.063  (±31.4%) i/s -      2.112k
 Group match -- with singleton group support
-                        327.455  (±22.6%) i/s -      1.421k
+                        457.098  (±18.8%) i/s -      1.961k
 Both match -- without singleton group support
-                        423.859  (±32.1%) i/s -      1.763k
+                        554.004  (±30.1%) i/s -      2.255k
 Both match -- with singleton group support
-                        293.873  (±23.5%) i/s -      1.333k
+                        452.834  (±19.7%) i/s -      1.935k

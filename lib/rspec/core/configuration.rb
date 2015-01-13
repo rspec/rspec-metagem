@@ -1525,6 +1525,14 @@ module RSpec
         end
       end
 
+      # @private
+      # Holds the various registered hooks. Here we use a FilterableItemRepository
+      # implementation that is specifically optimized for the read/write patterns
+      # of the config object.
+      def hooks
+        @hooks ||= HookCollections.new(self, FilterableItemRepository::QueryOptimized)
+      end
+
     private
 
       def handle_suite_hook(args, collection, append_or_prepend, hook_type, block)

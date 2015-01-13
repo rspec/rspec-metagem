@@ -336,7 +336,7 @@ module RSpec
       # @private
       # Holds the various registered hooks.
       def hooks
-        @hooks ||= HookCollections.new(self)
+        @hooks ||= HookCollections.new(self, FilterableItemRepository::UpdateOptimized)
       end
 
     private
@@ -413,13 +413,14 @@ EOS
       # API, so that callers _tell_ this class what to do with the hooks, rather than
       # asking this class for a list of hooks, and then doing something with them.
       class HookCollections
-        def initialize(owner)
-          @owner = owner
-          @before_example_hooks = nil
-          @after_example_hooks  = nil
-          @before_context_hooks = nil
-          @after_context_hooks  = nil
-          @around_example_hooks = nil
+        def initialize(owner, filterable_item_repo_class)
+          @owner                      = owner
+          @filterable_item_repo_class = filterable_item_repo_class
+          @before_example_hooks       = nil
+          @after_example_hooks        = nil
+          @before_context_hooks       = nil
+          @after_context_hooks        = nil
+          @around_example_hooks       = nil
         end
 
         def register_globals(host, globals)
@@ -540,18 +541,18 @@ EOS
         def ensure_hooks_initialized_for(position, scope)
           if position == :before
             if scope == :example
-              @before_example_hooks ||= FilterableItemRepository::QueryOptimized.new(:all?)
+              @before_example_hooks ||= @filterable_item_repo_class.new(:all?)
             else
-              @before_context_hooks ||= FilterableItemRepository::QueryOptimized.new(:all?)
+              @before_context_hooks ||= @filterable_item_repo_class.new(:all?)
             end
           elsif position == :after
             if scope == :example
-              @after_example_hooks ||= FilterableItemRepository::QueryOptimized.new(:all?)
+              @after_example_hooks ||= @filterable_item_repo_class.new(:all?)
             else
-              @after_context_hooks ||= FilterableItemRepository::QueryOptimized.new(:all?)
+              @after_context_hooks ||= @filterable_item_repo_class.new(:all?)
             end
           else # around
-            @around_example_hooks ||= FilterableItemRepository::QueryOptimized.new(:all?)
+            @around_example_hooks ||= @filterable_item_repo_class.new(:all?)
           end
         end
 
