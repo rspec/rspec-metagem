@@ -4,8 +4,6 @@ module RSpec
     #
     # Internal container for global non-configuration data.
     class World
-      include RSpec::Core::Hooks
-
       # @private
       attr_reader :example_groups, :filtered_examples
 
