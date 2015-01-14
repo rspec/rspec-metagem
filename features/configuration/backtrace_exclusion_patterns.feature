@@ -1,7 +1,21 @@
 Feature: Excluding lines from the backtrace
 
-  To reduce the noise when diagnosing failures, RSpec excludes matching lines
-  from backtraces. The default exclusion patterns are:
+  To reduce the noise when diagnosing failures, RSpec can exclude lines belonging to certain gems or matching given patterns.
+
+  If you want to filter out backtrace lines belonging to specific gems, you can use `config.filter_gems_from_backtrace` like so:
+
+  ```ruby
+  config.filter_gems_from_backtrace "ignored_gem", "another_ignored_gem",
+  ```
+
+  For more control over which lines to ignore, you can use the the `backtrace_exclusion_patterns` option to either replace the default exclusion patterns, or append your own, e.g.
+
+  ```ruby
+  config.backtrace_exclusion_patterns = [/first pattern/, /second pattern/]
+  config.backtrace_exclusion_patterns << /another pattern/
+  ```
+
+  The default exclusion patterns are:
 
   ```ruby
   /\/lib\d*\/ruby\//,
@@ -10,12 +24,8 @@ Feature: Excluding lines from the backtrace
   /lib\/rspec\/(core|expectations|matchers|mocks)/
   ```
 
-  This list can be modified or replaced with the `backtrace_exclusion_patterns`
-  option. Additionally, `rspec` can be run with the `--backtrace` option to skip
-  backtrace cleaning entirely.
+  Additionally, `rspec` can be run with the `--backtrace` option to skip backtrace cleaning entirely.
 
-  In addition, if you want to filter out backtrace lines from specific gems, you
-  can use `config.filter_gems_from_backtrace`.
 
   Scenario: Using default `backtrace_exclusion_patterns`
     Given a file named "spec/failing_spec.rb" with:
