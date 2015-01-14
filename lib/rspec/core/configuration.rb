@@ -1158,8 +1158,12 @@ module RSpec
       # Used internally to extend the singleton class of a single example's
       # example group instance with modules using `include` and/or `extend`.
       def configure_example(example)
-        @include_modules.items_for(example.metadata).each do |mod|
-          safe_include(mod, example.example_group_instance.singleton_class)
+        # We replace the metadata so that SharedExampleGroupModule#included
+        # has access to the example's metadata[:location].
+        example.example_group_instance.singleton_class.with_replaced_metadata(example.metadata) do
+          @include_modules.items_for(example.metadata).each do |mod|
+            safe_include(mod, example.example_group_instance.singleton_class)
+          end
         end
       end
 

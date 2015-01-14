@@ -20,7 +20,8 @@ module RSpec
       # Our definition evaluates the shared group block in the context of the
       # including example group.
       def included(klass)
-        SharedExampleGroupInclusionStackFrame.with_frame(@description, RSpec::CallerFilter.first_non_rspec_line) do
+        inclusion_line = klass.metadata[:location]
+        SharedExampleGroupInclusionStackFrame.with_frame(@description, inclusion_line) do
           klass.class_exec(&@definition)
         end
       end

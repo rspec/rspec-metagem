@@ -45,7 +45,21 @@ module RSpec
       # The [Metadata](Metadata) object associated with this group.
       # @see Metadata
       def self.metadata
-        @metadata if defined?(@metadata)
+        @metadata ||= nil
+      end
+
+      # Temporarily replace the provided metadata.
+      # Intended primarily to allow an example group's singleton class
+      # to return the metadata of the example that it exists for. This
+      # is necessary for shared example group inclusion to work properly
+      # with singleton example groups.
+      # @private
+      def self.with_replaced_metadata(meta)
+        orig_metadata = metadata
+        @metadata = meta
+        yield
+      ensure
+        @metadata = orig_metadata
       end
 
       # @private
@@ -333,7 +347,7 @@ module RSpec
           raise ArgumentError, "Could not find shared #{label} #{name.inspect}"
         end
 
-        SharedExampleGroupInclusionStackFrame.with_frame(name, inclusion_location) do
+        SharedExampleGroupInclusionStackFrame.with_frame(name, Metadata.relative_path(inclusion_location)) do
           module_exec(*args, &shared_block)
           module_exec(&customization_block) if customization_block
         end
