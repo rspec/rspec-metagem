@@ -42,7 +42,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rake",     "~> 10.0.0"
   s.add_development_dependency "cucumber", "~> 1.3"
   s.add_development_dependency "minitest", "~> 5.3"
-  s.add_development_dependency "aruba",    "~> 0.5"
+
+  # Aruba 0.6.2 removed an API we rely on. For now we are excluding
+  # that version until we find out if they will restore it. See:
+  # https://github.com/cucumber/aruba/commit/5b2c7b445bc80083e577b793e4411887ef295660#commitcomment-9284628
+  s.add_development_dependency "aruba",    "~> 0.5", "!= 0.6.2"
 
   s.add_development_dependency "nokogiri", (RUBY_VERSION < '1.9.3' ? "1.5.2" : "~> 1.5")
   s.add_development_dependency "coderay",  "~> 1.0.9"
