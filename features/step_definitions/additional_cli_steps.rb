@@ -1,6 +1,6 @@
 # Useful for when the output is slightly different on different versions of ruby
 Then /^the output should contain "([^"]*)" or "([^"]*)"$/ do |string1, string2|
-  unless [string1, string2].any? { |s| all_output =~ regexp(s) }
+  unless [string1, string2].any? { |s| all_output.include?(s) }
     fail %Q{Neither "#{string1}" or "#{string2}" were found in:\n#{all_output}}
   end
 end
