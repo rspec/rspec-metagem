@@ -13,6 +13,15 @@ rspec-core and rspec-mocks):
 
     gem install rspec
 
+Want to run against the `master` branch? You'll need to include the dependent
+RSpec repos as well. Add the following to your `Gemfile`:
+
+```ruby
+%w[rspec-core rspec-expectations rspec-mocks rspec-support].each do |lib|
+  gem lib, :git => "git://github.com/rspec/#{lib}.git", :branch => 'master'
+end
+```
+
 If you want to use rspec-expectations with another tool, like Test::Unit,
 Minitest, or Cucumber, you can install it directly:
 
