@@ -36,14 +36,21 @@ module RSpec::Core
 
     context "default" do
       it "renders rspec" do
-        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} '?#{task.rspec_path}'?/)
+      end
+    end
+
+    context "with space", :unless => RSpec::Support::OS.windows? do
+      it "renders rspec with space escaped" do
+        task.rspec_path = '/path with space/exe/rspec'
+        expect(spec_command).to match(/^#{ruby} #{default_load_path_opts} \/path\\ with\\ space\/exe\/rspec/)
       end
     end
 
     context "with ruby options" do
       it "renders them before the rspec path" do
         task.ruby_opts = "-w"
-        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} #{task.rspec_path}/)
+        expect(spec_command).to match(/^#{ruby} -w #{default_load_path_opts} '?#{task.rspec_path}'?/)
       end
     end
 
