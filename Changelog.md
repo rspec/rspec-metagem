@@ -64,6 +64,8 @@ Bug Fixes:
 * When a pending example fails (as expected) due to a mock expectation,
   set `RSpec::Core::Example::ExecutionResult#pending_exception` --
   previously it was not being set but should have been. (Myron Marston, #1844)
+* Fix rake task to work when `rspec-core` is installed in a directory
+  containing a space. (Guido Günther, #1845)
 
 ### 3.1.8 Development
 
