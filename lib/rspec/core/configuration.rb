@@ -297,9 +297,9 @@ module RSpec
         @start_time = $_rspec_core_load_started_at || ::RSpec::Core::Time.now
         # rubocop:enable Style/GlobalVars
         @expectation_frameworks = []
-        @include_modules = FilterableItemRepository.new(:any?)
-        @extend_modules  = FilterableItemRepository.new(:any?)
-        @prepend_modules = FilterableItemRepository.new(:any?)
+        @include_modules = FilterableItemRepository::QueryOptimized.new(:any?)
+        @extend_modules  = FilterableItemRepository::QueryOptimized.new(:any?)
+        @prepend_modules = FilterableItemRepository::QueryOptimized.new(:any?)
 
         @before_suite_hooks = []
         @after_suite_hooks  = []
@@ -333,7 +333,7 @@ module RSpec
         @profile_examples = false
         @requires = []
         @libs = []
-        @derived_metadata_blocks = FilterableItemRepository.new(:any?)
+        @derived_metadata_blocks = FilterableItemRepository::QueryOptimized.new(:any?)
       end
 
       # @private
@@ -1019,7 +1019,7 @@ module RSpec
 
       # Tells RSpec to include `mod` in example groups. Methods defined in
       # `mod` are exposed to examples (not example groups). Use `filters` to
-      # constrain the groups in which to include the module.
+      # constrain the groups or examples in which to include the module.
       #
       # @example
       #
@@ -1047,6 +1047,13 @@ module RSpec
       #         assert_select ".username", :text => 'jdoe'
       #       end
       #     end
+      #
+      # @note Filtered module inclusions can also be applied to
+      #   individual examples that have matching metadata. Just like
+      #   Ruby's object model is that every object has a singleton class
+      #   which has only a single instance, RSpec's model is that every
+      #   example has a singleton example group containing just the one
+      #   example.
       #
       # @see #extend
       # @see #prepend
@@ -1147,8 +1154,17 @@ module RSpec
       end
 
       # @private
-      def safe_include(mod, host)
-        host.__send__(:include, mod) unless host < mod
+      #
+      # Used internally to extend the singleton class of a single example's
+      # example group instance with modules using `include` and/or `extend`.
+      def configure_example(example)
+        # We replace the metadata so that SharedExampleGroupModule#included
+        # has access to the example's metadata[:location].
+        example.example_group_instance.singleton_class.with_replaced_metadata(example.metadata) do
+          @include_modules.items_for(example.metadata).each do |mod|
+            safe_include(mod, example.example_group_instance.singleton_class)
+          end
+        end
       end
 
       if RSpec::Support::RubyFeatures.module_prepends_supported?
@@ -1169,10 +1185,20 @@ module RSpec
       # @private
       if RUBY_VERSION.to_f >= 1.9
         # @private
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host < mod
+        end
+
+        # @private
         def safe_extend(mod, host)
           host.extend(mod) unless host.singleton_class < mod
         end
       else
+        # @private
+        def safe_include(mod, host)
+          host.__send__(:include, mod) unless host.included_modules.include?(mod)
+        end
+
         # @private
         def safe_extend(mod, host)
           host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
@@ -1501,6 +1527,14 @@ module RSpec
         ensure
           run_hooks_with(@after_suite_hooks, hook_context)
         end
+      end
+
+      # @private
+      # Holds the various registered hooks. Here we use a FilterableItemRepository
+      # implementation that is specifically optimized for the read/write patterns
+      # of the config object.
+      def hooks
+        @hooks ||= HookCollections.new(self, FilterableItemRepository::QueryOptimized)
       end
 
     private

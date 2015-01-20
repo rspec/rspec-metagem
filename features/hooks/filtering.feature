@@ -14,6 +14,8 @@ Feature: filters
   end
   ```
 
+  Note that filtered `:context` hooks will still be applied to individual examples with matching metadata -- in effect, every example has a singleton example group containing just the one example (analogous to Ruby's singleton classes).
+
   You can also specify metadata using only symbols.
 
   Scenario: Filter `before(:example)` hooks using arbitrary metadata
@@ -127,6 +129,10 @@ Feature: filters
             expect(@hook).to be_nil
           end
 
+          it "runs the hook for a single example with matching metadata", :foo => :bar do
+            expect(@hook).to eq(:before_context_foo_bar)
+          end
+
           describe "a nested subgroup with matching metadata", :foo => :bar do
             it "runs the hook" do
               expect(@hook).to eq(:before_context_foo_bar)
@@ -166,31 +172,37 @@ Feature: filters
           it "does not run the hook" do
             puts "unfiltered"
           end
+
+          it "runs the hook for a single example with matching metadata", :foo => :bar do
+            puts "filtered 1"
+          end
         end
 
         describe "a group with matching metadata", :foo => :bar do
           it "runs the hook" do
-            puts "filtered 1"
+            puts "filtered 2"
           end
         end
 
         describe "another group without matching metadata" do
           describe "a nested subgroup with matching metadata", :foo => :bar do
             it "runs the hook" do
-              puts "filtered 2"
+              puts "filtered 3"
             end
           end
         end
       end
       """
-    When I run `rspec --format progress filter_after_context_hooks_spec.rb`
+    When I run `rspec --format progress filter_after_context_hooks_spec.rb --order defined`
     Then the examples should all pass
     And the output should contain:
       """
       unfiltered
       .filtered 1
+      after :context
+      .filtered 2
       .after :context
-      filtered 2
+      filtered 3
       .after :context
       """
 

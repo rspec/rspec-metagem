@@ -160,6 +160,8 @@ module RSpec
       # @param example_group_instance the instance of an ExampleGroup subclass
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
+        hooks.register_global_singleton_context_hooks(self, RSpec.configuration.hooks)
+        RSpec.configuration.configure_example(self)
         RSpec.current_example = self
 
         start(reporter)
@@ -169,7 +171,7 @@ module RSpec
           if skipped?
             Pending.mark_pending! self, skip
           elsif !RSpec.configuration.dry_run?
-            with_around_example_hooks do
+            with_around_and_singleton_context_hooks do
               begin
                 run_before_example
                 @example_group_instance.instance_exec(self, &@example_block)
@@ -333,8 +335,12 @@ module RSpec
 
     private
 
+      def hooks
+        example_group_instance.singleton_class.hooks
+      end
+
       def with_around_example_hooks
-        @example_group_class.hooks.run(:around, :example, self) { yield }
+        hooks.run(:around, :example, self) { yield }
       rescue Exception => e
         set_exception(e, "in an `around(:example)` hook")
       end
@@ -370,12 +376,20 @@ module RSpec
 
       def run_before_example
         @example_group_instance.setup_mocks_for_rspec
-        @example_group_class.hooks.run(:before, :example, self)
+        hooks.run(:before, :example, self)
+      end
+
+      def with_around_and_singleton_context_hooks
+        singleton_context_hooks_host = example_group_instance.singleton_class
+        singleton_context_hooks_host.run_before_context_hooks(example_group_instance)
+        with_around_example_hooks { yield }
+      ensure
+        singleton_context_hooks_host.run_after_context_hooks(example_group_instance)
       end
 
       def run_after_example
         assign_generated_description if defined?(::RSpec::Matchers)
-        @example_group_class.hooks.run(:after, :example, self)
+        hooks.run(:after, :example, self)
         verify_mocks
       ensure
         @example_group_instance.teardown_mocks_for_rspec

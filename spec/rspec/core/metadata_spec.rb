@@ -189,7 +189,7 @@ module RSpec
 
               expect(meta[:shared_group_inclusion_backtrace]).to match [ an_object_having_attributes(
                 :shared_group_name  => "some shared behavior",
-                :inclusion_location => a_string_including("#{__FILE__}:#{line}")
+                :inclusion_location => a_string_including("#{Metadata.relative_path __FILE__}:#{line}")
               ) ]
             end
           end
@@ -213,7 +213,7 @@ module RSpec
 
                 expect(meta[:shared_group_inclusion_backtrace]).to match [ an_object_having_attributes(
                   :shared_group_name  => "some shared behavior",
-                  :inclusion_location => a_string_including("#{__FILE__}:#{line}")
+                  :inclusion_location => a_string_including("#{Metadata.relative_path __FILE__}:#{line}")
                 ) ]
               end
             end
@@ -239,11 +239,11 @@ module RSpec
                 expect(meta[:shared_group_inclusion_backtrace]).to match [
                   an_object_having_attributes(
                     :shared_group_name  => "inner",
-                    :inclusion_location => a_string_including("#{__FILE__}:#{inner_line}")
+                    :inclusion_location => a_string_including("#{Metadata.relative_path __FILE__}:#{inner_line}")
                   ),
                   an_object_having_attributes(
                     :shared_group_name  => "outer",
-                    :inclusion_location => a_string_including("#{__FILE__}:#{outer_line}")
+                    :inclusion_location => a_string_including("#{Metadata.relative_path __FILE__}:#{outer_line}")
                   ),
                 ]
               end

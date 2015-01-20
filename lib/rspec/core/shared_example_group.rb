@@ -20,7 +20,8 @@ module RSpec
       # Our definition evaluates the shared group block in the context of the
       # including example group.
       def included(klass)
-        SharedExampleGroupInclusionStackFrame.with_frame(@description, RSpec::CallerFilter.first_non_rspec_line) do
+        inclusion_line = klass.metadata[:location]
+        SharedExampleGroupInclusionStackFrame.with_frame(@description, inclusion_line) do
           klass.class_exec(&@definition)
         end
       end
@@ -48,13 +49,13 @@ module RSpec
       #   @param name [String, Symbol, Module] identifer to use when looking up
       #     this shared group
       #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-      #     group; any example group with matching metadata will automatically
-      #     include this shared example group.
+      #     group; any example group or example with matching metadata will
+      #     automatically include this shared example group.
       #   @param block The block to be eval'd
       # @overload shared_examples(metadata, &block)
       #   @param metadata [Array<Symbol>, Hash] metadata to attach to this
-      #     group; any example group with matching metadata will automatically
-      #     include this shared example group.
+      #     group; any example group or example with matching metadata will
+      #     automatically include this shared example group.
       #   @param block The block to be eval'd
       #
       # Stores the block for later use. The block will be evaluated

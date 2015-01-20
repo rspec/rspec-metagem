@@ -168,10 +168,6 @@ module RSpec::Core
               'after each in config'
             ])
           end
-
-          it "does not run the `:all` hooks" do
-            expect(all_filters).to be_empty
-          end
         end
 
         describe 'an example without matching metadata' do
@@ -224,10 +220,12 @@ module RSpec::Core
 
         expect(sequence).to eq([
           "ex1",
+          "before all in config",
           "around each in config",
           "before each in config",
           "ex2",
           "after each in config",
+          "after all in config"
         ])
       end
 
@@ -244,6 +242,42 @@ module RSpec::Core
         end.run
 
         expect(filters).to eq([:before_each, :matching_example, :nonmatching_example])
+      end
+    end
+
+    describe ":context hooks defined in configuration with metadata" do
+      it 'applies to individual matching examples' do
+        sequence = []
+
+        RSpec.configure do |config|
+          config.before(:context, :apply_it) { sequence << :before_context }
+          config.after(:context, :apply_it)  { sequence << :after_context  }
+        end
+
+        RSpec.describe do
+          example("ex", :apply_it) { sequence << :example }
+        end.run
+
+        expect(sequence).to eq([:before_context, :example, :after_context])
+      end
+
+      it 'does not apply to individual matching examples for which it also applies to a parent example group' do
+        sequence = []
+
+        RSpec.configure do |config|
+          config.before(:context, :apply_it) { sequence << :before_context }
+          config.after(:context, :apply_it)  { sequence << :after_context  }
+        end
+
+        RSpec.describe "Group", :apply_it do
+          example("ex") { sequence << :outer_example }
+
+          context "nested", :apply_it => false do
+            example("ex", :apply_it) { sequence << :inner_example }
+          end
+        end.run
+
+        expect(sequence).to eq([:before_context, :outer_example, :inner_example, :after_context])
       end
     end
   end
