@@ -43,10 +43,6 @@ module RSpec
           end
         end
 
-        def actual_is_unordered
-          ArgumentError.new("#{actual.inspect} does not have ordered elements")
-        end
-
         def subsets_comparable?
           # Structs support the Enumerable interface but don't really have
           # the semantics of a subset of a larger set...
