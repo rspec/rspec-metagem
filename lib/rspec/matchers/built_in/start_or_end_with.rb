@@ -4,7 +4,7 @@ module RSpec
       # @api private
       # Base class for the `end_with` and `start_with` matchers.
       # Not intended to be instantiated directly.
-      class StartAndEndWith < BaseMatcher
+      class StartOrEndWith < BaseMatcher
         def initialize(*expected)
           @actual_does_not_have_ordered_elements = false
           @expected = expected.length == 1 ? expected.first : expected
@@ -43,10 +43,6 @@ module RSpec
           end
         end
 
-        def actual_is_unordered
-          ArgumentError.new("#{actual.inspect} does not have ordered elements")
-        end
-
         def subsets_comparable?
           # Structs support the Enumerable interface but don't really have
           # the semantics of a subset of a larger set...
@@ -56,10 +52,16 @@ module RSpec
         end
       end
 
+      # For RSpec 3.1, the base class was named `StartAndEndWith`. For SemVer reasons,
+      # we still provide this constant until 4.0.
+      # @deprecated Use StartOrEndWith instead.
+      # @private
+      StartAndEndWith = StartOrEndWith
+
       # @api private
       # Provides the implementation for `start_with`.
       # Not intended to be instantiated directly.
-      class StartWith < StartAndEndWith
+      class StartWith < StartOrEndWith
       private
 
         def subset_matches?
@@ -74,7 +76,7 @@ module RSpec
       # @api private
       # Provides the implementation for `end_with`.
       # Not intended to be instantiated directly.
-      class EndWith < StartAndEndWith
+      class EndWith < StartOrEndWith
       private
 
         def subset_matches?
