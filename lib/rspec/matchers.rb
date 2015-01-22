@@ -220,19 +220,16 @@ module RSpec
     # @param old_name [Symbol] the original name for the matcher
     # @param options  [Hash] options for the aliased matcher
     # @option options [Class] :klass the ruby class to use as the decorator. (Not normally used).
-    # @yield [String] optional block that, when given is used to define the overriden
-    #   description. The yielded arg is the original description. If no block is
-    #   provided, a default description override is used based on the old and
-    #   new names.
+    # @yield [String] optional block that, when given, is used to define the overriden
+    #   logic. The yielded arg is the original description or failure message. If no
+    #   block is provided, a default override is used based on the old and new names.
     #
     # @example
-    #
     #   RSpec::Matchers.alias_matcher :a_list_that_sums_to, :sum_to
     #   sum_to(3).description # => "sum to 3"
     #   a_list_that_sums_to(3).description # => "a list that sums to 3"
     #
     # @example
-    #
     #   RSpec::Matchers.alias_matcher :a_list_sorted_by, :be_sorted_by do |description|
     #     description.sub("be sorted by", "a list sorted by")
     #   end
@@ -261,16 +258,20 @@ module RSpec
     #
     # @param negated_name [Symbol] the name for the negated matcher
     # @param base_name [Symbol] the name of the original matcher that will be negated
-    # @yield [String] optional block that, when given is used to define the overriden
-    #   description. The yielded arg is the original description. If no block is
-    #   provided, a default description override is used based on the old and
-    #   new names.
+    # @yield [String] optional block that, when given, is used to define the overriden
+    #   logic. The yielded arg is the original description or failure message. If no
+    #   block is provided, a default override is used based on the old and new names.
     #
     # @example
+    #   RSpec::Matchers.define_negated_matcher :exclude, :include
+    #   include(1, 2).description # => "include 1 and 2"
+    #   exclude(1, 2).description # => "exclude 1 and 2"
     #
-    #   RSpec::Matchers.define_negated_matcher :a_value_not_between, :a_value_between
-    #   a_value_between(3, 5).description # => "a value between 3 and 5"
-    #   a_value_not_between(3, 5).description # => "a value not between 3 and 5"
+    # @note While the most obvious negated form may be to add a `not_` prefix,
+    #   the failure messages you get with that form can be confusing (e.g.
+    #   "expected [actual] to not [verb], but did not"). We've found it works
+    #   best to find a more positive name for the negated form, such as
+    #   `avoid_changing` rather than `not_change`.
     def self.define_negated_matcher(negated_name, base_name, &description_override)
       alias_matcher(negated_name, base_name, :klass => AliasedNegatedMatcher, &description_override)
     end
@@ -329,7 +330,6 @@ module RSpec
     # Passes if actual.instance_of?(expected)
     #
     # @example
-    #
     #   expect(5).to     be_an_instance_of(Fixnum)
     #   expect(5).not_to be_an_instance_of(Numeric)
     #   expect(5).not_to be_an_instance_of(Float)
@@ -342,7 +342,6 @@ module RSpec
     # Passes if actual.kind_of?(expected)
     #
     # @example
-    #
     #   expect(5).to     be_a_kind_of(Fixnum)
     #   expect(5).to     be_a_kind_of(Numeric)
     #   expect(5).not_to be_a_kind_of(Float)
@@ -360,7 +359,6 @@ module RSpec
     # but you can make it `exclusive` by chaining that off the matcher.
     #
     # @example
-    #
     #   expect(5).to      be_between(1, 10)
     #   expect(11).not_to be_between(1, 10)
     #   expect(10).not_to be_between(1, 10).exclusive
@@ -372,7 +370,6 @@ module RSpec
     # Passes if actual == expected +/- delta
     #
     # @example
-    #
     #   expect(result).to     be_within(0.5).of(3.0)
     #   expect(result).not_to be_within(0.5).of(3.0)
     def be_within(delta)
@@ -407,7 +404,6 @@ module RSpec
     # * `by_at_most`
     #
     # @example
-    #
     #   expect {
     #     team.add_player(player)
     #   }.to change(roster, :count)
@@ -474,7 +470,6 @@ module RSpec
     #       but `=~` is not supported with `expect`.
     #
     # @example
-    #
     #   expect([1, 2, 3]).to contain_exactly(1, 2, 3)
     #   expect([1, 2, 3]).to contain_exactly(1, 3, 2)
     #
@@ -509,7 +504,6 @@ module RSpec
     # `expected.length` elements of the actual array.
     #
     # @example
-    #
     #   expect("this string").to   end_with "string"
     #   expect([0, 1, 2, 3, 4]).to end_with 4
     #   expect([0, 2, 3, 4, 4]).to end_with 3, 4
@@ -526,7 +520,6 @@ module RSpec
     # information about equality in Ruby.
     #
     # @example
-    #
     #   expect(5).to     eq(5)
     #   expect(5).not_to eq(3)
     def eq(expected)
@@ -541,7 +534,6 @@ module RSpec
     # information about equality in Ruby.
     #
     # @example
-    #
     #   expect(5).to     eql(5)
     #   expect(5).not_to eql(3)
     def eql(expected)
@@ -556,7 +548,6 @@ module RSpec
     # information about equality in Ruby.
     #
     # @example
-    #
     #   expect(5).to       equal(5)   # Fixnums are equal
     #   expect("5").not_to equal("5") # Strings that look the same are not the same object
     def equal(expected)
@@ -579,7 +570,6 @@ module RSpec
     # This works no matter how you define your attribute readers.
     #
     # @example
-    #
     #   Person = Struct.new(:name, :age)
     #   person = Person.new("Bob", 32)
     #
@@ -589,7 +579,6 @@ module RSpec
     # @note It will fail if actual doesn't respond to any of the expected attributes.
     #
     # @example
-    #
     #   expect(person).to have_attributes(:color => "red")
     def have_attributes(expected)
       BuiltIn::HaveAttributes.new(expected)
@@ -601,7 +590,6 @@ module RSpec
     # and it will only pass if all args are found in collection.
     #
     # @example
-    #
     #   expect([1,2,3]).to      include(3)
     #   expect([1,2,3]).to      include(2,3)
     #   expect([1,2,3]).to      include(2,3,4) # fails
@@ -620,7 +608,6 @@ module RSpec
     # elements of the collection.
     #
     # @example
-    #
     #   expect([1, 3, 5]).to all be_odd
     #   expect([1, 3, 6]).to all be_odd # fails
     #
@@ -642,12 +629,10 @@ module RSpec
     # pair of elements.
     #
     # @example
-    #
     #   expect(email).to match(/^([^\s]+)((?:[-a-z0-9]+\.)+[a-z]{2,})$/i)
     #   expect(email).to match("@example.com")
     #
     # @example
-    #
     #   hash = {
     #     :a => {
     #       :b => ["foo", 5],
@@ -682,7 +667,6 @@ module RSpec
     # that splatted out as individual items.
     #
     # @example
-    #
     #   expect(results).to contain_exactly(1, 2)
     #   # is identical to:
     #   expect(results).to match_array([1, 2])
@@ -701,7 +685,6 @@ module RSpec
     # standard stream will be captured.
     #
     # @example
-    #
     #   expect { print 'foo' }.to output.to_stdout
     #   expect { print 'foo' }.to output('foo').to_stdout
     #   expect { print 'foo' }.to output(/foo/).to_stdout
@@ -735,7 +718,6 @@ module RSpec
     # Pass an optional block to perform extra verifications on the exception matched
     #
     # @example
-    #
     #   expect { do_something_risky }.to raise_error
     #   expect { do_something_risky }.to raise_error(PoorRiskDecisionError)
     #   expect { do_something_risky }.to raise_error(PoorRiskDecisionError) { |error| expect(error.data).to eq 42 }
@@ -760,7 +742,6 @@ module RSpec
     # provided. Names can be Strings or Symbols.
     #
     # @example
-    #
     #   expect("string").to respond_to(:length)
     #
     def respond_to(*names)
@@ -780,7 +761,6 @@ module RSpec
     # a custom matcher, which would likely make your specs more expressive.
     #
     # @example
-    #
     #   expect(5).to satisfy { |n| n > 3 }
     def satisfy(&block)
       BuiltIn::Satisfy.new(&block)
@@ -794,7 +774,6 @@ module RSpec
     # `expected.length` elements of the actual array.
     #
     # @example
-    #
     #   expect("this string").to   start_with "this s"
     #   expect([0, 1, 2, 3, 4]).to start_with 0
     #   expect([0, 2, 3, 4, 4]).to start_with 0, 1
@@ -813,7 +792,6 @@ module RSpec
     # specified Symbol with the specified arg.
     #
     # @example
-    #
     #   expect { do_something_risky }.to throw_symbol
     #   expect { do_something_risky }.to throw_symbol(:that_was_risky)
     #   expect { do_something_risky }.to throw_symbol(:that_was_risky, 'culprit')
@@ -837,7 +815,6 @@ module RSpec
     # of whether or not arguments are yielded.
     #
     # @example
-    #
     #   expect { |b| 5.tap(&b) }.to yield_control
     #   expect { |b| "a".to_sym(&b) }.not_to yield_control
     #
@@ -853,7 +830,6 @@ module RSpec
     # no arguments. Fails if it does not yield, or yields with arguments.
     #
     # @example
-    #
     #   expect { |b| User.transaction(&b) }.to yield_with_no_args
     #   expect { |b| 5.tap(&b) }.not_to yield_with_no_args # because it yields with `5`
     #   expect { |b| "a".to_sym(&b) }.not_to yield_with_no_args # because it does not yield
@@ -880,7 +856,6 @@ module RSpec
     # operator, the matcher will pass.
     #
     # @example
-    #
     #   expect { |b| 5.tap(&b) }.to yield_with_args # because #tap yields an arg
     #   expect { |b| 5.tap(&b) }.to yield_with_args(5) # because 5 == 5
     #   expect { |b| 5.tap(&b) }.to yield_with_args(Fixnum) # because Fixnum === 5
@@ -908,7 +883,6 @@ module RSpec
     # operator, the matcher will pass.
     #
     # @example
-    #
     #   expect { |b| [1, 2, 3].each(&b) }.to yield_successive_args(1, 2, 3)
     #   expect { |b| { :a => 1, :b => 2 }.each(&b) }.to yield_successive_args([:a, 1], [:b, 2])
     #   expect { |b| [1, 2, 3].each(&b) }.not_to yield_successive_args(1, 2)
