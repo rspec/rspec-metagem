@@ -729,7 +729,7 @@ module RSpec
       # Convert to CamelCase.
       name = ' ' << group.description
       name.gsub!(/[^0-9a-zA-Z]+([0-9a-zA-Z])/) do
-        match = Regexp.last_match[1]
+        match = ::Regexp.last_match[1]
         match.upcase!
         match
       end
