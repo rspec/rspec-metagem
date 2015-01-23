@@ -8,7 +8,7 @@ module RSpec
         end
       else # for 1.8.7
         def flat_map(array, &block)
-          array.map(&block).flatten(2)
+          array.map(&block).flatten(1)
         end
       end
 
