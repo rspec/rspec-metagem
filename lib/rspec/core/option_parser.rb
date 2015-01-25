@@ -25,9 +25,9 @@ module RSpec::Core
       OptionParser.new do |parser|
         parser.banner = "Usage: rspec [options] [files or directories]\n\n"
 
-        parser.on('-I PATH', 'Specify PATH to add to $LOAD_PATH (may be used more than once).') do |dir|
+        parser.on('-I PATH', 'Specify PATH to add to $LOAD_PATH (may be used more than once).') do |dirs|
           options[:libs] ||= []
-          options[:libs] << dir
+          options[:libs].concat(dirs.split(File::PATH_SEPARATOR))
         end
 
         parser.on('-r', '--require PATH', 'Require a file.') do |path|

@@ -59,6 +59,20 @@ module RSpec::Core
       expect { generate_help_text }.to_not output(useless_lines).to_stdout
     end
 
+    describe "-I" do
+      it "sets the path" do
+        options = Parser.parse(%w[-I path/to/foo])
+        expect(options[:libs]).to eq %w[path/to/foo]
+      end
+
+      context "with multiple paths" do
+        it "sets the paths" do
+          options = Parser.parse(%W[-I path/to/foo -I path/to/bar#{File::PATH_SEPARATOR}path/to/baz])
+          expect(options[:libs]).to eq %w[path/to/foo path/to/bar path/to/baz]
+        end
+      end
+    end
+
     describe "--default-path" do
       it "sets the default path where RSpec looks for examples" do
         options = Parser.parse(%w[--default-path foo])
