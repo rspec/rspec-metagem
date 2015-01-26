@@ -65,8 +65,8 @@ module RSpec::Core
         expect(options[:libs]).to eq %w[path/to/foo]
       end
 
-      context "with multiple paths" do
-        it "sets the paths" do
+      context "with a string containing `#{File::PATH_SEPARATOR}`" do
+        it "splits into multiple paths, just like Ruby's `-I` option" do
           options = Parser.parse(%W[-I path/to/foo -I path/to/bar#{File::PATH_SEPARATOR}path/to/baz])
           expect(options[:libs]).to eq %w[path/to/foo path/to/bar path/to/baz]
         end
