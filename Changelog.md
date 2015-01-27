@@ -69,6 +69,8 @@ Bug Fixes:
   previously it was not being set but should have been. (Myron Marston, #1844)
 * Fix rake task to work when `rspec-core` is installed in a directory
   containing a space. (Guido Günther, #1845)
+* Fix regression in 3.1 that caused `describe Regexp` to raise errors.
+  (Durran Jordan, #1853)
 
 ### 3.1.8 Development
 
