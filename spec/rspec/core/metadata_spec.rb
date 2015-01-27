@@ -278,6 +278,12 @@ module RSpec
             it "returns the class" do
               expect(value_for String).to be(String)
             end
+
+            context "when the class is Regexp" do
+              it "returns the class" do
+                expect(value_for Regexp).to be(Regexp)
+              end
+            end
           end
         end
 
