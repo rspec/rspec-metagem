@@ -21,6 +21,9 @@ Enhancements:
   to `output(...).to_std(out|err)`. The latter doesn't work when a sub
   process writes to the named stream but is much faster.
   (Alex Genco, #700)
+* Improve compound matchers (created by `and` and `or`) so that diffs
+  are included in failures when one or more of their matchers
+  are diffable. (Alexey Fedorov, #713)
 
 Bug Fixes:
 
