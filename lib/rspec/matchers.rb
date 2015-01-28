@@ -10,6 +10,7 @@ RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relat
   dsl
   matcher_delegator
   aliased_matcher
+  expecteds_for_multiple_diffs
 ].each { |file| RSpec::Support.require_rspec_matchers(file) }
 
 # RSpec's top level namespace. All of rspec-expectations is contained

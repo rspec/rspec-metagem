@@ -3,9 +3,10 @@ module RSpec
     module BuiltIn
       # @api private
       # Base class for `and` and `or` compound matchers.
+      # rubocop:disable ClassLength
       class Compound < BaseMatcher
         # @private
-        attr_reader :matcher_1, :matcher_2
+        attr_reader :matcher_1, :matcher_2, :evaluator
 
         def initialize(matcher_1, matcher_2)
           @matcher_1 = matcher_1
@@ -34,6 +35,28 @@ module RSpec
         def expects_call_stack_jump?
           NestedEvaluator.matcher_expects_call_stack_jump?(matcher_1) ||
           NestedEvaluator.matcher_expects_call_stack_jump?(matcher_2)
+        end
+
+        # @api private
+        # @return [Boolean]
+        def diffable?
+          matcher_is_diffable?(matcher_1) || matcher_is_diffable?(matcher_2)
+        end
+
+        # @api private
+        # @return [RSpec::Matchers::ExpectedsForMultipleDiffs]
+        def expected
+          return nil unless evaluator
+          ::RSpec::Matchers::ExpectedsForMultipleDiffs.for_many_matchers(diffable_matcher_list)
+        end
+
+      protected
+
+        def diffable_matcher_list
+          list = []
+          list.concat(diffable_matcher_list_for(matcher_1)) unless matcher_1_matches?
+          list.concat(diffable_matcher_list_for(matcher_2)) unless matcher_2_matches?
+          list
         end
 
       private
@@ -88,17 +111,29 @@ module RSpec
         end
 
         def matcher_1_matches?
-          @evaluator.matcher_matches?(matcher_1)
+          evaluator.matcher_matches?(matcher_1)
         end
 
         def matcher_2_matches?
-          @evaluator.matcher_matches?(matcher_2)
+          evaluator.matcher_matches?(matcher_2)
         end
 
         def matcher_supports_block_expectations?(matcher)
           matcher.supports_block_expectations?
         rescue NoMethodError
           false
+        end
+
+        def matcher_is_diffable?(matcher)
+          matcher.diffable?
+        rescue NoMethodError
+          false
+        end
+
+        def diffable_matcher_list_for(matcher)
+          return [] unless matcher_is_diffable?(matcher)
+          return matcher.diffable_matcher_list if Compound === matcher
+          [matcher]
         end
 
         # For value expectations, we can evaluate the matchers sequentially.

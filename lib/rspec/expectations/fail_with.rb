@@ -24,8 +24,7 @@ module RSpec
                                "appropriate failure_message[_when_negated] method to return a string?"
         end
 
-        diff = differ.diff(actual, expected)
-        message = "#{message}\nDiff:#{diff}" unless diff.empty?
+        message = ::RSpec::Matchers::ExpectedsForMultipleDiffs.from(expected).message_with_diff(message, method(:differ), actual)
 
         raise RSpec::Expectations::ExpectationNotMetError, message
       end

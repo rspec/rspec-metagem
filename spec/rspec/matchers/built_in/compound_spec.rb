@@ -1,6 +1,13 @@
 module RSpec::Matchers::BuiltIn
   RSpec.describe Compound do
 
+    let(:matcher_without_diffable) { include("foo") }
+
+    before do
+      allow(RSpec::Matchers.configuration).to receive_messages(:color? => false)
+      allow(matcher_without_diffable).to receive(:diffable?).and_raise(NoMethodError)
+    end
+
     shared_examples "making a copy" do |compound_method, copy_method|
       context "when making a copy via `#{copy_method}`" do
         it "uses a copy of the base matchers" do
@@ -375,6 +382,171 @@ module RSpec::Matchers::BuiltIn
             EOS
           end
         end
+
+        context "when the first matcher is diffable" do
+          subject { include("foo").and be_a(String) }
+
+          it 'is diffable' do
+            expect(subject).to be_diffable
+          end
+
+          context "when only first matcher fails" do
+            it 'fails with a message containing a diff for first matcher' do
+              expected_failure = dedent(<<-EOS)
+                |Diff for (include "foo"):
+                |@@ -1,2 +1,3 @@
+                |-foo
+                |+baz
+                |+bar
+              EOS
+
+              expect {
+                expect(dedent(<<-EOS)).to subject
+                  |baz
+                  |bar
+                EOS
+              }.to fail_matching(expected_failure)
+            end
+          end
+
+          context "when only second matcher fails" do
+            subject { include("baz").and be_a(Fixnum) }
+
+            it 'fails with a message not containing a diff for first matcher' do
+              expect {
+                expect(dedent(<<-EOS)).to subject
+                  |baz
+                  |bar
+                EOS
+              }.to fail_matching(a_string_excluding "Diff")
+            end
+          end
+
+          context "when both matcher fail" do
+            subject { include("foo").and eq(35) }
+
+            it "fails with a message containing a diff with first matcher" do
+              expected_failure = dedent(<<-EOS)
+                |   expected "baz\\nbar" to include "foo"
+                |
+                |...and:
+                |
+                |   expected: 35
+                |        got: "baz\\nbar"
+                |
+                |   (compared using ==)
+                |
+                |Diff for (include "foo"):
+                |@@ -1,2 +1,3 @@
+                |-foo
+                |+baz
+                |+bar
+              EOS
+
+              expect {
+                expect(dedent(<<-EOS)).to subject
+                  |baz
+                  |bar
+                EOS
+              }.to fail_matching(expected_failure)
+            end
+          end
+        end
+
+        context "when the first matcher does not implement #diffable?" do
+          subject { matcher_without_diffable.and exist }
+
+          it 'is not diffable' do
+            expect(subject).not_to be_diffable
+          end
+        end
+
+        context "when the second matcher does not implement #diffable?" do
+          subject { exist.and matcher_without_diffable }
+
+          it 'is not diffable' do
+            expect(subject).not_to be_diffable
+          end
+        end
+
+        context "when the second matcher is diffable" do
+          subject { eq(35).and include("foo") }
+
+          it 'is diffable' do
+            expect(subject).to be_diffable
+          end
+
+          it 'fails with a message containing a diff for second matcher' do
+            expected_failure = dedent(<<-EOS)
+              |   expected: 35
+              |        got: "baz\\nbar"
+              |
+              |   (compared using ==)
+              |
+              |...and:
+              |
+              |   expected "baz\\nbar" to include "foo"
+              |Diff for (include "foo"):
+              |@@ -1,2 +1,3 @@
+              |-foo
+              |+baz
+              |+bar
+            EOS
+
+            expect {
+              expect(dedent(<<-EOS)).to subject
+                |baz
+                |bar
+              EOS
+            }.to fail_matching(expected_failure)
+          end
+        end
+
+        context "when both matchers are diffable" do
+          subject { include("bar").and include("foo") }
+
+          it 'is diffable' do
+            expect(subject).to be_diffable
+          end
+
+          it 'fails with a message containing diffs for both matcher' do
+            expected_failure = dedent(<<-EOS)
+              |expected "baz\\nbug" to include "bar" and expected "baz\\nbug" to include "foo"
+              |Diff for (include "bar"):
+              |@@ -1,2 +1,3 @@
+              |-bar
+              |+baz
+              |+bug
+              |
+              |Diff for (include "foo"):
+              |@@ -1,2 +1,3 @@
+              |-foo
+              |+baz
+              |+bug
+            EOS
+
+            expect {
+              expect(dedent(<<-EOS)).to subject
+                |baz
+                |bug
+              EOS
+            }.to fail_matching(expected_failure)
+          end
+        end
+
+        context "when both matchers are not diffable" do
+          subject { be_a(String).and be_truthy }
+
+          it 'is not diffable' do
+            expect(subject).not_to be_diffable
+          end
+
+          it 'fails with a message not containing any diff' do
+            expect {
+              expect(35).to subject
+            }.to fail_matching(a_string_excluding "Diff")
+          end
+        end
       end
     end
 
@@ -489,6 +661,119 @@ module RSpec::Matchers::BuiltIn
           end
         end
       end
+
+      context "when first matcher is diffable" do
+        subject { include("foo").or eq(35) }
+
+        it "is diffable" do
+          expect(subject).to be_diffable
+        end
+
+        it 'fails with a message containing diff for first matcher' do
+          expected_failure = dedent(<<-EOS)
+            |   expected "baz\\nbug" to include "foo"
+            |
+            |...or:
+            |
+            |   expected: 35
+            |        got: "baz\\nbug"
+            |
+            |   (compared using ==)
+            |
+            |Diff for (include "foo"):
+            |@@ -1,2 +1,3 @@
+            |-foo
+            |+baz
+            |+bug
+          EOS
+
+          expect {
+            expect(dedent(<<-EOS)).to subject
+              |baz
+              |bug
+            EOS
+          }.to fail_matching(expected_failure)
+        end
+      end
+
+      context "when second matcher is diffable" do
+        subject { eq(35).or include("foo") }
+
+        it "is diffable" do
+          expect(subject).to be_diffable
+        end
+
+        it 'fails with a message containing diff for second matcher' do
+          expected_failure = dedent(<<-EOS)
+            |   expected: 35
+            |        got: "baz\\nbug"
+            |
+            |   (compared using ==)
+            |
+            |...or:
+            |
+            |   expected "baz\\nbug" to include "foo"
+            |Diff for (include "foo"):
+            |@@ -1,2 +1,3 @@
+            |-foo
+            |+baz
+            |+bug
+          EOS
+
+          expect {
+            expect(dedent(<<-EOS)).to subject
+              |baz
+              |bug
+            EOS
+          }.to fail_matching(expected_failure)
+        end
+      end
+
+      context "when both matchers are diffable" do
+        subject { include("foo").or include("buzz") }
+
+        it "is diffable" do
+          expect(subject).to be_diffable
+        end
+
+        it 'fails with a message containing diffs for both matcher' do
+          expected_failure = dedent(<<-EOS)
+            |expected "baz\\nbug" to include "foo" or expected "baz\\nbug" to include "buzz"
+            |Diff for (include "foo"):
+            |@@ -1,2 +1,3 @@
+            |-foo
+            |+baz
+            |+bug
+            |
+            |Diff for (include "buzz"):
+            |@@ -1,2 +1,3 @@
+            |-buzz
+            |+baz
+            |+bug
+          EOS
+
+          expect {
+            expect(dedent(<<-EOS)).to subject
+              |baz
+              |bug
+            EOS
+          }.to fail_matching(expected_failure)
+        end
+      end
+
+      context "when both matchers are not diffable" do
+        subject { be_a(String).or be_a(Fixnum) }
+
+        it "is not diffable" do
+          expect(subject).not_to be_diffable
+        end
+
+        it 'fails with a message containing diffs for both matcher' do
+          expect {
+            expect(true).to subject
+          }.to fail_matching(a_string_excluding "Diff")
+        end
+      end
     end
 
     context "when chaining many matchers together" do
@@ -496,6 +781,38 @@ module RSpec::Matchers::BuiltIn
         matcher = start_with("f").and end_with("z").or end_with("o")
         expect("foo").to matcher
         expect(matcher.description).to eq('start with "f" and end with "z" or end with "o"')
+      end
+
+      it 'fails with complete diffs if its matchers are diffable' do
+        matcher = include("bar").and include("buzz").or include("foo")
+
+        expected_failure = dedent(<<-EOS)
+          |expected "bug\\nsquash" to include "bar" and expected "bug\\nsquash" to include "buzz" or expected "bug\\nsquash" to include "foo"
+          |Diff for (include "bar"):
+          |@@ -1,2 +1,3 @@
+          |-bar
+          |+bug
+          |+squash
+          |
+          |Diff for (include "buzz"):
+          |@@ -1,2 +1,3 @@
+          |-buzz
+          |+bug
+          |+squash
+          |
+          |Diff for (include "foo"):
+          |@@ -1,2 +1,3 @@
+          |-foo
+          |+bug
+          |+squash
+        EOS
+
+        expect {
+          expect(dedent(<<-EOS)).to matcher
+            |bug
+            |squash
+          EOS
+        }.to fail_matching(expected_failure)
       end
 
       it 'fails with a complete message' do
