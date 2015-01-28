@@ -3,6 +3,7 @@ module RSpec
     module BuiltIn
       # @api private
       # Base class for `and` and `or` compound matchers.
+      # rubocop:disable ClassLength
       class Compound < BaseMatcher
         # @private
         attr_reader :matcher_1, :matcher_2, :evaluator
