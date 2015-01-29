@@ -41,11 +41,11 @@ module RSpec
       # Returns message with diff(s) appended for provided differ
       # factory and actual value if there are any
       # @param [String] message original failure message
-      # @param [Proc] differ_factory brand new differ factory method (or proc, block)
+      # @param [Proc] differ
       # @param [Any] actual value
       # @return [String]
-      def message_with_diff(message, differ_factory, actual)
-        diff = diffs(differ_factory, actual)
+      def message_with_diff(message, differ, actual)
+        diff = diffs(differ, actual)
         message = "#{message}\n#{diff}" unless diff.empty?
         message
       end
@@ -67,9 +67,9 @@ module RSpec
         description[0...DESCRIPTION_MAX_LENGTH - 3] << "..."
       end
 
-      def diffs(differ_factory, actual)
+      def diffs(differ, actual)
         @expected_list.map do |(expected, diff_label)|
-          diff = differ_factory.call.diff(actual, expected)
+          diff = differ.diff(actual, expected)
           next if diff.empty?
           "#{diff_label}#{diff}"
         end.compact.join("\n")
