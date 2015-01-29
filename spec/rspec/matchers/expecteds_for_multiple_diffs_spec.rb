@@ -7,14 +7,12 @@ module RSpec
       end
 
       class FakeDiffer
-        FACTORY = Proc.new { FakeDiffer }
-
         def self.diff(actual, expected)
           [actual, expected].inspect
         end
       end
 
-      let(:differ_factory) { FakeDiffer::FACTORY }
+      let(:differ) { FakeDiffer }
 
       let(:message) { "a message" }
       let(:actual) { "actual value" }
@@ -48,7 +46,7 @@ module RSpec
 
         it "has a diff for all matchers with their description" do
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
             |Diff for (matcher 1 description):["actual value", "expected 1"]
@@ -62,7 +60,7 @@ module RSpec
         it "returns just provided message if diff is empty" do
           allow(FakeDiffer).to receive(:diff) { "" }
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
           EOS
@@ -70,7 +68,7 @@ module RSpec
 
         it "returns regular message with diff when single expected" do
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
             |Diff:["actual value", "expected value"]
@@ -81,7 +79,7 @@ module RSpec
           wrapped_value = described_class.for_many_matchers([include("expected value")])
 
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
             |Diff for (include "expected value"):["actual value", ["expected value"]]
@@ -92,7 +90,7 @@ module RSpec
           wrapped_value = described_class.for_many_matchers([matcher_with_long_description])
 
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
             |Diff for (#{truncated_description}):["actual value", "expected value"]
@@ -103,7 +101,7 @@ module RSpec
           wrapped_value = described_class.for_many_matchers([matcher_without_description_defined])
 
           expect(wrapped_value.message_with_diff(
-            message, differ_factory, actual
+            message, differ, actual
           )).to eq(dedent <<-EOS)
             |a message
             |Diff for (#{matcher_without_description_defined.inspect}):["actual value", "expected value"]
