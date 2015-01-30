@@ -22,11 +22,13 @@ module RSpec::Core
         end
       end
 
-      it "dumps the failure summary after the deprecation summary so failures don't scroll off the screen and get missed" do
+      it "dumps the failure summary after the profile and deprecation summary so failures don't scroll off the screen and get missed" do
+        config.profile_examples = 10
         formatter = instance_double("RSpec::Core::Formatter::ProgressFormatter")
-        reporter.register_listener(formatter, :dump_summary, :deprecation_summary)
+        reporter.register_listener(formatter, :dump_summary, :dump_profile, :deprecation_summary)
 
         expect(formatter).to receive(:deprecation_summary).ordered
+        expect(formatter).to receive(:dump_profile).ordered
         expect(formatter).to receive(:dump_summary).ordered
 
         reporter.finish
