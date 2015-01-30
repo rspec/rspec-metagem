@@ -71,6 +71,8 @@ Bug Fixes:
   containing a space. (Guido Günther, #1845)
 * Fix regression in 3.1 that caused `describe Regexp` to raise errors.
   (Durran Jordan, #1853)
+* Fix regression in 3.x that caused the profile information to be printed
+  after the summary. (Max Lincoln, #1857)
 
 ### 3.1.8 Development
 
