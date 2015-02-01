@@ -48,3 +48,42 @@ Feature: let and let!
       """
     When I run `rspec let_bang_spec.rb`
     Then the examples should all pass
+
+  Scenario: Use --threadsafe to set `RSpec.configuration.threadsafe` (defaults to true)
+    Given a file named "let_threadsafe.rb" with:
+      """ruby
+      require 'thread'
+      accesses = Queue.new
+      turns    = Queue.new
+
+      RSpec.describe "threadsafe let" do
+        let :resource do
+          turns.shift
+          accesses << :from_let
+        end
+
+        it "will only ever access the let block once" do
+          first_access  = Thread.new { resource }
+          second_access = Thread.new { resource }
+          loop do
+            Thread.pass
+            break if first_access.stop? && second_access.stop?
+          end
+          turns << nil
+          turns << nil
+          first_access.join
+          second_access.join
+          accesses << :from_example
+          expect(accesses.shift).to eq :from_let
+          expect(accesses.shift).to eq :from_example
+        end
+      end
+      """
+    When I run `rspec let_threadsafe.rb --threadsafe`
+    Then the examples should all pass
+
+    When I run `rspec let_threadsafe.rb --no-threadsafe`
+    Then the output should contain "1 example, 1 failure"
+
+    When I run `rspec let_threadsafe.rb`
+    Then the examples should all pass

@@ -462,7 +462,7 @@ module RSpec
       def self.run_before_context_hooks(example_group_instance)
         set_ivars(example_group_instance, superclass_before_context_ivars)
 
-        ContextHookMemoizedHash::Before.isolate_for_context_hook(example_group_instance) do
+        ContextHookMemoized::Before.isolate_for_context_hook(example_group_instance) do
           hooks.run(:before, :context, example_group_instance)
         end
       ensure
@@ -497,7 +497,7 @@ module RSpec
       def self.run_after_context_hooks(example_group_instance)
         set_ivars(example_group_instance, before_context_ivars)
 
-        ContextHookMemoizedHash::After.isolate_for_context_hook(example_group_instance) do
+        ContextHookMemoized::After.isolate_for_context_hook(example_group_instance) do
           hooks.run(:after, :context, example_group_instance)
         end
       ensure
@@ -613,6 +613,7 @@ module RSpec
 
       def initialize(inspect_output=nil)
         @__inspect_output = inspect_output || '(no description provided)'
+        super() # no args get passed
       end
 
       # @private
