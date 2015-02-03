@@ -597,6 +597,12 @@ module RSpec
     #   expect([1,2,3]).not_to  include(4)
     #   expect("spread").to     include("read")
     #   expect("spread").not_to include("red")
+    #   expect(:a => 1, :b => 2).to include(:a)
+    #   expect(:a => 1, :b => 2).to include(:a, :b)
+    #   expect(:a => 1, :b => 2).to include(:a => 1)
+    #   expect(:a => 1, :b => 2).to include(:b => 2, :a => 1)
+    #   expect(:a => 1, :b => 2).to include(:c) # fails
+    #   expect(:a => 1, :b => 2).not_to include(:a => 2)
     def include(*expected)
       BuiltIn::Include.new(*expected)
     end
