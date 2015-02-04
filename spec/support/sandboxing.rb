@@ -1,5 +1,4 @@
 require 'rspec/core/sandbox'
-require 'rspec/mocks'
 
 # Because testing RSpec with RSpec tries to modify the same global
 # objects, we sandbox every test.
@@ -11,11 +10,9 @@ RSpec.configure do |c|
       # something like `pending`
       config.before(:context) { RSpec.current_example = nil }
 
-      RSpec::Mocks.with_temporary_scope do
-        orig_load_path = $LOAD_PATH.dup
-        ex.run
-        $LOAD_PATH.replace(orig_load_path)
-      end
+      orig_load_path = $LOAD_PATH.dup
+      ex.run
+      $LOAD_PATH.replace(orig_load_path)
     end
   end
 end
