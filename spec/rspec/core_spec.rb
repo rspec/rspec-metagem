@@ -178,15 +178,12 @@ RSpec.describe RSpec do
       ).to eq(:slow => true)
     end
   end
-  
-  # File.executable? always returns false in Windows
-  # In *nix operating systems, the permissions are checked against the executable bit, 
-  # but in windows os we don't have the same permissions 
-  # This project had the same issue https://projects.puppetlabs.com/issues/20302
+    
   describe "::Core.path_to_executable" do
-    it 'returns the absolute location of the exe/rspec file', :if => !RSpec::Support::OS.windows? do
+    it 'returns the absolute location of the exe/rspec file' do
       expect(File.exist? RSpec::Core.path_to_executable).to be_truthy
-      expect(File.executable? RSpec::Core.path_to_executable).to be_truthy
+	  expect(File.read(RSpec::Core.path_to_executable)).to include("RSpec::Core::Runner.invoke") 
+	  expect(File.executable? RSpec::Core.path_to_executable).to be_truthy unless RSpec::Support::OS.windows?
     end
   end
 
