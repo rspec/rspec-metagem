@@ -732,4 +732,19 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
       expect(ex).to pass
     end
   end
+
+  describe "exposing the examples reporter" do
+    it "returns a null reporter when the example hasnt run yet" do
+      example = RSpec.describe.example
+      expect(example.reporter).to be_a RSpec::Core::NullReporter
+    end
+
+    it "returns the reporter used to run the example when executed" do
+      reporter = double(:reporter).as_null_object
+      group = RSpec.describe
+      example = group.example
+      example.run group.new, reporter
+      expect(example.reporter).to be reporter
+    end
+  end
 end

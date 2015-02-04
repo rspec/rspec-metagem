@@ -143,7 +143,11 @@ module RSpec
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time
+        @reporter = RSpec::Core::NullReporter.new
       end
+
+      # @return [RSpec::Core::Reporter] the current reporter for the example
+      attr_reader :reporter
 
       # Returns the example group class that provides the context for running
       # this example.
@@ -160,6 +164,7 @@ module RSpec
       # @param example_group_instance the instance of an ExampleGroup subclass
       def run(example_group_instance, reporter)
         @example_group_instance = example_group_instance
+        @reporter = reporter
         hooks.register_global_singleton_context_hooks(self, RSpec.configuration.hooks)
         RSpec.configuration.configure_example(self)
         RSpec.current_example = self
