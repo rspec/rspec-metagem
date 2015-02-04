@@ -48,9 +48,8 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:11
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:16
         |     # ./spec/support/sandboxing.rb:14
-        |     # ./spec/support/sandboxing.rb:8
+        |     # ./spec/support/sandboxing.rb:7
         |
         |Failures:
         |
@@ -67,9 +66,8 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:31
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:16
         |     # ./spec/support/sandboxing.rb:14
-        |     # ./spec/support/sandboxing.rb:8
+        |     # ./spec/support/sandboxing.rb:7
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
         |     Failure/Error: Unable to find matching line from backtrace
@@ -113,9 +111,8 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:11:in `block (3 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:16:in `block (4 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
-        |     # ./spec/support/sandboxing.rb:8:in `block (2 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |Failures:
         |
@@ -132,9 +129,8 @@ module FormatterSupport
         |       (compared using ==)
         |     # ./spec/rspec/core/resources/formatter_specs.rb:31:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:16:in `block (4 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
-        |     # ./spec/support/sandboxing.rb:8:in `block (2 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |  3) a failing spec with odd backtraces fails with a backtrace that has no file
         |     Failure/Error: ERB.new("<%= raise 'foo' %>").result
@@ -143,9 +139,8 @@ module FormatterSupport
         |     # (erb):1:in `<main>'
         |     # ./spec/rspec/core/resources/formatter_specs.rb:39:in `block (2 levels) in <top (required)>'
         |     # ./spec/support/formatter_support.rb:13:in `run_example_specs_with_formatter'
-        |     # ./spec/support/sandboxing.rb:16:in `block (4 levels) in <top (required)>'
         |     # ./spec/support/sandboxing.rb:14:in `block (3 levels) in <top (required)>'
-        |     # ./spec/support/sandboxing.rb:8:in `block (2 levels) in <top (required)>'
+        |     # ./spec/support/sandboxing.rb:7:in `block (2 levels) in <top (required)>'
         |
         |  4) a failing spec with odd backtraces fails with a backtrace containing an erb file
         |     Failure/Error: Unable to find matching line from backtrace
