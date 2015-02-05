@@ -736,7 +736,7 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
   describe "exposing the examples reporter" do
     it "returns a null reporter when the example hasnt run yet" do
       example = RSpec.describe.example
-      expect(example.reporter).to be_a RSpec::Core::NullReporter
+      expect(example.reporter).to be RSpec::Core::NullReporter
     end
 
     it "returns the reporter used to run the example when executed" do

@@ -143,7 +143,7 @@ module RSpec
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time
-        @reporter = RSpec::Core::NullReporter.new
+        @reporter = RSpec::Core::NullReporter
       end
 
       # @return [RSpec::Core::Reporter] the current reporter for the example

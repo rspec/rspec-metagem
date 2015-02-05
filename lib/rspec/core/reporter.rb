@@ -164,10 +164,9 @@ module RSpec::Core
   # @private
   # # Used in place of a {Reporter} for situations where we don't want reporting output.
   class NullReporter
-  private
-
-    def method_missing(*)
+    def self.method_missing(*)
       # ignore
     end
+    private_class_method :method_missing
   end
 end
