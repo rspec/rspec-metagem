@@ -40,7 +40,6 @@ module RSpec::Core
       @listeners[notification].to_a
     end
 
-    # @api
     # @overload report(count, &block)
     # @overload report(count, &block)
     # @param expected_example_count [Integer] the number of examples being run
@@ -73,7 +72,9 @@ module RSpec::Core
       notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
     end
 
-    # @private
+    # @param message [#to_s] A message object to send to formatters
+    #
+    # Send a custom message to supporting formatters.
     def message(message)
       notify :message, Notifications::MessageNotification.new(message)
     end
