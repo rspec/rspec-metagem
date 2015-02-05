@@ -95,7 +95,7 @@ Note: The new `expect` syntax no longer supports the `=~` matcher.
 
 ```ruby
 expect(actual).to be_an_instance_of(expected) # passes if actual.class == expected
-expect(actual).to be_a(expected)              # passes if actual.is_a?(expected)
+expect(actual).to be_a(expected)              # passes if actual.kind_of?(expected)
 expect(actual).to be_an(expected)             # an alias for be_a
 expect(actual).to be_a_kind_of(expected)      # another alias
 ```
