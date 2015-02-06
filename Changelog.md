@@ -1,3 +1,11 @@
+### Development
+
+Enhancements:
+
+* Expose the reporter used to run examples via `RSpec::Core::Example#reporter`.
+  (Jon Rowe, #1866)
+* Make `RSpec::Core::Reporter#message` a public supported API. (Jon Rowe, #1866)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.7...v3.2.0)
 

@@ -499,7 +499,7 @@ module RSpec
       end
 
       # Runs all the examples in this group.
-      def self.run(reporter=RSpec::Core::NullReporter.new)
+      def self.run(reporter=RSpec::Core::NullReporter)
         if RSpec.world.wants_to_quit
           RSpec.world.clear_remaining_example_groups if top_level?
           return

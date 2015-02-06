@@ -40,7 +40,6 @@ module RSpec::Core
       @listeners[notification].to_a
     end
 
-    # @api
     # @overload report(count, &block)
     # @overload report(count, &block)
     # @param expected_example_count [Integer] the number of examples being run
@@ -73,7 +72,9 @@ module RSpec::Core
       notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
     end
 
-    # @private
+    # @param message [#to_s] A message object to send to formatters
+    #
+    # Send a custom message to supporting formatters.
     def message(message)
       notify :message, Notifications::MessageNotification.new(message)
     end
@@ -163,10 +164,9 @@ module RSpec::Core
   # @private
   # # Used in place of a {Reporter} for situations where we don't want reporting output.
   class NullReporter
-  private
-
-    def method_missing(*)
+    def self.method_missing(*)
       # ignore
     end
+    private_class_method :method_missing
   end
 end
