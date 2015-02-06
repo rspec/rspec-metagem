@@ -172,6 +172,37 @@ module RSpec::Core
       end
     end
 
+    describe "#publish" do
+      let(:listener) { double("listener", :custom => nil) }
+      before do
+        reporter.register_listener listener, :custom, :start
+      end
+
+      it 'will send custom events to registered listeners' do
+        expect(listener).to receive(:custom).with(RSpec::Core::Notifications::NullNotification)
+        reporter.publish :custom
+      end
+
+      it 'will raise when encountering RSpec standard events' do
+        expect { reporter.publish :start }.to raise_error(
+          StandardError,
+          a_string_including("not internal RSpec ones")
+        )
+      end
+
+      it 'will ignore event names sent as strings' do
+        expect(listener).not_to receive(:custom)
+        reporter.publish "custom"
+      end
+
+      it 'will provide a custom notification object based on the options hash' do
+        expect(listener).to receive(:custom).with(
+          an_object_having_attributes(:my_data => :value)
+        )
+        reporter.publish :custom, :my_data => :value
+      end
+    end
+
     describe "timing" do
       before do
         config.start_time = start_time

@@ -1,7 +1,17 @@
+require 'set'
 module RSpec::Core
   # A reporter will send notifications to listeners, usually formatters for the
   # spec suite run.
   class Reporter
+    # @private
+    RSPEC_NOTIFICATIONS = Set.new(
+      [
+        :close, :deprecation, :deprecation_summary, :dump_failures, :dump_pending,
+        :dump_profile, :dump_summary, :example_failed, :example_group_finished,
+        :example_group_started, :example_passed, :example_pending, :example_started,
+        :message, :seed, :start, :start_dump, :stop
+      ])
+
     def initialize(configuration)
       @configuration = configuration
       @listeners = Hash.new { |h, k| h[k] = Set.new }
@@ -77,6 +87,19 @@ module RSpec::Core
     # Send a custom message to supporting formatters.
     def message(message)
       notify :message, Notifications::MessageNotification.new(message)
+    end
+
+    # @param event [Symbol] Name of the custom event to trigger on formatters
+    # @param options [Hash] Hash of arguments to provide via `CustomNotification`
+    #
+    # Publish a custom event to supporting registered formatters.
+    # @see RSpec::Core::Notifications::CustomNotification
+    def publish(event, options={})
+      if RSPEC_NOTIFICATIONS.include? event
+        raise "RSpec::Core::Reporter#publish is intended for sending custom " \
+              "events not internal RSpec ones, please rename your custom event."
+      end
+      notify event, Notifications::CustomNotification.for(options)
     end
 
     # @private

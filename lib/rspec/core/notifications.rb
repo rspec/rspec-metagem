@@ -599,5 +599,19 @@ module RSpec::Core
     # currently require no information, but we may wish to extend in future.
     class NullNotification
     end
+
+    # `CustomNotification` is used when sending custom events to formatters /
+    # other registered listeners, it creates attributes based on supplied hash
+    # of options.
+    class CustomNotification < Struct
+      # @param options [Hash] A hash of method / value pairs to create on this notification
+      # @return [CustomNotification]
+      #
+      # Build a custom notification based on the supplied option key / values.
+      def self.for(options={})
+        return NullNotification if options.keys.empty?
+        new(*options.keys).new(*options.values)
+      end
+    end
   end
 end
