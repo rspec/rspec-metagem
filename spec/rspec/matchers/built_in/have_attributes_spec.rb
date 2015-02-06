@@ -33,7 +33,7 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target does not have any of the expected attributes" do
       expect {
         expect(person).to have_attributes(:name => wrong_name)
-      }.to fail_matching(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => wrong_name} but had attributes #{hash_inspect :name => correct_name }|)
+      }.to fail_with(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => wrong_name} but had attributes #{hash_inspect :name => correct_name }|)
     end
 
     it "fails with correct message if object manipulates its data" do
@@ -45,7 +45,7 @@ RSpec.describe "#have_attributes matcher" do
       end.new
       expect {
         expect(counter).to have_attributes(:count => 1)
-      }.to fail_matching(%r|to have attributes #{hash_inspect :count => 1} but had attributes #{hash_inspect :count => 2 }|)
+      }.to fail_with(%r|to have attributes #{hash_inspect :count => 1} but had attributes #{hash_inspect :count => 2 }|)
     end
 
     it 'diffs the attributes received with those expected' do
@@ -59,13 +59,13 @@ RSpec.describe "#have_attributes matcher" do
 
       expect {
         expect(person).to have_attributes(:name => wrong_name)
-      }.to fail_matching(expected_diff)
+      }.to fail_including(expected_diff)
     end
 
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to have_attributes(:color => 'red')
-      }.to fail_matching("expected #{object_inspect person} to respond to :color")
+      }.to fail_including("expected #{object_inspect person} to respond to :color")
     end
 
     it "doesn't produce a diff if the target fails the respond to check" do
@@ -77,7 +77,7 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target responds to the attribute but requires arguments" do
       expect {
         expect(person).to have_attributes(:parent => 'Billy')
-      }.to fail_matching("expected #{object_inspect person} to respond to :parent with 0 arguments")
+      }.to fail_including("expected #{object_inspect person} to respond to :parent with 0 arguments")
     end
 
     describe "expect(...).to have_attributes(key => matcher)" do
@@ -94,7 +94,7 @@ RSpec.describe "#have_attributes matcher" do
       it "fails with a clear message when the matcher does not match" do
         expect {
           expect(person).to have_attributes(:age => (a_value < 10))
-        }.to fail_matching("expected #{object_inspect person} to have attributes {:age => (a value < 10)}")
+        }.to fail_including("expected #{object_inspect person} to have attributes {:age => (a value < 10)}")
       end
     end
   end
@@ -108,7 +108,7 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target has all of the expected attributes" do
       expect {
         expect(person).to_not have_attributes(:age => correct_age)
-      }.to fail_matching(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :age => correct_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :age => correct_age}|)
     end
 
     it "doesn't produce a diff" do
@@ -120,13 +120,13 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to_not have_attributes(:color => 'red')
-      }.to fail_matching("expected #{object_inspect person} to respond to :color")
+      }.to fail_including("expected #{object_inspect person} to respond to :color")
     end
 
     it "fails if target responds to the attribute but requires arguments" do
       expect {
         expect(person).to_not have_attributes(:parent => 'Billy')
-      }.to fail_matching("expected #{object_inspect person} to respond to :parent with 0 arguments")
+      }.to fail_including("expected #{object_inspect person} to respond to :parent with 0 arguments")
     end
   end
 
@@ -143,7 +143,7 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target does not have any of the expected attributes" do
       expect {
         expect(person).to have_attributes(:name => correct_name, :age => wrong_age)
-      }.to fail_matching(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => correct_name, :age => wrong_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} to have attributes #{hash_inspect :name => correct_name, :age => wrong_age}|)
     end
 
     it 'diffs the attributes received with those expected' do
@@ -158,19 +158,19 @@ RSpec.describe "#have_attributes matcher" do
 
       expect {
         expect(person).to have_attributes(:name => correct_name, :age => wrong_age)
-      }.to fail_matching(expected_diff)
+      }.to fail_including(expected_diff)
     end
 
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to have_attributes(:name => correct_name, :color => 'red')
-      }.to fail_matching("expected #{object_inspect person} to respond to :color")
+      }.to fail_including("expected #{object_inspect person} to respond to :color")
     end
 
     it "fails if target responds to the attribute but requires arguments" do
       expect {
         expect(person).to have_attributes(:name => correct_name, :parent => 'Billy')
-      }.to fail_matching("expected #{object_inspect person} to respond to :parent with 0 arguments")
+      }.to fail_including("expected #{object_inspect person} to respond to :parent with 0 arguments")
     end
   end
 
@@ -183,25 +183,25 @@ RSpec.describe "#have_attributes matcher" do
     it "fails if target has any of the expected attributes" do
       expect {
         expect(person).to_not have_attributes(:name => wrong_name, :age => correct_age)
-      }.to fail_matching(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => wrong_name, :age => correct_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => wrong_name, :age => correct_age}|)
     end
 
     it "fails if target has all of the expected attributes" do
       expect {
         expect(person).to_not have_attributes(:name => correct_name, :age => correct_age)
-      }.to fail_matching(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => correct_name, :age => correct_age}|)
+      }.to fail_with(%r|expected #{object_inspect person} not to have attributes #{hash_inspect :name => correct_name, :age => correct_age}|)
     end
 
     it "fails if target does not responds to any of the attributes" do
       expect {
         expect(person).to_not have_attributes(:name => correct_name, :color => 'red')
-      }.to fail_matching("expected #{object_inspect person} to respond to :color")
+      }.to fail_including("expected #{object_inspect person} to respond to :color")
     end
 
     it "fails if target responds to the attribute but requires arguments" do
       expect {
         expect(person).to_not have_attributes(:name => correct_name, :parent => 'Billy')
-      }.to fail_matching("expected #{object_inspect person} to respond to :parent with 0 arguments")
+      }.to fail_including("expected #{object_inspect person} to respond to :parent with 0 arguments")
     end
   end
 

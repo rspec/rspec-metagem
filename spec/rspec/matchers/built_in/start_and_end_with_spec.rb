@@ -71,7 +71,7 @@ RSpec.describe "expect(...).to start_with" do
 
       expect {
         expect([s1, 10]).to start_with(s2)
-      }.to fail_matching("expected [#{s1.inspect}, 10] to start with #{s2.inspect}")
+      }.to fail_including("expected [#{s1.inspect}, 10] to start with #{s2.inspect}")
     end
   end
 
@@ -97,7 +97,7 @@ RSpec.describe "expect(...).to start_with" do
 
       expect {
         expect([s1, 10]).to start_with(s2)
-      }.to fail_matching(%Q{expected [#{s1.inspect}, 10] to start with #{s2.inspect}})
+      }.to fail_including(%Q{expected [#{s1.inspect}, 10] to start with #{s2.inspect}})
     end
   end
 
@@ -279,7 +279,7 @@ RSpec.describe "expect(...).to end_with" do
 
       expect {
         expect([10, s1]).to end_with(s2)
-      }.to fail_matching("expected [10, #{s1.inspect}] to end with #{s2.inspect}")
+      }.to fail_including("expected [10, #{s1.inspect}] to end with #{s2.inspect}")
     end
   end
 
@@ -305,7 +305,7 @@ RSpec.describe "expect(...).to end_with" do
 
       expect {
         expect([10, s1]).to end_with(s2)
-      }.to fail_matching(%Q{expected [10, #{s1.inspect}] to end with #{s2.inspect}})
+      }.to fail_including(%Q{expected [10, #{s1.inspect}] to end with #{s2.inspect}})
     end
   end
 

@@ -14,7 +14,7 @@ RSpec.describe "exist matcher" do
         it "fails" do
           expect {
             expect(subject).send(expect_method, exist)
-          }.to fail_matching("it does not respond to either `exist?` or `exists?`")
+          }.to fail_including("it does not respond to either `exist?` or `exists?`")
         end
       end
     end
@@ -115,7 +115,7 @@ RSpec.describe "exist matcher" do
           it "fails" do
             expect {
               expect(subject).send(expect_method, exist)
-            }.to fail_matching("`exist?` and `exists?` returned different values")
+            }.to fail_including("`exist?` and `exists?` returned different values")
           end
         end
       end

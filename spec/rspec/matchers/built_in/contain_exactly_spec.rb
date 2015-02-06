@@ -177,7 +177,7 @@ MESSAGE
 
       expect {
         expect(actual).to contain_exactly(*expected)
-      }.to fail_matching("the missing elements were:      [0, 1, 4, 4]")
+      }.to fail_including("the missing elements were:      [0, 1, 4, 4]")
     end
   end
 
@@ -300,7 +300,7 @@ RSpec.describe "matching against things that aren't arrays" do
     expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
     expect {
       expect(Set.new([3, 2, 1])).to contain_exactly(1, 2)
-    }.to fail_matching("expected collection contained:  [1, 2]")
+    }.to fail_including("expected collection contained:  [1, 2]")
   end
 
   it 'works with non-enumerables that implement `to_ary`' do
@@ -308,7 +308,7 @@ RSpec.describe "matching against things that aren't arrays" do
     expect(relation).to contain_exactly(2, 1, 3)
     expect {
       expect(relation).to contain_exactly(1, 2)
-    }.to fail_matching("expected collection contained:  [1, 2]")
+    }.to fail_including("expected collection contained:  [1, 2]")
   end
 end
 

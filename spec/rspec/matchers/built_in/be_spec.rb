@@ -61,7 +61,7 @@ RSpec.describe "expect(...).to be_predicate" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).to be_happy
-    }.to fail_matching("to respond to `happy?`")
+    }.to fail_including("to respond to `happy?`")
   end
 
   it 'falls back to a present-tense form of the predicate when needed' do
@@ -147,7 +147,7 @@ RSpec.describe "expect(...).not_to be_predicate" do
   it "fails when actual does not respond to :sym?" do
     expect {
       expect(Object.new).not_to be_happy
-    }.to fail_matching("to respond to `happy?`")
+    }.to fail_including("to respond to `happy?`")
   end
 end
 
@@ -169,7 +169,7 @@ RSpec.describe "expect(...).to be_predicate(*args)" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).to be_older_than(3)
-    }.to fail_matching("to respond to `older_than?`")
+    }.to fail_including("to respond to `older_than?`")
   end
 end
 
@@ -191,7 +191,7 @@ RSpec.describe "expect(...).not_to be_predicate(*args)" do
   it "fails when actual does not respond to :predicate?" do
     expect {
       expect(Object.new).not_to be_older_than(3)
-    }.to fail_matching("to respond to `older_than?`")
+    }.to fail_including("to respond to `older_than?`")
   end
 end
 
@@ -218,7 +218,7 @@ RSpec.describe "expect(...).to be_predicate(&block)" do
     delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).to be_happy { delegate.check_happy }
-    }.to fail_matching("to respond to `happy?`")
+    }.to fail_including("to respond to `happy?`")
   end
 
   it 'passes the block on to the present-tense predicate form' do
@@ -299,7 +299,7 @@ RSpec.describe "expect(...).not_to be_predicate(&block)" do
     delegate = double("delegate", :check_happy => true)
     expect {
       expect(Object.new).not_to be_happy { delegate.check_happy }
-    }.to fail_matching("to respond to `happy?`")
+    }.to fail_including("to respond to `happy?`")
   end
 end
 
@@ -326,7 +326,7 @@ RSpec.describe "expect(...).to be_predicate(*args, &block)" do
     delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to fail_matching("to respond to `older_than?`")
+    }.to fail_including("to respond to `older_than?`")
   end
 end
 
@@ -353,7 +353,7 @@ RSpec.describe "expect(...).not_to be_predicate(*args, &block)" do
     delegate = double("delegate", :check_older_than => true)
     expect {
       expect(Object.new).not_to be_older_than(3) { |age| delegate.check_older_than(age) }
-    }.to fail_matching("to respond to `older_than?`")
+    }.to fail_including("to respond to `older_than?`")
   end
 end
 

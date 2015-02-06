@@ -153,7 +153,7 @@ module RSpec::Matchers::BuiltIn
             expect(copied_matcher).not_to equal(all_matcher)
             expect(copied_matcher.matcher).not_to equal(base_matcher)
             expect([[3]]).to copied_matcher
-            expect { expect([[4]]).to copied_matcher }.to fail_matching("expected [4]")
+            expect { expect([[4]]).to copied_matcher }.to fail_including("expected [4]")
           end
 
         end

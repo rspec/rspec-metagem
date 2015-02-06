@@ -13,6 +13,8 @@ RSpec.describe RSpec::Matchers do
     in_sub_process do
       main.instance_eval do
         include RSpec::Matchers
+        include FailMatchers
+
         expect(3).to eq(3)
         expect(3).to be_odd
 
