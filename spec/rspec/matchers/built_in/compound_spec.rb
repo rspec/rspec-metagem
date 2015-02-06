@@ -38,7 +38,7 @@ module RSpec::Matchers::BuiltIn
 
           expect([3]).to copy
 
-          expect { expect([4]).to copy }.to fail_matching("expected [4]")
+          expect { expect([4]).to copy }.to fail_including("expected [4]")
         end
       end
     end
@@ -229,7 +229,7 @@ module RSpec::Matchers::BuiltIn
 
           expect {
             expect(p).to combine(be_a(Integer), eq(3))
-          }.to fail_matching("expected: 3")
+          }.to fail_including("expected: 3")
         end
       end
     end
@@ -248,7 +248,7 @@ module RSpec::Matchers::BuiltIn
             a_string_starting_with("f").and(ending_with("d")),
             a_string_starting_with("b").and(ending_with("n"))
           )
-        }.to fail_matching('expected ["foo", "bar"] to include (a string starting with "f" and ending with "d") and (a string starting with "b" and ending with "n")')
+        }.to fail_including('expected ["foo", "bar"] to include (a string starting with "f" and ending with "d") and (a string starting with "b" and ending with "n")')
       end
 
       it 'provides a description' do
@@ -405,7 +405,7 @@ module RSpec::Matchers::BuiltIn
                   |baz
                   |bar
                 EOS
-              }.to fail_matching(expected_failure)
+              }.to fail_including(expected_failure)
             end
           end
 
@@ -418,7 +418,7 @@ module RSpec::Matchers::BuiltIn
                   |baz
                   |bar
                 EOS
-              }.to fail_matching(a_string_excluding "Diff")
+              }.to fail_with(a_string_excluding "Diff")
             end
           end
 
@@ -448,7 +448,7 @@ module RSpec::Matchers::BuiltIn
                   |baz
                   |bar
                 EOS
-              }.to fail_matching(expected_failure)
+              }.to fail_including(expected_failure)
             end
           end
         end
@@ -498,7 +498,7 @@ module RSpec::Matchers::BuiltIn
                 |baz
                 |bar
               EOS
-            }.to fail_matching(expected_failure)
+            }.to fail_including(expected_failure)
           end
         end
 
@@ -530,7 +530,7 @@ module RSpec::Matchers::BuiltIn
                 |baz
                 |bug
               EOS
-            }.to fail_matching(expected_failure)
+            }.to fail_including(expected_failure)
           end
         end
 
@@ -544,7 +544,7 @@ module RSpec::Matchers::BuiltIn
           it 'fails with a message not containing any diff' do
             expect {
               expect(35).to subject
-            }.to fail_matching(a_string_excluding "Diff")
+            }.to fail_with(a_string_excluding "Diff")
           end
         end
       end
@@ -692,7 +692,7 @@ module RSpec::Matchers::BuiltIn
               |baz
               |bug
             EOS
-          }.to fail_matching(expected_failure)
+          }.to fail_including(expected_failure)
         end
       end
 
@@ -725,7 +725,7 @@ module RSpec::Matchers::BuiltIn
               |baz
               |bug
             EOS
-          }.to fail_matching(expected_failure)
+          }.to fail_including(expected_failure)
         end
       end
 
@@ -757,7 +757,7 @@ module RSpec::Matchers::BuiltIn
               |baz
               |bug
             EOS
-          }.to fail_matching(expected_failure)
+          }.to fail_including(expected_failure)
         end
       end
 
@@ -771,7 +771,7 @@ module RSpec::Matchers::BuiltIn
         it 'fails with a message containing diffs for both matcher' do
           expect {
             expect(true).to subject
-          }.to fail_matching(a_string_excluding "Diff")
+          }.to fail_with(a_string_excluding "Diff")
         end
       end
     end
@@ -812,7 +812,7 @@ module RSpec::Matchers::BuiltIn
             |bug
             |squash
           EOS
-        }.to fail_matching(expected_failure)
+        }.to fail_including(expected_failure)
       end
 
       it 'fails with a complete message' do

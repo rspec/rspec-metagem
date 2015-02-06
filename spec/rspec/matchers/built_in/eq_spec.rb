@@ -56,7 +56,7 @@ module RSpec
       it 'fails properly when the actual is an array of multiline strings' do
         expect {
           expect(["a\nb", "c\nd"]).to eq([])
-        }.to fail_matching("expected: []")
+        }.to fail_including("expected: []")
       end
 
       describe '#description' do
@@ -161,7 +161,7 @@ module RSpec
         it 'fails with a conventional representation of the decimal' do
           expect {
             expect(float).to eq(decimal)
-          }.to fail_matching "expected: 3.3 (#<BigDecimal"
+          }.to fail_including "expected: 3.3 (#<BigDecimal"
         end
 
         it 'does not not assume BigDecimal is defined since you need to require `bigdecimal` to make it available' do

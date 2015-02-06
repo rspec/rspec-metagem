@@ -85,7 +85,7 @@ RSpec.shared_examples "an RSpec matcher" do |options|
 
     expect {
       expect([invalid_value]).to include(matcher)
-    }.to fail_matching("include (#{matcher.description})")
+    }.to fail_including("include (#{matcher.description})")
   end
 
   it 'can match negatively properly' do

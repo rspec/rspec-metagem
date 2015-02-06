@@ -85,13 +85,13 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     it "fails if the block does not output to #{stream_name}" do
       expect {
         expect { }.to matcher(/foo/)
-      }.to fail_matching("expected block to output /foo/ to #{stream_name}, but output nothing\nDiff")
+      }.to fail_including("expected block to output /foo/ to #{stream_name}, but output nothing\nDiff")
     end
 
     it "fails if the block outputs a string to #{stream_name} that does not match" do
       expect {
         expect { print_to_stream 'foo' }.to matcher(/food/)
-      }.to fail_matching("expected block to output /food/ to #{stream_name}, but output \"foo\"\nDiff")
+      }.to fail_including("expected block to output /food/ to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -107,7 +107,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     it "fails if the block outputs a string to #{stream_name} that matches the regex" do
       expect {
         expect { print_to_stream 'foo' }.to_not matcher(/foo/)
-      }.to fail_matching("expected block to not output /foo/ to #{stream_name}, but output \"foo\"\nDiff")
+      }.to fail_including("expected block to not output /foo/ to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -119,7 +119,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     it "fails if the block outputs a string to #{stream_name} that does not pass the given matcher" do
       expect {
         expect { print_to_stream 'foo' }.to matcher(a_string_starting_with("b"))
-      }.to fail_matching("expected block to output a string starting with \"b\" to #{stream_name}, but output \"foo\"\nDiff")
+      }.to fail_including("expected block to output a string starting with \"b\" to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 
@@ -131,7 +131,7 @@ RSpec.shared_examples "output_to_stream" do |stream_name, matcher_method, helper
     it "fails if the block outputs a string to #{stream_name} that passes the given matcher" do
       expect {
         expect { print_to_stream 'foo' }.to_not matcher(a_string_starting_with("f"))
-      }.to fail_matching("expected block to not output a string starting with \"f\" to #{stream_name}, but output \"foo\"\nDiff")
+      }.to fail_including("expected block to not output a string starting with \"f\" to #{stream_name}, but output \"foo\"\nDiff")
     end
   end
 end

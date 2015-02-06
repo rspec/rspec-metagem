@@ -41,13 +41,11 @@ module FailMatchers
     raise_error(RSpec::Expectations::ExpectationNotMetError, message)
   end
 
-  def fail_matching(message)
-    if String === message
-      regexp = /#{Regexp.escape(message)}/
-    else
-      regexp = message
-    end
-    raise_error(RSpec::Expectations::ExpectationNotMetError, regexp)
+  def fail_including(snippet)
+    raise_error(
+      RSpec::Expectations::ExpectationNotMetError,
+      a_string_including(snippet)
+    )
   end
 end
 

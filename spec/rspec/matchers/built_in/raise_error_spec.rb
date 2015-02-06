@@ -401,7 +401,7 @@ RSpec.describe "Composing matchers with `raise_error`" do
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
         expect { raise FooError }.to raise_error(an_error_with_attribute(:foo).equal_to(3))
-      }.to fail_matching("expected an error with attribute :foo equal to 3, got #<FooError: FooError>")
+      }.to fail_including("expected an error with attribute :foo equal to 3, got #<FooError: FooError>")
     end
 
     it 'provides a description' do
@@ -418,7 +418,7 @@ RSpec.describe "Composing matchers with `raise_error`" do
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
         expect { raise FooError, "food" }.to raise_error(FooError, a_string_including("bar"))
-      }.to fail_matching('expected FooError with a string including "bar", got #<FooError: food')
+      }.to fail_including('expected FooError with a string including "bar", got #<FooError: food')
     end
 
     it 'provides a description' do
@@ -435,7 +435,7 @@ RSpec.describe "Composing matchers with `raise_error`" do
     it 'fails with a clear message when the matcher does not match the raised error' do
       expect {
         expect { raise FooError, "food" }.to raise_error(FooError).with_message(a_string_including("bar"))
-      }.to fail_matching('expected FooError with a string including "bar", got #<FooError: food')
+      }.to fail_including('expected FooError with a string including "bar", got #<FooError: food')
     end
 
     it 'provides a description' do

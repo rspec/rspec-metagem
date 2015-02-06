@@ -81,7 +81,7 @@ RSpec.describe "expect(...).to have_sym(*args)" do
   it "fails if target does not respond to #has_sym?" do
     expect {
       expect(Object.new).to have_key(:a)
-    }.to fail_matching('to respond to `has_key?`')
+    }.to fail_including('to respond to `has_key?`')
   end
 
   it "reraises an exception thrown in #has_sym?(*args)" do
@@ -138,7 +138,7 @@ RSpec.describe "expect(...).not_to have_sym(*args)" do
   it "fails if target does not respond to #has_sym?" do
     expect {
       expect(Object.new).not_to have_key(:a)
-    }.to fail_matching('to respond to `has_key?`')
+    }.to fail_including('to respond to `has_key?`')
   end
 
   it "reraises an exception thrown in #has_sym?(*args)" do
