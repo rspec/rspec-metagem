@@ -106,14 +106,20 @@ module RSpec
       end
 
       # @private
+      def self.id_from(metadata)
+        "#{metadata[:rerun_file_path]}[#{metadata[:scoped_id]}]"
+      end
+
+      # @private
       # Used internally to populate metadata hashes with computed keys
       # managed by RSpec.
       class HashPopulator
         attr_reader :metadata, :user_metadata, :description_args, :block
 
-        def initialize(metadata, user_metadata, description_args, block)
+        def initialize(metadata, user_metadata, index_provider, description_args, block)
           @metadata         = metadata
           @user_metadata    = user_metadata
+          @index_provider   = index_provider
           @description_args = description_args
           @block            = block
         end
@@ -151,6 +157,8 @@ module RSpec
           metadata[:line_number]        = line_number.to_i
           metadata[:location]           = "#{relative_file_path}:#{line_number}"
           metadata[:absolute_file_path] = File.expand_path(relative_file_path)
+          metadata[:rerun_file_path]  ||= relative_file_path
+          metadata[:scoped_id]          = build_scoped_id_for(relative_file_path)
         end
 
         def file_path_and_line_number_from(backtrace)
@@ -171,6 +179,12 @@ module RSpec
           return parent_description.to_s unless my_description
           separator = description_separator(parent_description, my_description)
           (parent_description.to_s + separator) << my_description.to_s
+        end
+
+        def build_scoped_id_for(file_path)
+          index = @index_provider.call(file_path).to_s
+          parent_scoped_id = metadata.fetch(:scoped_id) { return index }
+          "#{parent_scoped_id}:#{index}"
         end
 
         def ensure_valid_user_keys
@@ -196,7 +210,7 @@ module RSpec
 
       # @private
       class ExampleHash < HashPopulator
-        def self.create(group_metadata, user_metadata, description, block)
+        def self.create(group_metadata, user_metadata, index, description, block)
           example_metadata = group_metadata.dup
           group_metadata = Hash.new(&ExampleGroupHash.backwards_compatibility_default_proc do |hash|
             hash[:parent_example_group]
@@ -208,7 +222,7 @@ module RSpec
           example_metadata.delete(:parent_example_group)
 
           description_args = description.nil? ? [] : [description]
-          hash = new(example_metadata, user_metadata, description_args, block)
+          hash = new(example_metadata, user_metadata, index, description_args, block)
           hash.populate
           hash.metadata
         end
@@ -229,7 +243,7 @@ module RSpec
 
       # @private
       class ExampleGroupHash < HashPopulator
-        def self.create(parent_group_metadata, user_metadata, *args, &block)
+        def self.create(parent_group_metadata, user_metadata, example_group_index, *args, &block)
           group_metadata = hash_with_backwards_compatibility_default_proc
 
           if parent_group_metadata
@@ -237,7 +251,7 @@ module RSpec
             group_metadata[:parent_example_group] = parent_group_metadata
           end
 
-          hash = new(group_metadata, user_metadata, args, block)
+          hash = new(group_metadata, user_metadata, example_group_index, args, block)
           hash.populate
           hash.metadata
         end
@@ -313,9 +327,11 @@ module RSpec
         :execution_result,
         :file_path,
         :absolute_file_path,
+        :rerun_file_path,
         :full_description,
         :line_number,
         :location,
+        :scoped_id,
         :block
       ]
     end

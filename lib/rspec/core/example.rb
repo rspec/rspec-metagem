@@ -101,6 +101,12 @@ module RSpec
         end
       end
 
+      # @return [String] the unique id of this example. Pass
+      #   this at the command line to re-run this exact example.
+      def id
+        Metadata.id_from(metadata)
+      end
+
       # @attr_reader
       #
       # Returns the first exception raised in the context of running this
@@ -138,7 +144,9 @@ module RSpec
         @example_block       = example_block
 
         @metadata = Metadata::ExampleHash.create(
-          @example_group_class.metadata, user_metadata, description, example_block
+          @example_group_class.metadata, user_metadata,
+          example_group_class.method(:next_runnable_index_for),
+          description, example_block
         )
 
         @example_group_instance = @exception = nil

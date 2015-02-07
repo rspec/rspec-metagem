@@ -386,7 +386,9 @@ module RSpec
         user_metadata = Metadata.build_hash_from(args)
 
         @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata, user_metadata, description, *args, &example_group_block
+          superclass_metadata, user_metadata,
+          superclass.method(:next_runnable_index_for),
+          description, *args, &example_group_block
         )
 
         hooks.register_globals(self, RSpec.configuration.hooks)
@@ -412,6 +414,15 @@ module RSpec
       # @private
       def self.children
         @children ||= []
+      end
+
+      # @private
+      def self.next_runnable_index_for(file)
+        if self == ExampleGroup
+          RSpec.world.num_example_groups_defined_in(file)
+        else
+          children.count + examples.count
+        end + 1
       end
 
       # @private
@@ -571,6 +582,12 @@ module RSpec
         @declaration_line_numbers ||= [metadata[:line_number]] +
           examples.map { |e| e.metadata[:line_number] } +
           FlatMap.flat_map(children, &:declaration_line_numbers)
+      end
+
+      # @return [String] the unique id of this example group. Pass
+      #   this at the command line to re-run this exact example group.
+      def self.id
+        Metadata.id_from(metadata)
       end
 
       # @private
