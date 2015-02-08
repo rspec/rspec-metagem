@@ -275,3 +275,20 @@ module FormatterSupport
   end
 
 end
+
+if RSpec::Support::RubyFeatures.module_prepends_supported?
+  module RSpec::Core
+    class Reporter
+      module EnforceRSpecNotificationsListComplete
+        def notify(event, *args)
+          return super if caller_locations(1, 1).first.label =~ /publish/
+          return super if RSPEC_NOTIFICATIONS.include?(event)
+
+          raise "#{event.inspect} must be added to `RSPEC_NOTIFICATIONS`"
+        end
+      end
+
+      prepend EnforceRSpecNotificationsListComplete
+    end
+  end
+end
