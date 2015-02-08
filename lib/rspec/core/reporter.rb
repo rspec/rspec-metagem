@@ -1,10 +1,9 @@
-require 'set'
 module RSpec::Core
   # A reporter will send notifications to listeners, usually formatters for the
   # spec suite run.
   class Reporter
     # @private
-    RSPEC_NOTIFICATIONS = Set.new(
+    RSPEC_NOTIFICATIONS = LookupSet.new(
       [
         :close, :deprecation, :deprecation_summary, :dump_failures, :dump_pending,
         :dump_profile, :dump_summary, :example_failed, :example_group_finished,
@@ -14,7 +13,7 @@ module RSpec::Core
 
     def initialize(configuration)
       @configuration = configuration
-      @listeners = Hash.new { |h, k| h[k] = Set.new }
+      @listeners = Hash.new { |h, k| h[k] = LookupSet.new }
       @examples = []
       @failed_examples = []
       @pending_examples = []

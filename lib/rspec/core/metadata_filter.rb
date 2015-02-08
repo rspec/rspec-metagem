@@ -147,8 +147,8 @@ module RSpec
 
         def initialize(applies_predicate)
           super
-          @applicable_keys   = Set.new
-          @proc_keys         = Set.new
+          @applicable_keys   = LookupSet.new
+          @proc_keys         = LookupSet.new
           @memoized_lookups  = Hash.new do |hash, applicable_metadata|
             hash[applicable_metadata] = find_items_for(applicable_metadata)
           end

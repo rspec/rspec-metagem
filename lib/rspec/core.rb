@@ -11,6 +11,7 @@ RSpec::Support.define_optimized_require_for_rspec(:core) { |f| require_relative 
   version
   warnings
 
+  lookup_set
   flat_map
   filter_manager
   dsl

@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_core "formatters/helpers"
-require 'set'
 
 module RSpec
   module Core
@@ -13,7 +12,7 @@ module RSpec
         def initialize(deprecation_stream, summary_stream)
           @deprecation_stream = deprecation_stream
           @summary_stream = summary_stream
-          @seen_deprecations = Set.new
+          @seen_deprecations = LookupSet.new
           @count = 0
         end
         alias :output :deprecation_stream
