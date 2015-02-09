@@ -1,12 +1,13 @@
-# This file was generated on 2015-02-03T22:13:58-08:00 from the rspec-dev repo.
+# This file was generated on 2015-02-08T20:55:31-08:00 from the rspec-dev repo.
 # DO NOT modify it by hand as your changes will get lost the next time it is generated.
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $SCRIPT_DIR/travis_functions.sh
 source $SCRIPT_DIR/predicate_functions.sh
 
-# idea taken from: http://blog.headius.com/2010/03/jruby-startup-time-tips.html
-export JRUBY_OPTS="${JRUBY_OPTS} -X-C" # disable JIT since these processes are so short lived
+# If JRUBY_OPTS isn't set, use these.
+# see http://docs.travis-ci.com/user/ci-environment/
+export JRUBY_OPTS=${JRUBY_OPTS:-"--server -Xcompile.invokedynamic=false"}
 SPECS_HAVE_RUN_FILE=specs.out
 MAINTENANCE_BRANCH=`cat maintenance-branch`
 
