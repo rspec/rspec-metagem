@@ -5,6 +5,8 @@ Enhancements:
 * Expose the reporter used to run examples via `RSpec::Core::Example#reporter`.
   (Jon Rowe, #1866)
 * Make `RSpec::Core::Reporter#message` a public supported API. (Jon Rowe, #1866)
+* Allow custom formatter events to be published via
+  `RSpec::Core::Reporter#publish(hash)`. (Jon Rowe, #1869)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.7...v3.2.0)
