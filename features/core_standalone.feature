@@ -5,6 +5,8 @@ Feature: Use rspec-core without rspec-mocks or rspec-expectations
   available, but rspec-core can be used just fine without either of those
   gems installed.
 
+  # Rubinius stacktrace includes kernel/loader.rb etc.
+  @unsupported-on-rbx
   Scenario: Use only rspec-core when only it is installed
     Given only rspec-core is installed
       And a file named "core_only_spec.rb" with:
