@@ -1,3 +1,10 @@
+### Development
+
+Enhancements:
+
+* Make RSpecs fail matchers (for checking examples fail) publically available
+  for use by extension/plugin authors. (Charlie Rudolph, #729)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...v3.2.0)
 
