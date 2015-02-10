@@ -299,7 +299,7 @@ RSpec.describe "matching against things that aren't arrays" do
   end
 
   it 'works with other collection objects' do
-    in_sub_process do
+    in_sub_process_if_possible do
       require 'set'
       expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
       expect {
