@@ -372,7 +372,7 @@ module RSpec
       end
 
       # @private
-      def self.set_it_up(*args, &example_group_block)
+      def self.set_it_up(description, *args, &example_group_block)
         # Ruby 1.9 has a bug that can lead to infinite recursion and a
         # SystemStackError if you include a module in a superclass after
         # including it in a subclass: https://gist.github.com/845896
@@ -383,12 +383,10 @@ module RSpec
         # here.
         ensure_example_groups_are_configured
 
-        description = args.shift
         user_metadata = Metadata.build_hash_from(args)
-        args.unshift(description)
 
         @metadata = Metadata::ExampleGroupHash.create(
-          superclass_metadata, user_metadata, *args, &example_group_block
+          superclass_metadata, user_metadata, description, *args, &example_group_block
         )
 
         hooks.register_globals(self, RSpec.configuration.hooks)
