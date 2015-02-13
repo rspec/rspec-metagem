@@ -1,5 +1,3 @@
-require 'uri'
-
 RSpec.describe "#include matcher" do
   it "is diffable" do
     expect(include("a")).to be_diffable
@@ -466,6 +464,8 @@ RSpec.describe "#include matcher" do
     end
 
     describe "expect(array).to include(matcher)" do
+      include RSpec::Support::InSubProcess
+
       it "passes when the matcher matches one of the values" do
         expect([10, 20, 30]).to include( a_value_within(5).of(24) )
       end
@@ -490,17 +490,21 @@ RSpec.describe "#include matcher" do
       end
 
       it 'does not treat an object that only implements #matches? as a matcher' do
-        domain = Struct.new(:domain) do
-          def matches?(url)
-            URI(url).host == self.domain
+        in_sub_process_if_possible do
+          require 'uri'
+
+          domain = Struct.new(:domain) do
+            def matches?(url)
+              URI(url).host == self.domain
+            end
           end
+
+          expect([domain.new("rspec.info")]).to include(domain.new("rspec.info"))
+
+          expect {
+            expect([domain.new("rspec.info")]).to include(domain.new("foo.com"))
+          }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
         end
-
-        expect([domain.new("rspec.info")]).to include(domain.new("rspec.info"))
-
-        expect {
-          expect([domain.new("rspec.info")]).to include(domain.new("foo.com"))
-        }.to fail_matching("expected [#{domain.new("rspec.info").inspect}] to include")
       end
     end
 
