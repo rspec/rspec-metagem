@@ -1,4 +1,3 @@
-require 'rspec/support/spec/in_sub_process'
 require 'timeout'
 
 class UnsortableObject
