@@ -2,7 +2,6 @@ require 'date'
 # complex is available w/o requiring on ruby 1.9+.
 # Loading it on 1.9+ issues a warning, so we only load it on 1.8.7.
 require 'complex' if RUBY_VERSION == '1.8.7'
-require 'bigdecimal'
 
 module RSpec
   module Matchers
@@ -155,13 +154,18 @@ module RSpec
       end
 
       context 'with BigDecimal objects' do
+        include RSpec::Support::InSubProcess
+
         let(:float)   { 1.1 }
         let(:decimal) { BigDecimal("3.3") }
 
         it 'fails with a conventional representation of the decimal' do
-          expect {
-            expect(float).to eq(decimal)
-          }.to fail_including "expected: 3.3 (#<BigDecimal"
+          in_sub_process_if_possible do
+            require 'bigdecimal'
+            expect {
+              expect(float).to eq(decimal)
+            }.to fail_including "expected: 3.3 (#<BigDecimal"
+          end
         end
 
         it 'does not not assume BigDecimal is defined since you need to require `bigdecimal` to make it available' do
