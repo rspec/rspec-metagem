@@ -649,8 +649,6 @@ end
 
 
 RSpec.describe "arbitrary predicate with DelegateClass" do
-  include RSpec::Support::InSubProcess
-
   it "accesses methods defined in the delegating class (LH[#48])" do
     in_sub_process_if_possible do
       require 'delegate'

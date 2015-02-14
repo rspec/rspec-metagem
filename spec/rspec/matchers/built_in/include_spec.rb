@@ -464,8 +464,6 @@ RSpec.describe "#include matcher" do
     end
 
     describe "expect(array).to include(matcher)" do
-      include RSpec::Support::InSubProcess
-
       it "passes when the matcher matches one of the values" do
         expect([10, 20, 30]).to include( a_value_within(5).of(24) )
       end

@@ -163,7 +163,6 @@ the missing elements were:      [1]
 MESSAGE
   end
 
-  include RSpec::Support::InSubProcess
   def timeout_if_not_debugging(time)
     in_sub_process_if_possible do
       require 'timeout'
@@ -280,8 +279,6 @@ RSpec.describe "expect(...).not_to contain_exactly(:with, :multiple, :args)" do
 end
 
 RSpec.describe "matching against things that aren't arrays" do
-  include RSpec::Support::InSubProcess
-
   it "fails with nil and the expected error message is given" do
     expect {
       expect(nil).to contain_exactly(1, 2, 3)

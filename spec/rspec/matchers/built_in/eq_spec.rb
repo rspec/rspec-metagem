@@ -54,7 +54,6 @@ module RSpec
       end
 
       describe '#description' do
-        include RSpec::Support::InSubProcess
         [
             [nil, 'eq nil'],
             [true, 'eq true'],
@@ -185,8 +184,6 @@ module RSpec
       end
 
       context 'with BigDecimal objects' do
-        include RSpec::Support::InSubProcess
-
         let(:float)   { 1.1 }
         let(:decimal) { BigDecimal("3.3") }
 
