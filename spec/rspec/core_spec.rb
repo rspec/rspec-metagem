@@ -1,11 +1,55 @@
-require 'rspec/support/spec/prevent_load_time_warnings'
+require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe RSpec do
-  fake_minitest = File.expand_path('../../support/fake_minitest', __FILE__)
-  it_behaves_like 'a library that issues no warnings when loaded', 'rspec-core',
-    # Loading minitest issues warnings, so we put our fake minitest on the load
-    # path to prevent the real minitest from being loaded.
-    "$LOAD_PATH.unshift '#{fake_minitest}'", 'require "rspec/core"', 'RSpec::Core::Runner.disable_autorun!' do
+  fake_libs = File.expand_path('../../support/fake_libs', __FILE__)
+  it_behaves_like 'library wide checks', 'rspec-core',
+    :preamble_for_lib => [
+      # rspec-core loads a number of external libraries. We don't want them loaded
+      # as part of loading all of rspec-core for these specs, for a few reasons:
+      #
+      #   * Some external libraries issue warnings, which we can't do anything about.
+      #     Since we are trying to prevent _any_ warnings from loading RSpec, it's
+      #     easiest to avoid loading those libraries entirely.
+      #   * Some external libraries load many stdlibs. Here we allow a known set of
+      #     directly loaded stdlibs, and we're not directly concerned with transitive
+      #     dependencies.
+      #   * We're really only concerned with these issues w.r.t. rspec-mocks and
+      #     rspec-expectations from within their spec suites. Here we care only about
+      #     rspec-core, so avoiding loading them helps keep the spec suites independent.
+      #   * These are some of the slowest specs we have, and cutting out the loading
+      #     of external libraries cuts down on how long these specs take.
+      #
+      # To facilitate the avoidance of loading certain libraries, we have a bunch
+      # of files in `support/fake_libs` that substitute for the real things when
+      # we put that directory on the load path. Here's the list:
+      #
+      #   * coderay -- loaded by the HTML formatter if availble for syntax highlighting.
+      #   * drb -- loaded when `--drb` is used. Loads other stdlibs (socket, thread, fcntl).
+      #   * erb -- loaded by `ConfigurationOptions` so `.rspec` can use ERB. Loads other stdlibs (strscan, cgi/util).
+      #   * flexmock -- loaded by our Flexmock mocking adapter.
+      #   * json -- loaded by the JSON formatter, loads other stdlibs (ostruct, enc/utf_16le.bundle, etc).
+      #   * minitest -- loaded by our Minitest assertions adapter.
+      #   * mocha -- loaded by our Mocha mocking adapter.
+      #   * rake -- loaded by our Rake task. Loads other stdlibs (fileutils, ostruct, thread, monitor, etc).
+      #   * rr -- loaded by our RR mocking adapter.
+      #   * rspec-mocks -- loaded by our RSpec mocking adapter.
+      #   * rspec-expectations -- loaded by the generated `spec_helper` (defined in project_init).
+      #   * test-unit -- loaded by our T::U assertions adapter.
+      #
+      "$LOAD_PATH.unshift '#{fake_libs}'",
+      # Many files assume this has already been loaded and will have errors if it has not.
+      'require "rspec/core"',
+      # Prevent rspec/autorun from trying to run RSpec.
+      'RSpec::Core::Runner.disable_autorun!'
+    ], :skip_spec_files => %r{/fake_libs/},
+    :allowed_loaded_feature_regexps => [
+      /optparse\.rb/,   # Used by OptionParser.
+      /set\.rb/,        # used in a few places but being removed in #1870.
+      /rbconfig\.rb/,   # loaded by rspec-support for OS detection.
+      /shellwords\.rb/, # used by ConfigurationOptions and RakeTask.
+      /stringio/,       # Used by BaseFormatter.
+      %r{/fake_libs/},  # ignore these, obviously
+    ] do
 
     pending_when = {
       '1.9.2' => { :description => "issues no warnings when loaded" },
