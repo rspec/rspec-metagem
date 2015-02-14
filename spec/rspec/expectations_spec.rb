@@ -1,11 +1,19 @@
-require 'rspec/support/spec/prevent_load_time_warnings'
+require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe "RSpec::Expectations" do
-  it_behaves_like 'a library that issues no warnings when loaded', 'rspec-expectations',
-    # We define minitest constants because rspec/expectations/minitest_integration
-    # expects these constants to already be defined.
-    'module Minitest; class Assertion; end; module Test; end; end',
-    'require "rspec/expectations"'
+  it_behaves_like "library wide checks", "rspec-expectations",
+    :preamble_for_lib => [
+      # We define minitest constants because rspec/expectations/minitest_integration
+      # expects these constants to already be defined.
+      "module Minitest; class Assertion; end; module Test; end; end",
+      'require "rspec/expectations"'
+    ],
+    :allowed_loaded_feature_regexps => [
+      /stringio/, /tempfile/,         # Used by `output` matcher. Can't be easily avoided.
+      /delegate/, /tmpdir/, /thread/, # required by tempfile
+      /fileutils/, /etc/,             # required by tmpdir
+      /prettyprint.rb/, /pp.rb/       # required by rspec-support
+    ]
 
   it 'does not allow expectation failures to be caught by a bare rescue' do
     expect {
