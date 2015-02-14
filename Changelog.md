@@ -318,7 +318,7 @@ Breaking Changes for 3.0.0:
   (Sam Phippen)
 * Remove the deprecated `have`, `have_at_least` and `have_at_most` matchers.
   You can continue using those matchers through https://github.com/rspec/rspec-collection_matchers,
-  or you can rewrite your expectations with something like 
+  or you can rewrite your expectations with something like
   `expect(your_object.size).to eq(num)`. (Hugo Baraúna)
 * Rename `be_true` and `be_false` to `be_truthy` and `be_falsey`. (Sam Phippen)
 * Make `expect { }.to_not raise_error(SomeSpecificClass, message)`,
@@ -439,9 +439,9 @@ Deprecations:
 Deprecations
 
 * Deprecate `have`, `have_at_least` and `have_at_most`. You can continue using those
-	matchers through https://github.com/rspec/rspec-collection_matchers, or
-	you can rewrite your expectations with something like
-	`expect(your_object.size).to eq(num)`. (Hugo Baraúna)
+  matchers through https://github.com/rspec/rspec-collection_matchers, or
+  you can rewrite your expectations with something like
+  `expect(your_object.size).to eq(num)`. (Hugo Baraúna)
 * Deprecate `be_xyz` predicate matcher when `xyz?` is a private method.
   (Jon Rowe)
 * Deprecate `be_true`/`be_false` in favour of `be_truthy`/`be_falsey`
