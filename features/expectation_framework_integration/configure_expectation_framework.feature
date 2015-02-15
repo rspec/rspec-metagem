@@ -45,7 +45,8 @@ Feature: configure expectation framework
     Then the examples should all pass
 
   Scenario: Configure test/unit assertions
-    Given a file named "example_spec.rb" with:
+    Given rspec-expectations is not installed
+      And a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.expect_with :test_unit
@@ -72,7 +73,8 @@ Feature: configure expectation framework
     And  the output should contain "3 examples, 1 failure"
 
   Scenario: Configure minitest assertions
-    Given a file named "example_spec.rb" with:
+    Given rspec-expectations is not installed
+      And a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.expect_with :minitest
@@ -146,7 +148,8 @@ Feature: configure expectation framework
     Then the examples should all pass
 
   Scenario: Configure test/unit and minitest assertions
-    Given a file named "example_spec.rb" with:
+    Given rspec-expectations is not installed
+      And a file named "example_spec.rb" with:
       """ruby
       RSpec.configure do |config|
         config.expect_with :test_unit, :minitest

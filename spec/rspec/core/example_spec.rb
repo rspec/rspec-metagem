@@ -187,12 +187,28 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     end
 
     context "when `expect_with :stdlib` is configured" do
-      before(:each) { expect_with :stdlib }
+      around do |ex|
+        # Prevent RSpec::Matchers from being autoloaded.
+        orig_autoloads = RSpec::MODULES_TO_AUTOLOAD.dup
+        RSpec::MODULES_TO_AUTOLOAD.clear
+        ex.run
+        RSpec::MODULES_TO_AUTOLOAD.replace(orig_autoloads)
+      end
 
-      it "does not attempt to get the generated description from RSpec::Matchers" do
-        expect(RSpec::Matchers).not_to receive(:generated_description)
-        example_group.example { assert 5 == 5 }
+      before { expect_with :stdlib }
+
+      it "does not attempt to get the generated description from RSpec::Matchers when not loaded" do
+        # Hide the constant while the example runs to simulate it being unloaded.
+        example_group.before { hide_const("RSpec::Matchers") }
+
+        ex = example_group.example { assert 5 == 5 }
         example_group.run
+
+        # We rescue errors that occur while generating the description and append it,
+        # so this ensures that no error mentioning `RSpec::Matchers` occurred while
+        # generating the description.
+        expect(ex.description).not_to include("RSpec::Matchers")
+        expect(ex).to pass
       end
 
       it "uses the file and line number" do
