@@ -2,6 +2,8 @@
 
 Enhancements:
 
+* Expose `RSpec::Matchers::EnglishPhrasing` to make it easier to write
+  nice failure messages in custom matchers. (Jared Beck, #736)
 * Make RSpecs fail matchers (for checking examples fail) publically available
   for use by extension/plugin authors. (Charlie Rudolph, #729)
 * Avoid loading `tempfile` (and its dependencies) unless

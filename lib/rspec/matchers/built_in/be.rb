@@ -87,11 +87,11 @@ module RSpec
         end
 
         def expected_to_sentence
-          split_words(@expected)
+          EnglishPhrasing.split_words(@expected)
         end
 
         def args_to_sentence
-          to_sentence(@args)
+          EnglishPhrasing.list(@args)
         end
       end
 
@@ -252,7 +252,7 @@ module RSpec
         end
 
         def prefix_to_sentence
-          split_words(@prefix)
+          EnglishPhrasing.split_words(@prefix)
         end
 
         def failure_message_expecting(value)
