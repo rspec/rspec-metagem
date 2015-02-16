@@ -1,9 +1,3 @@
-require 'date'
-# complex is available w/o requiring on ruby 1.9+.
-# Loading it on 1.9+ issues a warning, so we only load it on 1.8.7.
-require 'complex' if RUBY_VERSION == '1.8.7'
-require 'bigdecimal'
-
 module RSpec
   module Matchers
     RSpec.describe "eq" do
@@ -67,19 +61,40 @@ module RSpec
             [:symbol, 'eq :symbol'],
             [1, 'eq 1'],
             [1.2, 'eq 1.2'],
-            [Complex(1, 2), "eq #{Complex(1, 2).inspect}"],
             ['foo', 'eq "foo"'],
             [/regex/, 'eq /regex/'],
             [['foo'], 'eq ["foo"]'],
             [{:foo => :bar}, 'eq {:foo=>:bar}'],
             [Class, 'eq Class'],
             [RSpec, 'eq RSpec'],
-            [Date.new(2014, 1, 1), "eq #{Date.new(2014, 1, 1).inspect}"],
             [Time.utc(2014, 1, 1), "eq #{Time.utc(2014, 1, 1).inspect}"],
         ].each do |expected, expected_description|
           context "with #{expected.inspect}" do
             it "is \"#{expected_description}\"" do
               expect(eq(expected).description).to eq expected_description
+            end
+          end
+        end
+
+        context "with Date.new(2014, 1, 1)" do
+          it "is eq to Date.new(2014, 1, 1).inspect" do
+            in_sub_process_if_possible do
+              require 'date'
+              date = Date.new(2014, 1, 1)
+              expect(eq(date).description).to eq "eq #{date.inspect}"
+            end
+          end
+        end
+
+        context "with Complex(1, 2)" do
+          it "is eq to Complex(1, 2).inspect" do
+            in_sub_process_if_possible do
+              # complex is available w/o requiring on ruby 1.9+.
+              # Loading it on 1.9+ issues a warning, so we only load it on 1.8.7.
+              require 'complex' if RUBY_VERSION == '1.8.7'
+
+              complex = Complex(1, 2)
+              expect(eq(complex).description).to eq "eq #{complex.inspect}"
             end
           end
         end
@@ -118,13 +133,22 @@ module RSpec
         end
 
         context 'with DateTime objects' do
+          def with_date_loaded
+            in_sub_process_if_possible do
+              require 'date'
+              yield
+            end
+          end
+
           let(:date1) { DateTime.new(2000, 1, 1, 1, 1, Rational(1, 10)) }
           let(:date2) { DateTime.new(2000, 1, 1, 1, 1, Rational(2, 10)) }
 
           it 'produces different output for DateTimes differing by milliseconds' do
-            expect {
-              expect(date1).to eq(date2)
-            }.to fail_with(a_string_with_differing_output)
+            with_date_loaded do
+              expect {
+                expect(date1).to eq(date2)
+              }.to fail_with(a_string_with_differing_output)
+            end
           end
 
           it 'does not not assume DateTime is defined since you need to require `date` to make it available' do
@@ -135,20 +159,25 @@ module RSpec
           end
 
           it 'fails with identical output when the DateTimes are exactly the same' do
-            expect {
-              expect(date1).to_not eq(date1)
-            }.to fail_with(a_string_with_identical_output)
+            with_date_loaded do
+              expect {
+                expect(date1).to_not eq(date1)
+              }.to fail_with(a_string_with_identical_output)
+            end
           end
 
           context 'when ActiveSupport is loaded' do
             it "uses a custom format to ensure the output is different when DateTimes differ" do
               stub_const("ActiveSupport", Module.new)
-              allow(date1).to receive(:inspect).and_return("Timestamp")
-              allow(date2).to receive(:inspect).and_return("Timestamp")
 
-              expect {
-                expect(date1).to eq(date2)
-              }.to fail_with(a_string_with_differing_output)
+              with_date_loaded do
+                allow(date1).to receive(:inspect).and_return("Timestamp")
+                allow(date2).to receive(:inspect).and_return("Timestamp")
+
+                expect {
+                  expect(date1).to eq(date2)
+                }.to fail_with(a_string_with_differing_output)
+              end
             end
           end
         end
@@ -159,9 +188,12 @@ module RSpec
         let(:decimal) { BigDecimal("3.3") }
 
         it 'fails with a conventional representation of the decimal' do
-          expect {
-            expect(float).to eq(decimal)
-          }.to fail_including "expected: 3.3 (#<BigDecimal"
+          in_sub_process_if_possible do
+            require 'bigdecimal'
+            expect {
+              expect(float).to eq(decimal)
+            }.to fail_including "expected: 3.3 (#<BigDecimal"
+          end
         end
 
         it 'does not not assume BigDecimal is defined since you need to require `bigdecimal` to make it available' do

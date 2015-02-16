@@ -1,4 +1,5 @@
 require 'rspec/support/spec'
+require 'rspec/support/spec/in_sub_process'
 
 RSpec::Support::Spec.setup_simplecov do
   minimum_coverage 97
@@ -19,6 +20,7 @@ RSpec::configure do |config|
   config.order = :random
 
   config.include FormattingSupport
+  config.include RSpec::Support::InSubProcess
 
   config.expect_with :rspec do |expectations|
     $default_expectation_syntax = expectations.syntax
@@ -77,7 +79,6 @@ RSpec.shared_context "isolate include_chain_clauses_in_custom_matcher_descriptio
   end
 end
 
-require 'rspec/support/spec/in_sub_process'
 module MinitestIntegration
   include ::RSpec::Support::InSubProcess
 

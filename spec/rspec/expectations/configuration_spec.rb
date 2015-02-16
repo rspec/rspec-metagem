@@ -1,5 +1,3 @@
-require 'delegate'
-
 module RSpec
   module Expectations
     RSpec.describe Configuration do
@@ -47,7 +45,13 @@ module RSpec
       end
 
       context 'on an interpreter that does not provide BasicObject', :uses_should, :unless => defined?(::BasicObject) do
-        before { RSpec::Expectations::Syntax.disable_should(Delegator) }
+        def with_delegate
+          in_sub_process_if_possible do
+            require 'delegate'
+            RSpec::Expectations::Syntax.disable_should(Delegator)
+            yield
+          end
+        end
 
         let(:klass) do
           Class.new(SimpleDelegator) do
@@ -58,9 +62,11 @@ module RSpec
         let(:instance) { klass.new(Object.new) }
 
         it 'provides a means to manually add it Delegator' do
-          instance.should_not respond_to(:delegated?) # because #should is being delegated...
-          config.add_should_and_should_not_to Delegator
-          instance.should respond_to(:delegated?) # now it should work!
+          with_delegate do
+            instance.should_not respond_to(:delegated?) # because #should is being delegated...
+            config.add_should_and_should_not_to Delegator
+            instance.should respond_to(:delegated?) # now it should work!
+          end
         end
       end
 

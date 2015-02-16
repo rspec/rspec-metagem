@@ -650,20 +650,22 @@ end
 
 RSpec.describe "arbitrary predicate with DelegateClass" do
   it "accesses methods defined in the delegating class (LH[#48])" do
-    require 'delegate'
-    class ArrayDelegate < DelegateClass(Array)
-      def initialize(array)
-        @internal_array = array
-        super(@internal_array)
+    in_sub_process_if_possible do
+      require 'delegate'
+      class ArrayDelegate < DelegateClass(Array)
+        def initialize(array)
+          @internal_array = array
+          super(@internal_array)
+        end
+
+        def large?
+          @internal_array.size >= 5
+        end
       end
 
-      def large?
-        @internal_array.size >= 5
-      end
+      delegate = ArrayDelegate.new([1,2,3,4,5,6])
+      expect(delegate).to be_large
     end
-
-    delegate = ArrayDelegate.new([1,2,3,4,5,6])
-    expect(delegate).to be_large
   end
 end
 

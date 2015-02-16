@@ -1,6 +1,3 @@
-require 'rspec/support/spec/in_sub_process'
-require 'timeout'
-
 class UnsortableObject
   def initialize(id)
     @id = id
@@ -167,8 +164,11 @@ MESSAGE
   end
 
   def timeout_if_not_debugging(time)
-    return yield if defined?(::Debugger)
-    Timeout.timeout(time) { yield }
+    in_sub_process_if_possible do
+      require 'timeout'
+      return yield if defined?(::Debugger)
+      Timeout.timeout(time) { yield }
+    end
   end
 
   it 'fails a match of 11 items with duplicates in a reasonable amount of time' do
@@ -279,8 +279,6 @@ RSpec.describe "expect(...).not_to contain_exactly(:with, :multiple, :args)" do
 end
 
 RSpec.describe "matching against things that aren't arrays" do
-  include RSpec::Support::InSubProcess
-
   it "fails with nil and the expected error message is given" do
     expect {
       expect(nil).to contain_exactly(1, 2, 3)
@@ -300,7 +298,7 @@ RSpec.describe "matching against things that aren't arrays" do
   end
 
   it 'works with other collection objects' do
-    in_sub_process do
+    in_sub_process_if_possible do
       require 'set'
       expect(Set.new([3, 2, 1])).to contain_exactly(1, 2, 3)
       expect {
