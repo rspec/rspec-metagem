@@ -78,8 +78,8 @@ module RSpec::Core
     def start(expected_example_count, time=RSpec::Core::Time.now)
       @start = time
       @load_time = (@start - @configuration.start_time).to_f
-      notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
       notify :seed, Notifications::SeedNotification.new(@configuration.seed, seed_used?)
+      notify :start, Notifications::StartNotification.new(expected_example_count, @load_time)
     end
 
     # @param message [#to_s] A message object to send to formatters
