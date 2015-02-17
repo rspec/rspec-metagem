@@ -2,8 +2,6 @@
 $_rspec_core_load_started_at = Time.now
 # rubocop:enable Style/GlobalVars
 
-require 'rbconfig'
-
 require "rspec/support"
 RSpec::Support.require_rspec_support "caller_filter"
 

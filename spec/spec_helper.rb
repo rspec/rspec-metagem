@@ -22,6 +22,10 @@ class RSpec::Core::Configuration
 end
 
 Dir['./spec/support/**/*.rb'].map do |file|
+  # fake libs aren't intended to be loaded except by some specific specs
+  # that shell out and run a new process.
+  next if file =~ /fake_libs/
+
   # Ensure requires are relative to `spec`, which is on the
   # load path. This helps prevent double requires on 1.8.7.
   require file.gsub("./spec/support", "support")
