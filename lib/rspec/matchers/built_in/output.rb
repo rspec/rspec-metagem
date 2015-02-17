@@ -1,5 +1,4 @@
 require 'stringio'
-require 'tempfile'
 
 module RSpec
   module Matchers
@@ -172,6 +171,14 @@ module RSpec
       # @private
       class CaptureStreamToTempfile < Struct.new(:name, :stream)
         def capture(block)
+          # We delay loading tempfile until it is actually needed because
+          # we want to minimize stdlibs loaded so that users who use a
+          # portion of the stdlib can't have passing specs while forgetting
+          # to load it themselves. `CaptureStreamToTempfile` is rarely used
+          # and `tempfile` pulls in a bunch of things (delegate, tmpdir,
+          # thread, fileutils, etc), so it's worth delaying it until this point.
+          require 'tempfile'
+
           original_stream = stream.clone
           captured_stream = Tempfile.new(name)
 

@@ -70,7 +70,7 @@ for more information.
 ## Usage
 
 The `should` and `should_not` methods can be used to define expectations on any
-object. 
+object.
 
 ```ruby
 actual.should eq expected
