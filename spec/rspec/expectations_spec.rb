@@ -9,8 +9,8 @@ RSpec.describe "RSpec::Expectations" do
       'require "rspec/expectations"'
     ],
     :allowed_loaded_feature_regexps => [
-      /stringio/,               # Used by `output` matcher. Can't be easily avoided.
-      /prettyprint.rb/, /pp.rb/ # required by rspec-support
+      /stringio/, # Used by `output` matcher. Can't be easily avoided.
+      /prettyprint.rb/, /pp.rb/, /diff\/lcs/, /rbconfig/ # required by rspec-support
     ]
 
   it 'does not allow expectation failures to be caught by a bare rescue' do
