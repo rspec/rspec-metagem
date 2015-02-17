@@ -2,6 +2,18 @@ require 'rspec/support/spec/library_wide_checks'
 
 RSpec.describe RSpec do
   fake_libs = File.expand_path('../../support/fake_libs', __FILE__)
+  allowed_loaded_features = [
+    /optparse\.rb/,   # Used by OptionParser.
+    /set\.rb/,        # used in a few places but being removed in #1870.
+    /rbconfig\.rb/,   # loaded by rspec-support for OS detection.
+    /shellwords\.rb/, # used by ConfigurationOptions and RakeTask.
+    /stringio/,       # Used by BaseFormatter.
+    %r{/fake_libs/},  # ignore these, obviously
+  ]
+
+  # JRuby appears to not respect `--disable=gem` so rubygems also gets loaded.
+  allowed_loaded_features << /rubygems/ if RSpec::Support::Ruby.jruby?
+
   it_behaves_like 'library wide checks', 'rspec-core',
     :preamble_for_lib => [
       # rspec-core loads a number of external libraries. We don't want them loaded
@@ -41,29 +53,13 @@ RSpec.describe RSpec do
       'require "rspec/core"',
       # Prevent rspec/autorun from trying to run RSpec.
       'RSpec::Core::Runner.disable_autorun!'
-    ], :skip_spec_files => %r{/fake_libs/},
-    :allowed_loaded_feature_regexps => [
-      /optparse\.rb/,   # Used by OptionParser.
-      /set\.rb/,        # used in a few places but being removed in #1870.
-      /rbconfig\.rb/,   # loaded by rspec-support for OS detection.
-      /shellwords\.rb/, # used by ConfigurationOptions and RakeTask.
-      /stringio/,       # Used by BaseFormatter.
-      %r{/fake_libs/},  # ignore these, obviously
-    ] do
-
-    pending_when = {
-      '1.9.2' => { :description => "issues no warnings when loaded" },
-      '1.8.7' => { :description => "issues no warnings when the spec files are loaded" },
-      '2.0.0' => { }
-    }
-
-    if RUBY_VERSION == '1.9.2' || RUBY_VERSION == '1.8.7'
-      before(:example, pending_when.fetch(RUBY_VERSION)) do
+    ], :skip_spec_files => %r{/fake_libs/}, :allowed_loaded_feature_regexps => allowed_loaded_features do
+    if RUBY_VERSION == '1.8.7'
+      before(:example, :description => /(issues no warnings when the spec files are loaded|stdlibs)/) do
         pending "Not working on #{RUBY_DESCRIPTION}"
       end
-    end
-    if (RUBY_PLATFORM == 'java' && RUBY_VERSION == '2.0.0')
-      before(:example, pending_when.fetch(RUBY_VERSION)) do
+    elsif RUBY_VERSION == '2.0.0' && RSpec::Support::Ruby.jruby?
+      before(:example) do
         skip "Not reliably working on #{RUBY_DESCRIPTION}"
       end
     end
