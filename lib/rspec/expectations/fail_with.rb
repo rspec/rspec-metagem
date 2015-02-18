@@ -1,5 +1,3 @@
-RSpec::Support.require_rspec_support 'differ'
-
 module RSpec
   module Expectations
     class << self
