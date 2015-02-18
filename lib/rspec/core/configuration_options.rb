@@ -52,12 +52,12 @@ module RSpec
         end
       end
 
-      UNFORCED_OPTIONS = LookupSet.new([
+      UNFORCED_OPTIONS = Set.new([
         :requires, :profile, :drb, :libs, :files_or_directories_to_run,
         :full_description, :full_backtrace, :tty
       ])
 
-      UNPROCESSABLE_OPTIONS = LookupSet.new([:formatters])
+      UNPROCESSABLE_OPTIONS = Set.new([:formatters])
 
       def force?(key)
         !UNFORCED_OPTIONS.include?(key)

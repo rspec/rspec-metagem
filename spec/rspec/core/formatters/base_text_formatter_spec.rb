@@ -52,7 +52,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
     end
 
     def output_from_running(example_group)
-      allow(RSpec.configuration).to receive(:loaded_spec_files) { RSpec::Core::LookupSet.new([File.expand_path(__FILE__)]) }
+      allow(RSpec.configuration).to receive(:loaded_spec_files) { RSpec::Core::Set.new([File.expand_path(__FILE__)]) }
       example_group.run(reporter)
       examples = example_group.examples
       send_notification :dump_summary, summary_notification(1, examples, examples, [], 0)

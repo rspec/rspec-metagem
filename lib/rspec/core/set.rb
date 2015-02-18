@@ -8,7 +8,7 @@ module RSpec
     # piece of the stdlib. This helps to prevent false positive
     # builds.
     #
-    class LookupSet
+    class Set
       include Enumerable
 
       def initialize(array=[])

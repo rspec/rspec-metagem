@@ -3,7 +3,7 @@ module RSpec::Core
   # spec suite run.
   class Reporter
     # @private
-    RSPEC_NOTIFICATIONS = LookupSet.new(
+    RSPEC_NOTIFICATIONS = Set.new(
       [
         :close, :deprecation, :deprecation_summary, :dump_failures, :dump_pending,
         :dump_profile, :dump_summary, :example_failed, :example_group_finished,
@@ -13,7 +13,7 @@ module RSpec::Core
 
     def initialize(configuration)
       @configuration = configuration
-      @listeners = Hash.new { |h, k| h[k] = LookupSet.new }
+      @listeners = Hash.new { |h, k| h[k] = Set.new }
       @examples = []
       @failed_examples = []
       @pending_examples = []

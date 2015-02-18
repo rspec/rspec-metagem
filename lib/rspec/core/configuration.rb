@@ -306,7 +306,7 @@ module RSpec
 
         @mock_framework = nil
         @files_or_directories_to_run = []
-        @loaded_spec_files = LookupSet.new
+        @loaded_spec_files = Set.new
         @color = false
         @pattern = '**{,/*/**}/*_spec.rb'
         @exclude_pattern = ''

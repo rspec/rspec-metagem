@@ -12,7 +12,7 @@ module RSpec
         def initialize(deprecation_stream, summary_stream)
           @deprecation_stream = deprecation_stream
           @summary_stream = summary_stream
-          @seen_deprecations = LookupSet.new
+          @seen_deprecations = Set.new
           @count = 0
         end
         alias :output :deprecation_stream

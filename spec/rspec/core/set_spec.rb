@@ -1,6 +1,6 @@
-RSpec.describe 'RSpec::Core::LookupSet' do
+RSpec.describe 'RSpec::Core::Set' do
 
-  let(:set) { RSpec::Core::LookupSet.new([1, 2, 3]) }
+  let(:set) { RSpec::Core::Set.new([1, 2, 3]) }
 
   it 'takes an array of values' do
     expect(set).to include(1, 2, 3)
