@@ -107,6 +107,37 @@ module RSpec
           }.to raise_error(ArgumentError)
         end
 
+        context "with an :ids filter" do
+          it 'matches examples with a matching id and rerun_file_path' do
+            metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file" }
+            expect(filter_applies?(:ids, { "some/file" => ["1:2"] }, metadata)).to be true
+          end
+
+          it 'does not match examples without a matching id' do
+            metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file" }
+            expect(filter_applies?(:ids, { "some/file" => ["1:3"] }, metadata)).to be false
+          end
+
+          it 'does not match examples without a matching rerun_file_path' do
+            metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file" }
+            expect(filter_applies?(:ids, { "some/file_2" => ["1:2"] }, metadata)).to be false
+          end
+
+          it 'matches the scoped id from a parent example group' do
+            metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file", :example_group => { :scoped_id => "1" } }
+            expect(filter_applies?(:ids, { "some/file" => ["1"] }, metadata)).to be true
+            expect(filter_applies?(:ids, { "some/file" => ["2"] }, metadata)).to be false
+          end
+
+          it 'matches only on entire id segments so (1 is not treated as a parent group of 11)' do
+            metadata = { :scoped_id => "1:2", :rerun_file_path => "some/file", :example_group => { :scoped_id => "1" } }
+            expect(filter_applies?(:ids, { "some/file" => ["1"] }, metadata)).to be true
+
+            metadata = { :scoped_id => "11", :rerun_file_path => "some/file" }
+            expect(filter_applies?(:ids, { "some/file" => ["1"] }, metadata)).to be false
+          end
+        end
+
         context "with a nested hash" do
           it 'matches when the nested entry matches' do
             metadata = { :foo => { :bar => "words" } }

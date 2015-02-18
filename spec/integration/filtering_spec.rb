@@ -123,4 +123,57 @@ RSpec.describe 'Filtering' do
       expect(last_cmd_stdout).not_to match(/fails/)
     end
   end
+
+  context "passing example ids at the command line" do
+    it "selects matching examples" do
+      write_file_formatted "spec/file_1_spec.rb", """
+        RSpec.describe 'File 1' do
+          1.upto(3) do |i|
+            example('ex ' + i.to_s) { expect(i).to be_odd }
+          end
+        end
+      """
+
+      write_file_formatted "spec/file_2_spec.rb", """
+        RSpec.describe 'File 2' do
+          1.upto(3) do |i|
+            example('ex ' + i.to_s) { expect(i).to be_even }
+          end
+        end
+      """
+
+      # Using the form that Metadata.relative_path returns...
+      run_command "./spec/file_1_spec.rb[1:1,1:3] ./spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
+      # Without the leading `.`...
+      run_command "spec/file_1_spec.rb[1:1,1:3] spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
+      # Using absolute paths...
+      spec_root = in_current_dir { File.expand_path("spec") }
+      run_command "#{spec_root}/file_1_spec.rb[1:1,1:3] #{spec_root}/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+    end
+
+    it "selects matching example groups" do
+      write_file_formatted "spec/file_1_spec.rb", """
+        RSpec.describe 'Group 1' do
+          example { fail }
+
+          context 'nested 1' do
+            it { }
+            it { }
+          end
+
+          context 'nested 2' do
+            example { fail }
+          end
+        end
+      """
+
+      run_command "./spec/file_1_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
+    end
+  end
 end

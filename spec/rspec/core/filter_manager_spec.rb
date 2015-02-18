@@ -105,24 +105,64 @@ module RSpec::Core
         RSpec.describe("group", *args).example("example")
       end
 
-      it "prefers location to exclusion filter" do
-        group = RSpec.describe("group")
-        included = group.example("include", :slow => true) {}
-        excluded = group.example("exclude") {}
-        filter_manager.add_location(__FILE__, [__LINE__ - 2])
-        filter_manager.exclude_with_low_priority :slow => true
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+      shared_examples_for "example identification filter preference" do |type|
+        it "prefers #{type} filter to exclusion filter" do
+          group = RSpec.describe("group")
+          included = group.example("include", :slow => true) {}; line = __LINE__
+          excluded = group.example("exclude") {}
+
+          add_filter(:line_number => line, :scoped_id => "1:1")
+          filter_manager.exclude_with_low_priority :slow => true
+
+          expect(filter_manager.prune([included, excluded])).to eq([included])
+        end
+
+        it "prefers #{type} on entire group to exclusion filter on a nested example" do
+          # We way want to change this behaviour in future, see:
+          # https://github.com/rspec/rspec-core/issues/779
+          group = RSpec.describe("group"); line = __LINE__
+          included = group.example("include", :slow => true)
+          excluded = RSpec.describe.example
+
+          add_filter(:line_number => line, :scoped_id => "1")
+          filter_manager.exclude_with_low_priority :slow => true
+
+          expect(filter_manager.prune([included, excluded])).to eq([included])
+        end
       end
 
-      it "prefers location to exclusion filter on entire group" do
-        # We way want to change this behaviour in future, see:
-        # https://github.com/rspec/rspec-core/issues/779
-        group = RSpec.describe("group")
-        included = group.example("include", :slow => true) {}
-        excluded = example_with
-        filter_manager.add_location(__FILE__, [__LINE__ - 3])
-        filter_manager.exclude_with_low_priority :slow => true
-        expect(filter_manager.prune([included, excluded])).to eq([included])
+      describe "location filtering" do
+        include_examples "example identification filter preference", :location do
+          def add_filter(options)
+            filter_manager.add_location(__FILE__, [options.fetch(:line_number)])
+          end
+        end
+      end
+
+      describe "id filtering" do
+        include_examples "example identification filter preference", :id do
+          def add_filter(options)
+            filter_manager.add_ids(__FILE__, [options.fetch(:scoped_id)])
+          end
+        end
+      end
+
+      context "with a location and an id filter" do
+        it 'takes the set union of matched examples' do
+          group = RSpec.describe("group")
+
+          matches_id = group.example
+          matches_line_number = group.example; line_1 = __LINE__
+          matches_both = group.example; line_2 = __LINE__
+          matches_neither = group.example
+
+          filter_manager.add_ids(__FILE__, ["1:1", "1:3"])
+          filter_manager.add_location(__FILE__, [line_1, line_2])
+
+          expect(filter_manager.prune([
+            matches_id, matches_line_number, matches_both, matches_neither
+          ])).to eq([matches_id, matches_line_number, matches_both])
+        end
       end
 
       context "with examples from multiple spec source files" do
@@ -209,6 +249,55 @@ module RSpec::Core
 
           filter_manager.include :foo => true, :bar => true
           expect(filter_manager.prune(examples)).to contain_exactly(included_1, included_2)
+        end
+      end
+
+      context "with :id filters" do
+        it 'selects only the matched example when a single example id is given' do
+          ex_1 = ex_2 = nil
+          RSpec.describe do
+            ex_1 = example
+            ex_2 = example
+          end
+
+          filter_manager.add_ids(Metadata.relative_path(__FILE__), %w[ 1:2 ])
+          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+        end
+
+        it 'can work with absolute file paths' do
+          ex_1 = ex_2 = nil
+          RSpec.describe do
+            ex_1 = example
+            ex_2 = example
+          end
+
+          filter_manager.add_ids(File.expand_path(__FILE__), %w[ 1:2 ])
+          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+        end
+
+        it "can work with relative paths that lack the leading `.`" do
+          path = Metadata.relative_path(__FILE__).sub(/^\.\//, '')
+
+          ex_1 = ex_2 = nil
+          RSpec.describe do
+            ex_1 = example
+            ex_2 = example
+          end
+
+          filter_manager.add_ids(path, %w[ 1:2 ])
+          expect(filter_manager.prune([ex_1, ex_2])).to eq([ex_2])
+        end
+
+        it 'can select groups' do
+          ex_1 = ex_2 = ex_3 = nil
+          RSpec.describe { ex_1 = example }
+          RSpec.describe do
+            ex_2 = example
+            ex_3 = example
+          end
+
+          filter_manager.add_ids(Metadata.relative_path(__FILE__), %w[ 2 ])
+          expect(filter_manager.prune([ex_1, ex_2, ex_3])).to eq([ex_2, ex_3])
         end
       end
     end
