@@ -234,7 +234,7 @@ module RSpec::Core
             lines = ["Failure/Error: #{read_failed_line.strip}"]
             lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
             encoded_string(exception.message.to_s).split("\n").each do |line|
-              lines << "  #{line}" if exception.message
+              lines << "  #{line}"
             end
             lines
           end
