@@ -8,6 +8,10 @@ Enhancements:
 * Allow custom formatter events to be published via
   `RSpec::Core::Reporter#publish(event_name, hash_of_attributes)`. (Jon Rowe, #1869)
 
+Bugfixes:
+
+* Handle invalid UTF-8 strings within exception methods. (Benjamin Fleischer, #1760)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.7...v3.2.0)
 
