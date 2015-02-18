@@ -205,8 +205,16 @@ module RSpec::Core
         def encoding_of(string)
           string.encoding
         end
+
+        def encoded_string(string)
+          RSpec::Support::EncodedString.new(string, Encoding.default_external)
+        end
       else
         def encoding_of(_string)
+        end
+
+        def encoded_string(string)
+          RSpec::Support::EncodedString.new(string)
         end
       end
 
@@ -225,8 +233,8 @@ module RSpec::Core
           begin
             lines = ["Failure/Error: #{read_failed_line.strip}"]
             lines << "#{exception_class_name}:" unless exception_class_name =~ /RSpec/
-            exception.message.to_s.split("\n").each do |line|
-              lines << "  #{line}" if exception.message
+            encoded_string(exception.message.to_s).split("\n").each do |line|
+              lines << "  #{line}"
             end
             lines
           end

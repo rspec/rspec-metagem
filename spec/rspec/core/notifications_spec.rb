@@ -100,5 +100,18 @@ RSpec.describe "FailedExampleNotification" do
       expect(lines[0]).to match %r{\AFailure\/Error}
       expect(lines[1]).to match %r{\A\s*Test exception\z}
     end
+
+    if String.method_defined?(:encoding)
+      it "returns failures_lines with invalid bytes replace by '?'" do
+        message_with_invalid_byte_sequence =
+          "\xEF \255 \xAD I have bad bytes".force_encoding(Encoding::UTF_8)
+        allow(exception).to receive(:message).
+          and_return(message_with_invalid_byte_sequence)
+
+        lines = notification.message_lines
+        expect(lines[0]).to match %r{\AFailure\/Error}
+        expect(lines[1].strip).to eq("? ? ? I have bad bytes")
+      end
+    end
   end
 end
