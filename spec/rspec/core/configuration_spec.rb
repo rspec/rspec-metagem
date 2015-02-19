@@ -752,13 +752,6 @@ module RSpec::Core
       end
     end
 
-    describe "path with line number" do
-      it "assigns the line number as a location filter" do
-        assign_files_or_directories_to_run "path/to/a_spec.rb:37"
-        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
-      end
-    end
-
     context "with full_description set" do
       it "overrides filters" do
         config.filter_run :focused => true
