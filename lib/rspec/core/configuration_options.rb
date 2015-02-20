@@ -1,6 +1,5 @@
 require 'erb'
 require 'shellwords'
-require 'set'
 
 module RSpec
   module Core
@@ -53,12 +52,12 @@ module RSpec
         end
       end
 
-      UNFORCED_OPTIONS = [
+      UNFORCED_OPTIONS = Set.new([
         :requires, :profile, :drb, :libs, :files_or_directories_to_run,
         :full_description, :full_backtrace, :tty
-      ].to_set
+      ])
 
-      UNPROCESSABLE_OPTIONS = [:formatters].to_set
+      UNPROCESSABLE_OPTIONS = Set.new([:formatters])
 
       def force?(key)
         !UNFORCED_OPTIONS.include?(key)

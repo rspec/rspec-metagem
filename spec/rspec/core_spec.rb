@@ -4,7 +4,6 @@ RSpec.describe RSpec do
   fake_libs = File.expand_path('../../support/fake_libs', __FILE__)
   allowed_loaded_features = [
     /optparse\.rb/,   # Used by OptionParser.
-    /set\.rb/,        # used in a few places but being removed in #1870.
     /rbconfig\.rb/,   # loaded by rspec-support for OS detection.
     /shellwords\.rb/, # used by ConfigurationOptions and RakeTask.
     /stringio/,       # Used by BaseFormatter.

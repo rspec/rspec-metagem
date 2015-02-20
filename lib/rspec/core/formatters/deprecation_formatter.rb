@@ -1,5 +1,4 @@
 RSpec::Support.require_rspec_core "formatters/helpers"
-require 'set'
 
 module RSpec
   module Core

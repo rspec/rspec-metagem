@@ -196,8 +196,8 @@ module RSpec::Core::Formatters
     end
 
     def notifications_for(formatter_class)
-      formatter_class.ancestors.inject(Set.new) do |notifications, klass|
-        notifications + Loader.formatters.fetch(klass) { Set.new }
+      formatter_class.ancestors.inject(::RSpec::Core::Set.new) do |notifications, klass|
+        notifications.merge Loader.formatters.fetch(klass) { ::RSpec::Core::Set.new }
       end
     end
 

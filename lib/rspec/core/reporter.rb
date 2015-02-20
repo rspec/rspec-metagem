@@ -1,4 +1,3 @@
-require 'set'
 module RSpec::Core
   # A reporter will send notifications to listeners, usually formatters for the
   # spec suite run.
