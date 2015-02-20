@@ -7,6 +7,8 @@ Enhancements:
 * Make `RSpec::Core::Reporter#message` a public supported API. (Jon Rowe, #1866)
 * Allow custom formatter events to be published via
   `RSpec::Core::Reporter#publish(event_name, hash_of_attributes)`. (Jon Rowe, #1869)
+* Remove dependency on the standard library `Set` and replace with `RSpec::Core::Set`.
+  (Jon Rowe, #1870)
 
 Bugfixes:
 
