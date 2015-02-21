@@ -38,16 +38,6 @@ module RSpec::Core
     describe 'start' do
       before { config.start_time = start_time }
 
-      it 'notifies formatters of the seed used' do
-        formatter = double("formatter")
-        reporter.register_listener formatter, :seed
-
-        expect(formatter).to receive(:seed).with(
-          an_object_having_attributes(:seed => config.seed, :seed_used? => config.seed_used?)
-        )
-        reporter.start 1
-      end
-
       it 'notifies the formatter of start with example count' do
         formatter = double("formatter")
         reporter.register_listener formatter, :start
@@ -60,11 +50,13 @@ module RSpec::Core
         reporter.start 3, (start_time + 5)
       end
 
-      it 'notifies the formatter of the seed before notifing of start' do
+      it 'notifies the formatter of the seed used before notifing of start' do
         formatter = double("formatter")
         reporter.register_listener formatter, :seed
         reporter.register_listener formatter, :start
-        expect(formatter).to receive(:seed).ordered
+        expect(formatter).to receive(:seed).ordered.with(
+          an_object_having_attributes(:seed => config.seed, :seed_used? => config.seed_used?)
+        )
         expect(formatter).to receive(:start).ordered
         reporter.start 1
       end
