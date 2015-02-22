@@ -14,7 +14,7 @@ Bug Fixes:
 
 * Handle invalid UTF-8 strings within exception methods. (Benjamin Fleischer, #1760)
 * Notify start-of-run seed _before_ `start` notification rather than
-  _after_ so that formatters like Fuubar work properly. (Samuel Esposito, #1882).
+  _after_ so that formatters like Fuubar work properly. (Samuel Esposito, #1882)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.1.7...v3.2.0)
