@@ -31,11 +31,11 @@ module RSpec
         end
 
         it "works with a normal path" do
-          expect_ascend("/var//ponies/", "/var/ponies", "/var", "/")
+          expect_ascend("/var/ponies", "/var/ponies", "/var", "/")
         end
 
         it "works with a path with a trailing slash" do
-          expect_ascend("/var//ponies/", "/var/ponies", "/var", "/")
+          expect_ascend("/var/ponies/", "/var/ponies", "/var", "/")
         end
 
         it "works with a path with double slashes" do
