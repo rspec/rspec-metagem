@@ -92,13 +92,24 @@ module RSpec
         inspect_output
       end
 
-      # Returns the argument that can be passed to the `rspec` command to rerun this example.
-      def rerun_argument
-        loaded_spec_files = RSpec.configuration.loaded_spec_files
+      # Returns the location-based argument that can be passed to the `rspec` command to rerun this example.
+      def location_rerun_argument
+        @location_rerun_argument ||= begin
+          loaded_spec_files = RSpec.configuration.loaded_spec_files
 
-        Metadata.ascending(metadata) do |meta|
-          return meta[:location] if loaded_spec_files.include?(meta[:absolute_file_path])
+          Metadata.ascending(metadata) do |meta|
+            return meta[:location] if loaded_spec_files.include?(meta[:absolute_file_path])
+          end
         end
+      end
+
+      # Returns the location-based argument that can be passed to the `rspec` command to rerun this example.
+      #
+      # @deprecated Use {#location_rerun_argument} instead.
+      # @note If there are multiple examples identified by this location, they will use {#id}
+      #   to rerun instead, but this method will still return the location (that's why it is deprecated!).
+      def rerun_argument
+        location_rerun_argument
       end
 
       # @return [String] the unique id of this example. Pass

@@ -30,33 +30,48 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       expect(output.string).to match("2 examples, 2 failures, 2 pending")
     end
 
-    it "includes command to re-run each failed example" do
-      example_group = RSpec.describe("example group") do
-        it("fails") { fail }
-      end
-      line = __LINE__ - 2
-
-      expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
-    end
-
-    context "for an example defined in an file required by the user rather than loaded by rspec" do
-      it "looks through ancestor metadata to find a workable re-run command" do
-        line = __LINE__ + 1
+    describe "rerun command for failed examples" do
+      it "uses the location to identify the example" do
         example_group = RSpec.describe("example group") do
-          # Using eval in order to make it think this got defined in an external file.
-          instance_eval "it('fails') { fail }", "some/external/file.rb", 1
+          it("fails") { fail }
         end
+        line = __LINE__ - 2
 
         expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
       end
-    end
 
-    def output_from_running(example_group)
-      allow(RSpec.configuration).to receive(:loaded_spec_files) { RSpec::Core::Set.new([File.expand_path(__FILE__)]) }
-      example_group.run(reporter)
-      examples = example_group.examples
-      send_notification :dump_summary, summary_notification(1, examples, examples, [], 0)
-      output.string
+      context "for an example defined in an file required by the user rather than loaded by rspec" do
+        it "looks through ancestor metadata to find a workable re-run command" do
+          line = __LINE__ + 1
+          example_group = RSpec.describe("example group") do
+            # Using eval in order to make it think this got defined in an external file.
+            instance_eval "it('fails') { fail }", "some/external/file.rb", 1
+          end
+
+          expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
+        end
+      end
+
+      context "for an example that is not uniquely identified by the location" do
+        it "uses the id instead" do
+          example_group = RSpec.describe("example group") do
+            1.upto(2) do |i|
+              it("compares #{i} against 2") { expect(i).to eq(2) }
+            end
+          end
+
+          expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}[1:1]")} # example group compares 1 against 2")
+        end
+      end
+
+      def output_from_running(example_group)
+        allow(RSpec.configuration).to receive(:loaded_spec_files) { RSpec::Core::Set.new([File.expand_path(__FILE__)]) }
+        example_group.run(reporter)
+        examples = example_group.examples
+        failed   = examples.select { |e| e.execution_result.status == :failed }
+        send_notification :dump_summary, summary_notification(1, examples, failed, [], 0)
+        output.string
+      end
     end
   end
 

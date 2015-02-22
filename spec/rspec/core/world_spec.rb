@@ -23,6 +23,33 @@ module RSpec::Core
       end
     end
 
+    describe "#all_examples" do
+      it "contains all examples from all levels of nesting" do
+        RSpec.describe do
+          example("ex1")
+
+          context "nested" do
+            example("ex2")
+
+            context "nested" do
+              example("ex3")
+              example("ex4")
+            end
+          end
+
+          example("ex5")
+        end
+
+        RSpec.describe do
+          example("ex6")
+        end
+
+        expect(RSpec.world.all_examples.map(&:description)).to match_array(%w[
+          ex1 ex2 ex3 ex4 ex5 ex6
+        ])
+      end
+    end
+
     describe "#preceding_declaration_line (again)" do
       let(:group) do
         RSpec.describe("group") do

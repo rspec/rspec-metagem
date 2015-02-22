@@ -485,7 +485,7 @@ module RSpec::Core
       def colorized_rerun_commands(colorizer=::RSpec::Core::Formatters::ConsoleCodes)
         "\nFailed examples:\n\n" +
         failed_examples.map do |example|
-          colorizer.wrap("rspec #{example.rerun_argument}", RSpec.configuration.failure_color) + " " +
+          colorizer.wrap("rspec #{rerun_argument_for(example)}", RSpec.configuration.failure_color) + " " +
           colorizer.wrap("# #{example.full_description}",   RSpec.configuration.detail_color)
         end.join("\n")
       end
@@ -514,6 +514,25 @@ module RSpec::Core
         end
 
         formatted
+      end
+
+    private
+
+      def rerun_argument_for(example)
+        location = example.location_rerun_argument
+        duplicate_rerun_locations.include?(location) ? example.id : location
+      end
+
+      def duplicate_rerun_locations
+        @duplicate_rerun_locations ||= begin
+          locations = RSpec.world.all_examples.map(&:location_rerun_argument)
+
+          Set.new.tap do |s|
+            locations.group_by { |l| l }.each do |l, ls|
+              s << l if ls.count > 1
+            end
+          end
+        end
       end
     end
 
