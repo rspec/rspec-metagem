@@ -98,21 +98,15 @@ module RSpec
       def enforce_block_expectation(matcher)
         return if supports_block_expectations?(matcher)
 
-        raise ExpectationNotMetError, "You must pass an argument rather than " \
-          "a block to use the provided matcher (#{description_of matcher}), or " \
-          "the matcher must implement `supports_block_expectations?`."
+        raise ExpectationNotMetError, "You must pass an argument rather than a block to use the provided " \
+          "matcher (#{RSpec::Support::ObjectInspector.inspect(matcher)}), or the matcher must implement " \
+          "`supports_block_expectations?`."
       end
 
       def supports_block_expectations?(matcher)
         matcher.supports_block_expectations?
       rescue NoMethodError
         false
-      end
-
-      def description_of(matcher)
-        matcher.description
-      rescue NoMethodError
-        matcher.inspect
       end
     end
   end

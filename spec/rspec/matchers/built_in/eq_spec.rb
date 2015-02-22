@@ -47,6 +47,30 @@ module RSpec
         expect(matcher.failure_message_when_negated).to eq "\nexpected: value != 1\n     got: 1\n\n(compared using ==)\n"
       end
 
+      context "with Time objects" do
+        RSpec::Matchers.define :a_string_with_differing_output do
+          match do |string|
+            time_strings = /expected: (.+)\n.*got: (.+)$/.match(string).captures
+            time_strings.uniq.count == 2
+          end
+        end
+
+        let(:time1) { Time.utc(1969, 12, 31, 19, 01, 40, 101) }
+        let(:time2) { Time.utc(1969, 12, 31, 19, 01, 40, 102) }
+
+        it "provides additional precision on #failure_message" do
+          expect {
+            expect(time1).to eq(time2)
+          }.to fail_with(a_string_with_differing_output)
+        end
+
+        it "provides additional precision on #negative_failure_message" do
+          expect {
+            expect(time1).to_not eq(time1)
+          }.to fail_with(a_string_with_differing_output)
+        end
+      end
+
       it 'fails properly when the actual is an array of multiline strings' do
         expect {
           expect(["a\nb", "c\nd"]).to eq([])
@@ -54,6 +78,9 @@ module RSpec
       end
 
       describe '#description' do
+        # Ruby 1.8.7 produces a less precise output
+        expected_seconds = Time.method_defined?(:nsec) ? '000000000' : '000000'
+
         [
             [nil, 'eq nil'],
             [true, 'eq true'],
@@ -67,7 +94,7 @@ module RSpec
             [{:foo => :bar}, 'eq {:foo=>:bar}'],
             [Class, 'eq Class'],
             [RSpec, 'eq RSpec'],
-            [Time.utc(2014, 1, 1), "eq #{Time.utc(2014, 1, 1).inspect}"],
+            [Time.utc(2014, 1, 1), "eq 2014-01-01 00:00:00.#{expected_seconds} +0000"],
         ].each do |expected, expected_description|
           context "with #{expected.inspect}" do
             it "is \"#{expected_description}\"" do
@@ -103,104 +130,6 @@ module RSpec
           it 'matches with "^eq #<Object:0x[0-9a-f]*>$"' do
             expect(eq(Object.new).description).to match(/^eq #<Object:0x[0-9a-f]*>$/)
           end
-        end
-      end
-
-      context "Time Equality" do
-        RSpec::Matchers.define :a_string_with_differing_output do
-          match do |string|
-            time_strings = /expected: (.+)\n.*got: (.+)$/.match(string).captures
-            time_strings.uniq.count == 2
-          end
-        end
-
-        RSpec::Matchers.define :a_string_with_identical_output do
-          match do |string|
-            time_strings = /expected: value != (.+)\n.*got: (.+)$/.match(string).captures
-            time_strings.uniq.count == 1
-          end
-        end
-
-        context 'with Time objects' do
-          let(:time1) { Time.utc(1969, 12, 31, 19, 01, 40, 101) }
-          let(:time2) { Time.utc(1969, 12, 31, 19, 01, 40, 102) }
-
-          it 'produces different output for Times differing by milliseconds' do
-            expect {
-              expect(time1).to eq(time2)
-            }.to fail_with(a_string_with_differing_output)
-          end
-        end
-
-        context 'with DateTime objects' do
-          def with_date_loaded
-            in_sub_process_if_possible do
-              require 'date'
-              yield
-            end
-          end
-
-          let(:date1) { DateTime.new(2000, 1, 1, 1, 1, Rational(1, 10)) }
-          let(:date2) { DateTime.new(2000, 1, 1, 1, 1, Rational(2, 10)) }
-
-          it 'produces different output for DateTimes differing by milliseconds' do
-            with_date_loaded do
-              expect {
-                expect(date1).to eq(date2)
-              }.to fail_with(a_string_with_differing_output)
-            end
-          end
-
-          it 'does not not assume DateTime is defined since you need to require `date` to make it available' do
-            hide_const('DateTime')
-            expect {
-              expect(5).to eq(4)
-            }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
-          end
-
-          it 'fails with identical output when the DateTimes are exactly the same' do
-            with_date_loaded do
-              expect {
-                expect(date1).to_not eq(date1)
-              }.to fail_with(a_string_with_identical_output)
-            end
-          end
-
-          context 'when ActiveSupport is loaded' do
-            it "uses a custom format to ensure the output is different when DateTimes differ" do
-              stub_const("ActiveSupport", Module.new)
-
-              with_date_loaded do
-                allow(date1).to receive(:inspect).and_return("Timestamp")
-                allow(date2).to receive(:inspect).and_return("Timestamp")
-
-                expect {
-                  expect(date1).to eq(date2)
-                }.to fail_with(a_string_with_differing_output)
-              end
-            end
-          end
-        end
-      end
-
-      context 'with BigDecimal objects' do
-        let(:float)   { 1.1 }
-        let(:decimal) { BigDecimal("3.3") }
-
-        it 'fails with a conventional representation of the decimal' do
-          in_sub_process_if_possible do
-            require 'bigdecimal'
-            expect {
-              expect(float).to eq(decimal)
-            }.to fail_including "expected: 3.3 (#<BigDecimal"
-          end
-        end
-
-        it 'does not not assume BigDecimal is defined since you need to require `bigdecimal` to make it available' do
-          hide_const('BigDecimal')
-          expect {
-            expect(5).to eq(4)
-          }.to raise_error(RSpec::Expectations::ExpectationNotMetError)
         end
       end
     end

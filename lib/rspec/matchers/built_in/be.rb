@@ -8,13 +8,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected: truthy value\n     got: #{actual.inspect}"
+          "expected: truthy value\n     got: #{actual_formatted}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected: falsey value\n     got: #{actual.inspect}"
+          "expected: falsey value\n     got: #{actual_formatted}"
         end
 
       private
@@ -31,13 +31,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected: falsey value\n     got: #{actual.inspect}"
+          "expected: falsey value\n     got: #{actual_formatted}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected: truthy value\n     got: #{actual.inspect}"
+          "expected: truthy value\n     got: #{actual_formatted}"
         end
 
       private
@@ -54,7 +54,7 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected: nil\n     got: #{actual.inspect}"
+          "expected: nil\n     got: #{actual_formatted}"
         end
 
         # @api private
@@ -83,7 +83,7 @@ module RSpec
         end
 
         def inspected_args
-          @args.map { |a| a.inspect }
+          @args.map { |a| RSpec::Support::ObjectInspector.inspect(a) }
         end
 
         def expected_to_sentence
@@ -108,13 +108,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@actual.inspect} to evaluate to true"
+          "expected #{actual_formatted} to evaluate to true"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@actual.inspect} to evaluate to false"
+          "expected #{actual_formatted} to evaluate to false"
         end
 
         [:==, :<, :<=, :>=, :>, :===, :=~].each do |operator|
@@ -149,13 +149,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected: #{@operator} #{@expected.inspect}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{@actual.inspect}"
+          "expected: #{@operator} #{expected_formatted}\n     got: #{@operator.to_s.gsub(/./, ' ')} #{actual_formatted}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          message = "`expect(#{@actual.inspect}).not_to be #{@operator} #{@expected.inspect}`"
+          message = "`expect(#{actual_formatted}).not_to be #{@operator} #{expected_formatted}`"
           if [:<, :>, :<=, :>=].include?(@operator)
             message + " not only FAILED, it is a bit confusing."
           else
@@ -257,7 +257,7 @@ module RSpec
 
         def failure_message_expecting(value)
           validity_message ||
-            "expected `#{@actual.inspect}.#{predicate}#{args_to_s}` to return #{value}, got #{@predicate_matches.inspect}"
+            "expected `#{actual_formatted}.#{predicate}#{args_to_s}` to return #{value}, got #{@predicate_matches.inspect}"
         end
 
         def validity_message

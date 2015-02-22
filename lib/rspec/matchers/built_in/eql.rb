@@ -8,13 +8,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "\nexpected: #{expected.inspect}\n     got: #{actual.inspect}\n\n(compared using eql?)\n"
+          "\nexpected: #{expected_formatted}\n     got: #{actual_formatted}\n\n(compared using eql?)\n"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "\nexpected: value != #{expected.inspect}\n     got: #{actual.inspect}\n\n(compared using eql?)\n"
+          "\nexpected: value != #{expected_formatted}\n     got: #{actual_formatted}\n\n(compared using eql?)\n"
         end
 
         # @api private

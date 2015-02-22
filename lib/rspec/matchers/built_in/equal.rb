@@ -48,14 +48,14 @@ MESSAGE
 
         def actual_inspected
           if LITERAL_SINGLETONS.include?(actual)
-            actual.inspect
+            actual_formatted
           else
             inspect_object(actual)
           end
         end
 
         def simple_failure_message
-          "\nexpected #{expected.inspect}\n     got #{actual_inspected}\n"
+          "\nexpected #{expected_formatted}\n     got #{actual_inspected}\n"
         end
 
         def detailed_failure_message
@@ -73,7 +73,7 @@ MESSAGE
         end
 
         def inspect_object(o)
-          "#<#{o.class}:#{o.object_id}> => #{o.inspect}"
+          "#<#{o.class}:#{o.object_id}> => #{RSpec::Support::ObjectInspector.inspect(o)}"
         end
       end
     end

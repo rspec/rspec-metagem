@@ -28,13 +28,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@actual.inspect} to exist#{@test.validity_message}"
+          "expected #{actual_formatted} to exist#{@test.validity_message}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@actual.inspect} not to exist#{@test.validity_message}"
+          "expected #{actual_formatted} not to exist#{@test.validity_message}"
         end
 
         # @api private

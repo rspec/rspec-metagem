@@ -136,11 +136,11 @@ module RSpec
         def expected_error
           case @expected_message
           when nil
-            description_of(@expected_error)
+            RSpec::Support::ObjectInspector.inspect(@expected_error)
           when Regexp
-            "#{@expected_error} with message matching #{@expected_message.inspect}"
+            "#{@expected_error} with message matching #{RSpec::Support::ObjectInspector.inspect(@expected_message)}"
           else
-            "#{@expected_error} with #{description_of @expected_message}"
+            "#{@expected_error} with #{RSpec::Support::ObjectInspector.inspect(@expected_message)}"
           end
         end
 
@@ -155,7 +155,7 @@ module RSpec
 
           backtrace = format_backtrace(@actual_error.backtrace)
           [
-            ", got #{@actual_error.inspect} with backtrace:",
+            ", got #{RSpec::Support::ObjectInspector.inspect(@actual_error)} with backtrace:",
             *backtrace
           ].join("\n  # ")
         end

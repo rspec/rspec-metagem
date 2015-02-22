@@ -9,14 +9,14 @@ module RSpec
         # @return [String]
         def failure_message
           if Array === actual
-            message  = "expected collection contained:  #{safe_sort(surface_descriptions_in expected).inspect}\n"
-            message += "actual collection contained:    #{safe_sort(actual).inspect}\n"
-            message += "the missing elements were:      #{safe_sort(surface_descriptions_in missing_items).inspect}\n" unless missing_items.empty?
-            message += "the extra elements were:        #{safe_sort(extra_items).inspect}\n" unless extra_items.empty?
+            message  = "expected collection contained:  #{RSpec::Support::ObjectInspector.inspect(safe_sort(surface_descriptions_in expected))}\n"
+            message += "actual collection contained:    #{RSpec::Support::ObjectInspector.inspect(safe_sort(actual))}\n"
+            message += "the missing elements were:      #{RSpec::Support::ObjectInspector.inspect(safe_sort(surface_descriptions_in missing_items))}\n" unless missing_items.empty?
+            message += "the extra elements were:        #{RSpec::Support::ObjectInspector.inspect(safe_sort(extra_items))}\n" unless extra_items.empty?
             message
           else
             "expected a collection that can be converted to an array with " \
-            "`#to_ary` or `#to_a`, but got #{actual.inspect}"
+            "`#to_ary` or `#to_a`, but got #{actual_formatted}"
           end
         end
 
@@ -24,7 +24,7 @@ module RSpec
         # @return [String]
         def failure_message_when_negated
           list = EnglishPhrasing.list(surface_descriptions_in(expected))
-          "expected #{actual.inspect} not to contain exactly#{list}"
+          "expected #{actual_formatted} not to contain exactly#{list}"
         end
 
         # @api private

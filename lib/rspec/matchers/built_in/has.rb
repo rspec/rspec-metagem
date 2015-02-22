@@ -80,7 +80,7 @@ module RSpec
 
         def args_description
           return nil if @args.empty?
-          @args.map { |arg| arg.inspect }.join(', ')
+          @args.map { |arg| RSpec::Support::ObjectInspector.inspect(arg) }.join(', ')
         end
 
         def failure_message_args_description

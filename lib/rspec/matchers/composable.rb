@@ -80,8 +80,7 @@ module RSpec
       #
       # @!visibility public
       def description_of(object)
-        return object.description if Matchers.is_a_describable_matcher?(object)
-        object.inspect
+        RSpec::Support::ObjectInspector.inspect(object)
       end
 
       # Transforms the given data structue (typically a hash or array)

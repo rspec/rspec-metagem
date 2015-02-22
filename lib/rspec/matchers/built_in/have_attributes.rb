@@ -42,7 +42,7 @@ module RSpec
         # @return [String]
         def description
           described_items = surface_descriptions_in(expected)
-          improve_hash_formatting "have attributes #{described_items.inspect}"
+          improve_hash_formatting "have attributes #{RSpec::Support::ObjectInspector.inspect(described_items)}"
         end
 
         # @api private
@@ -55,14 +55,14 @@ module RSpec
         # @return [String]
         def failure_message
           respond_to_failure_message_or do
-            "expected #{@actual.inspect} to #{description} but had attributes #{ formatted_values }"
+            "expected #{actual_formatted} to #{description} but had attributes #{ formatted_values }"
           end
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          respond_to_failure_message_or { "expected #{@actual.inspect} not to #{description}" }
+          respond_to_failure_message_or { "expected #{actual_formatted} not to #{description}" }
         end
 
       private
@@ -105,7 +105,8 @@ module RSpec
         end
 
         def formatted_values
-          improve_hash_formatting(@values.inspect)
+          values = RSpec::Support::ObjectInspector.inspect(@values)
+          improve_hash_formatting(values)
         end
       end
     end

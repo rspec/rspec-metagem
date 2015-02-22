@@ -113,7 +113,7 @@ module RSpec
 
         def actual_output_description
           return "nothing" unless captured?
-          @actual.inspect
+          actual_formatted
         end
       end
 

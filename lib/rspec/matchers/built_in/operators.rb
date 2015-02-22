@@ -98,10 +98,15 @@ module RSpec
         def __delegate_operator(actual, operator, expected)
           if actual.__send__(operator, expected)
             true
-          elsif ['==', '===', '=~'].include?(operator)
-            fail_with_message("expected: #{expected.inspect}\n     got: #{actual.inspect} (using #{operator})")
           else
-            fail_with_message("expected: #{operator} #{expected.inspect}\n     got: #{operator.gsub(/./, ' ')} #{actual.inspect}")
+            expected_formatted = RSpec::Support::ObjectInspector.inspect(expected)
+            actual_formatted   = RSpec::Support::ObjectInspector.inspect(actual)
+
+            if ['==', '===', '=~'].include?(operator)
+              fail_with_message("expected: #{expected_formatted}\n     got: #{actual_formatted} (using #{operator})")
+            else
+              fail_with_message("expected: #{operator} #{expected_formatted}\n     got: #{operator.gsub(/./, ' ')} #{actual_formatted}")
+            end
           end
         end
       end
@@ -111,7 +116,11 @@ module RSpec
       class NegativeOperatorMatcher < OperatorMatcher
         def __delegate_operator(actual, operator, expected)
           return false unless actual.__send__(operator, expected)
-          fail_with_message("expected not: #{operator} #{expected.inspect}\n         got: #{operator.gsub(/./, ' ')} #{actual.inspect}")
+
+          expected_formatted = RSpec::Support::ObjectInspector.inspect(expected)
+          actual_formatted   = RSpec::Support::ObjectInspector.inspect(actual)
+
+          fail_with_message("expected not: #{operator} #{expected_formatted}\n         got: #{operator.gsub(/./, ' ')} #{actual_formatted}")
         end
       end
     end

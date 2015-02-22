@@ -317,7 +317,7 @@ module RSpec
           elsif all_args_match?
             "yielded with expected arguments" \
               "\nexpected not: #{surface_descriptions_in(@expected).inspect}" +
-              "\n         got: #{@actual.inspect}"
+              "\n         got: #{actual_formatted}"
           else
             "did"
           end
@@ -332,7 +332,7 @@ module RSpec
           unless (match = all_args_match?)
             @positive_args_failure = "yielded with unexpected arguments" \
               "\nexpected: #{surface_descriptions_in(@expected).inspect}" +
-              "\n     got: #{@actual.inspect}"
+              "\n     got: #{actual_formatted}"
           end
 
           match
@@ -400,7 +400,7 @@ module RSpec
 
           "yielded with unexpected arguments" \
           "\nexpected: #{surface_descriptions_in(@expected).inspect}" \
-          "\n     got: #{@actual.inspect}"
+          "\n     got: #{actual_formatted}"
         end
 
         def negative_failure_reason
@@ -408,7 +408,7 @@ module RSpec
 
           "yielded with expected arguments" \
           "\nexpected not: #{surface_descriptions_in(@expected).inspect}" \
-          "\n         got: #{@actual.inspect}"
+          "\n         got: #{actual_formatted}"
         end
       end
     end

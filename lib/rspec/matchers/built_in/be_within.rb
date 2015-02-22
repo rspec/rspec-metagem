@@ -38,13 +38,13 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message
-          "expected #{@actual.inspect} to #{description}#{not_numeric_clause}"
+          "expected #{actual_formatted} to #{description}#{not_numeric_clause}"
         end
 
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{@actual.inspect} not to #{description}"
+          "expected #{actual_formatted} not to #{description}"
         end
 
         # @api private
