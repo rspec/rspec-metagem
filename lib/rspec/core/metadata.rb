@@ -322,6 +322,8 @@ module RSpec
       # @private
       RESERVED_KEYS = [
         :description,
+        :description_args,
+        :described_class,
         :example_group,
         :parent_example_group,
         :execution_result,
@@ -332,7 +334,8 @@ module RSpec
         :line_number,
         :location,
         :scoped_id,
-        :block
+        :block,
+        :shared_group_inclusion_backtrace
       ]
     end
 

@@ -31,6 +31,15 @@ module RSpec
 
       end
 
+      specify 'RESERVED_KEYS contains all keys assigned by RSpec (and vice versa)' do
+        group        = RSpec.describe("group")
+        example      = group.example("example") { }
+        nested_group = group.describe("nested")
+
+        assigned_keys = group.metadata.keys | example.metadata.keys | nested_group.metadata.keys
+        expect(RSpec::Core::Metadata::RESERVED_KEYS).to match_array(assigned_keys)
+      end
+
       context "when created" do
         Metadata::RESERVED_KEYS.each do |key|
           it "prohibits :#{key} as a hash key for an example group" do
