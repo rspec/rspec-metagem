@@ -32,10 +32,10 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
     describe "rerun command for failed examples" do
       it "uses the location to identify the example" do
+        line = __LINE__ + 2
         example_group = RSpec.describe("example group") do
           it("fails") { fail }
         end
-        line = __LINE__ - 2
 
         expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}:#{line}")} # example group fails")
       end
