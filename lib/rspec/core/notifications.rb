@@ -542,7 +542,7 @@ module RSpec::Core
       # allow `rspec ./some_spec.rb[1:1]` syntax without quoting the id.
       #
       # @private
-      SHELLS_ALLOWING_UNQUOTED_IDS = %w[ bash ksh ]
+      SHELLS_ALLOWING_UNQUOTED_IDS = %w[ bash ksh fish ]
 
       def conditionally_quote(id)
         return id if shell_allows_unquoted_ids?
