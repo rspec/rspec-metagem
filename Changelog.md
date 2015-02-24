@@ -9,6 +9,11 @@ Enhancements:
   `RSpec::Core::Reporter#publish(event_name, hash_of_attributes)`. (Jon Rowe, #1869)
 * Remove dependency on the standard library `Set` and replace with `RSpec::Core::Set`.
   (Jon Rowe, #1870)
+* Assign a unique id to each example and group so that they can be
+  uniquely identified, even for shared examples (and similar situations)
+  where the location isn't unique. (Myron Marston, #1884)
+* Use the example id in the rerun command printed for failed examples
+  when the location is not unique. (Myron Marston, #1884)
 
 Bug Fixes:
 
