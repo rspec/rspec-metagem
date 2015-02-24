@@ -25,7 +25,7 @@ Lint/LiteralInInterpolation:
 
 # This should go down over time.
 MethodLength:
-  Max: 155
+  Max: 40
 
 # Exclude the default spec_helper to make it easier to uncomment out
 # default settings (for both users and the Cucumber suite).
