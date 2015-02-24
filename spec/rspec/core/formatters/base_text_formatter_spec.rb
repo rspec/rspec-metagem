@@ -53,14 +53,38 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       end
 
       context "for an example that is not uniquely identified by the location" do
-        it "uses the id instead" do
-          example_group = RSpec.describe("example group") do
-            1.upto(2) do |i|
-              it("compares #{i} against 2") { expect(i).to eq(2) }
+        let(:example_group_in_this_file) { example_group_defined_in(__FILE__) }
+
+        def example_group_defined_in(file)
+          instance_eval <<-EOS, file, 1
+            $group = RSpec.describe("example group") do
+              1.upto(2) do |i|
+                it("compares \#{i} against 2") { expect(i).to eq(2) }
+              end
             end
+          EOS
+          $group
+        end
+
+        let(:id) { "#{RSpec::Core::Metadata::relative_path("#{__FILE__}")}[1:1]" }
+
+        it "uses the id instead" do
+          with_env_vars 'SHELL' => '/usr/local/bin/bash' do
+            expect(output_from_running example_group_in_this_file).to include("rspec #{id} # example group compares 1 against 2")
+          end
+        end
+
+        context "on a shell that may not handle unquoted ids" do
+          around { |ex| with_env_vars('SHELL' => '/usr/local/bin/cash', &ex) }
+
+          it 'quotes the id to be safe so the rerun command can be copied and pasted' do
+            expect(output_from_running example_group_in_this_file).to include("rspec '#{id}'")
           end
 
-          expect(output_from_running example_group).to include("rspec #{RSpec::Core::Metadata::relative_path("#{__FILE__}[1:1]")} # example group compares 1 against 2")
+          it 'correctly escapes file names that have quotes in them' do
+            group_in_other_file = example_group_defined_in("./path/with'quote_spec.rb")
+            expect(output_from_running group_in_other_file).to include("rspec './path/with\\'quote_spec.rb[1:1]'")
+          end
         end
       end
 

@@ -147,6 +147,10 @@ RSpec.describe 'Filtering' do
       run_command "./spec/file_1_spec.rb[1:1,1:3] ./spec/file_2_spec.rb[1:2]"
       expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
 
+      # Using spaces between scoped ids, and quoting the whole thing...
+      run_command "'./spec/file_1_spec.rb[1:1, 1:3]' ./spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
       # Without the leading `.`...
       run_command "spec/file_1_spec.rb[1:1,1:3] spec/file_2_spec.rb[1:2]"
       expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
