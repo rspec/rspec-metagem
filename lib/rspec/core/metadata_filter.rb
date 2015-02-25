@@ -17,6 +17,7 @@ module RSpec
           silence_metadata_example_group_deprecations do
             return filter_applies_to_any_value?(key, value, metadata) if Array === metadata[key] && !(Proc === value)
             return location_filter_applies?(value, metadata)          if key == :locations
+            return id_filter_applies?(value, metadata)                if key == :ids
             return filters_apply?(key, value, metadata)               if Hash === value
 
             return false unless metadata.key?(key)
@@ -40,6 +41,14 @@ module RSpec
 
         def filter_applies_to_any_value?(key, value, metadata)
           metadata[key].any? { |v| filter_applies?(key, v,  key => value) }
+        end
+
+        def id_filter_applies?(rerun_paths_to_scoped_ids, metadata)
+          scoped_ids = rerun_paths_to_scoped_ids.fetch(metadata[:rerun_file_path]) { return false }
+
+          Metadata.ascend(metadata).any? do |meta|
+            scoped_ids.include?(meta[:scoped_id])
+          end
         end
 
         def location_filter_applies?(locations, metadata)

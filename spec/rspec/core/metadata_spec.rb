@@ -31,6 +31,15 @@ module RSpec
 
       end
 
+      specify 'RESERVED_KEYS contains all keys assigned by RSpec (and vice versa)' do
+        group        = RSpec.describe("group")
+        example      = group.example("example") { }
+        nested_group = group.describe("nested")
+
+        assigned_keys = group.metadata.keys | example.metadata.keys | nested_group.metadata.keys
+        expect(RSpec::Core::Metadata::RESERVED_KEYS).to match_array(assigned_keys)
+      end
+
       context "when created" do
         Metadata::RESERVED_KEYS.each do |key|
           it "prohibits :#{key} as a hash key for an example group" do
@@ -155,6 +164,90 @@ module RSpec
             group = RSpec.describe("group")
             example = group.example("example", &block)
             expect(example.metadata[:block]).to equal(block)
+          end
+        end
+      end
+
+      describe ":id" do
+        define :have_id_with do |scoped_id|
+          expected_id = "#{Metadata.relative_path(__FILE__)}[#{scoped_id}]"
+
+          match do |group_or_example|
+            group_or_example.metadata[:scoped_id] == scoped_id &&
+            group_or_example.id == expected_id
+          end
+
+          failure_message do |group_or_example|
+            "expected #{group_or_example.inspect}\n" \
+            "   to have id: #{expected_id}\n" \
+            "   but had id: #{group_or_example.id}\n" \
+            "   and have scoped id: #{scoped_id}\n" \
+            "   but had  scoped id: #{group_or_example.metadata[:scoped_id]}"
+          end
+        end
+
+        context "on a top-level group" do
+          it "is set to file[<group index>]" do
+            expect(RSpec.describe).to have_id_with("1")
+            expect(RSpec.describe).to have_id_with("2")
+          end
+
+          it "starts the count at 1 for each file" do
+            instance_eval <<-EOS, "spec_1.rb", 1
+              $group_1 = RSpec.describe
+              $group_2 = RSpec.describe
+            EOS
+
+            instance_eval <<-EOS, "spec_2.rb", 1
+              $group_3 = RSpec.describe
+              $group_4 = RSpec.describe
+            EOS
+
+            expect($group_1.id).to end_with("spec_1.rb[1]")
+            expect($group_2.id).to end_with("spec_1.rb[2]")
+            expect($group_3.id).to end_with("spec_2.rb[1]")
+            expect($group_4.id).to end_with("spec_2.rb[2]")
+          end
+        end
+
+        context "on a nested group" do
+          it "is set to file[<group index>:<group index>]" do
+            top_level_group = RSpec.describe
+            expect(top_level_group.describe).to have_id_with("1:1")
+            expect(top_level_group.describe).to have_id_with("1:2")
+          end
+        end
+
+        context "on an example" do
+          it "is set to file[<group index>:<example index>]" do
+            group = RSpec.describe
+            expect(group.example).to have_id_with("1:1")
+            expect(group.example).to have_id_with("1:2")
+          end
+        end
+
+        context "when examples are interleaved with example groups" do
+          it "counts both when assigning the index" do
+            group = RSpec.describe
+            expect(group.example ).to have_id_with("1:1")
+            expect(group.describe).to have_id_with("1:2")
+            expect(group.example ).to have_id_with("1:3")
+            expect(group.example ).to have_id_with("1:4")
+            expect(group.describe).to have_id_with("1:5")
+          end
+        end
+
+        context "on an example defined in a shared group defined in a separate file" do
+          it "uses the host group's file name as the prefix" do
+            # Using eval in order to make ruby think this got defined in another file.
+            instance_eval <<-EOS, "some/external/file.rb", 1
+              RSpec.shared_examples "shared" do
+                example { }
+              end
+            EOS
+
+            group = RSpec.describe { include_examples "shared" }
+            expect(group.examples.first.id).to start_with(Metadata.relative_path(__FILE__))
           end
         end
       end

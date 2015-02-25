@@ -752,13 +752,6 @@ module RSpec::Core
       end
     end
 
-    describe "path with line number" do
-      it "assigns the line number as a location filter" do
-        assign_files_or_directories_to_run "path/to/a_spec.rb:37"
-        expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [37]}})
-      end
-    end
-
     context "with full_description set" do
       it "overrides filters" do
         config.filter_run :focused => true
@@ -800,6 +793,42 @@ module RSpec::Core
       it "assigns the file and line numbers as a location filter" do
         assign_files_or_directories_to_run "path/to/a_spec.rb:1:3:5:7"
         expect(inclusion_filter).to eq({:locations => {File.expand_path("path/to/a_spec.rb") => [1,3,5,7]}})
+      end
+    end
+
+    context "with an example id" do
+      it "assigns the file and id as an ids filter" do
+        assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2]"
+        expect(inclusion_filter).to eq(:ids => { "./path/to/a_spec.rb" => ["1:2"] })
+      end
+    end
+
+    context "with a single file with multiple example ids" do
+      it "assigns the file and ids as an ids filter" do
+        assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2,1:3]"
+        expect(inclusion_filter).to eq(:ids => { "./path/to/a_spec.rb" => ["1:2", "1:3"] })
+      end
+
+      it "ignores whitespace between scoped ids" do
+        assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2 , 1:3]"
+        expect(inclusion_filter).to eq(:ids => { "./path/to/a_spec.rb" => ["1:2", "1:3"] })
+      end
+    end
+
+    context "with multiple files with ids" do
+      it "assigns all of them to the ids filter" do
+        assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2,1:3]", "./path/to/b_spec.rb[1:4]"
+        expect(inclusion_filter).to eq(:ids => {
+          "./path/to/a_spec.rb" => ["1:2", "1:3"],
+          "./path/to/b_spec.rb" => ["1:4"]
+        })
+      end
+    end
+
+    context "with the same file specified multiple times with different scoped ids" do
+      it "unions all the ids" do
+        assign_files_or_directories_to_run "./path/to/a_spec.rb[1:2]", "./path/to/a_spec.rb[1:3]"
+        expect(inclusion_filter).to eq(:ids => { "./path/to/a_spec.rb" => ["1:2", "1:3"] })
       end
     end
 

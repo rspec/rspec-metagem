@@ -6,8 +6,9 @@ RSpec.describe 'Filtering' do
 
   it 'prints a rerun command for shared examples in external files that works to rerun' do
     write_file "spec/support/shared_examples.rb", """
-      RSpec.shared_examples 'a failing example' do
-        example { expect(1).to eq(2) }
+      RSpec.shared_examples 'with a failing example' do
+        example { expect(1).to eq(2) } # failing
+        example { expect(2).to eq(2) } # passing
       end
     """
 
@@ -15,7 +16,7 @@ RSpec.describe 'Filtering' do
       load File.expand_path('../support/shared_examples.rb', __FILE__)
 
       RSpec.describe 'A group with shared examples' do
-        include_examples 'a failing example'
+        include_examples 'with a failing example'
       end
 
       RSpec.describe 'A group with a passing example' do
@@ -24,7 +25,7 @@ RSpec.describe 'Filtering' do
     """
 
     run_command ""
-    expect(last_cmd_stdout).to include("2 examples, 1 failure")
+    expect(last_cmd_stdout).to include("3 examples, 1 failure")
     run_rerun_command_for_failing_spec
     expect(last_cmd_stdout).to include("1 example, 1 failure")
     # There was originally a bug when doing it again...
@@ -121,6 +122,63 @@ RSpec.describe 'Filtering' do
       run_command "spec/file_1_spec.rb:2 spec/file_2_spec.rb -fd"
       expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
       expect(last_cmd_stdout).not_to match(/fails/)
+    end
+  end
+
+  context "passing example ids at the command line" do
+    it "selects matching examples" do
+      write_file_formatted "spec/file_1_spec.rb", """
+        RSpec.describe 'File 1' do
+          1.upto(3) do |i|
+            example('ex ' + i.to_s) { expect(i).to be_odd }
+          end
+        end
+      """
+
+      write_file_formatted "spec/file_2_spec.rb", """
+        RSpec.describe 'File 2' do
+          1.upto(3) do |i|
+            example('ex ' + i.to_s) { expect(i).to be_even }
+          end
+        end
+      """
+
+      # Using the form that Metadata.relative_path returns...
+      run_command "./spec/file_1_spec.rb[1:1,1:3] ./spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
+      # Using spaces between scoped ids, and quoting the whole thing...
+      run_command "'./spec/file_1_spec.rb[1:1, 1:3]' ./spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
+      # Without the leading `.`...
+      run_command "spec/file_1_spec.rb[1:1,1:3] spec/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+
+      # Using absolute paths...
+      spec_root = in_current_dir { File.expand_path("spec") }
+      run_command "#{spec_root}/file_1_spec.rb[1:1,1:3] #{spec_root}/file_2_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
+    end
+
+    it "selects matching example groups" do
+      write_file_formatted "spec/file_1_spec.rb", """
+        RSpec.describe 'Group 1' do
+          example { fail }
+
+          context 'nested 1' do
+            it { }
+            it { }
+          end
+
+          context 'nested 2' do
+            example { fail }
+          end
+        end
+      """
+
+      run_command "./spec/file_1_spec.rb[1:2]"
+      expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
     end
   end
 end

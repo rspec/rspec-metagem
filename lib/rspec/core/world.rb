@@ -13,6 +13,7 @@ module RSpec
       def initialize(configuration=RSpec.configuration)
         @configuration = configuration
         @example_groups = []
+        @example_group_counts_by_spec_file = Hash.new(0)
         @filtered_examples = Hash.new do |hash, group|
           hash[group] = begin
             examples = group.examples.dup
@@ -55,7 +56,13 @@ module RSpec
       # Register an example group.
       def register(example_group)
         example_groups << example_group
+        @example_group_counts_by_spec_file[example_group.metadata[:file_path]] += 1
         example_group
+      end
+
+      # @private
+      def num_example_groups_defined_in(file)
+        @example_group_counts_by_spec_file[file]
       end
 
       # @private
@@ -79,6 +86,12 @@ module RSpec
       def example_count(groups=example_groups)
         FlatMap.flat_map(groups) { |g| g.descendants }.
           inject(0) { |a, e| a + e.filtered_examples.size }
+      end
+
+      # @private
+      def all_examples
+        flattened_groups = FlatMap.flat_map(example_groups) { |g| g.descendants }
+        FlatMap.flat_map(flattened_groups) { |g| g.examples }
       end
 
       # @api private

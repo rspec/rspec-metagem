@@ -1606,6 +1606,9 @@ module RSpec
         end
       end
 
+      # @private
+      ON_SQUARE_BRACKETS = /[\[\]]/
+
       def extract_location(path)
         match = /^(.*?)((?:\:\d+)+)$/.match(path)
 
@@ -1613,6 +1616,9 @@ module RSpec
           captures = match.captures
           path, lines = captures[0], captures[1][1..-1].split(":").map { |n| n.to_i }
           filter_manager.add_location path, lines
+        else
+          path, scoped_ids = path.split(ON_SQUARE_BRACKETS)
+          filter_manager.add_ids(path, scoped_ids.split(/\s*,\s*/)) if scoped_ids
         end
 
         return [] if path == default_path
