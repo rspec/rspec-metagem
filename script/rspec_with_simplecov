@@ -31,7 +31,7 @@ begin
       add_filter "./bundle/"
       add_filter "./tmp/"
       add_filter "./spec/"
-      minimum_coverage(RUBY_PLATFORM == 'java' ? 94 : 97)
+      minimum_coverage(RUBY_PLATFORM == 'java' ? 93 : 97)
     end
   end
 rescue LoadError
