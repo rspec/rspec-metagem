@@ -6,6 +6,8 @@ Enhancements:
   for use by extension/plugin authors. (Charlie Rudolph, #729)
 * Avoid loading `tempfile` (and its dependencies) unless
   it is absolutely needed. (Myron Marston, #735)
+* Improve failure output when attempting to use `be_true` or `be_false`.
+  (Tim Wade, #744)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...v3.2.0)
