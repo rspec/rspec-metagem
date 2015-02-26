@@ -264,7 +264,15 @@ module RSpec
           return nil if predicate_accessible?
 
           msg = "expected #{@actual} to respond to `#{predicate}`"
-          msg << " but `#{predicate}` is a private method" if private_predicate?
+
+          if private_predicate?
+            msg << " but `#{predicate}` is a private method"
+          elsif predicate == :true?
+            msg << " or perhaps you meant `be true` or `be_truthy`"
+          elsif predicate == :false?
+            msg << " or perhaps you meant `be false` or `be_falsey`"
+          end
+
           msg
         end
       end

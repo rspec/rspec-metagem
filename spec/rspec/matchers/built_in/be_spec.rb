@@ -124,6 +124,34 @@ RSpec.describe "expect(...).to be_predicate" do
     value = double(:happy? => false)
     expect(matcher == value).to be false
   end
+
+  it "indicates `be true` or `be_truthy` when using `be_true`" do
+    actual = double("actual")
+    expect {
+      expect(actual).to be_true
+    }.to fail_with(/or perhaps you meant `be true` or `be_truthy`/)
+  end
+
+  it "shows no message if actual responds to `true?` when using `be_true`" do
+    actual = double("actual", :true? => true)
+    expect {
+      expect(actual).to be_true
+    }.not_to raise_error
+  end
+
+  it "indicates `be false` or `be_falsey` when using `be_false`" do
+    actual = double("actual")
+    expect {
+      expect(actual).to be_false
+    }.to fail_with(/or perhaps you meant `be false` or `be_falsey`/)
+  end
+
+  it "shows no message if actual responds to `false?` when using `be_false`" do
+    actual = double("actual", :false? => true)
+    expect {
+      expect(actual).to be_false
+    }.not_to raise_error
+  end
 end
 
 RSpec.describe "expect(...).not_to be_predicate" do
@@ -690,4 +718,3 @@ RSpec.describe "be_an_instance_of" do
     expect(5).not_to be_an_instance_of(Numeric)
   end
 end
-
