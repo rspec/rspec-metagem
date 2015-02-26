@@ -18,6 +18,8 @@ Enhancements:
 Bug Fixes:
 
 * Handle invalid UTF-8 strings within exception methods. (Benjamin Fleischer, #1760)
+* Fix Rake Task quoting of file names with quotes to work properly on
+  Windows. (Myron Marston, #1887
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.0...v3.2.1)

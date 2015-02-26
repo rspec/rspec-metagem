@@ -47,6 +47,13 @@ module RSpec::Core
       end
     end
 
+    context "on windows, with a quote in the name", :if => RSpec::Support::OS.windows? do
+      it "renders rspec quoted, with quote escaped" do
+        task.rspec_path = "/foo'bar/exe/rspec"
+        expect(spec_command).to include(%q|'/foo\'bar/exe/rspec'|)
+      end
+    end
+
     context "with ruby options" do
       it "renders them before the rspec path" do
         task.ruby_opts = "-w"
