@@ -128,7 +128,7 @@ module RSpec
 
       if RSpec::Support::OS.windows?
         def escape(shell_command)
-          "'#{shell_command.gsub("'", "\'")}'"
+          "'#{shell_command.gsub("'", "\\\\'")}'"
         end
       else
         require 'shellwords'
