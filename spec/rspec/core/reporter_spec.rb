@@ -66,6 +66,7 @@ module RSpec::Core
       it "passes messages to that formatter" do
         formatter = double("formatter", :example_started => nil)
         reporter.register_listener formatter, :example_started
+        example = new_example
 
         expect(formatter).to receive(:example_started) do |notification|
           expect(notification.example).to eq example
@@ -121,6 +122,7 @@ module RSpec::Core
     context "given multiple formatters" do
       it "passes messages to all formatters" do
         formatters = (1..2).map { double("formatter", :example_started => nil) }
+        example = new_example
 
         formatters.each do |formatter|
           expect(formatter).to receive(:example_started) do |notification|

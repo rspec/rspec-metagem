@@ -4,9 +4,11 @@ require 'pathname'
 RSpec.describe "FailedExampleNotification" do
   include FormatterSupport
 
+  let(:example) { new_example }
   let(:notification) { ::RSpec::Core::Notifications::FailedExampleNotification.new(example) }
 
   before do
+    allow(example.execution_result).to receive(:exception) { exception }
     example.metadata[:absolute_file_path] = __FILE__
   end
 
