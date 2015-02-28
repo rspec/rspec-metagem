@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
     s.cert_chain = [File.expand_path('~/.gem/rspec-gem-public_cert.pem')]
   end
 
-  %w[core expectations mocks].each do |name|
+  %w[expectations mocks].each do |name|
     if RSpec::Version::STRING =~ /[a-zA-Z]+/
       s.add_runtime_dependency "rspec-#{name}", "= #{RSpec::Version::STRING}"
     else
