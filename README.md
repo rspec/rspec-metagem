@@ -123,7 +123,7 @@ Although you probably won't ever need this unless you are writing an
 extension, you can access it from an example like this:
 
 ```ruby
-it "does something" do
+it "does something" do |example|
   expect(example.metadata[:description]).to eq("does something")
 end
 ```
