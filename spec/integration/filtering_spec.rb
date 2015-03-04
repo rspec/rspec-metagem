@@ -5,14 +5,14 @@ RSpec.describe 'Filtering' do
   before { clean_current_dir }
 
   it 'prints a rerun command for shared examples in external files that works to rerun' do
-    write_file "spec/support/shared_examples.rb", """
+    write_file "spec/support/shared_examples.rb", "
       RSpec.shared_examples 'with a failing example' do
         example { expect(1).to eq(2) } # failing
         example { expect(2).to eq(2) } # passing
       end
-    """
+    "
 
-    write_file "spec/host_group_spec.rb", """
+    write_file "spec/host_group_spec.rb", "
       load File.expand_path('../support/shared_examples.rb', __FILE__)
 
       RSpec.describe 'A group with shared examples' do
@@ -22,7 +22,7 @@ RSpec.describe 'Filtering' do
       RSpec.describe 'A group with a passing example' do
         example { expect(1).to eq(1) }
       end
-    """
+    "
 
     run_command ""
     expect(last_cmd_stdout).to include("3 examples, 1 failure")
@@ -40,7 +40,7 @@ RSpec.describe 'Filtering' do
 
   context "with a shared example containing a context in a separate file" do
     it "runs the example nested inside the shared" do
-      write_file_formatted 'spec/shared_example.rb', """
+      write_file_formatted 'spec/shared_example.rb', "
         RSpec.shared_examples_for 'a shared example' do
           it 'succeeds' do
           end
@@ -50,15 +50,15 @@ RSpec.describe 'Filtering' do
             end
           end
         end
-      """
+      "
 
-      write_file_formatted 'spec/simple_spec.rb', """
+      write_file_formatted 'spec/simple_spec.rb', "
         require File.join(File.dirname(__FILE__), 'shared_example.rb')
 
         RSpec.describe 'top level' do
           it_behaves_like 'a shared example'
         end
-      """
+      "
 
       run_command 'spec/simple_spec.rb:3 -fd'
       expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
@@ -67,7 +67,7 @@ RSpec.describe 'Filtering' do
 
   context "passing a line-number filter" do
     it "trumps exclusions, except for :if/:unless (which are absolute exclusions)" do
-      write_file_formatted 'spec/a_spec.rb', """
+      write_file_formatted 'spec/a_spec.rb', "
         RSpec.configure do |c|
           c.filter_run_excluding :slow
         end
@@ -82,7 +82,7 @@ RSpec.describe 'Filtering' do
           example('ex 4', :slow       ) { }
           example('ex 5', :if => false) { }
         end
-      """
+      "
 
       run_command "spec/a_spec.rb -fd"
       expect(last_cmd_stdout).to include("1 example, 0 failures", "ex 3").and exclude("ex 1", "ex 2", "ex 4", "ex 5")
@@ -100,14 +100,14 @@ RSpec.describe 'Filtering' do
 
   context "passing a line-number-filtered file and a non-filtered file" do
     it "applies the line number filtering only to the filtered file, running all specs in the non-filtered file except excluded ones" do
-      write_file_formatted "spec/file_1_spec.rb", """
+      write_file_formatted "spec/file_1_spec.rb", "
         RSpec.describe 'File 1' do
           it('passes') {      }
           it('fails')  { fail }
         end
-      """
+      "
 
-      write_file_formatted "spec/file_2_spec.rb", """
+      write_file_formatted "spec/file_2_spec.rb", "
         RSpec.configure do |c|
           c.filter_run_excluding :exclude_me
         end
@@ -117,7 +117,7 @@ RSpec.describe 'Filtering' do
           it('passes') { }
           it('fails', :exclude_me) { fail }
         end
-      """
+      "
 
       run_command "spec/file_1_spec.rb:2 spec/file_2_spec.rb -fd"
       expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
@@ -127,21 +127,21 @@ RSpec.describe 'Filtering' do
 
   context "passing example ids at the command line" do
     it "selects matching examples" do
-      write_file_formatted "spec/file_1_spec.rb", """
+      write_file_formatted "spec/file_1_spec.rb", "
         RSpec.describe 'File 1' do
           1.upto(3) do |i|
             example('ex ' + i.to_s) { expect(i).to be_odd }
           end
         end
-      """
+      "
 
-      write_file_formatted "spec/file_2_spec.rb", """
+      write_file_formatted "spec/file_2_spec.rb", "
         RSpec.describe 'File 2' do
           1.upto(3) do |i|
             example('ex ' + i.to_s) { expect(i).to be_even }
           end
         end
-      """
+      "
 
       # Using the form that Metadata.relative_path returns...
       run_command "./spec/file_1_spec.rb[1:1,1:3] ./spec/file_2_spec.rb[1:2]"
@@ -162,7 +162,7 @@ RSpec.describe 'Filtering' do
     end
 
     it "selects matching example groups" do
-      write_file_formatted "spec/file_1_spec.rb", """
+      write_file_formatted "spec/file_1_spec.rb", "
         RSpec.describe 'Group 1' do
           example { fail }
 
@@ -175,7 +175,7 @@ RSpec.describe 'Filtering' do
             example { fail }
           end
         end
-      """
+      "
 
       run_command "./spec/file_1_spec.rb[1:2]"
       expect(last_cmd_stdout).to match(/2 examples, 0 failures/)
