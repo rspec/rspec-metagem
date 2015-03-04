@@ -123,6 +123,28 @@ RSpec.describe 'Filtering' do
       expect(last_cmd_stdout).to match(/3 examples, 0 failures/)
       expect(last_cmd_stdout).not_to match(/fails/)
     end
+
+    it 'applies command line tag filters only to files that lack a line number filter' do
+      write_file_formatted "spec/file_1_spec.rb", "
+        RSpec.describe 'File 1' do
+          it('is selected by line')   { }
+          it('is not selected', :tag) { }
+        end
+      "
+
+      write_file_formatted "spec/file_2_spec.rb", "
+        RSpec.describe 'File 2' do
+          it('is not selected')          { }
+          it('is selected by tag', :tag) { }
+        end
+      "
+
+      run_command "spec/file_1_spec.rb:2 spec/file_2_spec.rb --tag tag -fd"
+      expect(last_cmd_stdout).to include(
+        "2 examples, 0 failures",
+        "is selected by line", "is selected by tag"
+      ).and exclude("not selected")
+    end
   end
 
   context "passing example ids at the command line" do
