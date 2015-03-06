@@ -240,6 +240,19 @@ class UsingAnArrayAsAStack < RSpec::Core::ExampleGroup
 end
 ```
 
+To run these examples, RSpec would (roughly) do the following:
+
+``` ruby
+example_1 = UsingAnArrayAsAStack.new
+example_1.before_example_1
+example_1.it_is_initially_empty
+
+example_2 = UsingAnArrayAsAStack::AfterAnItemHasBeenPushed.new
+example_2.before_example_1
+example_2.before_example_2
+example_2.it_allows_the_pushed_item_to_be_popped
+```
+
 ## The `rspec` Command
 
 When you install the rspec-core gem, it installs the `rspec` executable,
