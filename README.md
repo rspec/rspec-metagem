@@ -176,8 +176,9 @@ RSpec has two scopes:
   loaded. The block is evaluated in the context of a subclass of
   `RSpec::Core::ExampleGroup`, or a subclass of the parent example group
   when you're nesting them.
-* **Example**: Examples, and any other blocks with per-example semantics
-  (such as a `before(:example)` hook), are evaluated in the context of
+* **Example**: Examples -- typically defined by an `it` block -- and any other
+  blocks with per-example semantics -- such as a `before(:example)` hook -- are
+  evaluated in the context of
   an _instance_ of the example group class to which the example belongs.
   Examples are _not_ executed when the spec file is loaded; instead,
   RSpec waits to run any examples until all spec files have been loaded,
