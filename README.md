@@ -72,6 +72,9 @@ RSpec.describe Order do
 end
 ```
 
+Nested groups are subclasses of the outer example group class, providing
+the inheritance semantics you'd want for free.
+
 ## Aliases
 
 You can declare example groups using either `describe` or `context`.
