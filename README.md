@@ -201,8 +201,8 @@ RSpec.describe "Using an array as a stack" do
   end
 
   context "after an item has been pushed" do
-    def build_stack
-      super.push :item
+    before(:example) do
+      @stack.push :item
     end
 
     it 'allows the pushed item to be popped' do
@@ -220,7 +220,7 @@ class UsingAnArrayAsAStack < RSpec::Core::ExampleGroup
     []
   end
 
-  def before_example
+  def before_example_1
     @stack = build_stack
   end
 
@@ -229,8 +229,8 @@ class UsingAnArrayAsAStack < RSpec::Core::ExampleGroup
   end
 
   class AfterAnItemHasBeenPushed < self
-    def build_stack
-      super.push :item
+    def before_example_2
+      @stack.push :item
     end
 
     def it_allows_the_pushed_item_to_be_popped
