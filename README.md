@@ -203,13 +203,12 @@ $ rspec spec/calculator_spec.rb
 ./spec/calculator_spec.rb:1: uninitialized constant Calculator
 ```
 
-Implement the simplest solution:
+Address the failure by defining a skeleton of the `Calculator` class:
 
 ```ruby
 # in lib/calculator.rb
 class Calculator
-  def add(a,b)
-    a + b
+  def add(a, b)
   end
 end
 ```
@@ -220,6 +219,39 @@ Be sure to require the implementation file in the spec:
 # in spec/calculator_spec.rb
 # - RSpec adds ./lib to the $LOAD_PATH
 require "calculator"
+```
+
+Now run the spec again, and watch the expectation fail:
+
+```
+$ rspec spec/calculator_spec.rb
+F
+
+Failures:
+
+  1) Calculator#add returns the sum of its arguments
+     Failure/Error: expect(Calculator.new.add(1, 2)).to eq(3)
+
+       expected: 3
+            got: nil
+
+       (compared using ==)
+     # ./spec/calcalator_spec.rb:6:in `block (3 levels) in <top (required)>'
+
+Finished in 0.00131 seconds (files took 0.10968 seconds to load)
+1 example, 1 failure
+
+Failed examples:
+
+rspec ./spec/calcalator_spec.rb:5 # Calculator#add returns the sum of its arguments
+```
+
+Implement the simplest solution, by changing the definition of `Calculator#add` to:
+
+```ruby
+def add(a, b)
+  a + b
+end
 ```
 
 Now run the spec again, and watch it pass:
