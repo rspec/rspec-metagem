@@ -3,6 +3,87 @@ module RSpec
     class ExampleStatusPersister
     end
 
+    # Merges together a list of example statuses from this run
+    # and a list from previous runs (presumably loaded from disk).
+    # Each example status object is expected to be a hash with
+    # at least an `:example_id` and a `:status` key. Examples that
+    # were loaded but not executed (due to filtering, `--fail-fast`
+    # or whatever) should have a `:status` of `UNKNOWN_STATUS`.
+    #
+    # This willl produce a new list that:
+    #   - Will be missing examples from previous runs that we know for sure
+    #     no longer exist.
+    #   - Will have the latest known status for any examples that either
+    #     definitively do exist or may still exist.
+    #   - Is sorted by file name and example definition order, so that
+    #     the saved file is easily scannable if users want to inspect it.
+    # @private
+    class ExampleStatusMerger
+      def self.merge(this_run, from_previous_runs)
+        new(this_run, from_previous_runs).merge
+      end
+
+      def initialize(this_run, from_previous_runs)
+        @this_run           = hash_from(this_run)
+        @from_previous_runs = hash_from(from_previous_runs)
+        @file_exists_cache  = Hash.new { |hash, file| hash[file] = File.exist?(file) }
+      end
+
+      def merge
+        delete_previous_examples_that_no_longer_exist
+
+        @this_run.merge(@from_previous_runs) do |_ex_id, new, old|
+          new.fetch(:status) == UNKNOWN_STATUS ? old : new
+        end.values.sort_by(&method(:sort_value_from))
+      end
+
+      UNKNOWN_STATUS = "unknown".freeze
+
+    private
+
+      def hash_from(example_list)
+        example_list.inject({}) do |hash, example|
+          hash[example.fetch(:example_id)] = example
+          hash
+        end
+      end
+
+      def delete_previous_examples_that_no_longer_exist
+        @from_previous_runs.delete_if do |ex_id, _|
+          example_must_no_longer_exist?(ex_id)
+        end
+      end
+
+      def example_must_no_longer_exist?(ex_id)
+        # Obviously, it exists if it was loaded for this spec run...
+        return false if @this_run.key?(ex_id)
+
+        spec_file = spec_file_from(ex_id)
+
+        # `this_run` includes examples that were loaded but not executed.
+        # Given that, if the spec file for this example was loaded,
+        # but the id does not still exist, it's safe to assume that
+        # the example must no longer exist.
+        return true if loaded_spec_files.include?(spec_file)
+
+        # The example may still exist as long as the file exists...
+        !@file_exists_cache[spec_file]
+      end
+
+      def loaded_spec_files
+        @loaded_spec_files ||= Set.new(@this_run.keys.map(&method(:spec_file_from)))
+      end
+
+      def spec_file_from(ex_id)
+        ex_id.split("[").first
+      end
+
+      def sort_value_from(example)
+        file, scoped_id = example.fetch(:example_id).split(Configuration::ON_SQUARE_BRACKETS)
+        [file, *scoped_id.split(":").map(&method(:Integer))]
+      end
+    end
+
     # Dumps a list of hashes in a pretty, human readable format
     # for later parsing. The hashes are expected to have symbol
     # keys and string values, and each hash should have the same
