@@ -175,12 +175,6 @@ You can store command line options in a `.rspec` file in the project's root
 directory, and the `rspec` command will read them as though you typed them on
 the command line.
 
-## Autotest Integration
-
-rspec-core no longer ships with an Autotest extension, if you require Autotest
-integration, please use the `rspec-autotest` gem and see [rspec/rspec-autotest](https://github.com/rspec/rspec-autotest)
-for details
-
 ## Get Started
 
 Start with a simple example of behavior you expect from your system. Do
