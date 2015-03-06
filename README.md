@@ -167,6 +167,78 @@ RSpec.describe Hash do
 end
 ```
 
+## A Word on Scope
+
+RSpec has two scopes:
+
+* **Example Group**: Example groups are defined by a `describe` or
+  `context` block, which is eagerly evaluated when the spec file is
+  loaded. The block is evaluated in the context of a subclass of
+  `RSpec::Core::ExampleGroup`, or a subclass of the parent example group
+  when you're nesting them.
+* **Example**: Examples, and any other blocks with per-example semantics
+  (such as a `before(:example)` hook), are evaluated in the context of
+  an _instance_ of the example group class to which the example belongs.
+  Examples are _not_ executed when the spec file is loaded; instead,
+  RSpec waits to run any examples until all spec files have been loaded,
+  at which point it can apply filtering, randomization, etc.
+
+To make this more concrete, consider this code snippet:
+
+``` ruby
+RSpec.describe "Using an array as a stack" do
+  def build_stack
+    []
+  end
+
+  before(:example) do
+    @stack = build_stack
+  end
+
+  it 'is initially empty' do
+    expect(@stack).to be_empty
+  end
+
+  context "after an item has been pushed" do
+    def build_stack
+      super.push :item
+    end
+
+    it 'allows the pushed item to be popped' do
+      expect(@stack.pop).to eq(:item)
+    end
+  end
+end
+```
+
+Under the covers, this is (roughly) equivalent to:
+
+``` ruby
+class UsingAnArrayAsAStack < RSpec::Core::ExampleGroup
+  def build_stack
+    []
+  end
+
+  def before_example
+    @stack = build_stack
+  end
+
+  def it_is_initially_empty
+    expect(@stack).to be_empty
+  end
+
+  class AfterAnItemHasBeenPushed < self
+    def build_stack
+      super.push :item
+    end
+
+    def it_allows_the_pushed_item_to_be_popped
+      expect(@stack.pop).to eq(:item)
+    end
+  end
+end
+```
+
 ## The `rspec` Command
 
 When you install the rspec-core gem, it installs the `rspec` executable,
