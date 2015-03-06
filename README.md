@@ -30,6 +30,7 @@ RSpec uses the words "describe" and "it" so we can express concepts like a conve
 RSpec.describe Order do
   it "sums the prices of its line items" do
     order = Order.new
+
     order.add_entry(LineItem.new(:item => Item.new(
       :price => Money.new(1.11, :USD)
     )))
@@ -37,6 +38,7 @@ RSpec.describe Order do
       :price => Money.new(2.22, :USD),
       :quantity => 2
     )))
+
     expect(order.total).to eq(Money.new(5.55, :USD))
   end
 end
