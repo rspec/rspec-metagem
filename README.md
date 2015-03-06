@@ -4,7 +4,7 @@ rspec-core provides the structure for writing executable examples of how your
 code should behave, and an `rspec` command with tools to constrain which
 examples get run and tailor the output.
 
-## install
+## Install
 
     gem install rspec      # for rspec-core, rspec-expectations, rspec-mocks
     gem install rspec-core # for rspec-core only
@@ -19,7 +19,7 @@ RSpec repos as well. Add the following to your `Gemfile`:
 end
 ```
 
-## basic structure
+## Basic Structure
 
 RSpec uses the words "describe" and "it" so we can express concepts like a conversation:
 
@@ -49,7 +49,7 @@ Under the hood, an example group is a class in which the block passed to
 `describe` is evaluated. The blocks passed to `it` are evaluated in the
 context of an _instance_ of that class.
 
-## nested groups
+## Nested Groups
 
 You can also declare nested nested groups using the `describe` or `context`
 methods:
@@ -70,7 +70,7 @@ RSpec.describe Order do
 end
 ```
 
-## aliases
+## Aliases
 
 You can declare example groups using either `describe` or `context`.
 For a top level example group, `describe` and `context` are available
@@ -81,7 +81,7 @@ patching.
 You can declare examples within a group using any of `it`, `specify`, or
 `example`.
 
-## shared examples and contexts
+## Shared Examples and Contexts
 
 Declare a shared example group using `shared_examples`, and then include it
 in any group using `include_examples`.
@@ -111,7 +111,7 @@ pretty much the same as `shared_examples` and `include_examples`, providing
 more accurate naming when you share hooks, `let` declarations, helper methods,
 etc, but no examples.
 
-## metadata
+## Metadata
 
 rspec-core stores a metadata hash with every example and group, which
 contains their descriptions, the locations at which they were
@@ -162,26 +162,26 @@ RSpec.describe Hash do
 end
 ```
 
-## the `rspec` command
+## The `rspec` Command
 
 When you install the rspec-core gem, it installs the `rspec` executable,
 which you'll use to run rspec. The `rspec` command comes with many useful
 options.
 Run `rspec --help` to see the complete list.
 
-## store command line options `.rspec`
+## Store Command Line Options `.rspec`
 
 You can store command line options in a `.rspec` file in the project's root
 directory, and the `rspec` command will read them as though you typed them on
 the command line.
 
-## autotest integration
+## Autotest Integration
 
 rspec-core no longer ships with an Autotest extension, if you require Autotest
 integration, please use the `rspec-autotest` gem and see [rspec/rspec-autotest](https://github.com/rspec/rspec-autotest)
 for details
 
-## get started
+## Get Started
 
 Start with a simple example of behavior you expect from your system. Do
 this before you write any implementation code:
