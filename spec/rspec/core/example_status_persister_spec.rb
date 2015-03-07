@@ -1,6 +1,111 @@
 require 'rspec/core/example_status_persister'
+require 'tempfile'
 
 module RSpec::Core
+  RSpec.describe "Example status persisting" do
+    it 'can load a previously persisted set of example statuses from disk' do
+      examples = [
+        { :example_id => "spec_1.rb[1:1]", :status => "passed" },
+        { :example_id => "spec_1.rb[1:2]", :status => "failed" }
+      ]
+
+      temp_file = Tempfile.new("example_statuses.txt")
+      temp_file.write(ExampleStatusDumper.dump(examples))
+      temp_file.close
+
+      loaded = ExampleStatusPersister.load_from(temp_file.path)
+      expect(loaded).to eq(examples)
+    end
+
+    it 'returns `[]` from `load_from` when the named file does not exist' do
+      expect(ExampleStatusPersister.load_from("./some/missing/path.txt")).to eq([])
+    end
+
+    describe "persisting example statuses" do
+      include FormatterSupport
+
+      def new_example(id, metadata = {})
+        super(metadata).tap do |ex|
+          allow(ex).to receive_messages(:id => id)
+        end
+      end
+
+      let(:file) { Tempfile.new("example_statuses.txt") }
+      let(:existing_spec_file) { Metadata.relative_path(__FILE__) }
+
+      it 'writes the given example statuses to disk' do
+        ex_1 = new_example("spec_1.rb[1:1]", :status => :passed)
+        ex_2 = new_example("spec_1.rb[1:2]", :status => :failed)
+
+        ExampleStatusPersister.persist([ex_1, ex_2], file.path)
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to contain_exactly(
+          a_hash_including(:example_id => ex_1.id, :status => "passed"),
+          a_hash_including(:example_id => ex_2.id, :status => "failed")
+        )
+      end
+
+      it 'creates any necessary intermediary directories' do
+        path = File.join("#{file.path}-some", "subdirectory", "examples.txt")
+        ex_1 = new_example("spec_1.rb[1:1]", :status => :passed)
+
+        ExampleStatusPersister.persist([ex_1], path)
+        loaded = ExampleStatusPersister.load_from(path)
+
+        expect(loaded).to contain_exactly(
+          a_hash_including(:example_id => ex_1.id, :status => "passed")
+        )
+      end
+
+      it 'merges the example statuses with the existing records in the named file' do
+        ex_1 = new_example("#{existing_spec_file}[1:1]", :status => :passed)
+        ex_2 = new_example("spec_1.rb[1:1]", :status => :failed)
+
+        ExampleStatusPersister.persist([ex_1], file.path)
+        ExampleStatusPersister.persist([ex_2], file.path)
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to contain_exactly(
+          a_hash_including(:example_id => ex_1.id, :status => "passed"),
+          a_hash_including(:example_id => ex_2.id, :status => "failed")
+        )
+      end
+
+      it 'includes the spec run times so users can use it for their own purposes' do
+        ex_1 = new_example("spec_1.rb[1:1]", :status => :passed)
+        allow(ex_1.execution_result).to receive(:run_time) { 3.0 }
+
+        ExampleStatusPersister.persist([ex_1], file.path)
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to match [ a_hash_including(:run_time => "3 seconds") ]
+      end
+
+      it "persists a loaded but unexecuted example with an #{ExampleStatusMerger::UNKNOWN_STATUS} status" do
+        ex_1 = RSpec.describe.example
+
+        ExampleStatusPersister.persist([ex_1], file.path)
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to match [ a_hash_including(
+          :example_id => ex_1.id, :status => ExampleStatusMerger::UNKNOWN_STATUS
+        ) ]
+      end
+
+      it "persists a skipped example properly" do
+        group = RSpec.describe
+        ex_1 = group.example("foo", :skip)
+        group.run
+
+        ExampleStatusPersister.persist([ex_1], file.path)
+        loaded = ExampleStatusPersister.load_from(file.path)
+
+        expect(loaded).to match [ a_hash_including( :example_id => ex_1.id, :status => "pending") ]
+      end
+    end
+  end
+
   RSpec.describe "Example status merging" do
     let(:existing_spec_file) { Metadata.relative_path(__FILE__) }
 

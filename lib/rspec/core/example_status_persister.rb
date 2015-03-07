@@ -1,6 +1,59 @@
+RSpec::Support.require_rspec_support "directory_maker"
+
 module RSpec
   module Core
+    # Persists example ids and their statuses so that we can filter
+    # to just the ones that failed the last time they ran.
+    # @private
     class ExampleStatusPersister
+      def self.load_from(file_name)
+        return [] unless File.exist?(file_name)
+        ExampleStatusParser.parse(File.read(file_name))
+      end
+
+      def self.persist(examples, file_name)
+        new(examples, file_name).persist
+      end
+
+      def initialize(examples, file_name)
+        @examples  = examples
+        @file_name = file_name
+      end
+
+      def persist
+        write dumped_statuses
+      end
+
+    private
+
+      def write(statuses)
+        RSpec::Support::DirectoryMaker.mkdir_p(File.dirname(@file_name))
+        File.open(@file_name, "w") { |f| f.write(statuses) }
+      end
+
+      def dumped_statuses
+        ExampleStatusDumper.dump(merged_statuses)
+      end
+
+      def merged_statuses
+        ExampleStatusMerger.merge(statuses_from_this_run, statuses_from_previous_runs)
+      end
+
+      def statuses_from_this_run
+        @examples.map do |ex|
+          result = ex.execution_result
+
+          {
+            :example_id => ex.id,
+            :status     => result.status ? result.status.to_s : ExampleStatusMerger::UNKNOWN_STATUS,
+            :run_time   => result.run_time ? Formatters::Helpers.format_duration(result.run_time) : ""
+          }
+        end
+      end
+
+      def statuses_from_previous_runs
+        self.class.load_from(@file_name)
+      end
     end
 
     # Merges together a list of example statuses from this run
