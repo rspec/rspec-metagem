@@ -201,12 +201,11 @@ module FormatterSupport
   end
 
   def new_example(metadata = {})
-    result = instance_double(RSpec::Core::Example::ExecutionResult,
-                             :pending_fixed?   => false,
-                             :example_skipped? => false,
-                             :status           => :passed,
-                             :exception        => Exception.new
-                            )
+    metadata = metadata.dup
+    result = RSpec::Core::Example::ExecutionResult.new
+    result.started_at = ::Time.now
+    result.record_finished(metadata.delete(:status) { :passed }, ::Time.now)
+    result.exception = Exception.new if result.status == :failed
 
     instance_double(RSpec::Core::Example,
                      :description             => "Example",
