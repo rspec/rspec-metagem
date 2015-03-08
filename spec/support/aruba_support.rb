@@ -13,6 +13,8 @@ RSpec.shared_context "aruba support" do
   attr_reader :last_cmd_stdout, :last_cmd_stderr
 
   def run_command(cmd)
+    RSpec.configuration.color = true
+
     temp_stdout = StringIO.new
     temp_stderr = StringIO.new
     RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
@@ -23,6 +25,7 @@ RSpec.shared_context "aruba support" do
     end
   ensure
     RSpec.reset
+    RSpec.configuration.color = true
     RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
     # Ensure it gets cached with a proper value -- if we leave it set to nil,

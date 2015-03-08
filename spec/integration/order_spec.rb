@@ -4,7 +4,7 @@ RSpec.describe 'command line', :ui do
   include_context "aruba support"
 
   before :all do
-    write_file 'spec/simple_spec.rb', """
+    write_file 'spec/simple_spec.rb', "
       RSpec.describe 'group 1' do
         specify('group 1 example 1') {}
         specify('group 1 example 2') {}
@@ -15,9 +15,9 @@ RSpec.describe 'command line', :ui do
           specify('group 1-1 example 3') {}
         end
       end
-    """
+    "
 
-    write_file 'spec/simple_spec2.rb', """
+    write_file 'spec/simple_spec2.rb', "
       RSpec.describe 'group 2' do
         specify('group 2 example 1') {}
         specify('group 2 example 2') {}
@@ -28,9 +28,9 @@ RSpec.describe 'command line', :ui do
           specify('group 2-1 example 3') {}
         end
       end
-    """
+    "
 
-    write_file 'spec/order_spec.rb', """
+    write_file 'spec/order_spec.rb', "
       RSpec.describe 'group 1' do
         specify('group 1 example 1')  {}
         specify('group 1 example 2')  {}
@@ -76,7 +76,7 @@ RSpec.describe 'command line', :ui do
       RSpec.describe('group 8')  { specify('example') {} }
       RSpec.describe('group 9')  { specify('example') {} }
       RSpec.describe('group 10') { specify('example') {} }
-    """
+    "
   end
 
   describe '--order rand' do
@@ -150,7 +150,7 @@ RSpec.describe 'command line', :ui do
     after { remove_file 'spec/custom_order_spec.rb' }
 
     before do
-      write_file 'spec/custom_order_spec.rb', """
+      write_file 'spec/custom_order_spec.rb', "
         RSpec.configure do |config|
           config.register_ordering :global do |list|
             list.sort_by { |item| item.description }
@@ -167,7 +167,7 @@ RSpec.describe 'command line', :ui do
         RSpec.describe 'group A' do
           specify('group A example 1')  {}
         end
-      """
+      "
     end
 
     it 'orders the groups and examples by the provided strategy' do

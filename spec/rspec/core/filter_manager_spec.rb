@@ -129,6 +129,25 @@ module RSpec::Core
 
           expect(filter_manager.prune([included, excluded])).to eq([included])
         end
+
+        it "still applies inclusion filters to examples from files with no #{type} filters" do
+          group = RSpec.describe("group")
+          included_via_loc_or_id = group.example("inc via #{type}"); line = __LINE__
+          excluded_via_loc_or_id = group.example("exc via #{type}", :foo)
+
+          included_via_tag, excluded_via_tag = instance_eval <<-EOS, "some/other_spec.rb", 1
+            group = RSpec.describe("group")
+            [group.example("inc via tag", :foo), group.example("exc via tag")]
+          EOS
+
+          add_filter(:line_number => line, :scoped_id => "1:1")
+          filter_manager.include_with_low_priority :foo => true
+
+          expect(filter_manager.prune([
+            included_via_loc_or_id, excluded_via_loc_or_id,
+            included_via_tag, excluded_via_tag
+          ]).map(&:description)).to eq([included_via_loc_or_id, included_via_tag].map(&:description))
+        end
       end
 
       describe "location filtering" do
@@ -298,6 +317,24 @@ module RSpec::Core
 
           filter_manager.add_ids(Metadata.relative_path(__FILE__), %w[ 2 ])
           expect(filter_manager.prune([ex_1, ex_2, ex_3])).to eq([ex_2, ex_3])
+        end
+
+        it 'uses the rerun file path when applying the id filter' do
+          ex_1, ex_2 = instance_eval <<-EOS, "./some/spec.rb", 1
+            ex_1 = ex_2 = nil
+
+            RSpec.shared_examples "shared" do
+              ex_1 = example("ex 1")
+              ex_2 = example("ex 2")
+            end
+
+            [ex_1, ex_2]
+          EOS
+
+          RSpec.describe { include_examples "shared" }
+
+          filter_manager.add_ids(__FILE__, %w[ 1:1 ])
+          expect(filter_manager.prune([ex_1, ex_2]).map(&:description)).to eq([ex_1].map(&:description))
         end
       end
     end

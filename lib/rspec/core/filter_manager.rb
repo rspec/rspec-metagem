@@ -35,12 +35,15 @@ module RSpec
         examples = prune_conditionally_filtered_examples(examples)
 
         if inclusions.standalone?
-          examples.select { |e| include?(e) }
+          examples.select { |e| inclusions.include_example?(e) }
         else
-          locations = inclusions.fetch(:locations) { Hash.new([]) }
-          ids       = inclusions.fetch(:ids)       { Hash.new([]) }
+          locations, ids, non_scoped_inclusions = inclusions.split_file_scoped_rules
 
-          examples.select { |e| priority_include?(e, ids, locations) || (!exclude?(e) && include?(e)) }
+          examples.select do |ex|
+            file_scoped_include?(ex.metadata, ids, locations) do
+              !exclusions.include_example?(ex) && non_scoped_inclusions.include_example?(ex)
+            end
+          end
         end
       end
 
@@ -76,14 +79,6 @@ module RSpec
         inclusions.add(filter_key => filter)
       end
 
-      def exclude?(example)
-        exclusions.include_example?(example)
-      end
-
-      def include?(example)
-        inclusions.include_example?(example)
-      end
-
       def prune_conditionally_filtered_examples(examples)
         examples.reject do |ex|
           meta = ex.metadata
@@ -96,10 +91,14 @@ module RSpec
       # and there is a `:slow => true` exclusion filter), but only for specs
       # defined in the same file as the location filters. Excluded specs in
       # other files should still be excluded.
-      def priority_include?(example, ids, locations)
-        return true if MetadataFilter.filter_applies?(:ids, ids, example.metadata)
-        return false if locations[example.metadata[:absolute_file_path]].empty?
-        MetadataFilter.filter_applies?(:locations, locations, example.metadata)
+      def file_scoped_include?(ex_metadata, ids, locations)
+        no_location_filters = locations[ex_metadata[:absolute_file_path]].empty?
+        no_id_filters = ids[ex_metadata[:rerun_file_path]].empty?
+
+        return yield if no_location_filters && no_id_filters
+
+        MetadataFilter.filter_applies?(:ids, ids, ex_metadata) ||
+        MetadataFilter.filter_applies?(:locations, locations, ex_metadata)
       end
     end
 
@@ -119,8 +118,8 @@ module RSpec
         [exclusions, inclusions]
       end
 
-      def initialize(*args, &block)
-        @rules = Hash.new(*args, &block)
+      def initialize(rules={})
+        @rules = rules
       end
 
       def add(updated)
@@ -194,6 +193,14 @@ module RSpec
 
       def standalone?
         is_standalone_filter?(@rules)
+      end
+
+      def split_file_scoped_rules
+        rules_dup = @rules.dup
+        locations = rules_dup.delete(:locations) { Hash.new([]) }
+        ids       = rules_dup.delete(:ids)       { Hash.new([]) }
+
+        return locations, ids, self.class.new(rules_dup)
       end
 
     private
