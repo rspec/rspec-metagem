@@ -83,7 +83,9 @@ module RSpec
       # @param out [IO] output stream
       def run(err, out)
         setup(err, out)
-        run_specs(@world.ordered_example_groups)
+        run_specs(@world.ordered_example_groups).tap do
+          persist_example_statuses
+        end
       end
 
       # Wires together the various configuration objects and state holders.
@@ -110,6 +112,17 @@ module RSpec
             example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
           end
         end
+      end
+
+    private
+
+      def persist_example_statuses
+        return unless @configuration.example_status_persistence_file_path
+
+        ExampleStatusPersister.persist(
+          @world.all_examples,
+          @configuration.example_status_persistence_file_path
+        )
       end
 
       # @private

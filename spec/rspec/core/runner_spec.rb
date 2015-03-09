@@ -236,6 +236,36 @@ module RSpec::Core
           end
         end
 
+        describe "persistence of example statuses" do
+          let(:all_examples) { [double("example")] }
+
+          def run
+            allow(world).to receive(:all_examples).and_return(all_examples)
+            allow(config).to receive(:load_spec_files)
+
+            class_spy(ExampleStatusPersister).as_stubbed_const
+
+            runner = build_runner
+            runner.run(err, out)
+          end
+
+          context "when `example_status_persistence_file_path` is configured" do
+            it 'persists the status of all loaded examples' do
+              config.example_status_persistence_file_path = "examples.txt"
+              run
+              expect(ExampleStatusPersister).to have_received(:persist).with(all_examples, "examples.txt")
+            end
+          end
+
+          context "when `example_status_persistence_file_path` is not configured" do
+            it 'persists the status of all loaded examples' do
+              config.example_status_persistence_file_path = nil
+              run
+              expect(ExampleStatusPersister).not_to have_received(:persist)
+            end
+          end
+        end
+
         context "running files" do
           include_context "spec files"
 
