@@ -226,11 +226,11 @@ module RSpec
       end
 
       def headers
-        @headers ||= split_line(@header_line).map(&:to_sym)
+        @headers ||= split_line(@header_line).grep(/\S/).map(&:to_sym)
       end
 
       def split_line(line)
-        line.split(/\s+\|\s+/)
+        line.split(/\s+\|\s+?/, -1)
       end
     end
   end

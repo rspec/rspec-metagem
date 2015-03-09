@@ -302,6 +302,16 @@ module RSpec::Core
       expect(round_tripped).to eq(examples)
     end
 
+    it 'can round trip blank values through the dumper and parser' do
+      examples = [
+        { :example_id => "./spec/unit/foo_spec.rb[1:1]", :run_time => '1 second'  },
+        { :example_id => "./spec/unit/foo_spec.rb[1:2]", :run_time => ''          }
+      ]
+
+      round_tripped = parse(dump(examples))
+      expect(round_tripped).to eq(examples)
+    end
+
     it 'produces nothing when given nothing' do
       expect(dump([])).to eq(nil)
     end
