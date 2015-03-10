@@ -123,6 +123,24 @@ module RSpec::Core
       end
     end
 
+    describe "--only-failures" do
+      it 'is equivalent to `--tag last_run_status:failed`' do
+        tag = Parser.parse(%w[ --tag last_run_status:failed ])
+        only_failures = Parser.parse(%w[ --only-failures ])
+
+        expect(only_failures).to eq(tag)
+      end
+    end
+
+    describe "--next-failure" do
+      it 'is equivalent to `--tag last_run_status:failed --fail-fast --order defined`' do
+        long_form = Parser.parse(%w[ --tag last_run_status:failed --fail-fast --order defined ])
+        next_failure = Parser.parse(%w[ --next-failure ])
+
+        expect(next_failure).to eq(long_form)
+      end
+    end
+
     %w[--example -e].each do |option|
       describe option do
         it "escapes the arg" do

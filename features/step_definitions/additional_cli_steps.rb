@@ -124,3 +124,17 @@ end
 When /^I create "([^"]*)" with the following content:$/ do |file_name, content|
   write_file(file_name, content)
 end
+
+Given(/^I have run `([^`]*)` once, resulting in "([^"]*)"$/) do |command, output_snippet|
+  step %Q{I run `#{command}`}
+  step %Q{the output from "#{command}" should contain "#{output_snippet}"}
+end
+
+When(/^I fix "(.*?)" by replacing "(.*?)" with "(.*?)"$/) do |file_name, original, replacement|
+  in_current_dir do
+    contents = File.read(file_name)
+    expect(contents).to include(original)
+    fixed = contents.sub(original, replacement)
+    File.open(file_name, "w") { |f| f.write(fixed) }
+  end
+end
