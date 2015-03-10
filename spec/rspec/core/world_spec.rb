@@ -23,6 +23,39 @@ module RSpec::Core
       end
     end
 
+    describe "#last_run_statuses" do
+      context "when `example_status_persistence_file_path` is configured" do
+        it 'gets the last run statuses from the ExampleStatusPersister' do
+          configuration.example_status_persistence_file_path = "examples.txt"
+          persister = class_double(ExampleStatusPersister).as_stubbed_const
+
+          allow(persister).to receive(:load_from).with("examples.txt").and_return([
+            { :example_id => "id_1", :status => "passed" },
+            { :example_id => "id_2", :status => "failed" }
+          ])
+
+          expect(world.last_run_statuses).to eq(
+            'id_1' => 'passed', 'id_2' => 'failed'
+          )
+        end
+      end
+
+      context "when `example_status_persistence_file_path` is not configured" do
+        it 'returns a memoized value' do
+          expect(world.last_run_statuses).to be(world.last_run_statuses)
+        end
+
+        it 'returns a blank hash without attempting to load the persisted statuses' do
+          configuration.example_status_persistence_file_path = nil
+
+          persister = class_double(ExampleStatusPersister).as_stubbed_const
+          expect(persister).not_to receive(:load_from)
+
+          expect(world.last_run_statuses).to eq({})
+        end
+      end
+    end
+
     describe "#all_examples" do
       it "contains all examples from all levels of nesting" do
         RSpec.describe do

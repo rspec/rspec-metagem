@@ -168,6 +168,22 @@ module RSpec
         end
       end
 
+      describe ":last_run_status" do
+        it 'assigns it by looking up world.last_run_statuses[id]' do
+          looked_up_ids = []
+          last_run_statuses = Hash.new do |hash, id|
+            looked_up_ids << id
+            "some_status"
+          end
+
+          allow(RSpec.world).to receive(:last_run_statuses).and_return(last_run_statuses)
+          example = RSpec.describe.example
+
+          expect(example.metadata[:last_run_status]).to eq("some_status")
+          expect(looked_up_ids).to eq [example.id]
+        end
+      end
+
       describe ":id" do
         define :have_id_with do |scoped_id|
           expected_id = "#{Metadata.relative_path(__FILE__)}[#{scoped_id}]"

@@ -108,6 +108,19 @@ module RSpec
         @configuration.reporter
       end
 
+      # @private
+      def last_run_statuses
+        @last_run_statuses ||=
+          if (path = @configuration.example_status_persistence_file_path)
+            ExampleStatusPersister.load_from(path).inject({}) do |hash, example|
+              hash[example.fetch(:example_id)] = example.fetch(:status)
+              hash
+            end
+          else
+            {}
+          end
+      end
+
       # @api private
       #
       # Notify reporter of filters.

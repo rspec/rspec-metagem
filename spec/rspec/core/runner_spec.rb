@@ -243,7 +243,7 @@ module RSpec::Core
             allow(world).to receive(:all_examples).and_return(all_examples)
             allow(config).to receive(:load_spec_files)
 
-            class_spy(ExampleStatusPersister).as_stubbed_const
+            class_spy(ExampleStatusPersister, :load_from => []).as_stubbed_const
 
             runner = build_runner
             runner.run(err, out)

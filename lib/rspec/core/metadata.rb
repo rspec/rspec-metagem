@@ -327,6 +327,7 @@ module RSpec
         :example_group,
         :parent_example_group,
         :execution_result,
+        :last_run_status,
         :file_path,
         :absolute_file_path,
         :rerun_file_path,
