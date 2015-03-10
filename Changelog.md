@@ -14,6 +14,15 @@ Enhancements:
   where the location isn't unique. (Myron Marston, #1884)
 * Use the example id in the rerun command printed for failed examples
   when the location is not unique. (Myron Marston, #1884)
+* Add `config.example_status_persistence_file_path` option, which is
+  used to persist the last run status of each example. (Myron Marston, #1888)
+* Add `:last_run_status` metadata to each example, which indicates what
+  happened the last time an example ran. (Myron Marston, #1888)
+* Add `--only-failures` CLI option which filters to only the examples
+  that failed the last time they ran. (Myron Marston, #1888)
+* Add `--next-failure` CLI option which allows you to repeatedly focus
+  on just one of the currently failing examples, then move on to the
+  next failure, etc. (Myron Marston, #1888)
 
 Bug Fixes:
 
