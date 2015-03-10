@@ -159,6 +159,11 @@ module RSpec
       # `--only-failures` and `--next-failures` CLI options.
       add_setting :example_status_persistence_file_path
 
+      # @macro define_reader
+      # Indicates if the `--only-failures` (or `--next-failure`) flag is being used.
+      define_reader :only_failures
+      alias_method :only_failures?, :only_failures
+
       # @macro add_setting
       # Clean up and exit after the first failure (default: `false`).
       add_setting :fail_fast
@@ -310,6 +315,7 @@ module RSpec
         @after_suite_hooks  = []
 
         @mock_framework = nil
+        @files_or_directories_to_run_defaulted = false
         @files_or_directories_to_run = []
         @loaded_spec_files = Set.new
         @color = false
@@ -797,7 +803,14 @@ module RSpec
       # @private
       def files_or_directories_to_run=(*files)
         files = files.flatten
-        files << default_path if (command == 'rspec' || Runner.running_in_drb?) && default_path && files.empty?
+
+        if (command == 'rspec' || Runner.running_in_drb?) && default_path && files.empty?
+          @files_or_directories_to_run_defaulted = true
+          files << default_path
+        else
+          @files_or_directories_to_run_defaulted = false
+        end
+
         @files_or_directories_to_run = files
         @files_to_run = nil
       end
@@ -805,7 +818,14 @@ module RSpec
       # The spec files RSpec will run.
       # @return [Array] specified files about to run
       def files_to_run
-        @files_to_run ||= get_files_to_run(@files_or_directories_to_run)
+        @files_to_run ||= begin
+          if @files_or_directories_to_run_defaulted && only_failures?
+            files_with_failures = RSpec.world.spec_files_with_failures.to_a
+            @files_or_directories_to_run = files_with_failures if files_with_failures.any?
+          end
+
+          get_files_to_run(@files_or_directories_to_run)
+        end
       end
 
       # Creates a method that delegates to `example` including the submitted

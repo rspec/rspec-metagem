@@ -121,6 +121,18 @@ module RSpec
           end
       end
 
+      # @private
+      def spec_files_with_failures
+        @spec_files_with_failures ||=
+          last_run_statuses.inject(Set.new) do |files, (id, status)|
+            files << id.split(Configuration::ON_SQUARE_BRACKETS).first if status == FAILED_STATUS
+            files
+          end.to_a
+      end
+
+      # @private
+      FAILED_STATUS = "failed".freeze
+
       # @api private
       #
       # Notify reporter of filters.

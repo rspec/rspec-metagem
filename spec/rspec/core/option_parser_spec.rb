@@ -128,7 +128,7 @@ module RSpec::Core
         tag = Parser.parse(%w[ --tag last_run_status:failed ])
         only_failures = Parser.parse(%w[ --only-failures ])
 
-        expect(only_failures).to eq(tag)
+        expect(only_failures).to include(tag)
       end
     end
 
@@ -137,7 +137,7 @@ module RSpec::Core
         long_form = Parser.parse(%w[ --tag last_run_status:failed --fail-fast --order defined ])
         next_failure = Parser.parse(%w[ --next-failure ])
 
-        expect(next_failure).to eq(long_form)
+        expect(next_failure).to include(long_form)
       end
     end
 

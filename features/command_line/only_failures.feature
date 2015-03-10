@@ -55,11 +55,22 @@ Feature: Only Failures
         end
       end
       """
-    And I have run `rspec` once, resulting in "7 examples, 3 failures"
+    And a file named "spec/passing_spec.rb" with:
+      """ruby
+      puts "Loading passing_spec.rb"
 
-  Scenario: Use just `--only-failures`
+      RSpec.describe "A passing spec" do
+        it "passes" do
+          expect(1).to eq(1)
+        end
+      end
+      """
+    And I have run `rspec` once, resulting in "8 examples, 3 failures"
+
+  Scenario: Running `rspec --only-failures` loads only spec files with failures and runs only the failures
     When I run `rspec --only-failures`
-    Then the output should contain "3 examples, 3 failures"
+    Then the output from "rspec --only-failures" should contain "3 examples, 3 failures"
+     And the output from "rspec --only-failures" should not contain "Loading passing_spec.rb"
 
   Scenario: Combine `--only-failures` with a file name
     When I run `rspec spec/array_spec.rb --only-failures`
@@ -91,4 +102,3 @@ Feature: Only Failures
 
     When I run `rspec --next-failure`
     Then the output should contain "All examples were filtered out"
-

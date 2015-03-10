@@ -155,12 +155,12 @@ module RSpec::Core
 FILTERING
 
         parser.on('--only-failures', "Filter to just the examples that failed the last time they ran.") do
-          add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
+          configure_only_failures(options)
         end
 
         parser.on("--next-failure", "Apply `--only-failures` and abort after one failure.",
                   "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
-          add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
+          configure_only_failures(options)
           set_fail_fast(options, true)
           set_order(options, "defined")
         end
@@ -251,6 +251,11 @@ FILTERING
 
     def set_order(options, value)
       options[:order] = value
+    end
+
+    def configure_only_failures(options)
+      options[:only_failures] = true
+      add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
     end
   end
 end

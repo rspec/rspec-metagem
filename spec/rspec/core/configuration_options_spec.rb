@@ -106,6 +106,13 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
       opts.configure(config)
     end
 
+    it 'configures `only_failures` before `files_or_directories_to_run` since it affects loaded files' do
+      opts = config_options_object(*%w[ --only-failures ])
+      expect(config).to receive(:force).with(:only_failures => true).ordered
+      expect(config).to receive(:files_or_directories_to_run=).ordered
+      opts.configure(config)
+    end
+
     { "pattern" => :pattern, "exclude-pattern" => :exclude_pattern }.each do |flag, attr|
       it "sets #{attr} before `requires` so users can check `files_to_run` in a `spec_helper` loaded by `--require`" do
         opts = config_options_object(*%W[--require spec_helpe --#{flag} **/*.spec])
@@ -166,6 +173,18 @@ RSpec.describe RSpec::Core::ConfigurationOptions, :isolated_directory => true, :
         opts = config_options_object(*%w[-I dir_from_opts])
         expect(config).to receive(:libs=).with(["dir_from_opts", "dir_from_env"])
         opts.configure(config)
+      end
+    end
+
+    %w[ --only-failures --next-failure ].each do |option|
+      describe option do
+        it "changes `config.only_failures?` to true" do
+          opts = config_options_object(option)
+
+          expect {
+            opts.configure(config)
+          }.to change(config, :only_failures?).from(a_falsey_value).to(true)
+        end
       end
     end
   end

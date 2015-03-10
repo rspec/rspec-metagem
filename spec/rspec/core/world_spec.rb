@@ -23,16 +23,20 @@ module RSpec::Core
       end
     end
 
+    def simulate_persisted_examples(*examples)
+      configuration.example_status_persistence_file_path = "examples.txt"
+      persister = class_double(ExampleStatusPersister).as_stubbed_const
+
+      allow(persister).to receive(:load_from).with("examples.txt").and_return(examples)
+    end
+
     describe "#last_run_statuses" do
       context "when `example_status_persistence_file_path` is configured" do
         it 'gets the last run statuses from the ExampleStatusPersister' do
-          configuration.example_status_persistence_file_path = "examples.txt"
-          persister = class_double(ExampleStatusPersister).as_stubbed_const
-
-          allow(persister).to receive(:load_from).with("examples.txt").and_return([
+          simulate_persisted_examples(
             { :example_id => "id_1", :status => "passed" },
             { :example_id => "id_2", :status => "failed" }
-          ])
+          )
 
           expect(world.last_run_statuses).to eq(
             'id_1' => 'passed', 'id_2' => 'failed'
@@ -52,6 +56,37 @@ module RSpec::Core
           expect(persister).not_to receive(:load_from)
 
           expect(world.last_run_statuses).to eq({})
+        end
+      end
+    end
+
+    describe "#spec_files_with_failures" do
+      context "when `example_status_persistence_file_path` is configured" do
+        it 'returns a memoized array of unique spec files that contain failed exaples' do
+          simulate_persisted_examples(
+            { :example_id => "./spec_1.rb[1:1]", :status => "failed"  },
+            { :example_id => "./spec_1.rb[1:2]", :status => "failed"  },
+            { :example_id => "./spec_2.rb[1:2]", :status => "passed"  },
+            { :example_id => "./spec_3.rb[1:2]", :status => "pending" },
+            { :example_id => "./spec_4.rb[1:2]", :status => "unknown" },
+            { :example_id => "./spec_5.rb[1:2]", :status => "failed"  }
+          )
+
+          expect(world.spec_files_with_failures).to(
+            be_an(Array) &
+            be(world.spec_files_with_failures) &
+            contain_exactly("./spec_1.rb", "./spec_5.rb")
+          )
+        end
+      end
+
+      context "when `example_status_persistence_file_path1` is not configured" do
+        it "returns a memoized blank array" do
+          configuration.example_status_persistence_file_path = nil
+
+          expect(world.spec_files_with_failures).to(
+            eq([]) & be(world.spec_files_with_failures)
+          )
         end
       end
     end
