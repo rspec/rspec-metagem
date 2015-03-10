@@ -54,12 +54,8 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('--fail-fast', 'Abort the run on first failure.') do |_o|
-          set_fail_fast(options)
-        end
-
-        parser.on('--no-fail-fast', 'Do not abort the run on first failure.') do |_o|
-          set_fail_fast(options, false)
+        parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
+          set_fail_fast(options, value)
         end
 
         parser.on('--failure-exit-code CODE', Integer,
@@ -165,7 +161,7 @@ FILTERING
         parser.on("--next-failure", "Apply `--only-failures` and abort after one failure.",
                   "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
           add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
-          set_fail_fast(options)
+          set_fail_fast(options, true)
           set_order(options, "defined")
         end
 
@@ -249,7 +245,7 @@ FILTERING
       (options[filter_type] ||= {})[tag_name] = value
     end
 
-    def set_fail_fast(options, value=true)
+    def set_fail_fast(options, value)
       options[:fail_fast] = value
     end
 
