@@ -12,7 +12,6 @@ module RSpec
       # strongly recommend that you do not base your custom matchers on this
       # class. If/when this changes, we will announce it and remove this warning.
       class BaseMatcher
-        include RSpec::Matchers::Pretty
         include RSpec::Matchers::Composable
 
         # @api private
@@ -56,7 +55,7 @@ module RSpec
         # Generates a description using {EnglishPhrasing}.
         # @return [String]
         def description
-          desc = EnglishPhrasing.split_words(name)
+          desc = EnglishPhrasing.split_words(self.class.matcher_name)
           desc << EnglishPhrasing.list(@expected) if defined?(@expected)
           desc
         end
@@ -80,6 +79,23 @@ module RSpec
         def expects_call_stack_jump?
           false
         end
+
+        # @private
+        def self.matcher_name
+          @matcher_name ||= underscore(name.split("::").last)
+        end
+
+        # @private
+        # Borrowed from ActiveSupport.
+        def self.underscore(camel_cased_word)
+          word = camel_cased_word.to_s.dup
+          word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
+          word.tr!("-", "_")
+          word.downcase!
+          word
+        end
+        private_class_method :underscore
 
       private
 

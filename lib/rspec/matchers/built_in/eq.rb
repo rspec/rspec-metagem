@@ -20,8 +20,7 @@ module RSpec
         # @api private
         # @return [String]
         def description
-          english_name = EnglishPhrasing.split_words(name)
-          "#{english_name} #{@expected.inspect}"
+          "eq #{@expected.inspect}"
         end
 
         # @api private

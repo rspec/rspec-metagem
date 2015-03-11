@@ -26,7 +26,7 @@ module RSpec
         # @return [String]
         def description
           return super unless Hash === expected
-          english_name = EnglishPhrasing.split_words(name)
+          english_name = EnglishPhrasing.split_words(self.class.matcher_name)
           description_of_expected = surface_descriptions_in(expected).inspect
           "#{english_name} #{description_of_expected}"
         end
