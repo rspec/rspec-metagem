@@ -571,21 +571,6 @@ RSpec.describe "#include matcher" do
     end
   end
 
-  include RSpec::Matchers::Pretty
-  # We have to use Hash#inspect in examples that have multi-entry
-  # hashes because the #inspect output on 1.8.7 is non-deterministic
-  # due to the fact that hashes are not ordered. So we can't simply
-  # put a literal string for what we expect because it varies.
-  if RUBY_VERSION.to_f == 1.8
-    def hash_inspect(hash)
-      /\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|" }){#{hash.size}}\}/
-    end
-  else
-    def hash_inspect(hash)
-      improve_hash_formatting hash.inspect
-    end
-  end
-
   # `fail_including` uses the `include` matcher internally, and using a matcher
   # to test itself is potentially problematic, so just for this spec file we
   # use `fail_matching` instead, which converts to a regex instead.

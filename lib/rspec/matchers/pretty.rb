@@ -12,19 +12,6 @@ module RSpec
 
     private
 
-      # `{ :a => 5, :b => 2 }.inspect` produces:
-      #
-      #     {:a=>5, :b=>2}
-      #
-      # ...but it looks much better as:
-      #
-      #     {:a => 5, :b => 2}
-      #
-      # This is idempotent and safe to run on a string multiple times.
-      def improve_hash_formatting(inspect_string)
-        inspect_string.gsub(/(\S)=>(\S)/, '\1 => \2')
-      end
-
       # @private
       # Borrowed from ActiveSupport.
       def underscore(camel_cased_word)
