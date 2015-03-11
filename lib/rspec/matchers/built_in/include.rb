@@ -27,7 +27,8 @@ module RSpec
         # @return [String]
         def description
           described_items = surface_descriptions_in(expected)
-          improve_hash_formatting "include#{to_sentence(described_items)}"
+          item_list = EnglishPhrasing.list(described_items)
+          improve_hash_formatting "include#{item_list}"
         end
 
         # @api private

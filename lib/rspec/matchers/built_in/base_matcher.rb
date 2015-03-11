@@ -53,11 +53,12 @@ module RSpec
         end
 
         # @api private
-        # Generates a "pretty" description using the logic in {Pretty}.
+        # Generates a description using {EnglishPhrasing}.
         # @return [String]
         def description
-          return name_to_sentence unless defined?(@expected)
-          "#{name_to_sentence}#{to_sentence @expected}"
+          desc = EnglishPhrasing.split_words(name)
+          desc << EnglishPhrasing.list(@expected) if defined?(@expected)
+          desc
         end
 
         # @api private
@@ -84,7 +85,8 @@ module RSpec
 
         def assert_ivars(*expected_ivars)
           return unless (expected_ivars - present_ivars).any?
-          raise "#{self.class.name} needs to supply#{to_sentence expected_ivars}"
+          ivar_list = EnglishPhrasing.list(expected_ivars)
+          raise "#{self.class.name} needs to supply#{ivar_list}"
         end
 
         if RUBY_VERSION.to_f < 1.9

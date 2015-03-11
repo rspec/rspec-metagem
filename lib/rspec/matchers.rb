@@ -4,6 +4,7 @@ RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relat
 
 %w[
   pretty
+  english_phrasing
   composable
   built_in
   generated_descriptions
@@ -243,7 +244,7 @@ module RSpec
     #     alias $1 $2
     def self.alias_matcher(new_name, old_name, options={}, &description_override)
       description_override ||= lambda do |old_desc|
-        old_desc.gsub(Pretty.split_words(old_name), Pretty.split_words(new_name))
+        old_desc.gsub(EnglishPhrasing.split_words(old_name), EnglishPhrasing.split_words(new_name))
       end
       klass = options.fetch(:klass) { AliasedMatcher }
 

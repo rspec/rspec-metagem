@@ -300,7 +300,9 @@ module RSpec
 
         # The default description.
         def description
-          "#{name_to_sentence}#{to_sentence expected}#{chained_method_clause_sentences}"
+          english_name = EnglishPhrasing.split_words(name)
+          expected_list = EnglishPhrasing.list(expected)
+          "#{english_name}#{expected_list}#{chained_method_clause_sentences}"
         end
 
         # Matchers do not support block expectations by default. You
@@ -320,7 +322,9 @@ module RSpec
           return '' unless Expectations.configuration.include_chain_clauses_in_custom_matcher_descriptions?
 
           @chained_method_clauses.map do |(method_name, method_args)|
-            " #{split_words(method_name)}#{to_sentence(method_args)}"
+            english_name = EnglishPhrasing.split_words(method_name)
+            arg_list = EnglishPhrasing.list(method_args)
+            " #{english_name}#{arg_list}"
           end.join
         end
       end
@@ -336,7 +340,7 @@ module RSpec
         # Allows expectation expressions to be used in the match block.
         include RSpec::Matchers
 
-        # Converts matcher name and expected args to an English expresion.
+        # Facilitates better descriptions and failure messages.
         include RSpec::Matchers::Pretty
 
         # Supports the matcher composability features of RSpec 3+.

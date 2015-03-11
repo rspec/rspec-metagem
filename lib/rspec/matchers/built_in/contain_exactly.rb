@@ -23,13 +23,15 @@ module RSpec
         # @api private
         # @return [String]
         def failure_message_when_negated
-          "expected #{actual.inspect} not to contain exactly#{to_sentence(surface_descriptions_in expected)}"
+          list = EnglishPhrasing.list(surface_descriptions_in(expected))
+          "expected #{actual.inspect} not to contain exactly#{list}"
         end
 
         # @api private
         # @return [String]
         def description
-          "contain exactly#{to_sentence(surface_descriptions_in expected)}"
+          list = EnglishPhrasing.list(surface_descriptions_in(expected))
+          "contain exactly#{list}"
         end
 
       private

@@ -205,7 +205,6 @@ RSpec.describe "#have_attributes matcher" do
     end
   end
 
-
   include RSpec::Matchers::Pretty
   # We have to use Hash#inspect in examples that have multi-entry
   # hashes because the #inspect output on 1.8.7 is non-deterministic
