@@ -340,9 +340,6 @@ module RSpec
         # Allows expectation expressions to be used in the match block.
         include RSpec::Matchers
 
-        # Facilitates better descriptions and failure messages.
-        include RSpec::Matchers::Pretty
-
         # Supports the matcher composability features of RSpec 3+.
         include Composable
 
@@ -360,6 +357,9 @@ module RSpec
 
         # The block parameter used in the expectation
         attr_reader :block_arg
+
+        # The name of the matcher.
+        attr_reader :name
 
         # @api private
         def initialize(name, declarations, matcher_execution_context, *expected, &block_arg)

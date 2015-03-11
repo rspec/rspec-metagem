@@ -13,6 +13,21 @@ module FormattingSupport
   def dedent(string)
     string.gsub(/^\s+\|/, '').chomp
   end
+
+  # We have to use Hash#inspect in examples that have multi-entry
+  # hashes because the #inspect output on 1.8.7 is non-deterministic
+  # due to the fact that hashes are not ordered. So we can't simply
+  # put a literal string for what we expect because it varies.
+  if RUBY_VERSION.to_f == 1.8
+    def hash_inspect(hash)
+      /\{(#{hash.map { |key,value| "#{key.inspect} => #{value.inspect}.*" }.join "|" }){#{hash.size}}\}/
+    end
+  else
+    def hash_inspect(hash)
+      RSpec::Matchers::BuiltIn::BaseMatcher::HashFormatting.
+        improve_hash_formatting hash.inspect
+    end
+  end
 end
 
 RSpec::configure do |config|

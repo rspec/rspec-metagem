@@ -12,7 +12,6 @@ module RSpec
       # strongly recommend that you do not base your custom matchers on this
       # class. If/when this changes, we will announce it and remove this warning.
       class BaseMatcher
-        include RSpec::Matchers::Pretty
         include RSpec::Matchers::Composable
 
         # @api private
@@ -56,7 +55,7 @@ module RSpec
         # Generates a description using {EnglishPhrasing}.
         # @return [String]
         def description
-          desc = EnglishPhrasing.split_words(name)
+          desc = EnglishPhrasing.split_words(self.class.matcher_name)
           desc << EnglishPhrasing.list(@expected) if defined?(@expected)
           desc
         end
@@ -81,6 +80,23 @@ module RSpec
           false
         end
 
+        # @private
+        def self.matcher_name
+          @matcher_name ||= underscore(name.split("::").last)
+        end
+
+        # @private
+        # Borrowed from ActiveSupport.
+        def self.underscore(camel_cased_word)
+          word = camel_cased_word.to_s.dup
+          word.gsub!(/([A-Z]+)([A-Z][a-z])/, '\1_\2')
+          word.gsub!(/([a-z\d])([A-Z])/, '\1_\2')
+          word.tr!("-", "_")
+          word.downcase!
+          word
+        end
+        private_class_method :underscore
+
       private
 
         def assert_ivars(*expected_ivars)
@@ -96,6 +112,25 @@ module RSpec
         else
           alias present_ivars instance_variables
         end
+
+        # @private
+        module HashFormatting
+          # `{ :a => 5, :b => 2 }.inspect` produces:
+          #
+          #     {:a=>5, :b=>2}
+          #
+          # ...but it looks much better as:
+          #
+          #     {:a => 5, :b => 2}
+          #
+          # This is idempotent and safe to run on a string multiple times.
+          def improve_hash_formatting(inspect_string)
+            inspect_string.gsub(/(\S)=>(\S)/, '\1 => \2')
+          end
+          module_function :improve_hash_formatting
+        end
+
+        include HashFormatting
 
         # @api private
         # Provides default implementations of failure messages, based on the `description`.

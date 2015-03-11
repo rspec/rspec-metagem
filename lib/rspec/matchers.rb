@@ -3,7 +3,6 @@ RSpec::Support.require_rspec_support 'matcher_definition'
 RSpec::Support.define_optimized_require_for_rspec(:matchers) { |f| require_relative(f) }
 
 %w[
-  pretty
   english_phrasing
   composable
   built_in
