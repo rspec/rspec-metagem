@@ -154,10 +154,22 @@ module RSpec
         end
       end
 
-      # @macro add_setting
-      # Sets a file path to use for persisting example statuses. Necessary for the
+      # @macro define_reader
+      # The file path to use for persisting example statuses. Necessary for the
       # `--only-failures` and `--next-failures` CLI options.
-      add_setting :example_status_persistence_file_path
+      #
+      # @overload example_status_persistence_file_path
+      #   @return [String] the file path
+      # @overload example_status_persistence_file_path=(value)
+      #   @param value [String] the file path
+      define_reader :example_status_persistence_file_path
+
+      # Sets the file path to use for persisting example statuses. Necessary for the
+      # `--only-failures` and `--next-failures` CLI options.
+      def example_status_persistence_file_path=(value)
+        @example_status_persistence_file_path = value
+        clear_values_derived_from_example_status_persistence_file_path
+      end
 
       # @macro define_reader
       # Indicates if the `--only-failures` (or `--next-failure`) flag is being used.
@@ -353,6 +365,9 @@ module RSpec
       def force(hash)
         ordering_manager.force(hash)
         @preferred_options.merge!(hash)
+
+        return unless hash.key?(:example_status_persistence_file_path)
+        clear_values_derived_from_example_status_persistence_file_path
       end
 
       # @private
@@ -820,12 +835,36 @@ module RSpec
       def files_to_run
         @files_to_run ||= begin
           if @files_or_directories_to_run_defaulted && only_failures?
-            files_with_failures = RSpec.world.spec_files_with_failures.to_a
+            files_with_failures = spec_files_with_failures.to_a
             @files_or_directories_to_run = files_with_failures if files_with_failures.any?
           end
 
           get_files_to_run(@files_or_directories_to_run)
         end
+      end
+
+      # @private
+      def last_run_statuses
+        @last_run_statuses ||=
+          if (path = example_status_persistence_file_path)
+            ExampleStatusPersister.load_from(path).inject({}) do |hash, example|
+              hash[example.fetch(:example_id)] = example.fetch(:status)
+              hash
+            end
+          else
+            {}
+          end
+      end
+
+      # @private
+      FAILED_STATUS = "failed".freeze
+
+      # @private
+      def spec_files_with_failures
+        @spec_files_with_failures ||= last_run_statuses.inject(Set.new) do |files, (id, status)|
+          files << id.split(ON_SQUARE_BRACKETS).first if status == FAILED_STATUS
+          files
+        end.to_a
       end
 
       # Creates a method that delegates to `example` including the submitted
@@ -1702,6 +1741,11 @@ module RSpec
 
         instance_variable_set(:"@#{name}", value)
         @files_to_run = nil
+      end
+
+      def clear_values_derived_from_example_status_persistence_file_path
+        @last_run_statuses = nil
+        @spec_files_with_failures = nil
       end
     end
     # rubocop:enable Style/ClassLength

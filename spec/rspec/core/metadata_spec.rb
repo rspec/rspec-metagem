@@ -169,14 +169,14 @@ module RSpec
       end
 
       describe ":last_run_status" do
-        it 'assigns it by looking up world.last_run_statuses[id]' do
+        it 'assigns it by looking up configuration.last_run_statuses[id]' do
           looked_up_ids = []
           last_run_statuses = Hash.new do |hash, id|
             looked_up_ids << id
             "some_status"
           end
 
-          allow(RSpec.world).to receive(:last_run_statuses).and_return(last_run_statuses)
+          allow(RSpec.configuration).to receive(:last_run_statuses).and_return(last_run_statuses)
           example = RSpec.describe.example
 
           expect(example.metadata[:last_run_status]).to eq("some_status")

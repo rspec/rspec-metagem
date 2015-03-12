@@ -108,31 +108,6 @@ module RSpec
         @configuration.reporter
       end
 
-      # @private
-      def last_run_statuses
-        @last_run_statuses ||=
-          if (path = @configuration.example_status_persistence_file_path)
-            ExampleStatusPersister.load_from(path).inject({}) do |hash, example|
-              hash[example.fetch(:example_id)] = example.fetch(:status)
-              hash
-            end
-          else
-            {}
-          end
-      end
-
-      # @private
-      def spec_files_with_failures
-        @spec_files_with_failures ||=
-          last_run_statuses.inject(Set.new) do |files, (id, status)|
-            files << id.split(Configuration::ON_SQUARE_BRACKETS).first if status == FAILED_STATUS
-            files
-          end.to_a
-      end
-
-      # @private
-      FAILED_STATUS = "failed".freeze
-
       # @api private
       #
       # Notify reporter of filters.

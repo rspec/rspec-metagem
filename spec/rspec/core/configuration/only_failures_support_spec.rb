@@ -1,7 +1,6 @@
 module RSpec::Core
   RSpec.describe Configuration, "--only-failures support" do
     let(:config) { Configuration.new }
-    let(:world)  { World.new(config) }
 
     def simulate_persisted_examples(*examples)
       config.example_status_persistence_file_path = "examples.txt"
@@ -12,25 +11,31 @@ module RSpec::Core
 
     describe "#last_run_statuses" do
       def last_run_statuses
-        world.last_run_statuses
+        config.last_run_statuses
       end
 
       context "when `example_status_persistence_file_path` is configured" do
-        it 'gets the last run statuses from the ExampleStatusPersister' do
+        before do
           simulate_persisted_examples(
             { :example_id => "id_1", :status => "passed" },
             { :example_id => "id_2", :status => "failed" }
           )
+        end
 
+        it 'gets the last run statuses from the ExampleStatusPersister' do
           expect(last_run_statuses).to eq(
             'id_1' => 'passed', 'id_2' => 'failed'
           )
+        end
+
+        it 'returns a memoized value' do
+          expect(last_run_statuses).to be(last_run_statuses)
         end
       end
 
       context "when `example_status_persistence_file_path` is not configured" do
         it 'returns a memoized value' do
-          expect(last_run_statuses).to be(world.last_run_statuses)
+          expect(last_run_statuses).to be(last_run_statuses)
         end
 
         it 'returns a blank hash without attempting to load the persisted statuses' do
@@ -42,11 +47,36 @@ module RSpec::Core
           expect(last_run_statuses).to eq({})
         end
       end
+
+      def allows_value_to_change_when_updated
+        simulate_persisted_examples(
+          { :example_id => "id_1", :status => "passed" },
+          { :example_id => "id_2", :status => "failed" }
+        )
+
+        config.example_status_persistence_file_path = nil
+
+        expect {
+          yield
+        }.to change { last_run_statuses }.to('id_1' => 'passed', 'id_2' => 'failed')
+      end
+
+      it 'allows the value to be updated when `example_status_persistence_file_path` is set after first access' do
+        allows_value_to_change_when_updated do
+          config.example_status_persistence_file_path = "examples.txt"
+        end
+      end
+
+      it 'allows the value to be updated when `example_status_persistence_file_path` is forced after first access' do
+        allows_value_to_change_when_updated do
+          config.force(:example_status_persistence_file_path => "examples.txt")
+        end
+      end
     end
 
     describe "#spec_files_with_failures" do
       def spec_files_with_failures
-        world.spec_files_with_failures
+        config.spec_files_with_failures
       end
 
       context "when `example_status_persistence_file_path` is configured" do
@@ -62,7 +92,7 @@ module RSpec::Core
 
           expect(spec_files_with_failures).to(
             be_an(Array) &
-            be(world.spec_files_with_failures) &
+            be(spec_files_with_failures) &
             contain_exactly("./spec_1.rb", "./spec_5.rb")
           )
         end
@@ -73,8 +103,30 @@ module RSpec::Core
           config.example_status_persistence_file_path = nil
 
           expect(spec_files_with_failures).to(
-            eq([]) & be(world.spec_files_with_failures)
+            eq([]) & be(spec_files_with_failures)
           )
+        end
+      end
+
+      def allows_value_to_change_when_updated
+        simulate_persisted_examples({ :example_id => "./spec_1.rb[1:1]", :status => "failed" })
+
+        config.example_status_persistence_file_path = nil
+
+        expect {
+          yield
+        }.to change { spec_files_with_failures }.to(["./spec_1.rb"])
+      end
+
+      it 'allows the value to be updated when `example_status_persistence_file_path` is set after first access' do
+        allows_value_to_change_when_updated do
+          config.example_status_persistence_file_path = "examples.txt"
+        end
+      end
+
+      it 'allows the value to be updated when `example_status_persistence_file_path` is forced after first access' do
+        allows_value_to_change_when_updated do
+          config.force(:example_status_persistence_file_path => "examples.txt")
         end
       end
     end
@@ -93,7 +145,7 @@ module RSpec::Core
       before do
         expect(files_loaded_via_default_path).not_to eq(files_with_failures)
         config.default_path = default_path
-        allow(RSpec.world).to receive_messages(:spec_files_with_failures => files_with_failures)
+        allow(config).to receive_messages(:spec_files_with_failures => files_with_failures)
         config.force(:only_failures => true)
       end
 
@@ -104,7 +156,7 @@ module RSpec::Core
         end
 
         it 'loads the default path if there are no files with failures' do
-          allow(RSpec.world).to receive_messages(:spec_files_with_failures => [])
+          allow(config).to receive_messages(:spec_files_with_failures => [])
           config.files_or_directories_to_run = []
           expect(config.files_to_run).to eq(files_loaded_via_default_path)
         end
