@@ -1,4 +1,5 @@
 ### Development
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.2...master)
 
 Enhancements:
 
@@ -20,6 +21,16 @@ Bug Fixes:
 * Handle invalid UTF-8 strings within exception methods. (Benjamin Fleischer, #1760)
 * Fix Rake Task quoting of file names with quotes to work properly on
   Windows. (Myron Marston, #1887)
+
+### 3.2.2 / 2015-03-11
+[Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.1...v3.2.2)
+
+Bug Fixes:
+
+* Fix regression in 3.2.0 that allowed tag-filtered examples to
+  run even if there was a location filter applied to the spec
+  file that was intended to limit the file to other examples.
+  (#1894, Myron Marston)
 
 ### 3.2.1 / 2015-02-23
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.0...v3.2.1)
