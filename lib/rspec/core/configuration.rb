@@ -327,7 +327,6 @@ module RSpec
         @after_suite_hooks  = []
 
         @mock_framework = nil
-        @files_or_directories_to_run_defaulted = false
         @files_or_directories_to_run = []
         @loaded_spec_files = Set.new
         @color = false
@@ -820,10 +819,7 @@ module RSpec
         files = files.flatten
 
         if (command == 'rspec' || Runner.running_in_drb?) && default_path && files.empty?
-          @files_or_directories_to_run_defaulted = true
           files << default_path
-        else
-          @files_or_directories_to_run_defaulted = false
         end
 
         @files_or_directories_to_run = files
@@ -833,14 +829,7 @@ module RSpec
       # The spec files RSpec will run.
       # @return [Array] specified files about to run
       def files_to_run
-        @files_to_run ||= begin
-          if @files_or_directories_to_run_defaulted && only_failures?
-            files_with_failures = spec_files_with_failures.to_a
-            @files_or_directories_to_run = files_with_failures if files_with_failures.any?
-          end
-
-          get_files_to_run(@files_or_directories_to_run)
-        end
+        @files_to_run ||= get_files_to_run(@files_or_directories_to_run)
       end
 
       # @private
@@ -1624,10 +1613,15 @@ module RSpec
       end
 
       def get_files_to_run(paths)
-        FlatMap.flat_map(paths_to_check(paths)) do |path|
+        files = FlatMap.flat_map(paths_to_check(paths)) do |path|
           path = path.gsub(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
           File.directory?(path) ? gather_directories(path) : extract_location(path)
         end.sort.uniq
+
+        return files unless only_failures?
+        relative_files = files.map { |f| Metadata.relative_path(File.expand_path f) }
+        intersection = (relative_files & spec_files_with_failures.to_a)
+        intersection.empty? ? files : intersection
       end
 
       def paths_to_check(paths)

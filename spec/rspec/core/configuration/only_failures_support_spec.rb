@@ -132,9 +132,14 @@ module RSpec::Core
     end
 
     describe "#files_to_run, when `only_failures` is set" do
-      around { |ex| Dir.chdir("spec/rspec/core", &ex) }
+      around do |ex|
+        handle_current_dir_change do
+          Dir.chdir("spec/rspec/core", &ex)
+        end
+      end
+
       let(:default_path) { "resources" }
-      let(:files_with_failures) { ["resources/a_spec.rb"] }
+      let(:files_with_failures) { ["./resources/a_spec.rb"] }
       let(:files_loaded_via_default_path) do
         configuration = Configuration.new
         configuration.default_path = default_path
@@ -167,16 +172,14 @@ module RSpec::Core
       end
 
       context "and a path has been set" do
-        it "ignores the list of files with failures, loading the configured path instead" do
+        it "loads the intersection of files matching the path and files with failures" do
+          config.files_or_directories_to_run = ["resources"]
+          expect(config.files_to_run).to eq(files_with_failures)
+        end
+
+        it "loads all files matching the path when there are no intersecting files" do
           config.files_or_directories_to_run = ["resources/acceptance"]
           expect(config.files_to_run).to contain_files("resources/acceptance/foo_spec.rb")
-        end
-      end
-
-      context "and the default path has been explicitly set" do
-        it "ignores the list of files with failures, loading the configured path instead" do
-          config.files_or_directories_to_run = [default_path]
-          expect(config.files_to_run).to eq(files_loaded_via_default_path)
         end
       end
     end

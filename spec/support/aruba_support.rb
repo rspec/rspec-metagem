@@ -17,16 +17,16 @@ RSpec.shared_context "aruba support" do
 
     temp_stdout = StringIO.new
     temp_stderr = StringIO.new
-    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
     cmd_parts = Shellwords.split(cmd)
 
-    in_current_dir do
-      RSpec::Core::Runner.run(cmd_parts, temp_stderr, temp_stdout)
+    handle_current_dir_change do
+      in_current_dir do
+        RSpec::Core::Runner.run(cmd_parts, temp_stderr, temp_stdout)
+      end
     end
   ensure
     RSpec.reset
     RSpec.configuration.color = true
-    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
 
     # Ensure it gets cached with a proper value -- if we leave it set to nil,
     # and the next spec operates in a different dir, it could get set to an
