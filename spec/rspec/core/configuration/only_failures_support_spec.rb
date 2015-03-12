@@ -6,7 +6,7 @@ module RSpec::Core
       config.example_status_persistence_file_path = "examples.txt"
       persister = class_double(ExampleStatusPersister).as_stubbed_const
 
-      allow(persister).to receive(:load_from).with("examples.txt").and_return(examples)
+      allow(persister).to receive(:load_from).with("examples.txt").and_return(examples.flatten)
     end
 
     describe "#last_run_statuses" do
@@ -145,7 +145,11 @@ module RSpec::Core
       before do
         expect(files_loaded_via_default_path).not_to eq(files_with_failures)
         config.default_path = default_path
-        allow(config).to receive_messages(:spec_files_with_failures => files_with_failures)
+
+        simulate_persisted_examples(files_with_failures.map do |file|
+          { :example_id => "#{file}[1:1]", :status => "failed" }
+        end)
+
         config.force(:only_failures => true)
       end
 
@@ -156,7 +160,7 @@ module RSpec::Core
         end
 
         it 'loads the default path if there are no files with failures' do
-          allow(config).to receive_messages(:spec_files_with_failures => [])
+          simulate_persisted_examples([])
           config.files_or_directories_to_run = []
           expect(config.files_to_run).to eq(files_loaded_via_default_path)
         end
