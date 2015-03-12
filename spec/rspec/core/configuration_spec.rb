@@ -488,52 +488,6 @@ module RSpec::Core
         end
       end
 
-      context "when only_failures is set" do
-        around { |ex| Dir.chdir("spec/rspec/core", &ex) }
-        let(:default_path) { "resources" }
-        let(:files_with_failures) { ["resources/a_spec.rb"] }
-        let(:files_loaded_via_default_path) do
-          config = Configuration.new
-          config.default_path = default_path
-          config.files_or_directories_to_run = []
-          config.files_to_run
-        end
-
-        before do
-          expect(files_loaded_via_default_path).not_to eq(files_with_failures)
-          config.default_path = default_path
-          allow(RSpec.world).to receive_messages(:spec_files_with_failures => files_with_failures)
-          config.force(:only_failures => true)
-        end
-
-        context "and no explicit paths have been set" do
-          it 'loads only the files that have failures' do
-            assign_files_or_directories_to_run
-            expect(config.files_to_run).to eq(files_with_failures)
-          end
-
-          it 'loads the default path if there are no files with failures' do
-            allow(RSpec.world).to receive_messages(:spec_files_with_failures => [])
-            assign_files_or_directories_to_run
-            expect(config.files_to_run).to eq(files_loaded_via_default_path)
-          end
-        end
-
-        context "and a path has been set" do
-          it "ignores the list of files with failures, loading the configured path instead" do
-            assign_files_or_directories_to_run "resources/acceptance"
-            expect(config.files_to_run).to contain_files("resources/acceptance/foo_spec.rb")
-          end
-        end
-
-        context "and the default path has been explicitly set" do
-          it "ignores the list of files with failures, loading the configured path instead" do
-            assign_files_or_directories_to_run default_path
-            expect(config.files_to_run).to eq(files_loaded_via_default_path)
-          end
-        end
-      end
-
       context "with default pattern" do
         it "loads files named _spec.rb" do
           assign_files_or_directories_to_run "spec/rspec/core/resources"
