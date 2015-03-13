@@ -82,14 +82,14 @@ module RSpec::Core
         expect(loaded).to match [ a_hash_including(:run_time => "3 seconds") ]
       end
 
-      it "persists a loaded but unexecuted example with an #{ExampleStatusMerger::UNKNOWN_STATUS} status" do
+      it "persists a loaded but unexecuted example with an #{Configuration::UNKNOWN_STATUS} status" do
         ex_1 = RSpec.describe.example
 
         ExampleStatusPersister.persist([ex_1], file.path)
         loaded = ExampleStatusPersister.load_from(file.path)
 
         expect(loaded).to match [ a_hash_including(
-          :example_id => ex_1.id, :status => ExampleStatusMerger::UNKNOWN_STATUS
+          :example_id => ex_1.id, :status => Configuration::UNKNOWN_STATUS
         ) ]
       end
 
@@ -142,7 +142,7 @@ module RSpec::Core
 
     context "for examples that are only in the set for this run" do
       it "takes them indiscriminately, even if they did not execute" do
-        this_run = [ example(existing_spec_file, "1:1", ExampleStatusMerger::UNKNOWN_STATUS) ]
+        this_run = [ example(existing_spec_file, "1:1", Configuration::UNKNOWN_STATUS) ]
 
         merged = merge(:this_run => this_run, :from_previous_runs => [])
         expect(merged).to match_array(this_run)
@@ -187,7 +187,7 @@ module RSpec::Core
       end
 
       it "takes the status from previous runs if the example was loaded but did not execute" do
-        this_run           = [ example("foo_spec.rb", "1:1", ExampleStatusMerger::UNKNOWN_STATUS) ]
+        this_run           = [ example("foo_spec.rb", "1:1", Configuration::UNKNOWN_STATUS) ]
         from_previous_runs = [ example("foo_spec.rb", "1:1", "failed") ]
 
         merged = merge(:this_run => this_run, :from_previous_runs => from_previous_runs)

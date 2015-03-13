@@ -31,20 +31,32 @@ module RSpec::Core
         it 'returns a memoized value' do
           expect(last_run_statuses).to be(last_run_statuses)
         end
+
+        specify 'the hash returns `unknown` for unknown example ids for consistency' do
+          expect(last_run_statuses["foo"]).to eq(Configuration::UNKNOWN_STATUS)
+          expect(last_run_statuses["bar"]).to eq(Configuration::UNKNOWN_STATUS)
+        end
       end
 
       context "when `example_status_persistence_file_path` is not configured" do
+        before do
+          config.example_status_persistence_file_path = nil
+        end
+
         it 'returns a memoized value' do
           expect(last_run_statuses).to be(last_run_statuses)
         end
 
         it 'returns a blank hash without attempting to load the persisted statuses' do
-          config.example_status_persistence_file_path = nil
-
           persister = class_double(ExampleStatusPersister).as_stubbed_const
           expect(persister).not_to receive(:load_from)
 
           expect(last_run_statuses).to eq({})
+        end
+
+        specify 'the hash returns `unknown` for all ids for consistency' do
+          expect(last_run_statuses["foo"]).to eq(Configuration::UNKNOWN_STATUS)
+          expect(last_run_statuses["bar"]).to eq(Configuration::UNKNOWN_STATUS)
         end
       end
 

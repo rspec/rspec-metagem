@@ -834,16 +834,18 @@ module RSpec
 
       # @private
       def last_run_statuses
-        @last_run_statuses ||=
+        @last_run_statuses ||= Hash.new(UNKNOWN_STATUS).tap do |statuses|
           if (path = example_status_persistence_file_path)
-            ExampleStatusPersister.load_from(path).inject({}) do |hash, example|
+            ExampleStatusPersister.load_from(path).inject(statuses) do |hash, example|
               hash[example.fetch(:example_id)] = example.fetch(:status)
               hash
             end
-          else
-            {}
           end
+        end
       end
+
+      # @private
+      UNKNOWN_STATUS = "unknown".freeze
 
       # @private
       FAILED_STATUS = "failed".freeze

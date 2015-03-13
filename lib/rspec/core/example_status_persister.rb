@@ -45,7 +45,7 @@ module RSpec
 
           {
             :example_id => ex.id,
-            :status     => result.status ? result.status.to_s : ExampleStatusMerger::UNKNOWN_STATUS,
+            :status     => result.status ? result.status.to_s : Configuration::UNKNOWN_STATUS,
             :run_time   => result.run_time ? Formatters::Helpers.format_duration(result.run_time) : ""
           }
         end
@@ -86,11 +86,9 @@ module RSpec
         delete_previous_examples_that_no_longer_exist
 
         @this_run.merge(@from_previous_runs) do |_ex_id, new, old|
-          new.fetch(:status) == UNKNOWN_STATUS ? old : new
+          new.fetch(:status) == Configuration::UNKNOWN_STATUS ? old : new
         end.values.sort_by(&method(:sort_value_from))
       end
-
-      UNKNOWN_STATUS = "unknown".freeze
 
     private
 
