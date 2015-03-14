@@ -915,6 +915,7 @@ module RSpec
 
     BE_PREDICATE_REGEX = /^(be_(?:an?_)?)(.*)/
     HAS_REGEX = /^(?:have_)(.*)/
+    DYNAMIC_MATCHER_REGEX = Regexp.union(BE_PREDICATE_REGEX, HAS_REGEX)
 
     def method_missing(method, *args, &block)
       case method.to_s
@@ -925,6 +926,18 @@ module RSpec
       else
         super
       end
+    end
+
+    if RUBY_VERSION.to_f >= 1.9
+      def respond_to_missing?(method, *)
+        method =~ DYNAMIC_MATCHER_REGEX || super
+      end
+    else # for 1.8.7
+      def respond_to?(method, *)
+        method = method.to_s
+        method =~ DYNAMIC_MATCHER_REGEX || super
+      end
+      public :respond_to?
     end
 
     # @api private
