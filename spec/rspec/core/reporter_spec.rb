@@ -206,6 +206,29 @@ module RSpec::Core
       end
     end
 
+    describe "#abort_with" do
+      before { allow(reporter).to receive(:exit!) }
+
+      it "publishes the message and notifies :close" do
+        listener = double("Listener")
+        reporter.register_listener(listener, :message, :close)
+        stream   = StringIO.new
+
+        allow(listener).to receive(:message) { |n| stream << n.message }
+        allow(listener).to receive(:close) { stream.close }
+
+        reporter.register_listener(listener)
+        reporter.abort_with("Booom!", 1)
+
+        expect(stream).to have_attributes(:string => "Booom!").and be_closed
+      end
+
+      it "exits with the provided exit code" do
+        reporter.abort_with("msg", 13)
+        expect(reporter).to have_received(:exit!).with(13)
+      end
+    end
+
     describe "timing" do
       before do
         config.start_time = start_time

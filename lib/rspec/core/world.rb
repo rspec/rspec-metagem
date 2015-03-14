@@ -112,6 +112,7 @@ module RSpec
       #
       # Notify reporter of filters.
       def announce_filters
+        fail_if_config_and_cli_options_invalid
         filter_announcements = []
 
         announce_inclusion_filter filter_announcements
@@ -174,6 +175,16 @@ module RSpec
 
       def declaration_line_numbers
         @declaration_line_numbers ||= FlatMap.flat_map(example_groups, &:declaration_line_numbers)
+      end
+
+      def fail_if_config_and_cli_options_invalid
+        return unless @configuration.only_failures_but_not_configured?
+
+        reporter.abort_with(
+          "\nTo use `--only-failures`, you must first set " \
+          "`config.example_status_persistence_file_path`.",
+          1 # exit code
+        )
       end
     end
   end

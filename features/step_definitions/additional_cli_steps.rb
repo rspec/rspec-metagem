@@ -138,3 +138,15 @@ When(/^I fix "(.*?)" by replacing "(.*?)" with "(.*?)"$/) do |file_name, origina
     File.open(file_name, "w") { |f| f.write(fixed) }
   end
 end
+
+Then(/^it should fail with "(.*?)"$/) do |snippet|
+  assert_failing_with(snippet)
+end
+
+Given(/^I have not configured `example_status_persistence_file_path`$/) do
+  in_current_dir do
+    return unless File.exist?("spec/spec_helper.rb")
+    return unless File.read("spec/spec_helper.rb").include?("example_status_persistence_file_path")
+    File.open("spec/spec_helper.rb", "w") { |f| f.write("") }
+  end
+end

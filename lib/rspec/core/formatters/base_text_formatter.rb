@@ -68,6 +68,7 @@ module RSpec
 
           output.puts
 
+          output.flush
           output.close unless output == $stdout
         end
       end

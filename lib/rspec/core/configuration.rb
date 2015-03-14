@@ -176,6 +176,11 @@ module RSpec
       define_reader :only_failures
       alias_method :only_failures?, :only_failures
 
+      # @private
+      def only_failures_but_not_configured?
+        only_failures? && !example_status_persistence_file_path
+      end
+
       # @macro add_setting
       # Clean up and exit after the first failure (default: `false`).
       add_setting :fail_fast
