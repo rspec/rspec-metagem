@@ -123,9 +123,11 @@ module RSpec
       end
 
       if RSpec::Support::OS.windows?
+        # :nocov:
         def escape(shell_command)
           "'#{shell_command.gsub("'", "\\\\'")}'"
         end
+        # :nocov:
       else
         require 'shellwords'
 

@@ -394,10 +394,12 @@ EOS
           def hook_description
             "around hook at #{Metadata.relative_path(block.source_location.join(':'))}"
           end
-        else
+        else # for 1.8.7
+          # :nocov:
           def hook_description
             "around hook"
           end
+          # :nocov:
         end
       end
 
@@ -622,9 +624,11 @@ EOS
             @owner.parent_groups
           end
         else # Ruby < 2.1 (see https://bugs.ruby-lang.org/issues/8035)
+          # :nocov:
           def owner_parent_groups
             @owner_parent_groups ||= [@owner] + @owner.parent_groups
           end
+          # :nocov:
         end
       end
     end

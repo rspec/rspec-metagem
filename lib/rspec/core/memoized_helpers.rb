@@ -443,6 +443,7 @@ EOS
         # Gets the named constant or yields.
         # On 1.8, const_defined? / const_get do not take into
         # account the inheritance hierarchy.
+        # :nocov:
         def self.get_constant_or_yield(example_group, name)
           if example_group.const_defined?(name)
             example_group.const_get(name)
@@ -450,6 +451,7 @@ EOS
             yield
           end
         end
+        # :nocov:
       else
         # @private
         #

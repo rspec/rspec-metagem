@@ -482,6 +482,7 @@ module RSpec
           superclass.before_context_ivars
         end
       else # 1.8.7
+        # :nocov:
         # @private
         def self.superclass_before_context_ivars
           if superclass.respond_to?(:before_context_ivars)
@@ -496,6 +497,7 @@ module RSpec
             ancestors.find { |a| a.respond_to?(:before_context_ivars) }.before_context_ivars
           end
         end
+        # :nocov:
       end
 
       # @private
@@ -603,8 +605,10 @@ module RSpec
       end
 
       if RUBY_VERSION.to_f < 1.9
+        # :nocov:
         # @private
         INSTANCE_VARIABLE_TO_IGNORE = '@__inspect_output'.freeze
+        # :nocov:
       else
         # @private
         INSTANCE_VARIABLE_TO_IGNORE = :@__inspect_output
@@ -627,10 +631,12 @@ module RSpec
       end
 
       unless method_defined?(:singleton_class) # for 1.8.7
+        # :nocov:
         # @private
         def singleton_class
           class << self; self; end
         end
+        # :nocov:
       end
 
       # Raised when an RSpec API is called in the wrong scope, such as `before`
@@ -774,6 +780,7 @@ module RSpec
     end
 
     if RUBY_VERSION == '1.9.2'
+      # :nocov:
       class << self
         alias _base_name_for base_name_for
         def base_name_for(group)
@@ -781,6 +788,7 @@ module RSpec
         end
       end
       private_class_method :_base_name_for
+      # :nocov:
     end
 
     def self.disambiguate(name, const_scope)

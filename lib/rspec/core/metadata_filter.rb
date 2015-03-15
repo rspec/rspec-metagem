@@ -127,6 +127,7 @@ module RSpec
         end
 
         unless [].respond_to?(:each_with_object) # For 1.8.7
+          # :nocov:
           undef items_for
           def items_for(request_meta)
             @items_and_filters.inject([]) do |to_return, (item, item_meta)|
@@ -135,6 +136,7 @@ module RSpec
               to_return
             end
           end
+          # :nocov:
         end
       end
 
@@ -217,6 +219,7 @@ module RSpec
         end
 
         unless [].respond_to?(:each_with_object) # For 1.8.7
+          # :nocov:
           undef proc_keys_from
           def proc_keys_from(metadata)
             metadata.inject([]) do |to_return, (key, value)|
@@ -224,6 +227,7 @@ module RSpec
               to_return
             end
           end
+          # :nocov:
         end
       end
     end
