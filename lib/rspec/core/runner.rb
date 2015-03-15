@@ -117,12 +117,14 @@ module RSpec
     private
 
       def persist_example_statuses
-        return unless @configuration.example_status_persistence_file_path
+        return unless (path = @configuration.example_status_persistence_file_path)
 
-        ExampleStatusPersister.persist(
-          @world.all_examples,
-          @configuration.example_status_persistence_file_path
-        )
+        ExampleStatusPersister.persist(@world.all_examples, path)
+      rescue SystemCallError => e
+        RSpec.warning "Could not write example statuses to #{path} (configured as " \
+                      "`config.example_status_persistence_file_path`) due to a " \
+                      "system error: #{e.inspect}. Please check that the config " \
+                      "option is set to an accessible, valid file path", :call_site => nil
       end
 
       # @private

@@ -841,9 +841,17 @@ module RSpec
       def last_run_statuses
         @last_run_statuses ||= Hash.new(UNKNOWN_STATUS).tap do |statuses|
           if (path = example_status_persistence_file_path)
-            ExampleStatusPersister.load_from(path).inject(statuses) do |hash, example|
-              hash[example.fetch(:example_id)] = example.fetch(:status)
-              hash
+            begin
+              ExampleStatusPersister.load_from(path).inject(statuses) do |hash, example|
+                hash[example.fetch(:example_id)] = example.fetch(:status)
+                hash
+              end
+            rescue SystemCallError => e
+              RSpec.warning "Could not read from #{path.inspect} (configured as " \
+                            "`config.example_status_persistence_file_path`) due " \
+                            "to a system error: #{e.inspect}. Please check that " \
+                            "the config option is set to an accessible, valid " \
+                            "file path", :call_site => nil
             end
           end
         end
