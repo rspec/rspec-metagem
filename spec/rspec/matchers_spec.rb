@@ -24,6 +24,22 @@ RSpec.describe RSpec::Matchers do
       end
     end
   end
+
+  describe "#respond_to?" do
+    it "handles dynamic matcher methods" do
+      expect(self).to respond_to(:be_happy, :have_eyes_closed)
+    end
+
+    it "supports the optional `include_private` arg" do
+      expect(self.respond_to?(:puts, true)).to eq true
+      expect(self.respond_to?(:puts, false)).to eq false
+      expect(self.respond_to?(:puts)).to eq false
+    end
+
+    it "allows `method` to get dynamic matcher methods", :if => RUBY_VERSION.to_f >= 1.9 do
+      expect(method(:be_happy).call).to be_a(be_happy.class)
+    end
+  end
 end
 
 module RSpec
