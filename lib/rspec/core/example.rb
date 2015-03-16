@@ -115,7 +115,7 @@ module RSpec
       # @return [String] the unique id of this example. Pass
       #   this at the command line to re-run this exact example.
       def id
-        Metadata.id_from(metadata)
+        @id ||= Metadata.id_from(metadata)
       end
 
       # @attr_reader
@@ -159,6 +159,11 @@ module RSpec
           example_group_class.method(:next_runnable_index_for),
           description, example_block
         )
+
+        # This should perhaps be done in `Metadata::ExampleHash.create`,
+        # but the logic there has no knowledge of `RSpec.world` and we
+        # want to keep it that way. It's easier to just assign it here.
+        @metadata[:last_run_status] = RSpec.configuration.last_run_statuses[id]
 
         @example_group_instance = @exception = nil
         @clock = RSpec::Core::Time

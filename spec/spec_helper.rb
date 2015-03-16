@@ -53,9 +53,21 @@ module EnvHelpers
       ENV.replace(original)
     end
   end
+
+  def handle_current_dir_change
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
+    yield
+  ensure
+    RSpec::Core::Metadata.instance_variable_set(:@relative_path_regex, nil)
+  end
 end
 
 RSpec.configure do |c|
+  c.example_status_persistence_file_path = "./spec/examples.txt"
+  c.around(:example, :isolated_directory) do |ex|
+    handle_current_dir_change(&ex)
+  end
+
   # structural
   c.alias_it_behaves_like_to 'it_has_behavior'
   c.include(RSpecHelpers)

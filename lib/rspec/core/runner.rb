@@ -83,7 +83,9 @@ module RSpec
       # @param out [IO] output stream
       def run(err, out)
         setup(err, out)
-        run_specs(@world.ordered_example_groups)
+        run_specs(@world.ordered_example_groups).tap do
+          persist_example_statuses
+        end
       end
 
       # Wires together the various configuration objects and state holders.
@@ -110,6 +112,19 @@ module RSpec
             example_groups.map { |g| g.run(reporter) }.all? ? 0 : @configuration.failure_exit_code
           end
         end
+      end
+
+    private
+
+      def persist_example_statuses
+        return unless (path = @configuration.example_status_persistence_file_path)
+
+        ExampleStatusPersister.persist(@world.all_examples, path)
+      rescue SystemCallError => e
+        RSpec.warning "Could not write example statuses to #{path} (configured as " \
+                      "`config.example_status_persistence_file_path`) due to a " \
+                      "system error: #{e.inspect}. Please check that the config " \
+                      "option is set to an accessible, valid file path", :call_site => nil
       end
 
       # @private

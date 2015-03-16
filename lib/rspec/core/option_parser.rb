@@ -21,6 +21,8 @@ module RSpec::Core
       options
     end
 
+  private
+
     # rubocop:disable MethodLength
     def parser(options)
       OptionParser.new do |parser|
@@ -45,19 +47,15 @@ module RSpec::Core
                   '  [rand]    randomize the order of groups and examples',
                   '  [random]  alias for rand',
                   '  [random:SEED] e.g. --order random:123') do |o|
-          options[:order] = o
+          set_order(options, o)
         end
 
         parser.on('--seed SEED', Integer, 'Equivalent of --order rand:SEED.') do |seed|
           options[:order] = "rand:#{seed}"
         end
 
-        parser.on('--fail-fast', 'Abort the run on first failure.') do |_o|
-          options[:fail_fast] = true
-        end
-
-        parser.on('--no-fail-fast', 'Do not abort the run on first failure.') do |_o|
-          options[:fail_fast] = false
+        parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
+          set_fail_fast(options, value)
         end
 
         parser.on('--failure-exit-code CODE', Integer,
@@ -156,6 +154,17 @@ module RSpec::Core
 
 FILTERING
 
+        parser.on('--only-failures', "Filter to just the examples that failed the last time they ran.") do
+          configure_only_failures(options)
+        end
+
+        parser.on("--next-failure", "Apply `--only-failures` and abort after one failure.",
+                  "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
+          configure_only_failures(options)
+          set_fail_fast(options, true)
+          set_order(options, "defined")
+        end
+
         parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb").') do |o|
           options[:pattern] = o
         end
@@ -180,18 +189,19 @@ FILTERING
           name, value = tag.gsub(/^(~@|~|@)/, '').split(':', 2)
           name = name.to_sym
 
-          options[filter_type] ||= {}
-          options[filter_type][name] = case value
-                                       when  nil        then true # The default value for tags is true
-                                       when 'true'      then true
-                                       when 'false'     then false
-                                       when 'nil'       then nil
-                                       when /^:/        then value[1..-1].to_sym
-                                       when /^\d+$/     then Integer(value)
-                                       when /^\d+.\d+$/ then Float(value)
-                                       else
-                                         value
-                                       end
+          parsed_value = case value
+                         when  nil        then true # The default value for tags is true
+                         when 'true'      then true
+                         when 'false'     then false
+                         when 'nil'       then nil
+                         when /^:/        then value[1..-1].to_sym
+                         when /^\d+$/     then Integer(value)
+                         when /^\d+.\d+$/ then Float(value)
+                         else
+                           value
+                         end
+
+          add_tag_filter(options, filter_type, name, parsed_value)
         end
 
         parser.on('--default-path PATH', 'Set the default path where RSpec looks for examples (can',
@@ -230,5 +240,22 @@ FILTERING
       end
     end
     # rubocop:enable MethodLength
+
+    def add_tag_filter(options, filter_type, tag_name, value=true)
+      (options[filter_type] ||= {})[tag_name] = value
+    end
+
+    def set_fail_fast(options, value)
+      options[:fail_fast] = value
+    end
+
+    def set_order(options, value)
+      options[:order] = value
+    end
+
+    def configure_only_failures(options)
+      options[:only_failures] = true
+      add_tag_filter(options, :inclusion_filter, :last_run_status, 'failed')
+    end
   end
 end

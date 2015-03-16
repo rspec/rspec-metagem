@@ -124,3 +124,29 @@ end
 When /^I create "([^"]*)" with the following content:$/ do |file_name, content|
   write_file(file_name, content)
 end
+
+Given(/^I have run `([^`]*)` once, resulting in "([^"]*)"$/) do |command, output_snippet|
+  step %Q{I run `#{command}`}
+  step %Q{the output from "#{command}" should contain "#{output_snippet}"}
+end
+
+When(/^I fix "(.*?)" by replacing "(.*?)" with "(.*?)"$/) do |file_name, original, replacement|
+  in_current_dir do
+    contents = File.read(file_name)
+    expect(contents).to include(original)
+    fixed = contents.sub(original, replacement)
+    File.open(file_name, "w") { |f| f.write(fixed) }
+  end
+end
+
+Then(/^it should fail with "(.*?)"$/) do |snippet|
+  assert_failing_with(snippet)
+end
+
+Given(/^I have not configured `example_status_persistence_file_path`$/) do
+  in_current_dir do
+    return unless File.exist?("spec/spec_helper.rb")
+    return unless File.read("spec/spec_helper.rb").include?("example_status_persistence_file_path")
+    File.open("spec/spec_helper.rb", "w") { |f| f.write("") }
+  end
+end

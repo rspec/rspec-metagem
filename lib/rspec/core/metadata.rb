@@ -210,7 +210,7 @@ module RSpec
 
       # @private
       class ExampleHash < HashPopulator
-        def self.create(group_metadata, user_metadata, index, description, block)
+        def self.create(group_metadata, user_metadata, index_provider, description, block)
           example_metadata = group_metadata.dup
           group_metadata = Hash.new(&ExampleGroupHash.backwards_compatibility_default_proc do |hash|
             hash[:parent_example_group]
@@ -222,7 +222,7 @@ module RSpec
           example_metadata.delete(:parent_example_group)
 
           description_args = description.nil? ? [] : [description]
-          hash = new(example_metadata, user_metadata, index, description_args, block)
+          hash = new(example_metadata, user_metadata, index_provider, description_args, block)
           hash.populate
           hash.metadata
         end
@@ -327,6 +327,7 @@ module RSpec
         :example_group,
         :parent_example_group,
         :execution_result,
+        :last_run_status,
         :file_path,
         :absolute_file_path,
         :rerun_file_path,
