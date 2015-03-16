@@ -10,6 +10,9 @@ Enhancements:
   it is absolutely needed. (Myron Marston, #735)
 * Improve failure output when attempting to use `be_true` or `be_false`.
   (Tim Wade, #744)
+* Define `RSpec::Matchers#respond_to_missing?` so that
+  `RSpec::Matchers#respond_to?` and `RSpec::Matchers#method` handle
+  dynamic predicate matchers. (Andrei Botalov, #751)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...v3.2.0)
