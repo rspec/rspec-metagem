@@ -19,6 +19,50 @@ Feature: shared examples
   anything special (like autoload). Doing so would require a strict naming
   convention for files that would break existing suites.
 
+  **WARNING:** When you include parameterized examples in the current context multiple
+  times, you may override previous method definitions and last declaration wins.
+  So if you have this kind of shared example (or shared context)
+
+  ```ruby
+  RSpec.shared_examples "some example" do |parameter|
+    \# Same behavior is triggered also with either `def something; 'some value'; end`
+    \# or `define_method(:something) { 'some value' }`
+    let(:something) { parameter }
+    it "uses the given parameter" do
+      expect(something).to eq(parameter)
+    end
+  end
+
+  RSpec.describe SomeClass do
+    include_example "some example", "parameter1"
+    include_example "some example", "parameter2"
+  end
+  ```
+
+  You're actually doing this (notice that first example will fail):
+
+  ```ruby
+  RSpec.describe SomeClass do
+    \# Reordered code for better understanding of what is happening
+    let(:something) { "parameter1" }
+    let(:something) { "parameter2" }
+
+    it "uses the given parameter" do
+      \# This example will fail because last let "wins"
+      expect(something).to eq("parameter1")
+    end
+
+    it "uses the given parameter" do
+      expect(something).to eq("parameter2")
+    end
+  end
+  ```
+
+  To prevent this kind of subtle error a warning is emitted if you declare multiple
+  methods with the same name in the same context. Should you get this warning
+  the simplest solution is to replace `include_example` with `it_behaves_like`, in this
+  way method overriding is avoided because of the nested context created by `it_behaves_like`
+
   Conventions:
   ------------
 

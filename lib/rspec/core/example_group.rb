@@ -2,6 +2,8 @@ RSpec::Support.require_rspec_support 'recursive_const_methods'
 
 module RSpec
   module Core
+    # rubocop:disable Style/ClassLength
+
     # ExampleGroup and {Example} are the main structural elements of
     # rspec-core. Consider this example:
     #
@@ -650,6 +652,16 @@ module RSpec
       end
       private_class_method :method_missing
 
+      # @private
+      def self.method_added(method_name)
+        if (@__added_methods ||= Set.new).include?(method_name)
+          RSpec.warning "`#{self}##{method_name}` is being redefined " \
+                         "at #{RSpec::CallerFilter.first_non_rspec_line}. The original " \
+                         "definition will never be used and can be removed", :call_site => nil
+        end
+        @__added_methods << method_name
+      end
+
     private
 
       def method_missing(name, *args)
@@ -664,6 +676,8 @@ module RSpec
         super
       end
     end
+
+    # rubocop:enable Style/ClassLength
 
     # @private
     # Unnamed example group used by `SuiteHookContext`.
