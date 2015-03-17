@@ -15,6 +15,8 @@ module RSpec
         end
         # I have no idea what line = line.sub(/\A([^:]+:\d+)$/, '\\1') is supposed to do
         it "gracefully returns nil if run in a secure thread" do
+          # Ensure our call to `File.expand_path` is not cached as that is the insecure operation.
+          Metadata.instance_eval { @relative_path_regex = nil }
           with_safe_set_to_level_that_triggers_security_errors do
             value = Metadata.relative_path(".")
             # on some rubies, File.expand_path is not a security error, so accept "." as well

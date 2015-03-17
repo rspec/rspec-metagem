@@ -237,6 +237,8 @@ RSpec.describe RSpec do
     expect(err).to eq("")
     expect(out.split("\n")).to eq(%w[ RSpec::Mocks RSpec::Expectations ])
     expect(status.exitstatus).to eq(0)
+
+    expect(RSpec.const_missing(:Expectations)).to be(RSpec::Expectations)
   end
 
   it 'correctly raises an error when an invalid const is referenced' do

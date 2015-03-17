@@ -206,6 +206,7 @@ module RSpec::Core
       end
 
       it "deals gracefully with a security error" do
+        Metadata.instance_eval { @relative_path_regex = nil }
         with_safe_set_to_level_that_triggers_security_errors do
           self.formatter.__send__(:backtrace_line, __FILE__)
           # on some rubies, this doesn't raise a SecurityError; this test just

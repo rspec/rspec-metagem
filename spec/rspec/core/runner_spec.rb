@@ -21,10 +21,30 @@ module RSpec::Core
       end
     end
 
-    describe 'at_exit' do
+    describe '.autorun' do
+      before do
+        @original_ivars = Hash[ Runner.instance_variables.map do |ivar|
+          [ivar, Runner.instance_variable_get(ivar)]
+        end ]
+      end
+
+      after do
+        (@original_ivars.keys | Runner.instance_variables).each do |ivar|
+          if @original_ivars.key?(ivar)
+            Runner.instance_variable_set(ivar, @original_ivars[ivar])
+          else
+            # send is necessary for 1.8.7
+            Runner.send(:remove_instance_variable, ivar)
+          end
+        end
+      end
+
       it 'sets an at_exit hook if none is already set' do
-        allow(RSpec::Core::Runner).to receive(:autorun_disabled?).and_return(false)
-        allow(RSpec::Core::Runner).to receive(:installed_at_exit?).and_return(false)
+        Runner.instance_eval do
+          @autorun_disabled = false
+          @installed_at_exit = false
+        end
+
         allow(RSpec::Core::Runner).to receive(:running_in_drb?).and_return(false)
         allow(RSpec::Core::Runner).to receive(:invoke)
         expect(RSpec::Core::Runner).to receive(:at_exit)
@@ -32,11 +52,62 @@ module RSpec::Core
       end
 
       it 'does not set the at_exit hook if it is already set' do
-        allow(RSpec::Core::Runner).to receive(:autorun_disabled?).and_return(false)
-        allow(RSpec::Core::Runner).to receive(:installed_at_exit?).and_return(true)
+        Runner.instance_eval do
+          @autorun_disabled = false
+          @installed_at_exit = true
+        end
+
         allow(RSpec::Core::Runner).to receive(:running_in_drb?).and_return(false)
         expect(RSpec::Core::Runner).to receive(:at_exit).never
         RSpec::Core::Runner.autorun
+      end
+    end
+
+    describe "at_exit hook" do
+      before { allow(Runner).to receive(:invoke) }
+
+      it 'normally runs the spec suite' do
+        Runner.perform_at_exit
+        expect(Runner).to have_received(:invoke)
+      end
+
+      it 'does not run the suite if an error triggered the exit' do
+        begin
+          raise "boom"
+        rescue
+          Runner.perform_at_exit
+        end
+
+        expect(Runner).not_to have_received(:invoke)
+      end
+
+      it 'stil runs the suite if a `SystemExit` occurs since that is caused by `Kernel#exit`' do
+        begin
+          exit
+        rescue SystemExit
+          Runner.perform_at_exit
+        end
+
+        expect(Runner).to have_received(:invoke)
+      end
+    end
+
+    describe "interrupt handling" do
+      before { allow(Runner).to receive(:exit!) }
+
+      it 'prints a message the first time, then exits the second time' do
+        expect {
+          Runner.handle_interrupt
+        }.to output(/shutting down/).to_stderr_from_any_process &
+          change { RSpec.world.wants_to_quit }.from(a_falsey_value).to(true)
+
+        expect(Runner).not_to have_received(:exit!)
+
+        expect {
+          Runner.handle_interrupt
+        }.not_to output.to_stderr_from_any_process
+
+        expect(Runner).to have_received(:exit!)
       end
     end
 

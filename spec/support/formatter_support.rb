@@ -1,5 +1,5 @@
 module FormatterSupport
-  def run_example_specs_with_formatter(formatter_option)
+  def run_example_specs_with_formatter(formatter_option, normalize_output=true)
     options = RSpec::Core::ConfigurationOptions.new(%W[spec/rspec/core/resources/formatter_specs.rb --format #{formatter_option} --order defined])
 
     err, out = StringIO.new, StringIO.new
@@ -13,6 +13,7 @@ module FormatterSupport
     runner.run(err, out)
 
     output = out.string
+    return output unless normalize_output
     output.gsub!(/\d+(?:\.\d+)?(s| seconds)/, "n.nnnn\\1")
 
     caller_line = RSpec::Core::Metadata.relative_path(caller.first)

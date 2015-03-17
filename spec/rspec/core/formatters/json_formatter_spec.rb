@@ -13,7 +13,13 @@ require 'rspec/core/reporter'
 RSpec.describe RSpec::Core::Formatters::JsonFormatter do
   include FormatterSupport
 
-  it "outputs json (brittle high level functional test)" do
+  it "can be loaded via `--format json`" do
+    formatter_output = run_example_specs_with_formatter("json", false)
+    parsed = JSON.parse(formatter_output)
+    expect(parsed.keys).to include("examples", "summary", "summary_line")
+  end
+
+  it "outputs expected json (brittle high level functional test)" do
     group = RSpec.describe("one apiece") do
       it("succeeds") { expect(1).to eq 1 }
       it("fails") { fail "eek" }

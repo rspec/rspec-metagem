@@ -82,6 +82,15 @@ RSpec.describe RSpec::Core::DRbRunner, :isolated_directory => true, :isolated_ho
       DRb::stop_service
     end
 
+    it "falls back to `druby://:0` when `druby://localhost:0` fails" do
+      # see https://bugs.ruby-lang.org/issues/496 for background
+      expect(::DRb).to receive(:start_service).with("druby://localhost:0").and_raise(SocketError)
+      expect(::DRb).to receive(:start_service).with("druby://:0").and_call_original
+
+      result = runner("--drb-port", @drb_port, passing_spec_filename).run(err, out)
+      expect(result).to be(0)
+    end
+
     it "returns 0 if spec passes" do
       result = runner("--drb-port", @drb_port, passing_spec_filename).run(err, out)
       expect(result).to be(0)

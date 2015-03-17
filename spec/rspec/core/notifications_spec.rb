@@ -47,6 +47,16 @@ RSpec.describe "FailedExampleNotification" do
       end
     end
 
+    context "when ruby reports a file that does not exist" do
+      let(:file) { "#{__FILE__}/blah.rb" }
+      let(:exception) { instance_double(Exception, :backtrace => [ "#{file}:1"]) }
+
+      it "reports the filename and that it was unable to find the matching line" do
+        example.metadata[:absolute_file_path] = file
+        expect(notification.send(:read_failed_line)).to include("Unable to find #{file} to read failed line")
+      end
+    end
+
     context "when the stacktrace includes relative paths (which can happen when using `rspec/autorun` and running files through `ruby`)" do
       let(:relative_file) { Pathname(__FILE__).relative_path_from(Pathname(Dir.pwd)) }
       line = __LINE__
@@ -113,6 +123,27 @@ RSpec.describe "FailedExampleNotification" do
         lines = notification.message_lines
         expect(lines[0]).to match %r{\AFailure\/Error}
         expect(lines[1].strip).to eq("? ? ? I have bad bytes")
+      end
+    end
+  end
+end
+
+module RSpec::Core::Notifications
+  RSpec.describe ExamplesNotification do
+    include FormatterSupport
+
+    describe "#notifications" do
+      it 'returns an array of notification objects for all the examples' do
+        reporter = RSpec::Core::Reporter.new(RSpec.configuration)
+        example = new_example
+
+        reporter.example_started(example)
+        reporter.example_passed(example)
+
+        notification = ExamplesNotification.new(reporter)
+        expect(notification.notifications).to match [
+          an_instance_of(ExampleNotification) & an_object_having_attributes(:example => example)
+        ]
       end
     end
   end

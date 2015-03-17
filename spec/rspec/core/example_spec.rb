@@ -22,6 +22,14 @@ RSpec.describe RSpec::Core::Example, :parent_metadata => 'sample' do
     expect { ignoring_warnings { pp example_instance }}.to output(/RSpec::Core::Example/).to_stdout
   end
 
+  describe "#rerun_argument" do
+    it "returns the location-based rerun argument" do
+      allow(RSpec.configuration).to receive_messages(:loaded_spec_files => [__FILE__])
+      example = RSpec.describe.example
+      expect(example.rerun_argument).to eq("#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{__LINE__ - 1}")
+    end
+  end
+
   describe "#exception" do
     it "supplies the first exception raised, if any" do
       RSpec.configuration.output_stream = StringIO.new
