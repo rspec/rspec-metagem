@@ -18,6 +18,10 @@ Bug Fixes:
 
 * Make `contain_exactly` / `match_array` work with strict test doubles
   that have not defined `<=>`. (Myron Marston, #758)
+* Prevent `Range`s from being enumerated when generating matcher
+  descriptions. (Jon Rowe, #755)
+* Ensure exception messages are compared as strings in the `raise_error`
+  matcher. (Jon Rowe, #755)
 
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...v3.2.0)
