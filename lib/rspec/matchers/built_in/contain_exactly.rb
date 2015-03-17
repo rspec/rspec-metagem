@@ -52,7 +52,7 @@ module RSpec
         def convert_actual_to_an_array
           if actual.respond_to?(:to_ary)
             @actual = actual.to_ary
-          elsif enumerable?(actual) && actual.respond_to?(:to_a)
+          elsif should_enumerate?(actual) && actual.respond_to?(:to_a)
             @actual = actual.to_a
           else
             return false

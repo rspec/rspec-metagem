@@ -103,7 +103,7 @@ module RSpec
           Hash[surface_descriptions_in(item.to_a)]
         elsif Struct === item
           item.inspect
-        elsif enumerable?(item)
+        elsif should_enumerate?(item)
           begin
             item.map { |subitem| surface_descriptions_in(subitem) }
           rescue IOError # STDOUT is enumerable but `map` raises an error
@@ -137,7 +137,7 @@ module RSpec
           Hash[with_matchers_cloned(object.to_a)]
         elsif Struct === object
           object
-        elsif enumerable?(object)
+        elsif should_enumerate?(object)
           begin
             object.map { |subobject| with_matchers_cloned(subobject) }
           rescue IOError # STDOUT is enumerable but `map` raises an error
@@ -155,17 +155,17 @@ module RSpec
         # a single 1-character string, which is an enumerable, etc.
         #
         # @api private
-        def enumerable?(item)
+        def should_enumerate?(item)
           return false if String === item
-          Enumerable === item
+          Enumerable === item && !(Range === item)
         end
       else
         # @api private
-        def enumerable?(item)
-          Enumerable === item
+        def should_enumerate?(item)
+          Enumerable === item && !(Range === item)
         end
       end
-      module_function :surface_descriptions_in, :enumerable?
+      module_function :surface_descriptions_in, :should_enumerate?
 
       # Wraps an item in order to surface its `description` via `inspect`.
       # @api private
