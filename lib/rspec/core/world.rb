@@ -137,13 +137,7 @@ module RSpec
         example_groups.clear
         if filter_manager.empty?
           reporter.message("No examples found.")
-        elsif exclusion_filter.empty?
-          message = everything_filtered_message
-          if @configuration.run_all_when_everything_filtered?
-            message << "; ignoring #{inclusion_filter.description}"
-          end
-          reporter.message(message)
-        elsif inclusion_filter.empty?
+        elsif exclusion_filter.empty? || inclusion_filter.empty?
           reporter.message(everything_filtered_message)
         end
       end

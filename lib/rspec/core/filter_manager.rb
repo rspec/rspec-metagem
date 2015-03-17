@@ -183,10 +183,6 @@ module RSpec
         apply_standalone_filter(*args) || super
       end
 
-      def use(*args)
-        apply_standalone_filter(*args) || super
-      end
-
       def include_example?(example)
         @rules.empty? || super
       end

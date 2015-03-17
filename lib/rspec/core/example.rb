@@ -460,14 +460,6 @@ module RSpec
         "example at #{location}"
       end
 
-      def skip_message
-        if String === skip
-          skip
-        else
-          Pending::NO_REASON_GIVEN
-        end
-      end
-
       # Represents the result of executing an example.
       # Behaves like a hash for backwards compatibility.
       class ExecutionResult

@@ -35,7 +35,7 @@ module RSpec
 
         # rubocop:disable Style/ParameterLists
         def print_example_failed(pending_fixed, description, run_time, failure_id,
-                                 exception, extra_content, escape_backtrace=false)
+                                 exception, extra_content)
           # rubocop:enable Style/ParameterLists
           formatted_run_time = "%.5f" % run_time
 
@@ -45,11 +45,7 @@ module RSpec
           @output.puts "      <div class=\"failure\" id=\"failure_#{failure_id}\">"
           if exception
             @output.puts "        <div class=\"message\"><pre>#{h(exception[:message])}</pre></div>"
-            if escape_backtrace
-              @output.puts "        <div class=\"backtrace\"><pre>#{h exception[:backtrace]}</pre></div>"
-            else
-              @output.puts "        <div class=\"backtrace\"><pre>#{exception[:backtrace]}</pre></div>"
-            end
+            @output.puts "        <div class=\"backtrace\"><pre>#{h exception[:backtrace]}</pre></div>"
           end
           @output.puts extra_content if extra_content
           @output.puts "      </div>"

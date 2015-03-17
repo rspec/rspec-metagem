@@ -47,8 +47,6 @@ module RSpec
 
       def backtrace_line(line)
         Metadata.relative_path(line) unless exclude?(line)
-      rescue SecurityError
-        nil
       end
 
       def exclude?(line)
