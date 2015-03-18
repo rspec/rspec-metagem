@@ -138,13 +138,7 @@ module RSpec::Core::Formatters
         formatter = RSpec::LegacyFormatters.load_formatter formatter_class, *args
         @reporter.register_listener formatter, *formatter.notifications
       else
-        line = ::RSpec::CallerFilter.first_non_rspec_line
-        if line
-          call_site = "Formatter added at: #{line}"
-        else
-          call_site = "The formatter was added via command line flag or your "\
-                      "`.rspec` file."
-        end
+        call_site = "Formatter added at: #{::RSpec::CallerFilter.first_non_rspec_line}"
 
         RSpec.warn_deprecation <<-WARNING.gsub(/\s*\|/, ' ')
           |The #{formatter_class} formatter uses the deprecated formatter
