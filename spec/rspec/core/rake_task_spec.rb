@@ -80,6 +80,23 @@ module RSpec::Core
       end
     end
 
+    context "when `failure_message` is configured" do
+      before do
+        allow(task).to receive(:exit)
+        task.failure_message = "Bad news"
+      end
+
+      it 'prints it if the RSpec run failed' do
+        task.ruby_opts = '-e "exit(1);" ;#'
+        expect { task.run_task false }.to output(/Bad news/).to_stdout
+      end
+
+      it 'does not print it if the RSpec run succeeded' do
+        task.ruby_opts = '-e "exit(0);" ;#'
+        expect { task.run_task false }.not_to output(/Bad/).to_stdout
+      end
+    end
+
     context 'with custom exit status' do
       def silence_output(&block)
         expect(&block).to output(anything).to_stdout.and output(anything).to_stderr

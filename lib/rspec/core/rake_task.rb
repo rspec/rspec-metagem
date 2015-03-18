@@ -63,16 +63,12 @@ module RSpec
       # @private
       def run_task(verbose)
         command = spec_command
+        puts command if verbose
 
-        begin
-          puts command if verbose
-          success = system(command)
-        rescue
-          puts failure_message if failure_message
-        end
+        return if system(command)
+        puts failure_message if failure_message
 
-        return unless fail_on_error && !success
-
+        return unless fail_on_error
         $stderr.puts "#{command} failed" if verbose
         exit $?.exitstatus
       end
