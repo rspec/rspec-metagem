@@ -100,12 +100,6 @@ module RSpec
       end
 
       # @private
-      def self.backtrace_from(block)
-        return caller unless block.respond_to?(:source_location)
-        [block.source_location.join(':')]
-      end
-
-      # @private
       def self.id_from(metadata)
         "#{metadata[:rerun_file_path]}[#{metadata[:scoped_id]}]"
       end

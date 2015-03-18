@@ -74,8 +74,6 @@ module RSpec
                                   :message => exception.message,
                                   :backtrace => failure.formatted_backtrace.join("\n")
                                 }
-                              else
-                                false
                               end
           extra = extra_failure_content(failure)
 
@@ -85,8 +83,7 @@ module RSpec
             example.execution_result.run_time,
             @failed_examples.size,
             exception_details,
-            (extra == "") ? false : extra,
-            true
+            (extra == "") ? false : extra
           )
           @printer.flush
         end

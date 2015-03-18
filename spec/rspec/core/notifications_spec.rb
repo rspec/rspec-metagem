@@ -33,7 +33,7 @@ RSpec.describe "FailedExampleNotification" do
       let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
       it "is handled gracefully" do
-        safely do
+        with_safe_set_to_level_that_triggers_security_errors do
           expect { notification.send(:read_failed_line) }.not_to raise_error
         end
       end
@@ -44,6 +44,16 @@ RSpec.describe "FailedExampleNotification" do
 
       it "reports the filename and that it was unable to find the matching line" do
         expect(notification.send(:read_failed_line)).to include("Unable to find matching line")
+      end
+    end
+
+    context "when ruby reports a file that does not exist" do
+      let(:file) { "#{__FILE__}/blah.rb" }
+      let(:exception) { instance_double(Exception, :backtrace => [ "#{file}:1"]) }
+
+      it "reports the filename and that it was unable to find the matching line" do
+        example.metadata[:absolute_file_path] = file
+        expect(notification.send(:read_failed_line)).to include("Unable to find #{file} to read failed line")
       end
     end
 
@@ -113,6 +123,27 @@ RSpec.describe "FailedExampleNotification" do
         lines = notification.message_lines
         expect(lines[0]).to match %r{\AFailure\/Error}
         expect(lines[1].strip).to eq("? ? ? I have bad bytes")
+      end
+    end
+  end
+end
+
+module RSpec::Core::Notifications
+  RSpec.describe ExamplesNotification do
+    include FormatterSupport
+
+    describe "#notifications" do
+      it 'returns an array of notification objects for all the examples' do
+        reporter = RSpec::Core::Reporter.new(RSpec.configuration)
+        example = new_example
+
+        reporter.example_started(example)
+        reporter.example_passed(example)
+
+        notification = ExamplesNotification.new(reporter)
+        expect(notification.notifications).to match [
+          an_instance_of(ExampleNotification) & an_object_having_attributes(:example => example)
+        ]
       end
     end
   end

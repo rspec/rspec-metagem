@@ -24,14 +24,14 @@ begin
   # Simplecov emits some ruby warnings when loaded, so silence them.
   old_verbose, $VERBOSE = $VERBOSE, false
 
-  unless ENV['NO_COVERAGE'] || RUBY_VERSION < '1.9.3'
+  unless ENV['NO_COVERAGE'] || RUBY_VERSION.to_f < 2.1
     require 'simplecov'
 
     SimpleCov.start do
       add_filter "./bundle/"
       add_filter "./tmp/"
       add_filter "./spec/"
-      minimum_coverage(RUBY_PLATFORM == 'java' ? 93 : 97)
+      minimum_coverage(100)
     end
   end
 rescue LoadError

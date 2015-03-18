@@ -32,6 +32,8 @@ Bug Fixes:
 * Handle invalid UTF-8 strings within exception methods. (Benjamin Fleischer, #1760)
 * Fix Rake Task quoting of file names with quotes to work properly on
   Windows. (Myron Marston, #1887)
+* Fix `RSpec::Core::RakeTask#failure_message` so that it gets printed
+  when the task failed. (Myron Marston, #1905)
 
 ### 3.2.2 / 2015-03-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.1...v3.2.2)

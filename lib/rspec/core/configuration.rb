@@ -1261,7 +1261,8 @@ module RSpec
         def safe_extend(mod, host)
           host.extend(mod) unless host.singleton_class < mod
         end
-      else
+      else # for 1.8.7
+        # :nocov:
         # @private
         def safe_include(mod, host)
           host.__send__(:include, mod) unless host.included_modules.include?(mod)
@@ -1271,6 +1272,7 @@ module RSpec
         def safe_extend(mod, host)
           host.extend(mod) unless (class << host; self; end).included_modules.include?(mod)
         end
+        # :nocov:
       end
 
       # @private
@@ -1665,6 +1667,7 @@ module RSpec
       end
 
       if RSpec::Support::OS.windows?
+        # :nocov:
         def absolute_pattern?(pattern)
           pattern =~ /\A[A-Z]:\\/ || windows_absolute_network_path?(pattern)
         end
@@ -1673,6 +1676,7 @@ module RSpec
           return false unless ::File::ALT_SEPARATOR
           pattern.start_with?(::File::ALT_SEPARATOR + ::File::ALT_SEPARATOR)
         end
+        # :nocov:
       else
         def absolute_pattern?(pattern)
           pattern.start_with?(File::Separator)

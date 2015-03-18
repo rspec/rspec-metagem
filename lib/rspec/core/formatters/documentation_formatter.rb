@@ -64,10 +64,6 @@ module RSpec
         def current_indentation
           '  ' * @group_level
         end
-
-        def example_group_chain
-          example_group.parent_groups.reverse
-        end
       end
     end
   end

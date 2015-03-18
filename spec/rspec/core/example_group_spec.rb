@@ -1419,8 +1419,7 @@ module RSpec::Core
         let(:group) { RSpec.describe }
 
         before do
-          allow(RSpec.world).to receive(:wants_to_quit) { true }
-          allow(RSpec.world).to receive(:clear_remaining_example_groups)
+          RSpec.world.wants_to_quit = true
         end
 
         it "returns without starting the group" do
@@ -1430,16 +1429,19 @@ module RSpec::Core
 
         context "at top level" do
           it "purges remaining groups" do
-            expect(RSpec.world).to receive(:clear_remaining_example_groups)
-            self.group.run(reporter)
+            expect {
+              self.group.run(reporter)
+            }.to change { RSpec.world.example_groups }.from([self.group]).to([])
           end
         end
 
         context "in a nested group" do
           it "does not purge remaining groups" do
             nested_group = self.group.describe
-            expect(RSpec.world).not_to receive(:clear_remaining_example_groups)
-            nested_group.run(reporter)
+
+            expect {
+              nested_group.run(reporter)
+            }.not_to change { RSpec.world.example_groups }.from([self.group])
           end
         end
       end

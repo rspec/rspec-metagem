@@ -17,18 +17,21 @@ module RSpec
           return
         end
 
-        at_exit do
-          # Don't bother running any specs and just let the program terminate
-          # if we got here due to an unrescued exception (anything other than
-          # SystemExit, which is raised when somebody calls Kernel#exit).
-          next unless $!.nil? || $!.is_a?(SystemExit)
-
-          # We got here because either the end of the program was reached or
-          # somebody called Kernel#exit. Run the specs and then override any
-          # existing exit status with RSpec's exit status if any specs failed.
-          invoke
-        end
+        at_exit { perform_at_exit }
         @installed_at_exit = true
+      end
+
+      # @private
+      def self.perform_at_exit
+        # Don't bother running any specs and just let the program terminate
+        # if we got here due to an unrescued exception (anything other than
+        # SystemExit, which is raised when somebody calls Kernel#exit).
+        return unless $!.nil? || $!.is_a?(SystemExit)
+
+        # We got here because either the end of the program was reached or
+        # somebody called Kernel#exit. Run the specs and then override any
+        # existing exit status with RSpec's exit status if any specs failed.
+        invoke
       end
 
       # Runs the suite of specs and exits the process with an appropriate exit
@@ -159,8 +162,14 @@ module RSpec
 
       # @private
       def self.trap_interrupt
-        trap('INT') do
-          exit!(1) if RSpec.world.wants_to_quit
+        trap('INT') { handle_interrupt }
+      end
+
+      # @private
+      def self.handle_interrupt
+        if RSpec.world.wants_to_quit
+          exit!(1)
+        else
           RSpec.world.wants_to_quit = true
           STDERR.puts "\nRSpec is shutting down and will print the summary report... Interrupt again to force quit."
         end

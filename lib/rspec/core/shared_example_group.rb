@@ -195,10 +195,12 @@ module RSpec
         if Proc.method_defined?(:source_location)
           def ensure_block_has_source_location(_block); end
         else # for 1.8.7
+          # :nocov:
           def ensure_block_has_source_location(block)
             source_location = yield.split(':')
             block.extend Module.new { define_method(:source_location) { source_location } }
           end
+          # :nocov:
         end
       end
     end

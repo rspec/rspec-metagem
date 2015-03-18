@@ -53,6 +53,7 @@ module RSpec
 
           it "is not exposed to the global namespace when monkey patching is disabled" do
             RSpec.configuration.expose_dsl_globally = false
+            expect(RSpec.configuration.expose_dsl_globally?).to eq(false)
             expect(Kernel).to_not respond_to(shared_method_name)
           end
 
