@@ -14,7 +14,7 @@ module RSpec
 
         it "falls back on a default message when it gets a security error" do
           message = nil
-          safely do
+          with_safe_set_to_level_that_triggers_security_errors do
             message = RSpec::Core::Formatters::SnippetExtractor.new.lines_around("blech", 8)
           end
           expect(message).to eq("# Couldn't get snippet for blech")

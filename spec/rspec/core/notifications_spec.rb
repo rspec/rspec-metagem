@@ -33,7 +33,7 @@ RSpec.describe "FailedExampleNotification" do
       let(:exception) { instance_double(Exception, :backtrace => [ "#{__FILE__}:#{__LINE__}"]) }
 
       it "is handled gracefully" do
-        safely do
+        with_safe_set_to_level_that_triggers_security_errors do
           expect { notification.send(:read_failed_line) }.not_to raise_error
         end
       end
