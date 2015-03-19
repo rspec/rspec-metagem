@@ -115,7 +115,7 @@ module RSpec
 
         def verify_message
           return true if @expected_message.nil?
-          values_match?(@expected_message, @actual_error.message)
+          values_match?(@expected_message, @actual_error.message.to_s)
         end
 
         def prevent_invalid_expectations

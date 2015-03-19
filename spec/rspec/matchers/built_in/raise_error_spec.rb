@@ -13,6 +13,25 @@ RSpec.describe "expect { ... }.to raise_error" do
     expect {raise s}.to raise_error(s)
   end
 
+  it 'passes if an error instance with a non string message is raised' do
+    special_error =
+      Class.new(StandardError) do
+        def initialize(message)
+          @message = message
+        end
+
+        def message
+          self
+        end
+
+        def to_s
+          @message
+        end
+      end
+    s = special_error.new 'Stringlike'
+    expect { raise s }.to raise_error('Stringlike')
+  end
+
   it "fails if a different error instance is thrown from the one that is expected" do
     s = StandardError.new("Error 1")
     to_raise = StandardError.new("Error 2")
