@@ -104,13 +104,13 @@ Feature: shared examples
         end
 
         describe "#include?" do
-          context "with an an item that is in the collection" do
+          context "with an item that is in the collection" do
             it "returns true" do
               expect(collection.include?(7)).to be_truthy
             end
           end
 
-          context "with an an item that is not in the collection" do
+          context "with an item that is not in the collection" do
             it "returns false" do
               expect(collection.include?(9)).to be_falsey
             end
@@ -135,9 +135,9 @@ Feature: shared examples
           initialized with 3 items
             says it has three items
           #include?
-            with an an item that is in the collection
+            with an item that is in the collection
               returns true
-            with an an item that is not in the collection
+            with an item that is not in the collection
               returns false
 
       Set
@@ -145,9 +145,9 @@ Feature: shared examples
           initialized with 3 items
             says it has three items
           #include?
-            with an an item that is in the collection
+            with an item that is in the collection
               returns true
-            with an an item that is not in the collection
+            with an item that is not in the collection
               returns false
       """
 
