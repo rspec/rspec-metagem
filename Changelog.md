@@ -14,6 +14,11 @@ Enhancements:
   `RSpec::Matchers#respond_to?` and `RSpec::Matchers#method` handle
   dynamic predicate matchers. (Andrei Botalov, #751)
 
+Bug Fixes:
+
+* Make `contain_exactly` / `match_array` work with strict test doubles
+  that have not defined `<=>`. (Myron Marston, #758)
+
 ### 3.2.0 / 2015-02-03
 [Full Changelog](http://github.com/rspec/rspec-expectations/compare/v3.1.2...v3.2.0)
 
