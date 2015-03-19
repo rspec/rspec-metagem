@@ -37,7 +37,7 @@ module RSpec
       # @private
       def self.idempotently_define_singleton_method(name, &definition)
         (class << self; self; end).module_exec do
-          remove_method(name) if method_defined?(name)
+          remove_method(name) if method_defined?(name) && instance_method(name).owner == self
           define_method(name, &definition)
         end
       end

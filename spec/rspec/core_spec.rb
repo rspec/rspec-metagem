@@ -246,5 +246,14 @@ RSpec.describe RSpec do
       RSpec::NotAConst
     }.to raise_error(NameError, /RSpec::NotAConst/)
   end
+
+  it "does not blow up if some gem defines `Kernel#it`", :slow do
+    code = 'Kernel.module_eval { def it(*); end }; require "rspec/core"'
+    out, err, status = run_ruby_with_current_load_path(code)
+
+    expect(err).to eq("")
+    expect(out).to eq("")
+    expect(status.exitstatus).to eq(0)
+  end
 end
 
