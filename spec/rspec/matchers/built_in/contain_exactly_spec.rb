@@ -124,6 +124,17 @@ RSpec.describe "using contain_exactly with expect" do
       {:a => (a_value < 0)}
     )
   end
+
+  it 'works with strict test doubles (which have not defined `<=>`)' do
+    dbl_1 = double("1")
+    dbl_2 = double("2")
+
+    expect([dbl_1, dbl_2]).to contain_exactly(dbl_2, dbl_1)
+
+    expect {
+      expect([dbl_1, dbl_2]).to contain_exactly(dbl_1)
+    }.to fail
+  end
 end
 
 RSpec.describe "expect(array).to contain_exactly(*other_array)" do

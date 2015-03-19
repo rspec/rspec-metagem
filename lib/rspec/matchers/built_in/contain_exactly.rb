@@ -60,7 +60,9 @@ module RSpec
         end
 
         def safe_sort(array)
-          array.sort rescue array
+          array.sort
+        rescue Exception
+          array
         end
 
         def missing_items
