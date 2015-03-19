@@ -47,10 +47,10 @@ module RSpec
             hash ^= hash >> 6
           end
 
-          hash += (hash << 3 & MAX_32_BIT)
+          hash += ((hash << 3) & MAX_32_BIT)
           hash &= MAX_32_BIT
           hash ^= hash >> 11
-          hash += (hash << 15 & MAX_32_BIT)
+          hash += ((hash << 15) & MAX_32_BIT)
           hash &= MAX_32_BIT
           hash
         end
