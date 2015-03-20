@@ -104,6 +104,13 @@ Enhancements:
 * Make `-I` option support multiple values when separated by
   `File::PATH_SEPARATOR`, such as `rspec -I foo:bar`. This matches
   the behavior of Ruby's `-I` option. (Fumiaki Matsushima, #1855).
+* Treat each example as having a singleton example group for the
+  purposes of applying metadata-based features that normally apply
+  to example groups to individually tagged examples. For example,
+  `RSpec.shared_context "Uses redis", :uses_redis` will now apply
+  to individual examples tagged with `:uses_redis`, as will
+  `config.include RedisHelpers, :uses_redis`, and
+  `config.before(:context, :uses_redis) { }`, etc. (Myron Marston, #1749)
 
 Bug Fixes:
 
