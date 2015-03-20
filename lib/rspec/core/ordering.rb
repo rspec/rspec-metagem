@@ -1,16 +1,5 @@
 module RSpec
   module Core
-    if defined?(::Random)
-      # @private
-      RandomNumberGenerator = ::Random
-    else
-      # :nocov:
-      RSpec::Support.require_rspec_core "backport_random"
-      # @private
-      RandomNumberGenerator = RSpec::Core::Backports::Random
-      # :nocov:
-    end
-
     # @private
     module Ordering
       # @private
@@ -35,28 +24,38 @@ module RSpec
 
         def order(items)
           @used = true
-          rng = RandomNumberGenerator.new(@configuration.seed)
-          shuffle items, rng
+
+          seed = @configuration.seed.to_s
+          items.sort_by { |item| jenkins_hash_digest(seed + item.id) }
         end
 
-        if RUBY_VERSION > '1.9.3'
-          def shuffle(list, rng)
-            list.shuffle(:random => rng)
-          end
-        else
-          # :nocov:
-          def shuffle(list, rng)
-            shuffled = list.dup
-            shuffled.size.times do |i|
-              j = i + rng.rand(shuffled.size - i)
-              next if i == j
-              shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
-            end
+      private
 
-            shuffled
+        # http://en.wikipedia.org/wiki/Jenkins_hash_function
+        # Jenkins provides a good distribution and is simpler than MD5.
+        # It's a bit slower than MD5 (primarily because `Digest::MD5` is
+        # implemented in C) but has the advantage of not requiring us
+        # to load another part of stdlib, which we try to minimize.
+        def jenkins_hash_digest(string)
+          hash = 0
+
+          string.each_byte do |byte|
+            hash += byte
+            hash &= MAX_32_BIT
+            hash += ((hash << 10) & MAX_32_BIT)
+            hash &= MAX_32_BIT
+            hash ^= hash >> 6
           end
-          # :nocov:
+
+          hash += ((hash << 3) & MAX_32_BIT)
+          hash &= MAX_32_BIT
+          hash ^= hash >> 11
+          hash += ((hash << 15) & MAX_32_BIT)
+          hash &= MAX_32_BIT
+          hash
         end
+
+        MAX_32_BIT = 4_294_967_295
       end
 
       # @private

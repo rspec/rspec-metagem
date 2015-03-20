@@ -11,8 +11,12 @@ module RSpec
         describe '.order' do
           subject { described_class.new(configuration) }
 
+          def item(n)
+            instance_double(Example, :id => "./some_spec.rb[1:#{n}]")
+          end
+
           let(:configuration)  { RSpec::Core::Configuration.new }
-          let(:items)          { 10.times.map { |n| n } }
+          let(:items)          { 10.times.map { |n| item(n) } }
           let(:shuffled_items) { subject.order items }
 
           it 'shuffles the items randomly' do
@@ -23,6 +27,37 @@ module RSpec
           context 'given multiple calls' do
             it 'returns the items in the same order' do
               expect(subject.order(items)).to eq shuffled_items
+            end
+          end
+
+          def order_with(seed)
+            configuration.seed = seed
+            subject.order(items)
+          end
+
+          it 'has a good distribution', :slow do
+            orderings = 1.upto(1000).map do |seed|
+              order_with(seed)
+            end.uniq
+
+            # Here we are making sure that our hash function used for  ordering has a
+            # good distribution. Each seed produces a deterministic order and we want
+            # 99%+ of 1000 to be different.
+            expect(orderings.count).to be > 990
+          end
+
+          context "when given a subset of a list that was previously shuffled with the same seed" do
+            it "orders that subset the same as it was ordered before" do
+              all_items = 20.times.map { |n| item(n) }
+
+              all_shuffled = subject.order(all_items)
+              expect(all_shuffled).not_to eq(all_items)
+
+              last_half = all_items[10, 10]
+              last_half_shuffled = subject.order(last_half)
+              last_half_from_all_shuffled = all_shuffled.select { |i| last_half.include?(i) }
+
+              expect(last_half_from_all_shuffled.map(&:id)).to eq(last_half_shuffled.map(&:id))
             end
           end
 
@@ -69,7 +104,7 @@ module RSpec
           end
 
           it 'returns true if the random orderer has been used' do
-            registry.fetch(:random).order([1, 2])
+            registry.fetch(:random).order([RSpec.describe, RSpec.describe])
             expect(registry.used_random_seed?).to be true
           end
         end
