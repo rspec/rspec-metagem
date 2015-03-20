@@ -66,6 +66,23 @@ RSpec.describe RSpec::SharedContext do
     expect(group.new.foo).to eq('foo')
   end
 
+  it "supports let when applied to an individual example via metadata" do
+    shared = Module.new do
+      extend RSpec::SharedContext
+      let(:foo) { "bar" }
+    end
+
+    RSpec.configuration.include shared, :include_it
+
+    ex = value = nil
+    RSpec.describe "group" do
+      ex = example("ex1", :include_it) { value = foo }
+    end.run
+
+    expect(ex.execution_result).to have_attributes(:status => :passed, :exception => nil)
+    expect(value).to eq("bar")
+  end
+
   it 'supports explicit subjects' do
     shared = Module.new do
       extend RSpec::SharedContext

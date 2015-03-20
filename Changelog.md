@@ -40,6 +40,8 @@ Bug Fixes:
 * Fix how the DSL methods are defined so that RSpec is compatible with
   gems that define methods of the same name on `Kernel` (such as
   the `its-it` gem). (Alex Kwiatkowski, Ryan Ong, #1907)
+* Make `let` work properly when defined in a shared context that is applied
+  to an individual example via metadata. (Myron Marston, #1912)
 
 ### 3.2.2 / 2015-03-11
 [Full Changelog](http://github.com/rspec/rspec-core/compare/v3.2.1...v3.2.2)

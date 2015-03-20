@@ -134,6 +134,22 @@ module RSpec
               expect(non_matching_group).not_to respond_to(:bar)
             end
 
+            describe "when it has a `let` and applies to an individual example via metadata" do
+              it 'defines the `let` method correctly' do
+                define_shared_group("name", :include_it) do
+                  let(:foo) { "bar" }
+                end
+
+                ex = value = nil
+                RSpec.describe "group" do
+                  ex = example("ex1", :include_it) { value = foo }
+                end.run
+
+                expect(ex.execution_result).to have_attributes(:status => :passed, :exception => nil)
+                expect(value).to eq("bar")
+              end
+            end
+
             describe "hooks for individual examples that have matching metadata" do
               before do
                 skip "These specs pass in 2.0 mode on JRuby 1.7.8 but fail on " \
