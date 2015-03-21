@@ -436,11 +436,6 @@ module RSpec
       end
 
       # @private
-      def self.top_level?
-        @top_level ||= superclass == ExampleGroup
-      end
-
-      # @private
       def self.ensure_example_groups_are_configured
         unless defined?(@@example_groups_configured)
           RSpec.configuration.configure_mock_framework
@@ -511,10 +506,7 @@ module RSpec
 
       # Runs all the examples in this group.
       def self.run(reporter=RSpec::Core::NullReporter)
-        if RSpec.world.wants_to_quit
-          RSpec.world.clear_remaining_example_groups if top_level?
-          return
-        end
+        return if RSpec.world.wants_to_quit
         reporter.example_group_started(self)
 
         should_run_context_hooks = descendant_filtered_examples.any?

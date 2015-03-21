@@ -1383,24 +1383,6 @@ module RSpec::Core
           expect(reporter).not_to receive(:example_group_started)
           self.group.run(reporter)
         end
-
-        context "at top level" do
-          it "purges remaining groups" do
-            expect {
-              self.group.run(reporter)
-            }.to change { RSpec.world.example_groups }.from([self.group]).to([])
-          end
-        end
-
-        context "in a nested group" do
-          it "does not purge remaining groups" do
-            nested_group = self.group.describe
-
-            expect {
-              nested_group.run(reporter)
-            }.not_to change { RSpec.world.example_groups }.from([self.group])
-          end
-        end
       end
 
       context "with all examples passing" do

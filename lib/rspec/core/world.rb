@@ -24,12 +24,6 @@ module RSpec
         end
       end
 
-      # @private
-      # Used internally to clear remaining groups when fail_fast is set.
-      def clear_remaining_example_groups
-        example_groups.clear
-      end
-
       # @api private
       #
       # Apply ordering strategy from configuration to example groups.
