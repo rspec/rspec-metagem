@@ -24,8 +24,6 @@ Enhancements:
 * Add `--next-failure` CLI option which allows you to repeatedly focus
   on just one of the currently failing examples, then move on to the
   next failure, etc. (Myron Marston, #1888)
-* Warn when a helper method definition stomps an earlier definition
-  in the same example group. (Fabio Napoleoni, #1903)
 * Make `--order random` ordering stable, so that when you rerun a
   subset with a given seed, the examples will be order consistently
   relative to each other. (Myron Marston, #1908)
