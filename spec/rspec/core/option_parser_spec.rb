@@ -168,6 +168,16 @@ module RSpec::Core
 
         expect(next_failure).to include(long_form)
       end
+
+      it 'does not force `--order defined` over a specified `--seed 1234` option that comes before it' do
+        options = Parser.parse(%w[ --seed 1234 --next-failure ])
+        expect(options).to include(:order => "rand:1234")
+      end
+
+      it 'does not force `--order defined` over a specified `--seed 1234` option that comes after it' do
+        options = Parser.parse(%w[ --next-failure --seed 1234 ])
+        expect(options).to include(:order => "rand:1234")
+      end
     end
 
     %w[--example -e].each do |option|

@@ -47,7 +47,7 @@ module RSpec::Core
                   '  [rand]    randomize the order of groups and examples',
                   '  [random]  alias for rand',
                   '  [random:SEED] e.g. --order random:123') do |o|
-          set_order(options, o)
+          options[:order] = o
         end
 
         parser.on('--seed SEED', Integer, 'Equivalent of --order rand:SEED.') do |seed|
@@ -162,7 +162,7 @@ FILTERING
                   "  (Equivalent to `--only-failures --fail-fast --order defined`)") do
           configure_only_failures(options)
           set_fail_fast(options, true)
-          set_order(options, "defined")
+          options[:order] ||= 'defined'
         end
 
         parser.on('-P', '--pattern PATTERN', 'Load files matching pattern (default: "spec/**/*_spec.rb").') do |o|
@@ -247,10 +247,6 @@ FILTERING
 
     def set_fail_fast(options, value)
       options[:fail_fast] = value
-    end
-
-    def set_order(options, value)
-      options[:order] = value
     end
 
     def configure_only_failures(options)
