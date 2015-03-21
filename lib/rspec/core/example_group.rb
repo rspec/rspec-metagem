@@ -359,7 +359,6 @@ module RSpec
       def self.subclass(parent, description, args, &example_group_block)
         subclass = Class.new(parent)
         subclass.set_it_up(description, *args, &example_group_block)
-        ExampleGroups.assign_const(subclass)
         subclass.module_exec(&example_group_block) if example_group_block
 
         # The LetDefinitions module must be included _after_ other modules
@@ -390,6 +389,7 @@ module RSpec
           superclass.method(:next_runnable_index_for),
           description, *args, &example_group_block
         )
+        ExampleGroups.assign_const(self)
 
         hooks.register_globals(self, RSpec.configuration.hooks)
         RSpec.configuration.configure_group(self)

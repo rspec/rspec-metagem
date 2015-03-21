@@ -168,6 +168,16 @@ module RSpec::Core
         }.to raise_error(/ExampleGroups::CallingAnUndefinedMethod/)
       end
 
+      it "assigns the const before including shared contexts via metadata so error messages from eval'ing the context include the name" do
+        RSpec.shared_context("foo", :foo) { bar }
+
+        expect {
+          RSpec.describe("Including shared context via metadata", :foo)
+        }.to raise_error(NameError,
+          a_string_including('ExampleGroups::IncludingSharedContextViaMetadata', 'bar')
+        )
+      end
+
       it 'does not have problems with example groups named "Core"', :unless => RUBY_VERSION == '1.9.2' do
         RSpec.describe("Core")
         expect(defined?(::RSpec::ExampleGroups::Core)).to be_truthy
