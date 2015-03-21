@@ -1226,12 +1226,17 @@ module RSpec
       # Used internally to extend the singleton class of a single example's
       # example group instance with modules using `include` and/or `extend`.
       def configure_example(example)
+        singleton_group = example.example_group_instance.singleton_class
+
         # We replace the metadata so that SharedExampleGroupModule#included
         # has access to the example's metadata[:location].
-        example.example_group_instance.singleton_class.with_replaced_metadata(example.metadata) do
-          @include_modules.items_for(example.metadata).each do |mod|
+        singleton_group.with_replaced_metadata(example.metadata) do
+          modules = @include_modules.items_for(example.metadata)
+          modules.each do |mod|
             safe_include(mod, example.example_group_instance.singleton_class)
           end
+
+          MemoizedHelpers.define_helpers_on(singleton_group) unless modules.empty?
         end
       end
 
