@@ -107,6 +107,16 @@ RSpec::Matchers.define :contain_files do |*expected_files|
   failure_message_when_negated { contain_exactly_matcher.failure_message_when_negated }
 end
 
+RSpec::Matchers.define :first_include do |first_snippet|
+  chain :then_include, :second_snippet
+
+  match do |string|
+    string.include?(first_snippet) &&
+      string.include?(second_snippet) &&
+      string.index(first_snippet) < string.index(second_snippet)
+  end
+end
+
 RSpec::Matchers.alias_matcher :a_file_collection, :contain_files
 
 RSpec::Matchers.define_negated_matcher :avoid_outputting, :output
