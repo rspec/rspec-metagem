@@ -27,6 +27,8 @@ Enhancements:
 * Make `--order random` ordering stable, so that when you rerun a
   subset with a given seed, the examples will be order consistently
   relative to each other. (Myron Marston, #1908)
+* Set example group constant earlier so errors when evaluating the context
+  include the example group name (Myron Marson, #1911)
 
 Bug Fixes:
 
