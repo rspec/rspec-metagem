@@ -9,7 +9,8 @@ module RSpec::Core
     end
 
     def parse(args)
-      return {} if args.empty?
+      return { :files_or_directories_to_run => [] } if args.empty?
+      args = args.dup
 
       options = args.delete('--tty') ? { :tty => true } : {}
       begin
@@ -18,6 +19,7 @@ module RSpec::Core
         abort "#{e.message}\n\nPlease use --help for a listing of valid options"
       end
 
+      options[:files_or_directories_to_run] = args
       options
     end
 

@@ -13,10 +13,23 @@ module RSpec::Core
       end
     end
 
-    it "does not parse empty args" do
-      parser = Parser.new
-      expect(OptionParser).not_to receive(:new)
-      parser.parse([])
+    context "when given empty args" do
+      it "does not parse them" do
+        parser = Parser.new
+        expect(OptionParser).not_to receive(:new)
+        parser.parse([])
+      end
+
+      it "still returns a `:files_or_directories_to_run` entry since callers expect that" do
+        expect(
+          Parser.parse([])
+        ).to eq(:files_or_directories_to_run => [])
+      end
+    end
+
+    it 'does not mutate the provided args array' do
+      args = %w[ --require foo ]
+      expect { Parser.parse(args) }.not_to change { args }
     end
 
     it "proposes you to use --help and returns an error on incorrect argument" do
@@ -28,6 +41,13 @@ module RSpec::Core
       end
 
       parser.parse([option])
+    end
+
+    it 'treats additional arguments as `:files_or_directories_to_run`' do
+      options = Parser.parse(%w[ path/to/spec.rb --fail-fast spec/unit -Ibar 1_spec.rb:23 ])
+      expect(options).to include(
+        :files_or_directories_to_run => %w[ path/to/spec.rb spec/unit 1_spec.rb:23 ]
+      )
     end
 
     {
