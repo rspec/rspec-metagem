@@ -62,6 +62,13 @@ module RSpec::Core
           options[:order] = "rand:#{seed}"
         end
 
+        parser.on('--bisect', 'Repeatedly runs the suite in order to isolates the failures to the ',
+                  '  smallest reproducible case.') do
+          RSpec::Support.require_rspec_core "bisect/coordinator"
+          Bisect::Coordinator.bisect_with(original_args, RSpec.configuration)
+          exit
+        end
+
         parser.on('--[no-]fail-fast', 'Abort the run on first failure.') do |value|
           set_fail_fast(options, value)
         end

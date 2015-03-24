@@ -9,6 +9,8 @@ module RSpec
       class Runner
         include RSpec::Core::ShellEscape
 
+        attr_reader :original_cli_args
+
         def initialize(server, original_cli_args)
           @server            = server
           @original_cli_args = original_cli_args - ["--bisect"]

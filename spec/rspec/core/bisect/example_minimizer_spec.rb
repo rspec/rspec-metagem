@@ -6,6 +6,10 @@ module RSpec::Core
     RunResults = Formatters::BisectFormatter::RunResults
 
     FakeRunner = Struct.new(:all_ids, :always_failures, :dependent_failures) do
+      def original_cli_args
+        []
+      end
+
       def original_results
         RunResults.new(all_ids, always_failures | dependent_failures.keys)
       end
@@ -25,7 +29,7 @@ module RSpec::Core
         %w[ ex_1 ex_2 ex_3 ex_4 ex_5 ex_6 ex_7 ex_8 ],
         %w[ ex_2 ],
         { "ex_5" => "ex_4" }
-      ))
+      ), RSpec::Core::NullReporter)
 
       ids = minimizer.find_minimal_repro
       expect(ids).to match_array(%w[ ex_2 ex_4 ex_5 ])

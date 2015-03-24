@@ -14,7 +14,7 @@ module FormatterSupport
 
     output = out.string
     return output unless normalize_output
-    output.gsub!(/\d+(?:\.\d+)?(s| seconds)/, "n.nnnn\\1")
+    output = normalize_durations(output)
 
     caller_line = RSpec::Core::Metadata.relative_path(caller.first)
     output.lines.reject do |line|
@@ -28,6 +28,10 @@ module FormatterSupport
       # this line varies a bit depending on how you run the specs (via `rake` vs `rspec`)
       line.include?('/exe/rspec:')
     end.join
+  end
+
+  def normalize_durations(output)
+    output.gsub(/\d+(?:\.\d+)?(s| seconds)/, "n.nnnn\\1")
   end
 
   if RUBY_VERSION.to_f < 1.9

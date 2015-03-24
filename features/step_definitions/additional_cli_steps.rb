@@ -150,3 +150,17 @@ Given(/^I have not configured `example_status_persistence_file_path`$/) do
     File.open("spec/spec_helper.rb", "w") { |f| f.write("") }
   end
 end
+
+Given(/^files "(.*?)" through "(.*?)" with an unrelated passing spec in each file$/) do |file1, file2|
+  index_1 = Integer(file1[/\d+/])
+  index_2 = Integer(file2[/\d+/])
+  pattern = file1.sub(/\d+/, '%s')
+
+  index_1.upto(index_2) do |index|
+    write_file(pattern % index, <<-EOS)
+      RSpec.describe "Spec file #{index}" do
+        example { }
+      end
+    EOS
+  end
+end

@@ -4,6 +4,7 @@ module RSpec
       # Enumerates each subset of the given list of ids that is half the
       # size of the total list, so that hopefully we can discard half the
       # list each repeatedly in order to our minimal repro case.
+      # @private
       class SubsetEnumerator
         include Enumerable
 
@@ -11,9 +12,13 @@ module RSpec
           @ids = ids
         end
 
+        def subset_size
+          @subset_size ||= (@ids.size / 2.0).ceil
+        end
+
         def each
           yielded     = Set.new
-          slice_size  = (@ids.size / 2.0).ceil
+          slice_size  = subset_size
           combo_count = 1
 
           while slice_size > 0
