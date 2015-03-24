@@ -15,9 +15,8 @@ module RSpec::Core
 
     context "when given empty args" do
       it "does not parse them" do
-        parser = Parser.new
         expect(OptionParser).not_to receive(:new)
-        parser.parse([])
+        Parser.parse([])
       end
 
       it "still returns a `:files_or_directories_to_run` entry since callers expect that" do
@@ -33,14 +32,13 @@ module RSpec::Core
     end
 
     it "proposes you to use --help and returns an error on incorrect argument" do
-      parser = Parser.new
-      option = "--my_wrong_arg"
+      parser = Parser.new([option = "--my_wrong_arg"])
 
       expect(parser).to receive(:abort) do |msg|
         expect(msg).to include('use --help', option)
       end
 
-      parser.parse([option])
+      parser.parse
     end
 
     it 'treats additional arguments as `:files_or_directories_to_run`' do
@@ -58,22 +56,22 @@ module RSpec::Core
     }.each do |long, shorts|
       shorts.each do |option|
         it "won't parse #{option} as a shorthand for #{long}" do
-          parser = Parser.new
+          parser = Parser.new([option])
 
           expect(parser).to receive(:abort) do |msg|
             expect(msg).to include('use --help', option)
           end
 
-          parser.parse([option])
+          parser.parse
         end
       end
     end
 
     it "won't display invalid options in the help output" do
       def generate_help_text
-        parser = Parser.new
+        parser = Parser.new(["--help"])
         allow(parser).to receive(:exit)
-        parser.parse(["--help"])
+        parser.parse
       end
 
       useless_lines = /^\s*--?\w+\s*$\n/
@@ -84,11 +82,11 @@ module RSpec::Core
     %w[ -v --version ].each do |option|
       describe option do
         it "prints the version and exits" do
-          parser = Parser.new
+          parser = Parser.new([option])
           expect(parser).to receive(:exit)
 
           expect {
-            parser.parse([option])
+            parser.parse
           }.to output("#{RSpec::Core::Version::STRING}\n").to_stdout
         end
       end
@@ -99,12 +97,12 @@ module RSpec::Core
         project_init = instance_double(ProjectInitializer)
         allow(ProjectInitializer).to receive_messages(:new => project_init)
 
-        parser = Parser.new
+        parser = Parser.new(["--init"])
 
         expect(project_init).to receive(:run).ordered
         expect(parser).to receive(:exit).ordered
 
-        parser.parse(["--init"])
+        parser.parse
       end
     end
 

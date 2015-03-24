@@ -5,12 +5,18 @@ module RSpec::Core
   # @private
   class Parser
     def self.parse(args)
-      new.parse(args)
+      new(args).parse
     end
 
-    def parse(args)
-      return { :files_or_directories_to_run => [] } if args.empty?
-      args = args.dup
+    attr_reader :original_args
+
+    def initialize(original_args)
+      @original_args = original_args
+    end
+
+    def parse
+      return { :files_or_directories_to_run => [] } if original_args.empty?
+      args = original_args.dup
 
       options = args.delete('--tty') ? { :tty => true } : {}
       begin
