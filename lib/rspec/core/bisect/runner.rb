@@ -17,9 +17,7 @@ module RSpec
         end
 
         def run(locations)
-          @server.capture_run_results do
-            system command_for(locations)
-          end
+          run_locations(locations, original_results.failed_example_ids)
         end
 
         def command_for(locations)
@@ -47,10 +45,16 @@ module RSpec
         end
 
         def original_results
-          @original_results ||= run(original_locations)
+          @original_results ||= run_locations(original_locations)
         end
 
       private
+
+        def run_locations(locations, *capture_args)
+          @server.capture_run_results(*capture_args) do
+            system command_for(locations)
+          end
+        end
 
         def reusable_cli_options
           @reusable_cli_options ||= begin

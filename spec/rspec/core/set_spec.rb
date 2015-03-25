@@ -20,4 +20,17 @@ RSpec.describe 'RSpec::Core::Set' do
     expect(set).to be_an Enumerable
     expect { |p| set.each(&p) }.to yield_successive_args(1, 2, 3)
   end
+
+  it 'supports deletions' do
+    expect {
+      set.delete(1)
+    }.to change { set.include?(1) }.from(true).to(false)
+  end
+
+  it 'indicates if it is empty' do
+    set = RSpec::Core::Set.new
+    expect {
+      set << 1
+    }.to change { set.empty? }.from(true).to(false)
+  end
 end

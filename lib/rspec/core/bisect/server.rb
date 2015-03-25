@@ -16,8 +16,8 @@ module RSpec
           server.stop
         end
 
-        def capture_run_results(abort_after_example_id=nil)
-          self.abort_after_example_id = abort_after_example_id
+        def capture_run_results(expected_failures=[])
+          self.expected_failures = expected_failures
           yield
           latest_run_results
         end
@@ -36,7 +36,7 @@ module RSpec
         end
 
         # Fetched via DRb by the BisectFormatter to determine when to abort.
-        attr_accessor :abort_after_example_id
+        attr_accessor :expected_failures
 
         # Set via DRb by the BisectFormatter with the results of the run.
         attr_accessor :latest_run_results

@@ -1,9 +1,31 @@
 require 'rspec/core/bisect/runner'
+require 'rspec/core/formatters/bisect_formatter'
 
 module RSpec::Core
   RSpec.describe Bisect::Runner do
     let(:server) { instance_double("RSpec::Core::Bisect::Server", :drb_port => 1234) }
     let(:runner) { described_class.new(server, original_cli_args) }
+
+    describe "#run" do
+      let(:original_cli_args) { %w[ spec/1_spec.rb ] }
+
+      it "passes the failed examples from the original run as the expected failures so the runs can abort early" do
+        original_results = Formatters::BisectFormatter::RunResults.new(
+          [], %w[ spec/failure_spec.rb[1:1] spec/failure_spec.rb[1:2] ]
+        )
+
+        expect(server).to receive(:capture_run_results).
+          with(no_args).
+          ordered.
+          and_return(original_results)
+
+        expect(server).to receive(:capture_run_results).
+          with(original_results.failed_example_ids).
+          ordered
+
+        runner.run(%w[ spec/1_spec.rb[1:1] spec/1_spec.rb[1:2] ])
+      end
+    end
 
     describe "#command_for" do
       def command_for(locations, options={})

@@ -67,24 +67,67 @@ module RSpec::Core
         )
       end
 
-      it 'can abort the run early (e.g. when it is not interested in later examples)' do
-        results = server.capture_run_results("./spec/rspec/core/resources/formatter_specs.rb[2:2:1]") do
-          run_formatter_specs
+      describe "aborting the run early" do
+        it "aborts as soon as the last expected failure finishes, since we don't care about what happens after that" do
+          expected_failures = %w[
+            ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
+            ./spec/rspec/core/resources/formatter_specs.rb[4:1]
+          ]
+
+          results = server.capture_run_results(expected_failures) do
+            run_formatter_specs
+          end
+
+          expect(results).to have_attributes(
+            :all_example_ids => %w[
+              ./spec/rspec/core/resources/formatter_specs.rb[1:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[3:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[4:1]
+            ],
+            :failed_example_ids => %w[
+              ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[4:1]
+            ]
+          )
         end
 
-        expect(results).to have_attributes(
-          :all_example_ids => %w[
-            ./spec/rspec/core/resources/formatter_specs.rb[1:1]
-            ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
-            ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
-          ],
-          :failed_example_ids => %w[
-            ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
-          ]
-        )
-      end
+        it 'aborts after an expected failure passes instead, even when there are remaining failing examples' do
+          passing_example       = "./spec/rspec/core/resources/formatter_specs.rb[3:1]"
+          later_failing_example = "./spec/rspec/core/resources/formatter_specs.rb[4:1]"
 
-      # TODO: test aborting after pending vs failed vs passing example if we keep this feature.
+          results = server.capture_run_results([passing_example, later_failing_example]) do
+            run_formatter_specs
+          end
+
+          expect(results).to have_attributes(
+            :all_example_ids => %w[
+              ./spec/rspec/core/resources/formatter_specs.rb[1:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
+              ./spec/rspec/core/resources/formatter_specs.rb[3:1]
+            ],
+            :failed_example_ids => %w[
+              ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
+            ]
+          )
+        end
+
+        it 'aborts after an expected failure is pending instead, even when there are remaining failing examples' do
+          pending_example       = "./spec/rspec/core/resources/formatter_specs.rb[1:1]"
+          later_failing_example = "./spec/rspec/core/resources/formatter_specs.rb[4:1]"
+
+          results = server.capture_run_results([pending_example, later_failing_example]) do
+            run_formatter_specs
+          end
+
+          expect(results).to have_attributes(
+            :all_example_ids    => %w[ ./spec/rspec/core/resources/formatter_specs.rb[1:1] ],
+            :failed_example_ids => %w[]
+          )
+        end
+      end
     end
   end
 end

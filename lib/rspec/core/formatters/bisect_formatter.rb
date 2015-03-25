@@ -21,11 +21,11 @@ module RSpec
           @all_example_ids    = []
           @failed_example_ids = []
           @bisect_server      = DRbObject.new_with_uri(drb_uri)
-          @abort_after_id     = nil
+          @remaining_failures = []
         end
 
         def start(_notification)
-          @abort_after_id = @bisect_server.abort_after_example_id
+          @remaining_failures = Set.new(@bisect_server.expected_failures)
         end
 
         def example_started(notification)
@@ -34,15 +34,15 @@ module RSpec
 
         def example_failed(notification)
           @failed_example_ids << notification.example.id
-          example_finished(notification)
+          example_finished(notification, :failed)
         end
 
         def example_passed(notification)
-          example_finished(notification)
+          example_finished(notification, :passed)
         end
 
         def example_pending(notification)
-          example_finished(notification)
+          example_finished(notification, :pending)
         end
 
         def start_dump(_notification)
@@ -55,8 +55,11 @@ module RSpec
 
       private
 
-        def example_finished(notification)
-          return unless notification.example.id == @abort_after_id
+        def example_finished(notification, status)
+          return unless @remaining_failures.include?(notification.example.id)
+          @remaining_failures.delete(notification.example.id)
+
+          return if status == :failed && !@remaining_failures.empty?
           RSpec.world.wants_to_quit = true
         end
       end
