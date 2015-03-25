@@ -51,8 +51,7 @@ module RSpec
           )
         end
 
-        RunResults = Struct.new(:all_example_ids_in_execution_order,
-                                :failed_example_ids)
+        RunResults = Struct.new(:all_example_ids, :failed_example_ids)
 
       private
 

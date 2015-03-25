@@ -49,7 +49,7 @@ module RSpec::Core
         end
 
         expect(results).to have_attributes(
-          :all_example_ids_in_execution_order => %w[
+          :all_example_ids => %w[
             ./spec/rspec/core/resources/formatter_specs.rb[1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]
@@ -73,7 +73,7 @@ module RSpec::Core
         end
 
         expect(results).to have_attributes(
-          :all_example_ids_in_execution_order => %w[
+          :all_example_ids => %w[
             ./spec/rspec/core/resources/formatter_specs.rb[1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:1:1]
             ./spec/rspec/core/resources/formatter_specs.rb[2:2:1]

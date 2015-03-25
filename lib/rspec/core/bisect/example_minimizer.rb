@@ -7,7 +7,7 @@ module RSpec
       # Contains the core bisect logic. Searches for examples we can ignore by
       # repeatedly running different subsets of the suite.
       class ExampleMinimizer
-        attr_reader :runner, :reporter, :all_example_ids_in_execution_order, :failed_example_ids
+        attr_reader :runner, :reporter, :all_example_ids, :failed_example_ids
 
         def initialize(runner, reporter)
           @runner   = runner
@@ -17,7 +17,7 @@ module RSpec
         def find_minimal_repro
           prep
 
-          remaining_ids = all_example_ids_in_execution_order - failed_example_ids
+          remaining_ids = all_example_ids - failed_example_ids
           debug 0, "Initial failed_example_ids: #{failed_example_ids}"
           debug 0, "Initial remaining_ids: #{remaining_ids}"
 
@@ -41,8 +41,8 @@ module RSpec
           notify(:bisect_starting, :original_cli_args => runner.original_cli_args)
 
           _, duration = track_duration do
-            original_results = runner.original_results
-            @all_example_ids_in_execution_order = original_results.all_example_ids_in_execution_order
+            original_results    = runner.original_results
+            @all_example_ids    = original_results.all_example_ids
             @failed_example_ids = original_results.failed_example_ids
           end
 
@@ -52,7 +52,7 @@ module RSpec
         end
 
         def non_failing_example_ids
-          @non_failing_example_ids ||= all_example_ids_in_execution_order - failed_example_ids
+          @non_failing_example_ids ||= all_example_ids - failed_example_ids
         end
 
         def get_same_failures?(ids)
