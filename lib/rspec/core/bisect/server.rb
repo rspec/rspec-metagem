@@ -16,10 +16,21 @@ module RSpec
           server.stop
         end
 
+        # @private
+        class DidNotGetRunResults < StandardError
+          attr_reader :run_output
+
+          def initialize(run_output)
+            @run_output = run_output
+            super("Did not get run results, but got output: #{run_output}")
+          end
+        end
+
         def capture_run_results(expected_failures=[])
-          self.expected_failures = expected_failures
-          yield
-          latest_run_results
+          self.expected_failures  = expected_failures
+          self.latest_run_results = nil
+          run_output = yield
+          latest_run_results || raise(DidNotGetRunResults, run_output)
         end
 
         def start

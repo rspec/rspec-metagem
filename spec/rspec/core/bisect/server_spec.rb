@@ -26,6 +26,19 @@ module RSpec::Core
       expect(DRb).not_to have_running_server
     end
 
+    context "when results are failed to be reported" do
+      let(:server) { Bisect::Server.new }
+
+      it "raises an error with the output" do
+        expect {
+          server.capture_run_results { "the output" }
+        }.to raise_error(an_object_having_attributes(
+          :class      => Bisect::Server::DidNotGetRunResults,
+          :run_output => "the output"
+        ))
+      end
+    end
+
     context "when used in combination with the BisectFormatter", :slow do
       include FormatterSupport
 

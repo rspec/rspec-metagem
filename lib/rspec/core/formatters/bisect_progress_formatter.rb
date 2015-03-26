@@ -8,7 +8,8 @@ module RSpec
       class BisectProgressFormatter < BaseTextFormatter
         Formatters.register self, :bisect_starting, :original_bisect_run_complete,
                             :bisect_round_started, :individual_run_complete,
-                            :bisect_round_finished, :bisect_complete, :bisect_repro_command
+                            :bisect_round_finished, :bisect_complete, :bisect_repro_command,
+                            :bisect_failed
 
         def bisect_starting(notification)
           options = notification.original_cli_args.join(' ')
@@ -50,6 +51,13 @@ module RSpec
 
         def bisect_repro_command(notification)
           output.puts "\nThe minimal reproduction command is:\n  #{notification.repro}"
+        end
+
+        def bisect_failed(notification)
+          output.puts
+          output.puts ConsoleCodes.wrap("Spec run failed!", :failure)
+          output.puts
+          output.puts ConsoleCodes.wrap(notification.run_output, :failure)
         end
       end
     end

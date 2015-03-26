@@ -57,18 +57,24 @@ module RSpec
           end
         end
 
-        if Open3.respond_to?(:capture2e)
+        # `Open3.capture2e` does not work on JRuby:
+        # https://github.com/jruby/jruby/issues/2766
+        if Open3.respond_to?(:capture2e) && !RSpec::Support::Ruby.jruby?
           def run_command(cmd)
-            Open3.capture2e(cmd)
+            Open3.capture2e(cmd).first
           end
         else # for 1.8.7
           # :nocov:
           def run_command(cmd)
+            out = err = nil
+
             Open3.popen3(cmd) do |_, stdout, stderr|
               # Reading the streams blocks until the process is complete
-              stdout.read
-              stderr.read
+              out = stdout.read
+              err = stderr.read
             end
+
+            "Stdout:\n#{out}\n\nStderr:\n#{err}"
           end
           # :nocov:
         end

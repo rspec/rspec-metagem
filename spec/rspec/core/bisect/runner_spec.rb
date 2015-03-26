@@ -203,9 +203,12 @@ module RSpec::Core
       let(:original_cli_args) { %w[spec/unit] }
 
       open3_method = Open3.respond_to?(:capture2e) ? :capture2e : :popen3
+      open3_method = :popen3 if RSpec::Support::Ruby.jruby?
 
       before do
-        allow(Open3).to receive(open3_method)
+        allow(Open3).to receive(open3_method).and_return(
+          [double("Exit Status"), double("Stdout/err")]
+        )
         allow(server).to receive(:capture_run_results) do |&block|
           block.call
           "the results"

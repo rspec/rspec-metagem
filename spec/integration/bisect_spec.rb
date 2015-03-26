@@ -2,16 +2,21 @@ module RSpec::Core
   RSpec.describe "Bisect", :slow, :simulate_shell_allowing_unquoted_ids do
     include FormatterSupport
 
-    it 'finds the minimum rerun command and exits' do
-      RSpec.configuration.output_stream = out = StringIO.new
-      parser = Parser.new(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined --bisect])
+    def bisect(cli_args)
+      RSpec.configuration.output_stream = formatter_output
+      parser = Parser.new(cli_args)
       expect(parser).to receive(:exit)
 
       expect {
         parser.parse
       }.to avoid_outputting.to_stdout_from_any_process.and avoid_outputting.to_stderr_from_any_process
 
-      output = normalize_durations(out.string)
+      normalize_durations(formatter_output.string)
+    end
+
+    it 'finds the minimum rerun command and exits' do
+      output = bisect(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined --bisect])
+
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))
         |Bisect started using options: "spec/rspec/core/resources/order_dependent_specs.rb --order defined"
         |Running suite to find failures... (n.nnnn seconds)
@@ -27,6 +32,13 @@ module RSpec::Core
         |The minimal reproduction command is:
         |  rspec ./spec/rspec/core/resources/order_dependent_specs.rb[11:1,22:1] --order defined
       EOS
+    end
+
+    context "when a load-time problem occurs while running the suite" do
+      it 'surfaces the stdout and stderr output to the user' do
+        output = bisect(%w[spec/rspec/core/resources/fail_on_load_spec.rb_ --bisect])
+        expect(output).to include("Spec run failed", "undefined method `contex'", "About to call misspelled method")
+      end
     end
   end
 end
