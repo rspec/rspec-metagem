@@ -180,15 +180,15 @@ module FormatterSupport
     @reporter = config.reporter
   end
 
-  def output
-    @output ||= StringIO.new
+  def formatter_output
+    @formatter_output ||= StringIO.new
   end
 
   def config
     @configuration ||=
       begin
         config = RSpec::Core::Configuration.new
-        config.output_stream = output
+        config.output_stream = formatter_output
         config
       end
   end

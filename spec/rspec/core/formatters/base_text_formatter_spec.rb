@@ -27,17 +27,17 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
   describe "#dump_summary" do
     it "with 0s outputs pluralized (excluding pending)" do
       send_notification :dump_summary, summary_notification(0, [], [], [], 0)
-      expect(output.string).to match("0 examples, 0 failures")
+      expect(formatter_output.string).to match("0 examples, 0 failures")
     end
 
     it "with 1s outputs singular (including pending)" do
       send_notification :dump_summary, summary_notification(0, examples(1), examples(1), examples(1), 0)
-      expect(output.string).to match("1 example, 1 failure, 1 pending")
+      expect(formatter_output.string).to match("1 example, 1 failure, 1 pending")
     end
 
     it "with 2s outputs pluralized (including pending)" do
       send_notification :dump_summary, summary_notification(2, examples(2), examples(2), examples(2), 0)
-      expect(output.string).to match("2 examples, 2 failures, 2 pending")
+      expect(formatter_output.string).to match("2 examples, 2 failures, 2 pending")
     end
 
     describe "rerun command for failed examples" do
@@ -104,7 +104,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         examples = example_group.examples
         failed   = examples.select { |e| e.execution_result.status == :failed }
         send_notification :dump_summary, summary_notification(1, examples, failed, [], 0)
-        output.string
+        formatter_output.string
       end
     end
   end
@@ -124,8 +124,8 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
       run_all_and_dump_failures
 
-      expect(output.string).to match(/group name example name/m)
-      expect(output.string).to match(/(\s+)expected: \"that\"\n\1     got: \"this\"/m)
+      expect(formatter_output.string).to match(/group name example name/m)
+      expect(formatter_output.string).to match(/(\s+)expected: \"that\"\n\1     got: \"this\"/m)
     end
 
     context "with an exception without a message" do
@@ -157,7 +157,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         exception = Class.new(StandardError).new
         group.example("example name") { raise exception }
         run_all_and_dump_failures
-        expect(output.string).to include('(anonymous error class)')
+        expect(formatter_output.string).to include('(anonymous error class)')
       end
     end
 
@@ -165,7 +165,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       it "does not show the error class" do
         group.example("example name") { raise NameError.new('foo') }
         run_all_and_dump_failures
-        expect(output.string).to match(/NameError/m)
+        expect(formatter_output.string).to match(/NameError/m)
       end
     end
 
@@ -174,7 +174,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         it "runs without encountering an encoding exception" do
           group.example("Mixing encodings, e.g. UTF-8: © and Binary") { raise "Error: \xC2\xA9".force_encoding("ASCII-8BIT") }
           run_all_and_dump_failures
-          expect(output.string).to match(/RuntimeError:\n\s+Error: \?\?/m) # ?? because the characters dont encode properly
+          expect(formatter_output.string).to match(/RuntimeError:\n\s+Error: \?\?/m) # ?? because the characters dont encode properly
         end
       end
     end
@@ -183,7 +183,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       it "does not show the error class" do
         group.example("example name") { expect("this").to eq("that") }
         run_all_and_dump_failures
-        expect(output.string).not_to match(/RSpec/m)
+        expect(formatter_output.string).not_to match(/RSpec/m)
       end
     end
 
@@ -191,7 +191,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
       it "does not show the error class" do
         group.example("example name") { expect("this").to receive("that") }
         run_all_and_dump_failures
-        expect(output.string).not_to match(/RSpec/m)
+        expect(formatter_output.string).not_to match(/RSpec/m)
       end
     end
 
@@ -207,7 +207,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
           run_all_and_dump_failures
 
-          expect(output.string.lines).to include(a_string_ending_with(
+          expect(formatter_output.string.lines).to include(a_string_ending_with(
             'Shared Example Group: "foo bar" called from ' +
               "#{RSpec::Core::Metadata.relative_path(__FILE__)}:#{line}\n"
           ))
@@ -226,7 +226,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
             run_all_and_dump_failures
 
-            expect(output.string.lines).to include(a_string_ending_with(
+            expect(formatter_output.string.lines).to include(a_string_ending_with(
               'Shared Example Group: "foo bar" called from ' +
                 "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{line}\n"
             ))
@@ -249,7 +249,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
 
             run_all_and_dump_failures
 
-            expect(output.string.lines.grep(/Shared Example Group/)).to match [
+            expect(formatter_output.string.lines.grep(/Shared Example Group/)).to match [
               a_string_ending_with(
                 'Shared Example Group: "inner" called from ' +
                   "./spec/rspec/core/formatters/base_text_formatter_spec.rb:#{inner_line}\n"
@@ -273,7 +273,7 @@ RSpec.describe RSpec::Core::Formatters::BaseTextFormatter do
         config.success_color = :cyan
       end
       send_notification :dump_summary, summary_notification(0, examples(1), [], [], 0)
-      expect(output.string).to include("\e[36m")
+      expect(formatter_output.string).to include("\e[36m")
     end
   end
 end
