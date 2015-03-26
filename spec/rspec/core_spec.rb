@@ -3,6 +3,7 @@ require 'rspec/support/spec/library_wide_checks'
 RSpec.describe RSpec do
   fake_libs = File.expand_path('../../support/fake_libs', __FILE__)
   allowed_loaded_features = [
+    /open3.rb/,       # Used by Bisect::Runner, which is not normally loaded
     /optparse\.rb/,   # Used by OptionParser.
     /rbconfig\.rb/,   # loaded by rspec-support for OS detection.
     /shellwords\.rb/, # used by ConfigurationOptions and RakeTask.

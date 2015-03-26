@@ -1,4 +1,5 @@
 RSpec::Support.require_rspec_core "shell_escape"
+require 'open3'
 
 module RSpec
   module Core
@@ -52,8 +53,24 @@ module RSpec
 
         def run_locations(locations, *capture_args)
           @server.capture_run_results(*capture_args) do
-            system command_for(locations)
+            run_command command_for(locations)
           end
+        end
+
+        if Open3.respond_to?(:capture2e)
+          def run_command(cmd)
+            Open3.capture2e(cmd)
+          end
+        else # for 1.8.7
+          # :nocov:
+          def run_command(cmd)
+            Open3.popen3(cmd) do |_, stdout, stderr|
+              # Reading the streams blocks until the process is complete
+              stdout.read
+              stderr.read
+            end
+          end
+          # :nocov:
         end
 
         def reusable_cli_options

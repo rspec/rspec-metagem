@@ -202,8 +202,10 @@ module RSpec::Core
     describe "#original_results" do
       let(:original_cli_args) { %w[spec/unit] }
 
+      open3_method = Open3.respond_to?(:capture2e) ? :capture2e : :popen3
+
       before do
-        allow(runner).to receive(:system)
+        allow(Open3).to receive(open3_method)
         allow(server).to receive(:capture_run_results) do |&block|
           block.call
           "the results"
@@ -212,7 +214,7 @@ module RSpec::Core
 
       it "runs the suite with the locations from the original CLI args" do
         runner.original_results
-        expect(runner).to have_received(:system).with(a_string_including("spec/unit"))
+        expect(Open3).to have_received(open3_method).with(a_string_including("spec/unit"))
       end
 
       it 'returns the run results' do

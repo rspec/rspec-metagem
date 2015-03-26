@@ -7,7 +7,9 @@ module RSpec::Core
       parser = Parser.new(%w[spec/rspec/core/resources/order_dependent_specs.rb --order defined --bisect])
       expect(parser).to receive(:exit)
 
-      parser.parse
+      expect {
+        parser.parse
+      }.to avoid_outputting.to_stdout_from_any_process.and avoid_outputting.to_stderr_from_any_process
 
       output = normalize_durations(out.string)
       expect(output).to eq(<<-EOS.gsub(/^\s+\|/, ''))

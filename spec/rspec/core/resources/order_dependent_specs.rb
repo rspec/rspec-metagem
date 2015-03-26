@@ -10,6 +10,10 @@ $global_state_for_bisect_specs = {}
 end
 
 RSpec.describe "Group 2" do
+  before do
+    puts "Stdout output while bisecting should not be shown to the user"
+  end
+
   it "passes" do
     $global_state_for_bisect_specs[:foo] = 1
   end
