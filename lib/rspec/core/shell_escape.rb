@@ -3,11 +3,13 @@ module RSpec
     # @private
     # Deals with the fact that `shellwords` only works on POSIX systems.
     module ShellEscape
+      def quote(argument)
+        "'#{argument.gsub("'", "\\\\'")}'"
+      end
+
       if RSpec::Support::OS.windows?
         # :nocov:
-        def escape(shell_command)
-          "'#{shell_command.gsub("'", "\\\\'")}'"
-        end
+        alias escape quote
         # :nocov:
       else
         require 'shellwords'
@@ -27,7 +29,7 @@ module RSpec
 
       def conditionally_quote(id)
         return id if shell_allows_unquoted_ids?
-        "'#{id.gsub("'", "\\\\'")}'"
+        quote(id)
       end
 
       def shell_allows_unquoted_ids?

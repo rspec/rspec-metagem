@@ -51,7 +51,7 @@ module RSpec::Core
 
       it 'escapes locations' do
         cmd = command_for(["path/with spaces/to/spec.rb"])
-        if RSpec::Support::OS.windows?
+        if uses_quoting_for_escaping?
           expect(cmd).to include("'path/with spaces/to/spec.rb'")
         else
           expect(cmd).to include('path/with\ spaces/to/spec.rb')
@@ -116,7 +116,7 @@ module RSpec::Core
         allow(RSpec::Core).to receive(:path_to_executable).and_return("path/with spaces/rspec")
         cmd = command_for([])
 
-        if RSpec::Support::OS.windows?
+        if uses_quoting_for_escaping?
           expect(cmd).to include("'path/with spaces/rspec'")
         else
           expect(cmd).to include('path/with\ spaces/rspec')
@@ -125,7 +125,7 @@ module RSpec::Core
 
       it 'includes the current load path as an option to `ruby`, not as an option to `rspec`' do
         cmd = command_for([], :load_path => %W[ lp/foo lp/bar ])
-        if RSpec::Support::OS.windows?
+        if uses_quoting_for_escaping?
           expect(cmd).to first_include("-I'lp/foo':'lp/bar'").then_include(RSpec::Core.path_to_executable)
         else
           expect(cmd).to first_include("-Ilp/foo:lp/bar").then_include(RSpec::Core.path_to_executable)
@@ -134,7 +134,7 @@ module RSpec::Core
 
       it 'escapes the load path entries' do
         cmd = command_for([], :load_path => ['l p/foo', 'l p/bar' ])
-        if RSpec::Support::OS.windows?
+        if uses_quoting_for_escaping?
           expect(cmd).to first_include("-I'l p/foo':'l p/bar'").then_include(RSpec::Core.path_to_executable)
         else
           expect(cmd).to first_include('-Il\ p/foo:l\ p/bar').then_include(RSpec::Core.path_to_executable)
@@ -227,6 +227,10 @@ module RSpec::Core
       it 'memoizes, since it is expensive to re-run the suite' do
         expect(runner.original_results).to be(runner.original_results)
       end
+    end
+
+    def uses_quoting_for_escaping?
+      RSpec::Support::OS.windows? || RSpec::Support::Ruby.jruby?
     end
   end
 end
